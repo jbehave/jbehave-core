@@ -1,0 +1,234 @@
+<project name="jbehave" default="good-distribution" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+  <artifact:pom id="corePom" file="jbehave-core/pom.xml" />
+  <artifact:dependencies filesetId="dependency.fileset" pomRefId="corePom" useScope="test"/>
+  <property name="version" value="${corePom.version}" />
+  <echo message="Building version ${version}..." />
+    
+  <!-- modules -->
+  <property name="core.dir" location="jbehave-core" />
+
+  <!-- build output structure -->
+  <property name="build.dir" location="target" />
+  <property name="jbehave.source" location="jbehave-core/src/main/java" />
+  <property name="jbehave.resources" location="jbehave-core/src/main/resources" />
+  <property name="jbehave.behaviour" location="jbehave-core/src/behaviour/java" />
+  <property name="jbehave.classes" location="${build.dir}/classes" />
+  <property name="jbehave.behaviour.classes" location="${build.dir}/behaviour" />
+  <property name="gameoflife.source" location="examples/gameoflife/src/java" />
+  <property name="gameoflife.behaviour" location="examples/gameoflife/src/behaviour" />
+  <property name="gameoflife.scenarios" location="examples/gameoflife/src/scenario" />
+  <property name="example.classes" location="${build.dir}/examples/classes" />
+  <property name="example.behaviour.classes" location="${build.dir}/examples/behaviour" />
+  <property name="example.scenario.classes" location="${build.dir}/examples/scenario" />
+  <property name="dist.dir" location="${build.dir}/${version}" />
+  <property name="jbehave.zip" location="${build.dir}/jbehave-${version}.zip" />
+  <property name="jbehave.jar" location="${dist.dir}/jbehave-${version}.jar" />
+  <property name="jbehave.src.jar" location="${dist.dir}/jbehave-${version}-src.jar" />
+  <property name="javadoc.dist.dir" location="${dist.dir}/javadoc/${version}" />
+
+  <!-- general targets -->
+  <target name="setup" depends="clean">
+    <mkdir dir="target" />
+    <mkdir dir="target/classes" />
+    <mkdir dir="target/lib" />
+    <copy todir="target/lib">
+      <fileset refid="dependency.fileset" />
+      <mapper type="flatten" />
+    </copy>
+
+    <path id="jbehave.classpath">
+      <fileset dir="target/lib" includes="**/*.jar" excludes="**/ant-*.jar"/>
+      <pathelement location="target/classes" />
+    </path>
+    <classloader classpathref="jbehave.classpath" />
+
+    <pathconvert targetos="unix" property="jbehave.classpath.unix"
+      refid="jbehave.classpath">
+    </pathconvert>
+    <echo>Using classpath: ${jbehave.classpath.unix}</echo>
+
+  </target>
+
+  <target name="good-distribution"
+    depends="setup, working-jbehave, working-examples, jbehave-jar"
+    description="Checks that JBehave works, builds the JBehave binary and zips up the project." />
+  	
+  <target name="clean" depends="clean-working-dir">
+  </target>
+
+  <target name="clean-working-dir">
+  	<clean dir="${build.dir}" />
+  	<mkdir dir="${dist.dir}" />
+  </target>
+	
+  <macrodef name="clean">
+  	<attribute name="dir" />
+  	<sequential>
+  		<delete dir="@{dir}" />
+  		<mkdir dir="@{dir}" />
+  	</sequential>
+  </macrodef>
+  	
+  <!-- JBehave itself -->	
+  <target name="working-jbehave"
+  	depends="setup, jbehave-classes, jbehave-behaviour-classes"
+  	description="Ensures that you have a working version of JBehave.">
+	<junit failureproperty="misbehaving" showoutput="true">
+		<formatter type="plain"/>
+		<classpath refid="jbehave.classpath" />
+		<classpath>
+			<pathelement path="${jbehave.classes}" />
+			<pathelement path="${jbehave.behaviour.classes}" />
+		</classpath>
+		  <batchtest fork="yes" todir="${build.dir}">
+		    <fileset dir="${jbehave.behaviour}">
+		      <include name="**/*Behaviour.java"/>
+              <!--  FIXME:  Paranamer behaviour not passing in Ant -->
+              <exclude name="**/CandidateStepBehaviour.java" />
+		    </fileset>
+		  </batchtest>
+    </junit>
+    <fail if="misbehaving" />    
+  </target>
+	
+  <target name="jbehave-behaviour-classes"
+  	depends="jbehave-classes"
+  	description="Ensures compiled behaviour classes for JBehave.">
+  	<delete dir="${jbehave.behaviour.classes}" />
+  	<mkdir dir="${jbehave.behaviour.classes}" />
+  	<javac srcdir="${jbehave.behaviour}" destdir="${jbehave.behaviour.classes}">
+  		<classpath refid="jbehave.classpath" />
+  		<classpath>
+  			<pathelement path="${jbehave.classes}" />
+  		</classpath>
+  	</javac>
+	<copy todir="${jbehave.behaviour.classes}">
+    	<fileset dir="${jbehave.behaviour}" excludes="**/*.java" />
+  	</copy>
+  </target>
+	
+  <target name="jbehave-classes"
+  	description="Ensures compiled classes for JBehave.">
+  	<delete dir="${jbehave.classes}" />
+  	<mkdir dir="${jbehave.classes}" />
+	<javac srcdir="${jbehave.source}" destdir="${jbehave.classes}">
+		<classpath refid="jbehave.classpath" />
+	</javac>
+    <copy todir="${jbehave.classes}">
+      <fileset dir="${jbehave.source}" excludes="**/*.java" />
+      <fileset dir="${jbehave.resources}" excludes="**/*.java" />
+    </copy>
+  </target>
+
+  <!-- The examples -->
+  <target name="working-examples"
+  	depends="setup, working-example-behaviours, working-example-scenarios"
+  	description="Ensures that the example projects work with JBehave effectively, from the JBehave jar." />
+  	
+  <target name="working-example-behaviours"
+  	depends="compiled-examples, compiled-example-behaviours, jbehave-jar"
+  	description="Ensures that examples behave.">
+	<junit failureproperty="misbehaving" showoutput="true">
+		<formatter type="plain"/>
+		<classpath refid="jbehave.classpath" />
+		<classpath>
+			<pathelement path="${example.classes}" />
+		 	<pathelement path="${example.behaviour.classes}" />
+  			<pathelement path="${jbehave.jar}"/>
+		</classpath>
+	  <batchtest fork="yes" todir="${build.dir}">
+	    <fileset dir="${gameoflife.behaviour}">
+	      <include name="**/*Behaviour.java"/>
+	    </fileset>
+	  </batchtest>
+    </junit>
+  	<fail if="misbehaving" />
+  </target>
+	
+  <target name="compiled-example-behaviours" depends="compiled-examples, jbehave-jar"
+	description="Ensures compiled example behaviour classes.">
+  	<delete dir="${example.behaviour.classes}"/>
+  	<mkdir dir="${example.behaviour.classes}"/>
+  	<javac srcdir="${gameoflife.behaviour}" destdir="${example.behaviour.classes}">
+  		<classpath>
+  			<pathelement path="${jbehave.jar}"/>
+  			<pathelement path="${example.classes}"/>
+  		</classpath>
+  		<classpath refid="jbehave.classpath"/>
+  	</javac>
+  </target>
+	
+  <target name="compiled-examples" description="Ensures compiled example classes." depends="jbehave-jar">
+	<delete dir="${example.classes}"/>
+	<mkdir dir="${example.classes}"/>
+  	<javac srcdir="${gameoflife.source}" destdir="${example.classes}">
+  		<classpath>
+  			<pathelement location="${jbehave.jar}"/>
+  		</classpath>
+  		<classpath refid="jbehave.classpath"/>
+  	</javac>
+  </target>
+	
+  <target name="working-example-scenarios" depends="setup, compiled-example-behaviours, compiled-examples, compiled-example-scenarios, jbehave-jar"
+	description="Ensures that the scenarios for the examples work.">
+	<junit failureproperty="misbehaving" showoutput="true">
+		<formatter type="plain"/>
+		<classpath refid="jbehave.classpath" />
+		<classpath>
+			<pathelement path="${example.classes}" />
+			<pathelement path="${example.behaviour.classes}" />
+			<pathelement path="${example.scenario.classes}" />
+	  		<pathelement location="${jbehave.jar}"/>
+		</classpath>
+		  <batchtest fork="yes" todir="${build.dir}">
+		    <fileset dir="${gameoflife.scenarios}">
+		      <include name="com/lunivore/gameoflife/*.java" />
+		    </fileset>
+		  </batchtest>
+    </junit>
+  	<fail if="misbehaving"/>
+  </target>
+	
+  <target name="compiled-example-scenarios" depends="compiled-example-behaviours, compiled-examples, jbehave-jar"
+  	description="Ensures compiled classes for the examples' scenarios">
+	<delete dir="${example.scenario.classes}"/>
+	<mkdir dir="${example.scenario.classes}"/>
+  	<copy todir="${example.scenario.classes}">
+		<fileset dir="${gameoflife.scenarios}" excludes="**/*.java" />
+	</copy>
+  	<javac srcdir="${gameoflife.scenarios}" destdir="${example.scenario.classes}">
+  		<classpath refid="jbehave.classpath"/>
+		<classpath>
+			<pathelement path="${example.classes}" />
+			<pathelement path="${example.behaviour.classes}" />
+			<pathelement path="${jbehave.jar}" />
+		</classpath>
+  	</javac>
+  </target>
+  	
+  <target name="jbehave-jar"
+  	description="Produces a jar file in the distribution directory."
+  	depends="jbehave-classes">
+    <jar basedir="${jbehave.classes}" jarfile="${jbehave.jar}" />
+    <jar basedir="${jbehave.source}" jarfile="${jbehave.src.jar}" />
+  </target>
+
+  <target name="jbehave-src-zip" description="Assembles the source jar.">
+    <zip destfile="${jbehave.src.zip}" update="true" filesonly="true">
+      <zipfileset prefix="jbehave-${version}" dir="${jbehave.source}" />
+    </zip>
+  </target>
+
+  <target name="javadoc" description="Generates javadocs." depends="setup">
+    <mkdir dir="${javadoc.dist.dir}" />
+    <javadoc destdir="${javadoc.dist.dir}" windowtitle="JBehave API Documentation" verbose="false"
+      useexternalfile="true">
+      <fileset dir="${jbehave.source}">
+        <include name="**/*.java" />
+      </fileset>
+      <classpath refid="jbehave.classpath" />
+    </javadoc>
+  </target>
+
+</project>

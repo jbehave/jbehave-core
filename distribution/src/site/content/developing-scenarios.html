@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Developing Scenarios</title>
+</head>
+
+<body>
+
+<h2>Writing Textual Scenarios</h2>
+
+<p><a href="concepts.html">Behaviour-Driven Development</a>
+encourages you to start defining the scenarios that express the desired
+behaviour in a textual format, e.g.:</p>
+<pre class="brush: bdd">
+    Given a stock of symbol STK1 and a threshold of 10.0
+    When the stock is traded at 5.0
+    Then the alert status should be OFF
+    When the stock is traded at 11.0
+    Then the alert status should be ON
+</pre>
+<p>The textual scenario should use the language of the business
+domain and shield away as much as possible the details of the technical
+implementation. Also, it should be given a name that is expressive of
+the functionality that is being verified, i.e. <b>trader_is_alerted_of_status.scenario</b>.
+</p>
+<p>The scenario should use a syntax compatible with the <a
+    href="grammar.html">Grammar</a>.</p>
+
+<h2>Mapping Textual Scenario Steps to Java Methods via annotations</h2>
+
+<p>JBehave maps textual steps to Java methods via <a
+    href="javadoc/core/org/jbehave/scenario/steps/CandidateSteps.html">CandidateSteps</a>.
+The scenario writer need only provide annotated methods that match, by
+regex patterns, the textual steps. One way this can be done is by
+extending the default implementation <a
+    href="javadoc/core/org/jbehave/scenario/steps/Steps.html">Steps</a>:
+</p>
+<pre class="brush: java">
+public class TraderSteps extends Steps {
+
+    private Stock stock;
+
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(String symbol, double threshold) {
+        stock = new Stock(symbol, threshold);
+    }
+
+    @When("the stock is traded at $price")
+    public void theStockIsTradedAt(double price) {
+        stock.tradeAt(price);
+    }
+
+    @Then("the alert status should be $status")
+    public void theAlertStatusShouldBe(String status) {
+        ensureThat(stock.getStatus().name(), equalTo(status));
+    }
+
+}
+</pre>
+<p>Equivalently, as composition is often preferrable to inheritance,
+the scenario writer can use a POJO (i.e. without extending Steps)</p>
+<pre class="brush: java">
+public class TraderSteps { // look, Ma, I'm a POJO!!
+ 
+    private Stock stock;
+
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(String symbol, double threshold) {
+        stock = new Stock(symbol, threshold);
+    }
+
+    @When("the stock is traded at $price")
+    public void theStockIsTradedAt(double price) {
+        stock.tradeAt(price);
+    }
+
+    @Then("the alert status should be $status")
+    public void theAlertStatusShouldBe(String status) {
+        ensureThat(stock.getStatus().name(), equalTo(status));
+    }
+
+}
+</pre>
+<p>If POJOs are used we need to create <a
+    href="javadoc/core/org/jbehave/scenario/steps/CandidateSteps.html">CandidateSteps</a>
+via the <a
+    href="javadoc/core/org/jbehave/scenario/steps/StepsFactory.html">StepsFactory</a>
+</p>
+<pre class="brush: java">
+    StepsConfiguration configuration = ... // optional configuration
+    new StepsFactory(configuration).createCandidateSteps(new TraderSteps()));    
+</pre>
+<p>Each step is annotated with one of the <a href="annotations.html">step
+annotations</a>, each holding a regex pattern as value. The pattern is used
+to match the method in the Steps class with the appropriate parameters.
+The simplest default behaviour identifies arguments in the candidate
+step by the words prefixed by the <b>$</b> character. More advanced <a
+    href="parameter-injection.html">parameter injection</a> mechanisms
+are also supported by JBehave.</p>
+<p>JBehave execute all the matched steps in the order in which they
+are found in the Scenario. It is up to the implementor of the Steps
+class to provide the logic to tie together the results of the execution
+of each step. This can be done by keeping state member variables in the
+Steps class or possibly by using a service API or other dependency.</p>
+
+<h2>Mapping Scenario Files to Java Classes</h2>
+
+<p>In JBehave Core scenarios can be run in an automated way via a
+one-to-one mapping to Java classes. The mechanism via which the textual
+scenarios are resolved from a Java class is determined by the
+implementation of the <a
+    href="javadoc/core/org/jbehave/scenario/parser/ScenarioNameResolver.html">ScenarioNameResolver</a>.
+In our example, we need to create a file <code>TraderIsAletedOfStatus.java</code>,
+which maps to out textual scenario in same package.</p>
+
+<p>The contract for a user-defined Java scenario is the following:</p>
+<p>Must extend an instance of a <a
+    href="javadoc/core/org/jbehave/scenario/RunnableScenario.html">RunnableScenario</a>,
+such as <a href="javadoc/core/org/jbehave/scenario/JUnitScenario.html">JUnitScenario</a>
+</p>
+<p>Must provide a default constructor.</p>
+<p>(Only when running with external resources) Must provide an additional
+constructor with a ClassLoader parameter.</p>
+
+<p>Thus in our case the example Scenario would look like:</p>
+<pre class="brush: java">
+public class TraderScenario extends JUnitScenario {
+
+    public TraderScenario() {
+        super(new MostUsefulConfiguration() {
+            public ScenarioDefiner forDefiningScenarios() {
+                return new ClasspathScenarioDefiner(new UnderscoredCamelCaseResolver(".scenario"), 
+                             new PatternScenarioParser(keywords()));
+            }
+        });
+        addSteps(new TraderSteps()); // if TraderSteps extends Steps
+        addSteps(new StepsFactory().createCandidateSteps(new TraderSteps())); // if TraderSteps is a POJO
+    }
+}
+</pre>
+
+<p>Here we are configuring our textual scenario files to end with
+extension <b>.scenario</b>, by overriding the default behaviour of <a
+    href="javadoc/core/org/jbehave/scenario/parser/UnderscoredCamelCaseResolver.html">UnderscoredCamelCaseResolver</a>
+which has no extension.</p>
+
+<h2>What Next?</h2>
+
+<span class="followup">The <a href="configuring-scenarios.html">Configuring
+Scenarios</a> page will go into more configuration details and <a
+    href="running-scenarios.html">Running Scenarios</a> into the
+different ways to run scenarios. Or if you want to learn more about
+JBehave's step matching mechanism, you'll want to explored the concept
+of <a href="candidate-steps.html">candidate steps</a> in more detail. </span>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

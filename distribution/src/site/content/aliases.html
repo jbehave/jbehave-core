@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Aliases</title>
+</head>
+
+<body>
+
+<h2>Aliases</h2>
+
+<p><a href="concepts.html">Behaviour-Driven Development</a>
+emphasises the importance of language in communication the behaviour of
+the system from a business perspective. As such, the language used in
+the textual scenarios is subject to change, evolving with the
+understanding or the definition of the system itself.</p>
+
+<p>It is quite common therefore to want to express the same
+underlying step functionality in slightly different ways, or to support
+multiple syntaxes.</p>
+
+<p>JBehave addresses this use cases with <b>aliases</b>. For
+example, let's consider the following step:</p>
+
+<pre class="brush: java">
+    @When("the item price is $price")
+    public void theItemPriceIs(double price) {
+        // ...
+    }
+</pre>
+
+<p>which matches the following textual step:</p>
+
+<pre class="brush: bdd">
+When the item price is 10.0
+</pre>
+
+<p>At some point in the evolution of the description of the
+behaviour of the system, it may become necessary to underline the
+evolving nature of the item price, i.e. that the price changes and
+assumes a different value. In this case, it may be a more appropriate
+description to use the verb <b>becomes</b> in place of <b>is</b>:</p>
+
+<pre class="brush: bdd">
+When the item price becomes 10.0
+</pre>
+
+<p>We can then add an <a
+    href="javadoc/core/org/jbehave/scenario/annotations/Alias.html">Alias</a>
+annotation with the new matching step pattern:</p>
+<pre class="brush: java">
+    @When("the item price is $price")
+    @Alias("the item price becomes $price") // single alias
+    public void theItemPriceIs(double price) {
+        // ...
+    }
+</pre>
+
+<p>JBehave will then create for this method <b>two</b> <a
+    href="candidate-steps.html">candidate steps</a>, both of type <b>WHEN</b>,
+one for each of the two regex patterns, <b>"the item price is
+$price"</b> and <b>"the item price becomes $price"</b>.</p>
+
+<p>An obvious generalisation of this concept is the support for
+multiple aliases, via the <a
+    href="javadoc/core/org/jbehave/scenario/annotations/Aliases.html">Aliases</a>
+annotation:</p>
+<pre class="brush: java">
+    @When("the item price is $price")
+    @Aliases(values={"the item price becomes $price"
+                     "the item price equals to $price"}) // multiple aliases 
+    public void theItemPriceIs(double price) {
+        // ...
+    }
+</pre>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

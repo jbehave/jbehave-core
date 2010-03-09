@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Annotations</title>
+</head>
+
+<body>
+
+<h2>Step Annotations</h2>
+
+<p>JBehave supports the following Java method step annotations:</p>
+
+<ul>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/Given.html">Given</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/When.html">When</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/Then.html">Then</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/Alias.html">Alias</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/Aliases.html">Aliases</a>
+    </li>
+</ul>
+<p>Each annotation holds a regex pattern as value, which is used to
+match the <a href="candidate-steps.html">candidate steps</a> to the
+textual step:</p>
+
+<pre class="brush: java">
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(String symbol, double threshold) {
+        // ...
+    }
+
+    @When("the stock is traded at $price")
+    @Alias("the stock is exchanged at $price") // single alias    
+    public void theStockIsTradedAt(double price) {
+        // ...
+    }
+
+    @Then("the alert status should be $status")
+    @Aliases(values={"the trader should be alerted of status $status",
+                     "the alert status is at $status"}) // multiple aliases    
+    public void theAlertStatusShouldBe(String status) {
+        // ...
+    }
+</pre>
+
+<p>The use of <a href="aliases.html">aliases</a> is optional.</p>
+
+<h2>Scenario Annotations</h2>
+
+<p>JBehave supports the following Java method scenario annotations:</p>
+
+<ul>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/BeforeScenario.html">BeforeScenario</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/AfterScenario.html">AfterScenario</a>
+    </li>
+</ul>
+<p>The <b>BeforeScenario</b> annotation holds no value and it allows
+the corresponding method to be executed before each scenario, while the
+<b>AfterScenario</b> holds an optional <a
+    href="javadoc/core/org/jbehave/scenario/annotations/AfterScenario.Outcome.html">Outcome</a>
+value, which specifies whether the method should be executed depending
+on the outcome of the scenario:</p>
+
+<pre class="brush: java">
+
+    @BeforeScenario
+    public void beforeEachScenario() {
+        // ...
+    }
+        
+    @AfterScenario // equivalent to  @AfterScenario(uponOutcome=AfterScenario.Outcome.ANY)
+    public void afterAnyScenario() {
+        // ...
+    }
+        
+    @AfterScenario(uponOutcome=AfterScenario.Outcome.SUCCESS)
+    public void afterSuccessfulScenario() {
+        // ...
+    }
+        
+    @AfterScenario(uponOutcome=AfterScenario.Outcome.FAILURE)
+    public void afterFailedScenario() {
+        // ...
+    }
+</pre>
+
+<h2>Story Annotations</h2>
+
+<p>JBehave supports the following Java method story annotations:</p>
+
+<ul>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/BeforeStory.html">BeforeStory</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/AfterStory.html">AfterStory</a>
+    </li>
+</ul>
+<p>The <b>BeforeStory</b> and <b>AfterStory</b> annotations allow
+the corresponding methods to be executed before and after each story, either embedded or not:</p>
+
+<pre class="brush: java">
+
+    @BeforeStory // equivalent to @BeforeStory(uponEmbedded=false)
+    public void beforeStory() {
+        // ...
+    }
+
+    @BeforeStory(uponEmbedded=true)
+    public void beforeEmbeddedStory() {
+        // ...
+    }
+        
+    @AfterStory // equivalent to @AfterStory(uponEmbedded=false)
+    public void afterStory() {
+        // ...
+    }
+
+    @AfterStory(uponEmbedded=true)
+    public void afterEmbeddedStory() {
+        // ...
+    }
+    
+</pre>
+
+<h2>Parameter Annotations</h2>
+
+<p>JBehave supports the following Java parameter annotations:</p>
+
+<ul>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/annotations/Named.html">Named</a>
+    </li>
+</ul>
+<p>Parameter annotations are used in <a
+    href="parameter-injection.html">parameter injection</a>.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

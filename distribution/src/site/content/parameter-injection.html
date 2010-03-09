@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Parameter Injection</title>
+</head>
+
+<body>
+
+<h2>Parameter Injection</h2>
+
+<p>JBehave supports multiple mechanisms for parameter injection.</p>
+
+<h3>Ordered Parameters</h3>
+
+<p>This is the default behaviour. The arguments extracted from the
+candidate step are simply matched following natural order to the
+parameters in the annotated Java method. For example:</p>
+<pre class="brush: bdd">
+    Given a stock of symbol STK1 and a threshold of 10.0
+</pre>
+<p>Arguments "STK1" and "10.0" are matched to the first and second
+method parameters of the Java method:</p>
+<pre class="brush: java">
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(String symbol, double threshold) {
+        // ...
+    }
+</pre>
+<p>The names of the parameters (<b>symbol</b> and <b>threshold</b>)
+are not actually relevant, and there is no need for them to match the
+names of the argument capturers (<b>$symbol</b> and <b>$threshold</b>),
+although it is good practice to keep them matching.</p>
+
+<h3>Annotated Named Parameters</h3>
+
+<p>If we want to have named parameters, one mechanism is to use annotations:</p>
+<pre class="brush: java">
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(@Named("symbol") String aSymbol, @Named("threshold") double aThreshold) {
+        // ...
+    }
+</pre>
+<p>One reason to use named parameters is that then we can have method parameter appearing in any order:</p>
+<pre class="brush: java">
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(@Named("threshold") double aThreshold, @Named("symbol") String aSymbol) {
+        // ...
+    }
+</pre>
+<p>Another use case of named parameters is the use of <a href="table-examples.html">table examples</a>.</p>
+
+<h3>Paranamer Named Parameters</h3>
+
+<p>JBehave also supports an equivalent way to use named parameters, without using annotations, but leveraging 
+<a href="http://paranamer.codehaus.org">Paranamer</a>, configured via the <a
+    href="javadoc/core/org/jbehave/scenario/steps/StepsConfiguration.html">StepsConfiguration</a>:</p>
+
+<pre class="brush: java">
+    Paranamer paranamer =  new CachingParanamer(new BytecodeReadingParanamer());
+    StepConfiguration configuration = new StepsConfiguration();
+    configuration.useParanamer(paranamer);
+</pre>
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

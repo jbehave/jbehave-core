@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Non-English Scenarios</title>
+</head>
+
+<body>
+
+<h2>Writing Scenarios in your language</h2>
+
+<p>Good and effective communication is key to BDD. Therefore,
+writing scenarios in the <a href="http://en.wikipedia.org/wiki/Language">language</a>
+spoken by the business users is essential. And even though the patterns
+used to match the scenario steps to Java methods can be written in any
+language, the <a
+    href="javadoc/core/org/jbehave/scenario/definition/KeyWords.html">KeyWords</a>
+still need to be expressed in different languages.</p>
+
+<p>JBehave by default supports English as the scenario language. By
+supporting the internationalisation (i18n) of keywords by Java <a
+    href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Locale.html">Locale</a>,
+it also allows the scenarios to be written in any language. All is
+needed to configure the use of <a
+    href="javadoc/core/org/jbehave/scenario/i18n/I18nKeyWords.html">I18nKeyWords</a>
+for a given Locale. Each locale has a separate keywords properties file.
+E.g. for Italian locale, the file <b>keywords_it.properties</b> is:</p>
+<pre class="brush: bdd">
+Narrative=Narrativa:
+InOrderTo=Per ottenere
+AsA=Come
+IWantTo=Voglio
+Scenario=Scenario:
+GivenScenarios=Dati gli scenari:
+ExamplesTable=Esempi:
+ExamplesTableRow=Esempio:
+Given=Dato che
+When=Quando
+Then=Allora
+And=E
+Pending=PENDENTE
+NotPerformed=NON ESEGUITO
+Failed=FALLITO
+</pre>
+<p>We need to configure the use of the i18n-ed keywords in the <a
+    href="javadoc/core/org/jbehave/scenario/JUnitScenario.html">JUnitScenario</a>,
+e.g.:</p>
+<pre class="brush: java">
+public class ItTraderScenario extends JUnitScenario {
+
+	public ItTraderScenario(final ClassLoader classLoader) {
+		super(new PropertyBasedConfiguration() {
+			@Override
+			public ScenarioDefiner forDefiningScenarios() {
+				// use underscored camel case scenario files with extension ".scenario"
+				return new ClasspathScenarioDefiner(
+						new UnderscoredCamelCaseResolver(".scenario"),
+						new PatternScenarioParser(this), classLoader);
+			}
+
+			@Override
+			public ScenarioReporter forReportingScenarios() {
+				// report outcome in Italian (to System.out)
+				return new PrintStreamScenarioReporter(keywordsFor(new Locale("it"), classLoader));
+			}
+
+			@Override
+			public KeyWords keywords() {
+				// use Italian for keywords
+				return keywordsFor(new Locale("it"), classLoader);
+			}
+
+		}, new ItTraderSteps(classLoader));
+	}
+
+	protected static KeyWords keywordsFor(Locale locale, ClassLoader classLoader) {
+		return new I18nKeyWords(locale, new StringEncoder(), "org/jbehave/examples/trader/i18n/keywords", classLoader);
+	}
+
+}
+</pre>
+<p>The corresponding i18n-ed <a
+    href="javadoc/core/org/jbehave/scenario/steps/Steps.html">Steps</a>,
+also requires the configuration of i18n-ed keywords:</p>
+
+<pre class="brush: java">
+public class ItTraderSteps extends Steps {
+
+    private Stock stock;
+
+    public ItTraderSteps(ClassLoader classLoader) {
+    	// Use Italian for keywords
+        super(new StepsConfiguration(keywordsFor(new Locale("it"), classLoader)));
+    }
+
+    @Given("ho un'azione con simbolo $symbol e una soglia di $threshold")
+    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+        stock = new Stock(symbol, threshold);
+    }
+
+    @When("l'azione e' scambiata al prezzo di $price")
+    public void stockIsTraded(@Named("price") double price) {
+        stock.tradeAt(price);
+    }
+
+    @Then("lo status di allerta e' $status")
+    public void alertStatusIs(@Named("status") String status) {
+        ensureThat(stock.getStatus().name(), equalTo(status));
+    }
+
+	protected static KeyWords keywordsFor(Locale locale, ClassLoader classLoader) {
+		return new I18nKeyWords(locale, new StringEncoder(), "org/jbehave/examples/trader/i18n/keywords", classLoader);
+	}
+
+}
+</pre>
+<p>Note that the i18n-ed keywords not only allow the translation of
+the keywords used in parsing the textual scenario, but also the keywords
+used in the reporting of the scenario execution, e.g. <b>Pending</b>, <b>NotPerformed</b>
+and <b>Failed</b>.</p>
+
+<p>Also note that the i18n-ed scenario classes require the class loader to be injected via constructor if 
+running via command-line (see <a href="running-scenarios.html">running scenarios</a>).</p>
+
+<h2>Why are different languages not supported out-of-the-box?</h2>
+
+<p>Most non-English languages require characters that are rendered
+inconsistently using the native encoding of a given operating system. We
+are working on a consistent solution that is re-usable across multiple
+platforms.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

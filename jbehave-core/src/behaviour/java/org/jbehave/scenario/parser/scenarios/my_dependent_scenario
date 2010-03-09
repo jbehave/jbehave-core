@@ -1,0 +1,5 @@
+Scenario: the dependent scenario
+
+GivenScenario my_given_scenario
+Given my other step
+

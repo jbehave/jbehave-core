@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Candidate Steps</title>
+</head>
+
+<body>
+
+<h2>Candidate Steps</h2>
+
+<p>JBehave uses <a href="annotations.html">annotations</a> in the <a
+    href="javadoc/core/org/jbehave/scenario/steps/CandidateSteps.html">CandidateSteps</a>
+instance to associate an executable Java method to a <a
+    href="javadoc/core/org/jbehave/scenario/steps/CandidateStep.html">CandidateStep</a>.
+Each candidate step corresponds to one Java method and to one <a
+    href="javadoc/core/org/jbehave/scenario/steps/StepType.html">StepType</a>.
+A candidate step holds the regex pattern contained in the annotation
+value, which is used to do the matching with the textual steps in the
+scenario.</p>
+<p>Let's look at a concrete example:</p>
+<pre class="brush: java">
+public class TraderSteps { // It does not have to extend Steps, but it could
+
+    private Stock stock;
+
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(String symbol, double threshold) {
+        stock = new Stock(symbol, threshold);
+    }
+
+    @When("the stock is traded at $price")
+    @Alias("the stock is sold at $price")
+    public void theStockIsTradedAt(double price) {
+        stock.tradeAt(price);
+    }
+
+    @Then("the alert status should be $status")
+    public void theAlertStatusShouldBe(String status) {
+        ensureThat(stock.getStatus().name(), equalTo(status));
+    }
+
+}
+</pre>
+<p>For each method annotated with one of the <a
+    href="annotations.html">step annotations</a>, a candidate step is
+created. Note that each method can supports <a href="aliases.html">aliases</a>
+and a different candidate step is created for each alias.</p>
+
+<p>So, given one or more instances of Steps classes, each containing
+a number of annotated methods, JBehave collects a list of candidate
+steps, which are then used to match the textual steps found in the
+scenarios being run. For each given <a
+    href="javadoc/core/org/jbehave/scenario/steps/StepType.html">StepType</a>,
+<b>the regex pattern must be unique</b>.</p>
+
+<p>Hence, the following two methods are allowed to have the same
+regex pattern, because they correspond to different step types:</p>
+
+<pre class="brush: java">
+
+    @Given("a stock is traded at $price")
+    public void aStockWithPrice(double price) {
+        // ...
+    }
+
+    @When("the stock is traded at $price")
+    public void theStockIsTradedAt(double price) {
+        // ...
+    }
+</pre>
+
+<p>While the following would result in a runtime failure when
+running the scenario:</p>
+
+<pre class="brush: java">
+
+    @When("a stock is traded at $price")
+    public void aStockWithPrice(double price) {
+        // ...
+    }
+
+    @When("the stock is traded at $price")
+    public void theStockIsTradedAt(double price) {
+        // ...
+    }
+</pre>
+
+<p>Note that in the example above <b>TraderSteps</b> is a POJO, i.e.
+it does not extend the <a
+    href="javadoc/core/org/jbehave/scenario/steps/Steps.html">Steps</a>
+class. In this case, we need to use the <a
+    href="javadoc/core/org/jbehave/scenario/steps/StepsFactory.html">StepsFactory</a>
+to create <a
+    href="javadoc/core/org/jbehave/scenario/steps/CandidateSteps.html">CandidateSteps</a>
+to associate to the <b>Scenario</b> class. The factory creates an
+instance of <b>Steps</b> which wraps the POJO instance. But, in addition
+to the the composition model, JBehave also supports the inheritance
+model, in which the steps class would simply extend <b>Steps</b>.  The only difference is
+in how the steps are registered with the <b>Scenario</b>:</p>
+<pre class="brush: java">
+public class TraderScenario extends JUnitScenario {
+
+    public TraderScenario() {
+        addSteps(new TraderSteps()); // if TraderSteps extends Steps
+        addSteps(new StepsFactory().createCandidateSteps(new TraderSteps())); // if TraderSteps is a POJO
+    }
+}
+</pre>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

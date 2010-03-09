@@ -1,0 +1,111 @@
+
+  <!--
+    Note: Use of <artifact:dependencies/> requires maven-ant-tasks-2.1.jar in $ANT_HOME/lib
+          Download it from http://maven.apache.org/ant-tasks/download.html
+  -->
+<project name="trader" default="all"
+  xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+  <artifact:pom id="pom" file="pom.xml" />
+  <artifact:dependencies filesetId="dependency.fileset" pomRefId="pom" useScope="test"/>
+
+  <target name="clean">
+    <delete dir="target" />
+  </target>
+
+  <target name="setup">
+    <mkdir dir="target" />
+    <mkdir dir="target/classes" />
+    <mkdir dir="target/lib" />
+    <copy todir="target/lib">
+      <fileset refid="dependency.fileset" />
+      <mapper type="flatten" />
+    </copy>
+    <copy todir="target/classes">
+      <fileset dir="src/main/java">
+        <include name="**/*.scenario" />
+        <include name="**/*.properties" />
+      </fileset>
+    </copy>
+
+    <path id="scenario.classpath">
+      <fileset dir="target/lib" includes="**/*.jar" />
+      <pathelement location="target/classes" />
+    </path>
+    <classloader classpathref="scenario.classpath" />
+
+    <pathconvert targetos="unix" property="scenario.classpath.unix"
+      refid="scenario.classpath">
+    </pathconvert>
+    <echo>Using classpath: ${scenario.classpath.unix}</echo>
+
+  </target>
+
+  <target name="compile" depends="setup">
+    <javac srcdir="src/main/java" destdir="target/classes" debug="on"
+      debuglevel="lines,source" includes="**/*.java,**/*.xml">
+      <classpath refid="scenario.classpath" />
+    </javac>
+  </target>
+
+  <target name="run-scenarios" depends="compile">
+    <taskdef name="scenarioRunner" classname="org.jbehave.ant.ScenarioRunnerTask"
+      classpathref="scenario.classpath" />
+
+    <scenarioRunner scenarioIncludes="**/scenarios/*.java"
+      sourceDirectory="${basedir}/src/main/java"
+      scenarioExcludes="**/scenarios/*NonSuccessful.java,**/i18n/scenarios/*.java"
+      batch="true" ignoreFailure="false" classLoaderInjected="false" />
+    <scenarioRunner scenarioIncludes="**/scenarios/*.java"
+      sourceDirectory="${basedir}/src/main/java" scenarioExcludes="**/i18n/scenarios/*.java"
+      batch="true" ignoreFailure="true" classLoaderInjected="false" />
+    <scenarioRunner scenarioIncludes="**/i18n/scenarios/*.java"
+      sourceDirectory="${basedir}/src/main/java" scenarioExcludes="**/scenarios/*NonSuccessful.java"
+      classLoaderInjected="true" />
+  </target>
+
+  <target name="reports-resources">
+    <artifact:dependencies filesetId="reports.dependency.fileset">
+      <dependency groupId="org.jbehave" artifactId="jbehave-core"
+        version="${pom.version}" scope="compile" />
+      <dependency groupId="org.jbehave.site" artifactId="jbehave-site-resources"
+        version="2.0.1" scope="compile" />
+    </artifact:dependencies>
+    <copy todir="${basedir}/target/lib/reports">
+      <fileset refid="reports.dependency.fileset" />
+      <mapper type="flatten" />
+    </copy>
+    <unzip src="${basedir}/target/lib/reports/jbehave-core-${pom.version}.jar"
+      dest="${basedir}/target/jbehave-reports/rendered/">
+      <patternset>
+        <include name="**/*.ftl" />
+        <include name="**/*.css" />
+        <include name="**/*.js" />
+      </patternset>
+    </unzip>
+    <unzip
+      src="${basedir}/target/lib/reports/jbehave-site-resources-2.0.1.jar"
+      dest="${basedir}/target/jbehave-reports/rendered/">
+    </unzip>
+  </target>
+
+  <target name="render-reports" depends="compile, reports-resources">
+    <taskdef name="reportRenderer" classname="org.jbehave.ant.ReportRendererTask"
+      classpathref="scenario.classpath" />
+
+    <reportRenderer outputDirectory="${basedir}/target/jbehave-reports"
+      formats="txt,html,xml" templateProperties="defaultFormats=stats\nrenderedDirectory=rendered" />
+
+  </target>
+
+  <target name="stepdoc" depends="compile">
+    <taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
+      classpathref="scenario.classpath" />
+    <stepdoc scenarioIncludes="**/scenarios/*.java"
+      scenarioExcludes="**/i18n/scenarios/*.java" classLoaderInjected="false" />
+  </target>
+
+  <target name="all" depends="run-scenarios,render-reports,stepdoc">
+  </target>
+
+</project> 

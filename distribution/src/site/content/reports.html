@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Reports</title>
+</head>
+
+<body>
+
+<h2>Scenario Reporters</h2>
+
+<p>Reporting is an essential element of BDD as it allows to monitor
+the outcome of the scenarios that have been run. At the heart of
+JBehave's reporting is the <a
+    href="javadoc/core/org/jbehave/scenario/reporters/ScenarioReporter.html">ScenarioReporter</a>,
+which is used to report events as they occur.</p>
+
+<p>Currently, the scenario reporters supported are:</p>
+<ul>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/reporters/PrintStreamScenarioReporter.html">PrintStreamScenarioReporter</a>:
+    generic reporter to a print stream, using formats that are
+    configurable</li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/reporters/HtmlPrintStreamScenarioReporter.html">HtmlPrintStreamScenarioReporter</a>:
+    specialises the <b>PrintStreamScenarioReporter</b> to use HTML
+    formats</li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/reporters/XmlPrintStreamScenarioReporter.html">XmlPrintStreamScenarioReporter</a>:
+    specialises the <b>PrintStreamScenarioReporter</b> to use XML
+    formats</li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/reporters/StatisticsScenarioReporter.html">StatisticsScenarioReporter</a>:
+    collects statistics and stores them as properties</li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/reporters/DelegatingScenarioReporter.html">DelegatingScenarioReporter</a>:
+    delegates to any number of reporters as a proxy.</li>
+</ul>
+
+<p>Let's see an example of how we can configure the scenario
+reporters. We use the <b>DelegatingScenarioReporter</b> as a proxy for
+the reporters we want to configure, in the example below a plain text
+reporter (both to <b>System.out</b> and to a file) and an HTML reporter
+to a file:</p>
+<pre class="brush: java">
+    private static ScenarioNameResolver converter = new UnderscoredCamelCaseResolver(".scenario");
+
+    public TraderScenario(final Class scenarioClass) {
+        super(new PropertyBasedConfiguration() {
+            @Override
+            public ScenarioDefiner forDefiningScenarios() {
+                return new ClasspathScenarioDefiner(converter, new PatternScenarioParser(this));
+            }
+        
+            @Override
+            public ScenarioReporter forReportingScenarios() {
+                return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, converter))
+                            .with(CONSOLE) // report to System.out
+                            .with(TXT)     // report to .txt file in PLAIN format
+                            .with(HTML)    // report to .html file in HTML format
+                            .with(XML)     // report to .xml file in XML format
+                            .build();
+            }
+
+        }, new TraderSteps());
+    }
+</pre>
+
+<p>Note that we use the <a
+    href="javadoc/core/org/jbehave/scenario/reporters/ScenarioReporterBuilder.html">ScenarioReporterBuilder</a>
+to implement a builder pattern for file-based reporters via the <a
+    href="javadoc/core/org/jbehave/scenario/reporters/FilePrintStreamFactory.html">FilePrintStreamFactory</a>,
+in which we inject the <a
+    href="javadoc/core/org/jbehave/scenario/parser/ScenarioNameResolver.html">ScenarioNameResolver</a>
+to derive the report file names from the scenario class, using the same
+name resolution mechanism used for mapping Java classes and textual
+scenarios. So, e.g., if the scenario class is <b>com.example.MyScenario</b>,
+we'll end up with file report outputs of the form: <b>com.example.my_scenario.[format]</b>
+(where <b>format</b> is any of <b>txt,html,xml</b> in the example
+above).</p>
+
+<span class="followup">The file-based print stream factory for
+the scenario reporting requires the scenario class to be provided in
+order to derive from it the output file paths (with the appropriate
+format extension). If you want to migrate multiple scenarios to using
+file-based reporting, an intermediate stepping stone might be to provide
+as a scenario class the parent class in which you build the scenario
+reporter (TraderScenario.class in the example), which will result in all
+reporting (for a given format) to be appended to the same file. Then
+gradually you can refactor your scenario classes to provide their class
+to the parent (as the example shows). Otherwise, you may want to keep
+output in a single file, the choice is yours. </span>
+
+<p>The builder provides defaults for all the formats supported, but
+if the user needs to create a bespoke instance of a reporter for a given
+format, it can be easily done by overriding the default. E.g. to
+override the reporter for <b>TXT</b> format to use a ".text" extension
+(a possibly keywords for a different Locale):</p>
+<pre class="brush: java">
+
+        ScenarioReporter reporter = new ScenarioReporterBuilder(factory){
+               public ScenarioReporter reporterFor(Format format){
+                       switch (format) {
+                           case TXT:
+                               factory.useConfiguration(new FileConfiguration("text"));
+                               return new PrintStreamScenarioReporter(factory.getPrintStream(), new Properties(), new I18nKeyWords(Locale.ITALIAN), true);
+                            default:
+                               return super.reporterFor(format);
+                       }
+                   }
+</pre>
+
+<h2>Report Rendering</h2>
+
+<p>The generation of the reports is only the first part of a
+complete HTML-based reporting solution. Next we need to render the
+reports, aggregating all the ones that have been configured and
+generated in a given output directory, and presenting a collective index
+view for all formats configured. Moreover, we need to style the view,
+both for HTML and non-HTML report formats.</p>
+
+<p>The rendering is the responsibility of the <a
+    href="javadoc/core/org/jbehave/scenario/reporters/ReportRenderer.html">ReportRenderer</a>.
+JBehave provides an implementation (<a
+    href="javadoc/core/org/jbehave/scenario/reporters/FreemarkerReportRenderer.html">FreemarkerReportRenderer</a>)
+based on <a href="http://freemarker.org">Freemarker</a> to allow a
+templateable and easily styleable way to render the report views.</p>
+
+<p>The default resources required for the report rendering are
+bundled in the <b>jbehave-core.jar</b> (extract ftl/*.ftl, js/*.js and
+style/*.css) but can be overridden. The FTL files need to be the
+classpath for the <b>FreemarkerReportRenderer</b> to find them, while
+the look and feel resources (js/*.js and style/*.css files) need to be
+copied to the <b>target/jbehave-reports/rendered</b> directory (or
+wherever the index page has been rendered to) Also note that the default
+style makes use of images found in the <b>jbehave-site-resources.jar</b>.</p>
+
+<p>Also, note that the report formats configured should match ones
+found in the Ant or Maven execution for the report rendering task or
+goal (c.f. <a href="running-scenarios.html">running scenarios</a> for
+examples).</p>
+
+<h2>Reporting Statistics</h2>
+
+<p>The scenario statistics report above is treated in the rendering
+slightly differently from other reports, in that the statistics are
+displayed on the index page, if available. To ensure they are always
+available the scenario reporter builder automatically builds with the <b>stats</b>
+reporter included by default. To change or remove default formats simply
+override the method:</p>
+<pre class="brush: java">
+        new ScenarioReporterBuilder(factory){
+               protected void withDefaultFormats() {
+                    with(Format.STATS);
+               }
+        }
+</pre>
+
+<p>By default, JBehave outputs file reports to the directory <b>jbehave-reports</b>
+(relative to the scenario class code source location, e.g. the <b>target</b>
+directory in Maven), but this can be changed via the builder:</p>
+
+<pre class="brush: java">
+        new ScenarioReporterBuilder(factory).outputTo("my-reports")
+</pre>
+
+<p>If the default formats or the output file directory are modified
+via the builder, then correspondingly we need to inform the report
+render of these changes. See <a href="running-scenarios.html">running
+scenarios</a> for details on how to configure these changes.</p>
+
+<h2>Next?</h2>
+
+<span class="followup">The <a
+    href="https://svn.codehaus.org/jbehave/trunk/core/examples/trader">trader
+example</a> is configured to have a fully-working end-to-end use of JBehave
+reporting (be sure to read the instructions on <a
+    href="running-examples.html">running examples</a>). After running
+the build simply open the page <b>target/jbehave-reports/rendered/index.html</b></span>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

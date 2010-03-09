@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Building Source</title>
+</head>
+<body>
+
+<h2>Overview</h2>
+
+<p>The following assumes basic familiarity with use of <a
+    href="source-repository.html">source repository</a> and command-line
+build systems.</p>
+
+<h2>Building with Maven</h2>
+
+<p><a href="http://maven.apache.org">Maven</a> is a network-based
+build management system. We assume the binary distribution has been
+installed (version 2.2.x or above) and that the executable <b>mvn</b> is
+in the system path.</p>
+<p>People new to Maven may find useful to download a <a
+    href="http://maven.apache.org/apache-maven.pdf">PDF</a> version of
+the website documentation. There is also extensive free documentation
+available from the <a href="http://www.sonatype.com/book">Sonatype Maven Books</a>.</p>
+
+<h3>Maven build profiles</h3>
+
+<p>One of Maven's most useful features are <a
+    href="http://maven.apache.org/guides/introduction/introduction-to-profiles.html">profiles</a>.</p>
+
+<p>JBehave's profiles are:</p>
+
+<ul>
+    <li>default: builds all releasable modules</li>
+    <li>examples: builds examples</li>
+    <li>gui: builds examples that require non-headless mode
+    (separated as they do not run on <a
+        href="http://builds.codehaus.org/browse/JBEHAVE">CI</a>)</li>
+    <li>reporting: builds reports</li>
+    <li>distribution: builds distribution</li>
+</ul>
+
+<p>Note that profiles are additive and the default profile is always
+active.</p>
+
+<p>Some examples:</p>
+
+<pre class="brush: plain">
+mvn clean install -Pexamples (build core and all examples, excluding GUI-based ones)
+mvn clean install -Pexamples,gui (build core and all examples, including GUI-based ones)
+mvn clean install -Preporting,distribution (build with reporting and distribution)
+</pre>
+
+<p>Note that the Maven build phase <b>install</b> is used as it
+automatically implies all other previous phases in the module <a
+    href="http://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html">build
+cycle</a>, in particular the <b>test</b> or <b>integration-test</b> phases,
+where appropriate.</p>
+
+<h3>Performing a release</h3>
+
+<p>Using Maven's release plugin makes the release process very easy:</p>
+
+<pre class="brush: plain">
+mvn release:prepare -Preporting,distribution 
+mvn release:perform -Preporting,distribution
+</pre>
+
+<p>It is a two-step process as the first step (<b>release:prepare</b>)
+creates a tag in source control replacing all snapshot versions with a
+fixed version, while the second step (<b>release:perform</b>) builds the
+release from the tag and performs the upload to the remote repository.</p>
+
+<h2>Integration with IDEs</h2>
+
+<p>Maven is supported in most modern IDEs - e.g. <a
+    href="http://www.jetbrains.com/idea/features/ant_maven.html">Intellij
+IDEA</a> or Eclipse (via the <a href="http://m2eclipse.sonatype.org">m2eclipse
+plugin</a>). It builds the project classpath based on the dependencies
+declared in the POMs.</p>
+
+</body>
+
+</html>

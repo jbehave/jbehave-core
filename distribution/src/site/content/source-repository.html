@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Source Repository</title>
+</head>
+<body>
+
+<h2>Overview</h2>
+
+<p>JBehave uses <a href="http://subversion.tigris.org">Subversion</a> to manage its source code.</p>
+
+<h2>Web Access</h2>
+
+<p>The following is a link to the online source repository:</p>
+
+<p><a href="http://svn.codehaus.org/jbehave/trunk/core">http://svn.codehaus.org/jbehave/trunk/core</a></p>
+
+<h2>Developer access</h2>
+
+<p>Everyone can access the Subversion repository via HTTPS, but
+Committers must checkout the Subversion repository via HTTPS.</p>
+
+<pre>$ svn checkout https://svn.codehaus.org/jbehave/trunk/core jbehave</pre>
+<p>To commit changes to the repository, execute the following
+command to commit your changes (svn will prompt you for your password)</p>
+
+<pre>$ svn commit --username your-username -m &quot;A message&quot;</pre>
+
+<h2>Access from behind a firewall</h2>
+
+<p>For those users who are stuck behind a corporate firewall which
+is blocking http access to the Subversion repository, you can try to
+access it via the developer connection:</p>
+
+<pre>$ svn checkout https://svn.codehaus.org/jbehave/trunk jbehave</pre>
+
+<h2>Access through a proxy</h2>
+
+<p>The Subversion client can go through a proxy, if you configure it
+to do so. First, edit your &quot;servers&quot; configuration file to
+indicate which proxy to use. The files location depends on your
+operating system. On Linux or Unix it is located in the directory
+&quot;~/.subversion&quot;. On Windows it is in
+&quot;%APPDATA%\Subversion&quot;. (Try &quot;echo %APPDATA%&quot;, note
+this is a hidden directory.)</p>
+
+<p>There are comments in the file explaining what to do. If you
+don't have that file, get the latest Subversion client and run any
+command; this will cause the configuration directory and template files
+to be created.</p>
+
+<p>Example: Edit the 'servers' file and add something like :</p>
+
+<pre class="brush: plain">
+[global]
+http-proxy-host = your.proxy.name
+http-proxy-port = 3128
+</pre>
+</body>
+
+</html>

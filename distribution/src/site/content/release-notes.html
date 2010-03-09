@@ -1,0 +1,423 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Release Notes</title>
+</head>
+<body>
+
+<h1>JBehave Core - Version 2.5 (Mar 9, 2010)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-206'>JBEHAVE-206</a>] -         Regex overflow in using Examples table
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-242'>JBEHAVE-242</a>] -         Regex Stackoverflow error with ExampleTables on Windows
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-162'>JBEHAVE-162</a>] -         Need to be able to set order of steps for matching
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-243'>JBEHAVE-243</a>] -         Get rid of trailing whitespaces after the table
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-133'>JBEHAVE-133</a>] -         Allow Steps dependencies to be composable via PicoContainer
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-163'>JBEHAVE-163</a>] -         Support comments in plain-text scenarios
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-230'>JBEHAVE-230</a>] -         Add Narrative elements to Story parsing
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-239'>JBEHAVE-239</a>] -         Add @BeforeStory and @AfterStory annotations in candidate steps
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-240'>JBEHAVE-240</a>] -         Allow Steps dependencies to be composable via Spring
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-241'>JBEHAVE-241</a>] -         Allow Steps dependencies to be composable via Guice
+</li>
+</ul>
+    
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-235'>JBEHAVE-235</a>] -         Improve documentation on running trader example with reports
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-236'>JBEHAVE-236</a>] -         Checking out, building and testing JBehave from scratch
+</li>
+</ul>
+        
+
+<h1>JBehave Core - Version 2.4.1 (Feb 6, 2010)</h1>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-237'>JBEHAVE-237</a>] -         HTML/XML reports should handle better missing or null values from the examples table 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-238'>JBEHAVE-238</a>] -         Provide default values for KeyWords, when not reading from a I18n bundle
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-163'>JBEHAVE-163</a>] -         Support comments in plain-text scenarios
+</li>
+</ul>
+    
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-235'>JBEHAVE-235</a>] -         Improve documentation on running trader example with reports
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-236'>JBEHAVE-236</a>] -         Checking out, building and testing JBehave from scratch
+</li>
+</ul>
+        
+<h1>JBehave Core - Version 2.4 (Jan 20, 2010)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-200'>JBEHAVE-200</a>] -         Candidate step does not match AND steps
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-211'>JBEHAVE-211</a>] -         StringListConverter converts an empty String to a one element List instead of an empty List
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-212'>JBEHAVE-212</a>] -         Starting words are not updated when keywords are overridden in steps configuration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-221'>JBEHAVE-221</a>] -         Maven runner documentation has incorrect capitalization (should be camel case)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-223'>JBEHAVE-223</a>] -         0.0 gets parsed as a Long
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-224'>JBEHAVE-224</a>] -         Double.NaN should be parseable into a double
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-225'>JBEHAVE-225</a>] -         Multiline scenario title is parsed as empty
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-165'>JBEHAVE-165</a>] -         Allow scenarios to run in batch mode
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-175'>JBEHAVE-175</a>] -         Add support for BigDecimal and BigInteger parameters
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-196'>JBEHAVE-196</a>] -         Candidate steps should be aware of the method annotation type when matching textual steps
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-199'>JBEHAVE-199</a>] -         Allow ScenarioClassLoader to instantiate scenarios using default constructor
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-202'>JBEHAVE-202</a>] -         Allow class loader injection to be optional in scenario classes when running in command line
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-204'>JBEHAVE-204</a>] -         Scenario runner should report before and after story only once when running given scenarios
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-209'>JBEHAVE-209</a>] -         Add ParameterConverter for ExamplesTable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-210'>JBEHAVE-210</a>] -         Report embedded status in before/after story events 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-215'>JBEHAVE-215</a>] -         Allow a step to be reused between scenarios with and without example tables
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-217'>JBEHAVE-217</a>] -         Allow configuration to be overridden
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-219'>JBEHAVE-219</a>] -         Create standard human and machine-readable reports
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-222'>JBEHAVE-222</a>] -         Add/rename examples events in ScenarioReporter 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-229'>JBEHAVE-229</a>] -         PatternScenarioParser should depend on KeyWords and not Configuration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-231'>JBEHAVE-231</a>] -         Allow CandidateSteps methods to be defined in POJOs
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-161'>JBEHAVE-161</a>] -         HTML-based scenario reporting
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-214'>JBEHAVE-214</a>] -         Allow for multiple aliases for a given step
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-226'>JBEHAVE-226</a>] -         Statistics ScenarioReporter
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-227'>JBEHAVE-227</a>] -         XML Scenario Reporter
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-228'>JBEHAVE-228</a>] -         ScenarioReporterBuilder
+</li>
+</ul>
+    
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-197'>JBEHAVE-197</a>] -         Improve documentation of candidate steps and aliases in reference guide
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-203'>JBEHAVE-203</a>] -         StepsBehaviour tests fail with  JDK 1.5
+</li>
+</ul>
+        
+<h1>JBehave Core - Version 2.3.2 (Nov 3, 2009)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-200'>JBEHAVE-200</a>] -         Candidate step does not match AND steps
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-199'>JBEHAVE-199</a>] -         Allow ScenarioClassLoader to instantiate scenarios using default constructor
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-202'>JBEHAVE-202</a>] -         Allow class loader injection to be optional in scenario classes when running in command line
+</li>
+</ul>
+                
+
+<h1>JBehave Core - Version 2.3.1 (Oct 31, 2009)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-198'>JBEHAVE-198</a>] -         I18n keywords resource bundle not found by Ant task
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-175'>JBEHAVE-175</a>] -         Add support for BigDecimal and BigInteger parameters
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-196'>JBEHAVE-196</a>] -         Candidate steps should be aware of the method annotation type when matching textual steps
+</li>
+</ul>
+        
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-197'>JBEHAVE-197</a>] -         Improve documentation of candidate steps and aliases in reference guide
+</li>
+</ul>
+        
+
+<h1>JBehave Core - Version 2.3 (Oct 10, 2009)</h1>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-164'>JBEHAVE-164</a>] -         I18N Keywords
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-173'>JBEHAVE-173</a>] -         Support annotated named parameters in Steps methods
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-174'>JBEHAVE-174</a>] -         Improve documentation 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-178'>JBEHAVE-178</a>] -         Allow output patterns to be overridden and localised in PrintStreamScenarioReporter
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-126'>JBEHAVE-126</a>] -         GivenScenarios
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-130'>JBEHAVE-130</a>] -         Table examples include
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-177'>JBEHAVE-177</a>] -         Support named parameters in Steps methods via Paranamer 
+</li>
+</ul>
+    
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-176'>JBEHAVE-176</a>] -         Provide BNF for BDD grammar
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-185'>JBEHAVE-185</a>] -         Upgrade to JUnit 4.5
+</li>
+</ul>
+        
+<h1>JBehave Core - Version 2.2.1 (Aug 25, 2009)</h1>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-170'>JBEHAVE-170</a>] -         Alias (singular) annotation in addition to Aliases (plural)
+</li>
+</ul>
+                                 
+<h1>JBehave Core - Version 2.2 (Apr 25, 2009)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-127'>JBEHAVE-127</a>] -         Doesn't find scenarios with numbers in the file name
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-152'>JBEHAVE-152</a>] -         Scenario's in the default package cause NullPointerException
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-155'>JBEHAVE-155</a>] -         Maven plugin can't identify Scenario classes in src/test/java
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-117'>JBEHAVE-117</a>] -         Should throw an exception if two candidate step methods have the same annotation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-144'>JBEHAVE-144</a>] -         Ensure utility methods should be independent of unit-testing framework
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-145'>JBEHAVE-145</a>] -         Unit-test runners should decorate Exceptions a bit more clearly 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-147'>JBEHAVE-147</a>] -         Improve javadocs
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-154'>JBEHAVE-154</a>] -         Scenario keyword should include any separation char, e.g. &quot;:&quot;
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-159'>JBEHAVE-159</a>] -         Support multiple CandidateSteps instances in Stepdoc generation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-160'>JBEHAVE-160</a>] -         Improve regex-based scenario parsing
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-131'>JBEHAVE-131</a>] -         Aliases for steps
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-158'>JBEHAVE-158</a>] -         Generate StepDoc from annotated methods of CandidateSteps instance
+</li>
+</ul>
+    
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-27'>JBEHAVE-27</a>] -         Document best practices and suggested use cases
+</li>
+</ul>
+        
+
+<h1>JBehave Core - Version 2.1 (Oct 25, 2008)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-135'>JBEHAVE-135</a>] -         Scenario class lookup fails on Windows
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-138'>JBEHAVE-138</a>] -         Bug recognising Step with content starting with Given, When, Then, And
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-132'>JBEHAVE-132</a>] -         Support multiple test frameworks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-134'>JBEHAVE-134</a>] -         Extract CandidateSteps interface
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-137'>JBEHAVE-137</a>] -         Make default converter classes publicly accessible and allow configuration of number format
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-129'>JBEHAVE-129</a>] -         @BeforeScenario and @AfterScenario
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-136'>JBEHAVE-136</a>] -         Add Ant task integration
+</li>
+</ul>
+    
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-143'>JBEHAVE-143</a>] -         Improve documentation for scenario developers 
+</li>
+</ul>
+        
+<h2>        Wish
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-140'>JBEHAVE-140</a>] -         new StepMonitor method - executingStep(..)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-141'>JBEHAVE-141</a>] -         Allow mutability of StepsConfiguration instance
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-142'>JBEHAVE-142</a>] -         RunnableScenario.addSteps(CandidateSteps) -&gt; method needed
+</li>
+</ul>
+
+
+<h1>JBehave Core - Version 2.0.1 (Oct 7, 2008)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-135'>JBEHAVE-135</a>] -         Scenario class lookup fails on Windows
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-137'>JBEHAVE-137</a>] -         Make default converter classes publicly accessible and allow configuration of number format
+</li>
+</ul>
+              
+<h1>JBehave Core - Version 2.0 (Sep 1, 2008)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-105'>JBEHAVE-105</a>] -         Should not require a space before a new line
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-114'>JBEHAVE-114</a>] -         Build isn't running the scenarios
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-121'>JBEHAVE-121</a>] -         Only Parentheses are escaped in DollarStepPatternBuilder
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-26'>JBEHAVE-26</a>] -         Two Minute Intro for JBehave needs some work
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-116'>JBEHAVE-116</a>] -         Need really great javadoc for all injectable / configurable classes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-119'>JBEHAVE-119</a>] -         DollarArgThingumy should take the $ as an argument - this is what people are most likely to want to change
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-124'>JBEHAVE-124</a>] -         Eclipse can't find the test to run when it's in JBehave's jar
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-128'>JBEHAVE-128</a>] -         Candidate step should support generic parameter conversion
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-79'>JBEHAVE-79</a>] -         Localisation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-106'>JBEHAVE-106</a>] -         Should be able to have multiple scenarios in a story
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-107'>JBEHAVE-107</a>] -         Should be able to title scenarios
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-108'>JBEHAVE-108</a>] -         Story narratives
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-109'>JBEHAVE-109</a>] -         Story titles
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-110'>JBEHAVE-110</a>] -         Pending steps optionally break the build
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-111'>JBEHAVE-111</a>] -         Only output broken scenarios
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-112'>JBEHAVE-112</a>] -         Output pending scenarios as well as broken when option to break build on pending is selected
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-113'>JBEHAVE-113</a>] -         Sort out the website
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-123'>JBEHAVE-123</a>] -         JBehave configuration classes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-125'>JBEHAVE-125</a>] -         Custom converters
+</li>
+</ul>
+            
+
+</body>
+
+
+</html>

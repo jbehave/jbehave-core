@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Parameter Converters</title>
+</head>
+
+<body>
+
+<h2>Parameter Converters</h2>
+
+<h3>Build-in support for Java types and Lists</h3>
+
+<p>JBehave automatically converts the textual representation of a
+parameter extracted from the candidate step with the parameter type of
+the matched method in the Steps class. Let's go back to our example to
+make this point clear. Consider a single textual step:</p>
+<pre class="brush: bdd">
+    Given a stock of symbol STK1 and a threshold of 10.0
+</pre>
+<p>which we map to the Java method:</p>
+<pre class="brush: java">
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(String symbol, double threshold) {
+        // ...
+    }
+</pre>
+<p>The two arguments which are identified as parameters in matching
+the textual step to the annotation pattern are: "STK1" and "1.0". These
+are converted respectively to a <b>String</b> and a <b>double</b>.</p>
+<p>If we had comma-separated values, e.g</p>
+<pre class="brush: bdd">
+    Given a stock of symbols STK1,STK2 and thresholds of 10.0,20.0
+</pre>
+<p>these would handled automatically as well, provided the type of
+the parameter was a <a
+    href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/List.html">List</a></p>
+<pre class="brush: java">
+    @Given("a stock of symbols $symbols and thresholds $thresholds")
+    public void aStock(List<String> symbols, List<Double> thresholds) {
+        // ...
+    }
+</pre>
+<p>More in general, JBehave provides out-of-the-box support for
+Strings, numbers and the lists thereof.</p>
+
+<h3>ParameterConverter interface</h3>
+
+<p>At the core of the parameter conversion mechanism lies the <a
+    href="javadoc/core/org/jbehave/scenario/steps/ParameterConverters.html">ParameterConverters</a>
+facade and the interface:
+<pre class="brush: java">
+public static interface ParameterConverter {
+ 
+  boolean accept(Type type);
+ 
+  Object convertValue(String value, Type type);
+ 
+}
+</pre>
+<p>The built-in support for Java types is provided by
+implementations of this interface. Specifically:</p>
+<ul>
+    <li>NumberConverter</li>
+    <li>NumberListConverter</li>
+    <li>StringListConverter</li>
+</ul>
+
+<h3>Support for custom parameter converters</h3>
+
+<p>This mechanism then allows for custom converters to be defined
+too. For example, let's consider the case of date conversion, a rather
+common one. The step would typically look like:</p>
+<pre class="brush: bdd">
+    When a stock of symbol STK1 is traded on 09/09/2009
+</pre>
+<p>and the matching step is</p>
+<pre class="brush: java">
+    @When("a stock of symbol $symbol is traded on $tradedOn")
+    public void aStockIsTradedOn(String symbol, Date tradedOn) {
+        // ...
+    }
+</pre>
+<p>Out of the box, JBehave cannot know how to convert the argument
+value <b>"09/09/2009"</b> to a Date object. Date formats are far from
+standard. In this case, we want to use the date format </b>"dd/MM/yyyy"</b> and
+configure the parameter converter for Date type. An implementation of
+Date converter, backed up a <a
+    href="http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>,
+could be:</p>
+
+<pre class="brush: java">
+public class DateConverter implements ParameterConverter {
+
+    private final SimpleDateFormat dateFormat;
+
+	public DateConverter(String dateFormat) {
+		this.dateFormat = new SimpleDateFormat(dateFormat);
+    }
+
+    public boolean accept(Type type) {
+        if (type instanceof Class<?>) {
+            return Date.class.isAssignableFrom((Class<?>) type);
+        }
+        return false;
+    }
+
+    public Object convertValue(String value, Type type) {
+    	try {
+			return dateFormat.parse(value);
+		} catch (ParseException e) {
+			throw new RuntimeException("Could not convert value "+value+" with format "+dateFormat.toPattern());
+		}
+    }
+
+}
+</pre>
+<p>Then we configure the use of the newly defined <b>DateConverter</b>
+in our Steps class:</p>
+<pre class="brush: java">
+    private static final StepsConfiguration configuration = new StepsConfiguration();
+
+    public MySteps(ClassLoader classLoader) {
+        super(configuration);
+        configuration.useParameterConverters(new ParameterConverters(
+               new DateConverter("dd/MM/yyyy)));  // define converter for custom type Date
+    }
+
+</pre>
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

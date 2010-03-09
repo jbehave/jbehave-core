@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Download</title>
+</head>
+
+<body>
+
+<h2>Stable releases</h2>
+
+<p>The stable releases of JBehave can be found on the <a
+    href="http://repository.codehaus.org/org/jbehave/">Codehaus
+Repository</a> (which is synched with the <a
+    href="http://repo1.maven.org/maven2">Central Maven Repository</a>):</p>
+
+<ul>
+    <li><a
+        href="http://repository.codehaus.org/org/jbehave/jbehave-distribution/2.5/jbehave-distribution-2.5-bin.zip">2.5
+    bin distribution</a></li>
+    <li><a
+        href="http://repository.codehaus.org/org/jbehave/jbehave-distribution/2.5/jbehave-distribution-2.5-src.zip">2.5
+    src distribution</a></li>
+</ul>
+
+<h2 id="snapshot">Latest Snapshot</h2>
+
+<p>The snapshot builds of JBehave can be found on the <a
+    href="http://snapshots.repository.codehaus.org/org/jbehave/jbehave-distribution/">Codehaus
+Snapshots Repository</a>. Be sure to choose the snapshot with the latest 2.x
+version and the filename with the latest timestamp.</p>
+
+<h2 id="maven">Using Maven Artifacts</h2>
+
+<p>If you use Maven as the build system (or one that is compatible
+with the Maven Repository, such as Ivy), you can declare JBehave
+dependency as</p>
+<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+  <dependency> 
+    <groupId>org.jbehave</groupId>
+    <artifactId>jbehave-core</artifactId>
+    <version>[version]</version>
+  </dependency>
+]]></script>
+<p>
+specifying the correct version.
+</p>
+
+<p>If you are using the JBehave dependency-injection extensions
+you'll need to also add the corresponding module</p>
+<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+  <dependency> 
+    <groupId>org.jbehave</groupId>
+    <artifactId>jbehave-[pico|spring|guice]</artifactId>
+    <version>[version]</version>
+  </dependency>
+]]></script>
+
+<p>JBehave was designed to be embeddable in different development
+environments. The <b>jbehave-core</b> contains support for running
+scenarios as JUnit tests - which can be run either in your favourite IDE
+or in your command-line build that supports JUnit tests.</p>
+
+<p>You can also run scenarios using the JBehave Ant or Maven
+extensions. In this case, an extra dependency needs to be declared, <b>jbehave-ant</b>
+or <b>jbehave-maven-plugin</b>, as appropriate. Refer to <a
+    href="running-scenarios.html">running scenarios</a>.
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>
