@@ -1,14 +1,15 @@
 package org.jbehave.mojo;
 
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jbehave.scenario.RunnableScenario;
 import org.jbehave.scenario.ScenarioClassLoader;
 import org.jbehave.scenario.parser.ScenarioClassNameFinder;
+
+import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -195,12 +196,18 @@ public abstract class AbstractScenarioMojo extends AbstractMojo {
         List<RunnableScenario> scenarios = new ArrayList<RunnableScenario>();
         for (String name : names) {
             try {
-                scenarios.add(scenarioFor(classLoader, name));
+                if (!isScenarioAbstract(classLoader, name)) {
+                    scenarios.add(scenarioFor(classLoader, name));
+                }
             } catch (Exception e) {
                 throw new MojoExecutionException("Failed to instantiate scenario '" + name + "'", e);
             }
         }
         return scenarios;
+    }
+
+    private boolean isScenarioAbstract(ScenarioClassLoader classLoader, String name) throws ClassNotFoundException {
+        return Modifier.isAbstract(classLoader.loadClass(name).getModifiers());
     }
 
     private RunnableScenario scenarioFor(ScenarioClassLoader classLoader, String name) {
