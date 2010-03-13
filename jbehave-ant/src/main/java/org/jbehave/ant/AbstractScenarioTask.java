@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.apache.tools.ant.Project.MSG_DEBUG;
 import static org.apache.tools.ant.Project.MSG_INFO;
 
+import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,7 +156,9 @@ public abstract class AbstractScenarioTask extends Task {
         List<RunnableScenario> scenarios = new ArrayList<RunnableScenario>();
         for (String name : names) {
             try {
-                scenarios.add(scenarioFor(classLoader, name));
+                if (!isScenarioAbstract(classLoader, name)) {
+                    scenarios.add(scenarioFor(classLoader, name));
+                }
             } catch (Exception e) {
                 throw new BuildException("Failed to instantiate scenario '" + name + "'", e);
             }
@@ -163,6 +166,10 @@ public abstract class AbstractScenarioTask extends Task {
         return scenarios;
     }
 
+    private boolean isScenarioAbstract(ScenarioClassLoader classLoader, String name) throws ClassNotFoundException {
+        return Modifier.isAbstract(classLoader.loadClass(name).getModifiers());
+    }
+    
     private RunnableScenario scenarioFor(ScenarioClassLoader classLoader, String name) {
         if ( classLoaderInjected ){
             return classLoader.newScenario(name, ClassLoader.class);            
