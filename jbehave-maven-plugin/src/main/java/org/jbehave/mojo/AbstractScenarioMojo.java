@@ -212,7 +212,14 @@ public abstract class AbstractScenarioMojo extends AbstractMojo {
 
     private RunnableScenario scenarioFor(ScenarioClassLoader classLoader, String name) {
         if ( classLoaderInjected ){
-            return classLoader.newScenario(name, ClassLoader.class);            
+            try {
+                return classLoader.newScenario(name, ClassLoader.class);
+            } catch (RuntimeException e) {
+                throw new RuntimeException("JBehave is trying to instantiate your Scenario class '" 
+                        + name + "' with a ClassLoader as a parameter.  " +
+                        "If this is wrong, change the Maven configuration for the plugin to include " +
+                        "<classLoaderInjected>false</classLoaderInjected>" , e);
+            }
         }
         return classLoader.newScenario(name);
     }
