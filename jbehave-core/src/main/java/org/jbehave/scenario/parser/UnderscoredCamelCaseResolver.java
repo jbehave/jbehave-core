@@ -35,8 +35,9 @@ public class UnderscoredCamelCaseResolver extends AbstractScenarioNameResolver {
 	public static final String NUMBERS_AS_UPPER_CASE_LETTERS_PATTERN = "([A-Z0-9].*?)([A-Z0-9]|\\z)";
 	private static final String UNDERSCORE = "_";
 	private final String resolutionPattern;
+    private String wordToRemove = "";
 
-	public UnderscoredCamelCaseResolver() {
+    public UnderscoredCamelCaseResolver() {
 		this(DEFAULT_EXTENSION);
 	}
 
@@ -53,8 +54,10 @@ public class UnderscoredCamelCaseResolver extends AbstractScenarioNameResolver {
 	@Override
 	protected String resolveFileName(
 			Class<? extends RunnableScenario> scenarioClass) {
-		Matcher matcher = compile(resolutionPattern).matcher(
-				scenarioClass.getSimpleName());
+        String simpleName = scenarioClass.getSimpleName();
+        simpleName = simpleName.replace(wordToRemove, "");
+        Matcher matcher = compile(resolutionPattern).matcher(
+                simpleName);
 		int startAt = 0;
 		StringBuilder builder = new StringBuilder();
 		while (matcher.find(startAt)) {
@@ -65,4 +68,8 @@ public class UnderscoredCamelCaseResolver extends AbstractScenarioNameResolver {
 		return builder.substring(0, builder.length() - 1);
 	}
 
+    public ScenarioNameResolver removeFromClassname(String toStripOff) {
+        this.wordToRemove = toStripOff;
+        return this;
+    }
 }

@@ -1,11 +1,11 @@
 package org.jbehave.scenario.parser;
 
+import org.jbehave.scenario.JUnitScenario;
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.jbehave.Ensure.ensureThat;
 import static org.jbehave.scenario.parser.UnderscoredCamelCaseResolver.NUMBERS_AS_UPPER_CASE_LETTERS_PATTERN;
-
-import org.jbehave.scenario.JUnitScenario;
-import org.junit.Test;
 
 public class UnderscoredCamelCaseResolverBehaviour {
 
@@ -23,6 +23,17 @@ public class UnderscoredCamelCaseResolverBehaviour {
                 equalTo("org/jbehave/scenario/parser/camel_case.scenario"));
     }
     
+    @Test
+    /**
+     * Some teams are not going to have /scenarios/ directories,
+     * they are going to co-mingle with tests and match in Maven land with *Scenario
+     */
+    public void shouldResolveCamelCasedClassNameToUnderscoredNameWithExtensionStrippingExtraneousWord() {
+    	ScenarioNameResolver resolver = new UnderscoredCamelCaseResolver(".scenario").removeFromClassname("Scenario");
+        ensureThat(resolver.resolve(CamelCaseScenario.class),
+                equalTo("org/jbehave/scenario/parser/camel_case.scenario"));
+    }
+
     @Test
     public void shouldResolveCamelCasedClassNameWithNumbersTreatedAsLowerCaseLetters() {
     	ScenarioNameResolver resolver = new UnderscoredCamelCaseResolver();
