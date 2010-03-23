@@ -13,7 +13,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
 import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SpringStepsFactoryBehaviour {
 
@@ -26,7 +25,7 @@ public class SpringStepsFactoryBehaviour {
     }
 
     private ListableBeanFactory createBeanFactory(String... xmlResources) {
-        return (ListableBeanFactory)new ClassPathXmlApplicationContext(xmlResources);
+        return new SpringApplicationContextFactory(xmlResources).getApplicationContext();
     }
 
     @Test

@@ -4,9 +4,9 @@ import org.jbehave.examples.trader.TraderScenario;
 import org.jbehave.scenario.RunnableScenario;
 import org.jbehave.scenario.steps.CandidateSteps;
 import org.jbehave.scenario.steps.StepsConfiguration;
+import org.jbehave.scenario.steps.spring.SpringApplicationContextFactory;
 import org.jbehave.scenario.steps.spring.SpringStepsFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class SpringTraderScenario extends TraderScenario {
 
@@ -21,8 +21,7 @@ public class SpringTraderScenario extends TraderScenario {
     }
 
     private ListableBeanFactory createBeanFactory() {
-        return (ListableBeanFactory) new ClassPathXmlApplicationContext(
-                new String[] { "org/jbehave/examples/trader/spring/steps.xml" });
+        return new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml").getApplicationContext();
     }
 
 }
