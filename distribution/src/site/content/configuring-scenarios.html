@@ -8,22 +8,23 @@
 
 <h2>Configuring Scenarios</h2>
 
-<p>In JBehave, we have a separation of concerns:</p>
+<p>In JBehave, there is a separation of concerns between Scenario and Steps classes:</p>
 <ul>
     <li><a href="javadoc/core/org/jbehave/scenario/Scenario.html">Scenario</a>
-    classes: responsible for configuring the ways scenarios are executed</li>
+    classes are responsible for the configuration of scenario execution: 
+    there is a one-to-one mapping between executable Scenario classes
+    and textual scenario files.</li>
     <li><a
         href="javadoc/core/org/jbehave/scenario/steps/Steps.html">Steps</a>
-    classes: responsible for matching textual text with Java methods.
-    Which Steps classes are associated to a scenario is configured via
-    the Scenario.</li>
-    <li>There is a one-to-one mapping between executable Scenario
-    classes and textual scenario files.</li>
+    classes contain the Java methods that match the textual steps in the
+    scenarios: which Steps classes are used when executing a scenario is
+    configured via the Scenario class.</li>
 </ul>
 
-<p>Even if JBehave requires a Java class to be associated to each
-textual story file, all configuration can be collected in an abstract (i.e. not executable)
-base class:</p>
+<p>Even if each executable Scenario Java class can be configured
+independently, it is good pratice to collect the configuration that
+applies to all Scenarios in an abstract (i.e. not executable) base
+class:</p>
 <pre class="brush: java">
 public abstract class TraderScenario extends JUnitScenario {
 
@@ -52,11 +53,11 @@ public abstract class TraderScenario extends JUnitScenario {
 
         // Define the Steps configuration
         StepsConfiguration configuration = new StepsConfiguration();
-        StepMonitor monitor = new SilentStepMonitor(); // use new PrintStreamStepMonitor() to debug step matching issues
+        configuration.useMonitor(new SilentStepMonitor()); // use new PrintStreamStepMonitor() to debug step matching issues
+        configuration.useKeyWords(new I18nKeyWords(Locale.ENGLISH)); // use different Locale for different languages
+        configuration.usePatternBuilder(new PrefixCapturingPatternBuilder("$")); // could use different char (e.g. '%') to identify parameters in annotation patterns
 		configuration.useParameterConverters(new ParameterConverters(
-        		monitor, new TraderConverter(mockTradePersister())));  // define converter for custom type Trader
-        configuration.usePatternBuilder(new PrefixCapturingPatternBuilder("%")); // use '%' instead of '$' to identify parameters
-        configuration.useMonitor(monitor);
+        		monitor, new DateConverter(new SimpleDateFormat("dd/MM/yyyy"))));  // defines custom converter for Date objects with format dd/MM/yyyy
         
         // Define the Steps used by the Scenario class        
         addSteps(createSteps(configuration));
@@ -68,8 +69,10 @@ public abstract class TraderScenario extends JUnitScenario {
     }
 </pre>
 
-<p>If we wanted to use IoC to compose our Steps with all its dependencies, all we'd need to do is to override the createSteps method
-using a different StepsFactory and use that as your base Scenario class. E.g. for use with Spring IoC:</p>
+<p>If we wanted to use an inversion of control container to compose
+our Steps with all its dependencies, all we'd need to do is to override
+the createSteps method using a different StepsFactory and use that as
+your base Scenario class. For example, to use with a Spring container:</p>
 <pre class="brush: java">
 public abstract class SpringTraderScenario extends TraderScenario {
 
@@ -87,9 +90,10 @@ public abstract class SpringTraderScenario extends TraderScenario {
 }
 </pre>
 
-<p>Once we have a base Scenario class, all we need to extend providing the name
-of the executable Scenario class that maps to the textual scenario file.  For example, 
-to map to <b>trader_is_alerted_of_status.story</b> using the resolver defined above:</p>
+<p>Once we have a base Scenario class, all we need to do is to
+extend it providing the name of the executable Scenario class that maps
+to the textual scenario file. For example, to map to <b>trader_is_alerted_of_status.story</b>
+using the resolver defined above:</p>
 <pre class="brush: java">
 public class TraderIsAlertedOfStatus extends TraderScenario {
 
@@ -100,7 +104,12 @@ public class TraderIsAlertedOfStatus extends TraderScenario {
 }
 </pre>
 
-<h2>Scenario Configuration Elements</h2>
+<span class="followup">Note that JBehave follow the
+configuration-by-convention approach, by which a default value of the
+configuration element is provided and can be overridden, if so
+desidered.</span>
+
+<h3>Scenario Configuration Elements</h3>
 
 <p>While Scenarios are designed to be highly configurable, they come
 with a default behaviour for the <a
@@ -146,7 +155,7 @@ provides default configuration that most user will find appropriate</p>
     href="javadoc/core/org/jbehave/scenario/PropertyBasedConfiguration.html">PropertyBasedConfiguration</a>:
 overrides default configuration via system properties</p>
 
-<h2>Steps Configuration Elements</h2>
+<h3>Steps Configuration Elements</h3>
 
 <p>Steps can also be configured to a high degree via the <a
     href="javadoc/core/org/jbehave/scenario/steps/StepsConfiguration.html">StepsConfiguration</a>.
