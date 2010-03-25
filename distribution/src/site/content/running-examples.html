@@ -10,10 +10,15 @@
 
 <p>JBehave was developed as behaviour and example driven.  As such the examples are 
 an integral part of the build, verifying the correctness of the behaviour.  They 
-are not released as artifacts, but they can be run easily from source code using Maven</p>
+are not released as artifacts, but they can be run easily <a href="https://svn.codehaus.org/jbehave/trunk/core/examples">browsed</a>
+or checked out from source control:</p>
 
 <script type="syntaxhighlighter" class="brush: plain"><![CDATA[
 svn co https://svn.codehaus.org/jbehave/trunk/core
+]]></script>
+
+<p>To build core modules and run examples with Maven:</p>
+<script type="syntaxhighlighter" class="brush: plain"><![CDATA[
 cd core
 mvn clean install -Pexamples
 ]]></script>

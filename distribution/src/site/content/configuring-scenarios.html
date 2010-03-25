@@ -8,8 +8,104 @@
 
 <h2>Configuring Scenarios</h2>
 
-<p>JBehave was designed to be highly configurable but to provide
-default behaviour for the most useful configuration. <a
+<p>In JBehave, we have a separation of concerns:</p>
+<ul>
+    <li><a href="javadoc/core/org/jbehave/scenario/Scenario.html">Scenario</a>
+    classes: responsible for configuring the ways scenarios are executed</li>
+    <li><a
+        href="javadoc/core/org/jbehave/scenario/steps/Steps.html">Steps</a>
+    classes: responsible for matching textual text with Java methods.
+    Which Steps classes are associated to a scenario is configured via
+    the Scenario.</li>
+    <li>There is a one-to-one mapping between executable Scenario
+    classes and textual scenario files.</li>
+</ul>
+
+<p>Even if JBehave requires a Java class to be associated to each
+textual story file, all configuration can be collected in an abstract (i.e. not executable)
+base class:</p>
+<pre class="brush: java">
+public abstract class TraderScenario extends JUnitScenario {
+
+    // Define how to resolve textual story or scenarios file based on the Java class
+    private static ScenarioNameResolver resolver = new UnderscoredCamelCaseResolver(".story");
+
+    public TraderScenario(final Class scenarioClass) {
+        super(new PropertyBasedConfiguration() {
+            @Override
+            public ScenarioDefiner forDefiningScenarios() {
+                return new ClasspathScenarioDefiner(resolver, new PatternScenarioParser(keywords()));
+            }
+
+            // Define the scenario reporters
+            @Override
+            public ScenarioReporter forReportingScenarios() {
+                return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, resolver))
+                            .with(CONSOLE)
+                            .with(TXT)
+                            .with(HTML)
+                            .with(XML)
+                            .build();
+            }
+
+        });
+
+        // Define the Steps configuration
+        StepsConfiguration configuration = new StepsConfiguration();
+        StepMonitor monitor = new SilentStepMonitor(); // use new PrintStreamStepMonitor() to debug step matching issues
+		configuration.useParameterConverters(new ParameterConverters(
+        		monitor, new TraderConverter(mockTradePersister())));  // define converter for custom type Trader
+        configuration.usePatternBuilder(new PrefixCapturingPatternBuilder("%")); // use '%' instead of '$' to identify parameters
+        configuration.useMonitor(monitor);
+        
+        // Define the Steps used by the Scenario class        
+        addSteps(createSteps(configuration));
+    }
+
+    // Here we are instantiating Steps as POJOs
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());
+    }
+</pre>
+
+<p>If we wanted to use IoC to compose our Steps with all its dependencies, all we'd need to do is to override the createSteps method
+using a different StepsFactory and use that as your base Scenario class. E.g. for use with Spring IoC:</p>
+<pre class="brush: java">
+public abstract class SpringTraderScenario extends TraderScenario {
+
+    public SpringTraderScenario(Class scenarioClass) {
+        super(scenarioClass);
+    }
+
+    @Override
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        ListableBeanFactory parent = new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml")
+                                    .getApplicationContext();
+        return new SpringStepsFactory(configuration, parent).createCandidateSteps();
+    }
+
+}
+</pre>
+
+<p>Once we have a base Scenario class, all we need to extend providing the name
+of the executable Scenario class that maps to the textual scenario file.  For example, 
+to map to <b>trader_is_alerted_of_status.story</b> using the resolver defined above:</p>
+<pre class="brush: java">
+public class TraderIsAlertedOfStatus extends TraderScenario {
+
+    public TraderIsAlertedOfStatus() {
+        super(TraderIsAlertedOfStatus.class);
+    }
+
+}
+</pre>
+
+<h2>Scenario Configuration Elements</h2>
+
+<p>While Scenarios are designed to be highly configurable, they come
+with a default behaviour for the <a
+    href="javadoc/core/org/jbehave/scenario/MostUsefulConfiguration.html">most
+useful configuration</a>. <a
     href="javadoc/core/org/jbehave/scenario/Configuration.html">Configuration</a>
 is the main interface for configuring all the components of a scenario.</p>
 
@@ -38,7 +134,7 @@ Allows to define the strategy for error handling. The default value is <a
 
 <p><a
     href="javadoc/core/org/jbehave/scenario/definition/KeyWords.html">KeyWords</a>:
-Allows to specify the keywords used.  The default value is <a
+Allows to specify the keywords used. The default value is <a
     href="javadoc/core/org/jbehave/scenario/di18n/I18nKeyWords.html">I18nKeyWords</a>.</p>
 
 <p>JBehave provides two useful base implementations that users can
@@ -50,7 +146,7 @@ provides default configuration that most user will find appropriate</p>
     href="javadoc/core/org/jbehave/scenario/PropertyBasedConfiguration.html">PropertyBasedConfiguration</a>:
 overrides default configuration via system properties</p>
 
-<h2>Configuring Steps</h2>
+<h2>Steps Configuration Elements</h2>
 
 <p>Steps can also be configured to a high degree via the <a
     href="javadoc/core/org/jbehave/scenario/steps/StepsConfiguration.html">StepsConfiguration</a>.
