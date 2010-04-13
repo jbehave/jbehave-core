@@ -64,8 +64,13 @@
               <shadedArtifactId>jbehave-core</shadedArtifactId>
               <artifactSet>
                 <excludes>
-                  <exclude>org.apache.ant:ant</exclude>
+                  <exclude>commons-collections:commons-collections</exclude>
+                  <exclude>commons-io:commons-io</exclude>    
+                  <exclude>commons-lang:commons-lang</exclude>
+                  <exclude>javax.inject:javax.inject</exclude>  
                   <exclude>junit:junit-dep</exclude>
+                  <exclude>org.apache.ant:ant</exclude>
+                  <exclude>org.freemarker:freemarker</exclude>                     
                   <exclude>org.hamcrest:hamcrest-all</exclude>
                 </excludes>
               </artifactSet>
