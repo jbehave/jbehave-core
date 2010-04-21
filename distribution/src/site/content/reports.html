@@ -42,28 +42,40 @@ the reporters we want to configure, in the example below a plain text
 reporter (both to <b>System.out</b> and to a file) and an HTML reporter
 to a file:</p>
 <pre class="brush: java">
-    private static ScenarioNameResolver converter = new UnderscoredCamelCaseResolver(".scenario");
-
     public TraderScenario(final Class scenarioClass) {
-        super(new PropertyBasedConfiguration() {
+        final ScenarioNameResolver resolver = new UnderscoredCamelCaseResolver(".scenario");
+        useConfiguration(new MostUsefulConfiguration() {
             @Override
             public ScenarioDefiner forDefiningScenarios() {
-                return new ClasspathScenarioDefiner(converter, new PatternScenarioParser(this));
+                return new ClasspathScenarioDefiner(resolver, new PatternScenarioParser(keywords()));
             }
-        
+
             @Override
             public ScenarioReporter forReportingScenarios() {
-                return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, converter))
-                            .with(CONSOLE) // report to System.out
-                            .with(TXT)     // report to .txt file in PLAIN format
-                            .with(HTML)    // report to .html file in HTML format
-                            .with(XML)     // report to .xml file in XML format
+                return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, resolver))
+                            .with(CONSOLE)
+                            .with(TXT)
+                            .with(HTML)
+                            .with(XML)
                             .build();
             }
 
-        }, new TraderSteps());
+        });
+
+        StepsConfiguration configuration = new StepsConfiguration();
+        addSteps(createSteps(configuration));
+    }
+
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());
     }
 </pre>
+
+<span class="followup">For a fully-working example of reporting configuration you may consult the 
+<a href="https://svn.codehaus.org/jbehave/trunk/core/examples/trader">trader example</a>.  Note that the configuration only needs
+ to be done in one place, i.e. the parent Scenario class, and not repeated in every Scenario class that maps to a 
+ textual scenario.
+</span>
 
 <p>Note that we use the <a
     href="javadoc/core/org/jbehave/scenario/reporters/ScenarioReporterBuilder.html">ScenarioReporterBuilder</a>

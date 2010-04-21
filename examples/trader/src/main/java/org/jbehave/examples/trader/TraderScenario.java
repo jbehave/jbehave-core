@@ -12,7 +12,7 @@ import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
 import org.jbehave.scenario.JUnitScenario;
-import org.jbehave.scenario.PropertyBasedConfiguration;
+import org.jbehave.scenario.MostUsefulConfiguration;
 import org.jbehave.scenario.RunnableScenario;
 import org.jbehave.scenario.parser.ClasspathScenarioDefiner;
 import org.jbehave.scenario.parser.PatternScenarioParser;
@@ -30,12 +30,11 @@ import org.jbehave.scenario.steps.StepMonitor;
 import org.jbehave.scenario.steps.StepsConfiguration;
 import org.jbehave.scenario.steps.StepsFactory;
 
-public class TraderScenario extends JUnitScenario {
-
-    private static ScenarioNameResolver resolver = new UnderscoredCamelCaseResolver(".scenario");
+public abstract class TraderScenario extends JUnitScenario {
 
     public TraderScenario(final Class<? extends RunnableScenario> scenarioClass) {
-        super(new PropertyBasedConfiguration() {
+        final ScenarioNameResolver resolver = new UnderscoredCamelCaseResolver(".scenario");
+        useConfiguration(new MostUsefulConfiguration() {
             @Override
             public ScenarioDefiner forDefiningScenarios() {
                 return new ClasspathScenarioDefiner(resolver, new PatternScenarioParser(keywords()));
