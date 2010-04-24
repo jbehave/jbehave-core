@@ -22,7 +22,6 @@ import org.jbehave.scenario.reporters.FilePrintStreamFactory;
 import org.jbehave.scenario.reporters.ScenarioReporter;
 import org.jbehave.scenario.reporters.ScenarioReporterBuilder;
 import org.jbehave.scenario.steps.CandidateSteps;
-import org.jbehave.scenario.steps.PrintStreamStepMonitor;
 import org.jbehave.scenario.steps.StepsConfiguration;
 import org.jbehave.scenario.steps.StepsFactory;
 import org.junit.Test;
