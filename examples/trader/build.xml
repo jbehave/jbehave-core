@@ -3,7 +3,7 @@
     Note: Use of <artifact:dependencies/> requires maven-ant-tasks-2.1.jar in $ANT_HOME/lib
           Download it from http://maven.apache.org/ant-tasks/download.html
   -->
-<project name="trader" default="all"
+<project name="trader" default="build"
   xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
   <artifact:pom id="pom" file="pom.xml" />
@@ -25,6 +25,7 @@
       <fileset dir="src/main/java">
         <include name="**/*.scenario" />
         <include name="**/*.properties" />
+        <include name="**/*.xml" />        
       </fileset>
     </copy>
 
@@ -105,7 +106,7 @@
       scenarioExcludes="**/i18n/scenarios/*.java" classLoaderInjected="false" />
   </target>
 
-  <target name="all" depends="run-scenarios,render-reports,stepdoc">
+  <target name="build" depends="run-scenarios,render-reports,stepdoc">
   </target>
 
 </project> 

@@ -49,7 +49,7 @@ public class ScenarioReporterBuilderBehaviour {
         builder.outputTo(fileDirectory);
         
         // Then
-        ensureThat(builder.fileConfiguration("").getDirectory().endsWith(fileDirectory));
+        ensureThat(builder.fileConfiguration("").getOutputDirectory().endsWith(fileDirectory));
     }
 
     @Test

@@ -34,7 +34,7 @@ import org.jbehave.scenario.reporters.FilePrintStreamFactory.FileConfiguration;
  *  }
  * </pre>
  * </p>
- * <p>The builder configures the file-based reporters to output to the default file directory {@link FileConfiguration#DIRECTORY}.
+ * <p>The builder configures the file-based reporters to output to the default file directory {@link FileConfiguration#OUTPUT_DIRECTORY}.
  * To change the default:
  * <pre>
  * new ScenarioReporterBuilder(printStreamFactory).outputTo("my-reports").with(HTML).with(TXT).build();
@@ -64,7 +64,8 @@ public class ScenarioReporterBuilder {
 
     protected final FilePrintStreamFactory factory;
     protected Map<Format, ScenarioReporter> delegates = new HashMap<Format, ScenarioReporter>();
-    private String fileDirectory = new FileConfiguration().getDirectory();
+    private String outputDirectory = new FileConfiguration().getOutputDirectory();
+    private boolean outputAbsolute = new FileConfiguration().isOutputDirectoryAbsolute();
 
     public ScenarioReporterBuilder(FilePrintStreamFactory factory) {
         this.factory = factory;
@@ -79,8 +80,13 @@ public class ScenarioReporterBuilder {
         return new DelegatingScenarioReporter(delegates.values());
     }
 
-    public ScenarioReporterBuilder outputTo(String fileDirectory){        
-        this.fileDirectory = fileDirectory;
+    public ScenarioReporterBuilder outputTo(String outputDirector){        
+        this.outputDirectory = outputDirector;
+        return this;
+    }
+
+    public ScenarioReporterBuilder outputAsAbsolute(boolean outputAbsolute) {
+        this.outputAbsolute = outputAbsolute;
         return this;
     }
     
@@ -115,7 +121,7 @@ public class ScenarioReporterBuilder {
     }
 
     protected FileConfiguration fileConfiguration(String extension) {
-        return new FileConfiguration(fileDirectory, extension);
+        return new FileConfiguration(outputDirectory, outputAbsolute, extension);
     }
 
     @SuppressWarnings("serial")
@@ -126,5 +132,6 @@ public class ScenarioReporterBuilder {
         }
 
     }
+
 
 }

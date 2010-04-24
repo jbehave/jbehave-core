@@ -64,9 +64,15 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
     }
 
     protected File outputDirectory(Class<? extends RunnableScenario> scenarioClass, FileConfiguration configuration) {
-        String classesDir = scenarioClass.getProtectionDomain().getCodeSource().getLocation().getFile();        
-        File targetDirectory = new File(classesDir).getParentFile();
-        return new File(targetDirectory, configuration.getDirectory());
+        if ( configuration.isOutputDirectoryAbsolute() ){
+            return new File(configuration.getOutputDirectory());
+        }        
+        return buildOutputDirectoryFromCodeLocation(scenarioClass, configuration);
+    }
+
+    private File buildOutputDirectoryFromCodeLocation(Class<? extends RunnableScenario> scenarioClass, FileConfiguration configuration) {
+        File targetDirectory = new File(scenarioClass.getProtectionDomain().getCodeSource().getLocation().getFile()).getParentFile();
+        return new File(targetDirectory, configuration.getOutputDirectory());
     }
 
     protected String fileName(Class<? extends RunnableScenario> scenarioClass, ScenarioNameResolver scenarioNameResolver,
@@ -77,39 +83,45 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
     }
 
     /**
-     * Configuration class for file print streams. Allows specification of the
-     * file directory (relative to the scenario class code source location) and
-     * the file extension. Provides as defaults {@link #DIRECTORY} and
-     * {@link #HTML}.
+     * Configuration class for file print streams. Allows specification the 
+     * output directory (either absolute or relative to the code location) and
+     * the file extension. Provides as defaults {@link #OUTPUT_DIRECTORY} (relative
+     * to class code location) and {@link #HTML}. 
      */
     public static class FileConfiguration {
-        public static final String DIRECTORY = "jbehave-reports";
+        public static final String OUTPUT_DIRECTORY = "jbehave-reports";
         public static final String HTML = "html";
 
-        private final String directory;
+        private final String outputDirectory;
         private final String extension;
-
+        private final boolean outputAbsolute;
+        
         public FileConfiguration() {
-            this(DIRECTORY, HTML);
+            this(HTML);
         }
 
         public FileConfiguration(String extension) {
-            this(DIRECTORY, extension);
+            this(OUTPUT_DIRECTORY, false, extension);
         }
 
-        public FileConfiguration(String directory, String extension) {
-            this.directory = directory;
+        public FileConfiguration(String outputDirectory, boolean outputAbsolute, String extension) {
+            this.outputDirectory = outputDirectory;
+            this.outputAbsolute = outputAbsolute;
             this.extension = extension;
         }
 
-        public String getDirectory() {
-            return directory;
+        public String getOutputDirectory() {
+            return outputDirectory;
         }
 
         public String getExtension() {
             return extension;
         }
 
+        public boolean isOutputDirectoryAbsolute() {
+            return outputAbsolute;
+        }
+        
     }
 
 }

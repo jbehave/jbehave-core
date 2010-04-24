@@ -42,7 +42,12 @@ public abstract class TraderScenario extends JUnitScenario {
 
             @Override
             public ScenarioReporter forReportingScenarios() {
+                // configure reports output to absolute directory (output specification in builder are usually optional)
+                // specifying output allows a workaround for Ant classloader that return 
+                // $ANT_HOME/lib as the default code source location (cf JBEHAVE-277)
                 return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, resolver))
+                            .outputTo("target/jbehave-reports") 
+                            .outputAsAbsolute(true)
                             .with(CONSOLE)
                             .with(TXT)
                             .with(HTML)
