@@ -69,11 +69,10 @@ public class ScenarioReporterBuilder {
 
     public ScenarioReporterBuilder(FilePrintStreamFactory factory) {
         this.factory = factory;
-        withDefaultFormats();
     }
 
-    protected void withDefaultFormats() {
-        with(Format.STATS);
+    public ScenarioReporterBuilder withDefaultFormats() {
+        return with(Format.STATS);
     }
 
     public ScenarioReporter build() {

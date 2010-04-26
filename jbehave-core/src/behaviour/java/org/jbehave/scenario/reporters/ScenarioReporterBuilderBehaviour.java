@@ -28,7 +28,7 @@ public class ScenarioReporterBuilderBehaviour {
         ScenarioReporterBuilder builder = new ScenarioReporterBuilder(factory);
 
         // When
-        ScenarioReporter reporter = builder.build();
+        ScenarioReporter reporter = builder.withDefaultFormats().build();
         
         // Then
         ensureThat(reporter instanceof DelegatingScenarioReporter);
@@ -71,7 +71,7 @@ public class ScenarioReporterBuilderBehaviour {
         };
         
         // When
-        ScenarioReporter reporter = builder.with(TXT).build();
+        ScenarioReporter reporter = builder.withDefaultFormats().with(TXT).build();
         
         // Then
         ensureThat(reporter instanceof DelegatingScenarioReporter);

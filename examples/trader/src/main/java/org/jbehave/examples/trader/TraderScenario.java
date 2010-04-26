@@ -46,12 +46,9 @@ public abstract class TraderScenario extends JUnitScenario {
                 // specifying output allows a workaround for Ant classloader that return 
                 // $ANT_HOME/lib as the default code source location (cf JBEHAVE-277)
                 return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, resolver))
-                            .outputTo("target/jbehave-reports") 
-                            .outputAsAbsolute(true)
-                            .with(CONSOLE)
-                            .with(TXT)
-                            .with(HTML)
-                            .with(XML)
+                            .outputTo("target/jbehave-reports").outputAsAbsolute(true)
+                            .withDefaultFormats()
+                            .with(CONSOLE).with(TXT).with(HTML).with(XML)
                             .build();
             }
 

@@ -76,11 +76,13 @@ public class SpringTraderRunner {
 			}
 
 			@Override
-			public ScenarioReporter forReportingScenarios() {
-				return new ScenarioReporterBuilder(new FilePrintStreamFactory(
-						scenarioClass, resolver)).with(CONSOLE).with(TXT).with(
-						HTML).with(XML).build();
-			}
+            public ScenarioReporter forReportingScenarios() {
+                return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, resolver))
+                            .outputTo("target/jbehave").outputAsAbsolute(true)
+                            .withDefaultFormats()
+                            .with(CONSOLE).with(TXT).with(HTML).with(XML)
+                            .build();
+            }
 		};
 	}
 }
