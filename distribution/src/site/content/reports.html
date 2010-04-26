@@ -53,6 +53,8 @@ to a file:</p>
             @Override
             public ScenarioReporter forReportingScenarios() {
                 return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, resolver))
+                            .outputTo("target/jbehave-reports").outputAsAbsolute(true) // only required with Ant (cf note below)
+                            .withDefaultFormats() // add default formats
                             .with(CONSOLE)
                             .with(TXT)
                             .with(HTML)
@@ -75,6 +77,13 @@ to a file:</p>
 <a href="https://svn.codehaus.org/jbehave/trunk/core/examples/trader">trader example</a>.  Note that the configuration only needs
  to be done in one place, i.e. the parent Scenario class, and not repeated in every Scenario class that maps to a 
  textual scenario.
+</span>
+
+<span class="followup">In general, the specification of the output directory is optional.  It is necessary when running with Ant as 
+a workaround for Ant's classloading strategy which uses the Ant Project.class ProtectionDomain, which in turn leads to 
+the <b>$ANT_HOME/lib</b> as the code source location.  A better solution would be to override the hacky AntClassLoader behaviour, as
+also noted by Ant folks in the <a href="http://www.docjar.com/docs/api/org/apache/tools/ant/AntClassLoader.html#defineClassFromData%28File,%20byte,%20String%29">AntClassLoader#defineClassFromData</a>
+method.  A user-friendly way to do is being investigated.
 </span>
 
 <p>Note that we use the <a
@@ -156,13 +165,23 @@ examples).</p>
 <p>The scenario statistics report above is treated in the rendering
 slightly differently from other reports, in that the statistics are
 displayed on the index page, if available. To ensure they are always
-available the scenario reporter builder automatically builds with the <b>stats</b>
-reporter included by default. To change or remove default formats simply
-override the method:</p>
+available the scenario reporter builder is configured to have <b>stats</b>
+as a default format (although the default formats need to be added to
+the builder). 
+</p>
+
+<h2>Default Formats</h2>
+
+<p>Default formats allow users to define a builder that can be
+used in multiple configurations without having to repeat tediously all the 
+formats required, if these are used consistently.  By default, "stats" is 
+the only default format (used for collecting reporting statistics).  To modify
+simply override the method <b>withDefaultFormats()</b>.  E.g. to add "txt" as a
+default format:</p>
 <pre class="brush: java">
         new ScenarioReporterBuilder(factory){
-               protected void withDefaultFormats() {
-                    with(Format.STATS);
+               protected ScenarioReporterBuilder withDefaultFormats() {
+                    return with(Format.STATS).with(Format.TXT);
                }
         }
 </pre>
@@ -173,6 +192,14 @@ directory in Maven), but this can be changed via the builder:</p>
 
 <pre class="brush: java">
         new ScenarioReporterBuilder(factory).outputTo("my-reports")
+</pre>
+
+<p>In some cases, i.e. when using with Ant, the class code source location may not be 
+properly set, or different from what is expected.  In this case, one can tell the builder 
+to treat the output directory as an absolute path:</p>
+
+<pre class="brush: java">
+        new ScenarioReporterBuilder(factory).outputTo("target/my-reports").outputAsAbsolute(true)
 </pre>
 
 <p>If the default formats or the output file directory are modified
