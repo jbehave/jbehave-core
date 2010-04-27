@@ -78,7 +78,7 @@ public class SpringTraderRunner {
 			@Override
             public ScenarioReporter forReportingScenarios() {
                 return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, resolver))
-                            .outputTo("target/jbehave").outputAsAbsolute(true)
+                            .outputTo("target/jbehave-reports").outputAsAbsolute(true)
                             .withDefaultFormats()
                             .with(CONSOLE).with(TXT).with(HTML).with(XML)
                             .build();

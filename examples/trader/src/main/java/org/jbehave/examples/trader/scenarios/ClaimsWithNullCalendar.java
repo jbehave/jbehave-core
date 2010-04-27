@@ -46,7 +46,7 @@ public class ClaimsWithNullCalendar extends JUnitScenario {
             @Override
             public ScenarioReporter forReportingScenarios() {
                 return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, converter))
-                            .outputTo("target/jbehave").outputAsAbsolute(true)
+                            .outputTo("target/jbehave-reports").outputAsAbsolute(true)
                             .withDefaultFormats()
                             .with(CONSOLE)
                             .with(TXT)

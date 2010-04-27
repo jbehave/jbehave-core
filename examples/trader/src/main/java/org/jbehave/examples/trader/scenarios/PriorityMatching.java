@@ -34,7 +34,7 @@ public class PriorityMatching extends JUnitScenario {
             @Override
             public ScenarioReporter forReportingScenarios() {
                 return new ScenarioReporterBuilder(new FilePrintStreamFactory(PriorityMatching.class, resolver))
-                            .outputTo("target/jbehave").outputAsAbsolute(true)
+                            .outputTo("target/jbehave-reports").outputAsAbsolute(true)
                             .withDefaultFormats()
                             .with(CONSOLE)
                             .with(TXT)
