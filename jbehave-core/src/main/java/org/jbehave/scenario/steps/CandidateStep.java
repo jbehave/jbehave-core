@@ -90,15 +90,33 @@ public class CandidateStep {
     }
 
     public boolean matches(String stepAsString) {
+    	return matches(stepAsString, null);
+    }
+
+    public boolean matches(String stepAsString, String previousAsString) {
         try {
-            Matcher matcher = matcherForStep(stepAsString);
-            boolean matches = matcher.matches();
-            stepMonitor.stepMatchesPattern(stepAsString, matches, pattern.pattern());
-            return matches;
+        	boolean matchesType = true;
+        	if ( isAndStep(stepAsString) ){
+        		if ( previousAsString == null ){
+        			matchesType = false; // cannot handle AND step with no previous step
+        		} else {
+        			// previous step type should match candidate step type
+        			matchesType = startingWordFor(stepType).equals(findStartingWord(previousAsString));
+        		}
+        	}
+            stepMonitor.stepMatchesType(stepAsString, previousAsString, matchesType, stepType);
+            boolean matchesPattern = matcherForStep(stepAsString).matches();
+            stepMonitor.stepMatchesPattern(stepAsString, matchesPattern, pattern.pattern());
+            // must match both type and pattern
+            return matchesType && matchesPattern;
         } catch (StartingWordNotFound e) {
             return false;
         }
     }
+
+	private boolean isAndStep(String stepAsString) {
+		return stepAsString.startsWith(startingWordFor(StepType.AND));
+	}
 
     private String trimStartingWord(String word, String step) {
         return step.substring(word.length() + 1); // 1 for the space after

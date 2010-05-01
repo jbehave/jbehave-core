@@ -56,7 +56,8 @@ public class UnmatchedToPendingStepCreator implements StepCreator {
     private void addMatchedScenarioSteps(ScenarioDefinition scenarioDefinition, List<Step> steps,
             Map<String, String> tableRow, CandidateSteps... candidateSteps) {
         List<CandidateStep> prioritised = prioritise(candidateSteps);
-        for (String stringStep : scenarioDefinition.getSteps()) {
+        String previousStep = null;
+        for (String stringStep : scenarioDefinition.getSteps()) {        	
             Step step = new PendingStep(stringStep);
             for (CandidateStep candidate : prioritised) {
                 if (candidate.ignore(stringStep)) { // ignorable steps are added
@@ -64,14 +65,23 @@ public class UnmatchedToPendingStepCreator implements StepCreator {
                     step = new IgnorableStep(stringStep);
                     break;
                 }
-                if (candidate.matches(stringStep)) {
+                if (matchesCandidate(stringStep, previousStep, candidate)) {
                     step = candidate.createFrom(tableRow, stringStep);
                     break;
                 }
             }
             steps.add(step);
+            previousStep = stringStep;
         }
     }
+
+	private boolean matchesCandidate(String stringStep, String previousStep,
+			CandidateStep candidate) {
+		if ( previousStep != null ){
+			return candidate.matches(stringStep, previousStep);			
+		}
+		return candidate.matches(stringStep);
+	}
 
     private List<CandidateStep> prioritise(CandidateSteps[] candidateSteps) {
         List<CandidateStep> steps = new ArrayList<CandidateStep>();

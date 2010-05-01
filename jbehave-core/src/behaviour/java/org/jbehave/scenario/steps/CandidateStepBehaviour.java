@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.jbehave.Ensure.ensureThat;
 import static org.jbehave.Ensure.not;
+import static org.jbehave.scenario.steps.StepType.AND;
 import static org.jbehave.scenario.steps.StepType.GIVEN;
 import static org.jbehave.scenario.steps.StepType.THEN;
 import static org.jbehave.scenario.steps.StepType.WHEN;
@@ -46,24 +47,33 @@ public class CandidateStepBehaviour {
 		map.put(GIVEN, "Given");
 		map.put(WHEN, "When");
 		map.put(THEN, "Then");
+		map.put(AND, "And");
 		return map;
 	}
            
     @Test
-    public void shouldMatchASimpleString() throws Exception {
+    public void shouldMatchAStepWithoutArguments() throws Exception {
         CandidateStep candidateStep = new CandidateStep("I laugh", DEFAULT_PRIORITY, GIVEN,
                 SomeSteps.class.getMethod("aMethod"), null, PATTERN_BUILDER, new ParameterConverters(), startingWords);
         ensureThat(candidateStep.matches("Given I laugh"));
     }
 
     @Test
-    public void shouldMatchAStringWithArguments() throws Exception {
+    public void shouldMatchAStepWithArguments() throws Exception {
         CandidateStep candidateStep = new CandidateStep("windows on the $nth floor", DEFAULT_PRIORITY, WHEN, SomeSteps.class
                         		        .getMethod("aMethod"), null, PATTERN_BUILDER, new ParameterConverters(), startingWords);
         ensureThat(candidateStep.matches("When windows on the 1st floor"));
         ensureThat(not(candidateStep.matches("When windows on the 1st floor are open")));
     }
 
+    @Test
+    public void shouldMatchAndStepsOnlyWithPreviousStep() throws Exception {
+        CandidateStep candidateStep = new CandidateStep("windows on the $nth floor", DEFAULT_PRIORITY, WHEN, SomeSteps.class
+                        		        .getMethod("aMethod"), null, PATTERN_BUILDER, new ParameterConverters(), startingWords);
+        ensureThat(not(candidateStep.matches("And windows on the 1st floor")));
+        ensureThat(candidateStep.matches("And windows on the 1st floor", "When windows on the 1st floor"));
+    }
+    
     @Test
     public void shouldProvideARealStepUsingTheMatchedString() throws Exception {
         SomeSteps someSteps = new SomeSteps();
@@ -270,9 +280,13 @@ public class CandidateStepBehaviour {
         CandidateStep[] candidateSteps = steps.getSteps();
         ensureThat(candidateSteps.length, equalTo(2));
         candidateSteps[0].createFrom(tableRow, "Given foo named xyz").perform();
+        candidateSteps[0].createFrom(tableRow, "And foo named xyz").perform();
         candidateSteps[1].createFrom(tableRow, "When foo named Bar").perform();
+        candidateSteps[1].createFrom(tableRow, "And foo named Bar").perform();
         ensureThat(steps.givenName, equalTo("xyz"));
+        ensureThat(steps.givenTimes, equalTo(2));
         ensureThat(steps.whenName, equalTo("Bar"));
+        ensureThat(steps.whenTimes, equalTo(2));
     }
 
 	@Test(expected=StartingWordNotFound.class)
@@ -289,15 +303,19 @@ public class CandidateStepBehaviour {
     static class NamedTypeSteps extends Steps {
         String givenName;
         String whenName;
+		int givenTimes;
+		int whenTimes;
 
         @Given("foo named $name")
         public void givenFoo(String name) {
         	givenName = name;
+        	givenTimes++;
         }
 
         @When("foo named $name")
         public void whenFoo(String name) {
         	whenName = name;
+        	whenTimes++;
         }
 
     }

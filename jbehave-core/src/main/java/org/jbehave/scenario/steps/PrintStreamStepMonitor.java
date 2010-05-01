@@ -10,8 +10,9 @@ import java.lang.reflect.Type;
  * {@link System.out}.
  */
 public class PrintStreamStepMonitor implements StepMonitor {
-	
+
 	private static final String CONVERTED_VALUE_OF_TYPE = "Converted value ''{0}'' of type ''{1}'' to ''{2}'' with converter ''{3}''";
+	private static final String STEP_MATCHES_TYPE = "Step ''{0}'' (with previous step ''{1}'') ''{2}'' type ''{3}''";
 	private static final String STEP_MATCHES_PATTERN = "Step ''{0}'' {1} pattern ''{2}''";
 	private static final String MATCHES = "matches";
 	private static final String DOES_NOT_MATCH = "does not match";
@@ -31,6 +32,13 @@ public class PrintStreamStepMonitor implements StepMonitor {
 
 	public PrintStreamStepMonitor(PrintStream output) {
 		this.output = output;
+	}
+
+	public void stepMatchesType(String step, String previous, boolean matches,
+			StepType stepType) {
+		String message = format(STEP_MATCHES_TYPE, step, previous,
+				(matches ? MATCHES : DOES_NOT_MATCH), stepType);
+		print(output, message);
 	}
 
 	public void stepMatchesPattern(String step, boolean matches, String pattern) {
@@ -57,32 +65,33 @@ public class PrintStreamStepMonitor implements StepMonitor {
 
 	public void usingParameterNameForArg(String name, int position) {
 		String message = format(USING_NAME_FOR_ARG, PARAMETER, name, position);
-		print(output, message);		
+		print(output, message);
 	}
 
 	public void usingTableAnnotatedNameForArg(String name, int position) {
-		String message = format(USING_NAME_FOR_ARG, TABLE_ANNOTATED, name, position);
-		print(output, message);		
+		String message = format(USING_NAME_FOR_ARG, TABLE_ANNOTATED, name,
+				position);
+		print(output, message);
 	}
 
 	public void usingTableParameterNameForArg(String name, int position) {
-		String message = format(USING_NAME_FOR_ARG, TABLE_PARAMETER, name, position);
-		print(output, message);		
+		String message = format(USING_NAME_FOR_ARG, TABLE_PARAMETER, name,
+				position);
+		print(output, message);
 	}
 
 	public void usingNaturalOrderForArg(int position) {
 		String message = format(USING_NATURAL_ORDER_FOR_ARG, position);
-		print(output, message);		
+		print(output, message);
 	}
 
 	public void foundArg(String arg, int position) {
 		String message = format(FOUND_ARG, arg, position);
-		print(output, message);		
+		print(output, message);
 	}
-	
+
 	protected void print(PrintStream output, String message) {
 		output.println(message);
 	}
-
 
 }
