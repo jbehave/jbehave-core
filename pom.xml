@@ -3,7 +3,7 @@
   <groupId>org.jbehave</groupId>
   <artifactId>jbehave</artifactId>
   <packaging>pom</packaging>
-  <version>2.6-SNAPSHOT</version>
+  <version>2.5.2</version>
   <name>JBehave</name>
   <inceptionYear>2003</inceptionYear>
   <description>JBehave is a project that supports and facilitates Behaviour-Driven Development.</description>
@@ -362,9 +362,9 @@
   <contributors />
 
   <scm>
-    <connection>scm:svn:https://svn.codehaus.org/jbehave/trunk/core</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/jbehave/trunk/core</developerConnection>
-    <url>http://svn.codehaus.org/jbehave/trunk/core</url>
+    <connection>scm:svn:https://svn.codehaus.org/jbehave/tags/jbehave-2.5.2</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/jbehave/tags/jbehave-2.5.2</developerConnection>
+    <url>http://svn.codehaus.org/jbehave/tags/jbehave-2.5.2</url>
   </scm>
 
   <distributionManagement>
