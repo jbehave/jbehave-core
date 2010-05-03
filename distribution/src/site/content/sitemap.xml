@@ -1,0 +1,51 @@
+<sitemap>
+  <section>
+    <name>About</name>
+    <page>index.html</page>
+    <page>getting-started.html</page>
+    <page>dependencies.html</page>
+    <page>faq.html</page>
+    <page>license.html</page>
+    <page>download.html</page>
+    <page>javadoc.html</page>
+    <page>release-notes.html</page>
+    <page>building-source.html</page>
+    <page>running-examples.html</page>
+    <page>migrating-from-2.x.html</page>
+  </section>
+  <section>
+    <name>Fundamentals</name>
+    <page>concepts.html</page>
+    <page>grammar.html</page>
+    <page>more-on-bdd.html</page>
+  </section>
+  <section>
+    <name>Stories</name>
+    <page>developing-stories.html</page>
+    <page>annotations.html</page>
+    <page>candidate-steps.html</page>
+    <page>pending-steps.html</page>
+    <page>configuring-stories.html</page>
+    <page>running-stories.html</page>
+    <page>locating-stories.html</page>
+    <page>i18n-stories.html</page>
+  </section>
+  <section>
+    <name>Advanced Topics</name>
+    <page>aliases.html</page>
+    <page>dependency-injection.html</page>
+    <page>parameter-injection.html</page>
+    <page>parameter-converters.html</page>
+    <page>table-examples.html</page>
+    <page>table-parameters.html</page>
+    <page>given-stories.html</page>
+    <page>reports.html</page>
+  </section>
+  <section>
+    <name>Project Info</name>
+    <page>mailing-lists.html</page>
+    <page>issue-tracking.html</page>
+    <page>team-list.html</page>
+    <page>source-repository.html</page>
+  </section>
+</sitemap>

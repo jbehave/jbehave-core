@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Reports</title>
+</head>
+
+<body>
+
+<h2>Story Reporters</h2>
+
+<p>Reporting is an essential element of BDD as it allows to monitor
+the outcome of the stories that have been run. At the heart of
+JBehave's reporting is the <a
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>,
+which is used to report events as they occur.</p>
+
+<p>Currently, the story reporters supported are:</p>
+<ul>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/PrintStreamOutput.html">PrintStreamOutput</a>:
+    generic reporter to a print stream, using formats that are configurable</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/ConsoleOutput.html">ConsoleOutput</a>:
+    specialises the <b>PrintStreamOutput</b> to use TXT console output</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/TxtOutput.html">TxtOutput</a>:
+    specialises the <b>PrintStreamOutput</b> to use TXT file output</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/HtmlOutput.html">HtmlOutput</a>:
+    specialises the <b>PrintStreamOutput</b> to use HTML file output</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/XmlOutput.html">XmlOutput</a>:
+    specialises the <b>PrintStreamOutput</b> to use XML file output</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/PostStoryStatisticsCollector.html">PostStoryStatisticsCollector</a>:
+    collects statistics and stores them as properties after story is run</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/DelegatingStoryReporter.html">DelegatingStoryReporter</a>:
+    delegates to any number of reporters as a proxy.</li>
+</ul>
+
+<p>Let's see an example of how we can configure the story
+reporters. We use the <b>DelegatingStoryReporter</b> as a proxy for
+the reporters we want to configure, in the example below a plain text
+reporter (both to <b>System.out</b> and to a file) and an HTML reporter
+to a file:</p>
+<pre class="brush: java">
+
+    public TraderStory() {
+        // start with default story configuration, overriding story definer and reporter
+        StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
+        String storyPath = storyConfiguration.storyPathResolver().resolve(this.getClass());
+        storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
+        storyConfiguration.useStoryReporter(new StoryReporterBuilder(new FilePrintStreamFactory(storyPath))
+                .outputTo("target/jbehave-reports").outputAsAbsolute(true) // only required with Ant (cf note below)
+                .withDefaultFormats() // add default formats 
+                .withFormats(CONSOLE, TXT, HTML, XML)
+                .build(storyPath));
+        useConfiguration(storyConfiguration);
+
+        // start with default steps configuration
+        StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
+        addSteps(createSteps(stepsConfiguration));
+    }
+
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());
+    }
+
+</pre>
+
+<span class="followup">For a fully-working example of reporting configuration you may consult the 
+<a href="http://git.codehaus.org/gitweb.cgi?p=jbehave-git.git;a=tree;f=examples/trader">trader example</a>.  Note that the configuration only needs
+ to be done in one place, i.e. the parent Scenario class, and not repeated in every Scenario class that maps to a 
+ textual scenario.
+</span>
+
+<span class="followup">In general, the specification of the output directory is optional.  It is necessary when running with Ant as 
+a workaround for Ant's classloading strategy which uses the Ant Project.class ProtectionDomain, which in turn leads to 
+the <b>$ANT_HOME/lib</b> as the code source location.  A better solution would be to override the hacky AntClassLoader behaviour, as
+also noted by Ant folks in the <a href="http://www.docjar.com/docs/api/org/apache/tools/ant/AntClassLoader.html#defineClassFromData%28File,%20byte,%20String%29">AntClassLoader#defineClassFromData</a>
+method.  A user-friendly way to do is being investigated.
+</span>
+
+<p>Note that we use the <a
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>
+to implement a builder pattern for file-based reporters via the <a
+    href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.html">FilePrintStreamFactory</a>,
+in which we inject the <a
+    href="javadoc/core/org/jbehave/core/parser/StoryPathResolver.html">StoryPathResolver</a>
+to derive the report file names from the story class, using the same
+name resolution mechanism used for mapping Java classes and textual
+stories. So, e.g., if the story class is <b>com.example.MyStory</b>,
+we'll end up with file report outputs of the form: <b>com.example.my_story.[format]</b>
+(where <b>format</b> is any of <b>txt,html,xml</b> in the example
+above).</p>
+
+<span class="followup">The file-based print stream factory for
+the story reporting requires the story class to be provided in
+order to derive from it the output file paths (with the appropriate
+format extension). If you want to migrate multiple stories to using
+file-based reporting, an intermediate stepping stone might be to provide
+as a story class the parent class in which you build the story
+reporter (TraderStory.class in the example), which will result in all
+reporting (for a given format) to be appended to the same file. Then
+gradually you can refactor your story classes to provide their class
+to the parent (as the example shows). Otherwise, you may want to keep
+output in a single file, the choice is yours. </span>
+
+<p>The builder provides defaults for all the formats supported, but
+if the user needs to create a bespoke instance of a reporter for a given
+format, it can be easily done by overriding the default. E.g. to
+override the reporter for <b>TXT</b> format to use a ".text" extension
+(a possibly keywords for a different Locale):</p>
+<pre class="brush: java">
+
+        StoryReporter reporter = new StoryReporterBuilder(factory){
+               public StoryReporter reporterFor(String storyPath, Format format){
+			           FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, ouputLocationClass));
+                       switch (format) {
+                           case TXT:
+                               factory.useConfiguration(new FileConfiguration("text"));
+                               return new PrintStreamOutput(factory.getPrintStream(),
+                                            new Properties(), new LocalizedKeywords(Locale.ITALIAN), true);
+                            default:
+                               return super.reporterFor(format);
+                       }
+                   }
+</pre>
+
+<h2>Report Rendering</h2>
+
+<p>The generation of the reports is only the first part of a
+complete HTML-based reporting solution. Next we need to render the
+reports, aggregating all the ones that have been configured and
+generated in a given output directory, and presenting a collective index
+view for all formats configured. Moreover, we need to style the view,
+both for HTML and non-HTML report formats.</p>
+
+<p>The rendering is the responsibility of the <a
+    href="javadoc/core/org/jbehave/core/reporters/ReportRenderer.html">ReportRenderer</a>.
+JBehave provides an implementation (<a
+    href="javadoc/core/org/jbehave/core/reporters/FreemarkerReportRenderer.html">FreemarkerReportRenderer</a>)
+based on <a href="http://freemarker.org">Freemarker</a> to allow a
+templateable and easily styleable way to render the report views.</p>
+
+<p>The default resources required for the report rendering are
+bundled in the <b>jbehave-core.jar</b> (extract ftl/*.ftl, js/*.js and
+style/*.css) but can be overridden. The FTL files need to be the
+classpath for the <b>FreemarkerReportRenderer</b> to find them, while
+the look and feel resources (js/*.js and style/*.css files) need to be
+copied to the <b>target/jbehave-reports/rendered</b> directory (or
+wherever the index page has been rendered to) Also note that the default
+style makes use of images found in the <b>jbehave-site-resources.jar</b>.</p>
+
+<p>Also, note that the report formats configured should match ones
+found in the Ant or Maven execution for the report rendering task or
+goal (c.f. <a href="running-stories.html">running stories</a> for
+examples).</p>
+
+<h2>Reporting Statistics</h2>
+
+<p>The story statistics report above is treated in the rendering
+slightly differently from other reports, in that the statistics are
+displayed on the index page, if available. To ensure they are always
+available the story reporter builder is configured to have <b>stats</b>
+as a default format (although the default formats need to be added to
+the builder). 
+</p>
+
+<h2>Default Formats</h2>
+
+<p>Default formats allow users to define a builder that can be
+used in multiple configurations without having to repeat tediously all the 
+formats required, if these are used consistently.  By default, "stats" is 
+the only default format (used for collecting reporting statistics).  To modify
+simply override the method <b>withDefaultFormats()</b>.  E.g. to add "txt" as a
+default format:</p>
+<pre class="brush: java">
+        new StoryReporterBuilder(factory){
+               protected StoryReporterBuilder withDefaultFormats() {
+                    return withFormats(STATS, TXT);
+               }
+        }
+</pre>
+
+<p>By default, JBehave outputs file reports to the directory <b>jbehave-reports</b>
+(relative to the story class code source location, e.g. the <b>target</b>
+directory in Maven), but this can be changed via the builder:</p>
+
+<pre class="brush: java">
+        new StoryReporterBuilder(factory).outputTo("my-reports")
+</pre>
+
+<p>In some cases, i.e. when using with Ant, the class code source location may not be 
+properly set, or different from what is expected.  In this case, one can tell the builder 
+to treat the output directory as an absolute path:</p>
+
+<pre class="brush: java">
+        new StoryReporterBuilder(factory).outputTo("target/my-reports").outputAsAbsolute(true)
+</pre>
+
+<p>If the default formats or the output file directory are modified
+via the builder, then correspondingly we need to inform the report
+render of these changes. See <a href="running-stories.html">running
+stories</a> for details on how to configure these changes.</p>
+
+<h2>Next?</h2>
+
+<span class="followup">The <a
+    href="https://svn.codehaus.org/jbehave/trunk/core/examples/trader">trader
+example</a> is configured to have a fully-working end-to-end use of JBehave
+reporting (be sure to read the instructions on <a
+    href="running-examples.html">running examples</a>). After running
+the build simply open the page <b>target/jbehave-reports/rendered/index.html</b></span>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbehave</groupId>
+    <artifactId>jbehave-examples</artifactId>
+    <version>3.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbehave-trader-test-scope-example</artifactId>
+  <name>JBehave Trader Test Scope Example</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-pico</artifactId>
+      <version>${jbehave.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-spring</artifactId>
+      <version>${jbehave.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-guice</artifactId>
+      <version>${jbehave.version}</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <!-- JBEHAVE-155: we can run stories in test scope -->
+    <testSourceDirectory>${basedir}/../trader/src/main/java</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>run-stories-found</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <storyIncludes>
+                <storyInclude>**/stories/*.java</storyInclude>
+              </storyIncludes>
+              <storyExcludes>
+                <storyExclude>**/i18n/stories/*.java</storyExclude>
+                <storyExclude>**/*NonSuccessful.java</storyExclude>
+              </storyExcludes>
+              <skip>false</skip>
+              <scope>test</scope>
+            </configuration>
+            <goals>
+              <goal>run-stories</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>run-stories-via-ant</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <tasks>
+                <taskdef name="storyRunner" classname="org.jbehave.ant.StoryRunnerTask" classpathref="maven.runtime.classpath" />
+                <storyRunner storyIncludes="**/stories/*.java"
+                  storyExcludes="**/*Steps.java" skip="false" scope="test" />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+</project>

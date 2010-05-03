@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbehave</groupId>
+    <artifactId>jbehave</artifactId>
+    <version>3.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbehave-examples</artifactId>
+  <packaging>pom</packaging>
+  <name>JBehave Examples</name>
+
+  <modules>
+    <module>gameoflife</module>
+    <module>trader</module>
+    <module>trader-test-scope</module>
+  </modules>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-core</artifactId>
+      <version>${jbehave.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-ant</artifactId>
+      <version>${jbehave.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <!-- Resources that are packaged in the JAR file -->
+    <resources>
+      <resource>
+        <directory>${basedir}/src/scenario</directory>
+      </resource>
+    </resources>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.jbehave</groupId>
+          <artifactId>jbehave-maven-plugin</artifactId>
+          <version>${jbehave.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>run-stories-found</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <storyIncludes>
+                <storyInclude>${story.includes}</storyInclude>
+              </storyIncludes>
+              <storyExcludes>
+                <storyExclude>**/*Steps.java</storyExclude>
+              </storyExcludes>
+              <classLoaderInjected>false</classLoaderInjected>
+            </configuration>
+            <goals>
+              <goal>run-stories</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <properties>
+    <story.includes>**/stories/*.java</story.includes>
+    <jbehave.version>${pom.version}</jbehave.version>
+  </properties>
+  <profiles>
+    <profile>
+      <id>gui</id>
+      <modules>
+        <module>noughtsandcrosses</module>
+        <module>noughtsandcrosses/scenarios</module>
+      </modules>
+    </profile>
+  </profiles>
+</project>

@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>BDD Concepts</title>
+</head>
+
+<body>
+
+<h2>A definition of BDD</h2>
+
+<span class="followup">Behaviour-Driven Development (BDD) is
+about implementing an application by describing it from the point of
+view of its stakeholders </span>
+
+<h2>Stories, scenarios and steps</h2>
+
+<p>rBDD revolves around the concept of a <b>Story</b>, which
+represents an <b>automatically executable increment of business functionality</b>. At
+its core a Story comprises of one or more <b>Scenarios</b>, each of which represents
+    a concrete example of the behaviour of the system.  Each Scenario comprises of
+    a number of executable steps. These <b>Steps</b>
+can be of three types:</p>
+<pre class="brush: bdd">
+A story is a collection of scenarios
+
+Narrative:
+In order to communicate effectively to the business some functionality
+As a development team
+I want to use Behaviour-Driven Development
+    
+Scenario:  A scenario is a collection of executable steps of different type
+
+Given step represents a precondition to an event
+When step represents the occurrence of the event
+Then step represents the outcome of the event
+
+Scenario:  Another scenario exploring different combination of events
+
+Given a precondition
+When a negative event occurs
+Then a the outcome should be captured    
+</pre>
+
+<p><b>Given</b>, <b>When</b> and <b>Then</b> are also called <b>BDD
+Keywords</b></p>
+
+<p>A scenario can contain any number of steps, and steps of the same
+type can follow each other:</p>
+<pre class="brush: bdd">
+Given a wizard named Harry
+Given a wizard named Hermione
+When the wizards meet
+Then a spark should occur
+</pre>
+<p>This scenario signals that there are two preconditions to the
+event of the wizards meeting. As such, it may be expressed in an
+equivalent way:</p>
+<pre class="brush: bdd">
+Given a wizard named Harry
+And a wizard named Hermione
+When the wizards meet
+Then a spark should occur
+</pre>
+<p>We can then introduce another keyword:</p>
+<pre class="brush: bdd">
+A step starting with And assumes the same meaning of the previous step
+</pre>
+
+<h2>Communication is the key</h2>
+
+<p>aims to provide an <b>automatable</b> description of the
+behaviour of the system, from the point of view of the stakeholders. As
+such, it is essential that the language used in the description reflects
+the language used by the business users. The language and its grammar
+represents the shared understanding of the behaviour between the
+business users and the development team. And as any language it evolves
+with the evolution of this shared understanding. BDD provides the
+grammar, but the language is agreed between the business and the team.</p>
+<p>The emphasis should be placed on concepts relevant to the
+business, shielding away issues of technical implementation. A good rule
+of thumb is that if details of the technical implementation can be
+changed without affecting the overall behaviour, as visible by the
+business user, then it should not appear in the scenario.</p>
+
+<h2>Next?</h2>
+
+<span class="followup">Learn about the full <a
+    href="grammar.html">Grammar</a> JBehave supports. Or refer
+to <a href="more-on-bdd.html">More on BDD</a> for more BDD-related
+information.</span>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

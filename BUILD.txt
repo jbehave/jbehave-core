@@ -1,0 +1,37 @@
+Build system: 
+
+JDK required: 1.5+
+Ant (http://ant.apache.org) required: 1.7+ 
+(maven-ant-tasks-2.1.jar is required in $ANT_HOME/lib - download from http://maven.apache.org/ant-tasks/download.html)
+OR 
+Maven (http://maven.apache.org) required: 2.1+
+ 
+IDE integration:
+
+Ant is supported by all major IDEs.
+Maven Eclipse (http://m2eclipse.sonatype.org/update):  builds classpath based on the dependencies declared in the POM.
+
+Maven Build profiles:  
+
+- default: builds all releasable modules
+- reporting:  builds reports
+- distribution:  builds distribution
+- examples:  builds examples
+- gui:  builds examples that require non-headless mode (separated as they do not run on CI: http://builds.codehaus.org/browse/JBEHAVE)
+- nt: no-test, builds skipping unit-test behaviours 
+
+Note:  profiles are additive and the default profile is always active.
+E.g.: 
+
+- build core and all examples 
+
+mvn install -Pexamples,gui
+
+- build with reporting and distribution:
+
+mvn install -Preporting,distribution 
+
+Building a release with Maven:
+
+- mvn release:prepare -Preporting,distribution
+- mvn release:perform -Preporting,distribution

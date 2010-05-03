@@ -1,0 +1,7 @@
+Scenario: the first scenario
+
+Given my step
+
+Scenario: the second scenario
+
+Given my second step

@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>FAQs</title>
+</head>
+
+<body>
+
+<h2>FAQs</h2>
+
+<h3>What is BDD?</h3>
+
+<p>BDD stands for <b>Behaviour-Driven Development</b> and you can
+learn more about BBD from our <a href="more-on-bdd.html">More on BDD</a>
+page.</p>
+
+<h3>What Java version is required by JBehave?</h3>
+
+<p>JBehave requires a JDK 1.5 or greater.</p>
+
+<h3>How do I use JBehave within my development environment?</h3>
+
+<p>Stories can be run in IDEs, as <a href="http://junit.org">JUnit</a>
+tests.</p>
+
+<p>Stories can also be run on command line, see <a
+    href="running-stories.html">running stories</a>. It can also be
+run via web runner, although the web support is not part of JBehave
+Core. For more info on web support refer to <a
+    href="http://jbehave.org/reference/web/stable">JBehave Web</a>.</p>
+
+<h3>What libraries does JBehave depend on?</h3>
+
+<p>Check the <a href="dependencies.html">dependencies</a> details.</p>
+
+<h3>Eclipse can't seem to find annotations if they are contained
+within a jar</h3>
+
+<p>Some versions of Eclipse need to be aware of the JBehave source
+to enable the JUnit plugin for stories, as they can’t spot the <b>@Test</b>
+annotation in a class jar. The link to the core sources is available
+from the <a href="download.html">download</a> page.</p>
+
+<p>Alternatively, <a href="http://m2eclipse.sonatype.org">M2Eclipse</a>
+users can downlaod the sources automatically.</p>
+
+<p>A workaround is to override the runStory() method annotated
+with @Test</p>
+
+<pre class="brush: java">
+public class YourStory extends JUnitStory {
+
+    @Test
+    public void run() throws Throwable {
+        super.run();
+    }
+
+}
+</pre>
+<p>Note that this is only required for the root class of all your
+stories.</p>
+
+<h3>Can I run my story in IDE with TestNG?</h3>
+
+<p>Similarly to the proposed workaround above, you should be able to
+run with TestNG by simply annotating the runStory() method in your
+root Story class with the TestNG @Test annotation.</p>
+
+<pre class="brush: java">
+public class YourStory extends JUnitStory {
+
+    @org.testng.annotations.Test 
+    public void run() throws Throwable {
+        super.run();
+    }
+
+}
+</pre>
+
+<p>Note that as we don't tend to use TestNG this solution has not
+been well-tested. If you encounter any issues please let us know.</p>
+
+<h3>How do I make my scenarios fail when steps are not matched and
+are shown as pending?</h3>
+
+<p>Configure the <a
+    href="javadoc/core/org/jbehave/core/errors/PendingErrorStrategy.html">PendingErrorStrategy</a>
+in <a href="javadoc/core/org/jbehave/core/StoryConfiguration.html">StoryConfiguration</a></p>
+<pre class="brush: java">
+   StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+   storyConfiguration.usePendingErrorStrategy(PendingErrorStrategy.FAILING);  
+</pre>
+
+<h3>How do I output my story steps just when a story fails?</h3>
+
+<p>Configure the <a
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>
+in <a href="javadoc/core/org/jbehave/core/StoryConfiguration.html">StoryConfiguration</a></p>
+
+<pre class="brush: java">
+   StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+   storyConfiguration.useStoryReporter(new SilentSuccessFilter(ConsoleOutput()));
+
+</pre>
+
+<p>Alternatively, you can use <a
+    href="javadoc/core/org/jbehave/core/PropertyBasedConfiguration.html">PropertyBasedConfiguration</a>
+setting system property <b>"org.jbehave.outputall"</b>.</p>
+
+<h3>Can my steps classes be POJOs?</h3>
+
+<p>Yes, one can write steps as POJOs and then create an instance of
+<a href="javadoc/core/org/jbehave/steps/CandidateSteps.html">CandidateSteps</a>
+via the <a href="javadoc/core/org/jbehave/steps/StepsFactory.html">StepsFactory</a>
+</p>
+<pre class="brush: java">
+    StepsConfiguration configuration = ... // optional configuration
+    new StepsFactory(configuration).createCandidateSteps(new TraderSteps()));    
+</pre>
+
+<p>Alternatively, one can extend the <a
+    href="javadoc/core/org/jbehave/steps/Steps.html">Steps</a> class.</p>
+
+<h3>Can I insert comments in the textual scenarios?</h3>
+
+<p>Yes, one can add them the scenario title, which allows free text up the first keyword of the scenario, e.g. the first Given.</p>
+
+<p>From version 2.4.1, one can also insert ignorable steps between executable steps, using keyword "!--" (which can be changed via I18n properties)</p> 
+<pre class="brush: bdd">
+Scenario: This is a description of the scenario, of the intended behaviour and its verification
+
+Given a precondition
+!-- This is an ignorable step, used to insert a comment,
+which can be multiline, just like any other step!
+When something happens
+Then outcome is verified 
+</pre>
+
+</body>
+</html>

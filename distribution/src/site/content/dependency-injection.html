@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Dependency Injection</title>
+</head>
+
+<body>
+
+<h2>Introduction</h2>
+
+<p><a href="http://www.martinfowler.com/articles/injection.html">Dependency
+Injection</a> has become an integral part of modern software design. We
+discuss here the different ways in which JBehave supports dependency
+injection.</p>
+
+<h2>Steps class-level injection</h2>
+
+<p>Steps classes often use external dependencies to interface to the
+system whose behaviour is being verified.</p>
+
+<h3>Using PicoContainer</h3>
+
+<p>Steps can be instantiated via <a href="http://picocontainer.org">PicoContainer</a> using the <a
+    href="javadoc/pico/org/jbehave/core/steps/pico/PicoStepsFactory.html">PicoStepsFactory</a>
+(the extension module <b>jbehave-pico</b> needs to be added to the classpath):
+</p>
+
+<pre class="brush: java">
+public class PicoTraderStory extends TraderStory {
+
+    public PicoTraderStory(Class storyClass) {
+        super(storyClass);
+    }
+
+    @Override
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        PicoContainer parent = createPicoContainer();
+        return new PicoStepsFactory(configuration, parent).createCandidateSteps();
+    }
+
+    private PicoContainer createPicoContainer() { 
+        // users can also use any other way to create a PicoContainer, e.g. via a script language        
+        MutablePicoContainer parent = new DefaultPicoContainer(new Caching().wrap(new ConstructorInjection()));
+        parent.as(Characteristics.USE_NAMES).addComponent(TradingService.class);
+        parent.as(Characteristics.USE_NAMES).addComponent(TraderSteps.class);
+        parent.as(Characteristics.USE_NAMES).addComponent(BeforeAfterSteps.class);
+        return parent;
+    }
+    
+}
+</pre>
+
+<h3>Using Spring</h3>
+
+<p>Steps can be instantiated via <a href="http://springframework.org">Spring</a> using the <a
+    href="javadoc/spring/org/jbehave/core/steps/spring/SpringStepsFactory.html">SpringStepsFactory</a>
+(the extension module <b>jbehave-spring</b> needs to be added to the classpath):
+</p>
+
+<pre class="brush: java">
+public class SpringTraderStory extends TraderStory {
+
+    public SpringTraderStory(Class storyClass) {
+        super(storyClass);
+    }
+
+    @Override
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        ListableBeanFactory parent = createBeanFactory();
+        return new SpringStepsFactory(configuration, parent).createCandidateSteps();
+    }
+
+    private ListableBeanFactory createBeanFactory() {
+        return (ListableBeanFactory) new ClassPathXmlApplicationContext(
+                new String[] { "org/jbehave/examples/trader/spring/steps.xml" });
+    }
+
+}
+</pre>
+
+<h3>Using Guice</h3>
+
+<p>Steps can be instantiated via Using <a href="http://code.google.com/p/google-guice/">Guice</a> using the <a
+    href="javadoc/guice/org/jbehave/core/steps/guice/GuiceStepsFactory.html">GuiceStepsFactory</a>
+(the extension module <b>jbehave-guice</b> needs to be added to the classpath):
+</p>
+
+<pre class="brush: java">
+public class GuiceTraderStory extends TraderStory {
+
+    public GuiceTraderStory(Class storyClass) {
+        super(storyClass);
+    }
+
+    @Override
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        Injector parent = createInjector();
+        return new GuiceStepsFactory(configuration, parent).createCandidateSteps();
+    }
+
+    private Injector createInjector() {
+        Injector parent = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+              bind(TradingService.class).in(Scopes.SINGLETON);
+              bind(GuiceTraderSteps.class).in(Scopes.SINGLETON);
+              bind(BeforeAfterSteps.class).in(Scopes.SINGLETON);
+            }
+          });
+        return parent;
+    }
+    
+}
+</pre>
+where the <b>GuiceTraderSteps</b> is appropriately Guice-annotated:
+<pre class="brush: java">
+public class GuiceTraderSteps extends TraderSteps {
+
+    @Inject
+    public GuiceTraderSteps(TradingService service) {
+        super(service);
+    }
+
+}
+</pre>
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

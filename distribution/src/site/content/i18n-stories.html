@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Writing Stories in your language</title>
+</head>
+
+<body>
+
+<h2>Writing Stories in your language</h2>
+
+<p>Good and effective communication is key to BDD. Therefore,
+writing stories in the <a href="http://en.wikipedia.org/wiki/Language">language</a>
+spoken by the business users is essential. And even though the patterns
+used to match the scenario steps to Java methods can be written in any
+language, the <a
+    href="javadoc/core/org/jbehave/core/definition/Keywords.html">Keywords</a>
+still need to be expressed in different languages.</p>
+
+<p>JBehave by default supports English as the scenario language. By
+supporting the internationalisation (i18n) of keywords by Java <a
+    href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Locale.html">Locale</a>,
+it also allows the stories to be written in any language. All is
+needed to configure the use of <a
+    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>
+for a given Locale. Each locale has a separate keywords properties file.
+E.g. for Italian locale, the file <b>keywords_it.properties</b> is:</p>
+<pre class="brush: bdd">
+Narrative=Narrativa:
+InOrderTo=Per ottenere
+AsA=Come
+IWantTo=Voglio
+Scenario=Scenario:
+GivenStories=Date le storie:
+ExamplesTable=Esempi:
+ExamplesTableRow=Esempio:
+ExamplesTableSeparator=|
+Given=Dato che
+When=Quando
+Then=Allora
+And=E
+Pending=PENDENTE
+NotPerformed=NON ESEGUITO
+Failed=FALLITO
+</pre>
+<p>We need to configure the use of the i18n-ed keywords in the <a
+    href="javadoc/core/org/jbehave/core/JUnitStory.html">JUnitStory</a>,
+e.g.:</p>
+<pre class="brush: java">
+public class ItTraderStory extends JUnitStory {
+
+	public ItTraderStory() {
+        StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        // use Italian for keywords
+        Keywords keywords = new LocalizedKeywords(new Locale("it"), new StringEncoder(), "org/jbehave/examples/trader/i18n/keywords", classLoader);
+        storyConfiguration.useKeywords(keywords);
+        storyConfiguration.useStoryPatter(new RegexStoryParser(storyConfiguration.keywords());
+        storyConfiguration.useStoryReporter(new PrintStreamOutput(storyConfiguration.keywords()));
+        useConfiguration(storyConfiguration);
+
+        StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
+        // use Italian for keywords
+        stepsConfiguration.useKeywords(keywords);
+        addSteps(new StepsFactory(stepsConfiguration).createCandidateSteps(new ItTraderSteps()));
+    }
+}
+</pre>
+<p>The corresponding i18n-ed <a
+    href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a> will then understand the language that has been configured
+    via the i18n-ed keywords:</p>
+
+<pre class="brush: java">
+public class ItTraderSteps {
+
+    private Stock stock;
+    private ExamplesTable table;
+
+    @Given("ho un'azione con simbolo $symbol e una soglia di $threshold")
+    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+        stock = new Stock(symbol, threshold);
+    }
+
+    @When("l'azione e' scambiata al prezzo di $price")
+    public void stockIsTraded(@Named("price") double price) {
+        stock.tradeAt(price);
+    }
+
+    @Then("lo status di allerta e' $status")
+    public void alertStatusIs(@Named("status") String status) {
+        ensureThat(stock.getStatus().name(), equalTo(status));
+    }
+
+    @Given("ho una tabella $table")
+    public void aTAble(ExamplesTable table) {
+        this.table = table;
+    }
+
+    @Then("la tabella ha $rows righe")
+    public void hasRows(int rows){
+        ensureThat(table.getRowCount(), equalTo(rows));
+    }
+}
+</pre>
+<p>Note that the i18n-ed keywords not only allow the translation of
+the keywords used in parsing the textual story, but also the keywords
+used in the reporting of the story execution, e.g. <b>Pending</b>, <b>NotPerformed</b>
+and <b>Failed</b>.</p>
+
+<h2>Why are different languages not supported out-of-the-box?</h2>
+
+<span class="followup">Most non-English languages require characters that are rendered
+inconsistently using the native encoding of a given operating system.  At moment,
+a consistent solution is to provide your own keywords in your native encoding.
+We are working on a solution that is re-usable across multiple platforms.</span>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

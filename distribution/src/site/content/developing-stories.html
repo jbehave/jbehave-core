@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Developing Stories</title>
+</head>
+
+<body>
+
+<h2>Writing Textual Stories</h2>
+
+<p><a href="concepts.html">Behaviour-Driven Development</a>
+encourages you to start defining the stories via scenarios that express the desired
+behaviour in a textual format, e.g.:</p>
+<pre class="brush: bdd">
+    Given a stock of symbol STK1 and a threshold of 10.0
+    When the stock is traded at 5.0
+    Then the alert status should be OFF
+</pre>
+<p>The textual scenario should use the language of the business
+domain and shield away as much as possible the details of the technical
+implementation. Also, it should be given a name that is expressive of
+the functionality that is being verified, i.e. <b>trader_is_alerted_of_status.story</b>.
+</p>
+<p>The scenario should use a syntax compatible with the <a
+    href="grammar.html">Grammar</a>.</p>
+
+
+<span class="followup">A story is a collection of scenarios, each
+detailing different examples of the behaviour of
+    a given increment of functionality of the system.</span>
+
+<pre class="brush: bdd">
+    Scenario:  trader is not alerted below threshold
+
+    Given a stock of symbol STK1 and a threshold of 10.0
+    When the stock is traded at 5.0
+    Then the alert status should be OFF
+
+    Scenario:  trader is alerted above threshold
+
+    Given a stock of symbol STK1 and a threshold of 10.0
+    When the stock is traded at 11.0
+    Then the alert status should be ON
+</pre>
+
+<h2>Mapping Textual Scenario Steps to Java Methods via annotations</h2>
+
+<p>JBehave maps textual steps to Java methods via <a
+    href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>.
+The scenario writer need only provide annotated methods that match, by
+regex patterns, the textual steps. One way this can be done is by
+extending the default implementation <a
+    href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a>:
+</p>
+<pre class="brush: java">
+public class TraderSteps extends Steps {
+
+    private Stock stock;
+
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(String symbol, double threshold) {
+        stock = new Stock(symbol, threshold);
+    }
+
+    @When("the stock is traded at $price")
+    public void theStockIsTradedAt(double price) {
+        stock.tradeAt(price);
+    }
+
+    @Then("the alert status should be $status")
+    public void theAlertStatusShouldBe(String status) {
+        ensureThat(stock.getStatus().name(), equalTo(status));
+    }
+
+}
+</pre>
+<p>Equivalently, as composition is often preferrable to inheritance,
+the scenario writer can use a POJO (i.e. without extending Steps)</p>
+<pre class="brush: java">
+public class TraderSteps { // look, Ma, I'm a POJO!!
+ 
+    private Stock stock;
+
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    public void aStock(String symbol, double threshold) {
+        stock = new Stock(symbol, threshold);
+    }
+
+    @When("the stock is traded at $price")
+    public void theStockIsTradedAt(double price) {
+        stock.tradeAt(price);
+    }
+
+    @Then("the alert status should be $status")
+    public void theAlertStatusShouldBe(String status) {
+        ensureThat(stock.getStatus().name(), equalTo(status));
+    }
+
+}
+</pre>
+<p>If POJOs are used we need to create <a
+    href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
+via the <a
+    href="javadoc/core/org/jbehave/core/steps/StepsFactory.html">StepsFactory</a>
+</p>
+<pre class="brush: java">
+    StepsConfiguration configuration = ... // optional configuration
+    new StepsFactory(configuration).createCandidateSteps(new TraderSteps()));    
+</pre>
+<p>Each step is annotated with one of the <a href="annotations.html">step
+annotations</a>, each holding a regex pattern as value. The pattern is used
+to match the method in the Steps class with the appropriate parameters.
+The simplest default behaviour identifies arguments in the candidate
+step by the words prefixed by the <b>$</b> character. More advanced <a
+    href="parameter-injection.html">parameter injection</a> mechanisms
+are also supported by JBehave.</p>
+<p>JBehave execute all the matched steps in the order in which they
+are found in the Scenario. It is up to the implementor of the Steps
+class to provide the logic to tie together the results of the execution
+of each step. This can be done by keeping state member variables in the
+Steps class or possibly by using a service API or other dependency.</p>
+
+<h2>Mapping Story Files to Java Classes</h2>
+
+<p>In JBehave stories can be run in an automated way via a
+mapping to Java classes, either a one-to-one mapping or a many-to-one mapping.</p>
+<p>
+In the case of one-to-one mapping, the textual
+story path is resolved from a Java class via the <a
+    href="javadoc/core/org/jbehave/core/parser/StoryPathResolver.html">StoryPathResolver</a>.
+In our example, we need to create a file <code>TraderIsAletedOfStatus.java</code>,
+which maps to out textual story in same package, and it would extend a base Story class
+that contains the configuration:</p>
+
+<p>Thus in our case the example Story would look like:</p>
+<pre class="brush: java">
+public class TraderStory extends JUnitStory {
+
+    public TraderStory() {
+        StoryConfiguration storyConfiguration = new MostUsefulConfiguration();
+        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
+        storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
+
+        addSteps(new TraderSteps()); // if TraderSteps extends Steps
+        addSteps(new StepsFactory().createCandidateSteps(new TraderSteps())); // if TraderSteps is a POJO
+    }
+}
+</pre>
+
+<p>
+In the case of many-to-one mapping, the textual
+story path must be explicitly provided when extending  <a
+    href="javadoc/core/org/jbehave/core/JUnitStories.html">JUnitStories</a>:
+</p>
+
+<pre class="brush: java">
+public class TraderStories extends JUnitStories {
+
+    public TraderStories() {
+        StoryConfiguration storyConfiguration = new MostUsefulConfiguration();
+        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
+        storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
+
+        addSteps(new TraderSteps()); // if TraderSteps extends Steps
+        addSteps(new StepsFactory().createCandidateSteps(new TraderSteps())); // if TraderSteps is a POJO
+    }
+
+    @Override
+    protected List<String> storyPaths() {
+        return asList("org/jbehave/examples/trader/stories/trader_is_alerted_of_status.story",
+                      "org/jbehave/examples/trader/stories/traders_can_be_subset.story");
+    }
+}
+</pre>
+
+<p>Here we are configuring our textual story files to end with
+extension <b>.story</b>, by overriding the default behaviour of <a
+    href="javadoc/core/org/jbehave/core/parser/UnderscoredCamelCaseResolver.html">UnderscoredCamelCaseResolver</a>
+which has no extension.</p>
+
+<h2>What Next?</h2>
+
+<span class="followup">The <a href="configuring-stories.html">Configuring
+Stories</a> page will go into more configuration details and <a
+    href="running-stories.html">Running Stories</a> into the
+different ways to run stories. Or if you want to learn more about
+JBehave's step matching mechanism, you'll want to explored the concept
+of <a href="candidate-steps.html">candidate steps</a> in more detail. </span>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

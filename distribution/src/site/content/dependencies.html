@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Dependencies</title>
+</head>
+
+<body>
+
+<h2>Dependencies required by JBehave</h2>
+
+<h3>JBehave Core</h3>
+
+<p>The <a href="javadoc/core/index.html">JBehave Core</a> requires
+the following dependencies to be in the classpath:</p>
+<ul>
+    <li><a href="http://junit.org">junit-dep.jar</a></li>
+    <li><a href="http://hamcrest.org">hamcrest-all.jar</a></li>
+</ul>
+<p>All dependencies are provided in the <b>lib</b> directory of
+binary distribution from the <a href="download.html">download</a> page.</p>
+
+<p><b>Attention</b>: if you use <b>junit.jar</b>, be aware that from
+version 4.4 it comes bundled bundled with a copy of Hamcrest API, so you
+may experience unpredictable behaviours based on the relative position
+of the jars in the classpath. It is advisable to use the <b>junit-dep.jar</b>
+which is identitical, except that is come unbundled and any dependencies
+must be declared.</p>
+
+<p><b>Note</b>: JBehave Core is agnostic of any build tools,
+althought it does contain an optional dependency on the <a
+    href="http://ant.apache.org">ant.jar</a> for the implementaion of
+the <a
+    href="javadoc/core/org/jbehave/core/parser/StoryClassNameFinder.html">StoryClassNameFinder</a>.
+This is a utilily class which is used only by the <a
+    href="javadoc/ant/index.html">JBehave Ant</a> and <a
+    href="javadoc/maven-plugin/index.html">JBehave Maven Plugin</a>
+modules.</p>
+
+<h3>JBehave Pico</h3>
+
+<p>The <a href="javadoc/pico/index.html">JBehave Pico</a> module
+requires the following dependencies (and their transitive dependencies)
+to be in the classpath (in addition to Core and its dependencies):</p>
+<ul>
+    <li><a href="http://picocontainer.org">picocontainer.jar</a></li>
+</ul>
+
+<h3>JBehave Spring</h3>
+
+<p>The <a href="javadoc/spring/index.html">JBehave Spring</a> module
+requires the following dependencies (and their transitive dependencies)
+to be in the classpath (in addition to Core and its dependencies):</p>
+<ul>
+    <li><a href="http://springframework.org">spring-context.jar</a></li>
+</ul>
+
+<h3>JBehave Ant</h3>
+
+<p>The <a href="javadoc/ant/index.html">JBehave Ant</a> module
+requires the following dependencies to be in the classpath (in addition
+to Core and its dependencies):</p>
+<ul>
+    <li><a href="http://ant.apache.org">ant.jar</a></li>
+</ul>
+
+<h3>JBehave Maven Plugin</h3>
+
+<p>The <a href="javadoc/maven-plugin/index.html">JBehave Maven
+Plugin</a> module requires the following dependencies to be in the classpath
+(in addition to Core and its dependencies):</p>
+<ul>
+    <li><a href="http://maven.apache.org">maven-plugin-api.jar</a></li>
+</ul>
+
+</body>
+</html>
