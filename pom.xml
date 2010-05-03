@@ -357,7 +357,7 @@
   <licenses>
     <license>
       <name>BSD license</name>
-      <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-git.git;a=blob_plain;f=trunk/core/LICENSE.txt;hb=HEAD</url>
+      <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git;a=blob_plain;f=trunk/core/LICENSE.txt;hb=HEAD</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -366,9 +366,9 @@
   <contributors />
 
   <scm>
-    <connection>scm:git:git://git.codehaus.org/jbehave-git.git</connection> 
-    <developerConnection>scm:git:ssh://git@git.codehaus.org/jbehave-git.git</developerConnection>
-    <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-git.git</url>
+    <connection>scm:git:git://git.codehaus.org/jbehave-core.git</connection> 
+    <developerConnection>scm:git:ssh://git@git.codehaus.org/jbehave-core.git</developerConnection>
+    <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git</url>
   </scm>
 
   <distributionManagement>
