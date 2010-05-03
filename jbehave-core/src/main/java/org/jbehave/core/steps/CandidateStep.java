@@ -94,20 +94,20 @@ public class CandidateStep {
     	return matches(stepAsString, null);
     }
 
-    public boolean matches(String stepAsString, String previousAsString) {
+    public boolean matches(String step, String previousNonAndStep) {
         try {
         	boolean matchesType = true;
-        	if ( isAndStep(stepAsString) ){
-        		if ( previousAsString == null ){
+        	if ( isAndStep(step) ){
+        		if ( previousNonAndStep == null ){
         			matchesType = false; // cannot handle AND step with no previous step
         		} else {
         			// previous step type should match candidate step type
-        			matchesType = startingWordFor(stepType).equals(findStartingWord(previousAsString));
+        			matchesType = startingWordFor(stepType).equals(findStartingWord(previousNonAndStep));
         		}
         	}
-            stepMonitor.stepMatchesType(stepAsString, previousAsString, matchesType, stepType);
-            boolean matchesPattern = matcherForStep(stepAsString).matches();
-            stepMonitor.stepMatchesPattern(stepAsString, matchesPattern, pattern.pattern());
+            stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType);
+            boolean matchesPattern = matcherForStep(step).matches();
+            stepMonitor.stepMatchesPattern(step, matchesPattern, pattern.pattern());
             // must match both type and pattern
             return matchesType && matchesPattern;
         } catch (StartingWordNotFound e) {
@@ -115,7 +115,7 @@ public class CandidateStep {
         }
     }
 
-	private boolean isAndStep(String stepAsString) {
+	public boolean isAndStep(String stepAsString) {
 		return stepAsString.startsWith(startingWordFor(StepType.AND));
 	}
 

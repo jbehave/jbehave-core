@@ -56,7 +56,7 @@ public class MarkUnmatchedStepsAsPending implements StepCreator {
     private void addMatchedScenarioSteps(Scenario scenario, List<Step> steps,
                                          Map<String, String> tableRow, List<CandidateSteps> candidateSteps) {
         List<CandidateStep> prioritised = prioritise(candidateSteps);
-        String previousStep = null;
+        String previousNonAndStep = null;
         for (String stringStep : scenario.getSteps()) {        	
             Step step = new PendingStep(stringStep);
             for (CandidateStep candidate : prioritised) {
@@ -65,22 +65,25 @@ public class MarkUnmatchedStepsAsPending implements StepCreator {
                     step = new IgnorableStep(stringStep);
                     break;
                 }
-                if (matchesCandidate(stringStep, previousStep, candidate)) {
+                if (matchesCandidate(stringStep, previousNonAndStep, candidate)) {
                     step = candidate.createFrom(tableRow, stringStep);
+                    if  ( !candidate.isAndStep(stringStep) ){
+                    	// only update previous step if not AND step
+                        previousNonAndStep = stringStep;            	
+                    }
                     break;
                 }
             }
             steps.add(step);
-            previousStep = stringStep;
         }
     }
 
-	private boolean matchesCandidate(String stringStep, String previousStep,
+	private boolean matchesCandidate(String step, String previousNonAndStep,
 			CandidateStep candidate) {
-		if ( previousStep != null ){
-			return candidate.matches(stringStep, previousStep);			
+		if ( previousNonAndStep != null ){
+			return candidate.matches(step, previousNonAndStep);			
 		}
-		return candidate.matches(stringStep);
+		return candidate.matches(step);
 	}
 
     private List<CandidateStep> prioritise(List<CandidateSteps> candidateSteps) {
