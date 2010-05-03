@@ -20,22 +20,28 @@ positions itself as a design philosophy.</p>
 <ul>
     <li>Pure Java implementation, which plays well with Java-based
     enterprises</li>
-    <li>Allows users to specify and run text-based scenarios, which
+    <li>Users can specify and run text-based user stories, which
     allows "out-in" development.</li>
-    <li>Annotation-based binding of textual steps to Java methods</li>
-    <li>Auto-conversion of string arguments to any parameter type
+    <li>Annotation-based binding of textual steps to Java methods,
+     with auto-conversion of string arguments to any parameter type
     (including generic types) via custom parameter converters.</li>
-    <li>Scenario reporter - outputs scenarios executed in
-    human-readable form</li>
+    <li>Extensible story reporting - outputs stories executed in
+    human-readable form and file-based outputs.  Raw reports are
+    rendered to style-able HTML-based view</li>
     <li>Auto-generation of pending steps so the build is not broken
     by a missing step, but has option to configure breaking build for
     pending steps.</li>
-    <li>Scenario can be run as JUnit tests, providing easy
+    <li>Stories can be run as JUnit tests, providing easy
     integration with your favourite IDE. Using alternative
     annotation-based unit test frameworks is equally easy.</li>
-    <li>Ant integration: allows scenarios to be run via Ant task</li>
-    <li>Maven integration: allows scenarios to be run via Maven
+    <li>Ant integration: allows stories to be run via Ant task</li>
+    <li>Maven integration: allows stories to be run via Maven
     plugin at given build phase</li>
+    <li>IoC support: allows Steps classes and its dependencies to be composed via your
+    favourite container (Pico, Spring, Guice).
+    </li>
+    <li>Allow user stories to be written in any language.      
+    </li>
 </ul>
 
 <h2>Want to learn more?</h2>

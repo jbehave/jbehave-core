@@ -4,8 +4,8 @@ import java.lang.reflect.Type;
 
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
-import org.jbehave.scenario.steps.ParameterConverters.InvalidParameterException;
-import org.jbehave.scenario.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.InvalidParameterException;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 public class TraderConverter implements ParameterConverter {
     private TraderPersister persister;

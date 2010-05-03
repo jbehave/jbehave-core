@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Given Stories</title>
+</head>
+
+<body>
+
+<h2>Reusing Textual Stories</h2>
+
+<p>BDD encourages the description of the acceptance tests in a
+manner that is intelligible and transparent to the business users. This
+in particular may mean setting up explicitly via scenario steps all the
+pre-requirements of a particular scenario. For complex scenarios this
+will rapidly lead to maintainance problems due to duplication of entire
+blocks of steps.</p>
+
+<p>To help the user better manager more complex scenarios, JBehave
+allow the specification of entire stories as a pre-requisite for
+another scenario.</p>
+
+<pre class="brush: bdd">
+    Scenario:  A scenario in which the user can run other stories as pre-requisites
+    
+    GivenStories: path/to/story1,path/to/story2,...path/to/storyN
+    
+    Given ... // normal scenario steps
+</pre>
+<p>When JBehave encounters the keyword <b>GivenStories</b>, it
+will run the (one or more) textual stories specified by path in the
+list (using the same Steps instances specified for the parent story)
+before proceeding to the execution of the normal scenario steps.</p>
+
+<p>Another way to avoid duplication of textual scenario steps is to
+use the natural ordering of execution of the story classes.
+Typically, this means that the stories will be executed in the
+alphabetical order of their names and a convention can be adopted to
+have stories start with an alpha-numberical prefix, such as 'Snn' where
+'nn' is an incremental number. This though has the disadvantage of having
+to run all stories leading up to the desired scenario, which in some
+cases can be unnecessary and time consuming. For example, for debugging
+purposes one may need to one run one scenario, which may have a
+dependency on just one other story. This is where <b>GivenStories</b> is
+most useful.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

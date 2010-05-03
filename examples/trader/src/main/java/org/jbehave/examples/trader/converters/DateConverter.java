@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.jbehave.scenario.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 public class DateConverter implements ParameterConverter {
 

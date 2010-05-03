@@ -20,11 +20,11 @@ page.</p>
 
 <h3>How do I use JBehave within my development environment?</h3>
 
-<p>Scenarios can be run in IDEs, as <a href="http://junit.org">JUnit</a>
+<p>Stories can be run in IDEs, as <a href="http://junit.org">JUnit</a>
 tests.</p>
 
-<p>Scenarios can also be run on command line, see <a
-    href="running-scenarios.html">running scenarios</a>. It can also be
+<p>Stories can also be run on command line, see <a
+    href="running-stories.html">running stories</a>. It can also be
 run via web runner, although the web support is not part of JBehave
 Core. For more info on web support refer to <a
     href="http://jbehave.org/reference/web/stable">JBehave Web</a>.</p>
@@ -37,41 +37,41 @@ Core. For more info on web support refer to <a
 within a jar</h3>
 
 <p>Some versions of Eclipse need to be aware of the JBehave source
-to enable the JUnit plugin for scenarios, as they can’t spot the <b>@Test</b>
+to enable the JUnit plugin for stories, as they can’t spot the <b>@Test</b>
 annotation in a class jar. The link to the core sources is available
 from the <a href="download.html">download</a> page.</p>
 
 <p>Alternatively, <a href="http://m2eclipse.sonatype.org">M2Eclipse</a>
 users can downlaod the sources automatically.</p>
 
-<p>A workaround is to override the runScenario() method annotated
+<p>A workaround is to override the runStory() method annotated
 with @Test</p>
 
 <pre class="brush: java">
-public class YourScenario extends JUnitScenario {
+public class YourStory extends JUnitStory {
 
     @Test
-    public void runScenario() throws Throwable {
-        super.runScenario();
+    public void run() throws Throwable {
+        super.run();
     }
 
 }
 </pre>
-<p>Note that this is only required for the root scenario of all your
-scenarios.</p>
+<p>Note that this is only required for the root class of all your
+stories.</p>
 
-<h3>Can I run my scenarios in IDE with TestNG?</h3>
+<h3>Can I run my story in IDE with TestNG?</h3>
 
 <p>Similarly to the proposed workaround above, you should be able to
-run with TestNG by simply annotating the runScenario() method in your
-root Scenario class with the TestNG @Test annotation.</p>
+run with TestNG by simply annotating the runStory() method in your
+root Story class with the TestNG @Test annotation.</p>
 
 <pre class="brush: java">
-public class YourScenario extends JUnitScenario {
+public class YourStory extends JUnitStory {
 
     @org.testng.annotations.Test 
-    public void runScenario() throws Throwable {
-        super.runScenario();
+    public void run() throws Throwable {
+        super.run();
     }
 
 }
@@ -84,33 +84,27 @@ been well-tested. If you encounter any issues please let us know.</p>
 are shown as pending?</h3>
 
 <p>Configure the <a
-    href="javadoc/core/org/jbehave/scenario/errors/PendingErrorStrategy.html">PendingErrorStrategy</a>
-in <a href="javadoc/core/org/jbehave/scenario/Configuration.html">Configuration</a></p>
+    href="javadoc/core/org/jbehave/core/errors/PendingErrorStrategy.html">PendingErrorStrategy</a>
+in <a href="javadoc/core/org/jbehave/core/StoryConfiguration.html">StoryConfiguration</a></p>
 <pre class="brush: java">
-new Configuration(){
-   public PendingErrorStrategy forPendingSteps() {
-       return PendingErrorStrategy.FAILING;
-   }
-} 
+   StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+   storyConfiguration.usePendingErrorStrategy(PendingErrorStrategy.FAILING);  
 </pre>
 
-<h3>How do I output all my scenario steps - and not just when a
-scenario fails?</h3>
+<h3>How do I output my story steps just when a story fails?</h3>
 
 <p>Configure the <a
-    href="javadoc/core/org/jbehave/scenario/reporters/ScenarioReporter.html">ScenarioReporter</a>
-in <a href="javadoc/core/org/jbehave/scenario/Configuration.html">Configuration</a></p>
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>
+in <a href="javadoc/core/org/jbehave/core/StoryConfiguration.html">StoryConfiguration</a></p>
 
 <pre class="brush: java">
-new Configuration(){
-     public ScenarioReporter forReportingScenarios() {
-          return new PrintStreamScenarioReporter();
-    }
-} 
+   StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+   storyConfiguration.useStoryReporter(new SilentSuccessFilter(ConsoleOutput()));
+
 </pre>
 
 <p>Alternatively, you can use <a
-    href="javadoc/core/org/jbehave/scenario/PropertyBasedConfiguration.html">PropertyBasedConfiguration</a>
+    href="javadoc/core/org/jbehave/core/PropertyBasedConfiguration.html">PropertyBasedConfiguration</a>
 setting system property <b>"org.jbehave.outputall"</b>.</p>
 
 <h3>Can my steps classes be POJOs?</h3>

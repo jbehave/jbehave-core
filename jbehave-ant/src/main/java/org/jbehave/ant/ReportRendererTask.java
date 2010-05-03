@@ -10,8 +10,8 @@ import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.jbehave.scenario.reporters.FreemarkerReportRenderer;
-import org.jbehave.scenario.reporters.ReportRenderer;
+import org.jbehave.core.reporters.FreemarkerReportRenderer;
+import org.jbehave.core.reporters.ReportRenderer;
 
 /**
  * Ant task that renders reports

@@ -1,32 +1,32 @@
 package org.jbehave.examples.trader;
 
-import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import org.jbehave.core.annotations.Alias;
+import org.jbehave.core.annotations.Aliases;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.examples.trader.model.Stock;
+import org.jbehave.examples.trader.model.Stock.AlertStatus;
+import org.jbehave.examples.trader.model.Trader;
+import org.jbehave.examples.trader.service.TradingService;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.examples.trader.model.Stock;
-import org.jbehave.examples.trader.model.Trader;
-import org.jbehave.examples.trader.model.Stock.AlertStatus;
-import org.jbehave.examples.trader.service.TradingService;
-import org.jbehave.scenario.annotations.Alias;
-import org.jbehave.scenario.annotations.Aliases;
-import org.jbehave.scenario.annotations.Given;
-import org.jbehave.scenario.annotations.Named;
-import org.jbehave.scenario.annotations.Then;
-import org.jbehave.scenario.annotations.When;
-import org.jbehave.scenario.definition.ExamplesTable;
-import org.jbehave.scenario.steps.CandidateSteps;
-import org.jbehave.scenario.steps.StepsFactory;
+import static junit.framework.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.jbehave.Ensure.ensureThat;
 
 /**
  * POJO holding the candidate steps for the trader example.  
  * The {@link CandidateSteps} instance wrapping this are created via the {@link StepsFactory}
- * in the {@link TraderScenario}.
+ * in the {@link TraderStory}.
  */
 public class TraderSteps {
 
@@ -51,8 +51,9 @@ public class TraderSteps {
         traders.addAll(toTraders(tradersTable));
     }
 
-    @When("a wildcard search \"%regex\" is executed")
-    public void aWildcardSearchIsExecuted(String regex) {
+    @When("traders are subset to \"%regex\" by name")
+    @Alias("traders are filtered by \"%regex\"")
+    public void subsetTradersByName(String regex) {
         searchedTraders = new ArrayList<Trader>();
         for (Trader trader : traders) {
             if ( trader.getName().matches(regex) ){

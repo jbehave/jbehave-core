@@ -1,88 +1,61 @@
 package org.jbehave.examples.trader.spring;
 
-import static org.jbehave.scenario.reporters.ScenarioReporterBuilder.Format.CONSOLE;
-import static org.jbehave.scenario.reporters.ScenarioReporterBuilder.Format.HTML;
-import static org.jbehave.scenario.reporters.ScenarioReporterBuilder.Format.TXT;
-import static org.jbehave.scenario.reporters.ScenarioReporterBuilder.Format.XML;
-
+import org.jbehave.core.StoryEmbedder;
+import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
+import org.jbehave.core.parser.StoryLocation;
+import org.jbehave.core.parser.StoryPathFinder;
+import org.jbehave.core.steps.*;
 import org.jbehave.examples.trader.BeforeAfterSteps;
 import org.jbehave.examples.trader.TraderSteps;
-import org.jbehave.examples.trader.spring.scenarios.WildcardSearch;
-import org.jbehave.scenario.Configuration;
-import org.jbehave.scenario.MostUsefulConfiguration;
-import org.jbehave.scenario.RunnableScenario;
-import org.jbehave.scenario.ScenarioRunner;
-import org.jbehave.scenario.parser.ClasspathScenarioDefiner;
-import org.jbehave.scenario.parser.PatternScenarioParser;
-import org.jbehave.scenario.parser.PrefixCapturingPatternBuilder;
-import org.jbehave.scenario.parser.ScenarioDefiner;
-import org.jbehave.scenario.parser.ScenarioNameResolver;
-import org.jbehave.scenario.parser.UnderscoredCamelCaseResolver;
-import org.jbehave.scenario.reporters.FilePrintStreamFactory;
-import org.jbehave.scenario.reporters.ScenarioReporter;
-import org.jbehave.scenario.reporters.ScenarioReporterBuilder;
-import org.jbehave.scenario.steps.CandidateSteps;
-import org.jbehave.scenario.steps.StepsConfiguration;
-import org.jbehave.scenario.steps.StepsFactory;
+import org.jbehave.examples.trader.ClasspathTraderStoryEmbedder;
+import org.jbehave.examples.trader.converters.TraderConverter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
+
 /**
- * Run JBehave scenarios via Spring JUnit4 integration.
+ * Run stories via Spring JUnit 4 runner
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/org/jbehave/examples/trader/spring/steps.xml" })
+@ContextConfiguration(locations = {"/org/jbehave/examples/trader/spring/steps.xml"})
 public class SpringTraderRunner {
-
-	@Autowired
-    private BeforeAfterSteps beforeAfterSteps;
 
     @Autowired
     private TraderSteps traderSteps;
 
-	@Test
-	public void run() throws Throwable {
-		ScenarioRunner runner = new ScenarioRunner();
-		CandidateSteps[] candidateSteps = candidateSteps();
-		for (Class<? extends RunnableScenario> scenarioClass : scenarioClasses()) {
-			Configuration configuration = configure(scenarioClass);
-			runner.run(scenarioClass, configuration, candidateSteps);
-		}
-	}
+    @Autowired
+    private BeforeAfterSteps beforeAndAfterSteps;
 
-	public CandidateSteps[] candidateSteps() {
-        StepsConfiguration configuration = new StepsConfiguration();
-        configuration.usePatternBuilder(new PrefixCapturingPatternBuilder("%")); // use '%' instead of '$' to identify parameters        
-        return new StepsFactory(configuration)
-				.createCandidateSteps(traderSteps, beforeAfterSteps);
-	}
+    @Test
+    public void runAsJUnit() {
+        StoryEmbedder embedder = new ClasspathTraderStoryEmbedder() {
+            @Override
+            public List<CandidateSteps> candidateSteps() {
 
-	@SuppressWarnings("unchecked")
-	public Class<? extends RunnableScenario>[] scenarioClasses() {
-		return new Class[] { WildcardSearch.class };
-	}
+                StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
+                StepMonitor monitor = new SilentStepMonitor();
+                stepsConfiguration.useParameterConverters(new ParameterConverters(
+                        monitor, new TraderConverter(mockTradePersister())));  // define converter for custom type Trader
+                stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder("%")); // use '%' instead of '$' to identify parameters
+                stepsConfiguration.useMonitor(monitor);
 
-	public Configuration configure(final
-			Class<? extends RunnableScenario> scenarioClass) {
-		final ScenarioNameResolver resolver = new UnderscoredCamelCaseResolver(
-				".scenario");
-		return new MostUsefulConfiguration() {
-			public ScenarioDefiner forDefiningScenarios() {
-				return new ClasspathScenarioDefiner(resolver,
-						new PatternScenarioParser(keywords()));
-			}
-
-			@Override
-            public ScenarioReporter forReportingScenarios() {
-                return new ScenarioReporterBuilder(new FilePrintStreamFactory(scenarioClass, resolver))
-                            .outputTo("target/jbehave-reports").outputAsAbsolute(true)
-                            .withDefaultFormats()
-                            .with(CONSOLE).with(TXT).with(HTML).with(XML)
-                            .build();
+                return asList(new StepsFactory(stepsConfiguration).createCandidateSteps(traderSteps, beforeAndAfterSteps));
             }
-		};
-	}
+        };
+        embedder.runStoriesAsPaths(storyPaths());
+    }
+
+    protected List<String> storyPaths() {
+        StoryPathFinder finder = new StoryPathFinder();
+        String basedir = new StoryLocation("", this.getClass()).getCodeLocation().getFile();
+        return finder.listStoryPaths(basedir, "", asList("**/*.story"), asList(""));
+    }
+
+
 }

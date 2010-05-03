@@ -17,7 +17,7 @@ Given the traders:
 |Larry|Stooge 3|
 |Moe|Stooge 1|
 |Curly|Stooge 2|
-When a wildcard search ".*y" is executed
+When Traders are subset to ".*y" by name
 Then the traders returned are:
 |name|rank|
 |Larry|Stooge 3|
@@ -50,7 +50,7 @@ the table parsing functionality already seen in the <a href="table-examples.html
 </pre>
 
 <p><b>Note</b>: We are using the same table parsing functionality of the <a href="table-examples.html">table examples</a>, 
-via the re-use of the <a href="javadoc/core/org/jbehave/scenario/definition/ExamplesTable.html">ExamplesTable</a>,
+via the re-use of the <a href="javadoc/core/org/jbehave/core/definition/ExamplesTable.html">ExamplesTable</a>,
 but there is a fundamental difference between these two use cases:  with table examples the scenario is run for each line of the 
 table (using in each execution the parameter values of the given row), while in using table parameters we are simply using 
 the tabular structure as a parameter, and how this structure is interpreted is up to the scenario writer.</p>

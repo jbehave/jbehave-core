@@ -23,46 +23,46 @@
     </copy>
     <copy todir="target/classes">
       <fileset dir="src/main/java">
-        <include name="**/*.scenario" />
+        <include name="**/*.story" />
         <include name="**/*.properties" />
         <include name="**/*.xml" />        
       </fileset>
     </copy>
 
-    <path id="scenario.classpath">
+    <path id="story.classpath">
       <fileset dir="target/lib" includes="**/*.jar" />
       <pathelement location="target/classes" />
     </path>
-    <classloader classpathref="scenario.classpath" />
+    <classloader classpathref="story.classpath" />
 
-    <pathconvert targetos="unix" property="scenario.classpath.unix"
-      refid="scenario.classpath">
+    <pathconvert targetos="unix" property="story.classpath.unix"
+      refid="story.classpath">
     </pathconvert>
-    <echo>Using classpath: ${scenario.classpath.unix}</echo>
+    <echo>Using classpath: ${story.classpath.unix}</echo>
 
   </target>
 
   <target name="compile" depends="setup">
     <javac srcdir="src/main/java" destdir="target/classes" debug="on"
       debuglevel="lines,source" includes="**/*.java,**/*.xml">
-      <classpath refid="scenario.classpath" />
+      <classpath refid="story.classpath" />
     </javac>
   </target>
 
-  <target name="run-scenarios" depends="compile">
-    <taskdef name="scenarioRunner" classname="org.jbehave.ant.ScenarioRunnerTask"
-      classpathref="scenario.classpath" />
+  <target name="run-stories" depends="compile">
+    <taskdef name="storyRunner" classname="org.jbehave.ant.StoryRunnerTask"
+      classpathref="story.classpath" />
 
-    <scenarioRunner scenarioIncludes="**/scenarios/*.java"
+    <storyRunner storyIncludes="**/stories/*.java"
       sourceDirectory="${basedir}/src/main/java"
-      scenarioExcludes="**/scenarios/*NonSuccessful.java,**/i18n/scenarios/*.java"
+      storyExcludes="**/stories/*NonSuccessful.java,**/i18n/stories/*.java"
       batch="true" ignoreFailure="false" classLoaderInjected="false" />
-    <scenarioRunner scenarioIncludes="**/scenarios/*.java"
-      sourceDirectory="${basedir}/src/main/java" scenarioExcludes="**/i18n/scenarios/*.java"
+    <storyRunner storyIncludes="**/stories/*.java"
+      sourceDirectory="${basedir}/src/main/java" storyExcludes="**/i18n/stories/*.java"
       batch="true" ignoreFailure="true" classLoaderInjected="false" />
-    <scenarioRunner scenarioIncludes="**/i18n/scenarios/*.java"
-      sourceDirectory="${basedir}/src/main/java" scenarioExcludes="**/scenarios/*NonSuccessful.java"
-      classLoaderInjected="true" />
+    <storyRunner storyIncludes="**/i18n/stories/*.java"
+      sourceDirectory="${basedir}/src/main/java" storyExcludes="**/stories/*NonSuccessful.java"
+      classLoaderInjected="false" />
   </target>
 
   <target name="reports-resources">
@@ -92,7 +92,7 @@
 
   <target name="render-reports" depends="compile, reports-resources">
     <taskdef name="reportRenderer" classname="org.jbehave.ant.ReportRendererTask"
-      classpathref="scenario.classpath" />
+      classpathref="story.classpath" />
 
     <reportRenderer outputDirectory="${basedir}/target/jbehave-reports"
       formats="txt,html,xml" templateProperties="defaultFormats=stats" />
@@ -101,12 +101,12 @@
 
   <target name="stepdoc" depends="compile">
     <taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
-      classpathref="scenario.classpath" />
-    <stepdoc scenarioIncludes="**/scenarios/*.java"
-      scenarioExcludes="**/i18n/scenarios/*.java" classLoaderInjected="false" />
+      classpathref="story.classpath" />
+    <stepdoc storyIncludes="**/stories/*.java"
+      storyExcludes="**/i18n/stories/*.java" classLoaderInjected="false" />
   </target>
 
-  <target name="build" depends="run-scenarios,render-reports,stepdoc">
+  <target name="build" depends="run-stories,render-reports,stepdoc">
   </target>
 
 </project> 

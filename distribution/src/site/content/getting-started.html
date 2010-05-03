@@ -8,10 +8,10 @@
 
 <h2>Getting Started</h2>
 
-<h3>Write a textual scenario</h3>
+<h3>Write a textual story</h3>
 
-<p>Create a textual scenario file with a name that expresses the
-behaviour to verify, e.g. <b>i_can_toggle_a_cell</b> and define steps in
+<p>Create a textual story file with a name that expresses the
+behaviour to verify, e.g. <b>i_can_toggle_a_cell.story</b> and define steps in
 it:</p>
 <pre class="brush: bdd">
       Given a 5 by 5 game
@@ -39,21 +39,23 @@ it:</p>
 </pre>
 <p>Steps must start with one of the keywords highlighted (see <a
     href="concepts.html">Concepts</a> for more details) and are not
-limited to a single line.</p>
+limited to a single line.  Also, unless otherwise indicated, a story
+has at least one implicit scenario, each of which is a collection of
+steps.</p>
 
 <h3>Map scenario steps to Java methods</h3>
 
 <p>Define your <a
-    href="javadoc/core/org/jbehave/scenario/steps/Steps.html">Steps</a>
+    href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a>
 class, e.g. call it <b>GridSteps</b>, which will contain the Java
 methods that are mapped to the textual steps. The methods need to
 annotated with one of the JBehave <a
-    href="javadoc/core/org/jbehave/scenario/annotations/package-summary.html">annotations</a>
+    href="javadoc/core/org/jbehave/core/annotations/package-summary.html">annotations</a>
 and the annotated value should contain a regex pattern that matches the
 textual step:</p>
 
 <pre class="brush: java">
-      public class GridSteps extends Steps {
+      public class GridSteps {
 
         private Game game;
         private StringRenderer renderer;
@@ -78,25 +80,25 @@ textual step:</p>
       }
 </pre>
 
-<h3>Map scenario to Java class</h3>
+<h3>Map story to Java class</h3>
 
 <p>Define your <a
-    href="javadoc/core/org/jbehave/scenario/Scenario.html">Scenario</a>
-class with a name that can be mapped to the textual scenario filename,
+    href="javadoc/core/org/jbehave/core/RunnableStory.html">RunnableStory</a>
+class with a name that can be mapped to the textual story filename,
 e.g. <b>ICanToggleACell.java</b>:</p>
 
 <pre class="brush: java">
-      public class ICanToggleACell extends Scenario {
+      public class ICanToggleACell extends JUnitStory {
 
         public ICanToggleACell() {
-            super(new GridSteps()); // varargs, can have lots of steps
+            addSteps(new StepsFactory().createCandidateSteps(new GridSteps())); // varargs, can have lots of steps
         }
       }
 </pre>
-<p>The Scenario is now configured to use the <b>GridSteps</b> that
+<p>The story is now configured to use the <b>GridSteps</b> that
 hold the step mappings.</p>
 
-<h3>Run scenario in IDE</h3>
+<h3>Run story in IDE</h3>
 
 <p>Open your favourite IDE, the <b>ICanToggleACell.java</b> class
 will allow itself to run as a JUnit test. Be sure to check that you have
@@ -110,7 +112,7 @@ example-driven and it is very instructive to go through one or more working
 examples in the source repository, which illustrate features. Be
 sure to read about <a href="running-examples.html">running examples</a>.
 The examples also show command-line ways of <a
-    href="running-scenarios.html">running scenarios</a>.</span>
+    href="running-stories.html">running stories</a>.</span>
 
 </body>
 </html>

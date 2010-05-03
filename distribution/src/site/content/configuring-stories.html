@@ -1,0 +1,233 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Configuring Stories</title>
+</head>
+
+<body>
+
+<h2>Configuring Stories</h2>
+
+<p>In JBehave, there is a separation of concerns between RunnableStory and Steps classes:</p>
+<ul>
+    <li><a href="javadoc/core/org/jbehave/core/RunnableStory.html">RunnableStory</a>
+    classes are responsible for the configuration of story execution:
+    there can be a one-to-one or one-to-may mapping between executable RunnableStory classes
+    and textual story files, using <a
+            href="javadoc/core/org/jbehave/core/JUnitStory.html">JUnitStory</a> or <a
+            href="javadoc/core/org/jbehave/core/JUnitStories.html">JUnitStories</a> respectively.</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a>
+    classes contain the Java methods that match the textual steps in the
+    stories: which Steps classes are used when executing a story is
+    configured via the RunnableStory class.</li>
+</ul>
+
+<p>Even if each executable RunnableStory Java class can be configured
+independently, it is good practice to collect the configuration that
+applies to all stories in an abstract (i.e. not executable) base
+class:</p>
+<pre class="brush: java">
+public abstract class TraderStory extends JUnitStory {
+
+    public TraderStory(final Class storyClass) {
+          // start with default story configuration, overriding story definer and reporter
+          StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+          storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
+          String storyPath = storyConfiguration.storyPathResolver().resolve(storyClass);
+          storyConfiguration.useStoryReporter(new StoryReporterBuilder(new FilePrintStreamFactory(storyPath))
+                  .with(CONSOLE)
+                  .with(TXT)
+                  .with(HTML)
+                  .with(XML)
+                  .build());
+          useConfiguration(storyConfiguration);
+
+          // start with default steps configuration, overriding parameter converters, pattern builder and monitor
+          StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
+          StepMonitor monitor = new SilentStepMonitor();
+          stepsConfiguration.useParameterConverters(new ParameterConverters(
+                monitor, new DateConverter("dd/MM/yyyy")));  // define converter for Dates with custom pattern
+          stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder("%")); // use '%' instead of '$' to identify parameters
+          stepsConfiguration.useMonitor(monitor);
+          addSteps(createSteps(stepsConfiguration));
+      }
+
+      protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+          return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());
+      }
+
+    }  
+</pre>
+
+<p>To run multiple stories, specified as story paths, via a single RunnableStory instance: </p>
+
+<pre class="brush: java">
+public class TraderStories extends JUnitStories {
+
+    public TraderStories() {
+        // start with default story configuration, overriding story definer and reporter
+        StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
+        // Using URLs to define stories
+        storyConfiguration.useStoryLoader(new LoadFromURL());
+        for ( String storyPath : storyPaths() ){
+            StoryReporter storyReporter = new StoryReporterBuilder(new FilePrintStreamFactory(storyPath))
+                            .with(CONSOLE)
+                            .with(TXT)
+                            .with(HTML)
+                            .with(XML)
+                            .build();
+            storyConfiguration.addStoryReporter(storyPath, storyReporter);
+
+        }
+        useConfiguration(storyConfiguration);
+
+        // start with default steps configuration, overriding parameter converters, pattern builder and monitor
+        StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
+        StepMonitor monitor = new SilentStepMonitor();
+        stepsConfiguration.useParameterConverters(new ParameterConverters(
+                monitor, new DateConverter("dd/MM/yyyy")));  // define converter for Dates with custom pattern
+        stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder("%")); // use '%' instead of '$' to identify parameters
+        stepsConfiguration.useMonitor(monitor);
+        addSteps(createSteps(stepsConfiguration));
+    }
+
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());
+    }
+
+    @Override
+    protected List storyPaths() {
+        // Defining story paths via URLs
+        return asList(storyURL("trader_is_alerted_of_status.story"),
+                      storyURL("wildcard_search.story"));
+    }
+
+    private String storyURL(String name){
+        String codeLocation = new StoryLocation("", this.getClass()).getCodeLocation();
+        String urlPattern = "file://"+ codeLocation +"org/jbehave/examples/trader/stories/{0}";
+        return MessageFormat.format(urlPattern, name);
+
+    }
+</pre>
+
+<span class="followup">Note that in this second example, we are using story paths as URLs, and correspondingly we configure the use of <a
+            href="javadoc/core/org/jbehave/core/parser/LoadFromURL.html">LoadFromURL</a>.</span>
+
+<p>If we wanted to use an inversion of control container to compose
+our Steps with all its dependencies, all we'd need to do is to override
+the createSteps method using a different StepsFactory and use that as
+your base Story class. For example, to use with a Spring container:</p>
+<pre class="brush: java">
+public abstract class SpringTraderStory extends TraderStory {
+
+    public SpringTraderStory(Class storyClass) {
+        super(storyClass);
+    }
+
+    @Override
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        ListableBeanFactory parent = new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml")
+                                    .getApplicationContext();
+        return new SpringStepsFactory(configuration, parent).createCandidateSteps();
+    }
+
+}
+</pre>
+
+<p>Once we have a base RunnableStory class, all we need to do is to
+extend it providing the name of the executable Story class that maps
+to the textual story file. For example, to map to <b>trader_is_alerted_of_status.story</b>
+using the resolver defined above:</p>
+<pre class="brush: java">
+public class TraderIsAlertedOfStatus extends TraderStory {
+
+    public TraderIsAlertedOfStatus() {
+        super(TraderIsAlertedOfStatus.class);
+    }
+
+}
+</pre>
+
+<span class="followup">Note that JBehave follow the
+configuration-by-convention approach, by which a default value of the
+configuration element is provided and can be overridden, if so
+desired.</span>
+
+<h3>Story Configuration Elements</h3>
+
+<p>While Stories are designed to be highly configurable, they come
+with a default behaviour for the <a
+    href="javadoc/core/org/jbehave/core/MostUsefulConfiguration.html">most
+useful configuration</a>. <a
+    href="javadoc/core/org/jbehave/core/Configuration.html">Configuration</a>
+is the main interface for configuring all the components of a story.</p>
+
+<p>The configurable elements of the story include:</p>
+<p><a
+    href="javadoc/core/org/jbehave/core/steps/StepCreator.html">StepCreator</a>:
+Represents the strategy for the creation of executable steps from a
+given story definition matching a list of candidate steps. The
+default implementation is <a
+    href="javadoc/core/org/jbehave/core/steps/MarkUnmatchedStepsAsPending.html">MarkUnmatchedStepsAsPending</a>.</p>
+<p><a
+    href="javadoc/core/org/jbehave/core/parser/StoryParser.html">StoryParser</a>:
+Parses stories contained in a textual story file. The
+default implementation is <a
+    href="javadoc/core/org/jbehave/core/parser/RegexStoryParser.html">RegexStoryParser</a>.</p>
+<p><a
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>:
+Allows the runner to report the state of running stories. The default
+implementation is <a
+    href="javadoc/core/org/jbehave/core/reporters/PrintStreamOutput.html">PrintStreamOutput</a>.</p>
+
+<p><a
+    href="javadoc/core/org/jbehave/core/errors/ErrorStrategy.html">ErrorStrategy</a>:
+Allows to define the strategy for error handling. The default value is <a
+    href="javadoc/core/org/jbehave/core/errors/ErrorStrategy.html#RETHROW">RETHROW</a>.</p>
+
+<p><a
+    href="javadoc/core/org/jbehave/core/model/Keywords.html">Keywords</a>:
+Allows to specify the keywords used. The default value is <a
+    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</p>
+
+<p>JBehave provides two useful base implementations that users can
+extend to override only the elements that differ from default behaviour:</p>
+<p><a
+    href="javadoc/core/org/jbehave/core/MostUsefulStoryConfiguration.html">MostUsefulStoryConfiguration</a>:
+provides a default configuration that most users will find appropriate</p>
+<p><a
+    href="javadoc/core/org/jbehave/core/PropertyBasedStoryConfiguration.html">PropertyBasedStoryConfiguration</a>:
+overrides way to configure via system properties</p>
+
+<h3>Steps Configuration Elements</h3>
+
+<p>Steps can also be configured to a high degree via the <a
+    href="javadoc/core/org/jbehave/core/steps/StepsConfiguration.html">StepsConfiguration</a>.
+Among the elements that can be configured are:</p>
+<p><a
+    href="javadoc/core/org/jbehave/core/parser/StepPatternBuilder.html">StepPatternBuilder</a>:
+defaults to <a
+    href="javadoc/core/org/jbehave/core/parser/PrefixCapturingPatternBuilder.html">PrefixCapturingPatternBuilder</a>.</p>
+<p><a
+    href="javadoc/core/org/jbehave/core/steps/StepMonitor.html">StepMonitor</a>:
+defaults to <a
+    href="javadoc/core/org/jbehave/core/steps/SilentStepMonitor.html">SilentStepMonitor</a>,
+useful to either debug the step matching or to describe the steps being
+performed to some output.</p>
+<p><a
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a>:
+facade for collecting user-defined <a
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverters</a>.</p>
+<p><a
+    href="javadoc/core/org/jbehave/core/model/Keywords.html">Keywords</a>:
+defaults to <a
+    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

@@ -85,7 +85,7 @@ following profile to your <b>$HOME/.m2/settings.xml</b>
 <script type="syntaxhighlighter" class="brush: plain"><![CDATA[
 svn co https://svn.codehaus.org/jbehave/trunk/core/examples
 cd examples
-mvn clean install -Pcodehaus-snapshots -Djbehave.version=2.4
+mvn clean install -Pcodehaus-snapshots -Djbehave.version=3.0
 ]]></script>
 
 <span class="followup">As with any Maven artifact that is not expected to change, 
@@ -95,7 +95,7 @@ repository, you don't need to do it again, unless you think it needs to be updat
 
 <h2>Running Examples via Ant</h2>
 
-<p>While the basic infrastructure of the build is Maven-based, the examples also show how to run scenarios via Ant.
+<p>While the basic infrastructure of the build is Maven-based, the examples also show how to run stories via Ant.
 The <b>trader</b> example has an Ant build.xml which shows its use.  Note that it requires the 
 <a href="http://maven.apache.org/ant-tasks">Maven Ant Tasks</a> jar to be present in the <b>$ANT_HOME/lib</b> directory 
 in order to retrieve the dependency information from the Maven POM.

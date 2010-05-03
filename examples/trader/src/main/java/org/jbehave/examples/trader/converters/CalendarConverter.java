@@ -6,8 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.apache.commons.lang.StringUtils;
-import org.jbehave.scenario.steps.ParameterConverters;
-import org.jbehave.scenario.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 public class CalendarConverter implements ParameterConverter {
     

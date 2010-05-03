@@ -8,7 +8,7 @@
 
 <h2>Pending Steps</h2>
 
-<p>JBehave is designed to allow textual scenarios to be written
+<p>JBehave is designed to allow textual stories to be written
 before the implementation, i.e. to let the specification of the
 behaviour drive the development. For this reason, with steps that do not
 match any method in the Steps class, which are called <b>pending
@@ -20,15 +20,12 @@ scenario.</p>
 <p>In some cases, thought, it may be useful to make the scenarios
 fail when steps are pending. The behaviour is controlled by configuring
 the <a
-    href="javadoc/core/org/jbehave/scenario/errors/PendingErrorStrategy.html">PendingErrorStrategy</a>
-via the Scenario <a
-    href="javadoc/core/org/jbehave/scenario/Configuration.html">Configuration</a></p>
+    href="javadoc/core/org/jbehave/core/errors/PendingErrorStrategy.html">PendingErrorStrategy</a>
+via the <a
+    href="javadoc/core/org/jbehave/core/StoryConfiguration.html">StoryConfiguration</a></p>
 <pre class="brush: java">
-new Configuration(){
-   public PendingErrorStrategy forPendingSteps() {
-       return PendingErrorStrategy.FAILING;
-   }
-} 
+   StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+   storyConfiguration.usePendingErrorStrategy(PendingErrorStrategy.FAILING);
 </pre>
 
 <div class="clear">

@@ -2,7 +2,7 @@ package org.jbehave.mojo;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.jbehave.scenario.RunnableScenario;
+import org.jbehave.core.StoryEmbedder;
 
 /**
  * Mojo to generate stepdocs
@@ -10,27 +10,12 @@ import org.jbehave.scenario.RunnableScenario;
  * @author Mauro Talevi
  * @goal stepdoc
  */
-public class StepdocMojo extends AbstractScenarioMojo {
+public class StepdocMojo extends AbstractStoryMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (skipScenarios()) {
-            getLog().info("Skipped generating stepdoc");
-            return;
-        }
-        for (RunnableScenario scenario : scenarios()) {
-            String scenarioName = scenario.getClass().getName();
-            try {
-                getLog().info("Generating stepdoc for " + scenarioName);
-                scenario.generateStepdoc();
-            } catch (Throwable e) {
-                String message = "Failed to generate stepdoc for " + scenarioName;
-                if (ignoreFailure()) {
-                    getLog().warn(message, e);
-                } else {
-                    throw new MojoExecutionException(message, e);
-                }
-            }
-        }
+        StoryEmbedder embedder = newStoryEmbedder();
+        embedder.useRunnerMonitor(new MavenRunnerMonitor());
+        embedder.generateStepdoc();
     }
 
 }

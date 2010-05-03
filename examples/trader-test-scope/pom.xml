@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-examples</artifactId>
-    <version>2.6-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-trader-test-scope-example</artifactId>
   <name>JBehave Trader Test Scope Example</name>
@@ -27,7 +27,7 @@
     </dependency>
   </dependencies>
   <build>
-    <!-- JBEHAVE-155: we can run scenarios in test scope -->
+    <!-- JBEHAVE-155: we can run stories in test scope -->
     <testSourceDirectory>${basedir}/../trader/src/main/java</testSourceDirectory>
     <plugins>
       <plugin>
@@ -35,21 +35,21 @@
         <artifactId>jbehave-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>run-scenarios-found</id>
+            <id>run-stories-found</id>
             <phase>integration-test</phase>
             <configuration>
-              <scenarioIncludes>
-                <scenarioInclude>**/scenarios/*.java</scenarioInclude>
-              </scenarioIncludes>
-              <scenarioExcludes>
-                <scenarioExclude>**/i18n/scenarios/*.java</scenarioExclude>
-                <scenarioExclude>**/*NonSuccessful.java</scenarioExclude>
-              </scenarioExcludes>
+              <storyIncludes>
+                <storyInclude>**/stories/*.java</storyInclude>
+              </storyIncludes>
+              <storyExcludes>
+                <storyExclude>**/i18n/stories/*.java</storyExclude>
+                <storyExclude>**/*NonSuccessful.java</storyExclude>
+              </storyExcludes>
               <skip>false</skip>
               <scope>test</scope>
             </configuration>
             <goals>
-              <goal>run-scenarios</goal>
+              <goal>run-stories</goal>
             </goals>
           </execution>
         </executions>
@@ -59,13 +59,13 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <id>run-scenarios-via-ant</id>
+            <id>run-stories-via-ant</id>
             <phase>integration-test</phase>
             <configuration>
               <tasks>
-                <taskdef name="scenarioRunner" classname="org.jbehave.ant.ScenarioRunnerTask" classpathref="maven.runtime.classpath" />
-                <scenarioRunner scenarioIncludes="org/jbehave/examples/trader/scenarios/*.java"
-                  scenarioExcludes="**/*Steps.java" skip="false" scope="test" />
+                <taskdef name="storyRunner" classname="org.jbehave.ant.StoryRunnerTask" classpathref="maven.runtime.classpath" />
+                <storyRunner storyIncludes="**/stories/*.java"
+                  storyExcludes="**/*Steps.java" skip="false" scope="test" />
               </tasks>
             </configuration>
             <goals>

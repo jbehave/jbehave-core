@@ -11,8 +11,8 @@ import org.apache.maven.doxia.siterenderer.Renderer;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reporting.AbstractMavenReport;
 import org.apache.maven.reporting.MavenReportException;
-import org.jbehave.scenario.reporters.FreemarkerReportRenderer;
-import org.jbehave.scenario.reporters.ReportRenderer;
+import org.jbehave.core.reporters.FreemarkerReportRenderer;
+import org.jbehave.core.reporters.ReportRenderer;
 
 /**
  * Maven plugin for rendering JBehave reports. This plugin can be used both in

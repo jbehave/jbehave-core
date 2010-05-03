@@ -1,37 +1,19 @@
 package org.jbehave.ant;
 
-import static org.apache.tools.ant.Project.MSG_INFO;
-import static org.apache.tools.ant.Project.MSG_WARN;
-
 import org.apache.tools.ant.BuildException;
-import org.jbehave.scenario.RunnableScenario;
+import org.jbehave.core.StoryEmbedder;
 
 /**
  * Ant task that generate stepdocs
  * 
  * @author Mauro Talevi
  */
-public class StepdocTask extends AbstractScenarioTask {
+public class StepdocTask extends AbstractStoryTask {
 
     public void execute() throws BuildException {
-        if (skipScenarios()) {
-            log("Skipped running scenarios", MSG_INFO);
-            return;
-        }
-        for (RunnableScenario scenario : scenarios()) {
-            String scenarioName = scenario.getClass().getName();
-            try {
-                log("Generating stepdoc for " + scenarioName);
-                scenario.generateStepdoc();
-            } catch (Throwable e) {
-                String message = "Failed to generate stepdoc for " + scenarioName;
-                if (ignoreFailure()) {
-                    log(message, e, MSG_WARN);
-                } else {
-                    throw new BuildException(message, e);
-                }
-            }
-        }
+        StoryEmbedder embedder = newStoryEmbedder();
+        embedder.useRunnerMonitor(new AntRunnerMonitor());
+        embedder.generateStepdoc();
     }
 
 }

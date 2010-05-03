@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-examples</artifactId>
-    <version>2.6-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-trader-example</artifactId>
   <name>JBehave Trader Example</name>
@@ -84,68 +84,89 @@
         <artifactId>jbehave-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>run-scenarios-found</id>
+            <id>run-stories-found</id>
             <phase>integration-test</phase>
             <configuration>
-              <scenarioIncludes>
-                <scenarioInclude>**/scenarios/*.java</scenarioInclude>
-              </scenarioIncludes>
-              <scenarioExcludes>
-                <scenarioExclude>**/scenarios/*NonSuccessful.java</scenarioExclude>
-                <scenarioExclude>**/i18n/scenarios/*.java</scenarioExclude>
-              </scenarioExcludes>
+              <storyIncludes>
+                <storyInclude>**/stories/*.java</storyInclude>
+                <storyInclude>**/*Stories.java</storyInclude>  
+              </storyIncludes>
+              <storyExcludes>
+                <storyExclude>**/stories/*NonSuccessful.java</storyExclude>
+              </storyExcludes>
               <skip>false</skip>
               <batch>false</batch>
               <ignoreFailure>false</ignoreFailure>
               <classLoaderInjected>false</classLoaderInjected>
             </configuration>
             <goals>
-              <goal>run-scenarios</goal>
+              <goal>run-stories</goal>
             </goals>
           </execution>
           <execution>
-            <id>run-scenarios-in-batch-mode</id>
+            <id>run-stories-as-paths</id>
             <phase>integration-test</phase>
             <configuration>
-              <scenarioIncludes>
-                <scenarioInclude>**/scenarios/*.java</scenarioInclude>
-              </scenarioIncludes>
-              <scenarioExcludes>
-                <scenarioExclude>**/i18n/scenarios/*.java</scenarioExclude>
-              </scenarioExcludes>
+              <storyEmbedder>org.jbehave.examples.trader.ClasspathTraderStoryEmbedder</storyEmbedder>
+              <storyIncludes>
+                <storyInclude>**/stories/*.story</storyInclude>
+             </storyIncludes>
+              <storyExcludes>
+                <storyExclude>**/stories/*NonSuccessful.story</storyExclude>
+              </storyExcludes>
+              <skip>false</skip>
+              <batch>false</batch>
+              <ignoreFailure>false</ignoreFailure>
+              <classLoaderInjected>false</classLoaderInjected>
+            </configuration>
+            <goals>
+              <goal>run-stories-as-paths</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>run-stories-in-batch-mode</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <storyIncludes>
+                <storyInclude>**/stories/*.java</storyInclude>
+                <storyInclude>**/*Stories.java</storyInclude>                  
+              </storyIncludes>
+              <storyExcludes>
+                <storyExclude>**/i18n/stories/*.java</storyExclude>
+              </storyExcludes>
               <skip>false</skip>
               <batch>true</batch>
               <ignoreFailure>true</ignoreFailure>
               <classLoaderInjected>false</classLoaderInjected>
             </configuration>
             <goals>
-              <goal>run-scenarios</goal>
+              <goal>run-stories</goal>
             </goals>
           </execution>
           <execution>
-            <id>run-i18n-scenarios-found</id>
+            <id>run-i18n-stories-found</id>
             <phase>integration-test</phase>
             <configuration>
-              <scenarioIncludes>
-                <scenarioInclude>**/i18n/scenarios/*.java</scenarioInclude>
-              </scenarioIncludes>
+              <storyIncludes>
+                <storyInclude>**/i18n/stories/*.java</storyInclude>
+              </storyIncludes>
               <skip>false</skip>
-              <classLoaderInjected>true</classLoaderInjected>
+              <classLoaderInjected>false</classLoaderInjected>
             </configuration>
             <goals>
-              <goal>run-scenarios</goal>
+              <goal>run-stories</goal>
             </goals>
           </execution>
           <execution>
             <id>stepdoc</id>
             <phase>integration-test</phase>
             <configuration>
-              <scenarioIncludes>
-                <scenarioInclude>**/scenarios/*.java</scenarioInclude>
-              </scenarioIncludes>
-              <scenarioExcludes>
-                <scenarioExclude>**/scenarios/None.java</scenarioExclude>
-              </scenarioExcludes>
+              <storyIncludes>
+                <storyInclude>**/stories/*.java</storyInclude>
+              </storyIncludes>
+              <storyExcludes>
+                <storyExclude>**/stories/None.java</storyExclude>
+              </storyExcludes>
               <skip>${skip.stepdoc}</skip>
             </configuration>
             <goals>
@@ -184,19 +205,19 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
-            <id>run-scenarios-via-ant</id>
+            <id>run-stories-via-ant</id>
             <phase>integration-test</phase>
             <configuration>
               <tasks>
-                <taskdef name="scenarioRunner"
-                  classname="org.jbehave.ant.ScenarioRunnerTask"
+                <taskdef name="storyRunner"
+                  classname="org.jbehave.ant.StoryRunnerTask"
                   classpathref="maven.runtime.classpath" />
-                <scenarioRunner scenarioIncludes="**/scenarios/*.java"
-                  scenarioExcludes="**/i18n/scenarios/*.java"
-                  classLoaderInjected="false" skip="${skip.ant.scenarios}" />
-                <scenarioRunner scenarioIncludes="**/i18n/scenarios/*.java"
-                  scenarioExcludes="" classLoaderInjected="true"
-                  skip="${skip.ant.scenarios}" />
+                <storyRunner storyIncludes="**/stories/*.java"
+                  storyExcludes="**/i18n/stories/*.java"
+                  classLoaderInjected="false" skip="${skip.ant.stories}" />
+                <storyRunner storyIncludes="**/i18n/stories/*.java"
+                  storyExcludes="" classLoaderInjected="false"
+                  skip="${skip.ant.stories}" />
               </tasks>
             </configuration>
             <goals>
@@ -210,8 +231,9 @@
               <tasks>
                 <taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
                   classpathref="maven.runtime.classpath" />
-                <stepdoc scenarioIncludes="**/scenarios/*.java"
-                  scenarioExcludes="**/i18n/scenarios/*.java"
+                <stepdoc storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder"
+                  storyIncludes="**/stories/*.java"
+                  storyExcludes="**/i18n/stories/*.java"
                   classLoaderInjected="false" skip="${skip.ant.stepdoc}" />
               </tasks>
             </configuration>
@@ -245,7 +267,7 @@
     <profile>
       <id>ant</id>
       <properties>
-        <skip.ant.scenarios>false</skip.ant.scenarios>
+        <skip.ant.stories>false</skip.ant.stories>
         <skip.ant.stepdoc>false</skip.ant.stepdoc>
       </properties>
     </profile>
@@ -257,7 +279,7 @@
     </profile>
   </profiles>
   <properties>
-    <skip.ant.scenarios>true</skip.ant.scenarios>
+    <skip.ant.stories>true</skip.ant.stories>
     <skip.ant.stepdoc>true</skip.ant.stepdoc>
     <skip.stepdoc>true</skip.stepdoc>
   </properties>

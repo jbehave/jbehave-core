@@ -1,12 +1,12 @@
 package org.jbehave.examples.trader;
 
-import org.jbehave.scenario.annotations.AfterScenario;
-import org.jbehave.scenario.annotations.AfterStory;
-import org.jbehave.scenario.annotations.BeforeScenario;
-import org.jbehave.scenario.annotations.BeforeStory;
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.AfterStory;
+import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.BeforeStory;
 
 /**
- * Steps executed before and after each story and scenario
+ * Steps executed before and after each story and core
  */
 public class BeforeAfterSteps {
 

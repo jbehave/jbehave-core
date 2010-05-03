@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>2.6-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-examples</artifactId>
   <packaging>pom</packaging>
@@ -12,7 +12,6 @@
 
   <modules>
     <module>gameoflife</module>
-    <module>gameoflife/scenarios</module>
     <module>trader</module>
     <module>trader-test-scope</module>
   </modules>
@@ -52,19 +51,19 @@
         <artifactId>jbehave-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>run-scenarios-found</id>
+            <id>run-stories-found</id>
             <phase>integration-test</phase>
             <configuration>
-              <scenarioIncludes>
-                <scenarioInclude>${scenario.includes}</scenarioInclude>
-              </scenarioIncludes>
-              <scenarioExcludes>
-                <scenarioExclude>**/*Steps.java</scenarioExclude>
-              </scenarioExcludes>
+              <storyIncludes>
+                <storyInclude>${story.includes}</storyInclude>
+              </storyIncludes>
+              <storyExcludes>
+                <storyExclude>**/*Steps.java</storyExclude>
+              </storyExcludes>
               <classLoaderInjected>false</classLoaderInjected>
             </configuration>
             <goals>
-              <goal>run-scenarios</goal>
+              <goal>run-stories</goal>
             </goals>
           </execution>
         </executions>
@@ -72,7 +71,7 @@
     </plugins>
   </build>
   <properties>
-    <scenario.includes>**/scenario/*.java</scenario.includes>
+    <story.includes>**/stories/*.java</story.includes>
     <jbehave.version>${pom.version}</jbehave.version>
   </properties>
   <profiles>

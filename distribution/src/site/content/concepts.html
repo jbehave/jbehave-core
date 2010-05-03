@@ -12,23 +12,37 @@
 about implementing an application by describing it from the point of
 view of its stakeholders </span>
 
-<h2>Scenarios and Steps</h2>
+<h2>Stories, scenarios and steps</h2>
 
-<p>revolves around the concept of a <b>Scenario</b>, which
-represents an <b>automatable execution of business functionality</b>. At
-its core a Scenario comprises of a number of executed steps. These <b>Steps</b>
+<p>rBDD revolves around the concept of a <b>Story</b>, which
+represents an <b>automatically executable increment of business functionality</b>. At
+its core a Story comprises of one or more <b>Scenarios</b>, each of which represents
+    a concrete example of the behaviour of the system.  Each Scenario comprises of
+    a number of executable steps. These <b>Steps</b>
 can be of three types:</p>
 <pre class="brush: bdd">
-Scenario:  A scenario is a collection of executable steps of different type 
+A story is a collection of scenarios
 
-A Given step represents a precondition to an event
-A When step represents the occurrence of the event
-A Then step represents the outcome of the event
+Narrative:
+In order to communicate effectively to the business some functionality
+As a development team
+I want to use Behaviour-Driven Development
+    
+Scenario:  A scenario is a collection of executable steps of different type
+
+Given step represents a precondition to an event
+When step represents the occurrence of the event
+Then step represents the outcome of the event
+
+Scenario:  Another scenario exploring different combination of events
+
+Given a precondition
+When a negative event occurs
+Then a the outcome should be captured    
 </pre>
+
 <p><b>Given</b>, <b>When</b> and <b>Then</b> are also called <b>BDD
 Keywords</b></p>
-<p>A <b>Story</b> or a <b>Feature</b>, in turn, comprises of one or
-more <b>Scenario</b>s.</p>
 
 <p>A scenario can contain any number of steps, and steps of the same
 type can follow each other:</p>
@@ -57,12 +71,12 @@ A step starting with And assumes the same meaning of the previous step
 <p>aims to provide an <b>automatable</b> description of the
 behaviour of the system, from the point of view of the stakeholders. As
 such, it is essential that the language used in the description reflects
-the langauge used by the business users. The language and its grammar
+the language used by the business users. The language and its grammar
 represents the shared understanding of the behaviour between the
 business users and the development team. And as any language it evolves
 with the evolution of this shared understanding. BDD provides the
 grammar, but the language is agreed between the business and the team.</p>
-<p>The emphasys should be placed on concepts relevant to the
+<p>The emphasis should be placed on concepts relevant to the
 business, shielding away issues of technical implementation. A good rule
 of thumb is that if details of the technical implementation can be
 changed without affecting the overall behaviour, as visible by the
