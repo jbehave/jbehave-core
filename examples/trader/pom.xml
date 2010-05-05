@@ -92,6 +92,7 @@
                 <storyInclude>**/*Stories.java</storyInclude>  
               </storyIncludes>
               <storyExcludes>
+                <storyExclude>**/stories/Failure*.java</storyExclude>
                 <storyExclude>**/stories/*NonSuccessful.java</storyExclude>
               </storyExcludes>
               <skip>false</skip>

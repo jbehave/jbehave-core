@@ -43,7 +43,8 @@
               </storyIncludes>
               <storyExcludes>
                 <storyExclude>**/i18n/stories/*.java</storyExclude>
-                <storyExclude>**/*NonSuccessful.java</storyExclude>
+                <storyExclude>**/stories/Failure*.java</storyExclude>
+                <storyExclude>**/stories/*NonSuccessful.java</storyExclude>
               </storyExcludes>
               <skip>false</skip>
               <scope>test</scope>

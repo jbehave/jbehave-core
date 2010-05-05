@@ -67,8 +67,7 @@ public class StoryRunner {
         reporter = configuration.storyReporter(story.getPath());
         pendingStepStrategy = configuration.pendingErrorStrategy();
         errorStrategy = configuration.errorStrategy();
-        currentStrategy = ErrorStrategy.SILENT;
-        throwable = null;
+        resetErrorState(embeddedStory);
 
         reporter.beforeStory(story, embeddedStory);
         runStorySteps(candidateSteps, story, embeddedStory, StepCreator.Stage.BEFORE);
@@ -87,6 +86,15 @@ public class StoryRunner {
         currentStrategy.handleError(throwable);
     }
 
+	private void resetErrorState(boolean embeddedStory) {
+		if ( embeddedStory ) {
+			// do not reset error state for embedded stories
+			return;
+		}
+		currentStrategy = ErrorStrategy.SILENT;
+		throwable = null;
+	}
+	
     private void runGivenStories(StoryConfiguration configuration,
                                  List<CandidateSteps> candidateSteps, Scenario scenario)
             throws Throwable {
