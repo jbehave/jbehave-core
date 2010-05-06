@@ -131,7 +131,7 @@ public class StoryReporterBuilder {
             case CONSOLE:
                 return new ConsoleOutput();
 	        case CONSOLE_IF_IDE:
-	            return new ConsoleIfIdeOutput();
+	            return new IdeOnlyConsoleOutput();
             case TXT:
                 factory.useConfiguration(fileConfiguration("txt"));
                 return new TxtOutput(factory.createPrintStream());

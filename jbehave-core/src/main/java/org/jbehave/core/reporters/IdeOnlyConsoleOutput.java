@@ -6,16 +6,20 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.Properties;
 
-public class ConsoleIfIdeOutput extends TxtOutput {
-    public ConsoleIfIdeOutput() {
+/**
+ * Outputs to the console only if running in an IDE.  Command line builds (Maven, Ant)
+ * will produce nothing for this particular PrintStreamOutput specialisation
+ */
+public class IdeOnlyConsoleOutput extends TxtOutput {
+    public IdeOnlyConsoleOutput() {
         super(output());
     }
 
-    public ConsoleIfIdeOutput(Properties outputPatterns) {
+    public IdeOnlyConsoleOutput(Properties outputPatterns) {
         super(output(), outputPatterns);
     }
 
-    public ConsoleIfIdeOutput(Properties outputPatterns, Keywords keywords, boolean reportErrors) {
+    public IdeOnlyConsoleOutput(Properties outputPatterns, Keywords keywords, boolean reportErrors) {
         super(output(), outputPatterns, keywords, reportErrors);
     }
     public static PrintStream output() {
