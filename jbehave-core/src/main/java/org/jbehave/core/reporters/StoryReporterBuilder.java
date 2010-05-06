@@ -74,7 +74,7 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 public class StoryReporterBuilder {
 
     public enum Format {
-        CONSOLE, TXT, HTML, XML, STATS
+        CONSOLE, CONSOLE_IF_IDE, TXT, HTML, XML, STATS
     }
 
     protected List<Format> formats = new ArrayList<Format>();
@@ -130,6 +130,8 @@ public class StoryReporterBuilder {
         switch (format) {
             case CONSOLE:
                 return new ConsoleOutput();
+	        case CONSOLE_IF_IDE:
+	            return new ConsoleIfIdeOutput();
             case TXT:
                 factory.useConfiguration(fileConfiguration("txt"));
                 return new TxtOutput(factory.createPrintStream());
