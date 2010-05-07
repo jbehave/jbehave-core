@@ -6,23 +6,13 @@
     <artifactId>jbehave-examples</artifactId>
     <version>3.0-SNAPSHOT</version>
   </parent>
-  <artifactId>jbehave-trader-example</artifactId>
-  <name>JBehave Trader Example</name>
+  <artifactId>jbehave-trader-example-spring</artifactId>
+  <name>JBehave Trader Example - Spring version</name>
 
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-pico</artifactId>
-      <version>${jbehave.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jbehave</groupId>
       <artifactId>jbehave-spring</artifactId>
-      <version>${jbehave.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-guice</artifactId>
       <version>${jbehave.version}</version>
     </dependency>
   </dependencies>
