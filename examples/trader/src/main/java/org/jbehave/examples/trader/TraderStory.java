@@ -27,16 +27,15 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 /**
- * Example of how to run a story using a JBehave 2-style inheritance. A story
+ * Example of how to run a story using a JBehave2 style inheritance. A story
  * just need to extend this abstract class and are out-of-the-box runnable via
  * JUnit.
  */
 public abstract class TraderStory extends JUnitStory {
 
 	public TraderStory() {
-		// start with default story configuration, overriding story loader and
-		// reporter
 
+		// start with default story configuration, overriding story loader and reporter
         StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
         Class<? extends TraderStory> storyClass = this.getClass();
         String storyPath = storyPathResolver.resolve(storyClass);

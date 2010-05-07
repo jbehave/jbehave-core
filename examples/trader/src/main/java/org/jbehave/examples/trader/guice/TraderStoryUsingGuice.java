@@ -12,7 +12,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
 
-public class TraderStoryUsingGuice extends TraderStory {
+public abstract class TraderStoryUsingGuice extends TraderStory {
 
     @Override
     protected CandidateSteps[] createSteps(StepsConfiguration configuration) {

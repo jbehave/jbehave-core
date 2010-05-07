@@ -14,7 +14,7 @@ import org.picocontainer.PicoContainer;
 import org.picocontainer.behaviors.Caching;
 import org.picocontainer.injectors.ConstructorInjection;
 
-public class TraderStoryUsingPicoContainer extends TraderStory {
+public abstract class TraderStoryUsingPicoContainer extends TraderStory {
 
     @Override
     protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
