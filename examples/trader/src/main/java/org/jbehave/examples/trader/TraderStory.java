@@ -13,12 +13,13 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.StepsConfiguration;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.spring.SpringApplicationContextFactory;
+import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
-import org.jbehave.examples.trader.service.TradingService;
+import org.springframework.beans.factory.ListableBeanFactory;
 
 import static java.util.Arrays.asList;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
@@ -62,10 +63,14 @@ public abstract class TraderStory extends JUnitStory {
 		addSteps(createSteps(stepsConfiguration));
 	}
 
-	protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
-		return new StepsFactory(configuration).createCandidateSteps(
-				new TraderSteps(new TradingService()), new BeforeAfterSteps());
-	}
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        ListableBeanFactory parent = createBeanFactory();
+        return new SpringStepsFactory(configuration, parent).createCandidateSteps();
+    }
+
+    private ListableBeanFactory createBeanFactory() {
+        return new SpringApplicationContextFactory("org/jbehave/examples/trader/steps.xml").getApplicationContext();
+    }
 
 	private TraderPersister mockTradePersister() {
 		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",

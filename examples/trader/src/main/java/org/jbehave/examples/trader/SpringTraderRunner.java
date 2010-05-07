@@ -1,13 +1,16 @@
-package org.jbehave.examples.trader.spring;
+package org.jbehave.examples.trader;
 
 import org.jbehave.core.StoryEmbedder;
 import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
 import org.jbehave.core.parser.StoryLocation;
 import org.jbehave.core.parser.StoryPathFinder;
-import org.jbehave.core.steps.*;
-import org.jbehave.examples.trader.BeforeAfterSteps;
-import org.jbehave.examples.trader.TraderSteps;
-import org.jbehave.examples.trader.ClasspathTraderStoryEmbedder;
+import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.MostUsefulStepsConfiguration;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.SilentStepMonitor;
+import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.steps.StepsConfiguration;
+import org.jbehave.core.steps.StepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,7 +26,7 @@ import static java.util.Arrays.asList;
  * Run stories via Spring JUnit 4 runner
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/org/jbehave/examples/trader/spring/steps.xml"})
+@ContextConfiguration(locations = {"/org/jbehave/examples/trader/steps.xml"})
 public class SpringTraderRunner {
 
     @Autowired
