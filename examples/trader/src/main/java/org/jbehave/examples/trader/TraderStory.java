@@ -13,12 +13,18 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.StepsConfiguration;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.pico.PicoStepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
+import org.picocontainer.Characteristics;
+import org.picocontainer.DefaultPicoContainer;
+import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.PicoContainer;
+import org.picocontainer.behaviors.Caching;
+import org.picocontainer.injectors.ConstructorInjection;
 
 import static java.util.Arrays.asList;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
@@ -62,11 +68,18 @@ public abstract class TraderStory extends JUnitStory {
 		addSteps(createSteps(stepsConfiguration));
 	}
 
-	protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
-		return new StepsFactory(configuration).createCandidateSteps(
-				new TraderSteps(new TradingService()), new BeforeAfterSteps());
-	}
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        PicoContainer parent = createPicoContainer();
+        return new PicoStepsFactory(configuration, parent).createCandidateSteps();
+    }
 
+    private PicoContainer createPicoContainer() {
+        MutablePicoContainer parent = new DefaultPicoContainer(new Caching().wrap(new ConstructorInjection()));
+        parent.as(Characteristics.USE_NAMES).addComponent(TradingService.class);
+        parent.as(Characteristics.USE_NAMES).addComponent(TraderSteps.class);
+        parent.as(Characteristics.USE_NAMES).addComponent(BeforeAfterSteps.class);
+        return parent;
+    }
 	private TraderPersister mockTradePersister() {
 		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
 				10.d))));
