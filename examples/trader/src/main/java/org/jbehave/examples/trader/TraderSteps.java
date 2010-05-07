@@ -1,5 +1,6 @@
 package org.jbehave.examples.trader;
 
+import com.google.inject.Inject;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Aliases;
 import org.jbehave.core.annotations.Given;
@@ -35,7 +36,8 @@ public class TraderSteps {
     private Trader trader;
     private List<Trader> traders = new ArrayList<Trader>();
     private List<Trader> searchedTraders;
-        
+
+    @Inject
     public TraderSteps(TradingService service) {
         this.service = service;
     }

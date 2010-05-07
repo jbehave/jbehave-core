@@ -1,5 +1,9 @@
 package org.jbehave.examples.trader;
 
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Scopes;
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.StoryConfiguration;
 import org.jbehave.core.parser.LoadFromClasspath;
@@ -14,6 +18,7 @@ import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.StepsConfiguration;
 import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.guice.GuiceStepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
@@ -62,10 +67,22 @@ public abstract class TraderStory extends JUnitStory {
 		addSteps(createSteps(stepsConfiguration));
 	}
 
-	protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
-		return new StepsFactory(configuration).createCandidateSteps(
-				new TraderSteps(new TradingService()), new BeforeAfterSteps());
-	}
+    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+        Injector parent = createInjector();
+        return new GuiceStepsFactory(configuration, parent).createCandidateSteps();
+    }
+
+    private Injector createInjector() {
+        Injector parent = Guice.createInjector(new AbstractModule() {
+            @Override
+            protected void configure() {
+              bind(TradingService.class).in(Scopes.SINGLETON);
+              bind(TraderSteps.class).in(Scopes.SINGLETON);
+              bind(BeforeAfterSteps.class).in(Scopes.SINGLETON);
+            }
+          });
+        return parent;
+    }
 
 	private TraderPersister mockTradePersister() {
 		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
