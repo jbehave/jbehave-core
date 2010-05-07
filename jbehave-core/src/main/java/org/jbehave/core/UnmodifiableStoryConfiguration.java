@@ -57,46 +57,46 @@ public class UnmodifiableStoryConfiguration extends StoryConfiguration {
 	}
 
     @Override
-    public void useKeywords(Keywords keywords) {
-        notAllowed();
+    public StoryConfiguration useKeywords(Keywords keywords) {
+        throw notAllowed();
     }
 
     @Override
-    public void useStepCreator(StepCreator stepCreator) {
-        notAllowed();
+    public StoryConfiguration useStepCreator(StepCreator stepCreator) {
+        throw notAllowed();
     }
 
     @Override
-    public void usePendingErrorStrategy(PendingErrorStrategy pendingErrorStrategy) {
-        notAllowed();
+    public StoryConfiguration usePendingErrorStrategy(PendingErrorStrategy pendingErrorStrategy) {
+        throw notAllowed();
     }
 
     @Override
-    public void useErrorStrategy(ErrorStrategy errorStrategy) {
-        notAllowed();
+    public StoryConfiguration useErrorStrategy(ErrorStrategy errorStrategy) {
+        throw notAllowed();
     }
 
     @Override
-    public void useStoryParser(StoryParser storyParser) {
-        notAllowed();
+    public StoryConfiguration useStoryParser(StoryParser storyParser) {
+        throw notAllowed();
     }
 
     @Override
-    public void useStoryReporter(StoryReporter storyReporter) {
-        notAllowed();
+    public StoryConfiguration useStoryReporter(StoryReporter storyReporter) {
+        throw notAllowed();
     }
 
     @Override
-    public void useStepdocReporter(StepdocReporter stepdocReporter) {
-        notAllowed();
+    public StoryConfiguration useStepdocReporter(StepdocReporter stepdocReporter) {
+        throw notAllowed();
     }
 
     @Override
-    public void useStepdocGenerator(StepdocGenerator stepdocGenerator) {
-        notAllowed();
+    public StoryConfiguration useStepdocGenerator(StepdocGenerator stepdocGenerator) {
+        throw notAllowed();
     }
      
-    private void notAllowed() {
-        throw new RuntimeException("Configuration elements are unmodifiable");
+    private RuntimeException notAllowed() {
+        return new RuntimeException("Configuration elements are unmodifiable");
     }
 }

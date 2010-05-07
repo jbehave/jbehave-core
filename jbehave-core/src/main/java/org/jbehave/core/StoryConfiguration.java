@@ -39,7 +39,7 @@ import org.jbehave.core.steps.StepdocGenerator;
  * @author Elizabeth Keogh
  * @author Mauro Talevi
  */
-public abstract class StoryConfiguration {
+public class StoryConfiguration {
 
     /**
      * Use English language for keywords
@@ -99,7 +99,7 @@ public abstract class StoryConfiguration {
     /**
      * Default no-op constructor, uses the default instances defined for member variables.
      */
-    protected StoryConfiguration() {
+    public StoryConfiguration() {
     }
 
     /**
@@ -181,51 +181,63 @@ public abstract class StoryConfiguration {
         return stepdocReporter;
     }
 
-    public void useKeywords(Keywords keywords) {
+    public StoryConfiguration useKeywords(Keywords keywords) {
         this.keywords = keywords;
+        return this;
     }
 
-    public void useStepCreator(StepCreator stepCreator) {
+    public StoryConfiguration useStepCreator(StepCreator stepCreator) {
         this.stepCreator = stepCreator;
+        return this;
     }
 
-    public void usePendingErrorStrategy(PendingErrorStrategy pendingErrorStrategy) {
+    public StoryConfiguration usePendingErrorStrategy(PendingErrorStrategy pendingErrorStrategy) {
         this.pendingErrorStrategy = pendingErrorStrategy;
+        return this;
     }
 
-    public void useErrorStrategy(ErrorStrategy errorStrategy) {
+    public StoryConfiguration useErrorStrategy(ErrorStrategy errorStrategy) {
         this.errorStrategy = errorStrategy;
+        return this;
     }
 
-    public void useStoryParser(StoryParser storyParser) {
+    public StoryConfiguration useStoryParser(StoryParser storyParser) {
         this.storyParser = storyParser;
+        return this;
     }
 
-    public void useStoryLoader(StoryLoader storyLoader){
+    public StoryConfiguration useStoryLoader(StoryLoader storyLoader){
         this.storyLoader = storyLoader;
+        return this;
     }
 
-    public void useStoryPathResolver(StoryPathResolver storyPathResolver) {
+    public StoryConfiguration useStoryPathResolver(StoryPathResolver storyPathResolver) {
         this.storyPathResolver = storyPathResolver;
+        return this;
     }
 
-    public void useStoryReporter(StoryReporter storyReporter) {
+    public StoryConfiguration useStoryReporter(StoryReporter storyReporter) {
         this.storyReporter = storyReporter;
+        return this;
     }
     
-    public void useStoryReporter(String storyPath, StoryReporter storyReporter){
+    public StoryConfiguration useStoryReporter(String storyPath, StoryReporter storyReporter){
         this.storyReporters.put(storyPath, storyReporter);
+        return this;
     }
 
-	public void useStoryReporters(Map<String, StoryReporter> storyReporters) {
+	public StoryConfiguration useStoryReporters(Map<String, StoryReporter> storyReporters) {
 		this.storyReporters.putAll(storyReporters);
+        return this;
 	}
 
-    public void useStepdocReporter(StepdocReporter stepdocReporter) {
+    public StoryConfiguration useStepdocReporter(StepdocReporter stepdocReporter) {
         this.stepdocReporter = stepdocReporter;
+        return this;
     }
 
-    public void useStepdocGenerator(StepdocGenerator stepdocGenerator) {
+    public StoryConfiguration useStepdocGenerator(StepdocGenerator stepdocGenerator) {
         this.stepdocGenerator = stepdocGenerator;
+        return this;
     }
 }
