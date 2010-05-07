@@ -34,14 +34,15 @@ public class LoadFromRelativeFile implements StoryLoader {
     }
 
     public String loadStoryAsText(String storyPath) {
+        String fileLocation = null;
         try {
-            String fileLocation = new File(location.getFile()).getCanonicalPath() + "/";
+            fileLocation = new File(location.getFile()).getCanonicalPath() + "/";
             fileLocation = fileLocation + traversal + "/" + storyPath;
             fileLocation = fileLocation.replace("/", File.separator); // Windows and Unix
             File file = new File(fileLocation);
             return IOUtils.toString(new FileInputStream(file));            
         } catch (IOException e) {
-            throw new InvalidStoryResourceException("Story path '" + storyPath + "' not found.", e);
+            throw new InvalidStoryResourceException("Story path '" + storyPath + "' not found. Was looking in '" + fileLocation + "'", e);
         }
 
     }
