@@ -1,17 +1,22 @@
 package org.jbehave.mojo;
 
+import static java.util.Arrays.asList;
+
+import java.io.File;
+import java.lang.reflect.Modifier;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.StoryClassLoader;
 import org.jbehave.core.StoryEmbedder;
+import org.jbehave.core.StoryRunnerMode;
 import org.jbehave.core.StoryRunnerMonitor;
 import org.jbehave.core.parser.StoryPathFinder;
-
-import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -91,29 +96,58 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
      * 
      * @parameter default-value="false"
      */
-    private boolean classLoaderInjected;
+    protected boolean classLoaderInjected;
     
     /**
      * The boolean flag to skip stories
      * 
      * @parameter default-value="false"
      */
-    private boolean skip;
+    protected boolean skip;
     
     /**
      * The boolean flag to ignore failure
      * 
      * @parameter default-value="false"
      */
-    private boolean ignoreFailure;
+    protected boolean ignoreFailure;
 
     /**
      * The boolean flag to run in batch mode
      *
      * @parameter default-value="false"
      */
-    private boolean batch;
+    protected boolean batch;
 
+    /**
+     * The boolean flag to determined if reports are rendered after stories are run
+     * 
+     * @parameter default-value="true"
+     */
+    protected boolean renderReports;
+    
+    /**
+     * The output directory.
+     * 
+     * @parameter expression="${project.build.directory}/jbehave-reports"
+     * @required
+     */
+    protected File outputDirectory;
+
+    /**
+     * Formats of generated output. Defaults to asList().
+     * 
+     * @parameter 
+     */
+    protected List<String> formats = asList();
+
+    /**
+     * Non-default template properties. Defaults to new Properties().
+     * 
+     * @parameter 
+     */
+    protected Properties templateProperties = new Properties();
+    
     /**
      * The story embedder to run the stories
      *
@@ -168,34 +202,7 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         }
         return classpathElements;
     }
-
-    /**
-     * Indicates if failure should be ignored
-     * 
-     * @return A boolean flag, <code>true</code> if failure should be ignored
-     */
-    protected boolean ignoreFailure() {
-        return ignoreFailure;
-    }
-
-    /**
-     * Indicates if stories should be skipped
-     * 
-     * @return A boolean flag, <code>true</code> if stories are skipped
-     */
-    protected boolean skipStories() {
-        return skip;
-    }
-
-    /**
-     * Indicates if stories are batched
-     *
-     * @return A boolean flag, <code>true</code> if stories are batched
-     */
-    protected boolean batch() {
-        return batch;
-    }
-
+    
     protected List<String> storyPaths() {
         getLog().debug("Searching for story paths including "+ storyIncludes +" and excluding "+ storyExcludes);
         List<String> storyPaths = finder.listStoryPaths(rootSourceDirectory(), null, storyIncludes,
@@ -259,13 +266,24 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
 
     protected StoryEmbedder newStoryEmbedder() {
         try {
-            return (StoryEmbedder)createStoryClassLoader().loadClass(storyEmbedder).newInstance();
+             StoryEmbedder embedder = (StoryEmbedder) createStoryClassLoader().loadClass(storyEmbedder).newInstance();
+             embedder.useRunnerMonitor(runnerMonitor());
+             embedder.useRunnerMode(runnerMode());
+             return embedder;
         } catch ( Exception e) {
             throw new RuntimeException("Failed to create story embedder "+storyEmbedder, e);
         }
     }
 
-    protected class MavenRunnerMonitor implements StoryRunnerMonitor {
+    protected MavenRunnerMonitor runnerMonitor() {
+		return new MavenRunnerMonitor();
+	}
+
+	protected StoryRunnerMode runnerMode() {
+		return new StoryRunnerMode(batch, skip, ignoreFailure);
+	}
+
+	protected class MavenRunnerMonitor implements StoryRunnerMonitor {
         public void storiesBatchFailed(String failedStories) {
             getLog().warn("Failed to run stories batch: "+failedStories);
         }
@@ -281,5 +299,19 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         public void storiesNotRun() {
             getLog().info("Stories not run");
         }
+
+		public void renderingReports(File outputDirectory,
+				List<String> formats, Properties templateProperties) {
+            getLog().info("Rendering reports in '" + outputDirectory + "' using formats '" + formats + "'" 
+        		    + " and template properties '"+templateProperties+"'");
+		}
+
+		public void reportRenderingFailed(File outputDirectory,
+				List<String> formats, Properties templateProperties, Throwable cause) {
+            String message = "Failed to render reports in outputDirectory " + outputDirectory
+            		+ " using formats " + formats + " and template properties '"+templateProperties+"'";
+            getLog().warn(message, cause);
+
+		}
     }
 }

@@ -1,6 +1,9 @@
 package org.jbehave.core;
 
+import java.io.File;
 import java.io.PrintStream;
+import java.util.List;
+import java.util.Properties;
 
 public class PrintStreamRunnerMonitor implements StoryRunnerMonitor {
     private PrintStream output;
@@ -29,4 +32,16 @@ public class PrintStreamRunnerMonitor implements StoryRunnerMonitor {
     public void storiesNotRun() {
         output.println("Stories not run");
     }
+
+	public void renderingReports(File outputDirectory, List<String> formats,
+			Properties templateProperties) {
+		output.println("Rendering reports in '" + outputDirectory + "' using formats '" + formats + "'" 
+    		    + " and template properties '"+templateProperties+"'");
+	}
+
+	public void reportRenderingFailed(File outputDirectory,
+			List<String> formats, Properties templateProperties, Throwable cause) {
+		output.println("Failed to render reports in outputDirectory " + outputDirectory
+        		+ " using formats " + formats + " and template properties '"+templateProperties+"'");
+	}
 }

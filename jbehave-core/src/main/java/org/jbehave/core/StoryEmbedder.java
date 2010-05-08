@@ -2,12 +2,16 @@ package org.jbehave.core;
 
 import static java.util.Arrays.asList;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.jbehave.core.parser.StoryPathResolver;
+import org.jbehave.core.reporters.FreemarkerReportRenderer;
+import org.jbehave.core.reporters.ReportRenderer;
 import org.jbehave.core.steps.CandidateSteps;
 
 public class StoryEmbedder {
@@ -105,6 +109,17 @@ public class StoryEmbedder {
         }
 
     }
+    
+	public void renderReports(File outputDirectory, List<String> formats, Properties templateProperties) {
+        ReportRenderer reportRenderer = new FreemarkerReportRenderer(templateProperties);
+        try {
+        	runnerMonitor.renderingReports(outputDirectory, formats, templateProperties);
+            reportRenderer.render(outputDirectory, formats);
+        } catch (RuntimeException e) {
+        	runnerMonitor.reportRenderingFailed(outputDirectory, formats, templateProperties, e);
+            throw new RenderingReportsFailedException("Failed to render reports to "+outputDirectory+" with formats "+formats+" and template properties "+templateProperties, e);
+        }
+	}
 
     public void generateStepdoc() {
         StoryConfiguration configuration = configuration();
@@ -155,5 +170,11 @@ public class StoryEmbedder {
         }
     }
 
+    @SuppressWarnings("serial")
+	private class RenderingReportsFailedException extends RuntimeException {
+        public RenderingReportsFailedException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
 
 }
