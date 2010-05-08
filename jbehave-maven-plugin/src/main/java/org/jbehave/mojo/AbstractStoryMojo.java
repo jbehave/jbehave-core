@@ -111,6 +111,13 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
      * @parameter default-value="false"
      */
     protected boolean ignoreFailure;
+    
+    /**
+     * The boolean flag to ignore failure in reports
+     * 
+     * @parameter default-value="false"
+     */
+    protected boolean ignoreFailureInReports;
 
     /**
      * The boolean flag to run in batch mode
@@ -280,7 +287,7 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
 	}
 
 	protected StoryRunnerMode runnerMode() {
-		return new StoryRunnerMode(batch, skip, ignoreFailure);
+		return new StoryRunnerMode(batch, skip, ignoreFailure, ignoreFailureInReports);
 	}
 
 	protected class MavenRunnerMonitor implements StoryRunnerMonitor {
@@ -311,7 +318,15 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
             String message = "Failed to render reports in outputDirectory " + outputDirectory
             		+ " using formats " + formats + " and template properties '"+templateProperties+"'";
             getLog().warn(message, cause);
-
+		}
+		
+		public void reportsRendered(int scenarios, int failedScenarios) {
+			getLog().info("Reports rendered with " + scenarios
+            		+ " scenarios (of which  " + failedScenarios + " failed)");
+		}
+		
+		public void reportsNotRendered() {
+			getLog().info("Reports not rendered");
 		}
     }
 }

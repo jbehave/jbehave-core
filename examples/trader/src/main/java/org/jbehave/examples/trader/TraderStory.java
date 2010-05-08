@@ -1,5 +1,11 @@
 package org.jbehave.examples.trader;
 
+import static java.util.Arrays.asList;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.StoryConfiguration;
 import org.jbehave.core.parser.LoadFromClasspath;
@@ -20,12 +26,6 @@ import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
-
 /**
  * Example of how to run a story using a JBehave2 style inheritance. A story
  * just need to extend this abstract class and are out-of-the-box runnable via
@@ -45,7 +45,7 @@ public abstract class TraderStory extends JUnitStory {
                 .useStoryReporter(new StoryReporterBuilder()
                 // use absolute output with Ant, as the code source location
                 // defaults to $ANT_HOME/lib
-                // .outputTo("target/jbehave-reports").outputAsAbsolute(true)
+                		.outputTo("target/jbehave-reports").outputAsAbsolute(true)
                         .outputLocationClass(storyClass).withDefaultFormats()
                         .withFormats(CONSOLE, TXT, HTML, XML).build(storyPath))
                 .useStoryPathResolver(storyPathResolver));

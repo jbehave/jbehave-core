@@ -20,5 +20,9 @@ public interface StoryRunnerMonitor {
 
 	void reportRenderingFailed(File outputDirectory, List<String> formats,
 			Properties templateProperties, Throwable cause);
+
+	void reportsRendered(int scenarios, int failedScenarios);
+
+	void reportsNotRendered();
     
 }

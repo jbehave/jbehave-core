@@ -44,4 +44,14 @@ public class PrintStreamRunnerMonitor implements StoryRunnerMonitor {
 		output.println("Failed to render reports in outputDirectory " + outputDirectory
         		+ " using formats " + formats + " and template properties '"+templateProperties+"'");
 	}
+	
+	public void reportsRendered(int scenarios, int failedScenarios) {
+		output.println("Reports rendered with " + scenarios
+        		+ " scenarios (of which  " + failedScenarios + " failed)");
+	}
+	
+	public void reportsNotRendered() {
+		output.println("Reports not rendered");
+	}
+	
 }

@@ -111,14 +111,27 @@ public class StoryEmbedder {
     }
     
 	public void renderReports(File outputDirectory, List<String> formats, Properties templateProperties) {
+		if ( runnerMode.skip() ){
+			runnerMonitor.reportsNotRendered();
+			return;
+		}
         ReportRenderer reportRenderer = new FreemarkerReportRenderer(templateProperties);
         try {
         	runnerMonitor.renderingReports(outputDirectory, formats, templateProperties);
             reportRenderer.render(outputDirectory, formats);
         } catch (RuntimeException e) {
         	runnerMonitor.reportRenderingFailed(outputDirectory, formats, templateProperties, e);
-            throw new RenderingReportsFailedException("Failed to render reports to "+outputDirectory+" with formats "+formats+" and template properties "+templateProperties, e);
+            String message = "Failed to render reports to "+outputDirectory+" with formats "+formats+" and template properties "+templateProperties;
+			throw new RenderingReportsFailedException(message, e);
         }
+        int scenarios = reportRenderer.countScenarios();
+        int failedScenarios = reportRenderer.countFailedScenarios();
+    	runnerMonitor.reportsRendered(scenarios, failedScenarios);
+        if ( !runnerMode.ignoreFailureInReports() && failedScenarios > 0 ){
+        	String message = "Rendered reports with "+scenarios+" scenarios (of which "+failedScenarios+" failed)";
+			throw new RunningStoriesFailedException(message);
+        }        
+        
 	}
 
     public void generateStepdoc() {

@@ -71,9 +71,14 @@ public abstract class AbstractStoryTask extends Task {
     protected boolean skip = false;
 
     /**
-     * The boolean flag to ignoreFailure
+     * The boolean flag to ignore failure
      */
     protected boolean ignoreFailure = false;
+
+    /**
+     * The boolean flag to ignore failure in reports
+     */
+    protected boolean ignoreFailureInReports = false;
 
     /**
      * The boolean flag to run in batch mode
@@ -146,7 +151,7 @@ public abstract class AbstractStoryTask extends Task {
 	}
 
 	protected StoryRunnerMode runnerMode() {
-		return new StoryRunnerMode(batch, skip, ignoreFailure);
+		return new StoryRunnerMode(batch, skip, ignoreFailure, ignoreFailureInReports);
 	}
 
     protected List<String> storyPaths() {
@@ -249,6 +254,15 @@ public abstract class AbstractStoryTask extends Task {
     		log("Failed to render reports in outputDirectory " + outputDirectory
             		+ " using formats " + formats + " and template properties '"+templateProperties+"'", MSG_WARN);
     	}
+
+		public void reportsRendered(int scenarios, int failedScenarios) {
+			log("Reports rendered with " + scenarios
+            		+ " scenarios (of which  " + failedScenarios + " failed)", MSG_INFO);
+		}
+
+		public void reportsNotRendered() {
+			log("Reports not rendered", MSG_INFO);
+		}
     }
 
     // Setters used by Task to inject dependencies
@@ -289,7 +303,11 @@ public abstract class AbstractStoryTask extends Task {
         this.ignoreFailure = ignoreFailure;
     }
 
-    public void setBatch(boolean batch) {
+    public void setIgnoreFailureInReports(boolean ignoreFailureInReports) {
+		this.ignoreFailureInReports = ignoreFailureInReports;
+	}
+
+	public void setBatch(boolean batch) {
         this.batch = batch;
     }
 

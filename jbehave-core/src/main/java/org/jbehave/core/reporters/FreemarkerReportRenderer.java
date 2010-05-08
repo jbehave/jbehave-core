@@ -44,6 +44,7 @@ public class FreemarkerReportRenderer implements ReportRenderer {
 
     private final Configuration configuration;
     private final Properties templateResources;
+	private List<Report> renderedReports = new ArrayList<Report>();
 
     public FreemarkerReportRenderer() {
         this(defaultTemplateResources());
@@ -73,12 +74,34 @@ public class FreemarkerReportRenderer implements ReportRenderer {
         createIndex(outputDirectory, formats);
     }
 
+    public int countScenarios(){
+		return count("scenarios", renderedReports);
+    }
+
+    public int countFailedScenarios(){
+		return count("scenariosFailed", renderedReports);
+    }
+
+	private int count(String event, List<Report> renderedReports) {
+		int count = 0;
+    	for (Report report : renderedReports) {
+			Properties stats = report.asProperties("stats");
+			if ( stats != null ){
+				if ( stats.containsKey(event)){
+					int failed = Integer.parseInt((String)stats.get(event));
+					count = count + failed;
+				}
+			}
+		}
+    	return count;
+	}
+	
     private void createIndex(File outputDirectory, List<String> formats) {
         String outputName = templateResource("renderedDirectory")+"/index.html";
         String resource = templateResource("index");
         List<String> mergedFormats = mergeWithDefaults(formats);
         Map<String, List<File>> reportFiles = generatedReportFiles(outputDirectory, outputName, mergedFormats);
-        List<Report> renderedReports = renderedReports(reportFiles);
+        renderedReports = renderedReports(reportFiles);
         Map<String, Object> dataModel = newDataModel();
         dataModel.put("reports", renderedReports);
         dataModel.put("date", new Date());
