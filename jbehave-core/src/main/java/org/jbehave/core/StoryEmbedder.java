@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.jbehave.core.parser.StoryPathResolver;
 import org.jbehave.core.reporters.FreemarkerReportRenderer;
 import org.jbehave.core.reporters.ReportRenderer;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 
 public class StoryEmbedder {
@@ -46,7 +47,7 @@ public class StoryEmbedder {
                     // collect and postpone decision to throw exception
                     failedStories.put(storyName, e);
                 } else {
-                    if (runnerMode.ignoreFailure()) {
+                    if (runnerMode.ignoreFailureInStories()) {
                         runnerMonitor.storyFailed(storyName, e);
                     } else {
                         throw new RunningStoriesFailedException("Failed to run story " + storyName, e);
@@ -56,11 +57,15 @@ public class StoryEmbedder {
         }
 
         if (runnerMode.batch() && failedStories.size() > 0) {
-            if (runnerMode.ignoreFailure()) {
+            if (runnerMode.ignoreFailureInStories()) {
                 runnerMonitor.storiesBatchFailed(format(failedStories));
             } else {
                 throw new RunningStoriesFailedException("Failed to run stories in batch: " + format(failedStories));
             }
+        }
+        
+        if (runnerMode.renderReportsAfterStories()){
+        	renderReports();
         }
 
     }
@@ -91,7 +96,7 @@ public class StoryEmbedder {
                     // collect and postpone decision to throw exception
                     failedStories.put(storyPath, e);
                 } else {
-                    if (runnerMode.ignoreFailure()) {
+                    if (runnerMode.ignoreFailureInStories()) {
                         runnerMonitor.storyFailed(storyPath, e);
                     } else {
                         throw new RunningStoriesFailedException("Failed to run story " + storyPath, e);
@@ -101,15 +106,27 @@ public class StoryEmbedder {
         }
 
         if (runnerMode.batch() && failedStories.size() > 0) {
-            if (runnerMode.ignoreFailure()) {
+            if (runnerMode.ignoreFailureInStories()) {
                 runnerMonitor.storiesBatchFailed(format(failedStories));
             } else {
                 throw new RunningStoriesFailedException("Failed to run stories in batch: " + format(failedStories));
             }
         }
+        
+        if (runnerMode.renderReportsAfterStories()){
+        	renderReports();
+        }
 
     }
-    
+
+	public void renderReports() {
+		StoryReporterBuilder builder = configuration().storyReporterBuilder();
+		File outputDirectory = builder.outputDirectory();
+		List<String> formatNames = builder.formatNames(true);
+		Properties renderingResources = builder.renderingResources();
+		renderReports(outputDirectory, formatNames, renderingResources);		
+	}
+
 	public void renderReports(File outputDirectory, List<String> formats, Properties templateProperties) {
 		if ( runnerMode.skip() ){
 			runnerMonitor.reportsNotRendered();
@@ -146,6 +163,10 @@ public class StoryEmbedder {
 
     public List<CandidateSteps> candidateSteps() {
         return asList(new CandidateSteps[]{});
+    }
+
+    public StoryRunnerMode runnerMode() {
+        return runnerMode;
     }
 
     public void useStoryRunner(StoryRunner runner) {
@@ -189,5 +210,4 @@ public class StoryEmbedder {
             super(message, cause);
         }
     }
-
 }

@@ -30,7 +30,7 @@ import freemarker.template.TemplateException;
  * views are injectable via the {@link FreemarkerReportRender(Properties)}
  * constructor, but defaults are provided. To override, specify the the path the
  * new template under keys "index" and "single".</p>
- * <p>The report renderer provids the following template resources:
+ * <p>The report renderer provides the following resources:
  * <pre>
  * resources.setProperty("index", "ftl/jbehave-reports-index.ftl");
  * resources.setProperty("single", "ftl/jbehave-reports-single.ftl");
@@ -43,14 +43,14 @@ import freemarker.template.TemplateException;
 public class FreemarkerReportRenderer implements ReportRenderer {
 
     private final Configuration configuration;
-    private final Properties templateResources;
+    private final Properties resources;
 	private List<Report> renderedReports = new ArrayList<Report>();
 
     public FreemarkerReportRenderer() {
-        this(defaultTemplateResources());
+        this(defaultResources());
     }
 
-    private static Properties defaultTemplateResources() {
+    private static Properties defaultResources() {
         Properties resources = new Properties();
         resources.setProperty("index", "ftl/jbehave-reports-index.ftl");
         resources.setProperty("single", "ftl/jbehave-reports-single.ftl");
@@ -59,15 +59,15 @@ public class FreemarkerReportRenderer implements ReportRenderer {
         return resources;
     }
 
-    public FreemarkerReportRenderer(Properties templateResources) {
+    public FreemarkerReportRenderer(Properties resources) {
         this.configuration = configure();
-        this.templateResources = mergeWithDefault(templateResources);
+        this.resources = mergeWithDefault(resources);
     }
 
-    private Properties mergeWithDefault(Properties templateResources) {
-        Properties resources = defaultTemplateResources();
-        resources.putAll(templateResources);
-        return resources;
+    private Properties mergeWithDefault(Properties resources) {
+        Properties merged = defaultResources();
+        merged.putAll(resources);
+        return merged;
     }
 
     public void render(File outputDirectory, List<String> formats) {
@@ -203,7 +203,7 @@ public class FreemarkerReportRenderer implements ReportRenderer {
     }
 
     private String templateResource(String format) {
-        String resource = templateResources.getProperty(format);
+        String resource = resources.getProperty(format);
         if (resource == null) {
             throw new RendererTemplateNotFoundException(format);
         }

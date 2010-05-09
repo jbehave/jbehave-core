@@ -59,6 +59,7 @@ public class StoryConfiguration {
      * Parses the textual representation via pattern matching of keywords
      */
     private StoryParser storyParser = new RegexStoryParser(keywords);
+    
     /**
      * Loads story content from classpath
      */
@@ -132,21 +133,28 @@ public class StoryConfiguration {
      * @param stepdocReporter
      * @param stepdocGenerator
      * @param storyReporter
+     * @param storyReporterBuilder
      * @param pendingErrorStrategy
      */
-    protected StoryConfiguration(Keywords keywords, StepCreator stepCreator, StoryParser storyParser, StoryLoader storyLoader, StoryPathResolver storyPathResolver, ErrorStrategy errorStrategy, StepdocReporter stepdocReporter, StepdocGenerator stepdocGenerator, StoryReporter storyReporter, PendingErrorStrategy pendingErrorStrategy) {
-        this.keywords = keywords;
-        this.stepCreator = stepCreator;
-        this.storyParser = storyParser;
-        this.storyLoader = storyLoader;
-        this.storyPathResolver = storyPathResolver;
-        this.errorStrategy = errorStrategy;
-        this.stepdocReporter = stepdocReporter;
-        this.stepdocGenerator = stepdocGenerator;
-        this.storyReporter = storyReporter;
-        this.pendingErrorStrategy = pendingErrorStrategy;
-    }
-
+	protected StoryConfiguration(Keywords keywords, StepCreator stepCreator,
+			StoryParser storyParser, StoryLoader storyLoader,
+			StoryPathResolver storyPathResolver, ErrorStrategy errorStrategy,
+			StepdocReporter stepdocReporter, StepdocGenerator stepdocGenerator,
+			StoryReporter storyReporter,
+			StoryReporterBuilder storyReporterBuilder, 
+			PendingErrorStrategy pendingErrorStrategy) {
+		this.keywords = keywords;
+		this.stepCreator = stepCreator;
+		this.storyParser = storyParser;
+		this.storyLoader = storyLoader;
+		this.storyPathResolver = storyPathResolver;
+		this.errorStrategy = errorStrategy;
+		this.stepdocReporter = stepdocReporter;
+		this.stepdocGenerator = stepdocGenerator;
+		this.storyReporter = storyReporter;
+		this.storyReporterBuilder = storyReporterBuilder;
+		this.pendingErrorStrategy = pendingErrorStrategy;
+	}
 
     public StepCreator stepCreator() {
         return stepCreator;

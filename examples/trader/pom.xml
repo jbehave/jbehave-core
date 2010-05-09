@@ -94,7 +94,7 @@
               <storyExcludes />
               <skip>${skip.mvn}</skip>
               <batch>false</batch>
-              <ignoreFailure>true</ignoreFailure>
+              <ignoreFailureInStories>true</ignoreFailureInStories>
             </configuration>
             <goals>
               <goal>run-stories</goal>
@@ -111,7 +111,8 @@
               <storyExcludes />
               <skip>${skip.mvn}</skip>
               <batch>false</batch>
-              <ignoreFailure>true</ignoreFailure>
+              <ignoreFailureInStories>true</ignoreFailureInStories>
+              <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
             </configuration>
             <goals>
               <goal>run-stories-as-paths</goal>
@@ -130,7 +131,8 @@
               </storyExcludes>
               <skip>${skip.mvn}</skip>
               <batch>true</batch>
-              <ignoreFailure>true</ignoreFailure>
+              <ignoreFailureInStories>true</ignoreFailureInStories>
+              <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
             </configuration>
             <goals>
               <goal>run-stories</goal>
@@ -144,7 +146,8 @@
                 <storyInclude>**/i18n/stories/*.java</storyInclude>
               </storyIncludes>
               <skip>false</skip>
-              <ignoreFailure>true</ignoreFailure>
+              <ignoreFailureInStories>true</ignoreFailureInStories>
+              <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
             </configuration>
             <goals>
               <goal>run-stories</goal>
@@ -170,23 +173,8 @@
             <id>render-reports-generated</id>
             <phase>post-integration-test</phase>
             <configuration>
-              <outputDirectory>${project.build.directory}/jbehave-reports</outputDirectory>
-              <formats>
-                <format>txt</format>
-                <format>html</format>
-                <format>xml</format>
-              </formats>
-              <templateProperties>
-                <property>
-                  <name>defaultFormats</name>
-                  <value>stats</value>
-                </property>
-                <property>
-                  <name>renderedDirectory</name>
-                  <value>rendered</value>
-                </property>
-              </templateProperties>
-              <skip>${skip.mvn}</skip>
+              <storyEmbedder>org.jbehave.examples.trader.ClasspathTraderStoryEmbedder</storyEmbedder>
+              <skip>true</skip>
               <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
             </configuration>
             <goals>
@@ -208,13 +196,12 @@
                   classpathref="maven.runtime.classpath" />
                 <storyRunner storyIncludes="**/stories/*.java"
                   storyExcludes="**/i18n/stories/*.java" skip="${skip.ant}"
-                  ignoreFailure="true" />
+                  ignoreFailureInStories="true" ignoreFailureInReports="${ignore.failure.reports}"/>
                 <taskdef name="reportRenderer"
                   classname="org.jbehave.ant.ReportRendererTask"
                   classpathref="maven.runtime.classpath" />
-                <reportRenderer outputDirectory="${basedir}/target/jbehave-reports"
-                  formats="txt,html,xml" templateProperties="defaultFormats=stats"
-                  skip="${skip.ant}" ignoreFailureInReports="${ignore.failure.reports}" />
+                <reportRenderer storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder"
+                  skip="true" ignoreFailureInReports="${ignore.failure.reports}" />
               </tasks>
             </configuration>
             <goals>
