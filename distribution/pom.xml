@@ -15,27 +15,27 @@
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>jbehave-core</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>jbehave-pico</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>jbehave-spring</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>jbehave-guice</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>jbehave-ant</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.ant</groupId>
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>${pom.groupId}</groupId>
       <artifactId>jbehave-maven-plugin</artifactId>
-      <version>${pom.version}</version>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
   <build>
@@ -61,7 +61,7 @@
           <skinPath>skin.html</skinPath>
           <resourcePaths>resources</resourcePaths>
           <outputDirectoryPath>${project.build.directory}/site</outputDirectoryPath>
-          <publishedVersion>${pom.version}</publishedVersion>
+          <publishedVersion>${project.version}</publishedVersion>
         </configuration>
         <executions>
           <execution>
@@ -90,7 +90,7 @@
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>jbehave-core</artifactId>
-                  <version>${pom.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -110,7 +110,7 @@
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>jbehave-pico</artifactId>
-                  <version>${pom.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -130,7 +130,7 @@
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>jbehave-spring</artifactId>
-                  <version>${pom.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -150,7 +150,7 @@
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>jbehave-guice</artifactId>
-                  <version>${pom.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -170,7 +170,7 @@
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>jbehave-ant</artifactId>
-                  <version>${pom.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -190,7 +190,7 @@
                 <artifactItem>
                   <groupId>${pom.groupId}</groupId>
                   <artifactId>jbehave-maven-plugin</artifactId>
-                  <version>${pom.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -250,7 +250,7 @@
               <descriptors>
                 <descriptor>${basedir}/src/assembly/assembly-bin.xml</descriptor>
               </descriptors>
-              <finalName>jbehave-${pom.version}</finalName>
+              <finalName>jbehave-${project.version}</finalName>
               <workDirectory>${project.build.directory}/assembly/bin</workDirectory>
             </configuration>
           </execution>
@@ -264,7 +264,7 @@
               <descriptors>
                 <descriptor>${basedir}/src/assembly/assembly-src.xml</descriptor>
               </descriptors>
-              <finalName>jbehave-${pom.version}</finalName>
+              <finalName>jbehave-${project.version}</finalName>
               <workDirectory>${project.build.directory}/assembly/src</workDirectory>
             </configuration>
           </execution>
