@@ -5,9 +5,7 @@ import static org.apache.tools.ant.Project.MSG_DEBUG;
 import static org.apache.tools.ant.Project.MSG_INFO;
 import static org.apache.tools.ant.Project.MSG_WARN;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -68,37 +66,27 @@ public abstract class AbstractStoryTask extends Task {
     /**
      * The boolean flag to skip running stories
      */
-    protected boolean skip = false;
+    private boolean skip = false;
 
     /**
-     * The boolean flag to ignore failure
+     * The boolean flag to ignore failure in stories
      */
-    protected boolean ignoreFailure = false;
+    private boolean ignoreFailureInStories = false;
 
     /**
      * The boolean flag to ignore failure in reports
      */
-    protected boolean ignoreFailureInReports = false;
+    private boolean ignoreFailureInReports = false;
+
+    /**
+     * The boolean flag to render reports after stories
+     */
+	private boolean renderReportsAfterStories = true;
 
     /**
      * The boolean flag to run in batch mode
      */
-    protected boolean batch = false;
-
-    /**
-     * The output directory of the reports
-     */
-    protected File outputDirectory = new File("target/jbehave-reports");
-
-    /**
-     * The format of the generated output
-     */
-    protected List<String> formats = asList();
-
-    /**
-     * The template properties
-     */
-    protected Properties templateProperties = new Properties();
+	private boolean batch = false;
 
     /**
      * The story embedder to run the stories
@@ -110,6 +98,7 @@ public abstract class AbstractStoryTask extends Task {
      * Used to find story paths
      */
     private StoryPathFinder finder = new StoryPathFinder();
+
 
     /**
      * Determines if the scope of the source directory is "test"
@@ -151,7 +140,7 @@ public abstract class AbstractStoryTask extends Task {
 	}
 
 	protected StoryRunnerMode runnerMode() {
-		return new StoryRunnerMode(batch, skip, ignoreFailure, ignoreFailureInReports);
+		return new StoryRunnerMode(batch, skip, ignoreFailureInStories, ignoreFailureInReports, renderReportsAfterStories);
 	}
 
     protected List<String> storyPaths() {
@@ -295,40 +284,27 @@ public abstract class AbstractStoryTask extends Task {
         this.classLoaderInjected = classLoaderInjected;
     }
 
+	public void setBatch(boolean batch) {
+        this.batch = batch;
+    }
+
     public void setSkip(boolean skip) {
         this.skip = skip;
     }
 
-    public void setIgnoreFailure(boolean ignoreFailure) {
-        this.ignoreFailure = ignoreFailure;
+    public void setIgnoreFailureInStories(boolean ignoreFailureInStories) {
+        this.ignoreFailureInStories = ignoreFailureInStories;
     }
 
     public void setIgnoreFailureInReports(boolean ignoreFailureInReports) {
 		this.ignoreFailureInReports = ignoreFailureInReports;
 	}
-
-	public void setBatch(boolean batch) {
-        this.batch = batch;
-    }
-
-    public void setOutputDirectory(String outputDirectory) {
-        this.outputDirectory = new File(outputDirectory);
-    }
-
-    public void setFormats(String formats) {
-        this.formats = asList(formats.split(","));
-    }
     
-    public void setTemplateProperties(String properties){
-        try {
-            templateProperties.load(new ByteArrayInputStream(properties.getBytes()));
-        } catch (IOException e) {
-            String message = "Failed to load template properties: "+properties;
-            log(message, MSG_WARN);
-        }        
-    }
+    public void setRenderReportsAfterStories(boolean renderReportsAfterStories) {
+		this.renderReportsAfterStories = renderReportsAfterStories;
+	}
 
-    public void setStoryEmbedder(String storyEmbedder) {
+	public void setStoryEmbedder(String storyEmbedder) {
         this.storyEmbedder = storyEmbedder;
     }
 }

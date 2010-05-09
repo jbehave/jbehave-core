@@ -12,7 +12,7 @@ public class ReportRendererTask extends AbstractStoryTask {
 
     public void execute() throws BuildException {
         StoryEmbedder embedder = newStoryEmbedder();
-        embedder.renderReports(outputDirectory, formats, templateProperties);
+        embedder.renderReports();
     }
     
 }

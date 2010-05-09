@@ -2,11 +2,13 @@ package org.jbehave.core.reporters;
 
 import static java.util.Arrays.asList;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.jbehave.core.parser.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
@@ -82,11 +84,21 @@ public class StoryReporterBuilder {
     private String outputDirectory = new FileConfiguration().getOutputDirectory();
     private boolean outputAbsolute = new FileConfiguration().isOutputDirectoryAbsolute();
 	private Class<?> ouputLocationClass = this.getClass();
+	private Properties renderingResources = defaultRenderingResources();
 
     public StoryReporterBuilder() {
     }
 
-    public StoryReporterBuilder outputTo(String outputDirectory){
+    public static Properties defaultRenderingResources() {
+        Properties resources = new Properties();
+        resources.setProperty("index", "ftl/jbehave-reports-index.ftl");
+        resources.setProperty("single", "ftl/jbehave-reports-single.ftl");
+        resources.setProperty("renderedDirectory", "rendered");
+        resources.setProperty("defaultFormats", "stats");
+        return resources;
+	}
+
+	public StoryReporterBuilder outputTo(String outputDirectory){
         this.outputDirectory = outputDirectory;
         return this;
     }
@@ -151,6 +163,31 @@ public class StoryReporterBuilder {
     
     public Map<Format, StoryReporter> getDelegates() {
         return Collections.unmodifiableMap(delegates);
+    }
+    
+	public File outputDirectory() {
+		return new File(outputDirectory);
+	}
+
+	public List<String> formatNames(boolean toLowerCase) {
+		List<String> names = new ArrayList<String>();
+		for (Format format : formats) {
+			String name = format.name();
+			if ( toLowerCase ){
+				name = name.toLowerCase();
+			}
+			names.add(name);			
+		}
+		return names;		
+	}
+
+    public Properties renderingResources() {
+    	return renderingResources;
+    }
+    
+    public StoryReporterBuilder useRenderingResources(Properties resources){
+    	this.renderingResources = resources;
+    	return this;
     }
 
     protected FileConfiguration fileConfiguration(String extension) {

@@ -3,18 +3,20 @@ package org.jbehave.core;
 public class StoryRunnerMode {
     private boolean batch;
     private boolean skip;
-    private boolean ignoreFailure;
+    private boolean ignoreFailureInStories;
 	private boolean ignoreFailureInReports;
+	private boolean renderReportsAfterStories;
 
     public StoryRunnerMode() {
-        this(false, false, false, false);
+        this(false, false, false, false, true);
     }
     
-    public StoryRunnerMode(boolean batch, boolean skip, boolean ignoreFailure, boolean ignoreFailureInReports) {
+    public StoryRunnerMode(boolean batch, boolean skip, boolean ignoreFailureInStories, boolean ignoreFailureInReports, boolean renderReportsAfterStories) {
         this.batch = batch;
         this.skip = skip;
-        this.ignoreFailure = ignoreFailure;
+        this.ignoreFailureInStories = ignoreFailureInStories;
 		this.ignoreFailureInReports = ignoreFailureInReports;
+		this.renderReportsAfterStories = renderReportsAfterStories;
     }
 
     public boolean batch() {
@@ -25,11 +27,15 @@ public class StoryRunnerMode {
         return skip;
     }
 
-    public boolean ignoreFailure() {
-        return ignoreFailure;
+    public boolean ignoreFailureInStories() {
+        return ignoreFailureInStories;
     }
 
 	public boolean ignoreFailureInReports() {
 		return ignoreFailureInReports;
+	}
+
+	public boolean renderReportsAfterStories() {
+		return renderReportsAfterStories;
 	}
 }

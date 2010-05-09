@@ -96,64 +96,42 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
      * 
      * @parameter default-value="false"
      */
-    protected boolean classLoaderInjected;
+    private boolean classLoaderInjected;
     
     /**
      * The boolean flag to skip stories
      * 
      * @parameter default-value="false"
      */
-    protected boolean skip;
+    private boolean skip;
     
     /**
-     * The boolean flag to ignore failure
+     * The boolean flag to ignore failure in stories
      * 
      * @parameter default-value="false"
      */
-    protected boolean ignoreFailure;
+    private boolean ignoreFailureInStories;
     
     /**
      * The boolean flag to ignore failure in reports
      * 
      * @parameter default-value="false"
      */
-    protected boolean ignoreFailureInReports;
+    private boolean ignoreFailureInReports;
 
     /**
      * The boolean flag to run in batch mode
      *
      * @parameter default-value="false"
      */
-    protected boolean batch;
+    private boolean batch;
 
     /**
      * The boolean flag to determined if reports are rendered after stories are run
      * 
      * @parameter default-value="true"
      */
-    protected boolean renderReports;
-    
-    /**
-     * The output directory.
-     * 
-     * @parameter expression="${project.build.directory}/jbehave-reports"
-     * @required
-     */
-    protected File outputDirectory;
-
-    /**
-     * Formats of generated output. Defaults to asList().
-     * 
-     * @parameter 
-     */
-    protected List<String> formats = asList();
-
-    /**
-     * Non-default template properties. Defaults to new Properties().
-     * 
-     * @parameter 
-     */
-    protected Properties templateProperties = new Properties();
+    private boolean renderReportsAfterStories;
     
     /**
      * The story embedder to run the stories
@@ -287,7 +265,7 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
 	}
 
 	protected StoryRunnerMode runnerMode() {
-		return new StoryRunnerMode(batch, skip, ignoreFailure, ignoreFailureInReports);
+		return new StoryRunnerMode(batch, skip, ignoreFailureInStories, ignoreFailureInReports, renderReportsAfterStories);
 	}
 
 	protected class MavenRunnerMonitor implements StoryRunnerMonitor {

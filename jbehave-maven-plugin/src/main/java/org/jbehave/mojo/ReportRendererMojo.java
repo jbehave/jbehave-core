@@ -13,7 +13,7 @@ public class ReportRendererMojo extends AbstractStoryMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         StoryEmbedder embedder = newStoryEmbedder();
-        embedder.renderReports(outputDirectory, formats, templateProperties);
+        embedder.renderReports();
     }
 
 }

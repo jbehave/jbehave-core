@@ -19,7 +19,6 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.StepsConfiguration;
 import org.jbehave.core.steps.StepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
@@ -39,7 +38,8 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 		return new MostUsefulStoryConfiguration()
 			.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))
 			.useStoryReporterBuilder(new StoryReporterBuilder()
-				.outputLocationClass(this.getClass())
+				.outputTo("target/jbehave-reports").outputAsAbsolute(true)
+				//.outputLocationClass(this.getClass())
 				.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
 			.buildReporters(storyPaths());
@@ -49,13 +49,12 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 	public List<CandidateSteps> candidateSteps() {
 		// start with default steps configuration, overriding parameter
 		// converters, pattern builder and monitor
-		StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
-		StepMonitor monitor = new SilentStepMonitor();
-		stepsConfiguration.useParameterConverters(new ParameterConverters(
-				monitor, new TraderConverter(mockTradePersister())));
-		stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder(
-				"%")); // use '%' instead of '$' to identify parameters
-		stepsConfiguration.useMonitor(monitor);
+		StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration()
+			.useParameterConverters(new ParameterConverters(
+				new TraderConverter(mockTradePersister())))
+			.usePatternBuilder(new PrefixCapturingPatternBuilder(
+				"%")) // use '%' instead of '$' to identify parameters
+			.useMonitor(new SilentStepMonitor());
 		return asList(new StepsFactory(stepsConfiguration)
 				.createCandidateSteps(new TraderSteps(new TradingService()),
 						new BeforeAfterSteps()));
