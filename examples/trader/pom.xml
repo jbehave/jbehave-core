@@ -92,7 +92,7 @@
                 <storyInclude>**/*Stories.java</storyInclude>
               </storyIncludes>
               <storyExcludes />
-              <skip>true</skip>
+              <skip>${skip.mvn}</skip>
               <batch>false</batch>
               <ignoreFailureInStories>true</ignoreFailureInStories>
             </configuration>
@@ -113,6 +113,7 @@
               <batch>false</batch>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
+              <renderReportsAfterStories>true</renderReportsAfterStories>
             </configuration>
             <goals>
               <goal>run-stories-as-paths</goal>
@@ -129,7 +130,7 @@
               <storyExcludes>
                 <storyExclude>**/i18n/stories/*.java</storyExclude>
               </storyExcludes>
-              <skip>true</skip>
+              <skip>${skip.mvn}</skip>
               <batch>true</batch>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
