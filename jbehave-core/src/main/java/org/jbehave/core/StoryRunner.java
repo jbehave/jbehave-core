@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.PendingError;
 import org.jbehave.core.errors.PendingErrorStrategy;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Step;
@@ -34,6 +34,7 @@ public class StoryRunner {
     private ErrorStrategy errorStrategy;
     private Throwable throwable;
     private StepCreator stepCreator;
+	private String reporterStoryPath;
 
     public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Class<? extends RunnableStory> storyClass) throws Throwable {
         String storyPath = configuration.storyPathResolver().resolve(storyClass);
@@ -64,7 +65,7 @@ public class StoryRunner {
 
     public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Story story, boolean embeddedStory) throws Throwable {
         stepCreator = configuration.stepCreator();
-        reporter = configuration.storyReporter(story.getPath());
+        reporter = reporterFor(configuration, story, embeddedStory);
         pendingStepStrategy = configuration.pendingErrorStrategy();
         errorStrategy = configuration.errorStrategy();
         resetErrorState(embeddedStory);
@@ -85,6 +86,17 @@ public class StoryRunner {
         reporter.afterStory(embeddedStory);
         currentStrategy.handleError(throwable);
     }
+
+	private StoryReporter reporterFor(StoryConfiguration configuration,
+			Story story, boolean embeddedStory) {
+		if ( embeddedStory ){			
+			return configuration.storyReporter(reporterStoryPath);
+		} else {
+			// store parent story path for reporting
+			reporterStoryPath = story.getPath();
+			return configuration.storyReporter(reporterStoryPath);
+		}
+	}
 
 	private void resetErrorState(boolean embeddedStory) {
 		if ( embeddedStory ) {
@@ -186,4 +198,10 @@ public class StoryRunner {
     private interface State {
         void run(Step step);
     }
+    
+	@Override
+	public String toString() {
+		return this.getClass().getSimpleName();
+	}
+
 }

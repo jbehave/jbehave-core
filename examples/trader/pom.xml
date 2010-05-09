@@ -92,7 +92,7 @@
                 <storyInclude>**/*Stories.java</storyInclude>
               </storyIncludes>
               <storyExcludes />
-              <skip>${skip.mvn}</skip>
+              <skip>true</skip>
               <batch>false</batch>
               <ignoreFailureInStories>true</ignoreFailureInStories>
             </configuration>
@@ -129,7 +129,7 @@
               <storyExcludes>
                 <storyExclude>**/i18n/stories/*.java</storyExclude>
               </storyExcludes>
-              <skip>${skip.mvn}</skip>
+              <skip>true</skip>
               <batch>true</batch>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>

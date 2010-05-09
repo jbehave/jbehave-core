@@ -5,6 +5,9 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 public class PrintStreamRunnerMonitor implements StoryRunnerMonitor {
     private PrintStream output;
 
@@ -52,6 +55,11 @@ public class PrintStreamRunnerMonitor implements StoryRunnerMonitor {
 	
 	public void reportsNotRendered() {
 		output.println("Reports not rendered");
+	}
+	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 	
 }

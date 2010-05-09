@@ -1,7 +1,5 @@
 package org.jbehave.mojo;
 
-import static java.util.Arrays.asList;
-
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
@@ -9,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jbehave.core.RunnableStory;
@@ -306,5 +306,11 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
 		public void reportsNotRendered() {
 			getLog().info("Reports not rendered");
 		}
+		
+		@Override
+		public String toString() {
+			return this.getClass().getSimpleName();
+		}
+
     }
 }

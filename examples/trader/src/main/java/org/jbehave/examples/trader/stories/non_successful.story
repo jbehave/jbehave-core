@@ -17,7 +17,8 @@ Given the traders:
 |Larry|Stooge 3|
 |Moe  |Stooge 1|
 |Curly|Stooge 2|
-When traders are subset to ".*y" by name
+!-- Following steps is not matched since traders is mispelled
+When trdrs are subset to ".*y" by name
 Then the traders returned are:
 |name|rank    |
 |Moe |Stooge 1|

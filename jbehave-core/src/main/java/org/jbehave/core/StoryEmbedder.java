@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.parser.StoryPathResolver;
 import org.jbehave.core.reporters.FreemarkerReportRenderer;
 import org.jbehave.core.reporters.ReportRenderer;
@@ -193,6 +195,11 @@ public class StoryEmbedder {
         return sb.toString();
     }
 
+    @Override
+    public String toString() {
+    	return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+    
     @SuppressWarnings("serial")
 	private class RunningStoriesFailedException extends RuntimeException {
         public RunningStoriesFailedException(String message, Throwable cause) {

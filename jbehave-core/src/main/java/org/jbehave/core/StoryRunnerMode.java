@@ -1,6 +1,10 @@
 package org.jbehave.core;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 public class StoryRunnerMode {
+	
 	private boolean batch;
 	private boolean skip;
 	private boolean ignoreFailureInStories;
@@ -59,6 +63,11 @@ public class StoryRunnerMode {
 
 	public void doRenderReportsAfterStories(boolean renderReportsAfterStories) {
 		this.renderReportsAfterStories = renderReportsAfterStories;
+	}
+	
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 }

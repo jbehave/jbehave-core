@@ -1,5 +1,7 @@
 package org.jbehave.ant;
 
+import static org.apache.tools.ant.Project.MSG_INFO;
+
 import org.apache.tools.ant.BuildException;
 import org.jbehave.core.StoryEmbedder;
 
@@ -10,10 +12,10 @@ import org.jbehave.core.StoryEmbedder;
  */
 public class StepdocTask extends AbstractStoryTask {
 
-    public void execute() throws BuildException {
-        StoryEmbedder embedder = newStoryEmbedder();
-        embedder.useRunnerMonitor(new AntRunnerMonitor());
-        embedder.generateStepdoc();
-    }
+	public void execute() throws BuildException {
+		StoryEmbedder embedder = newStoryEmbedder();
+		log("Generating stepdoc using embedder " + embedder, MSG_INFO);
+		embedder.generateStepdoc();
+	}
 
 }

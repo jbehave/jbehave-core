@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.jbehave.core.RunnableStory;
@@ -251,6 +253,11 @@ public abstract class AbstractStoryTask extends Task {
 
 		public void reportsNotRendered() {
 			log("Reports not rendered", MSG_INFO);
+		}
+		
+		@Override
+		public String toString() {
+			return this.getClass().getSimpleName();
 		}
     }
 

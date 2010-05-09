@@ -68,7 +68,7 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 	public List<String> storyPaths() {
 		StoryPathFinder finder = new StoryPathFinder();
 		return finder.listStoryPaths("target/classes", "",
-				asList("**/trader*.story"), asList(""));
+				asList("**/*.story"), asList(""));
 	}
 
 }
