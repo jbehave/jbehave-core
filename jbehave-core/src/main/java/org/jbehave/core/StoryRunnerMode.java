@@ -1,6 +1,7 @@
 package org.jbehave.core;
 
 public class StoryRunnerMode {
+	
 	private boolean batch;
 	private boolean skip;
 	private boolean ignoreFailureInStories;
