@@ -30,15 +30,14 @@ public class StoryClassLoaderBehaviour {
         assertEquals(storyClassName, story.getClass().getName());
     }
 
-    private static class MyStory extends JUnitStory {
+    public static class MyStory extends JUnitStory {
 
-    	public MyStory(){
+		public MyStory() {
+		}
 
-        }
-
-        public MyStory(ClassLoader classLoader){
-
-        }
+		public MyStory(ClassLoader classLoader) {
+		}
+		
     }
 
 }

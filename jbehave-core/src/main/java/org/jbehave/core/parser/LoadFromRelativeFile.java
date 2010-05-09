@@ -20,16 +20,16 @@ public class LoadFromRelativeFile implements StoryLoader {
     private final URL location;
     private static final String MAVEN_TEST_DIR = "../../src/test/java";
 
-    public LoadFromRelativeFile(Class storyClass, String traversal) {
+    public LoadFromRelativeFile(Class<?> storyClass, String traversal) {
         this.traversal = traversal;
         this.location = locationFor(storyClass);
     }
     
-    public LoadFromRelativeFile(Class storyClass) {
+    public LoadFromRelativeFile(Class<?> storyClass) {
         this(storyClass, MAVEN_TEST_DIR);
     }
 
-    protected URL locationFor(Class storyClass) {
+    protected URL locationFor(Class<?> storyClass) {
         return storyClass.getProtectionDomain().getCodeSource().getLocation();
     }
 
