@@ -4,24 +4,14 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.jbehave.Ensure.ensureThat;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.MostUsefulStoryConfiguration;
-import org.jbehave.core.StoryConfiguration;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
-import org.jbehave.core.parser.UnderscoredCamelCaseResolver;
-import org.jbehave.core.reporters.PrintStreamOutput;
 import org.jbehave.core.steps.StepsFactory;
 
 public class PriorityMatching extends JUnitStory {
 
     public PriorityMatching() {
-        StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
-        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));        
-        storyConfiguration.useStoryReporter(new PrintStreamOutput());
-        useConfiguration(storyConfiguration);
-
         addSteps(new StepsFactory().createCandidateSteps(new PriorityMatchingSteps()));
-
     }
     
     public static class PriorityMatchingSteps {

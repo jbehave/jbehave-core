@@ -25,8 +25,8 @@ public class UnmodifiableStepsConfiguration extends StepsConfiguration {
     }
 
     @Override
-    public void usePatternBuilder(StepPatternBuilder patternBuilder) {
-        notAllowed();
+    public StepsConfiguration usePatternBuilder(StepPatternBuilder patternBuilder) {
+    	return notAllowed();
     }
 
     @Override
@@ -35,8 +35,8 @@ public class UnmodifiableStepsConfiguration extends StepsConfiguration {
     }
 
     @Override
-    public void useMonitor(StepMonitor monitor) {
-        notAllowed();
+    public StepsConfiguration useMonitor(StepMonitor monitor) {
+        return notAllowed();
     }
 
     @Override
@@ -45,8 +45,8 @@ public class UnmodifiableStepsConfiguration extends StepsConfiguration {
     }
 
     @Override
-    public void useParanamer(Paranamer paranamer) {
-        notAllowed();
+    public StepsConfiguration useParanamer(Paranamer paranamer) {
+    	return notAllowed();        
     }
 
     @Override
@@ -55,8 +55,8 @@ public class UnmodifiableStepsConfiguration extends StepsConfiguration {
     }
 
     @Override
-    public void useParameterConverters(ParameterConverters parameterConverters) {
-        notAllowed();
+    public StepsConfiguration useParameterConverters(ParameterConverters parameterConverters) {
+    	return notAllowed();
     }
 
     @Override
@@ -65,11 +65,11 @@ public class UnmodifiableStepsConfiguration extends StepsConfiguration {
     }
 
     @Override
-    public void useKeywords(Keywords keywords) {
-        notAllowed();
+    public StepsConfiguration useKeywords(Keywords keywords) {
+    	return notAllowed();
     }
 
-    private void notAllowed() {
+    private StepsConfiguration notAllowed() {
         throw new RuntimeException("Configuration elements are unmodifiable");
     }
 }
