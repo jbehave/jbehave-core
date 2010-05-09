@@ -11,6 +11,7 @@
     <page>release-notes.html</page>
     <page>building-source.html</page>
     <page>running-examples.html</page>
+    <page>migrating-from-2.x.html</page>
   </section>
   <section>
     <name>Fundamentals</name>
@@ -19,15 +20,16 @@
     <page>more-on-bdd.html</page>
   </section>
   <section>
-    <name>Scenarios</name>
-    <page>developing-scenarios.html</page>
+    <name>Stories</name>
+    <page>developing-stories.html</page>
     <page>annotations.html</page>
     <page>candidate-steps.html</page>
     <page>pending-steps.html</page>
-    <page>configuring-scenarios.html</page>
-    <page>running-scenarios.html</page>
     <page>stepdocs.html</page>
-    <page>i18n-scenarios.html</page>
+    <page>configuring-stories.html</page>
+    <page>running-stories.html</page>
+    <page>locating-stories.html</page>
+    <page>i18n-stories.html</page>    
   </section>
   <section>
     <name>Advanced Topics</name>
@@ -37,7 +39,7 @@
     <page>parameter-converters.html</page>
     <page>table-examples.html</page>
     <page>table-parameters.html</page>
-    <page>given-scenarios.html</page>
+    <page>given-stories.html</page>
     <page>reports.html</page>
   </section>
   <section>
