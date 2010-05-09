@@ -36,17 +36,13 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 
 	@Override
 	public StoryConfiguration configuration() {
-		// start with default story configuration, overriding story loader and
-		// reporter
-		StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
-		storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass()
-				.getClassLoader()));
-		storyConfiguration.useStoryReporters(new StoryReporterBuilder()
+		return new MostUsefulStoryConfiguration()
+			.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))
+			.useStoryReporterBuilder(new StoryReporterBuilder()
 				.outputLocationClass(this.getClass())
 				.withDefaultFormats()
-				.withFormats(CONSOLE, TXT, HTML, XML)
-				.build(storyPaths()));
-		return storyConfiguration;
+				.withFormats(CONSOLE, TXT, HTML, XML))
+			.buildReporters(storyPaths());
 	}
 
 	@Override
@@ -56,7 +52,7 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 		StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
 		StepMonitor monitor = new SilentStepMonitor();
 		stepsConfiguration.useParameterConverters(new ParameterConverters(
-				monitor, new TraderConverter(mockTradePersister()))); 
+				monitor, new TraderConverter(mockTradePersister())));
 		stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder(
 				"%")); // use '%' instead of '$' to identify parameters
 		stepsConfiguration.useMonitor(monitor);
@@ -66,12 +62,14 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 	}
 
 	protected TraderPersister mockTradePersister() {
-		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1", 10.d))));
+		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
+				10.d))));
 	}
 
 	public List<String> storyPaths() {
 		StoryPathFinder finder = new StoryPathFinder();
-		return finder.listStoryPaths("target/classes", "", asList("**/*.story"), asList(""));
+		return finder.listStoryPaths("target/classes", "",
+				asList("**/*.story"), asList(""));
 	}
 
 }

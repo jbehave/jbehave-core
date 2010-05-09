@@ -42,12 +42,11 @@ public abstract class TraderStory extends JUnitStory {
 
         useConfiguration(new StoryConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
-                .useStoryReporter(new StoryReporterBuilder()
-                // use absolute output with Ant, as the code source location
-                // defaults to $ANT_HOME/lib
-                		.outputTo("target/jbehave-reports").outputAsAbsolute(true)
-                        .outputLocationClass(storyClass).withDefaultFormats()
-                        .withFormats(CONSOLE, TXT, HTML, XML).build(storyPath))
+                .useStoryReporterBuilder(new StoryReporterBuilder()
+                	.outputTo("target/jbehave-reports").outputAsAbsolute(true)
+                	.outputLocationClass(storyClass).withDefaultFormats()
+                	.withFormats(CONSOLE, TXT, HTML, XML))
+                .buildReporters(storyPath)
                 .useStoryPathResolver(storyPathResolver));
 
 		// start with default steps configuration, overriding parameter

@@ -1,6 +1,9 @@
 package org.jbehave.core;
 
+import static java.util.Arrays.asList;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -18,6 +21,7 @@ import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.StepCreator;
@@ -45,10 +49,12 @@ public class StoryConfiguration {
      * Use English language for keywords
      */
     private Keywords keywords = new LocalizedKeywords(Locale.ENGLISH);
+    
     /**
      * Provides pending steps where unmatched steps exist.
      */
     private StepCreator stepCreator = new MarkUnmatchedStepsAsPending();
+    
     /**
      * Parses the textual representation via pattern matching of keywords
      */
@@ -57,10 +63,12 @@ public class StoryConfiguration {
      * Loads story content from classpath
      */
     private StoryLoader storyLoader = new LoadFromClasspath();
+    
     /**
      * Resolves story paths from class names using underscored camel case with ".story" extension
      */
     private StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
+    
     /**
      * Handles errors by re-throwing them.
      * <p/>
@@ -71,6 +79,7 @@ public class StoryConfiguration {
      * {@link org.jbehave.core.errors.ErrorStrategyInWhichWeTrustTheReporter}.
      */
     private ErrorStrategy errorStrategy = ErrorStrategy.RETHROW;
+    
     /**
      * Allows pending steps to pass, so that steps that to do not match any method will not
      * cause failure.
@@ -79,18 +88,27 @@ public class StoryConfiguration {
      * {@link org.jbehave.core.errors.PendingErrorStrategy.FAILING}.
      */
     private PendingErrorStrategy pendingErrorStrategy = PendingErrorStrategy.PASSING;
+    
     /**
      * Reports stories to console output
      */
     private StoryReporter storyReporter = new ConsoleOutput();
+    
     /**
      * Collects story reporters by story path 
      */
     private Map<String, StoryReporter> storyReporters = new HashMap<String,  StoryReporter>();
+
+    /**
+     * The story reporter builder
+     */
+	private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
+	
     /**
      * Use default stepdoc generator
      */
     private StepdocGenerator stepdocGenerator = new DefaultStepdocGenerator();
+
     /**
      * Reports stepdocs to System.out, while reporting methods
      */
@@ -168,6 +186,9 @@ public class StoryConfiguration {
         return storyReporter();
     }
 
+    public StoryReporterBuilder storyReporterBuilder() {
+        return storyReporterBuilder;
+    }
 
     public Keywords keywords() {
         return keywords;
@@ -231,7 +252,22 @@ public class StoryConfiguration {
         return this;
 	}
 
-    public StoryConfiguration useStepdocReporter(StepdocReporter stepdocReporter) {
+	public StoryConfiguration useStoryReporterBuilder(
+			StoryReporterBuilder storyReporterBuilder) {
+		this.storyReporterBuilder = storyReporterBuilder;
+		return this;
+	}
+
+	public StoryConfiguration buildReporters(String... storyPaths) {
+		return buildReporters(asList(storyPaths));
+	}
+	
+	public StoryConfiguration buildReporters(List<String> storyPaths) {
+		this.storyReporters.putAll(storyReporterBuilder.build(storyPaths));
+		return this;
+	}
+
+	public StoryConfiguration useStepdocReporter(StepdocReporter stepdocReporter) {
         this.stepdocReporter = stepdocReporter;
         return this;
     }
