@@ -137,7 +137,7 @@ public class StoryReporterBuilder {
 	}
 
     public StoryReporter reporterFor(String storyPath, Format format) {
-        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, ouputLocationClass));
+        FilePrintStreamFactory factory = filePrintStreamFactory(storyPath);
         switch (format) {
             case CONSOLE:
                 return new ConsoleOutput();
@@ -159,9 +159,13 @@ public class StoryReporterBuilder {
                 throw new UnsupportedReporterFormatException(format);
         }
     }
+
+	private FilePrintStreamFactory filePrintStreamFactory(String storyPath) {
+		return new FilePrintStreamFactory(new StoryLocation(storyPath, ouputLocationClass));
+	}
     
 	public File outputDirectory() {
-		return new File(outputDirectory);
+		return filePrintStreamFactory("").outputDirectory();
 	}
 
 	public List<String> formatNames(boolean toLowerCase) {

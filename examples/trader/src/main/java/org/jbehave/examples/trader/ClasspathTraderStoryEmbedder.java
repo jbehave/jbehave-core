@@ -35,12 +35,14 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 
 	@Override
 	public StoryConfiguration configuration() {
+		Class<? extends ClasspathTraderStoryEmbedder> embedderClass = this.getClass();
 		return new MostUsefulStoryConfiguration()
-			.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))
+			.useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
 			.useStoryReporterBuilder(new StoryReporterBuilder()
-				.outputTo("target/jbehave-reports").outputAsAbsolute(true)
-				//.outputLocationClass(this.getClass())
-				.withDefaultFormats()
+        		// use absolute output directory with Ant
+        		//.outputTo("target/jbehave-reports").outputAsAbsolute(true)
+        		.outputLocationClass(embedderClass)
+        		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
 			.buildReporters(storyPaths());
 	}

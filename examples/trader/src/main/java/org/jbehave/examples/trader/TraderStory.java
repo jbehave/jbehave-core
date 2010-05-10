@@ -43,8 +43,9 @@ public abstract class TraderStory extends JUnitStory {
         useConfiguration(new StoryConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
-                	.outputTo("target/jbehave-reports").outputAsAbsolute(true)
-                	//.outputLocationClass(storyClass)
+                	// use absolute output directory with Ant
+                	//.outputTo("target/jbehave-reports").outputAsAbsolute(true)
+                	.outputLocationClass(storyClass)
                 	.withDefaultFormats()
                 	.withFormats(CONSOLE, TXT, HTML, XML))
                 .buildReporters(storyPath)
