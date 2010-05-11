@@ -61,7 +61,6 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         ensureThat(result.getThrowable().getMessage(), equalTo("Pending: my step"));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void shouldPrependBeforeScenarioAndAppendAfterScenarioAnnotatedSteps() {
         // Given some steps classes which run different steps before and after
@@ -96,7 +95,6 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         ensureThat(executableSteps, equalTo(asList(stepBefore2, stepBefore1, normalStep, stepAfter1, stepAfter2)));
     }
 
-    @SuppressWarnings("unchecked")
     @Test
     public void shouldReturnBeforeAndAfterStoryAnnotatedSteps() {
         // Given some steps classes which run different steps before and after

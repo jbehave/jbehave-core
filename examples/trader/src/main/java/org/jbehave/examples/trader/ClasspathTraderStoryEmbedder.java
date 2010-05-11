@@ -19,7 +19,6 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.StepsConfiguration;
 import org.jbehave.core.steps.StepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
@@ -36,42 +35,42 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 
 	@Override
 	public StoryConfiguration configuration() {
-		// start with default story configuration, overriding story loader and
-		// reporter
-		StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
-		storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass()
-				.getClassLoader()));
-		storyConfiguration.useStoryReporters(new StoryReporterBuilder()
-				.outputLocationClass(this.getClass())
-				.withDefaultFormats()
-				.withFormats(CONSOLE, TXT, HTML, XML)
-				.build(storyPaths()));
-		return storyConfiguration;
+		Class<? extends ClasspathTraderStoryEmbedder> embedderClass = this.getClass();
+		return new MostUsefulStoryConfiguration()
+			.useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
+			.useStoryReporterBuilder(new StoryReporterBuilder()
+        		// use absolute output directory with Ant
+        		//.outputTo("target/jbehave-reports").outputAsAbsolute(true)
+        		.outputLocationClass(embedderClass)
+        		.withDefaultFormats()
+				.withFormats(CONSOLE, TXT, HTML, XML))
+			.buildReporters(storyPaths());
 	}
 
 	@Override
 	public List<CandidateSteps> candidateSteps() {
 		// start with default steps configuration, overriding parameter
 		// converters, pattern builder and monitor
-		StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
-		StepMonitor monitor = new SilentStepMonitor();
-		stepsConfiguration.useParameterConverters(new ParameterConverters(
-				monitor, new TraderConverter(mockTradePersister()))); 
-		stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder(
-				"%")); // use '%' instead of '$' to identify parameters
-		stepsConfiguration.useMonitor(monitor);
+		StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration()
+			.useParameterConverters(new ParameterConverters(
+				new TraderConverter(mockTradePersister())))
+			.usePatternBuilder(new PrefixCapturingPatternBuilder(
+				"%")) // use '%' instead of '$' to identify parameters
+			.useMonitor(new SilentStepMonitor());
 		return asList(new StepsFactory(stepsConfiguration)
 				.createCandidateSteps(new TraderSteps(new TradingService()),
 						new BeforeAfterSteps()));
 	}
 
 	protected TraderPersister mockTradePersister() {
-		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1", 10.d))));
+		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
+				10.d))));
 	}
 
 	public List<String> storyPaths() {
 		StoryPathFinder finder = new StoryPathFinder();
-		return finder.listStoryPaths("target/classes", "", asList("**/*.story"), asList(""));
+		return finder.listStoryPaths("target/classes", "",
+				asList("**/*.story"), asList(""));
 	}
 
 }

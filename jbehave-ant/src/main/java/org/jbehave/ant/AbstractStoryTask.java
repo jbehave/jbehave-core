@@ -5,16 +5,19 @@ import static org.apache.tools.ant.Project.MSG_DEBUG;
 import static org.apache.tools.ant.Project.MSG_INFO;
 import static org.apache.tools.ant.Project.MSG_WARN;
 
+import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.StoryClassLoader;
 import org.jbehave.core.StoryEmbedder;
+import org.jbehave.core.StoryRunnerMode;
 import org.jbehave.core.StoryRunnerMonitor;
 import org.jbehave.core.parser.StoryPathFinder;
 
@@ -66,14 +69,24 @@ public abstract class AbstractStoryTask extends Task {
     private boolean skip = false;
 
     /**
-     * The boolean flag to ignoreFailure
+     * The boolean flag to ignore failure in stories
      */
-    private boolean ignoreFailure = false;
+    private boolean ignoreFailureInStories = false;
+
+    /**
+     * The boolean flag to ignore failure in reports
+     */
+    private boolean ignoreFailureInReports = false;
+
+    /**
+     * The boolean flag to render reports after stories
+     */
+	private boolean renderReportsAfterStories = true;
 
     /**
      * The boolean flag to run in batch mode
      */
-    private boolean batch = false;
+	private boolean batch = false;
 
     /**
      * The story embedder to run the stories
@@ -85,6 +98,7 @@ public abstract class AbstractStoryTask extends Task {
      * Used to find story paths
      */
     private StoryPathFinder finder = new StoryPathFinder();
+
 
     /**
      * Determines if the scope of the source directory is "test"
@@ -121,32 +135,13 @@ public abstract class AbstractStoryTask extends Task {
         return new StoryClassLoader(asList(new String[]{}));
     }
 
-    /**
-     * Indicates if failure should be ignored
-     *
-     * @return A boolean flag, <code>true</code> if failure should be ignored
-     */
-    protected boolean ignoreFailure() {
-        return ignoreFailure;
-    }
+	protected AntRunnerMonitor runnerMonitor() {
+		return new AntRunnerMonitor();
+	}
 
-    /**
-     * Indicates if stories should be skipped
-     *
-     * @return A boolean flag, <code>true</code> if stories are skipped
-     */
-    protected boolean skipStories() {
-        return skip;
-    }
-  
-    /**
-     * Indicates if stories are batched
-     *
-     * @return A boolean flag, <code>true</code> if stories are batched
-     */
-    protected boolean batch() {
-        return batch;
-    }
+	protected StoryRunnerMode runnerMode() {
+		return new StoryRunnerMode(batch, skip, ignoreFailureInStories, ignoreFailureInReports, renderReportsAfterStories);
+	}
 
     protected List<String> storyPaths() {
         log("Searching for story paths including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
@@ -211,7 +206,10 @@ public abstract class AbstractStoryTask extends Task {
 
     protected StoryEmbedder newStoryEmbedder() {
         try {
-            return (StoryEmbedder) createStoryClassLoader().loadClass(storyEmbedder).newInstance();
+            StoryEmbedder embedder = (StoryEmbedder) createStoryClassLoader().loadClass(storyEmbedder).newInstance();
+            embedder.useRunnerMonitor(runnerMonitor());
+            embedder.useRunnerMode(runnerMode());
+            return embedder;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create story embedder " + storyEmbedder, e);
         }
@@ -219,22 +217,47 @@ public abstract class AbstractStoryTask extends Task {
     
     protected class AntRunnerMonitor implements StoryRunnerMonitor {
         public void storiesBatchFailed(String failedStories) {
-            log("Failed to run stories batch: " + failedStories, MSG_WARN);
+            log("Failed to run stories batch: "+failedStories, MSG_WARN);
         }
 
         public void storyFailed(String storyName, Throwable e) {
-            log("Failed to run story " + storyName, e, MSG_WARN);
+            log("Failed to run story "+storyName, e, MSG_WARN);
         }
 
         public void runningStory(String storyName) {
-            log("Running story " + storyName, MSG_INFO);
+            log("Running story "+storyName,  MSG_INFO);
         }
 
         public void storiesNotRun() {
-            log("Stories not run");
+            log("Stories not run", MSG_INFO);
         }
-    }
 
+        public void renderingReports(File outputDirectory, List<String> formats,
+    			Properties templateProperties) {
+        	log("Rendering reports in '" + outputDirectory + "' using formats '" + formats + "'" 
+        		    + " and template properties '"+templateProperties+"'", MSG_INFO);
+    	}
+
+    	public void reportRenderingFailed(File outputDirectory,
+    			List<String> formats, Properties templateProperties, Throwable cause) {
+    		log("Failed to render reports in outputDirectory " + outputDirectory
+            		+ " using formats " + formats + " and template properties '"+templateProperties+"'", MSG_WARN);
+    	}
+
+		public void reportsRendered(int scenarios, int failedScenarios) {
+			log("Reports rendered with " + scenarios
+            		+ " scenarios (of which  " + failedScenarios + " failed)", MSG_INFO);
+		}
+
+		public void reportsNotRendered() {
+			log("Reports not rendered", MSG_INFO);
+		}
+		
+		@Override
+		public String toString() {
+			return this.getClass().getSimpleName();
+		}
+    }
 
     // Setters used by Task to inject dependencies
 
@@ -266,19 +289,27 @@ public abstract class AbstractStoryTask extends Task {
         this.classLoaderInjected = classLoaderInjected;
     }
 
+	public void setBatch(boolean batch) {
+        this.batch = batch;
+    }
+
     public void setSkip(boolean skip) {
         this.skip = skip;
     }
 
-    public void setIgnoreFailure(boolean ignoreFailure) {
-        this.ignoreFailure = ignoreFailure;
+    public void setIgnoreFailureInStories(boolean ignoreFailureInStories) {
+        this.ignoreFailureInStories = ignoreFailureInStories;
     }
 
-    public void setBatch(boolean batch) {
-        this.batch = batch;
-    }
+    public void setIgnoreFailureInReports(boolean ignoreFailureInReports) {
+		this.ignoreFailureInReports = ignoreFailureInReports;
+	}
+    
+    public void setRenderReportsAfterStories(boolean renderReportsAfterStories) {
+		this.renderReportsAfterStories = renderReportsAfterStories;
+	}
 
-    public void setStoryEmbedder(String storyEmbedder) {
+	public void setStoryEmbedder(String storyEmbedder) {
         this.storyEmbedder = storyEmbedder;
     }
 }

@@ -11,14 +11,14 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 
 /**
- * A Stepdoc represents the documentation on a single {@link Step}, which
- * includes:
+ * A Stepdoc represents the documentation on a single candidate step, which includes:
  * <ul>
- * <li>the associated annotation in the {@link Steps} class</li>
- * <li>the pattern to match the candidate step that configured in the annotation
- * </li>
- * <li>the aliases for the step (optional)</li>
- * <li>the matched method inthe {@link Steps} class</li>
+ * <li>the associated annotation in the method of the {@link CandidateSteps}
+ * class</li>
+ * <li>the pattern to match the candidate step that is configured in the
+ * annotation</li>
+ * <li>the alias patterns for the candidate step (optional)</li>
+ * <li>the method in the {@link CandidateSteps} class</li>
  * </ul>
  * 
  * @author Mauro Talevi

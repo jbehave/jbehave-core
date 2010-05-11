@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Stepdocs</title>
+</head>
+
+<body>
+
+<h2>Stepdocs</h2>
+
+<p>The matching of textual steps to Java methods, each representing
+a candidate step, is a key concept in creating a Domain-Specific
+Language (DSL). Once the DSL has been defined, we need a way to display
+the "grammar" of the DSL to enable to scenario writer to exercise that
+grammar in writing the scenarios.</p>
+
+<p>To this end, JBehave provides the concept of <a
+	href="javadoc/core/org/jbehave/core/steps/Stepdoc.html">Stepdoc</a>,
+which represents the documentation on a single candidate step as
+annotated method in the <a
+	href="javadoc/core/org/jbehave/core/CandidateSteps.html">CandidateSteps</a>
+instance. This documentation includes:</p>
+<ul>
+	<li>the associated annotation in the method of the CandidateSteps
+	class</li>
+	<li>the pattern to match the candidate step that is configured in
+	the annotation</li>
+	<li>the alias patterns for the candidate step (optional)</li>
+	<li>the method in the CandidateSteps class</li>
+</ul>
+
+<p>To generate the stepdocs for a given list of CandidateSteps
+instances:</p>
+
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+
+  StepdocGenerator generator = new DefaultStepdocGenerator();
+  List<Stepdoc> stepdocs = generator.generate(new TraderSteps(new TradingService()), new BeforeAfterSteps());
+    
+]]></script>
+
+<p>Alternatively, given a RunnableScenario instance:</p>
+
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+
+  RunnableScenario scenario = new MyScenario();
+  scenario.generateStepdoc();
+    
+]]></script>
+
+<p>The RunnableScenario. will use the configured <a
+	href="javadoc/core/org/jbehave/core/reporters/StepdocReporter.html">StepdocReporter</a>
+	to report the stepdocs found in the CandidateSteps defined for the scenario.
+</p>	
+
+<h2>Stepdocs via Ant task</h2>
+
+<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+
+	<taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
+      classpathref="scenario.classpath" />
+    <stepdoc scenarioIncludes="**/scenarios/*.java"
+      scenarioExcludes="**/i18n/scenarios/*.java" classLoaderInjected="false" />
+      
+]]></script>
+
+<p>Remember to include <b>jbehave-ant</b> to your runtime classpath.</p>
+
+<h2>Stepdocs via Maven Plugin</h2>
+
+<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+   <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <version>[version]</version>
+        <executions>
+          <execution>
+            <id>stepdoc</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <scenarioIncludes>
+                <scenarioInclude>**/scenarios/*.java</scenarioInclude>
+              </scenarioIncludes>
+            </configuration>
+            <goals>
+              <goal>stepdoc</goal>
+            </goals>
+          </execution>
+        </executions>
+    </plugin>
+]]></script>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

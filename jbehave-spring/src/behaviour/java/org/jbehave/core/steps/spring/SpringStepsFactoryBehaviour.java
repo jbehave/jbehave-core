@@ -9,7 +9,6 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 import org.jbehave.core.steps.Steps;
-import org.jbehave.core.steps.StepsConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanDefinitionStoreException;

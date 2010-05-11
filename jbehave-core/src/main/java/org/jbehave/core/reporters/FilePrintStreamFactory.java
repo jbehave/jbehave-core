@@ -68,8 +68,15 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 		if ( storyName.startsWith(".") ){
 			storyName = storyName.substring(1);
 		}
-		String name = storyName.substring(0, storyName.lastIndexOf("."));
+		String name = stripPackage(storyName);
 		return name + "." + configuration.getExtension();
+	}
+
+	private String stripPackage(String name) {
+		if ( name.lastIndexOf(".") != -1){
+			return name.substring(0, name.lastIndexOf("."));
+		}
+		return name;
 	}
 	
 	public static class FilePrintStream extends PrintStream {
@@ -138,6 +145,11 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 
 		public boolean isOutputDirectoryAbsolute() {
 			return outputAbsolute;
+		}
+		
+		@Override
+		public String toString() {
+			return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 		}
 
 	}

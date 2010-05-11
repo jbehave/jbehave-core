@@ -18,9 +18,7 @@ public class URLTraderStoryEmbedder extends ClasspathTraderStoryEmbedder {
 
 	@Override
 	public StoryConfiguration configuration() {
-		StoryConfiguration storyConfiguration = super.configuration();
-		storyConfiguration.useStoryLoader(new LoadFromURL());
-		return storyConfiguration;
+		return super.configuration().useStoryLoader(new LoadFromURL());
 	}
 
 	@Override

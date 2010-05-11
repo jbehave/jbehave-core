@@ -1,20 +1,20 @@
 package org.jbehave.core;
 
-import org.hamcrest.Matchers;
-import org.jbehave.core.errors.InvalidRunnableStoryException;
-import org.jbehave.core.steps.CandidateSteps;
-import org.junit.Test;
-
-import java.util.List;
-
 import static java.util.Arrays.asList;
 import static org.jbehave.Ensure.ensureThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+
+import org.hamcrest.Matchers;
+import org.jbehave.core.steps.CandidateSteps;
+import org.junit.Test;
+
 public class RunnableStoryBehaviour {
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void shouldRunASingleStoryViaClass() throws Throwable {
         // Given
         StoryEmbedder embedder = mock(StoryEmbedder.class);
@@ -26,7 +26,6 @@ public class RunnableStoryBehaviour {
         RunnableStory story = new MyStory(embedder, configuration, steps);
         story.run();
 
-        // Then
         verify(embedder).runStoriesAsClasses(asList(storyClass));
     }
 
@@ -46,7 +45,8 @@ public class RunnableStoryBehaviour {
         verify(embedder).runStoriesAsPaths(asList("org/jbehave/core/story1", "org/jbehave/core/story2"));
     }
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void shouldAllowOverrideOfDefaultConfiguration() throws Throwable {
         // Given
         StoryEmbedder embedder = mock(StoryEmbedder.class);
@@ -66,7 +66,8 @@ public class RunnableStoryBehaviour {
     }
 
 
-    @Test
+    @SuppressWarnings("unchecked")
+	@Test
     public void shouldAllowAdditionOfSteps() throws Throwable {
         // Given
         StoryEmbedder embedder = mock(StoryEmbedder.class);

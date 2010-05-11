@@ -25,10 +25,11 @@
     <page>annotations.html</page>
     <page>candidate-steps.html</page>
     <page>pending-steps.html</page>
+    <page>stepdocs.html</page>
     <page>configuring-stories.html</page>
     <page>running-stories.html</page>
     <page>locating-stories.html</page>
-    <page>i18n-stories.html</page>
+    <page>i18n-stories.html</page>    
   </section>
   <section>
     <name>Advanced Topics</name>

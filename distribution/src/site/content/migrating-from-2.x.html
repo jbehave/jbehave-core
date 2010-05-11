@@ -8,51 +8,69 @@
 
 <h2>The reasons for JBehave 3</h2>
 
-<p>JBehave 1 was more of a thought experiment, helping to spread and understand new concepts around BDD.
-While JBehave 2 has been a complete rewrite based on new technologies (e.g. Java 5 annotations),  <b>JBehave 3 is more
-of an evolution of JBehave 2</b>, based on the experience using it in commercial projects.   With the
-benefit of this experience, we feel that the overall design stood well the wear and tear, but there were areas which
-called for improvements that would have broken backward compatibility.</p>. 
+<p>While JBehave 1 was more of a thought experiment, helping to
+spread and understand new concepts around BDD. JBehave 2 has been a
+complete rewrite based on new technologies (e.g. Java 5 annotations). By
+contrast, <b>JBehave 3 is an evolution of JBehave 2</b>, based on the
+experience using it in commercial projects. With the benefit of this
+experience, we feel that the overall design stood well the wear and
+tear, but there were areas which called for improvements that would have
+broken backward compatibility.</p>
 
 <h2>Migration path from JBehave 2</h2>
 
-<p>From the textual stories point of view, these are almost completely backward compatible.  The only exception being
-the <b>GivenScenarios</b> keyword, whose default value has changed to <b>GivenStories</b>.  Full backward compatibility
-can be nonetheless ensures by configuring the keywords bundle entry to <b>GivenScenarios</b> until the migration has
-been completed.  See <a href="i18n-stories.html">Writing Stories in your language</a> on how to configure and override
-default keywords to suit your needs.</p>
+<p>From the textual stories point of view, these are almost
+completely backward compatible. The only exception being the <b>GivenScenarios</b>
+keyword, whose default value has changed to <b>GivenStories</b>. Full
+backward compatibility can be nonetheless ensures by configuring the
+keywords bundle entry to <b>GivenScenarios</b> until the migration has
+been completed. See <a href="i18n-stories.html">Writing Stories in
+your language</a> on how to configure and override default keywords to suit
+your needs.</p>
 
-<p>From the Java point of view, significant changes have occurred, but only in the configuration of the running of the
-stories.  The Steps classes, which is where most users' efforts will have gone into can be used without change in JBehave 3.</p>
+<p>From the Java point of view, significant changes have occurred,
+but only in the configuration of the running of the stories. The Steps
+classes, which is where most users' efforts will have gone into can be
+used without change in JBehave 3.</p>
 
 <p>On the configuration side, the main changes are:</p>
 
 <ul>
-    <li><b>JUnitScenario</b> class has been renamed to <b>JUnitStory</b>, reflecting the fact that scenarios in JBehave 2
-    were already stories in all but name.</li>
-    <li>Terminology has changed throughout to refer to <b>Story</b> in place of <b>Scenario</b> where this refers to the
-    textual or Java representation.  Scenario now refers uniquely to the constituent part of a story.  The root package
-    has also changed from <b>org.jbehave.scenario</b> to <b>org.jbehave.core</b>.</li>
-    <li><b>Configuration</b> class has been renamed to <b>StoryConfiguration</b>, along with similar renames for the
-    <b>MostUsefulStoryConfiguration</b> and <b>PropertyBasedStoryConfiguration</b>, to ensure more consistency and less
-    confusion with the <b>StepsConfiguration</b>.</li>
-    <li>JUnitStory allows the overriding of the default MostUsefulStoryConfiguration only vis the the <b>useConfiguration</b>
-    method </li>
-    <li>JUnitStory allows the specification of <b>Steps</b> only via the <b>addSTeps</b> method.</li>
-    <li>The textual story lookup paradigm has shifted from a <b>RunnableStory</b> class to a story path, which can be
-        resolved from the class via the <b>StoryPathResolver</b>, and its implementations <b>UnderscoredCamelCaseResolver</b>
-        and <b>CasePreservingResolver</b>.  As such, the <b>StoryLoader</b> implementations only define the model story
-    from a story path.</li>
-    <li>The <b>FilePrintStreamFactory</b> correspondingly now handles only story paths.</li>
-
+	<li>Terminology has changed throughout to refer to <b>Story</b> in
+	place of <b>Scenario</b> where this refers to the textual or Java
+	representation reflecting the fact that scenarios in JBehave 2 were
+	already stories in all but name. E.g. <b>JUnitScenario</b> is now <b>JUnitStory</b>.</li>
+	<li>The root package has also changed from <b>org.jbehave.scenario</b>
+	to <b>org.jbehave.core</b>.</li>
+	<li><b>Configuration</b> class has been renamed to <b>StoryConfiguration</b>,
+	along with similar renames for the <b>MostUsefulStoryConfiguration</b>
+	and <b>PropertyBasedStoryConfiguration</b>, to ensure more consistency
+	and less confusion with the <b>StepsConfiguration</b>.</li>
+	<li>Configurations have shifted to use a builder paradigm.</li>
+	<li>JUnitStory allows the overriding of the default
+	MostUsefulStoryConfiguration only via the <b>useConfiguration</b>
+	method, and the specification of <b>Steps</b> only via the <b>addSteps</b>
+	method.</li>
+	<li>The textual story lookup paradigm has shifted from a <b>RunnableStory</b>
+	class to a story path, which can be resolved from the class via the <b>StoryPathResolver</b>,
+	and its implementations <b>UnderscoredCamelCaseResolver</b> and <b>CasePreservingResolver</b>.
+	As such, the <b>StoryLoader</b> implementations only define the model
+	story from a story path. The <b>FilePrintStreamFactory</b>
+	correspondingly now handles only story paths.</li>
+	<li>The concerns of running stories and rendering reports has been centralised in
+	an embeddable component - <b>StoryEmbedder</b> - which has thin wrappers for 
+	running in multiple environments, e.g. JUnit, Ant/Maven, Spring etc.  Using the 
+	StoryEmbedder, the user can choose to run multiple textual story using a single 
+	Java entry point.</li>
 </ul>
 
 <h2>Next?</h2>
 
 <span class="followup">JBehave development has been
-example-driven and the examples illustrate all the features, migrated from 2.x or new in 3.x. Be
-sure check out the <a href="running-examples.html">running examples</a>, as it's the best and most
-instructive way to get up to speed with the changes outlined above.</span>
+example-driven and the examples illustrate all the features, migrated
+from 2.x or new in 3.x. Be sure check out the <a
+	href="running-examples.html">running examples</a>, as it's the best and
+most instructive way to get up to speed with the changes outlined above.</span>
 
 </body>
 </html>

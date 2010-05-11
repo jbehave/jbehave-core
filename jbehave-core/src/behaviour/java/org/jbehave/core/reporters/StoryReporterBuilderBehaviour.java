@@ -2,11 +2,10 @@ package org.jbehave.core.reporters;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.jbehave.Ensure.ensureThat;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.STATS;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 
 import java.io.IOException;
-import java.util.Map;
+import java.util.Collection;
 import java.util.Properties;
 
 import org.jbehave.core.JUnitStory;
@@ -15,7 +14,6 @@ import org.jbehave.core.parser.StoryLocation;
 import org.jbehave.core.parser.StoryPathResolver;
 import org.jbehave.core.parser.UnderscoredCamelCaseResolver;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
-import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.junit.Test;
 
 public class StoryReporterBuilderBehaviour {
@@ -31,9 +29,9 @@ public class StoryReporterBuilderBehaviour {
         
         // Then
         ensureThat(reporter instanceof DelegatingStoryReporter);
-        Map<Format, StoryReporter> delegates = builder.getDelegates();
+        Collection<StoryReporter> delegates = ((DelegatingStoryReporter)reporter).getDelegates();
         ensureThat(delegates.size(), equalTo(1));
-        ensureThat(delegates.get(STATS) instanceof PostStoryStatisticsCollector);
+        ensureThat(delegates.iterator().next() instanceof PostStoryStatisticsCollector);
     }
 
     @Test
@@ -75,9 +73,9 @@ public class StoryReporterBuilderBehaviour {
         
         // Then
         ensureThat(reporter instanceof DelegatingStoryReporter);
-        Map<Format, StoryReporter> delegates = builder.getDelegates();
+        Collection<StoryReporter> delegates = ((DelegatingStoryReporter)reporter).getDelegates();
         ensureThat(delegates.size(), equalTo(2));
-        ensureThat(delegates.get(TXT), equalTo(txtReporter));
+        ensureThat(delegates.contains(txtReporter));
     }
 
     private String storyPath(Class<MyStory> storyClass) {

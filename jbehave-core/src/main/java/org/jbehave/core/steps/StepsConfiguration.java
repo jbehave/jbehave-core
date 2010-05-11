@@ -101,32 +101,36 @@ public abstract class StepsConfiguration {
         return patternBuilder;
     }
 
-    public void usePatternBuilder(StepPatternBuilder patternBuilder) {
+    public StepsConfiguration usePatternBuilder(StepPatternBuilder patternBuilder) {
         this.patternBuilder = patternBuilder;
+        return this;
     }
 
     public StepMonitor monitor() {
         return monitor;
     }
 
-    public void useMonitor(StepMonitor monitor) {
+    public StepsConfiguration useMonitor(StepMonitor monitor) {
         this.monitor = monitor;
+        return this;
     }
 
     public Paranamer paranamer() {
         return paranamer;
     }
 
-    public void useParanamer(Paranamer paranamer) {
+    public StepsConfiguration useParanamer(Paranamer paranamer) {
         this.paranamer = paranamer;
+        return this;
     }
 
     public ParameterConverters parameterConverters() {
         return parameterConverters;
     }
 
-    public void useParameterConverters(ParameterConverters parameterConverters) {
+    public StepsConfiguration useParameterConverters(ParameterConverters parameterConverters) {
         this.parameterConverters = parameterConverters;
+        return this;
     }
 
     public Map<StepType, String> getStartingWordsByType() {
@@ -137,9 +141,10 @@ public abstract class StepsConfiguration {
         return keywords;
     }
 
-    public void useKeywords(Keywords keywords) {
+    public StepsConfiguration useKeywords(Keywords keywords) {
         this.keywords = keywords;
         this.startingWordsByType = startingWordsByType(this.keywords);
+        return this;
     }
 
 }
