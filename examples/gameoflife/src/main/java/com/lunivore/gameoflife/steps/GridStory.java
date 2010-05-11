@@ -18,6 +18,7 @@ public class GridStory extends JUnitStory {
 		useConfiguration(new MostUsefulStoryConfiguration() {
 			@Override
 			public StoryPathResolver storyPathResolver() {
+				// Default story path extension is ".story", but here were are using no extension
 				return new UnderscoredCamelCaseResolver("");
 			}
 

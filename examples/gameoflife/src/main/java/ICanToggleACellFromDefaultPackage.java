@@ -1,17 +1,5 @@
-import com.lunivore.gameoflife.steps.GridSteps;
-import org.jbehave.core.JUnitStory;
-import org.jbehave.core.PropertyBasedStoryConfiguration;
-import org.jbehave.core.parser.LoadFromRelativeFile;
-import org.jbehave.core.parser.RegexStoryParser;
-import org.jbehave.core.reporters.PrintStreamOutput;
+import com.lunivore.gameoflife.steps.GridStory;
 
-public class ICanToggleACellFromDefaultPackage extends JUnitStory {
+public class ICanToggleACellFromDefaultPackage extends GridStory {
 
-    public ICanToggleACellFromDefaultPackage() {
-        useConfiguration(new PropertyBasedStoryConfiguration()
-                .useStoryParser(new RegexStoryParser())
-                .useStoryReporter(new PrintStreamOutput())
-                .useStoryLoader(new LoadFromRelativeFile(this.getClass(), "../../src/main/java")));
-        addSteps(new GridSteps());
-    }
 }
