@@ -424,7 +424,7 @@ public class PrintStreamOutputBehaviour {
         return resolver.resolve(storyClass);
     }
 
-    private static class MyStory extends JUnitStory {
+    private abstract class MyStory extends JUnitStory {
 
     }
 }

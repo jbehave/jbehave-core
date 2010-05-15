@@ -7,7 +7,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.StoryConfiguration;
+import org.jbehave.core.MostUsefulStoryConfiguration;
 import org.jbehave.core.parser.LoadFromClasspath;
 import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
 import org.jbehave.core.parser.StoryPathResolver;
@@ -40,7 +40,7 @@ public abstract class TraderStory extends JUnitStory {
         Class<? extends TraderStory> storyClass = this.getClass();
         String storyPath = storyPathResolver.resolve(storyClass);
 
-        useConfiguration(new StoryConfiguration()
+        useConfiguration(new MostUsefulStoryConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                 	// use absolute output directory with Ant
@@ -60,6 +60,7 @@ public abstract class TraderStory extends JUnitStory {
 		stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder(
 				"%")); // use '%' instead of '$' to identify parameters
 		stepsConfiguration.useMonitor(monitor);
+		stepsConfiguration.doDryRun(false);
 		addSteps(createSteps(stepsConfiguration));
 	}
 

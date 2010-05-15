@@ -28,6 +28,24 @@ via the <a
    storyConfiguration.usePendingErrorStrategy(PendingErrorStrategy.FAILING);
 </pre>
 
+<h2>Dry Run Mode</h2>
+
+<p>It may be sometimes useful to run in dry-run mode, checking if any steps are pending but without actually
+executed any of the steps, as this may take a considerable time.  The dry-run mode may be enabled via
+the <a href="javadoc/core/org/jbehave/core/steps/StepsConfiguration.html">StepsConfiguration</a>:</p>
+ 
+<pre class="brush: java">
+StepsConfiguration stepsConfiguration = new StepsConfiguration()
+	.useMonitor(new PrintStreamStepMonitor()) // default is SilentStepMonitor()
+	.doDryRun(true); // default is "false"
+new StepsFactory(stepsConfiguration, new MySteps());
+</pre>
+
+<p>We've here configured the steps to use a verbose monitoring, so that the use can see that in dry-run mode 
+the step that is about to be performed will be followed by a "(DRY RUN)" additional tag.   When dry-run mode
+is activated, it will also be shown in the reporters' output.
+</p>
+
 <div class="clear">
 <hr />
 </div>

@@ -100,7 +100,7 @@ public class Steps implements CandidateSteps {
 
     /**
      * Creates Steps with given custom configuration wrapping a POJO instance
-     * containing the annotatated steps methods
+     * containing the annotated steps methods
      * 
      * @param configuration the StepsConfiguration
      * @param instance the POJO instance
@@ -152,6 +152,7 @@ public class Steps implements CandidateSteps {
         CandidateStep step = createCandidateStep(method, stepType, stepPatternAsString, priority, configuration);
         step.useStepMonitor(configuration.monitor());
         step.useParanamer(configuration.paranamer());
+        step.doDryRun(configuration.dryRun());
         steps.add(step);
     }
 
@@ -189,6 +190,10 @@ public class Steps implements CandidateSteps {
     public List<Step> runAfterStory(boolean embeddedStory) {
         return storyStepsHaving(AfterStory.class, embeddedStory, new OkayToRun());
     }
+    
+	public StepsConfiguration getConfiguration() {
+		return configuration;
+	}
 
     List<Step> storyStepsHaving(final Class<? extends Annotation> annotationClass, boolean embeddedStory, final StepPart forSuccess) {
         List<Step> steps = new ArrayList<Step>();

@@ -148,6 +148,14 @@ public class SilentSuccessFilter implements StoryReporter {
         });     
     }
 
+    public void dryRun() {
+        currentScenario.add(new Todo() {
+            public void doNow() {
+                delegate.dryRun();
+            }
+        });
+    }
+    
     private static interface Todo {
         void doNow();
     }

@@ -172,6 +172,17 @@ span.inOrderTo, span.asA, span.iWantTo {
   color: red;
 }
 
+.dryRun {
+  border: solid;
+  color: amber;
+  background-color: yellow;
+  margin-left: 12px;
+  padding: 10px;
+  font-size: 20px;
+  text-align: center;
+  text-weight: bold;
+}
+
 .parameter {
   color: purple;
   padding-left: 0px;

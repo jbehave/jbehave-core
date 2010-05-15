@@ -83,4 +83,7 @@ public class StepFailureDecorator implements StoryReporter {
         delegate.afterExamples();        
     }
 
+	public void dryRun() {
+		delegate.dryRun();
+	}
 }

@@ -205,6 +205,10 @@ public class PrintStreamOutput implements StoryReporter {
         print(format("afterExamples", "\n"));
     }
 
+	public void dryRun() {
+		print(format("dryRun", "{0}\n", keywords.dryRun()));
+	}
+
     /**
      * Formats event output by key, usually equal to the method name.
      * 

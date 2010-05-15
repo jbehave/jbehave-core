@@ -70,6 +70,10 @@ public class StoryRunner {
         errorStrategy = configuration.errorStrategy();
         resetErrorState(embeddedStory);
 
+		if (isDryRun(candidateSteps)) {
+			reporter.dryRun();
+		}
+
         reporter.beforeStory(story, embeddedStory);
         runStorySteps(candidateSteps, story, embeddedStory, StepCreator.Stage.BEFORE);
         for (Scenario scenario : story.getScenarios()) {
@@ -86,6 +90,15 @@ public class StoryRunner {
         reporter.afterStory(embeddedStory);
         currentStrategy.handleError(throwable);
     }
+    
+	private boolean isDryRun(List<CandidateSteps> candidateSteps) {
+		for (CandidateSteps steps : candidateSteps) {
+			if (steps.getConfiguration().dryRun()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private StoryReporter reporterFor(StoryConfiguration configuration,
 			Story story, boolean embeddedStory) {

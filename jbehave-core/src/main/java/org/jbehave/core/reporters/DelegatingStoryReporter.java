@@ -117,6 +117,12 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
+	public void dryRun() {
+        for (StoryReporter reporter : delegates) {
+            reporter.dryRun();
+        }
+	}
+	
     public Collection<StoryReporter> getDelegates() {
         return delegates;
     }

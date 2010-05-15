@@ -69,6 +69,7 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("example", "\n<h3 class=\"example\">{0} {1}</h3>\n");
         patterns.setProperty("parameterValueStart", "<span class=\"step parameter\">");
         patterns.setProperty("parameterValueEnd", "</span>");
+        patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");        
         return patterns;
     }
 

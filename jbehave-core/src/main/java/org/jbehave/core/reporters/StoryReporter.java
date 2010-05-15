@@ -40,4 +40,6 @@ public interface StoryReporter {
 
     void failed(String step, Throwable e);
 
+	void dryRun();
+
 }

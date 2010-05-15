@@ -30,7 +30,7 @@ public class StoryClassLoaderBehaviour {
         assertEquals(storyClassName, story.getClass().getName());
     }
 
-    public static class MyStory extends JUnitStory {
+    protected static class MyStory extends JUnitStory {
 
 		public MyStory() {
 		}

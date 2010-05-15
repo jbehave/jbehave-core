@@ -34,9 +34,11 @@ public class Keywords {
     public static final String PENDING = "Pending";
     public static final String NOT_PERFORMED = "NotPerformed";
     public static final String FAILED = "Failed";
+    public static final String DRY_RUN = "DryRun";
+    
     public static final List<String> KEYWORDS = asList(NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SCENARIO,
             GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR, EXAMPLES_TABLE_VALUE_SEPARATOR,
-            GIVEN, WHEN, THEN, AND, IGNORABLE, PENDING, NOT_PERFORMED, FAILED);
+            GIVEN, WHEN, THEN, AND, IGNORABLE, PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
 
     private final String narrative;
     private final String inOrderTo;
@@ -56,6 +58,7 @@ public class Keywords {
     private final String pending;
     private final String notPerformed;
     private final String failed;
+	private final String dryRun;
     private final String[] others;
     private StringCoder encoder;
 
@@ -79,6 +82,7 @@ public class Keywords {
         keywords.put(PENDING, "PENDING");
         keywords.put(NOT_PERFORMED, "NOT PERFORMED");
         keywords.put(FAILED, "FAILED");
+        keywords.put(DRY_RUN, "DRY RUN");
         return keywords;
     }
 
@@ -123,6 +127,7 @@ public class Keywords {
         this.pending = keyword(PENDING, keywords);
         this.notPerformed = keyword(NOT_PERFORMED, keywords);
         this.failed = keyword(FAILED, keywords);
+        this.dryRun = keyword(DRY_RUN, keywords);
         this.others = new String[] { and, ignorable };
         this.encoder = encoder;
     }
@@ -207,6 +212,10 @@ public class Keywords {
         return failed;
     }
 
+	public String dryRun() {
+		return dryRun;
+	}
+
     public String[] others() {
         return others;
     }
@@ -231,7 +240,7 @@ public class Keywords {
     public static final class InsufficientKeywordsException extends RuntimeException {
 
         public InsufficientKeywordsException(String... others) {
-            super("Insufficient keywords: " + asList(others) + ", but requires another " + (10 - others.length));
+            super("Insufficient keywords: " + asList(others) + ", but requires another " + (11 - others.length));
         }
 
     }

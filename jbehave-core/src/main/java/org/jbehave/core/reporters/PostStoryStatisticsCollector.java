@@ -93,6 +93,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
 	public void afterExamples() {
 	}
+	
+	public void dryRun() {		
+	}
 
 	private void count(String event) {
 		Integer count = data.get(event);
@@ -127,5 +130,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
 				.append(output).append(data).toString();
 	}
+
 
 }

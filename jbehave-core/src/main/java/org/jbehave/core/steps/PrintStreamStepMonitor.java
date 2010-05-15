@@ -14,6 +14,8 @@ public class PrintStreamStepMonitor implements StepMonitor {
 	private static final String CONVERTED_VALUE_OF_TYPE = "Converted value ''{0}'' of type ''{1}'' to ''{2}'' with converter ''{3}''";
 	private static final String STEP_MATCHES_TYPE = "Step ''{0}'' (with previous step ''{1}'') ''{2}'' type ''{3}''";
 	private static final String STEP_MATCHES_PATTERN = "Step ''{0}'' {1} pattern ''{2}''";
+	private static final String PERFORMING = "Performing step ''{0}'' {1}";
+	private static final String DRY_RUN = "(DRY RUN)";
 	private static final String MATCHES = "matches";
 	private static final String DOES_NOT_MATCH = "does not match";
 	private static final String USING_NAME_FOR_ARG = "Using {0} name ''{1}'' for position {2}";
@@ -54,8 +56,9 @@ public class PrintStreamStepMonitor implements StepMonitor {
 		print(output, message);
 	}
 
-	public void performing(String step) {
-		print(output, step);
+	public void performing(String step, boolean dryRun) {
+		String message = format(PERFORMING, step, (dryRun? DRY_RUN : "" ));
+		print(output, message);
 	}
 
 	public void usingAnnotatedNameForArg(String name, int position) {

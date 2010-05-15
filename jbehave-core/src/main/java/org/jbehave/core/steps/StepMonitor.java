@@ -16,7 +16,7 @@ public interface StepMonitor {
 
     void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass);
 
-    void performing(String step);
+    void performing(String step, boolean dryRun);
 
 	void usingAnnotatedNameForArg(String name, int position);
 
