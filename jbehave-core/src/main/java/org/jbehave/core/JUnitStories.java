@@ -13,8 +13,7 @@ public abstract class JUnitStories extends AbstractStory {
 
     @Test
     public void run() throws Throwable {
-        StoryEmbedder embedder = storyEmbedder();
-        embedder.runStoriesAsPaths(storyPaths());
+        configuredEmbedder().runStoriesAsPaths(storyPaths());
     }
 
     protected abstract List<String> storyPaths();

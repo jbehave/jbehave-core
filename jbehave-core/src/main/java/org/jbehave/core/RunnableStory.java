@@ -21,12 +21,14 @@ public interface RunnableStory {
 
     void run() throws Throwable;
    
-    void useConfiguration(StoryConfiguration configuration);
-    
     StoryConfiguration getConfiguration();
     
+    List<CandidateSteps> getSteps();
+
     void addSteps(CandidateSteps... steps);
 
-    List<CandidateSteps> getSteps();
+    void useConfiguration(StoryConfiguration configuration);
+    
+	void useEmbedder(StoryEmbedder embedder);
 
 }

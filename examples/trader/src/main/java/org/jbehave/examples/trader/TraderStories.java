@@ -14,7 +14,7 @@ public class TraderStories extends JUnitStories {
 	private URLTraderStoryEmbedder embedder = new URLTraderStoryEmbedder();
 
 	@Override
-	protected StoryEmbedder storyEmbedder() {
+	protected StoryEmbedder configuredEmbedder() {
 		return embedder;
 	}
 

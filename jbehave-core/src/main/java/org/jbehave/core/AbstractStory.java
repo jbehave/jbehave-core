@@ -25,14 +25,7 @@ public abstract class AbstractStory implements RunnableStory {
 
     protected StoryConfiguration configuration = new MostUsefulStoryConfiguration();
     protected List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
-
-    public void useConfiguration(StoryConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public void addSteps(CandidateSteps... steps) {
-        this.candidateSteps.addAll(asList(steps));
-    }
+	private StoryEmbedder embedder = new StoryEmbedder();
 
     public StoryConfiguration getConfiguration() {
         return configuration;
@@ -42,20 +35,23 @@ public abstract class AbstractStory implements RunnableStory {
         return candidateSteps;
     }
 
-    protected StoryEmbedder storyEmbedder() {
-        StoryEmbedder embedder = new StoryEmbedder() {
-            @Override
-            public List<CandidateSteps> candidateSteps() {
-                return candidateSteps;
-            }
-
-            @Override
-            public StoryConfiguration configuration() {
-                return configuration;
-            }
-        };
-        return embedder;
+    public void useConfiguration(StoryConfiguration configuration) {
+        this.configuration = configuration;
     }
 
+    public void addSteps(CandidateSteps... steps) {
+        this.candidateSteps.addAll(asList(steps));
+    }
+
+    public void useEmbedder(StoryEmbedder embedder){
+		this.embedder = embedder;
+    }
+
+    protected StoryEmbedder configuredEmbedder() {
+    	embedder.useConfiguration(configuration);
+    	embedder.useCandidateSteps(candidateSteps);
+        return embedder;
+    }
+    
 
 }

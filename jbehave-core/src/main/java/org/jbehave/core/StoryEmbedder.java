@@ -1,7 +1,5 @@
 package org.jbehave.core;
 
-import static java.util.Arrays.asList;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,7 +16,9 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 
 public class StoryEmbedder {
-    private StoryRunner runner;
+    private StoryConfiguration configuration = new MostUsefulStoryConfiguration();
+    private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+	private StoryRunner runner;
     private StoryRunnerMode runnerMode;
     private StoryRunnerMonitor runnerMonitor;
 
@@ -43,6 +43,7 @@ public class StoryEmbedder {
             String storyName = story.getClass().getName();
             try {
                 runnerMonitor.runningStory(storyName);
+                story.useEmbedder(this);
                 story.run();
             } catch (Throwable e) {
                 if (runnerMode.batch()) {
@@ -160,22 +161,34 @@ public class StoryEmbedder {
     }
     
     public StoryConfiguration configuration() {
-        return new MostUsefulStoryConfiguration();
+        return configuration;
     }
 
     public List<CandidateSteps> candidateSteps() {
-        return asList(new CandidateSteps[]{});
+		return candidateSteps;
     }
 
     public StoryRunnerMode runnerMode() {
         return runnerMode;
     }
 
-    public void useStoryRunner(StoryRunner runner) {
-        this.runner = runner;
-    }
+	public StoryRunnerMonitor runnerMonitor() {
+		return runnerMonitor;
+	}
 
-    public void useRunnerMode(StoryRunnerMode runnerMode) {
+    public StoryRunner storyRunner() {
+		return runner;
+	}
+    
+	public void useConfiguration(StoryConfiguration configuration) {
+		this.configuration = configuration;
+	}
+
+	public void useCandidateSteps(List<CandidateSteps> candidateSteps) {
+		this.candidateSteps = candidateSteps;		
+	}
+
+	public void useRunnerMode(StoryRunnerMode runnerMode) {
         this.runnerMode = runnerMode;
     }
 
@@ -183,6 +196,10 @@ public class StoryEmbedder {
         this.runnerMonitor = runnerMonitor;
     }
 
+    public void useStoryRunner(StoryRunner runner) {
+        this.runner = runner;
+    }
+    
     private String format(Map<String, Throwable> failedStories) {
         StringBuffer sb = new StringBuffer();
         for (String storyName : failedStories.keySet()) {
@@ -217,4 +234,5 @@ public class StoryEmbedder {
             super(message, cause);
         }
     }
+
 }

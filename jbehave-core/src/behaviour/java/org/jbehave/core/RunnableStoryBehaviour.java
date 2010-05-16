@@ -99,7 +99,7 @@ public class RunnableStoryBehaviour {
         }
 
         @Override
-        protected StoryEmbedder storyEmbedder() {
+        protected StoryEmbedder configuredEmbedder() {
             return embedder;
         }
     }
@@ -118,7 +118,7 @@ public class RunnableStoryBehaviour {
             return asList("org/jbehave/core/story1", "org/jbehave/core/story2");
         }
 
-        protected StoryEmbedder storyEmbedder() {
+        protected StoryEmbedder configuredEmbedder() {
             return embedder;
         }
     }
