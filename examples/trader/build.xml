@@ -46,14 +46,6 @@
 		</javac>
 	</target>
 
-	<target name="run-stories" depends="compile, reports-resources">
-		<taskdef name="storyRunner" classname="org.jbehave.ant.StoryRunnerTask" classpathref="story.classpath" />
-
-		<storyRunner storyIncludes="**/stories/*.java" sourceDirectory="${basedir}/src/main/java" storyExcludes="**/stories/*NonSuccessful.java,**/i18n/stories/*.java" storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder" batch="true" ignoreFailureInStories="true" ignoreFailureInReports="false" />
-		<storyRunner storyIncludes="**/stories/*.java" sourceDirectory="${basedir}/src/main/java" storyExcludes="**/i18n/stories/*.java" storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder" batch="true" ignoreFailureInStories="true" ignoreFailureInReports="false" />
-		<storyRunner storyIncludes="**/i18n/stories/*.java" sourceDirectory="${basedir}/src/main/java" storyExcludes="**/stories/*NonSuccessful.java" storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder" ignoreFailureInStories="true" ignoreFailureInReports="false" />
-	</target>
-
 	<target name="reports-resources">
 		<artifact:dependencies filesetId="reports.dependency.fileset">
 			<dependency groupId="org.jbehave" artifactId="jbehave-core" version="${pom.version}" scope="compile" />
@@ -74,19 +66,32 @@
 		</unzip>
 	</target>
 
+	<target name="run-stories" depends="compile, reports-resources">
+		<taskdef name="storyRunner" classname="org.jbehave.ant.StoryRunnerTask" classpathref="story.classpath" />
+
+		<storyRunner 
+				storyIncludes="**/stories/*.java" batch="false" 
+				ignoreFailureInStories="true" ignoreFailureInReports="true" renderReportsAfterStories="true" />
+	</target>
+
+	<target name="run-stories-as-paths" depends="compile, reports-resources">
+		<taskdef name="storyPathRunner" classname="org.jbehave.ant.StoryPathRunnerTask" classpathref="story.classpath" />
+
+		<storyPathRunner storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder" 
+				storyIncludes="**/stories/*.story" batch="false" 
+				ignoreFailureInStories="true" ignoreFailureInReports="true" renderReportsAfterStories="true" />
+	</target>
+
 	<target name="render-reports" depends="compile, reports-resources">
 		<taskdef name="reportRenderer" classname="org.jbehave.ant.ReportRendererTask" classpathref="story.classpath" />
-
 		<reportRenderer storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder" />
-
 	</target>
 
 	<target name="stepdoc" depends="compile">
 		<taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask" classpathref="story.classpath" />
-		<stepdoc storyIncludes="**/stories/*.java" storyExcludes="**/i18n/stories/*.java" storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder" />
+		<stepdoc storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder" />
 	</target>
 
-	<target name="build" depends="run-stories,render-reports,stepdoc">
-	</target>
+	<target name="build" depends="run-stories,run-stories-as-paths,stepdoc"/>
 
 </project>
