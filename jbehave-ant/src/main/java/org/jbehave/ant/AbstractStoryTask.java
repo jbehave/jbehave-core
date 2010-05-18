@@ -17,9 +17,9 @@ import org.apache.tools.ant.Task;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.StoryClassLoader;
 import org.jbehave.core.StoryEmbedder;
-import org.jbehave.core.StoryRunnerMode;
-import org.jbehave.core.StoryRunnerMonitor;
 import org.jbehave.core.parser.StoryPathFinder;
+import org.jbehave.core.runner.StoryRunnerMode;
+import org.jbehave.core.runner.StoryRunnerMonitor;
 
 /**
  * Abstract task that holds all the configuration parameters to specify and load

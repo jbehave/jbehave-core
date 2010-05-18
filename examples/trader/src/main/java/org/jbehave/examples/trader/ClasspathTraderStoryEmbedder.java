@@ -8,9 +8,9 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.util.List;
 
-import org.jbehave.core.MostUsefulStoryConfiguration;
-import org.jbehave.core.StoryConfiguration;
 import org.jbehave.core.StoryEmbedder;
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.parser.LoadFromClasspath;
 import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
 import org.jbehave.core.parser.StoryPathFinder;

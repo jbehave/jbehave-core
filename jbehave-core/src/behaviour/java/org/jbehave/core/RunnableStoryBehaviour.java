@@ -11,6 +11,8 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
+import org.jbehave.core.configuration.PropertyBasedStoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.junit.Test;
 

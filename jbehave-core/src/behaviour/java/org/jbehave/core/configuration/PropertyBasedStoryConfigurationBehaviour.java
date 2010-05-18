@@ -1,9 +1,10 @@
-package org.jbehave.core;
+package org.jbehave.core.configuration;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.jbehave.core.configuration.PropertyBasedStoryConfiguration;
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.PendingErrorStrategy;
 import org.jbehave.core.i18n.LocalizedKeywords;

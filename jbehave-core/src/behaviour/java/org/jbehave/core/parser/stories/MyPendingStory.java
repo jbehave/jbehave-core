@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.reporters.PrintStreamOutput;
 import org.jbehave.core.reporters.StoryReporter;
 

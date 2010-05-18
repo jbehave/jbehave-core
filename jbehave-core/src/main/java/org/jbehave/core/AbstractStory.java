@@ -5,13 +5,14 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 
 /**
  * <p>
  * Abstract implementation of RunnableStory which is intended as a base
- * class for delegate implementations of RunnableStory. As such, it has no explicit
- * supports for any test framework.  It provides the
+ * class with no explicit support for any test framework.  It provides the
  * {@link StoryEmbedder} used to run the story or stories, with the provided
  * {@link StoryConfiguration} and the {@link CandidateSteps}.
  * </p>

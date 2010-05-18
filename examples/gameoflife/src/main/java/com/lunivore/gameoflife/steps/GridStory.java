@@ -1,7 +1,7 @@
 package com.lunivore.gameoflife.steps;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.parser.LoadFromClasspath;
 import org.jbehave.core.parser.RegexStoryParser;
 import org.jbehave.core.parser.StoryLoader;

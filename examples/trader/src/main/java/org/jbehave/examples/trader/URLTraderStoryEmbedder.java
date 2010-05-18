@@ -5,7 +5,7 @@ import static java.util.Arrays.asList;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.jbehave.core.StoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.parser.LoadFromURL;
 import org.jbehave.core.parser.StoryLocation;
 

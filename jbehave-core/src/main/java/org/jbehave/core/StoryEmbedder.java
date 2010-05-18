@@ -9,10 +9,16 @@ import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.parser.StoryPathResolver;
 import org.jbehave.core.reporters.FreemarkerReportRenderer;
 import org.jbehave.core.reporters.ReportRenderer;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.runner.PrintStreamRunnerMonitor;
+import org.jbehave.core.runner.StoryRunner;
+import org.jbehave.core.runner.StoryRunnerMode;
+import org.jbehave.core.runner.StoryRunnerMonitor;
 import org.jbehave.core.steps.CandidateSteps;
 
 public class StoryEmbedder {

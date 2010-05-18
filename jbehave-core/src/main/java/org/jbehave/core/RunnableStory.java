@@ -2,16 +2,18 @@ package org.jbehave.core;
 
 import java.util.List;
 
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 
 /**
  * <p>
- * Represents a runnable story.
+ * Represents a runnable story facade to the {@link StoryEmbedder}.
  * </p>
  * <p>
- * Typically users will need to extend an abstract implementation, such as
- * {@link AbstractStory} or a decorator, such as
- * {@link JUnitStory}, which also provide support for test frameworks.
+ * Users can either extend an abstract implementation, such as
+ * {@link AbstractStory} or a concrete implementation, such as
+ * {@link JUnitStory} or {@link JUnitStories}, which also provide support for
+ * test frameworks.
  * </p>
  * 
  * @see AbstractStory
@@ -19,16 +21,16 @@ import org.jbehave.core.steps.CandidateSteps;
  */
 public interface RunnableStory {
 
-    void run() throws Throwable;
-   
-    StoryConfiguration getConfiguration();
-    
-    List<CandidateSteps> getSteps();
+	void run() throws Throwable;
 
-    void addSteps(CandidateSteps... steps);
+	StoryConfiguration getConfiguration();
 
-    void useConfiguration(StoryConfiguration configuration);
-    
+	List<CandidateSteps> getSteps();
+
+	void addSteps(CandidateSteps... steps);
+
+	void useConfiguration(StoryConfiguration configuration);
+
 	void useEmbedder(StoryEmbedder embedder);
 
 }

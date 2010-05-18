@@ -1,10 +1,12 @@
-package org.jbehave.core;
+package org.jbehave.core.runner;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.RunnableStory;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.PendingError;
 import org.jbehave.core.errors.PendingErrorStrategy;

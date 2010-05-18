@@ -1,4 +1,4 @@
-package org.jbehave.core;
+package org.jbehave.core.runner;
 
 import java.io.File;
 import java.io.PrintStream;

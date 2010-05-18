@@ -1,8 +1,8 @@
 package org.jbehave.examples.trader.i18n;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.MostUsefulStoryConfiguration;
-import org.jbehave.core.StoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.i18n.StringCoder;
 import org.jbehave.core.model.Keywords;

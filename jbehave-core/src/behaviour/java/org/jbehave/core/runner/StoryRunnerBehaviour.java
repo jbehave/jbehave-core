@@ -1,4 +1,4 @@
-package org.jbehave.core;
+package org.jbehave.core.runner;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Matchers.anyObject;
@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.ErrorStrategyInWhichWeTrustTheReporter;
 import org.jbehave.core.errors.PendingErrorStrategy;
@@ -24,6 +26,7 @@ import org.jbehave.core.parser.RegexStoryParser;
 import org.jbehave.core.parser.StoryLoader;
 import org.jbehave.core.parser.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.runner.StoryRunner;
 import org.jbehave.core.steps.CandidateStep;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;

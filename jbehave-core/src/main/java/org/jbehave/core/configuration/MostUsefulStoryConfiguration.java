@@ -1,4 +1,4 @@
-package org.jbehave.core;
+package org.jbehave.core.configuration;
 
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.PendingErrorStrategy;

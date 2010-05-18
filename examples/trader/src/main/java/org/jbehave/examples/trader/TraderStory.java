@@ -7,7 +7,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.parser.LoadFromClasspath;
 import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
 import org.jbehave.core.parser.StoryPathResolver;
