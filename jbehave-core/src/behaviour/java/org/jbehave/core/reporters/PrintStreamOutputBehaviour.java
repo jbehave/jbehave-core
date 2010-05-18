@@ -3,7 +3,9 @@ package org.jbehave.core.reporters;
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 
@@ -70,7 +72,7 @@ public class PrintStreamOutputBehaviour {
                 + "\nExample: {to=Paul, money=$50}\n"
                 + "\n" // end of examples
                 + "\n\n"; // end of core and story
-        ensureThatOutputIs(out, expected);
+        assertThatOutputIs(out, expected);
     }
 
     @Test
@@ -116,7 +118,7 @@ public class PrintStreamOutputBehaviour {
                 // of
                 // examples
                 "</div>\n</div>\n"; // end of core and story
-        ensureThatOutputIs(out, expected);
+        assertThatOutputIs(out, expected);
     }
 
     @Test
@@ -164,7 +166,7 @@ public class PrintStreamOutputBehaviour {
                 + "</table>\n" + "\n<h3 class=\"example\">Example: {to=Mauro, money=$30}</h3>\n"
                 + "\n<h3 class=\"example\">Example: {to=Paul, money=$50}</h3>\n" + "</div><!-- after examples -->\n"
                 + "</div><!-- after core -->\n" + "</div><!-- after story -->\n";
-        ensureThatOutputIs(out, expected);
+        assertThatOutputIs(out, expected);
     }
 
     @Test
@@ -209,7 +211,7 @@ public class PrintStreamOutputBehaviour {
                 + "\n<example keyword=\"Example:\">{to=Mauro, money=$30}</example>\n"
                 + "\n<example keyword=\"Example:\">{to=Paul, money=$50}</example>\n" + "</examples>\n"
                 + "</core>\n" + "</story>\n";
-        ensureThatOutputIs(out, expected);
+        assertThatOutputIs(out, expected);
     }
 
     private void narrateAnInterestingStory(StoryReporter reporter) {
@@ -236,10 +238,10 @@ public class PrintStreamOutputBehaviour {
         reporter.afterStory(embeddedStory);
     }
 
-    private void ensureThatOutputIs(OutputStream out, String expected) {
+    private void assertThatOutputIs(OutputStream out, String expected) {
         // JUnit assertion allows easier comparison of strings in IDE
         assertEquals(expected, dos2unix(out.toString()));
-        //ensureThat(out.toString(), equalTo(expected));
+        //assertThat(out.toString(), equalTo(expected));
     }
 
     private String dos2unix(String string) {
@@ -269,7 +271,7 @@ public class PrintStreamOutputBehaviour {
         String expected = "Scenario: A title\n" + "Given I have a balance of $50\n" + "When I request $20\n"
                 + "When I ask Liz for a loan of $100 (FAILED)\n" + "Then I should have a balance of $30 (PENDING)\n"
                 + "Then I should have $20 (NOT PERFORMED)\n" + "\n" + dos2unix(stackTrace.toString()) + "\n";
-        ensureThatOutputIs(out, expected);
+        assertThatOutputIs(out, expected);
 
         // Given
         out = new ByteArrayOutputStream();
@@ -285,7 +287,7 @@ public class PrintStreamOutputBehaviour {
         reporter.afterScenario();
 
         // Then
-        ensureThat(!out.toString().contains(stackTrace.toString()));
+        assertThat(out.toString().contains(stackTrace.toString()), is(false));
     }
 
     @Test
@@ -313,7 +315,7 @@ public class PrintStreamOutputBehaviour {
                 + "Then I should have a balance of $30 - PENDING - need to implement me\n"
                 + "Then I should have $20 : NOT PERFORMED (because of previous pending)\n";
 
-        ensureThatOutputIs(out, expected);
+        assertThatOutputIs(out, expected);
 
     }
 
@@ -338,7 +340,7 @@ public class PrintStreamOutputBehaviour {
                 + "Quando chiedo a Liz un prestito di $100 (FALLITO)\n"
                 + "Allora dovrei avere un saldo di $30 (PENDENTE)\n" + "Allora dovrei avere $20 (NON ESEGUITO)\n";
 
-        ensureThatOutputIs(out, expected);
+        assertThatOutputIs(out, expected);
 
     }
 
@@ -350,15 +352,15 @@ public class PrintStreamOutputBehaviour {
         FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, this.getClass()));
         File file = factory.getOutputFile();
         file.delete();
-        ensureThat(!file.exists());
+        assertThat(!file.exists(), is(true));
 
         // When
         PrintStream printStream = factory.createPrintStream();
         printStream.print("Hello World");
 
         // Then
-        ensureThat(file.exists());
-        ensureThat(IOUtils.toString(new FileReader(file)), equalTo("Hello World"));
+        assertThat(file.exists(),  is(true));
+        assertThat(IOUtils.toString(new FileReader(file)), equalTo("Hello World"));
     }
 
     @Test
@@ -403,8 +405,8 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void ensureFileExists(File renderedOutput) throws IOException, FileNotFoundException {
-        ensureThat(renderedOutput.exists());
-        ensureThat(IOUtils.toString(new FileReader(renderedOutput)).length() > 0);
+        assertThat(renderedOutput.exists(),  is(true));
+        assertThat(IOUtils.toString(new FileReader(renderedOutput)).length(), greaterThan(0));
     }
 
     @Test(expected = RenderingFailedException.class)

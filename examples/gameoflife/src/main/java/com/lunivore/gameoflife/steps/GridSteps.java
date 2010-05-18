@@ -1,7 +1,7 @@
 package com.lunivore.gameoflife.steps;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.jbehave.core.annotations.Aliases;
 import org.jbehave.core.annotations.Given;
@@ -33,7 +33,7 @@ public class GridSteps extends Steps {
     @Then("the grid should look like $grid")
     @Aliases(values={"the grid should be $grid"})
     public void theGridShouldLookLike(String grid) {
-        ensureThat(renderer.asString(), equalTo(grid));
+        assertThat(renderer.asString(), equalTo(grid));
     }
 
 }

@@ -1,7 +1,7 @@
 package com.lunivore.noughtsandcrosses.steps;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.awt.Component;
 import java.util.ArrayList;
@@ -52,13 +52,13 @@ public class GridSteps extends Steps {
     @Then("the message should read \"$message\"")
     public void thenTheMessageShouldRead(String message) throws Exception {
         JLabel messageLabel = (JLabel) universe.getControl().findComponent(ComponentNames.MESSAGE);
-        ensureThat(messageLabel.getText(), equalTo(message));
+        assertThat(messageLabel.getText(), equalTo(message));
     }
 
     @Then("the grid should look like $grid")
     public void thenTheGridShouldLookLike(String grid) throws Exception {
         Component gridPanel = universe.getControl().findComponent(ComponentNames.GRID);
-        ensureThat(gridPanel.toString(), equalTo(grid));
+        assertThat(gridPanel.toString(), equalTo(grid));
     }
 
     @When("the player clicks $space")

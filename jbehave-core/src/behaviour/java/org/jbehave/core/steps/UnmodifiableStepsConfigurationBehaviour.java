@@ -9,7 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UnmodifiableStepsConfigurationBehaviour {
 
@@ -17,11 +17,11 @@ public class UnmodifiableStepsConfigurationBehaviour {
     public void shouldProvideDelegateConfigurationElements() {
         StepsConfiguration delegate = new MostUsefulStepsConfiguration();
         StepsConfiguration unmodifiable = new UnmodifiableStepsConfiguration(delegate);
-        ensureThat(unmodifiable.keywords(), is(delegate.keywords()));
-        ensureThat(unmodifiable.monitor(), is(delegate.monitor()));
-        ensureThat(unmodifiable.paranamer(), is(delegate.paranamer()));
-        ensureThat(unmodifiable.patternBuilder(), is(delegate.patternBuilder()));
-        ensureThat(unmodifiable.parameterConverters(), is(delegate.parameterConverters()));
+        assertThat(unmodifiable.keywords(), is(delegate.keywords()));
+        assertThat(unmodifiable.monitor(), is(delegate.monitor()));
+        assertThat(unmodifiable.paranamer(), is(delegate.paranamer()));
+        assertThat(unmodifiable.patternBuilder(), is(delegate.patternBuilder()));
+        assertThat(unmodifiable.parameterConverters(), is(delegate.parameterConverters()));
     }
 
 
@@ -29,14 +29,14 @@ public class UnmodifiableStepsConfigurationBehaviour {
     public void shouldNotAllowModificationOfConfigurationElements() throws NoSuchMethodException, IllegalAccessException {
         StepsConfiguration delegate = new MostUsefulStepsConfiguration();
         StepsConfiguration unmodifiable = new UnmodifiableStepsConfiguration(delegate);
-        ensureThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
-        ensureThatNotAllowed(unmodifiable, "useMonitor", StepMonitor.class);
-        ensureThatNotAllowed(unmodifiable, "useParanamer", Paranamer.class);
-        ensureThatNotAllowed(unmodifiable, "usePatternBuilder", StepPatternBuilder.class);
-        ensureThatNotAllowed(unmodifiable, "useParameterConverters", ParameterConverters.class);
+        assertThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
+        assertThatNotAllowed(unmodifiable, "useMonitor", StepMonitor.class);
+        assertThatNotAllowed(unmodifiable, "useParanamer", Paranamer.class);
+        assertThatNotAllowed(unmodifiable, "usePatternBuilder", StepPatternBuilder.class);
+        assertThatNotAllowed(unmodifiable, "useParameterConverters", ParameterConverters.class);
     }
 
-    private void ensureThatNotAllowed(StepsConfiguration unmodifiable, String methodName, Class<?> type) throws NoSuchMethodException, IllegalAccessException {
+    private void assertThatNotAllowed(StepsConfiguration unmodifiable, String methodName, Class<?> type) throws NoSuchMethodException, IllegalAccessException {
         Method method = unmodifiable.getClass().getMethod(methodName, type);
         try {
             method.invoke(unmodifiable, new Object[]{null});

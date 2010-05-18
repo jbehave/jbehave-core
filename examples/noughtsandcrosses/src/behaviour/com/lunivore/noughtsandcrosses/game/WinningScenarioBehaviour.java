@@ -1,6 +1,7 @@
 package com.lunivore.noughtsandcrosses.game;
 
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,10 +18,10 @@ public class WinningScenarioBehaviour {
         game.put(new Coord(1,0), Player.X);
         game.put(new Coord(1,1), Player.O);
         game.put(new Coord(2,2), Player.O);
-        ensureThat(!WinningScenario.ROW1.isAchievedIn(game));
+        assertThat(!WinningScenario.ROW1.isAchievedIn(game), is(true));
         game.put(new Coord(2,0), Player.X);
-        ensureThat(WinningScenario.ROW1.isAchievedIn(game));
-        ensureThat(!WinningScenario.COL1.isAchievedIn(game));
-        ensureThat(!WinningScenario.NORTH_WEST.isAchievedIn(game));
+        assertThat(WinningScenario.ROW1.isAchievedIn(game), is(true));
+        assertThat(!WinningScenario.COL1.isAchievedIn(game), is(true));
+        assertThat(!WinningScenario.NORTH_WEST.isAchievedIn(game), is(true));
     }
 }

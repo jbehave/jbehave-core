@@ -1,7 +1,9 @@
 package org.jbehave.core.parser;
 
 import static java.util.Arrays.asList;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,13 +17,13 @@ public class StoryPathFinderBehaviour {
     @Test
     public void shouldListPaths() {
         StoryPathFinder finder = new StoryPathFinder();
-        ensureThat(finder.listStoryPaths(".", ".", asList("**/stories/*.java"), asList("")).size() > 0);
+        assertThat(finder.listStoryPaths(".", ".", asList("**/stories/*.java"), asList("")).size(), greaterThan(0));
     }
 
     @Test
     public void shouldeturnEmptyListForInexistentBasedir() {
         StoryPathFinder finder = new StoryPathFinder();
-        ensureThat(finder.listStoryPaths("/inexistent", null, asList(""), asList("")).size() == 0);
+        assertThat(finder.listStoryPaths("/inexistent", null, asList(""), asList("")).size(), equalTo(0));
     }
 
     @Test(expected= InvalidStoryPathException.class)

@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class StoryLoaderBehaviour {
 
@@ -21,7 +21,7 @@ public class StoryLoaderBehaviour {
 
         // When
         StoryLoader loader = new LoadFromClasspath();
-        ensureThat(loader.loadStoryAsText(storyPath), equalTo(storyAsString));
+        assertThat(loader.loadStoryAsText(storyPath), equalTo(storyAsString));
 
     }
 
@@ -70,7 +70,7 @@ public class StoryLoaderBehaviour {
  
         // When
         StoryLoader loader = new LoadFromURL();
-        ensureThat(loader.loadStoryAsText(storyPath), equalTo(storyAsString));
+        assertThat(loader.loadStoryAsText(storyPath), equalTo(storyAsString));
     }
 
     @Test(expected = InvalidStoryResourceException.class)

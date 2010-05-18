@@ -4,7 +4,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
@@ -31,12 +31,12 @@ public class RegexStoryParserBehaviour {
                 "Then I should get steps";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
-        ensureThat(story.getPath(), equalTo(storyPath));
+        assertThat(story.getPath(), equalTo(storyPath));
         List<String> steps = story.getScenarios().get(0).getSteps();
-        ensureThat(steps.get(0), equalTo("Given a scenario"));
-        ensureThat(steps.get(1), equalTo("!-- ignore me"));
-        ensureThat(steps.get(2), equalTo("When I parse it"));
-        ensureThat(steps.get(3), equalTo("Then I should get steps"));
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+        assertThat(steps.get(1), equalTo("!-- ignore me"));
+        assertThat(steps.get(2), equalTo("When I parse it"));
+        assertThat(steps.get(3), equalTo("Then I should get steps"));
     }
 
     @Test
@@ -50,11 +50,11 @@ public class RegexStoryParserBehaviour {
                 wholeStory, storyPath);
 
         List<String> steps = story.getScenarios().get(0).getSteps();
-        ensureThat(steps.get(0), equalTo("Given a scenario Givenly"));
-        ensureThat(steps.get(1), equalTo("When I parse it to Whenever"));
-        ensureThat(steps.get(2), equalTo("And I parse it to Anderson"));
-        ensureThat(steps.get(3), equalTo("!-- ignore me too"));
-        ensureThat(steps.get(4), equalTo("Then I should get steps Thenact"));
+        assertThat(steps.get(0), equalTo("Given a scenario Givenly"));
+        assertThat(steps.get(1), equalTo("When I parse it to Whenever"));
+        assertThat(steps.get(2), equalTo("And I parse it to Anderson"));
+        assertThat(steps.get(3), equalTo("!-- ignore me too"));
+        assertThat(steps.get(4), equalTo("Then I should get steps Thenact"));
     }
 
     @Test
@@ -70,11 +70,11 @@ public class RegexStoryParserBehaviour {
 
         List<String> steps = story.getScenarios().get(0).getSteps();
 
-        ensureThat(steps.get(0), equalTo("Given a scenario" + NL +
+        assertThat(steps.get(0), equalTo("Given a scenario" + NL +
                 "with this line"));
-        ensureThat(steps.get(1), equalTo("When I parse it" + NL +
+        assertThat(steps.get(1), equalTo("When I parse it" + NL +
                 "with another line"));
-        ensureThat(steps.get(2), equalTo("Then I should get steps" + NL +
+        assertThat(steps.get(2), equalTo("Then I should get steps" + NL +
                 "without worrying about lines" + NL +
                 "or extra white space between or after steps"));
     }
@@ -88,7 +88,7 @@ public class RegexStoryParserBehaviour {
 
         Story story = parser.parseStory(wholeStory, null);
 
-        ensureThat(story.getScenarios().get(0).getTitle(), equalTo("A title\n that is spread across\n multiple lines"));
+        assertThat(story.getScenarios().get(0).getTitle(), equalTo("A title\n that is spread across\n multiple lines"));
     }
 
     @Test
@@ -99,10 +99,10 @@ public class RegexStoryParserBehaviour {
                 "Given my second scenario";
         Story story = parser.parseStory(wholeStory, storyPath);
 
-        ensureThat(story.getScenarios().get(0).getTitle(), equalTo("the first scenario"));
-        ensureThat(story.getScenarios().get(0).getSteps(), equalTo(asList("Given my scenario")));
-        ensureThat(story.getScenarios().get(1).getTitle(), equalTo("the second scenario"));
-        ensureThat(story.getScenarios().get(1).getSteps(), equalTo(asList("Given my second scenario")));
+        assertThat(story.getScenarios().get(0).getTitle(), equalTo("the first scenario"));
+        assertThat(story.getScenarios().get(0).getSteps(), equalTo(asList("Given my scenario")));
+        assertThat(story.getScenarios().get(1).getTitle(), equalTo("the second scenario"));
+        assertThat(story.getScenarios().get(1).getSteps(), equalTo(asList("Given my second scenario")));
     }
 
     @Test
@@ -115,10 +115,10 @@ public class RegexStoryParserBehaviour {
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         Narrative narrative = story.getNarrative();
-        ensureThat(narrative, not(equalTo(Narrative.EMPTY)));
-        ensureThat(narrative.inOrderTo().toString(), equalTo("renovate my house"));
-        ensureThat(narrative.asA().toString(), equalTo("customer"));
-        ensureThat(narrative.iWantTo().toString(), equalTo("get a loan"));
+        assertThat(narrative, not(equalTo(Narrative.EMPTY)));
+        assertThat(narrative.inOrderTo().toString(), equalTo("renovate my house"));
+        assertThat(narrative.asA().toString(), equalTo("customer"));
+        assertThat(narrative.iWantTo().toString(), equalTo("get a loan"));
     }
 
     @Test
@@ -149,32 +149,32 @@ public class RegexStoryParserBehaviour {
 
         Story story = parser.parseStory(wholeStory, storyPath);
 
-        ensureThat(story.getDescription().asString(), equalTo("This is just a story description"));
+        assertThat(story.getDescription().asString(), equalTo("This is just a story description"));
 
-        ensureThat(story.getNarrative().inOrderTo(), equalTo("see what we're not delivering"));
-        ensureThat(story.getNarrative().asA(), equalTo("developer"));
-        ensureThat(story.getNarrative().iWantTo(), equalTo("see the narrative for my story when a scenario in that story breaks"));
+        assertThat(story.getNarrative().inOrderTo(), equalTo("see what we're not delivering"));
+        assertThat(story.getNarrative().asA(), equalTo("developer"));
+        assertThat(story.getNarrative().iWantTo(), equalTo("see the narrative for my story when a scenario in that story breaks"));
 
-        ensureThat(story.getScenarios().get(0).getTitle(), equalTo("A pending scenario"));
-        ensureThat(story.getScenarios().get(0).getGivenStoryPaths().size(), equalTo(0));
-        ensureThat(story.getScenarios().get(0).getSteps(), equalTo(asList(
+        assertThat(story.getScenarios().get(0).getTitle(), equalTo("A pending scenario"));
+        assertThat(story.getScenarios().get(0).getGivenStoryPaths().size(), equalTo(0));
+        assertThat(story.getScenarios().get(0).getSteps(), equalTo(asList(
                 "Given a step that's pending",
                 "When I run the scenario",
                 "!-- A comment between steps",
                 "Then I should see this in the output"
         )));
 
-        ensureThat(story.getScenarios().get(1).getTitle(), equalTo("A passing scenario"));
-        ensureThat(story.getScenarios().get(1).getGivenStoryPaths().size(), equalTo(0));
-        ensureThat(story.getScenarios().get(1).getSteps(), equalTo(asList(
+        assertThat(story.getScenarios().get(1).getTitle(), equalTo("A passing scenario"));
+        assertThat(story.getScenarios().get(1).getGivenStoryPaths().size(), equalTo(0));
+        assertThat(story.getScenarios().get(1).getSteps(), equalTo(asList(
                 "Given I'm not reporting passing stories",
                 "When I run the scenario",
                 "Then this should not be in the output"
         )));
 
-        ensureThat(story.getScenarios().get(2).getTitle(), equalTo("A failing scenario"));
-        ensureThat(story.getScenarios().get(2).getGivenStoryPaths().size(), equalTo(0));
-        ensureThat(story.getScenarios().get(2).getSteps(), equalTo(asList(
+        assertThat(story.getScenarios().get(2).getTitle(), equalTo("A failing scenario"));
+        assertThat(story.getScenarios().get(2).getGivenStoryPaths().size(), equalTo(0));
+        assertThat(story.getScenarios().get(2).getSteps(), equalTo(asList(
                 "Given a step that fails",
                 "When I run the scenario",
                 "Then I should see this in the output",
@@ -223,9 +223,9 @@ public class RegexStoryParserBehaviour {
         }
 
         Story story = parser.parseStory(wholeStory.toString(), null);
-        ensureThat(story.getScenarios().size(), equalTo(numberOfScenarios));
+        assertThat(story.getScenarios().size(), equalTo(numberOfScenarios));
         for (Scenario scenario : story.getScenarios()) {
-            ensureThat(scenario.getSteps().size(), equalTo(numberOfGivenWhenThensPerScenario * 3));
+            assertThat(scenario.getSteps().size(), equalTo(numberOfGivenWhenThensPerScenario * 3));
         }
     }
 
@@ -244,27 +244,27 @@ public class RegexStoryParserBehaviour {
         Story story = parser.parseStory(wholeStory, storyPath);
 
         Scenario scenario = story.getScenarios().get(0);
-        ensureThat(scenario.getTitle(), equalTo("A scenario with examples table"));
-        ensureThat(scenario.getGivenStoryPaths().size(), equalTo(0));
-        ensureThat(scenario.getSteps(), equalTo(asList(
+        assertThat(scenario.getTitle(), equalTo("A scenario with examples table"));
+        assertThat(scenario.getGivenStoryPaths().size(), equalTo(0));
+        assertThat(scenario.getSteps(), equalTo(asList(
                 "Given a step with a <one>",
                 "When I run the scenario of name <two>",
                 "Then I should see <three> in the output"
         )));
         ExamplesTable table = scenario.getTable();
-        ensureThat(table.toString(), equalTo(
+        assertThat(table.toString(), equalTo(
                 "|one|two|three|" + NL +
                         "|11|12|13|" + NL +
                         "|21|22|23|"));
-        ensureThat(table.getRowCount(), equalTo(2));
-        ensureThat(table.getRow(0), not(nullValue()));
-        ensureThat(table.getRow(0).get("one"), equalTo("11"));
-        ensureThat(table.getRow(0).get("two"), equalTo("12"));
-        ensureThat(table.getRow(0).get("three"), equalTo("13"));
-        ensureThat(table.getRow(1), not(nullValue()));
-        ensureThat(table.getRow(1).get("one"), equalTo("21"));
-        ensureThat(table.getRow(1).get("two"), equalTo("22"));
-        ensureThat(table.getRow(1).get("three"), equalTo("23"));
+        assertThat(table.getRowCount(), equalTo(2));
+        assertThat(table.getRow(0), not(nullValue()));
+        assertThat(table.getRow(0).get("one"), equalTo("11"));
+        assertThat(table.getRow(0).get("two"), equalTo("12"));
+        assertThat(table.getRow(0).get("three"), equalTo("13"));
+        assertThat(table.getRow(1), not(nullValue()));
+        assertThat(table.getRow(1).get("one"), equalTo("21"));
+        assertThat(table.getRow(1).get("two"), equalTo("22"));
+        assertThat(table.getRow(1).get("three"), equalTo("23"));
     }
 
     @Test
@@ -278,11 +278,11 @@ public class RegexStoryParserBehaviour {
         Story story = parser.parseStory(wholeStory, storyPath);
 
         Scenario scenario = story.getScenarios().get(0);
-        ensureThat(scenario.getTitle(), equalTo("A scenario with given stories"));
-        ensureThat(scenario.getGivenStoryPaths(), equalTo(asList(
+        assertThat(scenario.getTitle(), equalTo("A scenario with given stories"));
+        assertThat(scenario.getGivenStoryPaths(), equalTo(asList(
                 "path/to/one",
                 "path/to/two")));
-        ensureThat(scenario.getSteps(), equalTo(asList(
+        assertThat(scenario.getSteps(), equalTo(asList(
                 "Given a step",
                 "When I run it",
                 "Then I should an output"
@@ -298,9 +298,9 @@ public class RegexStoryParserBehaviour {
 
         Story story = parser.parseStory(wholeStory);
 
-        ensureThat(story.getPath(), equalTo(""));
+        assertThat(story.getPath(), equalTo(""));
         Scenario scenario = story.getScenarios().get(0);
-        ensureThat(scenario.getSteps(), equalTo(asList(
+        assertThat(scenario.getSteps(), equalTo(asList(
                 "Given a step",
                 "When I run it",
                 "Then I should an output"

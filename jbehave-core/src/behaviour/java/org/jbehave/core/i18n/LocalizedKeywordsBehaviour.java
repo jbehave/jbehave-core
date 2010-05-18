@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jbehave.core.model.Keywords.*;
 import static org.junit.Assert.assertEquals;
 
@@ -54,11 +54,11 @@ public class LocalizedKeywordsBehaviour {
     private void ensureKeywordsAreLocalised(StepsConfiguration configuration, Locale locale) {
         Map<StepType, String> startingWordsByType = configuration.getStartingWordsByType();
         Keywords keywords = keywordsFor(locale, null);
-        ensureThat(startingWordsByType.get(StepType.GIVEN), equalTo(keywords.given()));
-        ensureThat(startingWordsByType.get(StepType.WHEN), equalTo(keywords.when()));
-        ensureThat(startingWordsByType.get(StepType.THEN), equalTo(keywords.then()));
-        ensureThat(startingWordsByType.get(StepType.AND), equalTo(keywords.and()));
-        ensureThat(startingWordsByType.get(StepType.IGNORABLE), equalTo(keywords.ignorable()));
+        assertThat(startingWordsByType.get(StepType.GIVEN), equalTo(keywords.given()));
+        assertThat(startingWordsByType.get(StepType.WHEN), equalTo(keywords.when()));
+        assertThat(startingWordsByType.get(StepType.THEN), equalTo(keywords.then()));
+        assertThat(startingWordsByType.get(StepType.AND), equalTo(keywords.and()));
+        assertThat(startingWordsByType.get(StepType.IGNORABLE), equalTo(keywords.ignorable()));
     }
 
     private void ensureKeywordsAreLocalisedFor(Locale locale, String bundleName) throws IOException {

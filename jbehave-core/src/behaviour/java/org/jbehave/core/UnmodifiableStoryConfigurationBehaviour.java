@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UnmodifiableStoryConfigurationBehaviour {
 
@@ -23,14 +23,14 @@ public class UnmodifiableStoryConfigurationBehaviour {
     public void shouldProvideDelegateConfigurationElements() {
         StoryConfiguration delegate = new MostUsefulStoryConfiguration();
         StoryConfiguration unmodifiable = new UnmodifiableStoryConfiguration(delegate);
-        ensureThat(unmodifiable.keywords(), is(delegate.keywords()));
-        ensureThat(unmodifiable.stepCreator(), is(delegate.stepCreator()));
-        ensureThat(unmodifiable.storyParser(), is(delegate.storyParser()));
-        ensureThat(unmodifiable.storyReporter(), is(delegate.storyReporter()));
-        ensureThat(unmodifiable.errorStrategy(), is(delegate.errorStrategy()));
-        ensureThat(unmodifiable.pendingErrorStrategy(), is(delegate.pendingErrorStrategy()));
-        ensureThat(unmodifiable.stepdocGenerator(), is(delegate.stepdocGenerator()));
-        ensureThat(unmodifiable.stepdocReporter(), is(delegate.stepdocReporter()));
+        assertThat(unmodifiable.keywords(), is(delegate.keywords()));
+        assertThat(unmodifiable.stepCreator(), is(delegate.stepCreator()));
+        assertThat(unmodifiable.storyParser(), is(delegate.storyParser()));
+        assertThat(unmodifiable.storyReporter(), is(delegate.storyReporter()));
+        assertThat(unmodifiable.errorStrategy(), is(delegate.errorStrategy()));
+        assertThat(unmodifiable.pendingErrorStrategy(), is(delegate.pendingErrorStrategy()));
+        assertThat(unmodifiable.stepdocGenerator(), is(delegate.stepdocGenerator()));
+        assertThat(unmodifiable.stepdocReporter(), is(delegate.stepdocReporter()));
     }
 
 
@@ -38,18 +38,18 @@ public class UnmodifiableStoryConfigurationBehaviour {
     public void shouldNotAllowModificationOfConfigurationElements() throws NoSuchMethodException, IllegalAccessException {
         StoryConfiguration delegate = new MostUsefulStoryConfiguration();
         StoryConfiguration unmodifiable = new UnmodifiableStoryConfiguration(delegate);
-        ensureThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
-        ensureThatNotAllowed(unmodifiable, "useStepCreator", StepCreator.class);
-        ensureThatNotAllowed(unmodifiable, "useStoryLoader", StoryLoader.class);
-        ensureThatNotAllowed(unmodifiable, "useStoryParser", StoryParser.class);
-        ensureThatNotAllowed(unmodifiable, "useStoryReporter", StoryReporter.class);
-        ensureThatNotAllowed(unmodifiable, "useErrorStrategy", ErrorStrategy.class);
-        ensureThatNotAllowed(unmodifiable, "usePendingErrorStrategy", PendingErrorStrategy.class);
-        ensureThatNotAllowed(unmodifiable, "useStepdocGenerator", StepdocGenerator.class);
-        ensureThatNotAllowed(unmodifiable, "useStepdocReporter", StepdocReporter.class);
+        assertThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
+        assertThatNotAllowed(unmodifiable, "useStepCreator", StepCreator.class);
+        assertThatNotAllowed(unmodifiable, "useStoryLoader", StoryLoader.class);
+        assertThatNotAllowed(unmodifiable, "useStoryParser", StoryParser.class);
+        assertThatNotAllowed(unmodifiable, "useStoryReporter", StoryReporter.class);
+        assertThatNotAllowed(unmodifiable, "useErrorStrategy", ErrorStrategy.class);
+        assertThatNotAllowed(unmodifiable, "usePendingErrorStrategy", PendingErrorStrategy.class);
+        assertThatNotAllowed(unmodifiable, "useStepdocGenerator", StepdocGenerator.class);
+        assertThatNotAllowed(unmodifiable, "useStepdocReporter", StepdocReporter.class);
     }
 
-    private void ensureThatNotAllowed(StoryConfiguration unmodifiable, String methodName, Class<?> type) throws NoSuchMethodException, IllegalAccessException {
+    private void assertThatNotAllowed(StoryConfiguration unmodifiable, String methodName, Class<?> type) throws NoSuchMethodException, IllegalAccessException {
         Method method = unmodifiable.getClass().getMethod(methodName, type);
         try {
             method.invoke(unmodifiable, new Object[]{null});

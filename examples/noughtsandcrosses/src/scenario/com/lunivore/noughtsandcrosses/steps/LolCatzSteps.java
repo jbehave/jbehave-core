@@ -1,7 +1,7 @@
 package com.lunivore.noughtsandcrosses.steps;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jbehave.scenario.definition.KeyWords.*;
 
 import java.awt.Component;
@@ -65,13 +65,13 @@ public class LolCatzSteps extends Steps {
     @Then("message sez \"$message\"")
     public void thenTheMessageShouldRead(String message) throws Exception {
         JLabel messageLabel = (JLabel) universe.getControl().findComponent(ComponentNames.MESSAGE);
-        ensureThat(messageLabel.getText(), equalTo(message));
+        assertThat(messageLabel.getText(), equalTo(message));
     }
 
     @Then("I haz grid $grid")
     public void thenTheGridShouldLookLike(String grid) throws Exception {
         Component gridPanel = universe.getControl().findComponent(ComponentNames.GRID);
-        ensureThat(gridPanel.toString(), equalTo(grid));
+        assertThat(gridPanel.toString(), equalTo(grid));
     }
 
     @When("I clicks $space")

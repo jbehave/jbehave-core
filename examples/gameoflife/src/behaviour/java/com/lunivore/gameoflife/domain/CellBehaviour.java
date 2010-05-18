@@ -2,7 +2,7 @@ package com.lunivore.gameoflife.domain;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 
@@ -14,9 +14,9 @@ public class CellBehaviour {
         Cell sameCell = new Cell(3, 4);
         Cell otherCell = new Cell(2, 5);
         
-        ensureThat(cell, equalTo(sameCell));
-        ensureThat(otherCell, not(equalTo(sameCell)));
+        assertThat(cell, equalTo(sameCell));
+        assertThat(otherCell, not(equalTo(sameCell)));
         
-        ensureThat(cell.hashCode(), equalTo(sameCell.hashCode()));
+        assertThat(cell.hashCode(), equalTo(sameCell.hashCode()));
     }
 }

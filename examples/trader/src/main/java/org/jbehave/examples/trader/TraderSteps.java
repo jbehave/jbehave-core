@@ -21,7 +21,7 @@ import java.util.Map;
 
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * POJO holding the candidate steps for the trader example.  
@@ -103,12 +103,12 @@ public class TraderSteps {
     @Then("the alert status is %status")
     @Alias("the trader is alerted with <status>") // alias used with examples table
     public void theAlertStatusIs(@Named("status") String status) {
-        ensureThat(stock.getStatus().name(), equalTo(status));
+        assertThat(stock.getStatus().name(), equalTo(status));
     }
 
     @Then(value="the alert status is currently %status", priority=1) // prioritise over potential match with previous method
     public void theAlertStatusIsCurrently(@Named("status") String status) {
-        ensureThat(stock.getStatus().name(), equalTo(status));
+        assertThat(stock.getStatus().name(), equalTo(status));
     }    
     
     @When("the trader sells all stocks")
@@ -118,7 +118,7 @@ public class TraderSteps {
 
     @Then ("the trader is left with no stocks")
     public void theTraderIsLeftWithNoStocks() {
-        ensureThat(trader.getStocks().size(), equalTo(0));
+        assertThat(trader.getStocks().size(), equalTo(0));
     }
 
 }

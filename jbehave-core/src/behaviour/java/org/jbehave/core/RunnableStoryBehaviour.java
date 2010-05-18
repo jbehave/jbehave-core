@@ -1,13 +1,16 @@
 package org.jbehave.core;
 
 import static java.util.Arrays.asList;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.jbehave.core.steps.CandidateSteps;
 import org.junit.Test;
 
@@ -56,12 +59,12 @@ public class RunnableStoryBehaviour {
 
         // When
         RunnableStory story = new MyStory(embedder, steps);
-        ensureThat(story.getConfiguration(), Matchers.not(Matchers.sameInstance(configuration)));
+        assertThat(story.getConfiguration(), is(not(sameInstance(configuration))));
         story.useConfiguration(configuration);
         story.run();
 
         // Then
-        ensureThat(!(story.getConfiguration() instanceof PropertyBasedStoryConfiguration));
+        assertThat(story.getConfiguration(), is(not(instanceOf(PropertyBasedStoryConfiguration.class))));
         verify(embedder).runStoriesAsClasses(asList(storyClass));
     }
 

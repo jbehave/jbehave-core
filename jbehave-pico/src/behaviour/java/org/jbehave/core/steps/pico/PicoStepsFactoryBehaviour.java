@@ -33,7 +33,7 @@ public class PicoStepsFactoryBehaviour {
     }
 
     @Test
-    public void ensureThatStepsCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
         // Given
         MutablePicoContainer parent = createPicoContainer();
         parent.as(Characteristics.USE_NAMES).addComponent(FooSteps.class);
@@ -46,7 +46,7 @@ public class PicoStepsFactoryBehaviour {
 
 
     @Test
-    public void ensureThatStepsWithStepsWithDependencyCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsWithStepsWithDependencyCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
         MutablePicoContainer parent = createPicoContainer();
         parent.as(Characteristics.USE_NAMES).addComponent(FooStepsWithDependency.class);
         parent.addComponent(Integer.class, 42);
@@ -67,7 +67,7 @@ public class PicoStepsFactoryBehaviour {
 
 
     @Test(expected=AbstractInjector.UnsatisfiableDependenciesException.class)
-    public void ensureThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
         MutablePicoContainer parent = createPicoContainer();
         parent.as(Characteristics.USE_NAMES).addComponent(FooStepsWithDependency.class);
         PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulStepsConfiguration(), parent);

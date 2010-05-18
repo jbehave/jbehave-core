@@ -1,7 +1,7 @@
 package com.lunivore.gameoflife.view.string;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -22,7 +22,7 @@ public class StringRendererBehaviour {
         when(grid.hasLife(3, 4)).thenReturn(true);
         renderer.gridChanged(grid);
         
-        ensureThat(renderer.asString(), equalTo(
+        assertThat(renderer.asString(), equalTo(
                 "....." + NL +
                 "....." + NL +
                 "....." + NL +

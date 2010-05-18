@@ -1,7 +1,7 @@
 package org.jbehave.examples.trader.i18n;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Map;
 
@@ -29,7 +29,7 @@ public class ItTraderSteps {
 
     @Then("lo status di allerta e' $status")
     public void alertStatusIs(@Named("status") String status) {
-        ensureThat(stock.getStatus().name(), equalTo(status));
+        assertThat(stock.getStatus().name(), equalTo(status));
     }
 
     @Given("ho una tabella $table")
@@ -39,12 +39,12 @@ public class ItTraderSteps {
 
     @Then("la tabella ha $rows righe")
     public void hasRows(int rows){
-        ensureThat(table.getRowCount(), equalTo(rows));
+        assertThat(table.getRowCount(), equalTo(rows));
     }
 
     @Then("alla riga $row e colonna $column troviamo: $value")
     public void theRowValuesAre(int row, String column, String value){
         Map<String,String> rowValues = table.getRow(row-1);      
-        ensureThat(rowValues.get(column), equalTo(value));
+        assertThat(rowValues.get(column), equalTo(value));
     }
 }

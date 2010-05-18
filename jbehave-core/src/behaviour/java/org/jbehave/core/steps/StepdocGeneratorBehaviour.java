@@ -5,7 +5,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import org.hamcrest.Matcher;
 import org.hamcrest.Description;
 import org.hamcrest.BaseMatcher;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.List;
 
@@ -18,15 +18,15 @@ public class StepdocGeneratorBehaviour {
         StepdocGenerator generator = new DefaultStepdocGenerator();
         MySteps steps = new MySteps();
         List<Stepdoc> stepdocs = generator.generate(steps);
-        ensureThat(stepdocs.get(0).getPattern(), equalTo("a given"));
-        ensureThat(stepdocs.get(0).getAliasPatterns(), equalTo(asList("a given alias", "another given alias")));
-        ensureThat(stepdocs.get(0).getMethod().getName(), equalTo("given"));
-        ensureThat(stepdocs.get(1).getPattern(), equalTo("a when"));
-        ensureThat(stepdocs.get(1).getAliasPatterns(), equalTo(asList("a when alias", "another when alias")));
-        ensureThat(stepdocs.get(1).getMethod().getName(), equalTo("when"));
-        ensureThat(stepdocs.get(2).getPattern(), equalTo("a then"));
-        ensureThat(stepdocs.get(2).getAliasPatterns(), equalTo(asList("a then alias", "another then alias")));
-        ensureThat(stepdocs.get(2).getMethod().getName(), equalTo("then"));
+        assertThat(stepdocs.get(0).getPattern(), equalTo("a given"));
+        assertThat(stepdocs.get(0).getAliasPatterns(), equalTo(asList("a given alias", "another given alias")));
+        assertThat(stepdocs.get(0).getMethod().getName(), equalTo("given"));
+        assertThat(stepdocs.get(1).getPattern(), equalTo("a when"));
+        assertThat(stepdocs.get(1).getAliasPatterns(), equalTo(asList("a when alias", "another when alias")));
+        assertThat(stepdocs.get(1).getMethod().getName(), equalTo("when"));
+        assertThat(stepdocs.get(2).getPattern(), equalTo("a then"));
+        assertThat(stepdocs.get(2).getAliasPatterns(), equalTo(asList("a then alias", "another then alias")));
+        assertThat(stepdocs.get(2).getMethod().getName(), equalTo("then"));
     }    
 
     @Test
@@ -34,10 +34,10 @@ public class StepdocGeneratorBehaviour {
         StepdocGenerator generator = new DefaultStepdocGenerator();
         MoreSteps steps = new MoreSteps();
         List<Stepdoc> stepdocs = generator.generate(steps);
-        ensureThat(stepdocs.get(0).getMethodSignature(), equalTo("org.jbehave.core.steps.StepdocGeneratorBehaviour$MoreSteps.givenAbc(int,int)"));
-        ensureThat(stepdocs.get(1).getMethodSignature(), equalTo("org.jbehave.core.steps.StepdocGeneratorBehaviour$MoreSteps.whenAbc(int,int)"));
-        ensureThat(stepdocs.get(2).getMethodSignature(), equalTo("org.jbehave.core.steps.StepdocGeneratorBehaviour$MoreSteps.whenXyz(int,int)"));
-        ensureThat(stepdocs.get(3).getMethodSignature(), equalTo("org.jbehave.core.steps.StepdocGeneratorBehaviour$MoreSteps.thenAbc(int,int)"));
+        assertThat(stepdocs.get(0).getMethodSignature(), equalTo("org.jbehave.core.steps.StepdocGeneratorBehaviour$MoreSteps.givenAbc(int,int)"));
+        assertThat(stepdocs.get(1).getMethodSignature(), equalTo("org.jbehave.core.steps.StepdocGeneratorBehaviour$MoreSteps.whenAbc(int,int)"));
+        assertThat(stepdocs.get(2).getMethodSignature(), equalTo("org.jbehave.core.steps.StepdocGeneratorBehaviour$MoreSteps.whenXyz(int,int)"));
+        assertThat(stepdocs.get(3).getMethodSignature(), equalTo("org.jbehave.core.steps.StepdocGeneratorBehaviour$MoreSteps.thenAbc(int,int)"));
     }
 
     @Test
@@ -48,8 +48,8 @@ public class StepdocGeneratorBehaviour {
         Stepdoc when1 = stepdocs.get(1);
         Stepdoc when2 = stepdocs.get(2);
 
-        ensureThat(when1.compareTo(when2), lessThan(0));
-        ensureThat(when2.compareTo(when1), greaterThan(0));
+        assertThat(when1.compareTo(when2), lessThan(0));
+        assertThat(when2.compareTo(when1), greaterThan(0));
     }
 
     private Matcher<Integer> lessThan(final int i) {

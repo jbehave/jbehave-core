@@ -1,7 +1,9 @@
 package org.jbehave.core.reporters;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 
 import java.io.IOException;
@@ -28,10 +30,10 @@ public class StoryReporterBuilderBehaviour {
         StoryReporter reporter = builder.withDefaultFormats().build(storyPath);
         
         // Then
-        ensureThat(reporter instanceof DelegatingStoryReporter);
+        assertThat(reporter, instanceOf(DelegatingStoryReporter.class));
         Collection<StoryReporter> delegates = ((DelegatingStoryReporter)reporter).getDelegates();
-        ensureThat(delegates.size(), equalTo(1));
-        ensureThat(delegates.iterator().next() instanceof PostStoryStatisticsCollector);
+        assertThat(delegates.size(), equalTo(1));
+        assertThat(delegates.iterator().next(), instanceOf(PostStoryStatisticsCollector.class));
     }
 
     @Test
@@ -46,8 +48,8 @@ public class StoryReporterBuilderBehaviour {
         builder.outputTo(outputDirectory).outputAsAbsolute(true).build(storyPath);
         
         // Then
-        ensureThat(builder.fileConfiguration("").getOutputDirectory(), equalTo((outputDirectory)));
-        ensureThat(builder.fileConfiguration("").isOutputDirectoryAbsolute());
+        assertThat(builder.fileConfiguration("").getOutputDirectory(), equalTo((outputDirectory)));
+        assertThat(builder.fileConfiguration("").isOutputDirectoryAbsolute(),  is(true));
     }
 
     @Test
@@ -72,10 +74,10 @@ public class StoryReporterBuilderBehaviour {
         StoryReporter reporter = builder.withDefaultFormats().withFormats(TXT).build(storyPath);
         
         // Then
-        ensureThat(reporter instanceof DelegatingStoryReporter);
+        assertThat(reporter, instanceOf(DelegatingStoryReporter.class));
         Collection<StoryReporter> delegates = ((DelegatingStoryReporter)reporter).getDelegates();
-        ensureThat(delegates.size(), equalTo(2));
-        ensureThat(delegates.contains(txtReporter));
+        assertThat(delegates.size(), equalTo(2));
+        assertThat(delegates.contains(txtReporter), is(true));
     }
 
     private String storyPath(Class<MyStory> storyClass) {

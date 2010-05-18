@@ -11,7 +11,7 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -37,8 +37,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 .createStepsFrom(asList(steps), new Scenario(asList("my step")), tableRow);
 
         // Then
-        ensureThat(executableSteps.size(), equalTo(1));
-        ensureThat(executableSteps.get(0), equalTo(executableStep));
+        assertThat(executableSteps.size(), equalTo(1));
+        assertThat(executableSteps.get(0), equalTo(executableStep));
     }
 
     @Test
@@ -56,9 +56,9 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         List<Step> executableSteps = stepCreator
                 .createStepsFrom(asList(steps), new Scenario(asList("my step")), tableRow);
         // Then
-        ensureThat(executableSteps.size(), equalTo(1));
+        assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform();
-        ensureThat(result.getThrowable().getMessage(), equalTo("Pending: my step"));
+        assertThat(result.getThrowable().getMessage(), equalTo("Pending: my step"));
     }
 
     @Test
@@ -92,7 +92,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         );
 
         // Then all before and after steps should be added
-        ensureThat(executableSteps, equalTo(asList(stepBefore2, stepBefore1, normalStep, stepAfter1, stepAfter2)));
+        assertThat(executableSteps, equalTo(asList(stepBefore2, stepBefore1, normalStep, stepAfter1, stepAfter2)));
     }
 
     @Test
@@ -120,8 +120,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 embeddedStory);
 
         // Then all before and after steps should be added
-        ensureThat(beforeSteps, equalTo(asList(stepBefore1, stepBefore2)));
-        ensureThat(afterSteps, equalTo(asList(stepAfter1, stepAfter2)));
+        assertThat(beforeSteps, equalTo(asList(stepBefore1, stepBefore2)));
+        assertThat(afterSteps, equalTo(asList(stepAfter1, stepAfter2)));
     }
 
     @Test
@@ -164,7 +164,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         );
 
         // Then the step with highest priority is returned
-        ensureThat(step4, equalTo(steps.get(0)));
+        assertThat(step4, equalTo(steps.get(0)));
     }
 
 }

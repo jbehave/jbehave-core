@@ -29,7 +29,7 @@ public class SpringStepsFactoryBehaviour {
     }
 
     @Test
-    public void ensureThatStepsCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
         // Given
         ListableBeanFactory parent = createBeanFactory("org/jbehave/core/steps/spring/steps.xml");
         SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulStepsConfiguration(), parent);
@@ -41,7 +41,7 @@ public class SpringStepsFactoryBehaviour {
 
 
     @Test
-    public void ensureThatStepsWithStepsWithDependencyCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsWithStepsWithDependencyCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
         ListableBeanFactory parent = createBeanFactory("org/jbehave/core/steps/spring/steps-with-dependency.xml");
         // When
         SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulStepsConfiguration(), parent);
@@ -60,7 +60,7 @@ public class SpringStepsFactoryBehaviour {
 
 
     @Test(expected=BeanDefinitionStoreException.class)
-    public void ensureThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
         ListableBeanFactory parent = createBeanFactory("org/jbehave/core/steps/spring/steps-with-missing-depedency.xml");
         SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulStepsConfiguration(), parent);
         // When

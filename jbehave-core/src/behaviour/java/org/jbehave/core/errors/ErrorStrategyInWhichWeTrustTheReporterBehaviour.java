@@ -1,7 +1,7 @@
 package org.jbehave.core.errors;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;
 
@@ -13,7 +13,7 @@ public class ErrorStrategyInWhichWeTrustTheReporterBehaviour {
         try {
             errorStrategy.handleError(null);
         } catch (AssertionError e) {
-            ensureThat(e.getMessage(), equalTo("An error occurred while running the stories; please check output for details."));
+            assertThat(e.getMessage(), equalTo("An error occurred while running the stories; please check output for details."));
         }
         
     }

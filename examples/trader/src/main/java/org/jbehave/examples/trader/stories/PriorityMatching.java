@@ -1,7 +1,7 @@
 package org.jbehave.examples.trader.stories;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.annotations.Given;
@@ -30,7 +30,7 @@ public class PriorityMatching extends JUnitStory {
 
         @Then("the parameter value is \"$param\"")
         public void theParamValue(String param){
-           ensureThat(this.param, equalTo(param));
+           assertThat(this.param, equalTo(param));
         }
 
     }

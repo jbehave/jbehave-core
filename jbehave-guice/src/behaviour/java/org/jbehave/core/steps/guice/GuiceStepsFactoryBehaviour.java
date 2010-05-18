@@ -30,7 +30,7 @@ public class GuiceStepsFactoryBehaviour {
     }
 
     @Test
-    public void ensureThatStepsCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
         // Given
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
@@ -48,7 +48,7 @@ public class GuiceStepsFactoryBehaviour {
 
 
     @Test
-    public void ensureThatStepsWithStepsWithDependencyCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsWithStepsWithDependencyCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
@@ -74,7 +74,7 @@ public class GuiceStepsFactoryBehaviour {
 
 
     @Test(expected=CreationException.class)
-    public void ensureThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {

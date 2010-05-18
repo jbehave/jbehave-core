@@ -3,8 +3,9 @@ package org.jbehave.core.steps;
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.jbehave.Ensure.ensureThat;
-import static org.jbehave.Ensure.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.jbehave.core.steps.StepType.AND;
 import static org.jbehave.core.steps.StepType.GIVEN;
 import static org.jbehave.core.steps.StepType.THEN;
@@ -57,7 +58,7 @@ public class CandidateStepBehaviour {
 		CandidateStep candidateStep = new CandidateStep("I laugh",
 				DEFAULT_PRIORITY, GIVEN, SomeSteps.class.getMethod("aMethod"),
 				null, PATTERN_BUILDER, new ParameterConverters(), startingWords);
-		ensureThat(candidateStep.matches("Given I laugh"));
+		assertThat(candidateStep.matches("Given I laugh"), is(true));
 	}
 
 	@Test
@@ -66,9 +67,8 @@ public class CandidateStepBehaviour {
 				"windows on the $nth floor", DEFAULT_PRIORITY, WHEN,
 				SomeSteps.class.getMethod("aMethod"), null, PATTERN_BUILDER,
 				new ParameterConverters(), startingWords);
-		ensureThat(candidateStep.matches("When windows on the 1st floor"));
-		ensureThat(not(candidateStep
-				.matches("When windows on the 1st floor are open")));
+		assertThat(candidateStep.matches("When windows on the 1st floor"),  is(true));
+		assertThat(candidateStep.matches("When windows on the 1st floor are open"), is(not(true)));
 	}
 
 	@Test
@@ -77,9 +77,9 @@ public class CandidateStepBehaviour {
 				"windows on the $nth floor", DEFAULT_PRIORITY, WHEN,
 				SomeSteps.class.getMethod("aMethod"), null, PATTERN_BUILDER,
 				new ParameterConverters(), startingWords);
-		ensureThat(not(candidateStep.matches("And windows on the 1st floor")));
-		ensureThat(candidateStep.matches("And windows on the 1st floor",
-				"When windows on the 1st floor"));
+		assertThat(candidateStep.matches("And windows on the 1st floor"), is(not(true)));
+		assertThat(candidateStep.matches("And windows on the 1st floor",
+				"When windows on the 1st floor"), is(true));
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class CandidateStepBehaviour {
 		Step step = candidateStep.createFrom(tableRow,
 				"Then I live on the 1st floor");
 		step.perform();
-		ensureThat((String) someSteps.args, equalTo("1st"));
+		assertThat((String) someSteps.args, equalTo("1st"));
 	}
 
 	@Test
@@ -102,8 +102,8 @@ public class CandidateStepBehaviour {
 				"the grid should look like $grid", DEFAULT_PRIORITY, THEN,
 				SomeSteps.class.getMethod("aMethod"), null, PATTERN_BUILDER,
 				new ParameterConverters(), startingWords);
-		ensureThat(candidateStep.matches("Then the grid should look like " + NL
-				+ "...." + NL + "...." + NL));
+		assertThat(candidateStep.matches("Then the grid should look like " + NL
+				+ "...." + NL + "...." + NL),  is(true));
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class CandidateStepBehaviour {
 				PATTERN_BUILDER, new ParameterConverters(), startingWords);
 		candidateStep.createFrom(tableRow, "Then I should live in no. 14")
 				.perform();
-		ensureThat((Integer) someSteps.args, equalTo(14));
+		assertThat((Integer) someSteps.args, equalTo(14));
 
 		candidateStep = new CandidateStep("I should live in no. $no",
 				DEFAULT_PRIORITY, THEN, SomeSteps.class.getMethod(
@@ -123,7 +123,7 @@ public class CandidateStepBehaviour {
 				new ParameterConverters(), startingWords);
 		candidateStep.createFrom(tableRow, "Then I should live in no. 14")
 				.perform();
-		ensureThat((Long) someSteps.args, equalTo(14L));
+		assertThat((Long) someSteps.args, equalTo(14L));
 
 		candidateStep = new CandidateStep("I should live in no. $no",
 				DEFAULT_PRIORITY, THEN, SomeSteps.class.getMethod(
@@ -131,7 +131,7 @@ public class CandidateStepBehaviour {
 				PATTERN_BUILDER, new ParameterConverters(), startingWords);
 		candidateStep.createFrom(tableRow, "Then I should live in no. 14")
 				.perform();
-		ensureThat((Double) someSteps.args, equalTo(14.0));
+		assertThat((Double) someSteps.args, equalTo(14.0));
 
 		candidateStep = new CandidateStep("I should live in no. $no",
 				DEFAULT_PRIORITY, THEN, SomeSteps.class.getMethod(
@@ -139,7 +139,7 @@ public class CandidateStepBehaviour {
 				PATTERN_BUILDER, new ParameterConverters(), startingWords);
 		candidateStep.createFrom(tableRow, "Then I should live in no. 14")
 				.perform();
-		ensureThat((Float) someSteps.args, equalTo(14.0f));
+		assertThat((Float) someSteps.args, equalTo(14.0f));
 	}
 
 	@Test
@@ -176,7 +176,7 @@ public class CandidateStepBehaviour {
 				"Then the grid should look like" + windowsNewline + ".."
 						+ unixNewline + ".." + windowsNewline);
 		step.perform();
-		ensureThat((String) someSteps.args, equalTo(".." + systemNewline + ".."
+		assertThat((String) someSteps.args, equalTo(".." + systemNewline + ".."
 				+ systemNewline));
 	}
 
@@ -189,7 +189,7 @@ public class CandidateStepBehaviour {
 				PATTERN_BUILDER, new ParameterConverters(), startingWords);
 		candidateStep.createFrom(tableRow, "When windows on the 1,2,3 floors")
 				.perform();
-		ensureThat(((List<?>) someSteps.args).toString(), equalTo(asList(1L,
+		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList(1L,
 				2L, 3L).toString()));
 
 		candidateStep = new CandidateStep("windows on the $nth floors",
@@ -198,7 +198,7 @@ public class CandidateStepBehaviour {
 				PATTERN_BUILDER, new ParameterConverters(), startingWords);
 		candidateStep.createFrom(tableRow, "When windows on the 1,2,3 floors")
 				.perform();
-		ensureThat(((List<?>) someSteps.args).toString(), equalTo(asList(1, 2,
+		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList(1, 2,
 				3).toString()));
 
 		candidateStep = new CandidateStep("windows on the $nth floors",
@@ -207,7 +207,7 @@ public class CandidateStepBehaviour {
 				PATTERN_BUILDER, new ParameterConverters(), startingWords);
 		candidateStep.createFrom(tableRow,
 				"When windows on the 1.1,2.2,3.3 floors").perform();
-		ensureThat(((List<?>) someSteps.args).toString(), equalTo(asList(1.1,
+		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList(1.1,
 				2.2, 3.3).toString()));
 
 		candidateStep = new CandidateStep("windows on the $nth floors",
@@ -216,7 +216,7 @@ public class CandidateStepBehaviour {
 				PATTERN_BUILDER, new ParameterConverters(), startingWords);
 		candidateStep.createFrom(tableRow,
 				"When windows on the 1.1,2.2,3.3 floors").perform();
-		ensureThat(((List<?>) someSteps.args).toString(), equalTo(asList(1.1f,
+		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList(1.1f,
 				2.2f, 3.3f).toString()));
 
 	}
@@ -230,7 +230,7 @@ public class CandidateStepBehaviour {
 				PATTERN_BUILDER, new ParameterConverters(), startingWords);
 		candidateStep.createFrom(tableRow, "When windows on the 1,2,3 floors")
 				.perform();
-		ensureThat(((List<?>) someSteps.args).toString(), equalTo(asList("1",
+		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList("1",
 				"2", "3").toString()));
 	}
 
@@ -247,8 +247,8 @@ public class CandidateStepBehaviour {
 		candidateStep.createFrom(tableRow,
 				"When I live on the first floor but some call it the ground")
 				.perform();
-		ensureThat(steps.ith, equalTo("first"));
-		ensureThat(steps.nth, equalTo("ground"));
+		assertThat(steps.ith, equalTo("first"));
+		assertThat(steps.nth, equalTo("ground"));
 	}
 
 	@Test
@@ -264,8 +264,8 @@ public class CandidateStepBehaviour {
 		candidateStep.createFrom(tableRow,
 				"When I live on the first floor but some call it the ground")
 				.perform();
-		ensureThat(steps.ith, equalTo("first"));
-		ensureThat(steps.nth, equalTo("ground"));
+		assertThat(steps.ith, equalTo("first"));
+		assertThat(steps.nth, equalTo("ground"));
 	}
 
 	@Test
@@ -283,8 +283,8 @@ public class CandidateStepBehaviour {
 		candidateStep.createFrom(tableRow,
 				"When I live on the <ith> floor but some call it the <nth>")
 				.perform();
-		ensureThat(steps.ith, equalTo("first"));
-		ensureThat(steps.nth, equalTo("ground"));
+		assertThat(steps.ith, equalTo("first"));
+		assertThat(steps.nth, equalTo("ground"));
 	}
 
 	@Test
@@ -300,8 +300,8 @@ public class CandidateStepBehaviour {
 		candidateStep.createFrom(tableRow,
 				"When I live on the first floor but some call it the ground")
 				.perform();
-		ensureThat(steps.ith, equalTo("first"));
-		ensureThat(steps.nth, equalTo("ground"));
+		assertThat(steps.ith, equalTo("first"));
+		assertThat(steps.nth, equalTo("ground"));
 	}
 
 	@Test
@@ -317,8 +317,8 @@ public class CandidateStepBehaviour {
 		candidateStep.createFrom(tableRow,
 				"When I live on the first floor but some call it the ground")
 				.perform();
-		ensureThat(steps.ith, equalTo("first"));
-		ensureThat(steps.nth, equalTo("ground"));
+		assertThat(steps.ith, equalTo("first"));
+		assertThat(steps.nth, equalTo("ground"));
 	}
 
 	@Test
@@ -336,8 +336,8 @@ public class CandidateStepBehaviour {
 		candidateStep.createFrom(tableRow,
 				"When I live on the <ith> floor but some call it the <nth>")
 				.perform();
-		ensureThat(steps.ith, equalTo("first"));
-		ensureThat(steps.nth, equalTo("ground"));
+		assertThat(steps.ith, equalTo("first"));
+		assertThat(steps.nth, equalTo("ground"));
 	}
 
 	@Test
@@ -364,8 +364,8 @@ public class CandidateStepBehaviour {
 		candidateStep.createFrom(tableRow,
 				"When I live on the first floor but some call it the ground")
 				.perform();
-		ensureThat(steps.ith, equalTo("first"));
-		ensureThat(steps.nth, equalTo("ground"));
+		assertThat(steps.ith, equalTo("first"));
+		assertThat(steps.nth, equalTo("ground"));
 	}
 
 	@Test
@@ -383,23 +383,23 @@ public class CandidateStepBehaviour {
 		candidateStep.createFrom(tableRow,
 				"When I live on the <ith> floor but some call it the <nth>")
 				.perform();
-		ensureThat(steps.ith, equalTo("first"));
-		ensureThat(steps.nth, equalTo("ground"));
+		assertThat(steps.ith, equalTo("first"));
+		assertThat(steps.nth, equalTo("ground"));
 	}
 
 	@Test
 	public void shouldCreateStepsOfDifferentTypesWithSameMatchingPattern() {
 		NamedTypeSteps steps = new NamedTypeSteps();
 		CandidateStep[] candidateSteps = steps.getSteps();
-		ensureThat(candidateSteps.length, equalTo(2));
+		assertThat(candidateSteps.length, equalTo(2));
 		candidateSteps[0].createFrom(tableRow, "Given foo named xyz").perform();
 		candidateSteps[0].createFrom(tableRow, "And foo named xyz").perform();
 		candidateSteps[1].createFrom(tableRow, "When foo named Bar").perform();
 		candidateSteps[1].createFrom(tableRow, "And foo named Bar").perform();
-		ensureThat(steps.givenName, equalTo("xyz"));
-		ensureThat(steps.givenTimes, equalTo(2));
-		ensureThat(steps.whenName, equalTo("Bar"));
-		ensureThat(steps.whenTimes, equalTo(2));
+		assertThat(steps.givenName, equalTo("xyz"));
+		assertThat(steps.givenTimes, equalTo(2));
+		assertThat(steps.whenName, equalTo("Bar"));
+		assertThat(steps.whenTimes, equalTo(2));
 	}
 
 	@Test
@@ -408,25 +408,25 @@ public class CandidateStepBehaviour {
 		configuration.doDryRun(true);
 		NamedTypeSteps steps = new NamedTypeSteps(configuration);
 		CandidateStep[] candidateSteps = steps.getSteps();
-		ensureThat(candidateSteps.length, equalTo(2));
+		assertThat(candidateSteps.length, equalTo(2));
 		candidateSteps[0].createFrom(tableRow, "Given foo named xyz").perform();
 		candidateSteps[0].createFrom(tableRow, "And foo named xyz").perform();
 		candidateSteps[1].createFrom(tableRow, "When foo named Bar").perform();
 		candidateSteps[1].createFrom(tableRow, "And foo named Bar").perform();
-		ensureThat(steps.givenName, nullValue());
-		ensureThat(steps.givenTimes, equalTo(0));
-		ensureThat(steps.whenName, nullValue());
-		ensureThat(steps.whenTimes, equalTo(0));
+		assertThat(steps.givenName, nullValue());
+		assertThat(steps.givenTimes, equalTo(0));
+		assertThat(steps.whenName, nullValue());
+		assertThat(steps.whenTimes, equalTo(0));
 	}
 
 	@Test(expected = StartingWordNotFound.class)
 	public void shouldNotCreateStepOfWrongType() {
 		NamedTypeSteps steps = new NamedTypeSteps();
 		CandidateStep[] candidateSteps = steps.getSteps();
-		ensureThat(candidateSteps.length, equalTo(2));
+		assertThat(candidateSteps.length, equalTo(2));
 		candidateSteps[0].createFrom(tableRow, "Given foo named xyz").perform();
-		ensureThat(steps.givenName, equalTo("xyz"));
-		ensureThat(steps.whenName, nullValue());
+		assertThat(steps.givenName, equalTo("xyz"));
+		assertThat(steps.whenName, nullValue());
 		candidateSteps[0].createFrom(tableRow, "Then foo named xyz").perform();
 	}
 

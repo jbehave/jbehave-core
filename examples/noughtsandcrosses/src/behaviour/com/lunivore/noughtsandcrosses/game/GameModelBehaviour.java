@@ -1,7 +1,7 @@
 package com.lunivore.noughtsandcrosses.game;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,7 +22,7 @@ public class GameModelBehaviour {
         
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
-                ensureThat(game.playerAt(column, row), equalTo(Player.NONE));
+                assertThat(game.playerAt(column, row), equalTo(Player.NONE));
             }
         }
     }
@@ -38,9 +38,9 @@ public class GameModelBehaviour {
         
         verify(observer, times(3)).gameChanged(game);
         
-        ensureThat(game.playerAt(0, 0), equalTo(Player.NONE));
-        ensureThat(game.playerAt(0, 1), equalTo(Player.X));
-        ensureThat(game.playerAt(0, 2), equalTo(Player.O));
+        assertThat(game.playerAt(0, 0), equalTo(Player.NONE));
+        assertThat(game.playerAt(0, 1), equalTo(Player.X));
+        assertThat(game.playerAt(0, 2), equalTo(Player.O));
     }
     
     @Test
@@ -60,7 +60,7 @@ public class GameModelBehaviour {
         game.playerActsAt(0, 2);
         
         // Then we should see X is the current player and the game is over
-        ensureThat(observer.game.currentPlayer(), equalTo(Player.X));
+        assertThat(observer.game.currentPlayer(), equalTo(Player.X));
     }
     
     private static class MyGameObserver implements GameObserver {

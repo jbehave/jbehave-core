@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.io.File;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.jbehave.Ensure.ensureThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 
 public class FilePrintStreamFactoryBehaviour {
@@ -39,7 +39,7 @@ public class FilePrintStreamFactoryBehaviour {
         File outputFile = factory.getOutputFile();
         String expected = new File(codeLocation).getParent() + "/" + configuration.getOutputDirectory() + "/"
                 + "org.jbehave.examples.trader.stories.my_given." + configuration.getExtension();
-        ensureThat(outputFile.toString(), equalTo(expected));
+        assertThat(outputFile.toString(), equalTo(expected));
 
     }
 
