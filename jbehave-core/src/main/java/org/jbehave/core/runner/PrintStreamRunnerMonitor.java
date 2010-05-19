@@ -8,6 +8,9 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+/**
+ * Monitor that reports to a {@link PrintStream}, defaulting to {@link System.out}
+ */
 public class PrintStreamRunnerMonitor implements StoryRunnerMonitor {
     private PrintStream output;
 
@@ -20,41 +23,41 @@ public class PrintStreamRunnerMonitor implements StoryRunnerMonitor {
     }
 
     public void storiesBatchFailed(String failedStories) {
-        output.println("Failed to run batch stories "+ failedStories);
+        print("Failed to run batch stories "+ failedStories);
     }
 
     public void storyFailed(String storyName, Throwable e) {
-        output.println("Failed to run story "+storyName);
-        e.printStackTrace(output);
+        print("Failed to run story "+storyName);
+        printStackTrace(e);
     }
 
     public void runningStory(String storyName) {
-        output.println("Running story "+storyName);
+        print("Running story "+storyName);
     }
 
     public void storiesNotRun() {
-        output.println("Stories not run");
+        print("Stories not run");
     }
 
 	public void renderingReports(File outputDirectory, List<String> formats,
 			Properties templateProperties) {
-		output.println("Rendering reports in '" + outputDirectory + "' using formats '" + formats + "'" 
+		print("Rendering reports in '" + outputDirectory + "' using formats '" + formats + "'" 
     		    + " and template properties '"+templateProperties+"'");
 	}
 
 	public void reportRenderingFailed(File outputDirectory,
 			List<String> formats, Properties templateProperties, Throwable cause) {
-		output.println("Failed to render reports in outputDirectory " + outputDirectory
+		print("Failed to render reports in outputDirectory " + outputDirectory
         		+ " using formats " + formats + " and template properties '"+templateProperties+"'");
 	}
 	
 	public void reportsRendered(int scenarios, int failedScenarios) {
-		output.println("Reports rendered with " + scenarios
+		print("Reports rendered with " + scenarios
         		+ " scenarios (of which  " + failedScenarios + " failed)");
 	}
 	
 	public void reportsNotRendered() {
-		output.println("Reports not rendered");
+		print("Reports not rendered");
 	}
 	
 	@Override
@@ -62,4 +65,13 @@ public class PrintStreamRunnerMonitor implements StoryRunnerMonitor {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 	
+	protected void print(String message) {
+		output.println(message);
+	}
+
+	protected void printStackTrace(Throwable e) {
+		e.printStackTrace(output);
+	}
+
+
 }
