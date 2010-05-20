@@ -1,5 +1,6 @@
 package org.jbehave.core.steps;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
@@ -10,9 +11,10 @@ import java.lang.reflect.Type;
 public interface StepMonitor {
 
 	void stepMatchesType(String stepAsString, String previousAsString,
-			boolean matchesType, StepType stepType);
+			boolean matchesType, StepType stepType, Method method, Object stepsInstance);
 
-    void stepMatchesPattern(String step, boolean matches, String pattern);
+	void stepMatchesPattern(String step, boolean matches, String pattern,
+			Method method, Object stepsInstance);
 
     void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass);
 
