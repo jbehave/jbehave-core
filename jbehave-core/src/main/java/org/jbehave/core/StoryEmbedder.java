@@ -14,16 +14,19 @@ import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.parser.StoryPathResolver;
 import org.jbehave.core.reporters.FreemarkerReportRenderer;
 import org.jbehave.core.reporters.ReportRenderer;
+import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.runner.PrintStreamRunnerMonitor;
 import org.jbehave.core.runner.StoryRunner;
 import org.jbehave.core.runner.StoryRunnerMode;
 import org.jbehave.core.runner.StoryRunnerMonitor;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.StepdocGenerator;
 
 public class StoryEmbedder {
     private StoryConfiguration configuration = new MostUsefulStoryConfiguration();
     private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+    private ReportRenderer reportRenderer = new FreemarkerReportRenderer();
 	private StoryRunner runner;
     private StoryRunnerMode runnerMode;
     private StoryRunnerMonitor runnerMonitor;
@@ -38,7 +41,7 @@ public class StoryEmbedder {
         this.runnerMode = runnerMode;
     }
 
-    public void runStories(List<RunnableStory> runnableStories) {
+	public void runStories(List<RunnableStory> runnableStories) {
         if (runnerMode.skip()) {
             runnerMonitor.storiesNotRun();
             return;
@@ -136,18 +139,18 @@ public class StoryEmbedder {
 		renderReports(outputDirectory, formatNames, renderingResources);		
 	}
 
-	public void renderReports(File outputDirectory, List<String> formats, Properties templateProperties) {
+	public void renderReports(File outputDirectory, List<String> formats, Properties renderingResources) {
 		if ( runnerMode.skip() ){
 			runnerMonitor.reportsNotRendered();
 			return;
 		}
-        ReportRenderer reportRenderer = new FreemarkerReportRenderer(templateProperties);
+        ReportRenderer reportRenderer = reportRenderer();
         try {
-        	runnerMonitor.renderingReports(outputDirectory, formats, templateProperties);
-            reportRenderer.render(outputDirectory, formats);
+        	runnerMonitor.renderingReports(outputDirectory, formats, renderingResources);
+            reportRenderer.render(outputDirectory, formats, renderingResources);
         } catch (RuntimeException e) {
-        	runnerMonitor.reportRenderingFailed(outputDirectory, formats, templateProperties, e);
-            String message = "Failed to render reports to "+outputDirectory+" with formats "+formats+" and template properties "+templateProperties;
+        	runnerMonitor.reportRenderingFailed(outputDirectory, formats, renderingResources, e);
+            String message = "Failed to render reports to "+outputDirectory+" with formats "+formats+" and rendering resources "+renderingResources;
 			throw new RenderingReportsFailedException(message, e);
         }
         int scenarios = reportRenderer.countScenarios();
@@ -163,7 +166,9 @@ public class StoryEmbedder {
     public void generateStepdoc() {
         StoryConfiguration configuration = configuration();
         List<CandidateSteps> candidateSteps = candidateSteps();
-        configuration.stepdocReporter().report(configuration.stepdocGenerator().generate(candidateSteps.toArray(new CandidateSteps[candidateSteps.size()])));
+        StepdocReporter reporter = configuration.stepdocReporter();
+		StepdocGenerator generator = configuration.stepdocGenerator();
+		reporter.report(generator.generate(candidateSteps.toArray(new CandidateSteps[candidateSteps.size()])));
     }
     
     public StoryConfiguration configuration() {
@@ -173,6 +178,10 @@ public class StoryEmbedder {
     public List<CandidateSteps> candidateSteps() {
 		return candidateSteps;
     }
+    
+	public ReportRenderer reportRenderer() {
+		return reportRenderer;
+	}
 
     public StoryRunnerMode runnerMode() {
         return runnerMode;
@@ -192,6 +201,10 @@ public class StoryEmbedder {
 
 	public void useCandidateSteps(List<CandidateSteps> candidateSteps) {
 		this.candidateSteps = candidateSteps;		
+	}
+	
+	public void useReportRenderer(ReportRenderer reportRenderer){
+		this.reportRenderer = reportRenderer;		
 	}
 
 	public void useRunnerMode(StoryRunnerMode runnerMode) {
@@ -224,7 +237,7 @@ public class StoryEmbedder {
     }
     
     @SuppressWarnings("serial")
-	private class RunningStoriesFailedException extends RuntimeException {
+	public class RunningStoriesFailedException extends RuntimeException {
         public RunningStoriesFailedException(String message, Throwable cause) {
             super(message, cause);
         }
@@ -235,7 +248,7 @@ public class StoryEmbedder {
     }
 
     @SuppressWarnings("serial")
-	private class RenderingReportsFailedException extends RuntimeException {
+	public class RenderingReportsFailedException extends RuntimeException {
         public RenderingReportsFailedException(String message, Throwable cause) {
             super(message, cause);
         }

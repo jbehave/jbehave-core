@@ -43,14 +43,14 @@ import freemarker.template.TemplateException;
 public class FreemarkerReportRenderer implements ReportRenderer {
 
     private final Configuration configuration;
-    private final Properties resources;
+    private Properties resources;
 	private List<Report> renderedReports = new ArrayList<Report>();
 
     public FreemarkerReportRenderer() {
-        this(defaultResources());
+        this.configuration = configure();
     }
 
-    private static Properties defaultResources() {
+    public static Properties defaultResources() {
         Properties resources = new Properties();
         resources.setProperty("index", "ftl/jbehave-reports-index.ftl");
         resources.setProperty("single", "ftl/jbehave-reports-single.ftl");
@@ -59,18 +59,14 @@ public class FreemarkerReportRenderer implements ReportRenderer {
         return resources;
     }
 
-    public FreemarkerReportRenderer(Properties resources) {
-        this.configuration = configure();
-        this.resources = mergeWithDefault(resources);
-    }
-
     private Properties mergeWithDefault(Properties resources) {
         Properties merged = defaultResources();
         merged.putAll(resources);
         return merged;
     }
 
-    public void render(File outputDirectory, List<String> formats) {
+    public void render(File outputDirectory, List<String> formats, Properties resources) {
+        this.resources = mergeWithDefault(resources);
         createIndex(outputDirectory, formats);
     }
 

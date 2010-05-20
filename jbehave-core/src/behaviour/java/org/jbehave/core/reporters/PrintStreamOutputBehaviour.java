@@ -374,7 +374,7 @@ public class PrintStreamOutputBehaviour {
         // When
         narrateAnInterestingStory(reporter);
         ReportRenderer renderer = new FreemarkerReportRenderer();
-        renderer.render(outputDirectory, asList("html", "txt"));
+        renderer.render(outputDirectory, asList("html", "txt"), FreemarkerReportRenderer.defaultResources());
 
         // Then
         ensureFileExists(new File(outputDirectory, "rendered/index.html"));
@@ -414,10 +414,10 @@ public class PrintStreamOutputBehaviour {
         // Given
         Properties templates = new Properties();
         templates.setProperty("index", "target/inexistent");
-        ReportRenderer renderer = new FreemarkerReportRenderer(templates);
+        ReportRenderer renderer = new FreemarkerReportRenderer();
         // When
         File outputDirectory = new File("target");
-        renderer.render(outputDirectory, asList("html"));
+        renderer.render(outputDirectory, asList("html"), templates);
         // Then ... fail as expected
     }
 
