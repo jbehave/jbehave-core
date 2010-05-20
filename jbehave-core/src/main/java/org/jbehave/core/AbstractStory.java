@@ -24,8 +24,8 @@ import org.jbehave.core.steps.CandidateSteps;
  */
 public abstract class AbstractStory implements RunnableStory {
 
-    protected StoryConfiguration configuration = new MostUsefulStoryConfiguration();
-    protected List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+	private StoryConfiguration configuration = new MostUsefulStoryConfiguration();
+    private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
 	private StoryEmbedder embedder = new StoryEmbedder();
 
     public StoryConfiguration getConfiguration() {
