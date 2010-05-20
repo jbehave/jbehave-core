@@ -39,6 +39,7 @@ public class StoryClassLoader extends URLClassLoader {
 	public RunnableStory newStory(String storyClassName,
 			Class<?>... parameterTypes) {
 		Class<?> storyClass = loadStoryClass(storyClassName);
+		Thread.currentThread().setContextClassLoader(this);
 		return instantiateStory(storyClass, parameterTypes);
 	}
 

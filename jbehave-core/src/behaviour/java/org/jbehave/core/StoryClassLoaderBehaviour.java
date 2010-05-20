@@ -2,8 +2,10 @@ package org.jbehave.core;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.sameInstance;
 
 import java.net.MalformedURLException;
 import java.util.Arrays;
@@ -43,6 +45,7 @@ public class StoryClassLoaderBehaviour {
         RunnableStory story = classLoader.newStory(storyClassName, parameterTypes);
         assertThat(story, not(nullValue()));
         assertThat(storyClassName, equalTo(story.getClass().getName()));
+        assertThat(classLoader, is(sameInstance(Thread.currentThread().getContextClassLoader())));
     }
 
     @Test
