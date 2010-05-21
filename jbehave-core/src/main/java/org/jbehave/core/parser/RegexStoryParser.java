@@ -258,7 +258,7 @@ public class RegexStoryParser implements StoryParser {
                 keywords.when(), keywords.then(), keywords.others());
         String scenario = keywords.scenario();
         String table = keywords.examplesTable();
-        return compile("((" + givenWhenThen + ") (.|\\s)*?)\\s*(\\Z|"
-                + givenWhenThenSpaced + "|" + scenario + "|" + table + ")");
+		return compile("((" + givenWhenThen + ") (.)*?)\\s*(\\Z|"
+				+ givenWhenThenSpaced + "|" + scenario + "|"+ table + ")", DOTALL);
     }
 }

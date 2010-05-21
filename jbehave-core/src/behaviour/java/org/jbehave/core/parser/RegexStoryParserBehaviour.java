@@ -181,6 +181,28 @@ public class RegexStoryParserBehaviour {
                 "And I should see this in the output"
         )));
     }
+    
+    public void shouldParseStoryWithVeryLongStep() {
+        String scenario = aScenarioWithAVeryLongGivenStep();
+        ensureThatScenarioCanBeParsed(scenario);
+    }
+
+    private String aScenarioWithAVeryLongGivenStep() {
+        StringBuilder longScenarioBuilder = new StringBuilder()
+                .append("Given all these examples:" + NL)
+                .append("|one|two|three|" + NL);
+        int numberOfLinesInStep = 50;
+        for (int i = 0; i < numberOfLinesInStep; i++) {
+            longScenarioBuilder.append("|a|sample|line|" + NL);
+        }
+        longScenarioBuilder.append("When I do something" + NL);
+        longScenarioBuilder.append("Then something should happen" + NL);
+        return longScenarioBuilder.toString();
+    }
+
+    private void ensureThatScenarioCanBeParsed(String scenarioAsText) {
+        parser.parseStory(scenarioAsText);
+    }
 
     @Test
     public void shouldParseLongStoryWithKeywordSplitScenarios() {
