@@ -1,4 +1,4 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.io;
 
 public interface StoryLoader {
 

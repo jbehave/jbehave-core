@@ -1,6 +1,6 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.parser.StoryLocation;
+import org.jbehave.core.io.StoryLocation;
 import org.junit.Test;
 
 import java.io.File;

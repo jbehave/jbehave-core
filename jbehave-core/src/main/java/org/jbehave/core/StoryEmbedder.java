@@ -11,7 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
-import org.jbehave.core.parser.StoryPathResolver;
+import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.reporters.FreemarkerReportRenderer;
 import org.jbehave.core.reporters.ReportRenderer;
 import org.jbehave.core.reporters.StepdocReporter;

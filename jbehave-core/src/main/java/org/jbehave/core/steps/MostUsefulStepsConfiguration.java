@@ -2,7 +2,7 @@ package org.jbehave.core.steps;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
+import org.jbehave.core.parsers.PrefixCapturingPatternBuilder;
 
 import java.util.Locale;
 

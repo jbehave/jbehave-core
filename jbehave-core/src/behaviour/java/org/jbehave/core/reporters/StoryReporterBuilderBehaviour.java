@@ -12,9 +12,9 @@ import java.util.Properties;
 
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.parser.StoryLocation;
-import org.jbehave.core.parser.StoryPathResolver;
-import org.jbehave.core.parser.UnderscoredCamelCaseResolver;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.junit.Test;
 

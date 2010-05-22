@@ -1,7 +1,11 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.io;
 
 import org.jbehave.core.errors.InvalidStoryResourceException;
 import org.jbehave.core.errors.StoryNotFoundException;
+import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.LoadFromURL;
+import org.jbehave.core.io.StoryLoader;
+import org.jbehave.core.io.StoryLocation;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -16,7 +20,7 @@ public class StoryLoaderBehaviour {
     @Test
     public void canLoadStoryFromClasspath() {
         // Given
-        String storyPath = "org/jbehave/core/parser/stories/my_pending_story";
+        String storyPath = "org/jbehave/core/io/stories/my_pending_story";
         String storyAsString = "Given my step";
 
         // When
@@ -65,7 +69,7 @@ public class StoryLoaderBehaviour {
     public void canDefineStoryWithURLLoading() {
         // Given
         String codeLocation = new StoryLocation("", this.getClass()).getCodeLocation().getFile();
-        String storyPath = "file:" + codeLocation + "org/jbehave/core/parser/stories/my_pending_story";
+        String storyPath = "file:" + codeLocation + "org/jbehave/core/io/stories/my_pending_story";
         String storyAsString = "Given my step";
  
         // When

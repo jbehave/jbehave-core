@@ -25,7 +25,7 @@ import org.jbehave.core.StoryEmbedder.RenderingReportsFailedException;
 import org.jbehave.core.StoryEmbedder.RunningStoriesFailedException;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
-import org.jbehave.core.parser.StoryPathResolver;
+import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.reporters.FreemarkerReportRenderer;
 import org.jbehave.core.reporters.ReportRenderer;
 import org.jbehave.core.runner.PrintStreamRunnerMonitor;

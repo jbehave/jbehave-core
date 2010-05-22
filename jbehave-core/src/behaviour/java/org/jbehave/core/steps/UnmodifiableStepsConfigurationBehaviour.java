@@ -2,7 +2,7 @@ package org.jbehave.core.steps;
 
 import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.model.Keywords;
-import org.jbehave.core.parser.StepPatternBuilder;
+import org.jbehave.core.parsers.StepPatternBuilder;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;

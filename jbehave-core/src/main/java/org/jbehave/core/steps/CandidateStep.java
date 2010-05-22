@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.errors.PendingError;
-import org.jbehave.core.parser.StepPatternBuilder;
+import org.jbehave.core.parsers.StepPatternBuilder;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;

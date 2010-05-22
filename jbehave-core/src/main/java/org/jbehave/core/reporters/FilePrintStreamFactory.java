@@ -8,7 +8,7 @@ import java.io.PrintStream;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.parser.StoryLocation;
+import org.jbehave.core.io.StoryLocation;
 
 /**
  * Creates {@link PrintStream} instances that write to a file

@@ -1,18 +1,17 @@
-package org.jbehave.core.parser.stories;
+package org.jbehave.core.io.stories;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.PropertyBasedStoryConfiguration;
 import org.jbehave.core.reporters.PrintStreamOutput;
 import org.jbehave.core.reporters.StoryReporter;
 
-public abstract class MyPendingStory extends JUnitStory {
-
-    public MyPendingStory() {
+public abstract class MyMultipleStory extends JUnitStory {
+    public MyMultipleStory() {
         // Making sure this doesn't output to the build while it's running
-        useConfiguration(new MostUsefulStoryConfiguration() {
+        useConfiguration(new PropertyBasedStoryConfiguration() {
             @Override
             public StoryReporter storyReporter() {
                 return new PrintStreamOutput(new PrintStream(new ByteArrayOutputStream()));

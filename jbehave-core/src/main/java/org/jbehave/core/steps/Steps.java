@@ -26,7 +26,7 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.errors.BeforeOrAfterException;
-import org.jbehave.core.parser.StepPatternBuilder;
+import org.jbehave.core.parsers.StepPatternBuilder;
 import org.jbehave.core.reporters.StoryReporter;
 
 /**

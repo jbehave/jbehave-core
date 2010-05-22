@@ -1,4 +1,4 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.io;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.errors.InvalidStoryResourceException;

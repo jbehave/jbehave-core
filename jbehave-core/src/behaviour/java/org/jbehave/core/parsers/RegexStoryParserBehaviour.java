@@ -1,4 +1,4 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.parsers;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -13,6 +13,8 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.parsers.StoryParser;
 import org.junit.Ignore;
 import org.junit.Test;
 

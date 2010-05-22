@@ -1,4 +1,4 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.parsers;
 
 import org.jbehave.core.model.Story;
 

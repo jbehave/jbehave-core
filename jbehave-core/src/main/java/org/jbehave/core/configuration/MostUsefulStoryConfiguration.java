@@ -3,9 +3,9 @@ package org.jbehave.core.configuration;
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.PendingErrorStrategy;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.parser.*;
+import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.parsers.*;
 import org.jbehave.core.reporters.*;
-import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.StepCreator;
@@ -20,7 +20,7 @@ import java.util.Locale;
  * <li>{@link org.jbehave.core.model.Keywords}: new I18nKeyWords()</li>
  * <li>{@link StepCreator}: new UnmatchedToPendingStepCreator()</li>
  * <li>{@link StoryParser}: new PatternStoryParser(keywords())</li>
- * <li>{@link org.jbehave.core.parser.StoryLoader}: new ClasspathLoader()</li>
+ * <li>{@link org.jbehave.core.io.StoryLoader}: new ClasspathLoader()</li>
  * <li>{@link ErrorStrategy}: ErrorStrategy.RETHROW</li>
  * <li>{@link PendingErrorStrategy}: PendingErrorStrategy.PASSING</li>
  * <li>{@link StoryReporter}: new PassSilentlyDecorator(new PrintStreamStoryReporter())</li>

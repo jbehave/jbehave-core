@@ -1,4 +1,4 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.parsers;
 
 import static java.util.regex.Pattern.DOTALL;
 import static java.util.regex.Pattern.compile;

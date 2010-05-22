@@ -1,4 +1,4 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.parsers;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -7,6 +7,8 @@ import static org.hamcrest.Matchers.is;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jbehave.core.parsers.PrefixCapturingPatternBuilder;
+import org.jbehave.core.parsers.StepPatternBuilder;
 import org.junit.Test;
 
 

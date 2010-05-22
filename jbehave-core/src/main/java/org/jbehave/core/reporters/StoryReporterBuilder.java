@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jbehave.core.parser.StoryLocation;
+import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 
 /**

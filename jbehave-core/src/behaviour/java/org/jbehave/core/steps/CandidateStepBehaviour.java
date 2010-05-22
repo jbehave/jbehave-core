@@ -24,8 +24,8 @@ import java.util.Map;
 
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
-import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
-import org.jbehave.core.parser.StepPatternBuilder;
+import org.jbehave.core.parsers.PrefixCapturingPatternBuilder;
+import org.jbehave.core.parsers.StepPatternBuilder;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateStep.StartingWordNotFound;
 import org.junit.Test;

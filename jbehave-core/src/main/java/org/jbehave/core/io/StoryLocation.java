@@ -1,4 +1,4 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.io;
 
 import java.net.MalformedURLException;
 import java.net.URL;

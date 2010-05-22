@@ -1,4 +1,4 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.io;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.jbehave.core.errors.InvalidStoryPathException;
+import org.jbehave.core.io.StoryPathFinder;
 import org.junit.Ignore;
 import org.junit.Test;
 

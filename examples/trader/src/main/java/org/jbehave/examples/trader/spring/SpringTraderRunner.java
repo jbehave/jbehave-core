@@ -1,9 +1,9 @@
 package org.jbehave.examples.trader.spring;
 
 import org.jbehave.core.StoryEmbedder;
-import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
-import org.jbehave.core.parser.StoryLocation;
-import org.jbehave.core.parser.StoryPathFinder;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.io.StoryPathFinder;
+import org.jbehave.core.parsers.PrefixCapturingPatternBuilder;
 import org.jbehave.core.steps.*;
 import org.jbehave.examples.trader.BeforeAfterSteps;
 import org.jbehave.examples.trader.TraderSteps;

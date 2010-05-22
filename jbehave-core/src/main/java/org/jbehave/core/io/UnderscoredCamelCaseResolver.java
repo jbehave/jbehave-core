@@ -1,4 +1,4 @@
-package org.jbehave.core.parser;
+package org.jbehave.core.io;
 
 import static java.util.regex.Pattern.compile;
 

@@ -12,7 +12,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.StoryClassLoader;
 import org.jbehave.core.StoryEmbedder;
-import org.jbehave.core.parser.StoryPathFinder;
+import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.runner.StoryRunnerMode;
 import org.jbehave.core.runner.StoryRunnerMonitor;
 

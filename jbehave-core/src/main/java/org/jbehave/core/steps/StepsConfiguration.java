@@ -12,8 +12,8 @@ import java.util.Map;
 
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
-import org.jbehave.core.parser.StepPatternBuilder;
+import org.jbehave.core.parsers.PrefixCapturingPatternBuilder;
+import org.jbehave.core.parsers.StepPatternBuilder;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;

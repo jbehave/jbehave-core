@@ -3,7 +3,7 @@ package org.jbehave.core.configuration;
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.PendingErrorStrategy;
-import org.jbehave.core.parser.StoryParser;
+import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.PrintStreamOutput;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StepdocReporter;

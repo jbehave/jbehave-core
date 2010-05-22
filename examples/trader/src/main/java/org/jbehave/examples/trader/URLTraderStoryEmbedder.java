@@ -6,8 +6,8 @@ import java.text.MessageFormat;
 import java.util.List;
 
 import org.jbehave.core.configuration.StoryConfiguration;
-import org.jbehave.core.parser.LoadFromURL;
-import org.jbehave.core.parser.StoryLocation;
+import org.jbehave.core.io.LoadFromURL;
+import org.jbehave.core.io.StoryLocation;
 
 /**
  * Specifies the StoryEmbedder for the Trader example, using URL story loading.

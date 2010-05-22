@@ -8,10 +8,10 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.parser.LoadFromClasspath;
-import org.jbehave.core.parser.PrefixCapturingPatternBuilder;
-import org.jbehave.core.parser.StoryPathResolver;
-import org.jbehave.core.parser.UnderscoredCamelCaseResolver;
+import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.parsers.PrefixCapturingPatternBuilder;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;
