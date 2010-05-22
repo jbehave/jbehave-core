@@ -26,7 +26,7 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.errors.BeforeOrAfterException;
-import org.jbehave.core.parsers.StepPatternBuilder;
+import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 
 /**
@@ -42,7 +42,7 @@ import org.jbehave.core.reporters.StoryReporter;
  * <p>
  * You can define the methods that should be run by annotating them with @Given, @When
  * or @Then, and providing a value for each annotation that matches the step.
- * The value is interpreted by the {@link StepPatternBuilder}, which by default
+ * The value is interpreted by the {@link StepPatternParser}, which by default
  * interprets the '$' as parameters.
  * </p>
  * <p>
@@ -159,7 +159,7 @@ public class Steps implements CandidateSteps {
     protected CandidateStep createCandidateStep(Method method, StepType stepType, String stepPatternAsString, int priority,
             StepsConfiguration configuration) {
         return new CandidateStep(stepPatternAsString, priority, stepType, method, instance,
-                configuration.patternBuilder(), configuration.parameterConverters(), configuration.getStartingWordsByType());
+                configuration.patternParser(), configuration.parameterConverters(), configuration.getStartingWordsByType());
     }
 
     private void checkForDuplicateCandidateSteps(List<CandidateStep> steps, StepType stepType, String patternAsString) {

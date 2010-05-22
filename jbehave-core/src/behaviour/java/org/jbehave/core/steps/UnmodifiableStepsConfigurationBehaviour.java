@@ -2,7 +2,7 @@ package org.jbehave.core.steps;
 
 import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.model.Keywords;
-import org.jbehave.core.parsers.StepPatternBuilder;
+import org.jbehave.core.parsers.StepPatternParser;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,7 +20,7 @@ public class UnmodifiableStepsConfigurationBehaviour {
         assertThat(unmodifiable.keywords(), is(delegate.keywords()));
         assertThat(unmodifiable.monitor(), is(delegate.monitor()));
         assertThat(unmodifiable.paranamer(), is(delegate.paranamer()));
-        assertThat(unmodifiable.patternBuilder(), is(delegate.patternBuilder()));
+        assertThat(unmodifiable.patternParser(), is(delegate.patternParser()));
         assertThat(unmodifiable.parameterConverters(), is(delegate.parameterConverters()));
     }
 
@@ -32,7 +32,7 @@ public class UnmodifiableStepsConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
         assertThatNotAllowed(unmodifiable, "useMonitor", StepMonitor.class);
         assertThatNotAllowed(unmodifiable, "useParanamer", Paranamer.class);
-        assertThatNotAllowed(unmodifiable, "usePatternBuilder", StepPatternBuilder.class);
+        assertThatNotAllowed(unmodifiable, "usePatternParser", StepPatternParser.class);
         assertThatNotAllowed(unmodifiable, "useParameterConverters", ParameterConverters.class);
     }
 

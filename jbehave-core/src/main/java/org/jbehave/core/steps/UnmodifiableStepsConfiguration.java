@@ -2,7 +2,7 @@ package org.jbehave.core.steps;
 
 import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.model.Keywords;
-import org.jbehave.core.parsers.StepPatternBuilder;
+import org.jbehave.core.parsers.StepPatternParser;
 
 /**
  * Decorator of StepsConfiguration that disables modification of configuration elements.
@@ -20,12 +20,12 @@ public class UnmodifiableStepsConfiguration extends StepsConfiguration {
     }
 
     @Override
-    public StepPatternBuilder patternBuilder() {
-        return delegate.patternBuilder();
+    public StepPatternParser patternParser() {
+        return delegate.patternParser();
     }
 
     @Override
-    public StepsConfiguration usePatternBuilder(StepPatternBuilder patternBuilder) {
+    public StepsConfiguration usePatternParser(StepPatternParser patternParser) {
     	return notAllowed();
     }
 

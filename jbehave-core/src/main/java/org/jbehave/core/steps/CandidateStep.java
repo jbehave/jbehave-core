@@ -7,12 +7,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.errors.PendingError;
-import org.jbehave.core.parsers.StepPatternBuilder;
+import org.jbehave.core.parsers.StepMatcher;
+import org.jbehave.core.parsers.StepPatternParser;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -39,21 +38,19 @@ public class CandidateStep {
     private final Object stepsInstance;
     private final ParameterConverters parameterConverters;
     private final Map<StepType, String> startingWordsByType;
-    private final Pattern pattern;
-    private final String[] groupNames;
-
+	private final StepMatcher stepMatcher;
     private StepMonitor stepMonitor = new SilentStepMonitor();
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
     
     public CandidateStep(String patternAsString, int priority, StepType stepType, Method method,
-            CandidateSteps steps, StepPatternBuilder patternBuilder,
+            CandidateSteps steps, StepPatternParser patternParser,
             ParameterConverters parameterConverters, Map<StepType, String> startingWords) {
-        this(patternAsString, priority, stepType, method, (Object) steps, patternBuilder, parameterConverters, startingWords);
+        this(patternAsString, priority, stepType, method, (Object) steps, patternParser, parameterConverters, startingWords);
     }
 
     public CandidateStep(String patternAsString, int priority, StepType stepType, Method method,
-            Object stepsInstance, StepPatternBuilder patternBuilder,
+            Object stepsInstance, StepPatternParser patternParser,
             ParameterConverters parameterConverters, Map<StepType, String> startingWords) {
         this.patternAsString = patternAsString;
         this.priority = priority;
@@ -62,8 +59,7 @@ public class CandidateStep {
         this.stepsInstance = stepsInstance;
         this.parameterConverters = parameterConverters;
         this.startingWordsByType = startingWords;
-        this.pattern = patternBuilder.buildPattern(patternAsString);
-        this.groupNames = patternBuilder.extractGroupNames(patternAsString);
+        this.stepMatcher = patternParser.parseStep(patternAsString);
     }
 
     public void useStepMonitor(StepMonitor stepMonitor) {
@@ -115,8 +111,8 @@ public class CandidateStep {
         		}
         	}
             stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType, method, stepsInstance);
-            boolean matchesPattern = matcherForStep(step).matches();
-            stepMonitor.stepMatchesPattern(step, matchesPattern, pattern.pattern(), method, stepsInstance);
+            boolean matchesPattern = stepMatcher.matches(stripStartingWord(step));
+            stepMonitor.stepMatchesPattern(step, matchesPattern, stepMatcher.pattern(), method, stepsInstance);
             // must match both type and pattern
             return matchesType && matchesPattern;
         } catch (StartingWordNotFound e) {
@@ -133,22 +129,20 @@ public class CandidateStep {
     }
 
     public Step createFrom(Map<String, String> tableRow, final String stepAsString) {
-        Matcher matcher = matcherForStep(stepAsString);
-        matcher.find();
-        return createStep(stepAsString, tableRow, matcher, method, stepMonitor, groupNames);
+        stepMatcher.find(stripStartingWord(stepAsString));
+        return createStep(stepAsString, tableRow, method, stepMonitor);
     }
 
-    private Matcher matcherForStep(final String stepAsString) {
-        String startingWord = findStartingWord(stepAsString);
-        String trimmed = trimStartingWord(startingWord, stepAsString);
-        return pattern.matcher(trimmed);
-    }
+    private String stripStartingWord(final String stepAsString) {
+		String startingWord = findStartingWord(stepAsString);
+        return trimStartingWord(startingWord, stepAsString);
+	}
 
-    protected Object[] argsForStep(Map<String, String> tableRow, Matcher matcher, Type[] types, String[] annotationNames,
+    protected Object[] argsForStep(Map<String, String> tableRow, Type[] types, String[] annotationNames,
             String[] parameterNames) {
         final Object[] args = new Object[types.length];
         for (int position = 0; position < types.length; position++) {
-            String arg = argForPosition(position, annotationNames, parameterNames, tableRow, matcher);
+            String arg = argForPosition(position, annotationNames, parameterNames, tableRow);
             args[position] = parameterConverters.convert(arg, types[position]);
         }
         return args;
@@ -164,18 +158,18 @@ public class CandidateStep {
     }
 
     private String argForPosition(int position, String[] annotationNames, String[] parameterNames,
-            Map<String, String> tableRow, Matcher matcher) {
+            Map<String, String> tableRow) {
         int annotatedNamePosition = parameterPosition(annotationNames, position);
         int parameterNamePosition = parameterPosition(parameterNames, position);
         String arg = null;
         if (annotatedNamePosition != -1 && isGroupName(annotationNames[position])) {
             String name = annotationNames[position];
             stepMonitor.usingAnnotatedNameForArg(name, position);
-            arg = getGroup(matcher, name);
+            arg = getGroup(name);
         } else if (parameterNamePosition != -1 && isGroupName(parameterNames[position])) {
             String name = parameterNames[position];
             stepMonitor.usingParameterNameForArg(name, position);
-            arg = getGroup(matcher, name);
+            arg = getGroup(name);
         } else if (annotatedNamePosition != -1 && isTableFieldName(tableRow, annotationNames[position])) {
             String name = annotationNames[position];
             stepMonitor.usingTableAnnotatedNameForArg(name, position);
@@ -186,7 +180,7 @@ public class CandidateStep {
             arg = getTableValue(tableRow, name);
         } else {
             stepMonitor.usingNaturalOrderForArg(position);
-            arg = getGroup(matcher, position);
+            arg = getGroup(position);
         }
         stepMonitor.foundArg(arg, position);
         return arg;
@@ -221,22 +215,24 @@ public class CandidateStep {
         return tableRow.get(name) != null;
     }
 
-    protected String getGroup(Matcher matcher, String name) {
-        for (int i = 0; i < groupNames.length; i++) {
+    protected String getGroup(String name) {
+        String[] groupNames = stepMatcher.parameterNames();
+		for (int i = 0; i < groupNames.length; i++) {
             String groupName = groupNames[i];
             if (name.equals(groupName)) {
-                return getGroup(matcher, i);
+                return getGroup(i);
             }
         }
         throw new NoGroupFoundForName(name, groupNames);
     }
 
-	private String getGroup(Matcher matcher, int i) {
-		return matcher.group(i + 1);
+	private String getGroup(int i) {
+		return stepMatcher.parameter(i + 1);
 	}
     
     private boolean isGroupName(String name) {
-        for (String groupName : groupNames) {
+        String[] groupNames = stepMatcher.parameterNames();
+		for (String groupName : groupNames) {
             if (name.equals(groupName)) {
                 return true;
             }
@@ -306,13 +302,12 @@ public class CandidateStep {
         return startingWord;
     }
 
-    protected Step createStep(final String stepAsString, Map<String, String> tableRow, Matcher matcher,
-                              final Method method, final StepMonitor stepMonitor, String[] groupNames) {
+    protected Step createStep(final String stepAsString, Map<String, String> tableRow, final Method method, final StepMonitor stepMonitor) {
         Type[] types = method.getGenericParameterTypes();
         String[] annotationNames = annotatedParameterNames();
         String[] parameterNames = paranamer.lookupParameterNames(method, false);
         final String translatedStep = translatedStep(stepAsString, tableRow, types, annotationNames, parameterNames);
-        final Object[] args = argsForStep(tableRow, matcher, types, annotationNames, parameterNames);
+        final Object[] args = argsForStep(tableRow, types, annotationNames, parameterNames);
         return new Step() {
             public StepResult perform() {
                 try {
@@ -352,13 +347,22 @@ public class CandidateStep {
         return patternAsString;
     }
 
-    public Pattern getPattern() {
-        return pattern;
+    public StepMatcher getStepMatcher() {
+        return stepMatcher;
     }
 
     @Override
     public String toString() {
         return stepType + " " + patternAsString;
+    }
+
+    @SuppressWarnings("serial")
+    public static class StepNotMatchingPattern extends RuntimeException {
+
+		public StepNotMatchingPattern(String stepAsString, String pattern) {
+			super("Step "+stepAsString+" not matching pattern "+pattern);
+		}
+
     }
 
     @SuppressWarnings("serial")

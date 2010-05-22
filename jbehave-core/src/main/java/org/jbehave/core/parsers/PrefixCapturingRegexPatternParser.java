@@ -7,12 +7,12 @@ import java.util.regex.Pattern;
 
 
 /**
- * Provides a pattern which will capture arguments starting with the given
+ * Provides a step matcher which will capture arguments starting with the given
  * prefix in any matching step. Default prefix is $.
  * 
  * @author Elizabeth Keogh
  */
-public class PrefixCapturingPatternBuilder implements StepPatternBuilder {
+public class PrefixCapturingRegexPatternParser implements StepPatternParser {
 
 	private final String prefix;
     private final String anyWordBeginningWithThePrefix;
@@ -21,7 +21,7 @@ public class PrefixCapturingPatternBuilder implements StepPatternBuilder {
      * Creates a pattern which captures arguments starting with $ in
      * a matching step.
      */
-    public PrefixCapturingPatternBuilder() {
+    public PrefixCapturingRegexPatternParser() {
         this("$");
     }
 
@@ -29,13 +29,17 @@ public class PrefixCapturingPatternBuilder implements StepPatternBuilder {
      * Creates a pattern which captures arguments starting with a given
      * prefix in a matching step.
      */
-    public PrefixCapturingPatternBuilder(String prefix) {
+    public PrefixCapturingRegexPatternParser(String prefix) {
         this.prefix = prefix;
 		this.anyWordBeginningWithThePrefix = "(\\" + prefix + "\\w*)(\\W|\\Z)";
     }
 
-    public Pattern buildPattern(String matchThis) {
-        String matchThisButLeaveBrackets = escapeRegexpPunctuation(matchThis);
+    public StepMatcher parseStep(String stepPattern){
+    	return new RegexStepMatcher(buildPattern(stepPattern), extractParameterNames(stepPattern));
+    }
+    
+    private Pattern buildPattern(String stepPattern) {
+        String matchThisButLeaveBrackets = escapeRegexPunctuation(stepPattern);
         List<Replacement> replacements = findArgumentsToReplace(matchThisButLeaveBrackets);
         String patternToMatchAgainst = replaceIdentifiedArgsWithCapture(matchThisButLeaveBrackets, replacements);
         String matchThisButIgnoreWhitespace = anyWhitespaceWillDo(patternToMatchAgainst);
@@ -45,6 +49,14 @@ public class PrefixCapturingPatternBuilder implements StepPatternBuilder {
     private String anyWhitespaceWillDo(String matchThis) {
         return matchThis.replaceAll("\\s+", "\\\\s+");
     }
+
+	private String[] extractParameterNames(String stepPattern) {
+		List<String> names = new ArrayList<String>();
+		for (Replacement replacement : findArgumentsToReplace(stepPattern)) {
+			names.add(replacement.name);
+		}
+		return names.toArray(new String[names.size()]);
+	}
 
     private List<Replacement> findArgumentsToReplace(
             String matchThisButLeaveBrackets) {
@@ -68,7 +80,7 @@ public class PrefixCapturingPatternBuilder implements StepPatternBuilder {
         return matchTemp;
     }
     
-    private String escapeRegexpPunctuation(String matchThis) {
+    private String escapeRegexPunctuation(String matchThis) {
         String escapedMatch = matchThis.replaceAll("([\\[\\]\\{\\}\\?\\^\\.\\*\\(\\)\\+\\\\])", "\\\\$1");
         return escapedMatch;
     }
@@ -87,13 +99,5 @@ public class PrefixCapturingPatternBuilder implements StepPatternBuilder {
         }
         
     }
-
-	public String[] extractGroupNames(String pattern) {
-		List<String> names = new ArrayList<String>();
-		for (Replacement replacement : findArgumentsToReplace(pattern)) {
-			names.add(replacement.name);
-		}
-		return names.toArray(new String[names.size()]);
-	}
 
 }

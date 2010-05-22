@@ -12,8 +12,8 @@ import java.util.Map;
 
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.parsers.PrefixCapturingPatternBuilder;
-import org.jbehave.core.parsers.StepPatternBuilder;
+import org.jbehave.core.parsers.PrefixCapturingRegexPatternParser;
+import org.jbehave.core.parsers.StepPatternParser;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -42,7 +42,7 @@ public abstract class StepsConfiguration {
 	/**
 	 * Pattern build that uses prefix for identifying parameters
 	 */
-	private StepPatternBuilder patternBuilder = new PrefixCapturingPatternBuilder(
+	private StepPatternParser patternParser = new PrefixCapturingRegexPatternParser(
 			"$");
 	/**
 	 * Silent monitoring that does not produce any noise of the step matching.
@@ -81,16 +81,16 @@ public abstract class StepsConfiguration {
 	 * Constructor that allows all dependencies to be injected
 	 * 
 	 * @param keywords
-	 * @param patternBuilder
+	 * @param patternParser
 	 * @param monitor
 	 * @param paranamer
 	 * @param parameterConverters
 	 */
 	protected StepsConfiguration(Keywords keywords,
-			StepPatternBuilder patternBuilder, StepMonitor monitor,
+			StepPatternParser patternParser, StepMonitor monitor,
 			Paranamer paranamer, ParameterConverters parameterConverters) {
 		this.keywords = keywords;
-		this.patternBuilder = patternBuilder;
+		this.patternParser = patternParser;
 		this.monitor = monitor;
 		this.paranamer = paranamer;
 		this.parameterConverters = parameterConverters;
@@ -107,13 +107,13 @@ public abstract class StepsConfiguration {
 		return words;
 	}
 
-	public StepPatternBuilder patternBuilder() {
-		return patternBuilder;
+	public StepPatternParser patternParser() {
+		return patternParser;
 	}
 
-	public StepsConfiguration usePatternBuilder(
-			StepPatternBuilder patternBuilder) {
-		this.patternBuilder = patternBuilder;
+	public StepsConfiguration usePatternParser(
+			StepPatternParser patternParser) {
+		this.patternParser = patternParser;
 		return this;
 	}
 
