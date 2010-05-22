@@ -3,26 +3,33 @@ package org.jbehave.core.io;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
 
 import java.io.IOException;
 import java.io.InputStream;
 
 import org.jbehave.core.errors.InvalidStoryPathException;
-import org.jbehave.core.io.StoryPathFinder;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class StoryPathFinderBehaviour {
 
     @Test
-    public void shouldListPaths() {
+    public void shouldFindPaths() {
         StoryPathFinder finder = new StoryPathFinder();
-        assertThat(finder.listStoryPaths(".", ".", asList("**/stories/*.java"), asList("")).size(), greaterThan(0));
+        assertThat(finder.listStoryPaths(".", ".", asList("src/**/stories/*.java"), asList("")).size(), equalTo(2));
+        assertThat(finder.listStoryPaths(".", ".", asList("src/**/stories/*_story"), asList("")).size(), equalTo(4));
+    }
+    
+    @Test
+    public void shouldIgnoreNullFiltersWhenFindingPaths() {
+        StoryPathFinder finder = new StoryPathFinder();
+        assertThat(finder.listStoryPaths(".", null, asList("src/**/stories/*.java"), null).size(), equalTo(2));
+        assertThat(finder.listStoryPaths(".", null, null, null).size(), equalTo(2));
     }
 
+
     @Test
-    public void shouldeturnEmptyListForInexistentBasedir() {
+    public void shouldReturnEmptyListForInexistentBasedir() {
         StoryPathFinder finder = new StoryPathFinder();
         assertThat(finder.listStoryPaths("/inexistent", null, asList(""), asList("")).size(), equalTo(0));
     }
