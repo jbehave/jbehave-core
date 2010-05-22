@@ -36,7 +36,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 	public PrintStream createPrintStream() {
 		try {
 			outputFile.getParentFile().mkdirs();
-			return new FilePrintStream(outputFile, true);
+			return new FilePrintStream(outputFile, false);
 		} catch (IOException e) {
 			throw new PrintStreamCreationFailedException(outputFile, e);
 		}
@@ -90,14 +90,6 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 			this.append = append;
 		}
 
-		public File getOutputFile() {
-			return outputFile;
-		}
-
-		public boolean isAppend() {
-			return append;
-		}
-		
 		@Override
 		public String toString() {
 			return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
