@@ -1,36 +1,34 @@
 package org.jbehave.core.io;
 
-import org.jbehave.core.errors.InvalidStoryResourceException;
-import org.jbehave.core.errors.StoryNotFoundException;
-import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.io.LoadFromURL;
-import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.io.StoryLocation;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
+import org.jbehave.core.errors.InvalidStoryResourceException;
+import org.jbehave.core.errors.StoryNotFoundException;
+import org.junit.Test;
 
 public class StoryLoaderBehaviour {
 
-
     @Test
-    public void canLoadStoryFromClasspath() {
+    public void shouldLoadStoryFromClasspath() {
         // Given
         String storyPath = "org/jbehave/core/io/stories/my_pending_story";
-        String storyAsString = "Given my step";
+        String storyAsText = "Given my step";
 
         // When
         StoryLoader loader = new LoadFromClasspath();
-        assertThat(loader.loadStoryAsText(storyPath), equalTo(storyAsString));
+        String loadedStoryAsText = loader.loadStoryAsText(storyPath);
+        
+        // Then
+		assertThat(loadedStoryAsText, equalTo(storyAsText));
 
     }
 
     @Test(expected = StoryNotFoundException.class)
-    public void cannotDefineStoryWithClasspathLoadingForInexistentResource() {
+    public void shouldNotLoadStoryFromClasspathIfNotFound() {
 
         StoryLoader loader = new LoadFromClasspath();
         loader.loadStoryAsText("inexistent.story");
@@ -38,7 +36,7 @@ public class StoryLoaderBehaviour {
     }
 
     @Test(expected = InvalidStoryResourceException.class)
-    public void cannotDefineStoryWithClasspathLoadingForInvalidResource() {
+    public void shouldNotLoadStoryFropmClasspathIfClassloaderNotValid() {
 
         StoryLoader loader = new LoadFromClasspath(new InvalidClassLoader());
         loader.loadStoryAsText("inexistent.story");
@@ -70,15 +68,18 @@ public class StoryLoaderBehaviour {
         // Given
         String codeLocation = new StoryLocation("", this.getClass()).getCodeLocation().getFile();
         String storyPath = "file:" + codeLocation + "org/jbehave/core/io/stories/my_pending_story";
-        String storyAsString = "Given my step";
+        String storyAsText = "Given my step";
  
         // When
         StoryLoader loader = new LoadFromURL();
-        assertThat(loader.loadStoryAsText(storyPath), equalTo(storyAsString));
+        String loadedStoryAsText = loader.loadStoryAsText(storyPath);
+        
+        // Then
+		assertThat(loadedStoryAsText, equalTo(storyAsText));
     }
 
     @Test(expected = InvalidStoryResourceException.class)
-    public void cannotDefineStoryWithURLLoadingForInexistentResource() {
+    public void shouldNotLoadStoryFromURLIfNotFound() {
         // Given
         String codeLocation = new StoryLocation("", this.getClass()).getCodeLocation().getFile();
         String storyPath = "file:" + codeLocation + "inexistent_story";
@@ -87,23 +88,7 @@ public class StoryLoaderBehaviour {
         StoryLoader loader = new LoadFromURL();
         loader.loadStoryAsText(storyPath);
         
-        // Then
-        // fail as expected
+        // Then fail as expected
 
     }
-
-    @Test(expected = InvalidStoryResourceException.class)
-    public void cannotDefineStoryWithURLLoadingForInvalidURL() {
-        // Given
-        String codeLocation = new StoryLocation("", this.getClass()).getCodeLocation().getFile();
-        String storyPath = "file:" + codeLocation + "inexistent_story";
-
-        // When
-        StoryLoader loader = new LoadFromURL();
-        loader.loadStoryAsText(storyPath);
-
-        // Then
-        // fail as expected
-    }
-
 }
