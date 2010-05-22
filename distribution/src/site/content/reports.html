@@ -115,7 +115,7 @@ override the reporter for <b>TXT</b> format to use a ".text" extension
 (a possibly keywords for a different Locale):</p>
 <pre class="brush: java">
 
-        StoryReporter reporter = new StoryReporterBuilder(factory){
+        StoryReporter reporter = new StoryReporterBuilder(){
                public StoryReporter reporterFor(String storyPath, Format format){
 			           FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, ouputLocationClass));
                        switch (format) {
@@ -132,11 +132,19 @@ override the reporter for <b>TXT</b> format to use a ".text" extension
 <h2>Report Rendering</h2>
 
 <p>The generation of the reports is only the first part of a
-complete HTML-based reporting solution. Next we need to render the
+complete HTML-based reporting solution. Next we render the
 reports, aggregating all the ones that have been configured and
 generated in a given output directory, and presenting a collective index
-view for all formats configured. Moreover, we need to style the view,
-both for HTML and non-HTML report formats.</p>
+view for all formats configured. Moreover, we can style the reports,
+both for HTML and non-HTML report formats, by decorating their content
+with CSS and syntax highlighting.  The decorating of non-HTML reports can
+be switched off if one prefers the raw content accessible via a URL:</p>
+
+<pre class="brush: java">
+		Properties properties = new Properties();
+		properties.setProperty("decorateNonHtml","false");
+        new StoryReporterBuilder().useRenderingResources(properties);        
+</pre>
 
 <p>The rendering is the responsibility of the <a
     href="javadoc/core/org/jbehave/core/reporters/ReportRenderer.html">ReportRenderer</a>.
@@ -178,8 +186,8 @@ the only default format (used for collecting reporting statistics).  To modify
 simply override the method <b>withDefaultFormats()</b>.  E.g. to add "txt" as a
 default format:</p>
 <pre class="brush: java">
-        new StoryReporterBuilder(factory){
-               protected StoryReporterBuilder withDefaultFormats() {
+        new StoryReporterBuilder(){
+               public StoryReporterBuilder withDefaultFormats() {
                     return withFormats(STATS, TXT);
                }
         }
@@ -190,7 +198,7 @@ default format:</p>
 directory in Maven), but this can be changed via the builder:</p>
 
 <pre class="brush: java">
-        new StoryReporterBuilder(factory).outputTo("my-reports")
+        new StoryReporterBuilder().outputTo("my-reports")
 </pre>
 
 <p>In some cases, i.e. when using with Ant, the class code source location may not be 
@@ -198,7 +206,7 @@ properly set, or different from what is expected.  In this case, one can tell th
 to treat the output directory as an absolute path:</p>
 
 <pre class="brush: java">
-        new StoryReporterBuilder(factory).outputTo("target/my-reports").outputAsAbsolute(true)
+        new StoryReporterBuilder().outputTo("target/my-reports").outputAsAbsolute(true)
 </pre>
 
 <p>If the default formats or the output file directory are modified

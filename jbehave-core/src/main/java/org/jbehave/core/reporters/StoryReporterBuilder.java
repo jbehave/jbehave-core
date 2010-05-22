@@ -82,19 +82,10 @@ public class StoryReporterBuilder {
     private String outputDirectory = new FileConfiguration().getOutputDirectory();
     private boolean outputAbsolute = new FileConfiguration().isOutputDirectoryAbsolute();
 	private Class<?> ouputLocationClass = this.getClass();
-	private Properties renderingResources = defaultRenderingResources();
+	private Properties renderingResources = FreemarkerReportRenderer.defaultResources();
 
     public StoryReporterBuilder() {
     }
-
-    public static Properties defaultRenderingResources() {
-        Properties resources = new Properties();
-        resources.setProperty("index", "ftl/jbehave-reports-index.ftl");
-        resources.setProperty("single", "ftl/jbehave-reports-single.ftl");
-        resources.setProperty("renderedDirectory", "rendered");
-        resources.setProperty("defaultFormats", "stats");
-        return resources;
-	}
 
 	public StoryReporterBuilder outputTo(String outputDirectory){
         this.outputDirectory = outputDirectory;

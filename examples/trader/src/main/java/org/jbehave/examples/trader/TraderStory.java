@@ -6,6 +6,8 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
+import java.util.Properties;
+
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -39,7 +41,8 @@ public abstract class TraderStory extends JUnitStory {
         StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
         Class<? extends TraderStory> storyClass = this.getClass();
         String storyPath = storyPathResolver.resolve(storyClass);
-
+        Properties rendering = new Properties();
+        rendering.put("decorateNonHtml", "true");
         useConfiguration(new MostUsefulStoryConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
@@ -47,6 +50,7 @@ public abstract class TraderStory extends JUnitStory {
                 	//.outputTo("target/jbehave-reports").outputAsAbsolute(true)
                 	.outputLocationClass(storyClass)
                 	.withDefaultFormats()
+                	.useRenderingResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML))
                 .buildReporters(storyPath)
                 .useStoryPathResolver(storyPathResolver));

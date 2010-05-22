@@ -29,11 +29,13 @@ import freemarker.template.TemplateException;
  * reporters for the given formats. The FTL templates for the index and single
  * views are injectable via the {@link FreemarkerReportRender(Properties)}
  * constructor, but defaults are provided. To override, specify the the path the
- * new template under keys "index" and "single".</p>
+ * new template under keys "index", "decorated" and "nonDecorated".</p>
  * <p>The report renderer provides the following resources:
  * <pre>
  * resources.setProperty("index", "ftl/jbehave-reports-index.ftl");
- * resources.setProperty("single", "ftl/jbehave-reports-single.ftl");
+ * resources.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
+ * resources.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
+ * resources.setProperty("decorateNonHtml", "true");
  * resources.setProperty("renderedDirectory", "rendered");
  * resources.setProperty("defaultFormats", "stats");
  * </pre>  
@@ -53,7 +55,9 @@ public class FreemarkerReportRenderer implements ReportRenderer {
     public static Properties defaultResources() {
         Properties resources = new Properties();
         resources.setProperty("index", "ftl/jbehave-reports-index.ftl");
-        resources.setProperty("single", "ftl/jbehave-reports-single.ftl");
+        resources.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
+        resources.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
+        resources.setProperty("decorateNonHtml", "true");
         resources.setProperty("renderedDirectory", "rendered");
         resources.setProperty("defaultFormats", "stats");
         return resources;
@@ -145,8 +149,10 @@ public class FreemarkerReportRenderer implements ReportRenderer {
 
     private List<Report> renderedReports(Map<String, List<File>> reportFiles) {
         try {
-            String resource = templateResource("single");
+            String decoratedTemplate = templateResource("decorated");
+            String nonDecoratedTemplate = templateResource("nonDecorated");
             String renderedDirectory = templateResource("renderedDirectory");
+            boolean decorateNonHtml = Boolean.valueOf(templateResource("decorateNonHtml"));
             List<Report> reports = new ArrayList<Report>();
             for (String name : reportFiles.keySet()) {
                 Map<String, File> filesByFormat = new HashMap<String, File>();
@@ -159,10 +165,15 @@ public class FreemarkerReportRenderer implements ReportRenderer {
                     dataModel.put("format", format);
                     File outputDirectory = file.getParentFile();
                     String outputName = renderedDirectory+ "/" + fileName;
+                    String template = decoratedTemplate;
                     if (!format.equals("html")) {
-                        outputName = outputName + ".html";
+                    	if ( decorateNonHtml ){
+                            outputName = outputName + ".html";                    		
+                    	} else {
+                            template = nonDecoratedTemplate;
+                    	}
                     }
-                    File written = write(outputDirectory, outputName, resource, dataModel);
+                    File written = write(outputDirectory, outputName, template, dataModel);
                     filesByFormat.put(format, written);
                 }
                 reports.add(new Report(name, filesByFormat));
