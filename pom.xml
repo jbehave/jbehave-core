@@ -3,7 +3,7 @@
   <groupId>org.jbehave</groupId>
   <artifactId>jbehave</artifactId>
   <packaging>pom</packaging>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0-beta-7</version>
   <name>JBehave</name>
   <inceptionYear>2003</inceptionYear>
   <description>JBehave is a project that supports and facilitates Behaviour-Driven Development.</description>
