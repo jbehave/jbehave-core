@@ -3,7 +3,7 @@ package org.jbehave.examples.trader.spring;
 import org.jbehave.core.StoryEmbedder;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathFinder;
-import org.jbehave.core.parsers.PrefixCapturingRegexPatternParser;
+import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.steps.*;
 import org.jbehave.examples.trader.BeforeAfterSteps;
 import org.jbehave.examples.trader.TraderSteps;
@@ -42,7 +42,7 @@ public class SpringTraderRunner {
                 StepMonitor monitor = new SilentStepMonitor();
                 stepsConfiguration.useParameterConverters(new ParameterConverters(
                         monitor, new TraderConverter(mockTradePersister())));  // define converter for custom type Trader
-                stepsConfiguration.usePatternParser(new PrefixCapturingRegexPatternParser("%")); // use '%' instead of '$' to identify parameters
+                stepsConfiguration.usePatternParser(new RegexPrefixCapturingPatternParser("%")); // use '%' instead of '$' to identify parameters
                 stepsConfiguration.useMonitor(monitor);
 
                 return asList(new StepsFactory(stepsConfiguration).createCandidateSteps(traderSteps, beforeAndAfterSteps));

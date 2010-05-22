@@ -165,11 +165,11 @@ public class CandidateStep {
         if (annotatedNamePosition != -1 && isGroupName(annotationNames[position])) {
             String name = annotationNames[position];
             stepMonitor.usingAnnotatedNameForArg(name, position);
-            arg = getGroup(name);
+            arg = matchedParameter(name);
         } else if (parameterNamePosition != -1 && isGroupName(parameterNames[position])) {
             String name = parameterNames[position];
             stepMonitor.usingParameterNameForArg(name, position);
-            arg = getGroup(name);
+            arg = matchedParameter(name);
         } else if (annotatedNamePosition != -1 && isTableFieldName(tableRow, annotationNames[position])) {
             String name = annotationNames[position];
             stepMonitor.usingTableAnnotatedNameForArg(name, position);
@@ -180,7 +180,7 @@ public class CandidateStep {
             arg = getTableValue(tableRow, name);
         } else {
             stepMonitor.usingNaturalOrderForArg(position);
-            arg = getGroup(position);
+            arg = matchedParameter(position);
         }
         stepMonitor.foundArg(arg, position);
         return arg;
@@ -215,18 +215,18 @@ public class CandidateStep {
         return tableRow.get(name) != null;
     }
 
-    protected String getGroup(String name) {
-        String[] groupNames = stepMatcher.parameterNames();
-		for (int i = 0; i < groupNames.length; i++) {
-            String groupName = groupNames[i];
-            if (name.equals(groupName)) {
-                return getGroup(i);
+    private String matchedParameter(String name) {
+        String[] parameterNames = stepMatcher.parameterNames();
+		for (int i = 0; i < parameterNames.length; i++) {
+            String parameterName = parameterNames[i];
+            if (name.equals(parameterName)) {
+                return matchedParameter(i);
             }
         }
-        throw new NoGroupFoundForName(name, groupNames);
+        throw new NoParameterFoundForName(name, parameterNames);
     }
 
-	private String getGroup(int i) {
+	private String matchedParameter(int i) {
 		return stepMatcher.parameter(i + 1);
 	}
     
@@ -366,10 +366,10 @@ public class CandidateStep {
     }
 
     @SuppressWarnings("serial")
-    public static class NoGroupFoundForName extends RuntimeException {
+    public static class NoParameterFoundForName extends RuntimeException {
 
-        public NoGroupFoundForName(String name, String[] groupNames) {
-            super("No group found for name '" + name + "' amongst '" + asList(groupNames) + "'");
+        public NoParameterFoundForName(String name, String[] names) {
+            super("No parameter found for name '" + name + "' amongst '" + asList(names) + "'");
         }
 
     }

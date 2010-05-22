@@ -48,7 +48,7 @@ public abstract class TraderStory extends JUnitStory {
           StepMonitor monitor = new SilentStepMonitor();
           stepsConfiguration.useParameterConverters(new ParameterConverters(
                 monitor, new DateConverter("dd/MM/yyyy")));  // define converter for Dates with custom pattern
-          stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder("%")); // use '%' instead of '$' to identify parameters
+          stepsConfiguration.usePatternParser(new PrefixCapturingPatternParser("%")); // use '%' instead of '$' to identify parameters
           stepsConfiguration.useMonitor(monitor);
           addSteps(createSteps(stepsConfiguration));
       }
@@ -88,7 +88,7 @@ public class TraderStories extends JUnitStories {
         StepMonitor monitor = new SilentStepMonitor();
         stepsConfiguration.useParameterConverters(new ParameterConverters(
                 monitor, new DateConverter("dd/MM/yyyy")));  // define converter for Dates with custom pattern
-        stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder("%")); // use '%' instead of '$' to identify parameters
+        stepsConfiguration.usePatternParser(new RegexPrefixCapturingPatternParser("%")); // use '%' instead of '$' to identify parameters
         stepsConfiguration.useMonitor(monitor);
         addSteps(createSteps(stepsConfiguration));
     }
@@ -113,7 +113,7 @@ public class TraderStories extends JUnitStories {
 </pre>
 
 <span class="followup">Note that in this second example, we are using story paths as URLs, and correspondingly we configure the use of <a
-            href="javadoc/core/org/jbehave/core/parser/LoadFromURL.html">LoadFromURL</a>.</span>
+            href="javadoc/core/org/jbehave/core/io/LoadFromURL.html">LoadFromURL</a>.</span>
 
 <p>If we wanted to use an inversion of control container to compose
 our Steps with all its dependencies, all we'd need to do is to override
@@ -172,10 +172,10 @@ given story definition matching a list of candidate steps. The
 default implementation is <a
     href="javadoc/core/org/jbehave/core/steps/MarkUnmatchedStepsAsPending.html">MarkUnmatchedStepsAsPending</a>.</p>
 <p><a
-    href="javadoc/core/org/jbehave/core/parser/StoryParser.html">StoryParser</a>:
+    href="javadoc/core/org/jbehave/core/io/StoryParser.html">StoryParser</a>:
 Parses stories contained in a textual story file. The
 default implementation is <a
-    href="javadoc/core/org/jbehave/core/parser/RegexStoryParser.html">RegexStoryParser</a>.</p>
+    href="javadoc/core/org/jbehave/core/io/RegexStoryParser.html">RegexStoryParser</a>.</p>
 <p><a
     href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>:
 Allows the runner to report the state of running stories. The default
@@ -195,10 +195,10 @@ Allows to specify the keywords used. The default value is <a
 <p>JBehave provides two useful base implementations that users can
 extend to override only the elements that differ from default behaviour:</p>
 <p><a
-    href="javadoc/core/org/jbehave/core/MostUsefulStoryConfiguration.html">MostUsefulStoryConfiguration</a>:
+    href="javadoc/core/org/jbehave/core/configuration/MostUsefulStoryConfiguration.html">MostUsefulStoryConfiguration</a>:
 provides a default configuration that most users will find appropriate</p>
 <p><a
-    href="javadoc/core/org/jbehave/core/PropertyBasedStoryConfiguration.html">PropertyBasedStoryConfiguration</a>:
+    href="javadoc/core/org/jbehave/core/configuration/PropertyBasedStoryConfiguration.html">PropertyBasedStoryConfiguration</a>:
 overrides way to configure via system properties</p>
 
 <h3>Steps Configuration Elements</h3>
@@ -207,9 +207,9 @@ overrides way to configure via system properties</p>
     href="javadoc/core/org/jbehave/core/steps/StepsConfiguration.html">StepsConfiguration</a>.
 Among the elements that can be configured are:</p>
 <p><a
-    href="javadoc/core/org/jbehave/core/parser/StepPatternBuilder.html">StepPatternBuilder</a>:
+    href="javadoc/core/org/jbehave/core/parsers/StepPatternParser.html">StepPatternParser</a>:
 defaults to <a
-    href="javadoc/core/org/jbehave/core/parser/PrefixCapturingPatternBuilder.html">PrefixCapturingPatternBuilder</a>.</p>
+    href="javadoc/core/org/jbehave/core/parsers/RegexPrefixCapturingPatternBuilder.html">RegexPrefixCapturingPatternParser</a>.</p>
 <p><a
     href="javadoc/core/org/jbehave/core/steps/StepMonitor.html">StepMonitor</a>:
 defaults to <a

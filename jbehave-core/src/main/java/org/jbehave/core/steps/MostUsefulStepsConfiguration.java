@@ -2,7 +2,7 @@ package org.jbehave.core.steps;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.parsers.PrefixCapturingRegexPatternParser;
+import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 
 import java.util.Locale;
 
@@ -11,7 +11,7 @@ import java.util.Locale;
  * The elements configured are:
  * <ul>
  * <li>{@link KeyWords}: new I18nKeyWords(Locale.ENGLISH)</li>
- * <li>{@link StepPatternParser}: new PrefixCapturingRegexPatternParser("$")</li>
+ * <li>{@link StepPatternParser}: new RegexPrefixCapturingPatternParser("$")</li>
  * <li>{@link StepMonitor}: new ClasspathStoryDefiner(new PatternStoryParser(keywords()))</li>
  * <li>{@link Paranamer}: new NullParanamer()</li>
  * <li>{@link ParameterConverters}: new ParameterConverters()</li>    
@@ -21,7 +21,7 @@ public class MostUsefulStepsConfiguration extends StepsConfiguration {
 
     public MostUsefulStepsConfiguration() {
         useKeywords(new LocalizedKeywords(Locale.ENGLISH));
-        usePatternParser(new PrefixCapturingRegexPatternParser("$"));
+        usePatternParser(new RegexPrefixCapturingPatternParser("$"));
         useMonitor(new SilentStepMonitor());
         useParanamer(new NullParanamer());
         useParameterConverters(new ParameterConverters());

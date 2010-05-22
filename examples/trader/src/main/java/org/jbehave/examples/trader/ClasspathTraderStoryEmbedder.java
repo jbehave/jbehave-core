@@ -13,7 +13,7 @@ import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathFinder;
-import org.jbehave.core.parsers.PrefixCapturingRegexPatternParser;
+import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;
@@ -54,7 +54,7 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 		StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration()
 			.useParameterConverters(new ParameterConverters(
 				new TraderConverter(mockTradePersister())))
-			.usePatternParser(new PrefixCapturingRegexPatternParser(
+			.usePatternParser(new RegexPrefixCapturingPatternParser(
 				"%")) // use '%' instead of '$' to identify parameters
 			.useMonitor(new SilentStepMonitor());
 		return asList(new StepsFactory(stepsConfiguration)

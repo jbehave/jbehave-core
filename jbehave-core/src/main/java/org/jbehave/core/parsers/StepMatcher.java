@@ -6,7 +6,7 @@ public interface StepMatcher {
 
 	boolean find(String stepWithoutStartingWord);
 
-	String parameter(int i);
+	String parameter(int matchedPosition);
 
 	String[] parameterNames();
 

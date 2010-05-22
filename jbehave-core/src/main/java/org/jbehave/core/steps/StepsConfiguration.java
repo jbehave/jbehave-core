@@ -12,7 +12,7 @@ import java.util.Map;
 
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.parsers.PrefixCapturingRegexPatternParser;
+import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 
 import com.thoughtworks.paranamer.NullParanamer;
@@ -42,7 +42,7 @@ public abstract class StepsConfiguration {
 	/**
 	 * Pattern build that uses prefix for identifying parameters
 	 */
-	private StepPatternParser patternParser = new PrefixCapturingRegexPatternParser(
+	private StepPatternParser patternParser = new RegexPrefixCapturingPatternParser(
 			"$");
 	/**
 	 * Silent monitoring that does not produce any noise of the step matching.

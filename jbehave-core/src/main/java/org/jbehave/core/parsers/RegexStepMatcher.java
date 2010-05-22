@@ -24,8 +24,8 @@ public class RegexStepMatcher implements StepMatcher {
 		return matcher.find();
 	}
 	
-	public String parameter(int i) {
-		return matcher.group(i);
+	public String parameter(int matchedPosition) {
+		return matcher.group(matchedPosition);
 	}
 
 	private void matcher(String patternToMatch){

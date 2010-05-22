@@ -17,15 +17,15 @@ import java.util.Locale;
  * The configuration that works for most situations that users are likely to encounter.
  * The elements configured are:
  * <ul>
- * <li>{@link org.jbehave.core.model.Keywords}: new I18nKeyWords()</li>
- * <li>{@link StepCreator}: new UnmatchedToPendingStepCreator()</li>
- * <li>{@link StoryParser}: new PatternStoryParser(keywords())</li>
- * <li>{@link org.jbehave.core.io.StoryLoader}: new ClasspathLoader()</li>
- * <li>{@link ErrorStrategy}: ErrorStrategy.RETHROW</li>
- * <li>{@link PendingErrorStrategy}: PendingErrorStrategy.PASSING</li>
- * <li>{@link StoryReporter}: new PassSilentlyDecorator(new PrintStreamStoryReporter())</li>
- * <li>{@link StepdocGenerator}: new DefaultStepdocGenerator()</li>
- * <li>{@link StepdocReporter}: new PrintStreamStepdocReporter(true)</li>
+ * <li>{@link org.jbehave.core.model.Keywords}: {@link LocalizedKeywords}</li>
+ * <li>{@link StepCreator}: {@link MarkUnmatchedStepsAsPending}</li>
+ * <li>{@link StoryParser}: {@link RegexStoryParser}</li>
+ * <li>{@link StoryLoader}: {@link LoadFromClasspath}</li>
+ * <li>{@link ErrorStrategy}: {@link ErrorStrategy.RETHROW}</li>
+ * <li>{@link PendingErrorStrategy}: {@link PendingErrorStrategy.PASSING}</li>
+ * <li>{@link StoryReporter}: {@link ConsoleOutput}</li>
+ * <li>{@link StepdocGenerator}: {@link DefaultStepdocGenerator}</li>
+ * <li>{@link StepdocReporter}: {@link PrintStreamStepdocReporter}</li>
  * </ul>
  */
 public class MostUsefulStoryConfiguration extends StoryConfiguration {

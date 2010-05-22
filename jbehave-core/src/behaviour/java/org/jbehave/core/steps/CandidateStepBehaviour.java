@@ -24,7 +24,7 @@ import java.util.Map;
 
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
-import org.jbehave.core.parsers.PrefixCapturingRegexPatternParser;
+import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateStep.StartingWordNotFound;
@@ -36,7 +36,7 @@ import com.thoughtworks.paranamer.Paranamer;
 
 public class CandidateStepBehaviour {
 
-	private static final StepPatternParser PATTERN_PARSER = new PrefixCapturingRegexPatternParser();
+	private static final StepPatternParser PATTERN_PARSER = new RegexPrefixCapturingPatternParser();
 	private static final String NL = System.getProperty("line.separator");
 	private static final int DEFAULT_PRIORITY = 0;
 	private Map<String, String> tableRow = new HashMap<String, String>();

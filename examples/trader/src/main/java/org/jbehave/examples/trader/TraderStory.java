@@ -11,7 +11,7 @@ import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
-import org.jbehave.core.parsers.PrefixCapturingRegexPatternParser;
+import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;
@@ -57,7 +57,7 @@ public abstract class TraderStory extends JUnitStory {
 		StepMonitor monitor = new SilentStepMonitor();
 		stepsConfiguration.useParameterConverters(new ParameterConverters(
 				monitor, new TraderConverter(mockTradePersister()))); 
-		stepsConfiguration.usePatternParser(new PrefixCapturingRegexPatternParser(
+		stepsConfiguration.usePatternParser(new RegexPrefixCapturingPatternParser(
 				"%")); // use '%' instead of '$' to identify parameters
 		stepsConfiguration.useMonitor(monitor);
 		stepsConfiguration.doDryRun(false);

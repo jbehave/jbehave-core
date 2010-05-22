@@ -82,7 +82,7 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 		StepMonitor monitor = new SilentStepMonitor();
 		stepsConfiguration.useParameterConverters(new ParameterConverters(
 				monitor, new TraderConverter(mockTradePersister()))); 
-		stepsConfiguration.usePatternBuilder(new PrefixCapturingPatternBuilder(
+		stepsConfiguration.usePatternParser(new RegexPrefixCapturingPatternParser(
 				"%")); // use '%' instead of '$' to identify parameters
 		stepsConfiguration.useMonitor(monitor);
 		return asList(new StepsFactory(stepsConfiguration)

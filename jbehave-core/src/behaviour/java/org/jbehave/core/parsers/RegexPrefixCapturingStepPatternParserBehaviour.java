@@ -7,13 +7,13 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 
 
-public class PrefixCapturingPatternParserBehaviour {
+public class RegexPrefixCapturingStepPatternParserBehaviour {
 
     private static final String NL = System.getProperty("line.separator");
 
     @Test
     public void shouldReplaceAllDollarArgumentsWithCaptures() {
-        StepPatternParser parser = new PrefixCapturingRegexPatternParser();
+        StepPatternParser parser = new RegexPrefixCapturingPatternParser();
         assertThat(parser.parseStep("a house with $numberOfDoors doors and $some windows").matches("a house with 3 doors and 4 windows"), is(true));
         assertThat(parser.parseStep("the house on $street").matches("the house on Easy Street"), is(true));
         assertThat(parser.parseStep("$number houses").matches("5 houses"), is(true));
@@ -22,7 +22,7 @@ public class PrefixCapturingPatternParserBehaviour {
     
     @Test
     public void shouldEscapeExistingPunctuationUsedInRegexps() {
-        StepPatternParser parser = new PrefixCapturingRegexPatternParser();
+        StepPatternParser parser = new RegexPrefixCapturingPatternParser();
         assertThat(parser.parseStep("I toggle the cell at ($column, $row)").matches("I toggle the cell at (3, 4)"), is(true));
         assertThat(parser.parseStep("$name should ask, \"Why?\"").matches("Fred should ask, \"Why?\""), is(true));
         assertThat(parser.parseStep("$thousands x 10^3").matches("2 x 10^3"), is(true));
@@ -35,7 +35,7 @@ public class PrefixCapturingPatternParserBehaviour {
     
     @Test
     public void shouldNotCareSoMuchAboutWhitespace() {
-        StepPatternParser parser = new PrefixCapturingRegexPatternParser();
+        StepPatternParser parser = new RegexPrefixCapturingPatternParser();
         StepMatcher stepMatcher = parser.parseStep("The grid looks like $grid");
 
         // Given an argument on a new line
@@ -64,7 +64,7 @@ public class PrefixCapturingPatternParserBehaviour {
     
     @Test
     public void shouldExtractParameterNamesFromStepPattern(){
-    	StepPatternParser parser = new PrefixCapturingRegexPatternParser();
+    	StepPatternParser parser = new RegexPrefixCapturingPatternParser();
         String[] names  = parser.parseStep("The grid $name looks like $grid").parameterNames();
         assertThat(names.length, equalTo(2));
         assertThat(names[0], equalTo("name"));
