@@ -11,10 +11,10 @@ import org.jbehave.core.model.Story;
 import org.junit.Test;
 import org.mockito.InOrder;
 
-public class DelegatingScenarioReporterBehaviour {
+public class DelegatingStoryReporterBehaviour {
 
     @Test
-    public void shouldDelegateScenarioReporterEvents() {
+    public void shouldDelegateReporterEvents() {
         StoryReporter delegate = mock(StoryReporter.class);
         DelegatingStoryReporter delegator = new DelegatingStoryReporter(delegate);
         List<String> givenStories = asList("path/to/story1", "path/to/story2");
@@ -23,7 +23,9 @@ public class DelegatingScenarioReporterBehaviour {
         Story story = new Story();
         boolean embeddedStory = false;
         
-        delegator.beforeStory(story, embeddedStory);
+        delegator.dryRun();
+        
+        delegator.beforeStory(story, embeddedStory);        
         
         delegator.beforeScenario("My core 1");
         delegator.givenStories(givenStories);
@@ -46,6 +48,8 @@ public class DelegatingScenarioReporterBehaviour {
         
         InOrder inOrder = inOrder(delegate);
                 
+        inOrder.verify(delegate).dryRun();        
+
         inOrder.verify(delegate).beforeStory(story, embeddedStory);
 
         inOrder.verify(delegate).beforeScenario("My core 1");
