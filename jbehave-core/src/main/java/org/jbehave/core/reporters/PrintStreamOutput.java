@@ -144,9 +144,6 @@ public class PrintStreamOutput implements StoryReporter {
 
     public void afterStory(boolean embeddedStory) {
         print(format("afterStory", "\n"));
-        if ( !embeddedStory && cause != null) {
-            throw new RuntimeException(cause);
-        }
     }
 
     public void givenStories(List<String> storyPaths) {

@@ -114,7 +114,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 		try {
 			p.store(output, this.getClass().getName());
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			e.printStackTrace();
 		}
 	}
 
