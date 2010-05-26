@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.0-beta-8</version>
+    <version>3.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-spring</artifactId>
   <name>JBehave Spring</name>
