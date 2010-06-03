@@ -294,7 +294,7 @@ public class RegexStoryParserBehaviour {
     @Test
     public void shouldParseStoryWithScenarioContainingGivenStories() {
         String wholeStory = "Scenario: A scenario with given stories" + NL + NL +
-                "GivenStories: path/to/one,path/to/two" + NL + NL +
+                "GivenStories: path/to/one , "+ NL +" path/to/two" + NL + NL +
                 "Given a step" + NL +
                 "When I run it" + NL +
                 "Then I should an output";
