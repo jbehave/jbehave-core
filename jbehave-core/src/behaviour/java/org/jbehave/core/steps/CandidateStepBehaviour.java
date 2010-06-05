@@ -157,7 +157,7 @@ public class CandidateStepBehaviour {
 
 		StepResult result = step.perform();
 		result.describeTo(reporter);
-		verify(reporter).successful("Then I live on the 1st floor");
+		verify(reporter).successful("Then I live on the "+StepCreator.PARAMETER_VALUE_START +"1st"+StepCreator.PARAMETER_VALUE_END+" floor");
 	}
 
 	@Test
