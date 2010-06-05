@@ -1,20 +1,19 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
-
 import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.parsers.StepPatternParser;
 
-import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
-
 /**
- * Creates candidate step from a regex pattern of a step of a given type,
- * associated to a Java method.
+ * A candidate step is associated to Java method in a given
+ * {@link CandidatesSteps} instance class. The candidate step is responsible for
+ * matching the textual step against the pattern contained in the method
+ * annotation via the {@link StepMatcher} and for the creation of the executable
+ * step via the {@link StepCreator}.
  */
 public class CandidateStep {
 
@@ -23,12 +22,10 @@ public class CandidateStep {
     private final StepType stepType;
     private final Method method;
     private final Object stepsInstance;
-    private final ParameterConverters parameterConverters;
     private final Map<StepType, String> startingWordsByType;
 	private final StepMatcher stepMatcher;
+	private final StepCreator stepCreator;
     private StepMonitor stepMonitor = new SilentStepMonitor();
-    private Paranamer paranamer = new NullParanamer();
-    private boolean dryRun = false;
     
     public CandidateStep(String patternAsString, int priority, StepType stepType, Method method,
             CandidateSteps steps, StepPatternParser patternParser,
@@ -44,9 +41,9 @@ public class CandidateStep {
         this.stepType = stepType;
         this.method = method;
         this.stepsInstance = stepsInstance;
-        this.parameterConverters = parameterConverters;
         this.startingWordsByType = startingWords;
         this.stepMatcher = patternParser.parseStep(patternAsString);
+        this.stepCreator = new StepCreator(stepsInstance, method, parameterConverters, stepMatcher, stepMonitor);
     }
 
  	public Integer getPriority() {
@@ -61,20 +58,17 @@ public class CandidateStep {
         return patternAsString;
     }
 
-    public boolean dryRun() {
-		return dryRun;
-	}
-
-	public void doDryRun(boolean dryRun) {
-		this.dryRun = dryRun;
-	}
-
     public void useStepMonitor(StepMonitor stepMonitor) {
         this.stepMonitor = stepMonitor;
+        this.stepCreator.useStepMonitor(stepMonitor);
     }
 
+	public void doDryRun(boolean dryRun) {
+		this.stepCreator.doDryRun(dryRun);
+	}
+
     public void useParanamer(Paranamer paranamer) {
-        this.paranamer = paranamer;
+        this.stepCreator.useParanamer(paranamer);
     }
 
     public boolean ignore(String stepAsString) {
@@ -118,8 +112,7 @@ public class CandidateStep {
 
     public Step createStep(String stepAsString, Map<String, String> tableRow) {
         stepMatcher.find(stripStartingWord(stepAsString));
-        StepCreator stepCreator = new StepCreator(stepsInstance, method, parameterConverters, stepMatcher, stepMonitor, paranamer, dryRun);
-        return stepCreator.createStep(stepAsString, tableRow, method, stepMonitor);
+        return stepCreator.createStep(stepAsString, tableRow);
     }
 
     private String stripStartingWord(final String stepAsString) {
@@ -155,24 +148,6 @@ public class CandidateStep {
     @Override
     public String toString() {
         return stepType + " " + patternAsString;
-    }
-
-    @SuppressWarnings("serial")
-    public static class StepNotMatchingPattern extends RuntimeException {
-
-		public StepNotMatchingPattern(String stepAsString, String pattern) {
-			super("Step "+stepAsString+" not matching pattern "+pattern);
-		}
-
-    }
-
-    @SuppressWarnings("serial")
-    public static class NoParameterFoundForName extends RuntimeException {
-
-        public NoParameterFoundForName(String name, String[] names) {
-            super("No parameter found for name '" + name + "' amongst '" + asList(names) + "'");
-        }
-
     }
 
     @SuppressWarnings("serial")

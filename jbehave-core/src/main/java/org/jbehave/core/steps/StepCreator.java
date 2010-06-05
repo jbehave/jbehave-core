@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import static java.util.Arrays.asList;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,8 +11,8 @@ import java.util.Map;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.errors.PendingError;
 import org.jbehave.core.parsers.StepMatcher;
-import org.jbehave.core.steps.CandidateStep.NoParameterFoundForName;
 
+import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
 public class StepCreator {
@@ -24,22 +26,32 @@ public class StepCreator {
 	private ParameterConverters parameterConverters;
 	private StepMatcher stepMatcher;
     private StepMonitor stepMonitor;
-    private Paranamer paranamer;
-    private boolean dryRun;
+    private Paranamer paranamer = new NullParanamer();
+    private boolean dryRun = false;
 	
     public StepCreator(Object stepsInstance, Method method,
 			ParameterConverters parameterConverters, StepMatcher stepMatcher,
-			StepMonitor stepMonitor, Paranamer paranamer, boolean dryRun) {
+			StepMonitor stepMonitor) {
 		this.stepsInstance = stepsInstance;
 		this.method = method;
 		this.parameterConverters = parameterConverters;
 		this.stepMatcher = stepMatcher;
 		this.stepMonitor = stepMonitor;
+	}
+
+    public void useStepMonitor(StepMonitor stepMonitor) {
+        this.stepMonitor = stepMonitor;
+    }
+
+	public void useParanamer(Paranamer paranamer) {
 		this.paranamer = paranamer;
+	}
+
+	public void doDryRun(boolean dryRun) {
 		this.dryRun = dryRun;
 	}
 
-	public Step createStep(final String stepAsString, Map<String, String> tableRow, final Method method, final StepMonitor stepMonitor) {
+	public Step createStep(final String stepAsString, Map<String, String> tableRow) {
         Type[] types = method.getGenericParameterTypes();
         String[] annotationNames = annotatedParameterNames();
         String[] parameterNames = paranamer.lookupParameterNames(method, false);
@@ -227,6 +239,15 @@ public class StepCreator {
 
         private static String getNamedValue(Annotation annotation) {
             return ((javax.inject.Named) annotation).value();
+        }
+
+    }
+
+    @SuppressWarnings("serial")
+    public static class NoParameterFoundForName extends RuntimeException {
+
+        public NoParameterFoundForName(String name, String[] names) {
+            super("No parameter found for name '" + name + "' amongst '" + asList(names) + "'");
         }
 
     }
