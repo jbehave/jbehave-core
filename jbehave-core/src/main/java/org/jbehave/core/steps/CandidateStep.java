@@ -148,13 +148,33 @@ public class CandidateStep {
         return args;
     }
 
-    protected String translatedStep(String stepAsString, Map<String, String> tableRow, Type[] types, String[] annotationNames,
+    protected String parametrisedStep(String stepAsString, Map<String, String> tableRow, Type[] types, String[] annotationNames,
             String[] parameterNames) {
-        String replacedStepText = stepAsString;
+        String parametrisedStep = stepAsString;
         for (int position = 0; position < types.length; position++) {
-            replacedStepText = replaceValuesInStepText(replacedStepText, position, annotationNames, parameterNames, tableRow);
+            parametrisedStep = replaceParameterValuesInStep(parametrisedStep, position, annotationNames, parameterNames, tableRow);
         }
-        return replacedStepText;
+        return parametrisedStep;
+    }
+
+    private String replaceParameterValuesInStep(String stepText, int position, String[] annotationNames, String[] parameterNames,
+            Map<String, String> tableRow) {
+        int annotatedNamePosition = parameterPosition(annotationNames, position);
+        int parameterNamePosition = parameterPosition(parameterNames, position);
+        if (annotatedNamePosition != -1) {
+            String name = annotationNames[position];
+            String value = getTableValue(tableRow, name);
+            if (value != null) {
+                stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+            }
+        } else if (parameterNamePosition != -1) {
+            String name = parameterNames[position];
+            String value = getTableValue(tableRow, name);
+            if (value != null) {
+                stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_START);
+            }
+        }
+        return stepText;
     }
 
     private String argForPosition(int position, String[] annotationNames, String[] parameterNames,
@@ -185,28 +205,7 @@ public class CandidateStep {
         stepMonitor.foundArg(arg, position);
         return arg;
     }
-
-    private String replaceValuesInStepText(String stepText, int position, String[] annotationNames, String[] parameterNames,
-            Map<String, String> tableRow) {
-        int annotatedNamePosition = parameterPosition(annotationNames, position);
-        int parameterNamePosition = parameterPosition(parameterNames, position);
-        if (annotatedNamePosition != -1) {
-            String name = annotationNames[position];
-            String value = getTableValue(tableRow, name);
-            if (value != null) {
-                stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
-            }
-        } else if (parameterNamePosition != -1) {
-            String name = parameterNames[position];
-            String value = getTableValue(tableRow, name);
-            if (value != null) {
-                stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_START);
-            }
-        }
-        return stepText;
-    }
-
-
+    
     private String getTableValue(Map<String, String> tableRow, String name) {
         return tableRow.get(name);
     }
@@ -244,10 +243,10 @@ public class CandidateStep {
         if (names.length == 0) {
             return -1;
         }
-        String name = names[position];
+        String positionName = names[position];
         for (int i = 0; i < names.length; i++) {
-            String annotatedName = names[i];
-            if (annotatedName != null && name.equals(annotatedName)) {
+            String name = names[i];
+            if (name != null && positionName.equals(name)) {
                 return i;
             }
         }
@@ -306,7 +305,7 @@ public class CandidateStep {
         Type[] types = method.getGenericParameterTypes();
         String[] annotationNames = annotatedParameterNames();
         String[] parameterNames = paranamer.lookupParameterNames(method, false);
-        final String translatedStep = translatedStep(stepAsString, tableRow, types, annotationNames, parameterNames);
+        final String parametrisedStep = parametrisedStep(stepAsString, tableRow, types, annotationNames, parameterNames);
         final Object[] args = argsForStep(tableRow, types, annotationNames, parameterNames);
         return new Step() {
             public StepResult perform() {
@@ -315,25 +314,26 @@ public class CandidateStep {
 					if (!dryRun) {
 						method.invoke(stepsInstance, args);
 					}
-                    return StepResult.success(stepAsString).withTranslatedText(translatedStep);
+                    return StepResult.successful(stepAsString).withParameterValues(parametrisedStep);
                 } catch (Throwable t) {
-                    return failureWithOriginalException(stepAsString, t);
+                    return failedOrPending(stepAsString, t);
                 }
             }
 
-            private StepResult failureWithOriginalException(final String stepAsString, Throwable t) {
+            private StepResult failedOrPending(final String stepAsString, Throwable t) {
                 if (t instanceof InvocationTargetException && t.getCause() != null) {
-                    if (t.getCause() instanceof PendingError) {
-                        return StepResult.pending(stepAsString, (PendingError) t.getCause());
+                    Throwable cause = t.getCause();
+					if (cause instanceof PendingError) {
+                        return StepResult.pending(stepAsString, (PendingError) cause).withParameterValues(parametrisedStep);
                     } else {
-                        return StepResult.failure(stepAsString, t.getCause());
+                        return StepResult.failed(stepAsString, cause).withParameterValues(parametrisedStep);
                     }
                 }
-                return StepResult.failure(stepAsString, t);
+                return StepResult.failed(stepAsString, t).withParameterValues(parametrisedStep);
             }
 
             public StepResult doNotPerform() {
-                return StepResult.notPerformed(stepAsString);
+                return StepResult.notPerformed(stepAsString).withParameterValues(parametrisedStep);
             }
 
         };

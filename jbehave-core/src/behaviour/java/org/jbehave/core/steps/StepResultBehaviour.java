@@ -14,10 +14,10 @@ public class StepResultBehaviour {
         IllegalStateException exception = new IllegalStateException();
         StoryReporter reporter = mock(StoryReporter.class);
 
-        StepResult.success("Given that a step is pending or failing").describeTo(reporter);
+        StepResult.successful("Given that a step is pending or failing").describeTo(reporter);
         StepResult.pending("When a step is performed").describeTo(reporter);
         StepResult.notPerformed("Then the step should describe itself properly to reporters").describeTo(reporter);
-        StepResult.failure("And any errors should appear at the end of the core", exception).describeTo(reporter);
+        StepResult.failed("And any errors should appear at the end of the core", exception).describeTo(reporter);
         
         verify(reporter).successful("Given that a step is pending or failing");
         verify(reporter).pending("When a step is performed");

@@ -68,9 +68,9 @@ public class StoryRunnerBehaviour {
         Step successfulStep = mock(Step.class);
         Step failingStep = mock(Step.class);
         when(pendingStep.perform()).thenReturn(StepResult.pending("pendingStep"));
-        when(successfulStep.perform()).thenReturn(StepResult.success("successfulStep"));
+        when(successfulStep.perform()).thenReturn(StepResult.successful("successfulStep"));
         when(successfulStep.doNotPerform()).thenReturn(StepResult.notPerformed("successfulStep"));
-        when(failingStep.perform()).thenReturn(StepResult.failure("failingStep", anException));
+        when(failingStep.perform()).thenReturn(StepResult.failed("failingStep", anException));
         when(creator.createStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(
                 asList(failingStep, successfulStep));
         when(creator.createStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(asList(successfulStep));
@@ -125,9 +125,9 @@ public class StoryRunnerBehaviour {
         when(mySteps.getConfiguration()).thenReturn(new MostUsefulStepsConfiguration());
         when(mySteps.getSteps()).thenReturn(someCandidateSteps);
         Step successfulStep = mock(Step.class);
-        when(successfulStep.perform()).thenReturn(StepResult.success("successfulStep"));
+        when(successfulStep.perform()).thenReturn(StepResult.successful("successfulStep"));
         Step anotherSuccessfulStep = mock(Step.class);
-        when(anotherSuccessfulStep.perform()).thenReturn(StepResult.success("anotherSuccessfulStep"));
+        when(anotherSuccessfulStep.perform()).thenReturn(StepResult.successful("anotherSuccessfulStep"));
         givenStoryWithNoBeforeOrAfterSteps(story1, embeddedStory, creator, mySteps);
         when(creator.createStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(asList(successfulStep));
         givenStoryWithNoBeforeOrAfterSteps(story2, embeddedStory, creator, mySteps);
@@ -166,7 +166,7 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = mockMySteps();
         when(creator.createStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(firstStepNormal, secondStepPending, thirdStepNormal, fourthStepAlsoPending));
-        when(firstStepNormal.perform()).thenReturn(StepResult.success("Given I succeed"));
+        when(firstStepNormal.perform()).thenReturn(StepResult.successful("Given I succeed"));
         when(secondStepPending.perform()).thenReturn(StepResult.pending("When I am pending"));
         when(thirdStepNormal.doNotPerform()).thenReturn(StepResult.notPerformed("Then I should not be performed"));
         when(fourthStepAlsoPending.doNotPerform()).thenReturn(
@@ -197,7 +197,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         Step firstStepExceptional = mock(Step.class);
         Step secondStepNotPerformed = mock(Step.class);
-        StepResult failure = StepResult.failure("When I fail", new IllegalStateException());
+        StepResult failure = StepResult.failed("When I fail", new IllegalStateException());
         StepResult notPerformed = StepResult.notPerformed("Then I should not be performed");
         when(firstStepExceptional.perform()).thenReturn(failure);
         when(secondStepNotPerformed.doNotPerform()).thenReturn(notPerformed);
@@ -235,7 +235,7 @@ public class StoryRunnerBehaviour {
         Step pendingStep = mock(Step.class);
         Step secondStep = mock(Step.class);
         when(pendingStep.perform()).thenReturn(StepResult.pending("pendingStep"));
-        when(secondStep.perform()).thenReturn(StepResult.success("secondStep"));
+        when(secondStep.perform()).thenReturn(StepResult.successful("secondStep"));
         StepCreator creator = mock(StepCreator.class);
         CandidateSteps mySteps = mockMySteps();        
         Scenario scenario1 = new Scenario("scenario1");
@@ -263,8 +263,8 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         Step beforeStep = mock(Step.class);
         Step afterStep = mock(Step.class);
-        when(beforeStep.perform()).thenReturn(StepResult.success("beforeStep"));
-        when(afterStep.perform()).thenReturn(StepResult.success("secondStep"));
+        when(beforeStep.perform()).thenReturn(StepResult.successful("beforeStep"));
+        when(afterStep.perform()).thenReturn(StepResult.successful("secondStep"));
         StepCreator creator = mock(StepCreator.class);
         CandidateSteps mySteps = mockMySteps();
         Story story = new Story();

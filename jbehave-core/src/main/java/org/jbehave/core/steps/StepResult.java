@@ -4,12 +4,13 @@ import org.jbehave.core.errors.PendingError;
 import org.jbehave.core.reporters.StoryReporter;
 
 /**
- * Represents a collection of possible step results:
+ * Represents the possible step results:
  * <ul>
  * <li>Failed</li>
  * <li>NotPerformed</li>
  * <li>Pending</li>
- * <li>Success</li>
+ * <li>Successful</li>
+ * <li>Ignorable</li>
  * </ul>
  */
 public abstract class StepResult {
@@ -22,7 +23,7 @@ public abstract class StepResult {
 
 		@Override
 		public void describeTo(StoryReporter reporter) {
-			reporter.failed(step, throwable);
+			reporter.failed(parametrisedStep(), throwable);
 		}
 	}
 
@@ -34,22 +35,11 @@ public abstract class StepResult {
 
 		@Override
 		public void describeTo(StoryReporter reporter) {
-			reporter.notPerformed(step);
+			reporter.notPerformed(parametrisedStep());
 		}
 	}
 	
 	
-    public static class Ignorable extends StepResult {
-        public Ignorable(String step) {
-            super(step);
-        }
-
-        @Override
-        public void describeTo(StoryReporter reporter) {
-            reporter.ignorable(step);
-        }
-    }
-
 	public static class Pending extends StepResult {
 		public Pending(String step) {
 			this(step, new PendingError(step));
@@ -61,25 +51,36 @@ public abstract class StepResult {
 
 		@Override
 		public void describeTo(StoryReporter reporter) {
-			reporter.pending(step);
+			reporter.pending(parametrisedStep());
 		}
 	}
 
-	public static class Success extends StepResult {
+	public static class Successful extends StepResult {
 
-        public Success(String string) {
+        public Successful(String string) {
 			super(string);
 		}
 
 		@Override
 		public void describeTo(StoryReporter reporter) {
-			reporter.successful(getTranslatedText() != null ? getTranslatedText() : step);
+			reporter.successful(parametrisedStep());
 		}
 
 	}
 
+    public static class Ignorable extends StepResult {
+        public Ignorable(String step) {
+            super(step);
+        }
+
+        @Override
+        public void describeTo(StoryReporter reporter) {
+            reporter.ignorable(step);
+        }
+    }
+
 	protected final String step;
-    private String translatedText;
+    private String parametrisedStep;
 	protected final Throwable throwable;
 
 	public StepResult(String step) {
@@ -91,17 +92,17 @@ public abstract class StepResult {
 		this.throwable = throwable;
 	}
 
-    public StepResult withTranslatedText(String translatedText) {
-        this.translatedText = translatedText;
+    public StepResult withParameterValues(String parametrisedStep) {
+        this.parametrisedStep = parametrisedStep;
         return this;
     }
 
-    public String getTranslatedText() {
-        return translatedText;
+    public String parametrisedStep() {
+        return parametrisedStep != null ? parametrisedStep : step;
     }
 
-    public static StepResult success(String step) {
-		return new Success(step);
+    public static StepResult successful(String step) {
+		return new Successful(step);
 	}
 
     public static StepResult ignorable(String step) {
@@ -120,7 +121,7 @@ public abstract class StepResult {
 		return new NotPerformed(step);
 	}
 
-	public static StepResult failure(String step, Throwable e) {
+	public static StepResult failed(String step, Throwable e) {
 		return new Failed(step, e);
 	}
 
