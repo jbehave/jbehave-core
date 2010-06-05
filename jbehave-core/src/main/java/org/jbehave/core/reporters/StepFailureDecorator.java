@@ -30,8 +30,8 @@ public class StepFailureDecorator implements StoryReporter {
 		delegate.afterScenario();
 	}
 
-	public void afterStory(boolean embeddedStory) {
-		delegate.afterStory(embeddedStory);
+	public void afterStory(boolean givenStory) {
+		delegate.afterStory(givenStory);
 		if (failure != null) {
 			throw failure;
 		}
@@ -41,9 +41,9 @@ public class StepFailureDecorator implements StoryReporter {
 		delegate.beforeScenario(title);
 	}
 
-    public void beforeStory(Story story, boolean embeddedStory) {
+    public void beforeStory(Story story, boolean givenStory) {
         failure = null;
-        delegate.beforeStory(story, embeddedStory);
+        delegate.beforeStory(story, givenStory);
     }
 
 	public void failed(String step, Throwable cause) {

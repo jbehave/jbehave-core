@@ -23,9 +23,9 @@ public class SilentSuccessFilterBehaviour {
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         IllegalArgumentException anException = new IllegalArgumentException();
         Story story = new Story();
-        boolean embeddedStory = false;
+        boolean givenStory = false;
         
-        decorator.beforeStory(story, embeddedStory);
+        decorator.beforeStory(story, givenStory);
         decorator.beforeScenario("My core 1");
         decorator.successful("Given step 1.1");
         decorator.ignorable("!-- ignore me");
@@ -52,7 +52,7 @@ public class SilentSuccessFilterBehaviour {
         decorator.successful("When step 4.2");
         decorator.successful("Then step 4.3");
         decorator.afterScenario();
-        decorator.afterStory(embeddedStory);
+        decorator.afterStory(givenStory);
         
         InOrder inOrder = inOrder(delegate);
         
@@ -67,7 +67,7 @@ public class SilentSuccessFilterBehaviour {
         verify(delegate, never()).successful("When step 4.2");
         verify(delegate, never()).successful("Then step 4.3");
         
-        inOrder.verify(delegate).beforeStory(story, embeddedStory);
+        inOrder.verify(delegate).beforeStory(story, givenStory);
         inOrder.verify(delegate).beforeScenario("My core 2");
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).successful("Given step 2.1");
@@ -82,7 +82,7 @@ public class SilentSuccessFilterBehaviour {
         inOrder.verify(delegate).failed("Then step 3.3", anException);
         
         inOrder.verify(delegate).afterScenario();
-        inOrder.verify(delegate).afterStory(embeddedStory);
+        inOrder.verify(delegate).afterStory(givenStory);
         
     }
 }

@@ -21,11 +21,11 @@ public class DelegatingStoryReporterBehaviour {
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         IllegalArgumentException anException = new IllegalArgumentException();
         Story story = new Story();
-        boolean embeddedStory = false;
+        boolean givenStory = false;
         
         delegator.dryRun();
         
-        delegator.beforeStory(story, embeddedStory);        
+        delegator.beforeStory(story, givenStory);        
         
         delegator.beforeScenario("My core 1");
         delegator.givenStories(givenStories);
@@ -44,13 +44,13 @@ public class DelegatingStoryReporterBehaviour {
         delegator.failed("Then step 2.3", anException);
         delegator.afterScenario();
         
-        delegator.afterStory(embeddedStory);
+        delegator.afterStory(givenStory);
         
         InOrder inOrder = inOrder(delegate);
                 
         inOrder.verify(delegate).dryRun();        
 
-        inOrder.verify(delegate).beforeStory(story, embeddedStory);
+        inOrder.verify(delegate).beforeStory(story, givenStory);
 
         inOrder.verify(delegate).beforeScenario("My core 1");
         inOrder.verify(delegate).givenStories(givenStories);
@@ -69,7 +69,7 @@ public class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).failed("Then step 2.3", anException);        
         inOrder.verify(delegate).afterScenario();
         
-        inOrder.verify(delegate).afterStory(embeddedStory);
+        inOrder.verify(delegate).afterStory(givenStory);
         
     }
 }

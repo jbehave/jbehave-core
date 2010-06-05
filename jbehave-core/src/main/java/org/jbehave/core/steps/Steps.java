@@ -183,23 +183,23 @@ public class Steps implements CandidateSteps {
         }
     }
 
-    public List<Step> runBeforeStory(boolean embeddedStory) {
-        return storyStepsHaving(BeforeStory.class, embeddedStory, new OkayToRun());
+    public List<Step> runBeforeStory(boolean givenStory) {
+        return storyStepsHaving(BeforeStory.class, givenStory, new OkayToRun());
     }
 
-    public List<Step> runAfterStory(boolean embeddedStory) {
-        return storyStepsHaving(AfterStory.class, embeddedStory, new OkayToRun());
+    public List<Step> runAfterStory(boolean givenStory) {
+        return storyStepsHaving(AfterStory.class, givenStory, new OkayToRun());
     }
     
 	public StepsConfiguration getConfiguration() {
 		return configuration;
 	}
 
-    List<Step> storyStepsHaving(final Class<? extends Annotation> annotationClass, boolean embeddedStory, final StepPart forSuccess) {
+    List<Step> storyStepsHaving(final Class<? extends Annotation> annotationClass, boolean givenStory, final StepPart forSuccess) {
         List<Step> steps = new ArrayList<Step>();
         for (final Method method : methodsOf(instance)) {
             if (method.isAnnotationPresent(annotationClass)) {
-                if ( runnableStoryStep(method.getAnnotation(annotationClass), embeddedStory) ){
+                if ( runnableStoryStep(method.getAnnotation(annotationClass), givenStory) ){
                     steps.add(new Step() {
                         public StepResult doNotPerform() {
                             return forSuccess.run(annotationClass, method);
@@ -215,9 +215,9 @@ public class Steps implements CandidateSteps {
         return steps;
     }
 
-    private boolean runnableStoryStep(Annotation annotation, boolean embeddedStory) {
+    private boolean runnableStoryStep(Annotation annotation, boolean givenStory) {
         boolean uponEmbedded = uponEmbedded(annotation);
-        return uponEmbedded == embeddedStory;
+        return uponEmbedded == givenStory;
     }    
 
     private boolean uponEmbedded(Annotation annotation) {

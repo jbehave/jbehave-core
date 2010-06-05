@@ -16,7 +16,7 @@ public interface StepCollector {
         BEFORE, AFTER
     }
 
-    List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean embeddedStory);
+    List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean givenStory);
 
     List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> tableRow);
 

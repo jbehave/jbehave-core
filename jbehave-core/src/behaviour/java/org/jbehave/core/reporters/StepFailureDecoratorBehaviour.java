@@ -32,27 +32,27 @@ public class StepFailureDecoratorBehaviour {
 	public void shouldJustDelegateAllReportingMethodsOtherThanFailure() {
 		// Given
 	    Story story = new Story();
-		boolean embeddedStory = false;
+		boolean givenStory = false;
 		
         // When
-		decorator.beforeStory(story, embeddedStory);
+		decorator.beforeStory(story, givenStory);
 		decorator.beforeScenario("My core 1");
 		decorator.successful("Given step 1.1");
 		decorator.pending("When step 1.2");
 		decorator.notPerformed("Then step 1.3");
 		decorator.afterScenario();
-		decorator.afterStory(embeddedStory);
+		decorator.afterStory(givenStory);
 
 		// Then
 		InOrder inOrder = inOrder(delegate);
 
-		inOrder.verify(delegate).beforeStory(story, embeddedStory);
+		inOrder.verify(delegate).beforeStory(story, givenStory);
 		inOrder.verify(delegate).beforeScenario("My core 1");
 		inOrder.verify(delegate).successful("Given step 1.1");
 		inOrder.verify(delegate).pending("When step 1.2");
 		inOrder.verify(delegate).notPerformed("Then step 1.3");
 		inOrder.verify(delegate).afterScenario();
-		inOrder.verify(delegate).afterStory(embeddedStory);
+		inOrder.verify(delegate).afterStory(givenStory);
 	}
 
 	@Test
@@ -77,11 +77,11 @@ public class StepFailureDecoratorBehaviour {
 		Throwable t = new IllegalArgumentException("World Peace for everyone");
 		String stepAsString = "When I have a bad idea";
 		decorator.failed(stepAsString, t);
-        boolean embeddedStory = false;
+        boolean givenStory = false;
 
 		// When
 		try {
-            decorator.afterStory(embeddedStory);
+            decorator.afterStory(givenStory);
 			fail("Should have rethrown exception");
 		} catch (Throwable rethrown) {
 			// Then

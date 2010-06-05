@@ -217,8 +217,8 @@ public class PrintStreamOutputBehaviour {
     private void narrateAnInterestingStory(StoryReporter reporter) {
         Story story = new Story(new Description("An interesting story"),
                 new Narrative("renovate my house", "customer", "get a loan"), "/path/to/story", new ArrayList<Scenario>());
-        boolean embeddedStory = false;
-        reporter.beforeStory(story, embeddedStory);
+        boolean givenStory = false;
+        reporter.beforeStory(story, givenStory);
         String title = "I ask for a loan";
         reporter.beforeScenario(title);
         reporter.givenStories(asList("/given/story1,/given/story2"));
@@ -235,7 +235,7 @@ public class PrintStreamOutputBehaviour {
         reporter.example(table.getRow(1));
         reporter.afterExamples();
         reporter.afterScenario();
-        reporter.afterStory(embeddedStory);
+        reporter.afterStory(givenStory);
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {

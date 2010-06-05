@@ -18,21 +18,21 @@ public class SilentSuccessFilter implements StoryReporter {
     private State scenarioState = State.SILENT;
     private State beforeStoryState = State.SILENT;
     private State afterStoryState = State.SILENT;
-    private boolean embeddedStory;
+    private boolean givenStory;
 
     public SilentSuccessFilter(StoryReporter delegate) {
         this.delegate = delegate;
     }
 
-    public void afterStory(boolean embeddedStory) {
+    public void afterStory(boolean givenStory) {
         afterStoryState.report();
     }
 
-    public void beforeStory(final Story story, final boolean embeddedStory) {
-        this.embeddedStory = embeddedStory;
+    public void beforeStory(final Story story, final boolean givenStory) {
+        this.givenStory = givenStory;
         beforeStoryState = new State() {
             public void report() {
-                delegate.beforeStory(story, embeddedStory);
+                delegate.beforeStory(story, givenStory);
                 beforeStoryState = State.SILENT;
             }
         };
@@ -81,7 +81,7 @@ public class SilentSuccessFilter implements StoryReporter {
                 }
                 afterStoryState = new State() {
                     public void report() {
-                        delegate.afterStory(embeddedStory);
+                        delegate.afterStory(givenStory);
                         afterStoryState = State.SILENT;
                     }
                 };

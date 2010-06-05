@@ -45,9 +45,9 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
-    public void afterStory(boolean embeddedStory) {
+    public void afterStory(boolean givenStory) {
         for (StoryReporter reporter : delegates) {
-            reporter.afterStory(embeddedStory);
+            reporter.afterStory(givenStory);
         }
     }
 
@@ -57,9 +57,9 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
-    public void beforeStory(Story story, boolean embeddedStory) {
+    public void beforeStory(Story story, boolean givenStory) {
         for (StoryReporter reporter : delegates) {
-            reporter.beforeStory(story, embeddedStory);
+            reporter.beforeStory(story, givenStory);
         }
     }
 

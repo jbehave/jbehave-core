@@ -61,11 +61,11 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 		count("stepsFailed");
 	}
 
-	public void beforeStory(Story story, boolean embeddedStory) {
+	public void beforeStory(Story story, boolean givenStory) {
 		resetData();
 	}
 
-	public void afterStory(boolean embeddedStory) {
+	public void afterStory(boolean givenStory) {
 		writeData();
 	}
 

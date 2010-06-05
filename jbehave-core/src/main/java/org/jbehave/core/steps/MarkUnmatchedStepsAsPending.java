@@ -16,15 +16,15 @@ import org.jbehave.core.model.Story;
  */
 public class MarkUnmatchedStepsAsPending implements StepCollector {
 
-    public List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean embeddedStory) {
+    public List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean givenStory) {
         List<Step> steps = new ArrayList<Step>();
         for (CandidateSteps candidates : candidateSteps) {
             switch (stage) {
                 case BEFORE:
-                    steps.addAll(candidates.runBeforeStory(embeddedStory));
+                    steps.addAll(candidates.runBeforeStory(givenStory));
                     break;
                 case AFTER:
-                    steps.addAll(candidates.runAfterStory(embeddedStory));
+                    steps.addAll(candidates.runAfterStory(givenStory));
                     break;
                 default:
                     break;

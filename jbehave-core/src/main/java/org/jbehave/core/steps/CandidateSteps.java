@@ -24,18 +24,18 @@ public interface CandidateSteps {
     /**
      * Return all the executable steps to run before each story, based on the embedded status
      * 
-     * @param embeddedStory the boolean flag denoting the embedded status 
+     * @param givenStory the boolean flag denoting the embedded status 
      * @return The list of steps 
      */
-    List<Step> runBeforeStory(boolean embeddedStory);
+    List<Step> runBeforeStory(boolean givenStory);
 
     /**
      * Return all the executable steps to run after each story, based on the embedded status
      * 
-     * @param embeddedStory the boolean flag denoting the embedded status 
+     * @param givenStory the boolean flag denoting the embedded status 
      * @return The list of steps 
      */
-    List<Step> runAfterStory(boolean embeddedStory);
+    List<Step> runAfterStory(boolean givenStory);
 
     /**
      * Return all the executable steps to run before each core

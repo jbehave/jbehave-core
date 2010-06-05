@@ -106,18 +106,18 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step stepAfter1 = mock(Step.class);
         Step stepAfter2 = mock(Step.class);
 
-        boolean embeddedStory = false;
-        when(steps1.runBeforeStory(embeddedStory)).thenReturn(asList(stepBefore1));
-        when(steps2.runBeforeStory(embeddedStory)).thenReturn(asList(stepBefore2));
-        when(steps1.runAfterStory(embeddedStory)).thenReturn(asList(stepAfter1));
-        when(steps2.runAfterStory(embeddedStory)).thenReturn(asList(stepAfter2));
+        boolean givenStory = false;
+        when(steps1.runBeforeStory(givenStory)).thenReturn(asList(stepBefore1));
+        when(steps2.runBeforeStory(givenStory)).thenReturn(asList(stepBefore2));
+        when(steps1.runAfterStory(givenStory)).thenReturn(asList(stepAfter1));
+        when(steps2.runAfterStory(givenStory)).thenReturn(asList(stepAfter2));
 
         // When we collect the list of steps
         MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
         List<Step> beforeSteps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Story(new Scenario()), Stage.BEFORE,
-                embeddedStory);
+                givenStory);
         List<Step> afterSteps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Story(new Scenario()), Stage.AFTER,
-                embeddedStory);
+                givenStory);
 
         // Then all before and after steps should be added
         assertThat(beforeSteps, equalTo(asList(stepBefore1, stepBefore2)));

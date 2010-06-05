@@ -52,7 +52,7 @@ public class StoryRunnerBehaviour {
                 "pendingStep"));
         Story story = new Story(new Description("my blurb"), scenario1,
                 scenario2, scenario3);
-        boolean embeddedStory = false;
+        boolean givenStory = false;
 
         CandidateStep[] someCandidateSteps = new CandidateStep[0];
         Step step = mock(Step.class);
@@ -76,16 +76,16 @@ public class StoryRunnerBehaviour {
         when(creator.collectStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(asList(successfulStep));
         when(creator.collectStepsFrom(asList(mySteps), scenario3, tableRow)).thenReturn(
                 asList(successfulStep, pendingStep));
-        givenStoryWithNoBeforeOrAfterSteps(story, embeddedStory, creator, mySteps);
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, creator, mySteps);
 
         // When
         ErrorStrategy errorStrategy = mock(ErrorStrategy.class);
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, creator, errorStrategy), asList(mySteps), story, embeddedStory);
+        runner.run(configurationWith(reporter, creator, errorStrategy), asList(mySteps), story, givenStory);
 
         // Then
         InOrder inOrder = inOrder(reporter, errorStrategy);
-        inOrder.verify(reporter).beforeStory(story, embeddedStory);
+        inOrder.verify(reporter).beforeStory(story, givenStory);
         inOrder.verify(reporter).beforeScenario("my title 1");
         inOrder.verify(reporter).failed("failingStep", anException);
         inOrder.verify(reporter).notPerformed("successfulStep");
@@ -97,7 +97,7 @@ public class StoryRunnerBehaviour {
         inOrder.verify(reporter).successful("successfulStep");
         inOrder.verify(reporter).pending("pendingStep");
         inOrder.verify(reporter).afterScenario();
-        inOrder.verify(reporter).afterStory(embeddedStory);
+        inOrder.verify(reporter).afterStory(givenStory);
         inOrder.verify(errorStrategy).handleError(anException);
     }
 
@@ -110,7 +110,7 @@ public class StoryRunnerBehaviour {
                 asList("anotherSuccessfulStep"));
         Story story1 = new Story(new Description("story 1"), scenario1);
         Story story2 = new Story(new Description("story 2"), scenario2);
-        boolean embeddedStory = false;
+        boolean givenStory = false;
 
         CandidateStep[] someCandidateSteps = new CandidateStep[0];
         Step step = mock(Step.class);
@@ -128,30 +128,30 @@ public class StoryRunnerBehaviour {
         when(successfulStep.perform()).thenReturn(StepResult.successful("successfulStep"));
         Step anotherSuccessfulStep = mock(Step.class);
         when(anotherSuccessfulStep.perform()).thenReturn(StepResult.successful("anotherSuccessfulStep"));
-        givenStoryWithNoBeforeOrAfterSteps(story1, embeddedStory, creator, mySteps);
+        givenStoryWithNoBeforeOrAfterSteps(story1, givenStory, creator, mySteps);
         when(creator.collectStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(asList(successfulStep));
-        givenStoryWithNoBeforeOrAfterSteps(story2, embeddedStory, creator, mySteps);
+        givenStoryWithNoBeforeOrAfterSteps(story2, givenStory, creator, mySteps);
         when(creator.collectStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(
                 asList(anotherSuccessfulStep));
         when(storyLoader.loadStoryAsText("/path/to/given/story1")).thenReturn("storyContent");
         when(storyParser.parseStory("storyContent", "/path/to/given/story1")).thenReturn(story1);
-        givenStoryWithNoBeforeOrAfterSteps(story1, embeddedStory, creator, mySteps);
-        givenStoryWithNoBeforeOrAfterSteps(story2, embeddedStory, creator, mySteps);
+        givenStoryWithNoBeforeOrAfterSteps(story1, givenStory, creator, mySteps);
+        givenStoryWithNoBeforeOrAfterSteps(story2, givenStory, creator, mySteps);
         ErrorStrategy errorStrategy = mock(ErrorStrategy.class);
 
         // When
         StoryRunner runner = new StoryRunner();
         runner.run(configurationWith(storyParser, storyLoader, reporter, creator, errorStrategy), asList(mySteps),
-                 story2, embeddedStory);
+                 story2, givenStory);
 
         // Then
         InOrder inOrder = inOrder(reporter);
-        inOrder.verify(reporter).beforeStory(story2, embeddedStory);
+        inOrder.verify(reporter).beforeStory(story2, givenStory);
         inOrder.verify(reporter).givenStories(givenStories);
         inOrder.verify(reporter).successful("successfulStep");
         inOrder.verify(reporter).successful("anotherSuccessfulStep");
-        inOrder.verify(reporter).afterStory(embeddedStory);
-        verify(reporter, never()).beforeStory(story1, embeddedStory);
+        inOrder.verify(reporter).afterStory(givenStory);
+        verify(reporter, never()).beforeStory(story1, givenStory);
     }
 
     @Test
@@ -172,12 +172,12 @@ public class StoryRunnerBehaviour {
         when(fourthStepAlsoPending.doNotPerform()).thenReturn(
                 StepResult.notPerformed("Then I should not be performed either"));
         Story story = new Story(new Scenario(""));
-        boolean embeddedStory = false;
-        givenStoryWithNoBeforeOrAfterSteps(story, embeddedStory, creator, mySteps);
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, creator, mySteps);
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, creator), asList(mySteps), story, embeddedStory);
+        runner.run(configurationWith(reporter, creator), asList(mySteps), story, givenStory);
 
         // Then
         verify(firstStepNormal).perform();
@@ -207,8 +207,8 @@ public class StoryRunnerBehaviour {
         when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(firstStepExceptional, secondStepNotPerformed));
         Story story = new Story(new Scenario(""));
-        boolean embeddedStory = false;
-        givenStoryWithNoBeforeOrAfterSteps(story, embeddedStory, creator, mySteps);
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, creator, mySteps);
 
         // When
         StoryRunner runner = new StoryRunner();
@@ -219,12 +219,12 @@ public class StoryRunnerBehaviour {
         verify(secondStepNotPerformed).doNotPerform();
 
         InOrder inOrder = inOrder(reporter, errorStrategy);
-        inOrder.verify(reporter).beforeStory((Story) anyObject(), eq(embeddedStory));
+        inOrder.verify(reporter).beforeStory((Story) anyObject(), eq(givenStory));
         inOrder.verify(reporter).beforeScenario((String) anyObject());
         inOrder.verify(reporter).failed("When I fail", failure.getThrowable());
         inOrder.verify(reporter).notPerformed("Then I should not be performed");
         inOrder.verify(reporter).afterScenario();
-        inOrder.verify(reporter).afterStory(embeddedStory);
+        inOrder.verify(reporter).afterStory(givenStory);
         inOrder.verify(errorStrategy).handleError(failure.getThrowable());
     }
 
@@ -243,13 +243,13 @@ public class StoryRunnerBehaviour {
         when(creator.collectStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(asList(pendingStep));
         when(creator.collectStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(asList(secondStep));
         Story story = new Story(scenario1, scenario2);
-        boolean embeddedStory = false;
-        givenStoryWithNoBeforeOrAfterSteps(story, embeddedStory, creator, mySteps);
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, creator, mySteps);
 
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, creator), asList(mySteps), story, embeddedStory);
+        runner.run(configurationWith(reporter, creator), asList(mySteps), story, givenStory);
 
         // Then
         verify(pendingStep).perform();
@@ -268,13 +268,13 @@ public class StoryRunnerBehaviour {
         StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mockMySteps();
         Story story = new Story();
-        boolean embeddedStory = false;
-        when(creator.collectStepsFrom(asList(mySteps), story, Stage.BEFORE, embeddedStory)).thenReturn(asList(beforeStep));
-        when(creator.collectStepsFrom(asList(mySteps), story, Stage.AFTER, embeddedStory)).thenReturn(asList(afterStep));
+        boolean givenStory = false;
+        when(creator.collectStepsFrom(asList(mySteps), story, Stage.BEFORE, givenStory)).thenReturn(asList(beforeStep));
+        when(creator.collectStepsFrom(asList(mySteps), story, Stage.AFTER, givenStory)).thenReturn(asList(afterStep));
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, creator),asList(mySteps), story, embeddedStory);
+        runner.run(configurationWith(reporter, creator),asList(mySteps), story, givenStory);
 
         // Then
         verify(beforeStep).perform();
@@ -295,14 +295,14 @@ public class StoryRunnerBehaviour {
         when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(pendingStep));
         Story story = new Story(new Scenario(""));
-        boolean embeddedStory = false;
-        givenStoryWithNoBeforeOrAfterSteps(story, embeddedStory, creator, mySteps);
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, creator, mySteps);
 
 
         // When
         StoryRunner runner = new StoryRunner();
         runner.run(configurationWithPendingStrategy(creator, reporter,
-                strategy), asList(mySteps), story, embeddedStory);
+                strategy), asList(mySteps), story, givenStory);
 
         // Then
         verify(strategy).handleError(pendingResult.getThrowable());
@@ -314,10 +314,10 @@ public class StoryRunnerBehaviour {
 		return mySteps;
 	}
 
-    private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean embeddedStory, StepCollector creator, CandidateSteps mySteps) {
+    private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean givenStory, StepCollector creator, CandidateSteps mySteps) {
         List<Step> steps = asList();
-        when(creator.collectStepsFrom(asList(mySteps), story, Stage.BEFORE, embeddedStory)).thenReturn(steps);
-        when(creator.collectStepsFrom(asList(mySteps), story, Stage.AFTER, embeddedStory)).thenReturn(steps);
+        when(creator.collectStepsFrom(asList(mySteps), story, Stage.BEFORE, givenStory)).thenReturn(steps);
+        when(creator.collectStepsFrom(asList(mySteps), story, Stage.AFTER, givenStory)).thenReturn(steps);
     }
 
     private StoryConfiguration configurationWithPendingStrategy(StepCollector creator, StoryReporter reporter,

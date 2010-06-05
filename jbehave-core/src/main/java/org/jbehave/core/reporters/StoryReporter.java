@@ -14,9 +14,9 @@ import org.jbehave.core.model.Story;
  */
 public interface StoryReporter {
 
-    void beforeStory(Story story, boolean embeddedStory);
+    void beforeStory(Story story, boolean givenStory);
 
-    void afterStory(boolean embeddedStory);
+    void afterStory(boolean givenStory);
 
     void beforeScenario(String title);
     

@@ -49,13 +49,13 @@ public class StoryRunner {
     }
 
     public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Story story) throws Throwable {
-        // always start in a non-embedded mode
+        // always start in a top-level non-given story
         run(configuration, candidateSteps, story, false);
     }
 
-    public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, String storyPath, boolean embeddedStory) throws Throwable {
+    public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, String storyPath, boolean givenStory) throws Throwable {
         Story story = defineStory(configuration, storyPath);
-        run(configuration, candidateSteps, story, embeddedStory);
+        run(configuration, candidateSteps, story, givenStory);
     }
 
     public Story defineStory(StoryConfiguration storyConfiguration, String storyPath) {
@@ -65,19 +65,19 @@ public class StoryRunner {
         return story;
     }
 
-    public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Story story, boolean embeddedStory) throws Throwable {
+    public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
         stepCollector = configuration.stepCollector();
-        reporter = reporterFor(configuration, story, embeddedStory);
+        reporter = reporterFor(configuration, story, givenStory);
         pendingStepStrategy = configuration.pendingErrorStrategy();
         errorStrategy = configuration.errorStrategy();
-        resetErrorState(embeddedStory);
+        resetErrorState(givenStory);
 
 		if (isDryRun(candidateSteps)) {
 			reporter.dryRun();
 		}
 
-        reporter.beforeStory(story, embeddedStory);
-        runStorySteps(candidateSteps, story, embeddedStory, StepCollector.Stage.BEFORE);
+        reporter.beforeStory(story, givenStory);
+        runStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.BEFORE);
         for (Scenario scenario : story.getScenarios()) {
             reporter.beforeScenario(scenario.getTitle());
             runGivenStories(configuration, candidateSteps, scenario); // first run any given stories, if any
@@ -88,8 +88,8 @@ public class StoryRunner {
             }
             reporter.afterScenario();
         }
-        runStorySteps(candidateSteps, story, embeddedStory, StepCollector.Stage.AFTER);
-        reporter.afterStory(embeddedStory);
+        runStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.AFTER);
+        reporter.afterStory(givenStory);
         currentStrategy.handleError(throwable);
     }
     
@@ -103,8 +103,8 @@ public class StoryRunner {
 	}
 
 	private StoryReporter reporterFor(StoryConfiguration configuration,
-			Story story, boolean embeddedStory) {
-		if ( embeddedStory ){			
+			Story story, boolean givenStory) {
+		if ( givenStory ){			
 			return configuration.storyReporter(reporterStoryPath);
 		} else {
 			// store parent story path for reporting
@@ -113,9 +113,9 @@ public class StoryRunner {
 		}
 	}
 
-	private void resetErrorState(boolean embeddedStory) {
-		if ( embeddedStory ) {
-			// do not reset error state for embedded stories
+	private void resetErrorState(boolean givenStory) {
+		if ( givenStory ) {
+			// do not reset error state for given stories
 			return;
 		}
 		currentStrategy = ErrorStrategy.SILENT;
@@ -125,11 +125,11 @@ public class StoryRunner {
     private void runGivenStories(StoryConfiguration configuration,
                                  List<CandidateSteps> candidateSteps, Scenario scenario)
             throws Throwable {
-        // run given story in embedded mode
         List<String> storyPaths = scenario.getGivenStoryPaths();
         if (storyPaths.size() > 0) {
             reporter.givenStories(storyPaths);
             for (String storyPath : storyPaths) {
+            	// run given story 
                 run(configuration, candidateSteps, storyPath, true);
             }
         }
@@ -150,8 +150,8 @@ public class StoryRunner {
         reporter.afterExamples();
     }
 
-    private void runStorySteps(List<CandidateSteps> candidateSteps, Story story, boolean embeddedStory, Stage stage) {
-        runSteps(stepCollector.collectStepsFrom(candidateSteps, story, stage, embeddedStory));
+    private void runStorySteps(List<CandidateSteps> candidateSteps, Story story, boolean givenStory, Stage stage) {
+        runSteps(stepCollector.collectStepsFrom(candidateSteps, story, stage, givenStory));
     }
 
     private void runScenarioSteps(

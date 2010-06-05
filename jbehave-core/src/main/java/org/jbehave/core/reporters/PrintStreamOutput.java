@@ -133,7 +133,7 @@ public class PrintStreamOutput implements StoryReporter {
         print(format("failed", "{0} ({1})\n", step, keywords.failed()));
     }
 
-    public void beforeStory(Story story, boolean embeddedStory) {
+    public void beforeStory(Story story, boolean givenStory) {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
         if (!story.getNarrative().isEmpty()) {
             Narrative narrative = story.getNarrative();
@@ -142,7 +142,7 @@ public class PrintStreamOutput implements StoryReporter {
         }
     }
 
-    public void afterStory(boolean embeddedStory) {
+    public void afterStory(boolean givenStory) {
         print(format("afterStory", "\n"));
     }
 
