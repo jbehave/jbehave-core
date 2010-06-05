@@ -3,8 +3,8 @@ package org.jbehave.core.reporters;
 import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
 import static org.jbehave.core.reporters.PrintStreamOutput.Format.PLAIN;
-import static org.jbehave.core.steps.CandidateStep.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.CandidateStep.PARAMETER_VALUE_START;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

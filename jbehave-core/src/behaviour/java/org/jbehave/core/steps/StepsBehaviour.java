@@ -26,15 +26,15 @@ public class StepsBehaviour {
         CandidateStep[] candidateSteps = steps.getSteps();
         assertThat(candidateSteps.length, equalTo(9));
         
-        findCandidateStep(candidateSteps, "GIVEN a given").createFrom(tableRow, "Given a given").perform();
-        findCandidateStep(candidateSteps, "GIVEN a given alias").createFrom(tableRow, "Given a given alias").perform();
-        findCandidateStep(candidateSteps, "GIVEN another given alias").createFrom(tableRow, "Given another given alias").perform();
-        findCandidateStep(candidateSteps, "WHEN a when").createFrom(tableRow, "When a when").perform();
-        findCandidateStep(candidateSteps, "WHEN a when alias").createFrom(tableRow, "When a when alias").perform();
-        findCandidateStep(candidateSteps, "WHEN another when alias").createFrom(tableRow, "When another when alias").perform();
-        findCandidateStep(candidateSteps, "THEN a then").createFrom(tableRow, "Then a then").perform();
-        findCandidateStep(candidateSteps, "THEN a then alias").createFrom(tableRow, "Then a then alias").perform();
-        findCandidateStep(candidateSteps, "THEN another then alias").createFrom(tableRow, "Then another then alias").perform();
+        findCandidateStep(candidateSteps, "GIVEN a given").createStep("Given a given", tableRow).perform();
+        findCandidateStep(candidateSteps, "GIVEN a given alias").createStep("Given a given alias", tableRow).perform();
+        findCandidateStep(candidateSteps, "GIVEN another given alias").createStep("Given another given alias", tableRow).perform();
+        findCandidateStep(candidateSteps, "WHEN a when").createStep("When a when", tableRow).perform();
+        findCandidateStep(candidateSteps, "WHEN a when alias").createStep("When a when alias", tableRow).perform();
+        findCandidateStep(candidateSteps, "WHEN another when alias").createStep("When another when alias", tableRow).perform();
+        findCandidateStep(candidateSteps, "THEN a then").createStep("Then a then", tableRow).perform();
+        findCandidateStep(candidateSteps, "THEN a then alias").createStep("Then a then alias", tableRow).perform();
+        findCandidateStep(candidateSteps, "THEN another then alias").createStep("Then another then alias", tableRow).perform();
 
         assertThat(steps.givens, equalTo(3));
         assertThat(steps.whens, equalTo(3));
@@ -47,12 +47,12 @@ public class StepsBehaviour {
         CandidateStep[] candidateSteps = steps.getSteps();
         assertThat(candidateSteps.length, equalTo(6));
 
-        findCandidateStep(candidateSteps, "GIVEN a given").createFrom(tableRow, "Given a given").perform();
-        findCandidateStep(candidateSteps, "GIVEN a given alias").createFrom(tableRow, "Given a given alias").perform();
-        findCandidateStep(candidateSteps, "WHEN a when").createFrom(tableRow, "When a when").perform();
-        findCandidateStep(candidateSteps, "WHEN a when alias").createFrom(tableRow, "When a when alias").perform();
-        findCandidateStep(candidateSteps, "THEN a then").createFrom(tableRow, "Then a then").perform();
-        findCandidateStep(candidateSteps, "THEN a then alias").createFrom(tableRow, "Then a then alias").perform();
+        findCandidateStep(candidateSteps, "GIVEN a given").createStep("Given a given", tableRow).perform();
+        findCandidateStep(candidateSteps, "GIVEN a given alias").createStep("Given a given alias", tableRow).perform();
+        findCandidateStep(candidateSteps, "WHEN a when").createStep("When a when", tableRow).perform();
+        findCandidateStep(candidateSteps, "WHEN a when alias").createStep("When a when alias", tableRow).perform();
+        findCandidateStep(candidateSteps, "THEN a then").createStep("Then a then", tableRow).perform();
+        findCandidateStep(candidateSteps, "THEN a then alias").createStep("Then a then alias", tableRow).perform();
         
         assertThat(steps.givens, equalTo(2));
         assertThat(steps.whens, equalTo(2));
@@ -65,12 +65,12 @@ public class StepsBehaviour {
         CandidateStep[] candidateSteps = new StepsFactory().createCandidateSteps(steps)[0].getSteps();
         assertThat(candidateSteps.length, equalTo(6));
 
-        findCandidateStep(candidateSteps, "GIVEN a given").createFrom(tableRow, "Given a given").perform();
-        findCandidateStep(candidateSteps, "GIVEN a given alias").createFrom(tableRow, "Given a given alias").perform();
-        findCandidateStep(candidateSteps, "WHEN a when").createFrom(tableRow, "When a when").perform();
-        findCandidateStep(candidateSteps, "WHEN a when alias").createFrom(tableRow, "When a when alias").perform();
-        findCandidateStep(candidateSteps, "THEN a then").createFrom(tableRow, "Then a then").perform();
-        findCandidateStep(candidateSteps, "THEN a then alias").createFrom(tableRow, "Then a then alias").perform();
+        findCandidateStep(candidateSteps, "GIVEN a given").createStep("Given a given", tableRow).perform();
+        findCandidateStep(candidateSteps, "GIVEN a given alias").createStep("Given a given alias", tableRow).perform();
+        findCandidateStep(candidateSteps, "WHEN a when").createStep("When a when", tableRow).perform();
+        findCandidateStep(candidateSteps, "WHEN a when alias").createStep("When a when alias", tableRow).perform();
+        findCandidateStep(candidateSteps, "THEN a then").createStep("Then a then", tableRow).perform();
+        findCandidateStep(candidateSteps, "THEN a then alias").createStep("Then a then alias", tableRow).perform();
         
         assertThat(steps.givens, equalTo(2));
         assertThat(steps.whens, equalTo(2));
@@ -163,7 +163,7 @@ public class StepsBehaviour {
         CandidateStep[] candidateSteps = steps.getSteps();
 
         assertThat(candidateSteps.length, equalTo(2));
-        candidateSteps[0].createFrom(tableRow, "Given a given").perform();
+        candidateSteps[0].createStep("Given a given", tableRow).perform();
 
     }
 
@@ -175,9 +175,9 @@ public class StepsBehaviour {
         CandidateStep[] candidateSteps = steps.getSteps();
         assertThat(candidateSteps.length, equalTo(3));
 
-        findCandidateStep(candidateSteps, "GIVEN un dato che").createFrom(tableRow, "Dato che un dato che").perform();
-        findCandidateStep(candidateSteps, "WHEN un quando").createFrom(tableRow, "Quando un quando").perform();
-        findCandidateStep(candidateSteps, "THEN un allora").createFrom(tableRow, "Allora un allora").perform();
+        findCandidateStep(candidateSteps, "GIVEN un dato che").createStep("Dato che un dato che", tableRow).perform();
+        findCandidateStep(candidateSteps, "WHEN un quando").createStep("Quando un quando", tableRow).perform();
+        findCandidateStep(candidateSteps, "THEN un allora").createStep("Allora un allora", tableRow).perform();
 
         assertThat(steps.givens, equalTo(1));
         assertThat(steps.whens, equalTo(1));
@@ -193,7 +193,7 @@ public class StepsBehaviour {
         assertThat(candidateSteps.length, equalTo(3));
 
         // misspelled starting word 
-        candidateSteps[0].createFrom(tableRow, "Dado che un dato che"); 
+        candidateSteps[0].createStep("Dado che un dato che", tableRow); 
         
     }
     

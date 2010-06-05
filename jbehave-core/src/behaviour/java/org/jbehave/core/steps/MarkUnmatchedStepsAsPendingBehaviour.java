@@ -29,7 +29,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step executableStep = mock(Step.class);
 
         when(candidate.matches("my step")).thenReturn(true);
-        when(candidate.createFrom(tableRow, "my step")).thenReturn(executableStep);
+        when(candidate.createStep("my step", tableRow)).thenReturn(executableStep);
         when(steps.getSteps()).thenReturn(new CandidateStep[] { candidate });
 
         // When
@@ -82,7 +82,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step normalStep = mock(Step.class);
 
         when(candidate.matches("my step")).thenReturn(true);
-        when(candidate.createFrom(tableRow, "my step")).thenReturn(normalStep);
+        when(candidate.createStep("my step", tableRow)).thenReturn(normalStep);
         when(steps1.getSteps()).thenReturn(new CandidateStep[] { candidate });
         when(steps2.getSteps()).thenReturn(new CandidateStep[] {});
 
@@ -153,10 +153,10 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(candidate2.getPriority()).thenReturn(2);
         when(candidate3.getPriority()).thenReturn(3);
         when(candidate4.getPriority()).thenReturn(4);
-        when(candidate1.createFrom(tableRow, stepAsString)).thenReturn(step1);
-        when(candidate2.createFrom(tableRow, stepAsString)).thenReturn(step2);
-        when(candidate3.createFrom(tableRow, stepAsString)).thenReturn(step3);
-        when(candidate4.createFrom(tableRow, stepAsString)).thenReturn(step4);
+        when(candidate1.createStep(stepAsString, tableRow)).thenReturn(step1);
+        when(candidate2.createStep(stepAsString, tableRow)).thenReturn(step2);
+        when(candidate3.createStep(stepAsString, tableRow)).thenReturn(step3);
+        when(candidate4.createStep(stepAsString, tableRow)).thenReturn(step4);
         
         // When we collect the list of steps
         MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
