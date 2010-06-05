@@ -6,7 +6,7 @@ import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepdocGenerator;
 
 /**
@@ -36,8 +36,8 @@ public class UnmodifiableStoryConfiguration extends StoryConfiguration {
         return delegate.pendingErrorStrategy();
     }
 
-    public StepCreator stepCreator() {
-        return delegate.stepCreator();
+    public StepCollector stepCollector() {
+        return delegate.stepCollector();
     }
 
     public ErrorStrategy errorStrategy() {
@@ -62,7 +62,7 @@ public class UnmodifiableStoryConfiguration extends StoryConfiguration {
     }
 
     @Override
-    public StoryConfiguration useStepCreator(StepCreator stepCreator) {
+    public StoryConfiguration useStepCollector(StepCollector stepCollector) {
         throw notAllowed();
     }
 

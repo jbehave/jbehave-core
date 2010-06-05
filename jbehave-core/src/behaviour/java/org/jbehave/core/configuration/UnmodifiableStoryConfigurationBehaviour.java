@@ -10,7 +10,7 @@ import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepdocGenerator;
 import org.junit.Test;
 
@@ -27,7 +27,7 @@ public class UnmodifiableStoryConfigurationBehaviour {
         StoryConfiguration delegate = new MostUsefulStoryConfiguration();
         StoryConfiguration unmodifiable = new UnmodifiableStoryConfiguration(delegate);
         assertThat(unmodifiable.keywords(), is(delegate.keywords()));
-        assertThat(unmodifiable.stepCreator(), is(delegate.stepCreator()));
+        assertThat(unmodifiable.stepCollector(), is(delegate.stepCollector()));
         assertThat(unmodifiable.storyParser(), is(delegate.storyParser()));
         assertThat(unmodifiable.storyReporter(), is(delegate.storyReporter()));
         assertThat(unmodifiable.errorStrategy(), is(delegate.errorStrategy()));
@@ -42,7 +42,7 @@ public class UnmodifiableStoryConfigurationBehaviour {
         StoryConfiguration delegate = new MostUsefulStoryConfiguration();
         StoryConfiguration unmodifiable = new UnmodifiableStoryConfiguration(delegate);
         assertThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
-        assertThatNotAllowed(unmodifiable, "useStepCreator", StepCreator.class);
+        assertThatNotAllowed(unmodifiable, "useStepCollector", StepCollector.class);
         assertThatNotAllowed(unmodifiable, "useStoryLoader", StoryLoader.class);
         assertThatNotAllowed(unmodifiable, "useStoryParser", StoryParser.class);
         assertThatNotAllowed(unmodifiable, "useStoryReporter", StoryReporter.class);

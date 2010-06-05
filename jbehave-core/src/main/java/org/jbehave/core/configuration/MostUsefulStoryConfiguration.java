@@ -8,7 +8,7 @@ import org.jbehave.core.parsers.*;
 import org.jbehave.core.reporters.*;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
-import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepdocGenerator;
 
 import java.util.Locale;
@@ -18,7 +18,7 @@ import java.util.Locale;
  * The elements configured are:
  * <ul>
  * <li>{@link org.jbehave.core.model.Keywords}: {@link LocalizedKeywords}</li>
- * <li>{@link StepCreator}: {@link MarkUnmatchedStepsAsPending}</li>
+ * <li>{@link StepCollector}: {@link MarkUnmatchedStepsAsPending}</li>
  * <li>{@link StoryParser}: {@link RegexStoryParser}</li>
  * <li>{@link StoryLoader}: {@link LoadFromClasspath}</li>
  * <li>{@link ErrorStrategy}: {@link ErrorStrategy.RETHROW}</li>
@@ -32,7 +32,7 @@ public class MostUsefulStoryConfiguration extends StoryConfiguration {
 
     public MostUsefulStoryConfiguration() {
         useKeywords(new LocalizedKeywords(Locale.ENGLISH));
-        useStepCreator(new MarkUnmatchedStepsAsPending());
+        useStepCollector(new MarkUnmatchedStepsAsPending());
         useStoryParser(new RegexStoryParser(keywords()));
         useStoryLoader(new LoadFromClasspath());
         useErrorStrategy(ErrorStrategy.RETHROW);

@@ -31,10 +31,10 @@ import org.jbehave.core.steps.CandidateStep;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 import org.jbehave.core.steps.Step;
-import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepResult;
 import org.jbehave.core.steps.Steps;
-import org.jbehave.core.steps.StepCreator.Stage;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.Test;
 import org.mockito.InOrder;
 
@@ -59,7 +59,7 @@ public class StoryRunnerBehaviour {
         StepResult result = mock(StepResult.class);
         when(step.perform()).thenReturn(result);
         StoryReporter reporter = mock(StoryReporter.class);
-        StepCreator creator = mock(StepCreator.class);
+        StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mock(Steps.class);
         when(mySteps.getConfiguration()).thenReturn(new MostUsefulStepsConfiguration());
         when(mySteps.getSteps()).thenReturn(someCandidateSteps);
@@ -71,10 +71,10 @@ public class StoryRunnerBehaviour {
         when(successfulStep.perform()).thenReturn(StepResult.successful("successfulStep"));
         when(successfulStep.doNotPerform()).thenReturn(StepResult.notPerformed("successfulStep"));
         when(failingStep.perform()).thenReturn(StepResult.failed("failingStep", anException));
-        when(creator.createStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(
+        when(creator.collectStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(
                 asList(failingStep, successfulStep));
-        when(creator.createStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(asList(successfulStep));
-        when(creator.createStepsFrom(asList(mySteps), scenario3, tableRow)).thenReturn(
+        when(creator.collectStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(asList(successfulStep));
+        when(creator.collectStepsFrom(asList(mySteps), scenario3, tableRow)).thenReturn(
                 asList(successfulStep, pendingStep));
         givenStoryWithNoBeforeOrAfterSteps(story, embeddedStory, creator, mySteps);
 
@@ -120,7 +120,7 @@ public class StoryRunnerBehaviour {
         StoryParser storyParser = mock(StoryParser.class);
         StoryLoader storyLoader = mock(StoryLoader.class);
         StoryReporter reporter = mock(StoryReporter.class);
-        StepCreator creator = mock(StepCreator.class);
+        StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mock(Steps.class);
         when(mySteps.getConfiguration()).thenReturn(new MostUsefulStepsConfiguration());
         when(mySteps.getSteps()).thenReturn(someCandidateSteps);
@@ -129,9 +129,9 @@ public class StoryRunnerBehaviour {
         Step anotherSuccessfulStep = mock(Step.class);
         when(anotherSuccessfulStep.perform()).thenReturn(StepResult.successful("anotherSuccessfulStep"));
         givenStoryWithNoBeforeOrAfterSteps(story1, embeddedStory, creator, mySteps);
-        when(creator.createStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(asList(successfulStep));
+        when(creator.collectStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(asList(successfulStep));
         givenStoryWithNoBeforeOrAfterSteps(story2, embeddedStory, creator, mySteps);
-        when(creator.createStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(
+        when(creator.collectStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(
                 asList(anotherSuccessfulStep));
         when(storyLoader.loadStoryAsText("/path/to/given/story1")).thenReturn("storyContent");
         when(storyParser.parseStory("storyContent", "/path/to/given/story1")).thenReturn(story1);
@@ -162,9 +162,9 @@ public class StoryRunnerBehaviour {
         Step secondStepPending = mock(Step.class);
         Step thirdStepNormal = mock(Step.class);
         Step fourthStepAlsoPending = mock(Step.class);
-        StepCreator creator = mock(StepCreator.class);
+        StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mockMySteps();
-        when(creator.createStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
+        when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(firstStepNormal, secondStepPending, thirdStepNormal, fourthStepAlsoPending));
         when(firstStepNormal.perform()).thenReturn(StepResult.successful("Given I succeed"));
         when(secondStepPending.perform()).thenReturn(StepResult.pending("When I am pending"));
@@ -202,9 +202,9 @@ public class StoryRunnerBehaviour {
         when(firstStepExceptional.perform()).thenReturn(failure);
         when(secondStepNotPerformed.doNotPerform()).thenReturn(notPerformed);
         ErrorStrategy errorStrategy = mock(ErrorStrategy.class);
-        StepCreator creator = mock(StepCreator.class);
+        StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mockMySteps();
-        when(creator.createStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
+        when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(firstStepExceptional, secondStepNotPerformed));
         Story story = new Story(new Scenario(""));
         boolean embeddedStory = false;
@@ -236,12 +236,12 @@ public class StoryRunnerBehaviour {
         Step secondStep = mock(Step.class);
         when(pendingStep.perform()).thenReturn(StepResult.pending("pendingStep"));
         when(secondStep.perform()).thenReturn(StepResult.successful("secondStep"));
-        StepCreator creator = mock(StepCreator.class);
+        StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mockMySteps();        
         Scenario scenario1 = new Scenario("scenario1");
         Scenario scenario2 = new Scenario("scenario2");
-        when(creator.createStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(asList(pendingStep));
-        when(creator.createStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(asList(secondStep));
+        when(creator.collectStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(asList(pendingStep));
+        when(creator.collectStepsFrom(asList(mySteps), scenario2, tableRow)).thenReturn(asList(secondStep));
         Story story = new Story(scenario1, scenario2);
         boolean embeddedStory = false;
         givenStoryWithNoBeforeOrAfterSteps(story, embeddedStory, creator, mySteps);
@@ -265,12 +265,12 @@ public class StoryRunnerBehaviour {
         Step afterStep = mock(Step.class);
         when(beforeStep.perform()).thenReturn(StepResult.successful("beforeStep"));
         when(afterStep.perform()).thenReturn(StepResult.successful("secondStep"));
-        StepCreator creator = mock(StepCreator.class);
+        StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mockMySteps();
         Story story = new Story();
         boolean embeddedStory = false;
-        when(creator.createStepsFrom(asList(mySteps), story, Stage.BEFORE, embeddedStory)).thenReturn(asList(beforeStep));
-        when(creator.createStepsFrom(asList(mySteps), story, Stage.AFTER, embeddedStory)).thenReturn(asList(afterStep));
+        when(creator.collectStepsFrom(asList(mySteps), story, Stage.BEFORE, embeddedStory)).thenReturn(asList(beforeStep));
+        when(creator.collectStepsFrom(asList(mySteps), story, Stage.AFTER, embeddedStory)).thenReturn(asList(afterStep));
 
         // When
         StoryRunner runner = new StoryRunner();
@@ -290,9 +290,9 @@ public class StoryRunnerBehaviour {
         StepResult pendingResult = StepResult.pending("My step isn't defined!");
         when(pendingStep.perform()).thenReturn(pendingResult);
         PendingErrorStrategy strategy = mock(PendingErrorStrategy.class);
-        StepCreator creator = mock(StepCreator.class);
+        StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mockMySteps();
-        when(creator.createStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
+        when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(pendingStep));
         Story story = new Story(new Scenario(""));
         boolean embeddedStory = false;
@@ -314,33 +314,33 @@ public class StoryRunnerBehaviour {
 		return mySteps;
 	}
 
-    private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean embeddedStory, StepCreator creator, CandidateSteps mySteps) {
+    private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean embeddedStory, StepCollector creator, CandidateSteps mySteps) {
         List<Step> steps = asList();
-        when(creator.createStepsFrom(asList(mySteps), story, Stage.BEFORE, embeddedStory)).thenReturn(steps);
-        when(creator.createStepsFrom(asList(mySteps), story, Stage.AFTER, embeddedStory)).thenReturn(steps);
+        when(creator.collectStepsFrom(asList(mySteps), story, Stage.BEFORE, embeddedStory)).thenReturn(steps);
+        when(creator.collectStepsFrom(asList(mySteps), story, Stage.AFTER, embeddedStory)).thenReturn(steps);
     }
 
-    private StoryConfiguration configurationWithPendingStrategy(StepCreator creator, StoryReporter reporter,
+    private StoryConfiguration configurationWithPendingStrategy(StepCollector creator, StoryReporter reporter,
                                                                 PendingErrorStrategy strategy) {
         return configurationWith(new RegexStoryParser(), new LoadFromClasspath(), reporter, creator,
                 new ErrorStrategyInWhichWeTrustTheReporter(), strategy);
     }
 
-    private StoryConfiguration configurationWith(final StoryReporter reporter, final StepCreator creator) {
+    private StoryConfiguration configurationWith(final StoryReporter reporter, final StepCollector creator) {
         return configurationWith(reporter, creator, new ErrorStrategyInWhichWeTrustTheReporter());
     }
 
-    private StoryConfiguration configurationWith(StoryReporter reporter, StepCreator creator, ErrorStrategy errorStrategy) {
+    private StoryConfiguration configurationWith(StoryReporter reporter, StepCollector creator, ErrorStrategy errorStrategy) {
         return configurationWith(new RegexStoryParser(), new LoadFromClasspath(), reporter, creator, errorStrategy);
     }
 
     private StoryConfiguration configurationWith(StoryParser parser, final StoryLoader storyLoader, final StoryReporter reporter,
-                                                 final StepCreator creator, final ErrorStrategy errorStrategy) {
+                                                 final StepCollector creator, final ErrorStrategy errorStrategy) {
         return configurationWith(parser, storyLoader, reporter, creator, errorStrategy, PendingErrorStrategy.PASSING);
     }
 
     private StoryConfiguration configurationWith(final StoryParser parser, final StoryLoader loader, final StoryReporter reporter,
-                                                 final StepCreator creator, final ErrorStrategy errorStrategy, final PendingErrorStrategy pendingStrategy) {
+                                                 final StepCollector creator, final ErrorStrategy errorStrategy, final PendingErrorStrategy pendingStrategy) {
 
         return new MostUsefulStoryConfiguration() {
             @Override
@@ -354,7 +354,7 @@ public class StoryRunnerBehaviour {
             }
 
             @Override
-            public StepCreator stepCreator() {
+            public StepCollector stepCollector() {
                 return creator;
             }
 

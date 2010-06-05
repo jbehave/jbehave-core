@@ -7,7 +7,7 @@ import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.PrintStreamOutput;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StepdocReporter;
-import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepdocGenerator;
 
 /**
@@ -74,10 +74,10 @@ public class PropertyBasedStoryConfiguration extends StoryConfiguration {
     }
 
     /**
-     * Returns the default StepCreator.
+     * Returns the default StepCollector.
      */
-    public StepCreator stepCreator() {
-        return defaultConfiguration.stepCreator();
+    public StepCollector stepCollector() {
+        return defaultConfiguration.stepCollector();
     }
 
     /**

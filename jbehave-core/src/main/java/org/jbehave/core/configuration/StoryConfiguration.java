@@ -26,7 +26,7 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.runner.StoryRunner;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
-import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepdocGenerator;
 
 /**
@@ -55,7 +55,7 @@ public class StoryConfiguration {
     /**
      * Provides pending steps where unmatched steps exist.
      */
-    private StepCreator stepCreator = new MarkUnmatchedStepsAsPending();
+    private StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
     
     /**
      * Parses the textual representation via pattern matching of keywords
@@ -127,7 +127,7 @@ public class StoryConfiguration {
      * Constructor that allows all dependencies to be injected
      *
      * @param keywords
-     * @param stepCreator
+     * @param stepCollector
      * @param storyParser
      * @param storyLoader
      * @param storyPathResolver
@@ -138,7 +138,7 @@ public class StoryConfiguration {
      * @param storyReporterBuilder
      * @param pendingErrorStrategy
      */
-	protected StoryConfiguration(Keywords keywords, StepCreator stepCreator,
+	protected StoryConfiguration(Keywords keywords, StepCollector stepCollector,
 			StoryParser storyParser, StoryLoader storyLoader,
 			StoryPathResolver storyPathResolver, ErrorStrategy errorStrategy,
 			StepdocReporter stepdocReporter, StepdocGenerator stepdocGenerator,
@@ -146,7 +146,7 @@ public class StoryConfiguration {
 			StoryReporterBuilder storyReporterBuilder, 
 			PendingErrorStrategy pendingErrorStrategy) {
 		this.keywords = keywords;
-		this.stepCreator = stepCreator;
+		this.stepCollector = stepCollector;
 		this.storyParser = storyParser;
 		this.storyLoader = storyLoader;
 		this.storyPathResolver = storyPathResolver;
@@ -158,8 +158,8 @@ public class StoryConfiguration {
 		this.pendingErrorStrategy = pendingErrorStrategy;
 	}
 
-    public StepCreator stepCreator() {
-        return stepCreator;
+    public StepCollector stepCollector() {
+        return stepCollector;
     }
 
     public StoryParser storyParser() {
@@ -217,8 +217,8 @@ public class StoryConfiguration {
         return this;
     }
 
-    public StoryConfiguration useStepCreator(StepCreator stepCreator) {
-        this.stepCreator = stepCreator;
+    public StoryConfiguration useStepCollector(StepCollector stepCollector) {
+        this.stepCollector = stepCollector;
         return this;
     }
 

@@ -12,11 +12,11 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
 /**
- * StepCreator that marks unmatched steps as {@link StepResult.Pending}
+ * StepCollector that marks unmatched steps as {@link StepResult.Pending}
  */
-public class MarkUnmatchedStepsAsPending implements StepCreator {
+public class MarkUnmatchedStepsAsPending implements StepCollector {
 
-    public List<Step> createStepsFrom(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean embeddedStory) {
+    public List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean embeddedStory) {
         List<Step> steps = new ArrayList<Step>();
         for (CandidateSteps candidates : candidateSteps) {
             switch (stage) {
@@ -33,7 +33,7 @@ public class MarkUnmatchedStepsAsPending implements StepCreator {
         return steps;
     }
 
-    public List<Step> createStepsFrom(List<CandidateSteps> candidateSteps, Scenario scenario,
+    public List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Scenario scenario,
                                       Map<String, String> tableRow) {
         List<Step> steps = new ArrayList<Step>();
 

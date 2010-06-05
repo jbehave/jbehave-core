@@ -2,7 +2,7 @@ package org.jbehave.core.steps;
 
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.StepCreator.Stage;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -22,8 +22,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     @Test
     public void shouldMatchUpStepsAndScenarioDefinitionToCreateExecutableSteps() {
         // Given
-        MarkUnmatchedStepsAsPending stepCreator = new MarkUnmatchedStepsAsPending();
-
+        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
+        
         CandidateStep candidate = mock(CandidateStep.class);
         CandidateSteps steps = mock(Steps.class);
         Step executableStep = mock(Step.class);
@@ -33,8 +33,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps.getSteps()).thenReturn(new CandidateStep[] { candidate });
 
         // When
-        List<Step> executableSteps = stepCreator
-                .createStepsFrom(asList(steps), new Scenario(asList("my step")), tableRow);
+        List<Step> executableSteps = stepCollector
+                .collectStepsFrom(asList(steps), new Scenario(asList("my step")), tableRow);
 
         // Then
         assertThat(executableSteps.size(), equalTo(1));
@@ -44,7 +44,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     @Test
     public void shouldProvidePendingStepsForAnyStepsWhichAreNotAvailable() {
         // Given
-        MarkUnmatchedStepsAsPending stepCreator = new MarkUnmatchedStepsAsPending();
+        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
 
         CandidateStep candidate = mock(CandidateStep.class);
         CandidateSteps steps = mock(Steps.class);
@@ -53,8 +53,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps.getSteps()).thenReturn(new CandidateStep[] { candidate });
 
         // When
-        List<Step> executableSteps = stepCreator
-                .createStepsFrom(asList(steps), new Scenario(asList("my step")), tableRow);
+        List<Step> executableSteps = stepCollector
+                .collectStepsFrom(asList(steps), new Scenario(asList("my step")), tableRow);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform();
@@ -86,9 +86,9 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps1.getSteps()).thenReturn(new CandidateStep[] { candidate });
         when(steps2.getSteps()).thenReturn(new CandidateStep[] {});
 
-        // When we create the series of steps for the core
-        MarkUnmatchedStepsAsPending stepCreator = new MarkUnmatchedStepsAsPending();
-        List<Step> executableSteps = stepCreator.createStepsFrom(asList(steps1, steps2), new Scenario(asList("my step")), tableRow
+        // When we collect the list of steps
+        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
+        List<Step> executableSteps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Scenario(asList("my step")), tableRow
         );
 
         // Then all before and after steps should be added
@@ -112,11 +112,11 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps1.runAfterStory(embeddedStory)).thenReturn(asList(stepAfter1));
         when(steps2.runAfterStory(embeddedStory)).thenReturn(asList(stepAfter2));
 
-        // When we create the series of steps for the core
-        MarkUnmatchedStepsAsPending stepCreator = new MarkUnmatchedStepsAsPending();
-        List<Step> beforeSteps = stepCreator.createStepsFrom(asList(steps1, steps2), new Story(new Scenario()), Stage.BEFORE,
+        // When we collect the list of steps
+        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
+        List<Step> beforeSteps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Story(new Scenario()), Stage.BEFORE,
                 embeddedStory);
-        List<Step> afterSteps = stepCreator.createStepsFrom(asList(steps1, steps2), new Story(new Scenario()), Stage.AFTER,
+        List<Step> afterSteps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Story(new Scenario()), Stage.AFTER,
                 embeddedStory);
 
         // Then all before and after steps should be added
@@ -158,9 +158,9 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(candidate3.createFrom(tableRow, stepAsString)).thenReturn(step3);
         when(candidate4.createFrom(tableRow, stepAsString)).thenReturn(step4);
         
-        // When we create the series of steps for the core
-        MarkUnmatchedStepsAsPending stepCreator = new MarkUnmatchedStepsAsPending();
-        List<Step> steps = stepCreator.createStepsFrom(asList(steps1, steps2), new Scenario(asList(stepAsString)), tableRow
+        // When we collect the list of steps
+        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
+        List<Step> steps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Scenario(asList(stepAsString)), tableRow
         );
 
         // Then the step with highest priority is returned

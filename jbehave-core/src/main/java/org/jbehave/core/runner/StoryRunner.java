@@ -16,9 +16,9 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Step;
-import org.jbehave.core.steps.StepCreator;
+import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepResult;
-import org.jbehave.core.steps.StepCreator.Stage;
+import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * Allows to run a single story and describe the results to the {@link StoryReporter}.
@@ -35,7 +35,7 @@ public class StoryRunner {
     private StoryReporter reporter;
     private ErrorStrategy errorStrategy;
     private Throwable throwable;
-    private StepCreator stepCreator;
+    private StepCollector stepCollector;
 	private String reporterStoryPath;
 
     public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Class<? extends RunnableStory> storyClass) throws Throwable {
@@ -66,7 +66,7 @@ public class StoryRunner {
     }
 
     public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Story story, boolean embeddedStory) throws Throwable {
-        stepCreator = configuration.stepCreator();
+        stepCollector = configuration.stepCollector();
         reporter = reporterFor(configuration, story, embeddedStory);
         pendingStepStrategy = configuration.pendingErrorStrategy();
         errorStrategy = configuration.errorStrategy();
@@ -77,7 +77,7 @@ public class StoryRunner {
 		}
 
         reporter.beforeStory(story, embeddedStory);
-        runStorySteps(candidateSteps, story, embeddedStory, StepCreator.Stage.BEFORE);
+        runStorySteps(candidateSteps, story, embeddedStory, StepCollector.Stage.BEFORE);
         for (Scenario scenario : story.getScenarios()) {
             reporter.beforeScenario(scenario.getTitle());
             runGivenStories(configuration, candidateSteps, scenario); // first run any given stories, if any
@@ -88,7 +88,7 @@ public class StoryRunner {
             }
             reporter.afterScenario();
         }
-        runStorySteps(candidateSteps, story, embeddedStory, StepCreator.Stage.AFTER);
+        runStorySteps(candidateSteps, story, embeddedStory, StepCollector.Stage.AFTER);
         reporter.afterStory(embeddedStory);
         currentStrategy.handleError(throwable);
     }
@@ -151,12 +151,12 @@ public class StoryRunner {
     }
 
     private void runStorySteps(List<CandidateSteps> candidateSteps, Story story, boolean embeddedStory, Stage stage) {
-        runSteps(stepCreator.createStepsFrom(candidateSteps, story, stage, embeddedStory));
+        runSteps(stepCollector.collectStepsFrom(candidateSteps, story, stage, embeddedStory));
     }
 
     private void runScenarioSteps(
             List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> tableRow) {
-        runSteps(stepCreator.createStepsFrom(candidateSteps, scenario, tableRow));
+        runSteps(stepCollector.collectStepsFrom(candidateSteps, scenario, tableRow));
     }
 
     /**
