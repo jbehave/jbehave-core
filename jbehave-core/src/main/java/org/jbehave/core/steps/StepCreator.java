@@ -52,17 +52,17 @@ public class StepCreator {
 	}
 
 	public Step createStep(final String stepAsString, Map<String, String> tableRow) {
-        Type[] types = method.getGenericParameterTypes();
         String[] annotationNames = annotatedParameterNames();
         String[] parameterNames = paranamer.lookupParameterNames(method, false);
-        final String parametrisedStep = parametrisedStep(stepAsString, tableRow, types, annotationNames, parameterNames);
-        final Object[] args = argsForStep(tableRow, types, annotationNames, parameterNames);
+        final Type[] types = method.getGenericParameterTypes();
+        final String[] args = argsForStep(tableRow, types, annotationNames, parameterNames);
+        final String parametrisedStep = parametrisedStep(stepAsString, tableRow, types, annotationNames, parameterNames, args);
         return new Step() {
             public StepResult perform() {
                 try {
 					stepMonitor.performing(stepAsString, dryRun);
 					if (!dryRun) {
-						method.invoke(stepsInstance, args);
+						method.invoke(stepsInstance, convertArgs(args, types));
 					}
                     return StepResult.successful(stepAsString).withParameterValues(parametrisedStep);
                 } catch (Throwable t) {
@@ -118,40 +118,57 @@ public class StepCreator {
     }
     
     private String parametrisedStep(String stepAsString, Map<String, String> tableRow, Type[] types, String[] annotationNames,
-            String[] parameterNames) {
+            String[] parameterNames, String[] args) {
         String parametrisedStep = stepAsString;
         for (int position = 0; position < types.length; position++) {
-            parametrisedStep = replaceParameterValuesInStep(parametrisedStep, position, annotationNames, parameterNames, tableRow);
+            parametrisedStep = replaceParameterValuesInStep(parametrisedStep, position, annotationNames, parameterNames, args, tableRow);
         }
         return parametrisedStep;
     }
 
     private String replaceParameterValuesInStep(String stepText, int position, String[] annotationNames, String[] parameterNames,
-            Map<String, String> tableRow) {
+            String[] args, Map<String, String> tableRow) {
         int annotatedNamePosition = parameterPosition(annotationNames, position);
         int parameterNamePosition = parameterPosition(parameterNames, position);
         if (annotatedNamePosition != -1) {
-            String name = annotationNames[position];
-            String value = getTableValue(tableRow, name);
-            if (value != null) {
-                stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
-            }
+            stepText = replaceTableValue(stepText, tableRow, annotationNames[position]);
         } else if (parameterNamePosition != -1) {
-            String name = parameterNames[position];
-            String value = getTableValue(tableRow, name);
-            if (value != null) {
-                stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_START);
-            }
+            stepText = replaceTableValue(stepText, tableRow, parameterNames[position]);
         }
+        stepText = replaceArgValue(stepText, position, args);        	
         return stepText;
     }
+
+	private String replaceArgValue(String stepText, int position, String[] args) {
+		String value = args[position];
+		if (value != null) {
+		    stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+		}
+		return stepText;
+	}
+
+	private String replaceTableValue(String stepText, Map<String, String> tableRow,
+			String name) {
+		String value = getTableValue(tableRow, name);
+		if (value != null) {
+		    stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+		}
+		return stepText;
+	}
     
-    private Object[] argsForStep(Map<String, String> tableRow, Type[] types, String[] annotationNames,
+    private String[] argsForStep(Map<String, String> tableRow, Type[] types, String[] annotationNames,
             String[] parameterNames) {
-        final Object[] args = new Object[types.length];
+        final String[] args = new String[types.length];
         for (int position = 0; position < types.length; position++) {
-            String arg = argForPosition(position, annotationNames, parameterNames, tableRow);
-            args[position] = parameterConverters.convert(arg, types[position]);
+            args[position] = argForPosition(position, annotationNames, parameterNames, tableRow);
+        }
+        return args;
+    }
+
+    private Object[] convertArgs(String[] argsAsString, Type[] types) {
+        final Object[] args = new Object[argsAsString.length];
+        for (int position = 0; position < argsAsString.length; position++) {
+            args[position] = parameterConverters.convert(argsAsString[position], types[position]);
         }
         return args;
     }
