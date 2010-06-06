@@ -12,7 +12,7 @@ import org.hamcrest.Matcher;
 
 public class OutcomesTable {
 
-    private static final List<String> FIELDS = asList("Description", "Actual", "Matcher", "Verified");
+    private static final List<String> FIELDS = asList("Description", "Value", "Matcher", "Verified");
 	private static final String NEWLINE = "\n";
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
@@ -68,7 +68,7 @@ public class OutcomesTable {
 		}
 		for (Outcome<?> outcome : outcomes) {
 			sb.append(VALUE_SEPARATOR).append(outcome.getDescription())
-			  .append(VALUE_SEPARATOR).append(outcome.getActual())
+			  .append(VALUE_SEPARATOR).append(outcome.getValue())
 			  .append(VALUE_SEPARATOR).append(outcome.getMatcher())
 			  .append(VALUE_SEPARATOR).append(outcome.isVerified())
 			  .append(VALUE_SEPARATOR).append(NEWLINE);
@@ -79,23 +79,23 @@ public class OutcomesTable {
 	public static class Outcome<T> {
 
 		private final String description;
-		private final T actual;
+		private final T value;
 		private final Matcher<T> matcher;
 		private final boolean verified;
 		
-		public Outcome(String description, T actual, Matcher<T> matcher) {
+		public Outcome(String description, T value, Matcher<T> matcher) {
 			this.description = description;
-			this.actual = actual;
+			this.value = value;
 			this.matcher = matcher;
-			this.verified = matcher.matches(actual);
+			this.verified = matcher.matches(value);
 		}
 
 		public String getDescription() {
 			return description;
 		}
 
-		public T getActual() {
-			return actual;
+		public T getValue() {
+			return value;
 		}
 
 		public Matcher<T> getMatcher() {

@@ -41,7 +41,7 @@ public class OutcomesTableBehaviour {
 			assertThat(failedOutcomes.size(), equalTo(1));
 			Outcome<?> outcome = failedOutcomes.get(0);
 			assertThat(outcome.getDescription(), equalTo("a failure"));
-			assertThat((Boolean)outcome.getActual(), is(true));
+			assertThat((Boolean)outcome.getValue(), is(true));
 		}
 	}
 

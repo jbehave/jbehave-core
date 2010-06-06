@@ -223,11 +223,11 @@ div.outcomes table th {
   font-weight: bold;
 }
 
-div.outcomes table tr.failed {
+div.outcomes table tr.notVerified {
   color: red;
 }
 
-div.outcomes table tr.successful {
+div.outcomes table tr.verified {
   color: green;
 }
 

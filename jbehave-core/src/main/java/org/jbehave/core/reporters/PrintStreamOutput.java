@@ -152,9 +152,9 @@ public class PrintStreamOutput implements StoryReporter {
         print(format("outcomesTableHeadEnd", "\n"));
         print(format("outcomesTableBodyStart", EMPTY));
         for (Outcome<?> outcome : rows) {
-            print(format("outcomesTableRowStart", "|", outcome.isVerified()?"successful":"failed"));
+            print(format("outcomesTableRowStart", "|", outcome.isVerified()?"verified":"notVerified"));
             print(format("outcomesTableCell", "{0}|", outcome.getDescription()));
-            print(format("outcomesTableCell", "{0}|", outcome.getActual()));
+            print(format("outcomesTableCell", "{0}|", outcome.getValue()));
             print(format("outcomesTableCell", "{0}|", outcome.getMatcher()));
             print(format("outcomesTableCell", "{0}|", outcome.isVerified()));
             print(format("outcomesTableRowEnd", "\n"));

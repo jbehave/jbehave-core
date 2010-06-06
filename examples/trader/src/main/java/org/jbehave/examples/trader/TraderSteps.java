@@ -1,14 +1,13 @@
 package org.jbehave.examples.trader;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Aliases;
 import org.jbehave.core.annotations.Given;
@@ -66,7 +65,8 @@ public class TraderSteps {
     @Then("the traders returned are: %tradersTable")
     public void theTradersReturnedAre(ExamplesTable tradersTable) {
         OutcomesTable outcomes = new OutcomesTable();
-        outcomes.addOutcome("traders", searchedTraders.toString(), Matchers.equalTo(toTraders(tradersTable).toString()));
+        outcomes.addOutcome("traders", searchedTraders.toString(), equalTo(toTraders(tradersTable).toString()));
+        outcomes.addOutcome("a success", "Any Value", equalTo("Any Value"));
         outcomes.verify();
     }
 
