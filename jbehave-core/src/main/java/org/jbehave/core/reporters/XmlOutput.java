@@ -68,6 +68,7 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("example", "\n<example keyword=\"{0}\">{1}</example>\n");
         patterns.setProperty("parameterValueStart", "<parameter>");
         patterns.setProperty("parameterValueEnd", "</parameter>");
+        patterns.setProperty("parameterValueNewline", "\n");        
         patterns.setProperty("dryRun", "<dryRun>{0}</dryRun>\n");        
         return patterns;
     }

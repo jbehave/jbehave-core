@@ -4,6 +4,7 @@ import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
 import static org.jbehave.core.reporters.PrintStreamOutput.Format.PLAIN;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_NEWLINE;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 
 import java.io.ByteArrayOutputStream;
@@ -289,7 +290,8 @@ public class PrintStreamOutput implements StoryReporter {
      */
     protected void print(String text) {
         output.print(text.replace(format(PARAMETER_VALUE_START, PARAMETER_VALUE_START), format("parameterValueStart", EMPTY))
-                         .replace(format(PARAMETER_VALUE_END, PARAMETER_VALUE_END), format("parameterValueEnd", EMPTY)));
+                         .replace(format(PARAMETER_VALUE_END, PARAMETER_VALUE_END), format("parameterValueEnd", EMPTY))
+                         .replace(format(PARAMETER_VALUE_NEWLINE, PARAMETER_VALUE_NEWLINE), format("parameterValueNewline", "\n")));
     }
     
 	@Override

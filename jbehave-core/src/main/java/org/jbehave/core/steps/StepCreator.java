@@ -21,6 +21,7 @@ public class StepCreator {
     public static final String PARAMETER_NAME_END = ">";
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
+	public static final String PARAMETER_VALUE_NEWLINE = "NL";
 	private Object stepsInstance;
 	private Method method;
 	private ParameterConverters parameterConverters;
@@ -143,6 +144,7 @@ public class StepCreator {
 		String value = args[position];
 		if (value != null) {
 		    stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+		    stepText = stepText.replace("\n", PARAMETER_VALUE_NEWLINE);
 		}
 		return stepText;
 	}
@@ -151,7 +153,7 @@ public class StepCreator {
 			String name) {
 		String value = getTableValue(tableRow, name);
 		if (value != null) {
-		    stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+		    stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);		    
 		}
 		return stepText;
 	}

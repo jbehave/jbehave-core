@@ -68,6 +68,7 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("example", "\n{0} {1}\n");
         patterns.setProperty("parameterValueStart", "");
         patterns.setProperty("parameterValueEnd", "");
+        patterns.setProperty("parameterValueNewline", "\n");        
         return patterns;
     }
 
