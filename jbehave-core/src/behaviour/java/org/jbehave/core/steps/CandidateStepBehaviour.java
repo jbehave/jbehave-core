@@ -22,8 +22,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
@@ -407,6 +410,15 @@ public class CandidateStepBehaviour {
 	}
 
 	@Test
+	public void shouldCaptureOutcomeFailures() {
+		FailingSteps steps = new FailingSteps();
+		CandidateStep[] candidateSteps = steps.getSteps();
+		assertThat(candidateSteps.length, equalTo(1));
+		StepResult stepResult = candidateSteps[0].createStep("When outcome fails for Bar upon verification", tableRow).perform();
+		assertThat(stepResult.throwable, Matchers.instanceOf(OutcomesFailed.class));
+	}
+	
+	@Test
 	public void shouldPerformStepsInDryRunMode() {
 		StepsConfiguration configuration = new MostUsefulStepsConfiguration();
 		configuration.doDryRun(true);
@@ -458,6 +470,17 @@ public class CandidateStepBehaviour {
 		public void whenFoo(String name) {
 			whenName = name;
 			whenTimes++;
+		}
+
+	}
+
+	static class FailingSteps extends Steps {
+
+		@When("outcome fails for $name upon verification")
+		public void whenOutcomeFails(String name) {
+			OutcomesTable outcomes = new OutcomesTable();
+			outcomes.addOutcome("failing", name, equalTo(""));
+			outcomes.verify();
 		}
 
 	}

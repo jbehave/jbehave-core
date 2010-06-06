@@ -25,7 +25,9 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.OutcomesTable.Outcome;
 
 /**
  * <p>
@@ -134,6 +136,33 @@ public class PrintStreamOutput implements StoryReporter {
         print(format("failed", "{0} ({1})\n", step, keywords.failed()));
     }
 
+    public void failedOutcomes(String step, OutcomesTable table) {
+    	failed(step, table.failureCause());
+        print(table);
+    }
+    
+	private void print(OutcomesTable table) {
+		print(format("outcomesTableStart", "\n"));
+        List<Outcome<?>> rows = table.getOutcomes();
+        print(format("outcomesTableHeadStart", "|"));
+        //TODO i18n outcome fields
+        for (String field : table.getOutcomeFields()) {
+            print(format("outcomesTableHeadCell", "{0}|", field));
+        }
+        print(format("outcomesTableHeadEnd", "\n"));
+        print(format("outcomesTableBodyStart", EMPTY));
+        for (Outcome<?> outcome : rows) {
+            print(format("outcomesTableRowStart", "|", outcome.isVerified()?"successful":"failed"));
+            print(format("outcomesTableCell", "{0}|", outcome.getDescription()));
+            print(format("outcomesTableCell", "{0}|", outcome.getActual()));
+            print(format("outcomesTableCell", "{0}|", outcome.getMatcher()));
+            print(format("outcomesTableCell", "{0}|", outcome.isVerified()));
+            print(format("outcomesTableRowEnd", "\n"));
+        }
+        print(format("outcomesTableBodyEnd", "\n"));
+        print(format("outcomesTableEnd", "\n"));
+	}
+
     public void beforeStory(Story story, boolean givenStory) {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
         if (!story.getNarrative().isEmpty()) {
@@ -175,9 +204,13 @@ public class PrintStreamOutput implements StoryReporter {
         for (String step : steps) {
             print(format("examplesStep", "{0}\n", step));
         }
-        print(format("examplesTableStart", "\n"));
-        final List<Map<String, String>> rows = table.getRows();
-        final List<String> headers = table.getHeaders();
+        print(table);
+    }
+
+	private void print(ExamplesTable table) {
+		print(format("examplesTableStart", "\n"));
+        List<Map<String, String>> rows = table.getRows();
+        List<String> headers = table.getHeaders();
         print(format("examplesTableHeadStart", "|"));
         for (String header : headers) {
             print(format("examplesTableHeadCell", "{0}|", header));
@@ -193,7 +226,7 @@ public class PrintStreamOutput implements StoryReporter {
         }
         print(format("examplesTableBodyEnd", "\n"));
         print(format("examplesTableEnd", "\n"));
-    }
+	}
 
     public void example(Map<String, String> tableRow) {
         print(format("example", "\n{0} {1}\n", keywords.examplesTableRow(), tableRow));

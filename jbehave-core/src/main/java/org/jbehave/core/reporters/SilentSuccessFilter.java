@@ -1,11 +1,12 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Story;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Story;
 
 /**
  * Filters out the reports from all stories that pass,
@@ -46,10 +47,19 @@ public class SilentSuccessFilter implements StoryReporter {
         });
     }
 
-    public void failed(final String step, final Throwable e) {
+    public void failed(final String step, final Throwable cause) {
         currentScenario.add(new Todo() {
             public void doNow() {
-                delegate.failed(step, e);
+                delegate.failed(step, cause);
+            }
+        });
+        setStateToNoisy();
+    }
+
+    public void failedOutcomes(final String step, final OutcomesTable table) {
+        currentScenario.add(new Todo() {
+            public void doNow() {
+                delegate.failedOutcomes(step, table);
             }
         });
         setStateToNoisy();

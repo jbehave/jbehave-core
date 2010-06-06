@@ -67,8 +67,8 @@ public class StepFailureDecoratorBehaviour {
 		// Then
 		verify(delegate).failed(
 				eq(stepAsString),
-				argThat(hasMessage(t.getMessage() + "\nduring step: '"
-						+ stepAsString + "'")));
+				argThat(hasMessage("Failure during step: '"
+						+ stepAsString + "': "+t.getMessage())));
 	}
 
 	@Test
@@ -85,8 +85,8 @@ public class StepFailureDecoratorBehaviour {
 			fail("Should have rethrown exception");
 		} catch (Throwable rethrown) {
 			// Then
-			assertThat(rethrown, hasMessage(t.getMessage() + "\nduring step: '"
-					+ stepAsString + "'"));
+			assertThat(rethrown, hasMessage("Failure during step: '"
+					+ stepAsString + "': "+t.getMessage()));
 		}
 	}
 

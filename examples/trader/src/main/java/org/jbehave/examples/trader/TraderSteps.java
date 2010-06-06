@@ -1,5 +1,14 @@
 package org.jbehave.examples.trader;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Aliases;
 import org.jbehave.core.annotations.Given;
@@ -7,21 +16,13 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepsFactory;
 import org.jbehave.examples.trader.model.Stock;
-import org.jbehave.examples.trader.model.Stock.AlertStatus;
 import org.jbehave.examples.trader.model.Trader;
+import org.jbehave.examples.trader.model.Stock.AlertStatus;
 import org.jbehave.examples.trader.service.TradingService;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * POJO holding the candidate steps for the trader example.  
@@ -64,8 +65,9 @@ public class TraderSteps {
     
     @Then("the traders returned are: %tradersTable")
     public void theTradersReturnedAre(ExamplesTable tradersTable) {
-        List<Trader> expected = toTraders(tradersTable);
-        assertEquals(expected.toString(), searchedTraders.toString());
+        OutcomesTable outcomes = new OutcomesTable();
+        outcomes.addOutcome("traders", searchedTraders.toString(), Matchers.equalTo(toTraders(tradersTable).toString()));
+        outcomes.verify();
     }
 
     private List<Trader> toTraders(ExamplesTable table) {

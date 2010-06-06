@@ -45,6 +45,16 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("pending", "{0} ({1})\n");
         patterns.setProperty("notPerformed", "{0} ({1})\n");
         patterns.setProperty("failed", "{0} ({1})\n");
+        patterns.setProperty("outcomesTableStart", "\n");
+        patterns.setProperty("outcomesTableHeadStart", "|");
+        patterns.setProperty("outcomesTableHeadCell", "{0}|");
+        patterns.setProperty("outcomesTableHeadEnd", "\n");
+        patterns.setProperty("outcomesTableBodyStart", "");
+        patterns.setProperty("outcomesTableRowStart", "|");
+        patterns.setProperty("outcomesTableCell", "{0}|");
+        patterns.setProperty("outcomesTableRowEnd", "\n");
+        patterns.setProperty("outcomesTableBodyEnd", "\n");
+        patterns.setProperty("outcomesTableEnd", "\n");
         patterns.setProperty("beforeStory", "{0}\n({1})\n");
         patterns.setProperty("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n");
         patterns.setProperty("afterStory", "\n");

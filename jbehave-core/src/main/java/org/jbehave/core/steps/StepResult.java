@@ -1,6 +1,7 @@
 package org.jbehave.core.steps;
 
 import org.jbehave.core.errors.PendingError;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.StoryReporter;
 
 /**
@@ -23,7 +24,11 @@ public abstract class StepResult {
 
 		@Override
 		public void describeTo(StoryReporter reporter) {
-			reporter.failed(parametrisedStep(), throwable);
+			if ( throwable instanceof OutcomesFailed ){
+				reporter.failedOutcomes(parametrisedStep(), ((OutcomesFailed)throwable).outcomesTable());
+			} else {
+				reporter.failed(parametrisedStep(), throwable);				
+			}
 		}
 	}
 

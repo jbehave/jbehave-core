@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
 
 /**
@@ -30,6 +31,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 			"examples");
 
 	private Throwable cause;
+	private OutcomesTable outcomesFailed;
 
 	public PostStoryStatisticsCollector(OutputStream output) {
 		this.output = output;
@@ -61,6 +63,12 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 		count("stepsFailed");
 	}
 
+	public void failedOutcomes(String step, OutcomesTable table){
+		this.outcomesFailed = table;
+		count("steps");
+		count("stepsFailed");
+	}
+
 	public void beforeStory(Story story, boolean givenStory) {
 		resetData();
 	}
@@ -75,11 +83,12 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
 	public void beforeScenario(String title) {
 		cause = null;
+		outcomesFailed = null;
 	}
 
 	public void afterScenario() {
 		count("scenarios");
-		if (cause != null) {
+		if (cause != null || outcomesFailed != null) {
 			count("scenariosFailed");
 		}
 	}

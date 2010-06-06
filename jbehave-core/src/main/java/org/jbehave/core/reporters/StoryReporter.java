@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
 
 /**
@@ -38,7 +39,9 @@ public interface StoryReporter {
 
     void notPerformed(String step);
 
-    void failed(String step, Throwable e);
+    void failed(String step, Throwable cause);
+
+	void failedOutcomes(String step, OutcomesTable table);
 
 	void dryRun();
 

@@ -20,8 +20,8 @@ public class StepFailureBehaviour {
 		String message = failure.getMessage();
 
 		// Then
-		assertThat(message, equalTo(cause.getMessage() + "\nduring step: '"
-				+ stepAsString + "'"));
+		assertThat(message, equalTo("Failure during step: '"
+				+ stepAsString + "': "+cause.getMessage()));
 	}
 
 	@Test

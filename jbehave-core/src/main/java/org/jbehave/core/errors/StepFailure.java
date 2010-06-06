@@ -1,5 +1,6 @@
 package org.jbehave.core.errors;
 
+import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.steps.Step;
 
 /**
@@ -8,9 +9,14 @@ import org.jbehave.core.steps.Step;
 @SuppressWarnings("serial")
 public class StepFailure extends RuntimeException {
 
-	public StepFailure(String stepAsString, Throwable cause) {
-		super(cause.getMessage() + "\nduring step: '" + stepAsString + "'");
-		this.initCause(cause);
+	public StepFailure(String step, Throwable cause) {
+		super("Failure during step: '" + step + "': "+cause.getMessage());
+		initCause(cause);
+	}
+
+	public StepFailure(String step, OutcomesTable table) {
+		super("Outcome failures during step: '" + step + "': "+table);
+		initCause(table.failureCause());
 	}
 
 }

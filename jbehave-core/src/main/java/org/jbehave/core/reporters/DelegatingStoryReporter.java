@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
 
 /**
@@ -81,9 +82,15 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
-    public void failed(String step, Throwable e) {
+    public void failed(String step, Throwable cause) {
         for (StoryReporter reporter : delegates) {
-            reporter.failed(step, e);
+            reporter.failed(step, cause);
+        }
+    }
+
+    public void failedOutcomes(String step, OutcomesTable table) {
+        for (StoryReporter reporter : delegates) {
+            reporter.failedOutcomes(step, table);
         }
     }
 

@@ -211,3 +211,30 @@ div.examples table td {
 div.examples {
   padding-bottom: 20px;
 }
+
+div.outcomes table {
+  border: solid;
+  margin-top: 12px;
+  margin-left: 12px;
+}
+
+div.outcomes table th {
+  text-align: center;
+  font-weight: bold;
+}
+
+div.outcomes table tr.failed {
+  color: red;
+}
+
+div.outcomes table tr.successful {
+  color: green;
+}
+
+div.outcomes table td {
+  text-align: center;
+}
+
+div.outcomes {
+  padding-bottom: 20px;
+}

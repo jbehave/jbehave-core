@@ -1,7 +1,6 @@
 package org.jbehave.core.reporters;
 
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -71,7 +70,7 @@ public class PrintStreamOutputBehaviour {
                 + "\nExample: {to=Mauro, money=$30}\n"
                 + "\nExample: {to=Paul, money=$50}\n"
                 + "\n" // end of examples
-                + "\n\n"; // end of core and story
+                + "\n\n"; // end of scenario and story
         assertThatOutputIs(out, expected);
     }
 
@@ -98,7 +97,7 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"element asA\"><span class=\"keyword asA\">As a</span> customer</div>\n"
                 + "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">I want to</span> get a loan</div>\n"
                 + "</div>\n"
-                + "<div class=\"core\">\n<h2>Scenario: I ask for a loan</h2>\n"
+                + "<div class=\"scenario\">\n<h2>Scenario: I ask for a loan</h2>\n"
                 + "<div class=\"givenStories\">GivenStories: [/given/story1,/given/story2]</div>\n"
                 + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
                 + "<div class=\"step ignorable\">!-- A comment</div>\n"
@@ -117,7 +116,7 @@ public class PrintStreamOutputBehaviour {
                 + "\n<h3 class=\"example\">Example: {to=Paul, money=$50}</h3>\n" + "</div>\n" + // end
                 // of
                 // examples
-                "</div>\n</div>\n"; // end of core and story
+                "</div>\n</div>\n"; // end of scenario and story
         assertThatOutputIs(out, expected);
     }
 
@@ -133,7 +132,7 @@ public class PrintStreamOutputBehaviour {
         };
         Properties patterns = new Properties();
         patterns.setProperty("afterStory", "</div><!-- after story -->\n");
-        patterns.setProperty("afterScenario", "</div><!-- after core -->\n");
+        patterns.setProperty("afterScenario", "</div><!-- after scenario -->\n");
         patterns.setProperty("afterExamples", "</div><!-- after examples -->\n");
         StoryReporter reporter = new HtmlOutput(factory.createPrintStream(), patterns);
 
@@ -148,7 +147,7 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"element asA\"><span class=\"keyword asA\">As a</span> customer</div>\n"
                 + "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">I want to</span> get a loan</div>\n"
                 + "</div>\n"
-                + "<div class=\"core\">\n<h2>Scenario: I ask for a loan</h2>\n"
+                + "<div class=\"scenario\">\n<h2>Scenario: I ask for a loan</h2>\n"
                 + "<div class=\"givenStories\">GivenStories: [/given/story1,/given/story2]</div>\n"
                 + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
                 + "<div class=\"step ignorable\">!-- A comment</div>\n"
@@ -165,7 +164,7 @@ public class PrintStreamOutputBehaviour {
                 + "<tr>\n<td>$30</td><td>Mauro</td></tr>\n" + "<tr>\n<td>$50</td><td>Paul</td></tr>\n" + "</tbody>\n"
                 + "</table>\n" + "\n<h3 class=\"example\">Example: {to=Mauro, money=$30}</h3>\n"
                 + "\n<h3 class=\"example\">Example: {to=Paul, money=$50}</h3>\n" + "</div><!-- after examples -->\n"
-                + "</div><!-- after core -->\n" + "</div><!-- after story -->\n";
+                + "</div><!-- after scenario -->\n" + "</div><!-- after story -->\n";
         assertThatOutputIs(out, expected);
     }
 
@@ -192,7 +191,7 @@ public class PrintStreamOutputBehaviour {
                 + "  <asA keyword=\"As a\">customer</asA>\n"
                 + "  <iWantTo keyword=\"I want to\">get a loan</iWantTo>\n"
                 + "</narrative>\n"
-                + "<core keyword=\"Scenario:\" title=\"I ask for a loan\">\n"
+                + "<scenario keyword=\"Scenario:\" title=\"I ask for a loan\">\n"
                 + "<givenStories keyword=\"GivenStories:\"paths=\"[/given/story1,/given/story2]\"</givenStories>\n"
                 + "<step outcome=\"successful\">Given I have a balance of $50</step>\n"
                 + "<step outcome=\"ignorable\">!-- A comment</step>\n"
@@ -210,7 +209,7 @@ public class PrintStreamOutputBehaviour {
                 + "<values><value>$50</value><value>Paul</value></values>\n" + "</parameters>\n"
                 + "\n<example keyword=\"Example:\">{to=Mauro, money=$30}</example>\n"
                 + "\n<example keyword=\"Example:\">{to=Paul, money=$50}</example>\n" + "</examples>\n"
-                + "</core>\n" + "</story>\n";
+                + "</scenario>\n" + "</story>\n";
         assertThatOutputIs(out, expected);
     }
 
@@ -239,9 +238,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
-        // JUnit assertion allows easier comparison of strings in IDE
-        assertEquals(expected, dos2unix(out.toString()));
-        //assertThat(out.toString(), equalTo(expected));
+        assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
     private String dos2unix(String string) {

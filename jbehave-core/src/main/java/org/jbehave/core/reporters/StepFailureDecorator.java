@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import org.jbehave.core.errors.StepFailure;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
 
 import java.util.List;
@@ -51,6 +52,11 @@ public class StepFailureDecorator implements StoryReporter {
 		delegate.failed(step, failure);
 	}
 
+    public void failedOutcomes(String step, OutcomesTable table) {
+		failure = new StepFailure(step, table);
+    	delegate.failedOutcomes(step, table);
+    }
+    
     public void ignorable(String step) {
         delegate.ignorable(step);
     }
