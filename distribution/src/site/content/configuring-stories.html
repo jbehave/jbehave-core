@@ -166,9 +166,8 @@ is the main interface for configuring all the components of a story.</p>
 
 <p>The configurable elements of the story include:</p>
 <p><a
-    href="javadoc/core/org/jbehave/core/steps/StepCreator.html">StepCreator</a>:
-Represents the strategy for the creation of executable steps from a
-given story definition matching a list of candidate steps. The
+    href="javadoc/core/org/jbehave/core/steps/StepCollector.html">StepCollector</a>:
+Represents the strategy for the collection of executable steps from a given story matching a list of candidate steps. The
 default implementation is <a
     href="javadoc/core/org/jbehave/core/steps/MarkUnmatchedStepsAsPending.html">MarkUnmatchedStepsAsPending</a>.</p>
 <p><a
@@ -180,7 +179,7 @@ default implementation is <a
     href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>:
 Allows the runner to report the state of running stories. The default
 implementation is <a
-    href="javadoc/core/org/jbehave/core/reporters/PrintStreamOutput.html">PrintStreamOutput</a>.</p>
+    href="javadoc/core/org/jbehave/core/reporters/ConsoleOutput.html">ConsoleOutput</a>.</p>
 
 <p><a
     href="javadoc/core/org/jbehave/core/errors/ErrorStrategy.html">ErrorStrategy</a>:

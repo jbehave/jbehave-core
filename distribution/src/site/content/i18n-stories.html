@@ -56,7 +56,7 @@ public class ItTraderStory extends JUnitStory {
         Keywords keywords = new LocalizedKeywords(new Locale("it"), new StringEncoder(), "org/jbehave/examples/trader/i18n/keywords", classLoader);
         storyConfiguration.useKeywords(keywords);
         storyConfiguration.useStoryPatter(new RegexStoryParser(storyConfiguration.keywords());
-        storyConfiguration.useStoryReporter(new PrintStreamOutput(storyConfiguration.keywords()));
+        storyConfiguration.useStoryReporter(new ConsoleOutput(storyConfiguration.keywords()));
         useConfiguration(storyConfiguration);
 
         StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();

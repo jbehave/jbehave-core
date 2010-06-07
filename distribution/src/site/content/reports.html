@@ -17,20 +17,17 @@ which is used to report events as they occur.</p>
 <p>Currently, the story reporters supported are:</p>
 <ul>
     <li><a
-        href="javadoc/core/org/jbehave/core/reporters/PrintStreamOutput.html">PrintStreamOutput</a>:
-    generic reporter to a print stream, using formats that are configurable</li>
-    <li><a
         href="javadoc/core/org/jbehave/core/reporters/ConsoleOutput.html">ConsoleOutput</a>:
-    specialises the <b>PrintStreamOutput</b> to use TXT console output</li>
+    a text-based console output</li>
     <li><a
         href="javadoc/core/org/jbehave/core/reporters/TxtOutput.html">TxtOutput</a>:
-    specialises the <b>PrintStreamOutput</b> to use TXT file output</li>
+    a text-based file output</li>
     <li><a
         href="javadoc/core/org/jbehave/core/reporters/HtmlOutput.html">HtmlOutput</a>:
-    specialises the <b>PrintStreamOutput</b> to use HTML file output</li>
+    an HTML file output</li>
     <li><a
         href="javadoc/core/org/jbehave/core/reporters/XmlOutput.html">XmlOutput</a>:
-    specialises the <b>PrintStreamOutput</b> to use XML file output</li>
+    an XML file output</li>
     <li><a
         href="javadoc/core/org/jbehave/core/reporters/PostStoryStatisticsCollector.html">PostStoryStatisticsCollector</a>:
     collects statistics and stores them as properties after story is run</li>
@@ -53,9 +50,10 @@ to a file:</p>
         String storyPath = storyConfiguration.storyPathResolver().resolve(this.getClass());
         storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
         storyConfiguration.useStoryReporter(new StoryReporterBuilder(new FilePrintStreamFactory(storyPath))
-                .outputTo("target/jbehave-reports").outputAsAbsolute(true) // only required with Ant (cf note below)
+                .withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true) // only required with Ant (cf note below)
                 .withDefaultFormats() // add default formats 
                 .withFormats(CONSOLE, TXT, HTML, XML)
+                .withFailureTrace(false) // set to see the stack trace of failure
                 .build(storyPath));
         useConfiguration(storyConfiguration);
 
@@ -72,8 +70,8 @@ to a file:</p>
 
 <span class="followup">For a fully-working example of reporting configuration you may consult the 
 <a href="http://git.codehaus.org/gitweb.cgi?p=jbehave-git.git;a=tree;f=examples/trader">trader example</a>.  Note that the configuration only needs
- to be done in one place, i.e. the parent Scenario class, and not repeated in every Scenario class that maps to a 
- textual scenario.
+ to be done in one place, i.e. the parent story class, and not repeated in every story class that maps to a 
+ textual story.
 </span>
 
 <span class="followup">In general, the specification of the output directory is optional.  It is necessary when running with Ant as 
@@ -198,7 +196,7 @@ default format:</p>
 directory in Maven), but this can be changed via the builder:</p>
 
 <pre class="brush: java">
-        new StoryReporterBuilder().outputTo("my-reports")
+        new StoryReporterBuilder().withOutputDirectory("my-reports")
 </pre>
 
 <p>In some cases, i.e. when using with Ant, the class code source location may not be 
@@ -206,7 +204,7 @@ properly set, or different from what is expected.  In this case, one can tell th
 to treat the output directory as an absolute path:</p>
 
 <pre class="brush: java">
-        new StoryReporterBuilder().outputTo("target/my-reports").outputAsAbsolute(true)
+        new StoryReporterBuilder().withOutputDirectory("target/my-reports").withOutputAbsolute(true)
 </pre>
 
 <p>If the default formats or the output file directory are modified
