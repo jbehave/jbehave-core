@@ -293,26 +293,27 @@ public class RegexStoryParserBehaviour {
 
     @Test
     public void shouldParseStoryWithScenarioContainingGivenStories() {
-        String wholeStory = "Scenario: A scenario with given stories" + NL + NL +
-                "GivenStories: path/to/one , "+ NL +" path/to/two" + NL + NL +
-                "Given a step" + NL +
-                "When I run it" + NL +
-                "Then I should an output";
+    	// given stories as CSV with no spaces or newlines
+        parseStoryWithGivenStories(
+        		"GivenStories: path/to/one,path/to/two" + NL + NL +
+				"Given a step");
+        // given stories as CSV with spaces and newlines
+        parseStoryWithGivenStories(
+        		"GivenStories: path/to/one , "+ NL +" path/to/two" + NL + NL +
+				"Given a step");
+    }
 
-        Story story = parser.parseStory(wholeStory, storyPath);
+	private void parseStoryWithGivenStories(String wholeStory) {
+		Story story = parser.parseStory(wholeStory, storyPath);
 
         Scenario scenario = story.getScenarios().get(0);
-        assertThat(scenario.getTitle(), equalTo("A scenario with given stories"));
         assertThat(scenario.getGivenStoryPaths(), equalTo(asList(
                 "path/to/one",
                 "path/to/two")));
         assertThat(scenario.getSteps(), equalTo(asList(
-                "Given a step",
-                "When I run it",
-                "Then I should an output"
+                "Given a step"
         )));
-
-    }
+	}
 
     @Test
     public void shouldParseStoryWithoutAPath() {
