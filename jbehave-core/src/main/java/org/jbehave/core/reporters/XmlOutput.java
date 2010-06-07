@@ -1,8 +1,11 @@
 package org.jbehave.core.reporters;
 
+import static org.jbehave.core.reporters.PrintStreamOutput.Format.XML;
+
 import java.io.PrintStream;
 import java.util.Properties;
 
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Keywords;
 
 /**
@@ -18,17 +21,24 @@ import org.jbehave.core.model.Keywords;
 public class XmlOutput extends PrintStreamOutput {
 
     public XmlOutput(PrintStream output) {
-        this(output, defaultHtmlPatterns());
+        this(output, new Properties());
     }
 
     public XmlOutput(PrintStream output, Properties outputPatterns) {
-        super(mergeWithDefault(outputPatterns), Format.XML);
-        usePrintStream(output);
+        this(output, outputPatterns, new LocalizedKeywords());
     }
     
+	public XmlOutput(PrintStream output, Keywords keywords) {
+		this(output, new Properties(), keywords);
+	}
+
+	public XmlOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
+		this(output, outputPatterns, keywords, false);
+	}
+
     public XmlOutput(PrintStream output, Properties outputPatterns,
-            Keywords keywords, boolean reportErrors) {
-        super(output, mergeWithDefault(outputPatterns), Format.XML, keywords, reportErrors);
+            Keywords keywords, boolean reportFailureTrace) {
+        super(XML, output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace);
     }
 
     private static Properties mergeWithDefault(Properties outputPatterns) {
@@ -44,7 +54,7 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("ignorable", "<step outcome=\"ignorable\">{0}</step>\n");
         patterns.setProperty("pending", "<step outcome=\"pending\" keyword=\"{1}\">{0}</step>\n");
         patterns.setProperty("notPerformed", "<step outcome=\"notPerformed\" keyword=\"{1}\">{0}</step>\n");
-        patterns.setProperty("failed", "<step outcome=\"failed\" keyword=\"{1}\">{0}</step>\n");
+        patterns.setProperty("failed", "<step outcome=\"failed\" keyword=\"{1}\">{0}<failure>{2}</failure></step>\n");
         patterns.setProperty("outcomesTableStart", "<outcomes>\n");
         patterns.setProperty("outcomesTableHeadStart", "<fields>");
         patterns.setProperty("outcomesTableHeadCell", "<field>{0}</field>");

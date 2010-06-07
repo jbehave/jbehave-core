@@ -1,8 +1,11 @@
 package org.jbehave.core.reporters;
 
+import static org.jbehave.core.reporters.PrintStreamOutput.Format.TXT;
+
 import java.io.PrintStream;
 import java.util.Properties;
 
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Keywords;
 
 /**
@@ -18,17 +21,24 @@ import org.jbehave.core.model.Keywords;
 public class TxtOutput extends PrintStreamOutput {
 
     public TxtOutput(PrintStream output) {
-        this(output, defaultPatterns());
+        this(output, new Properties());
     }
 
     public TxtOutput(PrintStream output, Properties outputPatterns) {
-        super(mergeWithDefault(outputPatterns), Format.PLAIN);
-        usePrintStream(output);
+        this(output, outputPatterns, new LocalizedKeywords());
     }
-    
+
+	public TxtOutput(PrintStream output, Keywords keywords) {
+		this(output, new Properties(), keywords);
+	}
+
+	public TxtOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
+		this(output, outputPatterns, keywords, false);
+	}
+
     public TxtOutput(PrintStream output, Properties outputPatterns,
-            Keywords keywords, boolean reportErrors) {
-        super(output, mergeWithDefault(outputPatterns), Format.PLAIN, keywords, reportErrors);
+            Keywords keywords, boolean reportFailureTrace) {
+        super(TXT, output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace);
     }
 
     private static Properties mergeWithDefault(Properties outputPatterns) {
@@ -44,8 +54,8 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("ignorable", "{0}\n");
         patterns.setProperty("pending", "{0} ({1})\n");
         patterns.setProperty("notPerformed", "{0} ({1})\n");
-        patterns.setProperty("failed", "{0} ({1})\n");
-        patterns.setProperty("outcomesTableStart", "\n");
+        patterns.setProperty("failed", "{0} ({1})\n({2})\n");
+        patterns.setProperty("outcomesTableStart", "");
         patterns.setProperty("outcomesTableHeadStart", "|");
         patterns.setProperty("outcomesTableHeadCell", "{0}|");
         patterns.setProperty("outcomesTableHeadEnd", "\n");
@@ -53,8 +63,8 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("outcomesTableRowStart", "|");
         patterns.setProperty("outcomesTableCell", "{0}|");
         patterns.setProperty("outcomesTableRowEnd", "\n");
-        patterns.setProperty("outcomesTableBodyEnd", "\n");
-        patterns.setProperty("outcomesTableEnd", "\n");
+        patterns.setProperty("outcomesTableBodyEnd", "");
+        patterns.setProperty("outcomesTableEnd", "");
         patterns.setProperty("beforeStory", "{0}\n({1})\n");
         patterns.setProperty("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n");
         patterns.setProperty("afterStory", "\n");

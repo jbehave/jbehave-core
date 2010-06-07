@@ -31,7 +31,7 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
  * StoryReporter reporter = new StoryReporterBuilder(printStreamFactory)
  * 								.outputLocationClass(storyClass)
  * 								.withDefaultFormats()
- * 								.withFormats(HTML, TXT)
+ * 								.withFormats(TXT, HTML, XML)
  * 								.build(storyPath);
  * </pre> 
  * </p>
@@ -51,10 +51,17 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
  * To change the default:
  * <pre>
  * new StoryReporterBuilder(printStreamFactory).outputTo("my-reports").outputAsAbsolute(true)
- * 					.withDefaultFormats().withFormats(HTML,TXT)
+ * 					.withDefaultFormats().withFormats(TXT, HTML, XML)
  * 					.build(storyPath);
  * </pre>
  * </p> 
+ * <p>
+ * By default, the reporters will output minimal failure information, the single line describing the failure cause and
+ * the outcomes if failures occur.  To configure the failure trace to be reported as well:
+ * <pre>
+ * new StoryReporterBuilder(printStreamFactory).withFailureTrace(true)
+ * </pre> 
+ * </p>
  * <p>The builder provides default instances for all reporters.  To change the reporter for a specific instance, 
  * e.g. to report format <b>TXT</b> to <b>.text</b> files and to inject other non-default parameters, 
  * such as keywords for a different locale:
@@ -65,7 +72,7 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
  *       switch (format) {
  *           case TXT:
  *               factory.useConfiguration(new FileConfiguration("text"));
- *               return new PrintStreamStoryReporter(factory.createPrintStream(), new Properties(), new I18nKeywords(Locale), true);
+ *               return new TxtOutput(factory.createPrintStream(), new Properties(), new LocalisedKeywords(Locale.IT));
  *            default:
  *               return super.reporterFor(format);
  *   }
@@ -83,10 +90,28 @@ public class StoryReporterBuilder {
     private boolean outputAbsolute = new FileConfiguration().isOutputDirectoryAbsolute();
 	private Class<?> ouputLocationClass = this.getClass();
 	private Properties renderingResources = FreemarkerReportRenderer.defaultResources();
+	private boolean reportFailureTrace = false;
 
-    public StoryReporterBuilder() {
+	public File outputDirectory() {
+		return filePrintStreamFactory("").outputDirectory();
+	}
+
+	public List<String> formatNames(boolean toLowerCase) {
+		List<String> names = new ArrayList<String>();
+		for (Format format : formats) {
+			String name = format.name();
+			if ( toLowerCase ){
+				name = name.toLowerCase();
+			}
+			names.add(name);			
+		}
+		return names;		
+	}
+
+    public Properties renderingResources() {
+    	return renderingResources;
     }
-
+    
 	public StoryReporterBuilder outputTo(String outputDirectory){
         this.outputDirectory = outputDirectory;
         return this;
@@ -110,7 +135,17 @@ public class StoryReporterBuilder {
     	this.formats.addAll(asList(formats));
         return this;
     }
+    
+    public StoryReporterBuilder withFailureTrace(boolean reportFailureTrace){
+    	this.reportFailureTrace = reportFailureTrace;
+		return this;
+    }
 
+    public StoryReporterBuilder useRenderingResources(Properties resources){
+    	this.renderingResources = resources;
+    	return this;
+    }
+    
     public StoryReporter build(String storyPath) {
         Map<Format, StoryReporter> delegates = new HashMap<Format, StoryReporter>();
     	for (Format format : formats ){
@@ -131,18 +166,18 @@ public class StoryReporterBuilder {
         FilePrintStreamFactory factory = filePrintStreamFactory(storyPath);
         switch (format) {
             case CONSOLE:
-                return new ConsoleOutput();
+            	return new ConsoleOutput().doReportFailureTrace(reportFailureTrace);
 	        case IDE_CONSOLE:
-	            return new IdeOnlyConsoleOutput();
+	            return new IdeOnlyConsoleOutput().doReportFailureTrace(reportFailureTrace);
             case TXT:
                 factory.useConfiguration(fileConfiguration("txt"));
-                return new TxtOutput(factory.createPrintStream());
+                return new TxtOutput(factory.createPrintStream()).doReportFailureTrace(reportFailureTrace);
             case HTML:
                 factory.useConfiguration(fileConfiguration("html"));
-                return new HtmlOutput(factory.createPrintStream());
+                return new HtmlOutput(factory.createPrintStream()).doReportFailureTrace(reportFailureTrace);
             case XML:
                 factory.useConfiguration(fileConfiguration("xml"));
-                return new XmlOutput(factory.createPrintStream());
+                return new XmlOutput(factory.createPrintStream()).doReportFailureTrace(reportFailureTrace);
             case STATS:
                 factory.useConfiguration(fileConfiguration("stats"));
                 return new PostStoryStatisticsCollector(factory.createPrintStream());
@@ -151,35 +186,10 @@ public class StoryReporterBuilder {
         }
     }
 
-	private FilePrintStreamFactory filePrintStreamFactory(String storyPath) {
+    protected FilePrintStreamFactory filePrintStreamFactory(String storyPath) {
 		return new FilePrintStreamFactory(new StoryLocation(storyPath, ouputLocationClass));
 	}
     
-	public File outputDirectory() {
-		return filePrintStreamFactory("").outputDirectory();
-	}
-
-	public List<String> formatNames(boolean toLowerCase) {
-		List<String> names = new ArrayList<String>();
-		for (Format format : formats) {
-			String name = format.name();
-			if ( toLowerCase ){
-				name = name.toLowerCase();
-			}
-			names.add(name);			
-		}
-		return names;		
-	}
-
-    public Properties renderingResources() {
-    	return renderingResources;
-    }
-    
-    public StoryReporterBuilder useRenderingResources(Properties resources){
-    	this.renderingResources = resources;
-    	return this;
-    }
-
     protected FileConfiguration fileConfiguration(String extension) {
         return new FileConfiguration(outputDirectory, outputAbsolute, extension);
     }

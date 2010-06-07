@@ -1,8 +1,11 @@
 package org.jbehave.core.reporters;
 
+import static org.jbehave.core.reporters.PrintStreamOutput.Format.HTML;
+
 import java.io.PrintStream;
 import java.util.Properties;
 
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Keywords;
 
 /**
@@ -19,17 +22,24 @@ import org.jbehave.core.model.Keywords;
 public class HtmlOutput extends PrintStreamOutput {
 
     public HtmlOutput(PrintStream output) {
-        this(output, defaultHtmlPatterns());
+        this(output, new Properties());
     }
 
     public HtmlOutput(PrintStream output, Properties outputPatterns) {
-        super(mergeWithDefault(outputPatterns), Format.HTML);
-        usePrintStream(output);
+        this(output, outputPatterns, new LocalizedKeywords());
     }
     
+	public HtmlOutput(PrintStream output, Keywords keywords) {
+		this(output, new Properties(), keywords);
+	}
+	
+	public HtmlOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
+		this(output, outputPatterns, keywords, false);
+	}
+
     public HtmlOutput(PrintStream output, Properties outputPatterns,
-            Keywords keywords, boolean reportErrors) {
-        super(output, mergeWithDefault(outputPatterns), Format.HTML, keywords, reportErrors);
+            Keywords keywords, boolean reportFailureTrace) {
+        super(HTML, output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace);
     }
 
     private static Properties mergeWithDefault(Properties outputPatterns) {
@@ -45,7 +55,7 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
         patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");
         patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
-        patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span></div>\n");
+        patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
         patterns.setProperty("outcomesTableStart", "<div class=\"outcomes\"><table>\n");
         patterns.setProperty("outcomesTableHeadStart", "<thead>\n<tr>\n");
         patterns.setProperty("outcomesTableHeadCell", "<th>{0}</th>");
@@ -61,7 +71,7 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("afterStory", "</div>\n");
         patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<h2>{0} {1}</h2>\n");
         patterns.setProperty("afterScenario", "</div>\n");
-        patterns.setProperty("afterScenarioWithFailure", "<div class=\"scenario.failure\">{0}</div>\n</div>\n");
+        patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
         patterns.setProperty("givenStories", "<div class=\"givenStories\">{0} {1}</div>\n");
         patterns.setProperty("beforeExamples", "<div class=\"examples\">\n<h3>{0}</h3>\n");
         patterns.setProperty("examplesStep", "<div class=\"step\">{0}</div>\n");

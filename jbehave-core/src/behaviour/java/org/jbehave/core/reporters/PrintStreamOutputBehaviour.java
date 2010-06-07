@@ -28,10 +28,13 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FreemarkerReportRenderer.RenderingFailedException;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class PrintStreamOutputBehaviour {
@@ -61,6 +64,9 @@ public class PrintStreamOutputBehaviour {
                 + "Then I should have a balance of $30 (PENDING)\n"
                 + "Then I should have $20 (NOT PERFORMED)\n"
                 + "Then I don't return loan (FAILED)\n"
+                + "(org.jbehave.core.model.OutcomesTable$OutcomesFailed)\n" 
+                + "|Description|Value|Matcher|Verified|\n"
+                + "|I don't return all|100|<50.0>|false|\n"                
                 + "Examples:\n"
                 + "Given money <money>\n"
                 + "Then I give it to <to>\n"
@@ -105,7 +111,17 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
                 + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
                 + "<div class=\"step notPerformed\">Then I should have $20 <span class=\"keyword notPerformed\">(NOT PERFORMED)</span></div>\n"
-                + "<div class=\"step failed\">Then I don't return loan <span class=\"keyword failed\">(FAILED)</span></div>\n"
+                + "<div class=\"step failed\">Then I don't return loan <span class=\"keyword failed\">(FAILED)</span><br/><span class=\"message failed\">org.jbehave.core.model.OutcomesTable$OutcomesFailed</span></div>\n"
+                + "<div class=\"outcomes\"><table>\n"
+                + "<thead>\n"
+                + "<tr>\n"
+                + "<th>Description</th><th>Value</th><th>Matcher</th><th>Verified</th></tr>\n"
+                + "</thead>\n"
+                + "<tbody>\n"
+                + "<tr class=\"notVerified\">\n"
+                + "<td>I don't return all</td><td>100.0</td><td>&lt;50.0&gt;</td><td>false</td></tr>\n"
+                + "</tbody>\n"
+                + "</table></div>\n"                
                 + "<div class=\"examples\">\n" + "<h3>Examples:</h3>\n"
                 + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
                 + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
@@ -155,7 +171,17 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
                 + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
                 + "<div class=\"step notPerformed\">Then I should have $20 <span class=\"keyword notPerformed\">(NOT PERFORMED)</span></div>\n"
-                + "<div class=\"step failed\">Then I don't return loan <span class=\"keyword failed\">(FAILED)</span></div>\n"
+                + "<div class=\"step failed\">Then I don't return loan <span class=\"keyword failed\">(FAILED)</span><br/><span class=\"message failed\">org.jbehave.core.model.OutcomesTable$OutcomesFailed</span></div>\n"
+                + "<div class=\"outcomes\"><table>\n"
+                + "<thead>\n"
+                + "<tr>\n"
+                + "<th>Description</th><th>Value</th><th>Matcher</th><th>Verified</th></tr>\n"
+                + "</thead>\n"
+                + "<tbody>\n"
+                + "<tr class=\"notVerified\">\n"
+                + "<td>I don't return all</td><td>100.0</td><td>&lt;50.0&gt;</td><td>false</td></tr>\n"
+                + "</tbody>\n"
+                + "</table></div>\n"                
                 + "<div class=\"examples\">\n" + "<h3>Examples:</h3>\n"
                 + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
                 + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
@@ -199,7 +225,11 @@ public class PrintStreamOutputBehaviour {
                 + "<step outcome=\"successful\">When I ask Liz for a loan of $100</step>\n"
                 + "<step outcome=\"pending\" keyword=\"PENDING\">Then I should have a balance of $30</step>\n"
                 + "<step outcome=\"notPerformed\" keyword=\"NOT PERFORMED\">Then I should have $20</step>\n"
-                + "<step outcome=\"failed\" keyword=\"FAILED\">Then I don&apos;t return loan</step>\n"
+                + "<step outcome=\"failed\" keyword=\"FAILED\">Then I don&apos;t return loan<failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed</failure></step>\n"
+                + "<outcomes>\n"
+                + "<fields><field>Description</field><field>Value</field><field>Matcher</field><field>Verified</field></fields>\n"
+                + "<outcome><value>I don&apos;t return all</value><value>100.0</value><value>&lt;50.0&gt;</value><value>false</value></outcome>\n"
+                + "</outcomes>\n"
                 + "<examples keyword=\"Examples:\">\n"
                 + "<step>Given money &lt;money&gt;</step>\n"
                 + "<step>Then I give it to &lt;to&gt;</step>\n"
@@ -227,7 +257,13 @@ public class PrintStreamOutputBehaviour {
         reporter.successful("When I ask Liz for a loan of $100");
         reporter.pending("Then I should have a balance of $30");
         reporter.notPerformed("Then I should have $20");
-        reporter.failed("Then I don't return loan", new Exception("Naughty me!"));
+        OutcomesTable outcomesTable = new OutcomesTable();
+        outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
+        try {
+        	outcomesTable.verify();
+        } catch ( OutcomesFailed e ){
+        	reporter.failedOutcomes("Then I don't return loan", e.outcomesTable());
+        }
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
         reporter.example(table.getRow(0));
@@ -238,7 +274,8 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
-        assertThat(dos2unix(out.toString()), equalTo(expected));
+        Assert.assertEquals(expected, out.toString());
+    	assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
     private String dos2unix(String string) {
@@ -246,7 +283,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
-    public void shouldReportThrowablesWhenToldToDoSo() {
+    public void shouldReportFailureTraceWhenToldToDoSo() {
         // Given
         IllegalAccessException exception = new IllegalAccessException("Leave my money alone!");
         OutputStream stackTrace = new ByteArrayOutputStream();
@@ -265,14 +302,19 @@ public class PrintStreamOutputBehaviour {
         reporter.afterScenario();
 
         // Then
-        String expected = "Scenario: A title\n" + "Given I have a balance of $50\n" + "When I request $20\n"
-                + "When I ask Liz for a loan of $100 (FAILED)\n" + "Then I should have a balance of $30 (PENDING)\n"
-                + "Then I should have $20 (NOT PERFORMED)\n" + "\n" + dos2unix(stackTrace.toString()) + "\n";
+        String expected = "Scenario: A title\n" 
+        		+ "Given I have a balance of $50\n" 
+        		+ "When I request $20\n"
+                + "When I ask Liz for a loan of $100 (FAILED)\n"
+                + "(java.lang.IllegalAccessException: Leave my money alone!)\n"
+                + "Then I should have a balance of $30 (PENDING)\n"
+                + "Then I should have $20 (NOT PERFORMED)\n" 
+                + "\n" + dos2unix(stackTrace.toString()) + "\n";
         assertThatOutputIs(out, expected);
 
         // Given
         out = new ByteArrayOutputStream();
-        reporter = new PrintStreamOutput(new PrintStream(out));
+        reporter = new TxtOutput(new PrintStream(out));
 
         // When
         reporter.beforeScenario("A title");
@@ -322,7 +364,7 @@ public class PrintStreamOutputBehaviour {
         IllegalAccessException exception = new IllegalAccessException("Lasciate in pace i miei soldi!");
         OutputStream out = new ByteArrayOutputStream();
         LocalizedKeywords keywords = new LocalizedKeywords(Locale.ITALIAN);
-        StoryReporter reporter = new PrintStreamOutput(new PrintStream(out), new Properties(), keywords,
+        StoryReporter reporter = new TxtOutput(new PrintStream(out), new Properties(), keywords,
                 true);
 
         // When
@@ -333,9 +375,12 @@ public class PrintStreamOutputBehaviour {
         reporter.notPerformed("Allora dovrei avere $20");
 
         // Then
-        String expected = "Dato che ho un saldo di $50\n" + "Quando richiedo $20\n"
+        String expected = "Dato che ho un saldo di $50\n" 
+        		+ "Quando richiedo $20\n"
                 + "Quando chiedo a Liz un prestito di $100 (FALLITO)\n"
-                + "Allora dovrei avere un saldo di $30 (PENDENTE)\n" + "Allora dovrei avere $20 (NON ESEGUITO)\n";
+                + "(java.lang.IllegalAccessException: Lasciate in pace i miei soldi!)\n"
+                + "Allora dovrei avere un saldo di $30 (PENDENTE)\n"
+                + "Allora dovrei avere $20 (NON ESEGUITO)\n";
 
         assertThatOutputIs(out, expected);
 
@@ -386,7 +431,7 @@ public class PrintStreamOutputBehaviour {
                 switch (format) {
                     case TXT:
                         factory.useConfiguration(new FileConfiguration("text"));
-                        return new PrintStreamOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
+                        return new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
                     default:
                         return super.reporterFor(storyPath, format);
                 }

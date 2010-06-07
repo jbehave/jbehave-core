@@ -21,8 +21,8 @@ public class OutcomesTable {
 	private List<Outcome<?>> failedOutcomes = new ArrayList<Outcome<?>>();
 	private OutcomesFailed failureCause;
 
-	public <T> void addOutcome(String description, T actual, Matcher<T> matcher) {
-		outcomes.add(new Outcome<T>(description, actual, matcher));
+	public <T> void addOutcome(String description, T value, Matcher<T> matcher) {
+		outcomes.add(new Outcome<T>(description, value, matcher));
 	}
 
 	public void verify() {

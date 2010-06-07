@@ -2,7 +2,6 @@ package org.jbehave.core.reporters;
 
 import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
-import static org.jbehave.core.reporters.PrintStreamOutput.Format.PLAIN;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_NEWLINE;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
@@ -21,7 +20,6 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.model.Narrative;
@@ -31,14 +29,15 @@ import org.jbehave.core.model.OutcomesTable.Outcome;
 
 /**
  * <p>
- * Story reporter that outputs to a PrintStream, defaulting to System.out.
+ * Abstract story reporter that outputs to a PrintStream.
  * </p>
  * <p>
- * The output of the reported event is also configurable via two other means:
+ * The output of the reported event is configurable via:
  * <ul>
  * <li>custom output patterns, providing only the patterns that differ from
  * default</li>
- * <li>keywords in different languages, providing the i18n locale</li>
+ * <li>keywords localised for different languages, providing the i18n Locale</li>
+ * <li>flag to report failure trace</li>
  * </ul>
  * </p>
  * <p>
@@ -54,7 +53,7 @@ import org.jbehave.core.model.OutcomesTable.Outcome;
  * 
  * The pattern is by default processed and formatted by the
  * {@link MessageFormat}. Both the {@link #format(String key, String defaultPattern, Object... args)} and
- * {@link #lookupPattern(String key, String defaultPattern)} methods are overrideable and a different formatter
+ * {@link #lookupPattern(String key, String defaultPattern)} methods are override-able and a different formatter
  * or pattern lookup can be used by subclasses.
  * </p>
  * <p>
@@ -63,56 +62,31 @@ import org.jbehave.core.model.OutcomesTable.Outcome;
  * instance of {@link org.jbehave.core.i18n.LocalizedKeywords} using the appropriate {@link Locale}, e.g.
  * 
  * <pre>
- * KeyWords keywords = new I18nKeyWords(new Locale(&quot;it&quot;);
+ * Keywords keywords = new LocalizedKeywords(new Locale(&quot;it&quot;));
  * </pre>
  * 
  * </p>
  */
-public class PrintStreamOutput implements StoryReporter {
+public abstract class PrintStreamOutput implements StoryReporter {
 
     private static final String EMPTY = "";
 
-    public enum Format { PLAIN, HTML, XML }
+    public enum Format { TXT, HTML, XML }
     
-    protected PrintStream output;
-    private final Properties outputPatterns;
     private final Format format;    
+    private final PrintStream output;
+    private final Properties outputPatterns;
     private final Keywords keywords;
-    private final boolean reportErrors;
+    private boolean reportFailureTrace;
     private Throwable cause;
     
-    public PrintStreamOutput() {
-        this(System.out);
-    }
-
-    public PrintStreamOutput(PrintStream output) {
-        this(output, new Properties(), new LocalizedKeywords(), false);
-    }
-
-    public PrintStreamOutput(Properties outputPatterns) {
-        this(System.out, outputPatterns, new LocalizedKeywords(), false);
-    }
-
-    public PrintStreamOutput(Properties outputPatterns, Format format) {
-        this(System.out, outputPatterns, format, new LocalizedKeywords(), false);
-    }
-
-    public PrintStreamOutput(Keywords keywords) {
-        this(System.out, new Properties(), keywords, false);
-    }
-
-    public PrintStreamOutput(PrintStream output, Properties outputPatterns, Keywords keywords,
-            boolean reportErrors) {
-        this(output, outputPatterns, PLAIN, keywords, reportErrors);
-    }
-
-    public PrintStreamOutput(PrintStream output, Properties outputPatterns, Format format,
-            Keywords keywords, boolean reportErrors) {
+    protected PrintStreamOutput(Format format, PrintStream output, Properties outputPatterns,
+            Keywords keywords, boolean reportFailureTrace) {
+        this.format = format;
         this.output = output;
         this.outputPatterns = outputPatterns;
-        this.format = format;
         this.keywords = keywords;
-        this.reportErrors = reportErrors;   
+        this.reportFailureTrace = reportFailureTrace;   
     }
 
     public void successful(String step) {
@@ -133,7 +107,7 @@ public class PrintStreamOutput implements StoryReporter {
 
     public void failed(String step, Throwable cause) {
         this.cause = cause;
-        print(format("failed", "{0} ({1})\n", step, keywords.failed()));
+        print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), cause));        
     }
 
     public void failedOutcomes(String step, OutcomesTable table) {
@@ -186,7 +160,7 @@ public class PrintStreamOutput implements StoryReporter {
     }
 
     public void afterScenario() {
-        if (cause != null && reportErrors) {
+        if (cause != null && reportFailureTrace) {
             print(format("afterScenarioWithFailure", "\n{0}\n", stackTrace(cause)));
         } else {
             print(format("afterScenario", "\n"));
@@ -307,15 +281,11 @@ public class PrintStreamOutput implements StoryReporter {
         return defaultPattern;
     }
 
-    /**
-     * Changes print stream used for output
-     * 
-     * @param output the new PrintStream to use
-     */
-    protected void usePrintStream(PrintStream output) {
-        this.output = output;
+    public PrintStreamOutput doReportFailureTrace(boolean reportFailureTrace){
+    	this.reportFailureTrace = reportFailureTrace;
+    	return this;
     }
-
+    
     /**
      * Prints text to output stream, replacing parameter start and end placeholders
      * 
@@ -329,8 +299,7 @@ public class PrintStreamOutput implements StoryReporter {
     
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append(output).toString();
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 
 }

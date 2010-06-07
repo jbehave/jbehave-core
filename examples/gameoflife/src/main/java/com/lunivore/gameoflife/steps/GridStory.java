@@ -8,7 +8,7 @@ import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.PrintStreamOutput;
+import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.StoryReporter;
 
 
@@ -34,7 +34,7 @@ public class GridStory extends JUnitStory {
 
 			@Override
 			public StoryReporter storyReporter() {
-				return new PrintStreamOutput();
+				return new ConsoleOutput();
 			}
 		});
 		addSteps(new GridSteps());

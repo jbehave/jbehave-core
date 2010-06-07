@@ -51,7 +51,8 @@ public abstract class TraderStory extends JUnitStory {
                 	.outputLocationClass(storyClass)
                 	.withDefaultFormats()
                 	.useRenderingResources(rendering)
-                	.withFormats(CONSOLE, TXT, HTML, XML))
+                	.withFormats(CONSOLE, TXT, HTML, XML)
+                	.withFailureTrace(false))
                 .buildReporters(storyPath)
                 .useStoryPathResolver(storyPathResolver));
 

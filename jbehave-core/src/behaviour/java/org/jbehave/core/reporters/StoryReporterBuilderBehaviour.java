@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
@@ -37,7 +38,7 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldAllowOverrideOfDefaultOuputDirectory() throws IOException {
+    public void shouldBuildWithCustomOuputDirectory() throws IOException {
     	
     	// Given
         StoryReporterBuilder builder = new StoryReporterBuilder();
@@ -53,11 +54,29 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildAndOverrideDefaultReporterForAGivenFormat() throws IOException {
+    public void shouldBuildWithReportingOfFailureTrace() throws IOException {    	
+    	// Given
+        StoryReporterBuilder builder = new StoryReporterBuilder();
+        String storyPath = storyPath(MyStory.class);
+        // When
+        StoryReporter reporter = builder.withFormats(TXT).withFailureTrace(true).build(storyPath);
+        
+        // Then
+        assertThat(reporter, instanceOf(DelegatingStoryReporter.class));
+        Collection<StoryReporter> delegates = ((DelegatingStoryReporter)reporter).getDelegates();
+        assertThat(delegates.size(), equalTo(1));
+        StoryReporter storyReporter = delegates.iterator().next();
+		assertThat(storyReporter, instanceOf(TxtOutput.class));
+		assertThat(storyReporter.toString(), containsString("reportFailureTrace=true"));
+    }
+
+
+    @Test
+    public void shouldBuildWithCustomReporterForAGivenFormat() throws IOException {
     	// Given
         String storyPath = storyPath(MyStory.class);
         final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, MyStory.class));
-        final StoryReporter txtReporter = new PrintStreamOutput(factory.createPrintStream(), new Properties(),  new LocalizedKeywords(), true);
+        final StoryReporter txtReporter = new TxtOutput(factory.createPrintStream(), new Properties(),  new LocalizedKeywords(), true);
         StoryReporterBuilder builder = new StoryReporterBuilder(){
                public StoryReporter reporterFor(String storyPath, Format format){
                        switch (format) {

@@ -1,17 +1,23 @@
 package org.jbehave.core.configuration;
 
+import java.util.Locale;
+
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.PendingErrorStrategy;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.parsers.*;
-import org.jbehave.core.reporters.*;
+import org.jbehave.core.io.StoryLoader;
+import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.parsers.StoryParser;
+import org.jbehave.core.reporters.ConsoleOutput;
+import org.jbehave.core.reporters.PrintStreamStepdocReporter;
+import org.jbehave.core.reporters.SilentSuccessFilter;
+import org.jbehave.core.reporters.StepdocReporter;
+import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepdocGenerator;
-
-import java.util.Locale;
 
 /**
  * The configuration that works for most situations that users are likely to encounter.
@@ -37,7 +43,7 @@ public class MostUsefulStoryConfiguration extends StoryConfiguration {
         useStoryLoader(new LoadFromClasspath());
         useErrorStrategy(ErrorStrategy.RETHROW);
         usePendingErrorStrategy(PendingErrorStrategy.PASSING);
-        useStoryReporter(new SilentSuccessFilter(new PrintStreamOutput()));
+        useStoryReporter(new SilentSuccessFilter(new ConsoleOutput()));
         useStepdocReporter(new PrintStreamStepdocReporter(true));
         useStepdocGenerator(new DefaultStepdocGenerator());
     }

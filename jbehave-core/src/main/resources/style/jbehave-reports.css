@@ -238,3 +238,8 @@ div.outcomes table td {
 div.outcomes {
   padding-bottom: 20px;
 }
+
+pre.failure {
+  padding-left: 10px;	
+  color: red;
+}
