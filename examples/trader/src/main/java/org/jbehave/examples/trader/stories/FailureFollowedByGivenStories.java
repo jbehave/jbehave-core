@@ -1,6 +1,7 @@
 package org.jbehave.examples.trader.stories;
 
 import junit.framework.Assert;
+
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;

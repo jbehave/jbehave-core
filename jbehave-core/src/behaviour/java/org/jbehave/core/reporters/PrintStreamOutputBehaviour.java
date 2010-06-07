@@ -409,7 +409,7 @@ public class PrintStreamOutputBehaviour {
     public void shouldReportEventsToFilePrintStreamsAndRenderAggregatedIndex() throws IOException {
         final String storyPath = storyPath(MyStory.class);
         File outputDirectory = new File("target/output");
-        StoryReporter reporter = new StoryReporterBuilder().outputTo(outputDirectory.getName())
+        StoryReporter reporter = new StoryReporterBuilder().withOutputDirectory(outputDirectory.getName())
         		.withFormats(HTML, TXT)
                 .build(storyPath);
 

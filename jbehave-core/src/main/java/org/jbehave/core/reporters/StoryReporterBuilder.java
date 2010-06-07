@@ -29,7 +29,7 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
  * String storyPath = resolver.resolve(storyClass);
  * FilePrintStreamFactory printStreamFactory = new FilePrintStreamFactory(storyPath);
  * StoryReporter reporter = new StoryReporterBuilder(printStreamFactory)
- * 								.outputLocationClass(storyClass)
+ * 								.withOutputLocationClass(storyClass)
  * 								.withDefaultFormats()
  * 								.withFormats(TXT, HTML, XML)
  * 								.build(storyPath);
@@ -50,7 +50,7 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
  * properly set.  In this case, we may specify the absolute output directory.
  * To change the default:
  * <pre>
- * new StoryReporterBuilder(printStreamFactory).outputTo("my-reports").outputAsAbsolute(true)
+ * new StoryReporterBuilder(printStreamFactory).withOutputDirectory("my-reports").withOutputAbsolute(true)
  * 					.withDefaultFormats().withFormats(TXT, HTML, XML)
  * 					.build(storyPath);
  * </pre>
@@ -112,17 +112,17 @@ public class StoryReporterBuilder {
     	return renderingResources;
     }
     
-	public StoryReporterBuilder outputTo(String outputDirectory){
+	public StoryReporterBuilder withOutputDirectory(String outputDirectory){
         this.outputDirectory = outputDirectory;
         return this;
     }
     
-    public StoryReporterBuilder outputAsAbsolute(boolean outputAbsolute) {
+    public StoryReporterBuilder withOutputAbsolute(boolean outputAbsolute) {
         this.outputAbsolute = outputAbsolute;
         return this;
     }
     
-	public StoryReporterBuilder outputLocationClass(Class<?> outputLocationClass) {
+	public StoryReporterBuilder withOutputLocationClass(Class<?> outputLocationClass) {
 		this.ouputLocationClass = outputLocationClass;
 		return this;
 	}
@@ -141,7 +141,7 @@ public class StoryReporterBuilder {
 		return this;
     }
 
-    public StoryReporterBuilder useRenderingResources(Properties resources){
+    public StoryReporterBuilder withRenderingResources(Properties resources){
     	this.renderingResources = resources;
     	return this;
     }

@@ -47,10 +47,10 @@ public abstract class TraderStory extends JUnitStory {
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                 	// use absolute output directory with Ant
-                	//.outputTo("target/jbehave-reports").outputAsAbsolute(true)
-                	.outputLocationClass(storyClass)
+                	//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
+                	.withOutputLocationClass(storyClass)
                 	.withDefaultFormats()
-                	.useRenderingResources(rendering)
+                	.withRenderingResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
                 	.withFailureTrace(false))
                 .buildReporters(storyPath)
@@ -67,6 +67,10 @@ public abstract class TraderStory extends JUnitStory {
 		stepsConfiguration.useMonitor(monitor);
 		stepsConfiguration.doDryRun(false);
 		addSteps(createSteps(stepsConfiguration));
+		
+		// Finally we can update the runner mode behaviour
+	    configuredEmbedder().runnerMode().doIgnoreFailureInReports(true);
+
 	}
 
 	protected CandidateSteps[] createSteps(StepsConfiguration configuration) {

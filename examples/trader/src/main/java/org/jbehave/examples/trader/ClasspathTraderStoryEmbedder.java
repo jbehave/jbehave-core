@@ -40,8 +40,8 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
 			.useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
 			.useStoryReporterBuilder(new StoryReporterBuilder()
         		// use absolute output directory with Ant
-        		//.outputTo("target/jbehave-reports").outputAsAbsolute(true)
-        		.outputLocationClass(embedderClass)
+        		//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
+        		.withOutputLocationClass(embedderClass)
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
 			.buildReporters(storyPaths());
