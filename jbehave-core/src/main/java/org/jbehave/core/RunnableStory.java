@@ -1,18 +1,18 @@
 package org.jbehave.core;
 
 import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.steps.CandidateSteps;
 
 /**
  * <p>
- * Represents a runnable story facade to the {@link StoryEmbedder}. At a
- * minimum, a runnable story requires {@link CandidateSteps} instances to be
- * added via the {@link RunnableStory#addSteps(CandidateSteps...)}, specifying
- * the mapping of textual steps to Java methods. Custom
- * {@link StoryConfiguration} and {@link StoryEmbedder} can be specified to
- * override any default via the
+ * Represents a runnable story facade to the {@link Embedder}. At a minimum, a
+ * runnable story requires {@link CandidateSteps} instances to be added via the
+ * {@link RunnableStory#addSteps(CandidateSteps...)}, specifying the mapping of
+ * textual steps to Java methods. Custom {@link StoryConfiguration} and
+ * {@link Embedder} can be specified to override any default via the
  * {@link RunnableStory#useConfiguration(StoryConfiguration)} and
- * {@link RunnableStory#useEmbedder(StoryEmbedder)} methods.
+ * {@link RunnableStory#useEmbedder(Embedder)} methods.
  * </p>
  * <p>
  * Users can either extend the abstract implementation {@link AbstractStory},
@@ -39,27 +39,24 @@ public interface RunnableStory {
 	void run() throws Throwable;
 
 	/**
-	 * Adds CandidateSteps instances used by the StoryEmbedder
+	 * Adds CandidateSteps instances used by the Embedder
 	 * 
-	 * @param steps
-	 *            the CandidateSteps instances used to match textual steps
+	 * @param steps the CandidateSteps instances used to match textual steps
 	 */
 	void addSteps(CandidateSteps... steps);
 
 	/**
 	 * Specifies the story configuration overriding any default
 	 * 
-	 * @param configuration
-	 *            the StoryConfiguration
+	 * @param configuration the StoryConfiguration
 	 */
 	void useConfiguration(StoryConfiguration configuration);
 
 	/**
 	 * Specifies the story embedder overriding any default
 	 * 
-	 * @param embedder
-	 *            the StoryEmbedder
+	 * @param embedder the Embedder running the story
 	 */
-	void useEmbedder(StoryEmbedder embedder);
+	void useEmbedder(Embedder embedder);
 
 }

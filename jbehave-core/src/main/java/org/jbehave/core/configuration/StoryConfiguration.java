@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jbehave.core.RunnableStory;
+import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.PendingErrorStrategy;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -23,7 +24,6 @@ import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.runner.StoryRunner;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.StepCollector;
@@ -31,7 +31,7 @@ import org.jbehave.core.steps.StepdocGenerator;
 
 /**
  * <p>
- * Provides the story configuration used by the {@link StoryRunner} and the
+ * Provides the story configuration used by the {@link Embedder} and the
  * in the {@link RunnableStory} implementations to customise its runtime properties.
  * </p>
  * <p>

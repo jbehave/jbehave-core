@@ -8,9 +8,9 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.util.List;
 
-import org.jbehave.core.StoryEmbedder;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
@@ -28,14 +28,14 @@ import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
 
 /**
- * Specifies the StoryEmbedder for the Trader example, providing the
+ * Specifies the Embedder for the Trader example, providing the
  * StoryConfiguration and the CandidateSteps, using classpath story loading.
  */
-public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
+public class ClasspathTraderEmbedder extends Embedder {
 
 	@Override
-	public StoryConfiguration configuration() {
-		Class<? extends ClasspathTraderStoryEmbedder> embedderClass = this.getClass();
+	public StoryConfiguration storyConfiguration() {
+		Class<? extends ClasspathTraderEmbedder> embedderClass = this.getClass();
 		return new MostUsefulStoryConfiguration()
 			.useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
 			.useStoryReporterBuilder(new StoryReporterBuilder()

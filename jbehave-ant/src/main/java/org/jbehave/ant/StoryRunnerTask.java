@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.jbehave.core.RunnableStory;
-import org.jbehave.core.StoryEmbedder;
+import org.jbehave.core.embedder.Embedder;
 
 /**
  * Ant task that runs stories
@@ -16,7 +16,7 @@ import org.jbehave.core.StoryEmbedder;
 public class StoryRunnerTask extends AbstractStoryTask {
 
     public void execute() throws BuildException {
-        StoryEmbedder embedder = newStoryEmbedder();
+        Embedder embedder = newEmbedder();
         List<RunnableStory> stories = stories();
 		log("Running stories "+stories+" using embedder "+embedder, MSG_INFO);
 		embedder.runStories(stories);

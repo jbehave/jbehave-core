@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -22,7 +23,7 @@ public class RunnableStoryBehaviour {
 	@Test
     public void shouldRunASingleStoryAsClass() throws Throwable {
         // Given
-        StoryEmbedder embedder = mock(StoryEmbedder.class);
+        Embedder embedder = mock(Embedder.class);
         StoryConfiguration configuration = mock(StoryConfiguration.class);
         CandidateSteps steps = mock(CandidateSteps.class);
         Class<MyStory> storyClass = MyStory.class;
@@ -44,7 +45,7 @@ public class RunnableStoryBehaviour {
     @Test
     public void shouldRunMultipleStoriesAsPaths() throws Throwable {
         // Given
-        StoryEmbedder embedder = mock(StoryEmbedder.class);
+        Embedder embedder = mock(Embedder.class);
         StoryConfiguration configuration = mock(StoryConfiguration.class);
         CandidateSteps steps = mock(CandidateSteps.class);
 
@@ -63,7 +64,7 @@ public class RunnableStoryBehaviour {
 	@Test
     public void shouldAllowOverrideOfDefaultConfiguration() throws Throwable {
         // Given
-        StoryEmbedder embedder = mock(StoryEmbedder.class);
+        Embedder embedder = mock(Embedder.class);
         StoryConfiguration configuration = mock(StoryConfiguration.class);
         CandidateSteps steps = mock(CandidateSteps.class);
         Class<MyStory> storyClass = MyStory.class;
@@ -72,7 +73,7 @@ public class RunnableStoryBehaviour {
         RunnableStory story = new MyStory();
         story.useEmbedder(embedder);
         story.addSteps(steps);
-        assertThat(embedder.configuration(), is(not(sameInstance(configuration))));
+        assertThat(embedder.storyConfiguration(), is(not(sameInstance(configuration))));
         story.useConfiguration(configuration);
         story.run();
 
@@ -87,7 +88,7 @@ public class RunnableStoryBehaviour {
 	@Test
     public void shouldAllowAdditionOfSteps() throws Throwable {
         // Given
-        StoryEmbedder embedder = mock(StoryEmbedder.class);
+        Embedder embedder = mock(Embedder.class);
         StoryConfiguration configuration = mock(StoryConfiguration.class);
         CandidateSteps steps = mock(CandidateSteps.class);
         Class<MyStory> storyClass = MyStory.class;

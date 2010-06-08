@@ -3,7 +3,7 @@ package org.jbehave.ant;
 import static org.apache.tools.ant.Project.MSG_INFO;
 
 import org.apache.tools.ant.BuildException;
-import org.jbehave.core.StoryEmbedder;
+import org.jbehave.core.embedder.Embedder;
 
 /**
  * Ant task that renders reports
@@ -13,7 +13,7 @@ import org.jbehave.core.StoryEmbedder;
 public class ReportRendererTask extends AbstractStoryTask {
 
     public void execute() throws BuildException {
-        StoryEmbedder embedder = newStoryEmbedder();
+        Embedder embedder = newEmbedder();
 		log("Rendering reports using embedder " + embedder, MSG_INFO);
         embedder.renderReports();
     }

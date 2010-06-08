@@ -59,9 +59,9 @@ used without change in JBehave 3.</p>
 	story from a story path. The <b>FilePrintStreamFactory</b>
 	correspondingly now handles only story paths.</li>
 	<li>The concerns of running stories and rendering reports has been centralised in
-	an embeddable component - <b>StoryEmbedder</b> - which has thin wrappers for 
+	an embeddable component - <b>Embedder</b> - which has thin wrappers for 
 	running in multiple environments, e.g. JUnit, Ant/Maven, Spring etc.  Using the 
-	StoryEmbedder, the user can choose to run multiple textual story using a single 
+	Embedder, the user can choose to run multiple textual story using a single 
 	Java entry point.</li>
 	<li>The story runner now renders the reports by default after running the stories, 
 	but behaviour can be changed via <b>renderReportsAfterStories</b> flag.</li>

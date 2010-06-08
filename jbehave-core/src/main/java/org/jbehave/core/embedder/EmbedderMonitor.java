@@ -1,15 +1,15 @@
-package org.jbehave.core.runner;
+package org.jbehave.core.embedder;
 
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
 
-public interface StoryRunnerMonitor {
+public interface EmbedderMonitor {
 
     void runningStory(String storyName);
 
-    void storyFailed(String storyName, Throwable e);
+    void storyFailed(String storyName, Throwable cause);
 
     void storiesNotRun();
 

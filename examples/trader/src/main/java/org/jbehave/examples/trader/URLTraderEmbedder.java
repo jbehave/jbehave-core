@@ -10,15 +10,15 @@ import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.StoryLocation;
 
 /**
- * Specifies the StoryEmbedder for the Trader example, using URL story loading.
- * It extends ClasspathTraderStoryEmbedder simply for convenience, in order to 
+ * Specifies the Embedder for the Trader example, using URL story loading.
+ * It extends ClasspathTraderEmbedder simply for convenience, in order to 
  * avoid duplicating common configuration.
  */
-public class URLTraderStoryEmbedder extends ClasspathTraderStoryEmbedder {
+public class URLTraderEmbedder extends ClasspathTraderEmbedder {
 
 	@Override
-	public StoryConfiguration configuration() {
-		return super.configuration().useStoryLoader(new LoadFromURL());
+	public StoryConfiguration storyConfiguration() {
+		return super.storyConfiguration().useStoryLoader(new LoadFromURL());
 	}
 
 	@Override

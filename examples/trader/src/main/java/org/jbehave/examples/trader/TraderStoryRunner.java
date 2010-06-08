@@ -13,15 +13,15 @@ public class TraderStoryRunner {
 	@Test
 	public void runClasspathLoadedStoriesAsJUnit() {
 		// Embedder defines the configuration and candidate steps
-		ClasspathTraderStoryEmbedder embedder = new ClasspathTraderStoryEmbedder();
-		embedder.runnerMode().doIgnoreFailureInStories(true);
+		ClasspathTraderEmbedder embedder = new ClasspathTraderEmbedder();
+		embedder.embedderConfiguration().doIgnoreFailureInStories(true);
 		embedder.runStoriesAsPaths(embedder.storyPaths());
 	}
 
 	@Test
 	public void runURLLoadedStoriesAsJUnit() {
 		// Embedder defines the configuration and candidate steps
-		URLTraderStoryEmbedder embedder = new URLTraderStoryEmbedder();
+		URLTraderEmbedder embedder = new URLTraderEmbedder();
 		embedder.runStoriesAsPaths(embedder.storyPaths());
 	}
 

@@ -1,4 +1,4 @@
-package org.jbehave.core.runner;
+package org.jbehave.core.embedder;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -11,14 +11,14 @@ import org.apache.commons.lang.builder.ToStringStyle;
 /**
  * Monitor that reports to a {@link PrintStream}, defaulting to {@link System.out}
  */
-public class PrintStreamRunnerMonitor implements StoryRunnerMonitor {
+public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     private PrintStream output;
 
-    public PrintStreamRunnerMonitor() {
+    public PrintStreamEmbedderMonitor() {
         this(System.out);
     }
 
-    public PrintStreamRunnerMonitor(PrintStream output) {
+    public PrintStreamEmbedderMonitor(PrintStream output) {
         this.output = output;
     }
 

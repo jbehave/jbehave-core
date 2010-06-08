@@ -1,4 +1,4 @@
-package org.jbehave.core.runner;
+package org.jbehave.core.embedder;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -8,13 +8,13 @@ import java.util.Properties;
 /**
  * Monitor that reports to {@link PrintStream} only failure events
  */
-public class ReportingFailuresRunnerMonitor extends PrintStreamRunnerMonitor {
+public class ReportingFailuresEmbedderMonitor extends PrintStreamEmbedderMonitor {
 
-	public ReportingFailuresRunnerMonitor() {
+	public ReportingFailuresEmbedderMonitor() {
         this(System.out);
     }
 
-    public ReportingFailuresRunnerMonitor(PrintStream output) {
+    public ReportingFailuresEmbedderMonitor(PrintStream output) {
         super(output);
     }
 

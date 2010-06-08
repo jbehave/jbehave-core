@@ -1,4 +1,4 @@
-package org.jbehave.core.runner;
+package org.jbehave.core.embedder;
 
 import static java.util.Arrays.asList;
 import static org.mockito.Matchers.anyObject;
@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.embedder.StoryRunner;
 import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.ErrorStrategyInWhichWeTrustTheReporter;
 import org.jbehave.core.errors.PendingErrorStrategy;
@@ -26,7 +27,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.runner.StoryRunner;
 import org.jbehave.core.steps.CandidateStep;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;

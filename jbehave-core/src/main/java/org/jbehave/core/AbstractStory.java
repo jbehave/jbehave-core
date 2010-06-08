@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 
@@ -14,12 +15,12 @@ import org.jbehave.core.steps.MostUsefulStepsConfiguration;
  * <p>
  * Abstract implementation of {@link RunnableStory} which is intended as a base
  * class with no explicit support for any test framework. It provides the
- * {@link StoryEmbedder} used to run the story or stories, using the
+ * {@link Embedder} used to run the story or stories, using the
  * {@link StoryConfiguration} and the {@link CandidateSteps} specified. By
  * default, {@link MostUsefulStepsConfiguration}) and
- * {@link StoryEmbedder#StoryEmbedder()} are used, but these can overridden via
+ * {@link Embedder#Embedder()} are used, but these can overridden via
  * the {@link RunnableStory#useConfiguration(StoryConfiguration)} and
- * {@link RunnableStory#useEmbedder(StoryEmbedder)} methods respectively.
+ * {@link RunnableStory#useEmbedder(Embedder)} methods respectively.
  * </p>
  * <p>
  * Users need to add the {@link CandidateSteps} instances, via the
@@ -35,7 +36,7 @@ public abstract class AbstractStory implements RunnableStory {
 
 	private StoryConfiguration configuration = new MostUsefulStoryConfiguration();
 	private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
-	private StoryEmbedder embedder = new StoryEmbedder();
+	private Embedder embedder = new Embedder();
 
 	public void useConfiguration(StoryConfiguration configuration) {
 		this.configuration = configuration;
@@ -45,11 +46,11 @@ public abstract class AbstractStory implements RunnableStory {
 		this.candidateSteps.addAll(asList(steps));
 	}
 
-	public void useEmbedder(StoryEmbedder embedder) {
+	public void useEmbedder(Embedder embedder) {
 		this.embedder = embedder;
 	}
 
-	protected StoryEmbedder configuredEmbedder() {
+	protected Embedder configuredEmbedder() {
 		embedder.useConfiguration(configuration);
 		embedder.useCandidateSteps(candidateSteps);
 		return embedder;

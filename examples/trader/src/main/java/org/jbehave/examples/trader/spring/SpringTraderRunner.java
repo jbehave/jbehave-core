@@ -1,13 +1,13 @@
 package org.jbehave.examples.trader.spring;
 
-import org.jbehave.core.StoryEmbedder;
+import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.steps.*;
 import org.jbehave.examples.trader.BeforeAfterSteps;
 import org.jbehave.examples.trader.TraderSteps;
-import org.jbehave.examples.trader.ClasspathTraderStoryEmbedder;
+import org.jbehave.examples.trader.ClasspathTraderEmbedder;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +34,7 @@ public class SpringTraderRunner {
 
     @Test
     public void runAsJUnit() {
-        StoryEmbedder embedder = new ClasspathTraderStoryEmbedder() {
+        Embedder embedder = new ClasspathTraderEmbedder() {
             @Override
             public List<CandidateSteps> candidateSteps() {
 

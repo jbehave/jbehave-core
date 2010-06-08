@@ -69,7 +69,7 @@ public abstract class TraderStory extends JUnitStory {
 		addSteps(createSteps(stepsConfiguration));
 		
 		// Finally we can update the runner mode behaviour
-	    configuredEmbedder().runnerMode().doIgnoreFailureInReports(true);
+	    configuredEmbedder().embedderConfiguration().doIgnoreFailureInReports(true);
 
 	}
 

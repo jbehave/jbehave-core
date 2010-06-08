@@ -21,14 +21,14 @@
     story classes or by Java path includes/excludes pattern. Below are
     examples on how to configure both extensions - using the trader example.</p>
 
-<h2>Story Embedder</h2>
+<h2>Embedder</h2>
 
-<p>JBehave provides a <a href="javadoc/core/org/jbehave/core/StoryEmbedder.html">StoryEmbedder</a>
+<p>JBehave provides a <a href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>
 as an entry point to running stories.  The embedder allows the specification of the configuration 
 and the candidate steps.  Then one needs only to specify the paths of the stories to run.
 </p>
 
-<p>The StoryEmbedder can also be used to run the stories in any IDE environment, e.g. via JUnit, without
+<p>The Embedder can also be used to run the stories in any IDE environment, e.g. via JUnit, without
 the need to extend any base class. 
 </p>
 
@@ -38,25 +38,25 @@ public class TraderStoryRunner {
 	@Test
 	public void runClasspathLoadedStoriesAsJUnit() {
 		// Embedder defines the configuration and candidate steps
-		ClasspathTraderStoryEmbedder embedder = new ClasspathTraderStoryEmbedder();
+		Embedder embedder = new ClasspathTraderEmbedder();
 		embedder.runStoriesAsPaths(embedder.storyPaths());
 	}
 
 	@Test
 	public void runURLLoadedStoriesAsJUnit() {
 		// Embedder defines the configuration and candidate steps
-		URLTraderStoryEmbedder embedder = new URLTraderStoryEmbedder();
+		Embedder embedder = new URLTraderEmbedder();
 		embedder.runStoriesAsPaths(embedder.storyPaths());
 	}
 
 }
 ]]></script>
 
-<p>where the Classpath/URLTraderStoryEmbedder define the configuration using the loading from the 
+<p>where the Classpath/URLTraderEmbedder define the configuration using the loading from the 
 classpath and URL resources, respectively.  E.g.:</p>
 
 <script type="syntaxhighlighter" class="brush: java"><![CDATA[
-public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
+public class ClasspathTraderEmbedder extends Embedder {
 
 	@Override
 	public StoryConfiguration configuration() {
@@ -110,7 +110,7 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
              classpathref="your.runtime.classpath"/>
 
     <storyPathRunner
-    		storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder"
+    		embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder"
             storyIncludes="**/stories/*.story"
             storyExcludes="**/stories/*NonSuccessful.story"
             classLoaderInjected="[true|false]"
@@ -154,7 +154,7 @@ public class ClasspathTraderStoryEmbedder extends StoryEmbedder {
                 <id>run-stories-as-paths</id>
                 <phase>integration-test</phase>
                 <configuration>
-                	<storyEmbedder>org.jbehave.examples.trader.ClasspathTraderStoryEmbedder</storyEmbedder>                	
+                	<embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>                	
 		            <storyIncludes>
                 		<storyInclude>**/stories/*.story</storyInclude>
              		</storyIncludes>

@@ -1,9 +1,9 @@
-package org.jbehave.core.runner;
+package org.jbehave.core.embedder;
 
 /**
  *  Monitor that reports nothing
  */
-public class SilentRunnerMonitor extends PrintStreamRunnerMonitor {
+public class SilentEmbedderMonitor extends PrintStreamEmbedderMonitor {
 
 	protected void print(String message) {
 	}

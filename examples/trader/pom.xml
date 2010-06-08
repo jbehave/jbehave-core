@@ -117,7 +117,7 @@
                 <id>stories-as-paths</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <storyEmbedder>org.jbehave.examples.trader.ClasspathTraderStoryEmbedder</storyEmbedder>
+                  <embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>
                   <storyIncludes>
                     <storyInclude>**/stories/*.story</storyInclude>
                   </storyIncludes>
@@ -152,7 +152,7 @@
                 <id>stepdoc</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <storyEmbedder>org.jbehave.examples.trader.ClasspathTraderStoryEmbedder</storyEmbedder>
+                  <embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>
                 </configuration>
                 <goals>
                   <goal>stepdoc</goal>
@@ -186,7 +186,7 @@
                     <taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
                       classpathref="maven.runtime.classpath" />
                     <stepdoc
-                      storyEmbedder="org.jbehave.examples.trader.ClasspathTraderStoryEmbedder"
+                      embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder"
                       skip="false" />
                   </tasks>
                 </configuration>

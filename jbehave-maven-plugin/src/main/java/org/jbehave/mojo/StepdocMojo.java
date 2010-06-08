@@ -2,7 +2,7 @@ package org.jbehave.mojo;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.jbehave.core.StoryEmbedder;
+import org.jbehave.core.embedder.Embedder;
 
 /**
  * Mojo to generate stepdocs
@@ -13,7 +13,7 @@ import org.jbehave.core.StoryEmbedder;
 public class StepdocMojo extends AbstractStoryMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        StoryEmbedder embedder = newStoryEmbedder();
+        Embedder embedder = newEmbedder();
         getLog().info("Generating stepdoc using embedder "+embedder);
         embedder.generateStepdoc();
     }

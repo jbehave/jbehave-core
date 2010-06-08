@@ -1,4 +1,4 @@
-package org.jbehave.core.runner;
+package org.jbehave.core.embedder;
 
 import java.io.File;
 import java.util.HashMap;

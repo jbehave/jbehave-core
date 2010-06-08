@@ -11,10 +11,10 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.StoryClassLoader;
-import org.jbehave.core.StoryEmbedder;
+import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderConfiguration;
+import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.io.StoryPathFinder;
-import org.jbehave.core.runner.StoryRunnerMode;
-import org.jbehave.core.runner.StoryRunnerMonitor;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -132,11 +132,11 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     private boolean renderReportsAfterStories;
     
     /**
-     * The story embedder to run the stories
+     * The embedder class to run the stories
      *
-     * @parameter default-value="org.jbehave.core.StoryEmbedder"
+     * @parameter default-value="org.jbehave.core.embedder.Embedder"
      */
-    private String storyEmbedder;
+    private String embedderClass;
     
     /**
      * Used to find story class names
@@ -247,26 +247,29 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         return classLoader.newStory(name);
     }
 
-    protected StoryEmbedder newStoryEmbedder() {
+    protected Embedder newEmbedder() {
         try {
-             StoryEmbedder embedder = (StoryEmbedder) createStoryClassLoader().loadClass(storyEmbedder).newInstance();
-             embedder.useRunnerMonitor(runnerMonitor());
-             embedder.useRunnerMode(runnerMode());
+             Embedder embedder = (Embedder) createStoryClassLoader().loadClass(embedderClass).newInstance();
+             embedder.useEmbedderMonitor(embedderMonitor());
+             embedder.useEmbedderConfiguration(embedderConfiguration());
              return embedder;
         } catch ( Exception e) {
-            throw new RuntimeException("Failed to create story embedder "+storyEmbedder, e);
+            throw new RuntimeException("Failed to create embedder "+embedderClass, e);
         }
     }
 
-    protected MavenRunnerMonitor runnerMonitor() {
-		return new MavenRunnerMonitor();
+    protected MavenEmbedderMonitor embedderMonitor() {
+		return new MavenEmbedderMonitor();
 	}
 
-	protected StoryRunnerMode runnerMode() {
-		return new StoryRunnerMode(batch, skip, ignoreFailureInStories, ignoreFailureInReports, renderReportsAfterStories);
+	protected EmbedderConfiguration embedderConfiguration() {
+		return new EmbedderConfiguration().doBatch(batch).doSkip(skip)
+		.doIgnoreFailureInStories(ignoreFailureInStories)
+		.doIgnoreFailureInReports(ignoreFailureInReports)
+		.doRenderReportsAfterStories(renderReportsAfterStories);
 	}
 
-	protected class MavenRunnerMonitor implements StoryRunnerMonitor {
+	protected class MavenEmbedderMonitor implements EmbedderMonitor {
         public void storiesBatchFailed(String failedStories) {
             getLog().warn("Failed to run stories batch: "+failedStories);
         }
