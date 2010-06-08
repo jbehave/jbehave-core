@@ -4,10 +4,8 @@ import org.jbehave.core.errors.ErrorStrategy;
 import org.jbehave.core.errors.PendingErrorStrategy;
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.StepCollector;
-import org.jbehave.core.steps.StepdocGenerator;
 
 /**
  * Decorator of StoryConfiguration that disables modification of configuration elements.
@@ -48,14 +46,6 @@ public class UnmodifiableStoryConfiguration extends StoryConfiguration {
         return delegate.keywords();
     }
 
-	public StepdocGenerator stepdocGenerator() {
-		return delegate.stepdocGenerator();
-	}
-
-	public StepdocReporter stepdocReporter() {
-		return delegate.stepdocReporter();
-	}
-
     @Override
     public StoryConfiguration useKeywords(Keywords keywords) {
         throw notAllowed();
@@ -86,16 +76,6 @@ public class UnmodifiableStoryConfiguration extends StoryConfiguration {
         throw notAllowed();
     }
 
-    @Override
-    public StoryConfiguration useStepdocReporter(StepdocReporter stepdocReporter) {
-        throw notAllowed();
-    }
-
-    @Override
-    public StoryConfiguration useStepdocGenerator(StepdocGenerator stepdocGenerator) {
-        throw notAllowed();
-    }
-     
     private RuntimeException notAllowed() {
         return new RuntimeException("Configuration elements are unmodifiable");
     }

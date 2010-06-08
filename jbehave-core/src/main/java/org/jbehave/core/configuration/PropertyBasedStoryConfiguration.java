@@ -5,10 +5,8 @@ import org.jbehave.core.errors.PendingErrorStrategy;
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.StepCollector;
-import org.jbehave.core.steps.StepdocGenerator;
 
 /**
  * PropertyBasedStoryConfiguration is backed by MostUsefulStoryConfiguration as default, but has different
@@ -94,13 +92,5 @@ public class PropertyBasedStoryConfiguration extends StoryConfiguration {
     public Keywords keywords() {
         return defaultConfiguration.keywords();
     }
-
-	public StepdocGenerator stepdocGenerator() {
-		return defaultConfiguration.stepdocGenerator();
-	}
-
-	public StepdocReporter stepdocReporter() {
-		return defaultConfiguration.stepdocReporter();
-	}
 
 }

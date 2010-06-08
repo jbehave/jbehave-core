@@ -2,13 +2,15 @@ package org.jbehave.core.steps;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
-import org.hamcrest.Matcher;
-import org.hamcrest.Description;
-import org.hamcrest.BaseMatcher;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Test;
 
 public class StepdocGeneratorBehaviour {
@@ -16,8 +18,7 @@ public class StepdocGeneratorBehaviour {
     @Test
     public void shouldGenerateStepdocsInPriorityOrder() {
         StepdocGenerator generator = new DefaultStepdocGenerator();
-        MySteps steps = new MySteps();
-        List<Stepdoc> stepdocs = generator.generate(steps);
+        List<Stepdoc> stepdocs = generator.generate(new MySteps());
         assertThat(stepdocs.get(0).getPattern(), equalTo("a given"));
         assertThat(stepdocs.get(0).getAliasPatterns(), equalTo(asList("a given alias", "another given alias")));
         assertThat(stepdocs.get(0).getMethod().getName(), equalTo("given"));
@@ -27,6 +28,21 @@ public class StepdocGeneratorBehaviour {
         assertThat(stepdocs.get(2).getPattern(), equalTo("a then"));
         assertThat(stepdocs.get(2).getAliasPatterns(), equalTo(asList("a then alias", "another then alias")));
         assertThat(stepdocs.get(2).getMethod().getName(), equalTo("then"));
+    }    
+
+    @Test
+    public void shouldGenerateStepdocsForBeforeAndAfterSteps() {
+        StepdocGenerator generator = new DefaultStepdocGenerator();
+        List<Stepdoc> stepdocs = generator.generate(new BeforeAndAfterSteps());
+        assertThat(stepdocs.size(), equalTo(4));
+        List<String> methodNames = new ArrayList<String>();
+        for (Stepdoc stepdoc : stepdocs) {
+			methodNames.add(stepdoc.getMethod().getName());
+		}
+        assertThat(methodNames, hasItem("beforeScenario"));
+        assertThat(methodNames, hasItem("afterScenario"));
+        assertThat(methodNames, hasItem("beforeStory"));
+        assertThat(methodNames, hasItem("afterStory"));
     }    
 
     @Test
@@ -121,6 +137,25 @@ public class StepdocGeneratorBehaviour {
         public void thenAbc(int xx, int yy) {
         }
 
+    }
+
+    public static class BeforeAndAfterSteps extends Steps {
+
+        @org.jbehave.core.annotations.BeforeScenario
+        public void beforeScenario() {
+        }
+
+        @org.jbehave.core.annotations.AfterScenario
+        public void afterScenario() {
+        }
+
+        @org.jbehave.core.annotations.BeforeStory
+        public void beforeStory() {
+        }
+
+        @org.jbehave.core.annotations.AfterStory
+        public void afterStory() {
+        }
     }
 
 }

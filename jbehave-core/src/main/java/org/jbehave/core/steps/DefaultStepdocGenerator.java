@@ -6,8 +6,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.AfterStory;
 import org.jbehave.core.annotations.Aliases;
 import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.BeforeStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
@@ -55,6 +57,14 @@ public class DefaultStepdocGenerator implements StepdocGenerator {
 			}
 			if (method.isAnnotationPresent(AfterScenario.class)) {
 				stepdocs.add(new Stepdoc(AfterScenario.class, EMPTY_VALUE, NO_ALIASES, method,
+						candidateSteps));
+			}
+			if (method.isAnnotationPresent(BeforeStory.class)) {
+				stepdocs.add(new Stepdoc(BeforeStory.class, EMPTY_VALUE, NO_ALIASES, method,
+						candidateSteps));
+			}
+			if (method.isAnnotationPresent(AfterStory.class)) {
+				stepdocs.add(new Stepdoc(AfterStory.class, EMPTY_VALUE, NO_ALIASES, method,
 						candidateSteps));
 			}
 		}

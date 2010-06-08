@@ -3,6 +3,7 @@ package org.jbehave.core.embedder;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
@@ -23,19 +24,20 @@ import java.util.Properties;
 
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.RunnableStory;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
-import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.embedder.EmbedderConfiguration;
-import org.jbehave.core.embedder.EmbedderMonitor;
-import org.jbehave.core.embedder.PrintStreamEmbedderMonitor;
-import org.jbehave.core.embedder.StoryRunner;
 import org.jbehave.core.embedder.Embedder.RenderingReportsFailedException;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailedException;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.reporters.FreemarkerReportRenderer;
+import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.ReportRenderer;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.DefaultStepdocGenerator;
+import org.jbehave.core.steps.Steps;
 import org.junit.Test;
 
 public class EmbedderBehaviour {
@@ -726,9 +728,19 @@ public class EmbedderBehaviour {
 
 	@Test
 	public void shouldGenerateStepdoc() {
-		// When
+		// Given
 		Embedder embedder = new Embedder();
+		embedder.useCandidateSteps(asList((CandidateSteps)new MySteps()));
+		embedder.useStepdocGenerator(new DefaultStepdocGenerator());
+		OutputStream out = new ByteArrayOutputStream();
+		embedder.useStepdocReporter(new PrintStreamStepdocReporter(new PrintStream(out)));
+		// When
 		embedder.generateStepdoc();
+		// Then
+		String expected = "Step: Given a given\n"
+				 + "Step: When a when\n"
+				 + "Step: Then a then\n";
+		assertThat(out.toString(), equalTo(expected));
 	}
 
 	private class MyStory extends JUnitStory {
@@ -737,4 +749,19 @@ public class EmbedderBehaviour {
 	private class MyOtherStory extends JUnitStory {
 	}
 
+    public static class MySteps extends Steps {
+        
+        @Given("a given")
+        public void given() {
+        }
+
+        @When("a when")
+        public void when() {
+        }
+        
+        @Then("a then")
+        public void then() {
+        }
+                
+    }
 }

@@ -20,14 +20,10 @@ import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.reporters.PrintStreamStepdocReporter;
-import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.StepCollector;
-import org.jbehave.core.steps.StepdocGenerator;
 
 /**
  * <p>
@@ -108,55 +104,10 @@ public class StoryConfiguration {
 	private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
 	
     /**
-     * Use default stepdoc generator
-     */
-    private StepdocGenerator stepdocGenerator = new DefaultStepdocGenerator();
-
-    /**
-     * Reports stepdocs to System.out, while reporting methods
-     */
-    private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter(System.out, true);
-
-    /**
      * Default no-op constructor, uses the default instances defined for member variables.
      */
     public StoryConfiguration() {
     }
-
-    /**
-     * Constructor that allows all dependencies to be injected
-     *
-     * @param keywords
-     * @param stepCollector
-     * @param storyParser
-     * @param storyLoader
-     * @param storyPathResolver
-     * @param errorStrategy
-     * @param stepdocReporter
-     * @param stepdocGenerator
-     * @param storyReporter
-     * @param storyReporterBuilder
-     * @param pendingErrorStrategy
-     */
-	protected StoryConfiguration(Keywords keywords, StepCollector stepCollector,
-			StoryParser storyParser, StoryLoader storyLoader,
-			StoryPathResolver storyPathResolver, ErrorStrategy errorStrategy,
-			StepdocReporter stepdocReporter, StepdocGenerator stepdocGenerator,
-			StoryReporter storyReporter,
-			StoryReporterBuilder storyReporterBuilder, 
-			PendingErrorStrategy pendingErrorStrategy) {
-		this.keywords = keywords;
-		this.stepCollector = stepCollector;
-		this.storyParser = storyParser;
-		this.storyLoader = storyLoader;
-		this.storyPathResolver = storyPathResolver;
-		this.errorStrategy = errorStrategy;
-		this.stepdocReporter = stepdocReporter;
-		this.stepdocGenerator = stepdocGenerator;
-		this.storyReporter = storyReporter;
-		this.storyReporterBuilder = storyReporterBuilder;
-		this.pendingErrorStrategy = pendingErrorStrategy;
-	}
 
     public StepCollector stepCollector() {
         return stepCollector;
@@ -202,14 +153,6 @@ public class StoryConfiguration {
 
     public Keywords keywords() {
         return keywords;
-    }
-
-    public StepdocGenerator stepdocGenerator() {
-        return stepdocGenerator;
-    }
-
-    public StepdocReporter stepdocReporter() {
-        return stepdocReporter;
     }
 
     public StoryConfiguration useKeywords(Keywords keywords) {
@@ -277,13 +220,4 @@ public class StoryConfiguration {
 		return this;
 	}
 
-	public StoryConfiguration useStepdocReporter(StepdocReporter stepdocReporter) {
-        this.stepdocReporter = stepdocReporter;
-        return this;
-    }
-
-    public StoryConfiguration useStepdocGenerator(StepdocGenerator stepdocGenerator) {
-        this.stepdocGenerator = stepdocGenerator;
-        return this;
-    }
 }
