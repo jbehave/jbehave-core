@@ -8,11 +8,13 @@ import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class RunnableStoryBehaviour {
 
@@ -33,9 +35,9 @@ public class RunnableStoryBehaviour {
         story.run();
 
         // Then
+        verify(embedder).useConfiguration(configuration);
+        verify(embedder).useCandidateSteps(Mockito.eq(Arrays.asList(steps)));
         verify(embedder).runStoriesAsClasses(asList(storyClass));
-        assertThat(story.getConfiguration(), sameInstance(configuration));
-        assertThat(story.getSteps().get(0), sameInstance(steps));
     }
 
 
@@ -70,12 +72,13 @@ public class RunnableStoryBehaviour {
         RunnableStory story = new MyStory();
         story.useEmbedder(embedder);
         story.addSteps(steps);
-        assertThat(story.getConfiguration(), is(not(sameInstance(configuration))));
+        assertThat(embedder.configuration(), is(not(sameInstance(configuration))));
         story.useConfiguration(configuration);
         story.run();
 
         // Then
-        assertThat(story.getConfiguration(), is(sameInstance(configuration)));
+        verify(embedder).useConfiguration(configuration);
+        verify(embedder).useCandidateSteps(Mockito.eq(Arrays.asList(steps)));
         verify(embedder).runStoriesAsClasses(asList(storyClass));
     }
 

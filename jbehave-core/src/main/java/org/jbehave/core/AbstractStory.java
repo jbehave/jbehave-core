@@ -8,51 +8,51 @@ import java.util.List;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 
 /**
  * <p>
- * Abstract implementation of RunnableStory which is intended as a base
- * class with no explicit support for any test framework.  It provides the
- * {@link StoryEmbedder} used to run the story or stories, with the provided
- * {@link StoryConfiguration} and the {@link CandidateSteps}.
+ * Abstract implementation of {@link RunnableStory} which is intended as a base
+ * class with no explicit support for any test framework. It provides the
+ * {@link StoryEmbedder} used to run the story or stories, using the
+ * {@link StoryConfiguration} and the {@link CandidateSteps} specified. By
+ * default, {@link MostUsefulStepsConfiguration}) and
+ * {@link StoryEmbedder#StoryEmbedder()} are used, but these can overridden via
+ * the {@link RunnableStory#useConfiguration(StoryConfiguration)} and
+ * {@link RunnableStory#useEmbedder(StoryEmbedder)} methods respectively.
  * </p>
  * <p>
- * Typically, users will find it easier to extend other implementations such as
- * {@link JUnitStory} or {@link JUnitStories} which also provide support for test frameworks
- * and also provide the story class or story paths being implemented by the user.
+ * Users need to add the {@link CandidateSteps} instances, via the
+ * {@link RunnableStory#addSteps(CandidateSteps...)} method.
+ * </p>
+ * <p>
+ * Typically, users that use JUnit will find it easier to extend other
+ * implementations, such as {@link JUnitStory} or {@link JUnitStories}, which
+ * implement the {@link RunnableStory#run()} via JUnit's annotations.
  * </p>
  */
 public abstract class AbstractStory implements RunnableStory {
 
 	private StoryConfiguration configuration = new MostUsefulStoryConfiguration();
-    private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+	private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
 	private StoryEmbedder embedder = new StoryEmbedder();
 
-    public StoryConfiguration getConfiguration() {
-        return configuration;
-    }
+	public void useConfiguration(StoryConfiguration configuration) {
+		this.configuration = configuration;
+	}
 
-    public List<CandidateSteps> getSteps() {
-        return candidateSteps;
-    }
+	public void addSteps(CandidateSteps... steps) {
+		this.candidateSteps.addAll(asList(steps));
+	}
 
-    public void useConfiguration(StoryConfiguration configuration) {
-        this.configuration = configuration;
-    }
-
-    public void addSteps(CandidateSteps... steps) {
-        this.candidateSteps.addAll(asList(steps));
-    }
-
-    public void useEmbedder(StoryEmbedder embedder){
+	public void useEmbedder(StoryEmbedder embedder) {
 		this.embedder = embedder;
-    }
+	}
 
-    protected StoryEmbedder configuredEmbedder() {
-    	embedder.useConfiguration(configuration);
-    	embedder.useCandidateSteps(candidateSteps);
-        return embedder;
-    }
-    
+	protected StoryEmbedder configuredEmbedder() {
+		embedder.useConfiguration(configuration);
+		embedder.useCandidateSteps(candidateSteps);
+		return embedder;
+	}
 
 }
