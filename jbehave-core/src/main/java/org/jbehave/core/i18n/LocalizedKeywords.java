@@ -1,7 +1,7 @@
 package org.jbehave.core.i18n;
 
 import org.jbehave.core.StoryClassLoader;
-import org.jbehave.core.model.Keywords;
+import org.jbehave.core.configuration.Keywords;
 
 import java.util.HashMap;
 import java.util.Locale;

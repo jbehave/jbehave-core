@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -60,7 +60,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mock(Steps.class);
-        when(mySteps.getConfiguration()).thenReturn(new MostUsefulStoryConfiguration());
+        when(mySteps.getConfiguration()).thenReturn(new MostUsefulConfiguration());
         when(mySteps.getSteps()).thenReturn(someCandidateSteps);
         IllegalArgumentException anException = new IllegalArgumentException();
         Step pendingStep = mock(Step.class);
@@ -121,7 +121,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mock(Steps.class);
-        when(mySteps.getConfiguration()).thenReturn(new MostUsefulStoryConfiguration());
+        when(mySteps.getConfiguration()).thenReturn(new MostUsefulConfiguration());
         when(mySteps.getSteps()).thenReturn(someCandidateSteps);
         Step successfulStep = mock(Step.class);
         when(successfulStep.perform()).thenReturn(StepResult.successful("successfulStep"));
@@ -309,7 +309,7 @@ public class StoryRunnerBehaviour {
 
 	private CandidateSteps mockMySteps() {
 		CandidateSteps mySteps = mock(CandidateSteps.class);
-        when(mySteps.getConfiguration()).thenReturn(new MostUsefulStoryConfiguration());
+        when(mySteps.getConfiguration()).thenReturn(new MostUsefulConfiguration());
 		return mySteps;
 	}
 
@@ -319,29 +319,29 @@ public class StoryRunnerBehaviour {
         when(creator.collectStepsFrom(asList(mySteps), story, Stage.AFTER, givenStory)).thenReturn(steps);
     }
 
-    private StoryConfiguration configurationWithPendingStrategy(StepCollector creator, StoryReporter reporter,
+    private Configuration configurationWithPendingStrategy(StepCollector creator, StoryReporter reporter,
                                                                 PendingStepStrategy strategy) {
         return configurationWith(new RegexStoryParser(), new LoadFromClasspath(), reporter, creator,
                 new RethrowingFailure(), strategy);
     }
 
-    private StoryConfiguration configurationWith(final StoryReporter reporter, final StepCollector creator) {
+    private Configuration configurationWith(final StoryReporter reporter, final StepCollector creator) {
         return configurationWith(reporter, creator, new RethrowingFailure());
     }
 
-    private StoryConfiguration configurationWith(StoryReporter reporter, StepCollector creator, FailureStrategy failureStrategy) {
+    private Configuration configurationWith(StoryReporter reporter, StepCollector creator, FailureStrategy failureStrategy) {
         return configurationWith(new RegexStoryParser(), new LoadFromClasspath(), reporter, creator, failureStrategy);
     }
 
-    private StoryConfiguration configurationWith(StoryParser parser, final StoryLoader storyLoader, final StoryReporter reporter,
+    private Configuration configurationWith(StoryParser parser, final StoryLoader storyLoader, final StoryReporter reporter,
                                                  final StepCollector creator, final FailureStrategy failureStrategy) {
         return configurationWith(parser, storyLoader, reporter, creator, failureStrategy, new PassingUponPendingStep());
     }
 
-    private StoryConfiguration configurationWith(final StoryParser parser, final StoryLoader loader, final StoryReporter reporter,
+    private Configuration configurationWith(final StoryParser parser, final StoryLoader loader, final StoryReporter reporter,
                                                  final StepCollector creator, final FailureStrategy failureStrategy, final PendingStepStrategy pendingStrategy) {
 
-        return new MostUsefulStoryConfiguration() {
+        return new MostUsefulConfiguration() {
             @Override
             public StoryParser storyParser() {
                 return parser;

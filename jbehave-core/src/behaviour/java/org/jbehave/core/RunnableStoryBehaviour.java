@@ -11,7 +11,7 @@ import static org.mockito.Mockito.verify;
 import java.util.Arrays;
 import java.util.List;
 
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.junit.Test;
@@ -24,7 +24,7 @@ public class RunnableStoryBehaviour {
     public void shouldRunASingleStoryAsClass() throws Throwable {
         // Given
         Embedder embedder = mock(Embedder.class);
-        StoryConfiguration configuration = mock(StoryConfiguration.class);
+        Configuration configuration = mock(Configuration.class);
         CandidateSteps steps = mock(CandidateSteps.class);
         Class<MyStory> storyClass = MyStory.class;
 
@@ -46,7 +46,7 @@ public class RunnableStoryBehaviour {
     public void shouldRunMultipleStoriesAsPaths() throws Throwable {
         // Given
         Embedder embedder = mock(Embedder.class);
-        StoryConfiguration configuration = mock(StoryConfiguration.class);
+        Configuration configuration = mock(Configuration.class);
         CandidateSteps steps = mock(CandidateSteps.class);
 
         // When
@@ -65,7 +65,7 @@ public class RunnableStoryBehaviour {
     public void shouldAllowOverrideOfDefaultConfiguration() throws Throwable {
         // Given
         Embedder embedder = mock(Embedder.class);
-        StoryConfiguration configuration = mock(StoryConfiguration.class);
+        Configuration configuration = mock(Configuration.class);
         CandidateSteps steps = mock(CandidateSteps.class);
         Class<MyStory> storyClass = MyStory.class;
 
@@ -73,7 +73,7 @@ public class RunnableStoryBehaviour {
         RunnableStory story = new MyStory();
         story.useEmbedder(embedder);
         story.addSteps(steps);
-        assertThat(embedder.storyConfiguration(), is(not(sameInstance(configuration))));
+        assertThat(embedder.configuration(), is(not(sameInstance(configuration))));
         story.useConfiguration(configuration);
         story.run();
 
@@ -89,7 +89,7 @@ public class RunnableStoryBehaviour {
     public void shouldAllowAdditionOfSteps() throws Throwable {
         // Given
         Embedder embedder = mock(Embedder.class);
-        StoryConfiguration configuration = mock(StoryConfiguration.class);
+        Configuration configuration = mock(Configuration.class);
         CandidateSteps steps = mock(CandidateSteps.class);
         Class<MyStory> storyClass = MyStory.class;
 

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 
 import org.jbehave.core.annotations.Given;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
 import org.junit.Before;
@@ -37,7 +37,7 @@ public class PicoStepsFactoryBehaviour {
         // Given
         MutablePicoContainer parent = createPicoContainer();
         parent.as(Characteristics.USE_NAMES).addComponent(FooSteps.class);
-        PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulStoryConfiguration(), parent);
+        PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulConfiguration(), parent);
         // When
         CandidateSteps[] steps = factory.createCandidateSteps();
         // Then 
@@ -51,7 +51,7 @@ public class PicoStepsFactoryBehaviour {
         parent.as(Characteristics.USE_NAMES).addComponent(FooStepsWithDependency.class);
         parent.addComponent(Integer.class, 42);
         // When
-        PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulStoryConfiguration(), parent);
+        PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulConfiguration(), parent);
         CandidateSteps[] steps = factory.createCandidateSteps();
         // Then
         assertFooStepsFound(steps);
@@ -70,7 +70,7 @@ public class PicoStepsFactoryBehaviour {
     public void assertThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
         MutablePicoContainer parent = createPicoContainer();
         parent.as(Characteristics.USE_NAMES).addComponent(FooStepsWithDependency.class);
-        PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulStoryConfiguration(), parent);
+        PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulConfiguration(), parent);
         // When
         factory.createCandidateSteps();
         // Then ... expected exception is thrown        

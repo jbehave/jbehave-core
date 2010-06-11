@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 
 import org.jbehave.core.annotations.Given;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
 import org.junit.Before;
@@ -32,7 +32,7 @@ public class SpringStepsFactoryBehaviour {
     public void assertThatStepsCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
         // Given
         ListableBeanFactory parent = createBeanFactory("org/jbehave/core/steps/spring/steps.xml");
-        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulStoryConfiguration(), parent);
+        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), parent);
         // When
         CandidateSteps[] steps = factory.createCandidateSteps();
         // Then 
@@ -44,7 +44,7 @@ public class SpringStepsFactoryBehaviour {
     public void assertThatStepsWithStepsWithDependencyCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
         ListableBeanFactory parent = createBeanFactory("org/jbehave/core/steps/spring/steps-with-dependency.xml");
         // When
-        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulStoryConfiguration(), parent);
+        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), parent);
         CandidateSteps[] steps = factory.createCandidateSteps();
         // Then
         assertFooStepsFound(steps);
@@ -62,7 +62,7 @@ public class SpringStepsFactoryBehaviour {
     @Test(expected=BeanDefinitionStoreException.class)
     public void assertThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
         ListableBeanFactory parent = createBeanFactory("org/jbehave/core/steps/spring/steps-with-missing-depedency.xml");
-        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulStoryConfiguration(), parent);
+        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), parent);
         // When
         factory.createCandidateSteps();
         // Then ... expected exception is thrown        

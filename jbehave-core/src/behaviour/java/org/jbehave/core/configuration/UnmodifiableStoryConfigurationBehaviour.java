@@ -9,7 +9,6 @@ import java.lang.reflect.Method;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
@@ -24,8 +23,8 @@ public class UnmodifiableStoryConfigurationBehaviour {
 
     @Test
     public void shouldProvideDelegateConfigurationElements() {
-        StoryConfiguration delegate = new MostUsefulStoryConfiguration();
-        StoryConfiguration unmodifiable = new UnmodifiableStoryConfiguration(delegate);
+        Configuration delegate = new MostUsefulConfiguration();
+        Configuration unmodifiable = new UnmodifiableConfiguration(delegate);
         assertThat(unmodifiable.keywords(), is(delegate.keywords()));
         assertThat(unmodifiable.stepCollector(), is(delegate.stepCollector()));
         assertThat(unmodifiable.storyParser(), is(delegate.storyParser()));
@@ -37,8 +36,8 @@ public class UnmodifiableStoryConfigurationBehaviour {
 
     @Test
     public void shouldNotAllowModificationOfConfigurationElements() throws NoSuchMethodException, IllegalAccessException {
-        StoryConfiguration delegate = new MostUsefulStoryConfiguration();
-        StoryConfiguration unmodifiable = new UnmodifiableStoryConfiguration(delegate);
+        Configuration delegate = new MostUsefulConfiguration();
+        Configuration unmodifiable = new UnmodifiableConfiguration(delegate);
         assertThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
         assertThatNotAllowed(unmodifiable, "useStepCollector", StepCollector.class);
         assertThatNotAllowed(unmodifiable, "useStoryLoader", StoryLoader.class);
@@ -52,7 +51,7 @@ public class UnmodifiableStoryConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useStepPatternParser", StepPatternParser.class);
     }
 
-    private void assertThatNotAllowed(StoryConfiguration unmodifiable, String methodName, Class<?> type) throws NoSuchMethodException, IllegalAccessException {
+    private void assertThatNotAllowed(Configuration unmodifiable, String methodName, Class<?> type) throws NoSuchMethodException, IllegalAccessException {
         Method method = unmodifiable.getClass().getMethod(methodName, type);
         try {
             method.invoke(unmodifiable, new Object[]{null});

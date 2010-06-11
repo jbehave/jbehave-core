@@ -9,8 +9,8 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 import java.util.Properties;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
@@ -19,7 +19,6 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.StepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.jbehave.examples.trader.model.Stock;
@@ -42,7 +41,7 @@ public abstract class TraderStory extends JUnitStory {
         String storyPath = storyPathResolver.resolve(storyClass);
         Properties rendering = new Properties();
         rendering.put("decorateNonHtml", "true");
-        useConfiguration(new MostUsefulStoryConfiguration()
+        Configuration configuration = new MostUsefulConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                 	// use absolute output directory with Ant
@@ -53,25 +52,20 @@ public abstract class TraderStory extends JUnitStory {
                 	.withFormats(CONSOLE, TXT, HTML, XML)
                 	.withFailureTrace(false))
                 .buildReporters(storyPath)
-                .useStoryPathResolver(storyPathResolver));
-
-		// start with default steps configuration, overriding parameter
-		// converters, pattern builder and monitor
-		StoryConfiguration stepsConfiguration = new MostUsefulStoryConfiguration();
-		StepMonitor monitor = new SilentStepMonitor();
-		stepsConfiguration.useParameterConverters(new ParameterConverters(
-				monitor, new TraderConverter(mockTradePersister()))); 
-		stepsConfiguration.useStepPatternParser(new RegexPrefixCapturingPatternParser(
-				"%")); // use '%' instead of '$' to identify parameters
-		stepsConfiguration.useStepMonitor(monitor);
-		stepsConfiguration.doDryRun(false);
-		addSteps(createSteps(stepsConfiguration));
+                .useStoryPathResolver(storyPathResolver)
+                .useStepMonitor(new SilentStepMonitor())
+                .useParameterConverters(new ParameterConverters(
+        				new TraderConverter(mockTradePersister())))
+        		.useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
+        		
+		useConfiguration(configuration);
+		addSteps(createSteps(configuration));
 		
-	    configuredEmbedder().embedderConfiguration().doIgnoreFailureInStories(true).doIgnoreFailureInReports(false);
+	    configuredEmbedder().embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInReports(false);
 
 	}
 
-	protected CandidateSteps[] createSteps(StoryConfiguration configuration) {
+	protected CandidateSteps[] createSteps(Configuration configuration) {
 		return new StepsFactory(configuration).createCandidateSteps(
 				new TraderSteps(new TradingService()), new BeforeAfterSteps());
 	}

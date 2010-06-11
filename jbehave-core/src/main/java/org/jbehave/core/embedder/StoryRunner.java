@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.RunnableStory;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -39,34 +39,34 @@ public class StoryRunner {
     private StepCollector stepCollector;
 	private String reporterStoryPath;
 
-    public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Class<? extends RunnableStory> storyClass) throws Throwable {
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Class<? extends RunnableStory> storyClass) throws Throwable {
         String storyPath = configuration.storyPathResolver().resolve(storyClass);
         run(configuration, candidateSteps, storyPath);
     }
 
-    public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, String storyPath) throws Throwable {
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, String storyPath) throws Throwable {
         Story story = defineStory(configuration, storyPath);
         run(configuration, candidateSteps, story);
     }
 
-    public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Story story) throws Throwable {
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story) throws Throwable {
         // always start in a top-level non-given story
         run(configuration, candidateSteps, story, false);
     }
 
-    public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, String storyPath, boolean givenStory) throws Throwable {
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, String storyPath, boolean givenStory) throws Throwable {
         Story story = defineStory(configuration, storyPath);
         run(configuration, candidateSteps, story, givenStory);
     }
 
-    public Story defineStory(StoryConfiguration storyConfiguration, String storyPath) {
-        String storyAsString = storyConfiguration.storyLoader().loadStoryAsText(storyPath);
-        Story story = storyConfiguration.storyParser().parseStory(storyAsString, storyPath);
+    public Story defineStory(Configuration configuration, String storyPath) {
+        String storyAsString = configuration.storyLoader().loadStoryAsText(storyPath);
+        Story story = configuration.storyParser().parseStory(storyAsString, storyPath);
         story.namedAs(new File(storyPath).getName());
         return story;
     }
 
-    public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
         stepCollector = configuration.stepCollector();
         reporter = reporterFor(configuration, story, givenStory);
         pendingStepStrategy = configuration.pendingStepStrategy();
@@ -103,7 +103,7 @@ public class StoryRunner {
 		return false;
 	}
 
-	private StoryReporter reporterFor(StoryConfiguration configuration,
+	private StoryReporter reporterFor(Configuration configuration,
 			Story story, boolean givenStory) {
 		if ( givenStory ){			
 			return configuration.storyReporter(reporterStoryPath);
@@ -123,7 +123,7 @@ public class StoryRunner {
 		throwable = null;
 	}
 	
-    private void runGivenStories(StoryConfiguration configuration,
+    private void runGivenStories(Configuration configuration,
                                  List<CandidateSteps> candidateSteps, Scenario scenario)
             throws Throwable {
         List<String> storyPaths = scenario.getGivenStoryPaths();

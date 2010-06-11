@@ -59,33 +59,30 @@ classpath and URL resources, respectively.  E.g.:</p>
 public class ClasspathTraderEmbedder extends Embedder {
 
 	@Override
-	public StoryConfiguration configuration() {
-		// start with default story configuration, overriding story loader and
-		// reporter
-		StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
-		storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass()
-				.getClassLoader()));
-		storyConfiguration.useStoryReporters(new StoryReporterBuilder()
-				.outputLocationClass(this.getClass())
-				.withDefaultFormats()
-				.withFormats(CONSOLE, TXT, HTML, XML)
-				.withStoryPaths(storyPaths())
-				.buildAll());
-		return storyConfiguration;
+	public Configuration configuration() {
+		Class<? extends ClasspathTraderEmbedder> embedderClass = this.getClass();
+		return new MostUsefulConfiguration()
+			.useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
+			.useStoryReporterBuilder(new StoryReporterBuilder()
+        		// use absolute output directory with Ant
+        		//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
+        		.withOutputLocationClass(embedderClass)
+        		.withDefaultFormats()
+				.withFormats(CONSOLE, TXT, HTML, XML))
+			.buildReporters(storyPaths())
+			.useEmbedderControls(new EmbedderControls()
+					.doIgnoreFailureInStories(true).doIgnoreFailureInReports(true))
+			.useParameterConverters(new ParameterConverters(
+							new TraderConverter(mockTradePersister())))
+			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
+							"%")) // use '%' instead of '$' to identify parameters
+			.useStepMonitor(new SilentStepMonitor());
+					
 	}
 
 	@Override
 	public List<CandidateSteps> candidateSteps() {
-		// start with default steps configuration, overriding parameter
-		// converters, pattern builder and monitor
-		StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
-		StepMonitor monitor = new SilentStepMonitor();
-		stepsConfiguration.useParameterConverters(new ParameterConverters(
-				monitor, new TraderConverter(mockTradePersister()))); 
-		stepsConfiguration.usePatternParser(new RegexPrefixCapturingPatternParser(
-				"%")); // use '%' instead of '$' to identify parameters
-		stepsConfiguration.useMonitor(monitor);
-		return asList(new StepsFactory(stepsConfiguration)
+		return asList(new StepsFactory(configuration())
 				.createCandidateSteps(new TraderSteps(new TradingService()),
 						new BeforeAfterSteps()));
 	}

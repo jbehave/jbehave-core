@@ -19,55 +19,55 @@ public class PropertyBasedStoryConfigurationBehaviour {
 
     @Before
     public void captureExistingEnvironment() {
-        originalFailOnPending = System.getProperty(PropertyBasedStoryConfiguration.FAIL_ON_PENDING);
-        originalOutputAll = System.getProperty(PropertyBasedStoryConfiguration.OUTPUT_ALL);
+        originalFailOnPending = System.getProperty(PropertyBasedConfiguration.FAIL_ON_PENDING);
+        originalOutputAll = System.getProperty(PropertyBasedConfiguration.OUTPUT_ALL);
     }
     
     @After
     public void resetEnvironment() {
         if (originalFailOnPending != null) {
-            System.setProperty(PropertyBasedStoryConfiguration.FAIL_ON_PENDING, originalFailOnPending);
+            System.setProperty(PropertyBasedConfiguration.FAIL_ON_PENDING, originalFailOnPending);
         } else {
-            System.clearProperty(PropertyBasedStoryConfiguration.FAIL_ON_PENDING);
+            System.clearProperty(PropertyBasedConfiguration.FAIL_ON_PENDING);
         }
         if (originalOutputAll != null) {
-            System.setProperty(PropertyBasedStoryConfiguration.OUTPUT_ALL, originalOutputAll);
+            System.setProperty(PropertyBasedConfiguration.OUTPUT_ALL, originalOutputAll);
         } else {
-            System.clearProperty(PropertyBasedStoryConfiguration.OUTPUT_ALL);
+            System.clearProperty(PropertyBasedConfiguration.OUTPUT_ALL);
         }
     }
     
     @Test
     public void shouldUsePassingPendingStepStrategyByDefault() {
-        System.clearProperty(PropertyBasedStoryConfiguration.FAIL_ON_PENDING);
-        assertThat(new PropertyBasedStoryConfiguration().pendingStepStrategy(), is(PassingUponPendingStep.class));
+        System.clearProperty(PropertyBasedConfiguration.FAIL_ON_PENDING);
+        assertThat(new PropertyBasedConfiguration().pendingStepStrategy(), is(PassingUponPendingStep.class));
     }
     
     @Test
     public void shouldUseFailingPendingStepStrategyWhenConfiguredToDoSo() {
-        System.setProperty(PropertyBasedStoryConfiguration.FAIL_ON_PENDING, "true");
-        assertThat(new PropertyBasedStoryConfiguration().pendingStepStrategy(), is(FailingUponPendingStep.class));
+        System.setProperty(PropertyBasedConfiguration.FAIL_ON_PENDING, "true");
+        assertThat(new PropertyBasedConfiguration().pendingStepStrategy(), is(FailingUponPendingStep.class));
     }
     
     @Test
     public void shouldOuputToConsoleByDefault() {
-        System.clearProperty(PropertyBasedStoryConfiguration.OUTPUT_ALL);
-        assertThat(new PropertyBasedStoryConfiguration().storyReporter(), is(ConsoleOutput.class));
+        System.clearProperty(PropertyBasedConfiguration.OUTPUT_ALL);
+        assertThat(new PropertyBasedConfiguration().storyReporter(), is(ConsoleOutput.class));
     }
     
     @Test
     public void shouldOutputAllWhenConfiguredToDoSo() {
-        System.setProperty(PropertyBasedStoryConfiguration.OUTPUT_ALL, "true");
-        assertThat(new PropertyBasedStoryConfiguration().storyReporter(), is(ConsoleOutput.class));
+        System.setProperty(PropertyBasedConfiguration.OUTPUT_ALL, "true");
+        assertThat(new PropertyBasedConfiguration().storyReporter(), is(ConsoleOutput.class));
     }
     
     @Test
     public void shouldRethrowErrrors() {
-        assertThat(new PropertyBasedStoryConfiguration().failureStrategy(), is(RethrowingFailure.class));
+        assertThat(new PropertyBasedConfiguration().failureStrategy(), is(RethrowingFailure.class));
     }
     
     @Test
     public void shouldProvideGivenWhenThenKeywordsByDefault() {
-        assertThat(new PropertyBasedStoryConfiguration().keywords(), is(LocalizedKeywords.class));
+        assertThat(new PropertyBasedConfiguration().keywords(), is(LocalizedKeywords.class));
     }
 }

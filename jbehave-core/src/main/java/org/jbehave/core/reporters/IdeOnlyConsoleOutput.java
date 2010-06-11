@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.jbehave.core.model.Keywords;
+import org.jbehave.core.configuration.Keywords;
 
 /**
  * Outputs to the console only if running in an IDE. Command line builds (Maven,

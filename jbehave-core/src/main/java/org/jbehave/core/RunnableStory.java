@@ -1,6 +1,6 @@
 package org.jbehave.core;
 
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.steps.CandidateSteps;
 
@@ -9,9 +9,9 @@ import org.jbehave.core.steps.CandidateSteps;
  * Represents a runnable story facade to the {@link Embedder}. At a minimum, a
  * runnable story requires {@link CandidateSteps} instances to be added via the
  * {@link RunnableStory#addSteps(CandidateSteps...)}, specifying the mapping of
- * textual steps to Java methods. Custom {@link StoryConfiguration} and
+ * textual steps to Java methods. Custom {@link Configuration} and
  * {@link Embedder} can be specified to override any default via the
- * {@link RunnableStory#useConfiguration(StoryConfiguration)} and
+ * {@link RunnableStory#useConfiguration(Configuration)} and
  * {@link RunnableStory#useEmbedder(Embedder)} methods.
  * </p>
  * <p>
@@ -48,9 +48,9 @@ public interface RunnableStory {
 	/**
 	 * Specifies the story configuration overriding any default
 	 * 
-	 * @param configuration the StoryConfiguration
+	 * @param configuration the Configuration
 	 */
-	void useConfiguration(StoryConfiguration configuration);
+	void useConfiguration(Configuration configuration);
 
 	/**
 	 * Specifies the story embedder overriding any default

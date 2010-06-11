@@ -3,11 +3,11 @@ package org.jbehave.core.configuration;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-public class UnmodifiableEmbedderConfiguration extends EmbedderConfiguration {
+public class UnmodifiableEmbedderControls extends EmbedderControls {
 
-	private EmbedderConfiguration delegate;
+	private EmbedderControls delegate;
 
-	public UnmodifiableEmbedderConfiguration(EmbedderConfiguration delegate) {
+	public UnmodifiableEmbedderControls(EmbedderControls delegate) {
 		this.delegate = delegate;
 	}
 
@@ -37,30 +37,30 @@ public class UnmodifiableEmbedderConfiguration extends EmbedderConfiguration {
 	}
 
 	@Override
-	public EmbedderConfiguration doBatch(boolean batch) {
+	public EmbedderControls doBatch(boolean batch) {
 		throw notAllowed();
 	}
 
 	@Override
-	public EmbedderConfiguration doIgnoreFailureInReports(
+	public EmbedderControls doIgnoreFailureInReports(
 			boolean ignoreFailureInReports) {
 		throw notAllowed();
 	}
 
 	@Override
-	public EmbedderConfiguration doIgnoreFailureInStories(
+	public EmbedderControls doIgnoreFailureInStories(
 			boolean ignoreFailureInStories) {
 		throw notAllowed();
 	}
 
 	@Override
-	public EmbedderConfiguration doRenderReportsAfterStories(
+	public EmbedderControls doRenderReportsAfterStories(
 			boolean renderReportsAfterStories) {
 		throw notAllowed();
 	}
 
 	@Override
-	public EmbedderConfiguration doSkip(boolean skip) {
+	public EmbedderControls doSkip(boolean skip) {
 		throw notAllowed();
 	}
 

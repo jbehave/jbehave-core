@@ -43,24 +43,37 @@ reporter (both to <b>System.out</b> and to a file) and an HTML reporter
 to a file:</p>
 <pre class="brush: java">
 
-    public TraderStory() {
-        // start with default story configuration, overriding story definer and reporter
-        StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
-        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
-        String storyPath = storyConfiguration.storyPathResolver().resolve(this.getClass());
-        storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
-        storyConfiguration.useStoryReporter(new StoryReporterBuilder(new FilePrintStreamFactory(storyPath))
-                .withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true) // only required with Ant (cf note below)
-                .withDefaultFormats() // add default formats 
-                .withFormats(CONSOLE, TXT, HTML, XML)
-                .withFailureTrace(false) // set to see the stack trace of failure
-                .build(storyPath));
-        useConfiguration(storyConfiguration);
+	public TraderStory() {
 
-        // start with default steps configuration
-        StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
-        addSteps(createSteps(stepsConfiguration));
-    }
+		// start with default story configuration, overriding story loader and reporter
+        StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
+        Class<? extends TraderStory> storyClass = this.getClass();
+        String storyPath = storyPathResolver.resolve(storyClass);
+        Properties rendering = new Properties();
+        rendering.put("decorateNonHtml", "true");
+        Configuration configuration = new MostUsefulConfiguration()
+                .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
+                .useStoryReporterBuilder(new StoryReporterBuilder()
+                	// use absolute output directory with Ant
+                	//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
+                	.withOutputLocationClass(storyClass)
+                	.withDefaultFormats()
+                	.withRenderingResources(rendering)
+                	.withFormats(CONSOLE, TXT, HTML, XML)
+                	.withFailureTrace(false))
+                .buildReporters(storyPath)
+                .useStoryPathResolver(storyPathResolver)
+                .useStepMonitor(new SilentStepMonitor())
+                .useParameterConverters(new ParameterConverters(
+        				new TraderConverter(mockTradePersister())))
+        		.useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
+        		
+		useConfiguration(configuration);
+		addSteps(createSteps(configuration));
+		
+	    configuredEmbedder().embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInReports(false);
+
+	}
 
     protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
         return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());

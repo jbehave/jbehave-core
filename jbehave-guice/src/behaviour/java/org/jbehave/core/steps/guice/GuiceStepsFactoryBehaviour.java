@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.reflect.Field;
 
 import org.jbehave.core.annotations.Given;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
 import org.junit.Before;
@@ -39,7 +39,7 @@ public class GuiceStepsFactoryBehaviour {
             }
           });
 
-        GuiceStepsFactory factory = new GuiceStepsFactory(new MostUsefulStoryConfiguration(), parent);
+        GuiceStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
         // When
         CandidateSteps[] steps = factory.createCandidateSteps();
         // Then 
@@ -58,7 +58,7 @@ public class GuiceStepsFactoryBehaviour {
           });
 
         // When
-        GuiceStepsFactory factory = new GuiceStepsFactory(new MostUsefulStoryConfiguration(), parent);
+        GuiceStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
         CandidateSteps[] steps = factory.createCandidateSteps();
         // Then
         assertFooStepsFound(steps);
@@ -81,7 +81,7 @@ public class GuiceStepsFactoryBehaviour {
               bind(FooStepsWithDependency.class);
             }
           });
-        GuiceStepsFactory factory = new GuiceStepsFactory(new MostUsefulStoryConfiguration(), parent);
+        GuiceStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
         // When
         factory.createCandidateSteps();
         // Then ... expected exception is thrown        

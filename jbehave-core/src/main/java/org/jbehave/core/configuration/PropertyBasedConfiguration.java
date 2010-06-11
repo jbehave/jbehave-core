@@ -3,31 +3,30 @@ package org.jbehave.core.configuration;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
-import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.StepCollector;
 
 /**
- * PropertyBasedStoryConfiguration is backed by MostUsefulStoryConfiguration as default, but has different
+ * PropertyBasedConfiguration is backed by MostUsefulConfiguration as default, but has different
  * behaviour if certain system properties are non-null:
  * <ul>
- *   <li>PropertyBasedStoryConfiguration.FAIL_ON_PENDING: uses {@link FailingUponPendingStep}</li>
- *   <li>PropertyBasedStoryConfiguration.OUTPUT_ALL:  uses {@link ConsoleOutput}</li>
+ *   <li>PropertyBasedConfiguration.FAIL_ON_PENDING: uses {@link FailingUponPendingStep}</li>
+ *   <li>PropertyBasedConfiguration.OUTPUT_ALL:  uses {@link ConsoleOutput}</li>
  * </ul>
  */
-public class PropertyBasedStoryConfiguration extends StoryConfiguration {
+public class PropertyBasedConfiguration extends Configuration {
 
     public static final String FAIL_ON_PENDING = "org.jbehave.failonpending";
     public static final String OUTPUT_ALL = "org.jbehave.outputall";
-    private final StoryConfiguration defaultConfiguration;
+    private final Configuration defaultConfiguration;
     
-    public PropertyBasedStoryConfiguration() {
-        this(new MostUsefulStoryConfiguration());
+    public PropertyBasedConfiguration() {
+        this(new MostUsefulConfiguration());
     }
 
-    public PropertyBasedStoryConfiguration(StoryConfiguration defaultConfiguration) {
+    public PropertyBasedConfiguration(Configuration defaultConfiguration) {
         this.defaultConfiguration = defaultConfiguration;
     }
 

@@ -25,8 +25,8 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
@@ -74,28 +74,28 @@ import org.jbehave.core.reporters.StoryReporter;
  * 
  * </p>
  * <p>
- * StoryConfiguration can be used to provide customization to the defaults
+ * Configuration can be used to provide customization to the defaults
  * configuration elements, eg custom parameters converters.
  * </p>
  */
 public class Steps implements CandidateSteps {
 
-    private final StoryConfiguration configuration;
+    private final Configuration configuration;
     private Object instance;
 
     /**
      * Creates Steps with default configuration
      */
     public Steps() {
-        this(new MostUsefulStoryConfiguration());
+        this(new MostUsefulConfiguration());
     }
 
     /**
      * Creates Steps with given custom configuration
      * 
-     * @param configuration the StoryConfiguration
+     * @param configuration the Configuration
      */
-    public Steps(StoryConfiguration configuration) {
+    public Steps(Configuration configuration) {
         this.configuration = configuration;
         this.instance = this;
     }
@@ -104,10 +104,10 @@ public class Steps implements CandidateSteps {
      * Creates Steps with given custom configuration wrapping a POJO instance
      * containing the annotated steps methods
      * 
-     * @param configuration the StoryConfiguration
+     * @param configuration the Configuration
      * @param instance the POJO instance
      */
-    public Steps(StoryConfiguration configuration, Object instance) {
+    public Steps(Configuration configuration, Object instance) {
         this.configuration = configuration;
         this.instance = instance;
     }
@@ -159,7 +159,7 @@ public class Steps implements CandidateSteps {
     }
 
     protected CandidateStep createCandidateStep(Method method, StepType stepType, String stepPatternAsString, int priority,
-            StoryConfiguration configuration) {
+            Configuration configuration) {
         return new CandidateStep(stepPatternAsString, priority, stepType, method, instance,
                 configuration.stepPatternParser(), configuration.parameterConverters(), configuration.keywords().startingWordsByType());
     }
@@ -193,7 +193,7 @@ public class Steps implements CandidateSteps {
         return storyStepsHaving(AfterStory.class, givenStory, new DoRun());
     }
     
-	public StoryConfiguration getConfiguration() {
+	public Configuration getConfiguration() {
 		return configuration;
 	}
 

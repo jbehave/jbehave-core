@@ -3,7 +3,7 @@ package org.jbehave.core.configuration;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-public class EmbedderConfiguration {
+public class EmbedderControls {
 	
 	private boolean batch = false;
 	private boolean skip = false;
@@ -11,7 +11,7 @@ public class EmbedderConfiguration {
 	private boolean ignoreFailureInReports = false;
 	private boolean renderReportsAfterStories = true;
 
-	public EmbedderConfiguration() {
+	public EmbedderControls() {
 	}
 
 	public boolean batch() {
@@ -34,27 +34,27 @@ public class EmbedderConfiguration {
 		return renderReportsAfterStories;
 	}
 
-	public EmbedderConfiguration doBatch(boolean batch) {
+	public EmbedderControls doBatch(boolean batch) {
 		this.batch = batch;
 		return this;
 	}
 
-	public EmbedderConfiguration doSkip(boolean skip) {
+	public EmbedderControls doSkip(boolean skip) {
 		this.skip = skip;
 		return this;
 	}
 
-	public EmbedderConfiguration doIgnoreFailureInStories(boolean ignoreFailureInStories) {
+	public EmbedderControls doIgnoreFailureInStories(boolean ignoreFailureInStories) {
 		this.ignoreFailureInStories = ignoreFailureInStories;
 		return this;
 	}
 
-	public EmbedderConfiguration doIgnoreFailureInReports(boolean ignoreFailureInReports) {
+	public EmbedderControls doIgnoreFailureInReports(boolean ignoreFailureInReports) {
 		this.ignoreFailureInReports = ignoreFailureInReports;
 		return this;
 	}
 
-	public EmbedderConfiguration doRenderReportsAfterStories(boolean renderReportsAfterStories) {
+	public EmbedderControls doRenderReportsAfterStories(boolean renderReportsAfterStories) {
 		this.renderReportsAfterStories = renderReportsAfterStories;
 		return this;
 	}

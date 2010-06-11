@@ -1,4 +1,4 @@
-package org.jbehave.core.model;
+package org.jbehave.core.configuration;
 
 import static java.util.Arrays.asList;
 

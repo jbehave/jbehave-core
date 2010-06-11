@@ -1,7 +1,7 @@
 package com.lunivore.gameoflife.steps;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
@@ -15,7 +15,7 @@ import org.jbehave.core.reporters.StoryReporter;
 public class GridStory extends JUnitStory {
 
 	public GridStory() {
-		useConfiguration(new MostUsefulStoryConfiguration() {
+		useConfiguration(new MostUsefulConfiguration() {
 			@Override
 			public StoryPathResolver storyPathResolver() {
 				// Default story path extension is ".story", but here were are using no extension

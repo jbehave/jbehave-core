@@ -137,9 +137,9 @@ that contains the configuration:</p>
 public class TraderStory extends JUnitStory {
 
     public TraderStory() {
-        StoryConfiguration storyConfiguration = new MostUsefulConfiguration();
-        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
-        storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
+        Configuration configuration = new MostUsefulConfiguration();
+        configuration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
+        configuration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
 
         addSteps(new TraderSteps()); // if TraderSteps extends Steps
         addSteps(new StepsFactory().createCandidateSteps(new TraderSteps())); // if TraderSteps is a POJO
@@ -156,20 +156,17 @@ story path must be explicitly provided when extending  <a
 <pre class="brush: java">
 public class TraderStories extends JUnitStories {
 
-    public TraderStories() {
-        StoryConfiguration storyConfiguration = new MostUsefulConfiguration();
-        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
-        storyConfiguration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
+	private URLTraderEmbedder embedder = new URLTraderEmbedder();
 
-        addSteps(new TraderSteps()); // if TraderSteps extends Steps
-        addSteps(new StepsFactory().createCandidateSteps(new TraderSteps())); // if TraderSteps is a POJO
-    }
+	@Override
+	protected Embedder configuredEmbedder() {
+		return embedder;
+	}
 
-    @Override
-    protected List<String> storyPaths() {
-        return asList("org/jbehave/examples/trader/stories/trader_is_alerted_of_status.story",
-                      "org/jbehave/examples/trader/stories/traders_can_be_subset.story");
-    }
+	@Override
+	protected List<String> storyPaths() {
+		return embedder.storyPaths();
+	}
 }
 </pre>
 

@@ -11,8 +11,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jbehave.core.annotations.AfterScenario;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.CandidateStep.StartingWordNotFound;
 import org.jbehave.core.steps.Steps.DuplicateCandidateStepFoundException;
@@ -171,7 +171,7 @@ public class StepsBehaviour {
 
     @Test
     public void shouldAllowI18nOfSteps(){
-        StoryConfiguration configuration = new MostUsefulStoryConfiguration();
+        Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
     	I18nSteps steps = new I18nSteps(configuration);
         CandidateStep[] candidateSteps = steps.getSteps();
@@ -188,7 +188,7 @@ public class StepsBehaviour {
 
     @Test(expected=StartingWordNotFound.class)
     public void shouldNotCreateStepIfStartingWordNotFound(){
-        StoryConfiguration configuration = new MostUsefulStoryConfiguration();
+        Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
     	I18nSteps steps = new I18nSteps(configuration);
         CandidateStep[] candidateSteps = steps.getSteps();
@@ -346,7 +346,7 @@ public class StepsBehaviour {
         private int whens;
         private int thens;
 
-        public I18nSteps(StoryConfiguration configuration) {
+        public I18nSteps(Configuration configuration) {
         	super(configuration);
 		}
 

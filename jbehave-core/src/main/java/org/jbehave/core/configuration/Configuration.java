@@ -21,7 +21,6 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
-import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StepPatternParser;
@@ -45,7 +44,7 @@ import com.thoughtworks.paranamer.Paranamer;
  * {@link RunnableStory} implementations to customise its runtime properties.
  * </p>
  * <p>
- * StoryConfiguration implements a <a
+ * Configuration implements a <a
  * href="http://en.wikipedia.org/wiki/Builder_pattern">Builder</a> pattern so
  * that each element of the configuration can be specified individually, and
  * read well. All elements have default values, which can be overridden by the
@@ -54,7 +53,7 @@ import com.thoughtworks.paranamer.Paranamer;
  * use of non-static member variables.
  * </p>
  */
-public class StoryConfiguration {
+public class Configuration {
 
 	/**
 	 * Use English language for keywords
@@ -117,9 +116,9 @@ public class StoryConfiguration {
 	private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
 
 	/**
-	 * The embedder configuration
+	 * The embedder controls
 	 */
-	private EmbedderConfiguration embedderConfiguration = new EmbedderConfiguration();
+	private EmbedderControls embedderControls = new EmbedderControls();
 
 	/**
 	 * Pattern build that uses prefix for identifying parameters
@@ -194,81 +193,81 @@ public class StoryConfiguration {
 		return keywords;
 	}
 
-	public EmbedderConfiguration embedderConfiguration() {
-		return embedderConfiguration;
+	public EmbedderControls embedderControls() {
+		return embedderControls;
 	}
 
-	public StoryConfiguration useKeywords(Keywords keywords) {
+	public Configuration useKeywords(Keywords keywords) {
 		this.keywords = keywords;
 		return this;
 	}
 
-	public StoryConfiguration useStepCollector(StepCollector stepCollector) {
+	public Configuration useStepCollector(StepCollector stepCollector) {
 		this.stepCollector = stepCollector;
 		return this;
 	}
 
-	public StoryConfiguration usePendingStepStrategy(
+	public Configuration usePendingStepStrategy(
 			PendingStepStrategy pendingStepStrategy) {
 		this.pendingStepStrategy = pendingStepStrategy;
 		return this;
 	}
 
-	public StoryConfiguration useErrorStrategy(FailureStrategy failureStrategy) {
+	public Configuration useErrorStrategy(FailureStrategy failureStrategy) {
 		this.failureStrategy = failureStrategy;
 		return this;
 	}
 
-	public StoryConfiguration useStoryParser(StoryParser storyParser) {
+	public Configuration useStoryParser(StoryParser storyParser) {
 		this.storyParser = storyParser;
 		return this;
 	}
 
-	public StoryConfiguration useStoryLoader(StoryLoader storyLoader) {
+	public Configuration useStoryLoader(StoryLoader storyLoader) {
 		this.storyLoader = storyLoader;
 		return this;
 	}
 
-	public StoryConfiguration useStoryPathResolver(
+	public Configuration useStoryPathResolver(
 			StoryPathResolver storyPathResolver) {
 		this.storyPathResolver = storyPathResolver;
 		return this;
 	}
 
-	public StoryConfiguration useStoryReporter(StoryReporter storyReporter) {
+	public Configuration useStoryReporter(StoryReporter storyReporter) {
 		this.storyReporter = storyReporter;
 		return this;
 	}
 
-	public StoryConfiguration useStoryReporter(String storyPath,
+	public Configuration useStoryReporter(String storyPath,
 			StoryReporter storyReporter) {
 		this.storyReporters.put(storyPath, storyReporter);
 		return this;
 	}
 
-	public StoryConfiguration useStoryReporters(
+	public Configuration useStoryReporters(
 			Map<String, StoryReporter> storyReporters) {
 		this.storyReporters.putAll(storyReporters);
 		return this;
 	}
 
-	public StoryConfiguration useStoryReporterBuilder(
+	public Configuration useStoryReporterBuilder(
 			StoryReporterBuilder storyReporterBuilder) {
 		this.storyReporterBuilder = storyReporterBuilder;
 		return this;
 	}
 
-	public StoryConfiguration useEmbedderConfiguration(
-			EmbedderConfiguration embedderConfiguration) {
-		this.embedderConfiguration = embedderConfiguration;
+	public Configuration useEmbedderControls(
+			EmbedderControls embedderControls) {
+		this.embedderControls = embedderControls;
 		return this;
 	}
 
-	public StoryConfiguration buildReporters(String... storyPaths) {
+	public Configuration buildReporters(String... storyPaths) {
 		return buildReporters(asList(storyPaths));
 	}
 
-	public StoryConfiguration buildReporters(List<String> storyPaths) {
+	public Configuration buildReporters(List<String> storyPaths) {
 		this.storyReporters.putAll(storyReporterBuilder.build(storyPaths));
 		return this;
 	}
@@ -277,7 +276,7 @@ public class StoryConfiguration {
 		return stepPatternParser;
 	}
 
-	public StoryConfiguration useStepPatternParser(
+	public Configuration useStepPatternParser(
 			StepPatternParser stepPatternParser) {
 		this.stepPatternParser = stepPatternParser;
 		return this;
@@ -287,7 +286,7 @@ public class StoryConfiguration {
 		return stepMonitor;
 	}
 
-	public StoryConfiguration useStepMonitor(StepMonitor stepMonitor) {
+	public Configuration useStepMonitor(StepMonitor stepMonitor) {
 		this.stepMonitor = stepMonitor;
 		return this;
 	}
@@ -296,7 +295,7 @@ public class StoryConfiguration {
 		return paranamer;
 	}
 
-	public StoryConfiguration useParanamer(Paranamer paranamer) {
+	public Configuration useParanamer(Paranamer paranamer) {
 		this.paranamer = paranamer;
 		return this;
 	}
@@ -305,7 +304,7 @@ public class StoryConfiguration {
 		return parameterConverters;
 	}
 
-	public StoryConfiguration useParameterConverters(
+	public Configuration useParameterConverters(
 			ParameterConverters parameterConverters) {
 		this.parameterConverters = parameterConverters;
 		return this;

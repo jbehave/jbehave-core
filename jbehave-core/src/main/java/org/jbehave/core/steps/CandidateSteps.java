@@ -2,7 +2,7 @@ package org.jbehave.core.steps;
 
 import java.util.List;
 
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.Configuration;
 
 /**
  * Represents the list of candidate steps that can be performed
@@ -56,8 +56,8 @@ public interface CandidateSteps {
     /**
      * Returns the configuration
      * 
-     * @return The StoryConfiguration
+     * @return The Configuration
      */
-    StoryConfiguration getConfiguration();
+    Configuration getConfiguration();
 
 }

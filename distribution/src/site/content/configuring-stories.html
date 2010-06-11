@@ -30,34 +30,44 @@ class:</p>
 <pre class="brush: java">
 public abstract class TraderStory extends JUnitStory {
 
-    public TraderStory(final Class storyClass) {
-          // start with default story configuration, overriding story definer and reporter
-          StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
-          storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
-          String storyPath = storyConfiguration.storyPathResolver().resolve(storyClass);
-          storyConfiguration.useStoryReporter(new StoryReporterBuilder(new FilePrintStreamFactory(storyPath))
-                  .with(CONSOLE)
-                  .with(TXT)
-                  .with(HTML)
-                  .with(XML)
-                  .build());
-          useConfiguration(storyConfiguration);
+	public TraderStory() {
 
-          // start with default steps configuration, overriding parameter converters, pattern builder and monitor
-          StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
-          StepMonitor monitor = new SilentStepMonitor();
-          stepsConfiguration.useParameterConverters(new ParameterConverters(
-                monitor, new DateConverter("dd/MM/yyyy")));  // define converter for Dates with custom pattern
-          stepsConfiguration.usePatternParser(new PrefixCapturingPatternParser("%")); // use '%' instead of '$' to identify parameters
-          stepsConfiguration.useMonitor(monitor);
-          addSteps(createSteps(stepsConfiguration));
-      }
+		// start with default story configuration, overriding story loader and reporter
+        StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
+        Class storyClass = this.getClass();
+        String storyPath = storyPathResolver.resolve(storyClass);
+        Properties rendering = new Properties();
+        rendering.put("decorateNonHtml", "true");
+        Configuration configuration = new MostUsefulConfiguration()
+                .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
+                .useStoryReporterBuilder(new StoryReporterBuilder()
+                	// use absolute output directory with Ant
+                	//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
+                	.withOutputLocationClass(storyClass)
+                	.withDefaultFormats()
+                	.withRenderingResources(rendering)
+                	.withFormats(CONSOLE, TXT, HTML, XML)
+                	.withFailureTrace(false))
+                .buildReporters(storyPath)
+                .useStoryPathResolver(storyPathResolver)
+                .useStepMonitor(new SilentStepMonitor())
+                .useParameterConverters(new ParameterConverters(
+        				new TraderConverter(mockTradePersister())))
+        		.useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
+        		
+		useConfiguration(configuration);
+		addSteps(createSteps(configuration));
+		
+	    configuredEmbedder().embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInReports(false);
 
-      protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
-          return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());
-      }
+	}
 
-    }  
+	protected CandidateSteps[] createSteps(Configuration configuration) {
+		return new StepsFactory(configuration).createCandidateSteps(
+				new TraderSteps(new TradingService()), new BeforeAfterSteps());
+	}
+
+}  
 </pre>
 
 <p>To run multiple stories, specified as story paths, via a single RunnableStory instance: </p>
@@ -65,51 +75,46 @@ public abstract class TraderStory extends JUnitStory {
 <pre class="brush: java">
 public class TraderStories extends JUnitStories {
 
-    public TraderStories() {
-        // start with default story configuration, overriding story definer and reporter
-        StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
-        storyConfiguration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
-        // Using URLs to define stories
-        storyConfiguration.useStoryLoader(new LoadFromURL());
-        for ( String storyPath : storyPaths() ){
-            StoryReporter storyReporter = new StoryReporterBuilder(new FilePrintStreamFactory(storyPath))
-                            .with(CONSOLE)
-                            .with(TXT)
-                            .with(HTML)
-                            .with(XML)
-                            .build();
-            storyConfiguration.addStoryReporter(storyPath, storyReporter);
+	private URLTraderEmbedder embedder = new URLTraderEmbedder();
 
-        }
-        useConfiguration(storyConfiguration);
+	@Override
+	protected Embedder configuredEmbedder() {
+		return embedder;
+	}
 
-        // start with default steps configuration, overriding parameter converters, pattern builder and monitor
-        StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
-        StepMonitor monitor = new SilentStepMonitor();
-        stepsConfiguration.useParameterConverters(new ParameterConverters(
-                monitor, new DateConverter("dd/MM/yyyy")));  // define converter for Dates with custom pattern
-        stepsConfiguration.usePatternParser(new RegexPrefixCapturingPatternParser("%")); // use '%' instead of '$' to identify parameters
-        stepsConfiguration.useMonitor(monitor);
-        addSteps(createSteps(stepsConfiguration));
-    }
+	@Override
+	protected List<String> storyPaths() {
+		return embedder.storyPaths();
+	}
+</pre>
 
-    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
-        return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());
-    }
+<p>where the URLTraderEmbedder specifies the story paths:</p>
 
-    @Override
-    protected List storyPaths() {
-        // Defining story paths via URLs
-        return asList(storyURL("trader_is_alerted_of_status.story"),
-                      storyURL("wildcard_search.story"));
-    }
+<pre>
+public class URLTraderEmbedder extends ClasspathTraderEmbedder {
 
-    private String storyURL(String name){
-        String codeLocation = new StoryLocation("", this.getClass()).getCodeLocation();
-        String urlPattern = "file://"+ codeLocation +"org/jbehave/examples/trader/stories/{0}";
-        return MessageFormat.format(urlPattern, name);
+	@Override
+	public Configuration configuration() {
+		return super.configuration().useStoryLoader(new LoadFromURL());
+	}
 
-    }
+	@Override
+	public List<String> storyPaths() {
+		// Defining story paths via URLs
+		return asList(storyURL("trader_is_alerted_of_status.story"),
+				storyURL("traders_can_be_subset.story"));
+	}
+
+	private String storyURL(String name) {
+		String codeLocation = new StoryLocation("", this.getClass())
+				.getCodeLocation().getFile();
+		String urlPattern = "file:" + codeLocation
+				+ "org/jbehave/examples/trader/stories/{0}";
+		return MessageFormat.format(urlPattern, name);
+
+	}
+
+}
 </pre>
 
 <span class="followup">Note that in this second example, we are using story paths as URLs, and correspondingly we configure the use of <a
@@ -187,17 +192,17 @@ Allows to define the strategy for error handling. The default value is <a
     href="javadoc/core/org/jbehave/core/errors/ErrorStrategy.html#RETHROW">RETHROW</a>.</p>
 
 <p><a
-    href="javadoc/core/org/jbehave/core/model/Keywords.html">Keywords</a>:
+    href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>:
 Allows to specify the keywords used. The default value is <a
     href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</p>
 
 <p>JBehave provides two useful base implementations that users can
 extend to override only the elements that differ from default behaviour:</p>
 <p><a
-    href="javadoc/core/org/jbehave/core/configuration/MostUsefulStoryConfiguration.html">MostUsefulStoryConfiguration</a>:
+    href="javadoc/core/org/jbehave/core/configuration/MostUsefulConfiguration.html">MostUsefulConfiguration</a>:
 provides a default configuration that most users will find appropriate</p>
 <p><a
-    href="javadoc/core/org/jbehave/core/configuration/PropertyBasedStoryConfiguration.html">PropertyBasedStoryConfiguration</a>:
+    href="javadoc/core/org/jbehave/core/configuration/PropertyBasedConfiguration.html">PropertyBasedConfiguration</a>:
 overrides way to configure via system properties</p>
 
 <h3>Steps Configuration Elements</h3>
@@ -220,7 +225,7 @@ performed to some output.</p>
 facade for collecting user-defined <a
     href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverters</a>.</p>
 <p><a
-    href="javadoc/core/org/jbehave/core/model/Keywords.html">Keywords</a>:
+    href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>:
 defaults to <a
     href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</p>
 

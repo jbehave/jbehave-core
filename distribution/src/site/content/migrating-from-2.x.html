@@ -43,13 +43,10 @@ used without change in JBehave 3.</p>
 	<li>The root package has also changed from <b>org.jbehave.scenario</b>
 	to <b>org.jbehave.core</b>. The Ant tasks and Maven goals have also been
 	renamed to reflect this change.</li>
-	<li><b>Configuration</b> class has been renamed to <b>StoryConfiguration</b>,
-	along with similar renames for the <b>MostUsefulStoryConfiguration</b>
-	and <b>PropertyBasedStoryConfiguration</b>, to ensure more consistency
-	and less confusion with the <b>StepsConfiguration</b>.</li>
-	<li>Configurations have shifted to use a builder paradigm.</li>
+	<li>Configuration has been consolidated into a single builder object.</b>
+	and moved to <b>org.jbehave.core.configuration</b> package.</li>
 	<li>JUnitStory allows the overriding of the default
-	MostUsefulStoryConfiguration only via the <b>useConfiguration</b>
+	MostUsefulConfiguration only via the <b>useConfiguration</b>
 	method, and the specification of <b>Steps</b> only via the <b>addSteps</b>
 	method.</li>
 	<li>The textual story lookup paradigm has shifted from a <b>RunnableStory</b>
@@ -62,9 +59,7 @@ used without change in JBehave 3.</p>
 	an embeddable component - <b>Embedder</b> - which has thin wrappers for 
 	running in multiple environments, e.g. JUnit, Ant/Maven, Spring etc.  Using the 
 	Embedder, the user can choose to run multiple textual story using a single 
-	Java entry point.</li>
-	<li>The story runner now renders the reports by default after running the stories, 
-	but behaviour can be changed via <b>renderReportsAfterStories</b> flag.</li>
+	Java entry point. The embedder behaviours can be managed via <b>EmbedderControls</b>.</li>
 </ul>
 
 <h2>Next?</h2>

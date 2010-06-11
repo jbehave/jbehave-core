@@ -10,9 +10,9 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.RunnableStory;
-import org.jbehave.core.configuration.EmbedderConfiguration;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.EmbedderControls;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.reporters.FreemarkerReportRenderer;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
@@ -27,7 +27,7 @@ import org.jbehave.core.steps.StepdocGenerator;
  * Represents an embeddable entry point to all of JBehave's functionality.
  */
 public class Embedder {
-	private StoryConfiguration storyConfiguration = new MostUsefulStoryConfiguration();
+	private Configuration configuration = new MostUsefulConfiguration();
 	private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
 	private ReportRenderer reportRenderer = new FreemarkerReportRenderer();
 	private StepdocGenerator stepdocGenerator = new DefaultStepdocGenerator();
@@ -47,8 +47,8 @@ public class Embedder {
 	}
 
 	public void runStories(List<RunnableStory> runnableStories) {		
-		EmbedderConfiguration embedderConfiguration = embedderConfiguration();
-		if (embedderConfiguration.skip()) {
+		EmbedderControls embedderControls = embedderControls();
+		if (embedderControls.skip()) {
 			embedderMonitor.storiesNotRun();
 			return;
 		}
@@ -61,11 +61,11 @@ public class Embedder {
 				story.useEmbedder(this);
 				story.run();
 			} catch (Throwable e) {
-				if (embedderConfiguration.batch()) {
+				if (embedderControls.batch()) {
 					// collect and postpone decision to throw exception
 					failedStories.put(storyName, e);
 				} else {
-					if (embedderConfiguration.ignoreFailureInStories()) {
+					if (embedderControls.ignoreFailureInStories()) {
 						embedderMonitor.storyFailed(storyName, e);
 					} else {
 						throw new RunningStoriesFailedException(
@@ -75,8 +75,8 @@ public class Embedder {
 			}
 		}
 
-		if (embedderConfiguration.batch() && failedStories.size() > 0) {
-			if (embedderConfiguration.ignoreFailureInStories()) {
+		if (embedderControls.batch() && failedStories.size() > 0) {
+			if (embedderControls.ignoreFailureInStories()) {
 				embedderMonitor.storiesBatchFailed(format(failedStories));
 			} else {
 				throw new RunningStoriesFailedException(
@@ -85,7 +85,7 @@ public class Embedder {
 			}
 		}
 
-		if (embedderConfiguration.renderReportsAfterStories()) {
+		if (embedderControls.renderReportsAfterStories()) {
 			renderReports();
 		}
 
@@ -94,7 +94,7 @@ public class Embedder {
 	public void runStoriesAsClasses(
 			List<? extends Class<? extends RunnableStory>> storyClasses) {
 		List<String> storyPaths = new ArrayList<String>();
-		StoryPathResolver resolver = storyConfiguration().storyPathResolver();
+		StoryPathResolver resolver = configuration().storyPathResolver();
 		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
@@ -102,8 +102,8 @@ public class Embedder {
 	}
 
 	public void runStoriesAsPaths(List<String> storyPaths) {
-		EmbedderConfiguration embedderConfiguration = embedderConfiguration();
-		if (embedderConfiguration.skip()) {
+		EmbedderControls embedderControls = embedderControls();
+		if (embedderControls.skip()) {
 			embedderMonitor.storiesNotRun();
 			return;
 		}
@@ -112,14 +112,14 @@ public class Embedder {
 		for (String storyPath : storyPaths) {
 			try {
 				embedderMonitor.runningStory(storyPath);
-				StoryConfiguration configuration = storyConfiguration();
+				Configuration configuration = configuration();
 				storyRunner.run(configuration, candidateSteps(), storyPath);
 			} catch (Throwable e) {
-				if (embedderConfiguration.batch()) {
+				if (embedderControls.batch()) {
 					// collect and postpone decision to throw exception
 					failedStories.put(storyPath, e);
 				} else {
-					if (embedderConfiguration.ignoreFailureInStories()) {
+					if (embedderControls.ignoreFailureInStories()) {
 						embedderMonitor.storyFailed(storyPath, e);
 					} else {
 						throw new RunningStoriesFailedException(
@@ -129,8 +129,8 @@ public class Embedder {
 			}
 		}
 
-		if (embedderConfiguration.batch() && failedStories.size() > 0) {
-			if (embedderConfiguration.ignoreFailureInStories()) {
+		if (embedderControls.batch() && failedStories.size() > 0) {
+			if (embedderControls.ignoreFailureInStories()) {
 				embedderMonitor.storiesBatchFailed(format(failedStories));
 			} else {
 				throw new RunningStoriesFailedException(
@@ -139,14 +139,14 @@ public class Embedder {
 			}
 		}
 
-		if (embedderConfiguration.renderReportsAfterStories()) {
+		if (embedderControls.renderReportsAfterStories()) {
 			renderReports();
 		}
 
 	}
 
 	public void renderReports() {
-		StoryReporterBuilder builder = storyConfiguration()
+		StoryReporterBuilder builder = configuration()
 				.storyReporterBuilder();
 		File outputDirectory = builder.outputDirectory();
 		List<String> formatNames = builder.formatNames(true);
@@ -156,9 +156,9 @@ public class Embedder {
 
 	public void renderReports(File outputDirectory, List<String> formats,
 			Properties renderingResources) {
-		EmbedderConfiguration embedderConfiguration = embedderConfiguration();
+		EmbedderControls embedderControls = embedderControls();
 
-		if (embedderConfiguration.skip()) {
+		if (embedderControls.skip()) {
 			embedderMonitor.reportsNotRendered();
 			return;
 		}
@@ -178,7 +178,7 @@ public class Embedder {
 		int scenarios = reportRenderer.countScenarios();
 		int failedScenarios = reportRenderer.countFailedScenarios();
 		embedderMonitor.reportsRendered(scenarios, failedScenarios);
-		if (!embedderConfiguration.ignoreFailureInReports()
+		if (!embedderControls.ignoreFailureInReports()
 				&& failedScenarios > 0) {
 			String message = "Rendered reports with " + scenarios
 					+ " scenarios (of which " + failedScenarios + " failed)";
@@ -193,8 +193,8 @@ public class Embedder {
 				.toArray(new CandidateSteps[candidateSteps.size()])));
 	}
 
-	public StoryConfiguration storyConfiguration() {
-		return storyConfiguration;
+	public Configuration configuration() {
+		return configuration;
 	}
 
 	public List<CandidateSteps> candidateSteps() {
@@ -205,8 +205,8 @@ public class Embedder {
 		return reportRenderer;
 	}
 
-	public EmbedderConfiguration embedderConfiguration() {
-		return storyConfiguration.embedderConfiguration();
+	public EmbedderControls embedderControls() {
+		return configuration.embedderControls();
 	}
 
 	public EmbedderMonitor embedderMonitor() {
@@ -217,8 +217,8 @@ public class Embedder {
 		return storyRunner;
 	}
 
-	public void useConfiguration(StoryConfiguration configuration) {
-		this.storyConfiguration = configuration;
+	public void useConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 
 	public void useCandidateSteps(List<CandidateSteps> candidateSteps) {
@@ -245,8 +245,8 @@ public class Embedder {
 		this.embedderMonitor = embedderMonitor;
 	}
 
-	public void useEmbedderConfiguration(EmbedderConfiguration embedderConfiguration) {
-		this.storyConfiguration.useEmbedderConfiguration(embedderConfiguration);
+	public void useEmbedderControls(EmbedderControls embedderControls) {
+		this.configuration.useEmbedderControls(embedderControls);
 	}
 
 	private String format(Map<String, Throwable> failedStories) {

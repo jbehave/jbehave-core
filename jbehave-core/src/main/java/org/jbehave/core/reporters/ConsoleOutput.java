@@ -2,8 +2,8 @@ package org.jbehave.core.reporters;
 
 import java.util.Properties;
 
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.model.Keywords;
 
 /**
  * <p>

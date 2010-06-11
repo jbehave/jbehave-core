@@ -1,7 +1,7 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.Configuration;
 
 /**
  * Factory class to create {@link CandidateSteps} from POJO instances.
@@ -11,13 +11,13 @@ import org.jbehave.core.configuration.StoryConfiguration;
  */
 public class StepsFactory {
 
-    private StoryConfiguration configuration;
+    private Configuration configuration;
 
     public StepsFactory() {
-        this(new MostUsefulStoryConfiguration());
+        this(new MostUsefulConfiguration());
     }
 
-    public StepsFactory(StoryConfiguration configuration) {
+    public StepsFactory(Configuration configuration) {
         this.configuration = configuration;
     }
 

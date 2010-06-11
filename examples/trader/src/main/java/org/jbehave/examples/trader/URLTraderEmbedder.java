@@ -5,7 +5,7 @@ import static java.util.Arrays.asList;
 import java.text.MessageFormat;
 import java.util.List;
 
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.StoryLocation;
 
@@ -17,8 +17,8 @@ import org.jbehave.core.io.StoryLocation;
 public class URLTraderEmbedder extends ClasspathTraderEmbedder {
 
 	@Override
-	public StoryConfiguration storyConfiguration() {
-		return super.storyConfiguration().useStoryLoader(new LoadFromURL());
+	public Configuration configuration() {
+		return super.configuration().useStoryLoader(new LoadFromURL());
 	}
 
 	@Override

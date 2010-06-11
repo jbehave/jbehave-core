@@ -11,8 +11,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.StoryClassLoader;
-import org.jbehave.core.configuration.EmbedderConfiguration;
-import org.jbehave.core.configuration.UnmodifiableEmbedderConfiguration;
+import org.jbehave.core.configuration.EmbedderControls;
+import org.jbehave.core.configuration.UnmodifiableEmbedderControls;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.io.StoryPathFinder;
@@ -252,7 +252,7 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         try {
              Embedder embedder = (Embedder) createStoryClassLoader().loadClass(embedderClass).newInstance();
              embedder.useEmbedderMonitor(embedderMonitor());
-             embedder.useEmbedderConfiguration(embedderConfiguration());
+             embedder.useEmbedderControls(embedderControls());
              return embedder;
         } catch ( Exception e) {
             throw new RuntimeException("Failed to create embedder "+embedderClass, e);
@@ -263,9 +263,9 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
 		return new MavenEmbedderMonitor();
 	}
 
-	protected EmbedderConfiguration embedderConfiguration() {
-		return new UnmodifiableEmbedderConfiguration(
-				new EmbedderConfiguration().doBatch(batch).doSkip(skip)
+	protected EmbedderControls embedderControls() {
+		return new UnmodifiableEmbedderControls(
+				new EmbedderControls().doBatch(batch).doSkip(skip)
 						.doIgnoreFailureInStories(ignoreFailureInStories)
 						.doIgnoreFailureInReports(ignoreFailureInReports)
 						.doRenderReportsAfterStories(renderReportsAfterStories));

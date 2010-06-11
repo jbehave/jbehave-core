@@ -2,7 +2,6 @@ package org.jbehave.core.configuration;
 
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
-import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
@@ -13,17 +12,17 @@ import org.jbehave.core.steps.StepMonitor;
 import com.thoughtworks.paranamer.Paranamer;
 
 /**
- * Decorator of StoryConfiguration that disables modification of configuration elements.
+ * Decorator of Configuration that disables modification of configuration elements.
  */
-public class UnmodifiableStoryConfiguration extends StoryConfiguration {
+public class UnmodifiableConfiguration extends Configuration {
 
-    private final StoryConfiguration delegate;
+    private final Configuration delegate;
 
-    public UnmodifiableStoryConfiguration() {
-        this(new MostUsefulStoryConfiguration());
+    public UnmodifiableConfiguration() {
+        this(new MostUsefulConfiguration());
     }
 
-    public UnmodifiableStoryConfiguration(StoryConfiguration delegate) {
+    public UnmodifiableConfiguration(Configuration delegate) {
         this.delegate = delegate;
     }
 
@@ -52,32 +51,32 @@ public class UnmodifiableStoryConfiguration extends StoryConfiguration {
     }
 
     @Override
-    public StoryConfiguration useKeywords(Keywords keywords) {
+    public Configuration useKeywords(Keywords keywords) {
         throw notAllowed();
     }
 
     @Override
-    public StoryConfiguration useStepCollector(StepCollector stepCollector) {
+    public Configuration useStepCollector(StepCollector stepCollector) {
         throw notAllowed();
     }
 
     @Override
-    public StoryConfiguration usePendingStepStrategy(PendingStepStrategy pendingStepStrategy) {
+    public Configuration usePendingStepStrategy(PendingStepStrategy pendingStepStrategy) {
         throw notAllowed();
     }
 
     @Override
-    public StoryConfiguration useErrorStrategy(FailureStrategy failureStrategy) {
+    public Configuration useErrorStrategy(FailureStrategy failureStrategy) {
         throw notAllowed();
     }
 
     @Override
-    public StoryConfiguration useStoryParser(StoryParser storyParser) {
+    public Configuration useStoryParser(StoryParser storyParser) {
         throw notAllowed();
     }
 
     @Override
-    public StoryConfiguration useStoryReporter(StoryReporter storyReporter) {
+    public Configuration useStoryReporter(StoryReporter storyReporter) {
         throw notAllowed();
     }
     
@@ -87,29 +86,29 @@ public class UnmodifiableStoryConfiguration extends StoryConfiguration {
 	}
 
 	@Override
-	public StoryConfiguration useEmbedderConfiguration(
-			EmbedderConfiguration embedderConfiguration) {
+	public Configuration useEmbedderControls(
+			EmbedderControls embedderControls) {
         throw notAllowed();
 	}
 
 	@Override
-	public StoryConfiguration useParameterConverters(
+	public Configuration useParameterConverters(
 			ParameterConverters parameterConverters) {
         throw notAllowed();
 	}
 
 	@Override
-	public StoryConfiguration useParanamer(Paranamer paranamer) {
+	public Configuration useParanamer(Paranamer paranamer) {
         throw notAllowed();
 	}
 
 	@Override
-	public StoryConfiguration useStepMonitor(StepMonitor stepMonitor) {
+	public Configuration useStepMonitor(StepMonitor stepMonitor) {
         throw notAllowed();
 	}
 
 	@Override
-	public StoryConfiguration useStepPatternParser(
+	public Configuration useStepPatternParser(
 			StepPatternParser stepPatternParser) {
         throw notAllowed();
 	}

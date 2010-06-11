@@ -25,8 +25,8 @@ import java.util.Map;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
@@ -422,7 +422,7 @@ public class CandidateStepBehaviour {
 	
 	@Test
 	public void shouldPerformStepsInDryRunMode() {
-		StoryConfiguration configuration = new MostUsefulStoryConfiguration();
+		Configuration configuration = new MostUsefulConfiguration();
 		configuration.doDryRun(true);
 		NamedTypeSteps steps = new NamedTypeSteps(configuration);
 		CandidateStep[] candidateSteps = steps.getSteps();
@@ -455,10 +455,10 @@ public class CandidateStepBehaviour {
 		int whenTimes;
 
 		public NamedTypeSteps() {
-			this(new MostUsefulStoryConfiguration());
+			this(new MostUsefulConfiguration());
 		}
 
-		public NamedTypeSteps(StoryConfiguration configuration) {
+		public NamedTypeSteps(Configuration configuration) {
 			super(configuration);
 		}
 

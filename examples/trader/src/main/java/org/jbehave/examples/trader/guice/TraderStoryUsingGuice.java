@@ -1,6 +1,6 @@
 package org.jbehave.examples.trader.guice;
 
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.guice.GuiceStepsFactory;
 import org.jbehave.examples.trader.BeforeAfterSteps;
@@ -15,7 +15,7 @@ import com.google.inject.Scopes;
 public abstract class TraderStoryUsingGuice extends TraderStory {
 
     @Override
-    protected CandidateSteps[] createSteps(StoryConfiguration configuration) {
+    protected CandidateSteps[] createSteps(Configuration configuration) {
         Injector parent = createInjector();
         return new GuiceStepsFactory(configuration, parent).createCandidateSteps();
     }

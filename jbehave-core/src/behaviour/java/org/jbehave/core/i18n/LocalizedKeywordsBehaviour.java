@@ -2,24 +2,24 @@ package org.jbehave.core.i18n;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.jbehave.core.model.Keywords.AND;
-import static org.jbehave.core.model.Keywords.AS_A;
-import static org.jbehave.core.model.Keywords.EXAMPLES_TABLE;
-import static org.jbehave.core.model.Keywords.EXAMPLES_TABLE_HEADER_SEPARATOR;
-import static org.jbehave.core.model.Keywords.EXAMPLES_TABLE_ROW;
-import static org.jbehave.core.model.Keywords.EXAMPLES_TABLE_VALUE_SEPARATOR;
-import static org.jbehave.core.model.Keywords.FAILED;
-import static org.jbehave.core.model.Keywords.GIVEN;
-import static org.jbehave.core.model.Keywords.GIVEN_STORIES;
-import static org.jbehave.core.model.Keywords.IGNORABLE;
-import static org.jbehave.core.model.Keywords.IN_ORDER_TO;
-import static org.jbehave.core.model.Keywords.I_WANT_TO;
-import static org.jbehave.core.model.Keywords.NARRATIVE;
-import static org.jbehave.core.model.Keywords.NOT_PERFORMED;
-import static org.jbehave.core.model.Keywords.PENDING;
-import static org.jbehave.core.model.Keywords.SCENARIO;
-import static org.jbehave.core.model.Keywords.THEN;
-import static org.jbehave.core.model.Keywords.WHEN;
+import static org.jbehave.core.configuration.Keywords.AND;
+import static org.jbehave.core.configuration.Keywords.AS_A;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_HEADER_SEPARATOR;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_ROW;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_VALUE_SEPARATOR;
+import static org.jbehave.core.configuration.Keywords.FAILED;
+import static org.jbehave.core.configuration.Keywords.GIVEN;
+import static org.jbehave.core.configuration.Keywords.GIVEN_STORIES;
+import static org.jbehave.core.configuration.Keywords.IGNORABLE;
+import static org.jbehave.core.configuration.Keywords.IN_ORDER_TO;
+import static org.jbehave.core.configuration.Keywords.I_WANT_TO;
+import static org.jbehave.core.configuration.Keywords.NARRATIVE;
+import static org.jbehave.core.configuration.Keywords.NOT_PERFORMED;
+import static org.jbehave.core.configuration.Keywords.PENDING;
+import static org.jbehave.core.configuration.Keywords.SCENARIO;
+import static org.jbehave.core.configuration.Keywords.THEN;
+import static org.jbehave.core.configuration.Keywords.WHEN;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
@@ -28,11 +28,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.i18n.LocalizedKeywords.LocalizedKeywordNotFoundException;
 import org.jbehave.core.i18n.LocalizedKeywords.ResourceBundleNotFoundException;
-import org.jbehave.core.model.Keywords;
 import org.jbehave.core.steps.StepType;
 import org.junit.Test;
 
@@ -62,13 +62,13 @@ public class LocalizedKeywordsBehaviour {
 
     @Test
     public void shouldAllowKeywordsToBeOverriddenInStoryConfiguration() {
-        StoryConfiguration configuration = new MostUsefulStoryConfiguration();
+        Configuration configuration = new MostUsefulConfiguration();
         ensureKeywordsAreLocalised(configuration, new Locale("en"));
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
         ensureKeywordsAreLocalised(configuration, new Locale("it"));
     }
 
-    private void ensureKeywordsAreLocalised(StoryConfiguration configuration, Locale locale) {
+    private void ensureKeywordsAreLocalised(Configuration configuration, Locale locale) {
         Keywords keywords = keywordsFor(locale, null);
         Map<StepType, String> startingWordsByType = keywords.startingWordsByType();
         assertThat(startingWordsByType.get(StepType.GIVEN), equalTo(keywords.given()));

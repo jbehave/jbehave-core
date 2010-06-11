@@ -8,9 +8,9 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.util.List;
 
-import org.jbehave.core.configuration.EmbedderConfiguration;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.EmbedderControls;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathFinder;
@@ -28,14 +28,14 @@ import org.jbehave.examples.trader.service.TradingService;
 
 /**
  * Specifies the Embedder for the Trader example, providing the
- * StoryConfiguration and the CandidateSteps, using classpath story loading.
+ * Configuration and the CandidateSteps, using classpath story loading.
  */
 public class ClasspathTraderEmbedder extends Embedder {
 
 	@Override
-	public StoryConfiguration storyConfiguration() {
+	public Configuration configuration() {
 		Class<? extends ClasspathTraderEmbedder> embedderClass = this.getClass();
-		return new MostUsefulStoryConfiguration()
+		return new MostUsefulConfiguration()
 			.useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
 			.useStoryReporterBuilder(new StoryReporterBuilder()
         		// use absolute output directory with Ant
@@ -44,21 +44,19 @@ public class ClasspathTraderEmbedder extends Embedder {
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
 			.buildReporters(storyPaths())
-			.useEmbedderConfiguration(new EmbedderConfiguration()
-					.doIgnoreFailureInStories(true).doIgnoreFailureInReports(true));
+			.useEmbedderControls(new EmbedderControls()
+					.doIgnoreFailureInStories(true).doIgnoreFailureInReports(true))
+			.useParameterConverters(new ParameterConverters(
+							new TraderConverter(mockTradePersister())))
+			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
+							"%")) // use '%' instead of '$' to identify parameters
+			.useStepMonitor(new SilentStepMonitor());
+					
 	}
 
 	@Override
 	public List<CandidateSteps> candidateSteps() {
-		// start with default steps configuration, overriding parameter
-		// converters, pattern builder and monitor
-		StoryConfiguration stepsConfiguration = new MostUsefulStoryConfiguration()
-			.useParameterConverters(new ParameterConverters(
-				new TraderConverter(mockTradePersister())))
-			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
-				"%")) // use '%' instead of '$' to identify parameters
-			.useStepMonitor(new SilentStepMonitor());
-		return asList(new StepsFactory(stepsConfiguration)
+		return asList(new StepsFactory(configuration())
 				.createCandidateSteps(new TraderSteps(new TradingService()),
 						new BeforeAfterSteps()));
 	}

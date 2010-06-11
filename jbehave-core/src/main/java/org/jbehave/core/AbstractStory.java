@@ -5,10 +5,10 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.configuration.EmbedderConfiguration;
-import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
-import org.jbehave.core.configuration.StoryConfiguration;
-import org.jbehave.core.configuration.UnmodifiableEmbedderConfiguration;
+import org.jbehave.core.configuration.EmbedderControls;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.UnmodifiableEmbedderControls;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.steps.CandidateSteps;
 
@@ -17,10 +17,10 @@ import org.jbehave.core.steps.CandidateSteps;
  * Abstract implementation of {@link RunnableStory} which is intended as a base
  * class with no explicit support for any test framework. It provides the
  * {@link Embedder} used to run the story or stories, using the
- * {@link StoryConfiguration} and the {@link CandidateSteps} specified. By
- * default, {@link MostUsefulStoryConfiguration}) and
+ * {@link Configuration} and the {@link CandidateSteps} specified. By
+ * default, {@link MostUsefulConfiguration}) and
  * {@link Embedder#Embedder()} are used, but these can overridden via
- * the {@link RunnableStory#useConfiguration(StoryConfiguration)} and
+ * the {@link RunnableStory#useConfiguration(Configuration)} and
  * {@link RunnableStory#useEmbedder(Embedder)} methods respectively.
  * </p>
  * <p>
@@ -35,11 +35,11 @@ import org.jbehave.core.steps.CandidateSteps;
  */
 public abstract class AbstractStory implements RunnableStory {
 
-	private StoryConfiguration configuration = new MostUsefulStoryConfiguration();
+	private Configuration configuration = new MostUsefulConfiguration();
 	private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
 	private Embedder embedder = new Embedder();
 
-	public void useConfiguration(StoryConfiguration configuration) {
+	public void useConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
 
@@ -52,9 +52,9 @@ public abstract class AbstractStory implements RunnableStory {
 	}
 
 	protected Embedder configuredEmbedder() {
-		EmbedderConfiguration embedderConfiguration = embedder.embedderConfiguration();
-		if ( embedderConfiguration instanceof UnmodifiableEmbedderConfiguration ){
-			configuration.useEmbedderConfiguration(embedderConfiguration);
+		EmbedderControls embedderControls = embedder.embedderControls();
+		if ( embedderControls instanceof UnmodifiableEmbedderControls ){
+			configuration.useEmbedderControls(embedderControls);
 		}
 		embedder.useConfiguration(configuration);
 		embedder.useCandidateSteps(candidateSteps);
