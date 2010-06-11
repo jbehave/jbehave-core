@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
-import org.jbehave.core.steps.StepsConfiguration;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 /**
@@ -20,10 +20,10 @@ import org.springframework.beans.factory.ListableBeanFactory;
  */
 public class SpringStepsFactory {
 
-    private final StepsConfiguration configuration;
+    private final StoryConfiguration configuration;
     private final ListableBeanFactory parent;
 
-    public SpringStepsFactory(StepsConfiguration configuration, ListableBeanFactory parent) {
+    public SpringStepsFactory(StoryConfiguration configuration, ListableBeanFactory parent) {
         this.configuration = configuration;
         this.parent = parent;
     }

@@ -6,16 +6,16 @@ import org.jbehave.core.JUnitStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
-import org.jbehave.core.steps.MostUsefulStepsConfiguration;
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.StepsConfiguration;
 import org.jbehave.core.steps.StepsFactory;
 import org.jbehave.examples.trader.converters.CalendarConverter;
 
 public class ClaimsWithNullCalendar extends JUnitStory {
 
 	public ClaimsWithNullCalendar() {
-		StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration()
+		StoryConfiguration stepsConfiguration = new MostUsefulStoryConfiguration()
 				.useParameterConverters(new ParameterConverters(
 						new CalendarConverter("dd/MM/yyyy")));
 		addSteps(new StepsFactory(stepsConfiguration)

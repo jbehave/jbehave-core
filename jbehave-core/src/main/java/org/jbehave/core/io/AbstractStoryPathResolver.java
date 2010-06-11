@@ -8,7 +8,7 @@ public abstract class AbstractStoryPathResolver implements
 	static final String DOT_REGEX = "\\.";
 	static final String SLASH = "/";
 	static final String EMPTY = "";
-	static final String DEFAULT_EXTENSION = "";
+	static final String DEFAULT_EXTENSION = ".story";
 
 	private final String extension;
 

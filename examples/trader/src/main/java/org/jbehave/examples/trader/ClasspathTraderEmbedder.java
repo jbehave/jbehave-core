@@ -8,6 +8,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.util.List;
 
+import org.jbehave.core.configuration.EmbedderConfiguration;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.embedder.Embedder;
@@ -16,10 +17,8 @@ import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.StepsConfiguration;
 import org.jbehave.core.steps.StepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.jbehave.examples.trader.model.Stock;
@@ -44,19 +43,21 @@ public class ClasspathTraderEmbedder extends Embedder {
         		.withOutputLocationClass(embedderClass)
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
-			.buildReporters(storyPaths());
+			.buildReporters(storyPaths())
+			.useEmbedderConfiguration(new EmbedderConfiguration()
+					.doIgnoreFailureInStories(true).doIgnoreFailureInReports(true));
 	}
 
 	@Override
 	public List<CandidateSteps> candidateSteps() {
 		// start with default steps configuration, overriding parameter
 		// converters, pattern builder and monitor
-		StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration()
+		StoryConfiguration stepsConfiguration = new MostUsefulStoryConfiguration()
 			.useParameterConverters(new ParameterConverters(
 				new TraderConverter(mockTradePersister())))
-			.usePatternParser(new RegexPrefixCapturingPatternParser(
+			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
 				"%")) // use '%' instead of '$' to identify parameters
-			.useMonitor(new SilentStepMonitor());
+			.useStepMonitor(new SilentStepMonitor());
 		return asList(new StepsFactory(stepsConfiguration)
 				.createCandidateSteps(new TraderSteps(new TradingService()),
 						new BeforeAfterSteps()));

@@ -18,7 +18,7 @@ public class StoryRunnerTask extends AbstractStoryTask {
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
         List<RunnableStory> stories = stories();
-		log("Running stories "+stories+" using embedder "+embedder, MSG_INFO);
+		log("Running stories using embedder "+embedder, MSG_INFO);
 		embedder.runStories(stories);
     }
 

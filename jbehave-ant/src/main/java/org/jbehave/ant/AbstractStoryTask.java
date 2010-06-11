@@ -16,8 +16,9 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.StoryClassLoader;
+import org.jbehave.core.configuration.EmbedderConfiguration;
+import org.jbehave.core.configuration.UnmodifiableEmbedderConfiguration;
 import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.embedder.EmbedderConfiguration;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.io.StoryPathFinder;
 
@@ -141,10 +142,11 @@ public abstract class AbstractStoryTask extends Task {
 	}
 
 	protected EmbedderConfiguration embedderConfiguration() {
-		return new EmbedderConfiguration().doBatch(batch).doSkip(skip)
-				.doIgnoreFailureInStories(ignoreFailureInStories)
-				.doIgnoreFailureInReports(ignoreFailureInReports)
-				.doRenderReportsAfterStories(renderReportsAfterStories);
+		return new UnmodifiableEmbedderConfiguration(
+				new EmbedderConfiguration().doBatch(batch).doSkip(skip)
+						.doIgnoreFailureInStories(ignoreFailureInStories)
+						.doIgnoreFailureInReports(ignoreFailureInReports)
+						.doRenderReportsAfterStories(renderReportsAfterStories));
 	}
 
 	protected List<String> storyPaths() {
@@ -326,7 +328,7 @@ public abstract class AbstractStoryTask extends Task {
 		this.renderReportsAfterStories = renderReportsAfterStories;
 	}
 
-	public void setStoryEmbedder(String storyEmbedder) {
-		this.embedderClass = storyEmbedder;
+	public void setEmbedderClass(String embedderClass) {
+		this.embedderClass = embedderClass;
 	}
 }

@@ -25,6 +25,8 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.errors.BeforeOrAfterException;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
@@ -72,28 +74,28 @@ import org.jbehave.core.reporters.StoryReporter;
  * 
  * </p>
  * <p>
- * StepsConfiguration can be used to provide customization to the defaults
+ * StoryConfiguration can be used to provide customization to the defaults
  * configuration elements, eg custom parameters converters.
  * </p>
  */
 public class Steps implements CandidateSteps {
 
-    private final StepsConfiguration configuration;
+    private final StoryConfiguration configuration;
     private Object instance;
 
     /**
      * Creates Steps with default configuration
      */
     public Steps() {
-        this(new MostUsefulStepsConfiguration());
+        this(new MostUsefulStoryConfiguration());
     }
 
     /**
      * Creates Steps with given custom configuration
      * 
-     * @param configuration the StepsConfiguration
+     * @param configuration the StoryConfiguration
      */
-    public Steps(StepsConfiguration configuration) {
+    public Steps(StoryConfiguration configuration) {
         this.configuration = configuration;
         this.instance = this;
     }
@@ -102,10 +104,10 @@ public class Steps implements CandidateSteps {
      * Creates Steps with given custom configuration wrapping a POJO instance
      * containing the annotated steps methods
      * 
-     * @param configuration the StepsConfiguration
+     * @param configuration the StoryConfiguration
      * @param instance the POJO instance
      */
-    public Steps(StepsConfiguration configuration, Object instance) {
+    public Steps(StoryConfiguration configuration, Object instance) {
         this.configuration = configuration;
         this.instance = instance;
     }
@@ -150,16 +152,16 @@ public class Steps implements CandidateSteps {
             String stepPatternAsString, int priority) {
         checkForDuplicateCandidateSteps(steps, stepType, stepPatternAsString);
         CandidateStep step = createCandidateStep(method, stepType, stepPatternAsString, priority, configuration);
-        step.useStepMonitor(configuration.monitor());
+        step.useStepMonitor(configuration.stepMonitor());
         step.useParanamer(configuration.paranamer());
         step.doDryRun(configuration.dryRun());
         steps.add(step);
     }
 
     protected CandidateStep createCandidateStep(Method method, StepType stepType, String stepPatternAsString, int priority,
-            StepsConfiguration configuration) {
+            StoryConfiguration configuration) {
         return new CandidateStep(stepPatternAsString, priority, stepType, method, instance,
-                configuration.patternParser(), configuration.parameterConverters(), configuration.getStartingWordsByType());
+                configuration.stepPatternParser(), configuration.parameterConverters(), configuration.keywords().startingWordsByType());
     }
 
     private void checkForDuplicateCandidateSteps(List<CandidateStep> steps, StepType stepType, String patternAsString) {
@@ -191,7 +193,7 @@ public class Steps implements CandidateSteps {
         return storyStepsHaving(AfterStory.class, givenStory, new OkayToRun());
     }
     
-	public StepsConfiguration getConfiguration() {
+	public StoryConfiguration getConfiguration() {
 		return configuration;
 	}
 

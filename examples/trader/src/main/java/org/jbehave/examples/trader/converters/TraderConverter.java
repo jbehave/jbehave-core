@@ -2,10 +2,10 @@ package org.jbehave.examples.trader.converters;
 
 import java.lang.reflect.Type;
 
-import org.jbehave.examples.trader.model.Trader;
-import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.core.steps.ParameterConverters.InvalidParameterException;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.examples.trader.model.Trader;
+import org.jbehave.examples.trader.persistence.TraderPersister;
 
 public class TraderConverter implements ParameterConverter {
     private TraderPersister persister;

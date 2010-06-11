@@ -93,6 +93,9 @@ public class StoryReporterBuilder {
 	private boolean reportFailureTrace = false;
 
 	public File outputDirectory() {
+		if ( outputAbsolute ){
+			return new File(outputDirectory);
+		}
 		return filePrintStreamFactory("").outputDirectory();
 	}
 

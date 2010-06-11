@@ -5,12 +5,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Map;
 
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.examples.trader.model.Stock;
 
 public class ItTraderSteps {
 

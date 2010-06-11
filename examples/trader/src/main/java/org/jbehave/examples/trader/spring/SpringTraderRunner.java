@@ -1,23 +1,29 @@
 package org.jbehave.examples.trader.spring;
 
+import static java.util.Arrays.asList;
+
+import java.util.List;
+
+import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
-import org.jbehave.core.steps.*;
+import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.SilentStepMonitor;
+import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.steps.StepsFactory;
 import org.jbehave.examples.trader.BeforeAfterSteps;
-import org.jbehave.examples.trader.TraderSteps;
 import org.jbehave.examples.trader.ClasspathTraderEmbedder;
+import org.jbehave.examples.trader.TraderSteps;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
 
 /**
  * Run stories via Spring JUnit 4 runner
@@ -38,12 +44,12 @@ public class SpringTraderRunner {
             @Override
             public List<CandidateSteps> candidateSteps() {
 
-                StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
+                StoryConfiguration stepsConfiguration = new MostUsefulStoryConfiguration();
                 StepMonitor monitor = new SilentStepMonitor();
                 stepsConfiguration.useParameterConverters(new ParameterConverters(
                         monitor, new TraderConverter(mockTradePersister())));  // define converter for custom type Trader
-                stepsConfiguration.usePatternParser(new RegexPrefixCapturingPatternParser("%")); // use '%' instead of '$' to identify parameters
-                stepsConfiguration.useMonitor(monitor);
+                stepsConfiguration.useStepPatternParser(new RegexPrefixCapturingPatternParser("%")); // use '%' instead of '$' to identify parameters
+                stepsConfiguration.useStepMonitor(monitor);
 
                 return asList(new StepsFactory(stepsConfiguration).createCandidateSteps(traderSteps, beforeAndAfterSteps));
             }

@@ -6,9 +6,9 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
-import org.jbehave.core.steps.StepsConfiguration;
 
 import com.google.inject.Binding;
 import com.google.inject.Injector;
@@ -24,10 +24,10 @@ import com.google.inject.Key;
  */
 public class GuiceStepsFactory {
 
-    private final StepsConfiguration configuration;
+    private final StoryConfiguration configuration;
     private final Injector parent;
 
-    public GuiceStepsFactory(StepsConfiguration configuration, Injector parent) {
+    public GuiceStepsFactory(StoryConfiguration configuration, Injector parent) {
         this.configuration = configuration;
         this.parent = parent;
     }

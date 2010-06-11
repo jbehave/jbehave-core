@@ -5,9 +5,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
-import org.jbehave.core.steps.StepsConfiguration;
 import org.picocontainer.ComponentAdapter;
 import org.picocontainer.PicoContainer;
 
@@ -21,10 +21,10 @@ import org.picocontainer.PicoContainer;
  */
 public class PicoStepsFactory {
 
-    private final StepsConfiguration configuration;
+    private final StoryConfiguration configuration;
     private final PicoContainer parent;
 
-    public PicoStepsFactory(StepsConfiguration configuration, PicoContainer parent) {
+    public PicoStepsFactory(StoryConfiguration configuration, PicoContainer parent) {
         this.configuration = configuration;
         this.parent = parent;
     }

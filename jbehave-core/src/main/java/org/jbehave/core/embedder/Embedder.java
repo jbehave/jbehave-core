@@ -10,6 +10,7 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.RunnableStory;
+import org.jbehave.core.configuration.EmbedderConfiguration;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.io.StoryPathResolver;
@@ -33,23 +34,20 @@ public class Embedder {
 	private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter(
 			System.out, true);
 	private StoryRunner storyRunner = new StoryRunner();
-	private EmbedderConfiguration embedderConfiguration;
 	private EmbedderMonitor embedderMonitor;
 
 	public Embedder() {
-		this(new StoryRunner(), new EmbedderConfiguration(),
-				new PrintStreamEmbedderMonitor());
+		this(new StoryRunner(), new PrintStreamEmbedderMonitor());
 	}
 
 	public Embedder(StoryRunner storyRunner,
-			EmbedderConfiguration embedderConfiguration,
 			EmbedderMonitor embedderMonitor) {
 		this.storyRunner = storyRunner;
 		this.embedderMonitor = embedderMonitor;
-		this.embedderConfiguration = embedderConfiguration;
 	}
 
-	public void runStories(List<RunnableStory> runnableStories) {
+	public void runStories(List<RunnableStory> runnableStories) {		
+		EmbedderConfiguration embedderConfiguration = embedderConfiguration();
 		if (embedderConfiguration.skip()) {
 			embedderMonitor.storiesNotRun();
 			return;
@@ -104,6 +102,7 @@ public class Embedder {
 	}
 
 	public void runStoriesAsPaths(List<String> storyPaths) {
+		EmbedderConfiguration embedderConfiguration = embedderConfiguration();
 		if (embedderConfiguration.skip()) {
 			embedderMonitor.storiesNotRun();
 			return;
@@ -157,6 +156,8 @@ public class Embedder {
 
 	public void renderReports(File outputDirectory, List<String> formats,
 			Properties renderingResources) {
+		EmbedderConfiguration embedderConfiguration = embedderConfiguration();
+
 		if (embedderConfiguration.skip()) {
 			embedderMonitor.reportsNotRendered();
 			return;
@@ -205,7 +206,7 @@ public class Embedder {
 	}
 
 	public EmbedderConfiguration embedderConfiguration() {
-		return embedderConfiguration;
+		return storyConfiguration.embedderConfiguration();
 	}
 
 	public EmbedderMonitor embedderMonitor() {
@@ -240,13 +241,12 @@ public class Embedder {
 		this.storyRunner = storyRunner;
 	}
 
-	public void useEmbedderConfiguration(
-			EmbedderConfiguration embedderConfiguration) {
-		this.embedderConfiguration = embedderConfiguration;
-	}
-
 	public void useEmbedderMonitor(EmbedderMonitor embedderMonitor) {
 		this.embedderMonitor = embedderMonitor;
+	}
+
+	public void useEmbedderConfiguration(EmbedderConfiguration embedderConfiguration) {
+		this.storyConfiguration.useEmbedderConfiguration(embedderConfiguration);
 	}
 
 	private String format(Map<String, Throwable> failedStories) {

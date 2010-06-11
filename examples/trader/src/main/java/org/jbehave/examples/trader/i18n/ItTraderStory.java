@@ -1,5 +1,7 @@
 package org.jbehave.examples.trader.i18n;
 
+import java.util.Locale;
+
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
@@ -10,12 +12,8 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.StepsConfiguration;
 import org.jbehave.core.steps.StepsFactory;
-
-import java.util.Locale;
 
 public class ItTraderStory extends JUnitStory {
 
@@ -31,7 +29,7 @@ public class ItTraderStory extends JUnitStory {
         storyConfiguration.useStoryReporter(new ConsoleOutput(storyConfiguration.keywords()));
         useConfiguration(storyConfiguration);
 
-        StepsConfiguration stepsConfiguration = new MostUsefulStepsConfiguration();
+        StoryConfiguration stepsConfiguration = new MostUsefulStoryConfiguration();
         // use Italian for keywords
         stepsConfiguration.useKeywords(keywords);
         stepsConfiguration.useParameterConverters(new ParameterConverters(new ParameterConverters.ExamplesTableConverter(keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator())));

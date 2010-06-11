@@ -17,7 +17,7 @@ public class StoryPathRunnerTask extends AbstractStoryTask {
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
         List<String> storyPaths = storyPaths();
-		log("Running stories with paths "+storyPaths+" using embedder "+embedder, MSG_INFO);
+		log("Running stories using embedder "+embedder, MSG_INFO);
 		embedder.runStoriesAsPaths(storyPaths);
     }
 

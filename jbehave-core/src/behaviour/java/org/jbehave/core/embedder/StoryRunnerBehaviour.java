@@ -29,7 +29,6 @@ import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateStep;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepResult;
@@ -61,7 +60,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mock(Steps.class);
-        when(mySteps.getConfiguration()).thenReturn(new MostUsefulStepsConfiguration());
+        when(mySteps.getConfiguration()).thenReturn(new MostUsefulStoryConfiguration());
         when(mySteps.getSteps()).thenReturn(someCandidateSteps);
         IllegalArgumentException anException = new IllegalArgumentException();
         Step pendingStep = mock(Step.class);
@@ -122,7 +121,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mock(Steps.class);
-        when(mySteps.getConfiguration()).thenReturn(new MostUsefulStepsConfiguration());
+        when(mySteps.getConfiguration()).thenReturn(new MostUsefulStoryConfiguration());
         when(mySteps.getSteps()).thenReturn(someCandidateSteps);
         Step successfulStep = mock(Step.class);
         when(successfulStep.perform()).thenReturn(StepResult.successful("successfulStep"));
@@ -310,7 +309,7 @@ public class StoryRunnerBehaviour {
 
 	private CandidateSteps mockMySteps() {
 		CandidateSteps mySteps = mock(CandidateSteps.class);
-        when(mySteps.getConfiguration()).thenReturn(new MostUsefulStepsConfiguration());
+        when(mySteps.getConfiguration()).thenReturn(new MostUsefulStoryConfiguration());
 		return mySteps;
 	}
 

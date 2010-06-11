@@ -27,6 +27,7 @@ import org.jbehave.core.RunnableStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.configuration.EmbedderConfiguration;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
 import org.jbehave.core.embedder.Embedder.RenderingReportsFailedException;
@@ -57,7 +58,7 @@ public class EmbedderBehaviour {
 		// When
 		StoryConfiguration configuration = new MostUsefulStoryConfiguration();
 		CandidateSteps steps = mock(CandidateSteps.class);
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		embedder.useConfiguration(configuration);
 		embedder.useCandidateSteps(asList(steps));
 		for (RunnableStory story : runnables) {
@@ -88,8 +89,7 @@ public class EmbedderBehaviour {
 		RunnableStory myOtherStory = mock(RunnableStory.class);
 		List<RunnableStory> runnables = asList(myStory, myOtherStory);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		for (RunnableStory story : runnables) {
 			doNothing().when(story).run();
 		}
@@ -117,8 +117,7 @@ public class EmbedderBehaviour {
 		RunnableStory myOtherStory = mock(RunnableStory.class);
 		List<RunnableStory> runnables = asList(myStory, myOtherStory);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		for (RunnableStory story : runnables) {
 			doThrow(new RuntimeException(story + " failed")).when(story).run();
 		}
@@ -139,8 +138,7 @@ public class EmbedderBehaviour {
 		RunnableStory myOtherStory = mock(RunnableStory.class);
 		List<RunnableStory> runnables = asList(myStory, myOtherStory);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		for (RunnableStory story : runnables) {
 			doThrow(new RuntimeException(story + " failed")).when(story).run();
 		}
@@ -170,8 +168,7 @@ public class EmbedderBehaviour {
 		RunnableStory myOtherStory = mock(RunnableStory.class);
 		List<RunnableStory> runnables = asList(myStory, myOtherStory);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		for (RunnableStory story : runnables) {
 			doNothing().when(story).run();
 		}
@@ -199,8 +196,7 @@ public class EmbedderBehaviour {
 		RunnableStory myOtherStory = mock(RunnableStory.class);
 		List<RunnableStory> runnables = asList(myStory, myOtherStory);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		for (RunnableStory story : runnables) {
 			doThrow(new RuntimeException(story + " failed")).when(story).run();
 		}
@@ -223,8 +219,7 @@ public class EmbedderBehaviour {
 		RunnableStory myOtherStory = mock(RunnableStory.class);
 		List<RunnableStory> runnables = asList(myStory, myOtherStory);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		for (RunnableStory story : runnables) {
 			doThrow(new RuntimeException(story + " failed")).when(story).run();
 		}
@@ -253,8 +248,7 @@ public class EmbedderBehaviour {
 		RunnableStory myOtherStory = mock(RunnableStory.class);
 		List<RunnableStory> runnables = asList(myStory, myOtherStory);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		for (RunnableStory story : runnables) {
 			doNothing().when(story).run();
 		}
@@ -281,8 +275,7 @@ public class EmbedderBehaviour {
 		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		embedder.runStoriesAsClasses(storyClasses);
 
 		// Then
@@ -311,8 +304,7 @@ public class EmbedderBehaviour {
 		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		StoryConfiguration configuration = embedder.storyConfiguration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
@@ -344,8 +336,7 @@ public class EmbedderBehaviour {
 		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		StoryConfiguration configuration = embedder.storyConfiguration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
@@ -378,8 +369,7 @@ public class EmbedderBehaviour {
 		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		StoryConfiguration configuration = embedder.storyConfiguration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
@@ -408,8 +398,7 @@ public class EmbedderBehaviour {
 		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		StoryConfiguration configuration = embedder.storyConfiguration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
@@ -446,8 +435,7 @@ public class EmbedderBehaviour {
 		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		StoryConfiguration configuration = embedder.storyConfiguration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
@@ -481,8 +469,7 @@ public class EmbedderBehaviour {
 		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		StoryConfiguration configuration = embedder.storyConfiguration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
@@ -513,8 +500,7 @@ public class EmbedderBehaviour {
 		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		StoryConfiguration configuration = embedder.storyConfiguration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
@@ -550,8 +536,7 @@ public class EmbedderBehaviour {
 		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		StoryConfiguration configuration = embedder.storyConfiguration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
@@ -581,8 +566,7 @@ public class EmbedderBehaviour {
 				new PrintStream(out));
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		embedder.useReportRenderer(renderer);
 
 		File outputDirectory = new File("target/output");
@@ -609,8 +593,7 @@ public class EmbedderBehaviour {
 				new PrintStream(out));
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		embedder.useReportRenderer(renderer);
 
 		File outputDirectory = new File("target/output");
@@ -636,8 +619,7 @@ public class EmbedderBehaviour {
 				new PrintStream(out));
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		embedder.useReportRenderer(renderer);
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
@@ -661,8 +643,7 @@ public class EmbedderBehaviour {
 				new PrintStream(out));
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		embedder.useReportRenderer(renderer);
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
@@ -686,8 +667,7 @@ public class EmbedderBehaviour {
 				new PrintStream(out));
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
-		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		embedder.useReportRenderer(renderer);
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
@@ -712,18 +692,23 @@ public class EmbedderBehaviour {
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor();
 
 		// When
-		Embedder embedder = new Embedder(runner, embedderConfiguration, monitor);
+		Embedder embedder = embedderWith(runner, embedderConfiguration, monitor);
 		assertThat(embedder.storyRunner(), is(sameInstance(runner)));
 		assertThat(embedder.embedderConfiguration(), is(sameInstance(embedderConfiguration)));
 		assertThat(embedder.embedderMonitor(), is(sameInstance(monitor)));
 		embedder.useStoryRunner(new StoryRunner());
-		embedder.useEmbedderConfiguration(new EmbedderConfiguration());
 		embedder.useEmbedderMonitor(new PrintStreamEmbedderMonitor());
 
 		// Then
 		assertThat(embedder.storyRunner(), is(not(sameInstance(runner))));
-		assertThat(embedder.embedderConfiguration(), is(not(sameInstance(embedderConfiguration))));
 		assertThat(embedder.embedderMonitor(), is(not(sameInstance(monitor))));
+	}
+
+	private Embedder embedderWith(StoryRunner runner,
+			EmbedderConfiguration embedderConfiguration, EmbedderMonitor monitor) {
+		Embedder embedder = new Embedder(runner, monitor);
+		embedder.useEmbedderConfiguration(embedderConfiguration);
+		return embedder;
 	}
 
 	@Test

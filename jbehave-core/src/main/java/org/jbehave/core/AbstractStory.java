@@ -5,11 +5,12 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbehave.core.configuration.EmbedderConfiguration;
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
+import org.jbehave.core.configuration.UnmodifiableEmbedderConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.MostUsefulStepsConfiguration;
 
 /**
  * <p>
@@ -17,7 +18,7 @@ import org.jbehave.core.steps.MostUsefulStepsConfiguration;
  * class with no explicit support for any test framework. It provides the
  * {@link Embedder} used to run the story or stories, using the
  * {@link StoryConfiguration} and the {@link CandidateSteps} specified. By
- * default, {@link MostUsefulStepsConfiguration}) and
+ * default, {@link MostUsefulStoryConfiguration}) and
  * {@link Embedder#Embedder()} are used, but these can overridden via
  * the {@link RunnableStory#useConfiguration(StoryConfiguration)} and
  * {@link RunnableStory#useEmbedder(Embedder)} methods respectively.
@@ -51,6 +52,10 @@ public abstract class AbstractStory implements RunnableStory {
 	}
 
 	protected Embedder configuredEmbedder() {
+		EmbedderConfiguration embedderConfiguration = embedder.embedderConfiguration();
+		if ( embedderConfiguration instanceof UnmodifiableEmbedderConfiguration ){
+			configuration.useEmbedderConfiguration(embedderConfiguration);
+		}
 		embedder.useConfiguration(configuration);
 		embedder.useCandidateSteps(candidateSteps);
 		return embedder;

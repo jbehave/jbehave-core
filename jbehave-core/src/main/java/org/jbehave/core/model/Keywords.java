@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.i18n.StringCoder;
+import org.jbehave.core.steps.StepType;
 
 /**
  * Provides the keywords which allow parsers to find steps in stories and
@@ -227,6 +228,16 @@ public class Keywords {
         return value;
     }
 
+	public Map<StepType, String> startingWordsByType() {
+		Map<StepType, String> words = new HashMap<StepType, String>();
+		words.put(StepType.GIVEN, given());
+		words.put(StepType.WHEN, when());
+		words.put(StepType.THEN, then());
+		words.put(StepType.AND, and());
+		words.put(StepType.IGNORABLE, ignorable());
+		return words;
+	}
+    
     @SuppressWarnings("serial")
     public static final class KeywordNotFoundException extends RuntimeException {
 

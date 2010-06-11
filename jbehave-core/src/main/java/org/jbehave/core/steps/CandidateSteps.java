@@ -2,6 +2,8 @@ package org.jbehave.core.steps;
 
 import java.util.List;
 
+import org.jbehave.core.configuration.StoryConfiguration;
+
 /**
  * Represents the list of candidate steps that can be performed
  */
@@ -52,10 +54,10 @@ public interface CandidateSteps {
     List<Step> runAfterScenario();
 
     /**
-     * Returns the steps configuration
+     * Returns the configuration
      * 
-     * @return The StepsConfiguration
+     * @return The StoryConfiguration
      */
-    StepsConfiguration getConfiguration();
+    StoryConfiguration getConfiguration();
 
 }

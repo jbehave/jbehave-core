@@ -18,7 +18,7 @@ public class StoryPathRunnerMojo extends AbstractStoryMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
         List<String> storyPaths = storyPaths();
-        getLog().info("Running stories with paths "+storyPaths+" using embedder "+embedder);
+        getLog().info("Running stories using embedder "+embedder);
 		embedder.runStoriesAsPaths(storyPaths);
     }
 
