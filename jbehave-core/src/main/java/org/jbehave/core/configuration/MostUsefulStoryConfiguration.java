@@ -1,20 +1,26 @@
 package org.jbehave.core.configuration;
 
-import java.util.Locale;
-
-import org.jbehave.core.errors.ErrorStrategy;
-import org.jbehave.core.errors.PendingErrorStrategy;
+import org.jbehave.core.failures.FailureStrategy;
+import org.jbehave.core.failures.PassingUponPendingStep;
+import org.jbehave.core.failures.PendingStepStrategy;
+import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.Keywords;
+import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.reporters.SilentSuccessFilter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
+
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 
 /**
  * The configuration that works for most situations that users are likely to encounter.
@@ -24,21 +30,30 @@ import org.jbehave.core.steps.StepCollector;
  * <li>{@link StepCollector}: {@link MarkUnmatchedStepsAsPending}</li>
  * <li>{@link StoryParser}: {@link RegexStoryParser}</li>
  * <li>{@link StoryLoader}: {@link LoadFromClasspath}</li>
- * <li>{@link ErrorStrategy}: {@link ErrorStrategy.RETHROW}</li>
- * <li>{@link PendingErrorStrategy}: {@link PendingErrorStrategy.PASSING}</li>
+ * <li>{@link FailureStrategy}: {@link RethrowingFailure}</li>
+ * <li>{@link PendingStepStrategy}: {@link PassingUponPendingStep}</li>
  * <li>{@link StoryReporter}: {@link ConsoleOutput}</li>
+ * <li>{@link EmbedderConfiguration}: {@link EmbedderConfiguration}</li>
+ * <li>{@link StepPatternParser}: {@link RegexPrefixCapturingPatternParser}</li>
+ * <li>{@link Paranamer}: {@link NullParanamer}</li>
+ * <li>{@link ParameterConverters}: {@link ParameterConverters}</li>
  * </ul>
  */
 public class MostUsefulStoryConfiguration extends StoryConfiguration {
 
     public MostUsefulStoryConfiguration() {
-        useKeywords(new LocalizedKeywords(Locale.ENGLISH));
+        useKeywords(new LocalizedKeywords());
         useStepCollector(new MarkUnmatchedStepsAsPending());
         useStoryParser(new RegexStoryParser(keywords()));
         useStoryLoader(new LoadFromClasspath());
-        useErrorStrategy(ErrorStrategy.RETHROW);
-        usePendingErrorStrategy(PendingErrorStrategy.PASSING);
-        useStoryReporter(new SilentSuccessFilter(new ConsoleOutput()));
+        useErrorStrategy(new RethrowingFailure());
+        usePendingStepStrategy(new PassingUponPendingStep());
+        useStoryReporter(new ConsoleOutput());
+        useEmbedderConfiguration(new EmbedderConfiguration());
+        useStepPatternParser(new RegexPrefixCapturingPatternParser());
+        useStepMonitor(new SilentStepMonitor());
+        useParanamer(new NullParanamer());
+        useParameterConverters(new ParameterConverters());
     }
 
 }

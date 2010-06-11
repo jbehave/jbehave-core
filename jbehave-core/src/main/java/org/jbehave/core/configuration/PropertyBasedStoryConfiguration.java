@@ -1,7 +1,8 @@
 package org.jbehave.core.configuration;
 
-import org.jbehave.core.errors.ErrorStrategy;
-import org.jbehave.core.errors.PendingErrorStrategy;
+import org.jbehave.core.failures.FailingUponPendingStep;
+import org.jbehave.core.failures.FailureStrategy;
+import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.model.Keywords;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
@@ -12,8 +13,8 @@ import org.jbehave.core.steps.StepCollector;
  * PropertyBasedStoryConfiguration is backed by MostUsefulStoryConfiguration as default, but has different
  * behaviour if certain system properties are non-null:
  * <ul>
- *   <li>PropertyBasedStoryConfiguration.FAIL_ON_PENDING: uses  PendingErrorStrategy.FAILING as PendingErrorStrategy</li>
- *   <li>PropertyBasedStoryConfiguration.OUTPUT_ALL:  uses PrintStreamStoryReporter as StoryReporter</li>
+ *   <li>PropertyBasedStoryConfiguration.FAIL_ON_PENDING: uses {@link FailingUponPendingStep}</li>
+ *   <li>PropertyBasedStoryConfiguration.OUTPUT_ALL:  uses {@link ConsoleOutput}</li>
  * </ul>
  */
 public class PropertyBasedStoryConfiguration extends StoryConfiguration {
@@ -64,11 +65,11 @@ public class PropertyBasedStoryConfiguration extends StoryConfiguration {
      * so you can see if any steps don't match or are
      * still to be implemented.
      */
-    public PendingErrorStrategy pendingErrorStrategy() {
+    public PendingStepStrategy pendingStepStrategy() {
         if (System.getProperty(FAIL_ON_PENDING) == null) {
-            return defaultConfiguration.pendingErrorStrategy();
+            return defaultConfiguration.pendingStepStrategy();
         }
-        return PendingErrorStrategy.FAILING;
+        return new FailingUponPendingStep();
     }
 
     /**
@@ -79,11 +80,11 @@ public class PropertyBasedStoryConfiguration extends StoryConfiguration {
     }
 
     /**
-     * Returns the default ErrorStrategy for handling
+     * Returns the default FailureStrategy for handling
      * errors.
      */
-    public ErrorStrategy errorStrategy() {
-        return defaultConfiguration.errorStrategy();
+    public FailureStrategy failureStrategy() {
+        return defaultConfiguration.failureStrategy();
     }
 
     /**

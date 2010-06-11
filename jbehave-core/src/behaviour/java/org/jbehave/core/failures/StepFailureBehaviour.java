@@ -1,9 +1,10 @@
-package org.jbehave.core.errors;
+package org.jbehave.core.failures;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
 
+import org.jbehave.core.failures.StepFailed;
 import org.junit.Test;
 
 public class StepFailureBehaviour {
@@ -14,13 +15,13 @@ public class StepFailureBehaviour {
 		Throwable cause = new IllegalArgumentException(
 				"Can't we all just get along?");
 		String stepAsString = "Given something that could never work";
-		StepFailure failure = new StepFailure(stepAsString, cause);
+		StepFailed failure = new StepFailed(stepAsString, cause);
 
 		// When
 		String message = failure.getMessage();
 
 		// Then
-		assertThat(message, equalTo("Failure during step: '"
+		assertThat(message, equalTo("'"
 				+ stepAsString + "': "+cause.getMessage()));
 	}
 
@@ -29,7 +30,7 @@ public class StepFailureBehaviour {
 		// Given
 		Throwable originalCause = new IllegalArgumentException(
 				"Can't we all just get along?");
-		StepFailure decorator = new StepFailure(
+		StepFailed decorator = new StepFailed(
 				"Given something that could never work", originalCause);
 
 		// When

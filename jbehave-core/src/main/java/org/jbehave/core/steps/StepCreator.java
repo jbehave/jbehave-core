@@ -9,7 +9,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.jbehave.core.annotations.Named;
-import org.jbehave.core.errors.PendingError;
+import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.parsers.StepMatcher;
 
 import com.thoughtworks.paranamer.NullParanamer;
@@ -74,8 +74,8 @@ public class StepCreator {
             private StepResult failedOrPending(final String stepAsString, Throwable t) {
                 if (t instanceof InvocationTargetException && t.getCause() != null) {
                     Throwable cause = t.getCause();
-					if (cause instanceof PendingError) {
-                        return StepResult.pending(stepAsString, (PendingError) cause).withParameterValues(parametrisedStep);
+					if (cause instanceof PendingStepFound) {
+                        return StepResult.pending(stepAsString, (PendingStepFound) cause).withParameterValues(parametrisedStep);
                     } else {
                         return StepResult.failed(stepAsString, cause).withParameterValues(parametrisedStep);
                     }

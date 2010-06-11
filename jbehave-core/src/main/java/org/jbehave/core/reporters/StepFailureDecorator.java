@@ -1,6 +1,6 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.errors.StepFailure;
+import org.jbehave.core.failures.StepFailed;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
@@ -11,17 +11,17 @@ import java.util.Map;
 /**
  * <p>
  * When a step fails, the {@link Throwable} that caused the failure is wrapped
- * in a {@link StepFailure} together with the step during which the failure
- * occurred. If such a failure occurs it will throw the {@link StepFailure}
+ * in a {@link StepFailed} together with the step during which the failure
+ * occurred. If such a failure occurs it will throw the {@link StepFailed}
  * after the story is finished.
  * </p>
  * 
- * @see StepFailure
+ * @see StepFailed
  */
 public class StepFailureDecorator implements StoryReporter {
 
 	private final StoryReporter delegate;
-	private StepFailure failure;
+	private StepFailed failure;
 
 	public StepFailureDecorator(StoryReporter delegate) {
 		this.delegate = delegate;
@@ -48,12 +48,12 @@ public class StepFailureDecorator implements StoryReporter {
     }
 
 	public void failed(String step, Throwable cause) {
-		failure = new StepFailure(step, cause);
+		failure = new StepFailed(step, cause);
 		delegate.failed(step, failure);
 	}
 
     public void failedOutcomes(String step, OutcomesTable table) {
-		failure = new StepFailure(step, table);
+		failure = new StepFailed(step, table);
     	delegate.failedOutcomes(step, table);
     }
     

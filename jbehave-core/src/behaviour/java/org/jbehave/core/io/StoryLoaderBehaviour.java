@@ -6,8 +6,6 @@ import static org.hamcrest.Matchers.equalTo;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.jbehave.core.errors.InvalidStoryResourceException;
-import org.jbehave.core.errors.StoryNotFoundException;
 import org.junit.Test;
 
 public class StoryLoaderBehaviour {
@@ -27,7 +25,7 @@ public class StoryLoaderBehaviour {
 
     }
 
-    @Test(expected = StoryNotFoundException.class)
+    @Test(expected = StoryResourceNotFound.class)
     public void shouldNotLoadStoryFromClasspathIfNotFound() {
 
         StoryLoader loader = new LoadFromClasspath();
@@ -35,7 +33,7 @@ public class StoryLoaderBehaviour {
 
     }
 
-    @Test(expected = InvalidStoryResourceException.class)
+    @Test(expected = InvalidStoryResource.class)
     public void shouldNotLoadStoryFropmClasspathIfClassloaderNotValid() {
 
         StoryLoader loader = new LoadFromClasspath(new InvalidClassLoader());
@@ -78,7 +76,7 @@ public class StoryLoaderBehaviour {
 		assertThat(loadedStoryAsText, equalTo(storyAsText));
     }
 
-    @Test(expected = InvalidStoryResourceException.class)
+    @Test(expected = InvalidStoryResource.class)
     public void shouldNotLoadStoryFromURLIfNotFound() {
         // Given
         String codeLocation = new StoryLocation("", this.getClass()).getCodeLocation().getFile();

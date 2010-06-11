@@ -10,8 +10,12 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.errors.ErrorStrategy;
-import org.jbehave.core.errors.PendingErrorStrategy;
+import org.jbehave.core.failures.FailingUponPendingStep;
+import org.jbehave.core.failures.FailureStrategy;
+import org.jbehave.core.failures.PassingUponPendingStep;
+import org.jbehave.core.failures.PendingStepStrategy;
+import org.jbehave.core.failures.RethrowingFailure;
+import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
@@ -41,9 +45,10 @@ import com.thoughtworks.paranamer.Paranamer;
  * {@link RunnableStory} implementations to customise its runtime properties.
  * </p>
  * <p>
- * StoryConfiguration implements a <a href="http://en.wikipedia.org/wiki/Builder_pattern">Builder</a> 
- * pattern so that each element of the configuration can be specified individually,
- * and read well.  All elements have default values, which can be overridden by the 
+ * StoryConfiguration implements a <a
+ * href="http://en.wikipedia.org/wiki/Builder_pattern">Builder</a> pattern so
+ * that each element of the configuration can be specified individually, and
+ * read well. All elements have default values, which can be overridden by the
  * "use" methods. The "use" methods allow to override the dependencies one by
  * one and play nicer with a Java hierarchical structure, in that does allow the
  * use of non-static member variables.
@@ -83,19 +88,18 @@ public class StoryConfiguration {
 	 * If there are multiple scenarios in a single story, this could cause the
 	 * story to stop after the first failing scenario.
 	 * <p/>
-	 * Users wanting a different behaviour may use
-	 * {@link org.jbehave.core.errors.ErrorStrategyInWhichWeTrustTheReporter}.
+	 * Users wanting a different behaviour may use {@link SilentlyAbsorbingFailure}.
 	 */
-	private ErrorStrategy errorStrategy = ErrorStrategy.RETHROW;
+	private FailureStrategy failureStrategy = new RethrowingFailure();
 
 	/**
 	 * Allows pending steps to pass, so that steps that to do not match any
 	 * method will not cause failure.
 	 * <p/>
 	 * Uses wanting a stricter behaviour for pending steps may use
-	 * {@link org.jbehave.core.errors.PendingErrorStrategy.FAILING}.
+	 * {@link FailingUponPendingStep}.
 	 */
-	private PendingErrorStrategy pendingErrorStrategy = PendingErrorStrategy.PASSING;
+	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 
 	/**
 	 * Reports stories to console output
@@ -121,29 +125,29 @@ public class StoryConfiguration {
 	 * Pattern build that uses prefix for identifying parameters
 	 */
 	private StepPatternParser stepPatternParser = new RegexPrefixCapturingPatternParser();
-	
+
 	/**
 	 * Silent monitoring that does not produce any noise of the step matching.
 	 * </p> If needed, users can switch on verbose monitoring using
 	 * {@link PrintStreamStepMonitor}
 	 */
 	private StepMonitor stepMonitor = new SilentStepMonitor();
-	
+
 	/**
 	 * Paranamer use is switched off by default
 	 */
 	private Paranamer paranamer = new NullParanamer();
-	
+
 	/**
 	 * Use default built-in parameter converters
 	 */
 	private ParameterConverters parameterConverters = new ParameterConverters();
-	
+
 	/**
 	 * Dry run is switched off by default
 	 */
 	private boolean dryRun = false;
-	
+
 	public StepCollector stepCollector() {
 		return stepCollector;
 	}
@@ -160,12 +164,12 @@ public class StoryConfiguration {
 		return storyPathResolver;
 	}
 
-	public ErrorStrategy errorStrategy() {
-		return errorStrategy;
+	public FailureStrategy failureStrategy() {
+		return failureStrategy;
 	}
 
-	public PendingErrorStrategy pendingErrorStrategy() {
-		return pendingErrorStrategy;
+	public PendingStepStrategy pendingStepStrategy() {
+		return pendingStepStrategy;
 	}
 
 	public StoryReporter storyReporter() {
@@ -204,14 +208,14 @@ public class StoryConfiguration {
 		return this;
 	}
 
-	public StoryConfiguration usePendingErrorStrategy(
-			PendingErrorStrategy pendingErrorStrategy) {
-		this.pendingErrorStrategy = pendingErrorStrategy;
+	public StoryConfiguration usePendingStepStrategy(
+			PendingStepStrategy pendingStepStrategy) {
+		this.pendingStepStrategy = pendingStepStrategy;
 		return this;
 	}
 
-	public StoryConfiguration useErrorStrategy(ErrorStrategy errorStrategy) {
-		this.errorStrategy = errorStrategy;
+	public StoryConfiguration useErrorStrategy(FailureStrategy failureStrategy) {
+		this.failureStrategy = failureStrategy;
 		return this;
 	}
 
@@ -268,7 +272,7 @@ public class StoryConfiguration {
 		this.storyReporters.putAll(storyReporterBuilder.build(storyPaths));
 		return this;
 	}
-	
+
 	public StepPatternParser stepPatternParser() {
 		return stepPatternParser;
 	}
@@ -317,6 +321,7 @@ public class StoryConfiguration {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		return ToStringBuilder.reflectionToString(this,
+				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
 }

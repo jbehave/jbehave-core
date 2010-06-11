@@ -1,15 +1,13 @@
 package org.jbehave.core.configuration;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.jbehave.core.configuration.PropertyBasedStoryConfiguration;
-import org.jbehave.core.errors.ErrorStrategy;
-import org.jbehave.core.errors.PendingErrorStrategy;
+import org.jbehave.core.failures.FailingUponPendingStep;
+import org.jbehave.core.failures.PassingUponPendingStep;
+import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.reporters.SilentSuccessFilter;
-import org.jbehave.core.reporters.PrintStreamOutput;
+import org.jbehave.core.reporters.ConsoleOutput;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,30 +40,30 @@ public class PropertyBasedStoryConfigurationBehaviour {
     @Test
     public void shouldUsePassingPendingStepStrategyByDefault() {
         System.clearProperty(PropertyBasedStoryConfiguration.FAIL_ON_PENDING);
-        assertThat(new PropertyBasedStoryConfiguration().pendingErrorStrategy(), is(PendingErrorStrategy.PASSING));
+        assertThat(new PropertyBasedStoryConfiguration().pendingStepStrategy(), is(PassingUponPendingStep.class));
     }
     
     @Test
     public void shouldUseFailingPendingStepStrategyWhenConfiguredToDoSo() {
         System.setProperty(PropertyBasedStoryConfiguration.FAIL_ON_PENDING, "true");
-        assertThat(new PropertyBasedStoryConfiguration().pendingErrorStrategy(), is(PendingErrorStrategy.FAILING));
+        assertThat(new PropertyBasedStoryConfiguration().pendingStepStrategy(), is(FailingUponPendingStep.class));
     }
     
     @Test
-    public void shouldSwallowOutputFromPassingScenariossByDefault() {
+    public void shouldOuputToConsoleByDefault() {
         System.clearProperty(PropertyBasedStoryConfiguration.OUTPUT_ALL);
-        assertThat(new PropertyBasedStoryConfiguration().storyReporter(), is(SilentSuccessFilter.class));
+        assertThat(new PropertyBasedStoryConfiguration().storyReporter(), is(ConsoleOutput.class));
     }
     
     @Test
     public void shouldOutputAllWhenConfiguredToDoSo() {
         System.setProperty(PropertyBasedStoryConfiguration.OUTPUT_ALL, "true");
-        assertThat(new PropertyBasedStoryConfiguration().storyReporter(), is(PrintStreamOutput.class));
+        assertThat(new PropertyBasedStoryConfiguration().storyReporter(), is(ConsoleOutput.class));
     }
     
     @Test
     public void shouldRethrowErrrors() {
-        assertThat(new PropertyBasedStoryConfiguration().errorStrategy(), equalTo(ErrorStrategy.RETHROW));
+        assertThat(new PropertyBasedStoryConfiguration().failureStrategy(), is(RethrowingFailure.class));
     }
     
     @Test

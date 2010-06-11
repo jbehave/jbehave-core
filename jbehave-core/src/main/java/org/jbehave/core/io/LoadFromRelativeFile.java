@@ -1,7 +1,6 @@
 package org.jbehave.core.io;
 
 import org.apache.commons.io.IOUtils;
-import org.jbehave.core.errors.InvalidStoryResourceException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +42,7 @@ public class LoadFromRelativeFile implements StoryLoader {
 			File file = new File(fileLocation);
 			return IOUtils.toString(new FileInputStream(file));
 		} catch (IOException e) {
-			throw new InvalidStoryResourceException("Story path '" + storyPath
+			throw new InvalidStoryResource("Story path '" + storyPath
 					+ "' not found while looking in '" + fileLocation + "'", e);
 		}
 

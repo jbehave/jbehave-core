@@ -15,10 +15,10 @@ import java.util.Map;
 
 import org.jbehave.core.configuration.MostUsefulStoryConfiguration;
 import org.jbehave.core.configuration.StoryConfiguration;
-import org.jbehave.core.embedder.StoryRunner;
-import org.jbehave.core.errors.ErrorStrategy;
-import org.jbehave.core.errors.ErrorStrategyInWhichWeTrustTheReporter;
-import org.jbehave.core.errors.PendingErrorStrategy;
+import org.jbehave.core.failures.FailureStrategy;
+import org.jbehave.core.failures.PassingUponPendingStep;
+import org.jbehave.core.failures.PendingStepStrategy;
+import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.Description;
@@ -78,12 +78,12 @@ public class StoryRunnerBehaviour {
         givenStoryWithNoBeforeOrAfterSteps(story, givenStory, creator, mySteps);
 
         // When
-        ErrorStrategy errorStrategy = mock(ErrorStrategy.class);
+        FailureStrategy failureStrategy = mock(FailureStrategy.class);
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, creator, errorStrategy), asList(mySteps), story, givenStory);
+        runner.run(configurationWith(reporter, creator, failureStrategy), asList(mySteps), story, givenStory);
 
         // Then
-        InOrder inOrder = inOrder(reporter, errorStrategy);
+        InOrder inOrder = inOrder(reporter, failureStrategy);
         inOrder.verify(reporter).beforeStory(story, givenStory);
         inOrder.verify(reporter).beforeScenario("my title 1");
         inOrder.verify(reporter).failed("failingStep", anException);
@@ -97,7 +97,7 @@ public class StoryRunnerBehaviour {
         inOrder.verify(reporter).pending("pendingStep");
         inOrder.verify(reporter).afterScenario();
         inOrder.verify(reporter).afterStory(givenStory);
-        inOrder.verify(errorStrategy).handleError(anException);
+        inOrder.verify(failureStrategy).handleFailure(anException);
     }
 
     @Test
@@ -136,11 +136,11 @@ public class StoryRunnerBehaviour {
         when(storyParser.parseStory("storyContent", "/path/to/given/story1")).thenReturn(story1);
         givenStoryWithNoBeforeOrAfterSteps(story1, givenStory, creator, mySteps);
         givenStoryWithNoBeforeOrAfterSteps(story2, givenStory, creator, mySteps);
-        ErrorStrategy errorStrategy = mock(ErrorStrategy.class);
+        FailureStrategy failureStrategy = mock(FailureStrategy.class);
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(storyParser, storyLoader, reporter, creator, errorStrategy), asList(mySteps),
+        runner.run(configurationWith(storyParser, storyLoader, reporter, creator, failureStrategy), asList(mySteps),
                  story2, givenStory);
 
         // Then
@@ -200,7 +200,7 @@ public class StoryRunnerBehaviour {
         StepResult notPerformed = StepResult.notPerformed("Then I should not be performed");
         when(firstStepExceptional.perform()).thenReturn(failure);
         when(secondStepNotPerformed.doNotPerform()).thenReturn(notPerformed);
-        ErrorStrategy errorStrategy = mock(ErrorStrategy.class);
+        FailureStrategy failureStrategy = mock(FailureStrategy.class);
         StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mockMySteps();
         when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
@@ -211,20 +211,20 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, creator, errorStrategy), asList(mySteps), story, false);
+        runner.run(configurationWith(reporter, creator, failureStrategy), asList(mySteps), story, false);
 
         // Then
         verify(firstStepExceptional).perform();
         verify(secondStepNotPerformed).doNotPerform();
 
-        InOrder inOrder = inOrder(reporter, errorStrategy);
+        InOrder inOrder = inOrder(reporter, failureStrategy);
         inOrder.verify(reporter).beforeStory((Story) anyObject(), eq(givenStory));
         inOrder.verify(reporter).beforeScenario((String) anyObject());
         inOrder.verify(reporter).failed("When I fail", failure.getThrowable());
         inOrder.verify(reporter).notPerformed("Then I should not be performed");
         inOrder.verify(reporter).afterScenario();
         inOrder.verify(reporter).afterStory(givenStory);
-        inOrder.verify(errorStrategy).handleError(failure.getThrowable());
+        inOrder.verify(failureStrategy).handleFailure(failure.getThrowable());
     }
 
     @Test
@@ -288,7 +288,7 @@ public class StoryRunnerBehaviour {
         Step pendingStep = mock(Step.class);
         StepResult pendingResult = StepResult.pending("My step isn't defined!");
         when(pendingStep.perform()).thenReturn(pendingResult);
-        PendingErrorStrategy strategy = mock(PendingErrorStrategy.class);
+        PendingStepStrategy strategy = mock(PendingStepStrategy.class);
         StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mockMySteps();
         when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
@@ -304,7 +304,7 @@ public class StoryRunnerBehaviour {
                 strategy), asList(mySteps), story, givenStory);
 
         // Then
-        verify(strategy).handleError(pendingResult.getThrowable());
+        verify(strategy).handleFailure(pendingResult.getThrowable());
     }
 
 	private CandidateSteps mockMySteps() {
@@ -320,26 +320,26 @@ public class StoryRunnerBehaviour {
     }
 
     private StoryConfiguration configurationWithPendingStrategy(StepCollector creator, StoryReporter reporter,
-                                                                PendingErrorStrategy strategy) {
+                                                                PendingStepStrategy strategy) {
         return configurationWith(new RegexStoryParser(), new LoadFromClasspath(), reporter, creator,
-                new ErrorStrategyInWhichWeTrustTheReporter(), strategy);
+                new RethrowingFailure(), strategy);
     }
 
     private StoryConfiguration configurationWith(final StoryReporter reporter, final StepCollector creator) {
-        return configurationWith(reporter, creator, new ErrorStrategyInWhichWeTrustTheReporter());
+        return configurationWith(reporter, creator, new RethrowingFailure());
     }
 
-    private StoryConfiguration configurationWith(StoryReporter reporter, StepCollector creator, ErrorStrategy errorStrategy) {
-        return configurationWith(new RegexStoryParser(), new LoadFromClasspath(), reporter, creator, errorStrategy);
+    private StoryConfiguration configurationWith(StoryReporter reporter, StepCollector creator, FailureStrategy failureStrategy) {
+        return configurationWith(new RegexStoryParser(), new LoadFromClasspath(), reporter, creator, failureStrategy);
     }
 
     private StoryConfiguration configurationWith(StoryParser parser, final StoryLoader storyLoader, final StoryReporter reporter,
-                                                 final StepCollector creator, final ErrorStrategy errorStrategy) {
-        return configurationWith(parser, storyLoader, reporter, creator, errorStrategy, PendingErrorStrategy.PASSING);
+                                                 final StepCollector creator, final FailureStrategy failureStrategy) {
+        return configurationWith(parser, storyLoader, reporter, creator, failureStrategy, new PassingUponPendingStep());
     }
 
     private StoryConfiguration configurationWith(final StoryParser parser, final StoryLoader loader, final StoryReporter reporter,
-                                                 final StepCollector creator, final ErrorStrategy errorStrategy, final PendingErrorStrategy pendingStrategy) {
+                                                 final StepCollector creator, final FailureStrategy failureStrategy, final PendingStepStrategy pendingStrategy) {
 
         return new MostUsefulStoryConfiguration() {
             @Override
@@ -363,12 +363,12 @@ public class StoryRunnerBehaviour {
             }
 
             @Override
-            public ErrorStrategy errorStrategy() {
-                return errorStrategy;
+            public FailureStrategy failureStrategy() {
+                return failureStrategy;
             }
 
             @Override
-            public PendingErrorStrategy pendingErrorStrategy() {
+            public PendingStepStrategy pendingStepStrategy() {
                 return pendingStrategy;
             }
         };

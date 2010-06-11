@@ -7,9 +7,10 @@ import java.util.Map;
 
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.configuration.StoryConfiguration;
-import org.jbehave.core.errors.ErrorStrategy;
-import org.jbehave.core.errors.PendingError;
-import org.jbehave.core.errors.PendingErrorStrategy;
+import org.jbehave.core.failures.FailureStrategy;
+import org.jbehave.core.failures.PendingStepFound;
+import org.jbehave.core.failures.PendingStepStrategy;
+import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -30,10 +31,10 @@ import org.jbehave.core.steps.StepCollector.Stage;
 public class StoryRunner {
 
     private State state = new FineSoFar();
-    private ErrorStrategy currentStrategy;
-    private PendingErrorStrategy pendingStepStrategy;
+    private FailureStrategy currentStrategy;
+    private PendingStepStrategy pendingStepStrategy;
     private StoryReporter reporter;
-    private ErrorStrategy errorStrategy;
+    private FailureStrategy failureStrategy;
     private Throwable throwable;
     private StepCollector stepCollector;
 	private String reporterStoryPath;
@@ -68,8 +69,8 @@ public class StoryRunner {
     public void run(StoryConfiguration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
         stepCollector = configuration.stepCollector();
         reporter = reporterFor(configuration, story, givenStory);
-        pendingStepStrategy = configuration.pendingErrorStrategy();
-        errorStrategy = configuration.errorStrategy();
+        pendingStepStrategy = configuration.pendingStepStrategy();
+        failureStrategy = configuration.failureStrategy();
         resetErrorState(givenStory);
 
 		if (isDryRun(candidateSteps)) {
@@ -90,7 +91,7 @@ public class StoryRunner {
         }
         runStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.AFTER);
         reporter.afterStory(givenStory);
-        currentStrategy.handleError(throwable);
+        currentStrategy.handleFailure(throwable);
     }
     
 	private boolean isDryRun(List<CandidateSteps> candidateSteps) {
@@ -118,7 +119,7 @@ public class StoryRunner {
 			// do not reset error state for given stories
 			return;
 		}
-		currentStrategy = ErrorStrategy.SILENT;
+		currentStrategy = new SilentlyAbsorbingFailure();
 		throwable = null;
 	}
 	
@@ -197,15 +198,15 @@ public class StoryRunner {
                 Throwable throwable1,
                 Throwable throwable2) {
             return throwable1 == null ? throwable2 :
-                    throwable1 instanceof PendingError ? (throwable2 == null ? throwable1 : throwable2) :
+                    throwable1 instanceof PendingStepFound ? (throwable2 == null ? throwable1 : throwable2) :
                             throwable1;
         }
 
-        private ErrorStrategy strategyFor(Throwable throwable) {
-            if (throwable instanceof PendingError) {
+        private FailureStrategy strategyFor(Throwable throwable) {
+            if (throwable instanceof PendingStepFound) {
                 return pendingStepStrategy;
             } else {
-                return errorStrategy;
+                return failureStrategy;
             }
         }
     }

@@ -1,6 +1,6 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.errors.PendingError;
+import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.StoryReporter;
 
@@ -47,10 +47,10 @@ public abstract class StepResult {
 	
 	public static class Pending extends StepResult {
 		public Pending(String step) {
-			this(step, new PendingError(step));
+			this(step, new PendingStepFound(step));
 		}
 
-		public Pending(String step, PendingError e) {
+		public Pending(String step, PendingStepFound e) {
 			super(step, e);
 		}
 
@@ -118,7 +118,7 @@ public abstract class StepResult {
 		return new Pending(step);
 	}
 
-	public static StepResult pending(String step, PendingError e) {
+	public static StepResult pending(String step, PendingStepFound e) {
 		return new Pending(step, e);
 	}
 

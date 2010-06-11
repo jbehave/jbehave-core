@@ -1,8 +1,6 @@
 package org.jbehave.core.io;
 
 import org.apache.commons.io.IOUtils;
-import org.jbehave.core.errors.InvalidStoryResourceException;
-import org.jbehave.core.errors.StoryNotFoundException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,13 +23,12 @@ public class LoadFromClasspath implements StoryLoader {
     public String loadStoryAsText(String storyPath) {
         InputStream stream = classLoader.getResourceAsStream(storyPath);
         if (stream == null) {
-            throw new StoryNotFoundException("Story path '" + storyPath + "' not found by class loader "
-                    + classLoader);
+            throw new StoryResourceNotFound(storyPath, classLoader);
         }
         try {
             return IOUtils.toString(stream);
         } catch (IOException e) {
-            throw new InvalidStoryResourceException("Failed to load story content for " + storyPath + " from resource stream " + stream, e);
+            throw new InvalidStoryResource(storyPath, stream, e);
         }
     }
 

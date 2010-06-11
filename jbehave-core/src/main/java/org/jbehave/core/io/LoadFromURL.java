@@ -1,9 +1,9 @@
 package org.jbehave.core.io;
 
-import org.apache.commons.io.IOUtils;
-import org.jbehave.core.errors.InvalidStoryResourceException;
-
+import java.io.IOException;
 import java.net.URL;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * Loads story content from URLs
@@ -13,8 +13,10 @@ public class LoadFromURL implements StoryLoader {
         try {
             URL url = new URL(storyPath);
             return IOUtils.toString(url.openStream());
+        } catch (IOException e) {
+            throw new InvalidStoryResource(storyPath, e);
         } catch (Exception e) {
-            throw new InvalidStoryResourceException("Failed to load story content " + storyPath, e);
+            throw new StoryResourceNotFound(storyPath, e);
         }
     }
 

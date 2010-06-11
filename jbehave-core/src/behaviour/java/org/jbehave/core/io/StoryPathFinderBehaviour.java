@@ -7,8 +7,6 @@ import static org.hamcrest.Matchers.equalTo;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.jbehave.core.errors.InvalidStoryPathException;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class StoryPathFinderBehaviour {
@@ -32,13 +30,6 @@ public class StoryPathFinderBehaviour {
     public void shouldReturnEmptyListForInexistentBasedir() {
         StoryPathFinder finder = new StoryPathFinder();
         assertThat(finder.listStoryPaths("/inexistent", null, asList(""), asList("")).size(), equalTo(0));
-    }
-
-    @Test(expected= InvalidStoryPathException.class)
-    @Ignore("Need to find alternative way to express invalid java path")
-    public void shouldNotListPathsForJavaThatAreInvalid() {
-        StoryPathFinder finder = new StoryPathFinder();
-        finder.listStoryPaths(".", null, null, null);
     }
     
    static class InvalidClassLoader extends ClassLoader {

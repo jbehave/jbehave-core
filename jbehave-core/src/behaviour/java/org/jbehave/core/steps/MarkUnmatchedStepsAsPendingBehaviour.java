@@ -1,19 +1,21 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.StepCollector.Stage;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.jbehave.core.failures.PendingStepFound;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.StepCollector.Stage;
+import org.junit.Test;
 
 public class MarkUnmatchedStepsAsPendingBehaviour {
 
@@ -49,16 +51,19 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         CandidateStep candidate = mock(CandidateStep.class);
         CandidateSteps steps = mock(Steps.class);
 
-        when(candidate.matches("my step")).thenReturn(false);
+        String stepAsString = "my step";
+		when(candidate.matches(stepAsString)).thenReturn(false);
         when(steps.getSteps()).thenReturn(new CandidateStep[] { candidate });
 
         // When
         List<Step> executableSteps = stepCollector
-                .collectStepsFrom(asList(steps), new Scenario(asList("my step")), tableRow);
+                .collectStepsFrom(asList(steps), new Scenario(asList(stepAsString)), tableRow);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform();
-        assertThat(result.getThrowable().getMessage(), equalTo("Pending: my step"));
+        Throwable throwable = result.getThrowable();
+		assertThat(throwable, is(PendingStepFound.class));
+		assertThat(throwable.getMessage(), equalTo(stepAsString));
     }
 
     @Test
