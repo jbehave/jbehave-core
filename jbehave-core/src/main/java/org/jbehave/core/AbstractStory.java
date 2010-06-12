@@ -5,11 +5,11 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.configuration.EmbedderControls;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.UnmodifiableEmbedderControls;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderControls;
+import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.steps.CandidateSteps;
 
 /**

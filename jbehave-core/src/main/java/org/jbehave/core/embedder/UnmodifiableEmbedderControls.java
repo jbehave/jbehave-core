@@ -1,4 +1,4 @@
-package org.jbehave.core.configuration;
+package org.jbehave.core.embedder;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;

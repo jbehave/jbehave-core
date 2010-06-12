@@ -9,9 +9,9 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.EmbedderControls;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;

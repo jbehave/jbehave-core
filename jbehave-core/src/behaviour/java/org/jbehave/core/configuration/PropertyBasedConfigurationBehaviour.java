@@ -12,7 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PropertyBasedStoryConfigurationBehaviour {
+public class PropertyBasedConfigurationBehaviour {
 
     private String originalFailOnPending;
     private String originalOutputAll;
@@ -62,7 +62,7 @@ public class PropertyBasedStoryConfigurationBehaviour {
     }
     
     @Test
-    public void shouldRethrowErrrors() {
+    public void shouldRethrowFailures() {
         assertThat(new PropertyBasedConfiguration().failureStrategy(), is(RethrowingFailure.class));
     }
     

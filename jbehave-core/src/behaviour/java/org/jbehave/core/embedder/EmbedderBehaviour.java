@@ -27,7 +27,6 @@ import org.jbehave.core.RunnableStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-import org.jbehave.core.configuration.EmbedderControls;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder.RenderingReportsFailedException;
@@ -567,7 +566,7 @@ public class EmbedderBehaviour {
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.useReportRenderer(renderer);
+		embedder.configuration().useReportRenderer(renderer);
 
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
@@ -594,7 +593,7 @@ public class EmbedderBehaviour {
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.useReportRenderer(renderer);
+		embedder.configuration().useReportRenderer(renderer);
 
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
@@ -620,7 +619,7 @@ public class EmbedderBehaviour {
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.useReportRenderer(renderer);
+		embedder.configuration().useReportRenderer(renderer);
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
 		Properties renderingResources = FreemarkerReportRenderer
@@ -644,7 +643,7 @@ public class EmbedderBehaviour {
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.useReportRenderer(renderer);
+		embedder.configuration().useReportRenderer(renderer);
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
 		Properties renderingResources = FreemarkerReportRenderer
@@ -668,7 +667,7 @@ public class EmbedderBehaviour {
 		ReportRenderer renderer = mock(ReportRenderer.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.useReportRenderer(renderer);
+		embedder.configuration().useReportRenderer(renderer);
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
 		Properties renderingResources = FreemarkerReportRenderer
@@ -693,8 +692,8 @@ public class EmbedderBehaviour {
 
 		// When
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
+		assertThat(embedder.configuration().embedderControls(), is(sameInstance(embedderControls)));
 		assertThat(embedder.storyRunner(), is(sameInstance(runner)));
-		assertThat(embedder.embedderControls(), is(sameInstance(embedderControls)));
 		assertThat(embedder.embedderMonitor(), is(sameInstance(monitor)));
 		embedder.useStoryRunner(new StoryRunner());
 		embedder.useEmbedderMonitor(new PrintStreamEmbedderMonitor());
@@ -716,9 +715,9 @@ public class EmbedderBehaviour {
 		// Given
 		Embedder embedder = new Embedder();
 		embedder.useCandidateSteps(asList((CandidateSteps)new MySteps()));
-		embedder.useStepdocGenerator(new DefaultStepdocGenerator());
+		embedder.configuration().useStepdocGenerator(new DefaultStepdocGenerator());
 		OutputStream out = new ByteArrayOutputStream();
-		embedder.useStepdocReporter(new PrintStreamStepdocReporter(new PrintStream(out)));
+		embedder.configuration().useStepdocReporter(new PrintStreamStepdocReporter(new PrintStream(out)));
 		// When
 		embedder.generateStepdoc();
 		// Then
