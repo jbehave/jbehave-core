@@ -16,10 +16,10 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.StoryClassLoader;
-import org.jbehave.core.configuration.EmbedderControls;
-import org.jbehave.core.configuration.UnmodifiableEmbedderControls;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
+import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.io.StoryPathFinder;
 
 /**

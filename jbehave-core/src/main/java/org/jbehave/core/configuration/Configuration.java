@@ -10,6 +10,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
@@ -26,21 +27,27 @@ import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
+import org.jbehave.core.reporters.FreemarkerReportRenderer;
+import org.jbehave.core.reporters.PrintStreamStepdocReporter;
+import org.jbehave.core.reporters.ReportRenderer;
+import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.PrintStreamStepMonitor;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.steps.StepdocGenerator;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
 /**
  * <p>
- * Provides the story configuration used by the {@link Embedder} and the in the
+ * Provides the configuration used by the {@link Embedder} and the in the
  * {@link RunnableStory} implementations to customise its runtime properties.
  * </p>
  * <p>
@@ -116,11 +123,6 @@ public class Configuration {
 	private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
 
 	/**
-	 * The embedder controls
-	 */
-	private EmbedderControls embedderControls = new EmbedderControls();
-
-	/**
 	 * Pattern build that uses prefix for identifying parameters
 	 */
 	private StepPatternParser stepPatternParser = new RegexPrefixCapturingPatternParser();
@@ -133,7 +135,7 @@ public class Configuration {
 	private StepMonitor stepMonitor = new SilentStepMonitor();
 
 	/**
-	 * Paranamer use is switched off by default
+	 * Paranamer is switched off by default
 	 */
 	private Paranamer paranamer = new NullParanamer();
 
@@ -146,6 +148,30 @@ public class Configuration {
 	 * Dry run is switched off by default
 	 */
 	private boolean dryRun = false;
+
+	/**
+	 * Use Freemarker-based report renderer
+	 */
+	private ReportRenderer reportRenderer = new FreemarkerReportRenderer();
+
+	/**
+	 * Generates stepdocs
+	 */
+	private StepdocGenerator stepdocGenerator = new DefaultStepdocGenerator();
+	
+	/**
+	 * Reports stepdocs
+	 */
+	private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter();
+
+	/**
+	 * The embedder controls
+	 */
+	private EmbedderControls embedderControls = new EmbedderControls();
+
+	public Keywords keywords() {
+		return keywords;
+	}
 
 	public StepCollector stepCollector() {
 		return stepCollector;
@@ -189,8 +215,36 @@ public class Configuration {
 		return storyReporterBuilder;
 	}
 
-	public Keywords keywords() {
-		return keywords;
+	public StepPatternParser stepPatternParser() {
+		return stepPatternParser;
+	}
+
+	public StepMonitor stepMonitor() {
+		return stepMonitor;
+	}
+
+	public Paranamer paranamer() {
+		return paranamer;
+	}
+
+	public ParameterConverters parameterConverters() {
+		return parameterConverters;
+	}
+
+	public boolean dryRun() {
+		return dryRun;
+	}
+
+	public ReportRenderer reportRenderer() {
+		return reportRenderer;
+	}
+
+	public StepdocGenerator stepdocGenerator() {
+		return stepdocGenerator;
+	}
+
+	public StepdocReporter stepdocReporter() {
+		return stepdocReporter;
 	}
 
 	public EmbedderControls embedderControls() {
@@ -213,7 +267,7 @@ public class Configuration {
 		return this;
 	}
 
-	public Configuration useErrorStrategy(FailureStrategy failureStrategy) {
+	public Configuration useFailureStrategy(FailureStrategy failureStrategy) {
 		this.failureStrategy = failureStrategy;
 		return this;
 	}
@@ -272,18 +326,10 @@ public class Configuration {
 		return this;
 	}
 
-	public StepPatternParser stepPatternParser() {
-		return stepPatternParser;
-	}
-
 	public Configuration useStepPatternParser(
 			StepPatternParser stepPatternParser) {
 		this.stepPatternParser = stepPatternParser;
 		return this;
-	}
-
-	public StepMonitor stepMonitor() {
-		return stepMonitor;
 	}
 
 	public Configuration useStepMonitor(StepMonitor stepMonitor) {
@@ -291,17 +337,9 @@ public class Configuration {
 		return this;
 	}
 
-	public Paranamer paranamer() {
-		return paranamer;
-	}
-
 	public Configuration useParanamer(Paranamer paranamer) {
 		this.paranamer = paranamer;
 		return this;
-	}
-
-	public ParameterConverters parameterConverters() {
-		return parameterConverters;
 	}
 
 	public Configuration useParameterConverters(
@@ -310,13 +348,22 @@ public class Configuration {
 		return this;
 	}
 
-	public boolean dryRun() {
-		return dryRun;
-	}
-
 	public void doDryRun(boolean dryRun) {
 		this.dryRun = dryRun;
 	}
+
+	public void useReportRenderer(ReportRenderer reportRenderer) {
+		this.reportRenderer = reportRenderer;
+	}
+
+	public void useStepdocGenerator(StepdocGenerator stepdocGenerator) {
+		this.stepdocGenerator = stepdocGenerator;
+	}
+
+	public void useStepdocReporter(StepdocReporter stepdocReporter) {
+		this.stepdocReporter = stepdocReporter;
+	}
+
 
 	@Override
 	public String toString() {
