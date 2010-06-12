@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Table Parameters</title>
+<title>Parameters Table</title>
 </head>
 
 <body>
 
-<h2>Table Parameters</h2>
+<h2>Parameters Table</h2>
 
 <p>Scenario writers may want to express a parameter in a tabular structure.
 For example:</p>
@@ -25,7 +25,7 @@ Then the traders returned are:
 </pre>
 
 <p>Now, JBehave supports multi-line parameters out-of-the-box.   Next, we need only combine this feature with
-the table parsing functionality already seen in the <a href="table-examples.html">table examples</a>:</p>
+the table parsing functionality already seen in the <a href="examples-table.html">examples table</a>:</p>
 
 <pre class="brush: java">
     @Given("the traders: $tradersTable")
@@ -49,9 +49,9 @@ the table parsing functionality already seen in the <a href="table-examples.html
     }
 </pre>
 
-<p><b>Note</b>: We are using the same table parsing functionality of the <a href="table-examples.html">table examples</a>, 
+<p><b>Note</b>: We are using the same table parsing functionality of the <a href="examples-table.html">examples table</a>, 
 via the re-use of the <a href="javadoc/core/org/jbehave/core/definition/ExamplesTable.html">ExamplesTable</a>,
-but there is a fundamental difference between these two use cases:  with table examples the scenario is run for each line of the 
+but there is a fundamental difference between these two use cases:  with examples table the scenario is run for each line of the 
 table (using in each execution the parameter values of the given row), while in using table parameters we are simply using 
 the tabular structure as a parameter, and how this structure is interpreted is up to the scenario writer.</p>
 

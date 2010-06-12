@@ -37,8 +37,8 @@
     <page>dependency-injection.html</page>
     <page>parameter-injection.html</page>
     <page>parameter-converters.html</page>
-    <page>table-examples.html</page>
-    <page>table-parameters.html</page>
+    <page>examples-table.html</page>
+    <page>parameters-table.html</page>
     <page>given-stories.html</page>
     <page>reports.html</page>
   </section>
