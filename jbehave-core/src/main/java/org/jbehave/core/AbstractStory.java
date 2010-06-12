@@ -5,8 +5,8 @@ import static java.util.Arrays.asList;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
@@ -51,7 +51,17 @@ public abstract class AbstractStory implements RunnableStory {
 		this.embedder = embedder;
 	}
 
+	protected Configuration configuration(){
+		return configuration;
+	}
+	
+	protected List<CandidateSteps> candidateSteps(){
+		return candidateSteps;
+	}
+	
 	protected Embedder configuredEmbedder() {
+		Configuration configuration = configuration();
+		List<CandidateSteps> candidateSteps = candidateSteps();
 		EmbedderControls embedderControls = embedder.embedderControls();
 		if ( embedderControls instanceof UnmodifiableEmbedderControls ){
 			configuration.useEmbedderControls(embedderControls);
