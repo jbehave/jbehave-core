@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Outcomes Table</title>
+</head>
+
+<body>
+
+<h2>Outcomes Table</h2>
+
+<p>Scenario writers may want to collect multiple outcomes and verify them all at once:</p>
+
+<pre class="brush: java">
+	OutcomesTable outcomes = new OutcomesTable();
+    outcomes.addOutcome("a failure", "A value", equalTo("A different value"));
+    outcomes.addOutcome("a success", "A value", equalTo("A value"));
+    outcomes.verify();
+</pre>
+
+<p>Upon verification, the outcome matching is done and if any
+outcome verification fails an <b>OutcomesFailed</b> exception is thrown
+and the step execution fails and the entire outcomes table (including all verified outcomes)
+is reported.</p>
+
+<pre class="brush: text">
+|Description|Value|Matcher|Verified|
+|a failure|A value|"A different value"|false|
+|a success|A value|"A value"|true|
+</pre>
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>
