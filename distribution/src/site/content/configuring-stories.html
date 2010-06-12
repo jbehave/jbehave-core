@@ -32,10 +32,9 @@ public abstract class TraderStory extends JUnitStory {
 
 	public TraderStory() {
 
-		// start with default story configuration, overriding story loader and reporter
+		// start with default configuration, overriding only the elements that are needed
         StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
         Class storyClass = this.getClass();
-        String storyPath = storyPathResolver.resolve(storyClass);
         Properties rendering = new Properties();
         rendering.put("decorateNonHtml", "true");
         Configuration configuration = new MostUsefulConfiguration()
@@ -48,7 +47,6 @@ public abstract class TraderStory extends JUnitStory {
                 	.withRenderingResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
                 	.withFailureTrace(false))
-                .buildReporters(storyPath)
                 .useStoryPathResolver(storyPathResolver)
                 .useStepMonitor(new SilentStepMonitor())
                 .useParameterConverters(new ParameterConverters(

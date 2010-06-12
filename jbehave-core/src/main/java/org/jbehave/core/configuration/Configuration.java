@@ -1,9 +1,6 @@
 package org.jbehave.core.configuration;
 
-import static java.util.Arrays.asList;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -110,7 +107,7 @@ public class Configuration {
 	/**
 	 * Reports stories to console output
 	 */
-	private StoryReporter storyReporter = new ConsoleOutput();
+	private StoryReporter defaultStoryReporter = new ConsoleOutput();
 
 	/**
 	 * Collects story reporters by story path
@@ -197,8 +194,8 @@ public class Configuration {
 		return pendingStepStrategy;
 	}
 
-	public StoryReporter storyReporter() {
-		return storyReporter;
+	public StoryReporter defaultStoryReporter() {
+		return defaultStoryReporter;
 	}
 
 	public StoryReporter storyReporter(String storyPath) {
@@ -206,9 +203,8 @@ public class Configuration {
 		if (storyReporter != null) {
 			return storyReporter;
 		}
-		// default to configured story reporter
-		// TODO consider merging the two methods
-		return storyReporter();
+		// fall back on default story reporter
+		return defaultStoryReporter();
 	}
 
 	public StoryReporterBuilder storyReporterBuilder() {
@@ -288,8 +284,8 @@ public class Configuration {
 		return this;
 	}
 
-	public Configuration useStoryReporter(StoryReporter storyReporter) {
-		this.storyReporter = storyReporter;
+	public Configuration useDefaultStoryReporter(StoryReporter storyReporter) {
+		this.defaultStoryReporter = storyReporter;
 		return this;
 	}
 
@@ -314,15 +310,6 @@ public class Configuration {
 	public Configuration useEmbedderControls(
 			EmbedderControls embedderControls) {
 		this.embedderControls = embedderControls;
-		return this;
-	}
-
-	public Configuration buildReporters(String... storyPaths) {
-		return buildReporters(asList(storyPaths));
-	}
-
-	public Configuration buildReporters(List<String> storyPaths) {
-		this.storyReporters.putAll(storyReporterBuilder.build(storyPaths));
 		return this;
 	}
 

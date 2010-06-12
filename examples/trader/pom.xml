@@ -141,6 +141,40 @@
       </properties>
     </profile>
     <profile>
+      <id>stories-as-urls</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jbehave</groupId>
+            <artifactId>jbehave-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>stories-as-urls</id>
+                <phase>integration-test</phase>
+                <configuration>
+                  <storyIncludes>
+                    <storyInclude>**/TraderStories.java</storyInclude>
+                  </storyIncludes>
+                  <storyExcludes />
+                  <skip>false</skip>
+                  <batch>${batch.mode}</batch>
+                  <ignoreFailureInStories>true</ignoreFailureInStories>
+                  <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
+                  <renderReportsAfterStories>true</renderReportsAfterStories>
+                </configuration>
+                <goals>
+                  <goal>run-stories</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+      <properties>
+        <skip.runnable.stories>true</skip.runnable.stories>
+      </properties>
+    </profile>
+    <profile>
       <id>stepdoc</id>
       <build>
         <plugins>

@@ -26,7 +26,7 @@ public class ItTraderStory extends JUnitStory {
         	.useKeywords(keywords)
         	.useStoryParser(new RegexStoryParser(keywords))
         	.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))
-        	.useStoryReporter(new ConsoleOutput(keywords))
+        	.useDefaultStoryReporter(new ConsoleOutput(keywords))
         	.useKeywords(keywords)
         	.useParameterConverters(new ParameterConverters(new ParameterConverters.ExamplesTableConverter(keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator())));
         useConfiguration(configuration);

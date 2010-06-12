@@ -69,7 +69,6 @@ public class ClasspathTraderEmbedder extends Embedder {
         		.withOutputLocationClass(embedderClass)
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
-			.buildReporters(storyPaths())
 			.useEmbedderControls(new EmbedderControls()
 					.doIgnoreFailureInStories(true).doIgnoreFailureInReports(true))
 			.useParameterConverters(new ParameterConverters(

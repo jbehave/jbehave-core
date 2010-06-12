@@ -34,7 +34,7 @@ public class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.storyLoader(), is(delegate.storyLoader()));
         assertThat(unmodifiable.storyParser(), is(delegate.storyParser()));
         assertThat(unmodifiable.storyPathResolver(), is(delegate.storyPathResolver()));
-        assertThat(unmodifiable.storyReporter(), is(delegate.storyReporter()));
+        assertThat(unmodifiable.defaultStoryReporter(), is(delegate.defaultStoryReporter()));
         assertThat(unmodifiable.storyReporterBuilder(), is(delegate.storyReporterBuilder()));
         assertThat(unmodifiable.failureStrategy(), is(delegate.failureStrategy()));
         assertThat(unmodifiable.pendingStepStrategy(), is(delegate.pendingStepStrategy()));
@@ -56,7 +56,7 @@ public class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
         assertThatNotAllowed(unmodifiable, "useStoryLoader", StoryLoader.class);
         assertThatNotAllowed(unmodifiable, "useStoryParser", StoryParser.class);
-        assertThatNotAllowed(unmodifiable, "useStoryReporter", StoryReporter.class);
+        assertThatNotAllowed(unmodifiable, "useDefaultStoryReporter", StoryReporter.class);
         assertThatNotAllowed(unmodifiable, "useStoryReporterBuilder", StoryReporterBuilder.class);
         assertThatNotAllowed(unmodifiable, "useFailureStrategy", FailureStrategy.class);
         assertThatNotAllowed(unmodifiable, "usePendingStepStrategy", PendingStepStrategy.class);

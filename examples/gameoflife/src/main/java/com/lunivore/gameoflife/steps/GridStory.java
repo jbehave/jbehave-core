@@ -33,7 +33,7 @@ public class GridStory extends JUnitStory {
 			}
 
 			@Override
-			public StoryReporter storyReporter() {
+			public StoryReporter defaultStoryReporter() {
 				return new ConsoleOutput();
 			}
 		});

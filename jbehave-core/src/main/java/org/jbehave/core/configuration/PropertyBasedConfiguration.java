@@ -28,8 +28,8 @@ public class PropertyBasedConfiguration extends MostUsefulConfiguration {
 	 * if the stories fail.
 	 * </p>
 	 */
-	public StoryReporter storyReporter() {
-		StoryReporter storyReporter = super.storyReporter();
+	public StoryReporter defaultStoryReporter() {
+		StoryReporter storyReporter = super.defaultStoryReporter();
 		if (System.getProperty(SILENT_SUCCESS) == null) {
 			return storyReporter;
 		} else {

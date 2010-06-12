@@ -43,15 +43,15 @@ public class ClasspathTraderEmbedder extends Embedder {
         		.withOutputLocationClass(embedderClass)
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
-			.buildReporters(storyPaths())
-			.useEmbedderControls(new EmbedderControls()
-					.doIgnoreFailureInStories(true).doIgnoreFailureInReports(true))
 			.useParameterConverters(new ParameterConverters(
 							new TraderConverter(mockTradePersister())))
 			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
 							"%")) // use '%' instead of '$' to identify parameters
-			.useStepMonitor(new SilentStepMonitor());
-					
+			.useStepMonitor(new SilentStepMonitor())
+			.useEmbedderControls(new EmbedderControls()
+				.doIgnoreFailureInStories(true)
+				.doIgnoreFailureInReports(true));
+								
 	}
 
 	@Override

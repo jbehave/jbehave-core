@@ -11,7 +11,7 @@ public abstract class MyMultipleStory extends JUnitStory {
 	public MyMultipleStory() {
         // Making sure this doesn't output to the build while it's running
         useConfiguration(new MostUsefulConfiguration()
-        		.useStoryReporter(new TxtOutput(new PrintStream(new ByteArrayOutputStream())))
+        		.useDefaultStoryReporter(new TxtOutput(new PrintStream(new ByteArrayOutputStream())))
         );
     }
 }

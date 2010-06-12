@@ -358,7 +358,7 @@ public class StoryRunnerBehaviour {
             }
 
             @Override
-            public StoryReporter storyReporter() {
+            public StoryReporter defaultStoryReporter() {
                 return reporter;
             }
 

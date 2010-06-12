@@ -14,7 +14,7 @@ public abstract class MyPendingStory extends JUnitStory {
         // Making sure this doesn't output to the build while it's running
         useConfiguration(new MostUsefulConfiguration() {
             @Override
-            public StoryReporter storyReporter() {
+            public StoryReporter defaultStoryReporter() {
                 return new TxtOutput(new PrintStream(new ByteArrayOutputStream()));
             }
         });

@@ -1,6 +1,5 @@
 package org.jbehave.core.configuration;
 
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -38,8 +37,8 @@ public class UnmodifiableConfiguration extends Configuration {
         this.delegate = delegate;
     }
 
-    public StoryReporter storyReporter() {
-       return delegate.storyReporter();
+    public StoryReporter defaultStoryReporter() {
+       return delegate.defaultStoryReporter();
     }
 
     public StoryParser storyParser() {
@@ -61,14 +60,6 @@ public class UnmodifiableConfiguration extends Configuration {
     public Keywords keywords() {
         return delegate.keywords();
     }
-
-	public Configuration buildReporters(List<String> storyPaths) {
-		return delegate.buildReporters(storyPaths);
-	}
-
-	public Configuration buildReporters(String... storyPaths) {
-		return delegate.buildReporters(storyPaths);
-	}
 
 	public boolean dryRun() {
 		return delegate.dryRun();
@@ -148,7 +139,7 @@ public class UnmodifiableConfiguration extends Configuration {
     }
 
     @Override
-    public Configuration useStoryReporter(StoryReporter storyReporter) {
+    public Configuration useDefaultStoryReporter(StoryReporter storyReporter) {
         throw notAllowed();
     }
     

@@ -26,8 +26,8 @@ public class Embedder {
 	
 	private Configuration configuration = new MostUsefulConfiguration();
 	private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
-	private StoryRunner storyRunner = new StoryRunner();
-	private EmbedderMonitor embedderMonitor = new PrintStreamEmbedderMonitor();
+	private StoryRunner storyRunner;
+	private EmbedderMonitor embedderMonitor;
 
 	public Embedder() {
 		this(new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -92,6 +92,11 @@ public class Embedder {
 		}
 		runStoriesAsPaths(storyPaths);
 	}
+	
+	public void buildReporters(Configuration configuration, List<String> storyPaths) {
+		StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
+		configuration.useStoryReporters(reporterBuilder.build(storyPaths));
+	}
 
 	public void runStoriesAsPaths(List<String> storyPaths) {
 		EmbedderControls embedderControls = embedderControls();
@@ -101,10 +106,11 @@ public class Embedder {
 		}
 
 		Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
+		Configuration configuration = configuration();
+		buildReporters(configuration, storyPaths);
 		for (String storyPath : storyPaths) {
 			try {
 				embedderMonitor.runningStory(storyPath);
-				Configuration configuration = configuration();
 				storyRunner.run(configuration, candidateSteps(), storyPath);
 			} catch (Throwable e) {
 				if (embedderControls.batch()) {
@@ -153,7 +159,7 @@ public class Embedder {
 			embedderMonitor.reportsNotRendered();
 			return;
 		}
-		ReportRenderer reportRenderer = configuration.reportRenderer();
+		ReportRenderer reportRenderer = configuration().reportRenderer();
 		try {
 			embedderMonitor.renderingReports(outputDirectory, formats,
 					renderingResources);
@@ -179,8 +185,8 @@ public class Embedder {
 
 	public void generateStepdoc() {
 		List<CandidateSteps> candidateSteps = candidateSteps();
-		StepdocReporter stepdocReporter = configuration.stepdocReporter();
-		StepdocGenerator stepdocGenerator = configuration.stepdocGenerator();
+		StepdocReporter stepdocReporter = configuration().stepdocReporter();
+		StepdocGenerator stepdocGenerator = configuration().stepdocGenerator();
 		stepdocReporter.report(stepdocGenerator.generate(candidateSteps
 				.toArray(new CandidateSteps[candidateSteps.size()])));
 	}
@@ -194,7 +200,7 @@ public class Embedder {
 	}
 
 	public EmbedderControls embedderControls() {
-		return configuration.embedderControls();
+		return configuration().embedderControls();
 	}
 	
 	public EmbedderMonitor embedderMonitor() {
@@ -213,16 +219,16 @@ public class Embedder {
 		this.candidateSteps = candidateSteps;
 	}
 
-	public void useStoryRunner(StoryRunner storyRunner) {
-		this.storyRunner = storyRunner;
-	}
-
 	public void useEmbedderControls(EmbedderControls embedderControls) {
-		this.configuration.useEmbedderControls(embedderControls);
+		this.configuration().useEmbedderControls(embedderControls);
 	}
 
 	public void useEmbedderMonitor(EmbedderMonitor embedderMonitor) {
 		this.embedderMonitor = embedderMonitor;
+	}
+
+	public void useStoryRunner(StoryRunner storyRunner) {
+		this.storyRunner = storyRunner;
 	}
 
 	private String format(Map<String, Throwable> failedStories) {

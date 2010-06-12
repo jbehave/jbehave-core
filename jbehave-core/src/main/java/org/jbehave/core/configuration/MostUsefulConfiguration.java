@@ -53,7 +53,7 @@ public class MostUsefulConfiguration extends Configuration {
         useStoryParser(new RegexStoryParser(keywords()));
         useFailureStrategy(new RethrowingFailure());
         usePendingStepStrategy(new PassingUponPendingStep());
-        useStoryReporter(new ConsoleOutput());
+        useDefaultStoryReporter(new ConsoleOutput());
         useStepCollector(new MarkUnmatchedStepsAsPending());
         useStepPatternParser(new RegexPrefixCapturingPatternParser());
         useStepMonitor(new SilentStepMonitor());

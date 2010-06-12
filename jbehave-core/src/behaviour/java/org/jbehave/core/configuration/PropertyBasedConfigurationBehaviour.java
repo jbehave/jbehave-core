@@ -53,13 +53,13 @@ public class PropertyBasedConfigurationBehaviour {
     @Test
     public void shouldOuputToConsoleByDefault() {
         System.clearProperty(SILENT_SUCCESS);
-        assertThat(new PropertyBasedConfiguration().storyReporter(), is(ConsoleOutput.class));
+        assertThat(new PropertyBasedConfiguration().defaultStoryReporter(), is(ConsoleOutput.class));
     }
     
     @Test
     public void shouldUseSilentSuccessFilterConfiguredToDoSo() {
         System.setProperty(SILENT_SUCCESS, "true");
-        assertThat(new PropertyBasedConfiguration().storyReporter(), is(SilentSuccessFilter.class));
+        assertThat(new PropertyBasedConfiguration().defaultStoryReporter(), is(SilentSuccessFilter.class));
     }
     
 }

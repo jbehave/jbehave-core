@@ -44,11 +44,9 @@ to a file:</p>
 <pre class="brush: java">
 
 	public TraderStory() {
-
-		// start with default story configuration, overriding story loader and reporter
+		// start with default configuration, overriding only the elements that are needed
         StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
-        Class<? extends TraderStory> storyClass = this.getClass();
-        String storyPath = storyPathResolver.resolve(storyClass);
+        Class storyClass = this.getClass();
         Properties rendering = new Properties();
         rendering.put("decorateNonHtml", "true");
         Configuration configuration = new MostUsefulConfiguration()
@@ -61,7 +59,6 @@ to a file:</p>
                 	.withRenderingResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
                 	.withFailureTrace(false))
-                .buildReporters(storyPath)
                 .useStoryPathResolver(storyPathResolver)
                 .useStepMonitor(new SilentStepMonitor())
                 .useParameterConverters(new ParameterConverters(
