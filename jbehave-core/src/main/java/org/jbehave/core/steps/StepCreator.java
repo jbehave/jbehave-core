@@ -1,6 +1,10 @@
 package org.jbehave.core.steps;
 
 import static java.util.Arrays.asList;
+import static org.jbehave.core.steps.AbstractStepResult.failed;
+import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
+import static org.jbehave.core.steps.AbstractStepResult.pending;
+import static org.jbehave.core.steps.AbstractStepResult.successful;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -65,7 +69,7 @@ public class StepCreator {
 					if (!dryRun) {
 						method.invoke(stepsInstance, convertArgs(args, types));
 					}
-                    return StepResult.successful(stepAsString).withParameterValues(parametrisedStep);
+                    return successful(stepAsString).withParameterValues(parametrisedStep);
                 } catch (Throwable t) {
                     return failedOrPending(stepAsString, t);
                 }
@@ -75,16 +79,16 @@ public class StepCreator {
                 if (t instanceof InvocationTargetException && t.getCause() != null) {
                     Throwable cause = t.getCause();
 					if (cause instanceof PendingStepFound) {
-                        return StepResult.pending(stepAsString, (PendingStepFound) cause).withParameterValues(parametrisedStep);
+                        return pending(stepAsString, (PendingStepFound) cause).withParameterValues(parametrisedStep);
                     } else {
-                        return StepResult.failed(stepAsString, cause).withParameterValues(parametrisedStep);
+                        return failed(stepAsString, cause).withParameterValues(parametrisedStep);
                     }
                 }
-                return StepResult.failed(stepAsString, t).withParameterValues(parametrisedStep);
+                return failed(stepAsString, t).withParameterValues(parametrisedStep);
             }
 
             public StepResult doNotPerform() {
-                return StepResult.notPerformed(stepAsString).withParameterValues(parametrisedStep);
+                return notPerformed(stepAsString).withParameterValues(parametrisedStep);
             }
 
         };

@@ -61,7 +61,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform();
-        Throwable throwable = result.getThrowable();
+        Throwable throwable = result.getFailure();
 		assertThat(throwable, is(PendingStepFound.class));
 		assertThat(throwable.getMessage(), equalTo(stepAsString));
     }

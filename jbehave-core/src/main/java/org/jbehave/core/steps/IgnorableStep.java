@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import static org.jbehave.core.steps.AbstractStepResult.ignorable;
+
 
 public class IgnorableStep implements Step {
     
@@ -10,7 +12,7 @@ public class IgnorableStep implements Step {
     }
 
     public StepResult perform() {
-        return StepResult.ignorable(getDescription());
+        return ignorable(getDescription());
     }
 
 
@@ -20,7 +22,7 @@ public class IgnorableStep implements Step {
 
 
     public StepResult doNotPerform() {
-        return StepResult.ignorable(getDescription());
+        return ignorable(getDescription());
     }
 
     @Override

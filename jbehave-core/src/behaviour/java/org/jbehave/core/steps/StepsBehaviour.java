@@ -11,8 +11,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jbehave.core.annotations.AfterScenario;
-import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.CandidateStep.StartingWordNotFound;
 import org.jbehave.core.steps.Steps.DuplicateCandidateStepFoundException;
@@ -157,7 +158,14 @@ public class StepsBehaviour {
 		assertThat(!steps.afterFailure, is(true)); // @AfterScenario(uponOutcome=FAILURE) is run after unsuccessful stories
 	
     }
-
+    
+    @Test(expected=BeforeOrAfterFailed.class)
+    public void shouldReportFailuresInBeforeAndAfterMethods() {
+    	BeforeAndAfterSteps steps = new BeforeAndAfterSteps();
+    	List<Step> executableSteps = steps.runBeforeScenario();
+    	executableSteps.get(0).perform();
+    	executableSteps.get(1).perform();
+    }
 
     @Test(expected=DuplicateCandidateStepFoundException.class)
     public void shouldFailIfDuplicateStepsAreEncountered() {
@@ -328,6 +336,19 @@ public class StepsBehaviour {
 
     }
 
+    static class BeforeAndAfterSteps extends Steps {
+        
+        @org.jbehave.core.annotations.BeforeScenario
+        public void beforeScenario() {
+        }
+
+        @org.jbehave.core.annotations.BeforeScenario
+        public void beforeScenarioThatFails() {
+        	throw new RuntimeException("Damn, I failed!");
+        }
+                
+    }
+
     static class DuplicateSteps extends Steps {
         
         @org.jbehave.core.annotations.Given("a given")
@@ -339,6 +360,7 @@ public class StepsBehaviour {
         }
                 
     }
+
 
     static class I18nSteps extends Steps {
 

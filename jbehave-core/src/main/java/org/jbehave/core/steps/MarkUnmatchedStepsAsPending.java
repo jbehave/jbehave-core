@@ -10,9 +10,10 @@ import java.util.Map;
 
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.AbstractStepResult.Pending;
 
 /**
- * StepCollector that marks unmatched steps as {@link StepResult.Pending}
+ * StepCollector that marks unmatched steps as {@link Pending}
  */
 public class MarkUnmatchedStepsAsPending implements StepCollector {
 

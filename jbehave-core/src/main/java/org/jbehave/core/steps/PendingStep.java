@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import static org.jbehave.core.steps.AbstractStepResult.pending;
+
 
 public class PendingStep implements Step {
     
@@ -10,7 +12,7 @@ public class PendingStep implements Step {
     }
 
     public StepResult perform() {
-        return StepResult.pending(getDescription());
+        return pending(getDescription());
     }
 
 
@@ -20,7 +22,7 @@ public class PendingStep implements Step {
 
 
     public StepResult doNotPerform() {
-        return StepResult.pending(getDescription());
+        return pending(getDescription());
     }
 
     @Override

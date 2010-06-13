@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.FAILURE;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.SUCCESS;
+import static org.jbehave.core.steps.AbstractStepResult.silent;
 import static org.jbehave.core.steps.StepType.GIVEN;
 import static org.jbehave.core.steps.StepType.THEN;
 import static org.jbehave.core.steps.StepType.WHEN;
@@ -25,11 +26,10 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
-import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.parsers.StepPatternParser;
-import org.jbehave.core.reporters.StoryReporter;
 
 /**
  * <p>
@@ -204,11 +204,11 @@ public class Steps implements CandidateSteps {
                 if ( runnableStoryStep(method.getAnnotation(annotationClass), givenStory) ){
                     steps.add(new Step() {
                         public StepResult doNotPerform() {
-                            return forSuccess.run(annotationClass, method);
+                            return forSuccess.run(method);
                         }
 
                         public StepResult perform() {
-                            return forSuccess.run(annotationClass, method);
+                            return forSuccess.run(method);
                         }
                     });                    
                 }
@@ -249,11 +249,11 @@ public class Steps implements CandidateSteps {
             if (method.isAnnotationPresent(annotationClass)) {
                 steps.add(new Step() {
                     public StepResult doNotPerform() {
-                        return forSuccess.run(annotationClass, method);
+                        return forSuccess.run(method);
                     }
 
                     public StepResult perform() {
-                        return forSuccess.run(annotationClass, method);
+                        return forSuccess.run(method);
                     }
 
                 });
@@ -272,11 +272,11 @@ public class Steps implements CandidateSteps {
                     steps.add(new Step() {
 
                         public StepResult doNotPerform() {
-                            return forFailure.run(annotationClass, method);
+                            return forFailure.run(method);
                         }
 
                         public StepResult perform() {
-                            return forSuccess.run(annotationClass, method);
+                            return forSuccess.run(method);
                         }
 
                     });
@@ -296,44 +296,30 @@ public class Steps implements CandidateSteps {
         return methods;
     }
 
-    class DoRun implements StepRunner {
-        public StepResult run(final Class<? extends Annotation> annotation, Method method) {
+    private class DoRun implements StepRunner {
+        public StepResult run(Method method) {
             try {
                 method.invoke(instance);
             } catch (InvocationTargetException e) {
                 if (e.getCause() != null) {
-                    throw new BeforeOrAfterFailed(annotation, method, e.getCause());
+                    throw new BeforeOrAfterFailed(method, e.getCause());
                 } else {
                     throw new RuntimeException(e);
                 }
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
-            return new SilentStepResult();
+            return silent();
         }
     }
 
     private class DoNotRun implements StepRunner {
-        public StepResult run(Class<? extends Annotation> annotation, Method method) {
-            return new SilentStepResult();
+        public StepResult run(Method method) {
+            return silent();
         }
     }
 
-    private interface StepRunner {
-        StepResult run(Class<? extends Annotation> annotation, Method method);
-    }
-
-    public class SilentStepResult extends StepResult {
-        public SilentStepResult() {
-            super("");
-        }
-
-        @Override
-        public void describeTo(StoryReporter reporter) {
-        }
-    }
-
-    @SuppressWarnings("serial")
+     @SuppressWarnings("serial")
     public static class DuplicateCandidateStepFoundException extends RuntimeException {
 
         public DuplicateCandidateStepFoundException(StepType stepType, String patternAsString) {

@@ -417,7 +417,7 @@ public class CandidateStepBehaviour {
 		CandidateStep[] candidateSteps = steps.getSteps();
 		assertThat(candidateSteps.length, equalTo(1));
 		StepResult stepResult = candidateSteps[0].createStep("When outcome fails for Bar upon verification", tableRow).perform();
-		assertThat(stepResult.throwable, Matchers.instanceOf(OutcomesFailed.class));
+		assertThat(stepResult.getFailure(), Matchers.instanceOf(OutcomesFailed.class));
 	}
 	
 	@Test

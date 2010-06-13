@@ -186,7 +186,7 @@ public class StoryRunner {
 
             StepResult result = step.perform();
             result.describeTo(reporter);
-            Throwable thisScenariosThrowable = result.getThrowable();
+            Throwable thisScenariosThrowable = result.getFailure();
             if (thisScenariosThrowable != null) {
                 state = new SomethingHappened();
                 throwable = mostImportantOf(throwable, thisScenariosThrowable);
