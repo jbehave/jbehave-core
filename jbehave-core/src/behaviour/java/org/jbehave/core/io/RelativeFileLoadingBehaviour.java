@@ -7,6 +7,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.jbehave.core.io.LoadFromRelativeFile.intellijProjectTestStoryFilePath;
 import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleTestStoryFilePath;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 
 public class RelativeFileLoadingBehaviour {
 
@@ -17,7 +18,7 @@ public class RelativeFileLoadingBehaviour {
 		String storyAsText = "Given my step";
 
         // When
-        LoadFromRelativeFile loader = new LoadFromRelativeFile(MyPendingStory.class,
+        LoadFromRelativeFile loader = new LoadFromRelativeFile(codeLocationFromClass(MyPendingStory.class),
                 mavenModuleTestStoryFilePath("src/behaviour/java"),
                 intellijProjectTestStoryFilePath("src/behaviour/java"));
         String loadedStoryAsText = loader.loadStoryAsText(storyPath);

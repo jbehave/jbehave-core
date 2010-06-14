@@ -15,10 +15,12 @@ import java.net.URL;
  *
  * Defaults to working from classes compiled to Maven-style 'target/test-classes', with story source in 'src/test/java'
  *
+ *    LoadFromRelativeFile loader = new LoadFromRelativeFile(codeLocationFromClass(YourStory.class));
+ *
  * To work with something other than the default story locations, you will have to specify them in the var-args
  * constructor.
  *
- *    LoadFromRelativeFile loader = new LoadFromRelativeFile(YourStory.class,
+ *    LoadFromRelativeFile loader = new LoadFromRelativeFile(codeLocationFromClass(YourStory.class),
  *        mavenModuleTestStoryFilePath("src/behaviour/java"),
  *        intellijProjectTestStoryFilePath("src/behaviour/java"));
  *
@@ -27,26 +29,24 @@ import java.net.URL;
  *   {@link LoadFromRelativeFile#intellijProjectStoryFilePath}
  *   {@link LoadFromRelativeFile#intellijProjectTestStoryFilePath}
  *
+ * See also {@link StoryLocation#codeLocationFromClass}
+ *
  */
 public class LoadFromRelativeFile implements StoryLoader {
 
 	private final StoryFilePath[] traversals;
 	private final URL location;
 
-	public LoadFromRelativeFile(Class<?> storyClass) {
-		this(storyClass, mavenModuleStoryFilePath("src/test/java"));
+	public LoadFromRelativeFile(URL location) {
+		this(location, mavenModuleStoryFilePath("src/test/java"));
 	}
 
-	public LoadFromRelativeFile(Class<?> storyClass, StoryFilePath... traversals) {
+	public LoadFromRelativeFile(URL location, StoryFilePath... traversals) {
 		this.traversals = traversals;
-		this.location = locationFor(storyClass);
+        this.location = location;
 	}
 
-	protected URL locationFor(Class<?> storyClass) {
-		return storyClass.getProtectionDomain().getCodeSource().getLocation();
-	}
-
-	public String loadStoryAsText(String storyPath) {
+    public String loadStoryAsText(String storyPath) {
         String badFileLocations = "";
         for (StoryFilePath traversal : traversals) {
             try {
