@@ -8,22 +8,36 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * Loads story content from a directory traversal relative to the compiled story
- * class.
+ * Loads story content from a directory traversal relative to the compiled story class.  It allows for a range
+ * of possibilities for a story location as each of Maven, Intellij, Eclipse and Ant can have compiled classes
+ * in different directories.
  * <p/>
- * Defaults to using {@link LoadFromRelativeFile.TEST_DIR}, which implies a traversal out of 'target/test-classes'
+ *
+ * Defaults to working from classes compiled to Maven-style 'target/test-classes', with story source in 'src/test/java'
+ *
+ * To work with something other than the default story locations, you will have to specify them in the var-args
+ * constructor.
+ *
+ *    LoadFromRelativeFile loader = new LoadFromRelativeFile(YourStory.class,
+ *        mavenModuleTestStoryFilePath("src/behaviour/java"),
+ *        intellijProjectTestStoryFilePath("src/behaviour/java"));
+ *
+ * Convenience methods : {@link LoadFromRelativeFile#mavenModuleStoryFilePath},
+ *   {@link LoadFromRelativeFile#mavenModuleTestStoryFilePath}
+ *   {@link LoadFromRelativeFile#intellijProjectStoryFilePath}
+ *   {@link LoadFromRelativeFile#intellijProjectTestStoryFilePath}
+ *
  */
 public class LoadFromRelativeFile implements StoryLoader {
 
-	private final CompileOutput[] traversals;
+	private final StoryFilePath[] traversals;
 	private final URL location;
-	private static final String TEST_DIR = "../../src/test/java";
 
 	public LoadFromRelativeFile(Class<?> storyClass) {
-		this(storyClass, mavenModuleCompileOutput("src/test/java"));
+		this(storyClass, mavenModuleStoryFilePath("src/test/java"));
 	}
 
-	public LoadFromRelativeFile(Class<?> storyClass, CompileOutput... traversals) {
+	public LoadFromRelativeFile(Class<?> storyClass, StoryFilePath... traversals) {
 		this.traversals = traversals;
 		this.location = locationFor(storyClass);
 	}
@@ -34,7 +48,7 @@ public class LoadFromRelativeFile implements StoryLoader {
 
 	public String loadStoryAsText(String storyPath) {
         String badFileLocations = "";
-        for (CompileOutput traversal : traversals) {
+        for (StoryFilePath traversal : traversals) {
             try {
                 String fileLocation = new File(location.getFile()).getCanonicalPath() + "/";
                 fileLocation = fileLocation.replace(traversal.toRemove, "") + "/"
@@ -58,30 +72,54 @@ public class LoadFromRelativeFile implements StoryLoader {
 
 	}
 
-    public static class CompileOutput {
+    /**
+     * For use the the var-args constructor of {@link LoadFromRelativeFile}, to allow a range of possibilities
+     * for locating Story file paths
+     */
+    public static class StoryFilePath {
         private final String toRemove;
         private final String relativePath;
 
-        public CompileOutput(String toRemove, String relativePath) {
+        public StoryFilePath(String toRemove, String relativePath) {
             this.toRemove = toRemove;
             this.relativePath = relativePath;
         }
     }
 
-    public static CompileOutput mavenModuleCompileOutput(String relativePath) {
-        return new CompileOutput("target/classes", relativePath);
+    /**
+     * Maven by default, has its PRODUCTION classes in target/classes. This story file path is relative to that.
+     * @param relativePath the path to the stories' base-dir inside the module
+     * @return the resulting StoryFilePath
+     */
+    public static StoryFilePath mavenModuleStoryFilePath(String relativePath) {
+        return new StoryFilePath("target/classes", relativePath);
     }
 
-    public static CompileOutput mavenModuleTestCompileOutput(String relativePath) {
-        return new CompileOutput("target/test-classes", relativePath);
+    /**
+     * Maven by default, has its TEST classes in target/test-classes. This story file path is relative to that.
+     * @param relativePath the path to the stories' base-dir inside the module
+     * @return the resulting StoryFilePath
+     */
+    public static StoryFilePath mavenModuleTestStoryFilePath(String relativePath) {
+        return new StoryFilePath("target/test-classes", relativePath);
     }
 
-    public static CompileOutput intellijProjectCompileOutput(String relativePath) {
-        return new CompileOutput("classes/production", relativePath);
+    /**
+     * Intellij by default, has its PRODUCTION classes in classes/production. This story file path is relative to that.
+     * @param relativePath the path to the stories' base-dir inside the module
+     * @return the resulting StoryFilePath
+     */
+    public static StoryFilePath intellijProjectStoryFilePath(String relativePath) {
+        return new StoryFilePath("classes/production", relativePath);
     }
 
-    public static CompileOutput intellijProjectTestCompileOutput(String relativePath) {
-        return new CompileOutput("classes/test", relativePath);
+    /**
+     * Intellij by default, has its TEST classes in classes/test. This story file path is relative to that.
+     * @param relativePath the path to the stories' base-dir inside the module
+     * @return the resulting StoryFilePath
+     */
+    public static StoryFilePath intellijProjectTestStoryFilePath(String relativePath) {
+        return new StoryFilePath("classes/test", relativePath);
     }
 
 }

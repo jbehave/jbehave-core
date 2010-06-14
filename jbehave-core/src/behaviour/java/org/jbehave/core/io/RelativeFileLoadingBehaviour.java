@@ -5,8 +5,8 @@ import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.jbehave.core.io.LoadFromRelativeFile.intellijProjectTestCompileOutput;
-import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleTestCompileOutput;
+import static org.jbehave.core.io.LoadFromRelativeFile.intellijProjectTestStoryFilePath;
+import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleTestStoryFilePath;
 
 public class RelativeFileLoadingBehaviour {
 
@@ -18,8 +18,8 @@ public class RelativeFileLoadingBehaviour {
 
         // When
         LoadFromRelativeFile loader = new LoadFromRelativeFile(MyPendingStory.class,
-                mavenModuleTestCompileOutput("src/behaviour/java"),
-                intellijProjectTestCompileOutput("src/behaviour/java"));
+                mavenModuleTestStoryFilePath("src/behaviour/java"),
+                intellijProjectTestStoryFilePath("src/behaviour/java"));
         String loadedStoryAsText = loader.loadStoryAsText(storyPath);
         
         // Then
