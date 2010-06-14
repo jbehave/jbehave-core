@@ -4,6 +4,7 @@ import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.AfterStory;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStory;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
 
 /**
  * Steps executed before and after each story and core
@@ -20,14 +21,14 @@ public class BeforeAfterSteps {
         System.out.println("After Story ...");
     }
     
-    @BeforeStory(uponEmbedded=true)
-    public void beforeEmbeddedStory() {
-        System.out.println("Before Embedded Story ...");
+    @BeforeStory(uponGivenStory=true)
+    public void beforeGivenStory() {
+        System.out.println("Before Given Story ...");
     }
 
-    @AfterStory(uponEmbedded=true)
-    public void afterEmbeddedStory() {
-        System.out.println("After Embedded Story ...");
+    @AfterStory(uponGivenStory=true)
+    public void afterGivenStory() {
+        System.out.println("After Given Story ...");
     }
     
     @BeforeScenario
@@ -37,7 +38,17 @@ public class BeforeAfterSteps {
 
     @AfterScenario
     public void afterScenario() {
-        System.out.println("After Scenario ...");
+        System.out.println("After Any Scenario ...");
     }
-    
+
+    @AfterScenario(uponOutcome=Outcome.FAILURE)
+    public void afterFailedScenario() {
+        System.out.println("After Failed Scenario ...");
+    }
+
+    @AfterScenario(uponOutcome=Outcome.SUCCESS)
+    public void afterSuccessfulScenario() {
+        System.out.println("After Successful Scenario ...");
+    }
+
 }

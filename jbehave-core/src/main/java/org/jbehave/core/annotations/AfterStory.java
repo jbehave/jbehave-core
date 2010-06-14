@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface AfterStory {
 
-    boolean uponEmbedded() default false;
+    boolean uponGivenStory() default false;
     
 }

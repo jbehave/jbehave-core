@@ -1,7 +1,5 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -91,7 +89,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
     private List<CandidateStep> prioritise(List<CandidateSteps> candidateSteps) {
         List<CandidateStep> steps = new ArrayList<CandidateStep>();
         for (CandidateSteps candidates : candidateSteps) {
-            steps.addAll(asList(candidates.getSteps()));
+            steps.addAll(candidates.listCandidates());
         }
         Collections.sort(steps, new Comparator<CandidateStep>() {
             public int compare(CandidateStep o1, CandidateStep o2) {

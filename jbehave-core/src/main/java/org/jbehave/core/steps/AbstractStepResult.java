@@ -79,9 +79,9 @@ public abstract class AbstractStepResult implements StepResult {
         }
     }
     
-    public static class SilentStepResult extends AbstractStepResult {
+    public static class SkippedStepResult extends AbstractStepResult {
 
-    	public SilentStepResult() {
+    	public SkippedStepResult() {
             super("");
         }
 
@@ -139,8 +139,8 @@ public abstract class AbstractStepResult implements StepResult {
 		return new Failed(step, e);
 	}
 	
-	public static StepResult silent(){
-		return new SilentStepResult();
+	public static StepResult skipped(){
+		return new SkippedStepResult();
 	}
 
 }

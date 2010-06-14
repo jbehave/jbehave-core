@@ -1,23 +1,21 @@
 package org.jbehave.core.io;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 
+import org.apache.commons.io.IOUtils;
+
 /**
  * Loads story content from a directory traversal relative to the compiled story
  * class.
  * <p/>
- * Defaults to using {@link TEST_DIR}, which implies a traversal out of 'target/test-classes'
  */
 public class LoadFromRelativeFile implements StoryLoader {
 
 	private final CompileOutput[] traversals;
 	private final URL location;
-	private static final String TEST_DIR = "../../src/test/java";
 
 	public LoadFromRelativeFile(Class<?> storyClass) {
 		this(storyClass, mavenModuleCompileOutput("src/test/java"));

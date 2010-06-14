@@ -57,15 +57,15 @@ public class StoryRunnerBehaviour {
                 scenario2, scenario3);
         boolean givenStory = false;
 
-        CandidateStep[] someCandidateSteps = new CandidateStep[0];
+        List<CandidateStep> someCandidateSteps = asList();
         Step step = mock(Step.class);
         StepResult result = mock(StepResult.class);
         when(step.perform()).thenReturn(result);
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mock(Steps.class);
-        when(mySteps.getConfiguration()).thenReturn(new MostUsefulConfiguration());
-        when(mySteps.getSteps()).thenReturn(someCandidateSteps);
+        when(mySteps.configuration()).thenReturn(new MostUsefulConfiguration());
+        when(mySteps.listCandidates()).thenReturn(someCandidateSteps);
         IllegalArgumentException anException = new IllegalArgumentException();
         Step pendingStep = mock(Step.class);
         Step successfulStep = mock(Step.class);
@@ -115,7 +115,7 @@ public class StoryRunnerBehaviour {
         Story story2 = new Story(new Description("story 2"), scenario2);
         boolean givenStory = false;
 
-        CandidateStep[] someCandidateSteps = new CandidateStep[0];
+        List<CandidateStep> someCandidateSteps = asList();
         Step step = mock(Step.class);
         StepResult result = mock(StepResult.class);
         when(step.perform()).thenReturn(result);
@@ -125,8 +125,8 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector creator = mock(StepCollector.class);
         CandidateSteps mySteps = mock(Steps.class);
-        when(mySteps.getConfiguration()).thenReturn(new MostUsefulConfiguration());
-        when(mySteps.getSteps()).thenReturn(someCandidateSteps);
+        when(mySteps.configuration()).thenReturn(new MostUsefulConfiguration());
+        when(mySteps.listCandidates()).thenReturn(someCandidateSteps);
         Step successfulStep = mock(Step.class);
         when(successfulStep.perform()).thenReturn(successful("successfulStep"));
         Step anotherSuccessfulStep = mock(Step.class);
@@ -166,7 +166,7 @@ public class StoryRunnerBehaviour {
         Step thirdStepNormal = mock(Step.class);
         Step fourthStepAlsoPending = mock(Step.class);
         StepCollector creator = mock(StepCollector.class);
-        CandidateSteps mySteps = mockMySteps();
+        CandidateSteps mySteps = mockStepsWithConfiguration();
         when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(firstStepNormal, secondStepPending, thirdStepNormal, fourthStepAlsoPending));
         when(firstStepNormal.perform()).thenReturn(successful("Given I succeed"));
@@ -206,7 +206,7 @@ public class StoryRunnerBehaviour {
         when(secondStepNotPerformed.doNotPerform()).thenReturn(notPerformed);
         FailureStrategy failureStrategy = mock(FailureStrategy.class);
         StepCollector creator = mock(StepCollector.class);
-        CandidateSteps mySteps = mockMySteps();
+        CandidateSteps mySteps = mockStepsWithConfiguration();
         when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(firstStepExceptional, secondStepNotPerformed));
         Story story = new Story(new Scenario(""));
@@ -240,7 +240,7 @@ public class StoryRunnerBehaviour {
         when(pendingStep.perform()).thenReturn(pending("pendingStep"));
         when(secondStep.perform()).thenReturn(successful("secondStep"));
         StepCollector creator = mock(StepCollector.class);
-        CandidateSteps mySteps = mockMySteps();        
+        CandidateSteps mySteps = mockStepsWithConfiguration();        
         Scenario scenario1 = new Scenario("scenario1");
         Scenario scenario2 = new Scenario("scenario2");
         when(creator.collectStepsFrom(asList(mySteps), scenario1, tableRow)).thenReturn(asList(pendingStep));
@@ -269,7 +269,7 @@ public class StoryRunnerBehaviour {
         when(beforeStep.perform()).thenReturn(successful("beforeStep"));
         when(afterStep.perform()).thenReturn(successful("secondStep"));
         StepCollector creator = mock(StepCollector.class);
-        CandidateSteps mySteps = mockMySteps();
+        CandidateSteps mySteps = mockStepsWithConfiguration();
         Story story = new Story();
         boolean givenStory = false;
         when(creator.collectStepsFrom(asList(mySteps), story, Stage.BEFORE, givenStory)).thenReturn(asList(beforeStep));
@@ -294,7 +294,7 @@ public class StoryRunnerBehaviour {
         when(pendingStep.perform()).thenReturn(pendingResult);
         PendingStepStrategy strategy = mock(PendingStepStrategy.class);
         StepCollector creator = mock(StepCollector.class);
-        CandidateSteps mySteps = mockMySteps();
+        CandidateSteps mySteps = mockStepsWithConfiguration();
         when(creator.collectStepsFrom(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(pendingStep));
         Story story = new Story(new Scenario(""));
@@ -311,10 +311,10 @@ public class StoryRunnerBehaviour {
         verify(strategy).handleFailure(pendingResult.getFailure());
     }
 
-	private CandidateSteps mockMySteps() {
-		CandidateSteps mySteps = mock(CandidateSteps.class);
-        when(mySteps.getConfiguration()).thenReturn(new MostUsefulConfiguration());
-		return mySteps;
+	private CandidateSteps mockStepsWithConfiguration() {
+		CandidateSteps steps = mock(CandidateSteps.class);
+        when(steps.configuration()).thenReturn(new MostUsefulConfiguration());
+		return steps;
 	}
 
     private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean givenStory, StepCollector creator, CandidateSteps mySteps) {

@@ -1,6 +1,5 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -26,8 +25,8 @@ public class StepsBehaviour {
 	@Test
     public void shouldProvideCandidateStepsCorrespondingToAnnotatedStepsWithMultipleAliases() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
-        CandidateStep[] candidateSteps = steps.getSteps();
-        assertThat(candidateSteps.length, equalTo(9));
+        List<CandidateStep> candidateSteps = steps.listCandidates();
+        assertThat(candidateSteps.size(), equalTo(9));
         
         findCandidateStep(candidateSteps, "GIVEN a given").createStep("Given a given", tableRow).perform();
         findCandidateStep(candidateSteps, "GIVEN a given alias").createStep("Given a given alias", tableRow).perform();
@@ -47,8 +46,8 @@ public class StepsBehaviour {
     @Test
     public void shouldProvideCandidateStepsCorrespondingToAnnotatedStepsWithSingleAlias() {
         SingleAliasSteps steps = new SingleAliasSteps();
-        CandidateStep[] candidateSteps = steps.getSteps();
-        assertThat(candidateSteps.length, equalTo(6));
+        List<CandidateStep> candidateSteps = steps.listCandidates();
+        assertThat(candidateSteps.size(), equalTo(6));
 
         findCandidateStep(candidateSteps, "GIVEN a given").createStep("Given a given", tableRow).perform();
         findCandidateStep(candidateSteps, "GIVEN a given alias").createStep("Given a given alias", tableRow).perform();
@@ -65,8 +64,8 @@ public class StepsBehaviour {
     @Test
     public void shouldProvideCandidateStepsCorrespondingToAnnotatedStepsInPojo() {
         PojoSteps steps = new PojoSteps();
-        CandidateStep[] candidateSteps = new StepsFactory().createCandidateSteps(steps)[0].getSteps();
-        assertThat(candidateSteps.length, equalTo(6));
+        List<CandidateStep> candidateSteps = new StepsFactory().createCandidateSteps(steps)[0].listCandidates();
+        assertThat(candidateSteps.size(), equalTo(6));
 
         findCandidateStep(candidateSteps, "GIVEN a given").createStep("Given a given", tableRow).perform();
         findCandidateStep(candidateSteps, "GIVEN a given alias").createStep("Given a given alias", tableRow).perform();
@@ -80,13 +79,13 @@ public class StepsBehaviour {
         assertThat(steps.thens, equalTo(2));
     }
 
-    private CandidateStep findCandidateStep(CandidateStep[] candidateSteps, String candidateStepAsString) {
+    private CandidateStep findCandidateStep(List<CandidateStep> candidateSteps, String candidateStepAsString) {
         for (CandidateStep candidateStep : candidateSteps) {
             if ( candidateStepAsString.equals(candidateStep.toString()) ){
                 return candidateStep;
             }
         }
-        throw new RuntimeException("CandidateStep "+candidateStepAsString+" not found amongst "+asList(candidateSteps));
+        throw new RuntimeException("CandidateStep "+candidateStepAsString+" not found amongst "+candidateSteps);
     }
 
     @Test
@@ -170,10 +169,10 @@ public class StepsBehaviour {
     @Test(expected=DuplicateCandidateStepFoundException.class)
     public void shouldFailIfDuplicateStepsAreEncountered() {
         DuplicateSteps steps = new DuplicateSteps();
-        CandidateStep[] candidateSteps = steps.getSteps();
+        List<CandidateStep> candidateSteps = steps.listCandidates();
 
-        assertThat(candidateSteps.length, equalTo(2));
-        candidateSteps[0].createStep("Given a given", tableRow).perform();
+        assertThat(candidateSteps.size(), equalTo(2));
+        candidateSteps.get(0).createStep("Given a given", tableRow).perform();
 
     }
 
@@ -182,8 +181,8 @@ public class StepsBehaviour {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
     	I18nSteps steps = new I18nSteps(configuration);
-        CandidateStep[] candidateSteps = steps.getSteps();
-        assertThat(candidateSteps.length, equalTo(3));
+        List<CandidateStep> candidateSteps = steps.listCandidates();
+        assertThat(candidateSteps.size(), equalTo(3));
 
         findCandidateStep(candidateSteps, "GIVEN un dato che").createStep("Dato che un dato che", tableRow).perform();
         findCandidateStep(candidateSteps, "WHEN un quando").createStep("Quando un quando", tableRow).perform();
@@ -199,11 +198,11 @@ public class StepsBehaviour {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
     	I18nSteps steps = new I18nSteps(configuration);
-        CandidateStep[] candidateSteps = steps.getSteps();
-        assertThat(candidateSteps.length, equalTo(3));
+        List<CandidateStep> candidateSteps = steps.listCandidates();
+        assertThat(candidateSteps.size(), equalTo(3));
 
         // misspelled starting word 
-        candidateSteps[0].createStep("Dado che un dato che", tableRow); 
+        candidateSteps.get(0).createStep("Dado che un dato che", tableRow); 
         
     }
     
@@ -250,12 +249,12 @@ public class StepsBehaviour {
             afterStory = true;
         }
 
-        @org.jbehave.core.annotations.BeforeStory(uponEmbedded=true)
+        @org.jbehave.core.annotations.BeforeStory(uponGivenStory=true)
         public void beforeEmbeddedStory() {
             beforeEmbeddedStory = true;
         }
         
-        @org.jbehave.core.annotations.AfterStory(uponEmbedded=true)
+        @org.jbehave.core.annotations.AfterStory(uponGivenStory=true)
         public void afterEmbeddedStory() {
             afterEmbeddedStory = true;
         }

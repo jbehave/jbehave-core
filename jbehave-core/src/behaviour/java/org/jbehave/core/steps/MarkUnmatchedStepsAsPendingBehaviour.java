@@ -32,7 +32,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         when(candidate.matches("my step")).thenReturn(true);
         when(candidate.createStep("my step", tableRow)).thenReturn(executableStep);
-        when(steps.getSteps()).thenReturn(new CandidateStep[] { candidate });
+        when(steps.listCandidates()).thenReturn(asList(candidate));
 
         // When
         List<Step> executableSteps = stepCollector
@@ -53,7 +53,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         String stepAsString = "my step";
 		when(candidate.matches(stepAsString)).thenReturn(false);
-        when(steps.getSteps()).thenReturn(new CandidateStep[] { candidate });
+        when(steps.listCandidates()).thenReturn(asList(candidate));
 
         // When
         List<Step> executableSteps = stepCollector
@@ -88,8 +88,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         when(candidate.matches("my step")).thenReturn(true);
         when(candidate.createStep("my step", tableRow)).thenReturn(normalStep);
-        when(steps1.getSteps()).thenReturn(new CandidateStep[] { candidate });
-        when(steps2.getSteps()).thenReturn(new CandidateStep[] {});
+        when(steps1.listCandidates()).thenReturn(asList(candidate));
+        when(steps2.listCandidates()).thenReturn(asList(new CandidateStep[]{}));
 
         // When we collect the list of steps
         MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
@@ -145,8 +145,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step step3 = mock(Step.class);
         Step step4 = mock(Step.class);
 
-        when(steps1.getSteps()).thenReturn(new CandidateStep[]{candidate1, candidate2});
-        when(steps2.getSteps()).thenReturn(new CandidateStep[]{candidate3, candidate4});
+        when(steps1.listCandidates()).thenReturn(asList(candidate1, candidate2));
+        when(steps2.listCandidates()).thenReturn(asList(candidate3, candidate4));
         
         // all matching the same step string with different priorities
         String stepAsString = "Given a step";

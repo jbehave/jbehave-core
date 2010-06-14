@@ -96,7 +96,7 @@ public class StoryRunner {
     
 	private boolean isDryRun(List<CandidateSteps> candidateSteps) {
 		for (CandidateSteps steps : candidateSteps) {
-			if (steps.getConfiguration().dryRun()) {
+			if (steps.configuration().dryRun()) {
 				return true;
 			}
 		}

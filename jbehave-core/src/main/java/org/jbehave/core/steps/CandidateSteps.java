@@ -5,59 +5,59 @@ import java.util.List;
 import org.jbehave.core.configuration.Configuration;
 
 /**
- * Represents the list of candidate steps that can be performed
+ * Interface providing the list of candidate steps, representing methods
+ * annotated with @Given, @When or @Then, that can be matched. It also provides
+ * the list of runnable steps, representing methods annotated with @BeforeStory,
+ * @AfterStory, @BeforeScenario, @AfterScenario, that do not require any matching.
  */
 public interface CandidateSteps {
 
-    /**
-     * Return all the candidate steps that can be performed by the implementing class
-     * 
-     * @return The list of candidate steps
-     */
-    CandidateStep[] getSteps();
+	/**
+	 * Returns the candidate steps that can be matched
+	 * 
+	 * @return The list of candidate steps
+	 */
+	List<CandidateStep> listCandidates();
 
-    /**
-     * Return all the candidate steps that can be performed by the given class
-     * 
-     * @return The list of candidate steps
-     */
-    CandidateStep[] getSteps(Class<?> stepsClass);
+	/**
+	 * Returns the steps to run before each story, based on the given story
+	 * status
+	 * 
+	 * @param givenStory
+	 *            the boolean flag denoting if it's a given story
+	 * @return The list of runnable steps
+	 */
+	List<Step> runBeforeStory(boolean givenStory);
 
-    /**
-     * Return all the executable steps to run before each story, based on the embedded status
-     * 
-     * @param givenStory the boolean flag denoting the embedded status 
-     * @return The list of steps 
-     */
-    List<Step> runBeforeStory(boolean givenStory);
+	/**
+	 * Returns the steps to run after each story, based on the given story
+	 * status
+	 * 
+	 * @param givenStory
+	 *            the boolean flag denoting if it's a given story
+	 * @return The list of runnable steps
+	 */
+	List<Step> runAfterStory(boolean givenStory);
 
-    /**
-     * Return all the executable steps to run after each story, based on the embedded status
-     * 
-     * @param givenStory the boolean flag denoting the embedded status 
-     * @return The list of steps 
-     */
-    List<Step> runAfterStory(boolean givenStory);
+	/**
+	 * Returns the steps to run before each scenario
+	 * 
+	 * @return The list of runnable steps
+	 */
+	List<Step> runBeforeScenario();
 
-    /**
-     * Return all the executable steps to run before each core
-     * 
-     * @return The list of steps 
-     */
-    List<Step> runBeforeScenario();
+	/**
+	 * Returns the steps to run after each scenario
+	 * 
+	 * @return The list of runnable steps
+	 */
+	List<Step> runAfterScenario();
 
-    /**
-     * Return all the executable steps to run after each core
-     * 
-     * @return The list of steps 
-     */
-    List<Step> runAfterScenario();
-
-    /**
-     * Returns the configuration
-     * 
-     * @return The Configuration
-     */
-    Configuration getConfiguration();
+	/**
+	 * Returns the configuration
+	 * 
+	 * @return The Configuration
+	 */
+	Configuration configuration();
 
 }

@@ -395,12 +395,12 @@ public class CandidateStepBehaviour {
 	@Test
 	public void shouldCreateStepsOfDifferentTypesWithSameMatchingPattern() {
 		NamedTypeSteps steps = new NamedTypeSteps();
-		CandidateStep[] candidateSteps = steps.getSteps();
-		assertThat(candidateSteps.length, equalTo(2));
-		performStep(candidateSteps[0], "Given foo named xyz");
-		performStep(candidateSteps[0], "And foo named xyz");
-		performStep(candidateSteps[1], "When foo named Bar");
-		performStep(candidateSteps[1], "And foo named Bar");
+		List<CandidateStep> candidateSteps = steps.listCandidates();
+		assertThat(candidateSteps.size(), equalTo(2));
+		performStep(candidateSteps.get(0), "Given foo named xyz");
+		performStep(candidateSteps.get(0), "And foo named xyz");
+		performStep(candidateSteps.get(1), "When foo named Bar");
+		performStep(candidateSteps.get(1), "And foo named Bar");
 		assertThat(steps.givenName, equalTo("xyz"));
 		assertThat(steps.givenTimes, equalTo(2));
 		assertThat(steps.whenName, equalTo("Bar"));
@@ -414,9 +414,9 @@ public class CandidateStepBehaviour {
 	@Test
 	public void shouldCaptureOutcomeFailures() {
 		FailingSteps steps = new FailingSteps();
-		CandidateStep[] candidateSteps = steps.getSteps();
-		assertThat(candidateSteps.length, equalTo(1));
-		StepResult stepResult = candidateSteps[0].createStep("When outcome fails for Bar upon verification", tableRow).perform();
+		List<CandidateStep> candidateSteps = steps.listCandidates();
+		assertThat(candidateSteps.size(), equalTo(1));
+		StepResult stepResult = candidateSteps.get(0).createStep("When outcome fails for Bar upon verification", tableRow).perform();
 		assertThat(stepResult.getFailure(), Matchers.instanceOf(OutcomesFailed.class));
 	}
 	
@@ -425,12 +425,12 @@ public class CandidateStepBehaviour {
 		Configuration configuration = new MostUsefulConfiguration();
 		configuration.doDryRun(true);
 		NamedTypeSteps steps = new NamedTypeSteps(configuration);
-		CandidateStep[] candidateSteps = steps.getSteps();
-		assertThat(candidateSteps.length, equalTo(2));
-		candidateSteps[0].createStep("Given foo named xyz", tableRow).perform();
-		candidateSteps[0].createStep("And foo named xyz", tableRow).perform();
-		candidateSteps[1].createStep("When foo named Bar", tableRow).perform();
-		candidateSteps[1].createStep("And foo named Bar", tableRow).perform();
+		List<CandidateStep> candidateSteps = steps.listCandidates();
+		assertThat(candidateSteps.size(), equalTo(2));
+		candidateSteps.get(0).createStep("Given foo named xyz", tableRow).perform();
+		candidateSteps.get(0).createStep("And foo named xyz", tableRow).perform();
+		candidateSteps.get(1).createStep("When foo named Bar", tableRow).perform();
+		candidateSteps.get(1).createStep("And foo named Bar", tableRow).perform();
 		assertThat(steps.givenName, nullValue());
 		assertThat(steps.givenTimes, equalTo(0));
 		assertThat(steps.whenName, nullValue());
@@ -440,12 +440,12 @@ public class CandidateStepBehaviour {
 	@Test(expected = StartingWordNotFound.class)
 	public void shouldNotCreateStepOfWrongType() {
 		NamedTypeSteps steps = new NamedTypeSteps();
-		CandidateStep[] candidateSteps = steps.getSteps();
-		assertThat(candidateSteps.length, equalTo(2));
-		candidateSteps[0].createStep("Given foo named xyz", tableRow).perform();
+		List<CandidateStep> candidateSteps = steps.listCandidates();
+		assertThat(candidateSteps.size(), equalTo(2));
+		candidateSteps.get(0).createStep("Given foo named xyz", tableRow).perform();
 		assertThat(steps.givenName, equalTo("xyz"));
 		assertThat(steps.whenName, nullValue());
-		candidateSteps[0].createStep("Then foo named xyz", tableRow).perform();
+		candidateSteps.get(0).createStep("Then foo named xyz", tableRow).perform();
 	}
 
 	static class NamedTypeSteps extends Steps {
