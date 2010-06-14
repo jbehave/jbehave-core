@@ -1,6 +1,7 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -9,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 
 /**
  * <p>
@@ -190,7 +191,7 @@ public class StoryReporterBuilder {
     }
 
     protected FilePrintStreamFactory filePrintStreamFactory(String storyPath) {
-		return new FilePrintStreamFactory(new StoryLocation(storyPath, ouputLocationClass));
+		return new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocationFromClass(ouputLocationClass)));
 	}
     
     protected FileConfiguration fileConfiguration(String extension) {

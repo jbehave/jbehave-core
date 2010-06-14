@@ -1,12 +1,13 @@
 package org.jbehave.core.io;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 
 public class StoryLoaderBehaviour {
 
@@ -64,7 +65,7 @@ public class StoryLoaderBehaviour {
     @Test
     public void canDefineStoryWithURLLoading() {
         // Given
-        String codeLocation = new StoryLocation("", this.getClass()).getCodeLocation().getFile();
+        String codeLocation = new StoryLocation("", codeLocationFromClass(this.getClass())).getCodeLocation().getFile();
         String storyPath = "file:" + codeLocation + "org/jbehave/core/io/stories/my_pending_story";
         String storyAsText = "Given my step";
  
@@ -79,7 +80,7 @@ public class StoryLoaderBehaviour {
     @Test(expected = InvalidStoryResource.class)
     public void shouldNotLoadStoryFromURLIfNotFound() {
         // Given
-        String codeLocation = new StoryLocation("", this.getClass()).getCodeLocation().getFile();
+        String codeLocation = new StoryLocation("", codeLocationFromClass(this.getClass())).getCodeLocation().getFile();
         String storyPath = "file:" + codeLocation + "inexistent_story";
 
         // When
