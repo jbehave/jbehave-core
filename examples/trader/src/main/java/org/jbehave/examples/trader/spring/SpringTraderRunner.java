@@ -1,11 +1,6 @@
 package org.jbehave.examples.trader.spring;
 
-import static java.util.Arrays.asList;
-
-import java.util.List;
-
 import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepsFactory;
@@ -17,6 +12,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 
 /**
  * Run stories via Spring JUnit 4 runner
@@ -44,7 +44,7 @@ public class SpringTraderRunner {
 
     protected List<String> storyPaths() {
         StoryPathFinder finder = new StoryPathFinder();
-        String basedir = new StoryLocation("", this.getClass()).getCodeLocation().getFile();
+        String basedir = codeLocationFromClass(this.getClass()).getFile();
         return finder.listStoryPaths(basedir, "", asList("**/*.story"), asList(""));
     }
 

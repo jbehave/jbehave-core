@@ -1,16 +1,18 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 
 /**
  * <p>
@@ -88,7 +90,7 @@ public class StoryReporterBuilder {
     private List<Format> formats = new ArrayList<Format>();
     private String outputDirectory = new FileConfiguration().getOutputDirectory();
     private boolean outputAbsolute = new FileConfiguration().isOutputDirectoryAbsolute();
-	private Class<?> ouputLocationClass = this.getClass();
+    private URL codeLocation = codeLocationFromClass(this.getClass());
 	private Properties renderingResources = FreemarkerReportRenderer.defaultResources();
 	private boolean reportFailureTrace = false;
 
@@ -125,8 +127,8 @@ public class StoryReporterBuilder {
         return this;
     }
     
-	public StoryReporterBuilder withOutputLocationClass(Class<?> outputLocationClass) {
-		this.ouputLocationClass = outputLocationClass;
+	public StoryReporterBuilder withCodeLocation(URL codeLocation) {
+        this.codeLocation = codeLocation;
 		return this;
 	}
 
@@ -190,9 +192,9 @@ public class StoryReporterBuilder {
     }
 
     protected FilePrintStreamFactory filePrintStreamFactory(String storyPath) {
-		return new FilePrintStreamFactory(new StoryLocation(storyPath, ouputLocationClass));
+		return new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocation));
 	}
-    
+
     protected FileConfiguration fileConfiguration(String extension) {
         return new FileConfiguration(outputDirectory, outputAbsolute, extension);
     }

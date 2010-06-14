@@ -1,13 +1,5 @@
 package org.jbehave.examples.trader;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
-
-import java.util.List;
-
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
@@ -26,6 +18,15 @@ import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
 
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+
 /**
  * Specifies the Embedder for the Trader example, providing the
  * Configuration and the CandidateSteps, using classpath story loading.
@@ -40,7 +41,7 @@ public class ClasspathTraderEmbedder extends Embedder {
 			.useStoryReporterBuilder(new StoryReporterBuilder()
         		// use absolute output directory with Ant
         		//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
-        		.withOutputLocationClass(embedderClass)
+        		.withCodeLocation(codeLocationFromClass(embedderClass))
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
 			.useParameterConverters(new ParameterConverters(

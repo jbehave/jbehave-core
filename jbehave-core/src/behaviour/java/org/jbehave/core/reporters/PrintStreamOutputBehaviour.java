@@ -1,12 +1,22 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import org.apache.commons.io.IOUtils;
+import org.jbehave.core.JUnitStory;
+import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.model.Description;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
+import org.jbehave.core.reporters.FreemarkerReportRenderer.RenderingFailedException;
+import org.junit.Assert;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -19,23 +29,14 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
-import org.jbehave.core.JUnitStory;
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.io.UnderscoredCamelCaseResolver;
-import org.jbehave.core.model.Description;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
-import org.jbehave.core.reporters.FreemarkerReportRenderer.RenderingFailedException;
-import org.junit.Assert;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 
 public class PrintStreamOutputBehaviour {
 
@@ -391,7 +392,7 @@ public class PrintStreamOutputBehaviour {
 
         // Given
         String storyPath = storyPath(MyStory.class);
-        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, this.getClass()));
+        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocationFromClass(this.getClass())));
         File file = factory.getOutputFile();
         file.delete();
         assertThat(!file.exists(), is(true));
@@ -425,7 +426,7 @@ public class PrintStreamOutputBehaviour {
     @Test
     public void shouldBuildPrintStreamReportersAndOverrideDefaultForAGivenFormat() throws IOException {
         final String storyPath = storyPath(MyStory.class);
-        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, this.getClass()));
+        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocationFromClass(this.getClass())));
         StoryReporter reporter = new StoryReporterBuilder() {
             public StoryReporter reporterFor(String storyPath, Format format) {
                 switch (format) {

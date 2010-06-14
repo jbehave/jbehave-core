@@ -7,6 +7,7 @@ import java.io.File;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 
 
 public class FilePrintStreamFactoryBehaviour {
@@ -27,14 +28,14 @@ public class FilePrintStreamFactoryBehaviour {
 
     @Test
     public void shouldHandleStoryPathAsURLWithSpecifiedCodeSourceClass() {
-        String codeLocation = new StoryLocation("", FilePrintStreamFactory.class).getCodeLocation().getFile();
+        String codeLocation = new StoryLocation("", codeLocationFromClass(FilePrintStreamFactory.class)).getCodeLocation().getFile();
         String storyPath = "file:" + codeLocation + "org/jbehave/examples/trader/stories/my_given.story";
         ensureOutputFileIsSame(codeLocation, storyPath);
     }
 
     private void ensureOutputFileIsSame(String codeLocation, String storyPath) {
         FilePrintStreamFactory.FileConfiguration configuration = new FilePrintStreamFactory.FileConfiguration("ext");
-        StoryLocation storyLocation = new StoryLocation(storyPath, this.getClass());
+        StoryLocation storyLocation = new StoryLocation(storyPath, codeLocationFromClass(this.getClass()));
 		FilePrintStreamFactory factory = new FilePrintStreamFactory(storyLocation, configuration);
         File outputFile = factory.getOutputFile();
         String expected = new File(codeLocation).getParent() + "/" + configuration.getOutputDirectory() + "/"
@@ -44,7 +45,7 @@ public class FilePrintStreamFactoryBehaviour {
     }
 
 	private String codeLocation() {
-		return new StoryLocation("", this.getClass()).getCodeLocation()
+		return new StoryLocation("", codeLocationFromClass(this.getClass())).getCodeLocation()
 				.getFile();
 	}
 
