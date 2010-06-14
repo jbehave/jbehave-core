@@ -1,13 +1,5 @@
 package org.jbehave.examples.trader;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
-
-import java.util.Properties;
-
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -25,6 +17,15 @@ import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
+
+import java.util.Properties;
+
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 /**
  * Example of how to run a story using a JBehave2 style inheritance. A story
@@ -45,7 +46,7 @@ public abstract class TraderStory extends JUnitStory {
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                 	// use absolute output directory with Ant
                 	//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
-                	.withOutputLocationClass(storyClass)
+                	.withCodeLocation(codeLocationFromClass(storyClass))
                 	.withDefaultFormats()
                 	.withRenderingResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML)

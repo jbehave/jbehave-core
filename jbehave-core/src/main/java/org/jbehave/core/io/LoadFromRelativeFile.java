@@ -11,7 +11,7 @@ import java.net.URL;
  * Loads story content from a directory traversal relative to the compiled story
  * class.
  * <p/>
- * Defaults to using {@link TEST_DIR}, which implies a traversal out of 'target/test-classes'
+ * Defaults to using {@link LoadFromRelativeFile.TEST_DIR}, which implies a traversal out of 'target/test-classes'
  */
 public class LoadFromRelativeFile implements StoryLoader {
 
