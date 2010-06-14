@@ -34,26 +34,27 @@ public class LoadFromRelativeFile implements StoryLoader {
 
 	public String loadStoryAsText(String storyPath) {
         String badFileLocations = "";
-        Throwable badFileLocationCause = null;
-		String fileLocation = null;
         for (CompileOutput traversal : traversals) {
             try {
-                fileLocation = new File(location.getFile()).getCanonicalPath()
-                        + "/";
-                fileLocation = fileLocation.replace(traversal.toRemove, "") + "/" + traversal.relativePath + "/" + storyPath;
+                String fileLocation = new File(location.getFile()).getCanonicalPath() + "/";
+                fileLocation = fileLocation.replace(traversal.toRemove, "") + "/"
+                        + traversal.relativePath + "/" + storyPath;
                 fileLocation = fileLocation.replace("/", File.separator);
                 File file = new File(fileLocation);
-                return IOUtils.toString(new FileInputStream(file));
-            } catch (IOException e) {
-                badFileLocationCause = e;
-                if (badFileLocations.length() > 0) {
-                    badFileLocations = badFileLocations + ", ";
+                if (file.exists()) {
+                    return IOUtils.toString(new FileInputStream(file));
+                } else {
+                    if (badFileLocations.length() > 0) {
+                        badFileLocations = badFileLocations + ", ";
+                    }
+                    badFileLocations = badFileLocations + fileLocation;
                 }
-                badFileLocations = badFileLocations + fileLocation;
+            } catch (IOException e) {
+                throw new InvalidStoryResource("Story path '" + storyPath + "' not found.", e);
             }
         }
         throw new InvalidStoryResource("Story path '" + storyPath
-                + "' not found while looking in '" + badFileLocations + "'", badFileLocationCause);
+                + "' not found while looking in '" + badFileLocations + "'", null);
 
 	}
 
