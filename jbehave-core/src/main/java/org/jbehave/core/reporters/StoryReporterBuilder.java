@@ -29,9 +29,8 @@ import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
  * Class&lt;MyStory&gt; storyClass = MyStory.class;
  * StoryPathResolver resolver = new UnderscoredCamelCaseResolver();
  * String storyPath = resolver.resolve(storyClass);
- * FilePrintStreamFactory printStreamFactory = new FilePrintStreamFactory(storyPath);
- * StoryReporter reporter = new StoryReporterBuilder(printStreamFactory)
- * 								.withOutputLocationClass(storyClass)
+ * StoryReporter reporter = new StoryReporterBuilder()
+ * 								.withCodeLocation(StoryLocation.codeLocationFromClass(storyClass))
  * 								.withDefaultFormats()
  * 								.withFormats(TXT, HTML, XML)
  * 								.build(storyPath);
@@ -40,7 +39,7 @@ import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
  * <p>The builder is configured to build with the {@link Format#STATS} as default format.  To change the default formats
  * the user can override the method:
  * <pre>
- * new StoryReporterBuilder(printStreamFactory){
+ * new StoryReporterBuilder(){
  *    protected StoryReporterBuilder withDefaultFormats() {
  *       return withFormats(STATS);
  *    }
@@ -48,29 +47,29 @@ import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
  * </pre>
  * </p>
  * <p>The builder configures the file-based reporters to output to the default file directory {@link FileConfiguration#OUTPUT_DIRECTORY}
- * as relative to the output location class source. In some case, e.g. with Ant class loader, the code source location may not be 
- * properly set.  In this case, we may specify the absolute output directory.
- * To change the default:
+ * as relative to the code location. In some case, e.g. with Ant class loader, the code source location from class may not be 
+ * properly set.  In this case, we may specify it from a file:
  * <pre>
- * new StoryReporterBuilder(printStreamFactory).withOutputDirectory("my-reports").withOutputAbsolute(true)
- * 					.withDefaultFormats().withFormats(TXT, HTML, XML)
- * 					.build(storyPath);
+ * new StoryReporterBuilder()
+ * 			.withCodeLocation(StoryLocation.codeLocationFromFile(new File("target/classes")))
+ * 			.withDefaultFormats().withFormats(TXT, HTML, XML)
+ * 			.build(storyPath);
  * </pre>
  * </p> 
  * <p>
  * By default, the reporters will output minimal failure information, the single line describing the failure cause and
  * the outcomes if failures occur.  To configure the failure trace to be reported as well:
  * <pre>
- * new StoryReporterBuilder(printStreamFactory).withFailureTrace(true)
+ * new StoryReporterBuilder().withFailureTrace(true)
  * </pre> 
  * </p>
  * <p>The builder provides default instances for all reporters.  To change the reporter for a specific instance, 
  * e.g. to report format <b>TXT</b> to <b>.text</b> files and to inject other non-default parameters, 
  * such as keywords for a different locale:
  * <pre>
- * new StoryReporterBuilder(printStreamFactory){
+ * new StoryReporterBuilder(){
  *   public StoryReporter reporterFor(String storyPath, Format format){
- *       FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocationClass));
+ *       FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocation));
  *       switch (format) {
  *           case TXT:
  *               factory.useConfiguration(new FileConfiguration("text"));
@@ -89,15 +88,11 @@ public class StoryReporterBuilder {
 
     private List<Format> formats = new ArrayList<Format>();
     private String outputDirectory = new FileConfiguration().getOutputDirectory();
-    private boolean outputAbsolute = new FileConfiguration().isOutputDirectoryAbsolute();
     private URL codeLocation = codeLocationFromClass(this.getClass());
 	private Properties renderingResources = FreemarkerReportRenderer.defaultResources();
 	private boolean reportFailureTrace = false;
 
 	public File outputDirectory() {
-		if ( outputAbsolute ){
-			return new File(outputDirectory);
-		}
 		return filePrintStreamFactory("").outputDirectory();
 	}
 
@@ -119,11 +114,6 @@ public class StoryReporterBuilder {
     
 	public StoryReporterBuilder withOutputDirectory(String outputDirectory){
         this.outputDirectory = outputDirectory;
-        return this;
-    }
-    
-    public StoryReporterBuilder withOutputAbsolute(boolean outputAbsolute) {
-        this.outputAbsolute = outputAbsolute;
         return this;
     }
     
@@ -192,11 +182,11 @@ public class StoryReporterBuilder {
     }
 
     protected FilePrintStreamFactory filePrintStreamFactory(String storyPath) {
-		return new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocation));
+		return new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath));
 	}
 
     protected FileConfiguration fileConfiguration(String extension) {
-        return new FileConfiguration(outputDirectory, outputAbsolute, extension);
+        return new FileConfiguration(outputDirectory, extension);
     }
 
 	@SuppressWarnings("serial")

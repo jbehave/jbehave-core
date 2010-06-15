@@ -44,7 +44,7 @@ public abstract class AbstractStory implements RunnableStory {
 	}
 
 	public void addSteps(CandidateSteps... steps) {
-		this.candidateSteps.addAll(asList(steps));
+		addSteps(asList(steps));
 	}
 
 	public void addSteps(List<CandidateSteps> steps) {

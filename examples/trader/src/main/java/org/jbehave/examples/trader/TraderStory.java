@@ -1,32 +1,35 @@
 package org.jbehave.examples.trader;
 
+import static java.util.Arrays.asList;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+
+import java.io.File;
+import java.net.URL;
+import java.util.List;
+import java.util.Properties;
+
+import org.apache.tools.ant.AntClassLoader;
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
-
-import java.util.List;
-import java.util.Properties;
-
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 /**
  * Example of how to run a story using a JBehave2 style inheritance. A story
@@ -42,12 +45,15 @@ public abstract class TraderStory extends JUnitStory {
         Class<? extends TraderStory> storyClass = this.getClass();
         Properties rendering = new Properties();
         rendering.put("decorateNonHtml", "true");
-        Configuration configuration = new MostUsefulConfiguration()
+    	URL codeLocation = StoryLocation.codeLocationFromClass(storyClass);
+        if ( storyClass.getClassLoader() instanceof AntClassLoader ){
+        	// use code location from file with Ant
+            codeLocation = StoryLocation.codeLocationFromFile(new File("target/classes"));        	
+        }
+		Configuration configuration = new MostUsefulConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
-                	// use absolute output directory with Ant
-                	//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
-                	.withCodeLocation(codeLocationFromClass(storyClass))
+                	.withCodeLocation(codeLocation)
                 	.withDefaultFormats()
                 	.withRenderingResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
@@ -61,7 +67,7 @@ public abstract class TraderStory extends JUnitStory {
 		useConfiguration(configuration);
 		addSteps(createSteps(configuration));
 		
-	    configuredEmbedder().embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInReports(false);
+	    configuredEmbedder().embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInReports(true);
 
 	}
 

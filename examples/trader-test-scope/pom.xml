@@ -47,6 +47,9 @@
               </storyExcludes>
               <skip>false</skip>
               <scope>test</scope>
+              <ignoreFailureInStories>true</ignoreFailureInStories>
+              <ignoreFailureInReports>true</ignoreFailureInReports>
+              <renderReportsAfterStories>true</renderReportsAfterStories>
             </configuration>
             <goals>
               <goal>run-stories</goal>

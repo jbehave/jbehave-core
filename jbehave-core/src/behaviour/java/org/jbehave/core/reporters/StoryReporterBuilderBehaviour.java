@@ -47,11 +47,10 @@ public class StoryReporterBuilderBehaviour {
 
         // When
         String outputDirectory = "my-reports";
-        builder.withOutputDirectory(outputDirectory).withOutputAbsolute(true).build(storyPath);
+        builder.withOutputDirectory(outputDirectory).build(storyPath);
         
         // Then
         assertThat(builder.fileConfiguration("").getOutputDirectory(), equalTo((outputDirectory)));
-        assertThat(builder.fileConfiguration("").isOutputDirectoryAbsolute(),  is(true));
     }
 
     @Test
@@ -76,7 +75,7 @@ public class StoryReporterBuilderBehaviour {
     public void shouldBuildWithCustomReporterForAGivenFormat() throws IOException {
     	// Given
         String storyPath = storyPath(MyStory.class);
-        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocationFromClass(MyStory.class)));
+        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocationFromClass(MyStory.class), storyPath));
         final StoryReporter txtReporter = new TxtOutput(factory.createPrintStream(), new Properties(),  new LocalizedKeywords(), true);
         StoryReporterBuilder builder = new StoryReporterBuilder(){
                public StoryReporter reporterFor(String storyPath, Format format){

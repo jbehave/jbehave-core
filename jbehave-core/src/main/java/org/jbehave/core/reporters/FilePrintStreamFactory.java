@@ -56,9 +56,6 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 	}
 
 	protected File outputDirectory() {
-		if (configuration.isOutputDirectoryAbsolute()) {
-			return new File(configuration.getOutputDirectory());
-		}
 		File targetDirectory = new File(storyLocation.getCodeLocation().getFile()).getParentFile();
 		return new File(targetDirectory, configuration.getOutputDirectory());
 	}
@@ -110,20 +107,18 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 
 		private final String outputDirectory;
 		private final String extension;
-		private final boolean outputAbsolute;
 
 		public FileConfiguration() {
 			this(HTML);
 		}
 
 		public FileConfiguration(String extension) {
-			this(OUTPUT_DIRECTORY, false, extension);
+			this(OUTPUT_DIRECTORY, extension);
 		}
 
 		public FileConfiguration(String outputDirectory,
-				boolean outputAbsolute, String extension) {
+				String extension) {
 			this.outputDirectory = outputDirectory;
-			this.outputAbsolute = outputAbsolute;
 			this.extension = extension;
 		}
 
@@ -135,10 +130,6 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 			return extension;
 		}
 
-		public boolean isOutputDirectoryAbsolute() {
-			return outputAbsolute;
-		}
-		
 		@Override
 		public String toString() {
 			return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
