@@ -1,9 +1,14 @@
 package org.jbehave.examples.trader.spring;
 
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
+
+import java.util.List;
+
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.BeforeAfterSteps;
 import org.jbehave.examples.trader.ClasspathTraderEmbedder;
 import org.jbehave.examples.trader.TraderSteps;
@@ -12,11 +17,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 
 /**
  * Run stories via Spring JUnit 4 runner
@@ -36,7 +36,7 @@ public class SpringTraderRunner {
         Embedder embedder = new ClasspathTraderEmbedder() {
             @Override
             public List<CandidateSteps> candidateSteps() {
-                return asList(new StepsFactory(configuration()).createCandidateSteps(traderSteps, beforeAndAfterSteps));
+                return new InstanceStepsFactory(configuration(), traderSteps, beforeAndAfterSteps).createCandidateSteps();
             }
         };
         embedder.runStoriesAsPaths(storyPaths());

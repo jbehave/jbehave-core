@@ -47,6 +47,10 @@ public abstract class AbstractStory implements RunnableStory {
 		this.candidateSteps.addAll(asList(steps));
 	}
 
+	public void addSteps(List<CandidateSteps> steps) {
+		this.candidateSteps.addAll(steps);
+	}
+
 	public void useEmbedder(Embedder embedder) {
 		this.embedder = embedder;
 	}

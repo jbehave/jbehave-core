@@ -64,7 +64,7 @@ public class StepsBehaviour {
     @Test
     public void shouldProvideCandidateStepsCorrespondingToAnnotatedStepsInPojo() {
         PojoSteps steps = new PojoSteps();
-        List<CandidateStep> candidateSteps = new StepsFactory().createCandidateSteps(steps)[0].listCandidates();
+        List<CandidateStep> candidateSteps = new InstanceStepsFactory(steps).createCandidateSteps().get(0).listCandidates();
         assertThat(candidateSteps.size(), equalTo(6));
 
         findCandidateStep(candidateSteps, "GIVEN a given").createStep("Given a given", tableRow).perform();

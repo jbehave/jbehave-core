@@ -1,5 +1,7 @@
 package org.jbehave.examples.trader.spring;
 
+import java.util.List;
+
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.spring.SpringApplicationContextFactory;
@@ -10,7 +12,7 @@ import org.springframework.beans.factory.ListableBeanFactory;
 public abstract class TraderStoryUsingSpring extends TraderStory {
 
     @Override
-    protected CandidateSteps[] createSteps(Configuration configuration) {
+    protected List<CandidateSteps> createSteps(Configuration configuration) {
         ListableBeanFactory parent = createBeanFactory();
         return new SpringStepsFactory(configuration, parent).createCandidateSteps();
     }

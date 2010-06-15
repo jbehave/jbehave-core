@@ -1,5 +1,14 @@
 package org.jbehave.examples.trader;
 
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+
+import java.util.List;
+
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
@@ -11,21 +20,12 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
-
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 /**
  * Specifies the Embedder for the Trader example, providing the
@@ -57,9 +57,9 @@ public class ClasspathTraderEmbedder extends Embedder {
 
 	@Override
 	public List<CandidateSteps> candidateSteps() {
-		return asList(new StepsFactory(configuration())
-				.createCandidateSteps(new TraderSteps(new TradingService()),
-						new BeforeAfterSteps()));
+		return new InstanceStepsFactory(configuration(), new TraderSteps(
+				new TradingService()), new BeforeAfterSteps())
+				.createCandidateSteps();
 	}
 
 	protected TraderPersister mockTradePersister() {

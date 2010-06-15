@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.Steps;
 import org.picocontainer.ComponentAdapter;
 import org.picocontainer.PicoContainer;
@@ -19,7 +20,7 @@ import org.picocontainer.PicoContainer;
  * @author Paul Hammant
  * @author Mauro Talevi
  */
-public class PicoStepsFactory {
+public class PicoStepsFactory implements InjectableStepsFactory {
 
     private final Configuration configuration;
     private final PicoContainer parent;
@@ -29,14 +30,14 @@ public class PicoStepsFactory {
         this.parent = parent;
     }
 
-    public CandidateSteps[] createCandidateSteps() {
-        List<Steps> steps = new ArrayList<Steps>();
+    public List<CandidateSteps> createCandidateSteps() {
+        List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
         for (ComponentAdapter<?> adapter : parent.getComponentAdapters()) {
             if (containsScenarioAnnotations(adapter.getComponentImplementation())) {
                 steps.add(new Steps(configuration, parent.getComponent(adapter.getComponentKey())));
             }
         }
-        return steps.toArray(new CandidateSteps[steps.size()]);
+        return steps;
     }
 
     private boolean containsScenarioAnnotations(Class<?> componentClass) {

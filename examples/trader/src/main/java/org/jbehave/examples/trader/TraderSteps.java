@@ -17,7 +17,7 @@ import org.jbehave.core.annotations.When;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.model.Stock.AlertStatus;
@@ -25,7 +25,7 @@ import org.jbehave.examples.trader.service.TradingService;
 
 /**
  * POJO holding the candidate steps for the trader example.  
- * The {@link CandidateSteps} instance wrapping this are created via the {@link StepsFactory}
+ * The {@link CandidateSteps} instance wrapping this are created via the {@link InstanceStepsFactory}
  * in the {@link TraderStory}.
  */
 public class TraderSteps {

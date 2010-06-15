@@ -34,13 +34,13 @@ import org.jbehave.core.parsers.StepPatternParser;
 
 /**
  * <p>
- * Default implementation of {@link CandidateSteps} which provides access to the
+ * Implementation of {@link CandidateSteps} which provides access to the
  * candidate steps that match the story you want to run.
  * </p>
  * <p>
- * To provide your candidate steps method, you can either extend the
- * {@link Steps} class or pass it a POJO instance that it can wrap. In the
- * former case, the instance is the extended {@link Steps} class itself.
+ * To provide your candidate steps methods, you can either extend the
+ * {@link Steps} class or pass it any {@link Object} instance that it can wrap.
+ * In the former case, the instance is the extended {@link Steps} class itself.
  * </p>
  * <p>
  * You can define the methods that should be run by annotating them with @Given, @When
@@ -87,14 +87,16 @@ public class Steps implements CandidateSteps {
 	private final StepRunner skipStep;
 
 	/**
-	 * Creates Steps with default configuration
+	 * Creates Steps with default configuration for a class extending this
+	 * instance and containing the candidate step methods
 	 */
 	public Steps() {
 		this(new MostUsefulConfiguration());
 	}
 
 	/**
-	 * Creates Steps with given custom configuration for this instance
+	 * Creates Steps with given custom configuration for a class extending this
+	 * instance and containing the candidate step methods
 	 * 
 	 * @param configuration
 	 *            the Configuration
@@ -104,13 +106,13 @@ public class Steps implements CandidateSteps {
 	}
 
 	/**
-	 * Creates Steps with given custom configuration wrapping a POJO instance
-	 * containing the annotated steps methods
+	 * Creates Steps with given custom configuration wrapping an Object instance
+	 * containing the candidate step methods
 	 * 
 	 * @param configuration
 	 *            the Configuration
 	 * @param instance
-	 *            the POJO instance
+	 *            the Object instance
 	 */
 	public Steps(Configuration configuration, Object instance) {
 		this.configuration = configuration;
@@ -142,21 +144,24 @@ public class Steps implements CandidateSteps {
 				String value = encode(annotation.value());
 				int priority = annotation.priority();
 				createCandidateStep(candidates, method, GIVEN, value, priority);
-				createCandidateStepsFromAliases(candidates, method, GIVEN, priority);
+				createCandidateStepsFromAliases(candidates, method, GIVEN,
+						priority);
 			}
 			if (method.isAnnotationPresent(When.class)) {
 				When annotation = method.getAnnotation(When.class);
 				String value = encode(annotation.value());
 				int priority = annotation.priority();
 				createCandidateStep(candidates, method, WHEN, value, priority);
-				createCandidateStepsFromAliases(candidates, method, WHEN, priority);
+				createCandidateStepsFromAliases(candidates, method, WHEN,
+						priority);
 			}
 			if (method.isAnnotationPresent(Then.class)) {
 				Then annotation = method.getAnnotation(Then.class);
 				String value = encode(annotation.value());
 				int priority = annotation.priority();
 				createCandidateStep(candidates, method, THEN, value, priority);
-				createCandidateStepsFromAliases(candidates, method, THEN, priority);
+				createCandidateStepsFromAliases(candidates, method, THEN,
+						priority);
 			}
 		}
 		return candidates;
@@ -166,9 +171,11 @@ public class Steps implements CandidateSteps {
 		return configuration.keywords().encode(value);
 	}
 
-	private void createCandidateStep(List<CandidateStep> candidates, Method method,
-			StepType stepType, String stepPatternAsString, int priority) {
-		checkForDuplicateCandidateSteps(candidates, stepType, stepPatternAsString);
+	private void createCandidateStep(List<CandidateStep> candidates,
+			Method method, StepType stepType, String stepPatternAsString,
+			int priority) {
+		checkForDuplicateCandidateSteps(candidates, stepType,
+				stepPatternAsString);
 		CandidateStep step = createCandidateStep(method, stepType,
 				stepPatternAsString, priority, configuration);
 		step.useStepMonitor(configuration.stepMonitor());
@@ -186,8 +193,9 @@ public class Steps implements CandidateSteps {
 						.startingWordsByType());
 	}
 
-	private void checkForDuplicateCandidateSteps(List<CandidateStep> candidates,
-			StepType stepType, String patternAsString) {
+	private void checkForDuplicateCandidateSteps(
+			List<CandidateStep> candidates, StepType stepType,
+			String patternAsString) {
 		for (CandidateStep candidate : candidates) {
 			if (candidate.getStepType() == stepType
 					&& candidate.getPatternAsString().equals(patternAsString)) {
@@ -197,12 +205,14 @@ public class Steps implements CandidateSteps {
 		}
 	}
 
-	private void createCandidateStepsFromAliases(List<CandidateStep> candidates,
-			Method method, StepType stepType, int priority) {
+	private void createCandidateStepsFromAliases(
+			List<CandidateStep> candidates, Method method, StepType stepType,
+			int priority) {
 		if (method.isAnnotationPresent(Aliases.class)) {
 			String[] aliases = method.getAnnotation(Aliases.class).values();
 			for (String alias : aliases) {
-				createCandidateStep(candidates, method, stepType, alias, priority);
+				createCandidateStep(candidates, method, stepType, alias,
+						priority);
 			}
 		}
 		if (method.isAnnotationPresent(Alias.class)) {

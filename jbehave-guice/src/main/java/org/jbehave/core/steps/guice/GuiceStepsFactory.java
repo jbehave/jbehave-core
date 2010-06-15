@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.Steps;
 
 import com.google.inject.Binding;
@@ -22,7 +23,7 @@ import com.google.inject.Key;
  * @author Paul Hammant
  * @author Mauro Talevi
  */
-public class GuiceStepsFactory {
+public class GuiceStepsFactory implements InjectableStepsFactory {
 
     private final Configuration configuration;
     private final Injector parent;
@@ -32,15 +33,15 @@ public class GuiceStepsFactory {
         this.parent = parent;
     }
 
-    public CandidateSteps[] createCandidateSteps() {
-        List<Steps> steps = new ArrayList<Steps>();
+    public List<CandidateSteps> createCandidateSteps() {
+        List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
         for (Binding<?> binding : parent.getBindings().values()) {
             Key<?> key = binding.getKey();
             if (containsScenarioAnnotations(key.getTypeLiteral().getType())) {
                 steps.add(new Steps(configuration, parent.getInstance(key)));
             }
         }
-        return steps.toArray(new CandidateSteps[steps.size()]);
+        return steps;
     }
 
     private boolean containsScenarioAnnotations(Type type) {

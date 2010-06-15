@@ -1,5 +1,7 @@
 package org.jbehave.examples.trader.pico;
 
+import java.util.List;
+
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.pico.PicoStepsFactory;
@@ -17,7 +19,7 @@ import org.picocontainer.injectors.ConstructorInjection;
 public abstract class TraderStoryUsingPicoContainer extends TraderStory {
 
     @Override
-    protected CandidateSteps[] createSteps(Configuration configuration) {
+    protected List<CandidateSteps> createSteps(Configuration configuration) {
         PicoContainer parent = createPicoContainer();
         return new PicoStepsFactory(configuration, parent).createCandidateSteps();
     }
