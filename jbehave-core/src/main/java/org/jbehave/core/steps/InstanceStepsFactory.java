@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
-
 /**
  * An {@link InjectableStepsFactory} that is provided Object instances, which
  * contain the candidate steps methods. The Object instances are wrapped by
