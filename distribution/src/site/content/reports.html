@@ -41,7 +41,7 @@ reporters. We use the <b>DelegatingStoryReporter</b> as a proxy for
 the reporters we want to configure, in the example below a plain text
 reporter (both to <b>System.out</b> and to a file) and an HTML reporter
 to a file:</p>
-<pre class="brush: java">
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
 
 	public TraderStory() {
 		// start with default configuration, overriding only the elements that are needed
@@ -49,12 +49,15 @@ to a file:</p>
         Class storyClass = this.getClass();
         Properties rendering = new Properties();
         rendering.put("decorateNonHtml", "true");
+        URL codeLocation = StoryLocation.codeLocationFromClass(storyClass);
+        if ( storyClass.getClassLoader() instanceof AntClassLoader ){
+            // use code location from file with Ant
+            codeLocation = StoryLocation.codeLocationFromFile(new File("target/classes"));          
+        }
         Configuration configuration = new MostUsefulConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
-                	// use absolute output directory with Ant
-                	//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
-                	.withOutputLocationClass(storyClass)
+                    .withCodeLocation(codeLocation)
                 	.withDefaultFormats()
                 	.withRenderingResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
@@ -72,11 +75,12 @@ to a file:</p>
 
 	}
 
-    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
         return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());
     }
 
-</pre>
+]]></script>
+
 
 <span class="followup">For a fully-working example of reporting configuration you may consult the 
 <a href="http://git.codehaus.org/gitweb.cgi?p=jbehave-git.git;a=tree;f=examples/trader">trader example</a>.  Note that the configuration only needs
@@ -209,12 +213,12 @@ directory in Maven), but this can be changed via the builder:</p>
         new StoryReporterBuilder().withOutputDirectory("my-reports")
 </pre>
 
-<p>In some cases, i.e. when using with Ant, the class code source location may not be 
-properly set, or different from what is expected.  In this case, one can tell the builder 
-to treat the output directory as an absolute path:</p>
+<p>In some cases, i.e. when using with Ant, the code location from class may not be 
+properly set, or different from what is expected.  In this case, we can use the code location from a file:
+</p>
 
 <pre class="brush: java">
-        new StoryReporterBuilder().withOutputDirectory("target/my-reports").withOutputAbsolute(true)
+        new StoryReporterBuilder().withCodeLocation(StoryLocation.codeLocationFromFile(new File("target/classes")))
 </pre>
 
 <p>If the default formats or the output file directory are modified

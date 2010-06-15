@@ -153,7 +153,7 @@ story path must be explicitly provided when extending  <a
     href="javadoc/core/org/jbehave/core/JUnitStories.html">JUnitStories</a>:
 </p>
 
-<pre class="brush: java">
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
 public class TraderStories extends JUnitStories {
 
 	private URLTraderEmbedder embedder = new URLTraderEmbedder();
@@ -168,7 +168,7 @@ public class TraderStories extends JUnitStories {
 		return embedder.storyPaths();
 	}
 }
-</pre>
+]]></script>
 
 <p>Here we are configuring our textual story files to end with
 extension <b>.story</b>, by overriding the default behaviour of <a

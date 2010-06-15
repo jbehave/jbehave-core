@@ -61,12 +61,15 @@ public class ClasspathTraderEmbedder extends Embedder {
 	@Override
 	public Configuration configuration() {
 		Class<? extends ClasspathTraderEmbedder> embedderClass = this.getClass();
-		return new MostUsefulConfiguration()
-			.useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
-			.useStoryReporterBuilder(new StoryReporterBuilder()
-        		// use absolute output directory with Ant
-        		//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
-        		.withOutputLocationClass(embedderClass)
+        URL codeLocation = StoryLocation.codeLocationFromClass(storyClass);
+        if ( embedderClass() instanceof AntClassLoader ){
+            // use code location from file with Ant
+            codeLocation = StoryLocation.codeLocationFromFile(new File("target/classes"));          
+        }
+        Configuration configuration = new MostUsefulConfiguration()
+             .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
+             .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withCodeLocation(codeLocation)
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
 			.useEmbedderControls(new EmbedderControls()

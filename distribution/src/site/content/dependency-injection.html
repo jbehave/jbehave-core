@@ -25,15 +25,11 @@ system whose behaviour is being verified.</p>
 (the extension module <b>jbehave-pico</b> needs to be added to the classpath):
 </p>
 
-<pre class="brush: java">
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
 public class PicoTraderStory extends TraderStory {
 
-    public PicoTraderStory(Class storyClass) {
-        super(storyClass);
-    }
-
     @Override
-    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
         PicoContainer parent = createPicoContainer();
         return new PicoStepsFactory(configuration, parent).createCandidateSteps();
     }
@@ -48,7 +44,7 @@ public class PicoTraderStory extends TraderStory {
     }
     
 }
-</pre>
+]]></script>
 
 <h3>Using Spring</h3>
 
@@ -57,15 +53,11 @@ public class PicoTraderStory extends TraderStory {
 (the extension module <b>jbehave-spring</b> needs to be added to the classpath):
 </p>
 
-<pre class="brush: java">
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
 public class SpringTraderStory extends TraderStory {
 
-    public SpringTraderStory(Class storyClass) {
-        super(storyClass);
-    }
-
     @Override
-    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
         ListableBeanFactory parent = createBeanFactory();
         return new SpringStepsFactory(configuration, parent).createCandidateSteps();
     }
@@ -76,7 +68,7 @@ public class SpringTraderStory extends TraderStory {
     }
 
 }
-</pre>
+]]></script>
 
 <h3>Using Guice</h3>
 
@@ -85,15 +77,11 @@ public class SpringTraderStory extends TraderStory {
 (the extension module <b>jbehave-guice</b> needs to be added to the classpath):
 </p>
 
-<pre class="brush: java">
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
 public class GuiceTraderStory extends TraderStory {
 
-    public GuiceTraderStory(Class storyClass) {
-        super(storyClass);
-    }
-
     @Override
-    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
         Injector parent = createInjector();
         return new GuiceStepsFactory(configuration, parent).createCandidateSteps();
     }
@@ -111,8 +99,8 @@ public class GuiceTraderStory extends TraderStory {
     }
     
 }
-</pre>
-where the <b>GuiceTraderSteps</b> is appropriately Guice-annotated:
+]]></script>
+<p>where the <b>GuiceTraderSteps</b> is appropriately Guice-annotated:</p>
 <pre class="brush: java">
 public class GuiceTraderSteps extends TraderSteps {
 

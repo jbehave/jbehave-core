@@ -63,10 +63,8 @@ public class StoryLoaderBehaviour {
 
 
     @Test
-    public void canDefineStoryWithURLLoading() {
-        // Given
-        String codeLocation = new StoryLocation("", codeLocationFromClass(this.getClass())).getCodeLocation().getFile();
-        String storyPath = "file:" + codeLocation + "org/jbehave/core/io/stories/my_pending_story";
+    public void canLoadStoryFromURL() {
+        String storyPath = codeLocationFromClass(this.getClass()) + "org/jbehave/core/io/stories/my_pending_story";
         String storyAsText = "Given my step";
  
         // When
@@ -79,9 +77,7 @@ public class StoryLoaderBehaviour {
 
     @Test(expected = InvalidStoryResource.class)
     public void shouldNotLoadStoryFromURLIfNotFound() {
-        // Given
-        String codeLocation = new StoryLocation("", codeLocationFromClass(this.getClass())).getCodeLocation().getFile();
-        String storyPath = "file:" + codeLocation + "inexistent_story";
+        String storyPath = codeLocationFromClass(this.getClass()) + "inexistent_story";
 
         // When
         StoryLoader loader = new LoadFromURL();
@@ -90,4 +86,5 @@ public class StoryLoaderBehaviour {
         // Then fail as expected
 
     }
+
 }

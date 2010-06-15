@@ -392,7 +392,7 @@ public class PrintStreamOutputBehaviour {
 
         // Given
         String storyPath = storyPath(MyStory.class);
-        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocationFromClass(this.getClass())));
+        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocationFromClass(this.getClass()), storyPath));
         File file = factory.getOutputFile();
         file.delete();
         assertThat(!file.exists(), is(true));
@@ -426,7 +426,7 @@ public class PrintStreamOutputBehaviour {
     @Test
     public void shouldBuildPrintStreamReportersAndOverrideDefaultForAGivenFormat() throws IOException {
         final String storyPath = storyPath(MyStory.class);
-        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(storyPath, codeLocationFromClass(this.getClass())));
+        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocationFromClass(this.getClass()), storyPath));
         StoryReporter reporter = new StoryReporterBuilder() {
             public StoryReporter reporterFor(String storyPath, Format format) {
                 switch (format) {

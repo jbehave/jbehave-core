@@ -102,7 +102,7 @@ public class TraderStory extends JUnitStory {
 
     public TraderStory() {
         addSteps(new TraderSteps()); // if TraderSteps extends Steps
-        addSteps(new StepsFactory().createCandidateSteps(new TraderSteps())); // if TraderSteps is a POJO
+        addSteps(new StepsFactory(configuration()).createCandidateSteps(new TraderSteps())); // if TraderSteps is a POJO
     }
 }
 </pre>

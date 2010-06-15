@@ -27,7 +27,7 @@
 independently, it is good practice to collect the configuration that
 applies to all stories in an abstract (i.e. not executable) base
 class:</p>
-<pre class="brush: java">
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
 public abstract class TraderStory extends JUnitStory {
 
 	public TraderStory() {
@@ -37,12 +37,15 @@ public abstract class TraderStory extends JUnitStory {
         Class storyClass = this.getClass();
         Properties rendering = new Properties();
         rendering.put("decorateNonHtml", "true");
+        URL codeLocation = StoryLocation.codeLocationFromClass(storyClass);
+        if ( storyClass.getClassLoader() instanceof AntClassLoader ){
+            // use code location from file with Ant
+            codeLocation = StoryLocation.codeLocationFromFile(new File("target/classes"));          
+        }
         Configuration configuration = new MostUsefulConfiguration()
-                .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
-                .useStoryReporterBuilder(new StoryReporterBuilder()
-                	// use absolute output directory with Ant
-                	//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
-                	.withOutputLocationClass(storyClass)
+                    .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
+                    .useStoryReporterBuilder(new StoryReporterBuilder()
+                    .withCodeLocation(codeLocation)
                 	.withDefaultFormats()
                 	.withRenderingResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
@@ -60,17 +63,17 @@ public abstract class TraderStory extends JUnitStory {
 
 	}
 
-	protected CandidateSteps[] createSteps(Configuration configuration) {
+	protected List<CandidateSteps> createSteps(Configuration configuration) {
 		return new StepsFactory(configuration).createCandidateSteps(
 				new TraderSteps(new TradingService()), new BeforeAfterSteps());
 	}
 
 }  
-</pre>
+]]></script>
 
 <p>To run multiple stories, specified as story paths, via a single RunnableStory instance: </p>
 
-<pre class="brush: java">
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
 public class TraderStories extends JUnitStories {
 
 	private URLTraderEmbedder embedder = new URLTraderEmbedder();
@@ -84,11 +87,12 @@ public class TraderStories extends JUnitStories {
 	protected List<String> storyPaths() {
 		return embedder.storyPaths();
 	}
-</pre>
+]]></script>
+
 
 <p>where the URLTraderEmbedder specifies the story paths:</p>
 
-<pre>
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
 public class URLTraderEmbedder extends ClasspathTraderEmbedder {
 
 	@Override
@@ -113,7 +117,7 @@ public class URLTraderEmbedder extends ClasspathTraderEmbedder {
 	}
 
 }
-</pre>
+]]></script>
 
 <span class="followup">Note that in this second example, we are using story paths as URLs, and correspondingly we configure the use of <a
             href="javadoc/core/org/jbehave/core/io/LoadFromURL.html">LoadFromURL</a>.</span>
@@ -122,7 +126,7 @@ public class URLTraderEmbedder extends ClasspathTraderEmbedder {
 our Steps with all its dependencies, all we'd need to do is to override
 the createSteps method using a different StepsFactory and use that as
 your base Story class. For example, to use with a Spring container:</p>
-<pre class="brush: java">
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
 public abstract class SpringTraderStory extends TraderStory {
 
     public SpringTraderStory(Class storyClass) {
@@ -130,14 +134,14 @@ public abstract class SpringTraderStory extends TraderStory {
     }
 
     @Override
-    protected CandidateSteps[] createSteps(StepsConfiguration configuration) {
+    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
         ListableBeanFactory parent = new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml")
                                     .getApplicationContext();
         return new SpringStepsFactory(configuration, parent).createCandidateSteps();
     }
 
 }
-</pre>
+]]></script>
 
 <p>Once we have a base RunnableStory class, all we need to do is to
 extend it providing the name of the executable Story class that maps
@@ -145,10 +149,6 @@ to the textual story file. For example, to map to <b>trader_is_alerted_of_status
 using the resolver defined above:</p>
 <pre class="brush: java">
 public class TraderIsAlertedOfStatus extends TraderStory {
-
-    public TraderIsAlertedOfStatus() {
-        super(TraderIsAlertedOfStatus.class);
-    }
 
 }
 </pre>

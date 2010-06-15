@@ -34,12 +34,12 @@ are converted respectively to a <b>String</b> and a <b>double</b>.</p>
 <p>these would handled automatically as well, provided the type of
 the parameter was a <a
     href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/List.html">List</a></p>
-<pre class="brush: java">
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
     @Given("a stock of symbols $symbols and thresholds $thresholds")
     public void aStock(List<String> symbols, List<Double> thresholds) {
         // ...
     }
-</pre>
+]]></script>
 <p>More in general, JBehave provides out-of-the-box support for
 Strings, numbers and the lists thereof.</p>
 

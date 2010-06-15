@@ -108,27 +108,27 @@ on the outcome of the scenario:</p>
     </li>
 </ul>
 <p>The <b>BeforeStory</b> and <b>AfterStory</b> annotations allow
-the corresponding methods to be executed before and after each story, either embedded or not:</p>
+the corresponding methods to be executed before and after each story, either a GivenStory or not:</p>
 
 <pre class="brush: java">
 
-    @BeforeStory // equivalent to @BeforeStory(uponEmbedded=false)
+    @BeforeStory // equivalent to @BeforeStory(uponGivenStory=false)
     public void beforeStory() {
         // ...
     }
 
-    @BeforeStory(uponEmbedded=true)
-    public void beforeEmbeddedStory() {
+    @BeforeStory(uponGivenStory=true)
+    public void beforeGivenStory() {
         // ...
     }
         
-    @AfterStory // equivalent to @AfterStory(uponEmbedded=false)
+    @AfterStory // equivalent to @AfterStory(uponGivenStory=false)
     public void afterStory() {
         // ...
     }
 
-    @AfterStory(uponEmbedded=true)
-    public void afterEmbeddedStory() {
+    @AfterStory(uponGivenStory=true)
+    public void afterGivenStory() {
         // ...
     }
     

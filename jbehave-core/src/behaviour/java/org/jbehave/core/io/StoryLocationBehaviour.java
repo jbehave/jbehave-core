@@ -1,36 +1,54 @@
 package org.jbehave.core.io;
 
-import org.junit.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
+
+import java.io.File;
+import java.net.URL;
+
+import org.junit.Test;
 
 public class StoryLocationBehaviour {
 
     @Test
-    public void shouldHandleURLs() {
-        String codeLocation = this.getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
-        String storyPath = "file:" + codeLocation + "org/jbehave/core/io/stories/my_pending_story";
-        StoryLocation storyLocation = new StoryLocation(storyPath, codeLocationFromClass(this.getClass()));
-        assertThat(storyLocation.isURL(), is(true));
-        assertThat(storyLocation.toString(), containsString("url=true"));
-        assertThat(storyLocation.getPath(), equalTo(storyPath));
-        assertThat(storyLocation.getLocation(), equalTo(storyPath));
-        assertThat(storyLocation.getName(), equalTo("org/jbehave/core/io/stories/my_pending_story"));
-    }
-                                 
-    @Test
     public void shouldHandleClasspathResources() {
-        String storyPath = "org/jbehave/core/io/stories/my_pending_story";
-        StoryLocation storyLocation = new StoryLocation(storyPath, codeLocationFromClass(this.getClass()));
+        URL codeLocation = StoryLocation.codeLocationFromClass(this.getClass());
+        String storyName = "org/jbehave/core/io/stories/my_pending_story";
+        String storyPath = storyName;
+		StoryLocation storyLocation = new StoryLocation(codeLocation, storyPath);
+        assertThat(storyLocation.getPath(), equalTo(storyPath));
         assertThat(storyLocation.isURL(), is(false));
         assertThat(storyLocation.toString(), containsString("url=false"));
+        assertThat(storyLocation.getLocation(), equalTo(codeLocation + storyName));
+        assertThat(storyLocation.getName(), equalTo(storyName));
+    }
+
+    @Test
+    public void shouldHandleURLResourcesSpecifiedViaClassCodeLocation() {
+        URL codeLocation = StoryLocation.codeLocationFromClass(this.getClass());
+        String storyName = "org/jbehave/core/io/stories/my_pending_story";
+		String storyPath = codeLocation + storyName;
+		StoryLocation storyLocation = new StoryLocation(codeLocation, storyPath);
         assertThat(storyLocation.getPath(), equalTo(storyPath));
-        assertThat(storyLocation.getLocation(), equalTo(storyLocation.getCodeLocation() + storyPath));
-        assertThat(storyLocation.getName(), equalTo(storyPath));
+        assertThat(storyLocation.isURL(), is(true));
+        assertThat(storyLocation.toString(), containsString("url=true"));
+        assertThat(storyLocation.getLocation(), equalTo(storyPath));
+        assertThat(storyLocation.getName(), equalTo(storyName));
+    }
+
+    @Test
+    public void shouldHandleURLResourcesSpecifiedViaFileCodeLocation() {
+        URL codeLocation = StoryLocation.codeLocationFromFile(new File("target/test-classes"));
+        String storyName = "org/jbehave/core/io/stories/my_pending_story";
+		String storyPath = codeLocation + storyName;
+		StoryLocation storyLocation = new StoryLocation(codeLocation, storyPath);
+        assertThat(storyLocation.getPath(), equalTo(storyPath));
+        assertThat(storyLocation.isURL(), is(true));
+        assertThat(storyLocation.toString(), containsString("url=true"));
+        assertThat(storyLocation.getLocation(), equalTo(storyPath));
+        assertThat(storyLocation.getName(), equalTo(storyName));
     }
 
 }
