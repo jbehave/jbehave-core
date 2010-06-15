@@ -13,7 +13,7 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.InstanceStepsFactory;
 
 public class ItTraderStory extends JUnitStory {
 
@@ -30,7 +30,7 @@ public class ItTraderStory extends JUnitStory {
         	.useKeywords(keywords)
         	.useParameterConverters(new ParameterConverters(new ParameterConverters.ExamplesTableConverter(keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator())));
         useConfiguration(configuration);
-        addSteps(new StepsFactory(configuration).createCandidateSteps(new ItTraderSteps()));
+        addSteps(new InstanceStepsFactory(configuration, new ItTraderSteps()).createCandidateSteps());
     }
 
 }

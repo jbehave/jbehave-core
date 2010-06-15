@@ -3,12 +3,12 @@ package org.jbehave.examples.trader.stories;
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.InstanceStepsFactory;
 
 public class AndStep extends JUnitStory {
 
 	public AndStep() {
-		addSteps(new StepsFactory().createCandidateSteps(new AndSteps()));
+		addSteps(new InstanceStepsFactory(configuration(), new AndSteps()).createCandidateSteps());
 	}
 
 	public static class AndSteps {

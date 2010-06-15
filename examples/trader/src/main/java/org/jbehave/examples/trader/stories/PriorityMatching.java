@@ -6,12 +6,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.InstanceStepsFactory;
 
 public class PriorityMatching extends JUnitStory {
 
     public PriorityMatching() {
-        addSteps(new StepsFactory().createCandidateSteps(new PriorityMatchingSteps()));
+        addSteps(new InstanceStepsFactory(configuration(), new PriorityMatchingSteps()).createCandidateSteps());
     }
     
     public static class PriorityMatchingSteps {

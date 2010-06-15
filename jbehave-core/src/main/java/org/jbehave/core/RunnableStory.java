@@ -1,5 +1,7 @@
 package org.jbehave.core;
 
+import java.util.List;
+
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.steps.CandidateSteps;
@@ -44,6 +46,13 @@ public interface RunnableStory {
 	 * @param steps the CandidateSteps instances used to match textual steps
 	 */
 	void addSteps(CandidateSteps... steps);
+
+	/**
+	 * Adds CandidateSteps instances used by the Embedder
+	 * 
+	 * @param steps the CandidateSteps instances used to match textual steps
+	 */
+	void addSteps(List<CandidateSteps> steps);
 
 	/**
 	 * Specifies the story configuration overriding any default

@@ -11,13 +11,14 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
 
+import java.util.List;
 import java.util.Properties;
 
 import static java.util.Arrays.asList;
@@ -64,9 +65,10 @@ public abstract class TraderStory extends JUnitStory {
 
 	}
 
-	protected CandidateSteps[] createSteps(Configuration configuration) {
-		return new StepsFactory(configuration).createCandidateSteps(
-				new TraderSteps(new TradingService()), new BeforeAfterSteps());
+	protected List<CandidateSteps> createSteps(Configuration configuration) {
+		return new InstanceStepsFactory(configuration, new TraderSteps(
+				new TradingService()), new BeforeAfterSteps())
+				.createCandidateSteps();
 	}
 
 	private TraderPersister mockTradePersister() {

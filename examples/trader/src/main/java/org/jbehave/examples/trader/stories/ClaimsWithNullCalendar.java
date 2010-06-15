@@ -9,7 +9,7 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.StepsFactory;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.converters.CalendarConverter;
 
 public class ClaimsWithNullCalendar extends JUnitStory {
@@ -18,8 +18,8 @@ public class ClaimsWithNullCalendar extends JUnitStory {
 		Configuration configuration = new MostUsefulConfiguration()
 				.useParameterConverters(new ParameterConverters(
 						new CalendarConverter("dd/MM/yyyy")));
-		addSteps(new StepsFactory(configuration)
-				.createCandidateSteps(new CalendarSteps()));
+		addSteps(new InstanceStepsFactory(configuration, new CalendarSteps())
+				.createCandidateSteps());
 	}
 
 	public static class CalendarSteps {

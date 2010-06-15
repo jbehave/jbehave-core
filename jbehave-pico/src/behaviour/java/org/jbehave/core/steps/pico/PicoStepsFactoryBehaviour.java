@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -39,7 +40,7 @@ public class PicoStepsFactoryBehaviour {
         parent.as(Characteristics.USE_NAMES).addComponent(FooSteps.class);
         PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulConfiguration(), parent);
         // When
-        CandidateSteps[] steps = factory.createCandidateSteps();
+        List<CandidateSteps> steps = factory.createCandidateSteps();
         // Then 
         assertFooStepsFound(steps);
     }
@@ -52,16 +53,16 @@ public class PicoStepsFactoryBehaviour {
         parent.addComponent(Integer.class, 42);
         // When
         PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulConfiguration(), parent);
-        CandidateSteps[] steps = factory.createCandidateSteps();
+        List<CandidateSteps> steps = factory.createCandidateSteps();
         // Then
         assertFooStepsFound(steps);
-        assertEquals(42, (int) ((FooStepsWithDependency) stepsInstance.get(steps[0])).integer);
+        assertEquals(42, (int) ((FooStepsWithDependency) stepsInstance.get(steps.get(0))).integer);
     }
 
-    private void assertFooStepsFound(CandidateSteps[] steps) throws NoSuchFieldException, IllegalAccessException {
-        assertEquals(1, steps.length);
-        assertTrue(steps[0] instanceof CandidateSteps);
-        Object instance = stepsInstance.get(steps[0]);
+    private void assertFooStepsFound(List<CandidateSteps> steps) throws NoSuchFieldException, IllegalAccessException {
+        assertEquals(1, steps.size());
+        assertTrue(steps.get(0) instanceof CandidateSteps);
+        Object instance = stepsInstance.get(steps.get(0));
         assertTrue(instance instanceof FooSteps);
     }
 
