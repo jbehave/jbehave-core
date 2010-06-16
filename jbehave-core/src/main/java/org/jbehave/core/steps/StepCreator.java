@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.jbehave.core.steps.AbstractStepResult.failed;
 import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
+import static org.jbehave.core.steps.AbstractStepResult.skipped;
 import static org.jbehave.core.steps.AbstractStepResult.successful;
 
 import java.lang.annotation.Annotation;
@@ -13,6 +14,8 @@ import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.parsers.StepMatcher;
 
@@ -26,23 +29,28 @@ public class StepCreator {
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
 	public static final String PARAMETER_VALUE_NEWLINE = "NL";
-	private Object stepsInstance;
-	private Method method;
-	private ParameterConverters parameterConverters;
-	private StepMatcher stepMatcher;
+	private final Object stepsInstance;
+	private final StepRunner beforeOrAfterStep;
+	private final StepRunner skipStep;
+	private final ParameterConverters parameterConverters;
+	private final StepMatcher stepMatcher;
     private StepMonitor stepMonitor;
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
-	
-    public StepCreator(Object stepsInstance, Method method,
-			ParameterConverters parameterConverters, StepMatcher stepMatcher,
-			StepMonitor stepMonitor) {
+
+    public StepCreator(Object stepsInstance, StepMonitor stepMonitor) {
+    	this(stepsInstance, null, null, stepMonitor);
+    }
+
+    public StepCreator(Object stepsInstance, ParameterConverters parameterConverters,
+			StepMatcher stepMatcher, StepMonitor stepMonitor) {
 		this.stepsInstance = stepsInstance;
-		this.method = method;
 		this.parameterConverters = parameterConverters;
 		this.stepMatcher = stepMatcher;
 		this.stepMonitor = stepMonitor;
-	}
+		this.beforeOrAfterStep = new BeforeOrAfterStep(this.stepsInstance);
+		this.skipStep = new SkipStep();
+    }
 
     public void useStepMonitor(StepMonitor stepMonitor) {
         this.stepMonitor = stepMonitor;
@@ -56,8 +64,74 @@ public class StepCreator {
 		this.dryRun = dryRun;
 	}
 
-	public Step createStep(final String stepAsString, Map<String, String> tableRow) {
-        String[] annotationNames = annotatedParameterNames();
+	public Step createBeforeOrAfterStep(final Method method) {
+		return new Step() {
+			public StepResult doNotPerform() {
+				return beforeOrAfterStep.run(method);
+			}
+
+			public StepResult perform() {
+				return beforeOrAfterStep.run(method);
+			}
+		};
+	}
+
+	public Step createAfterStepUponOutcome(final Method method, Outcome outcome) {
+		switch ( outcome ){
+		case ANY:
+			return new Step() {
+
+				public StepResult doNotPerform() {
+					return  beforeOrAfterStep.run(method);
+				}
+
+				public StepResult perform() {
+					return beforeOrAfterStep.run(method);
+				}
+
+			};
+		case SUCCESS:
+			return new Step() {
+
+				public StepResult doNotPerform() {
+					return skipStep.run(method);
+				}
+
+				public StepResult perform() {
+					return beforeOrAfterStep.run(method);
+				}
+
+			};
+		case FAILURE:
+			return new Step() {
+
+				public StepResult doNotPerform() {
+					return beforeOrAfterStep.run(method);
+				}
+
+				public StepResult perform() {
+					return skipStep.run(method);
+				}
+
+			};
+		default:
+			return new Step() {
+
+				public StepResult doNotPerform() {
+					return skipStep.run(method);
+				}
+
+				public StepResult perform() {
+					return skipStep.run(method);
+				}
+
+			};
+			
+		}
+	}
+
+	public Step createStep(final Method method, final String stepAsString, Map<String, String> tableRow) {
+        String[] annotationNames = annotatedParameterNames(method);
         String[] parameterNames = paranamer.lookupParameterNames(method, false);
         final Type[] types = method.getGenericParameterTypes();
         final String[] args = argsForStep(tableRow, types, annotationNames, parameterNames);
@@ -95,12 +169,13 @@ public class StepCreator {
     }
     
     /**
-     * Extract annotated parameter names from the @Named parameter annotations
-     * 
+     * Extract annotated parameter names from the @Named parameter annotations of the method
+	 *
+     * @param method the Method containing the annotations
      * @return An array of annotated parameter names, which <b>may</b> include
      *         <code>null</code> values for parameters that are not annotated
      */
-    private String[] annotatedParameterNames() {
+    private String[] annotatedParameterNames(Method method) {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         String[] names = new String[parameterAnnotations.length];
         for (int x = 0; x < parameterAnnotations.length; x++) {
@@ -255,6 +330,42 @@ public class StepCreator {
         return tableRow.get(name) != null;
     }
 
+    public interface StepRunner {
+        
+    	StepResult run(Method method);
+
+    }
+    
+	private class BeforeOrAfterStep implements StepRunner {
+		private final Object instance;
+
+		public BeforeOrAfterStep(Object instance) {
+			this.instance = instance;
+		}
+
+		public StepResult run(Method method) {
+			try {
+				method.invoke(instance);
+			} catch (InvocationTargetException e) {
+				if (e.getCause() != null) {
+					throw new BeforeOrAfterFailed(method, e.getCause());
+				} else {
+					throw new RuntimeException(e);
+				}
+			} catch (Throwable t) {
+				throw new RuntimeException(t);
+			}
+			return skipped();
+		}
+	}
+
+	private class SkipStep implements StepRunner {
+		public StepResult run(Method method) {
+			return skipped();
+		}
+	}
+
+    
     /**
      * This is a different class, because the @Inject jar may not be in the classpath.
      */
