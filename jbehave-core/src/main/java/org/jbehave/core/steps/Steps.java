@@ -4,13 +4,11 @@ import static java.util.Arrays.asList;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.FAILURE;
 import static org.jbehave.core.annotations.AfterScenario.Outcome.SUCCESS;
-import static org.jbehave.core.steps.AbstractStepResult.skipped;
 import static org.jbehave.core.steps.StepType.GIVEN;
 import static org.jbehave.core.steps.StepType.THEN;
 import static org.jbehave.core.steps.StepType.WHEN;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +27,6 @@ import org.jbehave.core.annotations.When;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 
@@ -84,8 +81,7 @@ public class Steps implements CandidateSteps {
 
 	private final Configuration configuration;
 	private final Object instance;
-	private final StepRunner invokeStep;
-	private final StepRunner skipStep;
+	private StepCreator stepCreator;
 
 	/**
 	 * Creates Steps with default configuration for a class extending this
@@ -118,23 +114,19 @@ public class Steps implements CandidateSteps {
 	public Steps(Configuration configuration, Object instance) {
 		this.configuration = configuration;
 		this.instance = instance;
-		this.invokeStep = invocatingStepRunner();
-		this.skipStep = skippingStepRunner();
+		this.stepCreator = new StepCreator(instance(), configuration
+				.stepMonitor());
 	}
 
-	protected Object instance() {
+	private Object instance() {
 		if (instance == null) {
 			return this;
 		}
 		return instance;
 	}
 
-	protected StepRunner invocatingStepRunner() {
-		return new InvokeStep(instance());
-	}
-
-	protected StepRunner skippingStepRunner() {
-		return new SkipStep();
+	public Configuration configuration() {
+		return configuration;
 	}
 
 	public List<CandidateStep> listCandidates() {
@@ -144,25 +136,23 @@ public class Steps implements CandidateSteps {
 				Given annotation = method.getAnnotation(Given.class);
 				String value = encode(annotation.value());
 				int priority = annotation.priority();
-				createCandidateStep(candidates, method, GIVEN, value, priority);
-				createCandidateStepsFromAliases(candidates, method, GIVEN,
+				addCandidateStep(candidates, method, GIVEN, value, priority);
+				addCandidateStepsFromAliases(candidates, method, GIVEN,
 						priority);
 			}
 			if (method.isAnnotationPresent(When.class)) {
 				When annotation = method.getAnnotation(When.class);
 				String value = encode(annotation.value());
 				int priority = annotation.priority();
-				createCandidateStep(candidates, method, WHEN, value, priority);
-				createCandidateStepsFromAliases(candidates, method, WHEN,
-						priority);
+				addCandidateStep(candidates, method, WHEN, value, priority);
+				addCandidateStepsFromAliases(candidates, method, WHEN, priority);
 			}
 			if (method.isAnnotationPresent(Then.class)) {
 				Then annotation = method.getAnnotation(Then.class);
 				String value = encode(annotation.value());
 				int priority = annotation.priority();
-				createCandidateStep(candidates, method, THEN, value, priority);
-				createCandidateStepsFromAliases(candidates, method, THEN,
-						priority);
+				addCandidateStep(candidates, method, THEN, value, priority);
+				addCandidateStepsFromAliases(candidates, method, THEN, priority);
 			}
 		}
 		return candidates;
@@ -172,7 +162,7 @@ public class Steps implements CandidateSteps {
 		return configuration.keywords().encode(value);
 	}
 
-	private void createCandidateStep(List<CandidateStep> candidates,
+	private void addCandidateStep(List<CandidateStep> candidates,
 			Method method, StepType stepType, String stepPatternAsString,
 			int priority) {
 		checkForDuplicateCandidateSteps(candidates, stepType,
@@ -183,15 +173,6 @@ public class Steps implements CandidateSteps {
 		step.useParanamer(configuration.paranamer());
 		step.doDryRun(configuration.dryRun());
 		candidates.add(step);
-	}
-
-	protected CandidateStep createCandidateStep(Method method,
-			StepType stepType, String stepPatternAsString, int priority,
-			Configuration configuration) {
-		return new CandidateStep(stepPatternAsString, priority, stepType,
-				method, instance(), configuration.stepPatternParser(),
-				configuration.parameterConverters(), configuration.keywords()
-						.startingWordsByType());
 	}
 
 	private void checkForDuplicateCandidateSteps(
@@ -206,49 +187,44 @@ public class Steps implements CandidateSteps {
 		}
 	}
 
-	private void createCandidateStepsFromAliases(
-			List<CandidateStep> candidates, Method method, StepType stepType,
-			int priority) {
+	private void addCandidateStepsFromAliases(List<CandidateStep> candidates,
+			Method method, StepType stepType, int priority) {
 		if (method.isAnnotationPresent(Aliases.class)) {
 			String[] aliases = method.getAnnotation(Aliases.class).values();
 			for (String alias : aliases) {
-				createCandidateStep(candidates, method, stepType, alias,
-						priority);
+				addCandidateStep(candidates, method, stepType, alias, priority);
 			}
 		}
 		if (method.isAnnotationPresent(Alias.class)) {
 			String alias = method.getAnnotation(Alias.class).value();
-			createCandidateStep(candidates, method, stepType, alias, priority);
+			addCandidateStep(candidates, method, stepType, alias, priority);
 		}
 	}
 
+	private CandidateStep createCandidateStep(Method method, StepType stepType,
+			String stepPatternAsString, int priority,
+			Configuration configuration) {
+		return new CandidateStep(stepPatternAsString, priority, stepType,
+				method, instance(), configuration.stepPatternParser(),
+				configuration.parameterConverters(), configuration.keywords()
+						.startingWordsByType());
+	}
+
 	public List<Step> runBeforeStory(boolean givenStory) {
-		return storyStepsHaving(BeforeStory.class, givenStory, invokeStep);
+		return storyStepsHaving(BeforeStory.class, givenStory);
 	}
 
 	public List<Step> runAfterStory(boolean givenStory) {
-		return storyStepsHaving(AfterStory.class, givenStory, invokeStep);
+		return storyStepsHaving(AfterStory.class, givenStory);
 	}
 
-	public Configuration configuration() {
-		return configuration;
-	}
-
-	List<Step> storyStepsHaving(Class<? extends Annotation> annotationClass,
-			boolean givenStory, final StepRunner forSuccess) {
+	private List<Step> storyStepsHaving(
+			Class<? extends Annotation> annotationClass, boolean givenStory) {
 		List<Step> steps = new ArrayList<Step>();
 		for (final Method method : annotatatedMethods(annotationClass)) {
 			if (runnableStoryStep(method.getAnnotation(annotationClass),
 					givenStory)) {
-				steps.add(new Step() {
-					public StepResult doNotPerform() {
-						return forSuccess.run(method);
-					}
-
-					public StepResult perform() {
-						return forSuccess.run(method);
-					}
-				});
+				steps.add(stepCreator.createBeforeOrAfterStep(method));
 			}
 		}
 		return steps;
@@ -269,57 +245,33 @@ public class Steps implements CandidateSteps {
 	}
 
 	public List<Step> runBeforeScenario() {
-		return scenarioStepsHaving(BeforeScenario.class, invokeStep);
+		return scenarioStepsHaving(BeforeScenario.class);
 	}
 
 	public List<Step> runAfterScenario() {
 		List<Step> steps = new ArrayList<Step>();
-		steps.addAll(scenarioStepsHavingOutcome(AfterScenario.class, ANY,
-				invokeStep, invokeStep));
-		steps.addAll(scenarioStepsHavingOutcome(AfterScenario.class, SUCCESS,
-				invokeStep, skipStep));
-		steps.addAll(scenarioStepsHavingOutcome(AfterScenario.class, FAILURE,
-				skipStep, invokeStep));
+		steps.addAll(scenarioStepsHavingOutcome(AfterScenario.class, ANY));
+		steps.addAll(scenarioStepsHavingOutcome(AfterScenario.class, SUCCESS));
+		steps.addAll(scenarioStepsHavingOutcome(AfterScenario.class, FAILURE));
 		return steps;
 	}
 
-	List<Step> scenarioStepsHaving(Class<? extends Annotation> annotationClass,
-			final StepRunner forSuccess) {
+	private List<Step> scenarioStepsHaving(
+			Class<? extends Annotation> annotationClass) {
 		List<Step> steps = new ArrayList<Step>();
-		for (final Method method : annotatatedMethods(annotationClass)) {
-			steps.add(new Step() {
-				public StepResult doNotPerform() {
-					return forSuccess.run(method);
-				}
-
-				public StepResult perform() {
-					return forSuccess.run(method);
-				}
-
-			});
+		for (Method method : annotatatedMethods(annotationClass)) {
+			steps.add(stepCreator.createBeforeOrAfterStep(method));
 		}
 		return steps;
 	}
 
 	private List<Step> scenarioStepsHavingOutcome(
-			Class<? extends AfterScenario> annotationClass,
-			final Outcome outcome, final StepRunner forSuccess,
-			final StepRunner forFailure) {
+			Class<? extends AfterScenario> annotationClass, Outcome outcome) {
 		List<Step> steps = new ArrayList<Step>();
-		for (final Method method : annotatatedMethods(annotationClass)) {
+		for (Method method : annotatatedMethods(annotationClass)) {
 			AfterScenario annotation = method.getAnnotation(annotationClass);
 			if (outcome.equals(annotation.uponOutcome())) {
-				steps.add(new Step() {
-
-					public StepResult doNotPerform() {
-						return forFailure.run(method);
-					}
-
-					public StepResult perform() {
-						return forSuccess.run(method);
-					}
-
-				});
+				steps.add(stepCreator.createAfterStepUponOutcome(method, outcome));
 			}
 		}
 		return steps;
@@ -338,35 +290,6 @@ public class Steps implements CandidateSteps {
 			}
 		}
 		return annotated;
-	}
-
-	private class InvokeStep implements StepRunner {
-		private final Object instance;
-
-		public InvokeStep(Object instance) {
-			this.instance = instance;
-		}
-
-		public StepResult run(Method method) {
-			try {
-				method.invoke(instance);
-			} catch (InvocationTargetException e) {
-				if (e.getCause() != null) {
-					throw new BeforeOrAfterFailed(method, e.getCause());
-				} else {
-					throw new RuntimeException(e);
-				}
-			} catch (Throwable t) {
-				throw new RuntimeException(t);
-			}
-			return skipped();
-		}
-	}
-
-	private class SkipStep implements StepRunner {
-		public StepResult run(Method method) {
-			return skipped();
-		}
 	}
 
 	@SuppressWarnings("serial")

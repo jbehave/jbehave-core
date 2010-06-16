@@ -43,7 +43,7 @@ public class CandidateStep {
         this.stepsInstance = stepsInstance;
         this.startingWordsByType = startingWords;
         this.stepMatcher = patternParser.parseStep(patternAsString);
-        this.stepCreator = new StepCreator(stepsInstance, method, parameterConverters, stepMatcher, stepMonitor);
+        this.stepCreator = new StepCreator(stepsInstance, parameterConverters, stepMatcher, stepMonitor);
     }
 
  	public Integer getPriority() {
@@ -112,7 +112,7 @@ public class CandidateStep {
 
     public Step createStep(String stepAsString, Map<String, String> tableRow) {
         stepMatcher.find(stripStartingWord(stepAsString));
-        return stepCreator.createStep(stepAsString, tableRow);
+        return stepCreator.createStep(method, stepAsString, tableRow);
     }
 
     private String stripStartingWord(final String stepAsString) {
