@@ -1,13 +1,13 @@
 package org.jbehave.core.io;
 
-import static org.apache.commons.lang.StringUtils.removeStart;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import static org.apache.commons.lang.StringUtils.removeStart;
 
 /**
  * <p>
@@ -34,17 +34,28 @@ public class StoryLocation {
 		this.url = isURL(storyPath);
 	}
 
-	public static URL codeLocationFromClass(Class<?> codeLocationClass) {
-		return codeLocationClass.getProtectionDomain().getCodeSource().getLocation();
-	}
 
-	public static URL codeLocationFromFile(File codeLocationFile) {
-		try {
-			return codeLocationFile.toURL();
-		} catch (MalformedURLException e) {
-			throw new InvalidCodeLocation(codeLocationFile);
-		}
-	}
+    public static URL codeLocationFromClass(Class<?> codeLocationClass) {
+
+        URL url1 = codeLocationClass.getProtectionDomain().getCodeSource().getLocation();
+        // Ant does something weird in respect of .getProtectionDomain().getCodeSource() when it is the agent that
+        // is running tests. Maven and Injellij are fine.  
+        if (url1.toExternalForm().indexOf("ant-1.") > 0 || url1.toExternalForm().indexOf("ant.jar") > 0) {
+            ClassLoader loader = codeLocationClass.getClassLoader();
+            String fsName = codeLocationClass.getName().replace(".", File.separator) + ".class";
+            URL resource = loader.getResource(fsName);
+            if (resource.toExternalForm().endsWith(fsName)) {
+                String spec = null;
+                try {
+                    spec = resource.getFile().substring(0, resource.getFile().lastIndexOf(fsName));
+                    return new File(spec).toURL();
+                } catch (MalformedURLException e) {
+                    throw new InvalidCodeLocation(spec);
+                }
+            }
+        }
+        return url1;
+    }
 
 	public URL getCodeLocation() {
 		return codeLocation;
@@ -92,8 +103,8 @@ public class StoryLocation {
 	@SuppressWarnings("serial")
 	public static class InvalidCodeLocation extends RuntimeException {
 
-		public InvalidCodeLocation(File file) {
-			super(file.toString());
+		public InvalidCodeLocation(String path) {
+			super(path);
 		}
 		
 	}

@@ -46,10 +46,6 @@ public abstract class TraderStory extends JUnitStory {
         Properties rendering = new Properties();
         rendering.put("decorateNonHtml", "true");
     	URL codeLocation = StoryLocation.codeLocationFromClass(storyClass);
-        if ( storyClass.getClassLoader() instanceof AntClassLoader ){
-        	// use code location from file with Ant
-            codeLocation = StoryLocation.codeLocationFromFile(new File("target/classes"));        	
-        }
 		Configuration configuration = new MostUsefulConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
