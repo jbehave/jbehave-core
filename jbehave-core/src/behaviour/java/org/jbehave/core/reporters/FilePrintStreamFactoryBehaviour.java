@@ -2,11 +2,11 @@ package org.jbehave.core.reporters;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 
 import java.io.File;
 import java.net.URL;
 
+import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.junit.Test;
@@ -16,21 +16,21 @@ public class FilePrintStreamFactoryBehaviour {
 
     @Test
     public void shouldHandleStoryPathInClasspath() {
-        URL codeLocation = codeLocationFromClass(this.getClass());
+        URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = "org/jbehave/examples/trader/stories/my_given.story";
         ensureOutputFileIsSame(codeLocation, storyPath);
     }
 
     @Test
     public void shouldHandleStoryPathAsURL() {
-        URL codeLocation = codeLocationFromClass(this.getClass());
+        URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyPath = codeLocation + "org/jbehave/examples/trader/stories/my_given.story";
         ensureOutputFileIsSame(codeLocation, storyPath);
     }
 
     @Test
     public void shouldHandleStoryPathAsURLWithSpecifiedCodeSourceClass() {
-        URL codeLocation = codeLocationFromClass(FilePrintStreamFactory.class);
+        URL codeLocation = CodeLocations.codeLocationFromClass(FilePrintStreamFactory.class);
         String storyPath = codeLocation + "org/jbehave/examples/trader/stories/my_given.story";
         ensureOutputFileIsSame(codeLocation, storyPath);
     }

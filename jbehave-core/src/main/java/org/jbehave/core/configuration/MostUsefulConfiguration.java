@@ -15,12 +15,15 @@ import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.FreemarkerReportRenderer;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
+import org.jbehave.core.reporters.ReportRenderer;
+import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.StepdocGenerator;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;

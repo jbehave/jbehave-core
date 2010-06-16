@@ -1,12 +1,12 @@
 package org.jbehave.core.reporters;
 
+import java.util.List;
+import java.util.Map;
+
 import org.jbehave.core.failures.StepFailed;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * <p>

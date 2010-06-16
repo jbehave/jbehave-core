@@ -3,17 +3,17 @@ package org.jbehave.examples.trader.i18n;
 import java.util.Locale;
 
 import org.jbehave.core.JUnitStory;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.i18n.StringCoder;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.ParameterConverters;
 
 public class ItTraderStory extends JUnitStory {
 

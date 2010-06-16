@@ -1,7 +1,6 @@
 package org.jbehave.examples.trader;
 
 import static java.util.Arrays.asList;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
@@ -13,14 +12,15 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
+import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.converters.TraderConverter;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
@@ -39,9 +39,7 @@ public class ClasspathTraderEmbedder extends Embedder {
 		return new MostUsefulConfiguration()
 			.useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
 			.useStoryReporterBuilder(new StoryReporterBuilder()
-        		// use absolute output directory with Ant
-        		//.withOutputDirectory("target/jbehave-reports").withOutputAbsolute(true)
-        		.withCodeLocation(codeLocationFromClass(embedderClass))
+        		.withCodeLocation(CodeLocations.codeLocationFromClass(embedderClass))
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
 			.useParameterConverters(new ParameterConverters(

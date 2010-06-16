@@ -1,19 +1,19 @@
 package org.jbehave.core.io;
 
-import org.junit.Test;
-
-import java.net.URL;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import java.net.URL;
+
+import org.junit.Test;
+
 public class StoryLocationBehaviour {
 
     @Test
     public void shouldHandleClasspathResources() {
-        URL codeLocation = StoryLocation.codeLocationFromClass(this.getClass());
+        URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyName = "org/jbehave/core/io/stories/my_pending_story";
         String storyPath = storyName;
 		StoryLocation storyLocation = new StoryLocation(codeLocation, storyPath);
@@ -26,7 +26,7 @@ public class StoryLocationBehaviour {
 
     @Test
     public void shouldHandleURLResourcesSpecifiedViaClassCodeLocation() {
-        URL codeLocation = StoryLocation.codeLocationFromClass(this.getClass());
+        URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         String storyName = "org/jbehave/core/io/stories/my_pending_story";
 		String storyPath = codeLocation + storyName;
 		StoryLocation storyLocation = new StoryLocation(codeLocation, storyPath);

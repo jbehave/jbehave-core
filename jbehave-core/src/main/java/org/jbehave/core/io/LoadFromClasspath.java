@@ -1,9 +1,9 @@
 package org.jbehave.core.io;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.commons.io.IOUtils;
 
 /**
  * Loads story content from classpath resources.

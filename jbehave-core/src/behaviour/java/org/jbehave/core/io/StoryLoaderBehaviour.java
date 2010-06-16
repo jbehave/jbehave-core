@@ -1,13 +1,12 @@
 package org.jbehave.core.io;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
+import org.junit.Test;
 
 public class StoryLoaderBehaviour {
 
@@ -64,7 +63,7 @@ public class StoryLoaderBehaviour {
 
     @Test
     public void canLoadStoryFromURL() {
-        String storyPath = codeLocationFromClass(this.getClass()) + "org/jbehave/core/io/stories/my_pending_story";
+        String storyPath = CodeLocations.codeLocationFromClass(this.getClass()) + "org/jbehave/core/io/stories/my_pending_story";
         String storyAsText = "Given my step";
  
         // When
@@ -77,7 +76,7 @@ public class StoryLoaderBehaviour {
 
     @Test(expected = InvalidStoryResource.class)
     public void shouldNotLoadStoryFromURLIfNotFound() {
-        String storyPath = codeLocationFromClass(this.getClass()) + "inexistent_story";
+        String storyPath = CodeLocations.codeLocationFromClass(this.getClass()) + "inexistent_story";
 
         // When
         StoryLoader loader = new LoadFromURL();

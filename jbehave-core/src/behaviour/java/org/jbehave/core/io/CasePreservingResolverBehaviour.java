@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.jbehave.core.JUnitStory;
-import org.jbehave.core.io.CasePreservingResolver;
 import org.junit.Test;
 
 public class CasePreservingResolverBehaviour {

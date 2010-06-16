@@ -1,13 +1,13 @@
 package org.jbehave.examples.trader;
 
-import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.io.LoadFromURL;
+import static java.util.Arrays.asList;
 
 import java.text.MessageFormat;
 import java.util.List;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.io.CodeLocations;
+import org.jbehave.core.io.LoadFromURL;
 
 /**
  * Specifies the Embedder for the Trader example, using URL story loading.
@@ -29,7 +29,7 @@ public class URLTraderEmbedder extends ClasspathTraderEmbedder {
 	}
 
 	private String storyURL(String name) {
-		String codeLocation = codeLocationFromClass(this.getClass()).getFile();
+		String codeLocation = CodeLocations.codeLocationFromClass(this.getClass()).getFile();
 		String urlPattern = "file:" + codeLocation + "org/jbehave/examples/trader/stories/{0}";
 		return MessageFormat.format(urlPattern, name);
 
