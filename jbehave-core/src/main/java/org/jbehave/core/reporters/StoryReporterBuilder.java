@@ -88,7 +88,7 @@ public class StoryReporterBuilder {
 
     private List<Format> formats = new ArrayList<Format>();
     private String outputDirectory = new FileConfiguration().getOutputDirectory();
-    private URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
+    private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
 	private Properties renderingResources = FreemarkerReportRenderer.defaultResources();
 	private boolean reportFailureTrace = false;
 
