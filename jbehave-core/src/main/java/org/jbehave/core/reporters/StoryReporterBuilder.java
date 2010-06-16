@@ -1,7 +1,6 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
+import static java.util.Arrays.asList;
 
 import java.io.File;
 import java.net.URL;
@@ -11,8 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
+import org.jbehave.core.io.CodeLocations;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 
 /**
  * <p>
@@ -88,7 +88,7 @@ public class StoryReporterBuilder {
 
     private List<Format> formats = new ArrayList<Format>();
     private String outputDirectory = new FileConfiguration().getOutputDirectory();
-    private URL codeLocation = codeLocationFromClass(this.getClass());
+    private URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
 	private Properties renderingResources = FreemarkerReportRenderer.defaultResources();
 	private boolean reportFailureTrace = false;
 

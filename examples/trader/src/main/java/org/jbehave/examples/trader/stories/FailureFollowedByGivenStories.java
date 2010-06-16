@@ -4,8 +4,8 @@ import junit.framework.Assert;
 
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
-import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.Steps;
 import org.jbehave.examples.trader.TraderStory;
 
 public class FailureFollowedByGivenStories extends TraderStory {

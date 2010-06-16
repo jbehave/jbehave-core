@@ -1,24 +1,24 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.JUnitStory;
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.io.UnderscoredCamelCaseResolver;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
-import org.junit.Test;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.Properties;
-
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-import static org.jbehave.core.io.StoryLocation.codeLocationFromClass;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Properties;
+
+import org.jbehave.core.JUnitStory;
+import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.CodeLocations;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
+import org.junit.Test;
 
 public class StoryReporterBuilderBehaviour {
 
@@ -75,7 +75,7 @@ public class StoryReporterBuilderBehaviour {
     public void shouldBuildWithCustomReporterForAGivenFormat() throws IOException {
     	// Given
         String storyPath = storyPath(MyStory.class);
-        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocationFromClass(MyStory.class), storyPath));
+        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(CodeLocations.codeLocationFromClass(MyStory.class), storyPath));
         final StoryReporter txtReporter = new TxtOutput(factory.createPrintStream(), new Properties(),  new LocalizedKeywords(), true);
         StoryReporterBuilder builder = new StoryReporterBuilder(){
                public StoryReporter reporterFor(String storyPath, Format format){

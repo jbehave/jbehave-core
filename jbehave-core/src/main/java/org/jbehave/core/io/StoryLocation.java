@@ -1,13 +1,12 @@
 package org.jbehave.core.io;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import static org.apache.commons.lang.StringUtils.removeStart;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import static org.apache.commons.lang.StringUtils.removeStart;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * <p>
@@ -35,29 +34,7 @@ public class StoryLocation {
 	}
 
 
-    public static URL codeLocationFromClass(Class<?> codeLocationClass) {
-
-        URL url1 = codeLocationClass.getProtectionDomain().getCodeSource().getLocation();
-        // Ant does something weird in respect of .getProtectionDomain().getCodeSource() when it is the agent that
-        // is running tests. Maven and Injellij are fine.  
-        if (url1.toExternalForm().indexOf("ant-1.") > 0 || url1.toExternalForm().indexOf("ant.jar") > 0) {
-            ClassLoader loader = codeLocationClass.getClassLoader();
-            String fsName = codeLocationClass.getName().replace(".", File.separator) + ".class";
-            URL resource = loader.getResource(fsName);
-            if (resource.toExternalForm().endsWith(fsName)) {
-                String spec = null;
-                try {
-                    spec = resource.getFile().substring(0, resource.getFile().lastIndexOf(fsName));
-                    return new File(spec).toURL();
-                } catch (MalformedURLException e) {
-                    throw new InvalidCodeLocation(spec);
-                }
-            }
-        }
-        return url1;
-    }
-
-	public URL getCodeLocation() {
+    public URL getCodeLocation() {
 		return codeLocation;
 	}
 
@@ -98,14 +75,5 @@ public class StoryLocation {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, 
 				ToStringStyle.SHORT_PREFIX_STYLE);
-	}
-	
-	@SuppressWarnings("serial")
-	public static class InvalidCodeLocation extends RuntimeException {
-
-		public InvalidCodeLocation(String path) {
-			super(path);
-		}
-		
 	}
 }

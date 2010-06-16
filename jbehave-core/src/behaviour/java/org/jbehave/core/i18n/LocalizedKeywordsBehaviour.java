@@ -28,9 +28,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.i18n.LocalizedKeywords.LocalizedKeywordNotFoundException;
 import org.jbehave.core.i18n.LocalizedKeywords.ResourceBundleNotFoundException;
 import org.jbehave.core.steps.StepType;

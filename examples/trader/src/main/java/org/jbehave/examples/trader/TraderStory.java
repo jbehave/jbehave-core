@@ -6,17 +6,15 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
-import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.tools.ant.AntClassLoader;
 import org.jbehave.core.JUnitStory;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
@@ -45,7 +43,7 @@ public abstract class TraderStory extends JUnitStory {
         Class<? extends TraderStory> storyClass = this.getClass();
         Properties rendering = new Properties();
         rendering.put("decorateNonHtml", "true");
-    	URL codeLocation = StoryLocation.codeLocationFromClass(storyClass);
+    	URL codeLocation = CodeLocations.codeLocationFromClass(storyClass);
 		Configuration configuration = new MostUsefulConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()

@@ -13,8 +13,6 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.parsers.StoryParser;
 import org.junit.Ignore;
 import org.junit.Test;
 

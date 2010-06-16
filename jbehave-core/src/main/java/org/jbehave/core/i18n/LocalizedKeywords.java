@@ -1,7 +1,6 @@
 package org.jbehave.core.i18n;
 
-import org.jbehave.core.StoryClassLoader;
-import org.jbehave.core.configuration.Keywords;
+import static java.util.ResourceBundle.getBundle;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -9,7 +8,8 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import static java.util.ResourceBundle.getBundle;
+import org.jbehave.core.StoryClassLoader;
+import org.jbehave.core.configuration.Keywords;
 
 /**
  * Add i18n support to Keywords, allowing to read the keywords from resource

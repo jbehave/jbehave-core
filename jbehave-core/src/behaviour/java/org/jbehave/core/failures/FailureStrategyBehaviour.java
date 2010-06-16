@@ -1,7 +1,5 @@
 package org.jbehave.core.failures;
 
-import org.jbehave.core.failures.RethrowingFailure;
-import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.junit.Test;
 
 public class FailureStrategyBehaviour {

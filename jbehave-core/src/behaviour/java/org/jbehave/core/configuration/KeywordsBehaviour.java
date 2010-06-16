@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.Keywords.KeywordNotFoundException;
 import org.junit.Test;
 
