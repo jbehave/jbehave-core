@@ -24,9 +24,9 @@ import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.reporters.FreemarkerReportRenderer;
+import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
-import org.jbehave.core.reporters.ReportRenderer;
+import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -58,6 +58,11 @@ import com.thoughtworks.paranamer.Paranamer;
  * </p>
  */
 public class Configuration {
+
+	/**
+	 * Dry run is switched off by default
+	 */
+	private boolean dryRun = false;
 
 	/**
 	 * Use English language for keywords
@@ -142,16 +147,6 @@ public class Configuration {
 	private ParameterConverters parameterConverters = new ParameterConverters();
 
 	/**
-	 * Dry run is switched off by default
-	 */
-	private boolean dryRun = false;
-
-	/**
-	 * Use Freemarker-based report renderer
-	 */
-	private ReportRenderer reportRenderer = new FreemarkerReportRenderer();
-
-	/**
 	 * Generates stepdocs
 	 */
 	private StepdocGenerator stepdocGenerator = new DefaultStepdocGenerator();
@@ -162,9 +157,18 @@ public class Configuration {
 	private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter();
 
 	/**
+	 * Use Freemarker-based view generator
+	 */
+	private ViewGenerator viewGenerator = new FreemarkerViewGenerator();
+
+	/**
 	 * The embedder controls
 	 */
 	private EmbedderControls embedderControls = new EmbedderControls();
+
+	public boolean dryRun() {
+		return dryRun;
+	}
 
 	public Keywords keywords() {
 		return keywords;
@@ -227,14 +231,6 @@ public class Configuration {
 		return parameterConverters;
 	}
 
-	public boolean dryRun() {
-		return dryRun;
-	}
-
-	public ReportRenderer reportRenderer() {
-		return reportRenderer;
-	}
-
 	public StepdocGenerator stepdocGenerator() {
 		return stepdocGenerator;
 	}
@@ -243,8 +239,16 @@ public class Configuration {
 		return stepdocReporter;
 	}
 
+	public ViewGenerator viewGenerator() {
+		return viewGenerator;
+	}
+
 	public EmbedderControls embedderControls() {
 		return embedderControls;
+	}
+
+	public void doDryRun(boolean dryRun) {
+		this.dryRun = dryRun;
 	}
 
 	public Configuration useKeywords(Keywords keywords) {
@@ -335,14 +339,6 @@ public class Configuration {
 		return this;
 	}
 
-	public void doDryRun(boolean dryRun) {
-		this.dryRun = dryRun;
-	}
-
-	public void useReportRenderer(ReportRenderer reportRenderer) {
-		this.reportRenderer = reportRenderer;
-	}
-
 	public void useStepdocGenerator(StepdocGenerator stepdocGenerator) {
 		this.stepdocGenerator = stepdocGenerator;
 	}
@@ -351,6 +347,9 @@ public class Configuration {
 		this.stepdocReporter = stepdocReporter;
 	}
 
+	public void useViewGenerator(ViewGenerator viewGenerator) {
+		this.viewGenerator = viewGenerator;
+	}
 
 	@Override
 	public String toString() {

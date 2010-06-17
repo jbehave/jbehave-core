@@ -21,11 +21,11 @@ public class ReportingFailuresEmbedderMonitor extends PrintStreamEmbedderMonitor
     public void runningStory(String storyName) {
     }
 
-	public void renderingReports(File outputDirectory, List<String> formats,
-			Properties templateProperties) {
+	public void generatingStoriesView(File outputDirectory, List<String> formats,
+			Properties viewProperties) {
 	}
 	
-	public void reportsRendered(int scenarios, int failedScenarios) {
+	public void storiesViewGenerated(int scenarios, int failedScenarios) {
 	}
 	
 }

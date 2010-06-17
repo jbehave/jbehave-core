@@ -49,7 +49,7 @@ public abstract class TraderStory extends JUnitStory {
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                 	.withCodeLocation(codeLocation)
                 	.withDefaultFormats()
-                	.withRenderingResources(rendering)
+                	.withViewResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
                 	.withFailureTrace(false))
                 .useStoryPathResolver(storyPathResolver)
@@ -61,7 +61,7 @@ public abstract class TraderStory extends JUnitStory {
 		useConfiguration(configuration);
 		addSteps(createSteps(configuration));
 		
-	    configuredEmbedder().embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInReports(true);
+	    configuredEmbedder().embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
 
 	}
 

@@ -89,7 +89,7 @@ public class StoryReporterBuilder {
     private List<Format> formats = new ArrayList<Format>();
     private String outputDirectory = new FileConfiguration().getOutputDirectory();
     private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
-	private Properties renderingResources = FreemarkerReportRenderer.defaultResources();
+	private Properties viewResources = FreemarkerViewGenerator.defaultResources();
 	private boolean reportFailureTrace = false;
 
 	public File outputDirectory() {
@@ -108,8 +108,8 @@ public class StoryReporterBuilder {
 		return names;		
 	}
 
-    public Properties renderingResources() {
-    	return renderingResources;
+    public Properties viewResources() {
+    	return viewResources;
     }
     
 	public StoryReporterBuilder withOutputDirectory(String outputDirectory){
@@ -136,8 +136,8 @@ public class StoryReporterBuilder {
 		return this;
     }
 
-    public StoryReporterBuilder withRenderingResources(Properties resources){
-    	this.renderingResources = resources;
+    public StoryReporterBuilder withViewResources(Properties resources){
+    	this.viewResources = resources;
     	return this;
     }
     

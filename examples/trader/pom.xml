@@ -52,13 +52,13 @@
                   <groupId>org.jbehave.site</groupId>
                   <artifactId>jbehave-site-resources</artifactId>
                   <version>2.0.2</version>
-                  <outputDirectory>${project.build.directory}/jbehave-reports/rendered</outputDirectory>
+                  <outputDirectory>${project.build.directory}/jbehave-reports/view</outputDirectory>
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.jbehave</groupId>
                   <artifactId>jbehave-core</artifactId>
                   <version>${jbehave.version}</version>
-                  <outputDirectory>${project.build.directory}/jbehave-reports/rendered</outputDirectory>
+                  <outputDirectory>${project.build.directory}/jbehave-reports/view</outputDirectory>
                   <includes>**\/*.css,**\/*.ftl,**\/*.js</includes>
                 </artifactItem>
               </artifactItems>
@@ -80,9 +80,9 @@
               <storyExcludes />
               <skip>${skip.runnable.stories}</skip>
               <batch>${batch.mode}</batch>
+              <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>
-              <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
-              <renderReportsAfterStories>true</renderReportsAfterStories>
+              <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
             </configuration>
             <goals>
               <goal>run-stories</goal>
@@ -96,7 +96,7 @@
     <profile>
       <id>report-failures</id>
       <properties>
-        <ignore.failure.reports>false</ignore.failure.reports>
+        <ignore.failure.view>false</ignore.failure.view>
       </properties>
     </profile>
     <profile>
@@ -124,9 +124,9 @@
                   <storyExcludes />
                   <skip>false</skip>
                   <batch>${batch.mode}</batch>
+                  <generateViewAfterStories>true</generateViewAfterStories>
                   <ignoreFailureInStories>true</ignoreFailureInStories>
-                  <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
-                  <renderReportsAfterStories>true</renderReportsAfterStories>
+                  <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
                 </configuration>
                 <goals>
                   <goal>run-stories-as-paths</goal>
@@ -159,8 +159,7 @@
                   <skip>false</skip>
                   <batch>${batch.mode}</batch>
                   <ignoreFailureInStories>true</ignoreFailureInStories>
-                  <ignoreFailureInReports>${ignore.failure.reports}</ignoreFailureInReports>
-                  <renderReportsAfterStories>true</renderReportsAfterStories>
+                  <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
                 </configuration>
                 <goals>
                   <goal>run-stories</goal>
@@ -214,9 +213,10 @@
                       classname="org.jbehave.ant.StoryRunnerTask"
                       classpathref="maven.runtime.classpath" />
                     <storyRunner storyIncludes="**/stories/*.java"
-                      skip="false" ignoreFailureInStories="true"
-                      ignoreFailureInReports="${ignore.failure.reports}"
-                      renderReportsAfterStories="true" />
+                      skip="false" 
+                      generateViewAfterStories="true" 
+                      ignoreFailureInStories="true"
+                      ignoreFailureInView="${ignore.failure.view}" />
                     <taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
                       classpathref="maven.runtime.classpath" />
                     <stepdoc
@@ -239,7 +239,7 @@
   </profiles>
   <properties>
     <batch.mode>false</batch.mode>
-    <ignore.failure.reports>true</ignore.failure.reports>
+    <ignore.failure.view>true</ignore.failure.view>
     <skip.runnable.stories>false</skip.runnable.stories>
   </properties>
 

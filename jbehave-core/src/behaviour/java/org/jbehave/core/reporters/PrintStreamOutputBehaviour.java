@@ -34,7 +34,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
-import org.jbehave.core.reporters.FreemarkerReportRenderer.RenderingFailedException;
+import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -407,7 +407,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
-    public void shouldReportEventsToFilePrintStreamsAndRenderAggregatedIndex() throws IOException {
+    public void shouldReportEventsToFilePrintStreamsAndGenerateView() throws IOException {
         final String storyPath = storyPath(MyStory.class);
         File outputDirectory = new File("target/output");
         StoryReporter reporter = new StoryReporterBuilder().withOutputDirectory(outputDirectory.getName())
@@ -416,11 +416,11 @@ public class PrintStreamOutputBehaviour {
 
         // When
         narrateAnInterestingStory(reporter);
-        ReportRenderer renderer = new FreemarkerReportRenderer();
-        renderer.render(outputDirectory, asList("html", "txt"), FreemarkerReportRenderer.defaultResources());
+        ViewGenerator viewGenerator = new FreemarkerViewGenerator();
+        viewGenerator.generateView(outputDirectory, asList("html", "txt"), FreemarkerViewGenerator.defaultResources());
 
         // Then
-        ensureFileExists(new File(outputDirectory, "rendered/index.html"));
+        ensureFileExists(new File(outputDirectory, "view/index.html"));
     }
 
     @Test
@@ -452,15 +452,15 @@ public class PrintStreamOutputBehaviour {
         assertThat(IOUtils.toString(new FileReader(renderedOutput)).length(), greaterThan(0));
     }
 
-    @Test(expected = RenderingFailedException.class)
+    @Test(expected = ViewGenerationFailedForTemplate.class)
     public void shouldFailRenderingOutputWithInexistentTemplates() throws IOException {
         // Given
         Properties templates = new Properties();
         templates.setProperty("index", "target/inexistent");
-        ReportRenderer renderer = new FreemarkerReportRenderer();
+        ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         // When
         File outputDirectory = new File("target");
-        renderer.render(outputDirectory, asList("html"), templates);
+        viewGenerator.generateView(outputDirectory, asList("html"), templates);
         // Then ... fail as expected
     }
 

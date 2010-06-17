@@ -13,7 +13,7 @@ import org.jbehave.core.RunnableStory;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.reporters.ReportRenderer;
+import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
@@ -77,8 +77,8 @@ public class Embedder {
 			}
 		}
 
-		if (embedderControls.renderReportsAfterStories()) {
-			renderReports();
+		if (embedderControls.generateViewAfterStories()) {
+			generateStoriesView();
 		}
 
 	}
@@ -137,44 +137,43 @@ public class Embedder {
 			}
 		}
 
-		if (embedderControls.renderReportsAfterStories()) {
-			renderReports();
+		if (embedderControls.generateViewAfterStories()) {
+			generateStoriesView();
 		}
 
 	}
 
-	public void renderReports() {
+	public void generateStoriesView() {
 		StoryReporterBuilder builder = configuration().storyReporterBuilder();
 		File outputDirectory = builder.outputDirectory();
 		List<String> formatNames = builder.formatNames(true);
-		Properties renderingResources = builder.renderingResources();
-		renderReports(outputDirectory, formatNames, renderingResources);
+		generateStoriesView(outputDirectory, formatNames, builder.viewResources());
 	}
 
-	public void renderReports(File outputDirectory, List<String> formats,
-			Properties renderingResources) {
+	public void generateStoriesView(File outputDirectory, List<String> formats,
+			Properties viewResources) {
 		EmbedderControls embedderControls = embedderControls();
 
 		if (embedderControls.skip()) {
-			embedderMonitor.reportsNotRendered();
+			embedderMonitor.storiesViewNotGenerated();
 			return;
 		}
-		ReportRenderer reportRenderer = configuration().reportRenderer();
+		ViewGenerator viewGenerator = configuration().viewGenerator();
 		try {
-			embedderMonitor.renderingReports(outputDirectory, formats,
-					renderingResources);
-			reportRenderer.render(outputDirectory, formats, renderingResources);
+			embedderMonitor.generatingStoriesView(outputDirectory, formats,
+					viewResources);
+			viewGenerator.generateView(outputDirectory, formats, viewResources);
 		} catch (RuntimeException e) {
-			embedderMonitor.reportRenderingFailed(outputDirectory, formats,
-					renderingResources, e);
+			embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats,
+					viewResources, e);
 			String message = "Failed to render reports to " + outputDirectory
 					+ " with formats " + formats + " and rendering resources "
-					+ renderingResources;
+					+ viewResources;
 			throw new RenderingReportsFailedException(message, e);
 		}
-		int scenarios = reportRenderer.countScenarios();
-		int failedScenarios = reportRenderer.countFailedScenarios();
-		embedderMonitor.reportsRendered(scenarios, failedScenarios);
+		int scenarios = viewGenerator.countScenarios();
+		int failedScenarios = viewGenerator.countFailedScenarios();
+		embedderMonitor.storiesViewGenerated(scenarios, failedScenarios);
 		if (!embedderControls.ignoreFailureInReports() && failedScenarios > 0) {
 			String message = "Rendered reports with " + scenarios
 					+ " scenarios (of which " + failedScenarios + " failed)";

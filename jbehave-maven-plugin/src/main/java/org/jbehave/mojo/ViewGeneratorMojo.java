@@ -5,16 +5,16 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.jbehave.core.embedder.Embedder;
 
 /**
- * Mojo to render reports
+ * Mojo to generate stories view
  * 
- * @goal render-reports
+ * @goal generate-stories-view
  */
-public class ReportRendererMojo extends AbstractStoryMojo {
+public class ViewGeneratorMojo extends AbstractStoryMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
-        getLog().info("Rendering reports using embedder "+embedder);
-        embedder.renderReports();
+        getLog().info("Generating stories view using embedder "+embedder);
+        embedder.generateStoriesView();
     }
 
 }

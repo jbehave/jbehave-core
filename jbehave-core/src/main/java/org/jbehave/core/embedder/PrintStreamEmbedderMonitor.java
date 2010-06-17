@@ -39,25 +39,25 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("Stories not run");
     }
 
-	public void renderingReports(File outputDirectory, List<String> formats,
-			Properties templateProperties) {
-		print("Rendering reports in '" + outputDirectory + "' using formats '" + formats + "'" 
-    		    + " and template properties '"+templateProperties+"'");
+	public void generatingStoriesView(File outputDirectory, List<String> formats,
+			Properties viewProperties) {
+		print("Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'" 
+    		    + " and view properties '"+viewProperties+"'");
 	}
 
-	public void reportRenderingFailed(File outputDirectory,
-			List<String> formats, Properties templateProperties, Throwable cause) {
-		print("Failed to render reports in outputDirectory " + outputDirectory
-        		+ " using formats " + formats + " and template properties '"+templateProperties+"'");
+	public void storiesViewGenerationFailed(File outputDirectory,
+			List<String> formats, Properties viewProperties, Throwable cause) {
+		print("Failed to generate stories view in outputDirectory " + outputDirectory
+        		+ " using formats " + formats + " and view properties '"+viewProperties+"'");
 	}
 	
-	public void reportsRendered(int scenarios, int failedScenarios) {
-		print("Reports rendered with " + scenarios
+	public void storiesViewGenerated(int scenarios, int failedScenarios) {
+		print("Stories view generated with " + scenarios
         		+ " scenarios (of which  " + failedScenarios + " failed)");
 	}
 	
-	public void reportsNotRendered() {
-		print("Reports not rendered");
+	public void storiesViewNotGenerated() {
+		print("Stories view not generated");
 	}
 	
 	@Override

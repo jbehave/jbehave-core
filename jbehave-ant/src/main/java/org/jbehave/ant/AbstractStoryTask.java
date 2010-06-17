@@ -76,14 +76,14 @@ public abstract class AbstractStoryTask extends Task {
 	private boolean ignoreFailureInStories = false;
 
 	/**
-	 * The boolean flag to ignore failure in reports
+	 * The boolean flag to ignore failure in view
 	 */
-	private boolean ignoreFailureInReports = false;
+	private boolean ignoreFailureInView = false;
 
 	/**
-	 * The boolean flag to render reports after stories
+	 * The boolean flag to generate view after stories
 	 */
-	private boolean renderReportsAfterStories = true;
+	private boolean generateViewAfterStories = true;
 
 	/**
 	 * The boolean flag to run in batch mode
@@ -144,9 +144,9 @@ public abstract class AbstractStoryTask extends Task {
 	protected EmbedderControls embedderControls() {
 		return new UnmodifiableEmbedderControls(
 				new EmbedderControls().doBatch(batch).doSkip(skip)
-						.doIgnoreFailureInStories(ignoreFailureInStories)
-						.doIgnoreFailureInReports(ignoreFailureInReports)
-						.doRenderReportsAfterStories(renderReportsAfterStories));
+				.doGenerateViewAfterStories(generateViewAfterStories)
+				.doIgnoreFailureInStories(ignoreFailureInStories)
+				.doIgnoreFailureInView(ignoreFailureInView));
 	}
 
 	protected List<String> storyPaths() {
@@ -246,30 +246,30 @@ public abstract class AbstractStoryTask extends Task {
 			log("Stories not run", MSG_INFO);
 		}
 
-		public void renderingReports(File outputDirectory,
-				List<String> formats, Properties templateProperties) {
-			log("Rendering reports in '" + outputDirectory
+		public void generatingStoriesView(File outputDirectory,
+				List<String> formats, Properties viewProperties) {
+			log("Generating stories view in '" + outputDirectory
 					+ "' using formats '" + formats + "'"
-					+ " and template properties '" + templateProperties + "'",
+					+ " and view properties '" + viewProperties + "'",
 					MSG_INFO);
 		}
 
-		public void reportRenderingFailed(File outputDirectory,
-				List<String> formats, Properties templateProperties,
+		public void storiesViewGenerationFailed(File outputDirectory,
+				List<String> formats, Properties viewProperties,
 				Throwable cause) {
-			log("Failed to render reports in outputDirectory "
+			log("Failed to generate stories view in outputDirectory "
 					+ outputDirectory + " using formats " + formats
-					+ " and template properties '" + templateProperties + "'",
+					+ " and view properties '" + viewProperties + "'",
 					MSG_WARN);
 		}
 
-		public void reportsRendered(int scenarios, int failedScenarios) {
-			log("Reports rendered with " + scenarios + " scenarios (of which  "
+		public void storiesViewGenerated(int scenarios, int failedScenarios) {
+			log("Stories view generated with " + scenarios + " scenarios (of which  "
 					+ failedScenarios + " failed)", MSG_INFO);
 		}
 
-		public void reportsNotRendered() {
-			log("Reports not rendered", MSG_INFO);
+		public void storiesViewNotGenerated() {
+			log("Stories view not generated ", MSG_INFO);
 		}
 
 		@Override
@@ -320,12 +320,12 @@ public abstract class AbstractStoryTask extends Task {
 		this.ignoreFailureInStories = ignoreFailureInStories;
 	}
 
-	public void setIgnoreFailureInReports(boolean ignoreFailureInReports) {
-		this.ignoreFailureInReports = ignoreFailureInReports;
+	public void setIgnoreFailureInView(boolean ignoreFailureInView) {
+		this.ignoreFailureInView = ignoreFailureInView;
 	}
 
-	public void setRenderReportsAfterStories(boolean renderReportsAfterStories) {
-		this.renderReportsAfterStories = renderReportsAfterStories;
+	public void setGenerateViewAfterStories(boolean generateViewAfterStories) {
+		this.generateViewAfterStories = generateViewAfterStories;
 	}
 
 	public void setEmbedderClass(String embedderClass) {

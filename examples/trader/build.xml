@@ -71,7 +71,7 @@
 
 		<storyRunner 
 				storyIncludes="**/stories/*.java" batch="false" 
-				ignoreFailureInStories="true" ignoreFailureInReports="true" renderReportsAfterStories="true" />
+				ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="run-stories-as-paths" depends="compile, reports-resources">
@@ -79,12 +79,7 @@
 
 		<storyPathRunner embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder" 
 				storyIncludes="**/stories/*.story" batch="false" 
-				ignoreFailureInStories="true" ignoreFailureInReports="true" renderReportsAfterStories="true" />
-	</target>
-
-	<target name="render-reports" depends="compile, reports-resources">
-		<taskdef name="reportRenderer" classname="org.jbehave.ant.ReportRendererTask" classpathref="story.classpath" />
-		<reportRenderer embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder" />
+				ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="stepdoc" depends="compile">

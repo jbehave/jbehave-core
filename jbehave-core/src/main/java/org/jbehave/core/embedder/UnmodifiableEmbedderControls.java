@@ -27,8 +27,8 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
 	}
 
 	@Override
-	public boolean renderReportsAfterStories() {
-		return delegate.renderReportsAfterStories();
+	public boolean generateViewAfterStories() {
+		return delegate.generateViewAfterStories();
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
 	}
 
 	@Override
-	public EmbedderControls doIgnoreFailureInReports(
+	public EmbedderControls doIgnoreFailureInView(
 			boolean ignoreFailureInReports) {
 		throw notAllowed();
 	}
@@ -54,8 +54,8 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
 	}
 
 	@Override
-	public EmbedderControls doRenderReportsAfterStories(
-			boolean renderReportsAfterStories) {
+	public EmbedderControls doGenerateViewAfterStories(
+			boolean generateViewAfterStories) {
 		throw notAllowed();
 	}
 

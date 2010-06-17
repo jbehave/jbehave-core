@@ -15,14 +15,14 @@ public interface EmbedderMonitor {
 
     void storiesBatchFailed(String failedStories);
 
-	void renderingReports(File outputDirectory, List<String> formats,
-			Properties templateProperties);
+	void generatingStoriesView(File outputDirectory, List<String> formats,
+			Properties viewProperties);
 
-	void reportRenderingFailed(File outputDirectory, List<String> formats,
-			Properties templateProperties, Throwable cause);
+	void storiesViewGenerationFailed(File outputDirectory, List<String> formats,
+			Properties viewProperties, Throwable cause);
 
-	void reportsRendered(int scenarios, int failedScenarios);
+	void storiesViewGenerated(int scenarios, int failedScenarios);
 
-	void reportsNotRendered();
+	void storiesViewNotGenerated();
     
 }

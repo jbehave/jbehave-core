@@ -47,15 +47,15 @@ to a file:</p>
 		// start with default configuration, overriding only the elements that are needed
         StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
         Class storyClass = this.getClass();
-        Properties rendering = new Properties();
-        rendering.put("decorateNonHtml", "true");
+        Properties viewProperties = new Properties();
+        viewProperties.put("decorateNonHtml", "true");
         URL codeLocation = CodeLocations.codeLocationFromClass(storyClass);
         Configuration configuration = new MostUsefulConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
                 	.withDefaultFormats()
-                	.withRenderingResources(rendering)
+                	.withViewResources(viewProperties)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
                 	.withFailureTrace(false))
                 .useStoryPathResolver(storyPathResolver)
@@ -137,12 +137,12 @@ override the reporter for <b>TXT</b> format to use a ".text" extension
                    }
 </pre>
 
-<h2>Report Rendering</h2>
+<h2>View Generation</h2>
 
 <p>The generation of the reports is only the first part of a
-complete HTML-based reporting solution. Next we render the
-reports, aggregating all the ones that have been configured and
-generated in a given output directory, and presenting a collective index
+complete HTML-based reporting solution. Next we generate the stories view,
+aggregating all the reports that have been configured and
+written to a given output directory, and presenting a collective index
 view for all formats configured. Moreover, we can style the reports,
 both for HTML and non-HTML report formats, by decorating their content
 with CSS and syntax highlighting.  The decorating of non-HTML reports can
@@ -151,35 +151,30 @@ be switched off if one prefers the raw content accessible via a URL:</p>
 <pre class="brush: java">
 		Properties properties = new Properties();
 		properties.setProperty("decorateNonHtml","false");
-        new StoryReporterBuilder().useRenderingResources(properties);        
+        new StoryReporterBuilder().useViewResources(properties);        
 </pre>
 
-<p>The rendering is the responsibility of the <a
-    href="javadoc/core/org/jbehave/core/reporters/ReportRenderer.html">ReportRenderer</a>.
+<p>The view generation is the responsibility of the <a
+    href="javadoc/core/org/jbehave/core/reporters/ViewGenerator.html">ViewGenerator</a>.
 JBehave provides an implementation (<a
-    href="javadoc/core/org/jbehave/core/reporters/FreemarkerReportRenderer.html">FreemarkerReportRenderer</a>)
+    href="javadoc/core/org/jbehave/core/reporters/FreemarkerViewGenerator.html">FreemarkerViewGenerator.</a>)
 based on <a href="http://freemarker.org">Freemarker</a> to allow a
-templateable and easily styleable way to render the report views.</p>
+templateable and easily styleable way to generate the view.</p>
 
-<p>The default resources required for the report rendering are
+<p>The default resources required for the view generation are
 bundled in the <b>jbehave-core.jar</b> (extract ftl/*.ftl, js/*.js and
 style/*.css) but can be overridden. The FTL files need to be the
-classpath for the <b>FreemarkerReportRenderer</b> to find them, while
+classpath for the <b>FreemarkerViewGenerator</b> to find them, while
 the look and feel resources (js/*.js and style/*.css files) need to be
-copied to the <b>target/jbehave-reports/rendered</b> directory (or
-wherever the index page has been rendered to) Also note that the default
+copied to the <b>target/jbehave-reports/view</b> directory (or
+wherever the index view is generated to) Also note that the default
 style makes use of images found in the <b>jbehave-site-resources.jar</b>.</p>
-
-<p>Also, note that the report formats configured should match ones
-found in the Ant or Maven execution for the report rendering task or
-goal (c.f. <a href="running-stories.html">running stories</a> for
-examples).</p>
 
 <h2>Reporting Statistics</h2>
 
-<p>The story statistics report above is treated in the rendering
+<p>The story statistics report above is treated in the view generation
 slightly differently from other reports, in that the statistics are
-displayed on the index page, if available. To ensure they are always
+displayed on the index view page, if available. To ensure they are always
 available the story reporter builder is configured to have <b>stats</b>
 as a default format (although the default formats need to be added to
 the builder). 
@@ -217,8 +212,8 @@ directory in Maven), but this can be changed via the builder:</p>
 </pre>
 
 <p>If the default formats or the output file directory are modified
-via the builder, then correspondingly we need to inform the report
-render of these changes. See <a href="running-stories.html">running
+via the builder, then correspondingly we need to inform the view
+generator if these changes. See <a href="running-stories.html">running
 stories</a> for details on how to configure these changes.</p>
 
 <h2>Next?</h2>
@@ -228,7 +223,7 @@ stories</a> for details on how to configure these changes.</p>
 example</a> is configured to have a fully-working end-to-end use of JBehave
 reporting (be sure to read the instructions on <a
     href="running-examples.html">running examples</a>). After running
-the build simply open the page <b>target/jbehave-reports/rendered/index.html</b></span>
+the build simply open the page <b>target/jbehave-reports/view/index.html</b></span>
 
 <div class="clear">
 <hr />

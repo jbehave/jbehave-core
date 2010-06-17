@@ -32,9 +32,9 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder.RenderingReportsFailedException;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailedException;
 import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.reporters.FreemarkerReportRenderer;
+import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
-import org.jbehave.core.reporters.ReportRenderer;
+import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.Steps;
@@ -71,8 +71,12 @@ public class EmbedderBehaviour {
 			assertThat(out.toString(), containsString("Running story "
 					+ story.getClass().getName()));
 		}
-		assertThat(out.toString(), containsString("Rendering reports"));
-		assertThat(out.toString(), containsString("Reports rendered"));
+		assertThatStoriesViewGenerated(out);
+	}
+
+	private void assertThatStoriesViewGenerated(OutputStream out) {
+		assertThat(out.toString(), containsString("Generating stories view"));
+		assertThat(out.toString(), containsString("Stories view generated"));
 	}
 
 	@Test
@@ -239,7 +243,7 @@ public class EmbedderBehaviour {
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
-		EmbedderControls embedderControls = new EmbedderControls().doRenderReportsAfterStories(false);
+		EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
@@ -287,8 +291,7 @@ public class EmbedderBehaviour {
 			assertThat(out.toString(), containsString("Running story "
 					+ storyPath));
 		}
-		assertThat(out.toString(), containsString("Rendering reports"));
-		assertThat(out.toString(), containsString("Reports rendered"));
+		assertThatStoriesViewGenerated(out);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -319,8 +322,7 @@ public class EmbedderBehaviour {
 			assertThat(out.toString(), containsString("Running story "
 					+ storyPath));
 		}
-		assertThat(out.toString(), containsString("Rendering reports"));
-		assertThat(out.toString(), containsString("Reports rendered"));
+		assertThatStoriesViewGenerated(out);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -528,7 +530,7 @@ public class EmbedderBehaviour {
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
-		EmbedderControls embedderControls = new EmbedderControls().doRenderReportsAfterStories(false);
+		EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
@@ -559,27 +561,26 @@ public class EmbedderBehaviour {
 	public void shouldRenderReportsViaGivenRenderer() throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
-		EmbedderControls embedderControls = new EmbedderControls().doRenderReportsAfterStories(false);
+		EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		ReportRenderer renderer = mock(ReportRenderer.class);
+		ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.configuration().useReportRenderer(renderer);
+		embedder.configuration().useViewGenerator(viewGenerator);
 
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
-		Properties renderingResources = FreemarkerReportRenderer
+		Properties renderingResources = FreemarkerViewGenerator
 				.defaultResources();
-		when(renderer.countScenarios()).thenReturn(2);
-		when(renderer.countFailedScenarios()).thenReturn(0);
-		embedder.renderReports(outputDirectory, formats, renderingResources);
+		when(viewGenerator.countScenarios()).thenReturn(2);
+		when(viewGenerator.countFailedScenarios()).thenReturn(0);
+		embedder.generateStoriesView(outputDirectory, formats, renderingResources);
 
 		// Then
-		verify(renderer).render(outputDirectory, formats, renderingResources);
-		assertThat(out.toString(), containsString("Rendering reports"));
-		assertThat(out.toString(), containsString("Reports rendered"));
+		verify(viewGenerator).generateView(outputDirectory, formats, renderingResources);
+		assertThatStoriesViewGenerated(out);
 	}
 
 	@Test
@@ -590,19 +591,19 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		ReportRenderer renderer = mock(ReportRenderer.class);
+		ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.configuration().useReportRenderer(renderer);
+		embedder.configuration().useViewGenerator(viewGenerator);
 
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
-		Properties renderingResources = FreemarkerReportRenderer
+		Properties renderingResources = FreemarkerViewGenerator
 				.defaultResources();
-		embedder.renderReports(outputDirectory, formats, renderingResources);
+		embedder.generateStoriesView(outputDirectory, formats, renderingResources);
 
 		// Then
-		verify(renderer, never()).render(outputDirectory, formats,
+		verify(viewGenerator, never()).generateView(outputDirectory, formats,
 				renderingResources);
 		assertThat(out.toString(), not(containsString("Rendering reports")));
 		assertThat(out.toString(), not(containsString("Reports rendered")));
@@ -616,17 +617,17 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		ReportRenderer renderer = mock(ReportRenderer.class);
+		ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.configuration().useReportRenderer(renderer);
+		embedder.configuration().useViewGenerator(viewGenerator);
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
-		Properties renderingResources = FreemarkerReportRenderer
+		Properties renderingResources = FreemarkerViewGenerator
 				.defaultResources();
-		doThrow(new RuntimeException()).when(renderer).render(outputDirectory,
+		doThrow(new RuntimeException()).when(viewGenerator).generateView(outputDirectory,
 				formats, renderingResources);
-		embedder.renderReports(outputDirectory, formats, renderingResources);
+		embedder.generateStoriesView(outputDirectory, formats, renderingResources);
 
 		// Then fail as expected
 	}
@@ -640,17 +641,17 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		ReportRenderer renderer = mock(ReportRenderer.class);
+		ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.configuration().useReportRenderer(renderer);
+		embedder.configuration().useViewGenerator(viewGenerator);
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
-		Properties renderingResources = FreemarkerReportRenderer
+		Properties renderingResources = FreemarkerViewGenerator
 				.defaultResources();
-		when(renderer.countScenarios()).thenReturn(2);
-		when(renderer.countFailedScenarios()).thenReturn(1);
-		embedder.renderReports(outputDirectory, formats, renderingResources);
+		when(viewGenerator.countScenarios()).thenReturn(2);
+		when(viewGenerator.countFailedScenarios()).thenReturn(1);
+		embedder.generateStoriesView(outputDirectory, formats, renderingResources);
 
 		// Then fail as expected
 	}
@@ -660,27 +661,26 @@ public class EmbedderBehaviour {
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
-		EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInReports(true);
+		EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInView(true);
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		ReportRenderer renderer = mock(ReportRenderer.class);
+		ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.configuration().useReportRenderer(renderer);
+		embedder.configuration().useViewGenerator(viewGenerator);
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
-		Properties renderingResources = FreemarkerReportRenderer
+		Properties renderingResources = FreemarkerViewGenerator
 				.defaultResources();
-		when(renderer.countScenarios()).thenReturn(2);
-		when(renderer.countFailedScenarios()).thenReturn(1);
-		embedder.renderReports(outputDirectory, formats, renderingResources);
+		when(viewGenerator.countScenarios()).thenReturn(2);
+		when(viewGenerator.countFailedScenarios()).thenReturn(1);
+		embedder.generateStoriesView(outputDirectory, formats, renderingResources);
 
 		// Then 
-		verify(renderer).render(outputDirectory, formats,
+		verify(viewGenerator).generateView(outputDirectory, formats,
 				renderingResources);
-		assertThat(out.toString(), containsString("Reports rendered"));
-
+		assertThatStoriesViewGenerated(out);
 	}
 
 	@Test

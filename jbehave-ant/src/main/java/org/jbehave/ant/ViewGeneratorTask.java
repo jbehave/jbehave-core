@@ -6,16 +6,14 @@ import org.apache.tools.ant.BuildException;
 import org.jbehave.core.embedder.Embedder;
 
 /**
- * Ant task that renders reports
- * 
- * @author Mauro Talevi
+ * Ant task that generates a stories view
  */
-public class ReportRendererTask extends AbstractStoryTask {
+public class ViewGeneratorTask extends AbstractStoryTask {
 
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
-		log("Rendering reports using embedder " + embedder, MSG_INFO);
-        embedder.renderReports();
+		log("Generating stories view using embedder " + embedder, MSG_INFO);
+        embedder.generateStoriesView();
     }
     
 }

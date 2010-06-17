@@ -110,20 +110,14 @@ public class ClasspathTraderEmbedder extends Embedder {
             storyExcludes="**/stories/*NonSuccessful.story"
             classLoaderInjected="[true|false]"
             skip="[true|false]"
-            ignoreFailure="[true|false]"
             batch="[true|false]"
+            ignoreFailureInStories="[true|false]"
+            ignoreFailureInReports="[true|false]"
+            generateViewAfterStories="[true|false]"
             scope="[compile|test]"
             sourceDirectory="[sourceDirectory|src/main/java]"
             testSourceDirectory="[testSourceDirectory|src/test/java]"/>
 
-    <taskdef name="renderReports"
-             classname="org.jbehave.ant.ReportRendererTask"
-             classpathref="your.runtime.classpath"/>
-
-    <renderReports
-            outputDirectory="${basedir}/target/jbehave-reports"
-            formats="txt,html,xml"
-            templateProperties="defaultFormats=stats\nrenderedDirectory=rendered"/>
 
     ]]>
 </script>
@@ -158,37 +152,14 @@ public class ClasspathTraderEmbedder extends Embedder {
               		</storyExcludes>
                     <classLoaderInjected>[true|false]</classLoaderInjected>
                     <skip>[true|false]</skip>
-                    <ignoreFailure>[true|false]</ignoreFailure>
                     <batch>[true|false]</batch>
+                    <ignoreFailureInStories>[true|false]</ignoreFailureInStories>
+                    <ignoreFailureInReports>[true|false]</ignoreFailureInReports>
+                    <generateViewAfterStories>[true|false]</generateViewAfterStories>
                     <scope>[compile|test]</scope>
                 </configuration>
                 <goals>
                     <goal>run-stories-as-paths</goal>
-                </goals>
-            </execution>
-            <execution>
-                <id>render-reports</id>
-                <phase>integration-test</phase>
-                <configuration>
-                    <outputDirectory>${basedir}/target/jbehave-reports</outputDirectory>
-                    <formats>
-                        <format>txt</format>
-                        <format>html</format>
-                        <format>xml</format>
-                    </formats>
-                    <templateProperties>
-                        <property>
-                            <name>defaultFormats</name>
-                            <value>stats</value>
-                        </property>
-                        <property>
-                            <name>renderedDirectory</name>
-                            <value>rendered</value>
-                        </property>
-                    </templateProperties>
-                </configuration>
-                <goals>
-                    <goal>render-reports</goal>
                 </goals>
             </execution>
         </executions>

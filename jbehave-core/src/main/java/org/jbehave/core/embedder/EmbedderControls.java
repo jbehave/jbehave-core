@@ -10,9 +10,9 @@ public class EmbedderControls {
 	
 	private boolean batch = false;
 	private boolean skip = false;
+	private boolean generateViewAfterStories = true;
 	private boolean ignoreFailureInStories = false;
 	private boolean ignoreFailureInReports = false;
-	private boolean renderReportsAfterStories = true;
 
 	public EmbedderControls() {
 	}
@@ -25,16 +25,16 @@ public class EmbedderControls {
 		return skip;
 	}
 
+	public boolean generateViewAfterStories() {
+		return generateViewAfterStories;
+	}
+
 	public boolean ignoreFailureInStories() {
 		return ignoreFailureInStories;
 	}
 
 	public boolean ignoreFailureInReports() {
 		return ignoreFailureInReports;
-	}
-
-	public boolean renderReportsAfterStories() {
-		return renderReportsAfterStories;
 	}
 
 	public EmbedderControls doBatch(boolean batch) {
@@ -47,21 +47,21 @@ public class EmbedderControls {
 		return this;
 	}
 
+	public EmbedderControls doGenerateViewAfterStories(boolean generateViewAfterStories) {
+		this.generateViewAfterStories = generateViewAfterStories;
+		return this;
+	}
+	
 	public EmbedderControls doIgnoreFailureInStories(boolean ignoreFailureInStories) {
 		this.ignoreFailureInStories = ignoreFailureInStories;
 		return this;
 	}
 
-	public EmbedderControls doIgnoreFailureInReports(boolean ignoreFailureInReports) {
-		this.ignoreFailureInReports = ignoreFailureInReports;
+	public EmbedderControls doIgnoreFailureInView(boolean ignoreFailureInView) {
+		this.ignoreFailureInReports = ignoreFailureInView;
 		return this;
 	}
 
-	public EmbedderControls doRenderReportsAfterStories(boolean renderReportsAfterStories) {
-		this.renderReportsAfterStories = renderReportsAfterStories;
-		return this;
-	}
-	
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

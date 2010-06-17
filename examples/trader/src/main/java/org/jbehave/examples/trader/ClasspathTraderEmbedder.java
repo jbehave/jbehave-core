@@ -49,7 +49,7 @@ public class ClasspathTraderEmbedder extends Embedder {
 			.useStepMonitor(new SilentStepMonitor())
 			.useEmbedderControls(new EmbedderControls()
 				.doIgnoreFailureInStories(true)
-				.doIgnoreFailureInReports(true));
+				.doIgnoreFailureInView(true));
 								
 	}
 

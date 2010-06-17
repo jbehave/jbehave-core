@@ -13,9 +13,9 @@ import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.reporters.FreemarkerReportRenderer;
+import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
-import org.jbehave.core.reporters.ReportRenderer;
+import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
@@ -42,7 +42,7 @@ import com.thoughtworks.paranamer.Paranamer;
  * <li>{@link StepPatternParser}: {@link RegexPrefixCapturingPatternParser}</li>
  * <li>{@link Paranamer}: {@link NullParanamer}</li>
  * <li>{@link ParameterConverters}: {@link ParameterConverters}</li>
- * <li>{@link ReportRenderer}: {@link FreemarkerReportRenderer}</li>
+ * <li>{@link ViewGenerator}: {@link FreemarkerViewGenerator}</li>
  * <li>{@link StepdocGenerator}: {@link DefaultStepdocGenerator}</li>
  * <li>{@link StepdocReporter}: {@link PrintStreamStepdocReporter}</li>
  * <li>{@link EmbedderControls}: {@link EmbedderControls}</li>
@@ -62,7 +62,7 @@ public class MostUsefulConfiguration extends Configuration {
         useStepMonitor(new SilentStepMonitor());
         useParanamer(new NullParanamer());
         useParameterConverters(new ParameterConverters());
-        useReportRenderer(new FreemarkerReportRenderer());
+        useViewGenerator(new FreemarkerViewGenerator());
         useStepdocGenerator(new DefaultStepdocGenerator());
         useStepdocReporter(new PrintStreamStepdocReporter());
         useEmbedderControls(new EmbedderControls());

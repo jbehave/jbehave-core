@@ -11,7 +11,7 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.ReportRenderer;
+import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -77,8 +77,8 @@ public class UnmodifiableConfiguration extends Configuration {
 		return delegate.paranamer();
 	}
 
-	public ReportRenderer reportRenderer() {
-		return delegate.reportRenderer();
+	public ViewGenerator viewGenerator() {
+		return delegate.viewGenerator();
 	}
 
 	public StepdocGenerator stepdocGenerator() {
@@ -177,7 +177,7 @@ public class UnmodifiableConfiguration extends Configuration {
 	}
 	
 	@Override
-	public void useReportRenderer(ReportRenderer reportRenderer) {
+	public void useViewGenerator(ViewGenerator viewGenerator) {
         throw notAllowed();
 	}
 

@@ -10,8 +10,6 @@ import org.jbehave.core.embedder.Embedder;
 
 /**
  * Ant task that runs stories
- * 
- * @author Mauro Talevi
  */
 public class StoryRunnerTask extends AbstractStoryTask {
 

@@ -105,20 +105,6 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     private boolean skip;
     
     /**
-     * The boolean flag to ignore failure in stories
-     * 
-     * @parameter default-value="false"
-     */
-    private boolean ignoreFailureInStories;
-    
-    /**
-     * The boolean flag to ignore failure in reports
-     * 
-     * @parameter default-value="false"
-     */
-    private boolean ignoreFailureInReports;
-
-    /**
      * The boolean flag to run in batch mode
      *
      * @parameter default-value="false"
@@ -126,11 +112,25 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     private boolean batch;
 
     /**
-     * The boolean flag to determined if reports are rendered after stories are run
+     * The boolean flag to ignore failure in stories
+     * 
+     * @parameter default-value="false"
+     */
+    private boolean ignoreFailureInStories;
+    
+    /**
+     * The boolean flag to ignore failure in view
+     * 
+     * @parameter default-value="false"
+     */
+    private boolean ignoreFailureInView;
+
+    /**
+     * The boolean flag to generate view after stories are run
      * 
      * @parameter default-value="true"
      */
-    private boolean renderReportsAfterStories;
+    private boolean generateViewAfterStories;
     
     /**
      * The embedder class to run the stories
@@ -266,9 +266,9 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
 	protected EmbedderControls embedderControls() {
 		return new UnmodifiableEmbedderControls(
 				new EmbedderControls().doBatch(batch).doSkip(skip)
-						.doIgnoreFailureInStories(ignoreFailureInStories)
-						.doIgnoreFailureInReports(ignoreFailureInReports)
-						.doRenderReportsAfterStories(renderReportsAfterStories));
+				.doGenerateViewAfterStories(generateViewAfterStories)
+				.doIgnoreFailureInStories(ignoreFailureInStories)
+				.doIgnoreFailureInView(ignoreFailureInView));
 	}
 
 	protected class MavenEmbedderMonitor implements EmbedderMonitor {
@@ -288,26 +288,26 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
             getLog().info("Stories not run");
         }
 
-		public void renderingReports(File outputDirectory,
-				List<String> formats, Properties templateProperties) {
-            getLog().info("Rendering reports in '" + outputDirectory + "' using formats '" + formats + "'" 
-        		    + " and template properties '"+templateProperties+"'");
+		public void generatingStoriesView(File outputDirectory,
+				List<String> formats, Properties viewProperties) {
+            getLog().info("Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'" 
+        		    + " and view properties '"+viewProperties+"'");
 		}
 
-		public void reportRenderingFailed(File outputDirectory,
-				List<String> formats, Properties templateProperties, Throwable cause) {
-            String message = "Failed to render reports in outputDirectory " + outputDirectory
-            		+ " using formats " + formats + " and template properties '"+templateProperties+"'";
+		public void storiesViewGenerationFailed(File outputDirectory,
+				List<String> formats, Properties viewProperties, Throwable cause) {
+            String message = "Failed to generate stories view in outputDirectory " + outputDirectory
+            		+ " using formats " + formats + " and view properties '"+viewProperties+"'";
             getLog().warn(message, cause);
 		}
 		
-		public void reportsRendered(int scenarios, int failedScenarios) {
-			getLog().info("Reports rendered with " + scenarios
+		public void storiesViewGenerated(int scenarios, int failedScenarios) {
+			getLog().info("Stories view generated with " + scenarios
             		+ " scenarios (of which  " + failedScenarios + " failed)");
 		}
 		
-		public void reportsNotRendered() {
-			getLog().info("Reports not rendered");
+		public void storiesViewNotGenerated() {
+			getLog().info("Stories view not generated");
 		}
 		
 		@Override
