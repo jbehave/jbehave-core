@@ -22,7 +22,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     private Map<String, String> tableRow = new HashMap<String, String>();
 
     @Test
-    public void shouldMatchUpStepsAndScenarioDefinitionToCreateExecutableSteps() {
+    public void shouldMatchCandidateStepsToCreateExecutableSteps() {
         // Given
         MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
         
@@ -31,7 +31,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step executableStep = mock(Step.class);
 
         when(candidate.matches("my step")).thenReturn(true);
-        when(candidate.createStep("my step", tableRow)).thenReturn(executableStep);
+        when(candidate.createMatchedStep("my step", tableRow)).thenReturn(executableStep);
         when(steps.listCandidates()).thenReturn(asList(candidate));
 
         // When
@@ -44,7 +44,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldProvidePendingStepsForAnyStepsWhichAreNotAvailable() {
+    public void shouldMarkAsPendingAnyStepsWhichAreNotAvailable() {
         // Given
         MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
 
@@ -67,9 +67,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldPrependBeforeScenarioAndAppendAfterScenarioAnnotatedSteps() {
-        // Given some steps classes which run different steps before and after
-        // stories
+    public void shouldAddBeforeAndAfterScenarioAnnotatedSteps() {
+        // Given some candidate steps classes with before and after scenario methods
         CandidateSteps steps1 = mock(Steps.class);
         CandidateSteps steps2 = mock(Steps.class);
         Step stepBefore1 = mock(Step.class);
@@ -87,7 +86,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step normalStep = mock(Step.class);
 
         when(candidate.matches("my step")).thenReturn(true);
-        when(candidate.createStep("my step", tableRow)).thenReturn(normalStep);
+        when(candidate.createMatchedStep("my step", tableRow)).thenReturn(normalStep);
         when(steps1.listCandidates()).thenReturn(asList(candidate));
         when(steps2.listCandidates()).thenReturn(asList(new CandidateStep[]{}));
 
@@ -101,9 +100,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldReturnBeforeAndAfterStoryAnnotatedSteps() {
-        // Given some steps classes which run different steps before and after
-        // story
+    public void shouldAddBeforeAndAfterStoryAnnotatedSteps() {
+        // Given some candidate steps classes with before and after story methods
         CandidateSteps steps1 = mock(Steps.class);
         CandidateSteps steps2 = mock(Steps.class);
         Step stepBefore1 = mock(Step.class);
@@ -131,8 +129,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
     @Test
     public void shouldPrioritiseAnnotatedSteps() {
-        // Given some Steps classes  
-        // and some candidate steps split across them
+        // Given some candidate steps classes  
+        // and some method split across them
 
         CandidateSteps steps1 = mock(Steps.class);
         CandidateSteps steps2 = mock(Steps.class);
@@ -158,10 +156,10 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(candidate2.getPriority()).thenReturn(2);
         when(candidate3.getPriority()).thenReturn(3);
         when(candidate4.getPriority()).thenReturn(4);
-        when(candidate1.createStep(stepAsString, tableRow)).thenReturn(step1);
-        when(candidate2.createStep(stepAsString, tableRow)).thenReturn(step2);
-        when(candidate3.createStep(stepAsString, tableRow)).thenReturn(step3);
-        when(candidate4.createStep(stepAsString, tableRow)).thenReturn(step4);
+        when(candidate1.createMatchedStep(stepAsString, tableRow)).thenReturn(step1);
+        when(candidate2.createMatchedStep(stepAsString, tableRow)).thenReturn(step2);
+        when(candidate3.createMatchedStep(stepAsString, tableRow)).thenReturn(step3);
+        when(candidate4.createMatchedStep(stepAsString, tableRow)).thenReturn(step4);
         
         // When we collect the list of steps
         MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();

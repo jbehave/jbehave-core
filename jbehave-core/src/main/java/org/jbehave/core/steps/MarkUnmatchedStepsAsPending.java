@@ -56,17 +56,18 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
                                          Map<String, String> tableRow, List<CandidateSteps> candidateSteps) {
         List<CandidateStep> prioritised = prioritise(candidateSteps);
         String previousNonAndStep = null;
-        for (String stepAsString : scenario.getSteps()) {        	
-            Step step = new PendingStep(stepAsString);
+        for (String stepAsString : scenario.getSteps()) {        
+        	// pending is default step, overridden below
+            Step step = StepCreator.createPendingStep(stepAsString);
             for (CandidateStep candidate : prioritised) {
                 if (candidate.ignore(stepAsString)) { 
                 	// ignorable steps are added
                     // so they can be reported
-                    step = new IgnorableStep(stepAsString);
+                    step = StepCreator.createIgnorableStep(stepAsString);
                     break;
                 }
                 if (matchesCandidate(stepAsString, previousNonAndStep, candidate)) {
-                    step = candidate.createStep(stepAsString, tableRow);
+                    step = candidate.createMatchedStep(stepAsString, tableRow);
                     if  ( !candidate.isAndStep(stepAsString) ){
                     	// only update previous step if not AND step
                         previousNonAndStep = stepAsString;            	

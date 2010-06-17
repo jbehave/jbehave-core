@@ -2,6 +2,7 @@ package org.jbehave.core.steps;
 
 import static java.util.Arrays.asList;
 import static org.jbehave.core.steps.AbstractStepResult.failed;
+import static org.jbehave.core.steps.AbstractStepResult.ignorable;
 import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
 import static org.jbehave.core.steps.AbstractStepResult.skipped;
@@ -32,8 +33,8 @@ public class StepCreator {
 	private final Object stepsInstance;
 	private final ParameterConverters parameterConverters;
 	private final StepMatcher stepMatcher;
-	private final StepRunner beforeOrAfterStep;
-	private final StepRunner skipStep;
+	private final StepRunner beforeOrAfter;
+	private final StepRunner skip;
     private StepMonitor stepMonitor;
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
@@ -48,8 +49,8 @@ public class StepCreator {
 		this.parameterConverters = parameterConverters;
 		this.stepMatcher = stepMatcher;
 		this.stepMonitor = stepMonitor;
-		this.beforeOrAfterStep = new BeforeOrAfterStep(this.stepsInstance);
-		this.skipStep = new SkipStep();
+		this.beforeOrAfter = new BeforeOrAfter();
+		this.skip = new Skip();
     }
 
     public void useStepMonitor(StepMonitor stepMonitor) {
@@ -67,11 +68,11 @@ public class StepCreator {
 	public Step createBeforeOrAfterStep(final Method method) {
 		return new Step() {
 			public StepResult doNotPerform() {
-				return beforeOrAfterStep.run(method);
+				return beforeOrAfter.run(method);
 			}
 
 			public StepResult perform() {
-				return beforeOrAfterStep.run(method);
+				return beforeOrAfter.run(method);
 			}
 		};
 	}
@@ -82,11 +83,11 @@ public class StepCreator {
 			return new Step() {
 
 				public StepResult doNotPerform() {
-					return beforeOrAfterStep.run(method);
+					return beforeOrAfter.run(method);
 				}
 
 				public StepResult perform() {
-					return beforeOrAfterStep.run(method);
+					return beforeOrAfter.run(method);
 				}
 
 			};
@@ -94,11 +95,11 @@ public class StepCreator {
 			return new Step() {
 
 				public StepResult doNotPerform() {
-					return skipStep.run(method);
+					return skip.run(method);
 				}
 
 				public StepResult perform() {
-					return beforeOrAfterStep.run(method);
+					return beforeOrAfter.run(method);
 				}
 
 			};
@@ -106,18 +107,18 @@ public class StepCreator {
 			return new Step() {
 
 				public StepResult doNotPerform() {
-					return beforeOrAfterStep.run(method);
+					return beforeOrAfter.run(method);
 				}
 
 				public StepResult perform() {
-					return skipStep.run(method);
+					return skip.run(method);
 				}
 
 			};
 		}
 	}
 
-	public Step createStep(final Method method, final String stepAsString, Map<String, String> tableRow) {
+	public Step createParametrisedStep(final Method method, final String stepAsString, Map<String, String> tableRow) {
         String[] annotationNames = annotatedParameterNames(method);
         String[] parameterNames = paranamer.lookupParameterNames(method, false);
         final Type[] types = method.getGenericParameterTypes();
@@ -323,16 +324,10 @@ public class StepCreator {
 
     }
     
-	private class BeforeOrAfterStep implements StepRunner {
-		private final Object instance;
-
-		public BeforeOrAfterStep(Object instance) {
-			this.instance = instance;
-		}
-
+	private class BeforeOrAfter implements StepRunner {
 		public StepResult run(Method method) {
 			try {
-				method.invoke(instance);
+				method.invoke(stepsInstance);
 			} catch (InvocationTargetException e) {
 				if (e.getCause() != null) {
 					throw new BeforeOrAfterFailed(method, e.getCause());
@@ -346,13 +341,37 @@ public class StepCreator {
 		}
 	}
 
-	private class SkipStep implements StepRunner {
+	private class Skip implements StepRunner {
 		public StepResult run(Method method) {
 			return skipped();
 		}
 	}
 
+    public static Step createPendingStep(final String stepAsString){
+		return new Step(){
+		    public StepResult perform() {
+		        return pending(stepAsString);
+		    }
+
+		    public StepResult doNotPerform() {
+		        return pending(stepAsString);
+		    }			
+		};
+    }
     
+	public static Step createIgnorableStep(final String stepAsString){
+		return new Step(){
+		    public StepResult perform() {
+		        return ignorable(stepAsString);
+		    }
+
+		    public StepResult doNotPerform() {
+		        return ignorable(stepAsString);
+		    }			
+		};
+	}
+	
+
     /**
      * This is a different class, because the @Inject jar may not be in the classpath.
      */

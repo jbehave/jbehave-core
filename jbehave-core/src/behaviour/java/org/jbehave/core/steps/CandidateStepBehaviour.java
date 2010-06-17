@@ -95,7 +95,7 @@ public class CandidateStepBehaviour {
 				SomeSteps.class.getMethod("aMethodWith", String.class),
 				someSteps, PATTERN_PARSER, new ParameterConverters(),
 				startingWords);
-		Step step = candidateStep.createStep("Then I live on the 1st floor",
+		Step step = candidateStep.createMatchedStep("Then I live on the 1st floor",
 				tableRow);
 		step.perform();
 		assertThat((String) someSteps.args, equalTo("1st"));
@@ -118,7 +118,7 @@ public class CandidateStepBehaviour {
 				"I should live in no. $no", DEFAULT_PRIORITY, THEN,
 				SomeSteps.class.getMethod("aMethodWith", int.class), someSteps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("Then I should live in no. 14", tableRow)
+		candidateStep.createMatchedStep("Then I should live in no. 14", tableRow)
 				.perform();
 		assertThat((Integer) someSteps.args, equalTo(14));
 
@@ -126,7 +126,7 @@ public class CandidateStepBehaviour {
 				DEFAULT_PRIORITY, THEN, SomeSteps.class.getMethod(
 						"aMethodWith", long.class), someSteps, PATTERN_PARSER,
 				new ParameterConverters(), startingWords);
-		candidateStep.createStep("Then I should live in no. 14", tableRow)
+		candidateStep.createMatchedStep("Then I should live in no. 14", tableRow)
 				.perform();
 		assertThat((Long) someSteps.args, equalTo(14L));
 
@@ -134,7 +134,7 @@ public class CandidateStepBehaviour {
 				DEFAULT_PRIORITY, THEN, SomeSteps.class.getMethod(
 						"aMethodWith", double.class), someSteps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("Then I should live in no. 14", tableRow)
+		candidateStep.createMatchedStep("Then I should live in no. 14", tableRow)
 				.perform();
 		assertThat((Double) someSteps.args, equalTo(14.0));
 
@@ -142,7 +142,7 @@ public class CandidateStepBehaviour {
 				DEFAULT_PRIORITY, THEN, SomeSteps.class.getMethod(
 						"aMethodWith", float.class), someSteps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("Then I should live in no. 14", tableRow)
+		candidateStep.createMatchedStep("Then I should live in no. 14", tableRow)
 				.perform();
 		assertThat((Float) someSteps.args, equalTo(14.0f));
 	}
@@ -157,7 +157,7 @@ public class CandidateStepBehaviour {
 				SomeSteps.class.getMethod("aMethodWith", String.class),
 				someSteps, PATTERN_PARSER, new ParameterConverters(),
 				startingWords);
-		Step step = candidateStep.createStep("Then I live on the 1st floor",
+		Step step = candidateStep.createMatchedStep("Then I live on the 1st floor",
 				tableRow);
 
 		StepResult result = step.perform();
@@ -177,7 +177,7 @@ public class CandidateStepBehaviour {
 				SomeSteps.class.getMethod("aMethodWith", String.class),
 				someSteps, PATTERN_PARSER, new ParameterConverters(),
 				startingWords);
-		Step step = candidateStep.createStep("Then the grid should look like" + windowsNewline + ".."
+		Step step = candidateStep.createMatchedStep("Then the grid should look like" + windowsNewline + ".."
 				+ unixNewline + ".." + windowsNewline,
 				tableRow);
 		step.perform();
@@ -192,7 +192,7 @@ public class CandidateStepBehaviour {
 				"windows on the $nth floors", DEFAULT_PRIORITY, WHEN, SomeSteps
 						.methodFor("aMethodWithListOfLongs"), someSteps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When windows on the 1,2,3 floors", tableRow)
+		candidateStep.createMatchedStep("When windows on the 1,2,3 floors", tableRow)
 				.perform();
 		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList(1L,
 				2L, 3L).toString()));
@@ -201,7 +201,7 @@ public class CandidateStepBehaviour {
 				DEFAULT_PRIORITY, WHEN, SomeSteps
 						.methodFor("aMethodWithListOfIntegers"), someSteps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When windows on the 1,2,3 floors", tableRow)
+		candidateStep.createMatchedStep("When windows on the 1,2,3 floors", tableRow)
 				.perform();
 		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList(1, 2,
 				3).toString()));
@@ -210,7 +210,7 @@ public class CandidateStepBehaviour {
 				DEFAULT_PRIORITY, WHEN, SomeSteps
 						.methodFor("aMethodWithListOfDoubles"), someSteps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When windows on the 1.1,2.2,3.3 floors",
+		candidateStep.createMatchedStep("When windows on the 1.1,2.2,3.3 floors",
 				tableRow).perform();
 		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList(1.1,
 				2.2, 3.3).toString()));
@@ -219,7 +219,7 @@ public class CandidateStepBehaviour {
 				DEFAULT_PRIORITY, WHEN, SomeSteps
 						.methodFor("aMethodWithListOfFloats"), someSteps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When windows on the 1.1,2.2,3.3 floors",
+		candidateStep.createMatchedStep("When windows on the 1.1,2.2,3.3 floors",
 				tableRow).perform();
 		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList(1.1f,
 				2.2f, 3.3f).toString()));
@@ -233,7 +233,7 @@ public class CandidateStepBehaviour {
 				"windows on the $nth floors", DEFAULT_PRIORITY, WHEN, SomeSteps
 						.methodFor("aMethodWithListOfStrings"), someSteps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When windows on the 1,2,3 floors", tableRow)
+		candidateStep.createMatchedStep("When windows on the 1,2,3 floors", tableRow)
 				.perform();
 		assertThat(((List<?>) someSteps.args).toString(), equalTo(asList("1",
 				"2", "3").toString()));
@@ -249,7 +249,7 @@ public class CandidateStepBehaviour {
 						"methodWithNamedParametersInNaturalOrder",
 						AnnotationNamedParameterSteps.class), steps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When I live on the first floor but some call it the ground",
+		candidateStep.createMatchedStep("When I live on the first floor but some call it the ground",
 				tableRow)
 				.perform();
 		assertThat(steps.ith, equalTo("first"));
@@ -266,7 +266,7 @@ public class CandidateStepBehaviour {
 						"methodWithNamedParametersInInverseOrder",
 						AnnotationNamedParameterSteps.class), steps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When I live on the first floor but some call it the ground",
+		candidateStep.createMatchedStep("When I live on the first floor but some call it the ground",
 				tableRow)
 				.perform();
 		assertThat(steps.ith, equalTo("first"));
@@ -285,7 +285,7 @@ public class CandidateStepBehaviour {
 						"methodWithNamedParametersInNaturalOrder",
 						AnnotationNamedParameterSteps.class), steps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When I live on the <ith> floor but some call it the <nth>",
+		candidateStep.createMatchedStep("When I live on the <ith> floor but some call it the <nth>",
 				tableRow)
 				.perform();
 		assertThat(steps.ith, equalTo("first"));
@@ -302,7 +302,7 @@ public class CandidateStepBehaviour {
 						"methodWithNamedParametersInNaturalOrder",
 						Jsr330AnnotationNamedParameterSteps.class), steps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When I live on the first floor but some call it the ground",
+		candidateStep.createMatchedStep("When I live on the first floor but some call it the ground",
 				tableRow)
 				.perform();
 		assertThat(steps.ith, equalTo("first"));
@@ -319,7 +319,7 @@ public class CandidateStepBehaviour {
 						"methodWithNamedParametersInInverseOrder",
 						Jsr330AnnotationNamedParameterSteps.class), steps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When I live on the first floor but some call it the ground",
+		candidateStep.createMatchedStep("When I live on the first floor but some call it the ground",
 				tableRow)
 				.perform();
 		assertThat(steps.ith, equalTo("first"));
@@ -338,7 +338,7 @@ public class CandidateStepBehaviour {
 						"methodWithNamedParametersInNaturalOrder",
 						Jsr330AnnotationNamedParameterSteps.class), steps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
-		candidateStep.createStep("When I live on the <ith> floor but some call it the <nth>",
+		candidateStep.createMatchedStep("When I live on the <ith> floor but some call it the <nth>",
 				tableRow)
 				.perform();
 		assertThat(steps.ith, equalTo("first"));
@@ -366,7 +366,7 @@ public class CandidateStepBehaviour {
 						ParanamerNamedParameterSteps.class), steps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
 		candidateStep.useParanamer(paranamer);
-		candidateStep.createStep("When I live on the first floor but some call it the ground",
+		candidateStep.createMatchedStep("When I live on the first floor but some call it the ground",
 				tableRow)
 				.perform();
 		assertThat(steps.ith, equalTo("first"));
@@ -385,7 +385,7 @@ public class CandidateStepBehaviour {
 						ParanamerNamedParameterSteps.class), steps,
 				PATTERN_PARSER, new ParameterConverters(), startingWords);
 		candidateStep.useParanamer(paranamer);
-		candidateStep.createStep("When I live on the <ith> floor but some call it the <nth>",
+		candidateStep.createMatchedStep("When I live on the <ith> floor but some call it the <nth>",
 				tableRow)
 				.perform();
 		assertThat(steps.ith, equalTo("first"));
@@ -408,7 +408,7 @@ public class CandidateStepBehaviour {
 	}
 
 	private void performStep(CandidateStep candidateStep, String step) {
-		candidateStep.createStep(step, tableRow).perform();
+		candidateStep.createMatchedStep(step, tableRow).perform();
 	}
 
 	@Test
@@ -416,7 +416,7 @@ public class CandidateStepBehaviour {
 		FailingSteps steps = new FailingSteps();
 		List<CandidateStep> candidateSteps = steps.listCandidates();
 		assertThat(candidateSteps.size(), equalTo(1));
-		StepResult stepResult = candidateSteps.get(0).createStep("When outcome fails for Bar upon verification", tableRow).perform();
+		StepResult stepResult = candidateSteps.get(0).createMatchedStep("When outcome fails for Bar upon verification", tableRow).perform();
 		assertThat(stepResult.getFailure(), Matchers.instanceOf(OutcomesFailed.class));
 	}
 	
@@ -427,10 +427,10 @@ public class CandidateStepBehaviour {
 		NamedTypeSteps steps = new NamedTypeSteps(configuration);
 		List<CandidateStep> candidateSteps = steps.listCandidates();
 		assertThat(candidateSteps.size(), equalTo(2));
-		candidateSteps.get(0).createStep("Given foo named xyz", tableRow).perform();
-		candidateSteps.get(0).createStep("And foo named xyz", tableRow).perform();
-		candidateSteps.get(1).createStep("When foo named Bar", tableRow).perform();
-		candidateSteps.get(1).createStep("And foo named Bar", tableRow).perform();
+		candidateSteps.get(0).createMatchedStep("Given foo named xyz", tableRow).perform();
+		candidateSteps.get(0).createMatchedStep("And foo named xyz", tableRow).perform();
+		candidateSteps.get(1).createMatchedStep("When foo named Bar", tableRow).perform();
+		candidateSteps.get(1).createMatchedStep("And foo named Bar", tableRow).perform();
 		assertThat(steps.givenName, nullValue());
 		assertThat(steps.givenTimes, equalTo(0));
 		assertThat(steps.whenName, nullValue());
@@ -442,10 +442,10 @@ public class CandidateStepBehaviour {
 		NamedTypeSteps steps = new NamedTypeSteps();
 		List<CandidateStep> candidateSteps = steps.listCandidates();
 		assertThat(candidateSteps.size(), equalTo(2));
-		candidateSteps.get(0).createStep("Given foo named xyz", tableRow).perform();
+		candidateSteps.get(0).createMatchedStep("Given foo named xyz", tableRow).perform();
 		assertThat(steps.givenName, equalTo("xyz"));
 		assertThat(steps.whenName, nullValue());
-		candidateSteps.get(0).createStep("Then foo named xyz", tableRow).perform();
+		candidateSteps.get(0).createMatchedStep("Then foo named xyz", tableRow).perform();
 	}
 
 	static class NamedTypeSteps extends Steps {

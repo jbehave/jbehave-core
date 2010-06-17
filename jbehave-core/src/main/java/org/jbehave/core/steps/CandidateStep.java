@@ -9,11 +9,11 @@ import org.jbehave.core.parsers.StepPatternParser;
 import com.thoughtworks.paranamer.Paranamer;
 
 /**
- * A candidate step is associated to Java method in a given
- * {@link CandidatesSteps} instance class. The candidate step is responsible for
- * matching the textual step against the pattern contained in the method
- * annotation via the {@link StepMatcher} and for the creation of the executable
- * step via the {@link StepCreator}.
+ * A candidate step is associated to a Java method annotated with {@link Given},
+ * {@link When}, {@link Then} in a {@link CandidatesSteps} instance class.
+ * The candidate step is responsible for matching the textual step against the
+ * pattern contained in the method annotation via the {@link StepMatcher} and
+ * for the creation of the matched executable step via the {@link StepCreator}.
  */
 public class CandidateStep {
 
@@ -104,9 +104,9 @@ public class CandidateStep {
 		return stepAsString.startsWith(startingWordFor(StepType.AND));
 	}
 
-    public Step createStep(String stepAsString, Map<String, String> tableRow) {
+    public Step createMatchedStep(String stepAsString, Map<String, String> tableRow) {
         stepMatcher.find(stripStartingWord(stepAsString));
-        return stepCreator.createStep(method, stepAsString, tableRow);
+        return stepCreator.createParametrisedStep(method, stepAsString, tableRow);
     }
 
     private String stripStartingWord(final String stepAsString) {
