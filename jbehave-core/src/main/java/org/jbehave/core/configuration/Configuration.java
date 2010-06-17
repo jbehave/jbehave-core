@@ -23,13 +23,16 @@ import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
+import org.jbehave.core.reporters.CandidateStepReporter;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
+import org.jbehave.core.reporters.PrintStreamCandidateStepReporter;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.steps.CandidateStepFinder;
 import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterConverters;
@@ -58,6 +61,16 @@ import com.thoughtworks.paranamer.Paranamer;
  * </p>
  */
 public class Configuration {
+
+	/**
+	 * Finder of matching candidate steps
+	 */
+	private CandidateStepFinder candidateStepFinder = new CandidateStepFinder();
+
+	/**
+	 * Report candidate steps found to System.out
+	 */
+	private CandidateStepReporter candidateStepReporter = new PrintStreamCandidateStepReporter();
 
 	/**
 	 * Dry run is switched off by default
@@ -166,6 +179,14 @@ public class Configuration {
 	 */
 	private EmbedderControls embedderControls = new EmbedderControls();
 
+	public CandidateStepFinder candidateStepFinder() {
+		return candidateStepFinder;
+	}
+
+	public CandidateStepReporter candidateStepReporter() {
+		return candidateStepReporter;
+	}
+
 	public boolean dryRun() {
 		return dryRun;
 	}
@@ -245,6 +266,14 @@ public class Configuration {
 
 	public EmbedderControls embedderControls() {
 		return embedderControls;
+	}
+
+	public void useCandidateStepFinder(CandidateStepFinder candidateStepFinder) {
+		this.candidateStepFinder = candidateStepFinder;
+	}
+
+	public void useCandidateStepReporter(CandidateStepReporter candidateStepReporter) {
+		this.candidateStepReporter = candidateStepReporter;
 	}
 
 	public void doDryRun(boolean dryRun) {
@@ -356,4 +385,5 @@ public class Configuration {
 		return ToStringBuilder.reflectionToString(this,
 				ToStringStyle.SHORT_PREFIX_STYLE);
 	}
+
 }

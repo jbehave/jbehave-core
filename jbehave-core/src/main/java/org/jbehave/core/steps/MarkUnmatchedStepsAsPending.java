@@ -1,8 +1,6 @@
 package org.jbehave.core.steps;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,6 +13,8 @@ import org.jbehave.core.steps.AbstractStepResult.Pending;
  */
 public class MarkUnmatchedStepsAsPending implements StepCollector {
 
+	private CandidateStepFinder stepFinder = new CandidateStepFinder();
+	
     public List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean givenStory) {
         List<Step> steps = new ArrayList<Step>();
         for (CandidateSteps candidates : candidateSteps) {
@@ -54,12 +54,12 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 
     private void addMatchedScenarioSteps(Scenario scenario, List<Step> steps,
                                          Map<String, String> tableRow, List<CandidateSteps> candidateSteps) {
-        List<CandidateStep> prioritised = prioritise(candidateSteps);
+        List<CandidateStep> prioritisedCandidates = stepFinder.collectAndPrioritise(candidateSteps);
         String previousNonAndStep = null;
         for (String stepAsString : scenario.getSteps()) {        
         	// pending is default step, overridden below
             Step step = StepCreator.createPendingStep(stepAsString);
-            for (CandidateStep candidate : prioritised) {
+            for (CandidateStep candidate : prioritisedCandidates) {
                 if (candidate.ignore(stepAsString)) { 
                 	// ignorable steps are added
                     // so they can be reported
@@ -87,18 +87,6 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 		return candidate.matches(step);
 	}
 
-    private List<CandidateStep> prioritise(List<CandidateSteps> candidateSteps) {
-        List<CandidateStep> steps = new ArrayList<CandidateStep>();
-        for (CandidateSteps candidates : candidateSteps) {
-            steps.addAll(candidates.listCandidates());
-        }
-        Collections.sort(steps, new Comparator<CandidateStep>() {
-            public int compare(CandidateStep o1, CandidateStep o2) {
-                // sort by decreasing order of priority
-                return -1 * o1.getPriority().compareTo(o2.getPriority());
-            }
-        });
-        return steps;
-    }
+   
 
 }

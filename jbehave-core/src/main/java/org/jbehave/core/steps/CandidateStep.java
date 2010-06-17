@@ -40,6 +40,10 @@ public class CandidateStep {
         this.stepCreator = new StepCreator(stepsInstance, parameterConverters, stepMatcher, stepMonitor);
     }
 
+	public Method getMethod() {
+		return method;
+	}
+
  	public Integer getPriority() {
         return priority;
     }
@@ -157,5 +161,6 @@ public class CandidateStep {
         }
 
     }
+
     
 }

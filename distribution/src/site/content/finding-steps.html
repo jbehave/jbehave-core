@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Finding Steps</title>
+</head>
+
+<body>
+
+<h2>Finding Steps</h2>
+
+<p>JBehave centers around the matching of textual steps with Java
+methods contained in <a
+	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
+instances. Each annotated method in the CandidateSteps instances corresponds to a 
+<a
+    href="javadoc/core/org/jbehave/core/steps/CandidateStep.html">CandidateStep</a>,
+which is responsible for the matching and for the creation of an executable step.</p>
+
+<p>When the number of CandidateSteps instances grows, it can become 
+more difficult to find a matching candidate step. 
+In this case, it may be useful to make use of the 
+ <a
+	href="javadoc/core/org/jbehave/core/steps/CandidateStepFinder.html">CandidateStepFinder</a>
+via the Embedder:</p>
+<pre class="brush: java">
+    Embedder embedder = new Embedder();
+    embedder.useConfiguration(...); // specify your configuration
+    embedder.useCandidateSteps(...); // specify your candidate steps instances 
+    embedder.useCandidateStepReporter(new PrintStreamCandidateStepReporter(System.out)); // defaults to System.out
+    embedder.findMatchingCandidates("Given a step that I'm looking to match")
+</pre>
+
+<p>The result of the search would by default be output to console, e.g.:</p>
+<pre class="brush: plain">
+Step 'When traders are subset to ".*y" by name' is matched by annotated methods:
+@org.jbehave.core.annotations.When(priority=0, value=traders are subset to "%regex" by name)
+@org.jbehave.core.annotations.Alias(value=traders are filtered by "%regex")
+public void org.jbehave.examples.trader.TraderSteps.subsetTradersByName(java.lang.String)
+from steps instances:
+org.jbehave.examples.trader.TraderSteps
+org.jbehave.examples.trader.BeforeAfterSteps
+</pre>
+
+<p>And if a match is not found:</p>
+<pre class="brush: plain">
+Step 'Given a step that I'm looking to match' is not matched by any method
+from steps instances:
+org.jbehave.examples.trader.TraderSteps
+org.jbehave.examples.trader.BeforeAfterSteps
+</pre>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

@@ -31,12 +31,27 @@ public class SpringTraderRunner {
 	private BeforeAfterSteps beforeAndAfterSteps;
 
 	@Test
-	public void runAsJUnit() {
+	public void runStoriesAsPaths() {
+		embedder().runStoriesAsPaths(storyPaths());
+	}
+
+	@Test
+	public void findMatchingCandidateSteps() {
+		embedder().findMatchingCandidates("When traders are subset to \".*y\" by name");
+		embedder().findMatchingCandidates("Given a step that is not matched");
+	}
+
+	@Test
+	public void findMatchingCandidateStepsWithNoStepsInstancesProvided() {
+		new Embedder().findMatchingCandidates("Given a step that cannot be matched");
+	}
+
+	private Embedder embedder() {
 		Embedder embedder = new ClasspathTraderEmbedder();
 		embedder.useCandidateSteps(new InstanceStepsFactory(embedder
 				.configuration(), traderSteps, beforeAndAfterSteps)
 				.createCandidateSteps());
-		embedder.runStoriesAsPaths(storyPaths());
+		return embedder;
 	}
 
 	protected List<String> storyPaths() {

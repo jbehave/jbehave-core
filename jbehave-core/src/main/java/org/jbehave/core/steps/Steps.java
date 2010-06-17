@@ -118,7 +118,7 @@ public class Steps implements CandidateSteps {
 				.stepMonitor());
 	}
 
-	private Object instance() {
+	Object instance() {
 		if (instance == null) {
 			return this;
 		}

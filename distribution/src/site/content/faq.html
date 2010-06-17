@@ -83,12 +83,12 @@ been well-tested. If you encounter any issues please let us know.</p>
 <h3>How do I make my scenarios fail when steps are not matched and
 are shown as pending?</h3>
 
-<p>Configure the <a
-    href="javadoc/core/org/jbehave/core/errors/PendingErrorStrategy.html">PendingErrorStrategy</a>
+<p>Configure the 
+<a
+    href="javadoc/core/org/jbehave/core/failures/PendingStepStrategy.html">PendingStepStrategy</a>:
 in <a href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a></p>
 <pre class="brush: java">
-   Configuration configuration = new MostUsefulConfiguration();
-   configuration.usePendingErrorStrategy(PendingErrorStrategy.FAILING);  
+   new MostUsefulConfiguration().usePendingStepStrategy(new FailingPendingStepStrategy());  
 </pre>
 
 <h3>How do I output my story steps just when a story fails?</h3>
@@ -98,9 +98,7 @@ in <a href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Conf
 in <a href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a></p>
 
 <pre class="brush: java">
-   Configuration configuration = new MostUsefulConfiguration();
-   configuration.useStoryReporter(new SilentSuccessFilter(ConsoleOutput()));
-
+   new MostUsefulConfiguration().useStoryReporter(new SilentSuccessFilter(ConsoleOutput()));
 </pre>
 
 <p>Alternatively, you can use <a
