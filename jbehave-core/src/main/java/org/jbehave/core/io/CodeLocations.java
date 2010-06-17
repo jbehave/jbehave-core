@@ -12,28 +12,9 @@ import java.net.URL;
 public class CodeLocations {
 
 	public static URL codeLocationFromClass(Class<?> codeLocationClass) {	
-	    URL codeLocationURL = codeLocationFromClassCodeSource(codeLocationClass);
-	    if (isAntJar(codeLocationURL)) {
-			// Ant returns the path to ant.jar as CodeSource.getLocation()
-			// so we use the class resource path
-		    codeLocationURL = codeLocationFromClassResourcePath(codeLocationClass);
-	    }
-	    return codeLocationURL;
-	}
-
-	public static boolean isAntJar(URL codeLocationURL) {
-		String externalForm = codeLocationURL.toExternalForm();
-		return externalForm.contains("ant-1.") || externalForm.contains("ant.jar");
-	}
-
-	public static URL codeLocationFromClassCodeSource(Class<?> codeLocationClass) {
-		return codeLocationClass.getProtectionDomain().getCodeSource().getLocation();
-	}
-
-	public static URL codeLocationFromClassResourcePath(Class<?> codeLocationClass) {
-		String pathOfClass = codeLocationClass.getName().replace(".", File.separator) + ".class";
-		URL loadedResource = codeLocationClass.getClassLoader().getResource(pathOfClass);
-		String codeLocationPath = removeEnd(loadedResource.getFile(), pathOfClass);
+		String pathOfClass = codeLocationClass.getName().replace(".", "/") + ".class";
+		URL classResource = codeLocationClass.getClassLoader().getResource(pathOfClass);
+		String codeLocationPath = removeEnd(classResource.getFile(), pathOfClass);
 		return codeLocationFromPath(codeLocationPath);
 	}
 

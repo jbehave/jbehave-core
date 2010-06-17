@@ -28,13 +28,7 @@ public class CandidateStep {
     private StepMonitor stepMonitor = new SilentStepMonitor();
     
     public CandidateStep(String patternAsString, int priority, StepType stepType, Method method,
-            CandidateSteps steps, StepPatternParser patternParser,
-            ParameterConverters parameterConverters, Map<StepType, String> startingWords) {
-        this(patternAsString, priority, stepType, method, (Object) steps, patternParser, parameterConverters, startingWords);
-    }
-
-    public CandidateStep(String patternAsString, int priority, StepType stepType, Method method,
-            Object stepsInstance, StepPatternParser patternParser,
+            Object stepsInstance, StepPatternParser stepPatternParser,
             ParameterConverters parameterConverters, Map<StepType, String> startingWords) {
         this.patternAsString = patternAsString;
         this.priority = priority;
@@ -42,7 +36,7 @@ public class CandidateStep {
         this.method = method;
         this.stepsInstance = stepsInstance;
         this.startingWordsByType = startingWords;
-        this.stepMatcher = patternParser.parseStep(patternAsString);
+        this.stepMatcher = stepPatternParser.parseStep(patternAsString);
         this.stepCreator = new StepCreator(stepsInstance, parameterConverters, stepMatcher, stepMonitor);
     }
 

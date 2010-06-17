@@ -35,7 +35,7 @@ public class StoryRunner {
     private PendingStepStrategy pendingStepStrategy;
     private StoryReporter reporter;
     private FailureStrategy failureStrategy;
-    private Throwable throwable;
+    private Throwable storyFailure;
     private StepCollector stepCollector;
 	private String reporterStoryPath;
 
@@ -71,7 +71,7 @@ public class StoryRunner {
         reporter = reporterFor(configuration, story, givenStory);
         pendingStepStrategy = configuration.pendingStepStrategy();
         failureStrategy = configuration.failureStrategy();
-        resetErrorState(givenStory);
+        resetFailureState(givenStory);
 
 		if (isDryRun(candidateSteps)) {
 			reporter.dryRun();
@@ -91,7 +91,7 @@ public class StoryRunner {
         }
         runStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.AFTER);
         reporter.afterStory(givenStory);
-        currentStrategy.handleFailure(throwable);
+        currentStrategy.handleFailure(storyFailure);
     }
     
 	private boolean isDryRun(List<CandidateSteps> candidateSteps) {
@@ -114,13 +114,13 @@ public class StoryRunner {
 		}
 	}
 
-	private void resetErrorState(boolean givenStory) {
+	private void resetFailureState(boolean givenStory) {
 		if ( givenStory ) {
-			// do not reset error state for given stories
+			// do not reset failure state for given stories
 			return;
 		}
 		currentStrategy = new SilentlyAbsorbingFailure();
-		throwable = null;
+		storyFailure = null;
 	}
 	
     private void runGivenStories(Configuration configuration,
@@ -186,24 +186,24 @@ public class StoryRunner {
 
             StepResult result = step.perform();
             result.describeTo(reporter);
-            Throwable thisScenariosThrowable = result.getFailure();
-            if (thisScenariosThrowable != null) {
+            Throwable scenarioFailure = result.getFailure();
+            if (scenarioFailure != null) {
                 state = new SomethingHappened();
-                throwable = mostImportantOf(throwable, thisScenariosThrowable);
-                currentStrategy = strategyFor(throwable);
+                storyFailure = mostImportantOf(storyFailure, scenarioFailure);
+                currentStrategy = strategyFor(storyFailure);
             }
         }
 
         private Throwable mostImportantOf(
-                Throwable throwable1,
-                Throwable throwable2) {
-            return throwable1 == null ? throwable2 :
-                    throwable1 instanceof PendingStepFound ? (throwable2 == null ? throwable1 : throwable2) :
-                            throwable1;
+                Throwable failure1,
+                Throwable failure2) {
+            return failure1 == null ? failure2 :
+                    failure1 instanceof PendingStepFound ? (failure2 == null ? failure1 : failure2) :
+                            failure1;
         }
 
-        private FailureStrategy strategyFor(Throwable throwable) {
-            if (throwable instanceof PendingStepFound) {
+        private FailureStrategy strategyFor(Throwable failure) {
+            if (failure instanceof PendingStepFound) {
                 return pendingStepStrategy;
             } else {
                 return failureStrategy;

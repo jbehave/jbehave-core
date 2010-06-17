@@ -49,11 +49,7 @@ to a file:</p>
         Class storyClass = this.getClass();
         Properties rendering = new Properties();
         rendering.put("decorateNonHtml", "true");
-        URL codeLocation = StoryLocation.codeLocationFromClass(storyClass);
-        if ( storyClass.getClassLoader() instanceof AntClassLoader ){
-            // use code location from file with Ant
-            codeLocation = StoryLocation.codeLocationFromFile(new File("target/classes"));          
-        }
+        URL codeLocation = CodeLocations.codeLocationFromClass(storyClass);
         Configuration configuration = new MostUsefulConfiguration()
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
@@ -213,12 +209,11 @@ directory in Maven), but this can be changed via the builder:</p>
         new StoryReporterBuilder().withOutputDirectory("my-reports")
 </pre>
 
-<p>In some cases, i.e. when using with Ant, the code location from class may not be 
-properly set, or different from what is expected.  In this case, we can use the code location from a file:
+<p>In some cases, we may want to set the code location explicitly from a file path:
 </p>
 
 <pre class="brush: java">
-        new StoryReporterBuilder().withCodeLocation(StoryLocation.codeLocationFromFile(new File("target/classes")))
+    new StoryReporterBuilder().withCodeLocation(CodeLocations.codeLocationFromPath("build/classes"))
 </pre>
 
 <p>If the default formats or the output file directory are modified

@@ -61,11 +61,7 @@ public class ClasspathTraderEmbedder extends Embedder {
 	@Override
 	public Configuration configuration() {
 		Class<? extends ClasspathTraderEmbedder> embedderClass = this.getClass();
-        URL codeLocation = StoryLocation.codeLocationFromClass(storyClass);
-        if ( embedderClass() instanceof AntClassLoader ){
-            // use code location from file with Ant
-            codeLocation = StoryLocation.codeLocationFromFile(new File("target/classes"));          
-        }
+        URL codeLocation = CodeLocations.codeLocationFromClass(embedderClass);
         Configuration configuration = new MostUsefulConfiguration()
              .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
              .useStoryReporterBuilder(new StoryReporterBuilder()

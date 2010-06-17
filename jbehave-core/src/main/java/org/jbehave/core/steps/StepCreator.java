@@ -30,10 +30,10 @@ public class StepCreator {
     public static final String PARAMETER_VALUE_END = "\uFF60";
 	public static final String PARAMETER_VALUE_NEWLINE = "NL";
 	private final Object stepsInstance;
-	private final StepRunner beforeOrAfterStep;
-	private final StepRunner skipStep;
 	private final ParameterConverters parameterConverters;
 	private final StepMatcher stepMatcher;
+	private final StepRunner beforeOrAfterStep;
+	private final StepRunner skipStep;
     private StepMonitor stepMonitor;
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
@@ -78,11 +78,11 @@ public class StepCreator {
 
 	public Step createAfterStepUponOutcome(final Method method, Outcome outcome) {
 		switch ( outcome ){
-		case ANY:
+		case ANY: default:
 			return new Step() {
 
 				public StepResult doNotPerform() {
-					return  beforeOrAfterStep.run(method);
+					return beforeOrAfterStep.run(method);
 				}
 
 				public StepResult perform() {
@@ -114,19 +114,6 @@ public class StepCreator {
 				}
 
 			};
-		default:
-			return new Step() {
-
-				public StepResult doNotPerform() {
-					return skipStep.run(method);
-				}
-
-				public StepResult perform() {
-					return skipStep.run(method);
-				}
-
-			};
-			
 		}
 	}
 
