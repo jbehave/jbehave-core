@@ -12,7 +12,7 @@ public class EmbedderControls {
 	private boolean skip = false;
 	private boolean generateViewAfterStories = true;
 	private boolean ignoreFailureInStories = false;
-	private boolean ignoreFailureInReports = false;
+	private boolean ignoreFailureInView = false;
 
 	public EmbedderControls() {
 	}
@@ -33,8 +33,8 @@ public class EmbedderControls {
 		return ignoreFailureInStories;
 	}
 
-	public boolean ignoreFailureInReports() {
-		return ignoreFailureInReports;
+	public boolean ignoreFailureInView() {
+		return ignoreFailureInView;
 	}
 
 	public EmbedderControls doBatch(boolean batch) {
@@ -58,7 +58,7 @@ public class EmbedderControls {
 	}
 
 	public EmbedderControls doIgnoreFailureInView(boolean ignoreFailureInView) {
-		this.ignoreFailureInReports = ignoreFailureInView;
+		this.ignoreFailureInView = ignoreFailureInView;
 		return this;
 	}
 

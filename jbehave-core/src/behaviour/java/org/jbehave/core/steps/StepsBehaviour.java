@@ -90,82 +90,67 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldProvideStepsToBePerformedBeforeStory() {
+    public void shouldProvideStepsToBePerformedBeforeAndAfterStory() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
 
-        List<Step> beforeStory = steps.runBeforeStory(false);
-        assertThat(beforeStory.size(), equalTo(1));        
-        beforeStory.get(0).perform();
+        List<BeforeOrAfterStep> beforeAfterStory = steps.listBeforeOrAfterStory(false);
+        assertThat(beforeAfterStory.size(), equalTo(2));        
+        beforeAfterStory.get(0).createStep().perform();
         assertThat(steps.beforeStory, is(true));
-        
-        List<Step> beforeGivenStory = steps.runBeforeStory(true);
-        assertThat(beforeGivenStory.size(), equalTo(1));        
-        beforeGivenStory.get(0).perform();
-        assertThat(steps.beforeGivenStory, is(true));
-    }
-    
-    @Test
-    public void shouldProvideStepsToBePerformedAfterStory() {
-        MultipleAliasesSteps steps = new MultipleAliasesSteps();
-
-        List<Step> afterStory = steps.runAfterStory(false);
-        assertThat(afterStory.size(), equalTo(1));        
-        afterStory.get(0).perform();
+        beforeAfterStory.get(1).createStep().perform();
         assertThat(steps.afterStory, is(true));
         
-        List<Step> afterGivenStory = steps.runAfterStory(true);
-        assertThat(afterGivenStory.size(), equalTo(1));        
-        afterGivenStory.get(0).perform();
+        List<BeforeOrAfterStep> beforeAfterGivenStory = steps.listBeforeOrAfterStory(true);
+        assertThat(beforeAfterGivenStory.size(), equalTo(2));        
+        beforeAfterGivenStory.get(0).createStep().perform();
+        assertThat(steps.beforeGivenStory, is(true));
+        beforeAfterGivenStory.get(1).createStep().perform();
         assertThat(steps.afterGivenStory, is(true));
     }
-
     
     @Test
-    public void shouldProvideStepsToBePerformedBeforeScenarios() {
+    public void shouldProvideStepsToBePerformedBeforeAndAfterScenarios() {
     	MultipleAliasesSteps steps = new MultipleAliasesSteps();
-    	List<Step> executableSteps = steps.runBeforeScenario();
-		assertThat(executableSteps.size(), equalTo(1));
+    	List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario();
+		assertThat(beforeAfterScenario.size(), equalTo(4));
 		
-    	executableSteps.get(0).perform();
+    	beforeAfterScenario.get(0).createStep().perform();
     	assertThat(steps.beforeScenario, is(true));
-    }
-    
-    @Test
-    public void shouldProvideStepsToBePerformedAfterScenarioUponOutcome() {
-    	MultipleAliasesSteps steps = new MultipleAliasesSteps();
-    	List<Step> executableSteps = steps.runAfterScenario();
-    	assertThat(executableSteps.size(), equalTo(3));
-    	
+
     	// uponOutcome=ANY
-    	executableSteps.get(0).perform();
+    	beforeAfterScenario.get(1).createStepUponOutcome().perform();
     	assertThat(steps.afterAnyScenario, is(true));
     	
     	// uponOutcome=SUCCESS
-    	executableSteps.get(1).perform();
+    	beforeAfterScenario.get(2).createStepUponOutcome().perform();
     	assertThat(steps.afterSuccessfulScenario, is(true));
     	
-		// uponOutcome=FAILURE
-    	executableSteps.get(2).perform();
+		// uponOutcome=FAILURE    	
+    	beforeAfterScenario.get(3).createStepUponOutcome().perform();
     	assertThat(steps.afterFailedScenario, is(false));
+
     }
     
     @Test
     public void shouldProvideStepsToBeNotPerformedAfterScenarioUponOutcome() {
     	MultipleAliasesSteps steps = new MultipleAliasesSteps();
-    	List<Step> executableSteps = steps.runAfterScenario();
-    	
+    	List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario();
+		assertThat(beforeAfterScenario.size(), equalTo(4));
+		
+    	beforeAfterScenario.get(0).createStep().doNotPerform();
+    	assertThat(steps.beforeScenario, is(true));
+
     	// uponOutcome=ANY
-    	executableSteps.get(0).doNotPerform();
-    	assertThat(steps.afterAnyScenario, is(true)); 
+    	beforeAfterScenario.get(1).createStepUponOutcome().doNotPerform();
+    	assertThat(steps.afterAnyScenario, is(true));
     	
     	// uponOutcome=SUCCESS
-		executableSteps.get(1).doNotPerform();
-		assertThat(steps.afterSuccessfulScenario, is(false)); 
-				
-		// uponOutcome=FAILURE
-		executableSteps.get(2).doNotPerform();
-		assertThat(steps.afterFailedScenario, is(true)); 
-		
+    	beforeAfterScenario.get(2).createStepUponOutcome().doNotPerform();
+    	assertThat(steps.afterSuccessfulScenario, is(false));
+    	
+		// uponOutcome=FAILURE    	
+    	beforeAfterScenario.get(3).createStepUponOutcome().doNotPerform();
+    	assertThat(steps.afterFailedScenario, is(true));
     }
     
     @Test
@@ -188,9 +173,9 @@ public class StepsBehaviour {
     @Test(expected=BeforeOrAfterFailed.class)
     public void shouldReportFailuresInBeforeAndAfterMethods() {
     	BeforeAndAfterSteps steps = new BeforeAndAfterSteps();
-    	List<Step> executableSteps = steps.runBeforeScenario();
-    	executableSteps.get(0).perform();
-    	executableSteps.get(1).perform();
+    	List<BeforeOrAfterStep> beforeScenario = steps.listBeforeOrAfterScenario();
+    	beforeScenario.get(0).createStep().perform();
+    	beforeScenario.get(1).createStep().perform();
     }
 
     @Test(expected=DuplicateCandidateStepFoundException.class)

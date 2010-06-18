@@ -15,7 +15,7 @@ public class StepdocTask extends AbstractStoryTask {
 	public void execute() throws BuildException {
 		Embedder embedder = newEmbedder();
 		log("Generating stepdoc using embedder " + embedder, MSG_INFO);
-		embedder.stepdocs();
+		embedder.reportStepdocs();
 	}
 
 }

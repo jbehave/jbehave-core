@@ -24,7 +24,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     @Test
     public void shouldMatchCandidateStepsToCreateExecutableSteps() {
         // Given
-        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
+    	StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
         
         CandidateStep candidate = mock(CandidateStep.class);
         CandidateSteps steps = mock(Steps.class);
@@ -46,7 +46,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     @Test
     public void shouldMarkAsPendingAnyStepsWhichAreNotAvailable() {
         // Given
-        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
+    	StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
 
         CandidateStep candidate = mock(CandidateStep.class);
         CandidateSteps steps = mock(Steps.class);
@@ -71,17 +71,26 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         // Given some candidate steps classes with before and after scenario methods
         CandidateSteps steps1 = mock(Steps.class);
         CandidateSteps steps2 = mock(Steps.class);
+        BeforeOrAfterStep bafStep11 = mock(BeforeOrAfterStep.class);
+        BeforeOrAfterStep bafStep12 = mock(BeforeOrAfterStep.class);
+        BeforeOrAfterStep bafStep21 = mock(BeforeOrAfterStep.class);
+        BeforeOrAfterStep bafStep22 = mock(BeforeOrAfterStep.class);
         Step stepBefore1 = mock(Step.class);
         Step stepBefore2 = mock(Step.class);
         Step stepAfter1 = mock(Step.class);
         Step stepAfter2 = mock(Step.class);
+        when(bafStep11.getStage()).thenReturn(Stage.BEFORE);
+        when(bafStep11.createStep()).thenReturn(stepBefore1);
+        when(bafStep12.getStage()).thenReturn(Stage.BEFORE);
+        when(bafStep12.createStep()).thenReturn(stepBefore2);
+        when(bafStep21.getStage()).thenReturn(Stage.AFTER);
+        when(bafStep21.createStepUponOutcome()).thenReturn(stepAfter1);
+        when(bafStep22.getStage()).thenReturn(Stage.AFTER);
+        when(bafStep22.createStepUponOutcome()).thenReturn(stepAfter2);
+        when(steps1.listBeforeOrAfterScenario()).thenReturn(asList(bafStep11, bafStep12));
+        when(steps2.listBeforeOrAfterScenario()).thenReturn(asList(bafStep21, bafStep22));
 
-        when(steps1.runBeforeScenario()).thenReturn(asList(stepBefore1));
-        when(steps2.runBeforeScenario()).thenReturn(asList(stepBefore2));
-        when(steps1.runAfterScenario()).thenReturn(asList(stepAfter1));
-        when(steps2.runAfterScenario()).thenReturn(asList(stepAfter2));
-
-        // And which have a 'normal' step that matches our core
+        // And which have a 'normal' step that matches our scenario
         CandidateStep candidate = mock(CandidateStep.class);
         Step normalStep = mock(Step.class);
 
@@ -91,12 +100,12 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps2.listCandidates()).thenReturn(asList(new CandidateStep[]{}));
 
         // When we collect the list of steps
-        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
+        StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
         List<Step> executableSteps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Scenario(asList("my step")), tableRow
         );
 
         // Then all before and after steps should be added
-        assertThat(executableSteps, equalTo(asList(stepBefore2, stepBefore1, normalStep, stepAfter1, stepAfter2)));
+        assertThat(executableSteps, equalTo(asList(stepBefore1, stepBefore2, normalStep, stepAfter1, stepAfter2)));
     }
 
     @Test
@@ -104,19 +113,29 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         // Given some candidate steps classes with before and after story methods
         CandidateSteps steps1 = mock(Steps.class);
         CandidateSteps steps2 = mock(Steps.class);
+        BeforeOrAfterStep bafStep11 = mock(BeforeOrAfterStep.class);
+        BeforeOrAfterStep bafStep21 = mock(BeforeOrAfterStep.class);
+        BeforeOrAfterStep bafStep12 = mock(BeforeOrAfterStep.class);
+        BeforeOrAfterStep bafStep22 = mock(BeforeOrAfterStep.class);
         Step stepBefore1 = mock(Step.class);
         Step stepBefore2 = mock(Step.class);
         Step stepAfter1 = mock(Step.class);
         Step stepAfter2 = mock(Step.class);
 
         boolean givenStory = false;
-        when(steps1.runBeforeStory(givenStory)).thenReturn(asList(stepBefore1));
-        when(steps2.runBeforeStory(givenStory)).thenReturn(asList(stepBefore2));
-        when(steps1.runAfterStory(givenStory)).thenReturn(asList(stepAfter1));
-        when(steps2.runAfterStory(givenStory)).thenReturn(asList(stepAfter2));
+        when(bafStep11.getStage()).thenReturn(Stage.BEFORE);
+        when(bafStep11.createStep()).thenReturn(stepBefore1);
+        when(bafStep21.getStage()).thenReturn(Stage.BEFORE);
+        when(bafStep21.createStep()).thenReturn(stepBefore2);
+        when(bafStep12.getStage()).thenReturn(Stage.AFTER);
+        when(bafStep12.createStep()).thenReturn(stepAfter1);
+        when(bafStep22.getStage()).thenReturn(Stage.AFTER);
+        when(bafStep22.createStep()).thenReturn(stepAfter2);
+        when(steps1.listBeforeOrAfterStory(givenStory)).thenReturn(asList(bafStep11, bafStep12));
+        when(steps2.listBeforeOrAfterStory(givenStory)).thenReturn(asList(bafStep21, bafStep22));
 
         // When we collect the list of steps
-        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
+        StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
         List<Step> beforeSteps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Story(new Scenario()), Stage.BEFORE,
                 givenStory);
         List<Step> afterSteps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Story(new Scenario()), Stage.AFTER,
@@ -162,7 +181,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(candidate4.createMatchedStep(stepAsString, tableRow)).thenReturn(step4);
         
         // When we collect the list of steps
-        MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
+        StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
         List<Step> steps = stepCollector.collectStepsFrom(asList(steps1, steps2), new Scenario(asList(stepAsString)), tableRow
         );
 

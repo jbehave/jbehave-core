@@ -17,8 +17,8 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
 	}
 
 	@Override
-	public boolean ignoreFailureInReports() {
-		return delegate.ignoreFailureInReports();
+	public boolean ignoreFailureInView() {
+		return delegate.ignoreFailureInView();
 	}
 
 	@Override

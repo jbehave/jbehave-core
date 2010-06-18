@@ -13,10 +13,10 @@ import org.jbehave.core.RunnableStory;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.reporters.CandidateStepReporter;
+import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.CandidateStepFinder;
+import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Stepdoc;
 
@@ -167,40 +167,41 @@ public class Embedder {
 		} catch (RuntimeException e) {
 			embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats,
 					viewResources, e);
-			String message = "Failed to render reports to " + outputDirectory
-					+ " with formats " + formats + " and rendering resources "
+			String message = "Failed to generate stories view in " + outputDirectory
+					+ " with formats " + formats + " and resources "
 					+ viewResources;
 			throw new RenderingReportsFailedException(message, e);
 		}
 		int scenarios = viewGenerator.countScenarios();
 		int failedScenarios = viewGenerator.countFailedScenarios();
 		embedderMonitor.storiesViewGenerated(scenarios, failedScenarios);
-		if (!embedderControls.ignoreFailureInReports() && failedScenarios > 0) {
-			String message = "Rendered reports with " + scenarios
+		if (!embedderControls.ignoreFailureInView() && failedScenarios > 0) {
+			String message = "Generated stories view with " + scenarios
 					+ " scenarios (of which " + failedScenarios + " failed)";
 			throw new RunningStoriesFailedException(message);
 		}
 
 	}
 
-	public void findMatchingSteps(String stepAsString){
+	public void reportStepdocs() {
 		Configuration configuration = configuration();
 		List<CandidateSteps> candidateSteps = candidateSteps();
-		CandidateStepFinder finder = configuration.candidateStepFinder();
-		CandidateStepReporter reporter = configuration.candidateStepReporter();
-		List<Stepdoc> matching = finder.findMatching(stepAsString, candidateSteps);
+		StepFinder finder = configuration.stepFinder();
+		StepdocReporter reporter = configuration.stepdocReporter();
 		List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
-		reporter.stepsMatching(stepAsString, matching, stepsInstances);		
-	}
-	
-	public void stepdocs() {
-		Configuration configuration = configuration();
-		List<CandidateSteps> candidateSteps = candidateSteps();
-		CandidateStepFinder finder = configuration.candidateStepFinder();
-		CandidateStepReporter reporter = configuration.candidateStepReporter();
-		reporter.stepdocs(finder.stepdocs(candidateSteps));
+		reporter.stepdocs(finder.stepdocs(candidateSteps), stepsInstances);
 	}
 
+	public void reportMatchingStepdocs(String stepAsString){
+		Configuration configuration = configuration();
+		List<CandidateSteps> candidateSteps = candidateSteps();
+		StepFinder finder = configuration.stepFinder();
+		StepdocReporter reporter = configuration.stepdocReporter();
+		List<Stepdoc> matching = finder.findMatching(stepAsString, candidateSteps);
+		List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
+		reporter.stepdocsMatching(stepAsString, matching, stepsInstances);		
+	}
+	
 	public Configuration configuration() {
 		return configuration;
 	}

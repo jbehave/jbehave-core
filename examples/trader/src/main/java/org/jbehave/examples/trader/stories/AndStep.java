@@ -4,11 +4,13 @@ import org.jbehave.core.JUnitStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.examples.trader.BeforeAfterSteps;
 
 public class AndStep extends JUnitStory {
 
 	public AndStep() {
-		addSteps(new InstanceStepsFactory(configuration(), new AndSteps()).createCandidateSteps());
+		configuration().embedderControls().doGenerateViewAfterStories(false);
+		addSteps(new InstanceStepsFactory(configuration(), new AndSteps(), new BeforeAfterSteps()).createCandidateSteps());
 	}
 
 	public static class AndSteps {

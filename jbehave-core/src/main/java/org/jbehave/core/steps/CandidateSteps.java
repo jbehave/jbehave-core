@@ -7,7 +7,7 @@ import org.jbehave.core.configuration.Configuration;
 /**
  * Interface providing the list of candidate steps, representing methods
  * annotated with @Given, @When or @Then, that can be matched. It also provides
- * the list of runnable steps, representing methods annotated with @BeforeStory,
+ * the list of before and after steps, representing methods annotated with @BeforeStory,
  * @AfterStory, @BeforeScenario, @AfterScenario, that do not require any matching.
  */
 public interface CandidateSteps {
@@ -20,38 +20,21 @@ public interface CandidateSteps {
 	List<CandidateStep> listCandidates();
 
 	/**
-	 * Returns the steps to run before each story, based on the given story
+	 * Returns the before or after story steps, based on the given story
 	 * status
 	 * 
 	 * @param givenStory
 	 *            the boolean flag denoting if it's a given story
-	 * @return The list of runnable steps
+	 * @return The list of before or after steps
 	 */
-	List<Step> runBeforeStory(boolean givenStory);
+	List<BeforeOrAfterStep> listBeforeOrAfterStory(boolean givenStory);
 
 	/**
-	 * Returns the steps to run after each story, based on the given story
-	 * status
+	 * Returns the before or after scenario steps
 	 * 
-	 * @param givenStory
-	 *            the boolean flag denoting if it's a given story
-	 * @return The list of runnable steps
+	 * @return The list of before or after steps
 	 */
-	List<Step> runAfterStory(boolean givenStory);
-
-	/**
-	 * Returns the steps to run before each scenario
-	 * 
-	 * @return The list of runnable steps
-	 */
-	List<Step> runBeforeScenario();
-
-	/**
-	 * Returns the steps to run after each scenario
-	 * 
-	 * @return The list of runnable steps
-	 */
-	List<Step> runAfterScenario();
+	List<BeforeOrAfterStep> listBeforeOrAfterScenario();
 
 	/**
 	 * Returns the configuration

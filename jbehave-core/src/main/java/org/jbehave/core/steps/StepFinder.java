@@ -10,7 +10,7 @@ import java.util.List;
  * Finds candidate steps matching a textual step from a list of
  * {@link CandidateSteps} instances.
  */
-public class CandidateStepFinder {
+public class StepFinder {
 
 	public List<Stepdoc> stepdocs(List<CandidateSteps> steps) {
 		List<Stepdoc> stepdocs = new LinkedList<Stepdoc>();
@@ -24,7 +24,7 @@ public class CandidateStepFinder {
 	public List<Stepdoc> findMatching(String stepAsString,
 			List<CandidateSteps> candidateSteps) {
 		List<Stepdoc> matching = new ArrayList<Stepdoc>();
-		for (CandidateStep candidate : collect(candidateSteps)) {
+		for (CandidateStep candidate : collectCandidateSteps(candidateSteps)) {
 			if (candidate.matches(stepAsString)) {
 				matching.add(new Stepdoc(candidate));
 			}
@@ -44,10 +44,10 @@ public class CandidateStepFinder {
 
 	public List<CandidateStep> collectAndPrioritise(
 			List<CandidateSteps> candidateSteps) {
-		return prioritise(collect(candidateSteps));
+		return prioritise(collectCandidateSteps(candidateSteps));
 	}
 
-	private List<CandidateStep> collect(List<CandidateSteps> candidateSteps) {
+	private List<CandidateStep> collectCandidateSteps(List<CandidateSteps> candidateSteps) {
 		List<CandidateStep> collected = new ArrayList<CandidateStep>();
 		for (CandidateSteps candidates : candidateSteps) {
 			collected.addAll(candidates.listCandidates());

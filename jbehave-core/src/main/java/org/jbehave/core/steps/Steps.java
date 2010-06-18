@@ -29,6 +29,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
+import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * <p>
@@ -81,7 +82,6 @@ public class Steps implements CandidateSteps {
 
 	private final Configuration configuration;
 	private final Object instance;
-	private StepCreator stepCreator;
 
 	/**
 	 * Creates Steps with default configuration for a class extending this
@@ -114,8 +114,6 @@ public class Steps implements CandidateSteps {
 	public Steps(Configuration configuration, Object instance) {
 		this.configuration = configuration;
 		this.instance = instance;
-		this.stepCreator = new StepCreator(instance(), configuration
-				.stepMonitor());
 	}
 
 	Object instance() {
@@ -205,26 +203,35 @@ public class Steps implements CandidateSteps {
 			String stepPatternAsString, int priority,
 			Configuration configuration) {
 		return new CandidateStep(stepPatternAsString, priority, stepType,
-				method, instance(), configuration.stepPatternParser(),
-				configuration.parameterConverters(), configuration.keywords()
-						.startingWordsByType());
+				method, instance(), configuration.keywords()
+						.startingWordsByType(), configuration
+						.stepPatternParser(), configuration
+						.parameterConverters());
+	}
+	
+	public List<BeforeOrAfterStep> listBeforeOrAfterStory(boolean givenStory){
+		List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+		steps.addAll(stepsHaving(Stage.BEFORE, BeforeStory.class, givenStory));
+		steps.addAll(stepsHaving(Stage.AFTER, AfterStory.class, givenStory));
+		return steps;
 	}
 
-	public List<Step> runBeforeStory(boolean givenStory) {
-		return storyStepsHaving(BeforeStory.class, givenStory);
+	public List<BeforeOrAfterStep> listBeforeOrAfterScenario(){
+		List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+		steps.addAll(stepsHaving(Stage.BEFORE, BeforeScenario.class));
+		steps.addAll(stepsHaving(Stage.AFTER, AfterScenario.class, ANY));
+		steps.addAll(stepsHaving(Stage.AFTER, AfterScenario.class, SUCCESS));
+		steps.addAll(stepsHaving(Stage.AFTER, AfterScenario.class, FAILURE));
+		return steps;
 	}
 
-	public List<Step> runAfterStory(boolean givenStory) {
-		return storyStepsHaving(AfterStory.class, givenStory);
-	}
-
-	private List<Step> storyStepsHaving(
-			Class<? extends Annotation> annotationClass, boolean givenStory) {
-		List<Step> steps = new ArrayList<Step>();
+	private List<BeforeOrAfterStep> stepsHaving(
+			Stage stage, Class<? extends Annotation> annotationClass, boolean givenStory) {
+		List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
 		for (final Method method : annotatatedMethods(annotationClass)) {
 			if (runnableStoryStep(method.getAnnotation(annotationClass),
 					givenStory)) {
-				steps.add(stepCreator.createBeforeOrAfterStep(method));
+				steps.add(createBeforeOrAfterStep(stage, method));
 			}
 		}
 		return steps;
@@ -244,37 +251,34 @@ public class Steps implements CandidateSteps {
 		return false;
 	}
 
-	public List<Step> runBeforeScenario() {
-		return scenarioStepsHaving(BeforeScenario.class);
-	}
-
-	public List<Step> runAfterScenario() {
-		List<Step> steps = new ArrayList<Step>();
-		steps.addAll(scenarioStepsHavingOutcome(AfterScenario.class, ANY));
-		steps.addAll(scenarioStepsHavingOutcome(AfterScenario.class, SUCCESS));
-		steps.addAll(scenarioStepsHavingOutcome(AfterScenario.class, FAILURE));
-		return steps;
-	}
-
-	private List<Step> scenarioStepsHaving(
+	private List<BeforeOrAfterStep> stepsHaving(Stage stage,
 			Class<? extends Annotation> annotationClass) {
-		List<Step> steps = new ArrayList<Step>();
+		List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
 		for (Method method : annotatatedMethods(annotationClass)) {
-			steps.add(stepCreator.createBeforeOrAfterStep(method));
+			steps.add(createBeforeOrAfterStep(stage, method));
 		}
 		return steps;
 	}
 
-	private List<Step> scenarioStepsHavingOutcome(
+	private List<BeforeOrAfterStep> stepsHaving(Stage stage,
 			Class<? extends AfterScenario> annotationClass, Outcome outcome) {
-		List<Step> steps = new ArrayList<Step>();
+		List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
 		for (Method method : annotatatedMethods(annotationClass)) {
 			AfterScenario annotation = method.getAnnotation(annotationClass);
 			if (outcome.equals(annotation.uponOutcome())) {
-				steps.add(stepCreator.createAfterStepUponOutcome(method, outcome));
+				steps.add(createBeforeOrAfterStep(stage, method, outcome));
 			}
 		}
 		return steps;
+	}
+
+
+	private BeforeOrAfterStep createBeforeOrAfterStep(Stage stage, Method method) {
+		return new BeforeOrAfterStep(stage, method, instance());
+	}
+
+	private BeforeOrAfterStep createBeforeOrAfterStep(Stage stage, Method method, Outcome outcome) {
+		return new BeforeOrAfterStep(stage, method, instance(), outcome);
 	}
 
 	private List<Method> allMethods() {
@@ -305,8 +309,8 @@ public class Steps implements CandidateSteps {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this,
-				ToStringStyle.SHORT_PREFIX_STYLE);
+		return new ToStringBuilder(this,
+				ToStringStyle.SHORT_PREFIX_STYLE).append(instance()).toString();
 	}
 
 }

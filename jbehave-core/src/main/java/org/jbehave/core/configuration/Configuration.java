@@ -23,14 +23,14 @@ import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.CandidateStepReporter;
+import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
-import org.jbehave.core.reporters.PrintStreamCandidateStepReporter;
+import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.CandidateStepFinder;
+import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.PrintStreamStepMonitor;
@@ -57,16 +57,6 @@ import com.thoughtworks.paranamer.Paranamer;
  * </p>
  */
 public class Configuration {
-
-	/**
-	 * Finder of matching candidate steps
-	 */
-	private CandidateStepFinder candidateStepFinder = new CandidateStepFinder();
-
-	/**
-	 * Report candidate steps found to System.out
-	 */
-	private CandidateStepReporter candidateStepReporter = new PrintStreamCandidateStepReporter();
 
 	/**
 	 * Dry run is switched off by default
@@ -134,6 +124,16 @@ public class Configuration {
 	private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
 
 	/**
+	 * Finder of matching candidate steps
+	 */
+	private StepFinder stepFinder = new StepFinder();
+
+	/**
+	 * Report candidate steps found to System.out
+	 */
+	private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter();
+
+	/**
 	 * Pattern build that uses prefix for identifying parameters
 	 */
 	private StepPatternParser stepPatternParser = new RegexPrefixCapturingPatternParser();
@@ -165,24 +165,12 @@ public class Configuration {
 	 */
 	private EmbedderControls embedderControls = new EmbedderControls();
 
-	public CandidateStepFinder candidateStepFinder() {
-		return candidateStepFinder;
-	}
-
-	public CandidateStepReporter candidateStepReporter() {
-		return candidateStepReporter;
-	}
-
 	public boolean dryRun() {
 		return dryRun;
 	}
 
 	public Keywords keywords() {
 		return keywords;
-	}
-
-	public StepCollector stepCollector() {
-		return stepCollector;
 	}
 
 	public StoryParser storyParser() {
@@ -222,6 +210,18 @@ public class Configuration {
 		return storyReporterBuilder;
 	}
 
+	public StepCollector stepCollector() {
+		return stepCollector;
+	}
+
+	public StepFinder stepFinder() {
+		return stepFinder;
+	}
+
+	public StepdocReporter stepdocReporter() {
+		return stepdocReporter;
+	}
+
 	public StepPatternParser stepPatternParser() {
 		return stepPatternParser;
 	}
@@ -246,25 +246,12 @@ public class Configuration {
 		return embedderControls;
 	}
 
-	public void useCandidateStepFinder(CandidateStepFinder candidateStepFinder) {
-		this.candidateStepFinder = candidateStepFinder;
-	}
-
-	public void useCandidateStepReporter(CandidateStepReporter candidateStepReporter) {
-		this.candidateStepReporter = candidateStepReporter;
-	}
-
 	public void doDryRun(boolean dryRun) {
 		this.dryRun = dryRun;
 	}
 
 	public Configuration useKeywords(Keywords keywords) {
 		this.keywords = keywords;
-		return this;
-	}
-
-	public Configuration useStepCollector(StepCollector stepCollector) {
-		this.stepCollector = stepCollector;
 		return this;
 	}
 
@@ -318,9 +305,18 @@ public class Configuration {
 		return this;
 	}
 
-	public Configuration useEmbedderControls(
-			EmbedderControls embedderControls) {
-		this.embedderControls = embedderControls;
+	public Configuration useStepCollector(StepCollector stepCollector) {
+		this.stepCollector = stepCollector;
+		return this;
+	}
+
+	public Configuration useStepFinder(StepFinder stepFinder) {
+		this.stepFinder = stepFinder;
+		return this;
+	}
+
+	public Configuration useStepdocReporter(StepdocReporter stepdocReporter) {
+		this.stepdocReporter = stepdocReporter;
 		return this;
 	}
 
@@ -348,6 +344,12 @@ public class Configuration {
 
 	public void useViewGenerator(ViewGenerator viewGenerator) {
 		this.viewGenerator = viewGenerator;
+	}
+
+	public Configuration useEmbedderControls(
+			EmbedderControls embedderControls) {
+		this.embedderControls = embedderControls;
+		return this;
 	}
 
 	@Override
