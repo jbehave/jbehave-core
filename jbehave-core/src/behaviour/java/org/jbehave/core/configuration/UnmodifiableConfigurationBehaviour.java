@@ -12,14 +12,12 @@ import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
-import org.jbehave.core.steps.StepdocGenerator;
 import org.junit.Test;
 
 import com.thoughtworks.paranamer.Paranamer;
@@ -43,8 +41,6 @@ public class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.stepCollector(), is(delegate.stepCollector()));
         assertThat(unmodifiable.stepMonitor(), is(delegate.stepMonitor()));
         assertThat(unmodifiable.stepPatternParser(), is(delegate.stepPatternParser()));
-        assertThat(unmodifiable.stepdocGenerator(), is(delegate.stepdocGenerator()));
-        assertThat(unmodifiable.stepdocReporter(), is(delegate.stepdocReporter()));
         assertThat(unmodifiable.viewGenerator(), is(delegate.viewGenerator()));
         assertThat(unmodifiable.embedderControls(), is(delegate.embedderControls()));
     }
@@ -65,8 +61,6 @@ public class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useStepCollector", StepCollector.class);
         assertThatNotAllowed(unmodifiable, "useStepMonitor", StepMonitor.class);
         assertThatNotAllowed(unmodifiable, "useStepPatternParser", StepPatternParser.class);
-        assertThatNotAllowed(unmodifiable, "useStepdocGenerator", StepdocGenerator.class);
-        assertThatNotAllowed(unmodifiable, "useStepdocReporter", StepdocReporter.class);
         assertThatNotAllowed(unmodifiable, "useViewGenerator", ViewGenerator.class);
         assertThatNotAllowed(unmodifiable, "useEmbedderControls", EmbedderControls.class);
     }

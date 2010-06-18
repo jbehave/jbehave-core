@@ -37,13 +37,13 @@ public class SpringTraderRunner {
 
 	@Test
 	public void findMatchingCandidateSteps() {
-		embedder().findMatchingCandidates("When traders are subset to \".*y\" by name");
-		embedder().findMatchingCandidates("Given a step that is not matched");
+		embedder().findMatchingSteps("When traders are subset to \".*y\" by name");
+		embedder().findMatchingSteps("Given a step that is not matched");
 	}
 
 	@Test
 	public void findMatchingCandidateStepsWithNoStepsInstancesProvided() {
-		new Embedder().findMatchingCandidates("Given a step that cannot be matched");
+		new Embedder().findMatchingSteps("Given a step that cannot be matched");
 	}
 
 	private Embedder embedder() {

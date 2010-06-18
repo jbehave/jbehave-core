@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -11,12 +12,21 @@ import java.util.List;
  */
 public class CandidateStepFinder {
 
-	public List<CandidateStep> findMatching(String stepAsString,
+	public List<Stepdoc> stepdocs(List<CandidateSteps> steps) {
+		List<Stepdoc> stepdocs = new LinkedList<Stepdoc>();
+		for (CandidateStep candidateStep : collectAndPrioritise(steps)){
+			stepdocs.add(new Stepdoc(candidateStep));
+		}
+		Collections.sort(stepdocs);
+		return stepdocs;
+	}
+
+	public List<Stepdoc> findMatching(String stepAsString,
 			List<CandidateSteps> candidateSteps) {
-		List<CandidateStep> matching = new ArrayList<CandidateStep>();
+		List<Stepdoc> matching = new ArrayList<Stepdoc>();
 		for (CandidateStep candidate : collect(candidateSteps)) {
 			if (candidate.matches(stepAsString)) {
-				matching.add(candidate);
+				matching.add(new Stepdoc(candidate));
 			}
 		}
 		return matching;
@@ -25,8 +35,8 @@ public class CandidateStepFinder {
 	public List<Object> stepsInstances(List<CandidateSteps> candidateSteps) {
 		List<Object> instances = new ArrayList<Object>();
 		for (CandidateSteps steps : candidateSteps) {
-			if ( steps instanceof Steps ){
-				instances.add(((Steps)steps).instance());				
+			if (steps instanceof Steps) {
+				instances.add(((Steps) steps).instance());
 			}
 		}
 		return instances;

@@ -15,7 +15,7 @@ public class StepdocMojo extends AbstractStoryMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
         getLog().info("Generating stepdoc using embedder "+embedder);
-        embedder.generateStepdoc();
+        embedder.stepdocs();
     }
 
 }

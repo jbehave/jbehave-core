@@ -14,13 +14,11 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.reporters.CandidateStepReporter;
-import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.CandidateStep;
 import org.jbehave.core.steps.CandidateStepFinder;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.StepdocGenerator;
+import org.jbehave.core.steps.Stepdoc;
 
 /**
  * Represents an embeddable entry point to all of JBehave's functionality.
@@ -185,23 +183,22 @@ public class Embedder {
 
 	}
 
-	public void findMatchingCandidates(String stepAsString){
+	public void findMatchingSteps(String stepAsString){
 		Configuration configuration = configuration();
 		List<CandidateSteps> candidateSteps = candidateSteps();
 		CandidateStepFinder finder = configuration.candidateStepFinder();
 		CandidateStepReporter reporter = configuration.candidateStepReporter();
-		List<CandidateStep> matching = finder.findMatching(stepAsString, candidateSteps);
+		List<Stepdoc> matching = finder.findMatching(stepAsString, candidateSteps);
 		List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
-		reporter.candidateStepsMatching(stepAsString, matching, stepsInstances);		
+		reporter.stepsMatching(stepAsString, matching, stepsInstances);		
 	}
 	
-	public void generateStepdoc() {
+	public void stepdocs() {
 		Configuration configuration = configuration();
 		List<CandidateSteps> candidateSteps = candidateSteps();
-		StepdocGenerator generator = configuration.stepdocGenerator();
-		StepdocReporter reporter = configuration.stepdocReporter();
-		reporter.report(generator.generate(candidateSteps
-				.toArray(new CandidateSteps[candidateSteps.size()])));
+		CandidateStepFinder finder = configuration.candidateStepFinder();
+		CandidateStepReporter reporter = configuration.candidateStepReporter();
+		reporter.stepdocs(finder.stepdocs(candidateSteps));
 	}
 
 	public Configuration configuration() {

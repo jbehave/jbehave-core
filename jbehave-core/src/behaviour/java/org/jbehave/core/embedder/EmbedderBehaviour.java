@@ -34,11 +34,9 @@ import org.jbehave.core.embedder.Embedder.RunningStoriesFailedException;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamCandidateStepReporter;
-import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateStepFinder;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.Steps;
 import org.junit.Test;
 
@@ -721,7 +719,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		embedder.configuration().useCandidateStepReporter(new PrintStreamCandidateStepReporter(new PrintStream(out)));
 		// When
-		embedder.findMatchingCandidates("Given a given");
+		embedder.findMatchingSteps("Given a given");
 		// Then
 		String expected = 
 			"Step 'Given a given' is matched by annotated methods:\n" +
@@ -741,7 +739,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		embedder.configuration().useCandidateStepReporter(new PrintStreamCandidateStepReporter(new PrintStream(out)));
 		// When
-		embedder.findMatchingCandidates("Given a non-defined step");
+		embedder.findMatchingSteps("Given a non-defined step");
 		// Then
 		String expected = 
 			"Step 'Given a non-defined step' is not matched by any method\n" +
@@ -759,7 +757,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		embedder.configuration().useCandidateStepReporter(new PrintStreamCandidateStepReporter(new PrintStream(out)));
 		// When
-		embedder.findMatchingCandidates("Given a non-defined step");
+		embedder.findMatchingSteps("Given a non-defined step");
 		// Then
 		String expected = 
 			"Step 'Given a non-defined step' is not matched by any method\n" +
@@ -772,15 +770,19 @@ public class EmbedderBehaviour {
 		// Given
 		Embedder embedder = new Embedder();
 		embedder.useCandidateSteps(asList((CandidateSteps)new MySteps()));
-		embedder.configuration().useStepdocGenerator(new DefaultStepdocGenerator());
+		embedder.configuration().useCandidateStepFinder(new CandidateStepFinder());
 		OutputStream out = new ByteArrayOutputStream();
-		embedder.configuration().useStepdocReporter(new PrintStreamStepdocReporter(new PrintStream(out)));
+		embedder.configuration().useCandidateStepReporter(new PrintStreamCandidateStepReporter(new PrintStream(out)));
 		// When
-		embedder.generateStepdoc();
+		embedder.stepdocs();
 		// Then
-		String expected = "Step: Given a given\n"
-				 + "Step: When a when\n"
-				 + "Step: Then a then\n";
+		String expected = 
+			"GIVEN a given\n"+
+			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.given()\n"+
+			"WHEN a when\n"+
+			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.when()\n" +
+			"THEN a then\n"+
+			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.then()\n";
 		assertThat(out.toString(), equalTo(expected));
 	}
 

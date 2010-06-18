@@ -259,7 +259,7 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         }
     }
 
-    protected MavenEmbedderMonitor embedderMonitor() {
+    protected EmbedderMonitor embedderMonitor() {
 		return new MavenEmbedderMonitor();
 	}
 

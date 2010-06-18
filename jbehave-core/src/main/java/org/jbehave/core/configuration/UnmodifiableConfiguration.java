@@ -11,14 +11,12 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
-import org.jbehave.core.steps.StepdocGenerator;
 
 import com.thoughtworks.paranamer.Paranamer;
 
@@ -79,14 +77,6 @@ public class UnmodifiableConfiguration extends Configuration {
 
 	public ViewGenerator viewGenerator() {
 		return delegate.viewGenerator();
-	}
-
-	public StepdocGenerator stepdocGenerator() {
-		return delegate.stepdocGenerator();
-	}
-
-	public StepdocReporter stepdocReporter() {
-		return delegate.stepdocReporter();
 	}
 
 	public StepMonitor stepMonitor() {
@@ -178,16 +168,6 @@ public class UnmodifiableConfiguration extends Configuration {
 	
 	@Override
 	public void useViewGenerator(ViewGenerator viewGenerator) {
-        throw notAllowed();
-	}
-
-	@Override
-	public void useStepdocGenerator(StepdocGenerator stepdocGenerator) {
-        throw notAllowed();
-	}
-
-	@Override
-	public void useStepdocReporter(StepdocReporter stepdocReporter) {
         throw notAllowed();
 	}
 

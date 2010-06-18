@@ -48,12 +48,16 @@ public class CandidateStep {
         return priority;
     }
 	
-    public StepType getStepType() {
-        return stepType;
-    }
-
     public String getPatternAsString() {
         return patternAsString;
+    }
+
+    public Object getStepsInstance(){
+    	return stepsInstance;    	
+    }
+    
+    public StepType getStepType() {
+        return stepType;
     }
 
     public void useStepMonitor(StepMonitor stepMonitor) {

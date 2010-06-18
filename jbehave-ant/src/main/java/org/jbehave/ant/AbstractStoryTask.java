@@ -137,7 +137,7 @@ public abstract class AbstractStoryTask extends Task {
 		return new StoryClassLoader(asList(new String[] {}));
 	}
 
-	protected AntEmbedderMonitor embedderMonitor() {
+	protected EmbedderMonitor embedderMonitor() {
 		return new AntEmbedderMonitor();
 	}
 

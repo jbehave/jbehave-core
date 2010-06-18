@@ -16,17 +16,13 @@ import org.jbehave.core.reporters.CandidateStepReporter;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamCandidateStepReporter;
-import org.jbehave.core.reporters.PrintStreamStepdocReporter;
-import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateStepFinder;
-import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
-import org.jbehave.core.steps.StepdocGenerator;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -47,8 +43,6 @@ import com.thoughtworks.paranamer.Paranamer;
  * <li>{@link StepPatternParser}: {@link RegexPrefixCapturingPatternParser}</li>
  * <li>{@link Paranamer}: {@link NullParanamer}</li>
  * <li>{@link ParameterConverters}: {@link ParameterConverters}</li>
- * <li>{@link StepdocGenerator}: {@link DefaultStepdocGenerator}</li>
- * <li>{@link StepdocReporter}: {@link PrintStreamStepdocReporter}</li>
  * <li>{@link ViewGenerator}: {@link FreemarkerViewGenerator}</li>
  * <li>{@link EmbedderControls}: {@link EmbedderControls}</li>
  * </ul>
@@ -69,8 +63,6 @@ public class MostUsefulConfiguration extends Configuration {
         useStepMonitor(new SilentStepMonitor());
         useParanamer(new NullParanamer());
         useParameterConverters(new ParameterConverters());
-        useStepdocGenerator(new DefaultStepdocGenerator());
-        useStepdocReporter(new PrintStreamStepdocReporter());
         useViewGenerator(new FreemarkerViewGenerator());
         useEmbedderControls(new EmbedderControls());
     }

@@ -27,20 +27,16 @@ import org.jbehave.core.reporters.CandidateStepReporter;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamCandidateStepReporter;
-import org.jbehave.core.reporters.PrintStreamStepdocReporter;
-import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateStepFinder;
-import org.jbehave.core.steps.DefaultStepdocGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.PrintStreamStepMonitor;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
-import org.jbehave.core.steps.StepdocGenerator;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -160,16 +156,6 @@ public class Configuration {
 	private ParameterConverters parameterConverters = new ParameterConverters();
 
 	/**
-	 * Generates stepdocs
-	 */
-	private StepdocGenerator stepdocGenerator = new DefaultStepdocGenerator();
-	
-	/**
-	 * Reports stepdocs
-	 */
-	private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter();
-
-	/**
 	 * Use Freemarker-based view generator
 	 */
 	private ViewGenerator viewGenerator = new FreemarkerViewGenerator();
@@ -250,14 +236,6 @@ public class Configuration {
 
 	public ParameterConverters parameterConverters() {
 		return parameterConverters;
-	}
-
-	public StepdocGenerator stepdocGenerator() {
-		return stepdocGenerator;
-	}
-
-	public StepdocReporter stepdocReporter() {
-		return stepdocReporter;
 	}
 
 	public ViewGenerator viewGenerator() {
@@ -366,14 +344,6 @@ public class Configuration {
 			ParameterConverters parameterConverters) {
 		this.parameterConverters = parameterConverters;
 		return this;
-	}
-
-	public void useStepdocGenerator(StepdocGenerator stepdocGenerator) {
-		this.stepdocGenerator = stepdocGenerator;
-	}
-
-	public void useStepdocReporter(StepdocReporter stepdocReporter) {
-		this.stepdocReporter = stepdocReporter;
 	}
 
 	public void useViewGenerator(ViewGenerator viewGenerator) {

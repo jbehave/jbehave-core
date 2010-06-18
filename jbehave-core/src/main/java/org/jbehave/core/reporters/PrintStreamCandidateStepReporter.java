@@ -7,12 +7,13 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.jbehave.core.steps.CandidateStep;
+import org.jbehave.core.steps.Stepdoc;
 
 public class PrintStreamCandidateStepReporter implements CandidateStepReporter {
 
 	private static final String STEP_MATCHED_BY = "Step ''{0}'' is matched by annotated methods:";
 	private static final String STEP_NOT_MATCHED = "Step ''{0}'' is not matched by any method";
+	private static final String STEPDOC = "{0} {1}\n{2}";
 
 	private PrintStream output;
 
@@ -24,12 +25,12 @@ public class PrintStreamCandidateStepReporter implements CandidateStepReporter {
 		this.output = output;
 	}
 
-	public void candidateStepsMatching(String stepAsString,
-			List<CandidateStep> candidateSteps, List<Object> stepsInstances) {
-		if (candidateSteps.size() > 0) {
+	public void stepsMatching(String stepAsString,
+			List<Stepdoc> stepdocs, List<Object> stepsInstances) {
+		if (stepdocs.size() > 0) {
 			output.println(format(STEP_MATCHED_BY, stepAsString));
-			for (CandidateStep candidateStep : candidateSteps) {
-				Method method = candidateStep.getMethod();
+			for (Stepdoc stepdoc : stepdocs) {
+				Method method = stepdoc.getMethod();
 				for (Annotation annotation : method.getAnnotations()) {
 					output.println(annotation);
 				}
@@ -45,6 +46,12 @@ public class PrintStreamCandidateStepReporter implements CandidateStepReporter {
 			}
 		} else {
 			output.println("as no steps instances are provided");			
+		}
+	}
+
+	public void stepdocs(List<Stepdoc> stepdocs) {
+		for (Stepdoc stepdoc : stepdocs) {
+			output.println(format(STEPDOC, stepdoc.getStepType(), stepdoc.getPattern(), stepdoc.getMethodSignature()));
 		}
 	}
 
