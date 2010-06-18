@@ -3,17 +3,16 @@ package org.jbehave.core.reporters;
 import static java.text.MessageFormat.format;
 
 import java.io.PrintStream;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.List;
 
 import org.jbehave.core.steps.Stepdoc;
 
 public class PrintStreamStepdocReporter implements StepdocReporter {
 
-	private static final String STEP_MATCHED_BY = "Step ''{0}'' is matched by annotated methods:";
-	private static final String STEP_NOT_MATCHED = "Step ''{0}'' is not matched by any method";
-
+	private static final String STEP_MATCHED_BY = "Step ''{0}'' is matched by annotated patterns:";
+	private static final String STEP_NOT_MATCHED = "Step ''{0}'' is not matched by any pattern";
+	private static final String STEPDOC = "''{0} {1}''";
+	
 	private PrintStream output;
 
 	public PrintStreamStepdocReporter() {
@@ -46,11 +45,8 @@ public class PrintStreamStepdocReporter implements StepdocReporter {
 
 	private void outputStepdocs(List<Stepdoc> stepdocs) {
 		for (Stepdoc stepdoc : stepdocs) {
-			Method method = stepdoc.getMethod();
-			for (Annotation annotation : method.getAnnotations()) {
-				output(annotation);
-			}
-			output(method);
+			output(format(STEPDOC, stepdoc.getStartingWord(), stepdoc.getPattern()));
+			output(stepdoc.getMethodSignature());
 		}
 	}
 	

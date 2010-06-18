@@ -722,9 +722,9 @@ public class EmbedderBehaviour {
 		embedder.reportMatchingStepdocs("Given a given");
 		// Then
 		String expected = 
-			"Step 'Given a given' is matched by annotated methods:\n" +
-			"@org.jbehave.core.annotations.Given(priority=0, value=a given)\n" +
-			"public void org.jbehave.core.embedder.EmbedderBehaviour$MySteps.given()\n" +
+			"Step 'Given a given' is matched by annotated patterns:\n" +
+			"'Given a given'\n" +
+			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.given()\n" +
 			"from steps instances:\n" +
 			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps\n";
 		assertThat(out.toString(), equalTo(expected));
@@ -742,7 +742,7 @@ public class EmbedderBehaviour {
 		embedder.reportMatchingStepdocs("Given a non-defined step");
 		// Then
 		String expected = 
-			"Step 'Given a non-defined step' is not matched by any method\n" +
+			"Step 'Given a non-defined step' is not matched by any pattern\n" +
 			"from steps instances:\n" +
 			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps\n";
 		assertThat(out.toString(), equalTo(expected));
@@ -760,7 +760,7 @@ public class EmbedderBehaviour {
 		embedder.reportMatchingStepdocs("Given a non-defined step");
 		// Then
 		String expected = 
-			"Step 'Given a non-defined step' is not matched by any method\n" +
+			"Step 'Given a non-defined step' is not matched by any pattern\n" +
 			"as no steps instances are provided\n";
 		assertThat(out.toString(), equalTo(expected));
 	}
@@ -777,12 +777,12 @@ public class EmbedderBehaviour {
 		embedder.reportStepdocs();
 		// Then
 		String expected = 
-			"@org.jbehave.core.annotations.Given(priority=0, value=a given)\n"+
-			"public void org.jbehave.core.embedder.EmbedderBehaviour$MySteps.given()\n"+
-			"@org.jbehave.core.annotations.When(priority=0, value=a when)\n"+
-			"public void org.jbehave.core.embedder.EmbedderBehaviour$MySteps.when()\n"+
-			"@org.jbehave.core.annotations.Then(priority=0, value=a then)\n"+
-			"public void org.jbehave.core.embedder.EmbedderBehaviour$MySteps.then()\n"+
+			"'Given a given'\n"+
+			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.given()\n"+
+			"'When a when'\n"+
+			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.when()\n"+
+			"'Then a then'\n"+
+			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.then()\n"+
 			"from steps instances:\norg.jbehave.core.embedder.EmbedderBehaviour$MySteps\n";
 		assertThat(out.toString(), equalTo(expected));
 	}

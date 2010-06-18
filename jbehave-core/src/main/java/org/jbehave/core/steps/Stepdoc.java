@@ -19,6 +19,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 public class Stepdoc implements Comparable<Stepdoc> {
 
 	private StepType stepType;
+	private String startingWord;
 	private String pattern;
 	private Method method;
 	private Object stepsInstance;
@@ -26,12 +27,17 @@ public class Stepdoc implements Comparable<Stepdoc> {
 	public Stepdoc(CandidateStep candidateStep) {
 		this.method = candidateStep.getMethod();
 		this.stepType = candidateStep.getStepType();
+		this.startingWord = candidateStep.getStartingWord();
 		this.pattern = candidateStep.getPatternAsString();
 		this.stepsInstance = candidateStep.getStepsInstance();
 	}
 
 	public StepType getStepType() {
 		return stepType;
+	}
+
+	public String getStartingWord() {
+		return startingWord;
 	}
 
 	public String getPattern() {

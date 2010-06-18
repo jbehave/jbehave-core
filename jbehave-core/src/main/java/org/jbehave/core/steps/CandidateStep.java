@@ -66,6 +66,10 @@ public class CandidateStep {
 		return stepType;
 	}
 
+	public String getStartingWord(){
+		return startingWordFor(stepType);
+	}
+	
 	public void useStepMonitor(StepMonitor stepMonitor) {
 		this.stepMonitor = stepMonitor;
 		this.stepCreator.useStepMonitor(stepMonitor);
