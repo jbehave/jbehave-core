@@ -20,13 +20,13 @@ public class PrintStreamStepMonitor implements StepMonitor {
 	private static final String DRY_RUN = "(DRY RUN)";
 	private static final String MATCHES = "matches";
 	private static final String DOES_NOT_MATCH = "does not match";
-	private static final String USING_NAME_FOR_ARG = "Using {0} name ''{1}'' for position {2}";
+	private static final String USING_NAME_FOR_PARAMETER = "Using {0} name ''{1}'' for parameter position {2}";
 	private static final String ANNOTATED = "annotated";
 	private static final String PARAMETER = "parameter";
 	private static final String TABLE_ANNOTATED = "table annotated";
 	private static final String TABLE_PARAMETER = "table parameter";
-	private static final String USING_NATURAL_ORDER_FOR_ARG = "Using natural order for position {0}";
-	private static final String FOUND_ARG = "Found argument ''{0}'' for position {1}";
+	private static final String USING_NATURAL_ORDER_FOR_PARAMETER = "Using natural order for parameter position {0}";
+	private static final String FOUND_PARAMETER = "Found parameter ''{0}'' for position {1}";
 
 	private final PrintStream output;
 
@@ -56,46 +56,38 @@ public class PrintStreamStepMonitor implements StepMonitor {
 
 	public void convertedValueOfType(String value, Type type, Object converted,
 			Class<?> converterClass) {
-		String message = format(CONVERTED_VALUE_OF_TYPE, value, type,
-				converted, converterClass);
-		print(output, message);
+		print(output, format(CONVERTED_VALUE_OF_TYPE, value, type,
+				converted, converterClass));
 	}
 
 	public void performing(String step, boolean dryRun) {
-		String message = format(PERFORMING, step, (dryRun ? DRY_RUN : ""));
-		print(output, message);
+		print(output, format(PERFORMING, step, (dryRun ? DRY_RUN : "")));
 	}
 
-	public void usingAnnotatedNameForArg(String name, int position) {
-		String message = format(USING_NAME_FOR_ARG, ANNOTATED, name, position);
-		print(output, message);
+	public void usingAnnotatedNameForParameter(String name, int position) {
+		print(output, format(USING_NAME_FOR_PARAMETER, ANNOTATED, name, position));
 	}
 
-	public void usingParameterNameForArg(String name, int position) {
-		String message = format(USING_NAME_FOR_ARG, PARAMETER, name, position);
-		print(output, message);
+	public void usingParameterNameForParameter(String name, int position) {
+		print(output, format(USING_NAME_FOR_PARAMETER, PARAMETER, name, position));
 	}
 
-	public void usingTableAnnotatedNameForArg(String name, int position) {
-		String message = format(USING_NAME_FOR_ARG, TABLE_ANNOTATED, name,
-				position);
-		print(output, message);
+	public void usingTableAnnotatedNameForParameter(String name, int position) {
+		print(output, format(USING_NAME_FOR_PARAMETER, TABLE_ANNOTATED, name,
+				position));
 	}
 
-	public void usingTableParameterNameForArg(String name, int position) {
-		String message = format(USING_NAME_FOR_ARG, TABLE_PARAMETER, name,
-				position);
-		print(output, message);
+	public void usingTableParameterNameForParameter(String name, int position) {
+		print(output, format(USING_NAME_FOR_PARAMETER, TABLE_PARAMETER, name,
+				position));
 	}
 
-	public void usingNaturalOrderForArg(int position) {
-		String message = format(USING_NATURAL_ORDER_FOR_ARG, position);
-		print(output, message);
+	public void usingNaturalOrderForParameter(int position) {
+		print(output, format(USING_NATURAL_ORDER_FOR_PARAMETER, position));
 	}
 
-	public void foundArg(String arg, int position) {
-		String message = format(FOUND_ARG, arg, position);
-		print(output, message);
+	public void foundParameter(String parameter, int position) {
+		print(output, format(FOUND_PARAMETER, parameter, position));
 	}
 
 	protected void print(PrintStream output, String message) {

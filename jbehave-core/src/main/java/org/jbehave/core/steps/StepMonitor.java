@@ -5,8 +5,6 @@ import java.lang.reflect.Type;
 
 /**
  * Interface to monitor step events
- * 
- * @author Mauro Talevi
  */
 public interface StepMonitor {
 
@@ -20,15 +18,15 @@ public interface StepMonitor {
 
     void performing(String step, boolean dryRun);
 
-	void usingAnnotatedNameForArg(String name, int position);
+	void usingAnnotatedNameForParameter(String name, int position);
 
-	void usingParameterNameForArg(String name, int position);
+	void usingParameterNameForParameter(String name, int position);
 
-	void usingTableAnnotatedNameForArg(String name, int position);
+	void usingTableAnnotatedNameForParameter(String name, int position);
 
-	void usingTableParameterNameForArg(String name, int position);
+	void usingTableParameterNameForParameter(String name, int position);
 
-	void usingNaturalOrderForArg(int position);
+	void usingNaturalOrderForParameter(int position);
 
-	void foundArg(String arg, int position);
+	void foundParameter(String parameter, int position);
 }
