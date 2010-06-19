@@ -24,8 +24,8 @@ the <a
 via the <a
     href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a></p>
 <pre class="brush: java">
-   Configuration configuration = new MostUsefulConfiguration();
-   configuration.usePendingStepStrategy(new FailingPendingStepStrategy());
+   Configuration configuration = new MostUsefulConfiguration()
+        .usePendingStepStrategy(new FailingPendingStepStrategy());
 </pre>
 
 <h2>Dry Run Mode</h2>
@@ -35,10 +35,10 @@ executed any of the steps, as this may take a considerable time.  The dry-run mo
 the <a href="javadoc/core/org/jbehave/core/steps/Configuration.html">Configuration</a>:</p>
  
 <pre class="brush: java">
-Configuration configuration = new MostUsefulConfiguration()
-	.useStepMonitor(new PrintStreamStepMonitor()) // default is SilentStepMonitor()
-	.doDryRun(true); // default is "false"
-new InstanceStepsFactory(configuration, new MySteps());
+    Configuration configuration = new MostUsefulConfiguration()
+	   .useStepMonitor(new PrintStreamStepMonitor()) // default is SilentStepMonitor()
+	   .doDryRun(true); // default is "false"
+    new InstanceStepsFactory(configuration, new MySteps());
 </pre>
 
 <p>We've here configured the steps to use a verbose monitoring, so that the use can see that in dry-run mode 
