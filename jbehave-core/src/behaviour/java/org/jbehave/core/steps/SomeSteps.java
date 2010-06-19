@@ -69,6 +69,10 @@ public class SomeSteps extends Steps {
         this.args = args;
     }
 
+    public ExamplesTable aMethodReturningExamplesTable(String value){
+    	return new ExamplesTable(value);
+    }
+    
     public static Method methodFor(String methodName) throws IntrospectionException {
         BeanInfo beanInfo = Introspector.getBeanInfo(SomeSteps.class);
         for (MethodDescriptor md : beanInfo.getMethodDescriptors()) {

@@ -21,7 +21,7 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.examples.trader.converters.TraderConverter;
+import org.jbehave.examples.trader.converters.DateConverter;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
@@ -42,8 +42,8 @@ public class ClasspathTraderEmbedder extends Embedder {
         		.withCodeLocation(CodeLocations.codeLocationFromClass(embedderClass))
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
-			.useParameterConverters(new ParameterConverters(
-							new TraderConverter(mockTradePersister())))
+            .useParameterConverters(new ParameterConverters()
+                	.addConverters(new DateConverter("dd/MM/yyyy")))
 			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
 							"%")) // use '%' instead of '$' to identify parameters
 			.useStepMonitor(new SilentStepMonitor())

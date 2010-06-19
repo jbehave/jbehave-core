@@ -12,6 +12,7 @@ This scenario shows that the same step pattern can be used for different step ty
 GivenStories: org/jbehave/examples/trader/stories/trader_is_alerted_of_status.story
 
 Given the alert status is OFF
+Given a date of 01/01/2010
 Given a trader of name Mauro
 And the alert status is OFF
 Given a stock of symbol STK1 and a threshold of 1.5
@@ -19,3 +20,4 @@ When the stock is traded at price 2.0
 Then the alert status is ON
 When the trader sells all stocks
 Then the trader is left with no stocks
+Then the date is 01/01/2010

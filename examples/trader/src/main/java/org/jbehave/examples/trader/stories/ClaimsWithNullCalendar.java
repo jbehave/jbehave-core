@@ -16,7 +16,7 @@ public class ClaimsWithNullCalendar extends JUnitStory {
 
 	public ClaimsWithNullCalendar() {
 		Configuration configuration = new MostUsefulConfiguration()
-				.useParameterConverters(new ParameterConverters(
+				.useParameterConverters(new ParameterConverters().addConverters(
 						new CalendarConverter("dd/MM/yyyy")));
 		addSteps(new InstanceStepsFactory(configuration, new CalendarSteps())
 				.createCandidateSteps());

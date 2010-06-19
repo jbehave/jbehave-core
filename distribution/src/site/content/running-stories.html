@@ -70,8 +70,8 @@ public class ClasspathTraderEmbedder extends Embedder {
 				.withFormats(CONSOLE, TXT, HTML, XML))
 			.useEmbedderControls(new EmbedderControls()
 					.doIgnoreFailureInStories(true).doIgnoreFailureInReports(true))
-			.useParameterConverters(new ParameterConverters(
-							new TraderConverter(mockTradePersister())))
+			.useParameterConverters(new ParameterConverters()
+					.addConverter(new DateConverter("dd/MM/yyyy")))
 			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
 							"%")) // use '%' instead of '$' to identify parameters
 			.useStepMonitor(new SilentStepMonitor());
@@ -83,10 +83,6 @@ public class ClasspathTraderEmbedder extends Embedder {
 		return asList(new StepsFactory(configuration())
 				.createCandidateSteps(new TraderSteps(new TradingService()),
 						new BeforeAfterSteps()));
-	}
-
-	protected TraderPersister mockTradePersister() {
-		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1", 10.d))));
 	}
 
 	public List<String> storyPaths() {

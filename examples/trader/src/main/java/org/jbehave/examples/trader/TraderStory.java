@@ -1,6 +1,5 @@
 package org.jbehave.examples.trader;
 
-import static java.util.Arrays.asList;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
@@ -23,10 +22,7 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.examples.trader.converters.TraderConverter;
-import org.jbehave.examples.trader.model.Stock;
-import org.jbehave.examples.trader.model.Trader;
-import org.jbehave.examples.trader.persistence.TraderPersister;
+import org.jbehave.examples.trader.converters.DateConverter;
 import org.jbehave.examples.trader.service.TradingService;
 
 /**
@@ -52,10 +48,10 @@ public abstract class TraderStory extends JUnitStory {
                 	.withViewResources(rendering)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
                 	.withFailureTrace(false))
+                .useParameterConverters(new ParameterConverters()
+                	.addConverters(new DateConverter("dd/MM/yyyy")))
                 .useStoryPathResolver(storyPathResolver)
                 .useStepMonitor(new SilentStepMonitor())
-                .useParameterConverters(new ParameterConverters(
-        				new TraderConverter(mockTradePersister())))
         		.useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
         		
 		useConfiguration(configuration);
@@ -69,11 +65,6 @@ public abstract class TraderStory extends JUnitStory {
 		return new InstanceStepsFactory(configuration, new TraderSteps(
 				new TradingService()), new BeforeAfterSteps())
 				.createCandidateSteps();
-	}
-
-	private TraderPersister mockTradePersister() {
-		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
-				10.d))));
 	}
 
 }

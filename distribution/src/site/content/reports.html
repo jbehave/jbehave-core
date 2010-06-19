@@ -60,8 +60,6 @@ to a file:</p>
                 	.withFailureTrace(false))
                 .useStoryPathResolver(storyPathResolver)
                 .useStepMonitor(new SilentStepMonitor())
-                .useParameterConverters(new ParameterConverters(
-        				new TraderConverter(mockTradePersister())))
         		.useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
         		
 		useConfiguration(configuration);

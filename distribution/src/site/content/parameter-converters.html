@@ -63,12 +63,12 @@ implementations of this interface. Specifically:</p>
     <li>NumberConverter</li>
     <li>NumberListConverter</li>
     <li>StringListConverter</li>
+    <li>ExamplesTableConverter</li>
 </ul>
 
-<h3>Support for custom parameter converters</h3>
+<h3>Custom parameter converters</h3>
 
-<p>This mechanism then allows for custom converters to be defined
-too. For example, let's consider the case of date conversion, a rather
+<p>For example, let's consider the case of date conversion, a rather
 common one. The step would typically look like:</p>
 <pre class="brush: bdd">
     When a stock of symbol STK1 is traded on 09/09/2009
@@ -117,15 +117,38 @@ public class DateConverter implements ParameterConverter {
 <p>Then we configure the use of the newly defined <b>DateConverter</b>
 in our Steps class:</p>
 <pre class="brush: java">
-    private static final StepsConfiguration configuration = new StepsConfiguration();
-
-    public MySteps(ClassLoader classLoader) {
-        super(configuration);
-        configuration.useParameterConverters(new ParameterConverters(
-               new DateConverter("dd/MM/yyyy)));  // define converter for custom type Date
+    public MyStory() {
+        useConfiguration(new MostUseflConfiguration()
+            .useParameterConverters(new ParameterConverters()
+               .addConverter(new DateConverter("dd/MM/yyyy))));  // define converter for custom type Date
     }
 
 </pre>
+
+<h3>Annotated methods as parameter converters</h3>
+
+<p>In some cases defining the converter in Configuration is not an option as the conversion is much more dynamical 
+in nature.  In this case, one can annotated Steps method to act as parameter converters when annotated by 
+<a href="javadoc/core/org/jbehave/core/annotations/AsParameterConverter.html">@AsParameterConverter</a>:
+</p>
+
+<pre class="brush: java">
+    public MySteps() {
+        // Method used as dynamical parameter converter
+        @AsParameterConverter
+        public Trader createTrader(String name){
+            return mockTradePersister().retrieveTrader(name);
+        }
+    
+        private TraderPersister mockTradePersister() {
+            return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
+                10.d))));
+        }
+
+    }
+</pre>
+
+
 <div class="clear">
 <hr />
 </div>

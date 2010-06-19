@@ -17,20 +17,29 @@ import org.jbehave.core.steps.ParameterConverters;
 
 public class ItTraderStory extends JUnitStory {
 
-    public ItTraderStory() {
-        // use Italian for keywords
-        ClassLoader classLoader = this.getClass().getClassLoader();
-        Keywords keywords = new LocalizedKeywords(new Locale("it"), new StringCoder(), "org/jbehave/examples/trader/i18n/keywords", classLoader);
-        Configuration configuration = new MostUsefulConfiguration()
-        	.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"))
-        	.useKeywords(keywords)
-        	.useStoryParser(new RegexStoryParser(keywords))
-        	.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))
-        	.useDefaultStoryReporter(new ConsoleOutput(keywords))
-        	.useKeywords(keywords)
-        	.useParameterConverters(new ParameterConverters(new ParameterConverters.ExamplesTableConverter(keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator())));
-        useConfiguration(configuration);
-        addSteps(new InstanceStepsFactory(configuration, new ItTraderSteps()).createCandidateSteps());
-    }
+	public ItTraderStory() {
+		// use Italian for keywords
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		Keywords keywords = new LocalizedKeywords(new Locale("it"),
+				new StringCoder(), "org/jbehave/examples/trader/i18n/keywords",
+				classLoader);
+		Configuration configuration = new MostUsefulConfiguration()
+				.useStoryPathResolver(
+						new UnderscoredCamelCaseResolver(".story"))
+				.useKeywords(keywords)
+				.useStoryParser(new RegexStoryParser(keywords))
+				.useStoryLoader(
+						new LoadFromClasspath(this.getClass().getClassLoader()))
+				.useDefaultStoryReporter(new ConsoleOutput(keywords))
+				.useKeywords(keywords)
+				.useParameterConverters(
+						new ParameterConverters()
+								.addConverters(new ParameterConverters.ExamplesTableConverter(
+										keywords.examplesTableHeaderSeparator(),
+										keywords.examplesTableValueSeparator())));
+		useConfiguration(configuration);
+		addSteps(new InstanceStepsFactory(configuration, new ItTraderSteps())
+				.createCandidateSteps());
+	}
 
 }

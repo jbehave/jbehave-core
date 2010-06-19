@@ -2,6 +2,7 @@ package org.jbehave.core.steps;
 
 import static java.util.Arrays.asList;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -15,18 +16,16 @@ import org.jbehave.core.model.ExamplesTable;
 
 /**
  * Facade responsible for converting parameter values to Java objects.
- * 
- * @author Elizabeth Keogh
- * @author Mauro Talevi
  */
 public class ParameterConverters {
 
 	private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
-	private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
+	private static final String SYSTEM_NEWLINE = System
+			.getProperty("line.separator");
 	private static final String COMMA = ",";
-	private static final List<ParameterConverter> DEFAULT_CONVERTERS = asList(
+	private static final ParameterConverter[] DEFAULT_CONVERTERS = {
 			new NumberConverter(), new NumberListConverter(),
-			new StringListConverter(), new ExamplesTableConverter());
+			new StringListConverter(), new ExamplesTableConverter() };
 	private final StepMonitor monitor;
 	private final List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
 
@@ -34,15 +33,18 @@ public class ParameterConverters {
 		this(new SilentStepMonitor());
 	}
 
-	public ParameterConverters(ParameterConverter... customConverters) {
-		this(new SilentStepMonitor(), customConverters);
+	public ParameterConverters(StepMonitor monitor){
+		this.monitor = monitor;
+		this.addConverters(DEFAULT_CONVERTERS);
 	}
 
-	public ParameterConverters(StepMonitor monitor,
-			ParameterConverter... customConverters) {
-		this.monitor = monitor;
-		this.converters.addAll(asList(customConverters));
-		this.converters.addAll(DEFAULT_CONVERTERS);
+	public ParameterConverters addConverters(ParameterConverter... converters) {
+		return addConverters(asList(converters));
+	}
+
+	public ParameterConverters addConverters(List<ParameterConverter> converters) {
+		this.converters.addAll(0, converters);
+		return this;
 	}
 
 	public Object convert(String value, Type type) {
@@ -72,9 +74,9 @@ public class ParameterConverters {
 	}
 
 	@SuppressWarnings("serial")
-	public static class InvalidParameterException extends RuntimeException {
+	public static class ParameterConvertionFailed extends RuntimeException {
 
-		public InvalidParameterException(String message, Throwable cause) {
+		public ParameterConvertionFailed(String message, Throwable cause) {
 			super(message, cause);
 		}
 
@@ -84,7 +86,8 @@ public class ParameterConverters {
 		@SuppressWarnings("unchecked")
 		private static List<Class> acceptedClasses = asList(new Class[] {
 				Integer.class, int.class, Long.class, long.class, Double.class,
-				double.class, Float.class, float.class, BigDecimal.class, BigInteger.class });
+				double.class, Float.class, float.class, BigDecimal.class,
+				BigInteger.class });
 
 		public boolean accept(Type type) {
 			if (type instanceof Class<?>) {
@@ -114,7 +117,7 @@ public class ParameterConverters {
 
 	public static class NumberListConverter implements ParameterConverter {
 
-	    private NumberConverter numberConverter = new NumberConverter();
+		private NumberConverter numberConverter = new NumberConverter();
 		private NumberFormat numberFormat;
 		private String valueSeparator;
 
@@ -139,43 +142,44 @@ public class ParameterConverters {
 			return false;
 		}
 
-        private Type rawType(Type type) {
-            return ((ParameterizedType) type).getRawType();
-        }
+		private Type rawType(Type type) {
+			return ((ParameterizedType) type).getRawType();
+		}
 
-        private Type argumentType(Type type) {
-            return ((ParameterizedType) type).getActualTypeArguments()[0];
-        }
+		private Type argumentType(Type type) {
+			return ((ParameterizedType) type).getActualTypeArguments()[0];
+		}
 
 		@SuppressWarnings("unchecked")
-        public Object convertValue(String value, Type type) {
-            Class<? extends Number> argumentType = (Class<? extends Number>) argumentType(type);
+		public Object convertValue(String value, Type type) {
+			Class<? extends Number> argumentType = (Class<? extends Number>) argumentType(type);
 			List<String> values = trim(asList(value.split(valueSeparator)));
-			if ( argumentType.equals(Number.class) ){
-	            return convertWithNumberFormat(values);			    
+			if (argumentType.equals(Number.class)) {
+				return convertWithNumberFormat(values);
 			}
 			return convertWithNumberConverter(values, argumentType);
 		}
 
-        private List<Number> convertWithNumberConverter(List<String> values, Class<? extends Number> type) {
-            List<Number> numbers = new ArrayList<Number>();
-            for (String value : values) {
-                numbers.add((Number) numberConverter.convertValue(value, type));
-            }
-            return numbers;
-        }
+		private List<Number> convertWithNumberConverter(List<String> values,
+				Class<? extends Number> type) {
+			List<Number> numbers = new ArrayList<Number>();
+			for (String value : values) {
+				numbers.add((Number) numberConverter.convertValue(value, type));
+			}
+			return numbers;
+		}
 
-        private List<Number> convertWithNumberFormat(List<String> values) {
-            List<Number> numbers = new ArrayList<Number>();
+		private List<Number> convertWithNumberFormat(List<String> values) {
+			List<Number> numbers = new ArrayList<Number>();
 			for (String numberValue : values) {
 				try {
 					numbers.add(numberFormat.parse(numberValue));
 				} catch (ParseException e) {
-					throw new InvalidParameterException(numberValue, e);
+					throw new ParameterConvertionFailed(numberValue, e);
 				}
 			}
-            return numbers;
-        }
+			return numbers;
+		}
 
 	}
 
@@ -204,7 +208,8 @@ public class ParameterConverters {
 		}
 
 		public Object convertValue(String value, Type type) {
-			if (value.trim().length() == 0) return asList();
+			if (value.trim().length() == 0)
+				return asList();
 			return trim(asList(value.split(valueSeparator)));
 		}
 
@@ -218,30 +223,57 @@ public class ParameterConverters {
 		return trimmed;
 	}
 
-    public static class ExamplesTableConverter implements ParameterConverter {
+	public static class ExamplesTableConverter implements ParameterConverter {
 
-        private String headerSeparator;
-        private String valueSeparator;
+		private String headerSeparator;
+		private String valueSeparator;
 
-        public ExamplesTableConverter() {
-            this("|", "|");
-        }
-        public ExamplesTableConverter(String headerSeparator, String valueSeparator) {
-            this.headerSeparator = headerSeparator;
-            this.valueSeparator = valueSeparator;
-        }
+		public ExamplesTableConverter() {
+			this("|", "|");
+		}
 
-        public boolean accept(Type type) {
-            if (type instanceof Class<?>) {
-                return ExamplesTable.class.isAssignableFrom((Class<?>) type);
-            }
-            return false;
-        }
+		public ExamplesTableConverter(String headerSeparator,
+				String valueSeparator) {
+			this.headerSeparator = headerSeparator;
+			this.valueSeparator = valueSeparator;
+		}
 
-        public Object convertValue(String value, Type type) {
-            return new ExamplesTable(value, headerSeparator, valueSeparator);
-        }
+		public boolean accept(Type type) {
+			if (type instanceof Class<?>) {
+				return ExamplesTable.class.isAssignableFrom((Class<?>) type);
+			}
+			return false;
+		}
 
-    }
-	
+		public Object convertValue(String value, Type type) {
+			return new ExamplesTable(value, headerSeparator, valueSeparator);
+		}
+
+	}
+
+	public static class MethodReturningConverter implements ParameterConverter {
+		private Object instance;
+		private Method method;
+
+		public MethodReturningConverter(Method method, Object instance) {
+			this.method = method;
+			this.instance = instance;
+		}
+
+		public boolean accept(Type type) {
+			if (type instanceof Class<?>) {
+				return method.getReturnType().isAssignableFrom((Class<?>) type);
+			}
+			return false;
+		}
+
+		public Object convertValue(String value, Type type) {
+			try {
+				return method.invoke(instance, value);
+			} catch (Exception e) {
+				throw new ParameterConvertionFailed("Failed to invoke method "+method+" with value "+value+ " in "+instance, e);
+			}
+		}
+
+	}
 }

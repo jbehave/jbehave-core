@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.apache.commons.lang.StringUtils;
-import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 public class CalendarConverter implements ParameterConverter {
@@ -39,9 +38,5 @@ public class CalendarConverter implements ParameterConverter {
         return new CalendarConverter("MM/dd/yyyy");
     }
     
-    public static ParameterConverters monthDayYearWrapped() {
-        return new ParameterConverters(monthDayYear());
-    }
- 
 }
 

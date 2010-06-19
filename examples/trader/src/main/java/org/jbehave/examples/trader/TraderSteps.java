@@ -1,15 +1,18 @@
 package org.jbehave.examples.trader;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Aliases;
+import org.jbehave.core.annotations.AsParameterConverter;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
@@ -21,6 +24,7 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.model.Stock.AlertStatus;
+import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
 
 /**
@@ -35,9 +39,20 @@ public class TraderSteps {
     private Trader trader;
     private List<Trader> traders = new ArrayList<Trader>();
     private List<Trader> searchedTraders;
+	private Date date;
         
     public TraderSteps(TradingService service) {
         this.service = service;
+    }
+
+    @Given("a date of %date")
+    public void aDate(Date date) {
+		this.date = date;
+    }
+    
+    @Then("the date is %date")
+    public void theDate(Date date) {
+		assertThat(date, equalTo(this.date));
     }
 
     @Given("a trader of name %trader")
@@ -118,9 +133,21 @@ public class TraderSteps {
         trader.sellAllStocks();
     }
 
-    @Then ("the trader is left with no stocks")
+    @Then("the trader is left with no stocks")
     public void theTraderIsLeftWithNoStocks() {
         assertThat(trader.getStocks().size(), equalTo(0));
     }
+    
+    // Method used as dynamical parameter converter
+    @AsParameterConverter
+    public Trader createTrader(String name){
+    	return mockTradePersister().retrieveTrader(name);
+    }
+    
+	private TraderPersister mockTradePersister() {
+		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
+				10.d))));
+	}
+
 
 }

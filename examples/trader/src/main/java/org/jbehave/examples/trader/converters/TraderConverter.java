@@ -2,7 +2,7 @@ package org.jbehave.examples.trader.converters;
 
 import java.lang.reflect.Type;
 
-import org.jbehave.core.steps.ParameterConverters.InvalidParameterException;
+import org.jbehave.core.steps.ParameterConverters.ParameterConvertionFailed;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
@@ -24,7 +24,7 @@ public class TraderConverter implements ParameterConverter {
     public Object convertValue(String value, Type type) {
         Trader trader = persister.retrieveTrader(value);
         if (trader == null) {
-            throw new InvalidParameterException("Trader not found for name " + value, null);
+            throw new ParameterConvertionFailed("Trader not found for name " + value, null);
         }
         return trader;
     }
