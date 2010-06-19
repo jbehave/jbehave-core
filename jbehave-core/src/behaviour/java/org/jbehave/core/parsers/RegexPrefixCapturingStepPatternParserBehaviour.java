@@ -9,62 +9,62 @@ import org.junit.Test;
 
 public class RegexPrefixCapturingStepPatternParserBehaviour {
 
-    private static final String NL = System.getProperty("line.separator");
+    private StepPatternParser parser = new RegexPrefixCapturingPatternParser();
 
     @Test
-    public void shouldReplaceAllDollarArgumentsWithCaptures() {
-        StepPatternParser parser = new RegexPrefixCapturingPatternParser();
-        assertThat(parser.parseStep("a house with $numberOfDoors doors and $some windows").matches("a house with 3 doors and 4 windows"), is(true));
-        assertThat(parser.parseStep("the house on $street").matches("the house on Easy Street"), is(true));
-        assertThat(parser.parseStep("$number houses").matches("5 houses"), is(true));
-        assertThat(parser.parseStep("my house").matches("my house"), is(true));
+    public void shouldMatchStepWithPatterns() {
+        assertThatPatternMatchesStep("a house with $numberOfDoors doors and $some windows", "a house with 3 doors and 4 windows", "numberOfDoors", "some");
+        assertThatPatternMatchesStep("the house on $street", "the house on Easy Street", "street");
+        assertThatPatternMatchesStep("$number houses", "5 houses", "number");
+        assertThatPatternMatchesStep("my house", "my house");
+        assertThatPatternMatchesStep("I toggle the cell at ( $column , $row )", "I toggle the cell at ( 3 , 4 )", "column", "row");
+        assertThatPatternMatchesStep("$name should ask, \"Why?\"", "Fred should ask, \"Why?\"", "name");
+        assertThatPatternMatchesStep("$thousands x 10^3", "2 x 10^3", "thousands");
     }
     
     @Test
-    public void shouldEscapeExistingPunctuationUsedInRegexps() {
-        StepPatternParser parser = new RegexPrefixCapturingPatternParser();
-        assertThat(parser.parseStep("I toggle the cell at ($column, $row)").matches("I toggle the cell at (3, 4)"), is(true));
-        assertThat(parser.parseStep("$name should ask, \"Why?\"").matches("Fred should ask, \"Why?\""), is(true));
-        assertThat(parser.parseStep("$thousands x 10^3").matches("2 x 10^3"), is(true));
-        
-        StepMatcher aMatcherWithAllTheRegexpPunctuation = parser
+    public void shouldEscapeExistingRegexPunctuationUsedInPatterns() {
+        StepMatcher aMatcherWithAllTheRegexPunctuation = parser
             .parseStep("$regexp should not be confused by []{}?^.*()+\\");
-        assertThat(aMatcherWithAllTheRegexpPunctuation.matches("[]{}?^.*()+\\ should not be confused by []{}?^.*()+\\"), is(true));
-        assertThat(aMatcherWithAllTheRegexpPunctuation.parameter(1), equalTo("[]{}?^.*()+\\"));
+        assertThat(aMatcherWithAllTheRegexPunctuation.matches("[]{}?^.*()+\\ should not be confused by []{}?^.*()+\\"), is(true));
+        assertThat(aMatcherWithAllTheRegexPunctuation.parameter(1), equalTo("[]{}?^.*()+\\"));
     }
     
+    private void assertThatPatternMatchesStep(String pattern, String step, String... parametersNames) {
+        StepMatcher stepMatcher = parser.parseStep(pattern);
+        assertThat(stepMatcher.matches(step), is(true));
+        assertThat(stepMatcher.parameterNames(), equalTo(parametersNames));
+    }
+
     @Test
     public void shouldNotCareSoMuchAboutWhitespace() {
-        StepPatternParser parser = new RegexPrefixCapturingPatternParser();
         StepMatcher stepMatcher = parser.parseStep("The grid looks like $grid");
 
         // Given an argument on a new line
         assertThat(stepMatcher.matches(
-        		"The grid looks like" + NL +
-                ".." + NL +
-                ".." + NL), is(true));
+        		"The grid looks like\n" +
+                "..\n" +
+                "..\n"), is(true));
         assertThat(stepMatcher.parameter(1), equalTo(
-                ".." + NL +
-                ".." + NL));
+                "..\n" +
+                "..\n"));
         
         // Given an argument on a new line with extra spaces
         assertThat(stepMatcher.matches(
-        		"The grid looks like " + NL +
-                ".." + NL +
-                ".." + NL), is(true));
+        		"The grid looks like \n" +
+                "..\n" +
+                "..\n"), is(true));
         assertThat(stepMatcher.parameter(1), equalTo(
-                ".." + NL +
-                ".." + NL));
+                "..\n" +
+                "..\n"));
         
         // Given an argument with extra spaces
         assertThat(stepMatcher.matches("The grid looks like  ."), is(true));
-        assertThat(stepMatcher.parameter(1), equalTo(
-                "."));        
+        assertThat(stepMatcher.parameter(1), equalTo("."));
     }
     
     @Test
     public void shouldExtractParameterNamesFromStepPattern(){
-    	StepPatternParser parser = new RegexPrefixCapturingPatternParser();
         String[] names  = parser.parseStep("The grid $name looks like $grid").parameterNames();
         assertThat(names.length, equalTo(2));
         assertThat(names[0], equalTo("name"));
