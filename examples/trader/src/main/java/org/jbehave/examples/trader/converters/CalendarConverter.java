@@ -34,9 +34,5 @@ public class CalendarConverter implements ParameterConverter {
         }
     }
 
-    public static ParameterConverter monthDayYear() {
-        return new CalendarConverter("MM/dd/yyyy");
-    }
-    
 }
 

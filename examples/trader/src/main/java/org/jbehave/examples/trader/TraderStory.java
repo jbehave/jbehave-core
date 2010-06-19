@@ -6,6 +6,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
 
@@ -22,7 +23,7 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.examples.trader.converters.DateConverter;
+import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.examples.trader.service.TradingService;
 
 /**
@@ -49,7 +50,7 @@ public abstract class TraderStory extends JUnitStory {
                 	.withFormats(CONSOLE, TXT, HTML, XML)
                 	.withFailureTrace(false))
                 .useParameterConverters(new ParameterConverters()
-                	.addConverters(new DateConverter("dd/MM/yyyy")))
+                	.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
                 .useStoryPathResolver(storyPathResolver)
                 .useStepMonitor(new SilentStepMonitor())
         		.useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));

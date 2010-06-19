@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -50,6 +51,14 @@ public class TraderSteps {
 		this.date = date;
     }
     
+    @When("%days days pass")
+    public void daysPass(int days) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.add(Calendar.DAY_OF_YEAR, days);
+		date = calendar.getTime();
+    }
+
     @Then("the date is %date")
     public void theDate(Date date) {
 		assertThat(date, equalTo(this.date));

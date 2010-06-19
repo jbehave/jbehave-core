@@ -70,8 +70,6 @@ public class ClasspathTraderEmbedder extends Embedder {
 				.withFormats(CONSOLE, TXT, HTML, XML))
 			.useEmbedderControls(new EmbedderControls()
 					.doIgnoreFailureInStories(true).doIgnoreFailureInReports(true))
-			.useParameterConverters(new ParameterConverters()
-					.addConverter(new DateConverter("dd/MM/yyyy")))
 			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
 							"%")) // use '%' instead of '$' to identify parameters
 			.useStepMonitor(new SilentStepMonitor());

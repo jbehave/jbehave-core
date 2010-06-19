@@ -6,6 +6,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
@@ -21,7 +22,7 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.examples.trader.converters.DateConverter;
+import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
@@ -43,8 +44,8 @@ public class ClasspathTraderEmbedder extends Embedder {
         		.withDefaultFormats()
 				.withFormats(CONSOLE, TXT, HTML, XML))
             .useParameterConverters(new ParameterConverters()
-                	.addConverters(new DateConverter("dd/MM/yyyy")))
-			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
+                	.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
+            .useStepPatternParser(new RegexPrefixCapturingPatternParser(
 							"%")) // use '%' instead of '$' to identify parameters
 			.useStepMonitor(new SilentStepMonitor())
 			.useEmbedderControls(new EmbedderControls()

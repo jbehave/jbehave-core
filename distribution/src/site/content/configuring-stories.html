@@ -46,8 +46,6 @@ public abstract class TraderStory extends JUnitStory {
                 	.withViewResources(viewProperties)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
                 	.withFailureTrace(false))
-                .useParameterConverters(new ParameterConverters()
-                    .addConverters(new DateConverter("dd/MM/yyyy")))
                 .useStoryPathResolver(storyPathResolver)
                 .useStepMonitor(new SilentStepMonitor())
                 .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));

@@ -63,6 +63,7 @@ implementations of this interface. Specifically:</p>
     <li>NumberConverter</li>
     <li>NumberListConverter</li>
     <li>StringListConverter</li>
+    <li>DateConverter</li>
     <li>ExamplesTableConverter</li>
 </ul>
 
@@ -80,47 +81,17 @@ common one. The step would typically look like:</p>
         // ...
     }
 </pre>
-<p>Out of the box, JBehave cannot know how to convert the argument
-value <b>"09/09/2009"</b> to a Date object. Date formats are far from
-standard. In this case, we want to use the date format </b>"dd/MM/yyyy"</b> and
-configure the parameter converter for Date type. An implementation of
-Date converter, backed up a <a
-    href="http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>,
-could be:</p>
-
-<pre class="brush: java">
-public class DateConverter implements ParameterConverter {
-
-    private final SimpleDateFormat dateFormat;
-
-	public DateConverter(String dateFormat) {
-		this.dateFormat = new SimpleDateFormat(dateFormat);
-    }
-
-    public boolean accept(Type type) {
-        if (type instanceof Class<?>) {
-            return Date.class.isAssignableFrom((Class<?>) type);
-        }
-        return false;
-    }
-
-    public Object convertValue(String value, Type type) {
-    	try {
-			return dateFormat.parse(value);
-		} catch (ParseException e) {
-			throw new RuntimeException("Could not convert value "+value+" with format "+dateFormat.toPattern());
-		}
-    }
-
-}
-</pre>
-<p>Then we configure the use of the newly defined <b>DateConverter</b>
-in our Steps class:</p>
+<p>Out of the box, JBehave provides a  <a
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters#DateConverter.html">DateConverter</a>
+backed up with a <a
+    href="http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
+    with format <b>dd/MM/yyyy</b>.  To configure the use of a<b>DateConverter</b> with a different date pattern:
+</p>
 <pre class="brush: java">
     public MyStory() {
         useConfiguration(new MostUseflConfiguration()
             .useParameterConverters(new ParameterConverters()
-               .addConverter(new DateConverter("dd/MM/yyyy))));  // define converter for custom type Date
+               .addConverter(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))));  // date converter with custom date pattern
     }
 
 </pre>

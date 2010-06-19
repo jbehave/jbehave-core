@@ -7,15 +7,30 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.jbehave.core.model.ExamplesTable;
 
 /**
+ * <p>
  * Facade responsible for converting parameter values to Java objects.
+ * </p>
+ * <p>
+ * A number of default converters are provided:
+ * <ul>
+ * <li>{@link ParameterConverters#NumberConverter}</li>
+ * <li>{@link ParameterConverters#NumberListConverter}</li>
+ * <li>{@link ParameterConverters#StringListConverter}</li>
+ * <li>{@link ParameterConverters#DateConverter}</li>
+ * <li>{@link ParameterConverters#ExamplesTableConverter}</li>
+ * </ul>
+ * </p>
  */
 public class ParameterConverters {
 
@@ -25,7 +40,8 @@ public class ParameterConverters {
 	private static final String COMMA = ",";
 	private static final ParameterConverter[] DEFAULT_CONVERTERS = {
 			new NumberConverter(), new NumberListConverter(),
-			new StringListConverter(), new ExamplesTableConverter() };
+			new StringListConverter(), new DateConverter(),
+			new ExamplesTableConverter() };
 	private final StepMonitor monitor;
 	private final List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
 
@@ -33,7 +49,7 @@ public class ParameterConverters {
 		this(new SilentStepMonitor());
 	}
 
-	public ParameterConverters(StepMonitor monitor){
+	public ParameterConverters(StepMonitor monitor) {
 		this.monitor = monitor;
 		this.addConverters(DEFAULT_CONVERTERS);
 	}
@@ -82,6 +98,16 @@ public class ParameterConverters {
 
 	}
 
+	/**
+	 * Converts values to numbers. Supports
+	 * <ul>
+	 * <li>Integer, int</li>
+	 * <li>Long, long</li>
+	 * <li>Double, double</li>
+	 * <li>Float, float</li>
+	 * <li>BigDecimale, BigInteger</li>
+	 * </ul>
+	 */
 	public static class NumberConverter implements ParameterConverter {
 		@SuppressWarnings("unchecked")
 		private static List<Class> acceptedClasses = asList(new Class[] {
@@ -115,6 +141,11 @@ public class ParameterConverters {
 
 	}
 
+	/**
+	 * Converts value to list of numbers. Splits value to a list, using an
+	 * injectable value separator (defaults to ",") and converts each element of
+	 * list via the {@link NumberCoverter}.
+	 */
 	public static class NumberListConverter implements ParameterConverter {
 
 		private NumberConverter numberConverter = new NumberConverter();
@@ -183,6 +214,11 @@ public class ParameterConverters {
 
 	}
 
+	/**
+	 * Converts value to list of String. Splits value to a list, using an
+	 * injectable value separator (defaults to ",") and trimming each element of
+	 * the list.
+	 */
 	public static class StringListConverter implements ParameterConverter {
 
 		private String valueSeparator;
@@ -221,6 +257,40 @@ public class ParameterConverters {
 			trimmed.add(value.trim());
 		}
 		return trimmed;
+	}
+
+	/**
+	 * Parses value to a {@link Date} using an injectable {@link DateFormat}
+	 * (defaults to <b>new SimpleDateFormat("dd/MM/yyyy")</b>)
+	 */
+	public static class DateConverter implements ParameterConverter {
+
+		private final DateFormat dateFormat;
+
+		public DateConverter() {
+			this(new SimpleDateFormat("dd/MM/yyyy"));
+		}
+
+		public DateConverter(DateFormat dateFormat) {
+			this.dateFormat = dateFormat;
+		}
+
+		public boolean accept(Type type) {
+			if (type instanceof Class<?>) {
+				return Date.class.isAssignableFrom((Class<?>) type);
+			}
+			return false;
+		}
+
+		public Object convertValue(String value, Type type) {
+			try {
+				return dateFormat.parse(value);
+			} catch (ParseException e) {
+				throw new ParameterConvertionFailed("Could not convert value "
+						+ value + " with date format " + dateFormat, e);
+			}
+		}
+
 	}
 
 	public static class ExamplesTableConverter implements ParameterConverter {
@@ -271,7 +341,9 @@ public class ParameterConverters {
 			try {
 				return method.invoke(instance, value);
 			} catch (Exception e) {
-				throw new ParameterConvertionFailed("Failed to invoke method "+method+" with value "+value+ " in "+instance, e);
+				throw new ParameterConvertionFailed("Failed to invoke method "
+						+ method + " with value " + value + " in " + instance,
+						e);
 			}
 		}
 
