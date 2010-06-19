@@ -118,15 +118,12 @@ public class StepCreator {
 		}
 	}
 
-	public Step createParametrisedStep(final Method method, final String stepAsString, Map<String, String> tableRow) {
-        String[] annotationNames = annotatedParameterNames(method);
-        String[] parameterNames = paranamer.lookupParameterNames(method, false);
-        Type[] types = method.getGenericParameterTypes();
-        String[] parameters = parametersForStep(tableRow, types, annotationNames, parameterNames);
-        final Object[] convertedParameters = convertParameters(parameters, types);
-        final String parametrisedStep = parametrisedStep(stepAsString, tableRow, types, annotationNames, parameterNames, parameters);
+	public Step createParametrisedStep(final Method method, final String stepAsString, final String stepWithoutStartingWord, final Map<String, String> tableRow) {
         return new Step() {
-            public StepResult perform() {
+            private Object[] convertedParameters;
+			private String parametrisedStep;
+			public StepResult perform() {
+				parametriseStep();
                 try {
 					stepMonitor.performing(stepAsString, dryRun);
 					if (!dryRun) {
@@ -151,9 +148,20 @@ public class StepCreator {
             }
 
             public StepResult doNotPerform() {
+				parametriseStep();
                 return notPerformed(stepAsString).withParameterValues(parametrisedStep);
             }
-
+            
+            private void parametriseStep(){
+        		stepMatcher.find(stepWithoutStartingWord);
+                String[] annotationNames = annotatedParameterNames(method);
+                String[] parameterNames = paranamer.lookupParameterNames(method, false);
+                Type[] types = method.getGenericParameterTypes();
+                String[] parameters = parametersForStep(tableRow, types, annotationNames, parameterNames);
+                convertedParameters = convertParameters(parameters, types);
+                parametrisedStep = parametrisedStep(stepAsString, tableRow, types, annotationNames, parameterNames, parameters);
+            }
+            
         };
     }
     

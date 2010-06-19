@@ -128,9 +128,8 @@ public class CandidateStep {
 
 	public Step createMatchedStep(String stepAsString,
 			Map<String, String> tableRow) {
-		stepMatcher.find(stripStartingWord(stepAsString));
 		return stepCreator.createParametrisedStep(method, stepAsString,
-				tableRow);
+				stripStartingWord(stepAsString), tableRow);
 	}
 
 	private String stripStartingWord(final String stepAsString) {
