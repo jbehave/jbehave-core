@@ -9,11 +9,20 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
 
 /**
- * StepCollector that marks unmatched steps as {@link Pending}
+ * StepCollector that marks unmatched steps as {@link Pending}. It uses a
+ * {@link StepFinder} to collect and prioritise {@link CandidateStep}s.
  */
 public class MarkUnmatchedStepsAsPending implements StepCollector {
 
-	private StepFinder stepFinder = new StepFinder();
+	private final StepFinder stepFinder;
+
+	public MarkUnmatchedStepsAsPending() {
+		this(new StepFinder());
+	}
+
+	public MarkUnmatchedStepsAsPending(StepFinder stepFinder) {
+		this.stepFinder = stepFinder;
+	}
 
 	public List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps,
 			Story story, Stage stage, boolean givenStory) {
@@ -72,13 +81,13 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 
 	private void addMatchedScenarioSteps(Scenario scenario, List<Step> steps,
 			Map<String, String> tableRow, List<CandidateSteps> candidateSteps) {
-		List<CandidateStep> prioritisedCandidates = stepFinder
-				.collectAndPrioritise(candidateSteps);
+		List<CandidateStep> allCandidates = stepFinder
+				.collectCandidates(candidateSteps);
 		String previousNonAndStep = null;
 		for (String stepAsString : scenario.getSteps()) {
 			// pending is default step, overridden below
 			Step step = StepCreator.createPendingStep(stepAsString);
-			for (CandidateStep candidate : prioritisedCandidates) {
+			for (CandidateStep candidate : stepFinder.prioritise(stepAsString, allCandidates)) {
 				if (candidate.ignore(stepAsString)) {
 					// ignorable steps are added
 					// so they can be reported
