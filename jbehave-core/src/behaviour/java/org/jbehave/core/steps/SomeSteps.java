@@ -5,6 +5,7 @@ import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.MethodDescriptor;
 import java.lang.reflect.Method;
+import java.util.Date;
 import java.util.List;
 
 import org.jbehave.core.model.ExamplesTable;
@@ -62,6 +63,10 @@ public class SomeSteps extends Steps {
     }
     
     public void aMethodWithListOfNumbers(List<Number> args) {
+        this.args = args;
+    }
+
+    public void aMethodWithDate(Date args) {
         this.args = args;
     }
 

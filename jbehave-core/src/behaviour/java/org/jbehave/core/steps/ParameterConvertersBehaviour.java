@@ -8,14 +8,18 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
@@ -168,6 +172,30 @@ public class ParameterConvertersBehaviour {
 			List<String> expected) {
 		List<String> list = (List<String>) converters.convert(value, type);
 		assertThat(list.size(), equalTo(expected.size()));
+	}
+
+	@Test
+	public void shouldConvertDateWithDefaultFormat() throws ParseException,
+			IntrospectionException {
+		Type type = SomeSteps.methodFor("aMethodWithDate")
+				.getGenericParameterTypes()[0];
+		ParameterConverters converters = new ParameterConverters();
+		String date = "01/01/2010";
+		assertThat((Date) converters.convert(date, type),
+				equalTo(DateConverter.DEFAULT_FORMAT.parse(date)));
+	}
+
+	@Test
+	public void shouldConvertDateWithCustomFormat() throws ParseException,
+			IntrospectionException {
+		Type type = SomeSteps.methodFor("aMethodWithDate")
+				.getGenericParameterTypes()[0];
+		DateFormat customFormat = new SimpleDateFormat("yyyy-MM-dd");
+		ParameterConverters converters = new ParameterConverters()
+			.addConverters(new DateConverter(customFormat));
+		String date = "2010-01-01";
+		assertThat((Date) converters.convert(date, type),
+				equalTo(customFormat.parse(date)));
 	}
 
 	@Test

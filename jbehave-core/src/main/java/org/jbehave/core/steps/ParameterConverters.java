@@ -265,10 +265,12 @@ public class ParameterConverters {
 	 */
 	public static class DateConverter implements ParameterConverter {
 
+		public static final DateFormat DEFAULT_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
+
 		private final DateFormat dateFormat;
 
 		public DateConverter() {
-			this(new SimpleDateFormat("dd/MM/yyyy"));
+			this(DEFAULT_FORMAT);
 		}
 
 		public DateConverter(DateFormat dateFormat) {
