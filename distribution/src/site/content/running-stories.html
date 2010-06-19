@@ -78,9 +78,8 @@ public class ClasspathTraderEmbedder extends Embedder {
 
 	@Override
 	public List<CandidateSteps> candidateSteps() {
-		return asList(new StepsFactory(configuration())
-				.createCandidateSteps(new TraderSteps(new TradingService()),
-						new BeforeAfterSteps()));
+		return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()),
+                        new BeforeAfterSteps()).createCandidateSteps();
 	}
 
 	public List<String> storyPaths() {

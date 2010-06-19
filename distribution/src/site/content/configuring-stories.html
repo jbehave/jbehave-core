@@ -58,8 +58,8 @@ public abstract class TraderStory extends JUnitStory {
 	}
 
 	protected List<CandidateSteps> createSteps(Configuration configuration) {
-		return new StepsFactory(configuration).createCandidateSteps(
-				new TraderSteps(new TradingService()), new BeforeAfterSteps());
+		return new InstanceStepsFactory(configuration, 
+                new TraderSteps(new TradingService()), new BeforeAfterSteps()).createCandidateSteps();
 	}
 
 }  
@@ -126,7 +126,7 @@ public abstract class SpringTraderStory extends TraderStory {
     }
 
     @Override
-    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
+    protected List<CandidateSteps> createSteps(Configuration configuration) {
         ListableBeanFactory parent = new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml")
                                     .getApplicationContext();
         return new SpringStepsFactory(configuration, parent).createCandidateSteps();
@@ -198,7 +198,7 @@ overrides way to configure via system properties</p>
 <h3>Steps Configuration Elements</h3>
 
 <p>Steps can also be configured to a high degree via the <a
-    href="javadoc/core/org/jbehave/core/steps/StepsConfiguration.html">StepsConfiguration</a>.
+    href="javadoc/core/org/jbehave/core/steps/Configuration.html">Configuration</a>.
 Among the elements that can be configured are:</p>
 <p><a
     href="javadoc/core/org/jbehave/core/parsers/StepPatternParser.html">StepPatternParser</a>:

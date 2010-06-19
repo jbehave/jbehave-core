@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.steps.AbstractStepsFactory;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
 import org.junit.Before;
@@ -40,7 +41,7 @@ public class GuiceStepsFactoryBehaviour {
             }
           });
 
-        GuiceStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
+        AbstractStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
         // When
         List<CandidateSteps> steps = factory.createCandidateSteps();
         // Then 
@@ -59,7 +60,7 @@ public class GuiceStepsFactoryBehaviour {
           });
 
         // When
-        GuiceStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
+        AbstractStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
         List<CandidateSteps> steps = factory.createCandidateSteps();
         // Then
         assertFooStepsFound(steps);
@@ -82,7 +83,7 @@ public class GuiceStepsFactoryBehaviour {
               bind(FooStepsWithDependency.class);
             }
           });
-        GuiceStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
+        AbstractStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
         // When
         factory.createCandidateSteps();
         // Then ... expected exception is thrown        

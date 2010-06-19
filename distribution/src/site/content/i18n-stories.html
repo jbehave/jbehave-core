@@ -62,7 +62,7 @@ public class ItTraderStory extends JUnitStory {
         	.useParameterConverters(new ParameterConverters()
         	   .addConverter(new ParameterConverters.ExamplesTableConverter(keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator())));
         useConfiguration(configuration);
-        addSteps(new StepsFactory(configuration).createCandidateSteps(new ItTraderSteps()));
+        addSteps(new InstanceStepsFactory(configuration, new ItTraderSteps()).createCandidateSteps());
     }
 
 }

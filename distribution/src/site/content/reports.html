@@ -69,8 +69,8 @@ to a file:</p>
 
 	}
 
-    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
-        return new StepsFactory(configuration).createCandidateSteps(new TraderSteps(new TradingService()), new BeforeAfterSteps());
+    protected List<CandidateSteps> createSteps(Configuration configuration) {
+        return new InstanceStepsFactory(configuration, new TraderSteps(new TradingService()), new BeforeAfterSteps()).createCandidateSteps();
     }
 
 ]]></script>

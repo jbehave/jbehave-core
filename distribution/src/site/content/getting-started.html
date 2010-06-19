@@ -91,7 +91,7 @@ e.g. <b>ICanToggleACell.java</b>:</p>
       public class ICanToggleACell extends JUnitStory {
 
         public ICanToggleACell() {
-            addSteps(new StepsFactory().createCandidateSteps(new GridSteps())); // varargs, can have lots of steps
+            addSteps(new InstanceStepsFactory(new GridSteps()).createCandidateSteps()); // varargs, can have lots of steps
         }
       }
 </pre>

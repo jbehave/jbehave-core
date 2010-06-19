@@ -112,8 +112,8 @@ setting system property <b>"org.jbehave.outputall"</b>.</p>
 via the <a href="javadoc/core/org/jbehave/steps/StepsFactory.html">StepsFactory</a>
 </p>
 <pre class="brush: java">
-    StepsConfiguration configuration = ... // optional configuration
-    new StepsFactory(configuration).createCandidateSteps(new TraderSteps()));    
+    Configuration configuration = ... // optional configuration
+    new InstanceStepsFactory(configuration, new TraderSteps()).createCandidateSteps());    
 </pre>
 
 <p>Alternatively, one can extend the <a

@@ -29,7 +29,7 @@ system whose behaviour is being verified.</p>
 public class PicoTraderStory extends TraderStory {
 
     @Override
-    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
+    protected List<CandidateSteps> createSteps(Configuration configuration) {
         PicoContainer parent = createPicoContainer();
         return new PicoStepsFactory(configuration, parent).createCandidateSteps();
     }
@@ -57,7 +57,7 @@ public class PicoTraderStory extends TraderStory {
 public class SpringTraderStory extends TraderStory {
 
     @Override
-    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
+    protected List<CandidateSteps> createSteps(Configuration configuration) {
         ListableBeanFactory parent = createBeanFactory();
         return new SpringStepsFactory(configuration, parent).createCandidateSteps();
     }
@@ -81,7 +81,7 @@ public class SpringTraderStory extends TraderStory {
 public class GuiceTraderStory extends TraderStory {
 
     @Override
-    protected List<CandidateSteps> createSteps(StepsConfiguration configuration) {
+    protected List<CandidateSteps> createSteps(Configuration configuration) {
         Injector parent = createInjector();
         return new GuiceStepsFactory(configuration, parent).createCandidateSteps();
     }

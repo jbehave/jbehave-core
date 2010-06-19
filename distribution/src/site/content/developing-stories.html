@@ -104,8 +104,8 @@ via the <a
     href="javadoc/core/org/jbehave/core/steps/StepsFactory.html">StepsFactory</a>
 </p>
 <pre class="brush: java">
-    StepsConfiguration configuration = ... // optional configuration
-    new StepsFactory(configuration).createCandidateSteps(new TraderSteps()));    
+    Configuration configuration = ... // optional configuration
+    new InstanceStepsFactory(configuration, new TraderSteps()).createCandidateSteps());    
 </pre>
 <p>Each step is annotated with one of the <a href="annotations.html">step
 annotations</a>, each holding a regex pattern as value. The pattern is used
@@ -142,7 +142,7 @@ public class TraderStory extends JUnitStory {
         configuration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
 
         addSteps(new TraderSteps()); // if TraderSteps extends Steps
-        addSteps(new StepsFactory().createCandidateSteps(new TraderSteps())); // if TraderSteps is a POJO
+        addSteps(new InstanceStepsFactory(new TraderSteps()).createCandidateSteps()); // if TraderSteps is a POJO
     }
 }
 </pre>

@@ -118,7 +118,15 @@ in nature.  In this case, one can annotated Steps method to act as parameter con
 
     }
 </pre>
-
+<p>The parameter converter configuration is done in the 
+<a href="javadoc/core/org/jbehave/core/steps/AbstractStepsFactory.html">AbstractStepsFactory</a>
+so you can use any implementation of <a href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
+that extends the abstract implementation, e.g.:</p>
+<pre class="brush: java">
+    public MyStory() {
+        addSteps(new InstanceStepsFactory(configuration(), new MySteps()).createCandidateSteps());
+    }
+</pre>
 
 <div class="clear">
 <hr />

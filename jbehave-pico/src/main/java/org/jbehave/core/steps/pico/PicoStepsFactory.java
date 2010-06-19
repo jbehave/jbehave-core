@@ -1,14 +1,11 @@
 package org.jbehave.core.steps.pico;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.AbstractStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.Steps;
 import org.picocontainer.ComponentAdapter;
 import org.picocontainer.PicoContainer;
 
@@ -20,37 +17,24 @@ import org.picocontainer.PicoContainer;
  * @author Paul Hammant
  * @author Mauro Talevi
  */
-public class PicoStepsFactory implements InjectableStepsFactory {
+public class PicoStepsFactory extends AbstractStepsFactory {
 
-	private final Configuration configuration;
 	private final PicoContainer parent;
 
 	public PicoStepsFactory(Configuration configuration, PicoContainer parent) {
-		this.configuration = configuration;
+		super(configuration);
 		this.parent = parent;
 	}
 
-	public List<CandidateSteps> createCandidateSteps() {
-		List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
+	@Override
+	protected List<Object> stepsInstances() {
+		List<Object> steps = new ArrayList<Object>();
 		for (ComponentAdapter<?> adapter : parent.getComponentAdapters()) {
 			if (isAnnotated(adapter.getComponentImplementation())) {
-				steps.add(new Steps(configuration, parent.getComponent(adapter
-						.getComponentKey())));
+				steps.add(parent.getComponent(adapter
+						.getComponentKey()));
 			}
 		}
 		return steps;
 	}
-
-	private boolean isAnnotated(Class<?> componentClass) {
-		for (Method method : componentClass.getMethods()) {
-			for (Annotation annotation : method.getAnnotations()) {
-				if (annotation.annotationType().getName().startsWith(
-						"org.jbehave.core.annotations")) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
 }
