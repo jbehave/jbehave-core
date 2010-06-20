@@ -16,6 +16,7 @@ import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.StepdocReporter;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterConverters;
@@ -65,6 +66,7 @@ public class MostUsefulConfiguration extends Configuration {
         useParameterConverters(new ParameterConverters());
         useViewGenerator(new FreemarkerViewGenerator());
         useEmbedderControls(new EmbedderControls());
+        useStoryReporterBuilder(new StoryReporterBuilder());
     }
 
 }

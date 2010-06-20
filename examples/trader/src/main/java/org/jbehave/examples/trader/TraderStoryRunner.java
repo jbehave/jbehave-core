@@ -15,7 +15,7 @@ public class TraderStoryRunner {
 		// Embedder defines the configuration and candidate steps
 		ClasspathTraderEmbedder embedder = new ClasspathTraderEmbedder();
 		embedder.embedderControls().doIgnoreFailureInStories(true);
-		embedder.runStoriesAsPaths(embedder.storyPaths());
+			
 	}
 
 	@Test
