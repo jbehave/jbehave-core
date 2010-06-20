@@ -5,11 +5,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
+import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
@@ -27,12 +30,15 @@ public class UnmodifiableConfigurationBehaviour {
     @Test
     public void shouldProvideDelegateConfigurationElements() {
         Configuration delegate = new MostUsefulConfiguration();
+        String storyPath = "path";
         Configuration unmodifiable = new UnmodifiableConfiguration(delegate);
+        assertThat(unmodifiable.dryRun(), is(delegate.dryRun()));
         assertThat(unmodifiable.keywords(), is(delegate.keywords()));
         assertThat(unmodifiable.storyLoader(), is(delegate.storyLoader()));
         assertThat(unmodifiable.storyParser(), is(delegate.storyParser()));
         assertThat(unmodifiable.storyPathResolver(), is(delegate.storyPathResolver()));
         assertThat(unmodifiable.defaultStoryReporter(), is(delegate.defaultStoryReporter()));
+        assertThat(unmodifiable.storyReporter(storyPath), is(delegate.storyReporter(storyPath)));
         assertThat(unmodifiable.storyReporterBuilder(), is(delegate.storyReporterBuilder()));
         assertThat(unmodifiable.failureStrategy(), is(delegate.failureStrategy()));
         assertThat(unmodifiable.pendingStepStrategy(), is(delegate.pendingStepStrategy()));
@@ -46,14 +52,19 @@ public class UnmodifiableConfigurationBehaviour {
     }
 
     @Test
-    public void shouldNotAllowModificationOfConfigurationElements() throws NoSuchMethodException, IllegalAccessException {
+    public void shouldNotAllowModificationOfConfigurationElements() throws NoSuchMethodException,
+            IllegalAccessException {
         Configuration delegate = new MostUsefulConfiguration();
         Configuration unmodifiable = new UnmodifiableConfiguration(delegate);
+        assertThatNotAllowed(unmodifiable, "doDryRun", Boolean.class);
         assertThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
         assertThatNotAllowed(unmodifiable, "useStoryLoader", StoryLoader.class);
         assertThatNotAllowed(unmodifiable, "useStoryParser", StoryParser.class);
         assertThatNotAllowed(unmodifiable, "useDefaultStoryReporter", StoryReporter.class);
         assertThatNotAllowed(unmodifiable, "useStoryReporterBuilder", StoryReporterBuilder.class);
+        assertThatNotAllowed(unmodifiable, "useStoryPathResolver", StoryPathResolver.class);
+        assertThatNotAllowed(unmodifiable, "useStoryReporter", String.class, StoryReporter.class);
+        assertThatNotAllowed(unmodifiable, "useStoryReporters", Map.class);
         assertThatNotAllowed(unmodifiable, "useFailureStrategy", FailureStrategy.class);
         assertThatNotAllowed(unmodifiable, "usePendingStepStrategy", PendingStepStrategy.class);
         assertThatNotAllowed(unmodifiable, "useParanamer", Paranamer.class);
@@ -62,13 +73,15 @@ public class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useStepMonitor", StepMonitor.class);
         assertThatNotAllowed(unmodifiable, "useStepPatternParser", StepPatternParser.class);
         assertThatNotAllowed(unmodifiable, "useViewGenerator", ViewGenerator.class);
+        assertThatNotAllowed(unmodifiable, "useStoryPathResolver", StoryPathResolver.class);
         assertThatNotAllowed(unmodifiable, "useEmbedderControls", EmbedderControls.class);
     }
 
-    private void assertThatNotAllowed(Configuration unmodifiable, String methodName, Class<?> type) throws NoSuchMethodException, IllegalAccessException {
-        Method method = unmodifiable.getClass().getMethod(methodName, type);
+    private void assertThatNotAllowed(Configuration unmodifiable, String methodName, Class<?>... types)
+            throws NoSuchMethodException, IllegalAccessException {
+        Method method = unmodifiable.getClass().getMethod(methodName, types);
         try {
-            method.invoke(unmodifiable, new Object[]{null});
+            method.invoke(unmodifiable, nullArgsFor(types));
         } catch (IllegalAccessException e) {
             throw e; // should not occur
         } catch (InvocationTargetException e) {
@@ -76,4 +89,17 @@ public class UnmodifiableConfigurationBehaviour {
         }
     }
 
+    private Object[] nullArgsFor(Class<?>[] types) {
+        Object[] args = new Object[types.length];
+        for (int i = 0; i < types.length; i++) {
+            args[i] = null;
+        }
+        return args;
+    }
+
+    @Test
+    public void shouldReportDelegateInToString() {
+        assertThat(new UnmodifiableConfiguration(new MostUsefulConfiguration()).toString(), Matchers
+                .containsString(MostUsefulConfiguration.class.getName()));
+    }
 }

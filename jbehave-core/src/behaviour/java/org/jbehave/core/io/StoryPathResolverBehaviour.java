@@ -9,6 +9,20 @@ import org.junit.Test;
 
 public class StoryPathResolverBehaviour {
 
+    @Test
+    public void shouldResolveClassNamePreservingCase() {
+        StoryPathResolver resolver = new CasePreservingResolver();
+        assertThat(resolver.resolve(CamelCase.class),
+                equalTo("org/jbehave/core/io/CamelCase.story"));
+    }
+
+    @Test
+    public void shouldResolveClassNamePreservingCaseWithNumbers() {
+        StoryPathResolver resolver = new CasePreservingResolver(".story");
+        assertThat(resolver.resolve(CamelCaseWithA3Qualifier.class),
+                equalTo("org/jbehave/core/io/CamelCaseWithA3Qualifier.story"));
+    }
+    
 	@Test
 	public void shouldResolveCamelCasedClassNameToCasePreservingName() {
 		StoryPathResolver resolver = new CasePreservingResolver("");

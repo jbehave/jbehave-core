@@ -7,7 +7,6 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.i18n.StringCoder;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.parsers.RegexStoryParser;
@@ -21,8 +20,7 @@ public class ItTraderStory extends JUnitStory {
 		// use Italian for keywords
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		Keywords keywords = new LocalizedKeywords(new Locale("it"),
-				new StringCoder(), "org/jbehave/examples/trader/i18n/keywords",
-				classLoader);
+				"org/jbehave/examples/trader/i18n/keywords", classLoader);
 		Configuration configuration = new MostUsefulConfiguration()
 				.useStoryPathResolver(
 						new UnderscoredCamelCaseResolver(".story"))

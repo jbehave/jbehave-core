@@ -56,7 +56,6 @@ public class StringCoder {
     }
 
     public void validateEncoding(String input, Mode mode) {
-        // TODO implement validation
     }
 
     @SuppressWarnings("serial")

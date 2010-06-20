@@ -28,11 +28,12 @@ public class KeywordsBehaviour {
         assertEquals("PENDING", keywords.pending());
         assertEquals("NOT PERFORMED", keywords.notPerformed());
         assertEquals("FAILED", keywords.failed());
+        assertEquals("DRY RUN", keywords.dryRun());
     }
 
-    @Test(expected=KeywordNotFoundException.class)
+    @Test(expected = KeywordNotFoundException.class)
     public void shouldFailIfSomeKeywordIsMissingInMapConstructor() throws IOException {
         new Keywords(new HashMap<String, String>());
     }
-    
+
 }

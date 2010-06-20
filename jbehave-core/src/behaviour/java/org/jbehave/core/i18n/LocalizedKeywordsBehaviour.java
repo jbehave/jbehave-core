@@ -38,8 +38,6 @@ import org.junit.Test;
 
 public class LocalizedKeywordsBehaviour {
 
-    private StringCoder encoder = new StringCoder("UTF-8");
-
     @Test
     public void shouldAllowKeywordsInEnglishAsDefault() throws IOException {
         ensureKeywordsAreLocalisedFor(null, null);
@@ -105,7 +103,7 @@ public class LocalizedKeywordsBehaviour {
         if (bundleName == null) {
             return (locale == null ? new LocalizedKeywords() : new LocalizedKeywords(locale));
         } else {
-            return new LocalizedKeywords(locale, new StringCoder(), bundleName, Thread.currentThread()
+            return new LocalizedKeywords(locale, bundleName, Thread.currentThread()
                     .getContextClassLoader());
         }
     }
@@ -122,7 +120,7 @@ public class LocalizedKeywordsBehaviour {
     }
 
     private void ensureKeywordIs(Properties properties, String key, String value) {
-        assertEquals(encoder.canonicalize(properties.getProperty(key, value)), value);
+        assertEquals(properties.getProperty(key, value), value);
     }
 
 }

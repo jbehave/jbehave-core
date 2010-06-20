@@ -56,298 +56,292 @@ import com.thoughtworks.paranamer.Paranamer;
  */
 public class Configuration {
 
-	/**
-	 * Dry run is switched off by default
-	 */
-	private boolean dryRun = false;
+    /**
+     * Dry run is switched off by default
+     */
+    private boolean dryRun = false;
 
-	/**
-	 * Use English language for keywords
-	 */
-	private Keywords keywords = new LocalizedKeywords();
+    /**
+     * Use English language for keywords
+     */
+    private Keywords keywords = new LocalizedKeywords();
 
-	/**
-	 * Provides pending steps where unmatched steps exist.
-	 */
-	private StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
+    /**
+     * Provides pending steps where unmatched steps exist.
+     */
+    private StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
 
-	/**
-	 * Parses the textual representation via pattern matching of keywords
-	 */
-	private StoryParser storyParser = new RegexStoryParser(keywords);
+    /**
+     * Parses the textual representation via pattern matching of keywords
+     */
+    private StoryParser storyParser = new RegexStoryParser(keywords);
 
-	/**
-	 * Loads story content from classpath
-	 */
-	private StoryLoader storyLoader = new LoadFromClasspath();
+    /**
+     * Loads story content from classpath
+     */
+    private StoryLoader storyLoader = new LoadFromClasspath();
 
-	/**
-	 * Resolves story paths from class names using underscored camel case with
-	 * ".story" extension
-	 */
-	private StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver();
+    /**
+     * Resolves story paths from class names using underscored camel case with
+     * ".story" extension
+     */
+    private StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver();
 
-	/**
-	 * Handles errors by re-throwing them.
-	 * <p/>
-	 * If there are multiple scenarios in a single story, this could cause the
-	 * story to stop after the first failing scenario.
-	 * <p/>
-	 * Users wanting a different behaviour may use {@link SilentlyAbsorbingFailure}.
-	 */
-	private FailureStrategy failureStrategy = new RethrowingFailure();
+    /**
+     * Handles errors by re-throwing them.
+     * <p/>
+     * If there are multiple scenarios in a single story, this could cause the
+     * story to stop after the first failing scenario.
+     * <p/>
+     * Users wanting a different behaviour may use
+     * {@link SilentlyAbsorbingFailure}.
+     */
+    private FailureStrategy failureStrategy = new RethrowingFailure();
 
-	/**
-	 * Allows pending steps to pass, so that steps that to do not match any
-	 * method will not cause failure.
-	 * <p/>
-	 * Uses wanting a stricter behaviour for pending steps may use
-	 * {@link FailingUponPendingStep}.
-	 */
-	private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
+    /**
+     * Allows pending steps to pass, so that steps that to do not match any
+     * method will not cause failure.
+     * <p/>
+     * Uses wanting a stricter behaviour for pending steps may use
+     * {@link FailingUponPendingStep}.
+     */
+    private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
 
-	/**
-	 * Reports stories to console output
-	 */
-	private StoryReporter defaultStoryReporter = new ConsoleOutput();
+    /**
+     * Reports stories to console output
+     */
+    private StoryReporter defaultStoryReporter = new ConsoleOutput();
 
-	/**
-	 * Collects story reporters by story path
-	 */
-	private Map<String, StoryReporter> storyReporters = new HashMap<String, StoryReporter>();
+    /**
+     * Collects story reporters by story path
+     */
+    private Map<String, StoryReporter> storyReporters = new HashMap<String, StoryReporter>();
 
-	/**
-	 * The story reporter builder
-	 */
-	private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
+    /**
+     * The story reporter builder
+     */
+    private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
 
-	/**
-	 * Finder of matching candidate steps
-	 */
-	private StepFinder stepFinder = new StepFinder();
+    /**
+     * Finder of matching candidate steps
+     */
+    private StepFinder stepFinder = new StepFinder();
 
-	/**
-	 * Report candidate steps found to System.out
-	 */
-	private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter();
+    /**
+     * Report candidate steps found to System.out
+     */
+    private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter();
 
-	/**
-	 * Pattern build that uses prefix for identifying parameters
-	 */
-	private StepPatternParser stepPatternParser = new RegexPrefixCapturingPatternParser();
+    /**
+     * Pattern build that uses prefix for identifying parameters
+     */
+    private StepPatternParser stepPatternParser = new RegexPrefixCapturingPatternParser();
 
-	/**
-	 * Silent monitoring that does not produce any noise of the step matching.
-	 * </p> If needed, users can switch on verbose monitoring using
-	 * {@link PrintStreamStepMonitor}
-	 */
-	private StepMonitor stepMonitor = new SilentStepMonitor();
+    /**
+     * Silent monitoring that does not produce any noise of the step matching.
+     * </p> If needed, users can switch on verbose monitoring using
+     * {@link PrintStreamStepMonitor}
+     */
+    private StepMonitor stepMonitor = new SilentStepMonitor();
 
-	/**
-	 * Paranamer is switched off by default
-	 */
-	private Paranamer paranamer = new NullParanamer();
+    /**
+     * Paranamer is switched off by default
+     */
+    private Paranamer paranamer = new NullParanamer();
 
-	/**
-	 * Use default built-in parameter converters
-	 */
-	private ParameterConverters parameterConverters = new ParameterConverters();
+    /**
+     * Use default built-in parameter converters
+     */
+    private ParameterConverters parameterConverters = new ParameterConverters();
 
-	/**
-	 * Use Freemarker-based view generator
-	 */
-	private ViewGenerator viewGenerator = new FreemarkerViewGenerator();
+    /**
+     * Use Freemarker-based view generator
+     */
+    private ViewGenerator viewGenerator = new FreemarkerViewGenerator();
 
-	/**
-	 * The embedder controls
-	 */
-	private EmbedderControls embedderControls = new EmbedderControls();
+    /**
+     * The embedder controls
+     */
+    private EmbedderControls embedderControls = new EmbedderControls();
 
-	public boolean dryRun() {
-		return dryRun;
-	}
+    public boolean dryRun() {
+        return dryRun;
+    }
 
-	public Keywords keywords() {
-		return keywords;
-	}
+    public Keywords keywords() {
+        return keywords;
+    }
 
-	public StoryParser storyParser() {
-		return storyParser;
-	}
+    public StoryParser storyParser() {
+        return storyParser;
+    }
 
-	public StoryLoader storyLoader() {
-		return storyLoader;
-	}
+    public StoryLoader storyLoader() {
+        return storyLoader;
+    }
 
-	public StoryPathResolver storyPathResolver() {
-		return storyPathResolver;
-	}
+    public StoryPathResolver storyPathResolver() {
+        return storyPathResolver;
+    }
 
-	public FailureStrategy failureStrategy() {
-		return failureStrategy;
-	}
+    public FailureStrategy failureStrategy() {
+        return failureStrategy;
+    }
 
-	public PendingStepStrategy pendingStepStrategy() {
-		return pendingStepStrategy;
-	}
+    public PendingStepStrategy pendingStepStrategy() {
+        return pendingStepStrategy;
+    }
 
-	public StoryReporter defaultStoryReporter() {
-		return defaultStoryReporter;
-	}
+    public StoryReporter defaultStoryReporter() {
+        return defaultStoryReporter;
+    }
 
-	public StoryReporter storyReporter(String storyPath) {
-		StoryReporter storyReporter = storyReporters.get(storyPath);
-		if (storyReporter != null) {
-			return storyReporter;
-		}
-		// fall back on default story reporter
-		return defaultStoryReporter();
-	}
+    public StoryReporter storyReporter(String storyPath) {
+        StoryReporter storyReporter = storyReporters.get(storyPath);
+        if (storyReporter != null) {
+            return storyReporter;
+        }
+        // fall back on default story reporter
+        return defaultStoryReporter();
+    }
 
-	public StoryReporterBuilder storyReporterBuilder() {
-		return storyReporterBuilder;
-	}
+    public StoryReporterBuilder storyReporterBuilder() {
+        return storyReporterBuilder;
+    }
 
-	public StepCollector stepCollector() {
-		return stepCollector;
-	}
+    public StepCollector stepCollector() {
+        return stepCollector;
+    }
 
-	public StepFinder stepFinder() {
-		return stepFinder;
-	}
+    public StepFinder stepFinder() {
+        return stepFinder;
+    }
 
-	public StepdocReporter stepdocReporter() {
-		return stepdocReporter;
-	}
+    public StepdocReporter stepdocReporter() {
+        return stepdocReporter;
+    }
 
-	public StepPatternParser stepPatternParser() {
-		return stepPatternParser;
-	}
+    public StepPatternParser stepPatternParser() {
+        return stepPatternParser;
+    }
 
-	public StepMonitor stepMonitor() {
-		return stepMonitor;
-	}
+    public StepMonitor stepMonitor() {
+        return stepMonitor;
+    }
 
-	public Paranamer paranamer() {
-		return paranamer;
-	}
+    public Paranamer paranamer() {
+        return paranamer;
+    }
 
-	public ParameterConverters parameterConverters() {
-		return parameterConverters;
-	}
+    public ParameterConverters parameterConverters() {
+        return parameterConverters;
+    }
 
-	public ViewGenerator viewGenerator() {
-		return viewGenerator;
-	}
+    public ViewGenerator viewGenerator() {
+        return viewGenerator;
+    }
 
-	public EmbedderControls embedderControls() {
-		return embedderControls;
-	}
+    public EmbedderControls embedderControls() {
+        return embedderControls;
+    }
 
-	public void doDryRun(boolean dryRun) {
-		this.dryRun = dryRun;
-	}
+    public Configuration doDryRun(Boolean dryRun) {
+        this.dryRun = dryRun;
+        return this;
+    }
 
-	public Configuration useKeywords(Keywords keywords) {
-		this.keywords = keywords;
-		return this;
-	}
+    public Configuration useKeywords(Keywords keywords) {
+        this.keywords = keywords;
+        return this;
+    }
 
-	public Configuration usePendingStepStrategy(
-			PendingStepStrategy pendingStepStrategy) {
-		this.pendingStepStrategy = pendingStepStrategy;
-		return this;
-	}
+    public Configuration usePendingStepStrategy(PendingStepStrategy pendingStepStrategy) {
+        this.pendingStepStrategy = pendingStepStrategy;
+        return this;
+    }
 
-	public Configuration useFailureStrategy(FailureStrategy failureStrategy) {
-		this.failureStrategy = failureStrategy;
-		return this;
-	}
+    public Configuration useFailureStrategy(FailureStrategy failureStrategy) {
+        this.failureStrategy = failureStrategy;
+        return this;
+    }
 
-	public Configuration useStoryParser(StoryParser storyParser) {
-		this.storyParser = storyParser;
-		return this;
-	}
+    public Configuration useStoryParser(StoryParser storyParser) {
+        this.storyParser = storyParser;
+        return this;
+    }
 
-	public Configuration useStoryLoader(StoryLoader storyLoader) {
-		this.storyLoader = storyLoader;
-		return this;
-	}
+    public Configuration useStoryLoader(StoryLoader storyLoader) {
+        this.storyLoader = storyLoader;
+        return this;
+    }
 
-	public Configuration useStoryPathResolver(
-			StoryPathResolver storyPathResolver) {
-		this.storyPathResolver = storyPathResolver;
-		return this;
-	}
+    public Configuration useStoryPathResolver(StoryPathResolver storyPathResolver) {
+        this.storyPathResolver = storyPathResolver;
+        return this;
+    }
 
-	public Configuration useDefaultStoryReporter(StoryReporter storyReporter) {
-		this.defaultStoryReporter = storyReporter;
-		return this;
-	}
+    public Configuration useDefaultStoryReporter(StoryReporter storyReporter) {
+        this.defaultStoryReporter = storyReporter;
+        return this;
+    }
 
-	public Configuration useStoryReporter(String storyPath,
-			StoryReporter storyReporter) {
-		this.storyReporters.put(storyPath, storyReporter);
-		return this;
-	}
+    public Configuration useStoryReporter(String storyPath, StoryReporter storyReporter) {
+        this.storyReporters.put(storyPath, storyReporter);
+        return this;
+    }
 
-	public Configuration useStoryReporters(
-			Map<String, StoryReporter> storyReporters) {
-		this.storyReporters.putAll(storyReporters);
-		return this;
-	}
+    public Configuration useStoryReporters(Map<String, StoryReporter> storyReporters) {
+        this.storyReporters.putAll(storyReporters);
+        return this;
+    }
 
-	public Configuration useStoryReporterBuilder(
-			StoryReporterBuilder storyReporterBuilder) {
-		this.storyReporterBuilder = storyReporterBuilder;
-		return this;
-	}
+    public Configuration useStoryReporterBuilder(StoryReporterBuilder storyReporterBuilder) {
+        this.storyReporterBuilder = storyReporterBuilder;
+        return this;
+    }
 
-	public Configuration useStepCollector(StepCollector stepCollector) {
-		this.stepCollector = stepCollector;
-		return this;
-	}
+    public Configuration useStepCollector(StepCollector stepCollector) {
+        this.stepCollector = stepCollector;
+        return this;
+    }
 
-	public Configuration useStepFinder(StepFinder stepFinder) {
-		this.stepFinder = stepFinder;
-		return this;
-	}
+    public Configuration useStepFinder(StepFinder stepFinder) {
+        this.stepFinder = stepFinder;
+        return this;
+    }
 
-	public Configuration useStepdocReporter(StepdocReporter stepdocReporter) {
-		this.stepdocReporter = stepdocReporter;
-		return this;
-	}
+    public Configuration useStepdocReporter(StepdocReporter stepdocReporter) {
+        this.stepdocReporter = stepdocReporter;
+        return this;
+    }
 
-	public Configuration useStepPatternParser(
-			StepPatternParser stepPatternParser) {
-		this.stepPatternParser = stepPatternParser;
-		return this;
-	}
+    public Configuration useStepPatternParser(StepPatternParser stepPatternParser) {
+        this.stepPatternParser = stepPatternParser;
+        return this;
+    }
 
-	public Configuration useStepMonitor(StepMonitor stepMonitor) {
-		this.stepMonitor = stepMonitor;
-		return this;
-	}
+    public Configuration useStepMonitor(StepMonitor stepMonitor) {
+        this.stepMonitor = stepMonitor;
+        return this;
+    }
 
-	public Configuration useParanamer(Paranamer paranamer) {
-		this.paranamer = paranamer;
-		return this;
-	}
+    public Configuration useParanamer(Paranamer paranamer) {
+        this.paranamer = paranamer;
+        return this;
+    }
 
-	public Configuration useParameterConverters(
-			ParameterConverters parameterConverters) {
-		this.parameterConverters = parameterConverters;
-		return this;
-	}
+    public Configuration useParameterConverters(ParameterConverters parameterConverters) {
+        this.parameterConverters = parameterConverters;
+        return this;
+    }
 
-	public void useViewGenerator(ViewGenerator viewGenerator) {
-		this.viewGenerator = viewGenerator;
-	}
+    public void useViewGenerator(ViewGenerator viewGenerator) {
+        this.viewGenerator = viewGenerator;
+    }
 
-	public Configuration useEmbedderControls(
-			EmbedderControls embedderControls) {
-		this.embedderControls = embedderControls;
-		return this;
-	}
+    public Configuration useEmbedderControls(EmbedderControls embedderControls) {
+        this.embedderControls = embedderControls;
+        return this;
+    }
 
 }

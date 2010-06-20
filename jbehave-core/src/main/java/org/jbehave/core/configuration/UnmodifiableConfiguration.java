@@ -21,22 +21,19 @@ import org.jbehave.core.steps.StepMonitor;
 import com.thoughtworks.paranamer.Paranamer;
 
 /**
- * Decorator of Configuration that disables modification of configuration elements.
+ * Decorator of Configuration that disables modification of configuration
+ * elements.
  */
 public class UnmodifiableConfiguration extends Configuration {
 
     private final Configuration delegate;
-
-    public UnmodifiableConfiguration() {
-        this(new MostUsefulConfiguration());
-    }
 
     public UnmodifiableConfiguration(Configuration delegate) {
         this.delegate = delegate;
     }
 
     public StoryReporter defaultStoryReporter() {
-       return delegate.defaultStoryReporter();
+        return delegate.defaultStoryReporter();
     }
 
     public StoryParser storyParser() {
@@ -59,49 +56,49 @@ public class UnmodifiableConfiguration extends Configuration {
         return delegate.keywords();
     }
 
-	public boolean dryRun() {
-		return delegate.dryRun();
-	}
+    public boolean dryRun() {
+        return delegate.dryRun();
+    }
 
-	public EmbedderControls embedderControls() {
-		return delegate.embedderControls();
-	}
+    public EmbedderControls embedderControls() {
+        return delegate.embedderControls();
+    }
 
-	public ParameterConverters parameterConverters() {
-		return delegate.parameterConverters();
-	}
+    public ParameterConverters parameterConverters() {
+        return delegate.parameterConverters();
+    }
 
-	public Paranamer paranamer() {
-		return delegate.paranamer();
-	}
+    public Paranamer paranamer() {
+        return delegate.paranamer();
+    }
 
-	public ViewGenerator viewGenerator() {
-		return delegate.viewGenerator();
-	}
+    public ViewGenerator viewGenerator() {
+        return delegate.viewGenerator();
+    }
 
-	public StepMonitor stepMonitor() {
-		return delegate.stepMonitor();
-	}
+    public StepMonitor stepMonitor() {
+        return delegate.stepMonitor();
+    }
 
-	public StepPatternParser stepPatternParser() {
-		return delegate.stepPatternParser();
-	}
+    public StepPatternParser stepPatternParser() {
+        return delegate.stepPatternParser();
+    }
 
-	public StoryLoader storyLoader() {
-		return delegate.storyLoader();
-	}
+    public StoryLoader storyLoader() {
+        return delegate.storyLoader();
+    }
 
-	public StoryPathResolver storyPathResolver() {
-		return delegate.storyPathResolver();
-	}
+    public StoryPathResolver storyPathResolver() {
+        return delegate.storyPathResolver();
+    }
 
-	public StoryReporter storyReporter(String storyPath) {
-		return delegate.storyReporter(storyPath);
-	}
+    public StoryReporter storyReporter(String storyPath) {
+        return delegate.storyReporter(storyPath);
+    }
 
-	public StoryReporterBuilder storyReporterBuilder() {
-		return delegate.storyReporterBuilder();
-	}
+    public StoryReporterBuilder storyReporterBuilder() {
+        return delegate.storyReporterBuilder();
+    }
 
     @Override
     public Configuration useKeywords(Keywords keywords) {
@@ -132,81 +129,74 @@ public class UnmodifiableConfiguration extends Configuration {
     public Configuration useDefaultStoryReporter(StoryReporter storyReporter) {
         throw notAllowed();
     }
-    
+
     @Override
-	public void doDryRun(boolean dryRun) {
+    public Configuration doDryRun(Boolean dryRun) {
         throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useEmbedderControls(
-			EmbedderControls embedderControls) {
+    @Override
+    public Configuration useEmbedderControls(EmbedderControls embedderControls) {
         throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useParameterConverters(
-			ParameterConverters parameterConverters) {
+    @Override
+    public Configuration useParameterConverters(ParameterConverters parameterConverters) {
         throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useParanamer(Paranamer paranamer) {
+    @Override
+    public Configuration useParanamer(Paranamer paranamer) {
         throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useStepMonitor(StepMonitor stepMonitor) {
+    @Override
+    public Configuration useStepMonitor(StepMonitor stepMonitor) {
         throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useStepPatternParser(
-			StepPatternParser stepPatternParser) {
+    @Override
+    public Configuration useStepPatternParser(StepPatternParser stepPatternParser) {
         throw notAllowed();
-	}
-	
-	@Override
-	public void useViewGenerator(ViewGenerator viewGenerator) {
-        throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useStoryLoader(StoryLoader storyLoader) {
+    @Override
+    public void useViewGenerator(ViewGenerator viewGenerator) {
         throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useStoryPathResolver(
-			StoryPathResolver storyPathResolver) {
+    @Override
+    public Configuration useStoryLoader(StoryLoader storyLoader) {
         throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useStoryReporter(String storyPath,
-			StoryReporter storyReporter) {
+    @Override
+    public Configuration useStoryPathResolver(StoryPathResolver storyPathResolver) {
         throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useStoryReporterBuilder(
-			StoryReporterBuilder storyReporterBuilder) {
+    @Override
+    public Configuration useStoryReporter(String storyPath, StoryReporter storyReporter) {
         throw notAllowed();
-	}
+    }
 
-	@Override
-	public Configuration useStoryReporters(
-			Map<String, StoryReporter> storyReporters) {
+    @Override
+    public Configuration useStoryReporterBuilder(StoryReporterBuilder storyReporterBuilder) {
         throw notAllowed();
-	}
+    }
 
-	private RuntimeException notAllowed() {
+    @Override
+    public Configuration useStoryReporters(Map<String, StoryReporter> storyReporters) {
+        throw notAllowed();
+    }
+
+    private RuntimeException notAllowed() {
         return new RuntimeException("Configuration elements are unmodifiable");
     }
-	
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(delegate).toString();
-	}
-	
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(delegate).toString();
+    }
+
 }

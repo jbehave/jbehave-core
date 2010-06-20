@@ -32,11 +32,14 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder.RenderingReportsFailedException;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailedException;
 import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
+import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Steps;
 import org.junit.Test;
 
@@ -93,6 +96,7 @@ public class EmbedderBehaviour {
 		List<RunnableStory> runnables = asList(myStory, myOtherStory);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
+		embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
 		for (RunnableStory story : runnables) {
 			doNothing().when(story).run();
 		}
@@ -312,7 +316,11 @@ public class EmbedderBehaviour {
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
 		for (Class storyClass : storyClasses) {
-			storyPaths.add(resolver.resolve(storyClass));
+			String storyPath = resolver.resolve(storyClass);
+            storyPaths.add(storyPath);
+	        StoryReporter storyReporter = mock(StoryReporter.class);
+	        configuration.useStoryReporter(storyPath, storyReporter);
+	        assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
 		}
 		embedder.runStoriesAsPaths(storyPaths);
 
@@ -594,6 +602,7 @@ public class EmbedderBehaviour {
 		ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        embedder.configuration().useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats());
 		embedder.configuration().useViewGenerator(viewGenerator);
 
 		File outputDirectory = new File("target/output");

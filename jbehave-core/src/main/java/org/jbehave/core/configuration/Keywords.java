@@ -6,14 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.i18n.StringCoder;
 import org.jbehave.core.steps.StepType;
 
 /**
- * Provides the keywords which allow parsers to find steps in stories and
- * match those steps with candidates through the annotations (Given, When and
- * Then) or though other keywords (And, "!--"). It also provides keywords used
- * in reporting.
+ * Provides the keywords which allow parsers to find steps in stories and match
+ * those steps with candidates through the annotations (Given, When and Then) or
+ * though other keywords (And, "!--"). It also provides keywords used in
+ * reporting.
  */
 public class Keywords {
 
@@ -36,10 +35,10 @@ public class Keywords {
     public static final String NOT_PERFORMED = "NotPerformed";
     public static final String FAILED = "Failed";
     public static final String DRY_RUN = "DryRun";
-    
+
     public static final List<String> KEYWORDS = asList(NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SCENARIO,
-            GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR, EXAMPLES_TABLE_VALUE_SEPARATOR,
-            GIVEN, WHEN, THEN, AND, IGNORABLE, PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
+            GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
+            EXAMPLES_TABLE_VALUE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE, PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
 
     private final String narrative;
     private final String inOrderTo;
@@ -50,7 +49,7 @@ public class Keywords {
     private final String examplesTable;
     private final String examplesTableRow;
     private final String examplesTableHeaderSeparator;
-    private final String examplesTableValueSeparator;    
+    private final String examplesTableValueSeparator;
     private final String given;
     private final String when;
     private final String then;
@@ -59,9 +58,8 @@ public class Keywords {
     private final String pending;
     private final String notPerformed;
     private final String failed;
-	private final String dryRun;
+    private final String dryRun;
     private final String[] others;
-    private StringCoder encoder;
 
     public static Map<String, String> defaultKeywords() {
         Map<String, String> keywords = new HashMap<String, String>();
@@ -97,19 +95,10 @@ public class Keywords {
     /**
      * Creates Keywords with provided values and default encoder
      * 
-     * @param keywords the Map of keywords indexed by their name
+     * @param keywords
+     *            the Map of keywords indexed by their name
      */
     public Keywords(Map<String, String> keywords) {
-        this(keywords, new StringCoder());
-    }
-
-    /**
-     * Creates a Keywords from the map provided.
-     * 
-     * @param keywords the Map of keywords indexed by their name
-     * @param encoder the StringEncoder used to encode the values
-     */
-    public Keywords(Map<String, String> keywords, StringCoder encoder) {
         this.narrative = keyword(NARRATIVE, keywords);
         this.inOrderTo = keyword(IN_ORDER_TO, keywords);
         this.asA = keyword(AS_A, keywords);
@@ -130,7 +119,6 @@ public class Keywords {
         this.failed = keyword(FAILED, keywords);
         this.dryRun = keyword(DRY_RUN, keywords);
         this.others = new String[] { and, ignorable };
-        this.encoder = encoder;
     }
 
     private String keyword(String name, Map<String, String> keywords) {
@@ -176,7 +164,7 @@ public class Keywords {
     public String examplesTableHeaderSeparator() {
         return examplesTableHeaderSeparator;
     }
-    
+
     public String examplesTableValueSeparator() {
         return examplesTableValueSeparator;
     }
@@ -213,45 +201,29 @@ public class Keywords {
         return failed;
     }
 
-	public String dryRun() {
-		return dryRun;
-	}
+    public String dryRun() {
+        return dryRun;
+    }
 
     public String[] others() {
         return others;
     }
 
-    public String encode(String value) {
-        if (encoder != null) {
-            return encoder.canonicalize(value);
-        }
-        return value;
+    public Map<StepType, String> startingWordsByType() {
+        Map<StepType, String> words = new HashMap<StepType, String>();
+        words.put(StepType.GIVEN, given());
+        words.put(StepType.WHEN, when());
+        words.put(StepType.THEN, then());
+        words.put(StepType.AND, and());
+        words.put(StepType.IGNORABLE, ignorable());
+        return words;
     }
 
-	public Map<StepType, String> startingWordsByType() {
-		Map<StepType, String> words = new HashMap<StepType, String>();
-		words.put(StepType.GIVEN, given());
-		words.put(StepType.WHEN, when());
-		words.put(StepType.THEN, then());
-		words.put(StepType.AND, and());
-		words.put(StepType.IGNORABLE, ignorable());
-		return words;
-	}
-    
     @SuppressWarnings("serial")
     public static final class KeywordNotFoundException extends RuntimeException {
 
         public KeywordNotFoundException(String name, Map<String, String> keywords) {
             super("Keyword " + name + " not found amongst " + keywords);
-        }
-
-    }
-
-    @SuppressWarnings("serial")
-    public static final class InsufficientKeywordsException extends RuntimeException {
-
-        public InsufficientKeywordsException(String... others) {
-            super("Insufficient keywords: " + asList(others) + ", but requires another " + (11 - others.length));
         }
 
     }
