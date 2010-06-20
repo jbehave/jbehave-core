@@ -41,7 +41,11 @@ public class TraderSteps {
     private List<Trader> traders = new ArrayList<Trader>();
     private List<Trader> searchedTraders;
 	private Date date;
-        
+      
+	public TraderSteps() {
+		this(new TradingService());
+	}
+	
     public TraderSteps(TradingService service) {
         this.service = service;
     }
