@@ -23,12 +23,12 @@
     <name>Stories</name>
     <page>developing-stories.html</page>
     <page>annotations.html</page>
+    <page>configuration.html</page>
     <page>candidate-steps.html</page>
     <page>pending-steps.html</page>
     <page>finding-steps.html</page>
     <page>prioritising-steps.html</page>
     <page>stepdocs.html</page>
-    <page>configuring-stories.html</page>
     <page>running-stories.html</page>
     <page>locating-stories.html</page>
     <page>i18n-stories.html</page>    

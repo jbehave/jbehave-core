@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Configuring Stories</title>
+<title>Configuration</title>
 </head>
 
 <body>
 
-<h2>Configuring Stories</h2>
+<h2>Configuration</h2>
 
 <p>In JBehave, there is a separation of concerns between RunnableStory and Steps classes:</p>
 <ul>
@@ -39,8 +39,8 @@ public abstract class TraderStory extends JUnitStory {
         viewProperties.put("decorateNonHtml", "true");
         URL codeLocation = CodeLocations.codeLocationFromClass(storyClass);
         Configuration configuration = new MostUsefulConfiguration()
-                    .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
-                    .useStoryReporterBuilder(new StoryReporterBuilder()
+                .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
+                .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
                 	.withDefaultFormats()
                 	.withViewResources(viewProperties)
@@ -150,7 +150,7 @@ configuration-by-convention approach, by which a default value of the
 configuration element is provided and can be overridden, if so
 desired.</span>
 
-<h3>Story Configuration Elements</h3>
+<h3>Configuration Elements</h3>
 
 <p>While Stories are designed to be highly configurable, they come
 with a default behaviour for the <a
@@ -160,64 +160,101 @@ useful configuration</a>. <a
 is the main interface for configuring all the components of a story.</p>
 
 <p>The configurable elements of the story include:</p>
-<p><a
+<ul>
+<li><a
+    href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>:
+defaults to <a
+    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</li>
+<li><a
     href="javadoc/core/org/jbehave/core/steps/StepCollector.html">StepCollector</a>:
 Represents the strategy for the collection of executable steps from a given story matching a list of candidate steps. The
 default implementation is <a
-    href="javadoc/core/org/jbehave/core/steps/MarkUnmatchedStepsAsPending.html">MarkUnmatchedStepsAsPending</a>.</p>
-<p><a
+    href="javadoc/core/org/jbehave/core/steps/MarkUnmatchedStepsAsPending.html">MarkUnmatchedStepsAsPending</a>.</li>
+<li><a
     href="javadoc/core/org/jbehave/core/io/StoryParser.html">StoryParser</a>:
 Parses stories contained in a textual story file. The
 default implementation is <a
-    href="javadoc/core/org/jbehave/core/io/RegexStoryParser.html">RegexStoryParser</a>.</p>
-<p><a
+    href="javadoc/core/org/jbehave/core/io/RegexStoryParser.html">RegexStoryParser</a>.</li>
+<li><a
     href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>:
 Allows the runner to report the state of running stories. The default
 implementation is <a
-    href="javadoc/core/org/jbehave/core/reporters/ConsoleOutput.html">ConsoleOutput</a>.</p>
-
-<p><a
+    href="javadoc/core/org/jbehave/core/reporters/ConsoleOutput.html">ConsoleOutput</a>.</li>
+<li><a
     href="javadoc/core/org/jbehave/core/failures/FailureStrategy.html">FailureStrategy</a>:
 Allows to define the strategy for error handling. The default value is <a
-    href="javadoc/core/org/jbehave/core/failures/RethrowingFailureStrategy.html">RethrowingFailureStrategy</a>.</p>
-
-<p><a
-    href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>:
-Allows to specify the keywords used. The default value is <a
-    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</p>
-
-<p>JBehave provides two useful base implementations that users can
-extend to override only the elements that differ from default behaviour:</p>
-<p><a
-    href="javadoc/core/org/jbehave/core/configuration/MostUsefulConfiguration.html">MostUsefulConfiguration</a>:
-provides a default configuration that most users will find appropriate</p>
-<p><a
-    href="javadoc/core/org/jbehave/core/configuration/PropertyBasedConfiguration.html">PropertyBasedConfiguration</a>:
-overrides way to configure via system properties</p>
-
-<h3>Steps Configuration Elements</h3>
-
-<p>Steps can also be configured to a high degree via the <a
-    href="javadoc/core/org/jbehave/core/steps/Configuration.html">Configuration</a>.
-Among the elements that can be configured are:</p>
-<p><a
+    href="javadoc/core/org/jbehave/core/failures/RethrowingFailureStrategy.html">RethrowingFailureStrategy</a>.</li>
+<li><a
     href="javadoc/core/org/jbehave/core/parsers/StepPatternParser.html">StepPatternParser</a>:
 defaults to <a
-    href="javadoc/core/org/jbehave/core/parsers/RegexPrefixCapturingPatternBuilder.html">RegexPrefixCapturingPatternParser</a>.</p>
-<p><a
+    href="javadoc/core/org/jbehave/core/parsers/RegexPrefixCapturingPatternBuilder.html">RegexPrefixCapturingPatternParser</a>.</li>
+<li><a
     href="javadoc/core/org/jbehave/core/steps/StepMonitor.html">StepMonitor</a>:
 defaults to <a
     href="javadoc/core/org/jbehave/core/steps/SilentStepMonitor.html">SilentStepMonitor</a>,
 useful to either debug the step matching or to describe the steps being
-performed to some output.</p>
-<p><a
+performed to some output.</li>
+<li><a
     href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a>:
 facade for collecting user-defined <a
-    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverters</a>.</p>
-<p><a
-    href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>:
-defaults to <a
-    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</p>
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverters</a>.</li>
+</ul>
+
+<h2>Annotated Configuration</h2>
+
+<p>JBehave also supports the ability to specify the same configuration via annotations.</p>
+
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+@WithConfiguration(stepMonitor = SilentStepMonitor.class, 
+        stepPatternParser = AnnotatedTraderStoryRunner.MyRegexPrefixCapturingPatternParser.class, 
+        storyLoader = AnnotatedTraderStoryRunner.MyStoryLoader.class, 
+        storyReporterBuilder = AnnotatedTraderStoryRunner.MyReportBuilder.class, 
+        parameterConverters = { AnnotatedTraderStoryRunner.MyDateConverter.class })
+@WithCandidateSteps(candidateSteps = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
+        PriorityMatchingSteps.class, SandpitSteps.class })
+public class AnnotatedTraderStoryRunner {
+
+    @Test
+    public void run() {
+        Embedder embedder = new Embedder();
+        embedder.useConfiguration(new AnnotationBuilder().buildConfiguration(this));
+        embedder.useCandidateSteps(new AnnotationBuilder().buildCandidateSteps(this));
+        embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+        embedder.runStoriesAsPaths(new StoryPathFinder().listStoryPaths("target/classes", "", asList("**/*.story"),
+                asList("")));
+    }
+    public static class MyReportBuilder extends StoryReporterBuilder {
+        public MyReportBuilder() {
+            this.withFormats(CONSOLE, TXT, HTML, XML).withDefaultFormats();
+        }
+    }
+
+    public static class MyStoryLoader extends LoadFromClasspath {
+        public MyStoryLoader() {
+            super(AnnotatedTraderStoryRunner.class.getClassLoader());
+        }
+    }
+
+    public static class MyRegexPrefixCapturingPatternParser extends RegexPrefixCapturingPatternParser {
+        public MyRegexPrefixCapturingPatternParser() {
+            super("%");
+        }
+    }
+
+    public static class MyDateConverter extends DateConverter {
+        public MyDateConverter() {
+            super(new SimpleDateFormat("yyyy-MM-dd"));
+        }
+    }
+    
+ }
+]]></script>
+
+<span class="followup">
+At present, the limitation is that the configuration element is instantiated from the default constructor. 
+This limitation will be removed when we add support for dependency injection to the configuration.
+</span>
+
 
 <div class="clear">
 <hr />

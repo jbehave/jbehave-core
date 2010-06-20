@@ -8,23 +8,23 @@
 
 <h2>Step Annotations</h2>
 
-<p>JBehave supports the following Java method step annotations:</p>
+<p>JBehave supports the following method step annotations:</p>
 
 <ul>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/Given.html">Given</a>
+        href="javadoc/core/org/jbehave/core/annotations/Given.html">@Given</a>
     </li>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/When.html">When</a>
+        href="javadoc/core/org/jbehave/core/annotations/When.html">@When</a>
     </li>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/Then.html">Then</a>
+        href="javadoc/core/org/jbehave/core/annotations/Then.html">@Then</a>
     </li>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/Alias.html">Alias</a>
+        href="javadoc/core/org/jbehave/core/annotations/Alias.html">@Alias</a>
     </li>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/Aliases.html">Aliases</a>
+        href="javadoc/core/org/jbehave/core/annotations/Aliases.html">@Aliases</a>
     </li>
 </ul>
 <p>Each annotation holds a regex pattern as value, which is used to
@@ -55,19 +55,19 @@ textual step:</p>
 
 <h2>Scenario Annotations</h2>
 
-<p>JBehave supports the following Java method scenario annotations:</p>
+<p>JBehave supports the following method scenario annotations:</p>
 
 <ul>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/BeforeScenario.html">BeforeScenario</a>
+        href="javadoc/core/org/jbehave/core/annotations/BeforeScenario.html">@BeforeScenario</a>
     </li>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/AfterScenario.html">AfterScenario</a>
+        href="javadoc/core/org/jbehave/core/annotations/AfterScenario.html">@AfterScenario</a>
     </li>
 </ul>
-<p>The <b>BeforeScenario</b> annotation holds no value and it allows
+<p>The <b>@BeforeScenario</b> annotation holds no value and it allows
 the corresponding method to be executed before each scenario, while the
-<b>AfterScenario</b> holds an optional <a
+<b>@AfterScenario</b> holds an optional <a
     href="javadoc/core/org/jbehave/core/annotations/AfterScenario.Outcome.html">Outcome</a>
 value, which specifies whether the method should be executed depending
 on the outcome of the scenario:</p>
@@ -97,17 +97,17 @@ on the outcome of the scenario:</p>
 
 <h2>Story Annotations</h2>
 
-<p>JBehave supports the following Java method story annotations:</p>
+<p>JBehave supports the following method story annotations:</p>
 
 <ul>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/BeforeStory.html">BeforeStory</a>
+        href="javadoc/core/org/jbehave/core/annotations/BeforeStory.html">@BeforeStory</a>
     </li>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/AfterStory.html">AfterStory</a>
+        href="javadoc/core/org/jbehave/core/annotations/AfterStory.html">@AfterStory</a>
     </li>
 </ul>
-<p>The <b>BeforeStory</b> and <b>AfterStory</b> annotations allow
+<p>The <b>@BeforeStory</b> and <b>@AfterStory</b> annotations allow
 the corresponding methods to be executed before and after each story, either a GivenStory or not:</p>
 
 <pre class="brush: java">
@@ -136,15 +136,31 @@ the corresponding methods to be executed before and after each story, either a G
 
 <h2>Parameter Annotations</h2>
 
-<p>JBehave supports the following Java parameter annotations:</p>
+<p>JBehave supports the following parameter annotations:</p>
 
 <ul>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/Named.html">Named</a>
+        href="javadoc/core/org/jbehave/core/annotations/Named.html">@Named</a>
     </li>
 </ul>
 <p>Parameter annotations are used in <a
     href="parameter-injection.html">parameter injection</a>.</p>
+
+<h2>Configuration Annotations</h2>
+
+<p>JBehave supports the following configuration annotations:</p>
+
+<ul>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/WithConfiguration.html">@WithConfiguration</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/WithCandidateSteps.html">@WithCandidateSteps</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/AsParameterConverter.html">@AsParameterConverter</a>
+    </li>
+</ul>
 
 <div class="clear">
 <hr />
