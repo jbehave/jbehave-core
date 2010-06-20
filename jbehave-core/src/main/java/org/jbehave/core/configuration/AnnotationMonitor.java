@@ -1,5 +1,7 @@
 package org.jbehave.core.configuration;
 
 public interface AnnotationMonitor {
-	void processingFailed(Object pAnnotatedRunner, Throwable e);
+
+    void annotatedElementInvalid(Class<?> elementClass, Exception cause);
+
 }

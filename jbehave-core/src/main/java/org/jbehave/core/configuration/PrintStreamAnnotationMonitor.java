@@ -4,17 +4,18 @@ import java.io.PrintStream;
 
 public class PrintStreamAnnotationMonitor implements AnnotationMonitor {
 
-	private PrintStream output = System.out;
-	public PrintStreamAnnotationMonitor() {
-		super();
-	}
+    private final PrintStream output;
+
+    public PrintStreamAnnotationMonitor() {
+        this(System.out);
+    }
+
     public PrintStreamAnnotationMonitor(PrintStream output) {
         this.output = output;
     }
 
-	public void processingFailed(Object pAnnotatedRunner, Throwable e) {
-		output.println("Failed to process annotations in " + pAnnotatedRunner.getClass() + ". /n");
-		e.printStackTrace(output);
-		
-	}
+    public void annotatedElementInvalid(Class<?> elementClass, Exception cause) {
+        output.println("Annotated element invalid: " + elementClass);
+        cause.printStackTrace(output);
+    }
 }
