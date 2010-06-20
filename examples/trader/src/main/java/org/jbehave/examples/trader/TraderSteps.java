@@ -157,7 +157,7 @@ public class TraderSteps {
     	return mockTradePersister().retrieveTrader(name);
     }
     
-	private TraderPersister mockTradePersister() {
+	static TraderPersister mockTradePersister() {
 		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
 				10.d))));
 	}
