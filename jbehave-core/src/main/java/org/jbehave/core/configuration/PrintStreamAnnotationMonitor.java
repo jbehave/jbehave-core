@@ -14,8 +14,8 @@ public class PrintStreamAnnotationMonitor implements AnnotationMonitor {
         this.output = output;
     }
 
-    public void annotatedElementInvalid(Class<?> elementClass, Exception cause) {
-        output.println("Annotated element invalid: " + elementClass);
+    public void elementCreationFailed(Class<?> elementClass, Exception cause) {
+        output.println("Eelement creation failed: " + elementClass);
         cause.printStackTrace(output);
     }
 }

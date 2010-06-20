@@ -17,11 +17,11 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
-import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 import com.thoughtworks.paranamer.Paranamer;
@@ -82,51 +82,43 @@ public class AnnotationBuilder {
      * @return A List of CandidateSteps instances
      */
     public List<CandidateSteps> buildCandidateSteps(Object annotatedInstance) {
-
-        List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
-        Configuration configuration = buildConfiguration(annotatedInstance);
         AnnotationFinder finder = new AnnotationFinder(annotatedInstance.getClass());
 
+        List<Object> stepsInstances = new ArrayList<Object>();
         if (finder.isAnnotationPresent(WithCandidateSteps.class)) {
-            List<Class<?>> candidateStepsClasses = new ArrayList<Class<?>>();
-            finder.getMemberValues(WithCandidateSteps.class, candidateStepsClasses, "candidateSteps");
-
-            for (Class<?> candidateStepClass : candidateStepsClasses) {
-                Object candidateStepInstance;
-                try {
-                    candidateStepInstance = candidateStepClass.newInstance();
-                    candidateSteps.add(new Steps(configuration, candidateStepInstance));
-                } catch (Exception e) {
-                    annotationMonitor.annotatedElementInvalid(candidateStepClass, e);
-                }
+            List<Class<?>> stepsClasses = new ArrayList<Class<?>>();
+            finder.getMemberValues(WithCandidateSteps.class, stepsClasses, "candidateSteps");
+            for (Class<?> stepsClass : stepsClasses) {
+                stepsInstances.add(instanceOf(stepsClass));
             }
         }
-        return candidateSteps;
+        Configuration configuration = buildConfiguration(annotatedInstance);
+        return new InstanceStepsFactory(configuration, stepsInstances).createCandidateSteps();
     }
 
     @SuppressWarnings("unchecked")
     private <T> T configurationElement(AnnotationFinder finder, String name, Class<T> type) {
-        Class<?> elementClass = finder.getMemberValue(WithConfiguration.class, Class.class, name);
-        try {
-            return (T) elementClass.newInstance();
-        } catch (Exception e) {
-            annotationMonitor.annotatedElementInvalid(elementClass, e);
-            throw new RuntimeException(e);
-        }
+        Class<T> elementClass = finder.getMemberValue(WithConfiguration.class, Class.class, name);
+        return instanceOf(elementClass);
     }
 
     private ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
-        List<Class<?>> converterClasses = new ArrayList<Class<?>>();
+        List<Class<ParameterConverter>> converterClasses = new ArrayList<Class<ParameterConverter>>();
         annotationFinder.getMemberValues(WithConfiguration.class, converterClasses, "parameterConverters");
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
-        for (Class<?> converterClass : converterClasses) {
-            try {
-                converters.add((ParameterConverter) converterClass.newInstance());
-            } catch (Exception e) {
-                annotationMonitor.annotatedElementInvalid(converterClass, e);
-            }
+        for (Class<ParameterConverter> converterClass : converterClasses) {
+            converters.add(instanceOf(converterClass));
         }
         return new ParameterConverters().addConverters(converters);
+    }
+
+    private <T> T instanceOf(Class<T> ofClass) {
+        try {
+            return (T)ofClass.newInstance();
+        } catch (Exception e) {
+            annotationMonitor.elementCreationFailed(ofClass, e);
+            throw new RuntimeException(e);
+        }
     }
 
 }

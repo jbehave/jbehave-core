@@ -18,15 +18,19 @@ import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
-import org.jbehave.examples.trader.converters.TraderConverter;
+import org.jbehave.examples.trader.stories.AndStep.AndSteps;
+import org.jbehave.examples.trader.stories.ClaimsWithNullCalendar.CalendarSteps;
+import org.jbehave.examples.trader.stories.FailureFollowedByGivenStories.SandpitSteps;
+import org.jbehave.examples.trader.stories.PriorityMatching.PriorityMatchingSteps;
 import org.junit.Test;
 
 @WithConfiguration(stepMonitor = SilentStepMonitor.class, 
         stepPatternParser = AnnotatedTraderStoryRunner.MyRegexPrefixCapturingPatternParser.class, 
         storyLoader = AnnotatedTraderStoryRunner.MyStoryLoader.class, 
-        storyReporterBuilder = AnnotatedTraderStoryRunner.MyReportBuilder.class,
-        parameterConverters = { AnnotatedTraderStoryRunner.MyDateConverter.class, AnnotatedTraderStoryRunner.MyTraderConverter.class })
-@WithCandidateSteps(candidateSteps = { TraderSteps.class })
+        storyReporterBuilder = AnnotatedTraderStoryRunner.MyReportBuilder.class, 
+        parameterConverters = { AnnotatedTraderStoryRunner.MyDateConverter.class })
+@WithCandidateSteps(candidateSteps = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
+        PriorityMatchingSteps.class, SandpitSteps.class })
 public class AnnotatedTraderStoryRunner {
 
     @Test
@@ -60,12 +64,6 @@ public class AnnotatedTraderStoryRunner {
     public static class MyDateConverter extends DateConverter {
         public MyDateConverter() {
             super(new SimpleDateFormat("yyyy-MM-dd"));
-        }
-    }
-    
-    public static class MyTraderConverter extends TraderConverter {
-        public MyTraderConverter(){
-            super(TraderSteps.mockTradePersister());
         }
     }
 
