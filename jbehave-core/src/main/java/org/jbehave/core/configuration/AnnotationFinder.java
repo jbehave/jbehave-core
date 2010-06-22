@@ -31,6 +31,10 @@ public class AnnotationFinder {
     private final Map<String, Map<String, Object>> annotationsMap = new HashMap<String, Map<String, Object>>();
 
     public AnnotationFinder(Class<?> annotatedClass) {
+        findAnnotations(annotatedClass);
+    }
+
+    private void findAnnotations(Class<?> annotatedClass) {
         Stack<Class<?>> stack = new Stack<Class<?>>();
         stack.push(annotatedClass);
         Class<?> annotatedSuperClass = annotatedClass.getSuperclass();
@@ -54,13 +58,15 @@ public class AnnotationFinder {
         AnnotationsAttribute invisible = (AnnotationsAttribute) classFile
                 .getAttribute(AnnotationsAttribute.invisibleTag);
 
-        if (visible != null)
+        if (visible != null) {
             populate(visible.getAnnotations());
-        if (invisible != null)
+        }
+        if (invisible != null) {
             populate(invisible.getAnnotations());
+        }
     }
 
-    protected void populate(javassist.bytecode.annotation.Annotation[] annotations) {
+    private void populate(javassist.bytecode.annotation.Annotation[] annotations) {
         if (annotations == null)
             return;
         // for each annotation on class hierarchy
@@ -71,7 +77,6 @@ public class AnnotationFinder {
                 annotationsAttributesMap = new HashMap<String, Object>();
                 annotationsMap.put(annotation.getTypeName(), annotationsAttributesMap);
             }
-
             processAnnotation(annotation, annotationsAttributesMap);
         }
     }
@@ -137,7 +142,6 @@ public class AnnotationFinder {
             }
 
             for (MemberValue arrayMember : arrayValue) {
-
                 valueList.add(processMemberValue(arrayMember, valueList));
             }
             return (T) valueList;
@@ -179,54 +183,27 @@ public class AnnotationFinder {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getMemberValue(Class<? extends Annotation> annotationClass, Class<T> memberType, String memberName) {
+    public <T> T getAnnotatedValue(Class<? extends Annotation> annotationClass, Class<T> memberType, String memberName) {
         String annotationName = annotationClass.getName();
-        T value = null;
         if (annotationsMap.containsKey(annotationName)) {
             Map<String, Object> annotationAttributeMap = annotationsMap.get(annotationName);
-            Object ann = annotationAttributeMap.get(memberName);
-            if (ann != null) {
-                value = (T) ann;
-            } else {
-                if (memberType.isAssignableFrom(Integer.class)) {
-                    value = (T) new Integer(0);
-                }
+            Object value = annotationAttributeMap.get(memberName);
+            if (value != null) {
+                return (T) value;
             }
-            return value;
-        } else {
-            throw new MissingAnnotationException(annotationClass, memberName);
         }
-    }
-
-    public <T> T getSubMemberValue(Class<? extends Annotation> annotationClass, Class<T> memberType, String memberName,
-            String subMemberName) {
-        T value = null;
-        String annotationName = annotationClass.getName();
-        if (annotationsMap.containsKey(annotationName)) {
-            return value;
-        } else {
-            throw new MissingAnnotationException(annotationClass, memberName);
-        }
-
+        throw new MissingAnnotationException(annotationClass, memberName);
     }
 
     @SuppressWarnings("unchecked")
-    public <T> void getMemberValues(Class<? extends Annotation> annotationClass, List<T> memberList, String memberName) {
-        String annotationName = annotationClass.getName();
-        if (annotationsMap.containsKey(annotationName)) {
-            Map<String, Object> annotationAttributeMap = annotationsMap.get(annotationName);
-            Object memberValues = annotationAttributeMap.get(memberName);
-
-            if (memberValues != null && memberValues instanceof List) {
-                for (Object object : (List) memberValues) {
-                    memberList.add((T) object);
-                }
-            } else {
-                throw new MissingAnnotationException(annotationClass, memberName);
-            }
-        } else {
-            throw new MissingAnnotationException(annotationClass, memberName);
+    public <T> List<Class<T>> getAnnotatedClasses(Class<? extends Annotation> annotationClass, Class<T> type,
+            String memberName) {
+        List memberValues = getAnnotatedValue(annotationClass, List.class, memberName);
+        List<Class<T>> list = new ArrayList<Class<T>>();
+        for (Object value : memberValues) {
+            list.add((Class<T>) value);
         }
+        return list;
     }
 
 }

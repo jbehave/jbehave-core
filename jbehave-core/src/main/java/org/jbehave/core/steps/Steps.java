@@ -116,7 +116,7 @@ public class Steps implements CandidateSteps {
 		this.instance = instance;
 	}
 
-	Object instance() {
+	public Object instance() {
 		if (instance == null) {
 			return this;
 		}

@@ -3,8 +3,8 @@ package org.jbehave.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.annotations.WithCandidateSteps;
 import org.jbehave.core.annotations.WithConfiguration;
+import org.jbehave.core.annotations.WithSteps;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -49,7 +49,12 @@ public class AnnotationBuilder {
     public Configuration buildConfiguration(Object annotatedInstance) throws MissingAnnotationException {
         AnnotationFinder finder = new AnnotationFinder(annotatedInstance.getClass());
 
-        Configuration configuration = new Configuration();
+        Configuration configuration = new MostUsefulConfiguration();
+        
+        if (!finder.isAnnotationPresent(WithConfiguration.class)) {
+            return configuration;
+        }
+        
         configuration.useKeywords(configurationElement(finder, "keywords", Keywords.class));
         configuration.useFailureStrategy(configurationElement(finder, "failureStrategy", FailureStrategy.class));
         configuration.usePendingStepStrategy(configurationElement(finder, "pendingStepStrategy",
@@ -74,8 +79,8 @@ public class AnnotationBuilder {
     }
 
     /**
-     * Builds CandidateSteps instances based on annotation
-     * {@link WithCandidateSteps} found in the annotated object instance
+     * Builds CandidateSteps using annotation {@link WithSteps} found in the
+     * annotated object instance
      * 
      * @param annotatedInstance
      *            the Object instance that contains the annotations
@@ -85,10 +90,8 @@ public class AnnotationBuilder {
         AnnotationFinder finder = new AnnotationFinder(annotatedInstance.getClass());
 
         List<Object> stepsInstances = new ArrayList<Object>();
-        if (finder.isAnnotationPresent(WithCandidateSteps.class)) {
-            List<Class<?>> stepsClasses = new ArrayList<Class<?>>();
-            finder.getMemberValues(WithCandidateSteps.class, stepsClasses, "candidateSteps");
-            for (Class<?> stepsClass : stepsClasses) {
+        if (finder.isAnnotationPresent(WithSteps.class)) {
+            for (Class<Object> stepsClass : finder.getAnnotatedClasses(WithSteps.class, Object.class, "instances")) {
                 stepsInstances.add(instanceOf(stepsClass));
             }
         }
@@ -98,15 +101,12 @@ public class AnnotationBuilder {
 
     @SuppressWarnings("unchecked")
     private <T> T configurationElement(AnnotationFinder finder, String name, Class<T> type) {
-        Class<T> elementClass = finder.getMemberValue(WithConfiguration.class, Class.class, name);
-        return instanceOf(elementClass);
+        return instanceOf((Class<T>) finder.getAnnotatedValue(WithConfiguration.class, Class.class, name));
     }
 
     private ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
-        List<Class<ParameterConverter>> converterClasses = new ArrayList<Class<ParameterConverter>>();
-        annotationFinder.getMemberValues(WithConfiguration.class, converterClasses, "parameterConverters");
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
-        for (Class<ParameterConverter> converterClass : converterClasses) {
+        for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(WithConfiguration.class, ParameterConverter.class, "parameterConverters")) {
             converters.add(instanceOf(converterClass));
         }
         return new ParameterConverters().addConverters(converters);
@@ -114,7 +114,7 @@ public class AnnotationBuilder {
 
     private <T> T instanceOf(Class<T> ofClass) {
         try {
-            return (T)ofClass.newInstance();
+            return (T) ofClass.newInstance();
         } catch (Exception e) {
             annotationMonitor.elementCreationFailed(ofClass, e);
             throw new RuntimeException(e);

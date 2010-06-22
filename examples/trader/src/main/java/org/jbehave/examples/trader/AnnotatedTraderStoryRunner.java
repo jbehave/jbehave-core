@@ -8,7 +8,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.text.SimpleDateFormat;
 
-import org.jbehave.core.annotations.WithCandidateSteps;
+import org.jbehave.core.annotations.WithSteps;
 import org.jbehave.core.annotations.WithConfiguration;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.embedder.Embedder;
@@ -29,7 +29,7 @@ import org.junit.Test;
         storyLoader = AnnotatedTraderStoryRunner.MyStoryLoader.class, 
         storyReporterBuilder = AnnotatedTraderStoryRunner.MyReportBuilder.class, 
         parameterConverters = { AnnotatedTraderStoryRunner.MyDateConverter.class })
-@WithCandidateSteps(candidateSteps = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
+@WithSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
         PriorityMatchingSteps.class, SandpitSteps.class })
 public class AnnotatedTraderStoryRunner {
 
