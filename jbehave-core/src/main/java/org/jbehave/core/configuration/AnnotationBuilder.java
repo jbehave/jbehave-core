@@ -3,8 +3,8 @@ package org.jbehave.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.annotations.WithConfiguration;
 import org.jbehave.core.annotations.AddSteps;
+import org.jbehave.core.annotations.WithConfiguration;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
