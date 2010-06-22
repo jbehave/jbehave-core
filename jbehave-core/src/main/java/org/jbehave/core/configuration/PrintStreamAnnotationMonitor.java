@@ -1,6 +1,7 @@
 package org.jbehave.core.configuration;
 
 import java.io.PrintStream;
+import java.lang.annotation.Annotation;
 
 public class PrintStreamAnnotationMonitor implements AnnotationMonitor {
 
@@ -15,7 +16,16 @@ public class PrintStreamAnnotationMonitor implements AnnotationMonitor {
     }
 
     public void elementCreationFailed(Class<?> elementClass, Exception cause) {
-        output.println("Eelement creation failed: " + elementClass);
+        output.println("Element creation failed: " + elementClass);
         cause.printStackTrace(output);
+    }
+
+    public void annotationNotFound(Class<? extends Annotation> annotation, Object annotatedInstance) {
+        output.println("Annotation " + annotation + " not found in "+annotatedInstance);        
+    }
+
+    public void annotationValueNotFound(String memberName, Class<? extends Annotation> annotation,
+            Object annotatedInstance) {
+        output.println("Member "+memberName+" not found for aannotation " + annotation + " in "+annotatedInstance);                
     }
 }

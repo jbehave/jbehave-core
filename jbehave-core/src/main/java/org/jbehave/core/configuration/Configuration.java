@@ -54,7 +54,7 @@ import com.thoughtworks.paranamer.Paranamer;
  * use of non-static member variables.
  * </p>
  */
-public class Configuration {
+public abstract class Configuration {
 
     /**
      * Dry run is switched off by default

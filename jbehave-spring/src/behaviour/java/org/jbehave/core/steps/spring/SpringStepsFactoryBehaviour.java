@@ -13,7 +13,7 @@ import org.jbehave.core.steps.Steps;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
-import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.context.ApplicationContext;
 
 public class SpringStepsFactoryBehaviour {
 
@@ -25,15 +25,15 @@ public class SpringStepsFactoryBehaviour {
         stepsInstance.setAccessible(true);
     }
 
-    private ListableBeanFactory createBeanFactory(String... xmlResources) {
-        return new SpringApplicationContextFactory(xmlResources).getApplicationContext();
+    private ApplicationContext createApplicationContext(String... resourceLocations) {
+        return new SpringApplicationContextFactory(resourceLocations).createApplicationContext();
     }
 
     @Test
     public void assertThatStepsCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
         // Given
-        ListableBeanFactory parent = createBeanFactory("org/jbehave/core/steps/spring/steps.xml");
-        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), parent);
+        ApplicationContext context = createApplicationContext("org/jbehave/core/steps/spring/steps.xml");
+        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), context);
         // When
         List<CandidateSteps> steps = factory.createCandidateSteps();
         // Then 
@@ -43,9 +43,9 @@ public class SpringStepsFactoryBehaviour {
 
     @Test
     public void assertThatStepsWithStepsWithDependencyCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
-        ListableBeanFactory parent = createBeanFactory("org/jbehave/core/steps/spring/steps-with-dependency.xml");
+        ApplicationContext context = createApplicationContext("org/jbehave/core/steps/spring/steps-with-dependency.xml");
         // When
-        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), parent);
+        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), context);
         List<CandidateSteps> steps = factory.createCandidateSteps();
         // Then
         assertFooStepsFound(steps);
@@ -62,8 +62,8 @@ public class SpringStepsFactoryBehaviour {
 
     @Test(expected=BeanDefinitionStoreException.class)
     public void assertThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
-        ListableBeanFactory parent = createBeanFactory("org/jbehave/core/steps/spring/steps-with-missing-depedency.xml");
-        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), parent);
+        ApplicationContext context = createApplicationContext("org/jbehave/core/steps/spring/steps-with-missing-depedency.xml");
+        SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), context);
         // When
         factory.createCandidateSteps();
         // Then ... expected exception is thrown        

@@ -7,18 +7,14 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.spring.SpringApplicationContextFactory;
 import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.jbehave.examples.trader.TraderStory;
-import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.context.ApplicationContext;
 
 public abstract class TraderStoryUsingSpring extends TraderStory {
 
     @Override
     protected List<CandidateSteps> createSteps(Configuration configuration) {
-        ListableBeanFactory parent = createBeanFactory();
-        return new SpringStepsFactory(configuration, parent).createCandidateSteps();
-    }
-
-    private ListableBeanFactory createBeanFactory() {
-        return new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml").getApplicationContext();
+        ApplicationContext context = new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml").createApplicationContext();
+        return new SpringStepsFactory(configuration, context).createCandidateSteps();
     }
 
 }

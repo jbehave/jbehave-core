@@ -9,12 +9,14 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
 /**
- *  Simple facade to create a {@GenericApplicationContext} using an
- *  injected {@link ClassLoader}. 
+ * Factory for Spring {@ApplicationContext} using the
+ * specified resources
  */
 public class SpringApplicationContextFactory {
 
-    private GenericApplicationContext context;
+    private final ApplicationContext parent;
+    private final ClassLoader classLoader;
+    private final String[] resourceLocations;
 
     public SpringApplicationContextFactory(String... resourceLocations) {
         this(Thread.currentThread().getContextClassLoader(), resourceLocations);
@@ -28,12 +30,16 @@ public class SpringApplicationContextFactory {
         this(parent, parent.getClassLoader(), resourceLocations);
     }
 
-    public SpringApplicationContextFactory(ApplicationContext parent, ClassLoader classLoader, String... resourceLocations) {
-        // set up the context class loader
-        Thread.currentThread().setContextClassLoader(classLoader);
+    public SpringApplicationContextFactory(ApplicationContext parent, ClassLoader classLoader,
+            String... resourceLocations) {
+        this.parent = parent;
+        this.classLoader = classLoader;
+        this.resourceLocations = resourceLocations;
+    }
 
+    public ConfigurableApplicationContext createApplicationContext() {
         // create application context
-        context = new GenericApplicationContext(parent);
+        GenericApplicationContext context = new GenericApplicationContext(parent);
         ResourceLoader resourceLoader = new DefaultResourceLoader(classLoader);
         context.setResourceLoader(resourceLoader);
         BeanDefinitionReader reader = new XmlBeanDefinitionReader(context);
@@ -41,9 +47,6 @@ public class SpringApplicationContextFactory {
             reader.loadBeanDefinitions(resourceLoader.getResource(resourceLocation));
         }
         context.refresh();
-    }
-
-    public ConfigurableApplicationContext getApplicationContext() {
         return context;
     }
 

@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.TYPE })
 @Inherited
-public @interface WithCandidateSteps {
+public @interface AddSteps {
 
-    Class<?>[] candidateSteps() default {};
-
+    Class<?>[] instances() default {};
+    
 }
