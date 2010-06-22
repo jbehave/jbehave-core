@@ -75,9 +75,11 @@
 							<shadedArtifactId>jbehave-core</shadedArtifactId>
 							<artifactSet>
 								<excludes>
+                                    <exclude>commons-codec:commons-codec</exclude>                  
 									<exclude>commons-collections:commons-collections</exclude>
 									<exclude>commons-io:commons-io</exclude>
 									<exclude>commons-lang:commons-lang</exclude>
+                                    <exclude>javassist:javassist</exclude>                  
 									<exclude>javax.inject:javax.inject</exclude>
 									<exclude>junit:junit-dep</exclude>
 									<exclude>org.apache.ant:ant</exclude>
