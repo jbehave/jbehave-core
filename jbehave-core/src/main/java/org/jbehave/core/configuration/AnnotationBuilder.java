@@ -3,8 +3,8 @@ package org.jbehave.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbehave.core.annotations.WithSteps;
 import org.jbehave.core.annotations.WithConfiguration;
-import org.jbehave.core.annotations.AddSteps;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -80,7 +80,7 @@ public class AnnotationBuilder {
     }
 
     /**
-     * Builds CandidateSteps using annotation {@link AddSteps} found in the
+     * Builds CandidateSteps using annotation {@link WithSteps} found in the
      * annotated object instance
      * 
      * @param annotatedInstance
@@ -92,37 +92,42 @@ public class AnnotationBuilder {
         List<Object> stepsInstances = new ArrayList<Object>();        
         Configuration configuration = buildConfiguration(annotatedInstance);
         InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
-        if (finder.isAnnotationPresent(AddSteps.class)) {
-            if ( finder.isAnnotationValuePresent(AddSteps.class, "instances") ){
-                List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(AddSteps.class, Object.class, "instances");
+        if (finder.isAnnotationPresent(WithSteps.class)) {
+            if ( finder.isAnnotationValuePresent(WithSteps.class, "instances") ){
+                List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(WithSteps.class, Object.class, "instances");
                 for (Class<Object> stepsClass : stepsClasses) {
-                    stepsInstances.add(instanceOf(stepsClass));
+                    stepsInstances.add(instanceOf(Object.class, stepsClass));
                 }             
                 factory = new InstanceStepsFactory(configuration, stepsInstances);
             } else {
-                annotationMonitor.annotationValueNotFound("instances", AddSteps.class, annotatedInstance);
+                annotationMonitor.annotationValueNotFound("instances", WithSteps.class, annotatedInstance);
             }
         } else {
-            annotationMonitor.annotationNotFound(AddSteps.class, annotatedInstance);
+            annotationMonitor.annotationNotFound(WithSteps.class, annotatedInstance);
         }
 
         return factory.createCandidateSteps();
     }
 
-    @SuppressWarnings("unchecked")
     private <T> T configurationElement(AnnotationFinder finder, String name, Class<T> type) {
-        return instanceOf((Class<T>) finder.getAnnotatedValue(WithConfiguration.class, Class.class, name));
+        Class<T> implementation = elementImplementation(finder, name);
+        return instanceOf(type, implementation);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> Class<T> elementImplementation(AnnotationFinder finder, String name) {
+        return (Class<T>) finder.getAnnotatedValue(WithConfiguration.class, Class.class, name);
     }
 
     private ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
         for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(WithConfiguration.class, ParameterConverter.class, "parameterConverters")) {
-            converters.add(instanceOf(converterClass));
+            converters.add(instanceOf(ParameterConverter.class, converterClass));
         }
         return new ParameterConverters().addConverters(converters);
     }
 
-    private <T> T instanceOf(Class<T> ofClass) {
+    protected <T> T instanceOf(Class<T> type, Class<T> ofClass) {
         try {
             return (T) ofClass.newInstance();
         } catch (Exception e) {

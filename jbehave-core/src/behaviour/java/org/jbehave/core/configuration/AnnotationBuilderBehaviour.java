@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.instanceOf;
 
 import java.util.List;
 
-import org.jbehave.core.annotations.AddSteps;
+import org.jbehave.core.annotations.WithSteps;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
 import org.junit.Test;
@@ -33,12 +33,12 @@ public class AnnotationBuilderBehaviour {
         }        
     }
 
-    @AddSteps(instances={MySteps.class, MyOtherSteps.class})
+    @WithSteps(instances={MySteps.class, MyOtherSteps.class})
     private static class Annotated {
         
     }
 
-    @AddSteps()
+    @WithSteps()
     private static class AnnotatedWithoutSteps {
         
     }

@@ -1,4 +1,4 @@
-package org.jbehave.core.annotations;
+package org.jbehave.core.annotations.spring;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.TYPE })
 @Inherited
-public @interface AddSteps {
+public @interface UsingSpring {
 
-    Class<?>[] instances() default {};
+    String[] locations() default {};
     
 }

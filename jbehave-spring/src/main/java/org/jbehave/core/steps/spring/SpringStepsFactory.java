@@ -20,11 +20,6 @@ public class SpringStepsFactory extends AbstractStepsFactory {
 
     private final ApplicationContext context;
 
-    public SpringStepsFactory(Configuration configuration, String... resourceLocations) {
-        super(configuration);
-        this.context = new SpringApplicationContextFactory(resourceLocations).createApplicationContext();
-    }
-
     public SpringStepsFactory(Configuration configuration, ApplicationContext context) {
         super(configuration);
         this.context = context;
