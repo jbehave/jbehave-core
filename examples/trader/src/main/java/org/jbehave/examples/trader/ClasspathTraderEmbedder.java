@@ -9,6 +9,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.jbehave.core.RunnableStory;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
@@ -71,5 +72,9 @@ public class ClasspathTraderEmbedder extends Embedder {
 		return finder.listStoryPaths("target/classes", "",
 				asList("**/*.story"), asList(""));
 	}
+
+    public List<RunnableStory> stories() {
+        return null;
+    }
 
 }

@@ -16,6 +16,9 @@ import org.picocontainer.PicoContainer;
 import org.picocontainer.behaviors.Caching;
 import org.picocontainer.injectors.ConstructorInjection;
 
+/**
+ * Example of configuring a single story to use steps defined in a Pico container.
+ */
 public abstract class TraderStoryUsingPicoContainer extends TraderStory {
 
     @Override

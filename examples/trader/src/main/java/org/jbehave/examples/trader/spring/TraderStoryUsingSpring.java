@@ -9,6 +9,9 @@ import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.jbehave.examples.trader.TraderStory;
 import org.springframework.context.ApplicationContext;
 
+/**
+ * Example of configuring a single story to use steps defined in a Spring context.
+ */
 public abstract class TraderStoryUsingSpring extends TraderStory {
 
     @Override

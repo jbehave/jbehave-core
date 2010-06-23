@@ -27,9 +27,14 @@ import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.examples.trader.service.TradingService;
 
 /**
- * Example of how to run a story using a JBehave2 style inheritance. A story
- * just need to extend this abstract class and are out-of-the-box runnable via
- * JUnit.
+ * Example of how to run a single story via JUnit.   JUnitStory is a simple facade
+ * around the Embedder.   The use need only provide the configuration and the Steps instances.
+ * Using this paradigm (which is the analogous to what found in JBehave 2) each runnable story
+ * maps to one textual story. 
+ * <p>
+ * Users want to run multiple stories via the same Java class (new to JBehave 3) should 
+ * look at {@link TraderStoryRunner}.
+ * </p> 
  */
 public abstract class TraderStory extends JUnitStory {
 

@@ -14,6 +14,9 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
 
+/**
+ * Example of configuring a single story to use steps defined in a Guice injector.
+ */
 public abstract class TraderStoryUsingGuice extends TraderStory {
 
     @Override
