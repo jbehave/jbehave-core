@@ -202,15 +202,15 @@ facade for collecting user-defined <a
 
 <h2>Annotated Configuration</h2>
 
-<p>JBehave also supports the ability to specify the same configuration via annotations.</p>
+<p>JBehave supports the ability to specify the same configuration via annotations.</p>
 
 <script type="syntaxhighlighter" class="brush: java"><![CDATA[
-@WithConfiguration(stepMonitor = SilentStepMonitor.class, 
+@Configure(
         stepPatternParser = AnnotatedTraderStoryRunner.MyRegexPrefixCapturingPatternParser.class, 
         storyLoader = AnnotatedTraderStoryRunner.MyStoryLoader.class, 
         storyReporterBuilder = AnnotatedTraderStoryRunner.MyReportBuilder.class, 
         parameterConverters = { AnnotatedTraderStoryRunner.MyDateConverter.class })
-@WithCandidateSteps(candidateSteps = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
         PriorityMatchingSteps.class, SandpitSteps.class })
 public class AnnotatedTraderStoryRunner {
 
@@ -251,11 +251,30 @@ public class AnnotatedTraderStoryRunner {
 ]]></script>
 
 <span class="followup">
-At present, the limitation is that the configuration element is instantiated from the default constructor. 
-This limitation will be removed when we add support for dependency injection to the configuration.
+The  <a
+    href="javadoc/core/org/jbehave/core/configuration/AnnotationBuilder.html">AnnotationBuilder</a> requires that configuration elements and the steps instances provide a default constructor. 
+This limitation can be removed by using <a href="dependency-injection.html">dependency injection</a> containers.
 </span>
 
+<p>If using <a
+    href="javadoc/spring/org/jbehave/core/configuration/spring/SpringAnnotationBuilder.html">SpringAnnotationBuilder</a>, we can specify the context from separate locations for configuration and steps.</>
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+@Configure()
+@UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml", "org/jbehave/examples/trader/spring/steps.xml" })
+public class AnnotatedEmbedderUsingSpring {
 
+    @Test
+    public void run() {
+        Embedder embedder = new Embedder();
+        embedder.useConfiguration(new SpringAnnotationBuilder().buildConfiguration(this));
+        embedder.useCandidateSteps(new SpringAnnotationBuilder().buildCandidateSteps(this));
+        embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+        embedder.runStoriesAsPaths(new StoryPathFinder().listStoryPaths("target/classes", "",
+                asList("**/stories/*.story"), asList("")));
+    }
+
+}
+]]></script>
 <div class="clear">
 <hr />
 </div>

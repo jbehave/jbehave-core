@@ -41,7 +41,7 @@ import com.thoughtworks.paranamer.Paranamer;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 @Inherited
-public @interface WithConfiguration {
+public @interface Configure {
 
 	Class<? extends Keywords> keywords() default LocalizedKeywords.class;
 

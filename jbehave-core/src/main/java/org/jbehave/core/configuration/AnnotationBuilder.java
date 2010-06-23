@@ -3,8 +3,8 @@ package org.jbehave.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.annotations.WithSteps;
-import org.jbehave.core.annotations.WithConfiguration;
+import org.jbehave.core.annotations.UsingSteps;
+import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -41,7 +41,7 @@ public class AnnotationBuilder {
 
     /**
      * Builds Configuration instance based on annotation
-     * {@link WithConfiguration} found in the annotated object instance
+     * {@link Configure} found in the annotated object instance
      * 
      * @param annotatedInstance
      *            the Object instance that contains the annotations
@@ -52,7 +52,8 @@ public class AnnotationBuilder {
 
         Configuration configuration = new MostUsefulConfiguration();
         
-        if (!finder.isAnnotationPresent(WithConfiguration.class)) {
+        if (!finder.isAnnotationPresent(Configure.class)) {
+            // not using annotation configuration, default to most useful configuration
             return configuration;
         }
         
@@ -80,7 +81,7 @@ public class AnnotationBuilder {
     }
 
     /**
-     * Builds CandidateSteps using annotation {@link WithSteps} found in the
+     * Builds CandidateSteps using annotation {@link UsingSteps} found in the
      * annotated object instance
      * 
      * @param annotatedInstance
@@ -92,18 +93,18 @@ public class AnnotationBuilder {
         List<Object> stepsInstances = new ArrayList<Object>();        
         Configuration configuration = buildConfiguration(annotatedInstance);
         InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
-        if (finder.isAnnotationPresent(WithSteps.class)) {
-            if ( finder.isAnnotationValuePresent(WithSteps.class, "instances") ){
-                List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(WithSteps.class, Object.class, "instances");
+        if (finder.isAnnotationPresent(UsingSteps.class)) {
+            if ( finder.isAnnotationValuePresent(UsingSteps.class, "instances") ){
+                List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(UsingSteps.class, Object.class, "instances");
                 for (Class<Object> stepsClass : stepsClasses) {
                     stepsInstances.add(instanceOf(Object.class, stepsClass));
                 }             
                 factory = new InstanceStepsFactory(configuration, stepsInstances);
             } else {
-                annotationMonitor.annotationValueNotFound("instances", WithSteps.class, annotatedInstance);
+                annotationMonitor.annotationValueNotFound("instances", UsingSteps.class, annotatedInstance);
             }
         } else {
-            annotationMonitor.annotationNotFound(WithSteps.class, annotatedInstance);
+            annotationMonitor.annotationNotFound(UsingSteps.class, annotatedInstance);
         }
 
         return factory.createCandidateSteps();
@@ -116,12 +117,12 @@ public class AnnotationBuilder {
 
     @SuppressWarnings("unchecked")
     private <T> Class<T> elementImplementation(AnnotationFinder finder, String name) {
-        return (Class<T>) finder.getAnnotatedValue(WithConfiguration.class, Class.class, name);
+        return (Class<T>) finder.getAnnotatedValue(Configure.class, Class.class, name);
     }
 
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
-        for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(WithConfiguration.class, ParameterConverter.class, "parameterConverters")) {
+        for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(Configure.class, ParameterConverter.class, "parameterConverters")) {
             converters.add(instanceOf(ParameterConverter.class, converterClass));
         }
         return new ParameterConverters().addConverters(converters);

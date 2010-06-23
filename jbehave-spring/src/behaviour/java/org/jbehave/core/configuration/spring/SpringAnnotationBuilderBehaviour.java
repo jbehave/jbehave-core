@@ -4,7 +4,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
@@ -19,9 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.jbehave.core.annotations.WithConfiguration;
+import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.spring.UsingSpring;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
@@ -38,7 +38,7 @@ public class SpringAnnotationBuilderBehaviour {
     private SpringAnnotationBuilder builder = new SpringAnnotationBuilder();
 
     @Test
-    public void shouldCreateConfigurationFromAnnotation() {
+    public void shouldBuildConfigurationFromAnnotations() {
         Configuration configuration = builder.buildConfiguration(new Annotated());
         assertThat(configuration.failureStrategy(), instanceOf(SilentlyAbsorbingFailure.class));
         assertThat(configuration.storyLoader(), instanceOf(LoadFromURL.class));
@@ -47,8 +47,8 @@ public class SpringAnnotationBuilderBehaviour {
         assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
         assertThat(configuration.storyReporterBuilder().formats(), hasItems(CONSOLE, HTML, TXT, XML, STATS));
         assertThat(configuration.storyReporterBuilder().outputDirectory().getName(), equalTo("my-output-directory"));
-        assertThat(configuration.storyReporterBuilder().viewResources(), hasProperty("index", equalTo("my-reports-index.ftl")));
-        assertThat(configuration.storyReporterBuilder().viewResources(), hasProperty("decorateNonHtml", equalTo("true")));
+        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"), equalTo("my-reports-index.ftl"));
+        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"), equalTo("true"));
         assertThat(configuration.storyReporterBuilder().reportFailureTrace(), is(true));        
     }
 
@@ -62,15 +62,32 @@ public class SpringAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldCreateCandidateStepsFromAnnotation() {
+    public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
+        assertThatConfigurationIs(builder.buildConfiguration(new NotAnnotated()), new MostUsefulConfiguration());
+        assertThatConfigurationIs(builder.buildConfiguration(new AnnotatedWithoutLocations()), new MostUsefulConfiguration());
+    }
+
+    private void assertThatConfigurationIs(Configuration builtConfiguration,
+            Configuration defaultConfiguration) {
+        assertThat(builtConfiguration.failureStrategy(), instanceOf(defaultConfiguration.failureStrategy().getClass()));
+        assertThat(builtConfiguration.storyLoader(), instanceOf(defaultConfiguration.storyLoader().getClass()));
+        assertThat(builtConfiguration.stepPatternParser(), instanceOf(defaultConfiguration.stepPatternParser().getClass()));
+        assertThat(builtConfiguration.storyReporterBuilder().formats(), equalTo(defaultConfiguration.storyReporterBuilder().formats()));
+        assertThat(builtConfiguration.storyReporterBuilder().outputDirectory(), equalTo(defaultConfiguration.storyReporterBuilder().outputDirectory()));
+        assertThat(builtConfiguration.storyReporterBuilder().viewResources(), equalTo(defaultConfiguration.storyReporterBuilder().viewResources()));
+        assertThat(builtConfiguration.storyReporterBuilder().reportFailureTrace(), equalTo(defaultConfiguration.storyReporterBuilder().reportFailureTrace()));
+    }
+
+    @Test
+    public void shouldBuildCandidateStepsFromAnnotations() {
         assertThatStepsInstancesAre(builder.buildCandidateSteps(new Annotated()), FooSteps.class,
                 FooStepsWithDependency.class);
     }
 
     @Test
-    public void shouldCreateEmptyCandidateStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
+    public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         assertThatStepsInstancesAre(builder.buildCandidateSteps(new NotAnnotated()));
-        assertThatStepsInstancesAre(builder.buildCandidateSteps(new AnnotatedWithoutSteps()));
+        assertThatStepsInstancesAre(builder.buildCandidateSteps(new AnnotatedWithoutLocations()));
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {
@@ -80,15 +97,16 @@ public class SpringAnnotationBuilderBehaviour {
         }
     }
 
-    @WithConfiguration()
+    @Configure()
     @UsingSpring(locations = { "org/jbehave/core/configuration/spring/configuration.xml",
             "org/jbehave/core/steps/spring/steps.xml", "org/jbehave/core/steps/spring/steps-with-dependency.xml" })
     private static class Annotated {
 
     }
 
+    @Configure()
     @UsingSpring()
-    private static class AnnotatedWithoutSteps {
+    private static class AnnotatedWithoutLocations {
 
     }
 

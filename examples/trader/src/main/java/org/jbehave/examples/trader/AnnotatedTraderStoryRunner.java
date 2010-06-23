@@ -8,8 +8,8 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.text.SimpleDateFormat;
 
-import org.jbehave.core.annotations.WithConfiguration;
-import org.jbehave.core.annotations.WithSteps;
+import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -23,11 +23,11 @@ import org.jbehave.examples.trader.stories.FailureFollowedByGivenStories.Sandpit
 import org.jbehave.examples.trader.stories.PriorityMatching.PriorityMatchingSteps;
 import org.junit.Test;
 
-@WithConfiguration(
+@Configure(
         storyLoader = AnnotatedTraderStoryRunner.MyStoryLoader.class, 
         storyReporterBuilder = AnnotatedTraderStoryRunner.MyReportBuilder.class, 
         parameterConverters = { AnnotatedTraderStoryRunner.MyDateConverter.class })
-@WithSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
         PriorityMatchingSteps.class, SandpitSteps.class })
 public class AnnotatedTraderStoryRunner {
 
