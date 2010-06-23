@@ -23,7 +23,7 @@
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit-dep</artifactId>
-        <version>4.4</version>
+        <version>4.5</version>
         <exclusions>
           <exclusion>
             <groupId>org.hamcrest</groupId>
