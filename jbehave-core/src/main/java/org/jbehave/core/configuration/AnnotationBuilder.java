@@ -119,7 +119,7 @@ public class AnnotationBuilder {
         return (Class<T>) finder.getAnnotatedValue(WithConfiguration.class, Class.class, name);
     }
 
-    private ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
+    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
         for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(WithConfiguration.class, ParameterConverter.class, "parameterConverters")) {
             converters.add(instanceOf(ParameterConverter.class, converterClass));

@@ -8,4 +8,27 @@
     <constructor-arg value="%"/>
   </bean>
   
+  <bean class="org.jbehave.core.io.LoadFromClasspath">
+    <constructor-arg value="org.jbehave.examples.trader.AnnotatedTraderStoryRunner"/>
+  </bean>
+
+  <bean class="org.jbehave.core.steps.ParameterConverters$DateConverter">
+    <constructor-arg>
+      <bean class="java.text.SimpleDateFormat">
+        <constructor-arg value="yyyy-MM-dd" />
+      </bean>
+    </constructor-arg>
+  </bean>
+  
+  <bean class="org.jbehave.core.configuration.spring.SpringStoryReporterBuilder" init-method="withDefaultFormats">
+    <property name="formats">
+        <list>
+            <value>CONSOLE</value>
+            <value>TXT</value>
+            <value>HTML</value>
+            <value>XML</value>
+        </list>
+    </property>
+  </bean>
+  
 </beans>

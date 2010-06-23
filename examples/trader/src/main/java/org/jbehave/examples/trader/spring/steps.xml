@@ -4,14 +4,21 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean id="tradingService" class="org.jbehave.examples.trader.service.TradingService">
-  </bean>
 
   <bean id="traderSteps" class="org.jbehave.examples.trader.TraderSteps">
-    <constructor-arg ref="tradingService" />
+    <constructor-arg>
+      <bean class="org.jbehave.examples.trader.service.TradingService"/>
+    </constructor-arg>
   </bean>
 
-  <bean id="beforeAndAfterSteps" class="org.jbehave.examples.trader.BeforeAfterSteps">
-  </bean>
+  <bean class="org.jbehave.examples.trader.BeforeAfterSteps" />
+
+  <bean class="org.jbehave.examples.trader.stories.AndStep$AndSteps" />
+
+  <bean class="org.jbehave.examples.trader.stories.ClaimsWithNullCalendar$CalendarSteps" />
+
+  <bean class="org.jbehave.examples.trader.stories.PriorityMatching$PriorityMatchingSteps" />
+
+  <bean class="org.jbehave.examples.trader.stories.FailureFollowedByGivenStories$SandpitSteps" />
 
 </beans>

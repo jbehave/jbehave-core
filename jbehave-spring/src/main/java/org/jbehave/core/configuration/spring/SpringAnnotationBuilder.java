@@ -1,5 +1,6 @@
 package org.jbehave.core.configuration.spring;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import org.jbehave.core.configuration.PrintStreamAnnotationMonitor;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.spring.SpringApplicationContextFactory;
 import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.springframework.context.ApplicationContext;
@@ -53,6 +56,21 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
         }
         return factory.createCandidateSteps();
     }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
+        if ( context != null ){
+            Map<String,ParameterConverter> beansOfType = context.getBeansOfType(ParameterConverter.class);
+            List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
+            for ( ParameterConverter converter : beansOfType.values() ) {
+                converters.add(converter);
+            }
+            return new ParameterConverters().addConverters(converters);
+        }
+        return super.parameterConverters(annotationFinder);
+    }
+
 
     @SuppressWarnings("unchecked")
     @Override

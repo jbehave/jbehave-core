@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
  * Loads story content from classpath resources.
@@ -14,6 +16,10 @@ public class LoadFromClasspath implements StoryLoader {
 
     public LoadFromClasspath() {
         this(Thread.currentThread().getContextClassLoader());
+    }
+
+    public LoadFromClasspath(Class<?> loadFromClass) {
+        this(loadFromClass.getClassLoader());
     }
 
     public LoadFromClasspath(ClassLoader classLoader) {
@@ -32,5 +38,8 @@ public class LoadFromClasspath implements StoryLoader {
         }
     }
 
-
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

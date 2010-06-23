@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
  * A step pattern parser that provides a step matcher which will capture
  * parameters starting with the given prefix in any matching step. Default
@@ -105,4 +108,8 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 
 	}
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 }

@@ -4,6 +4,44 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean class="org.jbehave.core.failures.SilentlyAbsorbingFailure"/>
-  
+  <bean class="org.jbehave.core.failures.SilentlyAbsorbingFailure" />
+
+  <bean class="org.jbehave.core.io.LoadFromURL">
+  </bean>
+
+  <bean class="org.jbehave.core.parsers.RegexPrefixCapturingPatternParser">
+    <constructor-arg value="MyPrefix" />
+  </bean>
+
+  <bean class="org.jbehave.core.steps.ParameterConverters$DateConverter">
+    <constructor-arg>
+      <bean class="java.text.SimpleDateFormat">
+        <constructor-arg value="yyyy-MM-dd" />
+      </bean>
+    </constructor-arg>
+  </bean>
+
+  <bean
+    class="org.jbehave.core.configuration.spring.SpringStoryReporterBuilder"
+    init-method="withDefaultFormats">
+    <property name="formats">
+      <list>
+        <value>CONSOLE</value>
+        <value>TXT</value>
+        <value>HTML</value>
+        <value>XML</value>
+      </list>
+    </property>
+    <property name="outputDirectory" value="my-output-directory" />
+    <property name="reportFailureTrace" value="true" />
+    <property name="viewResources">
+      <props>
+        <prop key="index">my-reports-index.ftl
+        </prop>
+        <prop key="decorateNonHtml">true
+        </prop>
+      </props>
+    </property>
+  </bean>
+
 </beans>
