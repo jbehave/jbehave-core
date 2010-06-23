@@ -80,7 +80,11 @@ public class AnnotationBuilder {
     }
 
     /**
+<<<<<<< HEAD
      * Builds CandidateSteps using annotation {@link WithSteps} found in the
+=======
+     * Builds CandidateSteps using annotation {@link AddSteps} found in the
+>>>>>>> 6c4dbcf213217ec44b711dc608093737cadb72e7
      * annotated object instance
      * 
      * @param annotatedInstance

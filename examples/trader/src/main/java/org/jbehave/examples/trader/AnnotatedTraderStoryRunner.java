@@ -8,15 +8,14 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.text.SimpleDateFormat;
 
-import org.jbehave.core.annotations.WithSteps;
 import org.jbehave.core.annotations.WithConfiguration;
+import org.jbehave.core.annotations.WithSteps;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.examples.trader.stories.AndStep.AndSteps;
 import org.jbehave.examples.trader.stories.ClaimsWithNullCalendar.CalendarSteps;
@@ -24,8 +23,7 @@ import org.jbehave.examples.trader.stories.FailureFollowedByGivenStories.Sandpit
 import org.jbehave.examples.trader.stories.PriorityMatching.PriorityMatchingSteps;
 import org.junit.Test;
 
-@WithConfiguration(stepMonitor = SilentStepMonitor.class, 
-        stepPatternParser = AnnotatedTraderStoryRunner.MyRegexPrefixCapturingPatternParser.class, 
+@WithConfiguration(
         storyLoader = AnnotatedTraderStoryRunner.MyStoryLoader.class, 
         storyReporterBuilder = AnnotatedTraderStoryRunner.MyReportBuilder.class, 
         parameterConverters = { AnnotatedTraderStoryRunner.MyDateConverter.class })
