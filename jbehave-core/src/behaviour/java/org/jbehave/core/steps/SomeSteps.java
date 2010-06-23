@@ -13,7 +13,6 @@ import org.jbehave.core.model.ExamplesTable;
 public class SomeSteps extends Steps {
 
     public SomeSteps() {
-        System.out.println("");
     }
 
     public Object args;
