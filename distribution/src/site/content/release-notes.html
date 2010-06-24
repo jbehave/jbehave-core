@@ -5,6 +5,144 @@
 </head>
 <body>
 
+<h1>JBehave Core - Version 3.0 (Jul xx, 2010)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-278'>JBEHAVE-278</a>] -         'And' Step (AndStep) ignores CandidateStep step                                                                                                                                                                           type
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-281'>JBEHAVE-281</a>] -         Multiple And steps are not matched
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-282'>JBEHAVE-282</a>] -         Using GivenScenarios causes failed tests to be forgotten
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-290'>JBEHAVE-290</a>] -         Stack Overflow when parsing a scenario with a very long step
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-296'>JBEHAVE-296</a>] -         Step failure exception being thrown in PrintStream reporters prevents the delegating reporter from completing
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-309'>JBEHAVE-309</a>] -         default report location determined by location of jbehave jar
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-244'>JBEHAVE-244</a>] -         Step parameters should be converted just before the step executes (not when the scenario is parsed)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-246'>JBEHAVE-246</a>] -         Improve terminology, the distinction between a story and a scenario
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-255'>JBEHAVE-255</a>] -         Make column separator configurable in ExamplesTable
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-259'>JBEHAVE-259</a>] -         ClassLoader not injected by default when running stories via CLI
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-263'>JBEHAVE-263</a>] -         Allow lazy parameter convertion
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-264'>JBEHAVE-264</a>] -         Steps methods as parameter converters when annotated by @AsParameterConverter
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-267'>JBEHAVE-267</a>] -         Embedder should be responsible for all configurable aspects of story running
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-268'>JBEHAVE-268</a>] -         Rename PassSilentlyDecorator to SilentSuccessFilter
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-269'>JBEHAVE-269</a>] -         Rename I18nKeyWords to LocalizedKeywords for clarity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-270'>JBEHAVE-270</a>] -         Rename UnmatchedToPendingStepCreator to MarkUnmatchedStepsAsPending for clarity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-271'>JBEHAVE-271</a>] -         PatternStoryParser should be RegexStoryParser
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-272'>JBEHAVE-272</a>] -         rename StoryReporter implementations to *Filter *Decorator and *Output as applicable (naming closer to purpose)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-280'>JBEHAVE-280</a>] -         Review MostUsefulStoryConfiguration defaults
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-283'>JBEHAVE-283</a>] -         Report Renderer should be failure aware
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-284'>JBEHAVE-284</a>] -         Allow embedder to generate stories view after running them
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-286'>JBEHAVE-286</a>] -         Adopt builder syntax for Story/StepsConfiguration 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-287'>JBEHAVE-287</a>] -         Dry-run Scenario to determine that no steps are Pending
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-289'>JBEHAVE-289</a>] -         Moved configuration and runner classes to separate packages
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-291'>JBEHAVE-291</a>] -         Add method and steps instance information to matching events in StepsMonitor
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-294'>JBEHAVE-294</a>] -         Separate step pattern parsing from the matching 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-295'>JBEHAVE-295</a>] -         Allow non-HTML file reports to be rendered undecorated with syntax highlighter
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-297'>JBEHAVE-297</a>] -         GivenScenarios comma-separated paths should support newlines between paths
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-300'>JBEHAVE-300</a>] -         Rename StepResult methods for consistency and clarity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-301'>JBEHAVE-301</a>] -         Rename embeddedStory flag to givenStory in StoryRunner
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-302'>JBEHAVE-302</a>] -         Separate step matching from step creation in CandidateStep
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-303'>JBEHAVE-303</a>] -         Mark start/end of all parameter values in step creation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-304'>JBEHAVE-304</a>] -         Fix rendering of newlines in ExamplesTable as parameter in HTML
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-305'>JBEHAVE-305</a>] -         Improve reporting of failure
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-306'>JBEHAVE-306</a>] -         StoryReporterBuilder method names should be more consistent
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-307'>JBEHAVE-307</a>] -         Remove redundant getter methods in RunnableStory
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-308'>JBEHAVE-308</a>] -         Consolidate configuration objects
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-310'>JBEHAVE-310</a>] -         Rename failure handling strategies and implement as standalone classes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-311'>JBEHAVE-311</a>] -         Move step creation concern from Steps to StepCreator
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-313'>JBEHAVE-313</a>] -         Change terminology of report rendering to view generation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-314'>JBEHAVE-314</a>] -         Use &quot;parameter&quot; language in place of &quot;arg&quot; in StepMonitor and StepCreator
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-315'>JBEHAVE-315</a>] -         Make ParameterConverters to use builder-style paradigm and add DateConverter
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-150'>JBEHAVE-150</a>] -         URL-based StoryLoader
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-156'>JBEHAVE-156</a>] -         Allow running of multiple textual stories using a single Java entry point
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-247'>JBEHAVE-247</a>] -         jBehave should be more intelligent/flexible with regards to prioritisation of steps
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-248'>JBEHAVE-248</a>] -         Should be able to use JBehave without inheriting from a base class
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-254'>JBEHAVE-254</a>] -         Review story/steps configuration 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-256'>JBEHAVE-256</a>] -         Stories should be retrievable from external or remote sources
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-265'>JBEHAVE-265</a>] -         Allow annotation-based configuration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-298'>JBEHAVE-298</a>] -         CandidateStep finder
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-316'>JBEHAVE-316</a>] -         Define commom JAXB interfaces for systems to provide Features and its Stories and Scenarios to a JBehave runner.
+</li>
+</ul>
+    
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-257'>JBEHAVE-257</a>] -         Migration path from JBehave 2.x to JBehave 3.x
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-262'>JBEHAVE-262</a>] -         Migrate to Git for version control 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-266'>JBEHAVE-266</a>] -         Remove deprecated method and classes from 2.x
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-274'>JBEHAVE-274</a>] -         Add example showing use of SpringJUnit4ClassRunner 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-285'>JBEHAVE-285</a>] -         Add stepdocs documentation page
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-288'>JBEHAVE-288</a>] -         Replace Ensure methods with Hamcrest direct invocations
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-293'>JBEHAVE-293</a>] -         Move I/O related components into separate package from parsing components
+</li>
+</ul>
+        
 <h1>JBehave Core - Version 2.5.9 (Jun 7, 2010)</h1>
             
 <h2>        Improvement
