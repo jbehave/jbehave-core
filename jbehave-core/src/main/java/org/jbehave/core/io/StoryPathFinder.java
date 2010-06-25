@@ -28,6 +28,22 @@ public class StoryPathFinder {
 
     /**
      * Finds paths from a base directory, allowing for includes/excludes. Paths
+     * found are normalised by {@link StoryPathFinder#normalise(List<String>)}.
+     * 
+     * @param searchInDirectory
+     *            the base directory path to search in
+     * @param includes
+     *            the List of include patterns, or <code>null</code> if none
+     * @param excludes
+     *            the List of exclude patterns, or <code>null</code> if none
+     * @return A List of paths found
+     */
+    public List<String> findPaths(String searchInDirectory, List<String> includes, List<String> excludes) {
+        return normalise(scan(searchInDirectory, includes, excludes));
+    }
+
+    /**
+     * Finds paths from a base directory, allowing for includes/excludes. Paths
      * found are prefixed with specified path by {@link
      * StoryPathFinder#prefix(String, List<String>)} and normalised by {@link
      * StoryPathFinder#normalise(List<String>)}.

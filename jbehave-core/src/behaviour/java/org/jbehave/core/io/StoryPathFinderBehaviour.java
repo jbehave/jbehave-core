@@ -19,7 +19,7 @@ public class StoryPathFinderBehaviour {
     @Test
     public void shouldFindPaths() {
         StoryPathFinder finder = new StoryPathFinder();
-        List<String> storyPaths = finder.findPaths("src/behaviour/java", asList("**/stories/*_story"), asList(""), null);
+        List<String> storyPaths = finder.findPaths("src/behaviour/java", asList("**/stories/*_story"), asList(""));
         assertThat(storyPaths.size(), equalTo(4));
         assertThat(storyPaths, hasItem(containsString("/")));
         assertThat(storyPaths, hasItem(not(startsWith("/"))));
@@ -41,7 +41,7 @@ public class StoryPathFinderBehaviour {
     @Test
     public void shouldFindPathsAndTransformThemToClassNames() {
         StoryPathFinder finder = new StoryPathFinder();
-        List<String> storyPaths = finder.findPaths("src/behaviour/java", asList("**/stories/*.java"), asList(""), "");
+        List<String> storyPaths = finder.findPaths("src/behaviour/java", asList("**/stories/*.java"), asList(""));
         List<String> classNames = new PathToClassNames().transform(storyPaths);
         assertThat(classNames.size(), equalTo(2));
         assertThat(classNames, hasItem(not(containsString("/"))));
@@ -59,13 +59,13 @@ public class StoryPathFinderBehaviour {
     @Test
     public void shouldIgnoreNullFiltersWhenFindingPaths() {
         StoryPathFinder finder = new StoryPathFinder();
-        assertThat(finder.findPaths("src/behaviour/java", null, null, null).size(), greaterThan(0));
+        assertThat(finder.findPaths("src/behaviour/java", null, null).size(), greaterThan(0));
     }
 
     @Test
     public void shouldReturnEmptyListForInexistentBasedir() {
         StoryPathFinder finder = new StoryPathFinder();
-        assertThat(finder.findPaths("/inexistent", asList(""), asList(""), null).size(), equalTo(0));
+        assertThat(finder.findPaths("/inexistent", asList(""), asList("")).size(), equalTo(0));
     }
     
 }

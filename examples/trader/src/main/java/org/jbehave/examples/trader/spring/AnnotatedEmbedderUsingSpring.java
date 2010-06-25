@@ -25,7 +25,7 @@ public class AnnotatedEmbedderUsingSpring {
         embedder.useCandidateSteps(new SpringAnnotationBuilder().buildCandidateSteps(this));
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
         embedder.runStoriesAsPaths(new StoryPathFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/stories/*.story"),
-                asList(""), null));
+                asList("")));
     }
 
 }

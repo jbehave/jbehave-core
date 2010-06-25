@@ -70,7 +70,7 @@ public class ClasspathTraderEmbedder extends Embedder {
 
 	public List<String> storyPaths() {
 		return new StoryPathFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"),
-				asList(""), null);
+				asList(""));
 	}
 
     public List<RunnableStory> stories() {

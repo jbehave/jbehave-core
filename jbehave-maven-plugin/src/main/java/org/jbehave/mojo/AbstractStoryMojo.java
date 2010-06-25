@@ -163,8 +163,7 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
 
     private List<String> findStoryClassNames() {
         getLog().debug("Searching for story class names including "+storyIncludes+" and excluding "+storyExcludes);
-        List<String> storyClassNames = new PathToClassNames().transform(finder.findPaths(rootSourceDirectory(), storyIncludes, storyExcludes,
-                null));
+        List<String> storyClassNames = new PathToClassNames().transform(finder.findPaths(rootSourceDirectory(), storyIncludes, storyExcludes));
         getLog().debug("Found story class names: " + storyClassNames);
         return storyClassNames;
     }
@@ -190,8 +189,7 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     
     protected List<String> storyPaths() {
         getLog().debug("Searching for story paths including "+ storyIncludes +" and excluding "+ storyExcludes);
-        List<String> storyPaths = finder.findPaths(rootSourceDirectory(), storyIncludes, storyExcludes,
-                null);
+        List<String> storyPaths = finder.findPaths(rootSourceDirectory(), storyIncludes, storyExcludes);
         getLog().info("Found story paths: " + storyPaths);
         return storyPaths;
     }

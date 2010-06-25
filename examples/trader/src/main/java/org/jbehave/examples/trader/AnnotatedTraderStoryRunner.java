@@ -38,8 +38,7 @@ public class AnnotatedTraderStoryRunner {
         embedder.useConfiguration(new AnnotationBuilder().buildConfiguration(this));
         embedder.useCandidateSteps(new AnnotationBuilder().buildCandidateSteps(this));
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryPathFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""),
-                null));
+        embedder.runStoriesAsPaths(new StoryPathFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList("")));
     }
 
     public static class MyReportBuilder extends StoryReporterBuilder {

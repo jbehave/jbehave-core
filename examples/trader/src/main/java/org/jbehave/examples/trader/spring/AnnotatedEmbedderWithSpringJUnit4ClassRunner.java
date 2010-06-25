@@ -56,7 +56,7 @@ public class AnnotatedEmbedderWithSpringJUnit4ClassRunner {
 
     protected List<String> storyPaths() {
         StoryPathFinder finder = new StoryPathFinder();
-        return finder.findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""), null);
+        return finder.findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""));
     }
 
 }
