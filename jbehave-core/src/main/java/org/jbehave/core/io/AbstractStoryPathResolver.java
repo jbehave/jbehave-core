@@ -12,10 +12,6 @@ public abstract class AbstractStoryPathResolver implements
 
 	private final String extension;
 
-	protected AbstractStoryPathResolver() {
-		this(DEFAULT_EXTENSION);
-	}
-
 	protected AbstractStoryPathResolver(String extension) {
 		this.extension = extension;
 	}

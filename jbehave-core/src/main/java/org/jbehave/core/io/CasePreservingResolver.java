@@ -2,31 +2,30 @@ package org.jbehave.core.io;
 
 import org.jbehave.core.RunnableStory;
 
-
 /**
  * <p>
- * Resolves story paths while preserving the Java story class case, e.g.:
- * "org.jbehave.core.ICanLogin.java" -> "org/jbehave/core/ICanLogin".
+ * Resolves story paths while preserving the Java class case, e.g.:
+ * "org.jbehave.core.ICanLogin.java" -> "org/jbehave/core/ICanLogin.story".
  * </p>
  * <p>
- * By default, no extension is used but this can be configured via the
- * constructor so that we can resolve story class to:
- * "org/jbehave/core/ICanLogin.story".
+ * By default, the {@link AbstractStoryPathResolver#DEFAULT_EXTENSION} is used
+ * but this can be configured via the constructor so that we can resolve class
+ * to use another or no extension at all, e.g.: "org/jbehave/core/ICanLogin".
  * </p>
  */
 public class CasePreservingResolver extends AbstractStoryPathResolver {
 
     public CasePreservingResolver() {
-        super();
+        this(DEFAULT_EXTENSION);
     }
 
     public CasePreservingResolver(String extension) {
-    	super(extension);
+        super(extension);
     }
 
-	@Override
-	protected String resolveName(Class<? extends RunnableStory> storyClass) {
-		return storyClass.getSimpleName();
-	}
+    @Override
+    protected String resolveName(Class<? extends RunnableStory> storyClass) {
+        return storyClass.getSimpleName();
+    }
 
 }

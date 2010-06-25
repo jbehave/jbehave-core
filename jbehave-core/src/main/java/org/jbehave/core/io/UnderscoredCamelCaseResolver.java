@@ -10,22 +10,23 @@ import org.jbehave.core.RunnableStory;
  * <p>
  * Resolves story paths converting the camel-cased Java core class to
  * lower-case underscore-separated paths e.g.:
+ * "org.jbehave.core.ICanLogin.java" -> "org/jbehave/core/i_can_login.story".
+ * </p>
+ * <p>
+ * By default, the {@link AbstractStoryPathResolver#DEFAULT_EXTENSION} is used
+ * but this can be configured via the constructor so that we can resolve class
+ * to use another or no extension at all, e.g.:
  * "org.jbehave.core.ICanLogin.java" -> "org/jbehave/core/i_can_login".
  * </p>
  * <p>
- * By default no extension is used, but this can be configured via the
- * constructor.  So with extension ".story", we can resolve the class to e.g.
- * "org/jbehave/core/i_can_login.story".
- * </p>
- * <p>
  * The default resolution pattern {@link #NUMBERS_AS_LOWER_CASE_LETTERS_PATTERN}
- * treats numbers as lower case letters, eg:
+ * treats numbers as lower case letters, e.g.:
  * "org.jbehave.core.ICanLoginTo1Site.java" ->
  * "org/jbehave/core/i_can_login_to1_site"
  * </p>
  * <p>
  * Choose {@link #NUMBERS_AS_UPPER_CASE_LETTERS_PATTERN} to treat numbers as
- * upper case letters, eg: "org.jbehave.core.ICanLoginTo1Site.java" ->
+ * upper case letters, e.g.: "org.jbehave.core.ICanLoginTo1Site.java" ->
  * "org/jbehave/core/i_can_login_to_1_site"
  * </p>
  */
