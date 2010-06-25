@@ -1,11 +1,11 @@
 package org.jbehave.examples.trader.spring;
 
 import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 import java.util.List;
 
 import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryPathFinder;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.BeforeAfterSteps;
@@ -56,8 +56,7 @@ public class AnnotatedEmbedderWithSpringJUnit4ClassRunner {
 
     protected List<String> storyPaths() {
         StoryPathFinder finder = new StoryPathFinder();
-        String basedir = CodeLocations.codeLocationFromClass(this.getClass()).getFile();
-        return finder.listStoryPaths(basedir, "", asList("**/*.story"), asList(""));
+        return finder.findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""), null);
     }
 
 }

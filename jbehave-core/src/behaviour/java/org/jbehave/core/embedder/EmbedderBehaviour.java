@@ -289,7 +289,7 @@ public class EmbedderBehaviour {
 		Configuration configuration = embedder.configuration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
-		for (Class storyClass : storyClasses) {
+		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			String storyPath = resolver.resolve(storyClass);
 			verify(runner).run(configuration, candidateSteps, storyPath);
 			assertThat(out.toString(), containsString("Running story "
@@ -315,7 +315,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class storyClass : storyClasses) {
+		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			String storyPath = resolver.resolve(storyClass);
             storyPaths.add(storyPath);
 	        StoryReporter storyReporter = mock(StoryReporter.class);
@@ -350,7 +350,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class storyClass : storyClasses) {
+		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		embedder.runStoriesAsPaths(storyPaths);
@@ -383,7 +383,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class storyClass : storyClasses) {
+		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -412,7 +412,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class storyClass : storyClasses) {
+		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -449,7 +449,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class storyClass : storyClasses) {
+		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -483,7 +483,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class storyClass : storyClasses) {
+		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -514,7 +514,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class storyClass : storyClasses) {
+		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -550,7 +550,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class storyClass : storyClasses) {
+		for (Class<? extends RunnableStory> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		embedder.runStoriesAsPaths(storyPaths);

@@ -1,6 +1,7 @@
 package org.jbehave.examples.trader;
 
 import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
@@ -37,8 +38,8 @@ public class AnnotatedTraderStoryRunner {
         embedder.useConfiguration(new AnnotationBuilder().buildConfiguration(this));
         embedder.useCandidateSteps(new AnnotationBuilder().buildCandidateSteps(this));
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryPathFinder().listStoryPaths("target/classes", "", asList("**/*.story"),
-                asList("")));
+        embedder.runStoriesAsPaths(new StoryPathFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""),
+                null));
     }
 
     public static class MyReportBuilder extends StoryReporterBuilder {

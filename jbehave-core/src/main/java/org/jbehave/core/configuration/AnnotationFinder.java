@@ -117,7 +117,7 @@ public class AnnotationFinder {
         }
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private <T> T processMemberValue(MemberValue memberValue, Object previousValue) {
 
         if (memberValue instanceof AnnotationMemberValue) {
@@ -205,9 +205,8 @@ public class AnnotationFinder {
     @SuppressWarnings("unchecked")
     public <T> List<T> getAnnotatedValues(Class<? extends Annotation> annotationClass, Class<T> type,
             String memberName) {
-        List memberValues = getAnnotatedValue(annotationClass, List.class, memberName);
         List<T> list = new ArrayList<T>();
-        for (Object value : memberValues) {
+        for (Object value : getAnnotatedValue(annotationClass, List.class, memberName)) {
             list.add((T) value);
         }
         return list;
@@ -216,9 +215,8 @@ public class AnnotationFinder {
     @SuppressWarnings("unchecked")
     public <T> List<Class<T>> getAnnotatedClasses(Class<? extends Annotation> annotationClass, Class<T> type,
             String memberName) {
-        List memberValues = getAnnotatedValue(annotationClass, List.class, memberName);
         List<Class<T>> list = new ArrayList<Class<T>>();
-        for (Object value : memberValues) {
+        for (Object value : getAnnotatedValue(annotationClass, List.class, memberName)) {
             list.add((Class<T>) value);
         }
         return list;

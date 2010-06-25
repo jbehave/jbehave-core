@@ -1,13 +1,13 @@
 package org.jbehave.examples.trader;
 
 import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromURL;
+import org.jbehave.core.io.StoryPathFinder;
 
 /**
  * Specifies the Embedder for the Trader example, using URL story loading.
@@ -23,16 +23,9 @@ public class URLTraderEmbedder extends ClasspathTraderEmbedder {
 
 	@Override
 	public List<String> storyPaths() {
-		// Defining story paths via URLs
-		return asList(storyURL("trader_is_alerted_of_status.story"),
-				storyURL("traders_can_be_subset.story"));
-	}
-
-	private String storyURL(String name) {
-		String codeLocation = CodeLocations.codeLocationFromClass(this.getClass()).getFile();
-		String urlPattern = "file:" + codeLocation + "org/jbehave/examples/trader/stories/{0}";
-		return MessageFormat.format(urlPattern, name);
-
+	    String codeLocation = codeLocationFromClass(this.getClass()).getFile();
+        return new StoryPathFinder().findPaths(codeLocation, asList("**/trader*.story"),
+	                asList(""), "file:"+codeLocation);
 	}
 
 }

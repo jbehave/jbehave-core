@@ -20,6 +20,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
+import org.jbehave.core.io.PathToClassNames;
 import org.jbehave.core.io.StoryPathFinder;
 
 /**
@@ -119,8 +120,8 @@ public abstract class AbstractStoryTask extends Task {
 	private List<String> findStoryClassNames() {
 		log("Searching for story class names including " + storyIncludes
 				+ " and excluding " + storyExcludes, MSG_DEBUG);
-		List<String> storyClassNames = finder.listStoryPaths(
-				rootSourceDirectory(), null, storyIncludes, storyExcludes);
+		List<String> storyClassNames =  new PathToClassNames().transform(finder.findPaths(
+				rootSourceDirectory(), storyIncludes, storyExcludes, null));
 		log("Found story class names: " + storyClassNames, MSG_DEBUG);
 		return storyClassNames;
 	}
@@ -152,8 +153,8 @@ public abstract class AbstractStoryTask extends Task {
 	protected List<String> storyPaths() {
 		log("Searching for story paths including " + storyIncludes
 				+ " and excluding " + storyExcludes, MSG_DEBUG);
-		List<String> storyPaths = finder.listStoryPaths(rootSourceDirectory(),
-				null, storyIncludes, storyExcludes);
+		List<String> storyPaths = finder.findPaths(rootSourceDirectory(),
+				storyIncludes, storyExcludes, null);
 		log("Found story paths: " + storyPaths, MSG_DEBUG);
 		return storyPaths;
 	}

@@ -1,66 +1,81 @@
 package org.jbehave.core.io;
 
+import static java.util.Arrays.asList;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.DirectoryScanner;
 
 /**
- * Finds story paths from a filesystem.
- * 
- * @author Mauro Talevi
+ * Finds story paths from a file system, using Ant's {@link DirectoryScanner}.
  */
 public class StoryPathFinder {
 
-    private static final String JAVA = ".java";
-    private static final String EMPTY = "";
-    private static final String DOT_REGEX = "\\.";
-    private static final String SLASH = "/";
-	private static final String BACKSLASH = "\\\\";
+    private final DirectoryScanner scanner;
 
-    private DirectoryScanner scanner = new DirectoryScanner();
+    public StoryPathFinder() {
+        this(new DirectoryScanner());
+    }
+
+    public StoryPathFinder(DirectoryScanner scanner) {
+        this.scanner = scanner;
+    }
 
     /**
-     * Lists story paths from a base directory, allowing for includes/excludes.
-     * If Java paths are found, these are normalised to Java class names.
+     * Finds paths from a base directory, allowing for includes/excludes. Paths
+     * found are prefixed with specified path by {@link
+     * StoryPathFinder#prefix(String, List<String>)} and normalised by {@link
+     * StoryPathFinder#normalise(List<String>)}.
      * 
-     * @param basedir the base directory path
-     * @param rootPath the root path prefixed to all paths found, or
+     * @param searchInDirectory
+     *            the base directory path to search in
+     * @param includes
+     *            the List of include patterns, or <code>null</code> if none
+     * @param excludes
+     *            the List of exclude patterns, or <code>null</code> if none
+     * @param prefixWith
+     *            the root path prefixed to all paths found, or
      *            <code>null</code> if none
-     * @param includes the List of include patterns, or <code>null</code> if
-     *            none
-     * @param excludes the List of exclude patterns, or <code>null</code> if
-     *            none
-     * @return A List of paths
+     * @return A List of paths found
      */
-    public List<String> listStoryPaths(String basedir, String rootPath, List<String> includes,
-            List<String> excludes) {
-        List<String> paths = new ArrayList<String>();
-        for (String path : listPaths(basedir, rootPath, includes, excludes)) {
-            paths.add(normalise(path));
-        }
-        return paths;
+    public List<String> findPaths(String searchInDirectory, List<String> includes, List<String> excludes,
+            String prefixWith) {
+        return normalise(prefix(prefixWith, scan(searchInDirectory, includes, excludes)));
     }
 
-    private String normalise(String path) {
-        if ( path.indexOf(JAVA) != -1 ){
-            String className = path.substring(0, path.indexOf(JAVA));
-            className = className.replaceAll(SLASH, DOT_REGEX); 
-            return className.replaceAll(BACKSLASH, DOT_REGEX);            
-        } else {
-            if ( path.startsWith("/") ){
-                return path.substring(1);
-            }           
-            return path;
-
-        }
+    protected List<String> normalise(List<String> paths) {
+        List<String> transformed = new ArrayList<String>(paths);
+        CollectionUtils.transform(transformed, new Transformer() {
+            public Object transform(Object input) {
+                String path = (String) input;
+                return path.replace('\\', '/');
+            }
+        });
+        return transformed;
     }
 
-    private List<String> listPaths(String basedir, String rootPath, List<String> includes, List<String> excludes) {
-        List<String> paths = new ArrayList<String>();
-        if ( !new File(basedir).exists() ){
+    protected List<String> prefix(final String prefixWith, List<String> paths) {
+        if (StringUtils.isBlank(prefixWith)) {
             return paths;
+        }
+        List<String> transformed = new ArrayList<String>(paths);
+        CollectionUtils.transform(transformed, new Transformer() {
+            public Object transform(Object input) {
+                String path = (String) input;
+                return prefixWith + path;
+            }
+        });
+        return transformed;
+    }
+
+    protected List<String> scan(String basedir, List<String> includes, List<String> excludes) {
+        if (!new File(basedir).exists()) {
+            return new ArrayList<String>();
         }
         scanner.setBasedir(basedir);
         if (includes != null) {
@@ -70,12 +85,7 @@ public class StoryPathFinder {
             scanner.setExcludes(excludes.toArray(new String[excludes.size()]));
         }
         scanner.scan();
-        String basePath = (rootPath != null ? rootPath + SLASH : EMPTY);
-        for (String relativePath : scanner.getIncludedFiles()) {
-            String path = basePath + relativePath;
-            paths.add(path);
-        }
-        return paths;
+        return asList(scanner.getIncludedFiles());
     }
 
 }

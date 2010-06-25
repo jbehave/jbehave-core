@@ -1,6 +1,7 @@
 package org.jbehave.examples.trader.spring;
 
 import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.spring.UsingSpring;
@@ -23,8 +24,8 @@ public class AnnotatedEmbedderUsingSpring {
         embedder.useConfiguration(new SpringAnnotationBuilder().buildConfiguration(this));
         embedder.useCandidateSteps(new SpringAnnotationBuilder().buildCandidateSteps(this));
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryPathFinder().listStoryPaths("target/classes", "",
-                asList("**/stories/*.story"), asList("")));
+        embedder.runStoriesAsPaths(new StoryPathFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/stories/*.story"),
+                asList(""), null));
     }
 
 }
