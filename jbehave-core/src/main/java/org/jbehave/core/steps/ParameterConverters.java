@@ -109,8 +109,7 @@ public class ParameterConverters {
 	 * </ul>
 	 */
 	public static class NumberConverter implements ParameterConverter {
-		@SuppressWarnings("unchecked")
-		private static List<Class> acceptedClasses = asList(new Class[] {
+		private static List<Class<?>> acceptedClasses = asList(new Class<?>[] {
 				Integer.class, int.class, Long.class, long.class, Double.class,
 				double.class, Float.class, float.class, BigDecimal.class,
 				BigInteger.class });
