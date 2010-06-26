@@ -57,7 +57,6 @@
       <id>gui</id>
       <modules>
         <module>noughtsandcrosses</module>
-        <module>noughtsandcrosses/scenarios</module>
       </modules>
     </profile>
   </profiles>

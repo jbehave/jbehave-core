@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-examples</artifactId>
-    <version>2.6-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-noughtsandcrosses-example</artifactId>
   <name>JBehave Noughts And Crosses Example</name>
@@ -18,7 +18,31 @@
   </dependencies>
 
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <testSourceDirectory>src/behaviour</testSourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>run-stories-in-test-scope</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <storyIncludes>
+                <storyInclude>**/stories/*.java</storyInclude>
+              </storyIncludes>
+              <skip>false</skip>
+              <scope>test</scope>
+              <ignoreFailureInStories>true</ignoreFailureInStories>
+              <ignoreFailureInReports>true</ignoreFailureInReports>
+              <renderReportsAfterStories>true</renderReportsAfterStories>
+            </configuration>
+            <goals>
+              <goal>run-stories</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
+
 </project>

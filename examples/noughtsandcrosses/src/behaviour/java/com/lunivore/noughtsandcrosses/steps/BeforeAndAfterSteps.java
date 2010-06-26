@@ -1,8 +1,8 @@
 package com.lunivore.noughtsandcrosses.steps;
 
-import org.jbehave.scenario.annotations.AfterScenario;
-import org.jbehave.scenario.annotations.BeforeScenario;
-import org.jbehave.scenario.steps.Steps;
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.steps.Steps;
 
 import com.lunivore.noughtsandcrosses.util.OAndXUniverse;
 

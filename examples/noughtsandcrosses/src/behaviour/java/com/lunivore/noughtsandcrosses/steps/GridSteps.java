@@ -2,57 +2,44 @@ package com.lunivore.noughtsandcrosses.steps;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.jbehave.scenario.definition.KeyWords.*;
 
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JLabel;
 
-import org.jbehave.scenario.annotations.Given;
-import org.jbehave.scenario.annotations.Then;
-import org.jbehave.scenario.annotations.When;
-import org.jbehave.scenario.definition.KeyWords;
-import org.jbehave.scenario.steps.Steps;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
+import org.jbehave.core.steps.Steps;
 
 import com.lunivore.noughtsandcrosses.NoughtsAndCrosses;
 import com.lunivore.noughtsandcrosses.util.OAndXUniverse;
 import com.lunivore.noughtsandcrosses.view.ComponentNames;
 
-public class LolCatzSteps extends Steps {
+public class GridSteps extends Steps {
+
     public static String ROWS = "abc";
     public static String COLUMNS = "123";
     protected static final String NL = System.getProperty("line.separator");
 	private final OAndXUniverse universe;
 
-    public LolCatzSteps() {
-    	this(new OAndXUniverse());
+    public GridSteps() {
+        this(new OAndXUniverse());
     }
     
-    public LolCatzSteps(OAndXUniverse universe) {
-    	super(lolCatzKeywords()); 
+    public GridSteps(OAndXUniverse universe) {
 		this.universe = universe;
-	}
-    
-    public static KeyWords lolCatzKeywords(){
-        Map<String, String> keywords = KeyWords.defaultKeywords();
-        // Override only the keywords that are required
-        keywords.put(SCENARIO, "I can haz:");
-        keywords.put(GIVEN, "Gief");
-        keywords.put(WHEN, "Wen");
-        keywords.put(THEN, "Den");
-        return new KeyWords(keywords);
     }
 
-	@Given("game")
+    @Given("the game is running")
     public void givenTheGameIsRunning() {
         new NoughtsAndCrosses();
     }
     
-    @Given("game like $grid")
+    @Given("a grid that looks like $grid")
     public void givenThatTheGridLooksLike(String grid) throws Exception {
         givenTheGameIsRunning();
         ArrayList<String> oTurns = new ArrayList<String>();
@@ -62,19 +49,19 @@ public class LolCatzSteps extends Steps {
         performMoves(oTurns, xTurns);
     }
     
-    @Then("message sez \"$message\"")
+    @Then("the message should read \"$message\"")
     public void thenTheMessageShouldRead(String message) throws Exception {
         JLabel messageLabel = (JLabel) universe.getControl().findComponent(ComponentNames.MESSAGE);
         assertThat(messageLabel.getText(), equalTo(message));
     }
 
-    @Then("I haz grid $grid")
+    @Then("the grid should look like $grid")
     public void thenTheGridShouldLookLike(String grid) throws Exception {
         Component gridPanel = universe.getControl().findComponent(ComponentNames.GRID);
         assertThat(gridPanel.toString(), equalTo(grid));
     }
 
-    @When("I clicks $space")
+    @When("the player clicks $space")
     public void whenPlayerClicksInSpace(String space) throws Exception {
     	universe.getControl().clickButton(space);
     }

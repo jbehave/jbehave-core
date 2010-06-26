@@ -10,36 +10,34 @@ import java.util.List;
 
 import javax.swing.JLabel;
 
-import org.jbehave.scenario.annotations.Given;
-import org.jbehave.scenario.annotations.Then;
-import org.jbehave.scenario.annotations.When;
-import org.jbehave.scenario.steps.Steps;
+import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.When;
 
 import com.lunivore.noughtsandcrosses.NoughtsAndCrosses;
 import com.lunivore.noughtsandcrosses.util.OAndXUniverse;
 import com.lunivore.noughtsandcrosses.view.ComponentNames;
 
-public class GridSteps extends Steps {
-
+public class LolCatzSteps  {
     public static String ROWS = "abc";
     public static String COLUMNS = "123";
     protected static final String NL = System.getProperty("line.separator");
 	private final OAndXUniverse universe;
 
-    public GridSteps() {
-        this(new OAndXUniverse());
+    public LolCatzSteps() {
+    	this(new OAndXUniverse());
     }
     
-    public GridSteps(OAndXUniverse universe) {
+    public LolCatzSteps(OAndXUniverse universe) {
 		this.universe = universe;
-    }
-
-    @Given("the game is running")
+	}
+    
+	@Given("game")
     public void givenTheGameIsRunning() {
         new NoughtsAndCrosses();
     }
     
-    @Given("a grid that looks like $grid")
+    @Given("game like $grid")
     public void givenThatTheGridLooksLike(String grid) throws Exception {
         givenTheGameIsRunning();
         ArrayList<String> oTurns = new ArrayList<String>();
@@ -49,19 +47,19 @@ public class GridSteps extends Steps {
         performMoves(oTurns, xTurns);
     }
     
-    @Then("the message should read \"$message\"")
+    @Then("message sez \"$message\"")
     public void thenTheMessageShouldRead(String message) throws Exception {
         JLabel messageLabel = (JLabel) universe.getControl().findComponent(ComponentNames.MESSAGE);
         assertThat(messageLabel.getText(), equalTo(message));
     }
 
-    @Then("the grid should look like $grid")
+    @Then("I haz grid $grid")
     public void thenTheGridShouldLookLike(String grid) throws Exception {
         Component gridPanel = universe.getControl().findComponent(ComponentNames.GRID);
         assertThat(gridPanel.toString(), equalTo(grid));
     }
 
-    @When("the player clicks $space")
+    @When("I clicks $space")
     public void whenPlayerClicksInSpace(String space) throws Exception {
     	universe.getControl().clickButton(space);
     }
