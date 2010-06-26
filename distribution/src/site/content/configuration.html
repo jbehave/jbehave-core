@@ -220,7 +220,7 @@ public class AnnotatedTraderStoryRunner {
         embedder.useConfiguration(new AnnotationBuilder().buildConfiguration(this));
         embedder.useCandidateSteps(new AnnotationBuilder().buildCandidateSteps(this));
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryPathFinder().listStoryPaths("target/classes", "", asList("**/*.story"),
+        embedder.runStoriesAsPaths(new StoryFinder().findPaths("target/classes", "", asList("**/*.story"),
                 asList("")));
     }
     public static class MyReportBuilder extends StoryReporterBuilder {
@@ -269,7 +269,7 @@ public class AnnotatedEmbedderUsingSpring {
         embedder.useConfiguration(new SpringAnnotationBuilder().buildConfiguration(this));
         embedder.useCandidateSteps(new SpringAnnotationBuilder().buildCandidateSteps(this));
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryPathFinder().listStoryPaths("target/classes", "",
+        embedder.runStoriesAsPaths(new StoryFinder().findPaths("target/classes", "",
                 asList("**/stories/*.story"), asList("")));
     }
 

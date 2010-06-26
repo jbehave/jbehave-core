@@ -83,8 +83,8 @@ public class ClasspathTraderEmbedder extends Embedder {
 	}
 
 	public List<String> storyPaths() {
-		StoryPathFinder finder = new StoryPathFinder();
-		return finder.listStoryPaths("target/classes", "", asList("**/*.story"), asList(""));
+		StoryFinder finder = new StoryFinder();
+		return finder.findPaths("target/classes", "", asList("**/*.story"), asList(""));
 	}
 
 }
@@ -101,7 +101,6 @@ public class ClasspathTraderEmbedder extends Embedder {
     		embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder"
             storyIncludes="**/stories/*.story"
             storyExcludes="**/stories/*NonSuccessful.story"
-            classLoaderInjected="[true|false]"
             skip="[true|false]"
             batch="[true|false]"
             ignoreFailureInStories="[true|false]"
@@ -143,7 +142,6 @@ public class ClasspathTraderEmbedder extends Embedder {
               		<storyExcludes>
                 		<storyExclude>**/stories/*NonSuccessful.story</storyExclude>
               		</storyExcludes>
-                    <classLoaderInjected>[true|false]</classLoaderInjected>
                     <skip>[true|false]</skip>
                     <batch>[true|false]</batch>
                     <ignoreFailureInStories>[true|false]</ignoreFailureInStories>

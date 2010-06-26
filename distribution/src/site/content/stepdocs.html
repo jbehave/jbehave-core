@@ -11,7 +11,7 @@
 <p>The matching of textual steps to Java methods, each representing
 a candidate step, is a key concept in creating a Domain-Specific
 Language (DSL). Once the DSL has been defined, we need a way to display
-the "grammar" of the DSL to enable to scenario writer to exercise that
+the "grammar" of the DSL to enable to story writer to exercise that
 grammar in writing the scenarios.</p>
 
 <p>To this end, JBehave provides the concept of <a
@@ -29,38 +29,37 @@ instance. This documentation includes:</p>
 	<li>the method in the CandidateSteps class</li>
 </ul>
 
-<p>To generate the stepdocs for a given list of CandidateSteps
-instances:</p>
+<p>To generate the stepdocs for a given list of Steps instances:</p>
 
 <script type="syntaxhighlighter" class="brush: java"><![CDATA[
-
-  StepdocGenerator generator = new DefaultStepdocGenerator();
-  List<Stepdoc> stepdocs = generator.generate(new TraderSteps(new TradingService()), new BeforeAfterSteps());
-    
+  Embedder embedder = new Embedder();
+  embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), new MySteps()).createCandidateSteps());
+  embedder.reportStepdocs();    
 ]]></script>
 
-<p>Alternatively, given a RunnableScenario instance:</p>
-
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
-
-  RunnableScenario scenario = new MyScenario();
-  scenario.generateStepdoc();
-    
-]]></script>
-
-<p>The RunnableScenario. will use the configured <a
+<p>The Embedder will use the <a
 	href="javadoc/core/org/jbehave/core/reporters/StepdocReporter.html">StepdocReporter</a>
-	to report the stepdocs found in the CandidateSteps defined for the scenario.
+	configured in the Configuration to report the stepdocs found.
 </p>	
+
+<p>The Embedder can also find and report stepdocs matching a given textual step.  This is very useful 
+when the number of Steps instances and the number of methods grows.  The Stepdoc will allow the user to 
+find both the methods and the Steps instances matching the given step.
+
+<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+  Embedder embedder = new Embedder();
+  embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), new MySteps()).createCandidateSteps());
+  embedder.reportMatchingStepdocs("Given a step I'm looking for");
+]]></script>
 
 <h2>Stepdocs via Ant task</h2>
 
 <script type="syntaxhighlighter" class="brush: xml"><![CDATA[
 
 	<taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
-      classpathref="scenario.classpath" />
-    <stepdoc scenarioIncludes="**/scenarios/*.java"
-      scenarioExcludes="**/i18n/scenarios/*.java" classLoaderInjected="false" />
+      classpathref="story.classpath" />
+    <stepdoc storyIncludes="**/stories/*.java"
+      storyExcludes="**/i18n/stories/*.java" />
       
 ]]></script>
 
@@ -78,9 +77,9 @@ instances:</p>
             <id>stepdoc</id>
             <phase>integration-test</phase>
             <configuration>
-              <scenarioIncludes>
-                <scenarioInclude>**/scenarios/*.java</scenarioInclude>
-              </scenarioIncludes>
+              <storyIncludes>
+                <storyInclude>**/stories/*.java</storyInclude>
+              </storyIncludes>
             </configuration>
             <goals>
               <goal>stepdoc</goal>

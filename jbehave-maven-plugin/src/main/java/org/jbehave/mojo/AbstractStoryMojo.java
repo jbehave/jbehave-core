@@ -1,9 +1,6 @@
 package org.jbehave.mojo;
 
 import java.io.File;
-import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -15,7 +12,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
-import org.jbehave.core.io.StoryPathFinder;
+import org.jbehave.core.io.StoryFinder;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -49,24 +46,16 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     private String scope;
 
     /**
-     * Story class names, if specified take precedence over the names
-     * specified via the "storyIncludes" and "storyExcludes" parameters
-     * 
-     * @parameter
-     */
-    private List<String> storyClassNames;
-
-    /**
-     * Story include filters, relative to the root source directory
-     * determined by the scope
+     * Story include filters, relative to the root source directory determined
+     * by the scope
      * 
      * @parameter
      */
     private List<String> storyIncludes;
 
     /**
-     * Story exclude filters, relative to the root source directory
-     * determined by the scope
+     * Story exclude filters, relative to the root source directory determined
+     * by the scope
      * 
      * @parameter
      */
@@ -91,22 +80,15 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     private List<String> testClasspathElements;
 
     /**
-     * The boolean flag to determined if class loader is injected in story class
-     * 
-     * @parameter default-value="false"
-     */
-    private boolean classLoaderInjected;
-    
-    /**
      * The boolean flag to skip stories
      * 
      * @parameter default-value="false"
      */
     private boolean skip;
-    
+
     /**
      * The boolean flag to run in batch mode
-     *
+     * 
      * @parameter default-value="false"
      */
     private boolean batch;
@@ -117,7 +99,7 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
      * @parameter default-value="false"
      */
     private boolean ignoreFailureInStories;
-    
+
     /**
      * The boolean flag to ignore failure in view
      * 
@@ -131,18 +113,18 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
      * @parameter default-value="true"
      */
     private boolean generateViewAfterStories;
-    
+
     /**
      * The embedder class to run the stories
-     *
+     * 
      * @parameter default-value="org.jbehave.core.embedder.Embedder"
      */
     private String embedderClass;
-    
+
     /**
-     * Used to find story class names
+     * Used to find stories
      */
-    private StoryPathFinder finder = new StoryPathFinder();
+    private StoryFinder finder = new StoryFinder();
 
     /**
      * Determines if the scope of the mojo classpath is "test"
@@ -160,22 +142,19 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         return sourceDirectory;
     }
 
-    private List<String> findStoryClassNames() {
-        getLog().debug("Searching for story class names including "+storyIncludes+" and excluding "+storyExcludes);
-        List<String> storyClassNames = finder.findClassNames(rootSourceDirectory(), storyIncludes, storyExcludes);
-        getLog().debug("Found story class names: " + storyClassNames);
-        return storyClassNames;
-    }
-
     /**
-     * Creates the StoryClassLoader with the classpath element of the
-     * selected scope
+     * Creates the StoryClassLoader with the classpath element of the selected
+     * scope
      * 
      * @return A StoryClassLoader
-     * @throws MalformedURLException
+     * @throws MojoExecutionException
      */
-    protected StoryClassLoader createStoryClassLoader() throws MalformedURLException {
-        return new StoryClassLoader(classpathElements());
+    private StoryClassLoader createStoryClassLoader() throws MojoExecutionException {
+        try {
+            return new StoryClassLoader(classpathElements());
+        } catch (Exception e) {
+            throw new MojoExecutionException("Failed to create story class loader", e);
+        }
     }
 
     private List<String> classpathElements() {
@@ -185,133 +164,87 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         }
         return classpathElements;
     }
-    
+
     protected List<String> storyPaths() {
-        getLog().debug("Searching for story paths including "+ storyIncludes +" and excluding "+ storyExcludes);
+        getLog().debug("Searching for story paths including " + storyIncludes + " and excluding " + storyExcludes);
         List<String> storyPaths = finder.findPaths(rootSourceDirectory(), storyIncludes, storyExcludes);
         getLog().info("Found story paths: " + storyPaths);
         return storyPaths;
     }
-    
-    /**
-     * Returns the list of runnable stories, whose class names are either
-     * specified via the parameter "storyClassNames" (which takes precedence)
-     * or found using the parameters "storyIncludes" and "storyExcludes".
-     * 
-     * @return A List of RunnableStory
-     * @throws MojoExecutionException
-     */
-    protected List<RunnableStory> stories() throws MojoExecutionException {
-        List<String> names = storyClassNames;
-        if (names == null || names.isEmpty()) {
-            names = findStoryClassNames();
-        }
-        if (names.isEmpty()) {
-            getLog().info("No stories to run.");
-        }
-        StoryClassLoader classLoader = null;
-        try {
-            classLoader = createStoryClassLoader();
-        } catch (Exception e) {
-            throw new MojoExecutionException("Failed to create story class loader", e);
-        }
-        List<RunnableStory> stories = new ArrayList<RunnableStory>();
-        for (String name : names) {
-            try {
-                if (!isStoryAbstract(classLoader, name)) {
-                    stories.add(storyFor(classLoader, name));
-                }
-            } catch (Exception e) {
-                throw new MojoExecutionException("Failed to instantiate story '" + name + "'", e);
-            }
-        }
+
+    protected List<RunnableStory> runnableStories() throws MojoExecutionException {
+        getLog().debug("Searching for runnable stories including " + storyIncludes + " and excluding " + storyExcludes);
+        List<RunnableStory> stories = finder
+                .findRunnables(rootSourceDirectory(), storyIncludes, storyExcludes, createStoryClassLoader());
+        getLog().info("Found runnable stories: " + stories);
         return stories;
-    }
-
-    private boolean isStoryAbstract(StoryClassLoader classLoader, String name) throws ClassNotFoundException {
-        return Modifier.isAbstract(classLoader.loadClass(name).getModifiers());
-    }
-
-    private RunnableStory storyFor(StoryClassLoader classLoader, String name) {
-        if ( classLoaderInjected ){
-            try {
-                return classLoader.newStory(name, ClassLoader.class);
-            } catch (RuntimeException e) {
-                throw new RuntimeException("JBehave is trying to instantiate your RunnableStory class '" 
-                        + name + "' with a ClassLoader as a parameter.  " +
-                        "If this is wrong, change the Maven configuration for the plugin to include " +
-                        "<classLoaderInjected>false</classLoaderInjected>" , e);
-            }
-        }
-        return classLoader.newStory(name);
     }
 
     protected Embedder newEmbedder() {
         try {
-             Embedder embedder = (Embedder) createStoryClassLoader().loadClass(embedderClass).newInstance();
-             embedder.useEmbedderMonitor(embedderMonitor());
-             embedder.useEmbedderControls(embedderControls());
-             return embedder;
-        } catch ( Exception e) {
-            throw new RuntimeException("Failed to create embedder "+embedderClass, e);
+            Embedder embedder = (Embedder) createStoryClassLoader().loadClass(embedderClass).newInstance();
+            embedder.useEmbedderMonitor(embedderMonitor());
+            embedder.useEmbedderControls(embedderControls());
+            return embedder;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create embedder " + embedderClass, e);
         }
     }
 
     protected EmbedderMonitor embedderMonitor() {
-		return new MavenEmbedderMonitor();
-	}
+        return new MavenEmbedderMonitor();
+    }
 
-	protected EmbedderControls embedderControls() {
-		return new UnmodifiableEmbedderControls(
-				new EmbedderControls().doBatch(batch).doSkip(skip)
-				.doGenerateViewAfterStories(generateViewAfterStories)
-				.doIgnoreFailureInStories(ignoreFailureInStories)
-				.doIgnoreFailureInView(ignoreFailureInView));
-	}
+    protected EmbedderControls embedderControls() {
+        return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
+                .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
+                .doIgnoreFailureInView(ignoreFailureInView));
+    }
 
-	protected class MavenEmbedderMonitor implements EmbedderMonitor {
+    protected class MavenEmbedderMonitor implements EmbedderMonitor {
         public void storiesBatchFailed(String failedStories) {
-            getLog().warn("Failed to run stories batch: "+failedStories);
+            getLog().warn("Failed to run stories batch: " + failedStories);
         }
 
         public void storyFailed(String storyName, Throwable e) {
-            getLog().warn("Failed to run story "+storyName, e);
+            getLog().warn("Failed to run story " + storyName, e);
         }
 
         public void runningStory(String storyName) {
-            getLog().info("Running story "+storyName);
+            getLog().info("Running story " + storyName);
         }
 
         public void storiesNotRun() {
             getLog().info("Stories not run");
         }
 
-		public void generatingStoriesView(File outputDirectory,
-				List<String> formats, Properties viewProperties) {
-            getLog().info("Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'" 
-        		    + " and view properties '"+viewProperties+"'");
-		}
+        public void generatingStoriesView(File outputDirectory, List<String> formats, Properties viewProperties) {
+            getLog().info(
+                    "Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'"
+                            + " and view properties '" + viewProperties + "'");
+        }
 
-		public void storiesViewGenerationFailed(File outputDirectory,
-				List<String> formats, Properties viewProperties, Throwable cause) {
+        public void storiesViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
+                Throwable cause) {
             String message = "Failed to generate stories view in outputDirectory " + outputDirectory
-            		+ " using formats " + formats + " and view properties '"+viewProperties+"'";
+                    + " using formats " + formats + " and view properties '" + viewProperties + "'";
             getLog().warn(message, cause);
-		}
-		
-		public void storiesViewGenerated(int scenarios, int failedScenarios) {
-			getLog().info("Stories view generated with " + scenarios
-            		+ " scenarios (of which  " + failedScenarios + " failed)");
-		}
-		
-		public void storiesViewNotGenerated() {
-			getLog().info("Stories view not generated");
-		}
-		
-		@Override
-		public String toString() {
-			return this.getClass().getSimpleName();
-		}
+        }
+
+        public void storiesViewGenerated(int scenarios, int failedScenarios) {
+            getLog().info(
+                    "Stories view generated with " + scenarios + " scenarios (of which  " + failedScenarios
+                            + " failed)");
+        }
+
+        public void storiesViewNotGenerated() {
+            getLog().info("Stories view not generated");
+        }
+
+        @Override
+        public String toString() {
+            return this.getClass().getSimpleName();
+        }
 
     }
 }

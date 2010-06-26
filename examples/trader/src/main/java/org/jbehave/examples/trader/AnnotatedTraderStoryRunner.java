@@ -14,7 +14,7 @@ import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.io.StoryPathFinder;
+import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
@@ -38,7 +38,7 @@ public class AnnotatedTraderStoryRunner {
         embedder.useConfiguration(new AnnotationBuilder().buildConfiguration(this));
         embedder.useCandidateSteps(new AnnotationBuilder().buildCandidateSteps(this));
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryPathFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList("")));
+        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList("")));
     }
 
     public static class MyReportBuilder extends StoryReporterBuilder {

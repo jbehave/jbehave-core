@@ -6,7 +6,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import java.util.List;
 
 import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.io.StoryPathFinder;
+import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.BeforeAfterSteps;
 import org.jbehave.examples.trader.ClasspathTraderEmbedder;
@@ -55,7 +55,7 @@ public class AnnotatedEmbedderWithSpringJUnit4ClassRunner {
     }
 
     protected List<String> storyPaths() {
-        StoryPathFinder finder = new StoryPathFinder();
+        StoryFinder finder = new StoryFinder();
         return finder.findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""));
     }
 

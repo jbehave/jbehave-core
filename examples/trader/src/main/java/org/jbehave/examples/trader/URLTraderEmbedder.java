@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.io.LoadFromURL;
-import org.jbehave.core.io.StoryPathFinder;
+import org.jbehave.core.io.StoryFinder;
 
 /**
  * Specifies the Embedder for the Trader example, using URL story loading.
@@ -24,7 +24,7 @@ public class URLTraderEmbedder extends ClasspathTraderEmbedder {
 	@Override
 	public List<String> storyPaths() {
 	    String codeLocation = codeLocationFromClass(this.getClass()).getFile();
-        return new StoryPathFinder().findPaths(codeLocation, asList("**/trader*.story"),
+        return new StoryFinder().findPaths(codeLocation, asList("**/trader*.story"),
 	                asList(""), "file:"+codeLocation);
 	}
 

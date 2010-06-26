@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.sameInstance;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 
+import org.hamcrest.Matchers;
 import org.jbehave.core.StoryClassLoader.StoryClassNotFoundException;
 import org.jbehave.core.StoryClassLoader.StoryNotInstantiatedException;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class StoryClassLoaderBehaviour {
     @Test
     public void shouldProvideShortJarPathUrlContentAsString() throws MalformedURLException {
         StoryClassLoader classLoader = new StoryClassLoader(Arrays.<String>asList("/path/to/one.jar", "/target/classes"));
-        assertThat(classLoader.toString(), equalTo("["+StoryClassLoader.class.getName()+" urls="+Arrays.<String>asList("one.jar", "/target/classes")+"]"));
+        assertThat(classLoader.toString(), Matchers.containsString("urls="+Arrays.<String>asList("one.jar", "/target/classes")));
     }
 
     @Test(expected=StoryClassNotFoundException.class)
