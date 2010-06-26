@@ -42,7 +42,8 @@ public class ItTraderStory extends JUnitStory {
                     .withCodeLocation(codeLocation)
                     .withDefaultFormats()
                     .withFormats(CONSOLE, TXT, HTML, XML)
-                    .withFailureTrace(false))
+                    .withFailureTrace(false)
+                    .withKeywords(keywords))
 				.useKeywords(keywords)
 				.useParameterConverters(
 						new ParameterConverters()

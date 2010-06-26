@@ -7,8 +7,13 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.URL;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.jbehave.core.JUnitStory;
@@ -68,8 +73,36 @@ public class StoryReporterBuilderBehaviour {
         StoryReporter storyReporter = delegates.iterator().next();
 		assertThat(storyReporter, instanceOf(TxtOutput.class));
 		assertThat(storyReporter.toString(), containsString("reportFailureTrace=true"));
-    }
+    }    
 
+    @Test
+    public void shouldBuildWithCustomKeywords() throws IOException {
+        // Given
+        String storyPath = storyPath(MyStory.class);
+        LocalizedKeywords keywords = new LocalizedKeywords(new Locale("it"),
+                "org/jbehave/core/i18n/keywords", this.getClass().getClassLoader());
+        final URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
+        final OutputStream out = new ByteArrayOutputStream();
+
+        StoryReporterBuilder builder = new StoryReporterBuilder(){
+            @Override
+            protected FilePrintStreamFactory filePrintStreamFactory(String storyPath) {
+                return new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath)){
+                    @Override
+                    public PrintStream createPrintStream() {
+                        return new PrintStream(out);
+                    }                    
+                };
+            }            
+        };
+
+        // When
+        StoryReporter reporter = builder.withDefaultFormats().withFormats(TXT).withKeywords(keywords).build(storyPath);
+        reporter.failed("Dato un passo che fallisce", new RuntimeException("ouch"));
+        
+        // Then
+        assertThat(out.toString(), equalTo("Dato un passo che fallisce (FALLITO)\n(java.lang.RuntimeException: ouch)\n"));
+    }
 
     @Test
     public void shouldBuildWithCustomReporterForAGivenFormat() throws IOException {

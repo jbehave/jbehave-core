@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
@@ -71,11 +73,21 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
  * </pre>
  * 
  * </p>
+ * 
  * <p>
- * The builder provides default instances for all reporters. To change the
- * reporter for a specific instance, e.g. to report format <b>TXT</b> to
- * <b>.text</b> files and to inject other non-default parameters, such as
- * keywords for a different locale:
+ * To specify the use of keywords for a given locale:
+ * 
+ * <pre>
+ * new StoryReporterBuilder().withKeywords(new LocalisedKeywords(Locale.IT)
+ * </pre>
+ * 
+ * </p>
+ * 
+ * <p>
+ * The builder provides default instances for all reporters, using the default
+ * output patterns. To change the reporter for a specific instance, e.g. to
+ * report format <b>TXT</b> to <b>.text</b> files and to inject other
+ * non-default parameters, such as the custom output patterns:
  * 
  * <pre>
  * new StoryReporterBuilder(){
@@ -84,12 +96,16 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
  *       switch (format) {
  *           case TXT:
  *               factory.useConfiguration(new FileConfiguration("text"));
- *               return new TxtOutput(factory.createPrintStream(), new Properties(), new LocalisedKeywords(Locale.IT));
+ *               Properties customPatterns = new Properties();
+ *               customPatterns.setProperty("successful", "{0}(YEAH!!!)\n");
+ *               return new TxtOutput(factory.createPrintStream(), customPatterns, keywords);
  *            default:
  *               return super.reporterFor(format);
  *   }
  * }
  * </pre>
+ * 
+ * </p>
  */
 public class StoryReporterBuilder {
 
@@ -102,12 +118,13 @@ public class StoryReporterBuilder {
     private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
     private Properties viewResources = FreemarkerViewGenerator.defaultResources();
     private boolean reportFailureTrace = false;
+    private Keywords keywords = new LocalizedKeywords();
 
     public File outputDirectory() {
         return filePrintStreamFactory("").outputDirectory();
     }
-    
-    public URL codeLocation(){
+
+    public URL codeLocation() {
         return codeLocation;
     }
 
@@ -127,10 +144,10 @@ public class StoryReporterBuilder {
         return names;
     }
 
-    public boolean reportFailureTrace(){
+    public boolean reportFailureTrace() {
         return reportFailureTrace;
     }
-    
+
     public Properties viewResources() {
         return viewResources;
     }
@@ -159,6 +176,11 @@ public class StoryReporterBuilder {
         return this;
     }
 
+    public StoryReporterBuilder withKeywords(Keywords keywords) {
+        this.keywords = keywords;
+        return this;
+    }
+
     public StoryReporterBuilder withViewResources(Properties resources) {
         this.viewResources = resources;
         return this;
@@ -184,18 +206,18 @@ public class StoryReporterBuilder {
         FilePrintStreamFactory factory = filePrintStreamFactory(storyPath);
         switch (format) {
         case CONSOLE:
-            return new ConsoleOutput().doReportFailureTrace(reportFailureTrace);
+            return new ConsoleOutput(keywords).doReportFailureTrace(reportFailureTrace);
         case IDE_CONSOLE:
-            return new IdeOnlyConsoleOutput().doReportFailureTrace(reportFailureTrace);
+            return new IdeOnlyConsoleOutput(keywords).doReportFailureTrace(reportFailureTrace);
         case TXT:
             factory.useConfiguration(fileConfiguration("txt"));
-            return new TxtOutput(factory.createPrintStream()).doReportFailureTrace(reportFailureTrace);
+            return new TxtOutput(factory.createPrintStream(), keywords).doReportFailureTrace(reportFailureTrace);
         case HTML:
             factory.useConfiguration(fileConfiguration("html"));
-            return new HtmlOutput(factory.createPrintStream()).doReportFailureTrace(reportFailureTrace);
+            return new HtmlOutput(factory.createPrintStream(), keywords).doReportFailureTrace(reportFailureTrace);
         case XML:
             factory.useConfiguration(fileConfiguration("xml"));
-            return new XmlOutput(factory.createPrintStream()).doReportFailureTrace(reportFailureTrace);
+            return new XmlOutput(factory.createPrintStream(), keywords).doReportFailureTrace(reportFailureTrace);
         case STATS:
             factory.useConfiguration(fileConfiguration("stats"));
             return new PostStoryStatisticsCollector(factory.createPrintStream());

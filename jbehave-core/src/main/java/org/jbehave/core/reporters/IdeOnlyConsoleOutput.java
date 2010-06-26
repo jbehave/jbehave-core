@@ -19,6 +19,10 @@ public class IdeOnlyConsoleOutput extends TxtOutput {
 		super(output());
 	}
 
+    public IdeOnlyConsoleOutput(Keywords keywords) {
+        super(output(), keywords);
+    }
+
 	public IdeOnlyConsoleOutput(Properties outputPatterns) {
 		super(output(), outputPatterns);
 	}
@@ -28,7 +32,7 @@ public class IdeOnlyConsoleOutput extends TxtOutput {
 		super(output(), outputPatterns, keywords, reportErrors);
 	}
 
-	public static PrintStream output() {
+    public static PrintStream output() {
 		if (inIDE()) {
 			return System.out;
 		}

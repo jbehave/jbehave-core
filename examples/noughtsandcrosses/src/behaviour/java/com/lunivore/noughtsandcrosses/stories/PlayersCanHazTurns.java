@@ -42,7 +42,8 @@ public class PlayersCanHazTurns extends JUnitStory {
                     .withCodeLocation(codeLocation)
                     .withDefaultFormats()
                     .withFormats(CONSOLE, TXT)
-                    .withFailureTrace(true));
+                    .withFailureTrace(true)
+                    .withKeywords(keywords));
         useConfiguration(configuration);
         OAndXUniverse universe = new OAndXUniverse();
         addSteps(new InstanceStepsFactory(configuration, new LolCatzSteps(universe), new BeforeAndAfterSteps(universe)).createCandidateSteps());
