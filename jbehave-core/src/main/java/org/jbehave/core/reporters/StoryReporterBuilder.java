@@ -144,6 +144,10 @@ public class StoryReporterBuilder {
         return names;
     }
 
+    public Keywords keywords() {
+        return keywords;
+    }
+
     public boolean reportFailureTrace() {
         return reportFailureTrace;
     }

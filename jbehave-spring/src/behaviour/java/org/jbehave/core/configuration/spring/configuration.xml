@@ -33,6 +33,15 @@
       </list>
     </property>
     <property name="outputDirectory" value="my-output-directory" />
+    <property name="keywords">
+       <bean class="org.jbehave.core.i18n.LocalizedKeywords">
+        <constructor-arg>
+           <bean class="java.util.Locale">
+                <constructor-arg value="IT"/>
+           </bean>
+        </constructor-arg>
+       </bean>
+    </property>
     <property name="reportFailureTrace" value="true" />
     <property name="viewResources">
       <props>

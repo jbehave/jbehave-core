@@ -17,12 +17,15 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.spring.UsingSpring;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.steps.CandidateSteps;
@@ -46,6 +49,9 @@ public class SpringAnnotationBuilderBehaviour {
         assertThat(configuration.stepPatternParser().toString(), containsString("prefix=MyPrefix"));
         assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
         assertThat(configuration.storyReporterBuilder().formats(), hasItems(CONSOLE, HTML, TXT, XML, STATS));
+        Keywords keywords = configuration.storyReporterBuilder().keywords();
+        assertThat(keywords, instanceOf(LocalizedKeywords.class));        
+        assertThat(((LocalizedKeywords)keywords).getLocale(), equalTo(Locale.ITALIAN));        
         assertThat(configuration.storyReporterBuilder().outputDirectory().getName(), equalTo("my-output-directory"));
         assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"), equalTo("my-reports-index.ftl"));
         assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"), equalTo("true"));

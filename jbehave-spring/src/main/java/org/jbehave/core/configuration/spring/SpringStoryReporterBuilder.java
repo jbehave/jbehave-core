@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Properties;
 
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 
 /**
@@ -36,6 +37,14 @@ public class SpringStoryReporterBuilder extends StoryReporterBuilder {
         withCodeLocation(codeLocation);
     }
 
+    public Keywords getKeywords(){
+        return keywords();
+    }
+    
+    public void setKeywords(Keywords keywords){
+        withKeywords(keywords);
+    }
+    
     public Properties getViewResources() {
         return viewResources();
     }
@@ -51,5 +60,5 @@ public class SpringStoryReporterBuilder extends StoryReporterBuilder {
     public void setReportFailureTrace(boolean reportFailureTrace) {
         withFailureTrace(reportFailureTrace);
     }
-
+    
 }
