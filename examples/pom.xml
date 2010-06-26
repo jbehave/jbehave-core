@@ -13,7 +13,6 @@
   <modules>
     <module>gameoflife</module>
     <module>trader</module>
-    <module>trader-test-scope</module>
   </modules>
 
   <dependencies>
