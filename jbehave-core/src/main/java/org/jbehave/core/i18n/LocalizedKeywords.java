@@ -8,8 +8,8 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.jbehave.core.StoryClassLoader;
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.embedder.EmbedderClassLoader;
 
 /**
  * Add i18n support to Keywords, allowing to read the keywords from resource
@@ -53,7 +53,7 @@ public class LocalizedKeywords extends Keywords {
 
     private static ResourceBundle lookupBunde(String bundleName, Locale locale, ClassLoader classLoader) {
         try {            
-            if (classLoader instanceof StoryClassLoader) {
+            if (classLoader instanceof EmbedderClassLoader) {
                 return getBundle(bundleName, locale, classLoader);
             }
             return getBundle(bundleName, locale);

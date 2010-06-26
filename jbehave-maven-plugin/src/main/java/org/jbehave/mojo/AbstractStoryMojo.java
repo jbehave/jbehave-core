@@ -7,10 +7,10 @@ import java.util.Properties;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.jbehave.core.RunnableStory;
-import org.jbehave.core.StoryClassLoader;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
+import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.io.StoryFinder;
 
@@ -143,17 +143,17 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     }
 
     /**
-     * Creates the StoryClassLoader with the classpath element of the selected
+     * Creates the EmbedderClassLoader with the classpath element of the selected
      * scope
      * 
-     * @return A StoryClassLoader
+     * @return A EmbedderClassLoader
      * @throws MojoExecutionException
      */
-    private StoryClassLoader createStoryClassLoader() throws MojoExecutionException {
+    private EmbedderClassLoader createClassLoader() throws MojoExecutionException {
         try {
-            return new StoryClassLoader(classpathElements());
+            return new EmbedderClassLoader(classpathElements());
         } catch (Exception e) {
-            throw new MojoExecutionException("Failed to create story class loader", e);
+            throw new MojoExecutionException("Failed to create "+EmbedderClassLoader.class, e);
         }
     }
 
@@ -175,14 +175,14 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     protected List<RunnableStory> runnableStories() throws MojoExecutionException {
         getLog().debug("Searching for runnable stories including " + storyIncludes + " and excluding " + storyExcludes);
         List<RunnableStory> stories = finder
-                .findRunnables(rootSourceDirectory(), storyIncludes, storyExcludes, createStoryClassLoader());
+                .findRunnables(rootSourceDirectory(), storyIncludes, storyExcludes, createClassLoader());
         getLog().info("Found runnable stories: " + stories);
         return stories;
     }
 
     protected Embedder newEmbedder() {
         try {
-            Embedder embedder = (Embedder) createStoryClassLoader().loadClass(embedderClass).newInstance();
+            Embedder embedder = createClassLoader().newInstance(Embedder.class, embedderClass);
             embedder.useEmbedderMonitor(embedderMonitor());
             embedder.useEmbedderControls(embedderControls());
             return embedder;

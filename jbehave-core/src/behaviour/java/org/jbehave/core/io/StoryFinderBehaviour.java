@@ -7,14 +7,19 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
+import java.net.MalformedURLException;
 import java.util.List;
 
+import org.jbehave.core.RunnableStory;
+import org.jbehave.core.embedder.EmbedderClassLoader;
+import org.jbehave.core.io.stories.MyStory;
 import org.junit.Test;
 
-public class StoryPathFinderBehaviour {
+public class StoryFinderBehaviour {
 
     @Test
     public void shouldFindPaths() {
@@ -42,10 +47,19 @@ public class StoryPathFinderBehaviour {
     public void shouldFindClassNames() {
         StoryFinder finder = new StoryFinder();
         List<String> classNames = finder.findClassNames("src/behaviour/java", asList("**/stories/*.java"), asList(""));
-        assertThat(classNames.size(), equalTo(2));
+        assertThat(classNames.size(), equalTo(3));
         assertThat(classNames, hasItem(not(containsString("/"))));
         assertThat(classNames, hasItem(not(endsWith(".java"))));
         assertThat(classNames, hasItem(startsWith("org.jbehave.core.io.stories")));
+    }
+
+    @Test
+    public void shouldFindRunnablesOnlyForNonAbstractClasses() throws MalformedURLException {
+        StoryFinder finder = new StoryFinder();
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(asList("target/test-classes"));
+        List<RunnableStory> runnables = finder.findRunnables("src/behaviour/java", asList("**/stories/*.java"), asList(""), classLoader);
+        assertThat(runnables.size(), equalTo(1));
+        assertThat(runnables.iterator().next(), instanceOf(MyStory.class));
     }
 
     @Test

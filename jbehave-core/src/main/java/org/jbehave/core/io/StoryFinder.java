@@ -3,7 +3,6 @@ package org.jbehave.core.io;
 import static java.util.Arrays.asList;
 
 import java.io.File;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.DirectoryScanner;
 import org.jbehave.core.RunnableStory;
-import org.jbehave.core.StoryClassLoader;
+import org.jbehave.core.embedder.EmbedderClassLoader;
 
 /**
  * Finds stories from a file system, using Ant's {@link DirectoryScanner}.
@@ -94,10 +93,10 @@ public class StoryFinder {
      *            the List of include patterns, or <code>null</code> if none
      * @param excludes
      *            the List of exclude patterns, or <code>null</code> if none
-     * @param classLoader the StoryClassLoader to instantiate the stories
+     * @param classLoader the EmbedderClassLoader to instantiate the stories
      * @return A List of RunnableStory found
      */
-    public List<RunnableStory> findRunnables(String searchInDirectory, List<String> includes, List<String> excludes, StoryClassLoader classLoader) {
+    public List<RunnableStory> findRunnables(String searchInDirectory, List<String> includes, List<String> excludes, EmbedderClassLoader classLoader) {
         return runnables(findClassNames(searchInDirectory, includes, excludes), classLoader);
     }
 
@@ -140,22 +139,14 @@ public class StoryFinder {
         return trasformed;
     }
 
-    protected List<RunnableStory> runnables(List<String> names, StoryClassLoader classLoader) {
+    protected List<RunnableStory> runnables(List<String> classNames, EmbedderClassLoader classLoader) {
         List<RunnableStory> stories = new ArrayList<RunnableStory>();
-        for (String name : names) {
-            if (!isAbstract(classLoader, name)) {
-                stories.add(classLoader.newStory(name));
+        for (String className : classNames) {
+            if (!classLoader.isAbstract(className)) {
+                stories.add(classLoader.newInstance(RunnableStory.class, className));
             }
         }
         return stories;
-    }
-
-    private boolean isAbstract(StoryClassLoader classLoader, String name) {
-        try {
-            return Modifier.isAbstract(classLoader.loadClass(name).getModifiers());
-        } catch (ClassNotFoundException e) {
-            return false;
-        }
     }
 
     protected List<String> scan(String basedir, List<String> includes, List<String> excludes) {
