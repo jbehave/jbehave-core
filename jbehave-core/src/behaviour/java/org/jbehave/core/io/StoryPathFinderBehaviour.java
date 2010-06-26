@@ -39,10 +39,9 @@ public class StoryPathFinderBehaviour {
     }
 
     @Test
-    public void shouldFindPathsAndTransformThemToClassNames() {
+    public void shouldFindClassNames() {
         StoryPathFinder finder = new StoryPathFinder();
-        List<String> storyPaths = finder.findPaths("src/behaviour/java", asList("**/stories/*.java"), asList(""));
-        List<String> classNames = new PathToClassNames().transform(storyPaths);
+        List<String> classNames = finder.findClassNames("src/behaviour/java", asList("**/stories/*.java"), asList(""));
         assertThat(classNames.size(), equalTo(2));
         assertThat(classNames, hasItem(not(containsString("/"))));
         assertThat(classNames, hasItem(not(endsWith(".java"))));

@@ -16,6 +16,7 @@ import org.apache.tools.ant.DirectoryScanner;
  */
 public class StoryPathFinder {
 
+    private static final String JAVA = ".java";
     private final DirectoryScanner scanner;
 
     public StoryPathFinder() {
@@ -64,6 +65,22 @@ public class StoryPathFinder {
         return normalise(prefix(prefixWith, scan(searchInDirectory, includes, excludes)));
     }
 
+    /**
+     * Finds java source paths from a base directory, allowing for includes/excludes, 
+     * and converts them to class names. 
+     * 
+     * @param searchInDirectory
+     *            the base directory path to search in
+     * @param includes
+     *            the List of include patterns, or <code>null</code> if none
+     * @param excludes
+     *            the List of exclude patterns, or <code>null</code> if none
+     * @return A List of class names found
+     */
+    public List<String> findClassNames(String searchInDirectory, List<String> includes, List<String> excludes){
+        return classNames(normalise(scan(searchInDirectory, includes, excludes)));
+    }
+    
     protected List<String> normalise(List<String> paths) {
         List<String> transformed = new ArrayList<String>(paths);
         CollectionUtils.transform(transformed, new Transformer() {
@@ -88,6 +105,21 @@ public class StoryPathFinder {
         });
         return transformed;
     }
+    
+    protected List<String> classNames(List<String> paths) {
+        List<String> trasformed = new ArrayList<String>(paths);
+        CollectionUtils.transform(trasformed, new Transformer() {
+            public Object transform(Object input) {
+                String path = (String) input;
+                if (!StringUtils.endsWithIgnoreCase(path, JAVA)) {
+                    return input;
+                }
+                return StringUtils.removeEndIgnoreCase(path, JAVA).replace('/', '.');
+            }
+        });
+        return trasformed;
+    }
+
 
     protected List<String> scan(String basedir, List<String> includes, List<String> excludes) {
         if (!new File(basedir).exists()) {
