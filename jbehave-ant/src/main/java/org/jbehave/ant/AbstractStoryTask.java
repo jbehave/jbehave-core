@@ -6,7 +6,6 @@ import static org.apache.tools.ant.Project.MSG_INFO;
 import static org.apache.tools.ant.Project.MSG_WARN;
 
 import java.io.File;
-import java.lang.reflect.Modifier;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,12 +41,6 @@ public abstract class AbstractStoryTask extends Task {
     private String scope = "compile";
 
     /**
-     * Story class names, if specified take precedence over the names specificed
-     * via the "storyIncludes" and "storyExcludes" parameters
-     */
-    private List<String> storyClassNames = new ArrayList<String>();
-
-    /**
      * Story include filters, relative to the root source directory determined
      * by the scope
      */
@@ -58,12 +51,6 @@ public abstract class AbstractStoryTask extends Task {
      * by the scope
      */
     private List<String> storyExcludes = new ArrayList<String>();
-
-    /**
-     * The boolean flag to determined if class loader is injected in story
-     * classes
-     */
-    private boolean classLoaderInjected = false;
 
     /**
      * The boolean flag to skip running stories
@@ -116,22 +103,19 @@ public abstract class AbstractStoryTask extends Task {
         return sourceDirectory;
     }
 
-    private List<String> findStoryClassNames() {
-        log("Searching for story class names including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
-        List<String> storyClassNames = finder.findClassNames(rootSourceDirectory(), storyIncludes, storyExcludes);
-        log("Found story class names: " + storyClassNames, MSG_DEBUG);
-        return storyClassNames;
-    }
-
     /**
      * Creates the Story ClassLoader with the classpath element of the selected
      * scope
      * 
      * @return A StoryClassLoader
-     * @throws MalformedURLException
+     * @throws BuildException
      */
-    protected StoryClassLoader createStoryClassLoader() throws MalformedURLException {
-        return new StoryClassLoader(asList(new String[] {}));
+    protected StoryClassLoader createStoryClassLoader() {
+        try {
+            return new StoryClassLoader(asList(new String[] {}));
+        } catch (MalformedURLException e) {
+            throw new BuildException("Failed to create story class loader", e);
+        }
     }
 
     protected EmbedderMonitor embedderMonitor() {
@@ -147,61 +131,16 @@ public abstract class AbstractStoryTask extends Task {
     protected List<String> storyPaths() {
         log("Searching for story paths including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
         List<String> storyPaths = finder.findPaths(rootSourceDirectory(), storyIncludes, storyExcludes);
-        log("Found story paths: " + storyPaths, MSG_DEBUG);
+        log("Found story paths: " + storyPaths, MSG_INFO);
         return storyPaths;
     }
 
-    /**
-     * Returns the list of story instances, whose class names are either
-     * specified via the parameter "storyClassNames" (which takes precedence) or
-     * found using the parameters "storyIncludes" and "storyExcludes".
-     * 
-     * @return A List of RunnableStories
-     * @throws BuildException
-     */
     protected List<RunnableStory> stories() throws BuildException {
-        List<String> names = storyClassNames;
-        if (names == null || names.isEmpty()) {
-            names = findStoryClassNames();
-        }
-        if (names.isEmpty()) {
-            log("No stories to run.", MSG_INFO);
-        }
-        StoryClassLoader classLoader = null;
-        try {
-            classLoader = createStoryClassLoader();
-        } catch (Exception e) {
-            throw new BuildException("Failed to create story class loader", e);
-        }
-        List<RunnableStory> stories = new ArrayList<RunnableStory>();
-        for (String name : names) {
-            try {
-                if (!isStoryAbstract(classLoader, name)) {
-                    stories.add(storyFor(classLoader, name));
-                }
-            } catch (Exception e) {
-                throw new BuildException("Failed to instantiate core '" + name + "'", e);
-            }
-        }
+        log("Searching for runnable stories including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
+        List<RunnableStory> stories = finder
+                .findRunnableStories(rootSourceDirectory(), storyIncludes, storyExcludes, createStoryClassLoader());
+        log("Found stories: " + stories, MSG_INFO);
         return stories;
-    }
-
-    private boolean isStoryAbstract(StoryClassLoader classLoader, String name) throws ClassNotFoundException {
-        return Modifier.isAbstract(classLoader.loadClass(name).getModifiers());
-    }
-
-    private RunnableStory storyFor(StoryClassLoader classLoader, String name) {
-        if (classLoaderInjected) {
-            try {
-                return classLoader.newStory(name, ClassLoader.class);
-            } catch (RuntimeException e) {
-                throw new RuntimeException("JBehave is trying to instantiate your Story class '" + name
-                        + "' with a ClassLoader as a parameter.  "
-                        + "If this is wrong, change the Ant configuration for the plugin to include "
-                        + "<classLoaderInjected>false</classLoaderInjected>", e);
-            }
-        }
-        return classLoader.newStory(name);
     }
 
     protected Embedder newEmbedder() {
@@ -272,20 +211,12 @@ public abstract class AbstractStoryTask extends Task {
         this.scope = scope;
     }
 
-    public void setStoryClassNames(String classNamesCSV) {
-        this.storyClassNames = asList(classNamesCSV.split(","));
-    }
-
     public void setStoryIncludes(String includesCSV) {
         this.storyIncludes = asList(includesCSV.split(","));
     }
 
     public void setStoryExcludes(String excludesCSV) {
         this.storyExcludes = asList(excludesCSV.split(","));
-    }
-
-    public void setClassLoaderInjected(boolean classLoaderInjected) {
-        this.classLoaderInjected = classLoaderInjected;
     }
 
     public void setBatch(boolean batch) {

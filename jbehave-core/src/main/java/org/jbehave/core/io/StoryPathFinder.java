@@ -3,6 +3,7 @@ package org.jbehave.core.io;
 import static java.util.Arrays.asList;
 
 import java.io.File;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.DirectoryScanner;
+import org.jbehave.core.RunnableStory;
+import org.jbehave.core.StoryClassLoader;
 
 /**
  * Finds story paths from a file system, using Ant's {@link DirectoryScanner}.
@@ -81,6 +84,10 @@ public class StoryPathFinder {
         return classNames(normalise(scan(searchInDirectory, includes, excludes)));
     }
     
+    public List<RunnableStory> findRunnableStories(String searchInDirectory, List<String> includes, List<String> excludes, StoryClassLoader classLoader) {
+        return runnableStories(classNames(normalise(scan(searchInDirectory, includes, excludes))), classLoader);
+    }
+
     protected List<String> normalise(List<String> paths) {
         List<String> transformed = new ArrayList<String>(paths);
         CollectionUtils.transform(transformed, new Transformer() {
@@ -120,6 +127,23 @@ public class StoryPathFinder {
         return trasformed;
     }
 
+    protected List<RunnableStory> runnableStories(List<String> names, StoryClassLoader classLoader) {
+        List<RunnableStory> stories = new ArrayList<RunnableStory>();
+        for (String name : names) {
+            if (!isAbstract(classLoader, name)) {
+                stories.add(classLoader.newStory(name));
+            }
+        }
+        return stories;
+    }
+
+    private boolean isAbstract(StoryClassLoader classLoader, String name) {
+        try {
+            return Modifier.isAbstract(classLoader.loadClass(name).getModifiers());
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 
     protected List<String> scan(String basedir, List<String> includes, List<String> excludes) {
         if (!new File(basedir).exists()) {
@@ -135,5 +159,6 @@ public class StoryPathFinder {
         scanner.scan();
         return asList(scanner.getIncludedFiles());
     }
+
 
 }
