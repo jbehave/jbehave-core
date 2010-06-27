@@ -3,8 +3,9 @@ package org.jbehave.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.UsingControls;
+import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -20,10 +21,10 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 import com.thoughtworks.paranamer.Paranamer;
 
@@ -31,14 +32,10 @@ public class AnnotationBuilder {
 
     private final AnnotationMonitor annotationMonitor;
 
-	private final Class<?> annotatedClass;
-	private final AnnotationFinder finder;
-	
-    public AnnotationFinder getFinder() {
-		return finder;
-	}
+    private final Class<?> annotatedClass;
+    private final AnnotationFinder finder;
 
-	public AnnotationBuilder(Class<?> annotatedClass) {
+    public AnnotationBuilder(Class<?> annotatedClass) {
         this(annotatedClass, new PrintStreamAnnotationMonitor());
     }
 
@@ -48,24 +45,28 @@ public class AnnotationBuilder {
         this.finder = new AnnotationFinder(annotatedClass);
     }
 
+    public Class<?> annotatedClass() {
+        return annotatedClass;
+    }
+
     /**
-     * Builds Configuration instance based on annotation
-     * {@link Configure} found in the annotated object instance
+     * Builds Configuration instance based on annotation {@link Configure} found
+     * in the annotated object instance
      * 
      * @param annotatedInstance
      *            the Object instance that contains the annotations
      * @return A Configuration instance
      */
     public Configuration buildConfiguration() throws MissingAnnotationException {
-        
 
         Configuration configuration = new MostUsefulConfiguration();
-        
+
         if (!finder.isAnnotationPresent(Configure.class)) {
-            // not using annotation configuration, default to most useful configuration
+            // not using annotation configuration, default to most useful
+            // configuration
             return configuration;
         }
-        
+
         configuration.useKeywords(configurationElement(finder, "keywords", Keywords.class));
         configuration.useFailureStrategy(configurationElement(finder, "failureStrategy", FailureStrategy.class));
         configuration.usePendingStepStrategy(configurationElement(finder, "pendingStepStrategy",
@@ -98,16 +99,17 @@ public class AnnotationBuilder {
      * @return A List of CandidateSteps instances
      */
     public List<CandidateSteps> buildCandidateSteps() {
-        
-        List<Object> stepsInstances = new ArrayList<Object>();        
+
+        List<Object> stepsInstances = new ArrayList<Object>();
         Configuration configuration = buildConfiguration();
         InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
         if (finder.isAnnotationPresent(UsingSteps.class)) {
-            if ( finder.isAnnotationValuePresent(UsingSteps.class, "instances") ){
-                List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(UsingSteps.class, Object.class, "instances");
+            if (finder.isAnnotationValuePresent(UsingSteps.class, "instances")) {
+                List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(UsingSteps.class, Object.class,
+                        "instances");
                 for (Class<Object> stepsClass : stepsClasses) {
                     stepsInstances.add(instanceOf(Object.class, stepsClass));
-                }             
+                }
                 factory = new InstanceStepsFactory(configuration, stepsInstances);
             } else {
                 annotationMonitor.annotationValueNotFound("instances", UsingSteps.class, annotatedClass);
@@ -117,6 +119,28 @@ public class AnnotationBuilder {
         }
 
         return factory.createCandidateSteps();
+    }
+
+    @SuppressWarnings("unchecked")
+    public EmbedderControls buildEmbedderControls() {
+        if (finder.isAnnotationPresent(UsingControls.class)) {
+
+            boolean batch = control(finder, "batch");
+            boolean skip = control(finder, "skip");
+            boolean generateViewAfterStories = control(finder, "generateViewAfterStories");
+            boolean ignoreFailureInStories = control(finder, "ignoreFailureInStories");
+            boolean ignoreFailureInView = control(finder, "ignoreFailureInView");
+
+            EmbedderControls embedderControls = instanceOf(EmbedderControls.class,
+                    finder.getAnnotatedValue(UsingControls.class, Class.class, "embedderControls"));
+            return embedderControls.doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
+                    .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView);
+        }
+        return new EmbedderControls();
+    }
+
+    private boolean control(AnnotationFinder finder, String name) {
+        return finder.getAnnotatedValue(UsingControls.class, Boolean.class, name);
     }
 
     private <T> T configurationElement(AnnotationFinder finder, String name, Class<T> type) {
@@ -131,7 +155,8 @@ public class AnnotationBuilder {
 
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
-        for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(Configure.class, ParameterConverter.class, "parameterConverters")) {
+        for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(Configure.class,
+                ParameterConverter.class, "parameterConverters")) {
             converters.add(instanceOf(ParameterConverter.class, converterClass));
         }
         return new ParameterConverters().addConverters(converters);
@@ -145,13 +170,14 @@ public class AnnotationBuilder {
             throw new RuntimeException(e);
         }
     }
-    
-	public AnnotationMonitor getAnnotationMonitor() {
-		return annotationMonitor;
-	}
 
-	public Class<?> getAnnotatedClass() {
-		return annotatedClass;
-	}
+    protected AnnotationMonitor annotationMonitor() {
+        return annotationMonitor;
+    }
+
+    protected AnnotationFinder annotationFinder() {
+        return finder;
+    }
+
 
 }

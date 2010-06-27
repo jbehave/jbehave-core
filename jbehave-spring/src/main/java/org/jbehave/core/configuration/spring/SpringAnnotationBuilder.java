@@ -23,23 +23,23 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
 
     private ApplicationContext context;
 
-    public SpringAnnotationBuilder(Class<?> targetClass) {
-    	super(targetClass);
+    public SpringAnnotationBuilder(Class<?> annotatedClass) {
+    	super(annotatedClass);
     }
 
-    public SpringAnnotationBuilder(Class<?> targetClass, AnnotationMonitor annotationMonitor) {
-        super(targetClass, annotationMonitor);
+    public SpringAnnotationBuilder(Class<?> annotatedClass, AnnotationMonitor annotationMonitor) {
+        super(annotatedClass, annotationMonitor);
     }
     
     @Override
     public Configuration buildConfiguration() throws MissingAnnotationException {
-        if (getFinder().isAnnotationPresent(UsingSpring.class)) {
-            if (getFinder().isAnnotationValuePresent(UsingSpring.class, "locations")) {
-                List<String> locations = getFinder().getAnnotatedValues(UsingSpring.class, String.class, "locations");
+        if (annotationFinder().isAnnotationPresent(UsingSpring.class)) {
+            if (annotationFinder().isAnnotationValuePresent(UsingSpring.class, "locations")) {
+                List<String> locations = annotationFinder().getAnnotatedValues(UsingSpring.class, String.class, "locations");
                 context = applicationContextFor(locations);
             }
         } else {
-        	getAnnotationMonitor().annotationNotFound(UsingSpring.class, getAnnotatedClass());
+        	annotationMonitor().annotationNotFound(UsingSpring.class, annotatedClass());
         }
         return super.buildConfiguration();
     }
