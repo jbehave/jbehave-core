@@ -48,6 +48,10 @@ public class AnnotationBuilder {
         this.finder = new AnnotationFinder(annotatedClass);
     }
 
+    public Class<?> annotatedClass(){
+        return annotatedClass;
+    }
+    
     /**
      * Builds Configuration instance based on annotation
      * {@link Configure} found in the annotated object instance

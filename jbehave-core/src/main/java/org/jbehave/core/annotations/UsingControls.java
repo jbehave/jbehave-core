@@ -8,11 +8,11 @@ import java.lang.annotation.Target;
 import org.jbehave.core.embedder.EmbedderControls;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.ANNOTATION_TYPE })
+@Target({ ElementType.TYPE })
 @Inherited
-public @interface WithEmbedderControls {
+public @interface UsingControls {
 
-	Class<? extends EmbedderControls> controlsClass() default EmbedderControls.class;
+	Class<? extends EmbedderControls> embedderControls() default EmbedderControls.class;
 	boolean batch()  default false;
 	boolean skip()  default false;
 	boolean generateViewAfterStories()  default true;

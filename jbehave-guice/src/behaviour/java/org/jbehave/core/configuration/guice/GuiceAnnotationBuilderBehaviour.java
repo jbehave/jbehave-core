@@ -1,4 +1,4 @@
-package org.jbehave.core.configuration.spring;
+package org.jbehave.core.configuration.guice;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -17,29 +17,39 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import org.jbehave.core.annotations.Configure;
-import org.jbehave.core.annotations.spring.UsingSpring;
+import org.jbehave.core.annotations.guice.UsingGuice;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromURL;
+import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
+import org.jbehave.core.parsers.StepPatternParser;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.DateConverter;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.Steps;
-import org.jbehave.core.steps.spring.SpringStepsFactoryBehaviour.FooSteps;
-import org.jbehave.core.steps.spring.SpringStepsFactoryBehaviour.FooStepsWithDependency;
+import org.jbehave.core.steps.guice.GuiceStepsFactoryBehaviour.FooSteps;
+import org.jbehave.core.steps.guice.GuiceStepsFactoryBehaviour.FooStepsWithDependency;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SpringAnnotationBuilderBehaviour {
+import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
+
+public class GuiceAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildConfigurationFromAnnotations() {
-    	SpringAnnotationBuilder builder = new SpringAnnotationBuilder(Annotated.class);
+        GuiceAnnotationBuilder builder = new GuiceAnnotationBuilder(Annotated.class);
         Configuration configuration = builder.buildConfiguration();
         assertThat(configuration.failureStrategy(), instanceOf(SilentlyAbsorbingFailure.class));
         assertThat(configuration.storyLoader(), instanceOf(LoadFromURL.class));
@@ -67,9 +77,9 @@ public class SpringAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
-    	SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
+        GuiceAnnotationBuilder builderNotAnnotated = new GuiceAnnotationBuilder(NotAnnotated.class);
         assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(), new MostUsefulConfiguration());
-       	SpringAnnotationBuilder builderAnnotatedWithoutLocations = new SpringAnnotationBuilder(AnnotatedWithoutLocations.class);
+        GuiceAnnotationBuilder builderAnnotatedWithoutLocations = new GuiceAnnotationBuilder(AnnotatedWithoutLocations.class);
         assertThatConfigurationIs(builderAnnotatedWithoutLocations.buildConfiguration(), new MostUsefulConfiguration());
     }
 
@@ -86,16 +96,16 @@ public class SpringAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildCandidateStepsFromAnnotations() {
-    	SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(Annotated.class);
+        GuiceAnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(Annotated.class);
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), FooSteps.class,
                 FooStepsWithDependency.class);
     }
 
     @Test
     public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
-       	SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
+        GuiceAnnotationBuilder builderNotAnnotated = new GuiceAnnotationBuilder(NotAnnotated.class);
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
-       	SpringAnnotationBuilder builderAnnotatedWithoutLocations = new SpringAnnotationBuilder(AnnotatedWithoutLocations.class);
+        GuiceAnnotationBuilder builderAnnotatedWithoutLocations = new GuiceAnnotationBuilder(AnnotatedWithoutLocations.class);
         assertThatStepsInstancesAre(builderAnnotatedWithoutLocations.buildCandidateSteps());
     }
 
@@ -107,19 +117,51 @@ public class SpringAnnotationBuilderBehaviour {
     }
 
     @Configure()
-    @UsingSpring(locations = { "org/jbehave/core/configuration/spring/configuration.xml",
-            "org/jbehave/core/steps/spring/steps.xml", "org/jbehave/core/steps/spring/steps-with-dependency.xml" })
+    @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
     private static class Annotated {
 
     }
 
     @Configure()
-    @UsingSpring()
+    @UsingGuice()
     private static class AnnotatedWithoutLocations {
 
     }
 
     private static class NotAnnotated {
+
+    }
+    
+    public static class ConfigurationModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
+            bind(FailureStrategy.class).to(SilentlyAbsorbingFailure.class);
+            bind(StepPatternParser.class).toInstance(new RegexPrefixCapturingPatternParser("MyPrefix"));
+            bind(StoryLoader.class).toInstance(new LoadFromURL());
+            bind(ParameterConverter.class).toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
+            Properties viewResources = new Properties();
+            viewResources.setProperty("index", "my-reports-index.ftl");
+            viewResources.setProperty("decorateNonHtml", "true");
+            bind(StoryReporterBuilder.class).toInstance(new StoryReporterBuilder()
+                .withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
+                .withKeywords(new LocalizedKeywords(Locale.ITALIAN))
+                .withOutputDirectory("my-output-directory")
+                .withViewResources(viewResources)                
+                .withFailureTrace(true)
+            );
+        }
+
+    }
+
+    public static class StepsModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
+            bind(FooSteps.class).in(Scopes.SINGLETON);
+            bind(Integer.class).toInstance(42);
+            bind(FooStepsWithDependency.class).in(Scopes.SINGLETON);
+        }
 
     }
 

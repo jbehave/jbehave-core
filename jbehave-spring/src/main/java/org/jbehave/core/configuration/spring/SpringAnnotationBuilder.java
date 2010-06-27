@@ -23,12 +23,12 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
 
     private ApplicationContext context;
 
-    public SpringAnnotationBuilder(Class<?> targetClass) {
-    	super(targetClass);
+    public SpringAnnotationBuilder(Class<?> annotatedClass) {
+    	super(annotatedClass);
     }
 
-    public SpringAnnotationBuilder(Class<?> targetClass, AnnotationMonitor annotationMonitor) {
-        super(targetClass, annotationMonitor);
+    public SpringAnnotationBuilder(Class<?> annotatedClass, AnnotationMonitor annotationMonitor) {
+        super(annotatedClass, annotationMonitor);
     }
     
     @Override

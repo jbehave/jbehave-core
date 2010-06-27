@@ -17,7 +17,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 
-	private final String prefix;
+    private final String prefix;
 
 	/**
 	 * Creates a parser which captures parameters starting with $ in a matching
@@ -37,6 +37,10 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 		this.prefix = prefix;
 	}
 
+	public String getPrefix(){
+	    return prefix;
+	}
+	
 	public StepMatcher parseStep(String stepPattern) {
 		return new RegexStepMatcher(buildPattern(stepPattern),
 				extractParameterNames(stepPattern));
