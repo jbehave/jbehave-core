@@ -9,37 +9,45 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.text.SimpleDateFormat;
 
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.UsingSteps;
-import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
+import org.jbehave.core.junit.AnnotatedEmbedder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
+import org.jbehave.examples.trader.TraderAnnotatedEmbedder.MyDateConverter;
+import org.jbehave.examples.trader.TraderAnnotatedEmbedder.MyReportBuilder;
+import org.jbehave.examples.trader.TraderAnnotatedEmbedder.MyStoryLoader;
 import org.jbehave.examples.trader.stories.AndStep.AndSteps;
 import org.jbehave.examples.trader.stories.ClaimsWithNullCalendar.CalendarSteps;
 import org.jbehave.examples.trader.stories.FailureFollowedByGivenStories.SandpitSteps;
 import org.jbehave.examples.trader.stories.PriorityMatching.PriorityMatchingSteps;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-@Configure(
-        storyLoader = AnnotatedTraderStoryRunner.MyStoryLoader.class, 
-        storyReporterBuilder = AnnotatedTraderStoryRunner.MyReportBuilder.class, 
-        parameterConverters = { AnnotatedTraderStoryRunner.MyDateConverter.class })
-@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
+@Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
+        parameterConverters = { MyDateConverter.class })
+@RunWith(AnnotatedEmbedder.class)
+@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class })
-public class AnnotatedTraderStoryRunner {
+public class TraderAnnotatedEmbedder implements Embeddable {
+
+    private Embedder embedder;
+
+    public void useEmbedder(Embedder embedder) {
+        this.embedder = embedder;
+    }
 
     @Test
     public void run() {
-        Embedder embedder = new Embedder();
-        AnnotationBuilder annotationBuilder = new AnnotationBuilder(this.getClass());
-        embedder.useConfiguration(annotationBuilder.buildConfiguration());
-        embedder.useCandidateSteps(annotationBuilder.buildCandidateSteps());
-        embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList("")));
+        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/*.story"), asList("")));
     }
 
     public static class MyReportBuilder extends StoryReporterBuilder {
@@ -50,7 +58,7 @@ public class AnnotatedTraderStoryRunner {
 
     public static class MyStoryLoader extends LoadFromClasspath {
         public MyStoryLoader() {
-            super(AnnotatedTraderStoryRunner.class.getClassLoader());
+            super(TraderAnnotatedEmbedder.class.getClassLoader());
         }
     }
 

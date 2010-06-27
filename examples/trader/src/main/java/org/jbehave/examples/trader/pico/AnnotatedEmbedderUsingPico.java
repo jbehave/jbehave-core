@@ -9,15 +9,16 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.text.SimpleDateFormat;
 
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.pico.UsingPico;
-import org.jbehave.core.configuration.pico.PicoAnnotationBuilder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
+import org.jbehave.core.junit.pico.PicoAnnotatedEmbedder;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -32,6 +33,7 @@ import org.jbehave.examples.trader.stories.ClaimsWithNullCalendar.CalendarSteps;
 import org.jbehave.examples.trader.stories.FailureFollowedByGivenStories.SandpitSteps;
 import org.jbehave.examples.trader.stories.PriorityMatching.PriorityMatchingSteps;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.behaviors.Caching;
 import org.picocontainer.injectors.ConstructorInjection;
@@ -41,14 +43,19 @@ import org.picocontainer.injectors.ConstructorInjection;
  * using PicoContainer
  */
 @Configure()
+@RunWith(PicoAnnotatedEmbedder.class)
 @UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingPico(containers = { TraderPicoContainer.class })
-public class AnnotatedEmbedderUsingPico {
+public class AnnotatedEmbedderUsingPico implements Embeddable {
 
+    private Embedder embedder;
+
+    public void useEmbedder(Embedder embedder) {
+        this.embedder = embedder;
+    }
+    
     @Test
     public void run() {
-        PicoAnnotationBuilder builder = new PicoAnnotationBuilder(this.getClass());
-        Embedder embedder = builder.buildEmbedder();
         embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/stories/*.story"), asList("")));
     }

@@ -9,7 +9,7 @@
   </bean>
   
   <bean class="org.jbehave.core.io.LoadFromClasspath">
-    <constructor-arg value="org.jbehave.examples.trader.AnnotatedTraderStoryRunner"/>
+    <constructor-arg value="org.jbehave.examples.trader.TraderAnnotatedEmbedder"/>
   </bean>
 
   <bean class="org.jbehave.core.steps.ParameterConverters$DateConverter">
