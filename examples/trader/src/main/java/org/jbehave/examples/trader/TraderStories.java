@@ -2,8 +2,8 @@ package org.jbehave.examples.trader;
 
 import java.util.List;
 
-import org.jbehave.core.JUnitStories;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.junit.JUnitStories;
 
 /**
  * Example of how multiple stories can be run via JUnit using 

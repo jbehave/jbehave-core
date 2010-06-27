@@ -11,9 +11,9 @@ import static org.hamcrest.Matchers.sameInstance;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 
-import org.jbehave.core.JUnitStory;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
+import org.jbehave.core.junit.JUnitStory;
 import org.junit.Test;
 
 public class EmbedderClassLoaderBehaviour {

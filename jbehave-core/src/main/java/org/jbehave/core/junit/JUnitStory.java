@@ -1,7 +1,9 @@
-package org.jbehave.core;
+package org.jbehave.core.junit;
 
 import static java.util.Arrays.asList;
 
+import org.jbehave.core.AbstractStory;
+import org.jbehave.core.RunnableStory;
 import org.junit.Test;
 
 /**

@@ -3,9 +3,9 @@ package org.jbehave.examples.trader.stories;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.jbehave.core.JUnitStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
+import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 
 public class PriorityMatching extends JUnitStory {

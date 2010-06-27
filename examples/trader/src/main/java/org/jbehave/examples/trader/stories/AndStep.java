@@ -1,8 +1,8 @@
 package org.jbehave.examples.trader.stories;
 
-import org.jbehave.core.JUnitStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.BeforeAfterSteps;
 

@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.jbehave.core.JUnitStory;
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
@@ -33,6 +32,7 @@ import org.jbehave.core.embedder.Embedder.RenderingReportsFailedException;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailedException;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;

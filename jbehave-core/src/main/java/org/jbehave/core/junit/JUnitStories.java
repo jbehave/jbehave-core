@@ -1,7 +1,8 @@
-package org.jbehave.core;
+package org.jbehave.core.junit;
 
 import java.util.List;
 
+import org.jbehave.core.AbstractStory;
 import org.junit.Test;
 
 /**
