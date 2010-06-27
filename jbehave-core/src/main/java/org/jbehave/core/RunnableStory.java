@@ -33,7 +33,7 @@ import org.jbehave.core.steps.CandidateSteps;
  * @see JUnitStory
  * @see JUnitStories
  */
-public interface RunnableStory {
+public interface RunnableStory extends Embeddable {
 
 	/**
 	 * Runs the story
@@ -62,12 +62,5 @@ public interface RunnableStory {
 	 * @param configuration the Configuration
 	 */
 	void useConfiguration(Configuration configuration);
-
-	/**
-	 * Specifies the story embedder overriding any default
-	 * 
-	 * @param embedder the Embedder running the story
-	 */
-	void useEmbedder(Embedder embedder);
 
 }

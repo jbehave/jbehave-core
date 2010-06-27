@@ -205,24 +205,26 @@ facade for collecting user-defined <a
 <p>JBehave supports the ability to specify the same configuration via annotations.</p>
 
 <script type="syntaxhighlighter" class="brush: java"><![CDATA[
-@Configure(
-        stepPatternParser = AnnotatedTraderStoryRunner.MyRegexPrefixCapturingPatternParser.class, 
-        storyLoader = AnnotatedTraderStoryRunner.MyStoryLoader.class, 
-        storyReporterBuilder = AnnotatedTraderStoryRunner.MyReportBuilder.class, 
-        parameterConverters = { AnnotatedTraderStoryRunner.MyDateConverter.class })
-@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, 
+@Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
+        parameterConverters = { MyDateConverter.class })
+@RunWith(AnnotatedEmbedder.class)
+@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class })
-public class AnnotatedTraderStoryRunner {
+public class TraderAnnotatedEmbedder implements Embeddable {
+
+    private Embedder embedder;
+
+    public void useEmbedder(Embedder embedder) {
+        this.embedder = embedder;
+    }
 
     @Test
     public void run() {
-        Embedder embedder = new Embedder();
-        embedder.useConfiguration(new AnnotationBuilder().buildConfiguration(this));
-        embedder.useCandidateSteps(new AnnotationBuilder().buildCandidateSteps(this));
-        embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryFinder().findPaths("target/classes", "", asList("**/*.story"),
-                asList("")));
+        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/*.story"), asList("")));
     }
+
     public static class MyReportBuilder extends StoryReporterBuilder {
         public MyReportBuilder() {
             this.withFormats(CONSOLE, TXT, HTML, XML).withDefaultFormats();
@@ -231,7 +233,7 @@ public class AnnotatedTraderStoryRunner {
 
     public static class MyStoryLoader extends LoadFromClasspath {
         public MyStoryLoader() {
-            super(AnnotatedTraderStoryRunner.class.getClassLoader());
+            super(TraderAnnotatedEmbedder.class.getClassLoader());
         }
     }
 
@@ -246,8 +248,8 @@ public class AnnotatedTraderStoryRunner {
             super(new SimpleDateFormat("yyyy-MM-dd"));
         }
     }
-    
- }
+
+}
 ]]></script>
 
 <span class="followup">
@@ -256,20 +258,25 @@ The  <a
 This limitation can be removed by using <a href="dependency-injection.html">dependency injection</a> containers.
 </span>
 
-<p>If using <a
+<p>For example, if using <a
     href="javadoc/spring/org/jbehave/core/configuration/spring/SpringAnnotationBuilder.html">SpringAnnotationBuilder</a>, we can specify the context from separate locations for configuration and steps.</>
 <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 @Configure()
-@UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml", "org/jbehave/examples/trader/spring/steps.xml" })
-public class AnnotatedEmbedderUsingSpring {
+@RunWith(SpringAnnotatedEmbedder.class)
+@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml",
+        "org/jbehave/examples/trader/spring/steps.xml" })
+public class AnnotatedEmbedderUsingSpring implements Embeddable {
+
+    private Embedder embedder;
+
+    public void useEmbedder(Embedder embedder) {
+        this.embedder = embedder;
+    }
 
     @Test
     public void run() {
-        Embedder embedder = new Embedder();
-        embedder.useConfiguration(new SpringAnnotationBuilder().buildConfiguration(this));
-        embedder.useCandidateSteps(new SpringAnnotationBuilder().buildCandidateSteps(this));
-        embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryFinder().findPaths("target/classes", "",
+        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/stories/*.story"), asList("")));
     }
 
