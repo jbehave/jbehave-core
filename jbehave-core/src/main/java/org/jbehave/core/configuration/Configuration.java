@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.jbehave.core.RunnableStory;
 import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
@@ -159,11 +158,6 @@ public abstract class Configuration {
      */
     private ViewGenerator viewGenerator = new FreemarkerViewGenerator();
 
-    /**
-     * The embedder controls
-     */
-    private EmbedderControls embedderControls = new EmbedderControls();
-
     public boolean dryRun() {
         return dryRun;
     }
@@ -239,10 +233,6 @@ public abstract class Configuration {
 
     public ViewGenerator viewGenerator() {
         return viewGenerator;
-    }
-
-    public EmbedderControls embedderControls() {
-        return embedderControls;
     }
 
     public Configuration doDryRun(Boolean dryRun) {
@@ -337,11 +327,6 @@ public abstract class Configuration {
 
     public void useViewGenerator(ViewGenerator viewGenerator) {
         this.viewGenerator = viewGenerator;
-    }
-
-    public Configuration useEmbedderControls(EmbedderControls embedderControls) {
-        this.embedderControls = embedderControls;
-        return this;
     }
 
 }

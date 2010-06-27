@@ -37,11 +37,11 @@ import org.picocontainer.behaviors.Caching;
 import org.picocontainer.injectors.ConstructorInjection;
 
 /**
- * Run stories via Embedder using JBehave's annotated configuration using Pico
- * injection
+ * Run stories via Embedder using JBehave's annotated configuration and steps
+ * using PicoContainer
  */
 @Configure()
-@UsingEmbedder()
+@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingPico(containers = { TraderPicoContainer.class })
 public class AnnotatedEmbedderUsingPico {
 
@@ -49,7 +49,6 @@ public class AnnotatedEmbedderUsingPico {
     public void run() {
         PicoAnnotationBuilder builder = new PicoAnnotationBuilder(this.getClass());
         Embedder embedder = builder.buildEmbedder();
-        embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
         embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/stories/*.story"), asList("")));
     }

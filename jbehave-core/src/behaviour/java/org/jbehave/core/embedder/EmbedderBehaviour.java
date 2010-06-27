@@ -701,7 +701,7 @@ public class EmbedderBehaviour {
 
 		// When
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		assertThat(embedder.configuration().embedderControls(), is(sameInstance(embedderControls)));
+		assertThat(embedder.embedderControls(), is(sameInstance(embedderControls)));
 		assertThat(embedder.storyRunner(), is(sameInstance(runner)));
 		assertThat(embedder.embedderMonitor(), is(sameInstance(monitor)));
 		embedder.useStoryRunner(new StoryRunner());
@@ -785,15 +785,14 @@ public class EmbedderBehaviour {
 		// When
 		embedder.reportStepdocs();
 		// Then
-		String expected = 
-			"'Given a given'\n"+
-			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.given()\n"+
-			"'When a when'\n"+
-			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.when()\n"+
-			"'Then a then'\n"+
-			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.then()\n"+
-			"from steps instances:\norg.jbehave.core.embedder.EmbedderBehaviour$MySteps\n";
-		assertThat(out.toString(), equalTo(expected));
+		assertThat(out.toString(), containsString("'Given a given'\n"+
+	            "org.jbehave.core.embedder.EmbedderBehaviour$MySteps.given()\n"));
+        assertThat(out.toString(), containsString("'When a when'\n"+
+                "org.jbehave.core.embedder.EmbedderBehaviour$MySteps.when()\n"));
+        assertThat(out.toString(), containsString("'Then a then'\n"+
+                "org.jbehave.core.embedder.EmbedderBehaviour$MySteps.then()\n"));
+        assertThat(out.toString(), containsString(
+                "from steps instances:\norg.jbehave.core.embedder.EmbedderBehaviour$MySteps\n"));
 	}
 	
 	private class MyStory extends JUnitStory {

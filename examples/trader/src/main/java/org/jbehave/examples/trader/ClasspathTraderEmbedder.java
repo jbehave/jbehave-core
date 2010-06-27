@@ -36,7 +36,12 @@ import org.jbehave.examples.trader.service.TradingService;
  */
 public class ClasspathTraderEmbedder extends Embedder {
 
-	@Override
+    @Override
+    public EmbedderControls embedderControls() {
+        return super.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+    }
+
+    @Override
 	public Configuration configuration() {
 		Class<? extends ClasspathTraderEmbedder> embedderClass = this.getClass();
 		return new MostUsefulConfiguration()
@@ -49,11 +54,7 @@ public class ClasspathTraderEmbedder extends Embedder {
                 	.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
 							"%")) // use '%' instead of '$' to identify parameters
-			.useStepMonitor(new SilentStepMonitor())
-			.useEmbedderControls(new EmbedderControls()
-				.doIgnoreFailureInStories(true)
-				.doIgnoreFailureInView(true));
-								
+			.useStepMonitor(new SilentStepMonitor());								
 	}
 
 	@Override
@@ -62,6 +63,8 @@ public class ClasspathTraderEmbedder extends Embedder {
 				new TradingService()), new BeforeAfterSteps())
 				.createCandidateSteps();
 	}
+	
+	
 
 	protected TraderPersister mockTradePersister() {
 		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
@@ -74,7 +77,7 @@ public class ClasspathTraderEmbedder extends Embedder {
 	}
 
     public List<RunnableStory> stories() {
-        return null;
+        return asList();
     }
 
 }

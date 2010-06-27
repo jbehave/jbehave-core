@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
@@ -58,10 +57,6 @@ public class UnmodifiableConfiguration extends Configuration {
 
     public boolean dryRun() {
         return delegate.dryRun();
-    }
-
-    public EmbedderControls embedderControls() {
-        return delegate.embedderControls();
     }
 
     public ParameterConverters parameterConverters() {
@@ -132,11 +127,6 @@ public class UnmodifiableConfiguration extends Configuration {
 
     @Override
     public Configuration doDryRun(Boolean dryRun) {
-        throw notAllowed();
-    }
-
-    @Override
-    public Configuration useEmbedderControls(EmbedderControls embedderControls) {
         throw notAllowed();
     }
 

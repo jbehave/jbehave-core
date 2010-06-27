@@ -8,7 +8,6 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
-import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
@@ -48,7 +47,6 @@ public class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.stepMonitor(), is(delegate.stepMonitor()));
         assertThat(unmodifiable.stepPatternParser(), is(delegate.stepPatternParser()));
         assertThat(unmodifiable.viewGenerator(), is(delegate.viewGenerator()));
-        assertThat(unmodifiable.embedderControls(), is(delegate.embedderControls()));
     }
 
     @Test
@@ -74,7 +72,6 @@ public class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useStepPatternParser", StepPatternParser.class);
         assertThatNotAllowed(unmodifiable, "useViewGenerator", ViewGenerator.class);
         assertThatNotAllowed(unmodifiable, "useStoryPathResolver", StoryPathResolver.class);
-        assertThatNotAllowed(unmodifiable, "useEmbedderControls", EmbedderControls.class);
     }
 
     private void assertThatNotAllowed(Configuration unmodifiable, String methodName, Class<?>... types)

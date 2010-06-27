@@ -9,7 +9,6 @@ import org.jbehave.examples.trader.BeforeAfterSteps;
 public class AndStep extends JUnitStory {
 
 	public AndStep() {
-		configuration().embedderControls().doGenerateViewAfterStories(false);
 		addSteps(new InstanceStepsFactory(configuration(), new AndSteps(), new BeforeAfterSteps()).createCandidateSteps());
 	}
 

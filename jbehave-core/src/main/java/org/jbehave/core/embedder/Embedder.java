@@ -27,6 +27,7 @@ public class Embedder {
 	
 	private Configuration configuration = new MostUsefulConfiguration();
 	private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+    private EmbedderControls embedderControls = new EmbedderControls();
 	private StoryRunner storyRunner;
 	private EmbedderMonitor embedderMonitor;
 
@@ -211,7 +212,7 @@ public class Embedder {
 	}
 
 	public EmbedderControls embedderControls() {
-		return configuration().embedderControls();
+		return embedderControls;
 	}
 	
 	public EmbedderMonitor embedderMonitor() {
@@ -231,7 +232,7 @@ public class Embedder {
 	}
 
 	public void useEmbedderControls(EmbedderControls embedderControls) {
-		this.configuration().useEmbedderControls(embedderControls);
+        this.embedderControls = embedderControls;		
 	}
 
 	public void useEmbedderMonitor(EmbedderMonitor embedderMonitor) {

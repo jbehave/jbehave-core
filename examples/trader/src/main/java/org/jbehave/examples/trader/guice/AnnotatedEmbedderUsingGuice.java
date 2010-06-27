@@ -39,23 +39,22 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 
 /**
- * Run stories via Embedder using JBehave's annotated configuration using Guice
- * injection
+ * Run stories via Embedder using JBehave's annotated configuration and steps
+ * using Guice
  */
-//@RunWith(GuiceJUnit4ClassRunner.class)
+// @RunWith(GuiceJUnit4ClassRunner.class)
 @Configure()
+@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
-@UsingEmbedder(ignoreFailureInStories = true, ignoreFailureInView = true)
 public class AnnotatedEmbedderUsingGuice {
 
-//    @Inject
-//    Embedder embedder;
+    // @Inject
+    // Embedder embedder;
 
     @Test
     public void run() {
         AnnotationBuilder builder = new GuiceAnnotationBuilder(this.getClass());
-        Embedder embedder =  builder.buildEmbedder();
-        embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+        Embedder embedder = builder.buildEmbedder();
         embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/stories/*.story"), asList("")));
     }
@@ -68,11 +67,10 @@ public class AnnotatedEmbedderUsingGuice {
             bind(StepPatternParser.class).toInstance(new RegexPrefixCapturingPatternParser("%"));
             bind(StoryLoader.class).toInstance(new LoadFromClasspath(this.getClass().getClassLoader()));
             bind(ParameterConverter.class).toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
-            bind(StoryReporterBuilder.class).toInstance(new StoryReporterBuilder()
-                .withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
-                .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass()))
-                .withFailureTrace(true)
-            );
+            bind(StoryReporterBuilder.class).toInstance(
+                    new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
+                            .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass()))
+                            .withFailureTrace(true));
         }
 
     }
@@ -82,7 +80,7 @@ public class AnnotatedEmbedderUsingGuice {
         @Override
         protected void configure() {
             bind(TradingService.class).in(Scopes.SINGLETON);
-            bind(TraderSteps.class).in(Scopes.SINGLETON);          
+            bind(TraderSteps.class).in(Scopes.SINGLETON);
             bind(BeforeAfterSteps.class).in(Scopes.SINGLETON);
             bind(AndSteps.class).in(Scopes.SINGLETON);
             bind(CalendarSteps.class).in(Scopes.SINGLETON);
@@ -91,6 +89,5 @@ public class AnnotatedEmbedderUsingGuice {
         }
 
     }
-
 
 }

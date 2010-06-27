@@ -12,21 +12,21 @@ import org.jbehave.core.io.StoryFinder;
 import org.junit.Test;
 
 /**
- *  Run stories via Embedder using JBehave's annotated configuration using
- *  a Spring context built from separate locations for configuration and steps.
+ * Run stories via Embedder using JBehave's annotated configuration and steps
+ * using Spring
  */
 @Configure()
-@UsingEmbedder(embedder=Embedder.class, ignoreFailureInStories=true, ignoreFailureInView=true)
-@UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml", "org/jbehave/examples/trader/spring/steps.xml" })
+@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml",
+        "org/jbehave/examples/trader/spring/steps.xml" })
 public class AnnotatedEmbedderUsingSpring {
 
     @Test
     public void run() {
         SpringAnnotationBuilder builder = new SpringAnnotationBuilder(this.getClass());
-        Embedder embedder =  builder.buildEmbedder();
-        embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
-        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/stories/*.story"),
-                asList("")));
+        Embedder embedder = builder.buildEmbedder();
+        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/stories/*.story"), asList("")));
     }
 
 }

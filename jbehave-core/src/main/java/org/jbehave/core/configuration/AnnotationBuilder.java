@@ -7,7 +7,6 @@ import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
@@ -86,7 +85,6 @@ public class AnnotationBuilder {
         configuration.useStoryReporterBuilder(configurationElement(finder, "storyReporterBuilder",
                 StoryReporterBuilder.class));
         configuration.useViewGenerator(configurationElement(finder, "viewGenerator", ViewGenerator.class));
-        configuration.useEmbedderControls(configurationElement(finder, "embedderControls", EmbedderControls.class));
         configuration.useParameterConverters(parameterConverters(finder));
         return configuration;
     }

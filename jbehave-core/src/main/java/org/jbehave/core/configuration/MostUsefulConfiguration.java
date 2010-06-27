@@ -64,9 +64,8 @@ public class MostUsefulConfiguration extends Configuration {
         useStepMonitor(new SilentStepMonitor());
         useParanamer(new NullParanamer());
         useParameterConverters(new ParameterConverters());
-        useViewGenerator(new FreemarkerViewGenerator());
-        useEmbedderControls(new EmbedderControls());
         useStoryReporterBuilder(new StoryReporterBuilder());
+        useViewGenerator(new FreemarkerViewGenerator());
     }
 
 }
