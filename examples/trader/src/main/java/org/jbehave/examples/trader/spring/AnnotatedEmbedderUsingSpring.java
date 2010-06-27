@@ -21,8 +21,9 @@ public class AnnotatedEmbedderUsingSpring {
     @Test
     public void run() {
         Embedder embedder = new Embedder();
-        embedder.useConfiguration(new SpringAnnotationBuilder().buildConfiguration(this));
-        embedder.useCandidateSteps(new SpringAnnotationBuilder().buildCandidateSteps(this));
+        SpringAnnotationBuilder builder = new SpringAnnotationBuilder(this.getClass());
+        embedder.useConfiguration(builder.buildConfiguration());
+        embedder.useCandidateSteps(builder.buildCandidateSteps());
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
         embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/stories/*.story"),
                 asList("")));

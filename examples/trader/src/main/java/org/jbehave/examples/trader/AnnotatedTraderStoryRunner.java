@@ -35,8 +35,9 @@ public class AnnotatedTraderStoryRunner {
     @Test
     public void run() {
         Embedder embedder = new Embedder();
-        embedder.useConfiguration(new AnnotationBuilder().buildConfiguration(this));
-        embedder.useCandidateSteps(new AnnotationBuilder().buildCandidateSteps(this));
+        AnnotationBuilder annotationBuilder = new AnnotationBuilder(this.getClass());
+        embedder.useConfiguration(annotationBuilder.buildConfiguration());
+        embedder.useCandidateSteps(annotationBuilder.buildCandidateSteps());
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
         embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList("")));
     }

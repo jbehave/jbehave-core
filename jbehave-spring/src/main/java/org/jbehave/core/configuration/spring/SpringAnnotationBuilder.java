@@ -10,7 +10,6 @@ import org.jbehave.core.configuration.AnnotationFinder;
 import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MissingAnnotationException;
-import org.jbehave.core.configuration.PrintStreamAnnotationMonitor;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -22,34 +21,32 @@ import org.springframework.context.ApplicationContext;
 
 public class SpringAnnotationBuilder extends AnnotationBuilder {
 
-    private final AnnotationMonitor annotationMonitor;
     private ApplicationContext context;
 
-    public SpringAnnotationBuilder() {
-        this(new PrintStreamAnnotationMonitor());
+    public SpringAnnotationBuilder(Class<?> targetClass) {
+    	super(targetClass);
     }
 
-    public SpringAnnotationBuilder(AnnotationMonitor annotationMonitor) {
-        this.annotationMonitor = annotationMonitor;
+    public SpringAnnotationBuilder(Class<?> targetClass, AnnotationMonitor annotationMonitor) {
+        super(targetClass, annotationMonitor);
     }
     
     @Override
-    public Configuration buildConfiguration(Object annotatedInstance) throws MissingAnnotationException {
-        AnnotationFinder finder = new AnnotationFinder(annotatedInstance.getClass());
-        if (finder.isAnnotationPresent(UsingSpring.class)) {
-            if (finder.isAnnotationValuePresent(UsingSpring.class, "locations")) {
-                List<String> locations = finder.getAnnotatedValues(UsingSpring.class, String.class, "locations");
+    public Configuration buildConfiguration() throws MissingAnnotationException {
+        if (getFinder().isAnnotationPresent(UsingSpring.class)) {
+            if (getFinder().isAnnotationValuePresent(UsingSpring.class, "locations")) {
+                List<String> locations = getFinder().getAnnotatedValues(UsingSpring.class, String.class, "locations");
                 context = applicationContextFor(locations);
             }
         } else {
-            annotationMonitor.annotationNotFound(UsingSpring.class, annotatedInstance);
+        	getAnnotationMonitor().annotationNotFound(UsingSpring.class, getAnnotatedClass());
         }
-        return super.buildConfiguration(annotatedInstance);
+        return super.buildConfiguration();
     }
 
     @Override
-    public List<CandidateSteps> buildCandidateSteps(Object annotatedInstance) {
-        Configuration configuration = buildConfiguration(annotatedInstance);
+    public List<CandidateSteps> buildCandidateSteps() {
+        Configuration configuration = buildConfiguration();
         InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
         if ( context != null ){
             factory = new SpringStepsFactory(configuration, context);            

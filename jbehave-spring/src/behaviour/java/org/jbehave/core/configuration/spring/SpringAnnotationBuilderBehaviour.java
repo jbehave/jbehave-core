@@ -38,11 +38,11 @@ import org.junit.Test;
 
 public class SpringAnnotationBuilderBehaviour {
 
-    private SpringAnnotationBuilder builder = new SpringAnnotationBuilder();
 
     @Test
     public void shouldBuildConfigurationFromAnnotations() {
-        Configuration configuration = builder.buildConfiguration(new Annotated());
+    	SpringAnnotationBuilder builder = new SpringAnnotationBuilder(Annotated.class);
+        Configuration configuration = builder.buildConfiguration();
         assertThat(configuration.failureStrategy(), instanceOf(SilentlyAbsorbingFailure.class));
         assertThat(configuration.storyLoader(), instanceOf(LoadFromURL.class));
         assertThat(configuration.stepPatternParser(), instanceOf(RegexPrefixCapturingPatternParser.class));
@@ -69,8 +69,10 @@ public class SpringAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
-        assertThatConfigurationIs(builder.buildConfiguration(new NotAnnotated()), new MostUsefulConfiguration());
-        assertThatConfigurationIs(builder.buildConfiguration(new AnnotatedWithoutLocations()), new MostUsefulConfiguration());
+    	SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
+        assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(), new MostUsefulConfiguration());
+       	SpringAnnotationBuilder builderAnnotatedWithoutLocations = new SpringAnnotationBuilder(AnnotatedWithoutLocations.class);
+        assertThatConfigurationIs(builderAnnotatedWithoutLocations.buildConfiguration(), new MostUsefulConfiguration());
     }
 
     private void assertThatConfigurationIs(Configuration builtConfiguration,
@@ -86,14 +88,17 @@ public class SpringAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildCandidateStepsFromAnnotations() {
-        assertThatStepsInstancesAre(builder.buildCandidateSteps(new Annotated()), FooSteps.class,
+    	SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(Annotated.class);
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), FooSteps.class,
                 FooStepsWithDependency.class);
     }
 
     @Test
     public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
-        assertThatStepsInstancesAre(builder.buildCandidateSteps(new NotAnnotated()));
-        assertThatStepsInstancesAre(builder.buildCandidateSteps(new AnnotatedWithoutLocations()));
+       	SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(Annotated.class);
+        assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
+       	SpringAnnotationBuilder builderAnnotatedWithoutLocations = new SpringAnnotationBuilder(AnnotatedWithoutLocations.class);
+        assertThatStepsInstancesAre(builderAnnotatedWithoutLocations.buildCandidateSteps());
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {

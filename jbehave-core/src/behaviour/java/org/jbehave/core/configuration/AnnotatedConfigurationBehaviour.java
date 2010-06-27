@@ -12,17 +12,19 @@ import org.jbehave.core.steps.Steps;
 import org.junit.Test;
 
 public class AnnotatedConfigurationBehaviour {
-    private AnnotationBuilder builder = new AnnotationBuilder();
 
     @Test
     public void shouldCreateCandidateStepsFromAnnotation(){
-        assertThatStepsInstancesAre(builder.buildCandidateSteps(new Annotated()), MySteps.class, MyOtherSteps.class);
+       	AnnotationBuilder builderAnnotated = new AnnotationBuilder(Annotated.class);
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), MySteps.class, MyOtherSteps.class);
     }
     
     @Test
     public void shouldCreateEmptyCandidateStepsListIfAnnotationOrAnnotatedValuesNotPresent(){
-        assertThatStepsInstancesAre(builder.buildCandidateSteps(new NotAnnotated()));
-        assertThatStepsInstancesAre(builder.buildCandidateSteps(new AnnotatedWithoutSteps()));
+       	AnnotationBuilder builderNotAnnotated = new AnnotationBuilder(NotAnnotated.class);
+    	assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
+       	AnnotationBuilder builderAnnotatedWithoutSteps = new AnnotationBuilder(AnnotatedWithoutSteps.class);
+        assertThatStepsInstancesAre(builderAnnotatedWithoutSteps.buildCandidateSteps());
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses){

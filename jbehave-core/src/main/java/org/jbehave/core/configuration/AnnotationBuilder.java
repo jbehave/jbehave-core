@@ -31,12 +31,21 @@ public class AnnotationBuilder {
 
     private final AnnotationMonitor annotationMonitor;
 
-    public AnnotationBuilder() {
-        this(new PrintStreamAnnotationMonitor());
+	private final Class<?> annotatedClass;
+	private final AnnotationFinder finder;
+	
+    public AnnotationFinder getFinder() {
+		return finder;
+	}
+
+	public AnnotationBuilder(Class<?> annotatedClass) {
+        this(annotatedClass, new PrintStreamAnnotationMonitor());
     }
 
-    public AnnotationBuilder(AnnotationMonitor annotationMonitor) {
+    public AnnotationBuilder(Class<?> annotatedClass, AnnotationMonitor annotationMonitor) {
         this.annotationMonitor = annotationMonitor;
+        this.annotatedClass = annotatedClass;
+        this.finder = new AnnotationFinder(annotatedClass);
     }
 
     /**
@@ -47,8 +56,8 @@ public class AnnotationBuilder {
      *            the Object instance that contains the annotations
      * @return A Configuration instance
      */
-    public Configuration buildConfiguration(Object annotatedInstance) throws MissingAnnotationException {
-        AnnotationFinder finder = new AnnotationFinder(annotatedInstance.getClass());
+    public Configuration buildConfiguration() throws MissingAnnotationException {
+        
 
         Configuration configuration = new MostUsefulConfiguration();
         
@@ -88,10 +97,10 @@ public class AnnotationBuilder {
      *            the Object instance that contains the annotations
      * @return A List of CandidateSteps instances
      */
-    public List<CandidateSteps> buildCandidateSteps(Object annotatedInstance) {
-        AnnotationFinder finder = new AnnotationFinder(annotatedInstance.getClass());
+    public List<CandidateSteps> buildCandidateSteps() {
+        
         List<Object> stepsInstances = new ArrayList<Object>();        
-        Configuration configuration = buildConfiguration(annotatedInstance);
+        Configuration configuration = buildConfiguration();
         InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
         if (finder.isAnnotationPresent(UsingSteps.class)) {
             if ( finder.isAnnotationValuePresent(UsingSteps.class, "instances") ){
@@ -101,10 +110,10 @@ public class AnnotationBuilder {
                 }             
                 factory = new InstanceStepsFactory(configuration, stepsInstances);
             } else {
-                annotationMonitor.annotationValueNotFound("instances", UsingSteps.class, annotatedInstance);
+                annotationMonitor.annotationValueNotFound("instances", UsingSteps.class, annotatedClass);
             }
         } else {
-            annotationMonitor.annotationNotFound(UsingSteps.class, annotatedInstance);
+            annotationMonitor.annotationNotFound(UsingSteps.class, annotatedClass);
         }
 
         return factory.createCandidateSteps();
@@ -136,5 +145,13 @@ public class AnnotationBuilder {
             throw new RuntimeException(e);
         }
     }
+    
+	public AnnotationMonitor getAnnotationMonitor() {
+		return annotationMonitor;
+	}
+
+	public Class<?> getAnnotatedClass() {
+		return annotatedClass;
+	}
 
 }
