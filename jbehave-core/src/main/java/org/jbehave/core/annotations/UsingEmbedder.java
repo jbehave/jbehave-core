@@ -5,15 +5,16 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.jbehave.core.embedder.EmbedderControls;
+
+import org.jbehave.core.embedder.Embedder;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 @Inherited
-public @interface UsingControls {
+public @interface UsingEmbedder {
 
-	Class<? extends EmbedderControls> embedderControls() default EmbedderControls.class;
-	boolean batch()  default false;
+    Class<?> embedder() default Embedder.class;
+    boolean batch()  default false;
 	boolean skip()  default false;
 	boolean generateViewAfterStories()  default true;
 	boolean ignoreFailureInStories()  default false;

@@ -9,7 +9,6 @@ import org.jbehave.core.configuration.AnnotationFinder;
 import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MissingAnnotationException;
-import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -26,7 +25,7 @@ import com.google.inject.util.Modules;
 
 public class GuiceAnnotationBuilder extends AnnotationBuilder {
 
-    private Injector injector;
+    public Injector injector;
 
     public GuiceAnnotationBuilder(Class<?> annotatedClass) {
         super(annotatedClass);
@@ -94,22 +93,6 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
             }
         }
         return super.instanceOf(type, ofClass);
-    }
-
-    public Object instanceWithInjectedEmbedder() {
-
-        // Build Configuration and CandidateSteps
-        Configuration configuration = buildConfiguration();
-        List<CandidateSteps> candidateSteps = buildCandidateSteps();
-
-        // Create the Embedder class
-        Embedder embedder = injector.getInstance(Embedder.class);
-        // TODO **** REMOVE when javax.inject is supported by Guice 2.1
-        embedder.useConfiguration(configuration);
-        embedder.useCandidateSteps(candidateSteps);
-        // TODO ****        
-        embedder.useEmbedderControls(buildEmbedderControls());
-        return injector.getInstance(annotatedClass());
     }
 
 

@@ -10,6 +10,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 import java.text.SimpleDateFormat;
 
 import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.pico.UsingPico;
 import org.jbehave.core.configuration.pico.PicoAnnotationBuilder;
 import org.jbehave.core.embedder.Embedder;
@@ -40,15 +41,14 @@ import org.picocontainer.injectors.ConstructorInjection;
  * injection
  */
 @Configure()
+@UsingEmbedder()
 @UsingPico(containers = { TraderPicoContainer.class })
 public class AnnotatedEmbedderUsingPico {
 
     @Test
     public void run() {
-        Embedder embedder = new Embedder();
         PicoAnnotationBuilder builder = new PicoAnnotationBuilder(this.getClass());
-        embedder.useConfiguration(builder.buildConfiguration());
-        embedder.useCandidateSteps(builder.buildCandidateSteps());
+        Embedder embedder = builder.buildEmbedder();
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
         embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/stories/*.story"), asList("")));

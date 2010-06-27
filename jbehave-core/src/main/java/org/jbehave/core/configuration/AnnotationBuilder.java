@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jbehave.core.annotations.Configure;
-import org.jbehave.core.annotations.UsingControls;
+import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.UsingSteps;
+import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -122,25 +123,28 @@ public class AnnotationBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    public EmbedderControls buildEmbedderControls() {
-        if (finder.isAnnotationPresent(UsingControls.class)) {
-
-            boolean batch = control(finder, "batch");
-            boolean skip = control(finder, "skip");
-            boolean generateViewAfterStories = control(finder, "generateViewAfterStories");
-            boolean ignoreFailureInStories = control(finder, "ignoreFailureInStories");
-            boolean ignoreFailureInView = control(finder, "ignoreFailureInView");
-
-            EmbedderControls embedderControls = instanceOf(EmbedderControls.class,
-                    finder.getAnnotatedValue(UsingControls.class, Class.class, "embedderControls"));
-            return embedderControls.doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
-                    .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView);
+    public Embedder buildEmbedder() {
+        if (!finder.isAnnotationPresent(UsingEmbedder.class)) {
+            return new Embedder();
         }
-        return new EmbedderControls();
+
+        Embedder embedder = instanceOf(Embedder.class,
+                finder.getAnnotatedValue(UsingEmbedder.class, Class.class, "embedder"));
+        boolean batch = control(finder, "batch");
+        boolean skip = control(finder, "skip");
+        boolean generateViewAfterStories = control(finder, "generateViewAfterStories");
+        boolean ignoreFailureInStories = control(finder, "ignoreFailureInStories");
+        boolean ignoreFailureInView = control(finder, "ignoreFailureInView");
+
+        embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
+                .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView);
+        embedder.useConfiguration(buildConfiguration());
+        embedder.useCandidateSteps(buildCandidateSteps());
+        return embedder;
     }
 
     private boolean control(AnnotationFinder finder, String name) {
-        return finder.getAnnotatedValue(UsingControls.class, Boolean.class, name);
+        return finder.getAnnotatedValue(UsingEmbedder.class, Boolean.class, name);
     }
 
     private <T> T configurationElement(AnnotationFinder finder, String name, Class<T> type) {
@@ -179,5 +183,19 @@ public class AnnotationBuilder {
         return finder;
     }
 
+    public Object embeddableInstance() {    
+        Embedder embedder = buildEmbedder();
+        return injectEmbedder(embedder, annotatedClass);
+    }
+
+    protected  Object injectEmbedder(Embedder embedder, Class<?> annotatedClass) {
+        try {
+            Object instance = annotatedClass.getConstructor().newInstance();
+            return instance;
+        } catch (Exception e) {
+            annotationMonitor.elementCreationFailed(annotatedClass, e);
+            throw new RuntimeException(e);
+        }
+    }
 
 }

@@ -11,12 +11,7 @@ public class GuiceJUnit4ClassRunner extends BlockJUnit4ClassRunner {
 
     @Override
     public Object createTest() {
-        Class<?> testClass = getTestClass().getJavaClass();
-        try {
-            return new GuiceAnnotationBuilder(testClass).instanceWithInjectedEmbedder();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return new GuiceAnnotationBuilder(getTestClass().getJavaClass()).embeddableInstance();
     }
 
 }

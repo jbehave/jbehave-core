@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.spring.UsingSpring;
 import org.jbehave.core.configuration.spring.SpringAnnotationBuilder;
 import org.jbehave.core.embedder.Embedder;
@@ -15,15 +16,14 @@ import org.junit.Test;
  *  a Spring context built from separate locations for configuration and steps.
  */
 @Configure()
+@UsingEmbedder(embedder=Embedder.class, ignoreFailureInStories=true, ignoreFailureInView=true)
 @UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml", "org/jbehave/examples/trader/spring/steps.xml" })
 public class AnnotatedEmbedderUsingSpring {
 
     @Test
     public void run() {
-        Embedder embedder = new Embedder();
         SpringAnnotationBuilder builder = new SpringAnnotationBuilder(this.getClass());
-        embedder.useConfiguration(builder.buildConfiguration());
-        embedder.useCandidateSteps(builder.buildCandidateSteps());
+        Embedder embedder =  builder.buildEmbedder();
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
         embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/stories/*.story"),
                 asList("")));

@@ -10,10 +10,10 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 import java.text.SimpleDateFormat;
 
 import org.jbehave.core.annotations.Configure;
-import org.jbehave.core.annotations.UsingControls;
+import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.guice.UsingGuice;
+import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.guice.GuiceAnnotationBuilder;
-import org.jbehave.core.configuration.guice.GuiceJUnit4ClassRunner;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -34,30 +34,27 @@ import org.jbehave.examples.trader.stories.ClaimsWithNullCalendar.CalendarSteps;
 import org.jbehave.examples.trader.stories.FailureFollowedByGivenStories.SandpitSteps;
 import org.jbehave.examples.trader.stories.PriorityMatching.PriorityMatchingSteps;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Inject;
 import com.google.inject.Scopes;
 
 /**
  * Run stories via Embedder using JBehave's annotated configuration using Guice
  * injection
  */
-@RunWith(GuiceJUnit4ClassRunner.class)
+//@RunWith(GuiceJUnit4ClassRunner.class)
 @Configure()
-@UsingGuice(modules = { ConfigurationModule.class, StepsModule.class }, embedder = Embedder.class)
-@UsingControls(ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
+@UsingEmbedder(ignoreFailureInStories = true, ignoreFailureInView = true)
 public class AnnotatedEmbedderUsingGuice {
 
-    @Inject
-    Embedder embedder;
+//    @Inject
+//    Embedder embedder;
 
     @Test
     public void run() {
-        GuiceAnnotationBuilder builder = new GuiceAnnotationBuilder(this.getClass());
-        embedder.useConfiguration(builder.buildConfiguration());
-        embedder.useCandidateSteps(builder.buildCandidateSteps());
+        AnnotationBuilder builder = new GuiceAnnotationBuilder(this.getClass());
+        Embedder embedder =  builder.buildEmbedder();
         embedder.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
         embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/stories/*.story"), asList("")));
