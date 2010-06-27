@@ -38,7 +38,7 @@
       </dependency>
       <dependency>
         <!--
-          Optional as only required core class name finder, used by
+          Optional as only required by core StoryFinder, and used by
           Ant and Maven Plugin modules
         -->
         <groupId>org.apache.ant</groupId>
