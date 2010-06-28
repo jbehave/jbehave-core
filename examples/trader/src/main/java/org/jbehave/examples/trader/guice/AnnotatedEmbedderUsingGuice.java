@@ -9,7 +9,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.text.SimpleDateFormat;
 
-import org.jbehave.core.Embeddable;
+import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.guice.UsingGuice;
@@ -46,18 +46,11 @@ import com.google.inject.Scopes;
 @RunWith(GuiceAnnotatedEmbedder.class)
 @UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
-public class AnnotatedEmbedderUsingGuice implements Embeddable {
-
-    //TODO @Inject
-    private Embedder embedder;
-
-    public void useEmbedder(Embedder embedder) {
-        this.embedder = embedder;        
-    }
+public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 
     @Test
     public void run() {
-        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/stories/*.story"), asList("")));
     }
 

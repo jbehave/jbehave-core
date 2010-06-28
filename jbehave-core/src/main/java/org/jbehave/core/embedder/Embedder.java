@@ -9,15 +9,15 @@ import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
-import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Stepdoc;
 
 /**
@@ -40,7 +40,7 @@ public class Embedder {
 		this.embedderMonitor = embedderMonitor;
 	}
 
-	public void runStories(List<RunnableStory> runnableStories) {
+	public void runStoriesAsEmbeddables(List<Embeddable> embeddableStories) {
 		EmbedderControls embedderControls = embedderControls();
 		if (embedderControls.skip()) {
 			embedderMonitor.storiesNotRun();
@@ -48,7 +48,7 @@ public class Embedder {
 		}
 
 		Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
-		for (RunnableStory story : runnableStories) {
+		for (Embeddable story : embeddableStories) {
 			String storyName = story.getClass().getName();
 			try {
 				embedderMonitor.runningStory(storyName);
@@ -86,10 +86,10 @@ public class Embedder {
 	}
 
 	public void runStoriesAsClasses(
-			List<? extends Class<? extends RunnableStory>> storyClasses) {
+			List<? extends Class<? extends Embeddable>> storyClasses) {
 		List<String> storyPaths = new ArrayList<String>();
 		StoryPathResolver resolver = configuration().storyPathResolver();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		runStoriesAsPaths(storyPaths);

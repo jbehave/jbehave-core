@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.sameInstance;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
 import org.jbehave.core.junit.JUnitStory;
 import org.junit.Test;
@@ -61,7 +61,7 @@ public class EmbedderClassLoaderBehaviour {
     @Test(expected = InstantiationFailed.class)
     public void shouldNotInstantiateClassWithInexistentName() throws MalformedURLException {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
-        classLoader.newInstance(RunnableStory.class, "InexistentClass");
+        classLoader.newInstance(Embeddable.class, "InexistentClass");
     }
 
     public static class MyEmbedder extends Embedder {

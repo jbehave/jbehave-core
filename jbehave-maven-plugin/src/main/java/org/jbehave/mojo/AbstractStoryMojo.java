@@ -6,7 +6,7 @@ import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
@@ -172,11 +172,11 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         return storyPaths;
     }
 
-    protected List<RunnableStory> runnableStories() throws MojoExecutionException {
-        getLog().debug("Searching for runnable stories including " + storyIncludes + " and excluding " + storyExcludes);
-        List<RunnableStory> stories = finder
-                .findRunnables(rootSourceDirectory(), storyIncludes, storyExcludes, createClassLoader());
-        getLog().info("Found runnable stories: " + stories);
+    protected List<Embeddable> embeddables() throws MojoExecutionException {
+        getLog().debug("Searching for embeddables including " + storyIncludes + " and excluding " + storyExcludes);
+        List<Embeddable> stories = finder
+                .findEmbeddables(rootSourceDirectory(), storyIncludes, storyExcludes, createClassLoader());
+        getLog().info("Found embeddables: " + stories);
         return stories;
     }
 

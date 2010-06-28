@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
@@ -39,8 +39,8 @@ public class StoryRunner {
     private StepCollector stepCollector;
 	private String reporterStoryPath;
 
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Class<? extends RunnableStory> storyClass) throws Throwable {
-        String storyPath = configuration.storyPathResolver().resolve(storyClass);
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Class<? extends Embeddable> embeddableClass) throws Throwable {
+        String storyPath = configuration.storyPathResolver().resolve(embeddableClass);
         run(configuration, candidateSteps, storyPath);
     }
 

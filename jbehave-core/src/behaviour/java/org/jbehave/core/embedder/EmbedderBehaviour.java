@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
@@ -46,16 +46,16 @@ import org.junit.Test;
 public class EmbedderBehaviour {
 
 	@Test
-	public void shouldRunStoriesAsRunnables() throws Throwable {
+	public void shouldRunStoriesAsEmbeddables() throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
 		EmbedderControls embedderControls = new EmbedderControls();
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		RunnableStory myStory = mock(RunnableStory.class);
-		RunnableStory myOtherStory = mock(RunnableStory.class);
-		List<RunnableStory> runnables = asList(myStory, myOtherStory);
+		Embeddable myStory = mock(Embeddable.class);
+		Embeddable myOtherStory = mock(Embeddable.class);
+		List<Embeddable> embeddables = asList(myStory, myOtherStory);
 
 		// When
 		Configuration configuration = new MostUsefulConfiguration();
@@ -63,13 +63,13 @@ public class EmbedderBehaviour {
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
 		embedder.useConfiguration(configuration);
 		embedder.useCandidateSteps(asList(steps));
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			doNothing().when(story).run();
 		}
-		embedder.runStories(runnables);
+		embedder.runStoriesAsEmbeddables(embeddables);
 
 		// Then
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			verify(story).useEmbedder(embedder);
 			assertThat(out.toString(), containsString("Running story "
 					+ story.getClass().getName()));
@@ -83,7 +83,7 @@ public class EmbedderBehaviour {
 	}
 
 	@Test
-	public void shouldNotRunStoriesAsRunnablesIfSkipFlagIsSet()
+	public void shouldNotRunStoriesAsEmbeddablesIfSkipFlagIsSet()
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
@@ -91,19 +91,19 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		RunnableStory myStory = mock(RunnableStory.class);
-		RunnableStory myOtherStory = mock(RunnableStory.class);
-		List<RunnableStory> runnables = asList(myStory, myOtherStory);
+		Embeddable myStory = mock(Embeddable.class);
+		Embeddable myOtherStory = mock(Embeddable.class);
+		List<Embeddable> embeddables = asList(myStory, myOtherStory);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
 		embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			doNothing().when(story).run();
 		}
-		embedder.runStories(runnables);
+		embedder.runStoriesAsEmbeddables(embeddables);
 
 		// Then
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			verify(story, never()).useEmbedder(embedder);
 			assertThat(out.toString(), not(containsString("Running story "
 					+ story.getClass().getName())));
@@ -112,7 +112,7 @@ public class EmbedderBehaviour {
 	}
 
 	@Test(expected = RunningStoriesFailedException.class)
-	public void shouldThrowExceptionUponFailingStoriesAsRunnablesIfIgnoreFailureInStoriesFlagIsNotSet()
+	public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureInStoriesFlagIsNotSet()
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
@@ -120,20 +120,20 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		RunnableStory myStory = mock(RunnableStory.class);
-		RunnableStory myOtherStory = mock(RunnableStory.class);
-		List<RunnableStory> runnables = asList(myStory, myOtherStory);
+		Embeddable myStory = mock(Embeddable.class);
+		Embeddable myOtherStory = mock(Embeddable.class);
+		List<Embeddable> embeddables = asList(myStory, myOtherStory);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			doThrow(new RuntimeException(story + " failed")).when(story).run();
 		}
-		embedder.runStories(runnables);
+		embedder.runStoriesAsEmbeddables(embeddables);
 
 	}
 
 	@Test
-	public void shouldNotThrowExceptionUponFailingStoriesAsRunnablesIfIgnoreFailureInStoriesFlagIsSet()
+	public void shouldNotThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureInStoriesFlagIsSet()
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
@@ -141,18 +141,18 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		RunnableStory myStory = mock(RunnableStory.class);
-		RunnableStory myOtherStory = mock(RunnableStory.class);
-		List<RunnableStory> runnables = asList(myStory, myOtherStory);
+		Embeddable myStory = mock(Embeddable.class);
+		Embeddable myOtherStory = mock(Embeddable.class);
+		List<Embeddable> embeddables = asList(myStory, myOtherStory);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			doThrow(new RuntimeException(story + " failed")).when(story).run();
 		}
-		embedder.runStories(runnables);
+		embedder.runStoriesAsEmbeddables(embeddables);
 
 		// Then
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			String storyName = story.getClass().getName();
 			assertThat(out.toString(), containsString("Running story "
 					+ storyName));
@@ -163,7 +163,7 @@ public class EmbedderBehaviour {
 	}
 
 	@Test
-	public void shouldRunStoriesAsRunnablesInBatchIfBatchFlagIsSet()
+	public void shouldRunStoriesAsEmbeddablesInBatchIfBatchFlagIsSet()
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
@@ -171,18 +171,18 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		RunnableStory myStory = mock(RunnableStory.class);
-		RunnableStory myOtherStory = mock(RunnableStory.class);
-		List<RunnableStory> runnables = asList(myStory, myOtherStory);
+		Embeddable myStory = mock(Embeddable.class);
+		Embeddable myOtherStory = mock(Embeddable.class);
+		List<Embeddable> embeddables = asList(myStory, myOtherStory);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			doNothing().when(story).run();
 		}
-		embedder.runStories(runnables);
+		embedder.runStoriesAsEmbeddables(embeddables);
 
 		// Then
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			String storyName = story.getClass().getName();
 			assertThat(out.toString(), containsString("Running story "
 					+ storyName));
@@ -191,7 +191,7 @@ public class EmbedderBehaviour {
 
 
 	@Test(expected = RunningStoriesFailedException.class)
-	public void shouldThrowExceptionUponFailingStoriesAsRunnablesInBatchIfIgnoreFailureInStoriesFlagIsNotSet()
+	public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesInBatchIfIgnoreFailureInStoriesFlagIsNotSet()
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
@@ -199,22 +199,22 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		RunnableStory myStory = mock(RunnableStory.class);
-		RunnableStory myOtherStory = mock(RunnableStory.class);
-		List<RunnableStory> runnables = asList(myStory, myOtherStory);
+		Embeddable myStory = mock(Embeddable.class);
+		Embeddable myOtherStory = mock(Embeddable.class);
+		List<Embeddable> embeddables = asList(myStory, myOtherStory);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			doThrow(new RuntimeException(story + " failed")).when(story).run();
 		}
-		embedder.runStories(runnables);
+		embedder.runStoriesAsEmbeddables(embeddables);
 
 		// Then fail as expected
 
 	}
 
 	@Test
-	public void shouldRunFailingStoriesAsRunnablesInBatchIfBatchFlagIsSet()
+	public void shouldRunFailingStoriesAsEmbeddablesInBatchIfBatchFlagIsSet()
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
@@ -222,18 +222,18 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		RunnableStory myStory = mock(RunnableStory.class);
-		RunnableStory myOtherStory = mock(RunnableStory.class);
-		List<RunnableStory> runnables = asList(myStory, myOtherStory);
+		Embeddable myStory = mock(Embeddable.class);
+		Embeddable myOtherStory = mock(Embeddable.class);
+		List<Embeddable> embeddables = asList(myStory, myOtherStory);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			doThrow(new RuntimeException(story + " failed")).when(story).run();
 		}
-		embedder.runStories(runnables);
+		embedder.runStoriesAsEmbeddables(embeddables);
 
 		// Then
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			String storyName = story.getClass().getName();
 			assertThat(out.toString(), containsString("Running story "
 					+ storyName));
@@ -243,7 +243,7 @@ public class EmbedderBehaviour {
 	}
 
 	@Test
-	public void shouldNotRenderReportsWhenRunningStoriesAsRunnablesIfRenderReportsAfterStoriesFlagIsNotSet()
+	public void shouldNotRenderReportsWhenRunningStoriesAsEmbeddablesIfRenderReportsAfterStoriesFlagIsNotSet()
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
@@ -251,18 +251,18 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		RunnableStory myStory = mock(RunnableStory.class);
-		RunnableStory myOtherStory = mock(RunnableStory.class);
-		List<RunnableStory> runnables = asList(myStory, myOtherStory);
+		Embeddable myStory = mock(Embeddable.class);
+		Embeddable myOtherStory = mock(Embeddable.class);
+		List<Embeddable> embeddables = asList(myStory, myOtherStory);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			doNothing().when(story).run();
 		}
-		embedder.runStories(runnables);
+		embedder.runStoriesAsEmbeddables(embeddables);
 
 		// Then
-		for (RunnableStory story : runnables) {
+		for (Embeddable story : embeddables) {
 			String storyName = story.getClass().getName();
 			assertThat(out.toString(), containsString("Running story "
 					+ storyName));
@@ -279,7 +279,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
+		List<? extends Class<? extends Embeddable>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
@@ -289,7 +289,7 @@ public class EmbedderBehaviour {
 		Configuration configuration = embedder.configuration();
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			String storyPath = resolver.resolve(storyClass);
 			verify(runner).run(configuration, candidateSteps, storyPath);
 			assertThat(out.toString(), containsString("Running story "
@@ -307,7 +307,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
+		List<? extends Class<? extends Embeddable>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
@@ -315,7 +315,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			String storyPath = resolver.resolve(storyClass);
             storyPaths.add(storyPath);
 	        StoryReporter storyReporter = mock(StoryReporter.class);
@@ -342,7 +342,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
+		List<? extends Class<? extends Embeddable>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
@@ -350,7 +350,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		embedder.runStoriesAsPaths(storyPaths);
@@ -375,7 +375,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
+		List<? extends Class<? extends Embeddable>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
@@ -383,7 +383,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -404,7 +404,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
+		List<? extends Class<? extends Embeddable>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
@@ -412,7 +412,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -441,7 +441,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
+		List<? extends Class<? extends Embeddable>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
@@ -449,7 +449,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -475,7 +475,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
+		List<? extends Class<? extends Embeddable>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
@@ -483,7 +483,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -506,7 +506,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
+		List<? extends Class<? extends Embeddable>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
@@ -514,7 +514,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		for (String storyPath : storyPaths) {
@@ -542,7 +542,7 @@ public class EmbedderBehaviour {
 		OutputStream out = new ByteArrayOutputStream();
 		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
 				new PrintStream(out));
-		List<? extends Class<? extends RunnableStory>> storyClasses = asList(
+		List<? extends Class<? extends Embeddable>> storyClasses = asList(
 				MyStory.class, MyOtherStory.class);
 
 		Embedder embedder = embedderWith(runner, embedderControls, monitor);
@@ -550,7 +550,7 @@ public class EmbedderBehaviour {
 		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
 		StoryPathResolver resolver = configuration.storyPathResolver();
 		List<String> storyPaths = new ArrayList<String>();
-		for (Class<? extends RunnableStory> storyClass : storyClasses) {
+		for (Class<? extends Embeddable> storyClass : storyClasses) {
 			storyPaths.add(resolver.resolve(storyClass));
 		}
 		embedder.runStoriesAsPaths(storyPaths);

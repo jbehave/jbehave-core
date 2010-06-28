@@ -2,7 +2,7 @@ package org.jbehave.core.junit;
 
 import java.util.List;
 
-import org.jbehave.core.AbstractStory;
+import org.jbehave.core.ConfigurableEmbedder;
 import org.junit.Test;
 
 /**
@@ -10,7 +10,7 @@ import org.junit.Test;
  * JUnit-runnable entry-point to run multiple stories specified by {@link JUnitStories#storyPaths()}.
  * </p>
  */
-public abstract class JUnitStories extends AbstractStory {
+public abstract class JUnitStories extends ConfigurableEmbedder {
 
     @Test
     public void run() throws Throwable {

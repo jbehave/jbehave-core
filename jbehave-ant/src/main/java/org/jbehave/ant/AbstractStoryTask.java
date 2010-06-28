@@ -13,7 +13,7 @@ import java.util.Properties;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
@@ -135,11 +135,11 @@ public abstract class AbstractStoryTask extends Task {
         return storyPaths;
     }
 
-    protected List<RunnableStory> runnableStories() throws BuildException {
-        log("Searching for runnable stories including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
-        List<RunnableStory> stories = finder
-                .findRunnables(rootSourceDirectory(), storyIncludes, storyExcludes, createClassLoader());
-        log("Found runnables stories: " + stories, MSG_INFO);
+    protected List<Embeddable> embeddables() throws BuildException {
+        log("Searching for embeddables including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
+        List<Embeddable> stories = finder
+                .findEmbeddables(rootSourceDirectory(), storyIncludes, storyExcludes, createClassLoader());
+        log("Found embeddables: " + stories, MSG_INFO);
         return stories;
     }
 

@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
@@ -19,7 +21,7 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-public class RunnableStoryBehaviour {
+public class ConfigurableEmbedderBehaviour {
 
     @SuppressWarnings("unchecked")
 	@Test
@@ -31,15 +33,13 @@ public class RunnableStoryBehaviour {
         Class<MyStory> storyClass = MyStory.class;
 
         // When
-        RunnableStory story = new MyStory();
+        MyStory story = new MyStory(configuration, steps);
         story.useEmbedder(embedder);
-        story.useConfiguration(configuration);
-        story.addSteps(steps);
         story.run();
 
         // Then
         verify(embedder).useConfiguration(configuration);
-        verify(embedder).useCandidateSteps(Mockito.eq(Arrays.asList(steps)));
+        verify(embedder).useCandidateSteps(eq(asList(steps)));
         verify(embedder).runStoriesAsClasses(asList(storyClass));
     }
 
@@ -52,10 +52,8 @@ public class RunnableStoryBehaviour {
         CandidateSteps steps = mock(CandidateSteps.class);
 
         // When
-        MyStories story = new MyStories();
+        MyStories story = new MyStories(configuration, steps);
         story.useEmbedder(embedder);
-        story.useConfiguration(configuration);
-        story.addSteps(steps);
         story.run();
 
         // Then
@@ -72,11 +70,11 @@ public class RunnableStoryBehaviour {
         Class<MyStory> storyClass = MyStory.class;
 
         // When
-        RunnableStory story = new MyStory();
-        story.useEmbedder(embedder);
-        story.addSteps(steps);
-        assertThat(embedder.configuration(), is(not(sameInstance(configuration))));
+        MyStory story = new MyStory(new MostUsefulConfiguration(), steps);
+        assertThat(story.configuration(), is(not(sameInstance(configuration))));
         story.useConfiguration(configuration);
+        assertThat(story.configuration(), is(sameInstance(configuration)));
+        story.useEmbedder(embedder);
         story.run();
 
         // Then
@@ -96,10 +94,8 @@ public class RunnableStoryBehaviour {
         Class<MyStory> storyClass = MyStory.class;
 
         // When
-        RunnableStory story = new MyStory();
+        MyStory story = new MyStory(configuration, steps);
         story.useEmbedder(embedder);
-        story.useConfiguration(configuration);
-        story.addSteps(steps);
         story.run();
 
         // Then
@@ -107,11 +103,21 @@ public class RunnableStoryBehaviour {
     }
 
     private class MyStory extends JUnitStory {
+
+        public MyStory(Configuration configuration, CandidateSteps steps) {
+            useConfiguration(configuration);
+            addSteps(steps);
+        }
         
     }
 
     private class MyStories extends JUnitStories {
         
+        public MyStories(Configuration configuration, CandidateSteps steps) {
+            useConfiguration(configuration);
+            addSteps(steps);
+        }
+
         @Override
         protected List<String> storyPaths() {
             return asList("org/jbehave/core/story1", "org/jbehave/core/story2");

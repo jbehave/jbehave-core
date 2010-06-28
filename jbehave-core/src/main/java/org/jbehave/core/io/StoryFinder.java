@@ -10,7 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.DirectoryScanner;
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 
 /**
@@ -85,7 +85,7 @@ public class StoryFinder {
     
     /**
      * Finds story class names from a base directory, allowing for includes/excludes,
-     * and instantiates the runnable stories using the class loader provided.
+     * and instantiates the embeddables using the class loader provided.
      * 
      * @param searchInDirectory
      *            the base directory path to search in
@@ -94,10 +94,10 @@ public class StoryFinder {
      * @param excludes
      *            the List of exclude patterns, or <code>null</code> if none
      * @param classLoader the EmbedderClassLoader to instantiate the stories
-     * @return A List of RunnableStory found
+     * @return A List of Embeddable found
      */
-    public List<RunnableStory> findRunnables(String searchInDirectory, List<String> includes, List<String> excludes, EmbedderClassLoader classLoader) {
-        return runnables(findClassNames(searchInDirectory, includes, excludes), classLoader);
+    public List<Embeddable> findEmbeddables(String searchInDirectory, List<String> includes, List<String> excludes, EmbedderClassLoader classLoader) {
+        return embeddables(findClassNames(searchInDirectory, includes, excludes), classLoader);
     }
 
     protected List<String> normalise(List<String> paths) {
@@ -139,14 +139,14 @@ public class StoryFinder {
         return trasformed;
     }
 
-    protected List<RunnableStory> runnables(List<String> classNames, EmbedderClassLoader classLoader) {
-        List<RunnableStory> stories = new ArrayList<RunnableStory>();
+    protected List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
+        List<Embeddable> embeddables = new ArrayList<Embeddable>();
         for (String className : classNames) {
             if (!classLoader.isAbstract(className)) {
-                stories.add(classLoader.newInstance(RunnableStory.class, className));
+                embeddables.add(classLoader.newInstance(Embeddable.class, className));
             }
         }
-        return stories;
+        return embeddables;
     }
 
     protected List<String> scan(String basedir, List<String> includes, List<String> excludes) {

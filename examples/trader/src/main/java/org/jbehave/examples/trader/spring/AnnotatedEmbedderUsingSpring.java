@@ -3,7 +3,7 @@ package org.jbehave.examples.trader.spring;
 import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
-import org.jbehave.core.Embeddable;
+import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.spring.UsingSpring;
@@ -22,17 +22,11 @@ import org.junit.runner.RunWith;
 @UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml",
         "org/jbehave/examples/trader/spring/steps.xml" })
-public class AnnotatedEmbedderUsingSpring implements Embeddable {
-
-    private Embedder embedder;
-
-    public void useEmbedder(Embedder embedder) {
-        this.embedder = embedder;
-    }
+public class AnnotatedEmbedderUsingSpring extends InjectableEmbedder {
 
     @Test
     public void run() {
-        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/stories/*.story"), asList("")));
     }
 

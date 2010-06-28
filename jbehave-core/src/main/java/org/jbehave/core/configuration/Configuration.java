@@ -3,7 +3,7 @@ package org.jbehave.core.configuration;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.FailureStrategy;
@@ -41,7 +41,7 @@ import com.thoughtworks.paranamer.Paranamer;
 /**
  * <p>
  * Provides the configuration used by the {@link Embedder} and the in the
- * {@link RunnableStory} implementations to customise its runtime properties.
+ * {@link Embeddable} implementations to customise its runtime properties.
  * </p>
  * <p>
  * Configuration implements a <a
