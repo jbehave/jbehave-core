@@ -20,6 +20,7 @@ import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.io.StoryFinder;
+import org.jbehave.core.junit.AnnotatedEmbedder;
 
 /**
  * Abstract task that holds all the configuration parameters to specify and load
@@ -81,6 +82,11 @@ public abstract class AbstractStoryTask extends Task {
      * The embedder to run the stories
      */
     private String embedderClass = Embedder.class.getName();
+
+    /**
+     * The annotated embedder to run the stories
+     */
+    private String annotatedEmbedderClass = AnnotatedEmbedder.class.getName();
 
     /**
      * Used to find stories
@@ -147,6 +153,36 @@ public abstract class AbstractStoryTask extends Task {
         embedder.useEmbedderMonitor(embedderMonitor());
         embedder.useEmbedderControls(embedderControls());
         return embedder;
+    }
+
+    protected List<AnnotatedEmbedder> annotatedEmbedders() {        
+        log("Searching for annotated classes including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
+        EmbedderClassLoader classLoader = createClassLoader();
+        List<Class<?>> classes = finder.findClasses(rootSourceDirectory(), storyIncludes, storyExcludes, classLoader);
+        Class<? extends AnnotatedEmbedder> annotatedEmbedderClass = annotatedEmbedderClass(classLoader);
+        log("Creating " + annotatedEmbedderClass + " for " + classes, MSG_INFO);
+        List<AnnotatedEmbedder> embedders = new ArrayList<AnnotatedEmbedder>();
+        for (Class<?> annotatedClass : classes) {
+            embedders.add(newAnnotatedEmbedder(annotatedEmbedderClass, annotatedClass));
+        }
+        return embedders;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class<? extends AnnotatedEmbedder> annotatedEmbedderClass(EmbedderClassLoader classLoader) {
+        try {
+            return (Class<? extends AnnotatedEmbedder>) classLoader.loadClass(annotatedEmbedderClass);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private AnnotatedEmbedder newAnnotatedEmbedder(Class<? extends AnnotatedEmbedder> annotatedEmbedderClass, Class<?> annotatedClass) {
+        try {
+            return (AnnotatedEmbedder) annotatedEmbedderClass.getConstructor(Class.class).newInstance(annotatedClass);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     protected class AntEmbedderMonitor implements EmbedderMonitor {
@@ -236,5 +272,9 @@ public abstract class AbstractStoryTask extends Task {
 
     public void setEmbedderClass(String embedderClass) {
         this.embedderClass = embedderClass;
+    }
+
+    public void setAnnotatedEmbedderClass(String annotatedEmbedderClass) {
+        this.annotatedEmbedderClass = annotatedEmbedderClass;
     }
 }

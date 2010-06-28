@@ -82,7 +82,23 @@ public class StoryFinder {
     public List<String> findClassNames(String searchInDirectory, List<String> includes, List<String> excludes){
         return classNames(normalise(scan(searchInDirectory, includes, excludes)));
     }
-    
+
+    /**
+     * Finds java class names from a base directory, allowing for includes/excludes, 
+     * and loads them
+     * 
+     * @param searchInDirectory
+     *            the base directory path to search in
+     * @param includes
+     *            the List of include patterns, or <code>null</code> if none
+     * @param excludes
+     *            the List of exclude patterns, or <code>null</code> if none
+     * @return A List of classes loaded
+     */
+    public List<Class<?>> findClasses(String searchInDirectory, List<String> includes, List<String> excludes, EmbedderClassLoader classLoader){
+        return classes(findClassNames(searchInDirectory, includes, excludes), classLoader);
+    }
+
     /**
      * Finds story class names from a base directory, allowing for includes/excludes,
      * and instantiates the embeddables using the class loader provided.
@@ -137,6 +153,20 @@ public class StoryFinder {
             }
         });
         return trasformed;
+    }
+
+    protected List<Class<?>> classes(List<String> classNames, EmbedderClassLoader classLoader) {
+        List<Class<?>> classes = new ArrayList<Class<?>>();
+        for (String className : classNames) {
+            if (!classLoader.isAbstract(className)) {
+                try {
+                    classes.add(classLoader.loadClass(className));
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return classes;
     }
 
     protected List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {

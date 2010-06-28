@@ -27,7 +27,7 @@ public class AnnotatedEmbedderUsingSpring extends InjectableEmbedder {
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/stories/*.story"), asList("")));
+                asList("**/spring/stories/*.story"), asList("")));
     }
 
 }

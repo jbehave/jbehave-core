@@ -51,7 +51,7 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/stories/*.story"), asList("")));
+                asList("**/pico/stories/*.story"), asList("")));
     }
 
     @SuppressWarnings("serial")

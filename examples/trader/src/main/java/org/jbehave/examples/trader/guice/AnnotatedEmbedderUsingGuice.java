@@ -51,7 +51,7 @@ public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/stories/*.story"), asList("")));
+                asList("**/guice/stories/*.story"), asList("")));
     }
 
     // Guice modules
