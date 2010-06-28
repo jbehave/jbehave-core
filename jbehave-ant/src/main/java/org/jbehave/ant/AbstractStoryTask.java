@@ -15,9 +15,9 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
-import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.io.StoryFinder;
 
@@ -108,13 +108,12 @@ public abstract class AbstractStoryTask extends Task {
      * scope
      * 
      * @return A EmbedderClassLoader
-     * @throws BuildException
      */
-    protected EmbedderClassLoader createClassLoader() {
+    private EmbedderClassLoader createClassLoader() {
         try {
             return new EmbedderClassLoader(asList(new String[] {}));
         } catch (MalformedURLException e) {
-            throw new BuildException("Failed to create "+EmbedderClassLoader.class, e);
+            throw new RuntimeException("Failed to create "+EmbedderClassLoader.class, e);
         }
     }
 
@@ -137,21 +136,17 @@ public abstract class AbstractStoryTask extends Task {
 
     protected List<Embeddable> embeddables() throws BuildException {
         log("Searching for embeddables including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
-        List<Embeddable> stories = finder
+        List<Embeddable> embeddables = finder
                 .findEmbeddables(rootSourceDirectory(), storyIncludes, storyExcludes, createClassLoader());
-        log("Found embeddables: " + stories, MSG_INFO);
-        return stories;
+        log("Found embeddables: " + embeddables, MSG_INFO);
+        return embeddables;
     }
 
     protected Embedder newEmbedder() {
-        try {
-            Embedder embedder = createClassLoader().newInstance(Embedder.class, embedderClass);
-            embedder.useEmbedderMonitor(embedderMonitor());
-            embedder.useEmbedderControls(embedderControls());
-            return embedder;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create embedder " + embedderClass, e);
-        }
+        Embedder embedder = createClassLoader().newInstance(Embedder.class, embedderClass);
+        embedder.useEmbedderMonitor(embedderMonitor());
+        embedder.useEmbedderControls(embedderControls());
+        return embedder;
     }
 
     protected class AntEmbedderMonitor implements EmbedderMonitor {

@@ -5,12 +5,11 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
-import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.io.StoryFinder;
 
@@ -143,17 +142,16 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     }
 
     /**
-     * Creates the EmbedderClassLoader with the classpath element of the selected
-     * scope
+     * Creates the EmbedderClassLoader with the classpath element of the
+     * selected scope
      * 
      * @return A EmbedderClassLoader
-     * @throws MojoExecutionException
      */
-    private EmbedderClassLoader createClassLoader() throws MojoExecutionException {
+    private EmbedderClassLoader createClassLoader() {
         try {
             return new EmbedderClassLoader(classpathElements());
         } catch (Exception e) {
-            throw new MojoExecutionException("Failed to create "+EmbedderClassLoader.class, e);
+            throw new RuntimeException("Failed to create " + EmbedderClassLoader.class, e);
         }
     }
 
@@ -172,23 +170,19 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         return storyPaths;
     }
 
-    protected List<Embeddable> embeddables() throws MojoExecutionException {
+    protected List<Embeddable> embeddables() {
         getLog().debug("Searching for embeddables including " + storyIncludes + " and excluding " + storyExcludes);
-        List<Embeddable> stories = finder
-                .findEmbeddables(rootSourceDirectory(), storyIncludes, storyExcludes, createClassLoader());
-        getLog().info("Found embeddables: " + stories);
-        return stories;
+        List<Embeddable> embeddables = finder.findEmbeddables(rootSourceDirectory(), storyIncludes, storyExcludes,
+                createClassLoader());
+        getLog().info("Found embeddables: " + embeddables);
+        return embeddables;
     }
 
     protected Embedder newEmbedder() {
-        try {
-            Embedder embedder = createClassLoader().newInstance(Embedder.class, embedderClass);
-            embedder.useEmbedderMonitor(embedderMonitor());
-            embedder.useEmbedderControls(embedderControls());
-            return embedder;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create embedder " + embedderClass, e);
-        }
+        Embedder embedder = createClassLoader().newInstance(Embedder.class, embedderClass);
+        embedder.useEmbedderMonitor(embedderMonitor());
+        embedder.useEmbedderControls(embedderControls());
+        return embedder;
     }
 
     protected EmbedderMonitor embedderMonitor() {
