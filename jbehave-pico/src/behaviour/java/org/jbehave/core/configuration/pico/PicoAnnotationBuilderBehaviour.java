@@ -41,9 +41,7 @@ import org.jbehave.core.steps.pico.PicoStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.pico.PicoStepsFactoryBehaviour.FooStepsWithDependency;
 import org.junit.Assert;
 import org.junit.Test;
-import org.picocontainer.DefaultPicoContainer;
-import org.picocontainer.behaviors.Caching;
-import org.picocontainer.injectors.ConstructorInjection;
+import org.picocontainer.MutablePicoContainer;
 
 public class PicoAnnotationBuilderBehaviour {
 
@@ -117,7 +115,7 @@ public class PicoAnnotationBuilderBehaviour {
     }
 
     @Configure()
-    @UsingPico(containers = {MyPicoContainer.class} )
+    @UsingPico(modules = { ConfigurationModule.class, StepsModule.class } )
     private static class Annotated {
 
     }
@@ -132,31 +130,35 @@ public class PicoAnnotationBuilderBehaviour {
 
     }
     
-    @SuppressWarnings("serial")
-    public static class MyPicoContainer extends DefaultPicoContainer {
+    public static class ConfigurationModule implements PicoModule {
 
-        public MyPicoContainer(){            
-            super(new Caching().wrap(new ConstructorInjection()));
-            addComponent(FailureStrategy.class, SilentlyAbsorbingFailure.class);
-            addComponent(StepPatternParser.class, new RegexPrefixCapturingPatternParser("MyPrefix"));
-            addComponent(StoryLoader.class, new LoadFromURL());
-            addComponent(ParameterConverter.class, new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
+        public void configure(MutablePicoContainer container){
+            container.addComponent(FailureStrategy.class, SilentlyAbsorbingFailure.class);
+            container.addComponent(StepPatternParser.class, new RegexPrefixCapturingPatternParser("MyPrefix"));
+            container.addComponent(StoryLoader.class, new LoadFromURL());
+            container.addComponent(ParameterConverter.class, new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
             Properties viewResources = new Properties();
             viewResources.setProperty("index", "my-reports-index.ftl");
             viewResources.setProperty("decorateNonHtml", "true");
-            addComponent(new StoryReporterBuilder()
+            container.addComponent(new StoryReporterBuilder()
                 .withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
                 .withKeywords(new LocalizedKeywords(Locale.ITALIAN))
                 .withOutputDirectory("my-output-directory")
                 .withViewResources(viewResources)                
                 .withFailureTrace(true)
             );
-            addComponent(FooSteps.class);
-            addComponent(Integer.class, 42);
-            addComponent(FooStepsWithDependency.class);
         }
 
     }
 
+    public static class StepsModule implements PicoModule {
+
+        public void configure(MutablePicoContainer container){
+            container.addComponent(FooSteps.class);
+            container.addComponent(Integer.class, 42);
+            container.addComponent(FooStepsWithDependency.class);
+        }
+
+    }
 
 }

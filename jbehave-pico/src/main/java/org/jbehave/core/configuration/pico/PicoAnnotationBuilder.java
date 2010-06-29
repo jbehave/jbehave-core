@@ -1,5 +1,6 @@
 package org.jbehave.core.configuration.pico;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jbehave.core.annotations.pico.UsingPico;
@@ -14,6 +15,7 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.pico.PicoStepsFactory;
+import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.PicoContainer;
 
 public class PicoAnnotationBuilder extends AnnotationBuilder {
@@ -28,19 +30,35 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
         super(annotatedClass, annotationMonitor);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({ "rawtypes" })
     public Configuration buildConfiguration() throws MissingAnnotationException {
-
         AnnotationFinder finder = annotationFinder();
         if (finder.isAnnotationPresent(UsingPico.class)) {
-            List<Class> containerClasses = finder.getAnnotatedValues(UsingPico.class, Class.class, "containers");
-            if ( containerClasses.size() > 0 ){
-                container = instanceOf(PicoContainer.class, containerClasses.iterator().next());                
+            List<Class> moduleClasses = finder.getAnnotatedValues(UsingPico.class, Class.class, "modules");
+            List<PicoModule> modules = new ArrayList<PicoModule>();
+            for (Class<PicoModule> moduleClass : moduleClasses) {
+                try {
+                    modules.add(moduleClass.newInstance());
+                } catch (Exception e) {
+                    annotationMonitor().elementCreationFailed(moduleClass, e);
+                }
+            }
+            if ( modules.size() > 0 ){
+                container = picoContainerFor(modules);                
             }
         } else {
             annotationMonitor().annotationNotFound(UsingPico.class, annotatedClass());
         }
         return super.buildConfiguration();
+    }
+
+    @SuppressWarnings("unchecked")
+    private PicoContainer picoContainerFor(List<PicoModule> modules) {
+        MutablePicoContainer container = instanceOf(MutablePicoContainer.class, annotationFinder().getAnnotatedValue(UsingPico.class, Class.class, "container"));
+        for (PicoModule module : modules) {
+            module.configure(container);
+        }
+        return container;
     }
 
     @Override
