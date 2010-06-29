@@ -42,9 +42,9 @@ import com.google.inject.Scopes;
 /**
  * Run stories via Embedder using JBehave's annotated configuration and steps using Guice
  */
-@Configure()
 @RunWith(GuiceAnnotatedEmbedder.class)
-@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
+@Configure()
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
 public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 

@@ -17,9 +17,9 @@ import org.junit.runner.RunWith;
  * Run stories via Embedder using JBehave's annotated configuration and steps
  * using Spring
  */
-@Configure()
 @RunWith(SpringAnnotatedEmbedder.class)
-@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
+@Configure()
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml",
         "org/jbehave/examples/trader/spring/steps.xml" })
 public class AnnotatedEmbedderUsingSpring extends InjectableEmbedder {

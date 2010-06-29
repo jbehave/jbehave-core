@@ -42,9 +42,9 @@ import org.picocontainer.MutablePicoContainer;
  * Run stories via Embedder using JBehave's annotated configuration and steps
  * using PicoContainer modules.
  */
-@Configure()
 @RunWith(PicoAnnotatedEmbedder.class)
-@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
+@Configure()
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingPico(modules = { ConfigurationModule.class, StepsModule.class })
 public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 

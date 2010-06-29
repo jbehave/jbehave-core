@@ -30,10 +30,10 @@ import org.jbehave.examples.trader.stories.PriorityMatching.PriorityMatchingStep
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+@RunWith(AnnotatedEmbedder.class)
 @Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
-@RunWith(AnnotatedEmbedder.class)
-@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class })
 public class TraderAnnotatedEmbedder implements Embeddable {
