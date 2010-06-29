@@ -9,8 +9,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.ResourceLoader;
 
 /**
- * Factory for Spring {@ApplicationContext} using the
- * specified resources
+ * Factory for Spring {@link ApplicationContext} using the specified resources
  */
 public class SpringApplicationContextFactory {
 
@@ -19,7 +18,7 @@ public class SpringApplicationContextFactory {
     private final String[] resourceLocations;
 
     public SpringApplicationContextFactory(String... resourceLocations) {
-        this(Thread.currentThread().getContextClassLoader(), resourceLocations);
+        this(SpringApplicationContextFactory.class.getClassLoader(), resourceLocations);
     }
 
     public SpringApplicationContextFactory(ClassLoader classLoader, String... resourceLocations) {
@@ -40,6 +39,7 @@ public class SpringApplicationContextFactory {
     public ConfigurableApplicationContext createApplicationContext() {
         // create application context
         GenericApplicationContext context = new GenericApplicationContext(parent);
+        context.setClassLoader(classLoader);
         ResourceLoader resourceLoader = new DefaultResourceLoader(classLoader);
         context.setResourceLoader(resourceLoader);
         BeanDefinitionReader reader = new XmlBeanDefinitionReader(context);

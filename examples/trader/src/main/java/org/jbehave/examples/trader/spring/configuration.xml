@@ -5,11 +5,19 @@
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
   <bean class="org.jbehave.core.parsers.RegexPrefixCapturingPatternParser">
-    <constructor-arg value="%"/>
+    <constructor-arg value="%" />
   </bean>
-  
+
   <bean class="org.jbehave.core.io.LoadFromClasspath">
-    <constructor-arg value="org.jbehave.examples.trader.TraderAnnotatedEmbedder"/>
+    <constructor-arg>
+      <bean class="org.jbehave.core.embedder.EmbedderClassLoader">
+        <constructor-arg>
+          <list>
+            <value>target/classes</value>
+          </list>
+        </constructor-arg>
+      </bean>
+    </constructor-arg>
   </bean>
 
   <bean class="org.jbehave.core.steps.ParameterConverters$DateConverter">
@@ -19,16 +27,18 @@
       </bean>
     </constructor-arg>
   </bean>
-  
-  <bean class="org.jbehave.core.configuration.spring.SpringStoryReporterBuilder" init-method="withDefaultFormats">
+
+  <bean
+    class="org.jbehave.core.configuration.spring.SpringStoryReporterBuilder"
+    init-method="withDefaultFormats">
     <property name="formats">
-        <list>
-            <value>CONSOLE</value>
-            <value>TXT</value>
-            <value>HTML</value>
-            <value>XML</value>
-        </list>
+      <list>
+        <value>CONSOLE</value>
+        <value>TXT</value>
+        <value>HTML</value>
+        <value>XML</value>
+      </list>
     </property>
   </bean>
-  
+
 </beans>

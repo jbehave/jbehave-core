@@ -36,7 +36,7 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
         if (annotationFinder().isAnnotationPresent(UsingSpring.class)) {
             if (annotationFinder().isAnnotationValuePresent(UsingSpring.class, "locations")) {
                 List<String> locations = annotationFinder().getAnnotatedValues(UsingSpring.class, String.class, "locations");
-                context = applicationContextFor(locations);
+                context = applicationContextFor(annotatedClass().getClassLoader(), locations);
             }
         } else {
         	annotationMonitor().annotationNotFound(UsingSpring.class, annotatedClass());
@@ -81,8 +81,8 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
         return super.instanceOf(type, ofClass);
     }
     
-    private ApplicationContext applicationContextFor(List<String> locations) {
-        return new SpringApplicationContextFactory(locations.toArray(new String[locations
+    private ApplicationContext applicationContextFor(ClassLoader classLoader, List<String> locations) {
+        return new SpringApplicationContextFactory(classLoader, locations.toArray(new String[locations
                 .size()])).createApplicationContext();
     }
     
