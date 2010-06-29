@@ -29,8 +29,8 @@ choose the one that best fits their need.</span>
 
 <h3>Using AnnotatedEmbedder</h3>
 
-<p>JBehave supports the ability to specify configuration elements and steps instance via annotations. An example of annotated
-configuration of the Embedded via annotations is:</p>
+<p>JBehave supports the ability to specify configuration elements and steps instance via annotations. An example of
+annotated configuration of the Embedded via annotations is:</p>
 
 <script type="syntaxhighlighter" class="brush: java"><![CDATA[
 @RunWith(AnnotatedEmbedder.class)
@@ -233,13 +233,16 @@ public class TraderStories extends JUnitStories {
 <p>All configurable elements of  <a
     href="javadoc/core/org/jbehave/core/Configuration.html">Configuration</a>
  come with a default behaviour, configured in the  <a
-    href="javadoc/core/org/jbehave/core/MostUsefulConfiguration.html">most
-useful configuration</a>:</p>
+    href="javadoc/core/org/jbehave/core/MostUsefulConfiguration.html">MostUsefulConfiguration</a>:</p>
 <ul>
 <li><a
     href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>:
 defaults to <a
     href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</li>
+<li><a
+    href="javadoc/core/org/jbehave/core/failures/FailureStrategy.html">FailureStrategy</a>:
+Allows to define the strategy for error handling. The default value is <a
+    href="javadoc/core/org/jbehave/core/failures/RethrowingFailureStrategy.html">RethrowingFailureStrategy</a>.</li>
 <li><a
     href="javadoc/core/org/jbehave/core/steps/StepCollector.html">StepCollector</a>:
 Represents the strategy for the collection of executable steps from a given story matching a list of candidate steps. The
@@ -247,28 +250,26 @@ default implementation is <a
     href="javadoc/core/org/jbehave/core/steps/MarkUnmatchedStepsAsPending.html">MarkUnmatchedStepsAsPending</a>.</li>
 <li><a
     href="javadoc/core/org/jbehave/core/io/StoryParser.html">StoryParser</a>:
-Parses stories contained in a textual story file. The
-default implementation is <a
+Parses stories contained in a textual story file. The default implementation is <a
     href="javadoc/core/org/jbehave/core/io/RegexStoryParser.html">RegexStoryParser</a>.</li>
-<li><a
-    href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>:
-Allows the runner to report the state of running stories. The default
-implementation is <a
-    href="javadoc/core/org/jbehave/core/reporters/ConsoleOutput.html">ConsoleOutput</a>.</li>
-<li><a
-    href="javadoc/core/org/jbehave/core/failures/FailureStrategy.html">FailureStrategy</a>:
-Allows to define the strategy for error handling. The default value is <a
-    href="javadoc/core/org/jbehave/core/failures/RethrowingFailureStrategy.html">RethrowingFailureStrategy</a>.</li>
 <li><a
     href="javadoc/core/org/jbehave/core/parsers/StepPatternParser.html">StepPatternParser</a>:
 defaults to <a
-    href="javadoc/core/org/jbehave/core/parsers/RegexPrefixCapturingPatternBuilder.html">RegexPrefixCapturingPatternParser</a>.</li>
+    href="javadoc/core/org/jbehave/core/parsers/RegexPrefixCapturingPatternBuilder.html">RegexPrefixCapturingPatternParser</a>.
+</li>
 <li><a
     href="javadoc/core/org/jbehave/core/steps/StepMonitor.html">StepMonitor</a>:
 defaults to <a
     href="javadoc/core/org/jbehave/core/steps/SilentStepMonitor.html">SilentStepMonitor</a>,
-useful to either debug the step matching or to describe the steps being
-performed to some output.</li>
+useful to either debug the step matching or to describe the steps being performed to some output.</li>
+<li>
+The <a
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>:
+facade for building instances of <a
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>. The <a
+    href="javadoc/core/org/jbehave/core/reporters/ViewGenerator.html">ViewGenerator</a>
+allows to generate view of reports run.  The default implementation is <a
+    href="javadoc/core/org/jbehave/core/reporters/FreemarkerViewGenerator.html">FreemarkerViewGenerator</a>.</li>
 <li><a
     href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a>:
 facade for collecting user-defined <a

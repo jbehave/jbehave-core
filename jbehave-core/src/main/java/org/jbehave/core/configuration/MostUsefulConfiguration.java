@@ -1,6 +1,5 @@
 package org.jbehave.core.configuration;
 
-import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -16,13 +15,12 @@ import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.StepdocReporter;
-import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
-import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
+import org.jbehave.core.steps.StepMonitor;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -39,12 +37,11 @@ import com.thoughtworks.paranamer.Paranamer;
  * <li>{@link DefaultStoryReporter}: {@link ConsoleOutput}</li>
  * <li>{@link StepCollector}: {@link MarkUnmatchedStepsAsPending}</li>
  * <li>{@link StepFinder}: {@link StepFinder}</li>
- * <li>{@link StepdocReporter}: {@link PrintStreamStepdocReporter}</li>
  * <li>{@link StepPatternParser}: {@link RegexPrefixCapturingPatternParser}</li>
+ * <li>{@link StepdocReporter}: {@link PrintStreamStepdocReporter}</li>
+ * <li>{@link StepMonitor}: {@link SilentStepMonitor}
  * <li>{@link Paranamer}: {@link NullParanamer}</li>
- * <li>{@link ParameterConverters}: {@link ParameterConverters}</li>
  * <li>{@link ViewGenerator}: {@link FreemarkerViewGenerator}</li>
- * <li>{@link EmbedderControls}: {@link EmbedderControls}</li>
  * </ul>
  */
 public class MostUsefulConfiguration extends Configuration {
@@ -59,12 +56,10 @@ public class MostUsefulConfiguration extends Configuration {
         useDefaultStoryReporter(new ConsoleOutput());
         useStepCollector(new MarkUnmatchedStepsAsPending());
         useStepFinder(new StepFinder());
-        useStepdocReporter(new PrintStreamStepdocReporter());
         useStepPatternParser(new RegexPrefixCapturingPatternParser());
         useStepMonitor(new SilentStepMonitor());
+        useStepdocReporter(new PrintStreamStepdocReporter());
         useParanamer(new NullParanamer());
-        useParameterConverters(new ParameterConverters());
-        useStoryReporterBuilder(new StoryReporterBuilder());
         useViewGenerator(new FreemarkerViewGenerator());
     }
 
