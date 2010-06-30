@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.StoryReporter;
@@ -115,6 +117,11 @@ public abstract class AbstractStepResult implements StepResult {
 		return throwable;
 	}
 
+	@Override
+	public String toString() {
+	    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(parametrisedStep()).toString();
+	}
+	
     public static StepResult successful(String step) {
 		return new Successful(step);
 	}

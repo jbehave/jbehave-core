@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
@@ -33,6 +34,8 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
+import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.CandidateStep.StartingWordNotFound;
 import org.junit.Test;
 
@@ -280,6 +283,25 @@ public class CandidateStepBehaviour {
                 .perform();
         assertThat(steps.ith, equalTo("first"));
         assertThat(steps.nth, equalTo("ground"));
+    }
+    
+    @Test
+    public void shouldCreateStepFromTableValuesWhenHeadersDoNotMatchParameterNames() throws Exception {
+        AnnotationNamedParameterSteps steps = new AnnotationNamedParameterSteps();
+        // I speak LolCatz and mispell headerz
+        tableRow.put("itz", "first");
+        tableRow.put("ntz", "ground");
+        String patternAsString = "I live on the ith floor but some call it the nth";
+        Method method = stepMethodFor("methodWithNamedParametersInNaturalOrder", AnnotationNamedParameterSteps.class);
+        CandidateStep candidateStep = candidateStepWith(patternAsString, WHEN, method, steps);
+        String stepAsString = "When I live on the <ith> floor but some call it the <nth>";
+        Step step = candidateStep.createMatchedStep(stepAsString, tableRow);
+        StepResult perform = step.perform();
+        assertThat(perform, instanceOf(Pending.class));
+        assertThat(perform.parametrisedStep(), equalTo(stepAsString));
+        StepResult doNotPerform = step.doNotPerform();
+        assertThat(doNotPerform, instanceOf(NotPerformed.class));
+        assertThat(doNotPerform.parametrisedStep(), equalTo(stepAsString));
     }
 
     @Test

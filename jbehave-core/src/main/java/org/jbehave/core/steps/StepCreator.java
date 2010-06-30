@@ -14,8 +14,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.parsers.StepMatcher;
@@ -123,32 +123,35 @@ public class StepCreator {
             private Object[] convertedParameters;
 			private String parametrisedStep;
 			public StepResult perform() {
-				parametriseStep();
                 try {
+                    parametriseStep();
 					stepMonitor.performing(stepAsString, dryRun);
 					if (!dryRun) {
 						method.invoke(stepsInstance, convertedParameters);
 					}
                     return successful(stepAsString).withParameterValues(parametrisedStep);
+                } catch ( ParameterNotFound e ){
+                    // step parametrisation failed, return pending StepResult                    
+                    return pending(stepAsString).withParameterValues(parametrisedStep);                    
                 } catch (Throwable t) {
-                    return failedOrPending(stepAsString, t);
-                }
-            }
-
-            private StepResult failedOrPending(final String stepAsString, Throwable t) {
-                if (t instanceof InvocationTargetException && t.getCause() != null) {
-                    Throwable cause = t.getCause();
-					if (cause instanceof PendingStepFound) {
-                        return pending(stepAsString, (PendingStepFound) cause).withParameterValues(parametrisedStep);
-                    } else {
-                        return failed(stepAsString, cause).withParameterValues(parametrisedStep);
+                    if (t instanceof InvocationTargetException && t.getCause() != null) {
+                        Throwable cause = t.getCause();
+                        if (cause instanceof PendingStepFound) {
+                            return pending(stepAsString, (PendingStepFound) cause).withParameterValues(parametrisedStep);
+                        } else {
+                            return failed(stepAsString, cause).withParameterValues(parametrisedStep);
+                        }
                     }
+                    return failed(stepAsString, t).withParameterValues(parametrisedStep);
                 }
-                return failed(stepAsString, t).withParameterValues(parametrisedStep);
             }
 
             public StepResult doNotPerform() {
-				parametriseStep();
+				try {
+                    parametriseStep();
+                } catch (ParameterNotFound e) {
+                    // step parametrisation failed, but still return notPerformed StepResult
+                }
                 return notPerformed(stepAsString).withParameterValues(parametrisedStep);
             }
             
@@ -288,11 +291,16 @@ public class StepCreator {
                 return matchedParameter(i);
             }
         }
-        throw new NoParameterFoundForName(name, parameterNames);
+        throw new ParameterNotFound(name, parameterNames);
     }
 
-	private String matchedParameter(int i) {
-		return stepMatcher.parameter(i + 1);
+	private String matchedParameter(int position) {
+	    String[] parameterNames = stepMatcher.parameterNames();
+        int matchedPosition = position + 1;
+        if ( matchedPosition <= parameterNames.length ){
+	        return stepMatcher.parameter(matchedPosition);	        
+	    }
+	    throw new ParameterNotFound(position, parameterNames);
 	}
 
     private int parameterPosition(String[] names, int position) {
@@ -393,12 +401,15 @@ public class StepCreator {
     }
 
     @SuppressWarnings("serial")
-    public static class NoParameterFoundForName extends RuntimeException {
+    public static class ParameterNotFound extends RuntimeException {
 
-        public NoParameterFoundForName(String name, String[] names) {
-            super("No parameter found for name '" + name + "' amongst '" + asList(names) + "'");
+        public ParameterNotFound(String name, String[] parameters) {
+            super("Parameter not found for name '" + name + "' amongst '" + asList(parameters) + "'");
         }
 
+        public ParameterNotFound(int position, String[] parameters) {
+            super("Parameter not found for position '" + position + "' amongst '" + asList(parameters) + "'");
+        }
     }
 
 
