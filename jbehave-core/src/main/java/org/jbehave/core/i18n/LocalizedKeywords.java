@@ -20,6 +20,7 @@ public class LocalizedKeywords extends Keywords {
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     private static final String DEFAULT_BUNDLE_NAME = "org/jbehave/core/i18n/keywords";
     private static final ClassLoader DEFAULT_CLASS_LOADER = Thread.currentThread().getContextClassLoader();
+    private static final StringCoder DEFAULT_STRING_CODER = new StringCoder();
     private final Locale locale;
 
     public LocalizedKeywords() {
@@ -27,11 +28,11 @@ public class LocalizedKeywords extends Keywords {
     }
 
     public LocalizedKeywords(Locale locale) {
-        this(locale, DEFAULT_BUNDLE_NAME, DEFAULT_CLASS_LOADER);
+        this(locale, DEFAULT_BUNDLE_NAME, DEFAULT_CLASS_LOADER, DEFAULT_STRING_CODER);
     }
 
-    public LocalizedKeywords(Locale locale, String bundleName, ClassLoader classLoader) {
-        super(keywords(bundleName, locale, classLoader));
+    public LocalizedKeywords(Locale locale, String bundleName, ClassLoader classLoader, StringCoder stringCoder) {
+        super(keywords(bundleName, locale, classLoader, stringCoder));
         this.locale = locale;
     }
 
@@ -40,11 +41,11 @@ public class LocalizedKeywords extends Keywords {
     }
     
     private static Map<String, String> keywords(String bundleName, Locale locale,
-            ClassLoader classLoader) {
+            ClassLoader classLoader, StringCoder stringCoder) {
         ResourceBundle bundle = lookupBunde(bundleName.trim(), locale, classLoader);
         Map<String, String> keywords = new HashMap<String, String>();
         for (String key : KEYWORDS) {
-            keywords.put(key, keyword(key, bundle));
+            keywords.put(key, stringCoder.canonicalize(keyword(key, bundle)));
         }
         return keywords;
     }

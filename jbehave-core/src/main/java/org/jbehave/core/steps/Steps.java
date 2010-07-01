@@ -132,7 +132,7 @@ public class Steps implements CandidateSteps {
 		for (Method method : allMethods()) {
 			if (method.isAnnotationPresent(Given.class)) {
 				Given annotation = method.getAnnotation(Given.class);
-				String value = annotation.value();
+				String value = canonicalise(annotation.value());
 				int priority = annotation.priority();
 				addCandidateStep(candidates, method, GIVEN, value, priority);
 				addCandidateStepsFromAliases(candidates, method, GIVEN,
@@ -140,14 +140,14 @@ public class Steps implements CandidateSteps {
 			}
 			if (method.isAnnotationPresent(When.class)) {
 				When annotation = method.getAnnotation(When.class);
-				String value = annotation.value();
+                String value = canonicalise(annotation.value());
 				int priority = annotation.priority();
 				addCandidateStep(candidates, method, WHEN, value, priority);
 				addCandidateStepsFromAliases(candidates, method, WHEN, priority);
 			}
 			if (method.isAnnotationPresent(Then.class)) {
 				Then annotation = method.getAnnotation(Then.class);
-				String value = annotation.value();
+                String value = canonicalise(annotation.value());
 				int priority = annotation.priority();
 				addCandidateStep(candidates, method, THEN, value, priority);
 				addCandidateStepsFromAliases(candidates, method, THEN, priority);
@@ -156,7 +156,11 @@ public class Steps implements CandidateSteps {
 		return candidates;
 	}
 
-	private void addCandidateStep(List<CandidateStep> candidates,
+	private String canonicalise(String value) {
+        return configuration.stringCoder().canonicalize(value);
+    }
+
+    private void addCandidateStep(List<CandidateStep> candidates,
 			Method method, StepType stepType, String stepPatternAsString,
 			int priority) {
 		checkForDuplicateCandidateSteps(candidates, stepType,
