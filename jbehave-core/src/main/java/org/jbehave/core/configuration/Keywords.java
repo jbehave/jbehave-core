@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.i18n.StringCoder;
 import org.jbehave.core.steps.StepType;
 
 /**
@@ -60,6 +61,7 @@ public class Keywords {
     private final String failed;
     private final String dryRun;
     private final String[] others;
+    private final StringCoder stringCoder;
 
     public static Map<String, String> defaultKeywords() {
         Map<String, String> keywords = new HashMap<String, String>();
@@ -86,19 +88,21 @@ public class Keywords {
     }
 
     /**
-     * Creates Keywords with default values {@link #defaultKeywords()}.
+     * Creates Keywords with default values {@link #defaultKeywords()} and
+     * default {@link StringCoder}.
      */
     public Keywords() {
-        this(defaultKeywords());
+        this(defaultKeywords(), new StringCoder());
     }
 
     /**
-     * Creates Keywords with provided values and default encoder
+     * Creates Keywords with provided keywords Map and StringCoder
      * 
-     * @param keywords
-     *            the Map of keywords indexed by their name
+     * @param keywords the Map of keywords indexed by their name
+     * @param stringCoder the StringCoder used for canonicalization
      */
-    public Keywords(Map<String, String> keywords) {
+    public Keywords(Map<String, String> keywords, StringCoder stringCoder) {
+        this.stringCoder = stringCoder;
         this.narrative = keyword(NARRATIVE, keywords);
         this.inOrderTo = keyword(IN_ORDER_TO, keywords);
         this.asA = keyword(AS_A, keywords);
@@ -126,7 +130,11 @@ public class Keywords {
         if (keyword == null) {
             throw new KeywordNotFoundException(name, keywords);
         }
-        return keyword;
+        return canonicalize(keyword);
+    }
+
+    public String canonicalize(String input) {
+        return stringCoder.canonicalize(input);
     }
 
     public String narrative() {

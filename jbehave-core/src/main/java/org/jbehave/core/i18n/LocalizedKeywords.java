@@ -32,7 +32,7 @@ public class LocalizedKeywords extends Keywords {
     }
 
     public LocalizedKeywords(Locale locale, String bundleName, ClassLoader classLoader, StringCoder stringCoder) {
-        super(keywords(bundleName, locale, classLoader, stringCoder));
+        super(keywords(bundleName, locale, classLoader), stringCoder);
         this.locale = locale;
     }
 
@@ -41,11 +41,11 @@ public class LocalizedKeywords extends Keywords {
     }
     
     private static Map<String, String> keywords(String bundleName, Locale locale,
-            ClassLoader classLoader, StringCoder stringCoder) {
+            ClassLoader classLoader) {
         ResourceBundle bundle = lookupBunde(bundleName.trim(), locale, classLoader);
         Map<String, String> keywords = new HashMap<String, String>();
         for (String key : KEYWORDS) {
-            keywords.put(key, stringCoder.canonicalize(keyword(key, bundle)));
+            keywords.put(key, keyword(key, bundle));
         }
         return keywords;
     }

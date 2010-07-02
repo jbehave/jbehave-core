@@ -12,7 +12,6 @@ import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.i18n.StringCoder;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
@@ -65,11 +64,6 @@ public abstract class Configuration {
      * Use English language for keywords
      */
     private Keywords keywords = new LocalizedKeywords();
-
-    /**
-     * The StringCoder for localized text
-     */
-    private StringCoder stringCoder = new StringCoder();
 
     /**
      * Provides pending steps where unmatched steps exist.
@@ -172,10 +166,6 @@ public abstract class Configuration {
         return keywords;
     }
 
-    public StringCoder stringCoder() {
-        return stringCoder;
-    }
-
     public StoryParser storyParser() {
         return storyParser;
     }
@@ -252,11 +242,6 @@ public abstract class Configuration {
 
     public Configuration useKeywords(Keywords keywords) {
         this.keywords = keywords;
-        return this;
-    }
-
-    public Configuration useStringCoder(StringCoder stringCoder){
-        this.stringCoder = stringCoder;
         return this;
     }
 

@@ -103,8 +103,7 @@ public class LocalizedKeywordsBehaviour {
         if (bundleName == null) {
             return (locale == null ? new LocalizedKeywords() : new LocalizedKeywords(locale));
         } else {
-            return new LocalizedKeywords(locale, bundleName, Thread.currentThread()
-                    .getContextClassLoader(), new StringCoder());
+            return new LocalizedKeywords(locale, bundleName, this.getClass().getClassLoader(), new StringCoder());
         }
     }
 

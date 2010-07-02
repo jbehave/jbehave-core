@@ -1,26 +1,23 @@
 package org.jbehave.core.i18n;
 
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 
 import org.apache.commons.lang.CharEncoding;
 
 /**
- * Supports encoding and decoding of strings using specified charsets.
+ * Supports encoding and decoding of Strings using specified charset, defaulting
+ * to "UTF-8" as {@link #DEFAULT_CHARSET_NAME}.
  */
 public class StringCoder {
 
-    public enum Mode {
-        STRICT, WARN
-    }
-
+    public static final String DEFAULT_CHARSET_NAME = "UTF-8";
     private final String charsetName;
 
     /**
-     * Creates a StringCoder using {@link Charset.defaultCharset().name()}
+     * Creates a StringCoder using the {@link #DEFAULT_CHARSET_NAME} charset
      */
     public StringCoder() {
-        this(Charset.defaultCharset().name());
+        this(DEFAULT_CHARSET_NAME);
     }
 
     /**
@@ -35,38 +32,32 @@ public class StringCoder {
     public String getCharsetName() {
         return charsetName;
     }
-    
+
     public boolean isCharsetSupported() {
         return CharEncoding.isSupported(charsetName);
     }
 
     /**
-     * Encodes and decodes input using the coder charset
+     * Canonicalizes input, i.e. encodes (String to byte[]) and decodes (byte[]
+     * to String), using the configured charset.
      * 
-     * @param input the String input 
-     * @return String after encoding and decoding
-     * @throws InvalidEncodingException if encoding is not supported for charset
+     * @param input the String input
+     * @return Canonicalized String
+     * @throws EncodingInvalid if encoding is not supported for charset
      */
     public String canonicalize(String input) {
         try {
             return new String(input.getBytes(charsetName), charsetName);
         } catch (UnsupportedEncodingException e) {
-            throw new InvalidEncodingException(input, e);
+            throw new EncodingInvalid(charsetName, e);
         }
-    }
-
-    public void validateEncoding(String input, Mode mode) {
     }
 
     @SuppressWarnings("serial")
-    public static final class InvalidEncodingException extends RuntimeException {
+    public static final class EncodingInvalid extends RuntimeException {
 
-        public InvalidEncodingException(String message) {
-            super(message);
-        }
-
-        public InvalidEncodingException(String input, UnsupportedEncodingException cause) {
-            super(input, cause);
+        public EncodingInvalid(String charsetName, UnsupportedEncodingException cause) {
+            super(charsetName, cause);
         }
 
     }

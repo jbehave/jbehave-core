@@ -72,6 +72,7 @@
   </dependencies>
 
   <properties>
+    <!-- NOTE: Set -Dfile.encoding=UTF-8 in MAVEN_OPTS -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <resource.encoding>UTF-8</resource.encoding>  
   </properties>

@@ -75,7 +75,7 @@
             <phase>integration-test</phase>
             <configuration>
               <storyIncludes>
-                <storyInclude>**/stories/*.java</storyInclude>
+                <storyInclude>${include.embeddables}</storyInclude>
               </storyIncludes>
               <storyExcludes />
               <skip>${skip.runnable.stories}</skip>
@@ -119,7 +119,7 @@
                 <configuration>
                   <embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>
                   <storyIncludes>
-                    <storyInclude>**/stories/*.story</storyInclude>
+                    <storyInclude>${include.paths}</storyInclude>
                   </storyIncludes>
                   <storyExcludes />
                   <skip>false</skip>
@@ -328,6 +328,8 @@
     <batch.mode>false</batch.mode>
     <ignore.failure.view>true</ignore.failure.view>
     <skip.runnable.stories>false</skip.runnable.stories>
+    <include.embeddables>**/stories/*.java</include.embeddables>
+    <include.paths>**/stories/*.story</include.paths>
   </properties>
 
 </project>

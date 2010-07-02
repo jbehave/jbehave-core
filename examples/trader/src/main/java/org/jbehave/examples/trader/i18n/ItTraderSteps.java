@@ -22,12 +22,12 @@ public class ItTraderSteps {
         stock = new Stock(symbol, threshold);
     }
 
-    @When("l'azione e' scambiata al prezzo di $price")
+    @When("l'azione è scambiata al prezzo di $price")
     public void stockIsTraded(@Named("price") double price) {
         stock.tradeAt(price);
     }
 
-    @Then("lo status di allerta e' $status")
+    @Then("lo status di allerta è $status")
     public void alertStatusIs(@Named("status") String status) {
         assertThat(stock.getStatus().name(), equalTo(status));
     }
