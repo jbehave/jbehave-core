@@ -1,0 +1,29 @@
+Narrativa:
+
+Para garantir uma resposta rápida
+Como um comerciante que fala português
+Eu desejo verificar os preços das ações
+
+Cenário: 
+
+Dado que haja uma ação com símbolo STK1 e um limite de 15.0
+Quando a ação é negociada ao preço de 5.0
+Então a situação de alerta é OFF
+Quando a ação é negociada ao preço de 11.0
+Então a situação de alerta é OFF
+Quando a ação é negociada ao preço de 16.0
+Então a situação de alerta é ON
+Quando a ação é negociada ao preçoooooo de 20.0
+Então a situação de alerta é ON
+
+Cenário:
+
+Dado que eu tenha uma tabela
+!!um!!dois!!
+!11!12!
+!21!22!
+Então a tabela possuir 2 linhas
+E na linha 1 e coluna um tivermos: 11
+E na linha 1 e coluna dois tivermos: 12
+E na linha 2 e coluna um tivermos: 21
+E na linha 2 e coluna dois tivermos: 22
