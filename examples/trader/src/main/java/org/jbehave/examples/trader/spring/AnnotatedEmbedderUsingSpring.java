@@ -9,7 +9,7 @@ import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.spring.UsingSpring;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.spring.SpringAnnotatedEmbedder;
+import org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
  * Run stories via Embedder using JBehave's annotated configuration and steps
  * using Spring
  */
-@RunWith(SpringAnnotatedEmbedder.class)
+@RunWith(SpringAnnotatedEmbedderRunner.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml",

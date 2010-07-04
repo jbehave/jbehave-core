@@ -16,7 +16,7 @@ import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.AnnotatedEmbedder;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
@@ -30,7 +30,7 @@ import org.jbehave.examples.trader.stories.PriorityMatching.PriorityMatchingStep
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@RunWith(AnnotatedEmbedder.class)
+@RunWith(AnnotatedEmbedderRunner.class)
 @Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)

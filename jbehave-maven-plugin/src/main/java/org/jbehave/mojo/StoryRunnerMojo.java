@@ -10,7 +10,7 @@ import org.jbehave.core.embedder.Embedder;
  * @author Mauro Talevi
  * @goal run-stories
  */
-public class StoryRunnerMojo extends AbstractStoryMojo {
+public class StoryRunnerMojo extends AbstractEmbedderMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();

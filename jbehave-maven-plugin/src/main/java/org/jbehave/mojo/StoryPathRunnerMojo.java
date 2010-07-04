@@ -11,7 +11,7 @@ import org.jbehave.core.embedder.Embedder;
  * @author Mauro Talevi
  * @goal run-stories-as-paths
  */
-public class StoryPathRunnerMojo extends AbstractStoryMojo {
+public class StoryPathRunnerMojo extends AbstractEmbedderMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();

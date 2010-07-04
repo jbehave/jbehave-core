@@ -2,12 +2,12 @@ package org.jbehave.core.junit.spring;
 
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.spring.SpringAnnotationBuilder;
-import org.jbehave.core.junit.AnnotatedEmbedder;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.junit.runners.model.InitializationError;
 
-public class SpringAnnotatedEmbedder extends AnnotatedEmbedder {
+public class SpringAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
 
-    public SpringAnnotatedEmbedder(Class<?> testClass) throws InitializationError {
+    public SpringAnnotatedEmbedderRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 

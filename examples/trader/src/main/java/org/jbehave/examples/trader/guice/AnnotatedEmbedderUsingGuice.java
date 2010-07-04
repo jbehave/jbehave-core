@@ -18,7 +18,7 @@ import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.junit.guice.GuiceAnnotatedEmbedder;
+import org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -42,7 +42,7 @@ import com.google.inject.Scopes;
 /**
  * Run stories via Embedder using JBehave's annotated configuration and steps using Guice
  */
-@RunWith(GuiceAnnotatedEmbedder.class)
+@RunWith(GuiceAnnotatedEmbedderRunner.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })

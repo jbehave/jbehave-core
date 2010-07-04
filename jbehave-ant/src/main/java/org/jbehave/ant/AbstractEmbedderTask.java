@@ -14,13 +14,14 @@ import java.util.Properties;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.jbehave.core.Embeddable;
+import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.AnnotatedEmbedder;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 
 /**
  * Abstract task that holds all the configuration parameters to specify and load
@@ -28,7 +29,7 @@ import org.jbehave.core.junit.AnnotatedEmbedder;
  * 
  * @author Mauro Talevi
  */
-public abstract class AbstractStoryTask extends Task {
+public abstract class AbstractEmbedderTask extends Task {
 
     private static final String TEST_SCOPE = "test";
 
@@ -84,9 +85,14 @@ public abstract class AbstractStoryTask extends Task {
     private String embedderClass = Embedder.class.getName();
 
     /**
-     * The annotated embedder to run the stories
+     * The class that is injected to provide embedder to run the stories.
      */
-    private String annotatedEmbedderClass = AnnotatedEmbedder.class.getName();
+    private String injectableEmbedderClass;
+
+    /**
+     * The annotated embedder runner class to run the stories
+     */
+    private String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
 
     /**
      * Used to find stories
@@ -149,31 +155,31 @@ public abstract class AbstractStoryTask extends Task {
     }
 
     /**
-     * Creates an instance of Embedder, either built from the first AnnotatedEmbedder found 
-     * or from direct instantiation of {@link #embedderClass}.
+     * Creates an instance of Embedder, either using {@link #injectableEmbedderClass} (if set)
+     * or defaulting to {@link #embedderClass}.
      * 
      * @return An Embedder
      */
     protected Embedder newEmbedder() {
         Embedder embedder = null;
-        List<AnnotatedEmbedder> annotatedEmbedders = annotatedEmbedders();        
-        if ( annotatedEmbedders.size() > 0 ){
-            embedder = annotatedEmbedders.iterator().next().buildEmbedder();
+        EmbedderClassLoader classLoader = createClassLoader();
+        if ( injectableEmbedderClass != null ){
+            embedder = classLoader.newInstance(InjectableEmbedder.class, injectableEmbedderClass).injectedEmbedder();
         } else {
-            embedder = createClassLoader().newInstance(Embedder.class, embedderClass);
+            embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
         embedder.useEmbedderMonitor(embedderMonitor());
         embedder.useEmbedderControls(embedderControls());
         return embedder;
     }
 
-    protected List<AnnotatedEmbedder> annotatedEmbedders() {        
+    protected List<AnnotatedEmbedderRunner> annotatedEmbedderRunners() {        
         log("Searching for annotated classes including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
         EmbedderClassLoader classLoader = createClassLoader();
         List<Class<?>> classes = finder.findClasses(rootSourceDirectory(), storyIncludes, storyExcludes, classLoader);
-        Class<? extends AnnotatedEmbedder> annotatedEmbedderClass = annotatedEmbedderClass(classLoader);
+        Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderClass = annotatedEmbedderClass(classLoader);
         log("Creating " + annotatedEmbedderClass + " for " + classes, MSG_INFO);
-        List<AnnotatedEmbedder> embedders = new ArrayList<AnnotatedEmbedder>();
+        List<AnnotatedEmbedderRunner> embedders = new ArrayList<AnnotatedEmbedderRunner>();
         for (Class<?> annotatedClass : classes) {
             embedders.add(newAnnotatedEmbedder(annotatedEmbedderClass, annotatedClass));
         }
@@ -181,17 +187,17 @@ public abstract class AbstractStoryTask extends Task {
     }
 
     @SuppressWarnings("unchecked")
-    private Class<? extends AnnotatedEmbedder> annotatedEmbedderClass(EmbedderClassLoader classLoader) {
+    private Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderClass(EmbedderClassLoader classLoader) {
         try {
-            return (Class<? extends AnnotatedEmbedder>) classLoader.loadClass(annotatedEmbedderClass);
+            return (Class<? extends AnnotatedEmbedderRunner>) classLoader.loadClass(annotatedEmbedderRunnerClass);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private AnnotatedEmbedder newAnnotatedEmbedder(Class<? extends AnnotatedEmbedder> annotatedEmbedderClass, Class<?> annotatedClass) {
+    private AnnotatedEmbedderRunner newAnnotatedEmbedder(Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderClass, Class<?> annotatedClass) {
         try {
-            return (AnnotatedEmbedder) annotatedEmbedderClass.getConstructor(Class.class).newInstance(annotatedClass);
+            return (AnnotatedEmbedderRunner) annotatedEmbedderClass.getConstructor(Class.class).newInstance(annotatedClass);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -286,7 +292,11 @@ public abstract class AbstractStoryTask extends Task {
         this.embedderClass = embedderClass;
     }
 
-    public void setAnnotatedEmbedderClass(String annotatedEmbedderClass) {
-        this.annotatedEmbedderClass = annotatedEmbedderClass;
+    public void setInjectableEmbedderClass(String injectableEmbedderClass) {
+        this.injectableEmbedderClass = injectableEmbedderClass;
+    }
+
+    public void setAnnotatedEmbedderRunnerClass(String annotatedEmbedderRunnerClass) {
+        this.annotatedEmbedderRunnerClass = annotatedEmbedderRunnerClass;
     }
 }

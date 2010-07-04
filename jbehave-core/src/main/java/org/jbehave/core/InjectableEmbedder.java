@@ -16,7 +16,7 @@ public abstract class InjectableEmbedder implements Embeddable {
         this.embedder = embedder;
     }
 
-    protected Embedder injectedEmbedder() {
+    public Embedder injectedEmbedder() {
         return embedder;
     }
 

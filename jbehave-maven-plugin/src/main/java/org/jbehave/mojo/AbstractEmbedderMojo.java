@@ -7,13 +7,14 @@ import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.jbehave.core.Embeddable;
+import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.AnnotatedEmbedder;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -21,7 +22,7 @@ import org.jbehave.core.junit.AnnotatedEmbedder;
  * 
  * @author Mauro Talevi
  */
-public abstract class AbstractStoryMojo extends AbstractMojo {
+public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
     private static final String TEST_SCOPE = "test";
 
@@ -123,11 +124,18 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     private String embedderClass;
 
     /**
-     * The embedder class to run the stories
+     * The class that is injected to provide embedder to run the stories
      * 
-     * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedder"
+     * @parameter
      */
-    private String annotatedEmbedderClass;
+    private String injectableEmbedderClass;
+
+    /**
+     * The annotated embedder runner class to run the stories
+     * 
+     * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
+     */
+    private String annotatedEmbedderRunnerClass;
 
     /**
      * Used to find stories
@@ -188,49 +196,49 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
     }
 
     /**
-     * Creates an instance of Embedder, either built from the first AnnotatedEmbedder found 
-     * or from direct instantiation of {@link #embedderClass}.
+     * Creates an instance of Embedder, either using {@link #injectableEmbedderClass} (if set)
+     * or defaulting to {@link #embedderClass}.
      * 
      * @return An Embedder
      */
     protected Embedder newEmbedder() {
         Embedder embedder = null;
-        List<AnnotatedEmbedder> annotatedEmbedders = annotatedEmbedders();        
-        if ( annotatedEmbedders.size() > 0 ){
-            embedder = annotatedEmbedders.iterator().next().buildEmbedder();
+        EmbedderClassLoader classLoader = createClassLoader();
+        if ( injectableEmbedderClass != null ){
+            embedder = classLoader.newInstance(InjectableEmbedder.class, injectableEmbedderClass).injectedEmbedder();
         } else {
-            embedder = createClassLoader().newInstance(Embedder.class, embedderClass);
+            embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
         embedder.useEmbedderMonitor(embedderMonitor());
         embedder.useEmbedderControls(embedderControls());
         return embedder;
     }
 
-    protected List<AnnotatedEmbedder> annotatedEmbedders() {        
+    protected List<AnnotatedEmbedderRunner> annotatedEmbedderRunners() {        
         getLog().debug("Searching for annotated classes including " + storyIncludes + " and excluding " + storyExcludes);
         EmbedderClassLoader classLoader = createClassLoader();
         List<Class<?>> classes = finder.findClasses(rootSourceDirectory(), storyIncludes, storyExcludes, classLoader);
-        Class<? extends AnnotatedEmbedder> annotatedEmbedderClass = annotatedEmbedderClass(classLoader);
-        getLog().info("Creating " + annotatedEmbedderClass + " for " + classes);
-        List<AnnotatedEmbedder> embedders = new ArrayList<AnnotatedEmbedder>();
+        Class<? extends AnnotatedEmbedderRunner> runnerClass = annotatedEmbedderRunnerClass(classLoader);
+        getLog().info("Creating runner " + runnerClass + " for " + classes);
+        List<AnnotatedEmbedderRunner> runners = new ArrayList<AnnotatedEmbedderRunner>();
         for (Class<?> annotatedClass : classes) {
-            embedders.add(newAnnotatedEmbedder(annotatedEmbedderClass, annotatedClass));
+            runners.add(newAnnotatedEmbedder(runnerClass, annotatedClass));
         }
-        return embedders;
+        return runners;
     }
 
     @SuppressWarnings("unchecked")
-    private Class<? extends AnnotatedEmbedder> annotatedEmbedderClass(EmbedderClassLoader classLoader) {
+    private Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderRunnerClass(EmbedderClassLoader classLoader) {
         try {
-            return (Class<? extends AnnotatedEmbedder>) classLoader.loadClass(annotatedEmbedderClass);
+            return (Class<? extends AnnotatedEmbedderRunner>) classLoader.loadClass(annotatedEmbedderRunnerClass);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private AnnotatedEmbedder newAnnotatedEmbedder(Class<? extends AnnotatedEmbedder> annotatedEmbedderClass, Class<?> annotatedClass) {
+    private AnnotatedEmbedderRunner newAnnotatedEmbedder(Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderClass, Class<?> annotatedClass) {
         try {
-            return (AnnotatedEmbedder) annotatedEmbedderClass.getConstructor(Class.class).newInstance(annotatedClass);
+            return (AnnotatedEmbedderRunner) annotatedEmbedderClass.getConstructor(Class.class).newInstance(annotatedClass);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

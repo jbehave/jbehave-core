@@ -9,7 +9,7 @@ import org.jbehave.core.embedder.Embedder;
  * 
  * @goal generate-stories-view
  */
-public class ViewGeneratorMojo extends AbstractStoryMojo {
+public class ViewGeneratorMojo extends AbstractEmbedderMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();

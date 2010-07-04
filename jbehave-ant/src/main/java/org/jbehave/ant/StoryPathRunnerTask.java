@@ -10,7 +10,7 @@ import org.jbehave.core.embedder.Embedder;
  *
  * @author Mauro Talevi
  */
-public class StoryPathRunnerTask extends AbstractStoryTask {
+public class StoryPathRunnerTask extends AbstractEmbedderTask {
     
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();

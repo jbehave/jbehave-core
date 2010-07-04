@@ -10,7 +10,7 @@ import org.jbehave.core.embedder.Embedder;
  * 
  * @author Mauro Talevi
  */
-public class StepdocTask extends AbstractStoryTask {
+public class StepdocTask extends AbstractEmbedderTask {
 
 	public void execute() throws BuildException {
 		Embedder embedder = newEmbedder();

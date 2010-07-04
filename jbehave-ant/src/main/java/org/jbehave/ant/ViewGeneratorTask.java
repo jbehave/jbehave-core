@@ -8,7 +8,7 @@ import org.jbehave.core.embedder.Embedder;
 /**
  * Ant task that generates a stories view
  */
-public class ViewGeneratorTask extends AbstractStoryTask {
+public class ViewGeneratorTask extends AbstractEmbedderTask {
 
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();

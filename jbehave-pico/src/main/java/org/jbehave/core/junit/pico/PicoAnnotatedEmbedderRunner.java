@@ -2,12 +2,12 @@ package org.jbehave.core.junit.pico;
 
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.pico.PicoAnnotationBuilder;
-import org.jbehave.core.junit.AnnotatedEmbedder;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.junit.runners.model.InitializationError;
 
-public class PicoAnnotatedEmbedder extends AnnotatedEmbedder {
+public class PicoAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
 
-    public PicoAnnotatedEmbedder(Class<?> testClass) throws InitializationError {
+    public PicoAnnotatedEmbedderRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 

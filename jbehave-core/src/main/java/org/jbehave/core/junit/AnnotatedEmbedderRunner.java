@@ -11,9 +11,9 @@ import org.junit.runners.model.InitializationError;
  * create an embeddable test instance and to provide an {@link Embedder}
  * from annotations.
  */
-public class AnnotatedEmbedder extends BlockJUnit4ClassRunner {
+public class AnnotatedEmbedderRunner extends BlockJUnit4ClassRunner {
 
-    public AnnotatedEmbedder(Class<?> testClass) throws InitializationError {
+    public AnnotatedEmbedderRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 

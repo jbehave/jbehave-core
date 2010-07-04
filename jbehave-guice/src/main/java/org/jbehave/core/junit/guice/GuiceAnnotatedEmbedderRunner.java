@@ -2,12 +2,12 @@ package org.jbehave.core.junit.guice;
 
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.guice.GuiceAnnotationBuilder;
-import org.jbehave.core.junit.AnnotatedEmbedder;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.junit.runners.model.InitializationError;
 
-public class GuiceAnnotatedEmbedder extends AnnotatedEmbedder {
+public class GuiceAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
 
-    public GuiceAnnotatedEmbedder(Class<?> testClass) throws InitializationError {
+    public GuiceAnnotatedEmbedderRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
     }
 

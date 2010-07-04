@@ -152,7 +152,7 @@
                 <id>with-annotated-embedder</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <annotatedEmbedderClass>org.jbehave.core.junit.guice.GuiceAnnotatedEmbedder</annotatedEmbedderClass>
+                  <annotatedEmbedderClass>org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner</annotatedEmbedderClass>
                   <storyIncludes>
                     <storyInclude>**/AnnotatedEmbedderUsingGuice.java</storyInclude>
                   </storyIncludes>
@@ -181,7 +181,7 @@
                 <id>with-annotated-embedder</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <annotatedEmbedderClass>org.jbehave.core.junit.pico.PicoAnnotatedEmbedder</annotatedEmbedderClass>
+                  <annotatedEmbedderClass>org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner</annotatedEmbedderClass>
                   <storyIncludes>
                     <storyInclude>**/AnnotatedEmbedderUsingPico.java</storyInclude>
                   </storyIncludes>
@@ -210,7 +210,7 @@
                 <id>with-annotated-embedder</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <annotatedEmbedderClass>org.jbehave.core.junit.spring.SpringAnnotatedEmbedder</annotatedEmbedderClass>
+                  <annotatedEmbedderClass>org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner</annotatedEmbedderClass>
                   <storyIncludes>
                     <storyInclude>**/AnnotatedEmbedderUsingSpring.java</storyInclude>
                   </storyIncludes>
