@@ -187,8 +187,20 @@ public abstract class AbstractStoryMojo extends AbstractMojo {
         return embeddables;
     }
 
+    /**
+     * Creates an instance of Embedder, either built from the first AnnotatedEmbedder found 
+     * or from direct instantiation of {@link #embedderClass}.
+     * 
+     * @return An Embedder
+     */
     protected Embedder newEmbedder() {
-        Embedder embedder = createClassLoader().newInstance(Embedder.class, embedderClass);
+        Embedder embedder = null;
+        List<AnnotatedEmbedder> annotatedEmbedders = annotatedEmbedders();        
+        if ( annotatedEmbedders.size() > 0 ){
+            embedder = annotatedEmbedders.iterator().next().buildEmbedder();
+        } else {
+            embedder = createClassLoader().newInstance(Embedder.class, embedderClass);
+        }
         embedder.useEmbedderMonitor(embedderMonitor());
         embedder.useEmbedderControls(embedderControls());
         return embedder;
