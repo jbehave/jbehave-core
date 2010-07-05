@@ -99,8 +99,8 @@ public class ClasspathTraderEmbedder extends Embedder {
 
     <storyPathRunner
     		embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder"
-            storyIncludes="**/stories/*.story"
-            storyExcludes="**/stories/*NonSuccessful.story"
+            includes="**/stories/*.story"
+            excludes="**/stories/*NonSuccessful.story"
             skip="[true|false]"
             batch="[true|false]"
             ignoreFailureInStories="[true|false]"
@@ -136,12 +136,12 @@ public class ClasspathTraderEmbedder extends Embedder {
                 <phase>integration-test</phase>
                 <configuration>
                 	<embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>                	
-		            <storyIncludes>
-                		<storyInclude>**/stories/*.story</storyInclude>
-             		</storyIncludes>
-              		<storyExcludes>
-                		<storyExclude>**/stories/*NonSuccessful.story</storyExclude>
-              		</storyExcludes>
+		            <includes>
+                		<include>**/stories/*.story</include>
+             		</includes>
+              		<excludes>
+                		<exclude>**/stories/*NonSuccessful.story</exclude>
+              		</excludes>
                     <skip>[true|false]</skip>
                     <batch>[true|false]</batch>
                     <ignoreFailureInStories>[true|false]</ignoreFailureInStories>

@@ -43,16 +43,16 @@ public abstract class AbstractEmbedderTask extends Task {
     private String scope = "compile";
 
     /**
-     * Story include filters, relative to the root source directory determined
+     * Include filters, relative to the root source directory determined
      * by the scope
      */
-    private List<String> storyIncludes = new ArrayList<String>();
+    private List<String> includes = new ArrayList<String>();
 
     /**
-     * Story exclude filters, relative to the root source directory determined
+     * Exclude filters, relative to the root source directory determined
      * by the scope
      */
-    private List<String> storyExcludes = new ArrayList<String>();
+    private List<String> excludes = new ArrayList<String>();
 
     /**
      * The boolean flag to skip running stories
@@ -95,7 +95,7 @@ public abstract class AbstractEmbedderTask extends Task {
     private String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
 
     /**
-     * Used to find stories
+     * Used to find story paths and embeddables
      */
     private StoryFinder finder = new StoryFinder();
 
@@ -140,16 +140,16 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     protected List<String> storyPaths() {
-        log("Searching for story paths including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
-        List<String> storyPaths = finder.findPaths(rootSourceDirectory(), storyIncludes, storyExcludes);
+        log("Searching for story paths including " + includes + " and excluding " + excludes, MSG_DEBUG);
+        List<String> storyPaths = finder.findPaths(rootSourceDirectory(), includes, excludes);
         log("Found story paths: " + storyPaths, MSG_INFO);
         return storyPaths;
     }
 
     protected List<Embeddable> embeddables() throws BuildException {
-        log("Searching for embeddables including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
+        log("Searching for embeddables including " + includes + " and excluding " + excludes, MSG_DEBUG);
         List<Embeddable> embeddables = finder
-                .findEmbeddables(rootSourceDirectory(), storyIncludes, storyExcludes, createClassLoader());
+                .findEmbeddables(rootSourceDirectory(), includes, excludes, createClassLoader());
         log("Found embeddables: " + embeddables, MSG_INFO);
         return embeddables;
     }
@@ -174,9 +174,9 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     protected List<AnnotatedEmbedderRunner> annotatedEmbedderRunners() {        
-        log("Searching for annotated classes including " + storyIncludes + " and excluding " + storyExcludes, MSG_DEBUG);
+        log("Searching for annotated classes including " + includes + " and excluding " + excludes, MSG_DEBUG);
         EmbedderClassLoader classLoader = createClassLoader();
-        List<Class<?>> classes = finder.findClasses(rootSourceDirectory(), storyIncludes, storyExcludes, classLoader);
+        List<Class<?>> classes = finder.findClasses(rootSourceDirectory(), includes, excludes, classLoader);
         Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderClass = annotatedEmbedderClass(classLoader);
         log("Creating " + annotatedEmbedderClass + " for " + classes, MSG_INFO);
         List<AnnotatedEmbedderRunner> embedders = new ArrayList<AnnotatedEmbedderRunner>();
@@ -260,12 +260,12 @@ public abstract class AbstractEmbedderTask extends Task {
         this.scope = scope;
     }
 
-    public void setStoryIncludes(String includesCSV) {
-        this.storyIncludes = asList(includesCSV.split(","));
+    public void setIncludes(String includesCSV) {
+        this.includes = asList(includesCSV.split(","));
     }
 
-    public void setStoryExcludes(String excludesCSV) {
-        this.storyExcludes = asList(excludesCSV.split(","));
+    public void setExcludes(String excludesCSV) {
+        this.excludes = asList(excludesCSV.split(","));
     }
 
     public void setBatch(boolean batch) {

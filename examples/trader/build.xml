@@ -70,7 +70,7 @@
 		<taskdef name="storyRunner" classname="org.jbehave.ant.StoryRunnerTask" classpathref="story.classpath" />
 
 		<storyRunner 
-				storyIncludes="**/stories/*.java" batch="false" 
+				includes="**/stories/*.java" batch="false" 
 				ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
@@ -78,7 +78,7 @@
 		<taskdef name="storyPathRunner" classname="org.jbehave.ant.StoryPathRunnerTask" classpathref="story.classpath" />
 
 		<storyPathRunner embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder" 
-				storyIncludes="**/stories/*.story" batch="false" 
+				includes="**/stories/*.story" batch="false" 
 				ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 

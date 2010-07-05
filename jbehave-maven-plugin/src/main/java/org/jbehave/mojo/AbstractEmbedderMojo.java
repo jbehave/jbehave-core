@@ -48,20 +48,20 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     private String scope;
 
     /**
-     * Story include filters, relative to the root source directory determined
+     * Include filters, relative to the root source directory determined
      * by the scope
      * 
      * @parameter
      */
-    private List<String> storyIncludes;
+    private List<String> includes;
 
     /**
-     * Story exclude filters, relative to the root source directory determined
+     * Exclude filters, relative to the root source directory determined
      * by the scope
      * 
      * @parameter
      */
-    private List<String> storyExcludes;
+    private List<String> excludes;
 
     /**
      * Compile classpath.
@@ -117,28 +117,28 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     private boolean generateViewAfterStories;
 
     /**
-     * The embedder class to run the stories
+     * The embedder class 
      * 
      * @parameter default-value="org.jbehave.core.embedder.Embedder"
      */
     private String embedderClass;
 
     /**
-     * The class that is injected to provide embedder to run the stories
+     * The class that is injected with the embedder
      * 
      * @parameter
      */
     private String injectableEmbedderClass;
 
     /**
-     * The annotated embedder runner class to run the stories
+     * The annotated embedder runner class 
      * 
      * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
      */
     private String annotatedEmbedderRunnerClass;
 
     /**
-     * Used to find stories
+     * Used to find story paths and embeddables
      */
     private StoryFinder finder = new StoryFinder();
 
@@ -181,15 +181,15 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     protected List<String> storyPaths() {
-        getLog().debug("Searching for story paths including " + storyIncludes + " and excluding " + storyExcludes);
-        List<String> storyPaths = finder.findPaths(rootSourceDirectory(), storyIncludes, storyExcludes);
+        getLog().debug("Searching for story paths including " + includes + " and excluding " + excludes);
+        List<String> storyPaths = finder.findPaths(rootSourceDirectory(), includes, excludes);
         getLog().info("Found story paths: " + storyPaths);
         return storyPaths;
     }
 
     protected List<Embeddable> embeddables() {
-        getLog().debug("Searching for embeddables including " + storyIncludes + " and excluding " + storyExcludes);
-        List<Embeddable> embeddables = finder.findEmbeddables(rootSourceDirectory(), storyIncludes, storyExcludes,
+        getLog().debug("Searching for embeddables including " + includes + " and excluding " + excludes);
+        List<Embeddable> embeddables = finder.findEmbeddables(rootSourceDirectory(), includes, excludes,
                 createClassLoader());
         getLog().info("Found embeddables: " + embeddables);
         return embeddables;
@@ -215,9 +215,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     protected List<AnnotatedEmbedderRunner> annotatedEmbedderRunners() {        
-        getLog().debug("Searching for annotated classes including " + storyIncludes + " and excluding " + storyExcludes);
+        getLog().debug("Searching for annotated classes including " + includes + " and excluding " + excludes);
         EmbedderClassLoader classLoader = createClassLoader();
-        List<Class<?>> classes = finder.findClasses(rootSourceDirectory(), storyIncludes, storyExcludes, classLoader);
+        List<Class<?>> classes = finder.findClasses(rootSourceDirectory(), includes, excludes, classLoader);
         Class<? extends AnnotatedEmbedderRunner> runnerClass = annotatedEmbedderRunnerClass(classLoader);
         getLog().info("Creating runner " + runnerClass + " for " + classes);
         List<AnnotatedEmbedderRunner> runners = new ArrayList<AnnotatedEmbedderRunner>();

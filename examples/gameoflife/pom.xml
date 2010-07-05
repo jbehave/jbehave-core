@@ -34,9 +34,9 @@
             <id>run-stories</id>
             <phase>integration-test</phase>
             <configuration>
-              <storyIncludes>
-                <storyInclude>**/stories/*.java</storyInclude>
-              </storyIncludes>
+              <includes>
+                <include>**/stories/*.java</include>
+              </includes>
             </configuration>
             <goals>
               <goal>run-stories</goal>

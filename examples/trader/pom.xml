@@ -71,14 +71,14 @@
         <artifactId>jbehave-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>runnable-stories</id>
+            <id>embeddable-stories</id>
             <phase>integration-test</phase>
             <configuration>
-              <storyIncludes>
-                <storyInclude>${include.embeddables}</storyInclude>
-              </storyIncludes>
-              <storyExcludes />
-              <skip>${skip.runnable.stories}</skip>
+              <includes>
+                <include>${include.embeddables}</include>
+              </includes>
+              <excludes />
+              <skip>${skip.embeddables.stories}</skip>
               <batch>${batch.mode}</batch>
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>
@@ -118,10 +118,10 @@
                 <phase>integration-test</phase>
                 <configuration>
                   <embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>
-                  <storyIncludes>
-                    <storyInclude>${include.paths}</storyInclude>
-                  </storyIncludes>
-                  <storyExcludes />
+                  <includes>
+                    <include>${include.paths}</include>
+                  </includes>
+                  <excludes />
                   <skip>false</skip>
                   <batch>${batch.mode}</batch>
                   <generateViewAfterStories>true</generateViewAfterStories>
@@ -137,7 +137,7 @@
         </plugins>
       </build>
       <properties>
-        <skip.runnable.stories>true</skip.runnable.stories>
+        <skip.embeddables.stories>true</skip.embeddables.stories>
       </properties>
     </profile>
     <profile>
@@ -153,9 +153,9 @@
                 <phase>integration-test</phase>
                 <configuration>
                   <annotatedEmbedderClass>org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner</annotatedEmbedderClass>
-                  <storyIncludes>
-                    <storyInclude>**/AnnotatedEmbedderUsingGuice.java</storyInclude>
-                  </storyIncludes>
+                  <includes>
+                    <include>**/AnnotatedEmbedderUsingGuice.java</include>
+                  </includes>
                 </configuration>
                 <goals>
                   <goal>run-with-annotated-embedder</goal>
@@ -166,7 +166,7 @@
         </plugins>
       </build>
       <properties>
-        <skip.runnable.stories>true</skip.runnable.stories>
+        <skip.embeddables.stories>true</skip.embeddables.stories>
       </properties>
     </profile>
     <profile>
@@ -182,9 +182,9 @@
                 <phase>integration-test</phase>
                 <configuration>
                   <annotatedEmbedderClass>org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner</annotatedEmbedderClass>
-                  <storyIncludes>
-                    <storyInclude>**/AnnotatedEmbedderUsingPico.java</storyInclude>
-                  </storyIncludes>
+                  <includes>
+                    <include>**/AnnotatedEmbedderUsingPico.java</include>
+                  </includes>
                 </configuration>
                 <goals>
                   <goal>run-with-annotated-embedder</goal>
@@ -195,7 +195,7 @@
         </plugins>
       </build>
       <properties>
-        <skip.runnable.stories>true</skip.runnable.stories>
+        <skip.embeddables.stories>true</skip.embeddables.stories>
       </properties>
     </profile>
     <profile>
@@ -211,9 +211,9 @@
                 <phase>integration-test</phase>
                 <configuration>
                   <annotatedEmbedderClass>org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner</annotatedEmbedderClass>
-                  <storyIncludes>
-                    <storyInclude>**/AnnotatedEmbedderUsingSpring.java</storyInclude>
-                  </storyIncludes>
+                  <includes>
+                    <include>**/AnnotatedEmbedderUsingSpring.java</include>
+                  </includes>
                 </configuration>
                 <goals>
                   <goal>run-with-annotated-embedder</goal>
@@ -224,7 +224,7 @@
         </plugins>
       </build>
       <properties>
-        <skip.runnable.stories>true</skip.runnable.stories>
+        <skip.embeddables.stories>true</skip.embeddables.stories>
       </properties>
     </profile>
     <profile>
@@ -239,10 +239,10 @@
                 <id>stories-as-urls</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <storyIncludes>
-                    <storyInclude>**/TraderStories.java</storyInclude>
-                  </storyIncludes>
-                  <storyExcludes />
+                  <includes>
+                    <include>**/TraderStories.java</include>
+                  </includes>
+                  <excludes />
                   <skip>false</skip>
                   <batch>${batch.mode}</batch>
                   <ignoreFailureInStories>true</ignoreFailureInStories>
@@ -257,7 +257,7 @@
         </plugins>
       </build>
       <properties>
-        <skip.runnable.stories>true</skip.runnable.stories>
+        <skip.embeddables.stories>true</skip.embeddables.stories>
       </properties>
     </profile>
     <profile>
@@ -292,14 +292,14 @@
             <artifactId>maven-antrun-plugin</artifactId>
             <executions>
               <execution>
-                <id>run-stories-via-ant</id>
+                <id>run-via-ant</id>
                 <phase>integration-test</phase>
                 <configuration>
                   <tasks>
                     <taskdef name="storyRunner"
                       classname="org.jbehave.ant.StoryRunnerTask"
                       classpathref="maven.runtime.classpath" />
-                    <storyRunner storyIncludes="**/stories/*.java"
+                    <storyRunner includes="${include.embeddables}"
                       skip="false" 
                       generateViewAfterStories="true" 
                       ignoreFailureInStories="true"
@@ -320,14 +320,14 @@
         </plugins>
       </build>
       <properties>
-        <skip.runnable.stories>true</skip.runnable.stories>
+        <skip.embeddables.stories>true</skip.embeddables.stories>
       </properties>
     </profile>
   </profiles>
   <properties>
     <batch.mode>false</batch.mode>
     <ignore.failure.view>true</ignore.failure.view>
-    <skip.runnable.stories>false</skip.runnable.stories>
+    <skip.embeddables.stories>false</skip.embeddables.stories>
     <include.embeddables>**/stories/*.java</include.embeddables>
     <include.paths>**/stories/*.story</include.paths>
   </properties>

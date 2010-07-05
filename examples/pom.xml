@@ -48,7 +48,7 @@
     </plugins>
   </build>
   <properties>
-    <story.includes>**/stories/*.java</story.includes>
+    <jbehave.includes>**/stories/*.java</jbehave.includes>
     <jbehave.version>${project.version}</jbehave.version>
   </properties>
   <profiles>

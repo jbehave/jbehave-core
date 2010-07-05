@@ -58,8 +58,8 @@ find both the methods and the Steps instances matching the given step.
 
 	<taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
       classpathref="story.classpath" />
-    <stepdoc storyIncludes="**/stories/*.java"
-      storyExcludes="**/i18n/stories/*.java" />
+    <stepdoc includes="**/stories/*.java"
+      excludes="**/i18n/stories/*.java" />
       
 ]]></script>
 
@@ -77,9 +77,9 @@ find both the methods and the Steps instances matching the given step.
             <id>stepdoc</id>
             <phase>integration-test</phase>
             <configuration>
-              <storyIncludes>
-                <storyInclude>**/stories/*.java</storyInclude>
-              </storyIncludes>
+              <includes>
+                <include>**/stories/*.java</include>
+              </includes>
             </configuration>
             <goals>
               <goal>stepdoc</goal>
