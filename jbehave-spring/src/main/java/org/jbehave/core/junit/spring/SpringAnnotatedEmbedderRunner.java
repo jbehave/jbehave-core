@@ -7,12 +7,15 @@ import org.junit.runners.model.InitializationError;
 
 public class SpringAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
 
+    private SpringAnnotationBuilder annotationBuilder;
+    
     public SpringAnnotatedEmbedderRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
+        annotationBuilder = new SpringAnnotationBuilder(testClass());
     }
 
     protected AnnotationBuilder annotationBuilder() {
-        return new SpringAnnotationBuilder(testClass());
+        return annotationBuilder;
     }
 
 }
