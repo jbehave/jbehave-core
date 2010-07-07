@@ -51,11 +51,9 @@ public class AnnotationBuilder {
     }
 
     /**
-     * Builds Configuration instance based on annotation {@link Configure} found
+     * Builds a Configuration instance based on annotation {@link Configure} found
      * in the annotated object instance
      * 
-     * @param annotatedInstance
-     *            the Object instance that contains the annotations
      * @return A Configuration instance
      */
     public Configuration buildConfiguration() throws MissingAnnotationException {
@@ -92,17 +90,24 @@ public class AnnotationBuilder {
 
     /**
      * Builds CandidateSteps using annotation {@link UsingSteps} found in the
-     * annotated object instance
+     * annotated object instance and using the configuration build by {@link #buildConfiguration()}
      * 
-     * @param annotatedInstance
-     *            the Object instance that contains the annotations
      * @return A List of CandidateSteps instances
      */
     public List<CandidateSteps> buildCandidateSteps() {
+        return buildCandidateSteps(buildConfiguration());
+    }
 
+    /**
+     * Builds CandidateSteps using annotation {@link UsingSteps} found in the
+     * annotated object instance and the configuration provided
+     * 
+     * @param configuration the Configuration
+     * @return A List of CandidateSteps instances
+     */
+    public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
         List<Object> stepsInstances = new ArrayList<Object>();
-        Configuration configuration = buildConfiguration();
-        InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
+        InjectableStepsFactory factory = null;
         if (finder.isAnnotationPresent(UsingSteps.class)) {
             if (finder.isAnnotationValuePresent(UsingSteps.class, "instances")) {
                 List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(UsingSteps.class, Object.class,
@@ -118,6 +123,9 @@ public class AnnotationBuilder {
             annotationMonitor.annotationNotFound(UsingSteps.class, annotatedClass);
         }
 
+        if (factory == null) {
+            factory = new InstanceStepsFactory(configuration);
+        }
         return factory.createCandidateSteps();
     }
 
@@ -127,18 +135,20 @@ public class AnnotationBuilder {
             return new Embedder();
         }
 
-        Embedder embedder = instanceOf(Embedder.class,
-                finder.getAnnotatedValue(UsingEmbedder.class, Class.class, "embedder"));
         boolean batch = control(finder, "batch");
         boolean skip = control(finder, "skip");
         boolean generateViewAfterStories = control(finder, "generateViewAfterStories");
         boolean ignoreFailureInStories = control(finder, "ignoreFailureInStories");
         boolean ignoreFailureInView = control(finder, "ignoreFailureInView");
+        Configuration configuration = buildConfiguration();
+        List<CandidateSteps> candidateSteps = buildCandidateSteps(configuration);
 
+        Embedder embedder = instanceOf(Embedder.class,
+                finder.getAnnotatedValue(UsingEmbedder.class, Class.class, "embedder"));
         embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView);
-        embedder.useConfiguration(buildConfiguration());
-        embedder.useCandidateSteps(buildCandidateSteps());
+        embedder.useConfiguration(configuration);
+        embedder.useCandidateSteps(candidateSteps);
         return embedder;
     }
 
@@ -182,15 +192,15 @@ public class AnnotationBuilder {
         return finder;
     }
 
-    public Object embeddableInstance() {    
+    public Object embeddableInstance() {
         return injectEmbedder(buildEmbedder(), annotatedClass);
     }
 
-    protected  Object injectEmbedder(Embedder embedder, Class<?> annotatedClass) {
+    protected Object injectEmbedder(Embedder embedder, Class<?> annotatedClass) {
         try {
             Object instance = annotatedClass.getConstructor().newInstance();
-            if ( instance instanceof Embeddable ){
-                ((Embeddable)instance).useEmbedder(embedder);
+            if (instance instanceof Embeddable) {
+                ((Embeddable) instance).useEmbedder(embedder);
             }
             return instance;
         } catch (Exception e) {

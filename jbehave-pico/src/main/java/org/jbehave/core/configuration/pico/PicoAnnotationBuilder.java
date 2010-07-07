@@ -62,11 +62,12 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    public List<CandidateSteps> buildCandidateSteps() {
-        Configuration configuration = buildConfiguration();
-        InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
+    public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
+        InjectableStepsFactory factory;
         if (container != null) {
             factory = new PicoStepsFactory(configuration, container);
+        } else {
+            factory = new InstanceStepsFactory(configuration);
         }
         return factory.createCandidateSteps();
     }
@@ -86,9 +87,6 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
             T instance = container.getComponent(type);
             if ( instance != null ){
                 return instance;
-            } else {
-                // fall back on default
-                // getAnnotationMonitor().elementCreationFailed(type, e);
             }
         }
         return super.instanceOf(type, ofClass);

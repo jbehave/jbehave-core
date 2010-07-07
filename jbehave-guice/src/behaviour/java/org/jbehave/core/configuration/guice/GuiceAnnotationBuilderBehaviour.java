@@ -96,9 +96,10 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotations() {
+    public void shouldBuildCandidateStepsFromAnnotations() {    	
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(Annotated.class);
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), FooSteps.class,
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class,
                 FooStepsWithDependency.class);
     }
 

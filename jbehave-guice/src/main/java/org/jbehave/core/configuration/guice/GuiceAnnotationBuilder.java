@@ -9,6 +9,7 @@ import org.jbehave.core.configuration.AnnotationFinder;
 import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MissingAnnotationException;
+import org.jbehave.core.configuration.PrintStreamAnnotationMonitor;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -28,7 +29,7 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
     public Injector injector;
 
     public GuiceAnnotationBuilder(Class<?> annotatedClass) {
-        super(annotatedClass);
+        this(annotatedClass, new PrintStreamAnnotationMonitor());
     }
 
     public GuiceAnnotationBuilder(Class<?> annotatedClass, AnnotationMonitor annotationMonitor) {
@@ -50,7 +51,7 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
                 }
             }
             // creating injector with any modules found
-            if ( modules.size() > 0 ){
+            if (modules.size() > 0) {
                 injector = Guice.createInjector(Modules.combine(modules));
             }
         } else {
@@ -60,21 +61,23 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    public List<CandidateSteps> buildCandidateSteps() {
-        Configuration configuration = buildConfiguration();
-        InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
+    public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
+        InjectableStepsFactory factory;
         if ( injector != null ){
             factory = new GuiceStepsFactory(configuration, injector);            
+        } else {
+            factory = new InstanceStepsFactory(configuration);
         }
         return factory.createCandidateSteps();
     }
-    
+
     @Override
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
-        if ( injector != null ){
-            List<Binding<ParameterConverter>> bindingsByType = injector.findBindingsByType(new TypeLiteral<ParameterConverter>(){});
+        if (injector != null) {
+            List<Binding<ParameterConverter>> bindingsByType = injector
+                    .findBindingsByType(new TypeLiteral<ParameterConverter>() {});
             List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
-            for ( Binding<ParameterConverter> binding : bindingsByType ) {
+            for (Binding<ParameterConverter> binding : bindingsByType) {
                 converters.add(binding.getProvider().get());
             }
             return new ParameterConverters().addConverters(converters);
@@ -84,16 +87,17 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
 
     @Override
     protected <T> T instanceOf(Class<T> type, Class<T> ofClass) {
-        if ( injector != null ){
+        if (injector != null) {
             try {
-                return injector.getInstance(type);
-            } catch ( RuntimeException e ){
-                // fall back on default
-                //getAnnotationMonitor().elementCreationFailed(type, e);                
+                if (!type.equals(Object.class) && injector.getBinding(type) != null) {
+                    return injector.getInstance(type);
+                }
+            } catch (Exception e) {
+                // fall back on getting instance by class
             }
+            return injector.getInstance(ofClass);
         }
         return super.instanceOf(type, ofClass);
     }
-
 
 }

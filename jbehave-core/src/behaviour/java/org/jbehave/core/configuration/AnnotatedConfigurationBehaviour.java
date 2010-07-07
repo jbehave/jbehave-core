@@ -16,15 +16,17 @@ public class AnnotatedConfigurationBehaviour {
     @Test
     public void shouldCreateCandidateStepsFromAnnotation(){
        	AnnotationBuilder builderAnnotated = new AnnotationBuilder(Annotated.class);
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), MySteps.class, MyOtherSteps.class);
+		Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), MySteps.class, MyOtherSteps.class);
     }
     
     @Test
     public void shouldCreateEmptyCandidateStepsListIfAnnotationOrAnnotatedValuesNotPresent(){
        	AnnotationBuilder builderNotAnnotated = new AnnotationBuilder(NotAnnotated.class);
-    	assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
+		Configuration configuration = builderNotAnnotated.buildConfiguration();
+    	assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps(configuration));
        	AnnotationBuilder builderAnnotatedWithoutSteps = new AnnotationBuilder(AnnotatedWithoutSteps.class);
-        assertThatStepsInstancesAre(builderAnnotatedWithoutSteps.buildCandidateSteps());
+        assertThatStepsInstancesAre(builderAnnotatedWithoutSteps.buildCandidateSteps(configuration));
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses){

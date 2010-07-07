@@ -45,11 +45,12 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    public List<CandidateSteps> buildCandidateSteps() {
-        Configuration configuration = buildConfiguration();
-        InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
+    public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
+        InjectableStepsFactory factory;
         if ( context != null ){
             factory = new SpringStepsFactory(configuration, context);            
+        } else {
+            factory = new InstanceStepsFactory(configuration);
         }
         return factory.createCandidateSteps();
     }

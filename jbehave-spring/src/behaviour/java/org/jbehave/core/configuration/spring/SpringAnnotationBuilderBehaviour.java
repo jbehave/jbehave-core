@@ -87,7 +87,8 @@ public class SpringAnnotationBuilderBehaviour {
     @Test
     public void shouldBuildCandidateStepsFromAnnotations() {
     	SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(Annotated.class);
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), FooSteps.class,
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class,
                 FooStepsWithDependency.class);
     }
 

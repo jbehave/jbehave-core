@@ -95,7 +95,8 @@ public class PicoAnnotationBuilderBehaviour {
     @Test
     public void shouldBuildCandidateStepsFromAnnotations() {
         PicoAnnotationBuilder builderAnnotated = new PicoAnnotationBuilder(Annotated.class);
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), FooSteps.class,
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class,
                 FooStepsWithDependency.class);
     }
 
