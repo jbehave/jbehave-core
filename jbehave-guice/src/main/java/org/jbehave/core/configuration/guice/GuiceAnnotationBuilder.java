@@ -91,11 +91,12 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
             try {
                 if (!type.equals(Object.class) && injector.getBinding(type) != null) {
                     return injector.getInstance(type);
+                } else {
+                    return injector.getInstance(ofClass);
                 }
             } catch (Exception e) {
-                // fall back on getting instance by class
+                return injector.getInstance(ofClass);
             }
-            return injector.getInstance(ofClass);
         }
         return super.instanceOf(type, ofClass);
     }
