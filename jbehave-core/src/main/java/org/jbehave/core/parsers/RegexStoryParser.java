@@ -42,10 +42,9 @@ public class RegexStoryParser implements StoryParser {
 
     public Story parseStory(String storyAsText, String storyPath) {
         this.storyPath = storyPath;
-        String canonicalizedStory = keywords.canonicalize(storyAsText);
-        Description description = parseDescriptionFrom(canonicalizedStory);
-        Narrative narrative = parseNarrativeFrom(canonicalizedStory);
-        List<Scenario> scenarios = parseScenariosFrom(canonicalizedStory);
+        Description description = parseDescriptionFrom(storyAsText);
+        Narrative narrative = parseNarrativeFrom(storyAsText);
+        List<Scenario> scenarios = parseScenariosFrom(storyAsText);
         return new Story(description, narrative, storyPath, scenarios);
     }
 

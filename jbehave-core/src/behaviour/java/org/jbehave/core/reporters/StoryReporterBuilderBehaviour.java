@@ -17,7 +17,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.i18n.StringCoder;
+import org.jbehave.core.i18n.Encoding;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathResolver;
@@ -81,7 +81,7 @@ public class StoryReporterBuilderBehaviour {
         // Given
         String storyPath = storyPath(MyStory.class);
         LocalizedKeywords keywords = new LocalizedKeywords(new Locale("it"),
-                "org/jbehave/core/i18n/keywords", this.getClass().getClassLoader(), new StringCoder());
+                "org/jbehave/core/i18n/keywords", this.getClass().getClassLoader(), new Encoding());
         final URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         final OutputStream out = new ByteArrayOutputStream();
 

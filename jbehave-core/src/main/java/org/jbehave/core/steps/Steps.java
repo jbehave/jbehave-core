@@ -159,11 +159,10 @@ public class Steps implements CandidateSteps {
     private void addCandidateStep(List<CandidateStep> candidates,
 			Method method, StepType stepType, String stepPatternAsString,
 			int priority) {
-        String pattern = configuration.keywords().canonicalize(stepPatternAsString);
 		checkForDuplicateCandidateSteps(candidates, stepType,
-		        pattern);
+		        stepPatternAsString);
 		CandidateStep step = createCandidateStep(method, stepType,
-		        pattern, priority, configuration);
+		        stepPatternAsString, priority, configuration);
 		step.useStepMonitor(configuration.stepMonitor());
 		step.useParanamer(configuration.paranamer());
 		step.doDryRun(configuration.dryRun());

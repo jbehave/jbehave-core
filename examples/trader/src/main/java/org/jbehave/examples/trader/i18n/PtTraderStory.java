@@ -12,7 +12,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.i18n.StringCoder;
+import org.jbehave.core.i18n.Encoding;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
@@ -30,7 +30,7 @@ public abstract class PtTraderStory extends JUnitStory {
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
 		Keywords keywords = new LocalizedKeywords(new Locale("pt"),
-				"org/jbehave/examples/trader/i18n/keywords", classLoader, new StringCoder());
+				"org/jbehave/examples/trader/i18n/keywords", classLoader, new Encoding());
 		Configuration configuration = new MostUsefulConfiguration()
 				.useStoryPathResolver(
 						new UnderscoredCamelCaseResolver(".historia"))

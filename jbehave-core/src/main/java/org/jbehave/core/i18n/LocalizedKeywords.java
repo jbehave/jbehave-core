@@ -20,7 +20,7 @@ public class LocalizedKeywords extends Keywords {
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     private static final String DEFAULT_BUNDLE_NAME = "org/jbehave/core/i18n/keywords";
     private static final ClassLoader DEFAULT_CLASS_LOADER = Thread.currentThread().getContextClassLoader();
-    private static final StringCoder DEFAULT_STRING_CODER = new StringCoder();
+    private static final Encoding DEFAULT_ENCODING = new Encoding();
     private final Locale locale;
 
     public LocalizedKeywords() {
@@ -28,11 +28,11 @@ public class LocalizedKeywords extends Keywords {
     }
 
     public LocalizedKeywords(Locale locale) {
-        this(locale, DEFAULT_BUNDLE_NAME, DEFAULT_CLASS_LOADER, DEFAULT_STRING_CODER);
+        this(locale, DEFAULT_BUNDLE_NAME, DEFAULT_CLASS_LOADER, DEFAULT_ENCODING);
     }
 
-    public LocalizedKeywords(Locale locale, String bundleName, ClassLoader classLoader, StringCoder stringCoder) {
-        super(keywords(bundleName, locale, classLoader), stringCoder);
+    public LocalizedKeywords(Locale locale, String bundleName, ClassLoader classLoader, Encoding encoding) {
+        super(keywords(bundleName, locale, classLoader), encoding);
         this.locale = locale;
     }
 
