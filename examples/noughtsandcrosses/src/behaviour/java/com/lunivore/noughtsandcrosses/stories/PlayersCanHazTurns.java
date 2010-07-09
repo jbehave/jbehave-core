@@ -10,7 +10,6 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.i18n.Encoding;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
@@ -33,7 +32,7 @@ public class PlayersCanHazTurns extends JUnitStory {
         ClassLoader classLoader = this.getClass().getClassLoader();
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         Keywords keywords = new LocalizedKeywords(new Locale("lc"),
-                "com/lunivore/noughtsandcrosses/util/keywords", classLoader, new Encoding());
+                "com/lunivore/noughtsandcrosses/util/keywords", classLoader);
         Configuration configuration = new MostUsefulConfiguration()
             .useKeywords(keywords)
             .useStoryParser(new RegexStoryParser(keywords))

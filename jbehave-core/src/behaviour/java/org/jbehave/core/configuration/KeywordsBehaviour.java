@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.HashMap;
 
 import org.jbehave.core.configuration.Keywords.KeywordNotFoundException;
-import org.jbehave.core.i18n.Encoding;
 import org.junit.Test;
 
 public class KeywordsBehaviour {
@@ -34,7 +33,7 @@ public class KeywordsBehaviour {
 
     @Test(expected = KeywordNotFoundException.class)
     public void shouldFailIfSomeKeywordIsMissingInMapConstructor() throws IOException {
-        new Keywords(new HashMap<String, String>(), new Encoding());
+        new Keywords(new HashMap<String, String>());
     }
 
 }

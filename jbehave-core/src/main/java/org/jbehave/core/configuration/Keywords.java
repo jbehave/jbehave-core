@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.i18n.Encoding;
 import org.jbehave.core.steps.StepType;
 
@@ -41,7 +43,6 @@ public class Keywords {
             GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE, PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
 
-    private final Encoding encoding;
     private final String narrative;
     private final String inOrderTo;
     private final String asA;
@@ -92,17 +93,15 @@ public class Keywords {
      * default {@link Encoding}.
      */
     public Keywords() {
-        this(defaultKeywords(), new Encoding());
+        this(defaultKeywords());
     }
 
     /**
      * Creates Keywords with provided keywords Map and Encoding
      * 
      * @param keywords the Map of keywords indexed by their name
-     * @param encoding the Encoding used to read the keywords
      */
-    public Keywords(Map<String, String> keywords, Encoding encoding) {
-        this.encoding = encoding;
+    public Keywords(Map<String, String> keywords) {
         this.narrative = keyword(NARRATIVE, keywords);
         this.inOrderTo = keyword(IN_ORDER_TO, keywords);
         this.asA = keyword(AS_A, keywords);
@@ -133,10 +132,6 @@ public class Keywords {
         return keyword;
     }
 
-    public Encoding encoding(){
-        return encoding;
-    }
-    
     public String narrative() {
         return narrative;
     }
@@ -227,6 +222,11 @@ public class Keywords {
         return words;
     }
 
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+    
     @SuppressWarnings("serial")
     public static final class KeywordNotFoundException extends RuntimeException {
 

@@ -19,8 +19,7 @@ public class LocalizedKeywords extends Keywords {
 
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     private static final String DEFAULT_BUNDLE_NAME = "i18n/keywords";
-    private static final ClassLoader DEFAULT_CLASS_LOADER = Thread.currentThread().getContextClassLoader();
-    private static final Encoding DEFAULT_ENCODING = new Encoding();
+    private static final ClassLoader DEFAULT_CLASS_LOADER = LocalizedKeywords.class.getClassLoader();
     private final Locale locale;
 
     public LocalizedKeywords() {
@@ -28,11 +27,11 @@ public class LocalizedKeywords extends Keywords {
     }
 
     public LocalizedKeywords(Locale locale) {
-        this(locale, DEFAULT_BUNDLE_NAME, DEFAULT_CLASS_LOADER, DEFAULT_ENCODING);
+        this(locale, DEFAULT_BUNDLE_NAME, DEFAULT_CLASS_LOADER);
     }
 
-    public LocalizedKeywords(Locale locale, String bundleName, ClassLoader classLoader, Encoding encoding) {
-        super(keywords(bundleName, locale, classLoader), encoding);
+    public LocalizedKeywords(Locale locale, String bundleName, ClassLoader classLoader) {
+        super(keywords(bundleName, locale, classLoader));
         this.locale = locale;
     }
 
