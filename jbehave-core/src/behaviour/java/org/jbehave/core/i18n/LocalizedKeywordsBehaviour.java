@@ -55,7 +55,7 @@ public class LocalizedKeywordsBehaviour {
 
     @Test(expected = LocalizedKeywordNotFoundException.class)
     public void shouldFailIfKeywordIsNotFound() throws IOException {
-        ensureKeywordsAreLocalisedFor(new Locale("es"), null);
+        ensureKeywordsAreLocalisedFor(new Locale("mk"), null);
     }
 
     @Test
