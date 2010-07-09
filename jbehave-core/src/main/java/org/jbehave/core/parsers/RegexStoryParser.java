@@ -201,8 +201,7 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullGivenStoriesIntoGroupOne() {
         String givenScenarios = keywords.givenStories();
-        String concatenatedKeywords = concatenateWithOr(keywords.given(),
-                keywords.when(), keywords.then(), keywords.others());
+        String concatenatedKeywords = concatenateWithOr(keywords.startingWords());
         return compile(".*" + givenScenarios + "((.|\\n)*?)\\s*(" + concatenatedKeywords + ").*");
     }
 
@@ -213,30 +212,8 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullScenarioTitleIntoGroupOne() {
         String scenario = keywords.scenario();
-        String concatenatedKeywords = concatenateWithOr(keywords.given(),
-                keywords.when(), keywords.then(), keywords.others());
+        String concatenatedKeywords = concatenateWithOr(keywords.startingWords());
         return compile(scenario + "((.|\\n)*?)\\s*(" + concatenatedKeywords + ").*");
-    }
-
-    private String concatenateWithOr(String given, String when, String then,
-                                     String[] others) {
-        return concatenateWithOr(false, given, when, then, others);
-    }
-
-    private String concatenateWithSpaceOr(String given, String when,
-                                          String then, String[] others) {
-        return concatenateWithOr(true, given, when, then, others);
-    }
-
-    private String concatenateWithOr(boolean usingSpace, String given,
-                                     String when, String then, String[] others) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(given).append(usingSpace ? "\\s|" : "|");
-        builder.append(when).append(usingSpace ? "\\s|" : "|");
-        builder.append(then).append(usingSpace ? "\\s|" : "|");
-        builder.append(usingSpace ? concatenateWithSpaceOr(others)
-                : concatenateWithOr(others));
-        return builder.toString();
     }
 
     private String concatenateWithOr(String... keywords) {
@@ -257,10 +234,8 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern patternToPullOutSteps() {
-        String givenWhenThen = concatenateWithOr(keywords.given(), keywords
-                .when(), keywords.then(), keywords.others());
-        String givenWhenThenSpaced = concatenateWithSpaceOr(keywords.given(),
-                keywords.when(), keywords.then(), keywords.others());
+        String givenWhenThen = concatenateWithOr(keywords.startingWords());
+        String givenWhenThenSpaced = concatenateWithSpaceOr(keywords.startingWords());
         String scenario = keywords.scenario();
         String table = keywords.examplesTable();
 		return compile("((" + givenWhenThen + ") (.)*?)\\s*(\\Z|"
