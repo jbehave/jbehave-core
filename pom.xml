@@ -95,6 +95,10 @@
     </resources>
     <testResources>
       <testResource>
+        <directory>src/behaviour/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
+      <testResource>
         <directory>${project.build.testSourceDirectory}</directory>
         <filtering>false</filtering>
         <excludes>

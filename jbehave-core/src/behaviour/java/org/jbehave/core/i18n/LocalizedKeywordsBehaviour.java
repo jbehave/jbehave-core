@@ -109,9 +109,9 @@ public class LocalizedKeywordsBehaviour {
 
     private Properties bundleFor(Locale locale) throws IOException {
         Properties expected = new Properties();
-        String bundle = "org/jbehave/core/i18n/keywords_" + (locale == null ? "en" : locale.getLanguage())
+        String bundle = "i18n/keywords_" + (locale == null ? "en" : locale.getLanguage())
                 + ".properties";
-        InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(bundle);
+        InputStream stream = this.getClass().getClassLoader().getResourceAsStream(bundle);
         if (stream != null) {
             expected.load(stream);
         }
