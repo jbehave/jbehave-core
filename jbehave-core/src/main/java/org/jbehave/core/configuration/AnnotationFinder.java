@@ -119,7 +119,7 @@ public class AnnotationFinder {
         }
     }
 
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings("unchecked")
     private <T> T processMemberValue(MemberValue memberValue, Object previousValue) {
 
         if (memberValue instanceof AnnotationMemberValue) {
@@ -171,7 +171,7 @@ public class AnnotationFinder {
         throw new RuntimeException("Invalid member value " + memberValue);
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings("unchecked")
     private Class loadClass(String type) {
         try {
             return annotatedClass.getClassLoader().loadClass(type);

@@ -9,7 +9,6 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.i18n.Encoding;
 import org.jbehave.core.steps.StepType;
 
 /**
@@ -89,8 +88,7 @@ public class Keywords {
     }
 
     /**
-     * Creates Keywords with default values {@link #defaultKeywords()} and
-     * default {@link Encoding}.
+     * Creates Keywords with default values {@link #defaultKeywords()}
      */
     public Keywords() {
         this(defaultKeywords());
