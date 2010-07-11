@@ -57,7 +57,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 
 	protected File outputDirectory() {
 		File codeLocationParent = new File(storyLocation.getCodeLocation().getFile()).getParentFile();
-		return new File(codeLocationParent, configuration.getOutputDirectory());
+		return new File(codeLocationParent.getPath().replace('\\','/'), configuration.getOutputDirectory());
 	}
 
 	protected String outputName() {

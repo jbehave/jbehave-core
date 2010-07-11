@@ -39,7 +39,7 @@ public class FilePrintStreamFactoryBehaviour {
         FileConfiguration configuration = new FileConfiguration("ext");
         FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration);
         File outputFile = factory.getOutputFile();
-        String expected = new File(codeLocation.getFile()).getParent() + "/" + configuration.getOutputDirectory() + "/"
+        String expected = new File(codeLocation.getFile()).getParent().replace('\\', '/') + "/" + configuration.getOutputDirectory() + "/"
                 + "org.jbehave.examples.trader.stories.my_given." + configuration.getExtension();
         assertThat(outputFile.toString(), equalTo(expected));
 
