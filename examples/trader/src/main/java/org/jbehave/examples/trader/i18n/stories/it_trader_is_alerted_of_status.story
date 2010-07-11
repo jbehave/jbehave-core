@@ -18,9 +18,9 @@ Allora lo status di allerta è ON
 Scenario:
 
 Dato che ho una tabella
-!!uno!!due!!
-!11!12!
-!21!22!
+|uno|due|
+|11|12|
+|21|22|
 Allora la tabella ha 2 righe
 E alla riga 1 e colonna uno troviamo: 11
 E alla riga 1 e colonna due troviamo: 12

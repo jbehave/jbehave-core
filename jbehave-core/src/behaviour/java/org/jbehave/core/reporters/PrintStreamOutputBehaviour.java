@@ -380,7 +380,7 @@ public class PrintStreamOutputBehaviour {
         		+ "Quando richiedo $20\n"
                 + "Quando chiedo a Liz un prestito di $100 (FALLITO)\n"
                 + "(java.lang.IllegalAccessException: Lasciate in pace i miei soldi!)\n"
-                + "Allora dovrei avere un saldo di $30 (PENDENTE)\n"
+                + "Allora dovrei avere un saldo di $30 (IN SOSPESO)\n"
                 + "Allora dovrei avere $20 (NON ESEGUITO)\n";
 
         assertThatOutputIs(out, expected);
