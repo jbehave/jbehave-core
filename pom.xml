@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.codehaus</groupId>
@@ -43,13 +44,19 @@
       </dependency>
       <dependency>
         <!--
-          Optional as only required by core StoryFinder, and used by
-          Ant and Maven Plugin modules
+          Optional as only required by core StoryFinder, and used by Ant
+          and Maven Plugin modules
         -->
         <groupId>org.apache.ant</groupId>
         <artifactId>ant</artifactId>
         <version>1.7.1</version>
         <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-launcher</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <!-- Only used for tests -->
       <dependency>
@@ -79,7 +86,7 @@
   <properties>
     <!-- NOTE: Set -Dfile.encoding=UTF-8 in MAVEN_OPTS -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <resource.encoding>UTF-8</resource.encoding>  
+    <resource.encoding>UTF-8</resource.encoding>
   </properties>
 
   <build>
@@ -348,7 +355,7 @@
   <contributors />
 
   <scm>
-    <connection>scm:git:git://git.codehaus.org/jbehave-core.git</connection> 
+    <connection>scm:git:git://git.codehaus.org/jbehave-core.git</connection>
     <developerConnection>scm:git:ssh://git@git.codehaus.org/jbehave-core.git</developerConnection>
     <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git</url>
   </scm>
