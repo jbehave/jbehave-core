@@ -12,17 +12,17 @@
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-guice</artifactId>
+      <version>${jbehave.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
       <artifactId>jbehave-pico</artifactId>
       <version>${jbehave.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jbehave</groupId>
       <artifactId>jbehave-spring</artifactId>
-      <version>${jbehave.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-guice</artifactId>
       <version>${jbehave.version}</version>
     </dependency>
   </dependencies>
@@ -302,10 +302,8 @@
                       classname="org.jbehave.ant.StoryRunnerTask"
                       classpathref="maven.runtime.classpath" />
                     <storyRunner includes="${include.embeddables}"
-                      skip="false" 
-                      generateViewAfterStories="true" 
-                      ignoreFailureInStories="true"
-                      ignoreFailureInView="${ignore.failure.view}" />
+                      skip="false" generateViewAfterStories="true"
+                      ignoreFailureInStories="true" ignoreFailureInView="${ignore.failure.view}" />
                     <taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
                       classpathref="maven.runtime.classpath" />
                     <stepdoc

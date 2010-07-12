@@ -42,11 +42,6 @@
       <artifactId>ant</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>${pom.groupId}</groupId>
-      <artifactId>jbehave-maven-plugin</artifactId>
-      <version>${project.version}</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
