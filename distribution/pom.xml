@@ -46,28 +46,6 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.codehaus.xsite</groupId>
-        <artifactId>xsite-maven-plugin</artifactId>
-        <version>1.1.2</version>
-        <configuration>
-          <sourceDirectoryPath>${basedir}/src/site/</sourceDirectoryPath>
-          <sitemapPath>content/sitemap.xml</sitemapPath>
-          <templatesDirectoryPath>${project.build.directory}/templates</templatesDirectoryPath>
-          <skinPath>xsite-skin.html</skinPath>
-          <resourcePaths>resources</resourcePaths>
-          <outputDirectoryPath>${project.build.directory}/site</outputDirectoryPath>
-          <publishedVersion>${project.version}</publishedVersion>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
@@ -234,12 +212,34 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.codehaus.xsite</groupId>
+        <artifactId>xsite-maven-plugin</artifactId>
+        <version>1.1.2</version>
+        <configuration>
+          <sourceDirectoryPath>${basedir}/src/site/</sourceDirectoryPath>
+          <sitemapPath>content/sitemap.xml</sitemapPath>
+          <templatesDirectoryPath>${project.build.directory}/templates</templatesDirectoryPath>
+          <skinPath>xsite-skin.html</skinPath>
+          <resourcePaths>resources</resourcePaths>
+          <outputDirectoryPath>${project.build.directory}/site</outputDirectoryPath>
+          <publishedVersion>${project.version}</publishedVersion>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
           <execution>
             <id>bin</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
@@ -253,7 +253,7 @@
           </execution>
           <execution>
             <id>src</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
