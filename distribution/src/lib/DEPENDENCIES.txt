@@ -4,7 +4,8 @@ Choose the desired version from:
 
 http://mvnrepository.com/artifact/org.jbehave/jbehave-distribution/
 
-If you use Maven or Ivy or Grape, you can dependencies declaratively from the POM.
+If you use Maven or Ivy or Grape, you can define dependencies declaratively, 
+using groupId and artifactId detailed in the POM (see also docs/download.html).
 
 If you use Ant, download the POM with the desired version, rename it to pom.xml,
 and execute Ant target in build.xml provided:
