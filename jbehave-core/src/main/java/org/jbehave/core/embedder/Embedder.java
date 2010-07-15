@@ -64,7 +64,7 @@ public class Embedder {
                     if (embedderControls.ignoreFailureInStories()) {
                         embedderMonitor.storyFailed(storyName, e);
                     } else {
-                        throw new RunningStoriesFailedException("Failed to run story " + storyName, e);
+                        throw new RunningStoriesFailed("Failed to run story " + storyName, e);
                     }
                 }
             }
@@ -74,7 +74,7 @@ public class Embedder {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.storiesBatchFailed(format(failedStories));
             } else {
-                throw new RunningStoriesFailedException("Failed to run stories in batch: " + format(failedStories));
+                throw new RunningStoriesFailed("Failed to run stories in batch: " + format(failedStories));
             }
         }
 
@@ -128,7 +128,7 @@ public class Embedder {
                     if (embedderControls.ignoreFailureInStories()) {
                         embedderMonitor.storyFailed(storyPath, e);
                     } else {
-                        throw new RunningStoriesFailedException("Failed to run story " + storyPath, e);
+                        throw new RunningStoriesFailed("Failed to run story " + storyPath, e);
                     }
                 }
             }
@@ -138,7 +138,7 @@ public class Embedder {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.storiesBatchFailed(format(failedStories));
             } else {
-                throw new RunningStoriesFailedException("Failed to run stories in batch: " + format(failedStories));
+                throw new RunningStoriesFailed("Failed to run stories in batch: " + format(failedStories));
             }
         }
 
@@ -215,7 +215,7 @@ public class Embedder {
             embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats, viewResources, e);
             String message = "Failed to generate stories view in " + outputDirectory + " with formats " + formats
                     + " and resources " + viewResources;
-            throw new RenderingReportsFailedException(message, e);
+            throw new ViewGenerationFailed(message, e);
         }
         int scenarios = viewGenerator.countScenarios();
         int failedScenarios = viewGenerator.countFailedScenarios();
@@ -223,7 +223,7 @@ public class Embedder {
         if (!embedderControls.ignoreFailureInView() && failedScenarios > 0) {
             String message = "Generated stories view with " + scenarios + " scenarios (of which " + failedScenarios
                     + " failed)";
-            throw new RunningStoriesFailedException(message);
+            throw new RunningStoriesFailed(message);
         }
 
     }
@@ -305,19 +305,19 @@ public class Embedder {
     }
 
     @SuppressWarnings("serial")
-    public class RunningStoriesFailedException extends RuntimeException {
-        public RunningStoriesFailedException(String message, Throwable cause) {
+    public class RunningStoriesFailed extends RuntimeException {
+        public RunningStoriesFailed(String message, Throwable cause) {
             super(message, cause);
         }
 
-        public RunningStoriesFailedException(String message) {
+        public RunningStoriesFailed(String message) {
             super(message);
         }
     }
 
     @SuppressWarnings("serial")
-    public class RenderingReportsFailedException extends RuntimeException {
-        public RenderingReportsFailedException(String message, Throwable cause) {
+    public class ViewGenerationFailed extends RuntimeException {
+        public ViewGenerationFailed(String message, Throwable cause) {
             super(message, cause);
         }
     }

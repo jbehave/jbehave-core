@@ -28,8 +28,8 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.embedder.Embedder.RenderingReportsFailedException;
-import org.jbehave.core.embedder.Embedder.RunningStoriesFailedException;
+import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
+import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
@@ -120,10 +120,10 @@ public class EmbedderBehaviour {
 			assertThat(out.toString(), not(containsString("Running story "
 					+ story.getClass().getName())));
 		}
-		assertThat(out.toString(), not(containsString("Rendering reports")));
+	    assertThat(out.toString(), not(containsString("Generating stories view")));
 	}
 
-	@Test(expected = RunningStoriesFailedException.class)
+	@Test(expected = RunningStoriesFailed.class)
 	public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureInStoriesFlagIsNotSet()
 			throws Throwable {
 		// Given
@@ -220,7 +220,7 @@ public class EmbedderBehaviour {
 	}
 
 
-	@Test(expected = RunningStoriesFailedException.class)
+	@Test(expected = RunningStoriesFailed.class)
 	public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesInBatchIfIgnoreFailureInStoriesFlagIsNotSet()
 			throws Throwable {
 		// Given
@@ -285,7 +285,7 @@ public class EmbedderBehaviour {
 	}
 
 	@Test
-	public void shouldNotRenderReportsWhenRunningStoriesAsEmbeddablesIfRenderReportsAfterStoriesFlagIsNotSet()
+	public void shouldNotGenerateViewWhenRunningStoriesAsEmbeddablesIfGenerateViewAfterStoriesFlagIsNotSet()
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
@@ -315,7 +315,7 @@ public class EmbedderBehaviour {
 			assertThat(out.toString(), containsString("Running story "
 					+ storyName));
 		}
-		assertThat(out.toString(), not(containsString("Rendering reports")));
+		assertThat(out.toString(), not(containsString("Generating stories view")));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -414,7 +414,7 @@ public class EmbedderBehaviour {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test(expected = RunningStoriesFailedException.class)
+	@Test(expected = RunningStoriesFailed.class)
 	public void shouldThrowExceptionUponFailingStoriesAsPathsIfIgnoreFailureInStoriesFlagIsNotSet()
 			throws Throwable {
 		// Given
@@ -514,7 +514,7 @@ public class EmbedderBehaviour {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Test(expected = RunningStoriesFailedException.class)
+	@Test(expected = RunningStoriesFailed.class)
 	public void shouldThrowExceptionUponFailingStoriesAsPathsInBatchIfIgnoreFailureInStoriesFlagIsNotSet()
 			throws Throwable {
 		// Given
@@ -582,7 +582,7 @@ public class EmbedderBehaviour {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void shouldNotRenderReportsWhenRunningStoriesAsPathsIfRenderReportsAfterStoriesFlagIsNotSet()
+	public void shouldNotGenerateViewWhenRunningStoriesAsPathsIfGenerateViewAfterStoriesFlagIsNotSet()
 			throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
@@ -609,12 +609,12 @@ public class EmbedderBehaviour {
 			assertThat(out.toString(), containsString("Running story "
 					+ storyPath));
 		}
-		assertThat(out.toString(), not(containsString("Rendering reports")));
-		assertThat(out.toString(), not(containsString("Reports rendered")));
+		assertThat(out.toString(), not(containsString("Generating stories view")));
+		assertThat(out.toString(), not(containsString("Stories view generated")));
 	}
 
 	@Test
-	public void shouldRenderReportsViaGivenRenderer() throws Throwable {
+	public void shouldGenerateStoriesView() throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
 		EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
@@ -640,7 +640,7 @@ public class EmbedderBehaviour {
 	}
 
 	@Test
-	public void shouldNotRenderReportsIfSkipFlagIsSet() throws Throwable {
+	public void shouldNotGenerateViewIfSkipFlagIsSet() throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
 		EmbedderControls embedderControls = new EmbedderControls().doSkip(true);
@@ -662,12 +662,12 @@ public class EmbedderBehaviour {
 		// Then
 		verify(viewGenerator, never()).generateView(outputDirectory, formats,
 				renderingResources);
-		assertThat(out.toString(), not(containsString("Rendering reports")));
-		assertThat(out.toString(), not(containsString("Reports rendered")));
+	    assertThat(out.toString(), not(containsString("Generating stories view")));
+		assertThat(out.toString(), not(containsString("Stories view generated")));
 	}
 
-	@Test(expected = RenderingReportsFailedException.class)
-	public void shouldThrowExceptionIfRenderingFails() throws Throwable {
+	@Test(expected = ViewGenerationFailed.class)
+	public void shouldThrowExceptionIfViewGenerationFails() throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);
 		EmbedderControls embedderControls = new EmbedderControls();
@@ -689,7 +689,7 @@ public class EmbedderBehaviour {
 		// Then fail as expected
 	}
 
-	@Test(expected = RunningStoriesFailedException.class)
+	@Test(expected = RunningStoriesFailed.class)
 	public void shouldThrowExceptionIfScenariosFailedAndIgnoreFlagIsNotSet()
 			throws Throwable {
 		// Given
