@@ -15,7 +15,7 @@ public class StoryRunnerMojo extends AbstractEmbedderMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
         getLog().info("Running stories using embedder "+embedder);
-		embedder.runStoriesAsEmbeddables(embeddables());
+		embedder.runStoriesAsEmbeddables(classNames(), createClassLoader());
     }
 
 }

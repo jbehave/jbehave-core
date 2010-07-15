@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Properties;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.jbehave.core.Embeddable;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
@@ -164,7 +163,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * 
      * @return A EmbedderClassLoader
      */
-    private EmbedderClassLoader createClassLoader() {
+    protected EmbedderClassLoader createClassLoader() {
         try {
             return new EmbedderClassLoader(classpathElements());
         } catch (Exception e) {
@@ -187,14 +186,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         return storyPaths;
     }
 
-    protected List<Embeddable> embeddables() {
-        getLog().debug("Searching for embeddables including " + includes + " and excluding " + excludes);
-        List<Embeddable> embeddables = finder.findEmbeddables(rootSourceDirectory(), includes, excludes,
-                createClassLoader());
-        getLog().info("Found embeddables: " + embeddables);
-        return embeddables;
+    protected List<String> classNames() {
+        getLog().debug("Searching for class names including " + includes + " and excluding " + excludes);
+        List<String> classNames = finder.findClassNames(rootSourceDirectory(), includes, excludes);
+        getLog().info("Found class names: " + classNames);
+        return classNames;
     }
-
+    
     /**
      * Creates an instance of Embedder, either using {@link #injectableEmbedderClass} (if set)
      * or defaulting to {@link #embedderClass}.

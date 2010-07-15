@@ -7,16 +7,11 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
-import java.net.MalformedURLException;
 import java.util.List;
 
-import org.jbehave.core.Embeddable;
-import org.jbehave.core.embedder.EmbedderClassLoader;
-import org.jbehave.core.io.stories.MyStory;
 import org.junit.Test;
 
 public class StoryFinderBehaviour {
@@ -51,15 +46,6 @@ public class StoryFinderBehaviour {
         assertThat(classNames, hasItem(not(containsString("/"))));
         assertThat(classNames, hasItem(not(endsWith(".java"))));
         assertThat(classNames, hasItem(startsWith("org.jbehave.core.io.stories")));
-    }
-
-    @Test
-    public void shouldFindEmbeddablesOnlyForNonAbstractClasses() throws MalformedURLException {
-        StoryFinder finder = new StoryFinder();
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(asList("target/test-classes"));
-        List<Embeddable> embeddables = finder.findEmbeddables("src/behaviour/java", asList("**/stories/*.java"), asList(""), classLoader);
-        assertThat(embeddables.size(), equalTo(1));
-        assertThat(embeddables.iterator().next(), instanceOf(MyStory.class));
     }
 
     @Test

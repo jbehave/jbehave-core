@@ -11,9 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.jbehave.core.Embeddable;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
@@ -121,7 +119,7 @@ public abstract class AbstractEmbedderTask extends Task {
      * 
      * @return A EmbedderClassLoader
      */
-    private EmbedderClassLoader createClassLoader() {
+    protected EmbedderClassLoader createClassLoader() {
         try {
             return new EmbedderClassLoader(asList(new String[] {}));
         } catch (MalformedURLException e) {
@@ -146,12 +144,11 @@ public abstract class AbstractEmbedderTask extends Task {
         return storyPaths;
     }
 
-    protected List<Embeddable> embeddables() throws BuildException {
-        log("Searching for embeddables including " + includes + " and excluding " + excludes, MSG_DEBUG);
-        List<Embeddable> embeddables = finder
-                .findEmbeddables(rootSourceDirectory(), includes, excludes, createClassLoader());
-        log("Found embeddables: " + embeddables, MSG_INFO);
-        return embeddables;
+    protected List<String> classNames() {
+        log("Searching for class names including " + includes + " and excluding " + excludes, MSG_DEBUG);
+        List<String> classNames = finder.findClassNames(rootSourceDirectory(), includes, excludes);
+        log("Found class names : " + classNames, MSG_INFO);
+        return classNames;
     }
 
     /**

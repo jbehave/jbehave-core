@@ -40,15 +40,15 @@ public class Embedder {
 		this.embedderMonitor = embedderMonitor;
 	}
 
-	public void runStoriesAsEmbeddables(List<Embeddable> embeddableStories) {
+	public void runStoriesAsEmbeddables(List<String> classNames, EmbedderClassLoader classLoader) {
 		EmbedderControls embedderControls = embedderControls();
 		if (embedderControls.skip()) {
 			embedderMonitor.storiesNotRun();
 			return;
-		}
-
+		}		
+		
 		Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
-		for (Embeddable story : embeddableStories) {
+        for (Embeddable story : embeddables(classNames, classLoader)) {
 			String storyName = story.getClass().getName();
 			try {
 				embedderMonitor.runningStory(storyName);
@@ -85,7 +85,15 @@ public class Embedder {
 
 	}
 
-	public void runStoriesAsClasses(
+	private List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
+        List<Embeddable> embeddables = new ArrayList<Embeddable>();
+        for (String className : classNames) {
+            embeddables.add(classLoader.newInstance(Embeddable.class, className));
+        }
+	    return embeddables;
+    }
+
+    public void runStoriesAsClasses(
 			List<? extends Class<? extends Embeddable>> storyClasses) {
 		List<String> storyPaths = new ArrayList<String>();
 		StoryPathResolver resolver = configuration().storyPathResolver();

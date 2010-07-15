@@ -84,7 +84,7 @@ public class StoryFinder {
     }
 
     /**
-     * Finds java class names from a base directory, allowing for includes/excludes, 
+     * Finds classes from a base directory, allowing for includes/excludes, 
      * and loads them
      * 
      * @param searchInDirectory
@@ -97,23 +97,6 @@ public class StoryFinder {
      */
     public List<Class<?>> findClasses(String searchInDirectory, List<String> includes, List<String> excludes, EmbedderClassLoader classLoader){
         return classes(findClassNames(searchInDirectory, includes, excludes), classLoader);
-    }
-
-    /**
-     * Finds story class names from a base directory, allowing for includes/excludes,
-     * and instantiates the embeddables using the class loader provided.
-     * 
-     * @param searchInDirectory
-     *            the base directory path to search in
-     * @param includes
-     *            the List of include patterns, or <code>null</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>null</code> if none
-     * @param classLoader the EmbedderClassLoader to instantiate the stories
-     * @return A List of Embeddable found
-     */
-    public List<Embeddable> findEmbeddables(String searchInDirectory, List<String> includes, List<String> excludes, EmbedderClassLoader classLoader) {
-        return embeddables(findClassNames(searchInDirectory, includes, excludes), classLoader);
     }
 
     protected List<String> normalise(List<String> paths) {
