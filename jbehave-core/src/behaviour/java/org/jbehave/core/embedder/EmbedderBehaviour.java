@@ -23,15 +23,19 @@ import java.util.List;
 import java.util.Properties;
 
 import org.jbehave.core.Embeddable;
+import org.jbehave.core.InjectableEmbedder;
+import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
+import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
+import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
@@ -42,6 +46,7 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Steps;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 public class EmbedderBehaviour {
 
@@ -613,6 +618,41 @@ public class EmbedderBehaviour {
 		assertThat(out.toString(), not(containsString("Stories view generated")));
 	}
 
+    @Test
+    public void shouldRunStoriesWithAnnotatedEmbedderRunnerIfEmbeddable() throws Throwable {
+        // Given
+        Embedder embedder = new Embedder();        
+        String runWithEmbedderRunner = RunningWithAnnotatedEmbedderRunner.class.getName();
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        // When
+        embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(), asList(runWithEmbedderRunner), classLoader);
+        // Then
+        assertThat(RunningWithAnnotatedEmbedderRunner.hasRun, is(true));
+    }
+	
+    @Test
+    public void shouldNotRunStoriesWithAnnotatedEmbedderRunnerIfNotEmbeddable() throws Throwable {
+        // Given
+        Embedder embedder = new Embedder();        
+        String runWithEmbedderRunner = NotEmbeddableWithAnnotatedEmbedderRunner.class.getName();
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        // When
+        embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(), asList(runWithEmbedderRunner), classLoader);
+        // Then
+        assertThat(NotEmbeddableWithAnnotatedEmbedderRunner.hasRun, is(false));
+    }
+
+    @Test(expected=RuntimeException.class)
+    public void shouldRethowFailuresWhenRunningWithAnnotatedEmbedderRunner() throws Throwable {
+        // Given
+        Embedder embedder = new Embedder();        
+        String runWithEmbedderRunner = FailingWithAnnotatedEmbedderRunner.class.getName();
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        // When
+        embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(), asList(runWithEmbedderRunner), classLoader);
+        // Then fail as expected
+    }
+
 	@Test
 	public void shouldGenerateStoriesView() throws Throwable {
 		// Given
@@ -848,6 +888,43 @@ public class EmbedderBehaviour {
 
 	private class MyOtherStory extends JUnitStory {
 	}
+
+	@RunWith(AnnotatedEmbedderRunner.class)
+	@Configure()
+	@UsingEmbedder()
+	public static class RunningWithAnnotatedEmbedderRunner extends InjectableEmbedder {
+	   
+	    static boolean hasRun;
+
+        @Test
+	    public void run() {
+	        hasRun = true;
+	    }
+	}
+
+    @RunWith(AnnotatedEmbedderRunner.class)
+    @Configure()
+    @UsingEmbedder()
+    public static class FailingWithAnnotatedEmbedderRunner extends InjectableEmbedder {
+       
+        @Test
+        public void run() {
+            throw new RuntimeException();
+        }
+    }
+
+    @RunWith(AnnotatedEmbedderRunner.class)
+    @Configure()
+    @UsingEmbedder()
+    public static class NotEmbeddableWithAnnotatedEmbedderRunner {
+       
+        static boolean hasRun;
+
+        @Test
+        public void run() {
+            hasRun = true;
+        }
+    }
 
     public static class MySteps extends Steps {
         
