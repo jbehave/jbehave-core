@@ -73,6 +73,10 @@ the keywords used in parsing the textual story, but also the keywords
 used in the reporting of the story execution, e.g. <b>Pending</b>, <b>NotPerformed</b>
 and <b>Failed</b>.</p>
 
+<h2>What encoding should I use for textual stories and Java source classes?</h2>
+
+<span class="followup">Always use encoding <b>UTF-8</b> for textual stories and Java source classes.</span>
+
 <h2>What languages are supported out-of-the-box?</h2>
 
 <p>JBehave supports a number of languages out-of-the-box, allowing users
@@ -87,9 +91,43 @@ If you'd like your language to be supported, you can contribute the keywords in 
 There are a number of tools that enable easy conversion between your non-English language characters and Unicode escaped characters.
 </span>
 
-<h2>What encoding should I use for textual stories and Java source classes?</h2>
+<h2>How do I add my own keywords bundle?</h2>
 
-<span class="followup">Always use encoding <b>UTF-8</b> for textual stories and Java source classes.</span>
+<p>Write a properties bundle containing the following keywords and save it as <b>i18n/keywords_xx.properties</b>. E.g. for Lolcatz 
+we'll have <b>i18n/keywords_lc.properties</b>:</p>
+
+<pre class="brush: java">
+Narrative=Narratif:
+InOrderTo=In Oder to
+AsA=As a
+IWantTo=I Wan
+Scenario=I can haz:
+GivenStories=Gief I can haz:
+ExamplesTable=Exemples:
+ExamplesTableRow=Exemple:
+ExamplesTableHeaderSeparator=!!
+ExamplesTableValueSeparator=!
+Given=Gief
+When=Wen
+Then=Den
+And=And
+Ignorable=!--
+Pending=PENDING
+NotPerformed=NOT PERFORMED
+Failed=FAILED
+DryRun=Dry Run
+</pre>
+
+<p>Make sure the bundle is in the your classpath and invoke it as (if using default bundle name):</p>
+<pre class="brush: java">
+ Keywords keywords = new LocalizedKeywords(new Locale("lc"));
+</pre>
+
+<p>If using a non-standard bundle name, e.g. mykeywords/keys:</p>
+<pre class="brush: java">
+ ClassLoader classLoader = ... // the classloader where to find the bundle from
+ Keywords keywords = new LocalizedKeywords(new Locale("lc"), "mykeywords/keys", classLoader);
+</pre>
 
 <div class="clear">
 <hr />
