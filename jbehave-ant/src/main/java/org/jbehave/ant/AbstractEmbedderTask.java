@@ -90,10 +90,10 @@ public abstract class AbstractEmbedderTask extends Task {
     /**
      * The annotated embedder runner class to run the stories
      */
-    private String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
+    protected String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
 
     /**
-     * Used to find story paths and embeddables
+     * Used to find story paths and class names
      */
     private StoryFinder finder = new StoryFinder();
 
@@ -121,7 +121,7 @@ public abstract class AbstractEmbedderTask extends Task {
      */
     protected EmbedderClassLoader createClassLoader() {
         try {
-            return new EmbedderClassLoader(asList(new String[] {}));
+            return new EmbedderClassLoader(this.getClass().getClassLoader());
         } catch (MalformedURLException e) {
             throw new RuntimeException("Failed to create "+EmbedderClassLoader.class, e);
         }
@@ -170,36 +170,6 @@ public abstract class AbstractEmbedderTask extends Task {
         return embedder;
     }
 
-    protected List<AnnotatedEmbedderRunner> annotatedEmbedderRunners() {        
-        log("Searching for annotated classes including " + includes + " and excluding " + excludes, MSG_DEBUG);
-        EmbedderClassLoader classLoader = createClassLoader();
-        List<Class<?>> classes = finder.findClasses(rootSourceDirectory(), includes, excludes, classLoader);
-        Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderClass = annotatedEmbedderClass(classLoader);
-        log("Creating " + annotatedEmbedderClass + " for " + classes, MSG_INFO);
-        List<AnnotatedEmbedderRunner> embedders = new ArrayList<AnnotatedEmbedderRunner>();
-        for (Class<?> annotatedClass : classes) {
-            embedders.add(newAnnotatedEmbedder(annotatedEmbedderClass, annotatedClass));
-        }
-        return embedders;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderClass(EmbedderClassLoader classLoader) {
-        try {
-            return (Class<? extends AnnotatedEmbedderRunner>) classLoader.loadClass(annotatedEmbedderRunnerClass);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private AnnotatedEmbedderRunner newAnnotatedEmbedder(Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderClass, Class<?> annotatedClass) {
-        try {
-            return (AnnotatedEmbedderRunner) annotatedEmbedderClass.getConstructor(Class.class).newInstance(annotatedClass);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     protected class AntEmbedderMonitor implements EmbedderMonitor {
         public void storiesBatchFailed(String failedStories) {
             log("Failed to run stories batch: " + failedStories, MSG_WARN);
@@ -217,6 +187,10 @@ public abstract class AbstractEmbedderTask extends Task {
             log("Stories not run", MSG_INFO);
         }
 
+        public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
+            log("Annotated instance "+annotatedInstance+" not of type "+type, MSG_WARN);            
+        }
+        
         public void generatingStoriesView(File outputDirectory, List<String> formats, Properties viewProperties) {
             log("Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'"
                     + " and view properties '" + viewProperties + "'", MSG_INFO);
@@ -241,6 +215,7 @@ public abstract class AbstractEmbedderTask extends Task {
         public String toString() {
             return this.getClass().getSimpleName();
         }
+
     }
 
     // Setters used by Task to inject dependencies

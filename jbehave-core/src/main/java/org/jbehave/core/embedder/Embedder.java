@@ -13,6 +13,7 @@ import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
@@ -21,270 +22,303 @@ import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Stepdoc;
 
 /**
- * Represents an embeddable entry point to all of JBehave's functionality.
+ * Represents an entry point to all of JBehave's functionality that is
+ * embeddable into other lanchers, such as IDEs or CLIs.
  */
 public class Embedder {
-	
-	private Configuration configuration = new MostUsefulConfiguration();
-	private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+
+    private Configuration configuration = new MostUsefulConfiguration();
+    private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
     private EmbedderControls embedderControls = new EmbedderControls();
-	private StoryRunner storyRunner;
-	private EmbedderMonitor embedderMonitor;
+    private StoryRunner storyRunner;
+    private EmbedderMonitor embedderMonitor;
 
-	public Embedder() {
-		this(new StoryRunner(), new PrintStreamEmbedderMonitor());
-	}
+    public Embedder() {
+        this(new StoryRunner(), new PrintStreamEmbedderMonitor());
+    }
 
-	public Embedder(StoryRunner storyRunner, EmbedderMonitor embedderMonitor) {
-		this.storyRunner = storyRunner;
-		this.embedderMonitor = embedderMonitor;
-	}
+    public Embedder(StoryRunner storyRunner, EmbedderMonitor embedderMonitor) {
+        this.storyRunner = storyRunner;
+        this.embedderMonitor = embedderMonitor;
+    }
 
-	public void runStoriesAsEmbeddables(List<String> classNames, EmbedderClassLoader classLoader) {
-		EmbedderControls embedderControls = embedderControls();
-		if (embedderControls.skip()) {
-			embedderMonitor.storiesNotRun();
-			return;
-		}		
-		
-		Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
+    public void runStoriesAsEmbeddables(List<String> classNames, EmbedderClassLoader classLoader) {
+        EmbedderControls embedderControls = embedderControls();
+        if (embedderControls.skip()) {
+            embedderMonitor.storiesNotRun();
+            return;
+        }
+
+        Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
         for (Embeddable story : embeddables(classNames, classLoader)) {
-			String storyName = story.getClass().getName();
-			try {
-				embedderMonitor.runningStory(storyName);
-				story.useEmbedder(this);
-				story.run();
-			} catch (Throwable e) {
-				if (embedderControls.batch()) {
-					// collect and postpone decision to throw exception
-					failedStories.put(storyName, e);
-				} else {
-					if (embedderControls.ignoreFailureInStories()) {
-						embedderMonitor.storyFailed(storyName, e);
-					} else {
-						throw new RunningStoriesFailedException(
-								"Failed to run story " + storyName, e);
-					}
-				}
-			}
-		}
+            String storyName = story.getClass().getName();
+            try {
+                embedderMonitor.runningStory(storyName);
+                story.useEmbedder(this);
+                story.run();
+            } catch (Throwable e) {
+                if (embedderControls.batch()) {
+                    // collect and postpone decision to throw exception
+                    failedStories.put(storyName, e);
+                } else {
+                    if (embedderControls.ignoreFailureInStories()) {
+                        embedderMonitor.storyFailed(storyName, e);
+                    } else {
+                        throw new RunningStoriesFailedException("Failed to run story " + storyName, e);
+                    }
+                }
+            }
+        }
 
-		if (embedderControls.batch() && failedStories.size() > 0) {
-			if (embedderControls.ignoreFailureInStories()) {
-				embedderMonitor.storiesBatchFailed(format(failedStories));
-			} else {
-				throw new RunningStoriesFailedException(
-						"Failed to run stories in batch: "
-								+ format(failedStories));
-			}
-		}
+        if (embedderControls.batch() && failedStories.size() > 0) {
+            if (embedderControls.ignoreFailureInStories()) {
+                embedderMonitor.storiesBatchFailed(format(failedStories));
+            } else {
+                throw new RunningStoriesFailedException("Failed to run stories in batch: " + format(failedStories));
+            }
+        }
 
-		if (embedderControls.generateViewAfterStories()) {
-			generateStoriesView();
-		}
+        if (embedderControls.generateViewAfterStories()) {
+            generateStoriesView();
+        }
 
-	}
+    }
 
-	private List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
+    private List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
         List<Embeddable> embeddables = new ArrayList<Embeddable>();
         for (String className : classNames) {
             embeddables.add(classLoader.newInstance(Embeddable.class, className));
         }
-	    return embeddables;
+        return embeddables;
     }
 
-    public void runStoriesAsClasses(
-			List<? extends Class<? extends Embeddable>> storyClasses) {
-		List<String> storyPaths = new ArrayList<String>();
-		StoryPathResolver resolver = configuration().storyPathResolver();
-		for (Class<? extends Embeddable> storyClass : storyClasses) {
-			storyPaths.add(resolver.resolve(storyClass));
-		}
-		runStoriesAsPaths(storyPaths);
-	}
-	
-	public void buildReporters(Configuration configuration, List<String> storyPaths) {
-		StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
-		configuration.useStoryReporters(reporterBuilder.build(storyPaths));
-	}
+    public void runStoriesAsClasses(List<? extends Class<? extends Embeddable>> storyClasses) {
+        List<String> storyPaths = new ArrayList<String>();
+        StoryPathResolver resolver = configuration().storyPathResolver();
+        for (Class<? extends Embeddable> storyClass : storyClasses) {
+            storyPaths.add(resolver.resolve(storyClass));
+        }
+        runStoriesAsPaths(storyPaths);
+    }
 
-	public void runStoriesAsPaths(List<String> storyPaths) {
-		EmbedderControls embedderControls = embedderControls();
-		if (embedderControls.skip()) {
-			embedderMonitor.storiesNotRun();
-			return;
-		}
+    public void buildReporters(Configuration configuration, List<String> storyPaths) {
+        StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
+        configuration.useStoryReporters(reporterBuilder.build(storyPaths));
+    }
 
-		Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
-		Configuration configuration = configuration();
-		buildReporters(configuration, storyPaths);
-		for (String storyPath : storyPaths) {
-			try {
-				embedderMonitor.runningStory(storyPath);
-				storyRunner.run(configuration, candidateSteps(), storyPath);
-			} catch (Throwable e) {
-				if (embedderControls.batch()) {
-					// collect and postpone decision to throw exception
-					failedStories.put(storyPath, e);
-				} else {
-					if (embedderControls.ignoreFailureInStories()) {
-						embedderMonitor.storyFailed(storyPath, e);
-					} else {
-						throw new RunningStoriesFailedException(
-								"Failed to run story " + storyPath, e);
-					}
-				}
-			}
-		}
+    public void runStoriesAsPaths(List<String> storyPaths) {
+        EmbedderControls embedderControls = embedderControls();
+        if (embedderControls.skip()) {
+            embedderMonitor.storiesNotRun();
+            return;
+        }
 
-		if (embedderControls.batch() && failedStories.size() > 0) {
-			if (embedderControls.ignoreFailureInStories()) {
-				embedderMonitor.storiesBatchFailed(format(failedStories));
-			} else {
-				throw new RunningStoriesFailedException(
-						"Failed to run stories in batch: "
-								+ format(failedStories));
-			}
-		}
+        Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
+        Configuration configuration = configuration();
+        buildReporters(configuration, storyPaths);
+        for (String storyPath : storyPaths) {
+            try {
+                embedderMonitor.runningStory(storyPath);
+                storyRunner.run(configuration, candidateSteps(), storyPath);
+            } catch (Throwable e) {
+                if (embedderControls.batch()) {
+                    // collect and postpone decision to throw exception
+                    failedStories.put(storyPath, e);
+                } else {
+                    if (embedderControls.ignoreFailureInStories()) {
+                        embedderMonitor.storyFailed(storyPath, e);
+                    } else {
+                        throw new RunningStoriesFailedException("Failed to run story " + storyPath, e);
+                    }
+                }
+            }
+        }
 
-		if (embedderControls.generateViewAfterStories()) {
-			generateStoriesView();
-		}
+        if (embedderControls.batch() && failedStories.size() > 0) {
+            if (embedderControls.ignoreFailureInStories()) {
+                embedderMonitor.storiesBatchFailed(format(failedStories));
+            } else {
+                throw new RunningStoriesFailedException("Failed to run stories in batch: " + format(failedStories));
+            }
+        }
 
-	}
+        if (embedderControls.generateViewAfterStories()) {
+            generateStoriesView();
+        }
 
-	public void generateStoriesView() {
-		StoryReporterBuilder builder = configuration().storyReporterBuilder();
-		File outputDirectory = builder.outputDirectory();
-		List<String> formatNames = builder.formatNames(true);
-		generateStoriesView(outputDirectory, formatNames, builder.viewResources());
-	}
+    }
 
-	public void generateStoriesView(File outputDirectory, List<String> formats,
-			Properties viewResources) {
-		EmbedderControls embedderControls = embedderControls();
+    public void runStoriesWithAnnotatedEmbedderRunner(String runnerClass, List<String> classNames,
+            EmbedderClassLoader classLoader) {
+        List<AnnotatedEmbedderRunner> runners = annotatedEmbedderRunners(runnerClass, classNames, classLoader);
+        for (AnnotatedEmbedderRunner runner : runners) {
+            try {
+                Object annotatedInstance = runner.createTest();
+                if (annotatedInstance instanceof Embeddable) {
+                    ((Embeddable) annotatedInstance).run();
+                } else {
+                    embedderMonitor.annotatedInstanceNotOfType(annotatedInstance, Embeddable.class);
+                }
+            } catch (Throwable e) {
+                throw new RuntimeException(runner.toString(), e);
+            }
+        }
+    }
 
-		if (embedderControls.skip()) {
-			embedderMonitor.storiesViewNotGenerated();
-			return;
-		}
-		ViewGenerator viewGenerator = configuration().viewGenerator();
-		try {
-			embedderMonitor.generatingStoriesView(outputDirectory, formats,
-					viewResources);
-			viewGenerator.generateView(outputDirectory, formats, viewResources);
-		} catch (RuntimeException e) {
-			embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats,
-					viewResources, e);
-			String message = "Failed to generate stories view in " + outputDirectory
-					+ " with formats " + formats + " and resources "
-					+ viewResources;
-			throw new RenderingReportsFailedException(message, e);
-		}
-		int scenarios = viewGenerator.countScenarios();
-		int failedScenarios = viewGenerator.countFailedScenarios();
-		embedderMonitor.storiesViewGenerated(scenarios, failedScenarios);
-		if (!embedderControls.ignoreFailureInView() && failedScenarios > 0) {
-			String message = "Generated stories view with " + scenarios
-					+ " scenarios (of which " + failedScenarios + " failed)";
-			throw new RunningStoriesFailedException(message);
-		}
+    private List<AnnotatedEmbedderRunner> annotatedEmbedderRunners(String runnerClassName, List<String> classNames,
+            EmbedderClassLoader classLoader) {
+        Class<?> runnerClass = loadClass(runnerClassName, classLoader);
+        List<AnnotatedEmbedderRunner> runners = new ArrayList<AnnotatedEmbedderRunner>();
+        for (String annotatedClassName : classNames) {
+            runners.add(newAnnotatedEmbedderRunner(runnerClass, annotatedClassName, classLoader));
+        }
+        return runners;
+    }
 
-	}
+    private AnnotatedEmbedderRunner newAnnotatedEmbedderRunner(Class<?> runnerClass, String annotatedClassName,
+            EmbedderClassLoader classLoader) {
+        try {
+            Class<?> annotatedClass = loadClass(annotatedClassName, classLoader);
+            return (AnnotatedEmbedderRunner) runnerClass.getConstructor(Class.class).newInstance(annotatedClass);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public void reportStepdocs() {
-		Configuration configuration = configuration();
-		List<CandidateSteps> candidateSteps = candidateSteps();
-		StepFinder finder = configuration.stepFinder();
-		StepdocReporter reporter = configuration.stepdocReporter();
-		List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
-		reporter.stepdocs(finder.stepdocs(candidateSteps), stepsInstances);
-	}
+    private Class<?> loadClass(String className, EmbedderClassLoader classLoader) {
+        try {
+            return classLoader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-	public void reportMatchingStepdocs(String stepAsString){
-		Configuration configuration = configuration();
-		List<CandidateSteps> candidateSteps = candidateSteps();
-		StepFinder finder = configuration.stepFinder();
-		StepdocReporter reporter = configuration.stepdocReporter();
-		List<Stepdoc> matching = finder.findMatching(stepAsString, candidateSteps);
-		List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
-		reporter.stepdocsMatching(stepAsString, matching, stepsInstances);		
-	}
-	
-	public Configuration configuration() {
-		return configuration;
-	}
+    public void generateStoriesView() {
+        StoryReporterBuilder builder = configuration().storyReporterBuilder();
+        File outputDirectory = builder.outputDirectory();
+        List<String> formatNames = builder.formatNames(true);
+        generateStoriesView(outputDirectory, formatNames, builder.viewResources());
+    }
 
-	public List<CandidateSteps> candidateSteps() {
-		return candidateSteps;
-	}
+    public void generateStoriesView(File outputDirectory, List<String> formats, Properties viewResources) {
+        EmbedderControls embedderControls = embedderControls();
 
-	public EmbedderControls embedderControls() {
-		return embedderControls;
-	}
-	
-	public EmbedderMonitor embedderMonitor() {
-		return embedderMonitor;
-	}
+        if (embedderControls.skip()) {
+            embedderMonitor.storiesViewNotGenerated();
+            return;
+        }
+        ViewGenerator viewGenerator = configuration().viewGenerator();
+        try {
+            embedderMonitor.generatingStoriesView(outputDirectory, formats, viewResources);
+            viewGenerator.generateView(outputDirectory, formats, viewResources);
+        } catch (RuntimeException e) {
+            embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats, viewResources, e);
+            String message = "Failed to generate stories view in " + outputDirectory + " with formats " + formats
+                    + " and resources " + viewResources;
+            throw new RenderingReportsFailedException(message, e);
+        }
+        int scenarios = viewGenerator.countScenarios();
+        int failedScenarios = viewGenerator.countFailedScenarios();
+        embedderMonitor.storiesViewGenerated(scenarios, failedScenarios);
+        if (!embedderControls.ignoreFailureInView() && failedScenarios > 0) {
+            String message = "Generated stories view with " + scenarios + " scenarios (of which " + failedScenarios
+                    + " failed)";
+            throw new RunningStoriesFailedException(message);
+        }
 
-	public StoryRunner storyRunner() {
-		return storyRunner;
-	}
+    }
 
-	public void useConfiguration(Configuration configuration) {
-		this.configuration = configuration;
-	}
+    public void reportStepdocs() {
+        Configuration configuration = configuration();
+        List<CandidateSteps> candidateSteps = candidateSteps();
+        StepFinder finder = configuration.stepFinder();
+        StepdocReporter reporter = configuration.stepdocReporter();
+        List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
+        reporter.stepdocs(finder.stepdocs(candidateSteps), stepsInstances);
+    }
 
-	public void useCandidateSteps(List<CandidateSteps> candidateSteps) {
-		this.candidateSteps = candidateSteps;
-	}
+    public void reportMatchingStepdocs(String stepAsString) {
+        Configuration configuration = configuration();
+        List<CandidateSteps> candidateSteps = candidateSteps();
+        StepFinder finder = configuration.stepFinder();
+        StepdocReporter reporter = configuration.stepdocReporter();
+        List<Stepdoc> matching = finder.findMatching(stepAsString, candidateSteps);
+        List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
+        reporter.stepdocsMatching(stepAsString, matching, stepsInstances);
+    }
 
-	public void useEmbedderControls(EmbedderControls embedderControls) {
-        this.embedderControls = embedderControls;		
-	}
+    public Configuration configuration() {
+        return configuration;
+    }
 
-	public void useEmbedderMonitor(EmbedderMonitor embedderMonitor) {
-		this.embedderMonitor = embedderMonitor;
-	}
+    public List<CandidateSteps> candidateSteps() {
+        return candidateSteps;
+    }
 
-	public void useStoryRunner(StoryRunner storyRunner) {
-		this.storyRunner = storyRunner;
-	}
+    public EmbedderControls embedderControls() {
+        return embedderControls;
+    }
 
-	private String format(Map<String, Throwable> failedStories) {
-		StringBuffer sb = new StringBuffer();
-		for (String storyName : failedStories.keySet()) {
-			Throwable cause = failedStories.get(storyName);
-			sb.append("\n");
-			sb.append(storyName);
-			sb.append(": ");
-			sb.append(cause.getMessage());
-		}
-		return sb.toString();
-	}
+    public EmbedderMonitor embedderMonitor() {
+        return embedderMonitor;
+    }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this,
-				ToStringStyle.SHORT_PREFIX_STYLE);
-	}
+    public StoryRunner storyRunner() {
+        return storyRunner;
+    }
 
-	@SuppressWarnings("serial")
-	public class RunningStoriesFailedException extends RuntimeException {
-		public RunningStoriesFailedException(String message, Throwable cause) {
-			super(message, cause);
-		}
+    public void useConfiguration(Configuration configuration) {
+        this.configuration = configuration;
+    }
 
-		public RunningStoriesFailedException(String message) {
-			super(message);
-		}
-	}
+    public void useCandidateSteps(List<CandidateSteps> candidateSteps) {
+        this.candidateSteps = candidateSteps;
+    }
 
-	@SuppressWarnings("serial")
-	public class RenderingReportsFailedException extends RuntimeException {
-		public RenderingReportsFailedException(String message, Throwable cause) {
-			super(message, cause);
-		}
-	}
+    public void useEmbedderControls(EmbedderControls embedderControls) {
+        this.embedderControls = embedderControls;
+    }
 
+    public void useEmbedderMonitor(EmbedderMonitor embedderMonitor) {
+        this.embedderMonitor = embedderMonitor;
+    }
+
+    public void useStoryRunner(StoryRunner storyRunner) {
+        this.storyRunner = storyRunner;
+    }
+
+    private String format(Map<String, Throwable> failedStories) {
+        StringBuffer sb = new StringBuffer();
+        for (String storyName : failedStories.keySet()) {
+            Throwable cause = failedStories.get(storyName);
+            sb.append("\n");
+            sb.append(storyName);
+            sb.append(": ");
+            sb.append(cause.getMessage());
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    @SuppressWarnings("serial")
+    public class RunningStoriesFailedException extends RuntimeException {
+        public RunningStoriesFailedException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public RunningStoriesFailedException(String message) {
+            super(message);
+        }
+    }
+
+    @SuppressWarnings("serial")
+    public class RenderingReportsFailedException extends RuntimeException {
+        public RenderingReportsFailedException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
 }

@@ -13,17 +13,30 @@
     <dependency>
       <groupId>org.jbehave</groupId>
       <artifactId>jbehave-guice</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jbehave</groupId>
       <artifactId>jbehave-pico</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jbehave</groupId>
       <artifactId>jbehave-spring</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-core</artifactId>
+      <version>${project.version}</version>
+      <classifier>resources</classifier>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave.site</groupId>
+      <artifactId>jbehave-site-resources</artifactId>
+      <version>3.0</version>
+      <type>zip</type>
     </dependency>
   </dependencies>
   <build>
@@ -58,7 +71,7 @@
                 <artifactItem>
                   <groupId>org.jbehave</groupId>
                   <artifactId>jbehave-core</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>resources</classifier>
                   <type>zip</type>
                   <outputDirectory>${project.build.directory}/jbehave-reports/view</outputDirectory>
@@ -154,7 +167,7 @@
                 <id>with-annotated-embedder</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <annotatedEmbedderClass>org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner</annotatedEmbedderClass>
+                  <annotatedEmbedderRunnerClass>org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
                   <includes>
                     <include>**/AnnotatedEmbedderUsingGuice.java</include>
                   </includes>
@@ -183,7 +196,7 @@
                 <id>with-annotated-embedder</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <annotatedEmbedderClass>org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner</annotatedEmbedderClass>
+                  <annotatedEmbedderRunnerClass>org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
                   <includes>
                     <include>**/AnnotatedEmbedderUsingPico.java</include>
                   </includes>
@@ -212,7 +225,7 @@
                 <id>with-annotated-embedder</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <annotatedEmbedderClass>org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner</annotatedEmbedderClass>
+                  <annotatedEmbedderRunnerClass>org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
                   <includes>
                     <include>**/AnnotatedEmbedderUsingSpring.java</include>
                   </includes>

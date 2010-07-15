@@ -10,6 +10,7 @@ import static org.hamcrest.Matchers.sameInstance;
 
 import java.net.MalformedURLException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
@@ -39,7 +40,8 @@ public class EmbedderClassLoaderBehaviour {
 
     @Test
     public void shouldIgnoreNullClasspathElements() throws MalformedURLException {
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(null);
+        List<String> elements = null;
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(elements);
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
 

@@ -24,5 +24,7 @@ public interface EmbedderMonitor {
 	void storiesViewGenerated(int scenarios, int failedScenarios);
 
 	void storiesViewNotGenerated();
+
+    void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type);
     
 }

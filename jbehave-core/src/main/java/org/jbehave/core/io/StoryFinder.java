@@ -84,19 +84,24 @@ public class StoryFinder {
     }
 
     /**
-     * Finds classes from a base directory, allowing for includes/excludes, 
-     * and loads them
+     * Load classes using the classloaded provided
      * 
-     * @param searchInDirectory
-     *            the base directory path to search in
-     * @param includes
-     *            the List of include patterns, or <code>null</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>null</code> if none
-     * @return A List of classes loaded
+     * @param classNames the List of class names
+     * @param classLoader the EmbedderClassLoader used to load classes
+     * @return The list of Classes loaded
      */
-    public List<Class<?>> findClasses(String searchInDirectory, List<String> includes, List<String> excludes, EmbedderClassLoader classLoader){
-        return classes(findClassNames(searchInDirectory, includes, excludes), classLoader);
+    public List<Class<?>> loadClasses(List<String> classNames, EmbedderClassLoader classLoader) {
+        List<Class<?>> classes = new ArrayList<Class<?>>();
+        for (String className : classNames) {
+            if (!classLoader.isAbstract(className)) {
+                try {
+                    classes.add(classLoader.loadClass(className));
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return classes;
     }
 
     protected List<String> normalise(List<String> paths) {
@@ -138,19 +143,6 @@ public class StoryFinder {
         return trasformed;
     }
 
-    protected List<Class<?>> classes(List<String> classNames, EmbedderClassLoader classLoader) {
-        List<Class<?>> classes = new ArrayList<Class<?>>();
-        for (String className : classNames) {
-            if (!classLoader.isAbstract(className)) {
-                try {
-                    classes.add(classLoader.loadClass(className));
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return classes;
-    }
 
     protected List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
         List<Embeddable> embeddables = new ArrayList<Embeddable>();

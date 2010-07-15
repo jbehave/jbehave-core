@@ -38,6 +38,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     public void storiesNotRun() {
         print("Stories not run");
     }
+    
+    public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
+        print("Annotated instance "+annotatedInstance+" if not of type "+type);
+    }
 
 	public void generatingStoriesView(File outputDirectory, List<String> formats,
 			Properties viewProperties) {

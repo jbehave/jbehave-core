@@ -1,7 +1,9 @@
 package org.jbehave.ant;
 
+import static org.apache.tools.ant.Project.MSG_INFO;
+
 import org.apache.tools.ant.BuildException;
-import org.jbehave.core.Embeddable;
+import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.junit.runner.RunWith;
 
@@ -12,18 +14,9 @@ import org.junit.runner.RunWith;
 public class AnnotatedEmbedderRunnerTask extends AbstractEmbedderTask {
 
     public void execute() throws BuildException {
-        for (AnnotatedEmbedderRunner annotatedEmbedderRunner : annotatedEmbedderRunners()) {
-            try {
-                Object annotatedInstance = annotatedEmbedderRunner.createTest();
-                if ( annotatedInstance instanceof Embeddable ){
-                    ((Embeddable)annotatedInstance).run();                    
-                } else {
-                    log(annotatedInstance+" not an "+Embeddable.class);
-                }
-            } catch (Throwable e) {
-                throw new BuildException(annotatedEmbedderRunner.toString(), e);
-            }
-        } 
+        Embedder embedder = newEmbedder();
+        log("Running stories with annotated embedder " + annotatedEmbedderRunnerClass, MSG_INFO);
+        embedder.runStoriesWithAnnotatedEmbedderRunner(annotatedEmbedderRunnerClass, classNames(), createClassLoader());
     }
 
 }

@@ -1,7 +1,6 @@
 package org.jbehave.mojo;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -13,7 +12,6 @@ import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -134,10 +132,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * 
      * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
      */
-    private String annotatedEmbedderRunnerClass;
+    protected String annotatedEmbedderRunnerClass;
 
     /**
-     * Used to find story paths and embeddables
+     * Used to find story paths and class names
      */
     private StoryFinder finder = new StoryFinder();
 
@@ -212,36 +210,6 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         return embedder;
     }
 
-    protected List<AnnotatedEmbedderRunner> annotatedEmbedderRunners() {        
-        getLog().debug("Searching for annotated classes including " + includes + " and excluding " + excludes);
-        EmbedderClassLoader classLoader = createClassLoader();
-        List<Class<?>> classes = finder.findClasses(rootSourceDirectory(), includes, excludes, classLoader);
-        Class<? extends AnnotatedEmbedderRunner> runnerClass = annotatedEmbedderRunnerClass(classLoader);
-        getLog().info("Creating runner " + runnerClass + " for " + classes);
-        List<AnnotatedEmbedderRunner> runners = new ArrayList<AnnotatedEmbedderRunner>();
-        for (Class<?> annotatedClass : classes) {
-            runners.add(newAnnotatedEmbedder(runnerClass, annotatedClass));
-        }
-        return runners;
-    }
-
-    @SuppressWarnings("unchecked")
-    private Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderRunnerClass(EmbedderClassLoader classLoader) {
-        try {
-            return (Class<? extends AnnotatedEmbedderRunner>) classLoader.loadClass(annotatedEmbedderRunnerClass);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private AnnotatedEmbedderRunner newAnnotatedEmbedder(Class<? extends AnnotatedEmbedderRunner> annotatedEmbedderClass, Class<?> annotatedClass) {
-        try {
-            return (AnnotatedEmbedderRunner) annotatedEmbedderClass.getConstructor(Class.class).newInstance(annotatedClass);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     protected EmbedderMonitor embedderMonitor() {
         return new MavenEmbedderMonitor();
     }
@@ -267,6 +235,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void storiesNotRun() {
             getLog().info("Stories not run");
+        }
+
+        public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
+            getLog().warn("Annotated instance "+annotatedInstance+" not of type "+type);            
         }
 
         public void generatingStoriesView(File outputDirectory, List<String> formats, Properties viewProperties) {
