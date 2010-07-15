@@ -43,7 +43,6 @@ public class ItTraderStory extends JUnitStory {
                     .withFormats(CONSOLE, TXT, HTML, XML)
                     .withFailureTrace(false)
                     .withKeywords(keywords))
-				.useKeywords(keywords)
 				.useParameterConverters(
 						new ParameterConverters()
 								.addConverters(new ParameterConverters.ExamplesTableConverter(

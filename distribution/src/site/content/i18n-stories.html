@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Writing Stories in your language</title>
+<title>Writing stories in your language</title>
 </head>
 
 <body>
 
-<h2>Writing Stories in your language</h2>
+<h2>Writing stories in your language</h2>
 
 <p>Good and effective communication is key to BDD. Therefore,
 writing stories in the <a href="http://en.wikipedia.org/wiki/Language">language</a>
@@ -16,60 +16,44 @@ language, the <a
     href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>
 still need to be expressed in different languages.</p>
 
-<p>JBehave by default supports English as the scenario language. By
+<p>JBehave by default uses English as the scenario language. By
 supporting the internationalisation (i18n) of keywords by Java <a
     href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/Locale.html">Locale</a>,
 it also allows the stories to be written in any language. All is
 needed to configure the use of <a
     href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>
-for a given Locale. Each locale has a separate keywords properties file.
-E.g. for Italian locale, the file <b>keywords_it.properties</b> is:</p>
-<pre class="brush: bdd">
-Narrative=Narrativa:
-InOrderTo=Per ottenere
-AsA=Come
-IWantTo=Voglio
-Scenario=Scenario:
-GivenStories=Date le storie:
-ExamplesTable=Esempi:
-ExamplesTableRow=Esempio:
-ExamplesTableSeparator=|
-Given=Dato che
-When=Quando
-Then=Allora
-And=E
-Pending=PENDENTE
-NotPerformed=NON ESEGUITO
-Failed=FALLITO
-</pre>
-<p>We need to configure the use of the i18n-ed keywords in the <a
-    href="javadoc/core/org/jbehave/core/JUnitStory.html">JUnitStory</a>,
-e.g.:</p>
+for a given locale. Each locale has a separate keywords properties file, e.g. for Italian 
+<b>i18n/keywords_it.properties</b> contained in the <b>jbehave-core.jar</b>.
+</p>
+<p>We need to configure the use of the localized keywords, e.g.:</p>
 <pre class="brush: java">
 public class ItTraderStory extends JUnitStory {
 
 	public ItTraderStory() {
         // use Italian for keywords
         ClassLoader classLoader = this.getClass().getClassLoader();
-        Keywords keywords = new LocalizedKeywords(new Locale("it"), new StringCoder(), "org/jbehave/examples/trader/i18n/keywords", classLoader);
+        Keywords keywords = new LocalizedKeywords(new Locale("it"));
         Configuration configuration = new MostUsefulConfiguration()
-        	.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"))
-        	.useKeywords(keywords)
-        	.useStoryParser(new RegexStoryParser(keywords))
-        	.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))
-        	.useStoryReporter(new ConsoleOutput(keywords))
-        	.useKeywords(keywords)
-        	.useParameterConverters(new ParameterConverters()
-        	   .addConverter(new ParameterConverters.ExamplesTableConverter(keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator())));
+                .useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"))
+                .useKeywords(keywords)
+                .useStoryParser(new RegexStoryParser(keywords))
+                .useStoryLoader(
+                        new LoadFromClasspath(classLoader))
+                .useDefaultStoryReporter(new ConsoleOutput(keywords))
+                .useStoryReporterBuilder(new StoryReporterBuilder()
+                    .withCodeLocation(codeLocation)
+                    .withDefaultFormats()
+                    .withFormats(CONSOLE, TXT, HTML, XML)
+                    .withFailureTrace(false)
+                    .withKeywords(keywords))
         useConfiguration(configuration);
         addSteps(new InstanceStepsFactory(configuration, new ItTraderSteps()).createCandidateSteps());
     }
 
 }
 </pre>
-<p>The corresponding i18n-ed <a
-    href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a> will then understand the language that has been configured
-    via the i18n-ed keywords:</p>
+<p>The parsing of the story with then understand the language that has been configured
+via the localized keywords and the patterns annotating the Steps methods must be in the same language:</p>
 
 <pre class="brush: java">
 public class ItTraderSteps {
@@ -82,38 +66,30 @@ public class ItTraderSteps {
         stock = new Stock(symbol, threshold);
     }
 
-    @When("l'azione e' scambiata al prezzo di $price")
-    public void stockIsTraded(@Named("price") double price) {
-        stock.tradeAt(price);
-    }
-
-    @Then("lo status di allerta e' $status")
-    public void alertStatusIs(@Named("status") String status) {
-        ensureThat(stock.getStatus().name(), equalTo(status));
-    }
-
-    @Given("ho una tabella $table")
-    public void aTAble(ExamplesTable table) {
-        this.table = table;
-    }
-
-    @Then("la tabella ha $rows righe")
-    public void hasRows(int rows){
-        ensureThat(table.getRowCount(), equalTo(rows));
-    }
 }
 </pre>
-<p>Note that the i18n-ed keywords not only allow the translation of
+<p>Note that the localized keywords not only allow the translation of
 the keywords used in parsing the textual story, but also the keywords
 used in the reporting of the story execution, e.g. <b>Pending</b>, <b>NotPerformed</b>
 and <b>Failed</b>.</p>
 
-<h2>Why are different languages not supported out-of-the-box?</h2>
+<h2>What languages are supported out-of-the-box?</h2>
 
-<span class="followup">Most non-English languages require characters that are rendered
-inconsistently using the native encoding of a given operating system.  At moment,
-a consistent solution is to provide your own keywords in your native encoding.
-We are working on a solution that is re-usable across multiple platforms.</span>
+<p>JBehave supports a number of languages out-of-the-box, allowing users
+to simply specify the locale in the <a
+    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.  You 
+can verify which language is supported by looking at the <b>i18n/</b> directory in the <b>jbehave-core-resources.zip</b>.
+If you'd like your language to be supported, you can contribute the keywords in that language and we'll happily add it.
+</p>
+
+<span class="followup">Note that Java resource bundles require non-English language characters to be expressed as Unicode escaped characters 
+(of the form \uxxxx where xxxx is 4-digit Hexadecimal number), using ISO-8859-1 encoding.
+There are a number of tools that enable easy conversion between your non-English language characters and Unicode escaped characters.
+</span>
+
+<h2>What encoding should I use for textual stories and Java source classes?</h2>
+
+<span class="followup">Always use encoding <b>UTF-8</b> for textual stories and Java source classes.</span>
 
 <div class="clear">
 <hr />

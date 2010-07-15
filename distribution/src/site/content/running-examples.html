@@ -47,50 +47,11 @@ mvn clean install -Djbehave.version=3.0
 <span class="followup">Note that running the examples in 'standalone' mode requires the JBehave parent POM to be present, as it 
 contains the information about the development setup of the project, e.g. the compiler, the layout of the source, etc. </span>
 
-<p>To ensure JBehave parent POM is available, two approaches are possible.  One is to check out project source as above and install the parent POM:
+<p>To ensure JBehave parent POM is available, checkout project source as above and install the parent POM:
 </p>
 
 <script type="syntaxhighlighter" class="brush: plain"><![CDATA[
 mvn clean install -N <-- only builds and installs locally top-level parent POM
-]]></script>
-
-<p>The other approach is to fetch the parent POM from the snapshots remote repository.  For this, you need to add the 
-following profile to your <b>$HOME/.m2/settings.xml</b> 
-
-<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
-<profile>
-  <id>codehaus-snapshots</id>
-  <repositories>
-    <repository>
-      <id>codehaus-snapshots</id>
-      <url>http://snapshots.repository.codehaus.org</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>codehaus-snapshots</id>
-      <url>http://snapshots.repository.codehaus.org</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
-</profile>
-]]></script>
-
-<p>and run with additional profile</p>
-<script type="syntaxhighlighter" class="brush: plain"><![CDATA[
-cd examples
-mvn clean install -Pcodehaus-snapshots -Djbehave.version=3.0
 ]]></script>
 
 <span class="followup">As with any Maven artifact that is not expected to change, 
