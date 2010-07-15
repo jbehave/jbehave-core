@@ -325,34 +325,6 @@ public class EmbedderBehaviour {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	public void shouldRunStoriesAsClasses() throws Throwable {
-		// Given
-		StoryRunner runner = mock(StoryRunner.class);
-		EmbedderControls embedderControls = new EmbedderControls();
-		OutputStream out = new ByteArrayOutputStream();
-		EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(
-				new PrintStream(out));
-		List<? extends Class<? extends Embeddable>> storyClasses = asList(
-				MyStory.class, MyOtherStory.class);
-
-		Embedder embedder = embedderWith(runner, embedderControls, monitor);
-		embedder.runStoriesAsClasses(storyClasses);
-
-		// Then
-		Configuration configuration = embedder.configuration();
-		List<CandidateSteps> candidateSteps = embedder.candidateSteps();
-		StoryPathResolver resolver = configuration.storyPathResolver();
-		for (Class<? extends Embeddable> storyClass : storyClasses) {
-			String storyPath = resolver.resolve(storyClass);
-			verify(runner).run(configuration, candidateSteps, storyPath);
-			assertThat(out.toString(), containsString("Running story "
-					+ storyPath));
-		}
-		assertThatStoriesViewGenerated(out);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
 	public void shouldRunStoriesAsPaths() throws Throwable {
 		// Given
 		StoryRunner runner = mock(StoryRunner.class);

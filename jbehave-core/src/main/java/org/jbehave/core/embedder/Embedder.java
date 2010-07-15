@@ -12,7 +12,6 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -90,15 +89,6 @@ public class Embedder {
             embeddables.add(classLoader.newInstance(Embeddable.class, className));
         }
         return embeddables;
-    }
-
-    public void runStoriesAsClasses(List<? extends Class<? extends Embeddable>> storyClasses) {
-        List<String> storyPaths = new ArrayList<String>();
-        StoryPathResolver resolver = configuration().storyPathResolver();
-        for (Class<? extends Embeddable> storyClass : storyClasses) {
-            storyPaths.add(resolver.resolve(storyClass));
-        }
-        runStoriesAsPaths(storyPaths);
     }
 
     public void buildReporters(Configuration configuration, List<String> storyPaths) {
