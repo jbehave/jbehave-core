@@ -18,6 +18,13 @@ import org.jbehave.core.steps.pico.PicoStepsFactory;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.PicoContainer;
 
+/**
+ * Extends {@link AnnotationBuilder} to provide PicoContainer-based 
+ * dependency injection if {@link UsingPico} annotation is present.
+ * 
+ * @author Cristiano Gavião
+ * @author Mauro Talevi
+ */
 public class PicoAnnotationBuilder extends AnnotationBuilder {
 
     private PicoContainer container;
@@ -30,7 +37,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
         super(annotatedClass, annotationMonitor);
     }
 
-    @SuppressWarnings({ "rawtypes" })
+    @SuppressWarnings({ "unchecked" })
     public Configuration buildConfiguration() throws MissingAnnotationException {
         AnnotationFinder finder = annotationFinder();
         if (finder.isAnnotationPresent(UsingPico.class)) {
@@ -82,7 +89,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    protected <T> T instanceOf(Class<T> type, Class<T> ofClass) {
+    protected <T, V extends T> T instanceOf(final Class<T> type, final Class<V> ofClass) {
         if (container != null) {
             T instance = container.getComponent(type);
             if ( instance != null ){

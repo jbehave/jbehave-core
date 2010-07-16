@@ -19,6 +19,13 @@ import org.jbehave.core.steps.spring.SpringApplicationContextFactory;
 import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.springframework.context.ApplicationContext;
 
+/**
+ * Extends {@link AnnotationBuilder} to provide Spring-based 
+ * dependency injection if {@link UsingSpring} annotation is present.
+ * 
+ * @author Cristiano Gavião
+ * @author Mauro Talevi
+ */
 public class SpringAnnotationBuilder extends AnnotationBuilder {
 
     private ApplicationContext context;
@@ -69,10 +76,9 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
         return super.parameterConverters(annotationFinder);
     }
 
-
-    @SuppressWarnings("unchecked")
     @Override
-    protected <T> T instanceOf(Class<T> type, Class<T> ofClass) {
+    @SuppressWarnings("unchecked")
+    protected <T, V extends T> T instanceOf(final Class<T> type, final Class<V> ofClass) {
         if ( context != null ){
             Map<String,Object> beansOfType = context.getBeansOfType(type);
             if ( beansOfType.size() > 0 ){

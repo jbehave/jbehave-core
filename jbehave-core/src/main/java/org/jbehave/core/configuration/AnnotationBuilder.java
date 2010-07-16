@@ -22,13 +22,20 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 import com.thoughtworks.paranamer.Paranamer;
 
+/**
+ * Allows the building of {@link Configuration}, {@link CandidateSteps} and
+ * {@link Embedder} from an annotated class.
+ * 
+ * @author Cristiano Gavião
+ * @author Mauro Talevi
+ */
 public class AnnotationBuilder {
 
     private final AnnotationMonitor annotationMonitor;
@@ -51,8 +58,8 @@ public class AnnotationBuilder {
     }
 
     /**
-     * Builds a Configuration instance based on annotation {@link Configure} found
-     * in the annotated object instance
+     * Builds a Configuration instance based on annotation {@link Configure}
+     * found in the annotated object instance
      * 
      * @return A Configuration instance
      */
@@ -90,7 +97,8 @@ public class AnnotationBuilder {
 
     /**
      * Builds CandidateSteps using annotation {@link UsingSteps} found in the
-     * annotated object instance and using the configuration build by {@link #buildConfiguration()}
+     * annotated object instance and using the configuration build by
+     * {@link #buildConfiguration()}
      * 
      * @return A List of CandidateSteps instances
      */
@@ -102,7 +110,8 @@ public class AnnotationBuilder {
      * Builds CandidateSteps using annotation {@link UsingSteps} found in the
      * annotated object instance and the configuration provided
      * 
-     * @param configuration the Configuration
+     * @param configuration
+     *            the Configuration
      * @return A List of CandidateSteps instances
      */
     public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
@@ -143,8 +152,8 @@ public class AnnotationBuilder {
         Configuration configuration = buildConfiguration();
         List<CandidateSteps> candidateSteps = buildCandidateSteps(configuration);
 
-        Embedder embedder = instanceOf(Embedder.class,
-                finder.getAnnotatedValue(UsingEmbedder.class, Class.class, "embedder"));
+        Embedder embedder = instanceOf(Embedder.class, finder.getAnnotatedValue(UsingEmbedder.class, Class.class,
+                "embedder"));
         embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView);
         embedder.useConfiguration(configuration);
@@ -175,7 +184,7 @@ public class AnnotationBuilder {
         return new ParameterConverters().addConverters(converters);
     }
 
-    protected <T> T instanceOf(Class<T> type, Class<T> ofClass) {
+    protected <T, V extends T> T instanceOf(Class<T> type, Class<V> ofClass) {
         try {
             return (T) ofClass.newInstance();
         } catch (Exception e) {
