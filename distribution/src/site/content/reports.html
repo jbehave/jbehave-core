@@ -40,7 +40,8 @@ which is used to report events as they occur.</p>
 We use the <b>DelegatingStoryReporter</b> as a proxy for the reporters
 we want to configure, in the example below a plain text reporter (both
 to <b>System.out</b> and to a file) and an HTML reporter to a file:</p>
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
 
 	public TraderStory() {
 		// start with default configuration, overriding only the elements that are needed
@@ -72,7 +73,8 @@ to <b>System.out</b> and to a file) and an HTML reporter to a file:</p>
         return new InstanceStepsFactory(configuration, new TraderSteps(new TradingService()), new BeforeAfterSteps()).createCandidateSteps();
     }
 
-]]></script>
+]]>
+</script>
 
 
 <span class="followup">For a fully-working example of reporting configuration you may consult the 

@@ -8,31 +8,44 @@
 
 <h2>Configuration</h2>
 
-<p>JBehave 3 was designed to be highly embeddable in its configuration and execution. At the heart, we have the <a
-  href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a> interface, which can specify the <a
-  href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a> to use for the running of the stories.</p>
+<p>JBehave 3 was designed to be highly embeddable in its
+configuration and execution. At the heart, we have the <a
+	href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>
+interface, which can specify the <a
+	href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>
+to use for the running of the stories.</p>
 
-<p>The Embedder separates the concerns of the configuration of the story execution from the matching of the textual
-story steps to Java methods:</p>
+<p>The Embedder separates the concerns of the configuration of the
+story execution from the matching of the textual story steps to Java
+methods:</p>
 <ul>
-  <li><a href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a> instances are
-  responsible for the configuration of story execution.</li>
-  <li><a href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a> instances are used to
-  find the Java methods that match the textual steps in the stories.</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/configuration/Configuration.html">Configuration</a>
+	instances are responsible for the configuration of story execution.</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
+	instances are used to find the Java methods that match the textual
+	steps in the stories.</li>
 </ul>
-<p>The Embedder needs both the Configuration and the list of CandidateSteps. Although it has sensible defaults for
-the configuration (such as <a href="javadoc/core/org/jbehave/core/configuration/MostUsefulConfiguration.html">MostUsefulConfiguration</a>)
-we need, for any significant story running, to configure at least one candidate steps instance.</p>
+<p>The Embedder needs both the Configuration and the list of
+CandidateSteps. Although it has sensible defaults for the configuration
+(such as <a
+	href="javadoc/core/org/jbehave/core/configuration/MostUsefulConfiguration.html">MostUsefulConfiguration</a>)
+we need, for any significant story running, to configure at least one
+candidate steps instance.</p>
 
-<span class="followup">JBehave allows multiple paths to the configuration of the Embedder, so that users can
-choose the one that best fits their need.</span>
+<span class="followup">JBehave allows multiple paths to the
+configuration of the Embedder, so that users can choose the one that
+best fits their need.</span>
 
 <h3>Using AnnotatedEmbedder</h3>
 
-<p>JBehave supports the ability to specify configuration elements and steps instance via annotations. An example of
-annotated configuration of the Embedded via annotations is:</p>
+<p>JBehave supports the ability to specify configuration elements
+and steps instance via annotations. An example of annotated
+configuration of the Embedded via annotations is:</p>
 
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
 @RunWith(AnnotatedEmbedder.class)
 @Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
@@ -72,23 +85,29 @@ public class TraderAnnotatedEmbedder extends InjectableEmbedder {
     }
 
 }
-]]></script>
+]]>
+</script>
 
 <p>Here we are actually using a JUnit Runner, <a
-    href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedder.html">AnnotatedEmbedder</a>, to bootstrap the configuration process.
-The AnnotatedEmbedder is a very thin wrapper around the <a
-    href="javadoc/core/org/jbehave/core/configuration/AnnotationBuilder.html">AnnotationBuilder</a>, building the Embedder and 
-    injecting in the test class, which extends  <a
-    href="javadoc/core/org/jbehave/core/InjectableEmbedder.html">InjectableEmbedder</a>.  
+	href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedder.html">AnnotatedEmbedder</a>,
+to bootstrap the configuration process. The AnnotatedEmbedder is a very
+thin wrapper around the <a
+	href="javadoc/core/org/jbehave/core/configuration/AnnotationBuilder.html">AnnotationBuilder</a>,
+building the Embedder and injecting in the test class, which extends <a
+	href="javadoc/core/org/jbehave/core/InjectableEmbedder.html">InjectableEmbedder</a>.
 </p>
 
-<span class="followup">Note that JBehave follows a configuration-by-convention approach, by which a default value of the
-configuration element is always provided but can be overridden, when needed.</span>
+<span class="followup">Note that JBehave follows a
+configuration-by-convention approach, by which a default value of the
+configuration element is always provided but can be overridden, when
+needed.</span>
 
 <h3>Using AnnotationBuilder</h3>
 
-<p>If we wanted to use the AnnotationBuilder directly, the above example would become:</p>
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<p>If we wanted to use the AnnotationBuilder directly, the above
+example would become:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
 @Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
@@ -133,30 +152,33 @@ public class TraderAnnotatedEmbedder {
     }
 
 }
-]]></script>
+]]>
+</script>
 
-<span class="followup">
-The  <a
-    href="javadoc/core/org/jbehave/core/configuration/AnnotationBuilder.html">AnnotationBuilder</a> requires that 
-    configuration elements and the steps instances provide a default constructor. 
-This limitation is overcome by using <a href="dependency-injection.html">dependency injection</a> containers.
-</span>
+<span class="followup"> The <a
+	href="javadoc/core/org/jbehave/core/configuration/AnnotationBuilder.html">AnnotationBuilder</a>
+requires that configuration elements and the steps instances provide a
+default constructor. This limitation is overcome by using <a
+	href="dependency-injection.html">dependency injection</a> containers.
+Note that the use of dependency injection annotations overrides the one
+specified by the <b>@Configure</b> and <b>@UsingSteps</b>.</span>
 
 <h3>Using ConfigurableEmbedder</h3>
 
 <p>A <a
-  href="javadoc/core/org/jbehave/core/ConfigurableEmbedder.html">ConfigurableEmbedder</a> is an abstract implementation
-  of <a
-  href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>, which allows subclasses to specify the 
-  Configuration and CandidateSteps directly.  A notable subclass of ConfigurableEmbedder is 
-  <a
-  href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a>, which allows each subclass to be 
-  run as a separate individual story.
-</p>
+	href="javadoc/core/org/jbehave/core/ConfigurableEmbedder.html">ConfigurableEmbedder</a>
+is an abstract implementation of <a
+	href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>,
+which allows subclasses to specify the Configuration and CandidateSteps
+directly. A notable subclass of ConfigurableEmbedder is <a
+	href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a>,
+which allows each subclass to be run as a separate individual story.</p>
 
-<p>Even if each JUnitStory Java class can be configured independently, it is good practice to
-collect the configuration that applies to all stories in an abstract (i.e. not runnable) base class:</p>
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<p>Even if each JUnitStory Java class can be configured
+independently, it is good practice to collect the configuration that
+applies to all stories in an abstract (i.e. not runnable) base class:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
 public abstract class TraderStory extends JUnitStory {
 
 	public TraderStory() {
@@ -192,11 +214,12 @@ public abstract class TraderStory extends JUnitStory {
 	}
 
 }  
-]]></script>
+]]>
+</script>
 
-<p>Once we have a configured instance of ConfigurableEmbedder, all we need to do is to
-extend it providing the name of the executable Story class that maps
-to the textual story file. For example, to map to <b>trader_is_alerted_of_status.story</b>
+<p>Once we have a configured instance of ConfigurableEmbedder, all
+we need to do is to extend it providing the name of the executable Story
+class that maps to the textual story file. For example, to map to <b>trader_is_alerted_of_status.story</b>
 using the resolver defined above:</p>
 <pre class="brush: java">
 public class TraderIsAlertedOfStatus extends TraderStory {
@@ -204,10 +227,13 @@ public class TraderIsAlertedOfStatus extends TraderStory {
 }
 </pre>
 
-<p>To run multiple stories, specified as story paths, one can use another subclass of ConfigurableEmbdder, <a
-  href="javadoc/core/org/jbehave/core/junit/JUnitStories.html">JUnitStories</a>: </p>
+<p>To run multiple stories, specified as story paths, one can use
+another subclass of ConfigurableEmbdder, <a
+	href="javadoc/core/org/jbehave/core/junit/JUnitStories.html">JUnitStories</a>:
+</p>
 
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
 public class TraderStories extends JUnitStories {
 
     public TraderStories() {
@@ -222,58 +248,61 @@ public class TraderStories extends JUnitStories {
         return new StoryFinder().findPaths(codeLocation, asList("**/trader*.story"),
                     asList(""), "file:"+codeLocation);
 	}
-]]></script>
+]]>
+</script>
 
-<span class="followup">Note that in this second example, we are using story paths as URLs, and correspondingly we configure the use of <a
-            href="javadoc/core/org/jbehave/core/io/LoadFromURL.html">LoadFromURL</a>.</span>
-
+<span class="followup">Note that in this second example, we are
+using story paths as URLs, and correspondingly we configure the use of <a
+	href="javadoc/core/org/jbehave/core/io/LoadFromURL.html">LoadFromURL</a>.</span>
 
 <h3>Configurable Elements</h3>
 
-<p>All configurable elements of  <a
-    href="javadoc/core/org/jbehave/core/Configuration.html">Configuration</a>
- come with a default behaviour, configured in the  <a
-    href="javadoc/core/org/jbehave/core/MostUsefulConfiguration.html">MostUsefulConfiguration</a>:</p>
+<p>All configurable elements of <a
+	href="javadoc/core/org/jbehave/core/Configuration.html">Configuration</a>
+come with a default behaviour, configured in the <a
+	href="javadoc/core/org/jbehave/core/MostUsefulConfiguration.html">MostUsefulConfiguration</a>:</p>
 <ul>
-<li><a
-    href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>:
-defaults to <a
-    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</li>
-<li><a
-    href="javadoc/core/org/jbehave/core/failures/FailureStrategy.html">FailureStrategy</a>:
-Allows to define the strategy for error handling. The default value is <a
-    href="javadoc/core/org/jbehave/core/failures/RethrowingFailureStrategy.html">RethrowingFailureStrategy</a>.</li>
-<li><a
-    href="javadoc/core/org/jbehave/core/steps/StepCollector.html">StepCollector</a>:
-Represents the strategy for the collection of executable steps from a given story matching a list of candidate steps. The
-default implementation is <a
-    href="javadoc/core/org/jbehave/core/steps/MarkUnmatchedStepsAsPending.html">MarkUnmatchedStepsAsPending</a>.</li>
-<li><a
-    href="javadoc/core/org/jbehave/core/io/StoryParser.html">StoryParser</a>:
-Parses stories contained in a textual story file. The default implementation is <a
-    href="javadoc/core/org/jbehave/core/io/RegexStoryParser.html">RegexStoryParser</a>.</li>
-<li><a
-    href="javadoc/core/org/jbehave/core/parsers/StepPatternParser.html">StepPatternParser</a>:
-defaults to <a
-    href="javadoc/core/org/jbehave/core/parsers/RegexPrefixCapturingPatternBuilder.html">RegexPrefixCapturingPatternParser</a>.
-</li>
-<li><a
-    href="javadoc/core/org/jbehave/core/steps/StepMonitor.html">StepMonitor</a>:
-defaults to <a
-    href="javadoc/core/org/jbehave/core/steps/SilentStepMonitor.html">SilentStepMonitor</a>,
-useful to either debug the step matching or to describe the steps being performed to some output.</li>
-<li>
-The <a
-    href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>:
-facade for building instances of <a
-    href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>. The <a
-    href="javadoc/core/org/jbehave/core/reporters/ViewGenerator.html">ViewGenerator</a>
-allows to generate view of reports run.  The default implementation is <a
-    href="javadoc/core/org/jbehave/core/reporters/FreemarkerViewGenerator.html">FreemarkerViewGenerator</a>.</li>
-<li><a
-    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a>:
-facade for collecting user-defined <a
-    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverters</a>.</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>:
+	defaults to <a
+		href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/failures/FailureStrategy.html">FailureStrategy</a>:
+	Allows to define the strategy for error handling. The default value is
+	<a
+		href="javadoc/core/org/jbehave/core/failures/RethrowingFailureStrategy.html">RethrowingFailureStrategy</a>.</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/steps/StepCollector.html">StepCollector</a>:
+	Represents the strategy for the collection of executable steps from a
+	given story matching a list of candidate steps. The default
+	implementation is <a
+		href="javadoc/core/org/jbehave/core/steps/MarkUnmatchedStepsAsPending.html">MarkUnmatchedStepsAsPending</a>.</li>
+	<li><a href="javadoc/core/org/jbehave/core/io/StoryParser.html">StoryParser</a>:
+	Parses stories contained in a textual story file. The default
+	implementation is <a
+		href="javadoc/core/org/jbehave/core/io/RegexStoryParser.html">RegexStoryParser</a>.</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/parsers/StepPatternParser.html">StepPatternParser</a>:
+	defaults to <a
+		href="javadoc/core/org/jbehave/core/parsers/RegexPrefixCapturingPatternBuilder.html">RegexPrefixCapturingPatternParser</a>.
+	</li>
+	<li><a href="javadoc/core/org/jbehave/core/steps/StepMonitor.html">StepMonitor</a>:
+	defaults to <a
+		href="javadoc/core/org/jbehave/core/steps/SilentStepMonitor.html">SilentStepMonitor</a>,
+	useful to either debug the step matching or to describe the steps being
+	performed to some output.</li>
+	<li>The <a
+		href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>:
+	facade for building instances of <a
+		href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>.
+	The <a
+		href="javadoc/core/org/jbehave/core/reporters/ViewGenerator.html">ViewGenerator</a>
+	allows to generate view of reports run. The default implementation is <a
+		href="javadoc/core/org/jbehave/core/reporters/FreemarkerViewGenerator.html">FreemarkerViewGenerator</a>.</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a>:
+	facade for collecting user-defined <a
+		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverters</a>.</li>
 </ul>
 
 <div class="clear">

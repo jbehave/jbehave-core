@@ -42,31 +42,37 @@ version and the filename with the latest timestamp.</p>
 
 <p>Using <a href="http://maven.apache.org">Apache Maven</a>:</p>
 
-<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
   <dependency> 
     <groupId>[groupId]</groupId>
     <artifactId>[artifactId]</artifactId>
     <version>[version]</version>
   </dependency>
-]]></script>
+]]>
+</script>
 
 <h3>Apache Ivy</h3>
 
 <p>Using <a href="http://ant.apache.org/ivy/">Apache Ivy</a>:</p>
 
-<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
 <dependency org="[groupId]" name="[artifactId]" rev="[version]"/>
-]]></script>
+]]>
+</script>
 
 <h3>Groovy Grape</h3>
 
 <p>Using <a href="http://groovy.codehaus.org/grape">Groovy Grape</a>:</p>
 
-<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
 @Grapes(
     @Grab(group='[groupId]', module='[artifactId]', version='[version]')
 )
-]]></script>
+]]>
+</script>
 
 <div class="clear">
 <hr />

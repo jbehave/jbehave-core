@@ -8,19 +8,23 @@
 
 <h2>Introduction</h2>
 
-<p><a href="http://www.martinfowler.com/articles/injection.html">Dependency Injection</a> has become an integral
-part of modern software design. We discuss here the different ways in which JBehave supports dependency injection.</p>
+<p><a href="http://www.martinfowler.com/articles/injection.html">Dependency
+Injection</a> has become an integral part of modern software design. We
+discuss here the different ways in which JBehave supports dependency
+injection.</p>
 
 <p>JBehave supports the following depency inejction containers:
 <ul>
-  <li><a href="http://code.google.com/p/google-guice/">Guice</a> (the extension module <b>jbehave-guice</b> needs
-  to be added to the classpath):</li>
+	<li><a href="http://code.google.com/p/google-guice/">Guice</a>
+	(the extension module <b>jbehave-guice</b> needs to be added to the
+	classpath):</li>
 
-  <li><a href="http://picocontainer.org">PicoContainer</a> (the extension module <b>jbehave-pico</b> needs to be
-  added to the classpath):</li>
+	<li><a href="http://picocontainer.org">PicoContainer</a> (the
+	extension module <b>jbehave-pico</b> needs to be added to the
+	classpath):</li>
 
-  <li><a href="http://springframework.org">Spring</a> (the extension module <b>jbehave-spring</b> needs to be added
-  to the classpath):</li>
+	<li><a href="http://springframework.org">Spring</a> (the extension
+	module <b>jbehave-spring</b> needs to be added to the classpath):</li>
 </ul>
 </p>
 
@@ -29,8 +33,10 @@ part of modern software design. We discuss here the different ways in which JBeh
 
 <h3>Using Guice</h3>
 
-<p>When using Guice we can specify the inject from separate modules for configuration and steps.</></p>
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<p>When using Guice we can specify the inject from separate modules
+for configuration and steps.</></p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
 @RunWith(GuiceAnnotatedEmbedder.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
@@ -75,13 +81,16 @@ public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
     }
 
 }
-]]></script>
+]]>
+</script>
 
 <h3>Using PicoContainer</h3>
 
-<p>When using PicoContainer we can specify the container from separate modules for configuration and steps.</> </p>
+<p>When using PicoContainer we can specify the container from
+separate modules for configuration and steps.</></p>
 
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
 @RunWith(PicoAnnotatedEmbedder.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
@@ -124,12 +133,15 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
     }
 
 }
-]]></script>
+]]>
+</script>
 
 <h3>Using Spring</h3>
 
-<p>When using Spring, we can specify the context from separate locations for configuration and steps.</>
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<p>When using Spring, we can specify the context from separate
+locations for configuration and steps.</> <script
+	type="syntaxhighlighter" class="brush: java">
+<![CDATA[
 @RunWith(SpringAnnotatedEmbedder.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
@@ -144,7 +156,8 @@ public class AnnotatedEmbedderUsingSpring extends InjectableEmbedder {
     }
 
 }
-]]></script>
+]]>
+</script>
 
 <h2>Steps class-level injection</h2>
 
@@ -155,10 +168,11 @@ system whose behaviour is being verified.</p>
 <h3>Using Guice</h3>
 
 <p>CandidateSteps can be created with Guice using the <a
-    href="javadoc/guice/org/jbehave/core/steps/guice/GuiceStepsFactory.html">GuiceStepsFactory</a>:
+	href="javadoc/guice/org/jbehave/core/steps/guice/GuiceStepsFactory.html">GuiceStepsFactory</a>:
 </p>
 
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
     protected List<CandidateSteps> createSteps(Configuration configuration) {
         Injector injector = createInjector();
         return new GuiceStepsFactory(configuration, injector).createCandidateSteps();
@@ -175,8 +189,11 @@ system whose behaviour is being verified.</p>
           });
     }
     
-]]></script>
-<p>where the <b>GuiceTraderSteps</b> is appropriately Guice-annotated:</p>
+]]>
+</script>
+
+<p>where the <b>GuiceTraderSteps</b> is appropriately
+Guice-annotated:</p>
 <pre class="brush: java">
 public class GuiceTraderSteps extends TraderSteps {
 
@@ -191,10 +208,11 @@ public class GuiceTraderSteps extends TraderSteps {
 <h3>Using PicoContainer</h3>
 
 <p>CandidateSteps can be created with PicoContainer using the <a
-    href="javadoc/pico/org/jbehave/core/steps/pico/PicoStepsFactory.html">PicoStepsFactory</a>:
+	href="javadoc/pico/org/jbehave/core/steps/pico/PicoStepsFactory.html">PicoStepsFactory</a>:
 </p>
 
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
     protected List<CandidateSteps> createSteps(Configuration configuration) {
         PicoContainer container = createPicoContainer();
         return new PicoStepsFactory(configuration, container).createCandidateSteps();
@@ -209,15 +227,17 @@ public class GuiceTraderSteps extends TraderSteps {
         return container;
     }
     
-]]></script>
+]]>
+</script>
 
 <h3>Using Spring</h3>
 
 <p>CandidateSteps can be created with Spring using the <a
-    href="javadoc/spring/org/jbehave/core/steps/spring/SpringStepsFactory.html">SpringStepsFactory</a>:
+	href="javadoc/spring/org/jbehave/core/steps/spring/SpringStepsFactory.html">SpringStepsFactory</a>:
 </p>
 
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
     protected List<CandidateSteps> createSteps(Configuration configuration) {
         ApplicationContext context = createContext();
         return new SpringStepsFactory(configuration, context).createCandidateSteps();
@@ -226,11 +246,11 @@ public class GuiceTraderSteps extends TraderSteps {
     private ApplicationContext createContext(){
         return  new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml").createApplicationContext();        
     }
-]]></script>
+]]>
+</script>
 
 <div class="clear">
 <hr />
 </div>
-
 </body>
 </html>
