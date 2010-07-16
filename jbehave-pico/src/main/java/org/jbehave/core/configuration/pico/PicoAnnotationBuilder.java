@@ -11,12 +11,12 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MissingAnnotationException;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.pico.PicoStepsFactory;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.PicoContainer;
+import org.picocontainer.injectors.AbstractInjector.AmbiguousComponentResolutionException;
 
 /**
  * Extends {@link AnnotationBuilder} to provide PicoContainer-based 
@@ -70,28 +70,32 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
 
     @Override
     public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
-        InjectableStepsFactory factory;
+        List<CandidateSteps> steps = super.buildCandidateSteps(configuration);
         if (container != null) {
-            factory = new PicoStepsFactory(configuration, container);
-        } else {
-            factory = new InstanceStepsFactory(configuration);
+             InjectableStepsFactory factory = new PicoStepsFactory(configuration, container);
+             steps.addAll(0, factory.createCandidateSteps());
         }
-        return factory.createCandidateSteps();
+        return steps;
     }
 
     @Override
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
+        ParameterConverters converters = super.parameterConverters(annotationFinder);
         if (container != null) {
-            List<ParameterConverter> converters = container.getComponents(ParameterConverter.class);
-            return new ParameterConverters().addConverters(converters);
+            return converters.addConverters(container.getComponents(ParameterConverter.class));
         }
-        return super.parameterConverters(annotationFinder);
+        return converters;
     }
 
     @Override
     protected <T, V extends T> T instanceOf(final Class<T> type, final Class<V> ofClass) {
         if (container != null) {
-            T instance = container.getComponent(type);
+            T instance = null;            
+            try {
+                instance = container.getComponent(type);
+            } catch (AmbiguousComponentResolutionException e) {
+                instance = container.getComponent(ofClass);
+            }
             if ( instance != null ){
                 return instance;
             }

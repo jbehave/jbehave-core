@@ -12,7 +12,6 @@ import org.jbehave.core.configuration.MissingAnnotationException;
 import org.jbehave.core.configuration.PrintStreamAnnotationMonitor;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.guice.GuiceStepsFactory;
@@ -71,21 +70,21 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
 
     @Override
     public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
-        InjectableStepsFactory factory;
+        List<CandidateSteps> steps = super.buildCandidateSteps(configuration);
         if ( injector != null ){
-            factory = new GuiceStepsFactory(configuration, injector);            
-        } else {
-            factory = new InstanceStepsFactory(configuration);
+            InjectableStepsFactory factory = new GuiceStepsFactory(configuration, injector);            
+            steps.addAll(0, factory.createCandidateSteps());
         }
-        return factory.createCandidateSteps();
+        return steps;
     }
     
 	@Override
 	protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
+	    ParameterConverters converters = super.parameterConverters(annotationFinder);
 		if (injector != null) {
-			return new ParameterConverters().addConverters(findConverters(injector));
+			return converters.addConverters(findConverters(injector));
 		}
-		return super.parameterConverters(annotationFinder);
+		return converters;
 	}
 
 	/**
