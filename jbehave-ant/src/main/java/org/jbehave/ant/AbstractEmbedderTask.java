@@ -202,8 +202,8 @@ public abstract class AbstractEmbedderTask extends Task {
                     + " and view properties '" + viewProperties + "'", MSG_WARN);
         }
 
-        public void storiesViewGenerated(int scenarios, int failedScenarios) {
-            log("Stories view generated with " + scenarios + " scenarios (of which  " + failedScenarios + " failed)",
+        public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
+            log("Stories view generated with " + stories +" stories containing "+ scenarios + " scenarios (of which  " + failedScenarios + " failed)",
                     MSG_INFO);
         }
 

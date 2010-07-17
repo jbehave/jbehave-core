@@ -641,7 +641,8 @@ public class EmbedderBehaviour {
 		File outputDirectory = new File("target/output");
 		List<String> formats = asList("html");
 		Properties renderingResources = FreemarkerViewGenerator
-				.defaultResources();
+				.defaultResources();        
+		when(viewGenerator.countStories()).thenReturn(2);
 		when(viewGenerator.countScenarios()).thenReturn(2);
 		when(viewGenerator.countFailedScenarios()).thenReturn(0);
 		embedder.generateStoriesView(outputDirectory, formats, renderingResources);
@@ -718,6 +719,7 @@ public class EmbedderBehaviour {
 		List<String> formats = asList("html");
 		Properties renderingResources = FreemarkerViewGenerator
 				.defaultResources();
+		when(viewGenerator.countStories()).thenReturn(1);
 		when(viewGenerator.countScenarios()).thenReturn(2);
 		when(viewGenerator.countFailedScenarios()).thenReturn(1);
 		embedder.generateStoriesView(outputDirectory, formats, renderingResources);
@@ -742,6 +744,7 @@ public class EmbedderBehaviour {
 		List<String> formats = asList("html");
 		Properties renderingResources = FreemarkerViewGenerator
 				.defaultResources();
+        when(viewGenerator.countStories()).thenReturn(1);		
 		when(viewGenerator.countScenarios()).thenReturn(2);
 		when(viewGenerator.countFailedScenarios()).thenReturn(1);
 		embedder.generateStoriesView(outputDirectory, formats, renderingResources);

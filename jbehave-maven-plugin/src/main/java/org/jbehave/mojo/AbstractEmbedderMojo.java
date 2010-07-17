@@ -45,16 +45,16 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     private String scope;
 
     /**
-     * Include filters, relative to the root source directory determined
-     * by the scope
+     * Include filters, relative to the root source directory determined by the
+     * scope
      * 
      * @parameter
      */
     private List<String> includes;
 
     /**
-     * Exclude filters, relative to the root source directory determined
-     * by the scope
+     * Exclude filters, relative to the root source directory determined by the
+     * scope
      * 
      * @parameter
      */
@@ -114,7 +114,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     private boolean generateViewAfterStories;
 
     /**
-     * The embedder class 
+     * The embedder class
      * 
      * @parameter default-value="org.jbehave.core.embedder.Embedder"
      */
@@ -128,7 +128,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     private String injectableEmbedderClass;
 
     /**
-     * The annotated embedder runner class 
+     * The annotated embedder runner class
      * 
      * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
      */
@@ -190,17 +190,18 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         getLog().info("Found class names: " + classNames);
         return classNames;
     }
-    
+
     /**
-     * Creates an instance of Embedder, either using {@link #injectableEmbedderClass} (if set)
-     * or defaulting to {@link #embedderClass}.
+     * Creates an instance of Embedder, either using
+     * {@link #injectableEmbedderClass} (if set) or defaulting to
+     * {@link #embedderClass}.
      * 
      * @return An Embedder
      */
     protected Embedder newEmbedder() {
         Embedder embedder = null;
         EmbedderClassLoader classLoader = createClassLoader();
-        if ( injectableEmbedderClass != null ){
+        if (injectableEmbedderClass != null) {
             embedder = classLoader.newInstance(InjectableEmbedder.class, injectableEmbedderClass).injectedEmbedder();
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
@@ -238,7 +239,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
-            getLog().warn("Annotated instance "+annotatedInstance+" not of type "+type);            
+            getLog().warn("Annotated instance " + annotatedInstance + " not of type " + type);
         }
 
         public void generatingStoriesView(File outputDirectory, List<String> formats, Properties viewProperties) {
@@ -254,10 +255,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().warn(message, cause);
         }
 
-        public void storiesViewGenerated(int scenarios, int failedScenarios) {
+        public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
             getLog().info(
-                    "Stories view generated with " + scenarios + " scenarios (of which  " + failedScenarios
-                            + " failed)");
+                    "Stories view generated with " + stories + " stories containing " + scenarios
+                            + " scenarios (of which  " + failedScenarios + " failed)");
         }
 
         public void storiesViewNotGenerated() {

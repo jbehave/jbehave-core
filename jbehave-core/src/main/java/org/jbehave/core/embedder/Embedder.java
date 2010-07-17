@@ -49,21 +49,21 @@ public class Embedder {
         }
 
         Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
-        for (Embeddable story : embeddables(classNames, classLoader)) {
-            String storyName = story.getClass().getName();
+        for (Embeddable embeddable : embeddables(classNames, classLoader)) {
+            String name = embeddable.getClass().getName();
             try {
-                embedderMonitor.runningStory(storyName);
-                story.useEmbedder(this);
-                story.run();
+                embedderMonitor.runningStory(name);
+                embeddable.useEmbedder(this);
+                embeddable.run();
             } catch (Throwable e) {
                 if (embedderControls.batch()) {
                     // collect and postpone decision to throw exception
-                    failedStories.put(storyName, e);
+                    failedStories.put(name, e);
                 } else {
                     if (embedderControls.ignoreFailureInStories()) {
-                        embedderMonitor.storyFailed(storyName, e);
+                        embedderMonitor.storyFailed(name, e);
                     } else {
-                        throw new RunningStoriesFailed("Failed to run story " + storyName, e);
+                        throw new RunningStoriesFailed(name, e);
                     }
                 }
             }
@@ -73,7 +73,7 @@ public class Embedder {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.storiesBatchFailed(format(failedStories));
             } else {
-                throw new RunningStoriesFailed("Failed to run stories in batch: " + format(failedStories));
+                throw new RunningStoriesFailed(failedStories);
             }
         }
 
@@ -118,7 +118,7 @@ public class Embedder {
                     if (embedderControls.ignoreFailureInStories()) {
                         embedderMonitor.storyFailed(storyPath, e);
                     } else {
-                        throw new RunningStoriesFailed("Failed to run story " + storyPath, e);
+                        throw new RunningStoriesFailed(storyPath, e);
                     }
                 }
             }
@@ -128,7 +128,7 @@ public class Embedder {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.storiesBatchFailed(format(failedStories));
             } else {
-                throw new RunningStoriesFailed("Failed to run stories in batch: " + format(failedStories));
+                throw new RunningStoriesFailed(failedStories);
             }
         }
 
@@ -207,13 +207,12 @@ public class Embedder {
                     + " and resources " + viewResources;
             throw new ViewGenerationFailed(message, e);
         }
+        int stories = viewGenerator.countStories();
         int scenarios = viewGenerator.countScenarios();
         int failedScenarios = viewGenerator.countFailedScenarios();
-        embedderMonitor.storiesViewGenerated(scenarios, failedScenarios);
+        embedderMonitor.storiesViewGenerated(stories, scenarios, failedScenarios);
         if (!embedderControls.ignoreFailureInView() && failedScenarios > 0) {
-            String message = "Generated stories view with " + scenarios + " scenarios (of which " + failedScenarios
-                    + " failed)";
-            throw new RunningStoriesFailed(message);
+            throw new RunningStoriesFailed(stories, scenarios, failedScenarios);
         }
 
     }
@@ -296,12 +295,18 @@ public class Embedder {
 
     @SuppressWarnings("serial")
     public class RunningStoriesFailed extends RuntimeException {
-        public RunningStoriesFailed(String message, Throwable cause) {
-            super(message, cause);
+
+        public RunningStoriesFailed(int stories, int scenarios, int failedScenarios) {
+            super("Failures in running " + stories +" stories containing "+ scenarios + " scenarios (of which " + failedScenarios
+            + " failed)");
         }
 
-        public RunningStoriesFailed(String message) {
-            super(message);
+        public RunningStoriesFailed(Map<String, Throwable> failedStories) {
+            super("Failures in running stories in batch: " + format(failedStories));
+        }
+
+        public RunningStoriesFailed(String name, Throwable cause) {
+            super("Failures in running story " + name, cause);
         }
     }
 

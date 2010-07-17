@@ -25,7 +25,7 @@ public class ReportingFailuresEmbedderMonitor extends PrintStreamEmbedderMonitor
 			Properties viewProperties) {
 	}
 	
-	public void storiesViewGenerated(int scenarios, int failedScenarios) {
+	public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
 	}
 	
 }
