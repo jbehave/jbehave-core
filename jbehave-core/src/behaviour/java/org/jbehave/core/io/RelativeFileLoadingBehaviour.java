@@ -6,28 +6,23 @@ import static org.jbehave.core.io.LoadFromRelativeFile.intellijProjectTestStoryF
 import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleTestStoryFilePath;
 
 import org.jbehave.core.io.stories.MyPendingStory;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class RelativeFileLoadingBehaviour {
 
     @Test
-    @Ignore("Fails on Windows - need to ensure file separators are normalised to /")
     public void shouldLoadStoryFromFileWithRelativeFilePath() {
         // Given
         String storyPath = "org/jbehave/core/io/stories/MyPendingStory.txt";
-		String storyAsText = "Given my step";
+        String storyAsText = "Given my step";
 
         // When
-        LoadFromRelativeFile loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class),
+        StoryLoader loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class),
                 mavenModuleTestStoryFilePath("src/behaviour/java"),
                 intellijProjectTestStoryFilePath("src/behaviour/java"));
-        String loadedStoryAsText = loader.loadStoryAsText(storyPath);
-        
         // Then
-		assertThat(loadedStoryAsText, equalTo(storyAsText));
-       
-    }
+        assertThat(loader.loadStoryAsText(storyPath), equalTo(storyAsText));
 
+    }
 
 }
