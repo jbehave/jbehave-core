@@ -73,7 +73,7 @@ public class SpringAnnotationBuilderBehaviour {
         SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
         assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(), new MostUsefulConfiguration());
         SpringAnnotationBuilder builderAnnotatedWithoutLocations = new SpringAnnotationBuilder(
-                AnnotatedWithoutModules.class);
+                AnnotatedWithoutResources.class);
         assertThatConfigurationIs(builderAnnotatedWithoutLocations.buildConfiguration(), new MostUsefulConfiguration());
     }
 
@@ -111,9 +111,9 @@ public class SpringAnnotationBuilderBehaviour {
     public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
-        SpringAnnotationBuilder builderAnnotatedWithoutModules = new SpringAnnotationBuilder(
-                AnnotatedWithoutModules.class);
-        assertThatStepsInstancesAre(builderAnnotatedWithoutModules.buildCandidateSteps());
+        SpringAnnotationBuilder builderAnnotatedWithoutResources = new SpringAnnotationBuilder(
+                AnnotatedWithoutResources.class);
+        assertThatStepsInstancesAre(builderAnnotatedWithoutResources.buildCandidateSteps());
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {
@@ -139,7 +139,7 @@ public class SpringAnnotationBuilderBehaviour {
 
     @Configure()
     @UsingSpring()
-    private static class AnnotatedWithoutModules {
+    private static class AnnotatedWithoutResources {
 
     }
 

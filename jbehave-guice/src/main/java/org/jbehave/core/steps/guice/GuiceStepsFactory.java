@@ -45,7 +45,7 @@ public class GuiceStepsFactory extends AbstractStepsFactory {
     private void addInstances(Injector injector, List<Object> steps) {
         for (Binding<?> binding : injector.getBindings().values()) {
             Key<?> key = binding.getKey();
-            if (isAnnotated(key.getTypeLiteral().getType())) {
+            if (hasAnnotatedMethods(key.getTypeLiteral().getType())) {
                 steps.add(injector.getInstance(key));
             }
         }

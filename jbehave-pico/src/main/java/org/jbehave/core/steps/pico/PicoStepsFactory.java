@@ -30,7 +30,7 @@ public class PicoStepsFactory extends AbstractStepsFactory {
 	protected List<Object> stepsInstances() {
 		List<Object> steps = new ArrayList<Object>();
 		for (ComponentAdapter<?> adapter : parent.getComponentAdapters()) {
-			if (isAnnotated(adapter.getComponentImplementation())) {
+			if (hasAnnotatedMethods(adapter.getComponentImplementation())) {
 				steps.add(parent.getComponent(adapter
 						.getComponentKey()));
 			}
