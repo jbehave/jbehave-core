@@ -35,7 +35,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class PrintStreamOutputBehaviour {
@@ -275,8 +274,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
-        Assert.assertEquals(expected, out.toString());
-    	assertThat(dos2unix(out.toString()), equalTo(expected));
+       assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
     private String dos2unix(String string) {

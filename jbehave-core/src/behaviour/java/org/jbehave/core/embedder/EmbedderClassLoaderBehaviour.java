@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +58,7 @@ public class EmbedderClassLoaderBehaviour {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList("/path/to/one.jar",
                 "/target/classes"));
         assertThat(classLoader.toString(),
-                containsString("urls=" + Arrays.<String> asList("one.jar", "/target/classes")));
+                containsString("urls=" + classLoader.asShortPaths(new File("one.jar").toURL(), new File("/target/classes").toURL())));
     }
 
     @Test(expected = InstantiationFailed.class)

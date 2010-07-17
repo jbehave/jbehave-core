@@ -49,7 +49,7 @@ public class EmbedderClassLoader extends URLClassLoader {
         }
     }
 
-    private List<String> asShortPaths(URL[] urls) {
+    List<String> asShortPaths(URL... urls) {
         List<String> names = new ArrayList<String>();
         for (URL url : urls) {
             String path = url.getPath();
