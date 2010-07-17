@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
@@ -39,31 +38,16 @@ public class StoryRunner {
     private StepCollector stepCollector;
 	private String reporterStoryPath;
 
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Class<? extends Embeddable> embeddableClass) throws Throwable {
-        String storyPath = configuration.storyPathResolver().resolve(embeddableClass);
-        run(configuration, candidateSteps, storyPath);
-    }
-
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, String storyPath) throws Throwable {
-        Story story = defineStory(configuration, storyPath);
-        run(configuration, candidateSteps, story);
-    }
-
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story) throws Throwable {
-        // always start in a top-level non-given story
-        run(configuration, candidateSteps, story, false);
+        run(configuration, candidateSteps, storyPath, false);
     }
 
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, String storyPath, boolean givenStory) throws Throwable {
-        Story story = defineStory(configuration, storyPath);
-        run(configuration, candidateSteps, story, givenStory);
+        run(configuration, candidateSteps, defineStory(configuration, storyPath), givenStory);
     }
 
-    public Story defineStory(Configuration configuration, String storyPath) {
-        String storyAsString = configuration.storyLoader().loadStoryAsText(storyPath);
-        Story story = configuration.storyParser().parseStory(storyAsString, storyPath);
-        story.namedAs(new File(storyPath).getName());
-        return story;
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story) throws Throwable {
+        run(configuration, candidateSteps, story, false);
     }
 
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
@@ -94,6 +78,13 @@ public class StoryRunner {
         currentStrategy.handleFailure(storyFailure);
     }
     
+    public Story defineStory(Configuration configuration, String storyPath) {
+        String storyAsString = configuration.storyLoader().loadStoryAsText(storyPath);
+        Story story = configuration.storyParser().parseStory(storyAsString, storyPath);
+        story.namedAs(new File(storyPath).getName());
+        return story;
+    }
+
 	private boolean isDryRun(List<CandidateSteps> candidateSteps) {
 		for (CandidateSteps steps : candidateSteps) {
 			if (steps.configuration().dryRun()) {
