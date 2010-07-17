@@ -76,8 +76,8 @@ public class LoadFromRelativeFile implements StoryLoader {
         private final String relativePath;
 
         public StoryFilePath(String toRemove, String relativePath) {
-            this.toRemove = toRemove;
-            this.relativePath = relativePath;
+            this.toRemove = toRemove.replace('\\', '/');
+            this.relativePath = relativePath.replace('\\', '/');
         }
     }
 

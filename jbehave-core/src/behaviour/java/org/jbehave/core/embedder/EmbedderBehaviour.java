@@ -799,7 +799,7 @@ public class EmbedderBehaviour {
 			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps.given()\n" +
 			"from steps instances:\n" +
 			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps\n";
-		assertThat(out.toString(), equalTo(expected));
+		assertThat(dos2unix(out.toString()), equalTo(expected));
 	}
 	
 	@Test
@@ -817,7 +817,7 @@ public class EmbedderBehaviour {
 			"Step 'Given a non-defined step' is not matched by any pattern\n" +
 			"from steps instances:\n" +
 			"org.jbehave.core.embedder.EmbedderBehaviour$MySteps\n";
-		assertThat(out.toString(), equalTo(expected));
+		assertThat(dos2unix(out.toString()), equalTo(expected));
 	}
 
 	@Test
@@ -834,7 +834,7 @@ public class EmbedderBehaviour {
 		String expected = 
 			"Step 'Given a non-defined step' is not matched by any pattern\n" +
 			"as no steps instances are provided\n";
-		assertThat(out.toString(), equalTo(expected));
+		assertThat(dos2unix(out.toString()), equalTo(expected));
 	}
 
 	@Test
@@ -848,16 +848,21 @@ public class EmbedderBehaviour {
 		// When
 		embedder.reportStepdocs();
 		// Then
-		assertThat(out.toString(), containsString("'Given a given'\n"+
+		String output = dos2unix(out.toString());
+        assertThat(output, containsString("'Given a given'\n"+
 	            "org.jbehave.core.embedder.EmbedderBehaviour$MySteps.given()\n"));
-        assertThat(out.toString(), containsString("'When a when'\n"+
+        assertThat(output, containsString("'When a when'\n"+
                 "org.jbehave.core.embedder.EmbedderBehaviour$MySteps.when()\n"));
-        assertThat(out.toString(), containsString("'Then a then'\n"+
+        assertThat(output, containsString("'Then a then'\n"+
                 "org.jbehave.core.embedder.EmbedderBehaviour$MySteps.then()\n"));
-        assertThat(out.toString(), containsString(
+        assertThat(output, containsString(
                 "from steps instances:\norg.jbehave.core.embedder.EmbedderBehaviour$MySteps\n"));
 	}
-	
+
+    private String dos2unix(String string) {
+        return string.replace("\r\n", "\n");
+    }
+
 	private class MyStory extends JUnitStory {
 	}
 
