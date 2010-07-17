@@ -124,7 +124,7 @@ public class SpringAnnotationBuilderBehaviour {
     }
 
     @Configure()
-    @UsingSpring(locations = { "org/jbehave/core/configuration/spring/configuration.xml",
+    @UsingSpring(resources = { "org/jbehave/core/configuration/spring/configuration.xml",
             "org/jbehave/core/steps/spring/steps.xml", "org/jbehave/core/steps/spring/steps-with-dependency.xml" })
     private static class AnnotatedUsingSpring {
 
@@ -132,7 +132,7 @@ public class SpringAnnotationBuilderBehaviour {
 
     @Configure()
     @UsingSteps(instances = { FooSteps.class })
-    @UsingSpring(locations = { "org/jbehave/core/configuration/spring/configuration.xml" })
+    @UsingSpring(resources = { "org/jbehave/core/configuration/spring/configuration.xml" })
     private static class AnnotatedUsingStepsAndSpring {
 
     }

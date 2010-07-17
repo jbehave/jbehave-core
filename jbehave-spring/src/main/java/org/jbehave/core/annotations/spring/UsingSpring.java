@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface UsingSpring {
 
-    String[] locations() default {};
+    String[] resources() default {};
     
 }

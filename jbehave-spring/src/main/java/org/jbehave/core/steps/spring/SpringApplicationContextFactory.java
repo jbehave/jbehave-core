@@ -15,25 +15,24 @@ public class SpringApplicationContextFactory {
 
     private final ApplicationContext parent;
     private final ClassLoader classLoader;
-    private final String[] resourceLocations;
+    private final String[] resources;
 
-    public SpringApplicationContextFactory(String... resourceLocations) {
-        this(SpringApplicationContextFactory.class.getClassLoader(), resourceLocations);
+    public SpringApplicationContextFactory(String... resources) {
+        this(SpringApplicationContextFactory.class.getClassLoader(), resources);
     }
 
-    public SpringApplicationContextFactory(ClassLoader classLoader, String... resourceLocations) {
-        this(null, classLoader, resourceLocations);
+    public SpringApplicationContextFactory(ClassLoader classLoader, String... resources) {
+        this(null, classLoader, resources);
     }
 
-    public SpringApplicationContextFactory(ApplicationContext parent, String... resourceLocations) {
-        this(parent, parent.getClassLoader(), resourceLocations);
+    public SpringApplicationContextFactory(ApplicationContext parent, String... resources) {
+        this(parent, parent.getClassLoader(), resources);
     }
 
-    public SpringApplicationContextFactory(ApplicationContext parent, ClassLoader classLoader,
-            String... resourceLocations) {
+    public SpringApplicationContextFactory(ApplicationContext parent, ClassLoader classLoader, String... resources) {
         this.parent = parent;
         this.classLoader = classLoader;
-        this.resourceLocations = resourceLocations;
+        this.resources = resources;
     }
 
     public ConfigurableApplicationContext createApplicationContext() {
@@ -43,8 +42,8 @@ public class SpringApplicationContextFactory {
         ResourceLoader resourceLoader = new DefaultResourceLoader(classLoader);
         context.setResourceLoader(resourceLoader);
         BeanDefinitionReader reader = new XmlBeanDefinitionReader(context);
-        for (String resourceLocation : resourceLocations) {
-            reader.loadBeanDefinitions(resourceLoader.getResource(resourceLocation));
+        for (String resource : resources) {
+            reader.loadBeanDefinitions(resourceLoader.getResource(resource));
         }
         context.refresh();
         return context;

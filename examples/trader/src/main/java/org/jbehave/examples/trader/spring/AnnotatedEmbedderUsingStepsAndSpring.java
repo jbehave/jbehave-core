@@ -29,7 +29,7 @@ import org.junit.runner.RunWith;
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class })
-@UsingSpring(locations = { "org/jbehave/examples/trader/spring/configuration.xml"})
+@UsingSpring(resources = { "org/jbehave/examples/trader/spring/configuration.xml"})
 public class AnnotatedEmbedderUsingStepsAndSpring extends InjectableEmbedder {
 
     @Test
