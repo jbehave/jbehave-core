@@ -92,10 +92,50 @@ public class Embedder {
         }
         return embeddables;
     }
+    
+    public void runStoriesWithAnnotatedEmbedderRunner(String runnerClass, List<String> classNames,
+            EmbedderClassLoader classLoader) {
+        List<AnnotatedEmbedderRunner> runners = annotatedEmbedderRunners(runnerClass, classNames, classLoader);
+        for (AnnotatedEmbedderRunner runner : runners) {
+            try {
+                Object annotatedInstance = runner.createTest();
+                if (annotatedInstance instanceof Embeddable) {
+                    ((Embeddable) annotatedInstance).run();
+                } else {
+                    embedderMonitor.annotatedInstanceNotOfType(annotatedInstance, Embeddable.class);
+                }
+            } catch (Throwable e) {
+                throw new RuntimeException(runner.toString(), e);
+            }
+        }
+    }
 
-    public void buildReporters(Configuration configuration, List<String> storyPaths) {
-        StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
-        configuration.useStoryReporters(reporterBuilder.build(storyPaths));
+    private List<AnnotatedEmbedderRunner> annotatedEmbedderRunners(String runnerClassName, List<String> classNames,
+            EmbedderClassLoader classLoader) {
+        Class<?> runnerClass = loadClass(runnerClassName, classLoader);
+        List<AnnotatedEmbedderRunner> runners = new ArrayList<AnnotatedEmbedderRunner>();
+        for (String annotatedClassName : classNames) {
+            runners.add(newAnnotatedEmbedderRunner(runnerClass, annotatedClassName, classLoader));
+        }
+        return runners;
+    }
+
+    private AnnotatedEmbedderRunner newAnnotatedEmbedderRunner(Class<?> runnerClass, String annotatedClassName,
+            EmbedderClassLoader classLoader) {
+        try {
+            Class<?> annotatedClass = loadClass(annotatedClassName, classLoader);
+            return (AnnotatedEmbedderRunner) runnerClass.getConstructor(Class.class).newInstance(annotatedClass);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Class<?> loadClass(String className, EmbedderClassLoader classLoader) {
+        try {
+            return classLoader.loadClass(className);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void runStoriesAsPaths(List<String> storyPaths) {
@@ -147,49 +187,9 @@ public class Embedder {
 
     }
 
-    public void runStoriesWithAnnotatedEmbedderRunner(String runnerClass, List<String> classNames,
-            EmbedderClassLoader classLoader) {
-        List<AnnotatedEmbedderRunner> runners = annotatedEmbedderRunners(runnerClass, classNames, classLoader);
-        for (AnnotatedEmbedderRunner runner : runners) {
-            try {
-                Object annotatedInstance = runner.createTest();
-                if (annotatedInstance instanceof Embeddable) {
-                    ((Embeddable) annotatedInstance).run();
-                } else {
-                    embedderMonitor.annotatedInstanceNotOfType(annotatedInstance, Embeddable.class);
-                }
-            } catch (Throwable e) {
-                throw new RuntimeException(runner.toString(), e);
-            }
-        }
-    }
-
-    private List<AnnotatedEmbedderRunner> annotatedEmbedderRunners(String runnerClassName, List<String> classNames,
-            EmbedderClassLoader classLoader) {
-        Class<?> runnerClass = loadClass(runnerClassName, classLoader);
-        List<AnnotatedEmbedderRunner> runners = new ArrayList<AnnotatedEmbedderRunner>();
-        for (String annotatedClassName : classNames) {
-            runners.add(newAnnotatedEmbedderRunner(runnerClass, annotatedClassName, classLoader));
-        }
-        return runners;
-    }
-
-    private AnnotatedEmbedderRunner newAnnotatedEmbedderRunner(Class<?> runnerClass, String annotatedClassName,
-            EmbedderClassLoader classLoader) {
-        try {
-            Class<?> annotatedClass = loadClass(annotatedClassName, classLoader);
-            return (AnnotatedEmbedderRunner) runnerClass.getConstructor(Class.class).newInstance(annotatedClass);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Class<?> loadClass(String className, EmbedderClassLoader classLoader) {
-        try {
-            return classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+    private void buildReporters(Configuration configuration, List<String> storyPaths) {
+        StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
+        configuration.useStoryReporters(reporterBuilder.build(storyPaths));
     }
 
     public void generateStoriesView() {
