@@ -15,16 +15,18 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.annotations.AfterStories;
 import org.jbehave.core.annotations.AfterScenario;
-import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.AfterStory;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Aliases;
+import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStory;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
@@ -204,7 +206,14 @@ public class Steps implements CandidateSteps {
 						.stepPatternParser(), configuration
 						.parameterConverters());
 	}
-	
+
+    public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
+        List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+        steps.addAll(stepsHaving(Stage.BEFORE, BeforeStories.class));
+        steps.addAll(stepsHaving(Stage.AFTER, AfterStories.class));
+        return steps;
+    }
+
 	public List<BeforeOrAfterStep> listBeforeOrAfterStory(boolean givenStory){
 		List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
 		steps.addAll(stepsHaving(Stage.BEFORE, BeforeStory.class, givenStory));

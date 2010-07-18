@@ -40,6 +40,18 @@ public class StoryRunner {
 	private String reporterStoryPath;
 
 	/**
+	 * Run steps before or after a collection of stories.  Steps are execute only <b>once</b> per collection
+	 * of stories.
+	 * 
+     * @param configuration the Configuration used to find the steps to run
+	 * @param candidateSteps List of CandidateSteps containing the candidate steps methods
+	 * @param stage the Stage
+	 */
+    public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
+        runSteps(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));        
+    }
+
+    /**
 	 * Runs a Story with the given configuration and steps.  
 	 * 
 	 * @param configuration the Configuration used to run story
@@ -145,12 +157,12 @@ public class StoryRunner {
     }
 
     private void runStorySteps(List<CandidateSteps> candidateSteps, Story story, boolean givenStory, Stage stage) {
-        runSteps(stepCollector.collectStepsFrom(candidateSteps, story, stage, givenStory));
+        runSteps(stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory));
     }
 
     private void runScenarioSteps(
             List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> tableRow) {
-        runSteps(stepCollector.collectStepsFrom(candidateSteps, scenario, tableRow));
+        runSteps(stepCollector.collectScenarioSteps(candidateSteps, scenario, tableRow));
     }
 
     /**
@@ -212,5 +224,6 @@ public class StoryRunner {
 	public String toString() {
 		return this.getClass().getSimpleName();
 	}
+
 
 }

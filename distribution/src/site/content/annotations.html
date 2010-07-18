@@ -134,6 +134,35 @@ the corresponding methods to be executed before and after each story, either a G
     
 </pre>
 
+<h2>Stories Annotations</h2>
+
+<p>JBehave supports the following method stories annotations:</p>
+
+<ul>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/BeforeStories.html">@BeforeStories</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/AfterStories.html">@AfterStories</a>
+    </li>
+</ul>
+<p>The <b>@BeforeStories</b> and <b>@AfterStories</b> annotations allow
+the corresponding methods to be executed before and after a collection of stories:</p>
+
+<pre class="brush: java">
+
+    @BeforeStories
+    public void beforeStories() {
+        // ...
+    }
+
+    @AfterStories
+    public void afterStories() {
+        // ...
+    }
+    
+</pre>
+
 <h2>Parameter Annotations</h2>
 
 <p>JBehave supports the following parameter annotations:</p>

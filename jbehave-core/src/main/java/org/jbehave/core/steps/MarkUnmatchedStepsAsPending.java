@@ -24,7 +24,16 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 		this.stepFinder = stepFinder;
 	}
 
-	public List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps,
+    public List<Step> collectBeforeOrAfterStoriesSteps(List<CandidateSteps> candidateSteps, Stage stage) {
+        List<Step> steps = new ArrayList<Step>();
+        for (CandidateSteps candidates : candidateSteps) {
+            steps.addAll(createSteps(candidates
+                    .listBeforeOrAfterStories(), stage));
+        }
+        return steps;
+    }
+
+	public List<Step> collectBeforeOrAfterStorySteps(List<CandidateSteps> candidateSteps,
 			Story story, Stage stage, boolean givenStory) {
 		List<Step> steps = new ArrayList<Step>();
 		for (CandidateSteps candidates : candidateSteps) {
@@ -45,7 +54,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 		return steps;
 	}
 
-	public List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps,
+	public List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps,
 			Scenario scenario, Map<String, String> tableRow) {
 		List<Step> steps = new ArrayList<Step>();
 

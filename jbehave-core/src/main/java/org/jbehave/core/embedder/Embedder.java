@@ -20,6 +20,7 @@ import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Stepdoc;
+import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * Represents an entry point to all of JBehave's functionality that is
@@ -104,14 +105,18 @@ public class Embedder {
             return;
         }
 
-        Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
         Configuration configuration = configuration();
+        List<CandidateSteps> candidateSteps = candidateSteps();
+        
+        storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
+        
+        Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
         buildReporters(configuration, storyPaths);
         for (String storyPath : storyPaths) {
             try {
                 embedderMonitor.runningStory(storyPath);
                 Story story = storyRunner.storyOfPath(configuration, storyPath);
-                storyRunner.run(configuration, candidateSteps(), story);
+                storyRunner.run(configuration, candidateSteps, story);
             } catch (Throwable e) {
                 if (embedderControls.batch()) {
                     // collect and postpone decision to throw exception
@@ -126,6 +131,8 @@ public class Embedder {
             }
         }
 
+        storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
+        
         if (embedderControls.batch() && failedStories.size() > 0) {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.storiesBatchFailed(format(failedStories));

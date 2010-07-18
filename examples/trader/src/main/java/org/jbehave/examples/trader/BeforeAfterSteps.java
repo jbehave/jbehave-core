@@ -1,7 +1,9 @@
 package org.jbehave.examples.trader;
 
+import org.jbehave.core.annotations.AfterStories;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.AfterStory;
+import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStory;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
@@ -10,6 +12,16 @@ import org.jbehave.core.annotations.AfterScenario.Outcome;
  * Steps executed before and after each story and core
  */
 public class BeforeAfterSteps {
+
+    @BeforeStories
+    public void beforeStories() {
+        System.out.println("Before Stories ...");
+    }
+
+    @AfterStories
+    public void afterStories() {
+        System.out.println("After Stories ...");
+    }
 
     @BeforeStory
     public void beforeStory() {

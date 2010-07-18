@@ -90,7 +90,20 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldProvideStepsToBePerformedBeforeAndAfterStory() {
+    public void shouldListStepsToBePerformedBeforeAndAfterStories() {
+        MultipleAliasesSteps steps = new MultipleAliasesSteps();
+
+        List<BeforeOrAfterStep> beforeAfterStories = steps.listBeforeOrAfterStories();
+        assertThat(beforeAfterStories.size(), equalTo(2));        
+        beforeAfterStories.get(0).createStep().perform();
+        assertThat(steps.beforeStories, is(true));
+        beforeAfterStories.get(1).createStep().perform();
+        assertThat(steps.afterStories, is(true));
+        
+    }
+
+    @Test
+    public void shouldListStepsToBePerformedBeforeAndAfterStory() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
 
         List<BeforeOrAfterStep> beforeAfterStory = steps.listBeforeOrAfterStory(false);
@@ -215,6 +228,8 @@ public class StepsBehaviour {
         private boolean afterStory;
         private boolean beforeGivenStory;
         private boolean afterGivenStory;
+        private boolean beforeStories;
+        private boolean afterStories;
         
         @org.jbehave.core.annotations.Given("a given")
         @org.jbehave.core.annotations.Aliases(values={"a given alias", "another given alias"})
@@ -232,6 +247,16 @@ public class StepsBehaviour {
         @org.jbehave.core.annotations.Aliases(values={"a then alias", "another then alias"})
         public void then() {
             thens++;
+        }
+
+        @org.jbehave.core.annotations.BeforeStories
+        public void beforeStories() {
+            beforeStories = true;
+        }
+        
+        @org.jbehave.core.annotations.AfterStories
+        public void afterStories() {
+            afterStories = true;
         }
 
         @org.jbehave.core.annotations.BeforeStory
