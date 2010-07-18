@@ -21,7 +21,8 @@ import org.jbehave.core.steps.StepResult;
 import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
- * Allows to run a single story and describe the results to the {@link StoryReporter}.
+ * Runs a {@link Story}, given a {@link Configuration} and a list of {@link CandidateSteps}, 
+ * describing the results to the {@link StoryReporter}.
  *
  * @author Elizabeth Keogh
  * @author Mauro Talevi
@@ -38,19 +39,19 @@ public class StoryRunner {
     private StepCollector stepCollector;
 	private String reporterStoryPath;
 
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, String storyPath) throws Throwable {
-        run(configuration, candidateSteps, storyPath, false);
-    }
-
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, String storyPath, boolean givenStory) throws Throwable {
-        run(configuration, candidateSteps, defineStory(configuration, storyPath), givenStory);
-    }
-
+	/**
+	 * Runs a Story with the given configuration and steps.  
+	 * 
+	 * @param configuration the Configuration used to run story
+	 * @param candidateSteps the List of CandidateSteps containing the candidate steps methods
+	 * @param story the Story to run
+	 * @throws Throwable if failures occurred and FailureStrategy dictates it to be re-thrown.
+	 */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story) throws Throwable {
         run(configuration, candidateSteps, story, false);
     }
 
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
+    private void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
         stepCollector = configuration.stepCollector();
         reporter = reporterFor(configuration, story, givenStory);
         pendingStepStrategy = configuration.pendingStepStrategy();
@@ -78,7 +79,7 @@ public class StoryRunner {
         currentStrategy.handleFailure(storyFailure);
     }
     
-    public Story defineStory(Configuration configuration, String storyPath) {
+    public Story storyOfPath(Configuration configuration, String storyPath) {
         String storyAsString = configuration.storyLoader().loadStoryAsText(storyPath);
         Story story = configuration.storyParser().parseStory(storyAsString, storyPath);
         story.namedAs(new File(storyPath).getName());
@@ -121,8 +122,9 @@ public class StoryRunner {
         if (storyPaths.size() > 0) {
             reporter.givenStories(storyPaths);
             for (String storyPath : storyPaths) {
-            	// run given story 
-                run(configuration, candidateSteps, storyPath, true);
+                // run given story 
+                Story story = storyOfPath(configuration, storyPath);
+                run(configuration, candidateSteps, story, true);
             }
         }
     }

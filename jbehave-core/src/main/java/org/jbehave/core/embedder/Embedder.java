@@ -13,6 +13,7 @@ import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
@@ -109,7 +110,8 @@ public class Embedder {
         for (String storyPath : storyPaths) {
             try {
                 embedderMonitor.runningStory(storyPath);
-                storyRunner.run(configuration, candidateSteps(), storyPath);
+                Story story = storyRunner.storyOfPath(configuration, storyPath);
+                storyRunner.run(configuration, candidateSteps(), story);
             } catch (Throwable e) {
                 if (embedderControls.batch()) {
                     // collect and postpone decision to throw exception
