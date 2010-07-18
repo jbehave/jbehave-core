@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 public class ConfigurableEmbedderBehaviour {
 
     @Test
-    public void shouldRunASingleStoryAsClass() throws Throwable {
+    public void shouldRunASingleStory() throws Throwable {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);
@@ -51,7 +51,7 @@ public class ConfigurableEmbedderBehaviour {
 
 
     @Test
-    public void shouldRunMultipleStoriesAsPaths() throws Throwable {
+    public void shouldRunMultipleStories() throws Throwable {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);
@@ -92,7 +92,6 @@ public class ConfigurableEmbedderBehaviour {
         verify(embedder).useCandidateSteps(Mockito.eq(Arrays.asList(steps)));
         verify(embedder).runStoriesAsPaths(asList(storyPath));
     }
-
 
 	@Test
     public void shouldAllowAdditionOfSteps() throws Throwable {

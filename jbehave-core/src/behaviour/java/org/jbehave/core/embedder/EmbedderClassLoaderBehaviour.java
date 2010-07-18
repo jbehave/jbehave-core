@@ -21,13 +21,13 @@ import org.junit.Test;
 public class EmbedderClassLoaderBehaviour {
 
     @Test
-    public void shouldInstantiateNewEmbedderWithDefaultConstructor() throws MalformedURLException {
+    public void shouldInstantiateNewEmbedder() throws MalformedURLException {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThatIsInstantiated(classLoader, MyEmbedder.class.getName(), MyEmbedder.class);
     }
 
     @Test
-    public void shouldInstantiateNewStoryWithDefaultConstructor() throws MalformedURLException {
+    public void shouldInstantiateNewStory() throws MalformedURLException {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
