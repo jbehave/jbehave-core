@@ -51,23 +51,23 @@
 		<unzip src="${org.jbehave.site:jbehave-site-resources:zip}" dest="${basedir}/target/jbehave-reports/view/" />
 	</target>
 
-	<target name="run-stories" depends="compile, reports-resources">
-		<taskdef name="storyRunner" classname="org.jbehave.ant.StoryRunnerTask" classpathref="story.classpath" />
+	<target name="run-stories-as-embeddables" depends="compile, reports-resources">
+		<taskdef name="runStoriesAsEmbeddables" classname="org.jbehave.ant.RunStoriesAsEmbeddables" classpathref="story.classpath" />
 
-		<storyRunner includes="**/stories/*.java" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
+		<runStoriesAsEmbeddables includes="**/stories/*.java" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="run-stories-as-paths" depends="compile, reports-resources">
-		<taskdef name="storyPathRunner" classname="org.jbehave.ant.StoryPathRunnerTask" classpathref="story.classpath" />
+		<taskdef name="runStoriesAsPaths" classname="org.jbehave.ant.RunStoriesAsPaths" classpathref="story.classpath" />
 
-		<storyPathRunner includes="**/stories/*.story" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
+		<runStoriesAsPaths includes="**/stories/*.story" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="stepdoc" depends="compile">
-		<taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask" classpathref="story.classpath" />
-		<stepdoc embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder" />
+		<taskdef name="reportStepdocs" classname="org.jbehave.ant.ReportStepdocs" classpathref="story.classpath" />
+		<reportStepdocs embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder" />
 	</target>
 
-	<target name="build" depends="run-stories,run-stories-as-paths,stepdoc" />
+	<target name="build" depends="run-stories-as-embeddables,run-stories-as-paths,stepdoc" />
 
 </project>

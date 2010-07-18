@@ -100,7 +100,7 @@
               <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
             </configuration>
             <goals>
-              <goal>run-stories</goal>
+              <goal>run-stories-as-embeddables</goal>
             </goals>
           </execution>
         </executions>
@@ -264,7 +264,7 @@
                   <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
                 </configuration>
                 <goals>
-                  <goal>run-stories</goal>
+                  <goal>run-stories-as-embeddables</goal>
                 </goals>
               </execution>
             </executions>
@@ -290,7 +290,7 @@
                   <embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>
                 </configuration>
                 <goals>
-                  <goal>stepdoc</goal>
+                  <goal>report-stepdocs</goal>
                 </goals>
               </execution>
             </executions>
@@ -311,15 +311,15 @@
                 <phase>integration-test</phase>
                 <configuration>
                   <tasks>
-                    <taskdef name="storyRunner"
-                      classname="org.jbehave.ant.StoryRunnerTask"
+                    <taskdef name="runStoriesAsEmbeddables"
+                      classname="org.jbehave.ant.RunStoriesAsEmbeddables"
                       classpathref="maven.runtime.classpath" />
-                    <storyRunner includes="${include.embeddables}"
+                    <runStoriesAsEmbeddables includes="${include.embeddables}"
                       skip="false" generateViewAfterStories="true"
                       ignoreFailureInStories="true" ignoreFailureInView="${ignore.failure.view}" />
-                    <taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
+                    <taskdef name="reportStepdocs" classname="org.jbehave.ant.ReportStepdocs"
                       classpathref="maven.runtime.classpath" />
-                    <stepdoc
+                    <reportStepdocs
                       embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder"
                       skip="false" />
                   </tasks>

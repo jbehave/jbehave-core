@@ -6,11 +6,9 @@ import org.apache.tools.ant.BuildException;
 import org.jbehave.core.embedder.Embedder;
 
 /**
- * Ant task that generate stepdocs
- * 
- * @author Mauro Talevi
+ * Ant task to report stepdocs
  */
-public class StepdocTask extends AbstractEmbedderTask {
+public class ReportStepdocs extends AbstractEmbedderTask {
 
 	public void execute() throws BuildException {
 		Embedder embedder = newEmbedder();

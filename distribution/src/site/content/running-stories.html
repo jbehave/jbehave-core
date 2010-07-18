@@ -100,11 +100,11 @@ public class ClasspathTraderEmbedder extends Embedder {
 
 <script type="syntaxhighlighter" class="brush: xml">
 <![CDATA[
-    <taskdef name="storyPathRunner"
-             classname="org.jbehave.ant.StoryPathRunnerTask"
+    <taskdef name="runStoriesAsPaths"
+             classname="org.jbehave.ant.RunStoriesAsPaths"
              classpathref="your.runtime.classpath"/>
 
-    <storyPathRunner
+    <runStoriesAsPaths
     		embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder"
             includes="**/stories/*.story"
             excludes="**/stories/*NonSuccessful.story"

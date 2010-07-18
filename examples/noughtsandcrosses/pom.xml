@@ -37,7 +37,7 @@
               <renderReportsAfterStories>true</renderReportsAfterStories>
             </configuration>
             <goals>
-              <goal>run-stories</goal>
+              <goal>run-stories-as-embeddables</goal>
             </goals>
           </execution>
         </executions>

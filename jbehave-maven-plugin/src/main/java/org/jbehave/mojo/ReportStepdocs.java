@@ -5,19 +5,16 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.jbehave.core.embedder.Embedder;
 
 /**
- * Mojo to run stories
- *
- * @author Mauro Talevi
- * @goal run-stories
+ * Mojo to report stepdocs
+ * 
+ * @goal report-stepdocs
  */
-public class StoryRunnerMojo extends AbstractEmbedderMojo {
+public class ReportStepdocs extends AbstractEmbedderMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
-        getLog().info("Running stories using embedder "+embedder);
-		embedder.runStoriesAsEmbeddables(classNames(), createClassLoader());
+        getLog().info("Generating stepdoc using embedder "+embedder);
+        embedder.reportStepdocs();
     }
 
 }
-
-

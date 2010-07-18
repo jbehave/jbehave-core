@@ -12,7 +12,7 @@ import org.junit.runner.RunWith;
  * 
  * @goal run-with-annotated-embedder
  */
-public class AnnotatedEmbedderRunnerMojo extends AbstractEmbedderMojo {
+public class RunStoriesWithAnnotatedEmbedderRunner extends AbstractEmbedderMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();

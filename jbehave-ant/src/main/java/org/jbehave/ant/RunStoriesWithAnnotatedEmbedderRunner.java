@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
  * Ant task that runs with {@link AnnotatedEmbedderRunner}, equivalent to
  * execution via JUnit's {@link RunWith}.
  */
-public class AnnotatedEmbedderRunnerTask extends AbstractEmbedderTask {
+public class RunStoriesWithAnnotatedEmbedderRunner extends AbstractEmbedderTask {
 
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();

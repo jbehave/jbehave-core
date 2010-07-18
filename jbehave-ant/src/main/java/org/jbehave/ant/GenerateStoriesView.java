@@ -6,16 +6,14 @@ import org.apache.tools.ant.BuildException;
 import org.jbehave.core.embedder.Embedder;
 
 /**
- * Ant task that runs stories as paths
- *
- * @author Mauro Talevi
+ * Ant task that generates a stories view
  */
-public class StoryPathRunnerTask extends AbstractEmbedderTask {
-    
+public class GenerateStoriesView extends AbstractEmbedderTask {
+
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
-        log("Running stories as paths using embedder "+embedder, MSG_INFO);
-		embedder.runStoriesAsPaths(storyPaths());
+		log("Generating stories view using embedder " + embedder, MSG_INFO);
+        embedder.generateStoriesView();
     }
-
+    
 }
