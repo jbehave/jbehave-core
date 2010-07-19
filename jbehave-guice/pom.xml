@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.0-SNAPSHOT</version>
+    <version>3.0-rc1</version>
   </parent>
   <artifactId>jbehave-guice</artifactId>
   <name>JBehave Guice</name>
