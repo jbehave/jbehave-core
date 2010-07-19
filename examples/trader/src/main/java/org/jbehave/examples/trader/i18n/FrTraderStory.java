@@ -22,16 +22,16 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 
-public class ItTraderStory extends JUnitStory {
+public class FrTraderStory extends JUnitStory {
 
-	public ItTraderStory() {
-		// use Italian for keywords
+	public FrTraderStory() {
+		// use French for keywords
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
-		Keywords keywords = new LocalizedKeywords(new Locale("it"));
+		Keywords keywords = new LocalizedKeywords(new Locale("fr"));
 		Configuration configuration = new MostUsefulConfiguration()
 				.useStoryPathResolver(
-						new UnderscoredCamelCaseResolver(".storia"))
+						new UnderscoredCamelCaseResolver(".histoire"))
 				.useKeywords(keywords)
 				.useStoryParser(new RegexStoryParser(keywords))
 				.useStoryLoader(
@@ -49,7 +49,7 @@ public class ItTraderStory extends JUnitStory {
 										keywords.examplesTableHeaderSeparator(),
 										keywords.examplesTableValueSeparator())));
 		useConfiguration(configuration);
-		addSteps(new InstanceStepsFactory(configuration, new ItTraderSteps())
+		addSteps(new InstanceStepsFactory(configuration, new FrTraderSteps())
 				.createCandidateSteps());
 	}
 
