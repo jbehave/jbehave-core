@@ -26,7 +26,6 @@ public class RegexStoryParser implements StoryParser {
     private static final String NONE = "";
     private static final String COMMA = ",";
     private final Keywords keywords;
-    private String storyPath;
 
     public RegexStoryParser() {
         this(new LocalizedKeywords());
@@ -41,7 +40,6 @@ public class RegexStoryParser implements StoryParser {
     }
 
     public Story parseStory(String storyAsText, String storyPath) {
-        this.storyPath = storyPath;
         Description description = parseDescriptionFrom(storyAsText);
         Narrative narrative = parseNarrativeFrom(storyAsText);
         List<Scenario> scenarios = parseScenariosFrom(storyAsText);
@@ -168,37 +166,6 @@ public class RegexStoryParser implements StoryParser {
         return scenarios;
     }
 
-    // This pattern approach causes stack overflow error on Windows
-    // http://jbehave.org/documentation/known-issues/regex-stack-overflow-errors
-
-    protected List<String> splitScenariosWithPattern(String storyAsText) {
-        Pattern scenarioSplitter = patternToPullScenariosIntoGroupFour();
-        Matcher matcher = scenarioSplitter.matcher(storyAsText);
-        int startAt = 0;
-        List<String> scenarios = new ArrayList<String>();
-        try {
-            if (matcher.matches()) {
-                while (matcher.find(startAt)) {
-                    scenarios.add(matcher.group(1));
-                    startAt = matcher.start(4);
-                }
-            } else {
-                scenarios.add(storyAsText);
-            }
-        } catch (StackOverflowError e) {
-            String message = "Failed to parse story (see http://jbehave.org/documentation/known-issues/regex-stack-overflow-errors): "
-                    + (storyPath != null ? storyPath : storyAsText);
-            throw new InvalidPatternException(message, e);
-        }
-        return scenarios;
-    }
-
-    private Pattern patternToPullScenariosIntoGroupFour() {
-        String scenario = keywords.scenario();
-        return compile(".*?((" + scenario + ") (.|\\s)*?)\\s*(\\Z|" + scenario
-                + ").*", DOTALL);
-    }
-
     private Pattern patternToPullGivenStoriesIntoGroupOne() {
         String givenScenarios = keywords.givenStories();
         String concatenatedKeywords = concatenateWithOr(keywords.startingWords());
@@ -234,11 +201,11 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern patternToPullOutSteps() {
-        String givenWhenThen = concatenateWithOr(keywords.startingWords());
-        String givenWhenThenSpaced = concatenateWithSpaceOr(keywords.startingWords());
+        String startingWords = concatenateWithOr(keywords.startingWords());
+        String startingWordsSpaced = concatenateWithSpaceOr(keywords.startingWords());
         String scenario = keywords.scenario();
         String table = keywords.examplesTable();
-		return compile("((" + givenWhenThen + ") (.)*?)\\s*(\\Z|"
-				+ givenWhenThenSpaced + "|" + scenario + "|"+ table + ")", DOTALL);
+		return compile("((" + startingWords + ") (.)*?)\\s*(\\Z|"
+				+ startingWordsSpaced + "|" + scenario + "|"+ table + ")", DOTALL);
     }
 }
