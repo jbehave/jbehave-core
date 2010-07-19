@@ -22,6 +22,8 @@ positions itself as a design philosophy.</p>
 	enterprises.</li>
 	<li>Users can specify and run text-based user stories, which
 	allows "out-in" development.</li>
+    <li>User stories can be specified as classpath resources
+    or external URL-based resources.</li>
 	<li>Annotation-based binding of textual steps to Java methods,
 	with auto-conversion of string arguments to any parameter type
 	(including generic types) via custom parameter converters.</li>
@@ -35,6 +37,8 @@ positions itself as a design philosophy.</p>
 	<li>Auto-generation of pending steps so the build is not broken by
 	a missing step, but has option to configure breaking build for pending
 	steps.</li>
+	<li>Pluggable step prioritising strategy.  Strategies bundled in core
+	include:  by priority field and by Levenshtein Distance.</li>
 	<li>Localisation of user stories, allowing them to be written in
 	any language.</li>
 	<li>IDE integration: stories can be run as JUnit tests or other
