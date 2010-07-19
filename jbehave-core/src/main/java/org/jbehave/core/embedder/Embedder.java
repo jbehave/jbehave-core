@@ -24,7 +24,7 @@ import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * Represents an entry point to all of JBehave's functionality that is
- * embeddable into other lanchers, such as IDEs or CLIs.
+ * embeddable into other launchers, such as IDEs or CLIs.
  */
 public class Embedder {
 

@@ -23,11 +23,8 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.SilentStepMonitor;
-import org.jbehave.examples.trader.model.Stock;
-import org.jbehave.examples.trader.model.Trader;
-import org.jbehave.examples.trader.persistence.TraderPersister;
+import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.examples.trader.service.TradingService;
 
 /**
@@ -65,12 +62,6 @@ public class ClasspathTraderEmbedder extends Embedder {
 	}
 	
 	
-
-	protected TraderPersister mockTradePersister() {
-		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1",
-				10.d))));
-	}
-
 	public List<String> storyPaths() {
 		return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"),
 				asList(""));

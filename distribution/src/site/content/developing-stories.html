@@ -9,8 +9,8 @@
 <h2>Writing Textual Stories</h2>
 
 <p><a href="concepts.html">Behaviour-Driven Development</a>
-encourages you to start defining the stories via scenarios that express the desired
-behaviour in a textual format, e.g.:</p>
+encourages you to start defining the stories via scenarios that express
+the desired behaviour in a textual format, e.g.:</p>
 <pre class="brush: bdd">
     Given a stock of symbol STK1 and a threshold of 10.0
     When the stock is traded at 5.0
@@ -22,12 +22,12 @@ implementation. Also, it should be given a name that is expressive of
 the functionality that is being verified, i.e. <b>trader_is_alerted_of_status.story</b>.
 </p>
 <p>The scenario should use a syntax compatible with the <a
-    href="grammar.html">Grammar</a>.</p>
+	href="grammar.html">Grammar</a>.</p>
 
 
 <span class="followup">A story is a collection of scenarios, each
-detailing different examples of the behaviour of
-    a given increment of functionality of the system.</span>
+detailing different examples of the behaviour of a given increment of
+functionality of the system.</span>
 
 <pre class="brush: bdd">
     Scenario:  trader is not alerted below threshold
@@ -46,36 +46,10 @@ detailing different examples of the behaviour of
 <h2>Mapping Textual Scenario Steps to Java Methods via annotations</h2>
 
 <p>JBehave maps textual steps to Java methods via <a
-    href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>.
+	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>.
 The scenario writer need only provide annotated methods that match, by
-regex patterns, the textual steps. One way this can be done is by
-extending the default implementation <a
-    href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a>:
-</p>
-<pre class="brush: java">
-public class TraderSteps extends Steps {
+regex patterns, the textual steps.</p>
 
-    private Stock stock;
-
-    @Given("a stock of symbol $symbol and a threshold of $threshold")
-    public void aStock(String symbol, double threshold) {
-        stock = new Stock(symbol, threshold);
-    }
-
-    @When("the stock is traded at $price")
-    public void theStockIsTradedAt(double price) {
-        stock.tradeAt(price);
-    }
-
-    @Then("the alert status should be $status")
-    public void theAlertStatusShouldBe(String status) {
-        ensureThat(stock.getStatus().name(), equalTo(status));
-    }
-
-}
-</pre>
-<p>Equivalently, as composition is often preferrable to inheritance,
-the scenario writer can use a POJO (i.e. without extending Steps)</p>
 <pre class="brush: java">
 public class TraderSteps { // look, Ma, I'm a POJO!!
  
@@ -98,92 +72,249 @@ public class TraderSteps { // look, Ma, I'm a POJO!!
 
 }
 </pre>
-<p>If POJOs are used we need to create <a
-    href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
-via the <a
-    href="javadoc/core/org/jbehave/core/steps/StepsFactory.html">StepsFactory</a>
+
+<span class="followup"> The scenario writer can specify the
+annotated methods in a POJO, i.e. without needing to extend/implement
+any JBehave class/interface. Of course, the Steps instances may inherit
+or implement other class/interface as required by the model of the
+application under test. </span>
+
+<p>To create instances of <a
+	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
+we use the <a
+	href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
 </p>
 <pre class="brush: java">
     Configuration configuration = ... // optional configuration
-    new InstanceStepsFactory(configuration, new TraderSteps()).createCandidateSteps());    
+    InjectableStepsFactory factory = new InstanceStepsFactory(configuration, new TraderSteps(), new BeforeAndAfterSteps());
+    factor.createCandidateSteps();    
 </pre>
 <p>Each step is annotated with one of the <a href="annotations.html">step
 annotations</a>, each holding a regex pattern as value. The pattern is used
 to match the method in the Steps class with the appropriate parameters.
 The simplest default behaviour identifies arguments in the candidate
 step by the words prefixed by the <b>$</b> character. More advanced <a
-    href="parameter-injection.html">parameter injection</a> mechanisms
-are also supported by JBehave.</p>
+	href="parameter-injection.html">parameter injection</a> mechanisms are
+also supported by JBehave.</p>
 <p>JBehave execute all the matched steps in the order in which they
-are found in the Scenario. It is up to the implementor of the Steps
-class to provide the logic to tie together the results of the execution
-of each step. This can be done by keeping state member variables in the
-Steps class or possibly by using a service API or other dependency.</p>
+are found in the scenario. It is up to the implementor of the Steps
+classes to provide the logic to tie together the results of the
+execution of each step. This can be done by keeping state member
+variables in the Steps class or possibly by using a service API or other
+dependency.</p>
 
-<h2>Mapping Story Files to Java Classes</h2>
+<h2>Mapping textual stories to Java Embeddable classes</h2>
 
-<p>In JBehave stories can be run in an automated way via a
-mapping to Java classes, either a one-to-one mapping or a many-to-one mapping.</p>
-<p>
-In the case of one-to-one mapping, the textual
-story path is resolved from a Java class via the <a
-    href="javadoc/core/org/jbehave/core/io/StoryPathResolver.html">StoryPathResolver</a>.
-In our example, we need to create a file <code>TraderIsAletedOfStatus.java</code>,
-which maps to out textual story in same package, and it would extend a base Story class
-that contains the configuration:</p>
+<p>In JBehave, textual stories can be run in an automated way via a
+mapping to Java runnable classes.</p>
 
-<p>Thus in our case the example Story would look like:</p>
-<pre class="brush: java">
-public class TraderStory extends JUnitStory {
+<span class="followup">JBehave allows many different ways to
+provide the mapping of textual stories to runnable Java classes.</span>
+
+<p>At the heart of the JBehave running of stories lies the <a
+	href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>,
+which provides an entry point to all of JBehave's functionality that is
+embeddable into other launchers, such as IDEs or CLIs. JBehave
+complements the Embedder with an <a
+	href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>
+which represents a runnable facade to the Embedder.</p>
+
+<p>JBehave provides two main Embeddable implementations:</p>
+
+<ul>
+	<li><a
+		href="javadoc/core/org/jbehave/core/ConfigurableEmbedder.html">ConfigurableEmbedder</a>:
+	allows the specification of the Configuration and CandidateSteps.</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/InjectableEmbedder.html">InjectableEmbedder</a>:
+	allows the injection of a fully specified Embedder.</li>
+</ul>
+
+<h3>JUnit-enabled Embeddables</h3>
+
+<p><a href="http://junit.org">JUnit</a> is supported out-of-the-box
+via several Embeddables implementations:</p>
+
+<ul>
+	<li><a href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a>:
+	provides a one-to-one mapping with the textual story via the <a
+		href="javadoc/core/org/jbehave/core/io/StoryPathResolver.html">StoryPathResolver</a>.
+	</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/junit/JUnitStories.html">JUnitStories</a>:
+	provides a many-to-one mapping with the textual story paths explicitly
+	specified by overriding the <b>storyPaths()</b> method.</li>
+</ul>
+
+<p>In the case of one-to-one mapping, our abstract base TraderStory
+would look like:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+public abstract class TraderStory extends JUnitStory {
 
     public TraderStory() {
-        Configuration configuration = new MostUsefulConfiguration();
-        configuration.useStoryPathResolver(new UnderscoredCamelCaseResolver(".story"));
-        configuration.useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()));
+        // start with default story configuration, overriding story loader and reporter
+        StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
+        Class<? extends Embeddable> embeddableClass = this.getClass();
+        Properties rendering = new Properties();
+        rendering.put("decorateNonHtml", "true");
+        URL codeLocation = CodeLocations.codeLocationFromClass(embeddableClass);
+        Configuration configuration = new MostUsefulConfiguration()
+                .useStoryLoader(new LoadFromClasspath(embeddableClass.getClassLoader()))
+                .useStoryReporterBuilder(new StoryReporterBuilder()
+                    .withCodeLocation(codeLocation)
+                    .withDefaultFormats()
+                    .withViewResources(rendering)
+                    .withFormats(CONSOLE, TXT, HTML, XML)
+                    .withFailureTrace(false))
+                .useParameterConverters(new ParameterConverters()
+                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
+                .useStoryPathResolver(storyPathResolver)
+                .useStepMonitor(new SilentStepMonitor())
+                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
+                
+        useConfiguration(configuration);
+        addSteps(new InstanceStepsFactory(new TraderSteps(), new BeforeAndAfterSteps()).createCandidateSteps()); 
+        
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
 
-        addSteps(new TraderSteps()); // if TraderSteps extends Steps
-        addSteps(new InstanceStepsFactory(new TraderSteps()).createCandidateSteps()); // if TraderSteps is a POJO
     }
 }
-</pre>
+]]>
+</script>
 
-<p>
-In the case of many-to-one mapping, the textual
-story path must be explicitly provided when extending  <a
-    href="javadoc/core/org/jbehave/core/JUnitStories.html">JUnitStories</a>:
-</p>
+<p>We then extend this base class with a class for each story, e.g.
+<code>TraderIsAletedOfStatus.java</code>, which maps to out textual
+story in same package.</p>
+
+<p>In the case of many-to-one mapping:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
 public class TraderStories extends JUnitStories {
 
-	private URLTraderEmbedder embedder = new URLTraderEmbedder();
+    @Override
+    public Configuration configuration() {
+        Class<? extends Embeddable> embeddableClass = this.getClass();
+        return new MostUsefulConfiguration()
+            .useStoryLoader(new LoadFromURL())
+            .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
+                .withDefaultFormats()
+                .withFormats(CONSOLE, TXT, HTML, XML))
+            .useParameterConverters(new ParameterConverters()
+                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
+            .useStepPatternParser(new RegexPrefixCapturingPatternParser(
+                            "%")) // use '%' instead of '$' to identify parameters
+            .useStepMonitor(new SilentStepMonitor());                               
+    }
 
-	@Override
-	protected Embedder configuredEmbedder() {
-		return embedder;
-	}
-
-	@Override
-	protected List<String> storyPaths() {
-		return embedder.storyPaths();
-	}
+    @Override
+    public List<CandidateSteps> candidateSteps() {
+        return new InstanceStepsFactory(configuration(), new TraderSteps(
+                new TradingService()), new BeforeAfterSteps())
+                .createCandidateSteps();
+    }
+    
+    @Override
+    protected List<String> storyPaths() {
+        // Specify story paths as URLs
+        String codeLocation = codeLocationFromClass(this.getClass()).getFile();
+        return new StoryFinder().findPaths(codeLocation, asList("**/trader_is_alerted_of_status.story",
+                "**/traders_can_be_subset.story"), asList(""), "file:" + codeLocation);
+    }
+        
 }
 ]]>
 </script>
 
-<p>Here we are configuring our textual story files to end with
-extension <b>.story</b>, by overriding the default behaviour of <a
-    href="javadoc/core/org/jbehave/core/io/UnderscoredCamelCaseResolver.html">UnderscoredCamelCaseResolver</a>
-which has no extension.</p>
+<h3>JUnit AnnotatedEmbedderRunner</h3>
+
+<p>JBehave also provides an implementation of JUnit's Runner, <a
+	href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedderRunner.html">AnnotatedEmbedderRunner</a>,
+which is runnable via JUnit's <b>@RunWith</b> annotation:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+@RunWith(AnnotatedEmbedderRunner.class)
+@Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
+        parameterConverters = { MyDateConverter.class })
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
+        PriorityMatchingSteps.class, SandpitSteps.class })
+public class TraderAnnotatedEmbedder implements Embeddable {
+
+    private Embedder embedder;
+
+    public void useEmbedder(Embedder embedder) {
+        this.embedder = embedder;
+    }
+
+    @Test
+    public void run() {
+        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/*.story"), asList("")));
+    }
+]]>
+</script>
+
+<h3>Other ways to run stories</h3>
+
+<p>As remarked above, JBehave does not impose any tie-in with any
+framework to run stories. It only requires access to the Embedder to run
+the stories. The following snippet shows, for example, how to use
+SpringJUnit4ClassRunner to compose and inject steps instances and them
+the stories:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/org/jbehave/examples/trader/spring/steps.xml" })
+public class AnnotatedEmbedderWithSpringJUnit4ClassRunner {
+
+    @Autowired
+    private TraderSteps traderSteps;
+
+    @Autowired
+    private BeforeAfterSteps beforeAndAfterSteps;
+
+    @Test
+    public void runStoriesAsPaths() {
+        embedder().runStoriesAsPaths(storyPaths());
+    }
+
+    @Test
+    public void findMatchingCandidateSteps() {
+        embedder().reportMatchingStepdocs("When traders are subset to \".*y\" by name");
+        embedder().reportMatchingStepdocs("Given a step that is not matched");
+    }
+
+    private Embedder embedder() {
+        Embedder embedder = new ClasspathTraderEmbedder();
+        embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), traderSteps, beforeAndAfterSteps)
+                .createCandidateSteps());
+        return embedder;
+    }
+
+    protected List<String> storyPaths() {
+        StoryFinder finder = new StoryFinder();
+        return finder.findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""));
+    }
+
+}
+]]>
+</script>
 
 <h2>What Next?</h2>
 
-<span class="followup">The <a href="configuration.html">configuration</a> page will go into more configuration details and <a
-    href="running-stories.html">Running Stories</a> into the
-different ways to run stories. Or if you want to learn more about
-JBehave's step matching mechanism, you'll want to explored the concept
-of <a href="candidate-steps.html">candidate steps</a> in more detail. </span>
+<span class="followup">JBehave provides fully annotatation-based
+support for specifying <a href="configuration.html">configuration</a>
+and <a href="dependency-injection.html">dependency injection</a>. The <a
+	href="running-stories.html">running stories</a> will go into more
+details of the different ways to run stories. Or if you want to learn
+more about JBehave's step matching mechanism, you'll want to explore the
+concept of <a href="candidate-steps.html">candidate steps</a> in more
+detail. </span>
 
 <div class="clear">
 <hr />

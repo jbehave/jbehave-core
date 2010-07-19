@@ -27,13 +27,15 @@ import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.examples.trader.service.TradingService;
 
 /**
+ * <p>
  * Example of how to run a single story via JUnit.   JUnitStory is a simple facade
  * around the Embedder.   The use need only provide the configuration and the Steps instances.
- * Using this paradigm (which is the analogous to what found in JBehave 2) each runnable story
+ * Using this paradigm (which is the analogous to the one used in JBehave 2) each runnable story
  * maps to one textual story. 
+ * </p>
  * <p>
- * Users want to run multiple stories via the same Java class (new to JBehave 3) should 
- * look at {@link TraderStoryRunner}.
+ * Users wanting to run multiple stories via the same Java class (new to JBehave 3) should 
+ * look at {@link TraderStories}, {@link TraderStoryRunner} or {@link TraderAnnotatedEmbedder}
  * </p> 
  */
 public abstract class TraderStory extends JUnitStory {

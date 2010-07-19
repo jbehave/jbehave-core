@@ -20,6 +20,7 @@ import org.jbehave.core.junit.JUnitStory;
  * </p>
  * 
  * @see ConfigurableEmbedder
+ * @see InjectableEmbedder
  * @see JUnitStory
  * @see JUnitStories
  */
