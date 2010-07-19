@@ -4,7 +4,7 @@ import static java.util.regex.Pattern.compile;
 
 import java.util.regex.Matcher;
 
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 
 /**
  * <p>
@@ -54,8 +54,8 @@ public class UnderscoredCamelCaseResolver extends AbstractStoryPathResolver {
 
 	@Override
 	protected String resolveName(
-			Class<? extends RunnableStory> storyClass) {
-        String simpleName = storyClass.getSimpleName();
+			Class<? extends Embeddable> embeddableClass) {
+        String simpleName = embeddableClass.getSimpleName();
         simpleName = simpleName.replace(wordToRemove, "");
         Matcher matcher = compile(resolutionPattern).matcher(
                 simpleName);

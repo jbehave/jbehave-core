@@ -1,6 +1,6 @@
 package org.jbehave.core.io;
 
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 
 public abstract class AbstractStoryPathResolver implements
         StoryPathResolver {
@@ -16,8 +16,8 @@ public abstract class AbstractStoryPathResolver implements
 		this.extension = extension;
 	}
 
-	public String resolve(Class<? extends RunnableStory> storyClass) {
-        return formatPath(resolveDirectory(storyClass), resolveName(storyClass), extension);
+	public String resolve(Class<? extends Embeddable> embeddableClass) {
+        return formatPath(resolveDirectory(embeddableClass), resolveName(embeddableClass), extension);
 	}
 
 	private String formatPath(String directory, String name,
@@ -34,8 +34,8 @@ public abstract class AbstractStoryPathResolver implements
 	}
 
 	protected String resolveDirectory(
-			Class<? extends RunnableStory> scenarioClass) {
-		Package scenarioPackage = scenarioClass.getPackage();
+			Class<? extends Embeddable> embeddableClass) {
+		Package scenarioPackage = embeddableClass.getPackage();
 		if (scenarioPackage != null) {
 			return scenarioPackage.getName().replaceAll(DOT_REGEX, SLASH);
 		}
@@ -43,6 +43,6 @@ public abstract class AbstractStoryPathResolver implements
 	}
 
 	protected abstract String resolveName(
-			Class<? extends RunnableStory> storyClass);
+			Class<? extends Embeddable> embeddableClass);
 
 }

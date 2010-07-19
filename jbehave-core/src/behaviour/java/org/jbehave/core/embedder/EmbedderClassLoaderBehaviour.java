@@ -8,10 +8,12 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Arrays;
+import java.util.List;
 
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
 import org.jbehave.core.junit.JUnitStory;
 import org.junit.Test;
@@ -19,13 +21,13 @@ import org.junit.Test;
 public class EmbedderClassLoaderBehaviour {
 
     @Test
-    public void shouldInstantiateNewEmbedderWithDefaultConstructor() throws MalformedURLException {
+    public void shouldInstantiateNewEmbedder() throws MalformedURLException {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThatIsInstantiated(classLoader, MyEmbedder.class.getName(), MyEmbedder.class);
     }
 
     @Test
-    public void shouldInstantiateNewStoryWithDefaultConstructor() throws MalformedURLException {
+    public void shouldInstantiateNewStory() throws MalformedURLException {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
@@ -39,7 +41,8 @@ public class EmbedderClassLoaderBehaviour {
 
     @Test
     public void shouldIgnoreNullClasspathElements() throws MalformedURLException {
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(null);
+        List<String> elements = null;
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(elements);
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
 
@@ -55,13 +58,13 @@ public class EmbedderClassLoaderBehaviour {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList("/path/to/one.jar",
                 "/target/classes"));
         assertThat(classLoader.toString(),
-                containsString("urls=" + Arrays.<String> asList("one.jar", "/target/classes")));
+                containsString("urls=" + classLoader.asShortPaths(new File("one.jar").toURL(), new File("/target/classes").toURL())));
     }
 
     @Test(expected = InstantiationFailed.class)
     public void shouldNotInstantiateClassWithInexistentName() throws MalformedURLException {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
-        classLoader.newInstance(RunnableStory.class, "InexistentClass");
+        classLoader.newInstance(Embeddable.class, "InexistentClass");
     }
 
     public static class MyEmbedder extends Embedder {

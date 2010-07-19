@@ -18,8 +18,8 @@ import org.jbehave.core.embedder.EmbedderClassLoader;
 public class LocalizedKeywords extends Keywords {
 
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    private static final String DEFAULT_BUNDLE_NAME = "org/jbehave/core/i18n/keywords";
-    private static final ClassLoader DEFAULT_CLASS_LOADER = Thread.currentThread().getContextClassLoader();
+    private static final String DEFAULT_BUNDLE_NAME = "i18n/keywords";
+    private static final ClassLoader DEFAULT_CLASS_LOADER = LocalizedKeywords.class.getClassLoader();
     private final Locale locale;
 
     public LocalizedKeywords() {

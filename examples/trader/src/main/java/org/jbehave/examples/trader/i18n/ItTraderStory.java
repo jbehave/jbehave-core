@@ -28,11 +28,10 @@ public class ItTraderStory extends JUnitStory {
 		// use Italian for keywords
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
-		Keywords keywords = new LocalizedKeywords(new Locale("it"),
-				"org/jbehave/examples/trader/i18n/keywords", classLoader);
+		Keywords keywords = new LocalizedKeywords(new Locale("it"));
 		Configuration configuration = new MostUsefulConfiguration()
 				.useStoryPathResolver(
-						new UnderscoredCamelCaseResolver(".story"))
+						new UnderscoredCamelCaseResolver(".storia"))
 				.useKeywords(keywords)
 				.useStoryParser(new RegexStoryParser(keywords))
 				.useStoryLoader(
@@ -44,7 +43,6 @@ public class ItTraderStory extends JUnitStory {
                     .withFormats(CONSOLE, TXT, HTML, XML)
                     .withFailureTrace(false)
                     .withKeywords(keywords))
-				.useKeywords(keywords)
 				.useParameterConverters(
 						new ParameterConverters()
 								.addConverters(new ParameterConverters.ExamplesTableConverter(

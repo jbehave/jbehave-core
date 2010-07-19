@@ -9,31 +9,31 @@
   <packaging>pom</packaging>
   <name>JBehave Distribution</name>
   <properties>
-    <jbehave.site.version>2.0.2</jbehave.site.version>
+    <jbehave.site.version>3.0</jbehave.site.version>
   </properties>
   <dependencies>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
-      <artifactId>jbehave-pico</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${pom.groupId}</groupId>
-      <artifactId>jbehave-spring</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-guice</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>${pom.groupId}</groupId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jbehave-pico</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jbehave-spring</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-ant</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -42,36 +42,9 @@
       <artifactId>ant</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>${pom.groupId}</groupId>
-      <artifactId>jbehave-maven-plugin</artifactId>
-      <version>${project.version}</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.xsite</groupId>
-        <artifactId>xsite-maven-plugin</artifactId>
-        <version>1.1.2</version>
-        <configuration>
-          <sourceDirectoryPath>${basedir}/src/site/</sourceDirectoryPath>
-          <sitemapPath>content/sitemap.xml</sitemapPath>
-          <templatesDirectoryPath>${project.build.directory}/templates</templatesDirectoryPath>
-          <skinPath>skin.html</skinPath>
-          <resourcePaths>resources</resourcePaths>
-          <outputDirectoryPath>${project.build.directory}/site</outputDirectoryPath>
-          <publishedVersion>${project.version}</publishedVersion>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>install</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -88,7 +61,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <artifactItems>
                 <artifactItem>
-                  <groupId>${pom.groupId}</groupId>
+                  <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-core</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
@@ -108,7 +81,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <artifactItems>
                 <artifactItem>
-                  <groupId>${pom.groupId}</groupId>
+                  <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-pico</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
@@ -128,7 +101,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <artifactItems>
                 <artifactItem>
-                  <groupId>${pom.groupId}</groupId>
+                  <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-spring</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
@@ -148,7 +121,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <artifactItems>
                 <artifactItem>
-                  <groupId>${pom.groupId}</groupId>
+                  <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-guice</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
@@ -168,7 +141,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <artifactItems>
                 <artifactItem>
-                  <groupId>${pom.groupId}</groupId>
+                  <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-ant</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
@@ -188,7 +161,7 @@
               <overWriteSnapshots>true</overWriteSnapshots>
               <artifactItems>
                 <artifactItem>
-                  <groupId>${pom.groupId}</groupId>
+                  <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-maven-plugin</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
@@ -210,6 +183,7 @@
                   <groupId>org.jbehave.site</groupId>
                   <artifactId>jbehave-site-resources</artifactId>
                   <version>${jbehave.site.version}</version>
+                  <type>zip</type>
                   <outputDirectory>${project.build.directory}/site</outputDirectory>
                 </artifactItem>
               </artifactItems>
@@ -229,10 +203,33 @@
                   <groupId>org.jbehave.site</groupId>
                   <artifactId>jbehave-site-templates</artifactId>
                   <version>${jbehave.site.version}</version>
+                  <type>zip</type>
                   <outputDirectory>${project.build.directory}/templates</outputDirectory>
                 </artifactItem>
               </artifactItems>
             </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.xsite</groupId>
+        <artifactId>xsite-maven-plugin</artifactId>
+        <version>1.1.2</version>
+        <configuration>
+          <sourceDirectoryPath>${basedir}/src/site/</sourceDirectoryPath>
+          <sitemapPath>content/sitemap.xml</sitemapPath>
+          <templatesDirectoryPath>${project.build.directory}/templates</templatesDirectoryPath>
+          <skinPath>xsite-skin.html</skinPath>
+          <resourcePaths>resources</resourcePaths>
+          <outputDirectoryPath>${project.build.directory}/site</outputDirectoryPath>
+          <publishedVersion>${project.version}</publishedVersion>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>
@@ -242,7 +239,7 @@
         <executions>
           <execution>
             <id>bin</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>
@@ -256,7 +253,7 @@
           </execution>
           <execution>
             <id>src</id>
-            <phase>install</phase>
+            <phase>package</phase>
             <goals>
               <goal>single</goal>
             </goals>

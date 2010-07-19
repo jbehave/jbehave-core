@@ -8,7 +8,7 @@
 
 <h2>What is JBehave?</h2>
 <p>JBehave is a framework for <a
-    href="http://en.wikipedia.org/wiki/Behavior_driven_development">Behaviour-Driven
+	href="http://en.wikipedia.org/wiki/Behavior_driven_development">Behaviour-Driven
 Development</a> (BDD). BDD is an evolution of test-driven development (TDD)
 and acceptance-test driven design, and is intended to make these
 practices more accessible and intuitive to newcomers and experts alike.
@@ -18,35 +18,40 @@ positions itself as a design philosophy.</p>
 <p>Features of JBehave include:</p>
 
 <ul>
-    <li>Pure Java implementation, which plays well with Java-based
-    enterprises</li>
-    <li>Users can specify and run text-based user stories, which
-    allows "out-in" development.</li>
-    <li>Annotation-based binding of textual steps to Java methods,
-     with auto-conversion of string arguments to any parameter type
-    (including generic types) via custom parameter converters.</li>
-    <li>Extensible story reporting - outputs stories executed in
-    human-readable form and file-based outputs.  Fully style-able view.
-    </li>
-    <li>Auto-generation of pending steps so the build is not broken
-    by a missing step, but has option to configure breaking build for
-    pending steps.</li>
-    <li>Stories can be run as JUnit tests, providing easy
-    integration with your favourite IDE. Using alternative
-    annotation-based unit test frameworks is equally easy.</li>
-    <li>Ant integration: allows stories to be run via Ant task</li>
-    <li>Maven integration: allows stories to be run via Maven
-    plugin at given build phase</li>
-    <li>IoC support: allows Steps classes and its dependencies to be composed via your
-    favourite container (Pico, Spring, Guice).
-    </li>
-    <li>Allow user stories to be written in any language.      
-    </li>
+	<li>Pure Java implementation, which plays well with Java-based
+	enterprises.</li>
+	<li>Users can specify and run text-based user stories, which
+	allows "out-in" development.</li>
+    <li>User stories can be specified as classpath resources
+    or external URL-based resources.</li>
+	<li>Annotation-based binding of textual steps to Java methods,
+	with auto-conversion of string arguments to any parameter type
+	(including generic types) via custom parameter converters.</li>
+	<li>Annotation-based configuration and Steps class specifications</li>
+	<li>Dependency Injection support allowing both configuration and
+	Steps instances composed via your favourite container (Guice,
+	PicoContainer, Spring).</li>
+	<li>Extensible story reporting: outputs stories executed in
+	different human-readable file-based formats (HTML, TXT, XML). 
+	Fully style-able view.</li>
+	<li>Auto-generation of pending steps so the build is not broken by
+	a missing step, but has option to configure breaking build for pending
+	steps.</li>
+	<li>Pluggable step prioritising strategy.  Strategies bundled in core
+	include:  by priority field and by Levenshtein Distance.</li>
+	<li>Localisation of user stories, allowing them to be written in
+	any language.</li>
+	<li>IDE integration: stories can be run as JUnit tests or other
+	annotation-based unit test frameworks, providing easy integration with
+	your favourite IDE.</li>
+	<li>Ant integration: allows stories to be run via Ant task</li>
+	<li>Maven integration: allows stories to be run via Maven plugin
+	at given build phase</li>
 </ul>
 
 <h2>Want to learn more?</h2>
-<span class="followup">The <a href="getting-started.html">Getting Started</a>
-page will get you up and running in no time.</span>
+<span class="followup">The <a href="getting-started.html">Getting
+Started</a> page will get you up and running in no time.</span>
 
 
 </body>

@@ -27,9 +27,9 @@
             <id>run-stories-in-test-scope</id>
             <phase>integration-test</phase>
             <configuration>
-              <storyIncludes>
-                <storyInclude>**/stories/*.java</storyInclude>
-              </storyIncludes>
+              <includes>
+                <include>**/stories/*.java</include>
+              </includes>
               <skip>false</skip>
               <scope>test</scope>
               <ignoreFailureInStories>true</ignoreFailureInStories>
@@ -37,7 +37,7 @@
               <renderReportsAfterStories>true</renderReportsAfterStories>
             </configuration>
             <goals>
-              <goal>run-stories</goal>
+              <goal>run-stories-as-embeddables</goal>
             </goals>
           </execution>
         </executions>

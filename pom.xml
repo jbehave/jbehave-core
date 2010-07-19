@@ -1,5 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.codehaus</groupId>
+    <artifactId>codehaus-parent</artifactId>
+    <version>1</version>
+  </parent>
   <groupId>org.jbehave</groupId>
   <artifactId>jbehave</artifactId>
   <packaging>pom</packaging>
@@ -38,13 +43,19 @@
       </dependency>
       <dependency>
         <!--
-          Optional as only required by core StoryFinder, and used by
-          Ant and Maven Plugin modules
+          Optional as only required by core StoryFinder, and used by Ant
+          and Maven Plugin modules
         -->
         <groupId>org.apache.ant</groupId>
         <artifactId>ant</artifactId>
         <version>1.7.1</version>
         <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-launcher</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <!-- Only used for tests -->
       <dependency>
@@ -72,8 +83,9 @@
   </dependencies>
 
   <properties>
+    <!-- NOTE: Set -Dfile.encoding=UTF-8 in MAVEN_OPTS -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <resource.encoding>UTF-8</resource.encoding>  
+    <resource.encoding>UTF-8</resource.encoding>
   </properties>
 
   <build>
@@ -93,6 +105,10 @@
       </resource>
     </resources>
     <testResources>
+      <testResource>
+        <directory>src/behaviour/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
       <testResource>
         <directory>${project.build.testSourceDirectory}</directory>
         <filtering>false</filtering>
@@ -324,40 +340,12 @@
         <module>examples</module>
       </modules>
     </profile>
-    <profile>
-      <!-- This profile belongs in ~/.m2/settings.xml but Bamboo does not have an obvious place to configure a settings.xml
-           So adding it to POM temporarily to get build to pass with Pico snapshot.
-       -->
-      <id>codehaus</id>
-      <repositories>
-        <repository>
-          <id>codehaus-releases</id>
-          <url>http://repository.codehaus.org</url>
-          <snapshots>
-            <enabled>false</enabled>
-          </snapshots>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-        </repository>
-        <repository>
-          <id>codehaus-snapshots</id>
-          <url>http://snapshots.repository.codehaus.org</url>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
-          <releases>
-            <enabled>false</enabled>
-          </releases>
-        </repository>
-      </repositories>
-    </profile>
   </profiles>
 
   <licenses>
     <license>
       <name>BSD license</name>
-      <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git;a=blob_plain;f=trunk/core/LICENSE.txt;hb=HEAD</url>
+      <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git;a=blob_plain;f=LICENSE.txt;hb=HEAD</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -366,25 +354,9 @@
   <contributors />
 
   <scm>
-    <connection>scm:git:git://git.codehaus.org/jbehave-core.git</connection> 
+    <connection>scm:git:git://git.codehaus.org/jbehave-core.git</connection>
     <developerConnection>scm:git:ssh://git@git.codehaus.org/jbehave-core.git</developerConnection>
     <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git</url>
   </scm>
-
-  <distributionManagement>
-    <!--
-      The id used must match a server id defined in ~/.m2/settings.xml
-    -->
-    <repository>
-      <id>codehaus.org</id>
-      <name>Codehaus JBehave Repository</name>
-      <url>dav:https://dav.codehaus.org/repository/jbehave/</url>
-    </repository>
-    <snapshotRepository>
-      <id>codehaus.org</id>
-      <name>Codehaus JBehave Snapshot Repository</name>
-      <url>dav:https://dav.codehaus.org/snapshots.repository/jbehave/</url>
-    </snapshotRepository>
-  </distributionManagement>
 
 </project>

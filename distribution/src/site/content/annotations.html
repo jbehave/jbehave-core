@@ -134,6 +134,35 @@ the corresponding methods to be executed before and after each story, either a G
     
 </pre>
 
+<h2>Stories Annotations</h2>
+
+<p>JBehave supports the following method stories annotations:</p>
+
+<ul>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/BeforeStories.html">@BeforeStories</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/AfterStories.html">@AfterStories</a>
+    </li>
+</ul>
+<p>The <b>@BeforeStories</b> and <b>@AfterStories</b> annotations allow
+the corresponding methods to be executed before and after a collection of stories:</p>
+
+<pre class="brush: java">
+
+    @BeforeStories
+    public void beforeStories() {
+        // ...
+    }
+
+    @AfterStories
+    public void afterStories() {
+        // ...
+    }
+    
+</pre>
+
 <h2>Parameter Annotations</h2>
 
 <p>JBehave supports the following parameter annotations:</p>
@@ -152,13 +181,25 @@ the corresponding methods to be executed before and after each story, either a G
 
 <ul>
     <li><a
-        href="javadoc/core/org/jbehave/core/annotations/WithConfiguration.html">@WithConfiguration</a>
-    </li>
-    <li><a
-        href="javadoc/core/org/jbehave/core/annotations/WithCandidateSteps.html">@WithCandidateSteps</a>
-    </li>
-    <li><a
         href="javadoc/core/org/jbehave/core/annotations/AsParameterConverter.html">@AsParameterConverter</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/Configure.html">@Configure</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/UsingEmbedder.html">@UsingEmbedder</a>
+    </li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/annotations/UsingSteps.html">@UsingSteps</a>
+    </li>
+    <li><a
+        href="javadoc/guice/org/jbehave/core/annotations/guice/UsingGuice.html">@UsingGuice</a>
+    </li>
+    <li><a
+        href="javadoc/pico/org/jbehave/core/annotations/pico/UsingPico.html">@UsingPico</a>
+    </li>
+    <li><a
+        href="javadoc/spring/org/jbehave/core/annotations/spring/UsingSpring.html">@UsingSpring</a>
     </li>
 </ul>
 

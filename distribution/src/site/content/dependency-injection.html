@@ -13,81 +13,173 @@ Injection</a> has become an integral part of modern software design. We
 discuss here the different ways in which JBehave supports dependency
 injection.</p>
 
+<p>JBehave supports the following depency inejction containers:
+<ul>
+	<li><a href="http://code.google.com/p/google-guice/">Guice</a>
+	(the extension module <b>jbehave-guice</b> needs to be added to the
+	classpath):</li>
+
+	<li><a href="http://picocontainer.org">PicoContainer</a> (the
+	extension module <b>jbehave-pico</b> needs to be added to the
+	classpath):</li>
+
+	<li><a href="http://springframework.org">Spring</a> (the extension
+	module <b>jbehave-spring</b> needs to be added to the classpath):</li>
+</ul>
+</p>
+
+
+<h2>Embedder class-level injection</h2>
+
+<h3>Using Guice</h3>
+
+<p>When using Guice we can specify the inject from separate modules
+for configuration and steps.</></p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+@RunWith(GuiceAnnotatedEmbedder.class)
+@Configure()
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
+public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
+
+    @Test
+    public void run() {
+        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/guice/stories/*.story"), asList("")));
+    }
+
+    // Guice modules
+    public static class ConfigurationModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
+            bind(StepPatternParser.class).toInstance(new RegexPrefixCapturingPatternParser("%"));
+            bind(StoryLoader.class).toInstance(new LoadFromClasspath(this.getClass().getClassLoader()));
+            bind(ParameterConverter.class).toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
+            bind(StoryReporterBuilder.class).toInstance(
+                    new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
+                            .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass()))
+                            .withFailureTrace(true));
+        }
+
+    }
+
+    public static class StepsModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
+            bind(TradingService.class).in(Scopes.SINGLETON);
+            bind(TraderSteps.class).in(Scopes.SINGLETON);
+            bind(BeforeAfterSteps.class).in(Scopes.SINGLETON);
+            bind(AndSteps.class).in(Scopes.SINGLETON);
+            bind(CalendarSteps.class).in(Scopes.SINGLETON);
+            bind(PriorityMatchingSteps.class).in(Scopes.SINGLETON);
+            bind(SandpitSteps.class).in(Scopes.SINGLETON);
+        }
+
+    }
+
+}
+]]>
+</script>
+
+<h3>Using PicoContainer</h3>
+
+<p>When using PicoContainer we can specify the container from
+separate modules for configuration and steps.</></p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+@RunWith(PicoAnnotatedEmbedder.class)
+@Configure()
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingPico(modules = { ConfigurationModule.class, StepsModule.class })
+public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
+
+    @Test
+    public void run() {
+        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/pico/stories/*.story"), asList("")));
+    }
+
+    public static class ConfigurationModule implements PicoModule {
+
+        public void configure(MutablePicoContainer container){
+            container.addComponent(StepPatternParser.class, new RegexPrefixCapturingPatternParser("%"));
+            container.addComponent(StoryLoader.class, new LoadFromClasspath(this.getClass().getClassLoader()));
+            container.addComponent(ParameterConverter.class, new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
+            container.addComponent(new StoryReporterBuilder()
+                .withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
+                .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass()))
+                .withFailureTrace(true)
+            );
+        }
+
+    }
+
+    public static class StepsModule implements PicoModule {
+
+        public void configure(MutablePicoContainer container){
+            container.addComponent(TradingService.class);
+            container.addComponent(TraderSteps.class);
+            container.addComponent(BeforeAfterSteps.class);
+            container.addComponent(AndSteps.class);
+            container.addComponent(CalendarSteps.class);
+            container.addComponent(PriorityMatchingSteps.class);
+            container.addComponent(SandpitSteps.class);
+        }
+
+    }
+
+}
+]]>
+</script>
+
+<h3>Using Spring</h3>
+
+<p>When using Spring, we can specify the context from separate
+locations for configuration and steps.</> <script
+	type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+@RunWith(SpringAnnotatedEmbedder.class)
+@Configure()
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingSpring(resources = { "org/jbehave/examples/trader/spring/configuration.xml",
+        "org/jbehave/examples/trader/spring/steps.xml" })
+public class AnnotatedEmbedderUsingSpring extends InjectableEmbedder {
+
+    @Test
+    public void run() {
+        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/stories/*.story"), asList("")));
+    }
+
+}
+]]>
+</script>
+
 <h2>Steps class-level injection</h2>
 
 <p>Steps classes often use external dependencies to interface to the
 system whose behaviour is being verified.</p>
 
-<h3>Using PicoContainer</h3>
-
-<p>Steps can be instantiated via <a href="http://picocontainer.org">PicoContainer</a> using the <a
-    href="javadoc/pico/org/jbehave/core/steps/pico/PicoStepsFactory.html">PicoStepsFactory</a>
-(the extension module <b>jbehave-pico</b> needs to be added to the classpath):
-</p>
-
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
-public class PicoTraderStory extends TraderStory {
-
-    @Override
-    protected List<CandidateSteps> createSteps(Configuration configuration) {
-        PicoContainer container = createPicoContainer();
-        return new PicoStepsFactory(configuration, container).createCandidateSteps();
-    }
-
-    private PicoContainer createPicoContainer() { 
-        // users can also use any other way to create a PicoContainer, e.g. via a script language        
-        MutablePicoContainer parent = new DefaultPicoContainer(new Caching().wrap(new ConstructorInjection()));
-        parent.as(Characteristics.USE_NAMES).addComponent(TradingService.class);
-        parent.as(Characteristics.USE_NAMES).addComponent(TraderSteps.class);
-        parent.as(Characteristics.USE_NAMES).addComponent(BeforeAfterSteps.class);
-        return parent;
-    }
-    
-}
-]]></script>
-
-<h3>Using Spring</h3>
-
-<p>Steps can be instantiated via <a href="http://springframework.org">Spring</a> using the <a
-    href="javadoc/spring/org/jbehave/core/steps/spring/SpringStepsFactory.html">SpringStepsFactory</a>
-(the extension module <b>jbehave-spring</b> needs to be added to the classpath):
-</p>
-
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
-public class SpringTraderStory extends TraderStory {
-
-    @Override
-    protected List<CandidateSteps> createSteps(Configuration configuration) {
-        ApplicationContext context = createContext()
-        return new SpringStepsFactory(configuration, context).createCandidateSteps();
-    }
-    
-    private ApplicationContext createContext() {
-        return new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml").createApplicationContext();
-    }
-    
-}
-]]></script>
-
 
 <h3>Using Guice</h3>
 
-<p>Steps can be instantiated via Using <a href="http://code.google.com/p/google-guice/">Guice</a> using the <a
-    href="javadoc/guice/org/jbehave/core/steps/guice/GuiceStepsFactory.html">GuiceStepsFactory</a>
-(the extension module <b>jbehave-guice</b> needs to be added to the classpath):
+<p>CandidateSteps can be created with Guice using the <a
+	href="javadoc/guice/org/jbehave/core/steps/guice/GuiceStepsFactory.html">GuiceStepsFactory</a>:
 </p>
 
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
-public class GuiceTraderStory extends TraderStory {
-
-    @Override
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
     protected List<CandidateSteps> createSteps(Configuration configuration) {
         Injector injector = createInjector();
         return new GuiceStepsFactory(configuration, injector).createCandidateSteps();
     }
 
     private Injector createInjector() {
-        Injector parent = Guice.createInjector(new AbstractModule() {
+        return Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
               bind(TradingService.class).in(Scopes.SINGLETON);
@@ -95,12 +187,13 @@ public class GuiceTraderStory extends TraderStory {
               bind(BeforeAfterSteps.class).in(Scopes.SINGLETON);
             }
           });
-        return parent;
     }
     
-}
-]]></script>
-<p>where the <b>GuiceTraderSteps</b> is appropriately Guice-annotated:</p>
+]]>
+</script>
+
+<p>where the <b>GuiceTraderSteps</b> is appropriately
+Guice-annotated:</p>
 <pre class="brush: java">
 public class GuiceTraderSteps extends TraderSteps {
 
@@ -111,9 +204,53 @@ public class GuiceTraderSteps extends TraderSteps {
 
 }
 </pre>
+
+<h3>Using PicoContainer</h3>
+
+<p>CandidateSteps can be created with PicoContainer using the <a
+	href="javadoc/pico/org/jbehave/core/steps/pico/PicoStepsFactory.html">PicoStepsFactory</a>:
+</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    protected List<CandidateSteps> createSteps(Configuration configuration) {
+        PicoContainer container = createPicoContainer();
+        return new PicoStepsFactory(configuration, container).createCandidateSteps();
+    }
+
+    private PicoContainer createPicoContainer() { 
+        // users can also use any other way to create a PicoContainer, e.g. via a script language        
+        MutablePicoContainer container = new DefaultPicoContainer(new Caching().wrap(new ConstructorInjection()));
+        container.as(Characteristics.USE_NAMES).addComponent(TradingService.class);
+        container.as(Characteristics.USE_NAMES).addComponent(TraderSteps.class);
+        container.as(Characteristics.USE_NAMES).addComponent(BeforeAfterSteps.class);
+        return container;
+    }
+    
+]]>
+</script>
+
+<h3>Using Spring</h3>
+
+<p>CandidateSteps can be created with Spring using the <a
+	href="javadoc/spring/org/jbehave/core/steps/spring/SpringStepsFactory.html">SpringStepsFactory</a>:
+</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    protected List<CandidateSteps> createSteps(Configuration configuration) {
+        ApplicationContext context = createContext();
+        return new SpringStepsFactory(configuration, context).createCandidateSteps();
+    }
+    
+    private ApplicationContext createContext(){
+        return  new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml").createApplicationContext();        
+    }
+]]>
+</script>
+
 <div class="clear">
 <hr />
 </div>
-
 </body>
 </html>

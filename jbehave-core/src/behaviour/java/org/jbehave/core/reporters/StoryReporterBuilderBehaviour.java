@@ -79,8 +79,7 @@ public class StoryReporterBuilderBehaviour {
     public void shouldBuildWithCustomKeywords() throws IOException {
         // Given
         String storyPath = storyPath(MyStory.class);
-        LocalizedKeywords keywords = new LocalizedKeywords(new Locale("it"),
-                "org/jbehave/core/i18n/keywords", this.getClass().getClassLoader());
+        LocalizedKeywords keywords = new LocalizedKeywords(new Locale("it"));
         final URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         final OutputStream out = new ByteArrayOutputStream();
 

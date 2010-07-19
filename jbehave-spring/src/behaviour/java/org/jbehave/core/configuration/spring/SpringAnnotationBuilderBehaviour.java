@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.annotations.spring.UsingSpring;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
@@ -39,21 +40,23 @@ public class SpringAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildConfigurationFromAnnotations() {
-    	SpringAnnotationBuilder builder = new SpringAnnotationBuilder(Annotated.class);
+        SpringAnnotationBuilder builder = new SpringAnnotationBuilder(AnnotatedUsingSpring.class);
         Configuration configuration = builder.buildConfiguration();
         assertThat(configuration.failureStrategy(), instanceOf(SilentlyAbsorbingFailure.class));
         assertThat(configuration.storyLoader(), instanceOf(LoadFromURL.class));
         assertThat(configuration.stepPatternParser(), instanceOf(RegexPrefixCapturingPatternParser.class));
-        assertThat(((RegexPrefixCapturingPatternParser)configuration.stepPatternParser()).getPrefix(), equalTo("MyPrefix"));
+        assertThat(((RegexPrefixCapturingPatternParser) configuration.stepPatternParser()).getPrefix(),
+                equalTo("MyPrefix"));
         assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
         assertThat(configuration.storyReporterBuilder().formats(), hasItems(CONSOLE, HTML, TXT, XML, STATS));
         Keywords keywords = configuration.storyReporterBuilder().keywords();
-        assertThat(keywords, instanceOf(LocalizedKeywords.class));        
-        assertThat(((LocalizedKeywords)keywords).getLocale(), equalTo(Locale.ITALIAN));        
+        assertThat(keywords, instanceOf(LocalizedKeywords.class));
+        assertThat(((LocalizedKeywords) keywords).getLocale(), equalTo(Locale.ITALIAN));
         assertThat(configuration.storyReporterBuilder().outputDirectory().getName(), equalTo("my-output-directory"));
-        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"), equalTo("my-reports-index.ftl"));
+        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"),
+                equalTo("my-reports-index.ftl"));
         assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"), equalTo("true"));
-        assertThat(configuration.storyReporterBuilder().reportFailureTrace(), is(true));        
+        assertThat(configuration.storyReporterBuilder().reportFailureTrace(), is(true));
     }
 
     private void assertThatDateIsConvertedWithFormat(ParameterConverters parameterConverters, DateFormat dateFormat) {
@@ -67,36 +70,50 @@ public class SpringAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
-    	SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
+        SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
         assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(), new MostUsefulConfiguration());
-       	SpringAnnotationBuilder builderAnnotatedWithoutLocations = new SpringAnnotationBuilder(AnnotatedWithoutLocations.class);
+        SpringAnnotationBuilder builderAnnotatedWithoutLocations = new SpringAnnotationBuilder(
+                AnnotatedWithoutResources.class);
         assertThatConfigurationIs(builderAnnotatedWithoutLocations.buildConfiguration(), new MostUsefulConfiguration());
     }
 
-    private void assertThatConfigurationIs(Configuration builtConfiguration,
-            Configuration defaultConfiguration) {
+    private void assertThatConfigurationIs(Configuration builtConfiguration, Configuration defaultConfiguration) {
         assertThat(builtConfiguration.failureStrategy(), instanceOf(defaultConfiguration.failureStrategy().getClass()));
         assertThat(builtConfiguration.storyLoader(), instanceOf(defaultConfiguration.storyLoader().getClass()));
-        assertThat(builtConfiguration.stepPatternParser(), instanceOf(defaultConfiguration.stepPatternParser().getClass()));
-        assertThat(builtConfiguration.storyReporterBuilder().formats(), equalTo(defaultConfiguration.storyReporterBuilder().formats()));
-        assertThat(builtConfiguration.storyReporterBuilder().outputDirectory(), equalTo(defaultConfiguration.storyReporterBuilder().outputDirectory()));
-        assertThat(builtConfiguration.storyReporterBuilder().viewResources(), equalTo(defaultConfiguration.storyReporterBuilder().viewResources()));
-        assertThat(builtConfiguration.storyReporterBuilder().reportFailureTrace(), equalTo(defaultConfiguration.storyReporterBuilder().reportFailureTrace()));
+        assertThat(builtConfiguration.stepPatternParser(), instanceOf(defaultConfiguration.stepPatternParser()
+                .getClass()));
+        assertThat(builtConfiguration.storyReporterBuilder().formats(), equalTo(defaultConfiguration
+                .storyReporterBuilder().formats()));
+        assertThat(builtConfiguration.storyReporterBuilder().outputDirectory(), equalTo(defaultConfiguration
+                .storyReporterBuilder().outputDirectory()));
+        assertThat(builtConfiguration.storyReporterBuilder().viewResources(), equalTo(defaultConfiguration
+                .storyReporterBuilder().viewResources()));
+        assertThat(builtConfiguration.storyReporterBuilder().reportFailureTrace(), equalTo(defaultConfiguration
+                .storyReporterBuilder().reportFailureTrace()));
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotations() {
-    	SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(Annotated.class);
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), FooSteps.class,
+    public void shouldBuildCandidateStepsFromAnnotationsUsingSpring() {
+        SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(AnnotatedUsingSpring.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class,
                 FooStepsWithDependency.class);
     }
 
     @Test
+    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndSpring() {
+        SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(AnnotatedUsingStepsAndSpring.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
+    }
+
+    @Test
     public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
-       	SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
+        SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
-       	SpringAnnotationBuilder builderAnnotatedWithoutLocations = new SpringAnnotationBuilder(AnnotatedWithoutLocations.class);
-        assertThatStepsInstancesAre(builderAnnotatedWithoutLocations.buildCandidateSteps());
+        SpringAnnotationBuilder builderAnnotatedWithoutResources = new SpringAnnotationBuilder(
+                AnnotatedWithoutResources.class);
+        assertThatStepsInstancesAre(builderAnnotatedWithoutResources.buildCandidateSteps());
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {
@@ -107,15 +124,22 @@ public class SpringAnnotationBuilderBehaviour {
     }
 
     @Configure()
-    @UsingSpring(locations = { "org/jbehave/core/configuration/spring/configuration.xml",
+    @UsingSpring(resources = { "org/jbehave/core/configuration/spring/configuration.xml",
             "org/jbehave/core/steps/spring/steps.xml", "org/jbehave/core/steps/spring/steps-with-dependency.xml" })
-    private static class Annotated {
+    private static class AnnotatedUsingSpring {
+
+    }
+
+    @Configure()
+    @UsingSteps(instances = { FooSteps.class })
+    @UsingSpring(resources = { "org/jbehave/core/configuration/spring/configuration.xml" })
+    private static class AnnotatedUsingStepsAndSpring {
 
     }
 
     @Configure()
     @UsingSpring()
-    private static class AnnotatedWithoutLocations {
+    private static class AnnotatedWithoutResources {
 
     }
 

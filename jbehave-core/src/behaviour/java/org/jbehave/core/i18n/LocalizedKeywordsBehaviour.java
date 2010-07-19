@@ -2,6 +2,7 @@ package org.jbehave.core.i18n;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.not;
 import static org.jbehave.core.configuration.Keywords.AND;
 import static org.jbehave.core.configuration.Keywords.AS_A;
 import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE;
@@ -48,6 +49,14 @@ public class LocalizedKeywordsBehaviour {
         ensureKeywordsAreLocalisedFor(new Locale("it"), null);
     }
 
+    @Test
+    public void shouldShowKeywordsInToStringRepresentations() throws IOException {
+        LocalizedKeywords it = keywordsFor(new Locale("it"));
+        LocalizedKeywords pt = keywordsFor(new Locale("pt"));
+        assertThat(it.toString(), not(equalTo(pt.toString())));
+    }
+
+    
     @Test(expected = ResourceBundleNotFoundException.class)
     public void shouldFailIfResourceBundleIsNotFound() throws IOException {
         ensureKeywordsAreLocalisedFor(new Locale("en"), "unknown");
@@ -55,7 +64,7 @@ public class LocalizedKeywordsBehaviour {
 
     @Test(expected = LocalizedKeywordNotFoundException.class)
     public void shouldFailIfKeywordIsNotFound() throws IOException {
-        ensureKeywordsAreLocalisedFor(new Locale("es"), null);
+        ensureKeywordsAreLocalisedFor(new Locale("mk"), null);
     }
 
     @Test
@@ -98,21 +107,24 @@ public class LocalizedKeywordsBehaviour {
         ensureKeywordIs(properties, NOT_PERFORMED, keywords.notPerformed());
         ensureKeywordIs(properties, FAILED, keywords.failed());
     }
-
+    
+    private LocalizedKeywords keywordsFor(Locale locale) {
+        return keywordsFor(locale, null);
+    }
+        
     private LocalizedKeywords keywordsFor(Locale locale, String bundleName) {
         if (bundleName == null) {
             return (locale == null ? new LocalizedKeywords() : new LocalizedKeywords(locale));
         } else {
-            return new LocalizedKeywords(locale, bundleName, Thread.currentThread()
-                    .getContextClassLoader());
+            return new LocalizedKeywords(locale, bundleName, this.getClass().getClassLoader());
         }
     }
 
     private Properties bundleFor(Locale locale) throws IOException {
         Properties expected = new Properties();
-        String bundle = "org/jbehave/core/i18n/keywords_" + (locale == null ? "en" : locale.getLanguage())
+        String bundle = "i18n/keywords_" + (locale == null ? "en" : locale.getLanguage())
                 + ".properties";
-        InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(bundle);
+        InputStream stream = this.getClass().getClassLoader().getResourceAsStream(bundle);
         if (stream != null) {
             expected.load(stream);
         }

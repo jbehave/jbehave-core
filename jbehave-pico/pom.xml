@@ -7,7 +7,7 @@
   </parent>
   <artifactId>jbehave-pico</artifactId>
   <name>JBehave PicoContainer</name>
-  <description>Extension of JBehave Core that allows CandidateSteps instances to be composed using a PicoContainer</description>
+  <description>Extension of JBehave Core that supports PicoContainer dependency injection</description>
 
   <dependencies>
     <dependency>

@@ -21,8 +21,10 @@ public interface EmbedderMonitor {
 	void storiesViewGenerationFailed(File outputDirectory, List<String> formats,
 			Properties viewProperties, Throwable cause);
 
-	void storiesViewGenerated(int scenarios, int failedScenarios);
+	void storiesViewGenerated(int stories, int scenarios, int failedScenarios);
 
 	void storiesViewNotGenerated();
+
+    void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type);
     
 }

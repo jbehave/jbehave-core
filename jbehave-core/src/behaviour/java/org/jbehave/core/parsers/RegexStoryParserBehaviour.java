@@ -13,7 +13,6 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -206,20 +205,6 @@ public class RegexStoryParserBehaviour {
 
     @Test
     public void shouldParseLongStoryWithKeywordSplitScenarios() {
-        ensureLongStoryCanBeParsed(parser);
-    }
-
-    @Test
-    @Ignore("It should fail due to regex stack overflow")
-    public void shouldParseLongStoryWithPatternSplitScenarios() {
-        StoryParser parser = new RegexStoryParser(new LocalizedKeywords()) {
-
-            @Override
-            protected List<String> splitScenarios(String storyAsText) {
-                return super.splitScenariosWithPattern(storyAsText);
-            }
-
-        };
         ensureLongStoryCanBeParsed(parser);
     }
 

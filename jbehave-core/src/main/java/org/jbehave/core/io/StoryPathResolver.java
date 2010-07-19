@@ -1,15 +1,15 @@
 package org.jbehave.core.io;
 
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 
 /**
  * <p>
- * Resolves story paths converting the Java {@link RunnableStory} class to a resource
+ * Resolves story paths converting the Java {@link Embeddable} class to a resource
  * path.
  * </p>
  */
 public interface StoryPathResolver {
 
-    String resolve(Class<? extends RunnableStory> storyClass);
+    String resolve(Class<? extends Embeddable> embeddableClass);
 
 }

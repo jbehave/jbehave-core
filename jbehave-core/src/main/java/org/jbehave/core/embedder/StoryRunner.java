@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.RunnableStory;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
@@ -22,7 +21,8 @@ import org.jbehave.core.steps.StepResult;
 import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
- * Allows to run a single story and describe the results to the {@link StoryReporter}.
+ * Runs a {@link Story}, given a {@link Configuration} and a list of {@link CandidateSteps}, 
+ * describing the results to the {@link StoryReporter}.
  *
  * @author Elizabeth Keogh
  * @author Mauro Talevi
@@ -39,34 +39,31 @@ public class StoryRunner {
     private StepCollector stepCollector;
 	private String reporterStoryPath;
 
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Class<? extends RunnableStory> storyClass) throws Throwable {
-        String storyPath = configuration.storyPathResolver().resolve(storyClass);
-        run(configuration, candidateSteps, storyPath);
+	/**
+	 * Run steps before or after a collection of stories.  Steps are execute only <b>once</b> per collection
+	 * of stories.
+	 * 
+     * @param configuration the Configuration used to find the steps to run
+	 * @param candidateSteps List of CandidateSteps containing the candidate steps methods
+	 * @param stage the Stage
+	 */
+    public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
+        runSteps(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));        
     }
 
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, String storyPath) throws Throwable {
-        Story story = defineStory(configuration, storyPath);
-        run(configuration, candidateSteps, story);
-    }
-
+    /**
+	 * Runs a Story with the given configuration and steps.  
+	 * 
+	 * @param configuration the Configuration used to run story
+	 * @param candidateSteps the List of CandidateSteps containing the candidate steps methods
+	 * @param story the Story to run
+	 * @throws Throwable if failures occurred and FailureStrategy dictates it to be re-thrown.
+	 */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story) throws Throwable {
-        // always start in a top-level non-given story
         run(configuration, candidateSteps, story, false);
     }
 
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, String storyPath, boolean givenStory) throws Throwable {
-        Story story = defineStory(configuration, storyPath);
-        run(configuration, candidateSteps, story, givenStory);
-    }
-
-    public Story defineStory(Configuration configuration, String storyPath) {
-        String storyAsString = configuration.storyLoader().loadStoryAsText(storyPath);
-        Story story = configuration.storyParser().parseStory(storyAsString, storyPath);
-        story.namedAs(new File(storyPath).getName());
-        return story;
-    }
-
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
+    private void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
         stepCollector = configuration.stepCollector();
         reporter = reporterFor(configuration, story, givenStory);
         pendingStepStrategy = configuration.pendingStepStrategy();
@@ -94,6 +91,13 @@ public class StoryRunner {
         currentStrategy.handleFailure(storyFailure);
     }
     
+    public Story storyOfPath(Configuration configuration, String storyPath) {
+        String storyAsString = configuration.storyLoader().loadStoryAsText(storyPath);
+        Story story = configuration.storyParser().parseStory(storyAsString, storyPath);
+        story.namedAs(new File(storyPath).getName());
+        return story;
+    }
+
 	private boolean isDryRun(List<CandidateSteps> candidateSteps) {
 		for (CandidateSteps steps : candidateSteps) {
 			if (steps.configuration().dryRun()) {
@@ -130,8 +134,9 @@ public class StoryRunner {
         if (storyPaths.size() > 0) {
             reporter.givenStories(storyPaths);
             for (String storyPath : storyPaths) {
-            	// run given story 
-                run(configuration, candidateSteps, storyPath, true);
+                // run given story 
+                Story story = storyOfPath(configuration, storyPath);
+                run(configuration, candidateSteps, story, true);
             }
         }
     }
@@ -152,12 +157,12 @@ public class StoryRunner {
     }
 
     private void runStorySteps(List<CandidateSteps> candidateSteps, Story story, boolean givenStory, Stage stage) {
-        runSteps(stepCollector.collectStepsFrom(candidateSteps, story, stage, givenStory));
+        runSteps(stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory));
     }
 
     private void runScenarioSteps(
             List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> tableRow) {
-        runSteps(stepCollector.collectStepsFrom(candidateSteps, scenario, tableRow));
+        runSteps(stepCollector.collectScenarioSteps(candidateSteps, scenario, tableRow));
     }
 
     /**
@@ -219,5 +224,6 @@ public class StoryRunner {
 	public String toString() {
 		return this.getClass().getSimpleName();
 	}
+
 
 }

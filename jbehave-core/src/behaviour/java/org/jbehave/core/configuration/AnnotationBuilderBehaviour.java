@@ -13,46 +13,46 @@ import org.junit.Test;
 
 public class AnnotationBuilderBehaviour {
 
-    @Test
-    public void shouldCreateCandidateStepsFromAnnotation(){
-    	AnnotationBuilder builderAnnotated = new AnnotationBuilder(Annotated.class);
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), MySteps.class, MyOtherSteps.class);
-    }
-    
-    @Test
-    public void shouldCreateEmptyCandidateStepsListIfAnnotationOrAnnotatedValuesNotPresent(){
-    	AnnotationBuilder builderNotAnnotated = new AnnotationBuilder(NotAnnotated.class);
-        assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
-       	AnnotationBuilder builderAnnotatedWithoutSteps = new AnnotationBuilder(AnnotatedWithoutSteps.class);
-       assertThatStepsInstancesAre(builderAnnotatedWithoutSteps.buildCandidateSteps());
-    }
+	@Test
+	public void shouldCreateCandidateStepsFromAnnotation() {
+		AnnotationBuilder builderAnnotated = new AnnotationBuilder(Annotated.class);
+		assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), MySteps.class, MyOtherSteps.class);
+	}
 
-    private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses){
-        assertThat(candidateSteps.size(), equalTo(stepsClasses.length));
-        for (int i = 0; i < stepsClasses.length; i++ ){
-            assertThat(((Steps)candidateSteps.get(i)).instance(), instanceOf(stepsClasses[i]));
-        }        
-    }
+	@Test
+	public void shouldCreateEmptyCandidateStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
+		AnnotationBuilder builderNotAnnotated = new AnnotationBuilder(NotAnnotated.class);
+		assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
+		AnnotationBuilder builderAnnotatedWithoutSteps = new AnnotationBuilder(AnnotatedWithoutSteps.class);
+		assertThatStepsInstancesAre(builderAnnotatedWithoutSteps.buildCandidateSteps());
+	}
 
-    @UsingSteps(instances={MySteps.class, MyOtherSteps.class})
-    private static class Annotated {
-        
-    }
+	private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {
+		assertThat(candidateSteps.size(), equalTo(stepsClasses.length));
+		for (int i = 0; i < stepsClasses.length; i++) {
+			assertThat(((Steps) candidateSteps.get(i)).instance(), instanceOf(stepsClasses[i]));
+		}
+	}
 
-    @UsingSteps()
-    private static class AnnotatedWithoutSteps {
-        
-    }
+	@UsingSteps(instances = { MySteps.class, MyOtherSteps.class })
+	private static class Annotated {
 
-    private static class NotAnnotated {
-        
-    }
-    
-    static class MySteps {
-        
-    }
-    
-    static class MyOtherSteps{
-        
-    }
+	}
+
+	@UsingSteps()
+	private static class AnnotatedWithoutSteps {
+
+	}
+
+	private static class NotAnnotated {
+
+	}
+
+	static class MySteps {
+
+	}
+
+	static class MyOtherSteps {
+
+	}
 }

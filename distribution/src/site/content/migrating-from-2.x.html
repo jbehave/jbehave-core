@@ -41,13 +41,17 @@ used without change in JBehave 3.</p>
 	representation reflecting the fact that scenarios in JBehave 2 were
 	already stories in all but name. E.g. <b>JUnitScenario</b> is now <b>JUnitStory</b>.</li>
 	<li>The root package has also changed from <b>org.jbehave.scenario</b>
-	to <b>org.jbehave.core</b>. The Ant tasks and Maven goals have also been
-	renamed to reflect this change.</li>
-	<li>Configuration has been consolidated into a single builder object.</b>
-	and moved to <b>org.jbehave.core.configuration</b> package.</li>
+	to <b>org.jbehave.core</b>.</li>
+	<li>The Ant tasks and Maven goals have also been renamed to
+	reflect the terminology change. To facilitate the migration, one can
+	use the script provided in the <a
+		href="http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git;a=tree;f=examples/migrating-from-2.x">migrating-from-2.x
+	example</a>.</li>
+	<li>Configuration has been consolidated into a single builder
+	object.</b> and moved to <b>org.jbehave.core.configuration</b> package.</li>
 	<li>JUnitStory allows the overriding of the default
-	MostUsefulConfiguration only via the <b>useConfiguration</b>
-	method, and the specification of <b>Steps</b> only via the <b>addSteps</b>
+	MostUsefulConfiguration only via the <b>useConfiguration</b> method,
+	and the specification of <b>Steps</b> only via the <b>addSteps</b>
 	method.</li>
 	<li>The textual story lookup paradigm has shifted from a <b>RunnableStory</b>
 	class to a story path, which can be resolved from the class via the <b>StoryPathResolver</b>,
@@ -55,12 +59,14 @@ used without change in JBehave 3.</p>
 	As such, the <b>StoryLoader</b> implementations only define the model
 	story from a story path. The <b>FilePrintStreamFactory</b>
 	correspondingly now handles only story paths.</li>
-    <li>Terminology concerning report rendering has been changed to stories view generation.</li>
-	<li>The concerns of running stories and view generation has been centralised in
-	an embeddable component - <b>Embedder</b> - which has thin wrappers for 
-	running in multiple environments, e.g. JUnit, Ant/Maven, Spring etc.  Using the 
-	Embedder, the user can choose to run multiple textual story using a single 
-	Java entry point. The embedder behaviours can be managed via <b>EmbedderControls</b>.</li>
+	<li>Terminology concerning report rendering has been changed to
+	stories view generation.</li>
+	<li>The concerns of running stories and view generation has been
+	centralised in an embeddable component - <b>Embedder</b> - which has
+	thin wrappers for running in multiple environments, e.g. JUnit,
+	Ant/Maven, Spring etc. Using the Embedder, the user can choose to run
+	multiple textual story using a single Java entry point. The embedder
+	behaviours can be managed via <b>EmbedderControls</b>.</li>
 </ul>
 
 <h2>Next?</h2>

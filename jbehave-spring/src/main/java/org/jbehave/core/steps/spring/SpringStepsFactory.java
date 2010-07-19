@@ -30,7 +30,7 @@ public class SpringStepsFactory extends AbstractStepsFactory {
         List<Object> steps = new ArrayList<Object>();
         for (String name : context.getBeanDefinitionNames()) {
             Object bean = context.getBean(name);
-            if (isAnnotated(bean.getClass())) {
+            if (hasAnnotatedMethods(bean.getClass())) {
                 steps.add(bean);
             }
         }

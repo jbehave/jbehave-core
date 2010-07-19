@@ -29,12 +29,14 @@ public class AnnotationFinder {
 
     private final ClassPool classPool = ClassPool.getDefault();
     private final Map<String, Map<String, Object>> annotationsMap = new HashMap<String, Map<String, Object>>();
+    private final Class<?> annotatedClass;
 
     public AnnotationFinder(Class<?> annotatedClass) {
-        findAnnotations(annotatedClass);
+        this.annotatedClass = annotatedClass;
+        findAnnotations();
     }
 
-    private void findAnnotations(Class<?> annotatedClass) {
+    private void findAnnotations() {
         Stack<Class<?>> stack = new Stack<Class<?>>();
         stack.push(annotatedClass);
         Class<?> annotatedSuperClass = annotatedClass.getSuperclass();
@@ -67,8 +69,9 @@ public class AnnotationFinder {
     }
 
     private void populate(javassist.bytecode.annotation.Annotation[] annotations) {
-        if (annotations == null)
+        if (annotations == null) {
             return;
+        }
         // for each annotation on class hierarchy
         for (javassist.bytecode.annotation.Annotation annotation : annotations) {
             // a map that contain each member(attribute) of the annotation
@@ -94,15 +97,14 @@ public class AnnotationFinder {
                 String memberName = memberMethod.getMethodInfo().getName();
                 Object memberValueObject = annotationsAttributesMap.get(memberName);
                 memberValue = annotation.getMemberValue(memberName);
+                if (memberValue == null) {
+                    CtMethod cm = annotationMetaClass.getDeclaredMethod(memberName);
+                    MethodInfo minfo = cm.getMethodInfo();
+                    AnnotationDefaultAttribute ada = (AnnotationDefaultAttribute) minfo
+                            .getAttribute(AnnotationDefaultAttribute.tag);
+                    memberValue = ada.getDefaultValue(); // default value
+                }
                 if (memberValueObject == null) {
-                    if (memberValue == null) {
-                        CtMethod cm = annotationMetaClass.getDeclaredMethod(memberName);
-                        MethodInfo minfo = cm.getMethodInfo();
-                        AnnotationDefaultAttribute ada = (AnnotationDefaultAttribute) minfo
-                                .getAttribute(AnnotationDefaultAttribute.tag);
-                        memberValue = ada.getDefaultValue(); // default
-                        // value
-                    }
                     memberValueObject = processMemberValue(memberValue, null);
                 } else {
                     Object newMemberValue = processMemberValue(memberValue, memberValueObject);
@@ -117,14 +119,13 @@ public class AnnotationFinder {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings("unchecked")
     private <T> T processMemberValue(MemberValue memberValue, Object previousValue) {
 
         if (memberValue instanceof AnnotationMemberValue) {
-            javassist.bytecode.annotation.Annotation value = ((AnnotationMemberValue) memberValue).getValue();
-            HashMap<String, Object> memberValueObject = new HashMap<String, Object>();
-            processAnnotation(value, (Map<String, Object>) memberValueObject);
-            return (T) memberValueObject;
+            Map<String, Object> value = new HashMap<String, Object>();
+            processAnnotation(((AnnotationMemberValue) memberValue).getValue(), value);
+            return (T) value;
         }
 
         if (memberValue instanceof StringMemberValue) {
@@ -133,28 +134,17 @@ public class AnnotationFinder {
         }
 
         if (memberValue instanceof ArrayMemberValue) {
-            MemberValue[] arrayValue = ((ArrayMemberValue) memberValue).getValue();
-            List<Object> valueList;
+            List<Object> values;
             if (previousValue == null) {
-                valueList = new ArrayList<Object>();
+                values = new ArrayList<Object>();
             } else {
-                valueList = (List<Object>) previousValue;
+                values = (List<Object>) previousValue;
             }
 
-            for (MemberValue arrayMember : arrayValue) {
-                valueList.add(processMemberValue(arrayMember, valueList));
+            for (MemberValue arrayMember : ((ArrayMemberValue) memberValue).getValue()) {
+                values.add(processMemberValue(arrayMember, values));
             }
-            return (T) valueList;
-        }
-
-        if (memberValue instanceof EnumMemberValue) {
-            String value = ((EnumMemberValue) memberValue).getValue();
-            String type = ((EnumMemberValue) memberValue).getType();
-            try {
-                return (T) Enum.valueOf((Class) Class.forName(type), value);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            return (T) values;
         }
 
         if (memberValue instanceof BooleanMemberValue) {
@@ -167,15 +157,27 @@ public class AnnotationFinder {
             return (T) value;
         }
 
-        if (memberValue instanceof ClassMemberValue) {
-            try {
-                String value = ((ClassMemberValue) memberValue).getValue();
-                return (T) Class.forName(value);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        if (memberValue instanceof EnumMemberValue) {
+            String value = ((EnumMemberValue) memberValue).getValue();
+            String type = ((EnumMemberValue) memberValue).getType();
+            return (T) Enum.valueOf(loadClass(type), value);
         }
-        throw new RuntimeException("Invalid member value "+memberValue);
+
+        if (memberValue instanceof ClassMemberValue) {
+            String value = ((ClassMemberValue) memberValue).getValue();
+            return (T) loadClass(value);
+        }
+
+        throw new RuntimeException("Invalid member value " + memberValue);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Class loadClass(String type) {
+        try {
+            return annotatedClass.getClassLoader().loadClass(type);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationClass) {
@@ -183,7 +185,7 @@ public class AnnotationFinder {
     }
 
     public boolean isAnnotationValuePresent(Class<? extends Annotation> annotationClass, String memberName) {
-        if (isAnnotationPresent(annotationClass) ){
+        if (isAnnotationPresent(annotationClass)) {
             return annotationsMap.get(annotationClass.getName()).containsKey(memberName);
         }
         return false;
@@ -201,10 +203,9 @@ public class AnnotationFinder {
         }
         throw new MissingAnnotationException(annotationClass, memberName);
     }
-    
+
     @SuppressWarnings("unchecked")
-    public <T> List<T> getAnnotatedValues(Class<? extends Annotation> annotationClass, Class<T> type,
-            String memberName) {
+    public <T> List<T> getAnnotatedValues(Class<? extends Annotation> annotationClass, Class<T> type, String memberName) {
         List<T> list = new ArrayList<T>();
         for (Object value : getAnnotatedValue(annotationClass, List.class, memberName)) {
             list.add((T) value);

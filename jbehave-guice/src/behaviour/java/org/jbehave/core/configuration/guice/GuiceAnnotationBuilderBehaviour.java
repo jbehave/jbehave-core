@@ -20,6 +20,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.annotations.guice.UsingGuice;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.Configuration;
@@ -35,9 +36,9 @@ import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
-import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.guice.GuiceStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.guice.GuiceStepsFactoryBehaviour.FooStepsWithDependency;
 import org.junit.Assert;
@@ -50,7 +51,7 @@ public class GuiceAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildConfigurationFromAnnotations() {
-        AnnotationBuilder builder = new GuiceAnnotationBuilder(Annotated.class);
+        AnnotationBuilder builder = new GuiceAnnotationBuilder(AnnotatedUsingGuice.class);
         Configuration configuration = builder.buildConfiguration();
         assertThat(configuration.failureStrategy(), instanceOf(SilentlyAbsorbingFailure.class));
         assertThat(configuration.storyLoader(), instanceOf(LoadFromURL.class));
@@ -80,8 +81,8 @@ public class GuiceAnnotationBuilderBehaviour {
     public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
         AnnotationBuilder builderNotAnnotated = new GuiceAnnotationBuilder(NotAnnotated.class);
         assertThatConfigurationIs(builderNotAnnotated.buildConfiguration(), new MostUsefulConfiguration());
-        AnnotationBuilder builderAnnotatedWithoutLocations = new GuiceAnnotationBuilder(AnnotatedWithoutLocations.class);
-        assertThatConfigurationIs(builderAnnotatedWithoutLocations.buildConfiguration(), new MostUsefulConfiguration());
+        AnnotationBuilder builderAnnotatedWithoutModules = new GuiceAnnotationBuilder(AnnotatedWithoutModules.class);
+        assertThatConfigurationIs(builderAnnotatedWithoutModules.buildConfiguration(), new MostUsefulConfiguration());
     }
 
     private void assertThatConfigurationIs(Configuration builtConfiguration,
@@ -96,17 +97,25 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotations() {
-        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(Annotated.class);
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), FooSteps.class,
+    public void shouldBuildCandidateStepsFromAnnotationsUsingGuice() {    	
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingGuice.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class,
                 FooStepsWithDependency.class);
+    }
+
+    @Test
+    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuice() {        
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingStepsAndGuice.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
     }
 
     @Test
     public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         AnnotationBuilder builderNotAnnotated = new GuiceAnnotationBuilder(NotAnnotated.class);
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
-        AnnotationBuilder builderAnnotatedWithoutLocations = new GuiceAnnotationBuilder(AnnotatedWithoutLocations.class);
+        AnnotationBuilder builderAnnotatedWithoutLocations = new GuiceAnnotationBuilder(AnnotatedWithoutModules.class);
         assertThatStepsInstancesAre(builderAnnotatedWithoutLocations.buildCandidateSteps());
     }
 
@@ -119,13 +128,20 @@ public class GuiceAnnotationBuilderBehaviour {
 
     @Configure()
     @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
-    private static class Annotated {
+    private static class AnnotatedUsingGuice {
+
+    }
+
+    @Configure()
+    @UsingSteps(instances = {FooSteps.class})
+    @UsingGuice(modules = { ConfigurationModule.class})
+    private static class AnnotatedUsingStepsAndGuice {
 
     }
 
     @Configure()
     @UsingGuice()
-    private static class AnnotatedWithoutLocations {
+    private static class AnnotatedWithoutModules {
 
     }
 

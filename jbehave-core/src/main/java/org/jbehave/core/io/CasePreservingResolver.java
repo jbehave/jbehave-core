@@ -1,6 +1,6 @@
 package org.jbehave.core.io;
 
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 
 /**
  * <p>
@@ -24,8 +24,8 @@ public class CasePreservingResolver extends AbstractStoryPathResolver {
     }
 
     @Override
-    protected String resolveName(Class<? extends RunnableStory> storyClass) {
-        return storyClass.getSimpleName();
+    protected String resolveName(Class<? extends Embeddable> embeddableClass) {
+        return embeddableClass.getSimpleName();
     }
 
 }

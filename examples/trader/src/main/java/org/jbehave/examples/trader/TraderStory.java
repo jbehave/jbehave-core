@@ -63,7 +63,7 @@ public abstract class TraderStory extends JUnitStory {
 		useConfiguration(configuration);
 		addSteps(createSteps(configuration));
 		
-	    configuredEmbedder().embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+	    configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
 
 	}
 

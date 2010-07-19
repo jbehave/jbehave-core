@@ -29,7 +29,7 @@ NarrativeStartingWord :== ("In order to" | "As a" | "I want to" ) ;
 ; that must not contain any keywords.
 ; It is followed by one or more Steps. 
 ; Finally the optional Examples table, which if present will execute the scenario for as many table rows present
-Scenario := "Scenario:"? Description? GivenScenarios? Step+ Examples? ;
+Scenario := "Scenario:"? Description? GivenStories? Step+ Examples? ;
 
 ; The free-text description 
 Description := (Word Space?)* ;
@@ -44,15 +44,15 @@ Space := ? Unicode space character ? ;
 NonSpaceCharacter := ? Any Unicode character except Space ? ;
 
 ; The keywords which are reserved (or equivalent in I18n-ed locale)
-KeyWord := "Scenario:" | "GivenScenarios:" | "Given" | "When" | "Then" | "And" | "!--";
+KeyWord := "Scenario:" | "GivenStories:" | "Given" | "When" | "Then" | "And" | "!--";
 
-; The comma-separated list of scenario resources that specify the scenarios to be run before the scenario steps
-GivenScenarios:= "GivenScenarios:" (ScenarioResourcePath ','?)+ ;
+; The comma-separated list of story resources that specify the stories to be run before the scenario steps
+GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
 
-; The scenario resource path  
-ScenarioResourcePath := PathCharacter+ ;
+; The story resource path  
+StoryPath := PathCharacter+ ;
 
-; The characters allowed in a scenario resource path
+; The characters allowed in a resource path
 PathCharacter := "/" | "." | "_" | Letter | Digit ;
 
 ; The letter characters

@@ -7,7 +7,7 @@
   </parent>
   <artifactId>jbehave-spring</artifactId>
   <name>JBehave Spring</name>
-  <description>Extension of JBehave Core that allows CandidateSteps instances to be composed using Spring</description>
+  <description>Extension of JBehave Core that supports Spring dependency injection</description>
 
   <dependencies>
     <dependency>
@@ -24,7 +24,7 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-test</artifactId>
       <version>2.5.6</version>
-    </dependency>      
+    </dependency>
   </dependencies>
 
 </project>

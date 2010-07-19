@@ -4,7 +4,12 @@ JDK required: 1.5+
 Ant (http://ant.apache.org) required: 1.7+ 
 (maven-ant-tasks-2.1.jar is required in $ANT_HOME/lib - download from http://maven.apache.org/ant-tasks/download.html)
 OR 
-Maven (http://maven.apache.org) required: 2.1+
+Maven (http://maven.apache.org) required: 2.2+
+
+Encoding: 
+
+Configure IDE to use UTF-8 for all files
+Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS 
  
 IDE integration:
 

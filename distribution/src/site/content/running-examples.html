@@ -6,87 +6,57 @@
 
 <body>
 
-<h2>Running Examples with latest snapshot</h2>
+<h2>JBehave Examples</h2>
 
 <p>JBehave was developed as behaviour and example driven.  As such the examples are 
 an integral part of the build, verifying the correctness of the behaviour.  They 
-are not released as artifacts, but they can be run easily <a href="https://svn.codehaus.org/jbehave/trunk/core/examples">browsed</a>
-or checked out from source control:</p>
+are not released as artifacts, but they can be run easily browsed
+or checked out from <a href="source-repository.html">source repository</a> :</p>
 
-<script type="syntaxhighlighter" class="brush: plain"><![CDATA[
-svn co https://svn.codehaus.org/jbehave/trunk/core
-]]></script>
+<ul>
+<li>gameoflife: demonstrates multi-line scenarios</li>
+<li>noughtsandcrosses: demonstrates GUI behaviours</li>
+<li>trader:  demonstrates all aspects of configuration and running modes, including reports and support for 
+dependency injection</li>
+</ul>
+
+<h2>Running Examples with latest snapshot</h2>
 
 <p>To build core modules and run examples with Maven:</p>
 <script type="syntaxhighlighter" class="brush: plain"><![CDATA[
-cd core
 mvn clean install -Pexamples
 ]]></script>
 
 <p>The 'examples' profile instructs Maven to build the releasable modules and to verify their
 behaviour by running the examples afterwards.</p>
 
+<p>To run the GUI example too (requires non-headless mode):</p>
+<script type="syntaxhighlighter" class="brush: plain"><![CDATA[
+mvn clean install -Pexamples,gui
+]]></script>
+
 <h2>Running Examples against a fixed version</h2>
 
 <p>In some cases, it may be necessary to run the examples against a known version of JBehave.</p>
 
-<script type="syntaxhighlighter" class="brush: plain"><![CDATA[
-svn co https://svn.codehaus.org/jbehave/trunk/core/examples
+<script type="syntaxhighlighter" class="brush: plain">
+<![CDATA[
 cd examples
-mvn clean install -Djbehave.version=2.4
-]]></script>
+mvn clean install -Djbehave.version=3.0
+]]>
+</script>
 
 <span class="followup">Note that running the examples in 'standalone' mode requires the JBehave parent POM to be present, as it 
 contains the information about the development setup of the project, e.g. the compiler, the layout of the source, etc. </span>
 
-<p>To ensure JBehave parent POM is available, two approaches are possible.  One is to check out project source as above and install the parent POM:
+<p>To ensure JBehave parent POM is available, checkout project source as above and install the parent POM:
 </p>
 
-<script type="syntaxhighlighter" class="brush: plain"><![CDATA[
-svn co https://svn.codehaus.org/jbehave/trunk/core
-cd core
+<script type="syntaxhighlighter" class="brush: plain">
+<![CDATA[
 mvn clean install -N <-- only builds and installs locally top-level parent POM
-]]></script>
-
-<p>The other approach is to fetch the parent POM from the snapshots remote repository.  For this, you need to add the 
-following profile to your <b>$HOME/.m2/settings.xml</b> 
-
-<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
-<profile>
-  <id>codehaus-snapshots</id>
-  <repositories>
-    <repository>
-      <id>codehaus-snapshots</id>
-      <url>http://snapshots.repository.codehaus.org</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>codehaus-snapshots</id>
-      <url>http://snapshots.repository.codehaus.org</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
-</profile>
-]]></script>
-
-<p>and run with additional profile</p>
-<script type="syntaxhighlighter" class="brush: plain"><![CDATA[
-svn co https://svn.codehaus.org/jbehave/trunk/core/examples
-cd examples
-mvn clean install -Pcodehaus-snapshots -Djbehave.version=3.0
-]]></script>
+]]>
+</script>
 
 <span class="followup">As with any Maven artifact that is not expected to change, 
 the build or retrieval is only required once, as it will be cached in the local repository. 

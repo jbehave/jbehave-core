@@ -14,13 +14,13 @@
     <page>migrating-from-2.x.html</page>
   </section>
   <section>
-    <name>Fundamentals</name>
+    <name>BDD Concepts</name>
     <page>concepts.html</page>
     <page>grammar.html</page>
     <page>more-on-bdd.html</page>
   </section>
   <section>
-    <name>Stories</name>
+    <name>Basic Topics</name>
     <page>developing-stories.html</page>
     <page>annotations.html</page>
     <page>configuration.html</page>

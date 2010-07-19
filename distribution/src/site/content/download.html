@@ -8,55 +8,72 @@
 
 <h2>Stable releases</h2>
 
-<p>Stable releases are downloadable from <a href="http://jbehave.org/download">JBehave download</a> page.</p>
+<p>Stable releases can be found on the <a
+	href="https://nexus.codehaus.org/content/repositories/releases/org/jbehave/">Codehaus
+Nexus Repository Manager</a> (which is synched with the <a
+	href="http://repo1.maven.org/maven2/org/jbehave">Central Maven
+Repository</a>).</p>
 
-<p>Stable releases are also found on the <a
-    href="http://repository.codehaus.org/org/jbehave/">Codehaus
-Repository</a> (which is synched with the <a
-    href="http://repo1.maven.org/maven2">Central Maven Repository</a>)</p>.
-
-<h2 id="snapshot">Latest Snapshot</h2>
+<h2 id="snapshot">Latest Snapshots</h2>
 
 <p>The snapshot builds of JBehave can be found on the <a
-    href="http://snapshots.repository.codehaus.org/org/jbehave/jbehave-distribution/">Codehaus
-Snapshots Repository</a>. Be sure to choose the snapshot with the latest
+	href="https://nexus.codehaus.org/content/repositories/snapshots/org/jbehave/">Codehaus
+Nexus Repository Manager</a>. Be sure to choose the snapshot with the latest
 version and the filename with the latest timestamp.</p>
 
-<h2 id="maven">Using Maven Artifacts</h2>
+<h2 id="maven">POM Artifacts</h2>
 
-<p>If you use Maven as the build system (or one that is compatible
-with the Maven Repository, such as Ivy), you can declare JBehave
-dependency as</p>
-<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<p>JBehave provides the following artifacts, defined as POM artifacts</p>
+
+<table class="bodyTable">
+<tr class="a"><th>Group Id</th><th>Artifact Id</th><th>Versions</th></tr>
+<tr class="b"><td>org.jbehave</td><td>jbehave-core</td><td><a href="https://nexus.codehaus.org/content/repositories/releases/org/jbehave/jbehave-core">lookup</a></td></tr>
+<tr class="a"><td>org.jbehave</td><td>jbehave-guice</td><td><a href="https://nexus.codehaus.org/content/repositories/releases/org/jbehave/jbehave-guice">lookup</a></td></tr>
+<tr class="b"><td>org.jbehave</td><td>jbehave-pico</td><td><a href="https://nexus.codehaus.org/content/repositories/releases/org/jbehave/jbehave-pico">lookup</a></td></tr>
+<tr class="a"><td>org.jbehave</td><td>jbehave-spring</td><td><a href="https://nexus.codehaus.org/content/repositories/releases/org/jbehave/jbehave-spring">lookup</a></td></tr>
+<tr class="b"><td>org.jbehave</td><td>jbehave-ant</td><td><a href="https://nexus.codehaus.org/content/repositories/releases/org/jbehave/jbehave-ant">lookup</a></td></tr>
+<tr class="a"><td>org.jbehave</td><td>jbehave-maven-plugin</td><td><a href="https://nexus.codehaus.org/content/repositories/releases/org/jbehave/jbehave-maven-plugin">lookup</a></td></tr>
+<tr class="b"><td>org.jbehave</td><td>jbehave-distribution</td><td><a href="https://nexus.codehaus.org/content/repositories/releases/org/jbehave/jbehave-distribution">lookup</a></td></tr>
+</table>
+
+<p>A POM artifact can be declared as dependency using different build systems:</p>
+
+<h3>Apache Maven</h3>
+
+<p>Using <a href="http://maven.apache.org">Apache Maven</a>:</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
   <dependency> 
-    <groupId>org.jbehave</groupId>
-    <artifactId>jbehave-core</artifactId>
+    <groupId>[groupId]</groupId>
+    <artifactId>[artifactId]</artifactId>
     <version>[version]</version>
   </dependency>
-]]></script>
-<p>
-specifying the correct version.
-</p>
+]]>
+</script>
 
-<p>If you are using the JBehave dependency-injection extensions
-you'll need to also add the corresponding module</p>
-<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
-  <dependency> 
-    <groupId>org.jbehave</groupId>
-    <artifactId>jbehave-[pico|spring|guice]</artifactId>
-    <version>[version]</version>
-  </dependency>
-]]></script>
+<h3>Apache Ivy</h3>
 
-<p>JBehave was designed to be embeddable in different development
-environments. The <b>jbehave-core</b> contains support for running
-stories as JUnit tests - which can be run either in your favourite IDE
-or in your command-line build that supports JUnit tests.</p>
+<p>Using <a href="http://ant.apache.org/ivy/">Apache Ivy</a>:</p>
 
-<p>You can also run stories using the JBehave Ant or Maven
-extensions. In this case, an extra dependency needs to be declared, <b>jbehave-ant</b>
-or <b>jbehave-maven-plugin</b>, as appropriate. Refer to <a
-    href="running-stories.html">running stories</a>.
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+<dependency org="[groupId]" name="[artifactId]" rev="[version]"/>
+]]>
+</script>
+
+<h3>Groovy Grape</h3>
+
+<p>Using <a href="http://groovy.codehaus.org/grape">Groovy Grape</a>:</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+@Grapes(
+    @Grab(group='[groupId]', module='[artifactId]', version='[version]')
+)
+]]>
+</script>
+
 <div class="clear">
 <hr />
 </div>

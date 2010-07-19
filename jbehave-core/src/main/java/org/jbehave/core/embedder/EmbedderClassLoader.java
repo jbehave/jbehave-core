@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -17,6 +18,10 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * {@link #newInstance(Class, String)} to instantiate generic types.
  */
 public class EmbedderClassLoader extends URLClassLoader {
+
+    public EmbedderClassLoader(ClassLoader parent) throws MalformedURLException {
+        this(Arrays.<String>asList(), parent);
+    }
 
     public EmbedderClassLoader(List<String> classpathElements) throws MalformedURLException {
         this(classpathElements, Embedder.class.getClassLoader());
@@ -32,7 +37,7 @@ public class EmbedderClassLoader extends URLClassLoader {
             Thread.currentThread().setContextClassLoader(this);
             return (T) loadClass(className, true).newInstance();
         } catch (Exception e) {
-            throw new InstantiationFailed(className, type, e);
+            throw new InstantiationFailed(className, type, this, e);
         }
     }
 
@@ -44,7 +49,7 @@ public class EmbedderClassLoader extends URLClassLoader {
         }
     }
 
-    private List<String> asShortPaths(URL[] urls) {
+    List<String> asShortPaths(URL... urls) {
         List<String> names = new ArrayList<String>();
         for (URL url : urls) {
             String path = url.getPath();
@@ -84,8 +89,8 @@ public class EmbedderClassLoader extends URLClassLoader {
     @SuppressWarnings("serial")
     public static class InstantiationFailed extends RuntimeException {
 
-        public InstantiationFailed(String className, Class<?> type, Throwable cause) {
-            super("Instantiation failed for" + className + " of type " + type, cause);
+        public InstantiationFailed(String className, Class<?> type, ClassLoader classLoader, Throwable cause) {
+            super("Instantiation failed for" + className + " of type " + type + " using class loader "+classLoader, cause);
         }
 
     }

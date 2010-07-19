@@ -2,17 +2,20 @@ package org.jbehave.core.configuration;
 
 import static java.util.Arrays.asList;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.steps.StepType;
 
 /**
  * Provides the keywords which allow parsers to find steps in stories and match
- * those steps with candidates through the annotations (Given, When and Then) or
- * though other keywords (And, "!--"). It also provides keywords used in
- * reporting.
+ * those steps with candidates through the annotations. It provides the starting
+ * words (Given, When, Then And, "!--") using in parsing, as well as providing
+ * keywords used in reporting.
  */
 public class Keywords {
 
@@ -59,7 +62,6 @@ public class Keywords {
     private final String notPerformed;
     private final String failed;
     private final String dryRun;
-    private final String[] others;
 
     public static Map<String, String> defaultKeywords() {
         Map<String, String> keywords = new HashMap<String, String>();
@@ -86,14 +88,14 @@ public class Keywords {
     }
 
     /**
-     * Creates Keywords with default values {@link #defaultKeywords()}.
+     * Creates Keywords with default values {@link #defaultKeywords()}
      */
     public Keywords() {
         this(defaultKeywords());
     }
 
     /**
-     * Creates Keywords with provided values and default encoder
+     * Creates Keywords with provided keywords Map and Encoding
      * 
      * @param keywords
      *            the Map of keywords indexed by their name
@@ -118,7 +120,6 @@ public class Keywords {
         this.notPerformed = keyword(NOT_PERFORMED, keywords);
         this.failed = keyword(FAILED, keywords);
         this.dryRun = keyword(DRY_RUN, keywords);
-        this.others = new String[] { and, ignorable };
     }
 
     private String keyword(String name, Map<String, String> keywords) {
@@ -205,8 +206,9 @@ public class Keywords {
         return dryRun;
     }
 
-    public String[] others() {
-        return others;
+    public String[] startingWords() {
+        Collection<String> words = startingWordsByType().values();
+        return words.toArray(new String[words.size()]);
     }
 
     public Map<StepType, String> startingWordsByType() {
@@ -217,6 +219,11 @@ public class Keywords {
         words.put(StepType.AND, and());
         words.put(StepType.IGNORABLE, ignorable());
         return words;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
     @SuppressWarnings("serial")

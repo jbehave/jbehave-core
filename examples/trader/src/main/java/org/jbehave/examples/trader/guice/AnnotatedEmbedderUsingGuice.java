@@ -9,7 +9,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.text.SimpleDateFormat;
 
-import org.jbehave.core.Embeddable;
+import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.guice.UsingGuice;
@@ -18,7 +18,7 @@ import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.junit.guice.GuiceAnnotatedEmbedder;
+import org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -42,23 +42,16 @@ import com.google.inject.Scopes;
 /**
  * Run stories via Embedder using JBehave's annotated configuration and steps using Guice
  */
+@RunWith(GuiceAnnotatedEmbedderRunner.class)
 @Configure()
-@RunWith(GuiceAnnotatedEmbedder.class)
-@UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
-public class AnnotatedEmbedderUsingGuice implements Embeddable {
-
-    //TODO @Inject
-    private Embedder embedder;
-
-    public void useEmbedder(Embedder embedder) {
-        this.embedder = embedder;        
-    }
+public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 
     @Test
     public void run() {
-        embedder.runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/stories/*.story"), asList("")));
+        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/guice/stories/*.story"), asList("")));
     }
 
     // Guice modules

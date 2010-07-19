@@ -16,28 +16,41 @@ import com.google.inject.Key;
  * composition and instantiation of all components that contain JBehave
  * annotated methods.
  * 
+ * @author Cristiano Gavião
  * @author Paul Hammant
  * @author Mauro Talevi
  */
 public class GuiceStepsFactory extends AbstractStepsFactory {
 
-	private final Injector parent;
+    private final Injector injector;
 
-	public GuiceStepsFactory(Configuration configuration, Injector parent) {
-		super(configuration);
-		this.parent = parent;
-	}
+    public GuiceStepsFactory(Configuration configuration, Injector injector) {
+        super(configuration);
+        this.injector = injector;
+    }
 
-	@Override
-	protected List<Object> stepsInstances() {
-		List<Object> steps = new ArrayList<Object>();
-		for (Binding<?> binding : parent.getBindings().values()) {
-			Key<?> key = binding.getKey();
-			if (isAnnotated(key.getTypeLiteral().getType())) {
-				steps.add(parent.getInstance(key));
-			}
-		}
-		return steps;
-	}
+    @Override
+    protected List<Object> stepsInstances() {
+        List<Object> steps = new ArrayList<Object>();
+        addInstances(injector, steps);
+        return steps;
+    }
 
+    /**
+     * Adds steps instances from given injector and recursively its parent
+     * 
+     * @param injector the current Inject
+     * @param steps the List of steps instances
+     */
+    private void addInstances(Injector injector, List<Object> steps) {
+        for (Binding<?> binding : injector.getBindings().values()) {
+            Key<?> key = binding.getKey();
+            if (hasAnnotatedMethods(key.getTypeLiteral().getType())) {
+                steps.add(injector.getInstance(key));
+            }
+        }
+        if (injector.getParent() != null) {
+            addInstances(injector.getParent(), steps);
+        }
+    }
 }

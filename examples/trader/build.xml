@@ -46,47 +46,28 @@
 		</javac>
 	</target>
 
-	<target name="reports-resources">
-		<artifact:dependencies filesetId="reports.dependency.fileset">
-			<dependency groupId="org.jbehave" artifactId="jbehave-core" version="${pom.version}" scope="compile" />
-			<dependency groupId="org.jbehave.site" artifactId="jbehave-site-resources" version="2.0.1" scope="compile" />
-		</artifact:dependencies>
-		<copy todir="${basedir}/target/lib/reports">
-			<fileset refid="reports.dependency.fileset" />
-			<mapper type="flatten" />
-		</copy>
-		<unzip src="${basedir}/target/lib/reports/jbehave-core-${pom.version}.jar" dest="${basedir}/target/jbehave-reports/rendered/">
-			<patternset>
-				<include name="**/*.ftl" />
-				<include name="**/*.css" />
-				<include name="**/*.js" />
-			</patternset>
-		</unzip>
-		<unzip src="${basedir}/target/lib/reports/jbehave-site-resources-2.0.1.jar" dest="${basedir}/target/jbehave-reports/rendered/">
-		</unzip>
+	<target name="reports-resources" depends="setup">
+		<unzip src="${org.jbehave:jbehave-core:zip:resources}" dest="${basedir}/target/jbehave-reports/view/" />
+		<unzip src="${org.jbehave.site:jbehave-site-resources:zip}" dest="${basedir}/target/jbehave-reports/view/" />
 	</target>
 
-	<target name="run-stories" depends="compile, reports-resources">
-		<taskdef name="storyRunner" classname="org.jbehave.ant.StoryRunnerTask" classpathref="story.classpath" />
+	<target name="run-stories-as-embeddables" depends="compile, reports-resources">
+		<taskdef name="runStoriesAsEmbeddables" classname="org.jbehave.ant.RunStoriesAsEmbeddables" classpathref="story.classpath" />
 
-		<storyRunner 
-				storyIncludes="**/stories/*.java" batch="false" 
-				ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
+		<runStoriesAsEmbeddables includes="**/stories/*.java" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="run-stories-as-paths" depends="compile, reports-resources">
-		<taskdef name="storyPathRunner" classname="org.jbehave.ant.StoryPathRunnerTask" classpathref="story.classpath" />
+		<taskdef name="runStoriesAsPaths" classname="org.jbehave.ant.RunStoriesAsPaths" classpathref="story.classpath" />
 
-		<storyPathRunner embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder" 
-				storyIncludes="**/stories/*.story" batch="false" 
-				ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
+		<runStoriesAsPaths includes="**/stories/*.story" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="stepdoc" depends="compile">
-		<taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask" classpathref="story.classpath" />
-		<stepdoc embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder" />
+		<taskdef name="reportStepdocs" classname="org.jbehave.ant.ReportStepdocs" classpathref="story.classpath" />
+		<reportStepdocs embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder" />
 	</target>
 
-	<target name="build" depends="run-stories,run-stories-as-paths,stepdoc"/>
+	<target name="build" depends="run-stories-as-embeddables,run-stories-as-paths,stepdoc" />
 
 </project>

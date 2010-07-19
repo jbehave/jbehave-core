@@ -10,7 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.DirectoryScanner;
-import org.jbehave.core.RunnableStory;
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 
 /**
@@ -82,22 +82,26 @@ public class StoryFinder {
     public List<String> findClassNames(String searchInDirectory, List<String> includes, List<String> excludes){
         return classNames(normalise(scan(searchInDirectory, includes, excludes)));
     }
-    
+
     /**
-     * Finds story class names from a base directory, allowing for includes/excludes,
-     * and instantiates the runnable stories using the class loader provided.
+     * Load classes using the classloaded provided
      * 
-     * @param searchInDirectory
-     *            the base directory path to search in
-     * @param includes
-     *            the List of include patterns, or <code>null</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>null</code> if none
-     * @param classLoader the EmbedderClassLoader to instantiate the stories
-     * @return A List of RunnableStory found
+     * @param classNames the List of class names
+     * @param classLoader the EmbedderClassLoader used to load classes
+     * @return The list of Classes loaded
      */
-    public List<RunnableStory> findRunnables(String searchInDirectory, List<String> includes, List<String> excludes, EmbedderClassLoader classLoader) {
-        return runnables(findClassNames(searchInDirectory, includes, excludes), classLoader);
+    public List<Class<?>> loadClasses(List<String> classNames, EmbedderClassLoader classLoader) {
+        List<Class<?>> classes = new ArrayList<Class<?>>();
+        for (String className : classNames) {
+            if (!classLoader.isAbstract(className)) {
+                try {
+                    classes.add(classLoader.loadClass(className));
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return classes;
     }
 
     protected List<String> normalise(List<String> paths) {
@@ -139,14 +143,15 @@ public class StoryFinder {
         return trasformed;
     }
 
-    protected List<RunnableStory> runnables(List<String> classNames, EmbedderClassLoader classLoader) {
-        List<RunnableStory> stories = new ArrayList<RunnableStory>();
+
+    protected List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
+        List<Embeddable> embeddables = new ArrayList<Embeddable>();
         for (String className : classNames) {
             if (!classLoader.isAbstract(className)) {
-                stories.add(classLoader.newInstance(RunnableStory.class, className));
+                embeddables.add(classLoader.newInstance(Embeddable.class, className));
             }
         }
-        return stories;
+        return embeddables;
     }
 
     protected List<String> scan(String basedir, List<String> includes, List<String> excludes) {

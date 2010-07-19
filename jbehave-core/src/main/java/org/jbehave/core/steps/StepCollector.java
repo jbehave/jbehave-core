@@ -16,8 +16,10 @@ public interface StepCollector {
         BEFORE, AFTER
     }
 
-    List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean givenStory);
+    List<Step> collectBeforeOrAfterStoriesSteps(List<CandidateSteps> candidateSteps, Stage stage);
 
-    List<Step> collectStepsFrom(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> tableRow);
+    List<Step> collectBeforeOrAfterStorySteps(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean givenStory);
+
+    List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> tableRow);
 
 }

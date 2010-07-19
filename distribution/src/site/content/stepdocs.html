@@ -31,11 +31,13 @@ instance. This documentation includes:</p>
 
 <p>To generate the stepdocs for a given list of Steps instances:</p>
 
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
   Embedder embedder = new Embedder();
   embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), new MySteps()).createCandidateSteps());
   embedder.reportStepdocs();    
-]]></script>
+]]>
+</script>
 
 <p>The Embedder will use the <a
 	href="javadoc/core/org/jbehave/core/reporters/StepdocReporter.html">StepdocReporter</a>
@@ -46,28 +48,33 @@ instance. This documentation includes:</p>
 when the number of Steps instances and the number of methods grows.  The Stepdoc will allow the user to 
 find both the methods and the Steps instances matching the given step.
 
-<script type="syntaxhighlighter" class="brush: java"><![CDATA[
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
   Embedder embedder = new Embedder();
   embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), new MySteps()).createCandidateSteps());
   embedder.reportMatchingStepdocs("Given a step I'm looking for");
-]]></script>
+]]>
+</script>
 
 <h2>Stepdocs via Ant task</h2>
 
-<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
 
 	<taskdef name="stepdoc" classname="org.jbehave.ant.StepdocTask"
       classpathref="story.classpath" />
-    <stepdoc storyIncludes="**/stories/*.java"
-      storyExcludes="**/i18n/stories/*.java" />
+    <stepdoc includes="**/stories/*.java"
+      excludes="**/i18n/stories/*.java" />
       
-]]></script>
+]]>
+</script>
 
 <p>Remember to include <b>jbehave-ant</b> to your runtime classpath.</p>
 
 <h2>Stepdocs via Maven Plugin</h2>
 
-<script type="syntaxhighlighter" class="brush: xml"><![CDATA[
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
    <plugin>
         <groupId>org.jbehave</groupId>
         <artifactId>jbehave-maven-plugin</artifactId>
@@ -77,9 +84,9 @@ find both the methods and the Steps instances matching the given step.
             <id>stepdoc</id>
             <phase>integration-test</phase>
             <configuration>
-              <storyIncludes>
-                <storyInclude>**/stories/*.java</storyInclude>
-              </storyIncludes>
+              <includes>
+                <include>**/stories/*.java</include>
+              </includes>
             </configuration>
             <goals>
               <goal>stepdoc</goal>
@@ -87,7 +94,8 @@ find both the methods and the Steps instances matching the given step.
           </execution>
         </executions>
     </plugin>
-]]></script>
+]]>
+</script>
 
 <div class="clear">
 <hr />
