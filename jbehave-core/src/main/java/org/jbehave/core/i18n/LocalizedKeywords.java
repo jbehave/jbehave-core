@@ -12,7 +12,7 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 
 /**
- * Add i18n support to Keywords, allowing to read the keywords from resource
+ * Adds i18n support to Keywords, allowing to read the keywords from resource
  * bundles for a given locale.
  */
 public class LocalizedKeywords extends Keywords {
@@ -53,7 +53,7 @@ public class LocalizedKeywords extends Keywords {
         try {
             return bundle.getString(name);
         } catch (MissingResourceException e) {
-            throw new LocalizedKeywordNotFoundException(name, bundle);
+            throw new LocalizedKeywordNotFound(name, bundle);
         }
     }
 
@@ -64,14 +64,14 @@ public class LocalizedKeywords extends Keywords {
             }
             return getBundle(bundleName, locale);
         } catch (MissingResourceException e) {
-            throw new ResourceBundleNotFoundException(bundleName, locale, classLoader, e);
+            throw new ResourceBundleNotFound(bundleName, locale, classLoader, e);
         }
     }
 
     @SuppressWarnings("serial")
-    public static final class ResourceBundleNotFoundException extends RuntimeException {
+    public static final class ResourceBundleNotFound extends RuntimeException {
 
-        public ResourceBundleNotFoundException(String bundleName, Locale locale, ClassLoader classLoader,
+        public ResourceBundleNotFound(String bundleName, Locale locale, ClassLoader classLoader,
                 MissingResourceException cause) {
             super("Resource bundle " + bundleName + " not found for locale " + locale + " in classLoader "
                     + classLoader, cause);
@@ -80,9 +80,9 @@ public class LocalizedKeywords extends Keywords {
     }
 
     @SuppressWarnings("serial")
-    public static final class LocalizedKeywordNotFoundException extends RuntimeException {
+    public static final class LocalizedKeywordNotFound extends RuntimeException {
 
-        public LocalizedKeywordNotFoundException(String name, ResourceBundle bundle) {
+        public LocalizedKeywordNotFound(String name, ResourceBundle bundle) {
             super("Keyword" + name + " not found in resource bundle " + bundle);
         }
 

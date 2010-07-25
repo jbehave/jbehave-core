@@ -226,7 +226,7 @@ public class StoryReporterBuilder {
             factory.useConfiguration(fileConfiguration("stats"));
             return new PostStoryStatisticsCollector(factory.createPrintStream());
         default:
-            throw new UnsupportedReporterFormatException(format);
+            throw new UnsupportedReporterFormat(format);
         }
     }
 
@@ -239,9 +239,9 @@ public class StoryReporterBuilder {
     }
 
     @SuppressWarnings("serial")
-    public static class UnsupportedReporterFormatException extends RuntimeException {
+    public static class UnsupportedReporterFormat extends RuntimeException {
 
-        public UnsupportedReporterFormatException(Format format) {
+        public UnsupportedReporterFormat(Format format) {
             super("StoryReporter format " + format + " not supported");
         }
 

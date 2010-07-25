@@ -32,8 +32,8 @@ import java.util.Properties;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.i18n.LocalizedKeywords.LocalizedKeywordNotFoundException;
-import org.jbehave.core.i18n.LocalizedKeywords.ResourceBundleNotFoundException;
+import org.jbehave.core.i18n.LocalizedKeywords.LocalizedKeywordNotFound;
+import org.jbehave.core.i18n.LocalizedKeywords.ResourceBundleNotFound;
 import org.jbehave.core.steps.StepType;
 import org.junit.Test;
 
@@ -57,12 +57,12 @@ public class LocalizedKeywordsBehaviour {
     }
 
     
-    @Test(expected = ResourceBundleNotFoundException.class)
+    @Test(expected = ResourceBundleNotFound.class)
     public void shouldFailIfResourceBundleIsNotFound() throws IOException {
         ensureKeywordsAreLocalisedFor(new Locale("en"), "unknown");
     }
 
-    @Test(expected = LocalizedKeywordNotFoundException.class)
+    @Test(expected = LocalizedKeywordNotFound.class)
     public void shouldFailIfKeywordIsNotFound() throws IOException {
         ensureKeywordsAreLocalisedFor(new Locale("mk"), null);
     }

@@ -133,14 +133,7 @@ public class RegexStoryParser implements StoryParser {
         }
         return steps;
     }
-
-    @SuppressWarnings("serial")
-    public static class InvalidPatternException extends RuntimeException {
-        public InvalidPatternException(String message, Throwable cause) {
-            super(message, cause);
-        }
-    }
-
+   
     protected List<String> splitScenarios(String storyAsText) {
         return splitScenariosWithKeyword(storyAsText);
     }

@@ -38,7 +38,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 			outputFile.getParentFile().mkdirs();
 			return new FilePrintStream(outputFile, false);
 		} catch (IOException e) {
-			throw new PrintStreamCreationFailedException(outputFile, e);
+			throw new PrintStreamCreationFailed(outputFile, e);
 		}
 	}
 
@@ -138,8 +138,8 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 	}
 
 	@SuppressWarnings("serial")
-	private class PrintStreamCreationFailedException extends RuntimeException {
-		public PrintStreamCreationFailedException(File file, IOException cause) {
+	private class PrintStreamCreationFailed extends RuntimeException {
+		public PrintStreamCreationFailed(File file, IOException cause) {
 			super("Failed to create print stream for file " + file, cause);
 		}
 	}

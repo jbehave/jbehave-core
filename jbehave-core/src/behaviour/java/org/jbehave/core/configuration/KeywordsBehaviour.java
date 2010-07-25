@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.util.HashMap;
 
-import org.jbehave.core.configuration.Keywords.KeywordNotFoundException;
+import org.jbehave.core.configuration.Keywords.KeywordNotFound;
 import org.junit.Test;
 
 public class KeywordsBehaviour {
@@ -31,7 +31,7 @@ public class KeywordsBehaviour {
         assertEquals("DRY RUN", keywords.dryRun());
     }
 
-    @Test(expected = KeywordNotFoundException.class)
+    @Test(expected = KeywordNotFound.class)
     public void shouldFailIfSomeKeywordIsMissingInMapConstructor() throws IOException {
         new Keywords(new HashMap<String, String>());
     }

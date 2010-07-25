@@ -4,9 +4,9 @@ import java.lang.annotation.Annotation;
 
 @SuppressWarnings("serial")
 /**
- * Thrown when an annotation or one of property members is required and is not found.
+ * Thrown when an annotation or one of property members is required and not found.
  */
-public class MissingAnnotationException extends RuntimeException {
+public class AnnotationRequired extends RuntimeException {
 
 	/**
 	 * Used when an annotation is required and not found
@@ -14,7 +14,7 @@ public class MissingAnnotationException extends RuntimeException {
 	 * @param annotatedClass the annotated Class 
 	 * @param missingAnnotation the missing Annotation class
 	 */
-	public MissingAnnotationException(Class<?> annotatedClass,
+	public AnnotationRequired(Class<?> annotatedClass,
 			Class<? extends Annotation> missingAnnotation) {
 		super(annotatedClass + " requires to be annotated by " + missingAnnotation + ".");
 	}
@@ -25,7 +25,7 @@ public class MissingAnnotationException extends RuntimeException {
      * @param annotation the Annotation class
 	 * @param missingMemberName the missing member name
 	 */
-	public MissingAnnotationException(Class<? extends Annotation> annotation, String missingMemberName) {
+	public AnnotationRequired(Class<? extends Annotation> annotation, String missingMemberName) {
 		super(annotation + " requires member named '" + missingMemberName + "'.");
 	}
 

@@ -9,7 +9,7 @@ import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.AnnotationFinder;
 import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.MissingAnnotationException;
+import org.jbehave.core.configuration.AnnotationRequired;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
@@ -38,7 +38,7 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    public Configuration buildConfiguration() throws MissingAnnotationException {
+    public Configuration buildConfiguration() throws AnnotationRequired {
         if (annotationFinder().isAnnotationPresent(UsingSpring.class)) {
             if (annotationFinder().isAnnotationValuePresent(UsingSpring.class, "resources")) {
                 List<String> resources = annotationFinder().getAnnotatedValues(UsingSpring.class, String.class,

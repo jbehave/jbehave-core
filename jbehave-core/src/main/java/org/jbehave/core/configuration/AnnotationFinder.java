@@ -201,7 +201,7 @@ public class AnnotationFinder {
                 return (T) value;
             }
         }
-        throw new MissingAnnotationException(annotationClass, memberName);
+        throw new AnnotationRequired(annotationClass, memberName);
     }
 
     @SuppressWarnings("unchecked")

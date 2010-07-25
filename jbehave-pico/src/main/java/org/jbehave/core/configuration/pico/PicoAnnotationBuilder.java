@@ -8,7 +8,7 @@ import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.AnnotationFinder;
 import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.MissingAnnotationException;
+import org.jbehave.core.configuration.AnnotationRequired;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
@@ -38,7 +38,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
     }
 
     @SuppressWarnings({ "unchecked" })
-    public Configuration buildConfiguration() throws MissingAnnotationException {
+    public Configuration buildConfiguration() throws AnnotationRequired {
         AnnotationFinder finder = annotationFinder();
         if (finder.isAnnotationPresent(UsingPico.class)) {
             List<Class> moduleClasses = finder.getAnnotatedValues(UsingPico.class, Class.class, "modules");

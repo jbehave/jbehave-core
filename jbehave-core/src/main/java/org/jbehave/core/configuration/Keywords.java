@@ -125,7 +125,7 @@ public class Keywords {
     private String keyword(String name, Map<String, String> keywords) {
         String keyword = keywords.get(name);
         if (keyword == null) {
-            throw new KeywordNotFoundException(name, keywords);
+            throw new KeywordNotFound(name, keywords);
         }
         return keyword;
     }
@@ -227,9 +227,9 @@ public class Keywords {
     }
 
     @SuppressWarnings("serial")
-    public static final class KeywordNotFoundException extends RuntimeException {
+    public static final class KeywordNotFound extends RuntimeException {
 
-        public KeywordNotFoundException(String name, Map<String, String> keywords) {
+        public KeywordNotFound(String name, Map<String, String> keywords) {
             super("Keyword " + name + " not found amongst " + keywords);
         }
 

@@ -63,7 +63,7 @@ public class AnnotationBuilder {
      * 
      * @return A Configuration instance
      */
-    public Configuration buildConfiguration() throws MissingAnnotationException {
+    public Configuration buildConfiguration() throws AnnotationRequired {
 
         Configuration configuration = new MostUsefulConfiguration();
 
