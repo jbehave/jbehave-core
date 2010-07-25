@@ -59,11 +59,10 @@ public class LoadFromRelativeFile implements StoryLoader {
                     traversalPaths.add(filePath);
                 }
             } catch (IOException e) {
-                throw new InvalidStoryResource("Story path '" + storyPath + "' not found.", e);
+                throw new StoryResourceNotFound(storyPath, e);
             }
         }
-        throw new InvalidStoryResource("Story path '" + storyPath + "' not found while looking in '" + traversalPaths
-                + "'", null);
+        throw new StoryResourceNotFound(storyPath, traversalPaths);
 
     }
 

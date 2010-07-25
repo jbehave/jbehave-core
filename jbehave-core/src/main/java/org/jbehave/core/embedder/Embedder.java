@@ -212,9 +212,7 @@ public class Embedder {
             viewGenerator.generateView(outputDirectory, formats, viewResources);
         } catch (RuntimeException e) {
             embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats, viewResources, e);
-            String message = "Failed to generate stories view in " + outputDirectory + " with formats " + formats
-                    + " and resources " + viewResources;
-            throw new ViewGenerationFailed(message, e);
+            throw new ViewGenerationFailed(outputDirectory, formats, viewResources, e);
         }
         int stories = viewGenerator.countStories();
         int scenarios = viewGenerator.countScenarios();
@@ -321,8 +319,9 @@ public class Embedder {
 
     @SuppressWarnings("serial")
     public class ViewGenerationFailed extends RuntimeException {
-        public ViewGenerationFailed(String message, Throwable cause) {
-            super(message, cause);
+        public ViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewResources,
+                RuntimeException cause) {
+            super("View generation failed to "+outputDirectory+" for formats "+formats+" and resources "+viewResources, cause);
         }
     }
 }

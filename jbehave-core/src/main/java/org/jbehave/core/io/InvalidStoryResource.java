@@ -8,13 +8,13 @@ import java.io.InputStream;
 @SuppressWarnings("serial")
 public class InvalidStoryResource extends RuntimeException {
 
-    public InvalidStoryResource(String message, Throwable cause) {
-        super(message, cause);
+    public InvalidStoryResource(String storyPath, Throwable cause) {
+        super("Invalid story resource for " + storyPath, cause);
     }
 
 	public InvalidStoryResource(String storyPath, InputStream stream,
 			Throwable cause) {
-		super("Invalid story content for " + storyPath + " from resource stream " + stream, cause);
+		super("Invalid story resource for " + storyPath + " from input stream " + stream, cause);
 	}
 
 }
