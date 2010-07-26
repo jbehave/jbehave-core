@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.is;
 import org.junit.Test;
 
 
-public class RegexPrefixCapturingStepPatternParserBehaviour {
+public class RegexPrefixCapturingPatternParserBehaviour {
 
     private StepPatternParser parser = new RegexPrefixCapturingPatternParser();
 
