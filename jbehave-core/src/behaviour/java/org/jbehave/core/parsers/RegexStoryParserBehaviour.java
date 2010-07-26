@@ -39,7 +39,7 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryWithStepsContainingKeywordsAsPartOfTheContent() {
+    public void shouldParseStoryWithStepsContainingKeywordsAtStartfOtherWords() {
         String wholeStory = "Given a scenario Givenly" + NL +
                 "When I parse it to Whenever" + NL +
                 "And I parse it to Anderson" + NL +

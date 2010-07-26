@@ -47,8 +47,8 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Description parseDescriptionFrom(String storyAsText) {
-        String concatenatedKeywords = concatenateWithOr(keywords.narrative(), keywords.scenario());
-        Pattern findDescription = compile("(.*?)(" + concatenatedKeywords + ").*", DOTALL);
+        String narrativeOrScenario = concatenateWithOr(keywords.narrative(), keywords.scenario());
+        Pattern findDescription = compile("(.*?)(" + narrativeOrScenario + ").*", DOTALL);
         Matcher findingDescription = findDescription.matcher(storyAsText);
         if (findingDescription.matches()) {
             return new Description(findingDescription.group(1).trim());
@@ -124,7 +124,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private List<String> findSteps(String scenarioAsText) {
-        Matcher matcher = patternToPullOutSteps().matcher(scenarioAsText);
+        Matcher matcher = patternToPullOutSteps().matcher("\n"+scenarioAsText);
         List<String> steps = new ArrayList<String>();
         int startAt = 0;
         while (matcher.find(startAt)) {
@@ -134,11 +134,7 @@ public class RegexStoryParser implements StoryParser {
         return steps;
     }
    
-    protected List<String> splitScenarios(String storyAsText) {
-        return splitScenariosWithKeyword(storyAsText);
-    }
-
-    protected List<String> splitScenariosWithKeyword(String storyAsText) {
+    private List<String> splitScenarios(String storyAsText) {
         List<String> scenarios = new ArrayList<String>();
         String scenarioKeyword = keywords.scenario();
 
@@ -161,8 +157,8 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullGivenStoriesIntoGroupOne() {
         String givenScenarios = keywords.givenStories();
-        String concatenatedKeywords = concatenateWithOr(keywords.startingWords());
-        return compile(".*" + givenScenarios + "((.|\\n)*?)\\s*(" + concatenatedKeywords + ").*");
+        String startingWords = concatenateWithOr(keywords.startingWords());
+        return compile(".*" + givenScenarios + "((.|\\n)*?)\\s*(" + startingWords + ").*");
     }
 
     private Pattern patternToPullExamplesTableIntoGroupOne() {
@@ -172,33 +168,35 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullScenarioTitleIntoGroupOne() {
         String scenario = keywords.scenario();
-        String concatenatedKeywords = concatenateWithOr(keywords.startingWords());
-        return compile(scenario + "((.|\\n)*?)\\s*(" + concatenatedKeywords + ").*");
+        String startingWords = concatenateWithOr(keywords.startingWords());
+        return compile(scenario + "((.|\\n)*?)\\s*(" + startingWords + ").*");
+    }
+
+    private Pattern patternToPullOutSteps() {
+        String startingWords = concatenateWithOr(keywords.startingWords());
+        String startingWordsSpaced = concatenateWithSpacedOr(keywords.startingWords());
+        String scenario = keywords.scenario();
+        String table = keywords.examplesTable();
+        return compile("((" + startingWords + ") (.)*?)\\s*(\\Z|"
+                + startingWordsSpaced + "|" + scenario + "|"+ table + ")", DOTALL);
     }
 
     private String concatenateWithOr(String... keywords) {
-        return concatenateWithOr(false, new StringBuilder(), keywords);
+        return concatenateWithOr(null, keywords);
     }
 
-    private String concatenateWithSpaceOr(String... keywords) {
-        return concatenateWithOr(true, new StringBuilder(), keywords);
+    private String concatenateWithSpacedOr(String... keywords) {
+        return concatenateWithOr("\\s", keywords);
     }
 
-    private String concatenateWithOr(boolean usingSpace, StringBuilder builder,
-                                     String[] keywords) {
-        for (String other : keywords) {
-            builder.append(other).append(usingSpace ? "\\s|" : "|");
+    private String concatenateWithOr(String betweenKeyword, String[] keywords) {
+        StringBuilder builder = new StringBuilder();
+        String between = betweenKeyword != null ? betweenKeyword + "|" : "|";
+        for (String keyword : keywords) {
+            builder.append(keyword).append(between);
         }
         String result = builder.toString();
         return result.substring(0, result.length() - 1); // chop off the last |
     }
 
-    private Pattern patternToPullOutSteps() {
-        String startingWords = concatenateWithOr(keywords.startingWords());
-        String startingWordsSpaced = concatenateWithSpaceOr(keywords.startingWords());
-        String scenario = keywords.scenario();
-        String table = keywords.examplesTable();
-		return compile("((" + startingWords + ") (.)*?)\\s*(\\Z|"
-				+ startingWordsSpaced + "|" + scenario + "|"+ table + ")", DOTALL);
-    }
 }
