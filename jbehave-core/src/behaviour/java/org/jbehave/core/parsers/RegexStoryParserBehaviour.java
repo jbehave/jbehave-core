@@ -39,7 +39,7 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryWithStepsContainingKeywordsAtStartfOtherWords() {
+    public void shouldParseStoryWithStepsContainingKeywordsAtStartOfOtherWords() {
         String wholeStory = "Given a scenario Givenly" + NL +
                 "When I parse it to Whenever" + NL +
                 "And I parse it to Anderson" + NL +
@@ -204,15 +204,11 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseLongStoryWithKeywordSplitScenarios() {
-        ensureLongStoryCanBeParsed(parser);
-    }
-
-    private void ensureLongStoryCanBeParsed(StoryParser parser) {
-        String aGivenWhenThen =
+    public void shouldParseLongStory() {
+         String aGivenWhenThen =
                 "Given a step" + NL +
-                        "When I run it" + NL +
-                        "Then I should seen an output" + NL;
+                "When I run it" + NL +
+                "Then I should seen an output" + NL;
 
         StringBuffer aScenario = new StringBuffer();
 

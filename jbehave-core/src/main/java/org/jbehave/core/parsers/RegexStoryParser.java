@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
@@ -124,7 +125,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private List<String> findSteps(String scenarioAsText) {
-        Matcher matcher = patternToPullOutSteps().matcher("\n"+scenarioAsText);
+        Matcher matcher = patternToPullStepsIntoGroupOne().matcher("\n"+scenarioAsText);
         List<String> steps = new ArrayList<String>();
         int startAt = 0;
         while (matcher.find(startAt)) {
@@ -172,13 +173,12 @@ public class RegexStoryParser implements StoryParser {
         return compile(scenario + "((.|\\n)*?)\\s*(" + startingWords + ").*");
     }
 
-    private Pattern patternToPullOutSteps() {
+    private Pattern patternToPullStepsIntoGroupOne() {
         String startingWords = concatenateWithOr(keywords.startingWords());
         String startingWordsSpaced = concatenateWithSpacedOr(keywords.startingWords());
-        String scenario = keywords.scenario();
         String table = keywords.examplesTable();
         return compile("((" + startingWords + ") (.)*?)\\s*(\\Z|"
-                + startingWordsSpaced + "|" + scenario + "|"+ table + ")", DOTALL);
+                + startingWordsSpaced + "|" + table + ")", DOTALL);
     }
 
     private String concatenateWithOr(String... keywords) {
@@ -195,8 +195,7 @@ public class RegexStoryParser implements StoryParser {
         for (String keyword : keywords) {
             builder.append(keyword).append(between);
         }
-        String result = builder.toString();
-        return result.substring(0, result.length() - 1); // chop off the last |
+        return StringUtils.chomp(builder.toString(), "|"); // chop off the last "|"
     }
 
 }
