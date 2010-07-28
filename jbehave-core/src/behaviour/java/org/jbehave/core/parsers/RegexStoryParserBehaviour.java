@@ -55,6 +55,33 @@ public class RegexStoryParserBehaviour {
         assertThat(steps.get(3), equalTo("!-- ignore me too"));
         assertThat(steps.get(4), equalTo("Then I should get steps Thenact"));
     }
+    
+    @Test
+    public void shouldParseStoryWithStepsContainingKeywordsNotAtStartOfLine() {
+        String wholeStory = "Given a scenario Given" + NL +
+                "When I parse it to When" + NL +
+                "And I parse it to And" + NL +
+                "!-- And ignore me too" + NL +
+                "Then I should get steps Then" + NL +
+                "Examples:" + NL +
+                "|Given|When|Then|And|" + NL +
+                "|Dato che|Quando|Allora|E|" + NL +
+                "|Dado que|Quando|Então|E|";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+
+        List<String> steps = story.getScenarios().get(0).getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario Given"));
+        assertThat(steps.get(1), equalTo("When I parse it to When"));
+        assertThat(steps.get(2), equalTo("And I parse it to And"));
+        assertThat(steps.get(3), equalTo("!-- And ignore me too"));
+        assertThat(steps.get(4), equalTo("Then I should get steps Then"));
+        
+        assertThat(story.getScenarios().get(0).getTable().toString(), 
+                    equalTo("|Given|When|Then|And|" + NL +
+                            "|Dato che|Quando|Allora|E|" + NL +
+                            "|Dado que|Quando|Então|E|"));
+    }
 
     @Test
     public void shouldParseStoryWithMultilineSteps() {
