@@ -11,6 +11,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.STATS;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,6 +47,7 @@ import org.junit.Test;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
+import com.google.inject.multibindings.Multibinder;
 
 public class GuiceAnnotationBuilderBehaviour {
 
@@ -57,6 +59,7 @@ public class GuiceAnnotationBuilderBehaviour {
         assertThat(configuration.storyLoader(), instanceOf(LoadFromURL.class));
         assertThat(configuration.stepPatternParser(), instanceOf(RegexPrefixCapturingPatternParser.class));
         assertThat(((RegexPrefixCapturingPatternParser)configuration.stepPatternParser()).getPrefix(), equalTo("MyPrefix"));
+        assertThatCustomObjectIsConverted(configuration.parameterConverters());
         assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
         assertThat(configuration.storyReporterBuilder().formats(), hasItems(CONSOLE, HTML, TXT, XML, STATS));
         Keywords keywords = configuration.storyReporterBuilder().keywords();
@@ -66,6 +69,10 @@ public class GuiceAnnotationBuilderBehaviour {
         assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"), equalTo("my-reports-index.ftl"));
         assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"), equalTo("true"));
         assertThat(configuration.storyReporterBuilder().reportFailureTrace(), is(true));        
+    }
+
+    private void assertThatCustomObjectIsConverted(ParameterConverters parameterConverters) {
+        assertThat(((CustomObject)parameterConverters.convert("value", CustomObject.class)).toString(), equalTo(new CustomObject("value").toString()));
     }
 
     private void assertThatDateIsConvertedWithFormat(ParameterConverters parameterConverters, DateFormat dateFormat) {
@@ -156,7 +163,6 @@ public class GuiceAnnotationBuilderBehaviour {
             bind(FailureStrategy.class).to(SilentlyAbsorbingFailure.class);
             bind(StepPatternParser.class).toInstance(new RegexPrefixCapturingPatternParser("MyPrefix"));
             bind(StoryLoader.class).toInstance(new LoadFromURL());
-            bind(ParameterConverter.class).toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
             Properties viewResources = new Properties();
             viewResources.setProperty("index", "my-reports-index.ftl");
             viewResources.setProperty("decorateNonHtml", "true");
@@ -167,8 +173,37 @@ public class GuiceAnnotationBuilderBehaviour {
                 .withViewResources(viewResources)                
                 .withFailureTrace(true)
             );
+            Multibinder<ParameterConverter> multiBinder = Multibinder.newSetBinder(binder(), ParameterConverter.class);
+            multiBinder.addBinding().toInstance(new CustomConverter());
+            multiBinder.addBinding().toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
         }
 
+    }
+
+    public static class CustomConverter implements ParameterConverter {
+
+        public boolean accept(Type type) {
+            return ((Class<?>)type).isAssignableFrom(CustomObject.class);
+        }
+
+        public Object convertValue(String value, Type type) {
+            return new CustomObject(value);
+        }
+    }
+
+
+    public static class CustomObject {
+
+        private final String value;
+
+        public CustomObject(String value) {
+            this.value = value;
+        }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
     public static class StepsModule extends AbstractModule {
