@@ -38,5 +38,4 @@ public class Narrative {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-
 }

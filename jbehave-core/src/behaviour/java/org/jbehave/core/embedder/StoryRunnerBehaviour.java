@@ -26,6 +26,7 @@ import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.Description;
+import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.RegexStoryParser;
@@ -80,8 +81,8 @@ public class StoryRunnerBehaviour {
         Scenario scenario2 = new Scenario("my title 2", asList("successfulStep"));
         Scenario scenario3 = new Scenario("my title 3", asList("successfulStep",
                 "pendingStep"));
-        Story story = new Story(new Description("my blurb"), scenario1,
-                scenario2, scenario3);
+        Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1,
+                scenario2, scenario3));
         List<CandidateStep> someCandidateSteps = asList();
         Step step = mock(Step.class);
         StepResult result = mock(StepResult.class);
@@ -136,8 +137,8 @@ public class StoryRunnerBehaviour {
         List<String> givenStories = asList("/path/to/given/story1");
         Scenario scenario2 = new Scenario("core 2", givenStories,
                 asList("anotherSuccessfulStep"));
-        Story story1 = new Story(new Description("story 1"), scenario1);
-        Story story2 = new Story(new Description("story 2"), scenario2);
+        Story story1 = new Story(new Description("story 1"), Narrative.EMPTY, asList(scenario1));
+        Story story2 = new Story(new Description("story 2"), Narrative.EMPTY, asList(scenario2));
 
         List<CandidateStep> someCandidateSteps = asList();
         Step step = mock(Step.class);
@@ -199,7 +200,7 @@ public class StoryRunnerBehaviour {
         when(thirdStepNormal.doNotPerform()).thenReturn(notPerformed("Then I should not be performed"));
         when(fourthStepAlsoPending.doNotPerform()).thenReturn(
         		notPerformed("Then I should not be performed either"));
-        Story story = new Story(new Scenario(""));
+        Story story = new Story(asList(new Scenario()));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
         // When
@@ -233,7 +234,7 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = mockStepsWithConfiguration();
         when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(firstStepExceptional, secondStepNotPerformed));
-        Story story = new Story(new Scenario(""));
+        Story story = new Story(asList(new Scenario()));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
         // When
@@ -264,11 +265,11 @@ public class StoryRunnerBehaviour {
         when(secondStep.perform()).thenReturn(successful("secondStep"));
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = mockStepsWithConfiguration();        
-        Scenario scenario1 = new Scenario("scenario1");
-        Scenario scenario2 = new Scenario("scenario2");
+        Scenario scenario1 = new Scenario();
+        Scenario scenario2 = new Scenario();
         when(collector.collectScenarioSteps(asList(mySteps), scenario1, tableRow)).thenReturn(asList(pendingStep));
         when(collector.collectScenarioSteps(asList(mySteps), scenario2, tableRow)).thenReturn(asList(secondStep));
-        Story story = new Story(scenario1, scenario2);
+        Story story = new Story(asList(scenario1, scenario2));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
 
@@ -318,7 +319,7 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = mockStepsWithConfiguration();
         when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 asList(pendingStep));
-        Story story = new Story(new Scenario(""));
+        Story story = new Story(asList(new Scenario()));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
 

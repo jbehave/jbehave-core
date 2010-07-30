@@ -1,38 +1,37 @@
 package org.jbehave.core.model;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 public class Story {
 
+    private final String path;
     private final Description description;
     private final Narrative narrative;
     private final List<Scenario> scenarios;
-    private String name = "Story";
-    private String path = "";
+    private String name;
 
-    public Story(Scenario... scenarios) {
-        this(asList(scenarios));
+    public Story() {
+        this(Arrays.<Scenario>asList());
     }
 
     public Story(List<Scenario> scenarios) {
         this(Description.EMPTY, Narrative.EMPTY, scenarios);
     }
 
-    public Story(Description description, Scenario... scenarios) {
-        this(description, Narrative.EMPTY, asList(scenarios));
-    }
-
     public Story(Description description, Narrative narrative, List<Scenario> scenarios) {
-        this(description, narrative, "", scenarios);
+        this(null, description, narrative, scenarios);
     }
 
-    public Story(Description description, Narrative narrative, String path, List<Scenario> scenarios) {
+    public Story(String path, Description description, Narrative narrative, List<Scenario> scenarios) {
+        this.path = path;
         this.description = description;
         this.narrative = narrative;
-        this.path = path;
         this.scenarios = scenarios;
     }
 
@@ -49,7 +48,7 @@ public class Story {
     }
 
     public String getName() {
-        return name;
+        return (name != null ? name : getPath());
     }
 
     public void namedAs(String name) {
@@ -59,4 +58,10 @@ public class Story {
     public String getPath() {
         return (path != null ? path : "");
     }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
 }

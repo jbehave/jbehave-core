@@ -139,9 +139,9 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps1, steps2), new Story(new Scenario()),
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps1, steps2), new Story(),
                 Stage.BEFORE, givenStory);
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps1, steps2), new Story(new Scenario()),
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps1, steps2), new Story(),
                 Stage.AFTER, givenStory);
 
         // Then all before and after steps should be added

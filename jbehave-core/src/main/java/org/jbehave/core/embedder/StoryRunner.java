@@ -142,12 +142,12 @@ public class StoryRunner {
     }
 
     private boolean isExamplesTableScenario(Scenario scenario) {
-        return scenario.getTable().getRowCount() > 0;
+        return scenario.getExamplesTable().getRowCount() > 0;
     }
 
     private void runExamplesTableScenario(
             List<CandidateSteps> candidateSteps, Scenario scenario) {
-        ExamplesTable table = scenario.getTable();
+        ExamplesTable table = scenario.getExamplesTable();
         reporter.beforeExamples(scenario.getSteps(), table);
         for (Map<String, String> tableRow : table.getRows()) {
             reporter.example(tableRow);

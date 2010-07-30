@@ -1,23 +1,20 @@
 package org.jbehave.core.model;
 
-import static java.util.Arrays.asList;
-
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 
 public class Scenario {
 
     private final String title;
     private final List<String> givenStoryPaths;
     private final List<String> steps;
-    private final ExamplesTable table;
+    private final ExamplesTable examplesTable;
 
     public Scenario() {
-        this("");
-    }
-
-    public Scenario(String title) {
-        this(title, new ArrayList<String>());
+        this(Arrays.<String>asList());
     }
 
     public Scenario(List<String> steps) {
@@ -25,22 +22,18 @@ public class Scenario {
     }
 
     public Scenario(String title, List<String> steps) {
-        this(title, new ArrayList<String>(), new ExamplesTable(""), steps);
+        this(title, Arrays.<String>asList(), new ExamplesTable(""), steps);
     }
 
     public Scenario(String title, List<String> givenStoryPaths, List<String> steps) {
         this(title, givenStoryPaths, new ExamplesTable(""), steps);
     }
-
-    public Scenario(String title, ExamplesTable table, String... steps) {
-        this(title, new ArrayList<String>(), table, asList(steps));
-    }
     
-    public Scenario(String title, List<String> givenStoryPaths, ExamplesTable table, List<String> steps) {
+    public Scenario(String title, List<String> givenStoryPaths, ExamplesTable examplesTable, List<String> steps) {
         this.title = title;
         this.givenStoryPaths = givenStoryPaths;
         this.steps = steps;
-        this.table = table;
+        this.examplesTable = examplesTable;
     }
 
     public List<String> getGivenStoryPaths() {
@@ -55,8 +48,13 @@ public class Scenario {
         return title;
     }
 
-    public ExamplesTable getTable() {
-        return table;
+    public ExamplesTable getExamplesTable() {
+        return examplesTable;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }

@@ -19,8 +19,7 @@ import org.jbehave.core.model.Story;
 
 /**
  * Pattern-based story parser, which uses the keywords provided to parse the
- * textual story into a {@link Story}, which comprises of a collection of
- * {@link Scenario}s, each of which contains a number of steps.
+ * textual story into a {@link Story}.
  */
 public class RegexStoryParser implements StoryParser {
 
@@ -44,7 +43,7 @@ public class RegexStoryParser implements StoryParser {
         Description description = parseDescriptionFrom(storyAsText);
         Narrative narrative = parseNarrativeFrom(storyAsText);
         List<Scenario> scenarios = parseScenariosFrom(storyAsText);
-        return new Story(description, narrative, storyPath, scenarios);
+        return new Story(storyPath, description, narrative, scenarios);
     }
 
     private Description parseDescriptionFrom(String storyAsText) {

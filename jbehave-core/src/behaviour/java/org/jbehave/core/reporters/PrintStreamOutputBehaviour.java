@@ -244,8 +244,8 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void narrateAnInterestingStory(StoryReporter reporter) {
-        Story story = new Story(new Description("An interesting story"),
-                new Narrative("renovate my house", "customer", "get a loan"), "/path/to/story", new ArrayList<Scenario>());
+        Story story = new Story("/path/to/story",
+                new Description("An interesting story"), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
         boolean givenStory = false;
         reporter.beforeStory(story, givenStory);
         String title = "I ask for a loan";

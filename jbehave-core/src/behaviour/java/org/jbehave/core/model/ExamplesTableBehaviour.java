@@ -20,7 +20,7 @@ public class ExamplesTableBehaviour {
     public void shouldParseTableWithDefaultSeparators() {
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureTableContentIsParsed(table);
-        assertEquals(tableAsString, table.toString());
+        assertEquals(tableAsString, table.asString());
     }
 
     @Test
@@ -31,7 +31,7 @@ public class ExamplesTableBehaviour {
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator);
         assertEquals(headerSeparator, table.getHeaderSeparator());
         ensureTableContentIsParsed(table);
-        assertEquals(tableWithCustomSeparator, table.toString());
+        assertEquals(tableWithCustomSeparator, table.asString());
     }
 
     @Test
@@ -42,7 +42,7 @@ public class ExamplesTableBehaviour {
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator);
         assertEquals(headerSeparator, table.getHeaderSeparator());
         ensureTableContentIsParsed(table);
-        assertEquals(tableWithCustomSeparator, table.toString());
+        assertEquals(tableWithCustomSeparator, table.asString());
     }
 
 
@@ -51,7 +51,7 @@ public class ExamplesTableBehaviour {
         String untrimmedTableAsString = "\n    \n" + tableAsString + "\n    \n";
         ExamplesTable table = new ExamplesTable(untrimmedTableAsString);
         ensureTableContentIsParsed(table);
-        assertEquals(untrimmedTableAsString, table.toString());
+        assertEquals(untrimmedTableAsString, table.asString());
     }
 
 

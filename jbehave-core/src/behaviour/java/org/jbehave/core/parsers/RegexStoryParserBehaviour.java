@@ -9,6 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import java.util.List;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
@@ -77,7 +78,7 @@ public class RegexStoryParserBehaviour {
         assertThat(steps.get(3), equalTo("!-- And ignore me too"));
         assertThat(steps.get(4), equalTo("Then I should get steps Then"));
         
-        assertThat(story.getScenarios().get(0).getTable().toString(), 
+        assertThat(story.getScenarios().get(0).getExamplesTable().asString(), 
                     equalTo("|Given|When|Then|And|" + NL +
                             "|Dato che|Quando|Allora|E|" + NL +
                             "|Dado que|Quando|Então|E|"));
@@ -132,14 +133,17 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryWithNarrative() {
-        String wholeStory = "Narrative: This bit of text is ignored" + NL +
+    public void shouldParseStoryWithDescriptionAndNarrative() {
+        String wholeStory = "Story: This is free-text description"+ NL +
+                "Narrative: This bit of text is ignored" + NL +
                 "In order to renovate my house" + NL +
                 "As a customer" + NL +
                 "I want to get a loan" + NL +
                 "Scenario:  A first scenario";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
+        Description description = story.getDescription();
+        assertThat(description.asString(), equalTo("Story: This is free-text description"));
         Narrative narrative = story.getNarrative();
         assertThat(narrative, not(equalTo(Narrative.EMPTY)));
         assertThat(narrative.inOrderTo().toString(), equalTo("renovate my house"));
@@ -281,8 +285,8 @@ public class RegexStoryParserBehaviour {
                 "When I run the scenario of name <two>",
                 "Then I should see <three> in the output"
         )));
-        ExamplesTable table = scenario.getTable();
-        assertThat(table.toString(), equalTo(
+        ExamplesTable table = scenario.getExamplesTable();
+        assertThat(table.asString(), equalTo(
                 "|one|two|three|" + NL +
                         "|11|12|13|" + NL +
                         "|21|22|23|"));

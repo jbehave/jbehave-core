@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 /**
  * <p>
  * Represents a tabular structure to hold example data for parameters named via the headers:
@@ -109,9 +112,13 @@ public class ExamplesTable {
         return valueSeparator;
     }
 
+    public String asString() {
+        return tableAsString;
+    }
+
     @Override
     public String toString() {
-        return tableAsString;
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
 }
