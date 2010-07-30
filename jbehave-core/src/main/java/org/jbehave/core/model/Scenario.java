@@ -1,5 +1,7 @@
 package org.jbehave.core.model;
 
+import static java.util.Collections.unmodifiableList;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -37,11 +39,11 @@ public class Scenario {
     }
 
     public List<String> getGivenStoryPaths() {
-        return givenStoryPaths;
+        return unmodifiableList(givenStoryPaths);
     }
 
     public List<String> getSteps() {
-        return steps;
+        return unmodifiableList(steps);
     }
 
     public String getTitle() {

@@ -1,6 +1,5 @@
 package org.jbehave.core.embedder;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,10 +91,8 @@ public class StoryRunner {
     }
     
     public Story storyOfPath(Configuration configuration, String storyPath) {
-        String storyAsString = configuration.storyLoader().loadStoryAsText(storyPath);
-        Story story = configuration.storyParser().parseStory(storyAsString, storyPath);
-        story.namedAs(new File(storyPath).getName());
-        return story;
+        String storyAsText = configuration.storyLoader().loadStoryAsText(storyPath);
+        return configuration.storyParser().parseStory(storyAsText, storyPath);
     }
 
 	private boolean isDryRun(List<CandidateSteps> candidateSteps) {

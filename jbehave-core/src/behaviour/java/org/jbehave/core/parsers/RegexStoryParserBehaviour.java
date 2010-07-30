@@ -6,6 +6,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import java.io.File;
 import java.util.List;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -24,6 +25,20 @@ public class RegexStoryParserBehaviour {
     private String storyPath = "path/to/my.story";
 
     @Test
+    public void shouldParseStoryAndProvideNameFromPath() {
+        Story story = parser.parseStory("", storyPath);
+        assertThat(story.getPath(), equalTo(storyPath));
+        assertThat(story.getName(), equalTo(new File(storyPath).getName()));
+    }
+
+    @Test
+    public void shouldParseStoryAndProvideEmptyNameWhenPathIsNull() {
+        Story story = parser.parseStory("", null);
+        assertThat(story.getPath(), equalTo(""));
+        assertThat(story.getName(), equalTo(story.getPath()));
+    }
+
+    @Test
     public void shouldParseStoryWithSimpleSteps() {
         String wholeStory = "Given a scenario" + NL +
                 "!-- ignore me" + NL +
@@ -38,7 +53,7 @@ public class RegexStoryParserBehaviour {
         assertThat(steps.get(2), equalTo("When I parse it"));
         assertThat(steps.get(3), equalTo("Then I should get steps"));
     }
-
+    
     @Test
     public void shouldParseStoryWithStepsContainingKeywordsAtStartOfOtherWords() {
         String wholeStory = "Given a scenario Givenly" + NL +
@@ -56,7 +71,7 @@ public class RegexStoryParserBehaviour {
         assertThat(steps.get(3), equalTo("!-- ignore me too"));
         assertThat(steps.get(4), equalTo("Then I should get steps Thenact"));
     }
-    
+
     @Test
     public void shouldParseStoryWithStepsContainingKeywordsNotAtStartOfLine() {
         String wholeStory = "Given a scenario Given" + NL +

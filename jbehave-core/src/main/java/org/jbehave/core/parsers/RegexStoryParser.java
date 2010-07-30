@@ -3,6 +3,7 @@ package org.jbehave.core.parsers;
 import static java.util.regex.Pattern.DOTALL;
 import static java.util.regex.Pattern.compile;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -43,7 +44,11 @@ public class RegexStoryParser implements StoryParser {
         Description description = parseDescriptionFrom(storyAsText);
         Narrative narrative = parseNarrativeFrom(storyAsText);
         List<Scenario> scenarios = parseScenariosFrom(storyAsText);
-        return new Story(storyPath, description, narrative, scenarios);
+        Story story = new Story(storyPath, description, narrative, scenarios);
+        if ( storyPath != null ){
+            story.namedAs(new File(storyPath).getName());
+        }
+        return story;
     }
 
     private Description parseDescriptionFrom(String storyAsText) {
