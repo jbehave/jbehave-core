@@ -190,7 +190,7 @@
                 </goals>
               </execution>
               <execution>
-                <id>with-annotated-embedder</id>
+                <id>annotated-embedder-using-spring</id>
                 <phase>integration-test</phase>
                 <configuration>
                   <annotatedEmbedderRunnerClass>org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
