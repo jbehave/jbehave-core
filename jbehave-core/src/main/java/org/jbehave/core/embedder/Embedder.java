@@ -2,9 +2,7 @@ package org.jbehave.core.embedder;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -12,6 +10,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StepdocReporter;
@@ -46,24 +45,24 @@ public class Embedder {
     public void runStoriesAsEmbeddables(List<String> classNames, EmbedderClassLoader classLoader) {
         EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
-            embedderMonitor.storiesNotRun();
+            embedderMonitor.embeddablesSkipped(classNames);
             return;
         }
 
-        Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
+        BatchFailures batchFailures = new BatchFailures();
         for (Embeddable embeddable : embeddables(classNames, classLoader)) {
             String name = embeddable.getClass().getName();
             try {
-                embedderMonitor.runningStory(name);
+                embedderMonitor.runningEmbeddable(name);
                 embeddable.useEmbedder(this);
                 embeddable.run();
             } catch (Throwable e) {
                 if (embedderControls.batch()) {
                     // collect and postpone decision to throw exception
-                    failedStories.put(name, e);
+                    batchFailures.put(name, e);
                 } else {
                     if (embedderControls.ignoreFailureInStories()) {
-                        embedderMonitor.storyFailed(name, e);
+                        embedderMonitor.embeddableFailed(name, e);
                     } else {
                         throw new RunningStoriesFailed(name, e);
                     }
@@ -71,11 +70,11 @@ public class Embedder {
             }
         }
 
-        if (embedderControls.batch() && failedStories.size() > 0) {
+        if (embedderControls.batch() && batchFailures.size() > 0) {
             if (embedderControls.ignoreFailureInStories()) {
-                embedderMonitor.storiesBatchFailed(format(failedStories));
+                embedderMonitor.batchFailed(batchFailures);
             } else {
-                throw new RunningStoriesFailed(failedStories);
+                throw new RunningStoriesFailed(batchFailures);
             }
         }
 
@@ -141,7 +140,7 @@ public class Embedder {
     public void runStoriesAsPaths(List<String> storyPaths) {
         EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
-            embedderMonitor.storiesNotRun();
+            embedderMonitor.storiesSkipped(storyPaths);
             return;
         }
 
@@ -150,7 +149,7 @@ public class Embedder {
         
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
         
-        Map<String, Throwable> failedStories = new HashMap<String, Throwable>();
+        BatchFailures batchFailures = new BatchFailures();
         buildReporters(configuration, storyPaths);
         for (String storyPath : storyPaths) {
             try {
@@ -160,7 +159,7 @@ public class Embedder {
             } catch (Throwable e) {
                 if (embedderControls.batch()) {
                     // collect and postpone decision to throw exception
-                    failedStories.put(storyPath, e);
+                    batchFailures.put(storyPath, e);
                 } else {
                     if (embedderControls.ignoreFailureInStories()) {
                         embedderMonitor.storyFailed(storyPath, e);
@@ -173,11 +172,11 @@ public class Embedder {
 
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
         
-        if (embedderControls.batch() && failedStories.size() > 0) {
+        if (embedderControls.batch() && batchFailures.size() > 0) {
             if (embedderControls.ignoreFailureInStories()) {
-                embedderMonitor.storiesBatchFailed(format(failedStories));
+                embedderMonitor.batchFailed(batchFailures);
             } else {
-                throw new RunningStoriesFailed(failedStories);
+                throw new RunningStoriesFailed(batchFailures);
             }
         }
 
@@ -283,18 +282,6 @@ public class Embedder {
         this.storyRunner = storyRunner;
     }
 
-    private String format(Map<String, Throwable> failedStories) {
-        StringBuffer sb = new StringBuffer();
-        for (String storyName : failedStories.keySet()) {
-            Throwable cause = failedStories.get(storyName);
-            sb.append("\n");
-            sb.append(storyName);
-            sb.append(": ");
-            sb.append(cause.getMessage());
-        }
-        return sb.toString();
-    }
-
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -308,8 +295,8 @@ public class Embedder {
             + " failed)");
         }
 
-        public RunningStoriesFailed(Map<String, Throwable> failedStories) {
-            super("Failures in running stories in batch: " + format(failedStories));
+        public RunningStoriesFailed(BatchFailures failures) {
+            super("Failures in running stories in batch: " + failures);
         }
 
         public RunningStoriesFailed(String name, Throwable cause) {

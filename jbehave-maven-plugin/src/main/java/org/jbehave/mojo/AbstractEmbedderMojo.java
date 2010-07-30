@@ -11,6 +11,7 @@ import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
+import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 
 /**
@@ -222,20 +223,33 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     protected class MavenEmbedderMonitor implements EmbedderMonitor {
-        public void storiesBatchFailed(String failedStories) {
-            getLog().warn("Failed to run stories batch: " + failedStories);
+
+        public void batchFailed(BatchFailures failures) {
+            getLog().warn("Failed to run batch " + failures);            
         }
 
-        public void storyFailed(String storyName, Throwable e) {
-            getLog().warn("Failed to run story " + storyName, e);
+        public void embeddableFailed(String name, Throwable cause) {
+            getLog().warn("Failed to run embeddable " + name, cause);            
         }
 
-        public void runningStory(String storyName) {
-            getLog().info("Running story " + storyName);
+        public void embeddablesSkipped(List<String> classNames) {
+            getLog().info("Skipped embeddables " + classNames);            
         }
 
-        public void storiesNotRun() {
-            getLog().info("Stories not run");
+        public void runningEmbeddable(String name) {
+            getLog().info("Running embeddable " + name);
+        }
+
+        public void runningStory(String path) {
+            getLog().info("Running story " + path);
+        }
+
+        public void storiesSkipped(List<String> storyPaths) {
+            getLog().info("Skipped stories " + storyPaths);            
+        }
+
+        public void storyFailed(String path, Throwable cause) {
+            getLog().warn("Failed to run story " + path, cause);
         }
 
         public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {

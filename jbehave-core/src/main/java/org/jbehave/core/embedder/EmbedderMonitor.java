@@ -4,16 +4,25 @@ import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
+import org.jbehave.core.failures.BatchFailures;
+
+
 
 public interface EmbedderMonitor {
 
-    void runningStory(String storyName);
+    void runningEmbeddable(String name);
 
-    void storyFailed(String storyName, Throwable cause);
+    void embeddableFailed(String name, Throwable cause);
+    
+    void embeddablesSkipped(List<String> classNames);
 
-    void storiesNotRun();
+    void runningStory(String path);
 
-    void storiesBatchFailed(String failedStories);
+    void storyFailed(String path, Throwable cause);
+
+    void storiesSkipped(List<String> storyPaths);
+
+    void batchFailed(BatchFailures failures);
 
 	void generatingStoriesView(File outputDirectory, List<String> formats,
 			Properties viewProperties);
@@ -26,5 +35,6 @@ public interface EmbedderMonitor {
 	void storiesViewNotGenerated();
 
     void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type);
-    
+
+ 
 }

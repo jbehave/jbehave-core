@@ -18,6 +18,7 @@ import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
+import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 
@@ -171,20 +172,32 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     protected class AntEmbedderMonitor implements EmbedderMonitor {
-        public void storiesBatchFailed(String failedStories) {
-            log("Failed to run stories batch: " + failedStories, MSG_WARN);
+        public void batchFailed(BatchFailures failures) {
+            log("Failed to run batch " + failures, MSG_WARN);
         }
 
-        public void storyFailed(String storyName, Throwable e) {
-            log("Failed to run story " + storyName, e, MSG_WARN);
+        public void embeddableFailed(String name, Throwable cause) {
+            log("Failed to run embeddable " + name, cause, MSG_WARN);            
         }
 
-        public void runningStory(String storyName) {
-            log("Running story " + storyName, MSG_INFO);
+        public void embeddablesSkipped(List<String> classNames) {
+            log("Skipped embeddables " + classNames, MSG_INFO);                        
         }
 
-        public void storiesNotRun() {
-            log("Stories not run", MSG_INFO);
+        public void runningEmbeddable(String name) {
+            log("Running embeddable " + name, MSG_INFO);
+        }
+
+        public void storiesSkipped(List<String> storyPaths) {
+            log("Skipped stories " + storyPaths, MSG_INFO);                                    
+        }
+
+        public void storyFailed(String path, Throwable e) {
+            log("Failed to run story " + path, e, MSG_WARN);
+        }
+
+        public void runningStory(String path) {
+            log("Running story " + path, MSG_INFO);
         }
 
         public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {

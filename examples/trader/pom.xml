@@ -94,7 +94,7 @@
               </includes>
               <excludes />
               <skip>${skip.embeddables.stories}</skip>
-              <batch>${batch.mode}</batch>
+              <batch>${batch}</batch>
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
@@ -109,19 +109,19 @@
   </build>
   <profiles>
     <profile>
-      <id>report-failures</id>
+      <id>fail-on-view</id>
       <properties>
         <ignore.failure.view>false</ignore.failure.view>
       </properties>
     </profile>
     <profile>
-      <id>batch-mode</id>
+      <id>batch</id>
       <properties>
-        <batch.mode>true</batch.mode>
+        <batch>true</batch>
       </properties>
     </profile>
     <profile>
-      <id>stories-as-paths</id>
+      <id>as-paths</id>
       <build>
         <plugins>
           <plugin>
@@ -138,7 +138,7 @@
                   </includes>
                   <excludes />
                   <skip>false</skip>
-                  <batch>${batch.mode}</batch>
+                  <batch>${batch}</batch>
                   <generateViewAfterStories>true</generateViewAfterStories>
                   <ignoreFailureInStories>true</ignoreFailureInStories>
                   <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
@@ -156,7 +156,7 @@
       </properties>
     </profile>
     <profile>
-      <id>annotated-embedder</id>
+      <id>with-annotated-embedder</id>
       <build>
         <plugins>
           <plugin>
@@ -227,7 +227,7 @@
                   </includes>
                   <excludes />
                   <skip>false</skip>
-                  <batch>${batch.mode}</batch>
+                  <batch>${batch}</batch>
                   <ignoreFailureInStories>true</ignoreFailureInStories>
                   <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
                 </configuration>
@@ -306,7 +306,7 @@
     </profile>
   </profiles>
   <properties>
-    <batch.mode>false</batch.mode>
+    <batch>false</batch>
     <ignore.failure.view>true</ignore.failure.view>
     <skip.embeddables.stories>false</skip.embeddables.stories>
     <include.embeddables>**/stories/*.java</include.embeddables>

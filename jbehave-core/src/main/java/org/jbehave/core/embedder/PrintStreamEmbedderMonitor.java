@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.failures.BatchFailures;
 
 /**
  * Monitor that reports to a {@link PrintStream}, defaulting to
@@ -23,23 +24,36 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         this.output = output;
     }
 
-    public void storiesBatchFailed(String failedStories) {
-        print("Failed to run batch stories " + failedStories);
+    public void batchFailed(BatchFailures failures) {
+        print("Failed to run batch " + failures);
     }
 
-    public void storyFailed(String storyName, Throwable e) {
-        print("Failed to run story " + storyName);
-        printStackTrace(e);
+    public void embeddableFailed(String name, Throwable cause) {
+        print("Failed to run embeddable " + name);
+        printStackTrace(cause);        
     }
 
-    public void runningStory(String storyName) {
-        print("Running story " + storyName);
+    public void embeddablesSkipped(List<String> classNames) {
+        print("Skipped embeddables "+classNames);        
     }
 
-    public void storiesNotRun() {
-        print("Stories not run");
+    public void runningEmbeddable(String name) {
+        print("Running embeddable " + name);
     }
 
+    public void runningStory(String path) {
+        print("Running story " + path);
+    }
+
+    public void storyFailed(String path, Throwable cause) {
+        print("Failed to run story " + path);
+        printStackTrace(cause);
+    }
+
+    public void storiesSkipped(List<String> storyPaths) {
+        print("Skipped stories "+storyPaths);        
+    }
+    
     public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
         print("Annotated instance " + annotatedInstance + " if not of type " + type);
     }
@@ -76,5 +90,6 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     protected void printStackTrace(Throwable e) {
         e.printStackTrace(output);
     }
+
 
 }

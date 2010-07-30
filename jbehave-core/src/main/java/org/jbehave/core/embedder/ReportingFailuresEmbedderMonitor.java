@@ -18,7 +18,7 @@ public class ReportingFailuresEmbedderMonitor extends PrintStreamEmbedderMonitor
         super(output);
     }
 
-    public void runningStory(String storyName) {
+    public void runningStory(String path) {
     }
 
 	public void generatingStoriesView(File outputDirectory, List<String> formats,

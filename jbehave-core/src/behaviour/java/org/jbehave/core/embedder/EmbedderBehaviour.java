@@ -35,6 +35,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
+import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
@@ -79,8 +80,8 @@ public class EmbedderBehaviour {
         embedder.runStoriesAsEmbeddables(classNames, classLoader);
 
         // Then
-        for (Embeddable story : embeddables) {
-            assertThat(out.toString(), containsString("Running story " + story.getClass().getName()));
+        for (Embeddable embeddable : embeddables) {
+            assertThat(out.toString(), containsString("Running embeddable " + embeddable.getClass().getName()));
         }
         assertThatStoriesViewGenerated(out);
     }
@@ -112,8 +113,8 @@ public class EmbedderBehaviour {
         embedder.runStoriesAsEmbeddables(classNames, classLoader);
 
         // Then
-        for (Embeddable story : embeddables) {
-            assertThat(out.toString(), not(containsString("Running story " + story.getClass().getName())));
+        for (Embeddable embeddable : embeddables) {
+            assertThat(out.toString(), not(containsString("Running embeddable " + embeddable.getClass().getName())));
         }
         assertThat(out.toString(), not(containsString("Generating stories view")));
     }
@@ -164,10 +165,10 @@ public class EmbedderBehaviour {
         embedder.runStoriesAsEmbeddables(classNames, classLoader);
 
         // Then
-        assertThat(out.toString(), containsString("Running story " + myStoryName));
-        assertThat(out.toString(), containsString("Failed to run story " + myStoryName));
-        assertThat(out.toString(), containsString("Running story " + myOtherStoryName));
-        assertThat(out.toString(), not(containsString("Failed to run story " + myOtherStoryName)));
+        assertThat(out.toString(), containsString("Running embeddable " + myStoryName));
+        assertThat(out.toString(), containsString("Failed to run embeddable " + myStoryName));
+        assertThat(out.toString(), containsString("Running embeddable " + myOtherStoryName));
+        assertThat(out.toString(), not(containsString("Failed to run embeddable " + myOtherStoryName)));
 
     }
 
@@ -194,8 +195,8 @@ public class EmbedderBehaviour {
 
         // Then
         for (Embeddable story : embeddables) {
-            String storyName = story.getClass().getName();
-            assertThat(out.toString(), containsString("Running story " + storyName));
+            String name = story.getClass().getName();
+            assertThat(out.toString(), containsString("Running embeddable " + name));
         }
     }
 
@@ -246,11 +247,11 @@ public class EmbedderBehaviour {
         embedder.runStoriesAsEmbeddables(classNames, classLoader);
 
         // Then
-        for (Embeddable story : embeddables) {
-            String storyName = story.getClass().getName();
-            assertThat(out.toString(), containsString("Running story " + storyName));
+        for (Embeddable embeddable : embeddables) {
+            String storyName = embeddable.getClass().getName();
+            assertThat(out.toString(), containsString("Running embeddable " + storyName));
         }
-        assertThat(out.toString(), containsString("Failed to run batch stories"));
+        assertThat(out.toString(), containsString("Failed to run batch"));
     }
 
     @Test
@@ -276,9 +277,8 @@ public class EmbedderBehaviour {
         embedder.runStoriesAsEmbeddables(classNames, classLoader);
 
         // Then
-        for (Embeddable story : embeddables) {
-            String storyName = story.getClass().getName();
-            assertThat(out.toString(), containsString("Running story " + storyName));
+        for (Embeddable embeddable : embeddables) {
+            assertThat(out.toString(), containsString("Running embeddable " + embeddable.getClass().getName()));
         }
         assertThat(out.toString(), not(containsString("Generating stories view")));
     }
@@ -353,7 +353,7 @@ public class EmbedderBehaviour {
             verify(runner, never()).run(configuration, candidateSteps, stories.get(storyPath));
             assertThat(out.toString(), not(containsString("Running story " + storyPath)));
         }
-        assertThat(out.toString(), containsString("Stories not run"));
+        assertThat(out.toString(), containsString("Skipped stories "+storyPaths));
     }
 
     @SuppressWarnings("unchecked")
@@ -524,8 +524,11 @@ public class EmbedderBehaviour {
             stories.put(storyPath, story);
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
+        BatchFailures failures = new BatchFailures();
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(configuration, candidateSteps,
+            RuntimeException thrown = new RuntimeException(storyPath + " failed");
+            failures.put(storyPath, thrown);
+            doThrow(thrown).when(runner).run(configuration, candidateSteps,
                     stories.get(storyPath));
         }
         
@@ -536,7 +539,7 @@ public class EmbedderBehaviour {
         for (String storyPath : storyPaths) {
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
-        assertThat(out.toString(), containsString("Failed to run batch stories"));
+        assertThat(out.toString(), containsString("Failed to run batch "+failures));
     }
 
     @SuppressWarnings("unchecked")
