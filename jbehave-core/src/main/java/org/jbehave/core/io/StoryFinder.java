@@ -9,7 +9,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
-import org.apache.tools.ant.DirectoryScanner;
+import org.codehaus.plexus.util.DirectoryScanner;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 

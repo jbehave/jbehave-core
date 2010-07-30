@@ -42,23 +42,6 @@
         <version>1.1</version>
       </dependency>
       <dependency>
-        <!--
-          Optional as only required by core StoryFinder, and used by Ant
-          and Maven Plugin modules
-        -->
-        <groupId>org.apache.ant</groupId>
-        <artifactId>ant</artifactId>
-        <version>1.7.1</version>
-        <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-launcher</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <!-- Only used for tests -->
-      <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-all</artifactId>
         <version>1.8.1</version>
