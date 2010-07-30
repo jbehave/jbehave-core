@@ -32,6 +32,7 @@ import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.StoryLoader;
+import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -58,21 +59,33 @@ public class GuiceAnnotationBuilderBehaviour {
         assertThat(configuration.failureStrategy(), instanceOf(SilentlyAbsorbingFailure.class));
         assertThat(configuration.storyLoader(), instanceOf(LoadFromURL.class));
         assertThat(configuration.stepPatternParser(), instanceOf(RegexPrefixCapturingPatternParser.class));
-        assertThat(((RegexPrefixCapturingPatternParser)configuration.stepPatternParser()).getPrefix(), equalTo("MyPrefix"));
+        assertThat(((RegexPrefixCapturingPatternParser) configuration.stepPatternParser()).getPrefix(),
+                equalTo("MyPrefix"));
         assertThatCustomObjectIsConverted(configuration.parameterConverters());
         assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
         assertThat(configuration.storyReporterBuilder().formats(), hasItems(CONSOLE, HTML, TXT, XML, STATS));
         Keywords keywords = configuration.storyReporterBuilder().keywords();
-        assertThat(keywords, instanceOf(LocalizedKeywords.class));        
-        assertThat(((LocalizedKeywords)keywords).getLocale(), equalTo(Locale.ITALIAN));        
+        assertThat(keywords, instanceOf(LocalizedKeywords.class));
+        assertThat(((LocalizedKeywords) keywords).getLocale(), equalTo(Locale.ITALIAN));
         assertThat(configuration.storyReporterBuilder().outputDirectory().getName(), equalTo("my-output-directory"));
-        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"), equalTo("my-reports-index.ftl"));
+        assertThat(configuration.storyReporterBuilder().viewResources().getProperty("index"),
+                equalTo("my-reports-index.ftl"));
         assertThat(configuration.storyReporterBuilder().viewResources().getProperty("decorateNonHtml"), equalTo("true"));
-        assertThat(configuration.storyReporterBuilder().reportFailureTrace(), is(true));        
+        assertThat(configuration.storyReporterBuilder().reportFailureTrace(), is(true));
+    }
+
+    @Test
+    public void shouldBuildConfigurationFromAnnotationsUsingConfigureAndGuiceConverters() {
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatCustomObjectIsConverted(configuration.parameterConverters());
+        assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
+        assertThatExamplesTableIsConverted(configuration.parameterConverters());
     }
 
     private void assertThatCustomObjectIsConverted(ParameterConverters parameterConverters) {
-        assertThat(((CustomObject)parameterConverters.convert("value", CustomObject.class)).toString(), equalTo(new CustomObject("value").toString()));
+        assertThat(((CustomObject) parameterConverters.convert("value", CustomObject.class)).toString(),
+                equalTo(new CustomObject("value").toString()));
     }
 
     private void assertThatDateIsConvertedWithFormat(ParameterConverters parameterConverters, DateFormat dateFormat) {
@@ -84,6 +97,12 @@ public class GuiceAnnotationBuilderBehaviour {
         }
     }
 
+    private void assertThatExamplesTableIsConverted(ParameterConverters parameterConverters) {
+        String tableAsString = "||one||two||\n" + "|1|2|";
+        ExamplesTable table = new ExamplesTable(tableAsString);
+        assertThat(table.getHeaders(), hasItems("one", "two"));
+    }
+
     @Test
     public void shouldBuildDefaultConfigurationIfAnnotationOrAnnotatedValuesNotPresent() {
         AnnotationBuilder builderNotAnnotated = new GuiceAnnotationBuilder(NotAnnotated.class);
@@ -92,19 +111,23 @@ public class GuiceAnnotationBuilderBehaviour {
         assertThatConfigurationIs(builderAnnotatedWithoutModules.buildConfiguration(), new MostUsefulConfiguration());
     }
 
-    private void assertThatConfigurationIs(Configuration builtConfiguration,
-            Configuration defaultConfiguration) {
+    private void assertThatConfigurationIs(Configuration builtConfiguration, Configuration defaultConfiguration) {
         assertThat(builtConfiguration.failureStrategy(), instanceOf(defaultConfiguration.failureStrategy().getClass()));
         assertThat(builtConfiguration.storyLoader(), instanceOf(defaultConfiguration.storyLoader().getClass()));
-        assertThat(builtConfiguration.stepPatternParser(), instanceOf(defaultConfiguration.stepPatternParser().getClass()));
-        assertThat(builtConfiguration.storyReporterBuilder().formats(), equalTo(defaultConfiguration.storyReporterBuilder().formats()));
-        assertThat(builtConfiguration.storyReporterBuilder().outputDirectory(), equalTo(defaultConfiguration.storyReporterBuilder().outputDirectory()));
-        assertThat(builtConfiguration.storyReporterBuilder().viewResources(), equalTo(defaultConfiguration.storyReporterBuilder().viewResources()));
-        assertThat(builtConfiguration.storyReporterBuilder().reportFailureTrace(), equalTo(defaultConfiguration.storyReporterBuilder().reportFailureTrace()));
+        assertThat(builtConfiguration.stepPatternParser(), instanceOf(defaultConfiguration.stepPatternParser()
+                .getClass()));
+        assertThat(builtConfiguration.storyReporterBuilder().formats(), equalTo(defaultConfiguration
+                .storyReporterBuilder().formats()));
+        assertThat(builtConfiguration.storyReporterBuilder().outputDirectory(), equalTo(defaultConfiguration
+                .storyReporterBuilder().outputDirectory()));
+        assertThat(builtConfiguration.storyReporterBuilder().viewResources(), equalTo(defaultConfiguration
+                .storyReporterBuilder().viewResources()));
+        assertThat(builtConfiguration.storyReporterBuilder().reportFailureTrace(), equalTo(defaultConfiguration
+                .storyReporterBuilder().reportFailureTrace()));
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingGuice() {    	
+    public void shouldBuildCandidateStepsFromAnnotationsUsingGuice() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingGuice.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class,
@@ -112,8 +135,15 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuice() {        
+    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuice() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingStepsAndGuice.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
+    }
+
+    @Test
+    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuiceAndConverters() {
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
     }
@@ -140,9 +170,16 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Configure()
-    @UsingSteps(instances = {FooSteps.class})
-    @UsingGuice(modules = { ConfigurationModule.class})
+    @UsingSteps(instances = { FooSteps.class })
+    @UsingGuice(modules = { ConfigurationModule.class })
     private static class AnnotatedUsingStepsAndGuice {
+
+    }
+
+    @Configure(parameterConverters = { MyExampleTableConverter.class, MyDateConverter.class })
+    @UsingSteps(instances = { FooSteps.class })
+    @UsingGuice(modules = { ConfigurationModule.class })
+    private static class AnnotatedUsingConfigureAndGuiceConverters {
 
     }
 
@@ -155,7 +192,7 @@ public class GuiceAnnotationBuilderBehaviour {
     private static class NotAnnotated {
 
     }
-    
+
     public static class ConfigurationModule extends AbstractModule {
 
         @Override
@@ -166,13 +203,10 @@ public class GuiceAnnotationBuilderBehaviour {
             Properties viewResources = new Properties();
             viewResources.setProperty("index", "my-reports-index.ftl");
             viewResources.setProperty("decorateNonHtml", "true");
-            bind(StoryReporterBuilder.class).toInstance(new StoryReporterBuilder()
-                .withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
-                .withKeywords(new LocalizedKeywords(Locale.ITALIAN))
-                .withOutputDirectory("my-output-directory")
-                .withViewResources(viewResources)                
-                .withFailureTrace(true)
-            );
+            bind(StoryReporterBuilder.class).toInstance(
+                    new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML).withKeywords(
+                            new LocalizedKeywords(Locale.ITALIAN)).withOutputDirectory("my-output-directory")
+                            .withViewResources(viewResources).withFailureTrace(true));
             Multibinder<ParameterConverter> multiBinder = Multibinder.newSetBinder(binder(), ParameterConverter.class);
             multiBinder.addBinding().toInstance(new CustomConverter());
             multiBinder.addBinding().toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
@@ -183,7 +217,7 @@ public class GuiceAnnotationBuilderBehaviour {
     public static class CustomConverter implements ParameterConverter {
 
         public boolean accept(Type type) {
-            return ((Class<?>)type).isAssignableFrom(CustomObject.class);
+            return ((Class<?>) type).isAssignableFrom(CustomObject.class);
         }
 
         public Object convertValue(String value, Type type) {
@@ -191,6 +225,19 @@ public class GuiceAnnotationBuilderBehaviour {
         }
     }
 
+    public static class MyExampleTableConverter extends ParameterConverters.ExamplesTableConverter {
+
+        public MyExampleTableConverter() {
+            super("||", "|");
+        }
+    }
+
+    public static class MyDateConverter extends ParameterConverters.DateConverter {
+
+        public MyDateConverter() {
+            super(new SimpleDateFormat("dd-MM-yyyy"));
+        }
+    }
 
     public static class CustomObject {
 
