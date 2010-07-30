@@ -156,7 +156,7 @@
       </properties>
     </profile>
     <profile>
-      <id>annotated-embedder-using-guice</id>
+      <id>annotated-embedder</id>
       <build>
         <plugins>
           <plugin>
@@ -164,7 +164,7 @@
             <artifactId>jbehave-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>with-annotated-embedder</id>
+                <id>annotated-embedder-using-guice</id>
                 <phase>integration-test</phase>
                 <configuration>
                   <annotatedEmbedderRunnerClass>org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
@@ -176,24 +176,8 @@
                   <goal>run-with-annotated-embedder</goal>
                 </goals>
               </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <skip.embeddables.stories>true</skip.embeddables.stories>
-      </properties>
-    </profile>
-    <profile>
-      <id>annotated-embedder-using-pico</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.jbehave</groupId>
-            <artifactId>jbehave-maven-plugin</artifactId>
-            <executions>
               <execution>
-                <id>with-annotated-embedder</id>
+                <id>annotated-embedder-using-pico</id>
                 <phase>integration-test</phase>
                 <configuration>
                   <annotatedEmbedderRunnerClass>org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
@@ -205,22 +189,6 @@
                   <goal>run-with-annotated-embedder</goal>
                 </goals>
               </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <skip.embeddables.stories>true</skip.embeddables.stories>
-      </properties>
-    </profile>
-    <profile>
-      <id>annotated-embedder-using-spring</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.jbehave</groupId>
-            <artifactId>jbehave-maven-plugin</artifactId>
-            <executions>
               <execution>
                 <id>with-annotated-embedder</id>
                 <phase>integration-test</phase>
