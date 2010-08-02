@@ -8,10 +8,7 @@
 
 <h2>The reasons for JBehave 3</h2>
 
-<p>While JBehave 1 was more of a thought experiment, helping to
-spread and understand new concepts around BDD. JBehave 2 has been a
-complete rewrite based on new technologies (e.g. Java 5 annotations). By
-contrast, <b>JBehave 3 is an evolution of JBehave 2</b>, based on the
+<p><b>JBehave 3 is an evolution of JBehave 2</b>, based on the
 experience using it in commercial projects. With the benefit of this
 experience, we feel that the overall design stood well the wear and
 tear, but there were areas which called for improvements that would have
@@ -20,13 +17,22 @@ broken backward compatibility.</p>
 <h2>Migration path from JBehave 2</h2>
 
 <p>From the textual stories point of view, these are almost
-completely backward compatible. The only exception being the <b>GivenScenarios</b>
-keyword, whose default value has changed to <b>GivenStories</b>. Full
-backward compatibility can be nonetheless ensures by configuring the
-keywords bundle entry to <b>GivenScenarios</b> until the migration has
-been completed. See <a href="i18n-stories.html">Writing Stories in
-your language</a> on how to configure and override default keywords to suit
-your needs.</p>
+completely backward compatible. The only exceptions being:
+
+<ul>
+	<li><b>GivenScenarios</b> keyword has changed to <b>GivenStories</b>.
+	Full backward compatibility can be nonetheless ensures by configuring
+	the keywords bundle entry to <b>GivenScenarios</b> until the migration
+	has been completed. See <a href="i18n-stories.html">Writing Stories
+	in your language</a> on how to configure and override default keywords to
+	suit your needs.</li>
+	<li>Regex-based story parser now enforces that step keywords must
+	be at the start of a new line. This allow keywords to be found in the
+	step text and in the examples table. The convention of having keywords
+	at start of line is already universally adopted and but may encounter
+	the occasional failure due spurious spaces before the keywords.</li>
+</ul>
+</p>
 
 <p>From the Java point of view, significant changes have occurred,
 but only in the configuration of the running of the stories. The Steps
@@ -39,34 +45,42 @@ used without change in JBehave 3.</p>
 	<li>Terminology has changed throughout to refer to <b>Story</b> in
 	place of <b>Scenario</b> where this refers to the textual or Java
 	representation reflecting the fact that scenarios in JBehave 2 were
-	already stories in all but name. E.g. <b>JUnitScenario</b> is now <b>JUnitStory</b>.</li>
-	<li>The root package has also changed from <b>org.jbehave.scenario</b>
-	to <b>org.jbehave.core</b>.</li>
+	already stories in all but name. Terminology concerning report
+	rendering has been changed to stories view generation.</li>
 	<li>The Ant tasks and Maven goals have also been renamed to
-	reflect the terminology change. To facilitate the migration, one can
-	use the script provided in the <a
+	reflect the terminology change.</li>
+	<li>To facilitate the migration due to the terminology changes in
+	the textual scenarios/stories and in the Ant/Maven files, one can use
+	the script provided in the <a
 		href="http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git;a=tree;f=examples/migrating-from-2.x">migrating-from-2.x
 	example</a>.</li>
-	<li>Configuration has been consolidated into a single builder
-	object.</b> and moved to <b>org.jbehave.core.configuration</b> package.</li>
-	<li>JUnitStory allows the overriding of the default
-	MostUsefulConfiguration only via the <b>useConfiguration</b> method,
-	and the specification of <b>Steps</b> only via the <b>addSteps</b>
-	method.</li>
+	<li>The root package has changed from <b>org.jbehave.scenario</b>
+	to <b>org.jbehave.core</b> to avoid classpath clashes.</li>
+	<li><b>JUnitStory</b> does not extend JUnit's TestCase any more.
+	To ensure the class is recognised as a JUnit test, you must make the
+	source code of jbehave-core available to your IDE. Alternatively, check
+	the <a href="faq.html">FAQ</a> for other workarounds.</li>
+	<li>The concerns of running stories and view generation has been
+	centralised in an embeddable component - <b>Embedder</b> - which has
+	thin wrappers for running in multiple environments, e.g. JUnit,
+	Ant/Maven, Spring etc. Using the Embedder, the user can choose to run
+	multiple textual story using a single Java entry point. The embedder
+	behaviours can be controlled via <b>EmbedderControls</b>.</li>
+	<li>JUnitStory is now a JUnit-specific extension of <b>ConfigurableEmbedder</b>
+	and allows the overriding of the default MostUsefulConfiguration only
+	via the <b>useConfiguration</b> method, and the specification of <b>Steps</b>
+	only via the <b>addSteps</b> method.</li>
+	<li>Configuration has been consolidated into a single builder and
+	moved to <b>org.jbehave.core.configuration</b> package. Configuration
+	and CandidateSteps are now fully specifiable via <a
+		href="configuration.html">annotations</a>, with or without <a
+		href="dependency-injection.html">dependency injection</a>.</li>
 	<li>The textual story lookup paradigm has shifted from a <b>RunnableStory</b>
 	class to a story path, which can be resolved from the class via the <b>StoryPathResolver</b>,
 	and its implementations <b>UnderscoredCamelCaseResolver</b> and <b>CasePreservingResolver</b>.
 	As such, the <b>StoryLoader</b> implementations only define the model
 	story from a story path. The <b>FilePrintStreamFactory</b>
 	correspondingly now handles only story paths.</li>
-	<li>Terminology concerning report rendering has been changed to
-	stories view generation.</li>
-	<li>The concerns of running stories and view generation has been
-	centralised in an embeddable component - <b>Embedder</b> - which has
-	thin wrappers for running in multiple environments, e.g. JUnit,
-	Ant/Maven, Spring etc. Using the Embedder, the user can choose to run
-	multiple textual story using a single Java entry point. The embedder
-	behaviours can be managed via <b>EmbedderControls</b>.</li>
 </ul>
 
 <h2>Next?</h2>
