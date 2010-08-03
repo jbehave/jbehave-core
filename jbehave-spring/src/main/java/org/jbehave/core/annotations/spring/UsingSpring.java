@@ -12,5 +12,7 @@ import java.lang.annotation.Target;
 public @interface UsingSpring {
 
     String[] resources() default {};
-    
+
+    boolean inheritResources() default true;
+
 }

@@ -15,4 +15,6 @@ public @interface UsingGuice {
 	
 	Class<? extends Module>[] modules() default {};
 
+	boolean inheritModules() default true;
+
 }

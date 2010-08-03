@@ -13,4 +13,6 @@ public @interface UsingSteps {
 
     Class<?>[] instances() default {};
     
+    boolean inheritInstances() default true;
+    
 }

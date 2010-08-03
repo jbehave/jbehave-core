@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.annotations.UsingInheritance;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Helper class to find and retrieve annotated values
@@ -48,7 +48,7 @@ public class AnnotationFinder {
     public <T, A extends Annotation> List<T> getAnnotatedValues(Class<A> annotationClass, Class<T> type,
             String memberName) {
         List<T> list = new ArrayList<T>();
-        if ( !isAnnotationPresent(annotationClass) ){
+        if (!isAnnotationPresent(annotationClass)) {
             return list;
         }
         Object[] values = getAnnotatedValue(annotationClass, Object[].class, memberName);
@@ -57,9 +57,9 @@ public class AnnotationFinder {
         }
         boolean inheritValues = true;
         try {
-            inheritValues = getAnnotatedValue(UsingInheritance.class, boolean.class, "ofValues");
+            inheritValues = getAnnotatedValue(annotationClass, boolean.class, createInheritMemberName(memberName));
         } catch (AnnotationRequired e) {
-            // no annotation @UsingInheritance(ofValues=false) - assume true
+            // no inherit property found - assume true
         }
         if (inheritValues) {
             Class<?> superClass = annotatedClass.getSuperclass();
@@ -68,6 +68,17 @@ public class AnnotationFinder {
             }
         }
         return list;
+    }
+
+    /**
+     * Creates the inherit member name by prefixing "inherit" to the capitalized
+     * member name.
+     * 
+     * @param memberName
+     * @return The inherit member name
+     */
+    protected String createInheritMemberName(String memberName) {
+        return "inherit" + StringUtils.capitalize(memberName);
     }
 
     @SuppressWarnings("unchecked")

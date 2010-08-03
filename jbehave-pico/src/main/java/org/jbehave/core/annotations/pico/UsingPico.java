@@ -16,7 +16,9 @@ import org.picocontainer.PicoContainer;
 public @interface UsingPico {
 
     Class<? extends PicoContainer> container() default DefaultPicoContainer.class;
-    
-	Class<? extends PicoModule>[] modules() default {};
+
+    Class<? extends PicoModule>[] modules() default {};
+
+    boolean inheritModules() default true;
 
 }

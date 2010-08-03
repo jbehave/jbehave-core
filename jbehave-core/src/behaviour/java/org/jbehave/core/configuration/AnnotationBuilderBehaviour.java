@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.instanceOf;
 
 import java.util.List;
 
-import org.jbehave.core.annotations.UsingInheritance;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
@@ -29,14 +28,14 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
-    public void shouldInheritInstances() {
+    public void shouldInheritStepsInstances() {
         AnnotationBuilder builderAnnotated = new AnnotationBuilder(AnnotatedInheriting.class);
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), MyOtherOtherSteps.class, MySteps.class,
                 MyOtherSteps.class);
     }
 
     @Test
-    public void shouldNotInheritInstances() {
+    public void shouldNotInheritStepsInstances() {
         AnnotationBuilder builderAnnotated = new AnnotationBuilder(AnnotatedNotInheriting.class);
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), MyOtherOtherSteps.class);
     }
@@ -58,8 +57,7 @@ public class AnnotationBuilderBehaviour {
 
     }
 
-    @UsingSteps(instances = { MyOtherOtherSteps.class })
-    @UsingInheritance(ofValues = false)
+    @UsingSteps(instances = { MyOtherOtherSteps.class }, inheritInstances = false)
     private static class AnnotatedNotInheriting extends Annotated {
 
     }

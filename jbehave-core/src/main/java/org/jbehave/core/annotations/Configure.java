@@ -68,6 +68,8 @@ public @interface Configure {
 	Class<? extends StepMonitor> stepMonitor() default SilentStepMonitor.class;
 
 	Class<? extends ParameterConverter>[] parameterConverters() default {};
+	
+	boolean inheritParameterConverters() default true;
 
 	Class<? extends Paranamer> paranamer() default NullParanamer.class;
 
