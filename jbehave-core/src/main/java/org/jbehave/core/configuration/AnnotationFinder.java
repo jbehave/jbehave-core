@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbehave.core.annotations.UsingInheritance;
+
 /**
  * Helper class to find and retrieve annotated values
  * 
@@ -46,9 +48,24 @@ public class AnnotationFinder {
     public <T, A extends Annotation> List<T> getAnnotatedValues(Class<A> annotationClass, Class<T> type,
             String memberName) {
         List<T> list = new ArrayList<T>();
+        if ( !isAnnotationPresent(annotationClass) ){
+            return list;
+        }
         Object[] values = getAnnotatedValue(annotationClass, Object[].class, memberName);
         for (Object value : values) {
             list.add((T) value);
+        }
+        boolean inheritValues = true;
+        try {
+            inheritValues = getAnnotatedValue(UsingInheritance.class, boolean.class, "ofValues");
+        } catch (AnnotationRequired e) {
+            // no annotation @UsingInheritance(ofValues=false) - assume true
+        }
+        if (inheritValues) {
+            Class<?> superClass = annotatedClass.getSuperclass();
+            if (superClass != null && superClass != Object.class) {
+                list.addAll(new AnnotationFinder(superClass).getAnnotatedValues(annotationClass, type, memberName));
+            }
         }
         return list;
     }
@@ -56,12 +73,7 @@ public class AnnotationFinder {
     @SuppressWarnings("unchecked")
     public <T, A extends Annotation> List<Class<T>> getAnnotatedClasses(Class<A> annotationClass, Class<T> type,
             String memberName) {
-        List<Class<T>> list = new ArrayList<Class<T>>();
-        Object[] values = getAnnotatedValue(annotationClass, Object[].class, memberName);
-        for (Object value : values) {
-            list.add((Class<T>) value);
-        }
-        return list;
+        return (List<Class<T>>) getAnnotatedValues(annotationClass, type.getClass(), memberName);
     }
 
     protected <A extends Annotation> Annotation getAnnotation(Class<A> annotationClass) {
