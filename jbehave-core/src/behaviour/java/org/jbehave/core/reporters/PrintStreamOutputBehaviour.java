@@ -218,7 +218,7 @@ public class PrintStreamOutputBehaviour {
                 + "  <iWantTo keyword=\"I want to\">get a loan</iWantTo>\n"
                 + "</narrative>\n"
                 + "<scenario keyword=\"Scenario:\" title=\"I ask for a loan\">\n"
-                + "<givenStories keyword=\"GivenStories:\"paths=\"[/given/story1,/given/story2]\"</givenStories>\n"
+                + "<givenStories keyword=\"GivenStories:\" paths=\"[/given/story1,/given/story2]\"/>\n"
                 + "<step outcome=\"successful\">Given I have a balance of $50</step>\n"
                 + "<step outcome=\"ignorable\">!-- A comment</step>\n"
                 + "<step outcome=\"successful\">When I request $20</step>\n"
