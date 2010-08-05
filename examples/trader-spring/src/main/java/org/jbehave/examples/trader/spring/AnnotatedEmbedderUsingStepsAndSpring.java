@@ -11,12 +11,12 @@ import org.jbehave.core.annotations.spring.UsingSpring;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner;
-import org.jbehave.examples.trader.BeforeAfterSteps;
-import org.jbehave.examples.trader.TraderSteps;
-import org.jbehave.examples.trader.stories.AndStep.AndSteps;
-import org.jbehave.examples.trader.stories.ClaimsWithNullCalendar.CalendarSteps;
-import org.jbehave.examples.trader.stories.FailureFollowedByGivenStories.SandpitSteps;
-import org.jbehave.examples.trader.stories.PriorityMatching.PriorityMatchingSteps;
+import org.jbehave.examples.trader.steps.AndSteps;
+import org.jbehave.examples.trader.steps.BeforeAfterSteps;
+import org.jbehave.examples.trader.steps.CalendarSteps;
+import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
+import org.jbehave.examples.trader.steps.SandpitSteps;
+import org.jbehave.examples.trader.steps.TraderSteps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

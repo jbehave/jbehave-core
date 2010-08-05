@@ -142,7 +142,7 @@
                 <id>stories-as-paths</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>
+                  <embedderClass>org.jbehave.examples.trader.TraderEmbedder</embedderClass>
                   <includes>
                     <include>${include.paths}</include>
                   </includes>
@@ -233,7 +233,7 @@
                 <phase>integration-test</phase>
                 <configuration>
                   <includes>
-                    <include>**/TraderStories.java</include>
+                    <include>**/*URLTraderStories.java</include>
                   </includes>
                   <excludes />
                   <skip>false</skip>
@@ -300,7 +300,7 @@
                       classname="org.jbehave.ant.ReportStepdocs"
                       classpathref="maven.runtime.classpath" />
                     <reportStepdocs
-                      embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder"
+                      embedderClass="org.jbehave.examples.trader.TraderEmbedder"
                       skip="false" />
                   </tasks>
                 </configuration>

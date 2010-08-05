@@ -65,7 +65,7 @@
 
 	<target name="stepdoc" depends="compile">
 		<taskdef name="reportStepdocs" classname="org.jbehave.ant.ReportStepdocs" classpathref="story.classpath" />
-		<reportStepdocs embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder" />
+		<reportStepdocs embedderClass="org.jbehave.examples.trader.TraderEmbedder" />
 	</target>
 
 	<target name="build" depends="run-stories-as-embeddables,run-stories-as-paths,stepdoc" />

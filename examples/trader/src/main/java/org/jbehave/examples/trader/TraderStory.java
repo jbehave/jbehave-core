@@ -5,11 +5,11 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
 
+import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.CodeLocations;
@@ -25,54 +25,60 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.examples.trader.service.TradingService;
+import org.jbehave.examples.trader.steps.AndSteps;
+import org.jbehave.examples.trader.steps.BeforeAfterSteps;
+import org.jbehave.examples.trader.steps.CalendarSteps;
+import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
+import org.jbehave.examples.trader.steps.SandpitSteps;
+import org.jbehave.examples.trader.steps.SearchSteps;
+import org.jbehave.examples.trader.steps.TraderSteps;
 
 /**
  * <p>
- * Example of how to run a single story via JUnit.   JUnitStory is a simple facade
- * around the Embedder.   The use need only provide the configuration and the Steps instances.
- * Using this paradigm (which is the analogous to the one used in JBehave 2) each runnable story
- * maps to one textual story. 
+ * Example of how to run a single story via JUnit. JUnitStory is a simple facade
+ * around the Embedder. The user need only provide the configuration and the
+ * CandidateSteps. Using this paradigm (which is the analogous to the one used
+ * in JBehave 2) each story class must extends this class and maps one-to-one to
+ * a textual story via the configured {@link StoryPathResolver}.
  * </p>
  * <p>
- * Users wanting to run multiple stories via the same Java class (new to JBehave 3) should 
- * look at {@link TraderStories}, {@link TraderStoryRunner} or {@link TraderAnnotatedEmbedder}
- * </p> 
+ * Users wanting to run multiple stories via the same Java class (new to JBehave
+ * 3) should look at {@link TraderStories}, {@link TraderStoryRunner} or
+ * {@link AnnotatedTraderEmbedder}
+ * </p>
  */
 public abstract class TraderStory extends JUnitStory {
 
-	public TraderStory() {
+    public TraderStory() {
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
+                .doIgnoreFailureInView(true);
+    }
 
-		// start with default story configuration, overriding story loader and reporter
-        StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
-        Class<? extends TraderStory> storyClass = this.getClass();
-        Properties rendering = new Properties();
-        rendering.put("decorateNonHtml", "true");
-    	URL codeLocation = CodeLocations.codeLocationFromClass(storyClass);
-		Configuration configuration = new MostUsefulConfiguration()
-                .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
-                .useStoryReporterBuilder(new StoryReporterBuilder()
-                	.withCodeLocation(codeLocation)
-                	.withDefaultFormats()
-                	.withViewResources(rendering)
-                	.withFormats(CONSOLE, TXT, HTML, XML)
-                	.withFailureTrace(false))
-                .useParameterConverters(new ParameterConverters()
-                	.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
-                .useStoryPathResolver(storyPathResolver)
-                .useStepMonitor(new SilentStepMonitor())
-        		.useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
-        		
-		useConfiguration(configuration);
-		addSteps(createSteps(configuration));
-		
-	    configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+    @Override
+    public Configuration configuration() {
+        Class<? extends Embeddable> embeddableClass = this.getClass();
+        Properties viewResources = new Properties();
+        viewResources.put("decorateNonHtml", "true");
+        return new MostUsefulConfiguration()
+            .useStoryLoader(new LoadFromClasspath(embeddableClass))
+            .useStoryPathResolver(new UnderscoredCamelCaseResolver())
+            .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
+                .withDefaultFormats()
+                .withViewResources(viewResources)
+                .withFormats(CONSOLE, TXT, HTML, XML))
+            .useParameterConverters(new ParameterConverters()
+                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
+            .useStepPatternParser(new RegexPrefixCapturingPatternParser(
+                            "%")) // use '%' instead of '$' to identify parameters
+            .useStepMonitor(new SilentStepMonitor());                               
+    }
 
-	}
-
-	protected List<CandidateSteps> createSteps(Configuration configuration) {
-		return new InstanceStepsFactory(configuration, new TraderSteps(
-				new TradingService()), new BeforeAfterSteps())
-				.createCandidateSteps();
-	}
-
+    @Override
+    public List<CandidateSteps> candidateSteps() {
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
+                new CalendarSteps(), new PriorityMatchingSteps(), new SandpitSteps(), new SearchSteps(),
+                new BeforeAfterSteps()).createCandidateSteps();
+    }
+        
 }

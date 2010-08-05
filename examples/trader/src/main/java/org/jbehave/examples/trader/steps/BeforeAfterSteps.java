@@ -1,4 +1,4 @@
-package org.jbehave.examples.trader;
+package org.jbehave.examples.trader.steps;
 
 import org.jbehave.core.annotations.AfterStories;
 import org.jbehave.core.annotations.AfterScenario;

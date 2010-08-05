@@ -5,20 +5,20 @@
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-  <bean id="traderSteps" class="org.jbehave.examples.trader.TraderSteps">
+  <bean id="traderSteps" class="org.jbehave.examples.trader.steps.TraderSteps">
     <constructor-arg>
       <bean class="org.jbehave.examples.trader.service.TradingService"/>
     </constructor-arg>
   </bean>
 
-  <bean class="org.jbehave.examples.trader.BeforeAfterSteps" />
+  <bean class="org.jbehave.examples.trader.steps.BeforeAfterSteps" />
 
-  <bean class="org.jbehave.examples.trader.stories.AndStep$AndSteps" />
+  <bean class="org.jbehave.examples.trader.steps.AndSteps" />
 
-  <bean class="org.jbehave.examples.trader.stories.ClaimsWithNullCalendar$CalendarSteps" />
+  <bean class="org.jbehave.examples.trader.steps.CalendarSteps" />
 
-  <bean class="org.jbehave.examples.trader.stories.PriorityMatching$PriorityMatchingSteps" />
+  <bean class="org.jbehave.examples.trader.steps.PriorityMatchingSteps" />
 
-  <bean class="org.jbehave.examples.trader.stories.FailureFollowedByGivenStories$SandpitSteps" />
+  <bean class="org.jbehave.examples.trader.steps.SandpitSteps" />
 
 </beans>

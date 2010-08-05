@@ -2,12 +2,11 @@ package org.jbehave.examples.trader.guice;
 
 import java.util.List;
 
-import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.guice.GuiceStepsFactory;
-import org.jbehave.examples.trader.BeforeAfterSteps;
 import org.jbehave.examples.trader.TraderStory;
 import org.jbehave.examples.trader.service.TradingService;
+import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -20,9 +19,8 @@ import com.google.inject.Scopes;
 public abstract class TraderStoryUsingGuice extends TraderStory {
 
     @Override
-    protected List<CandidateSteps> createSteps(Configuration configuration) {
-        Injector parent = createInjector();
-        return new GuiceStepsFactory(configuration, parent).createCandidateSteps();
+    public List<CandidateSteps> candidateSteps() {
+        return new GuiceStepsFactory(configuration(), createInjector()).createCandidateSteps();
     }
 
     private Injector createInjector() {

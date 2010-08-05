@@ -25,7 +25,7 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.examples.trader.BeforeAfterSteps;
+import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 
 /**
  * Abstract base ConfigurableEmbedder to run multiple stories via JUnit

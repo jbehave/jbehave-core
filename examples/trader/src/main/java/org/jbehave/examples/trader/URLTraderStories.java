@@ -1,0 +1,41 @@
+package org.jbehave.examples.trader;
+
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+
+import java.util.List;
+
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.io.LoadFromURL;
+import org.jbehave.core.io.StoryFinder;
+
+/**
+ * <p>
+ * Example of how multiple stories can be run via JUnit.
+ * </p>
+ * <p>
+ * Stories are specified as URLs and correspondingly the {@link LoadFromURL}
+ * story loader is configured and the story paths are looked up as "file:" URLs.
+ * It extends TraderStories simply for convenience, in order to avoid
+ * duplicating common configuration.
+ * </p>
+ */
+public class URLTraderStories extends TraderStories {
+
+    public URLTraderStories() {
+    }
+
+    @Override
+    public Configuration configuration() {
+        return super.configuration().useStoryLoader(new LoadFromURL());
+    }
+
+    @Override
+    protected List<String> storyPaths() {
+        // Specify story paths as URLs
+        String codeLocation = codeLocationFromClass(this.getClass()).getFile();
+        return new StoryFinder().findPaths(codeLocation, asList("**/trader_is_alerted_of_status.story",
+                "**/traders_can_be_subset.story"), asList(""), "file:" + codeLocation);
+    }
+
+}

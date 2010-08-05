@@ -1,7 +1,7 @@
 package org.jbehave.examples.trader.guice;
 
-import org.jbehave.examples.trader.TraderSteps;
 import org.jbehave.examples.trader.service.TradingService;
+import org.jbehave.examples.trader.steps.TraderSteps;
 
 import com.google.inject.Inject;
 

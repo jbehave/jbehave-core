@@ -8,9 +8,9 @@ import java.util.List;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.examples.trader.BeforeAfterSteps;
-import org.jbehave.examples.trader.ClasspathTraderEmbedder;
-import org.jbehave.examples.trader.TraderSteps;
+import org.jbehave.examples.trader.TraderEmbedder;
+import org.jbehave.examples.trader.steps.BeforeAfterSteps;
+import org.jbehave.examples.trader.steps.TraderSteps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/org/jbehave/examples/trader/spring/steps.xml" })
-public class AnnotatedEmbedderWithSpringJUnit4ClassRunner {
+public class TraderEmbedderWithSpringJUnit4ClassRunner {
 
     @Autowired
     private TraderSteps traderSteps;
@@ -48,15 +48,14 @@ public class AnnotatedEmbedderWithSpringJUnit4ClassRunner {
     }
 
     private Embedder embedder() {
-        Embedder embedder = new ClasspathTraderEmbedder();
+        Embedder embedder = new TraderEmbedder();
         embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), traderSteps, beforeAndAfterSteps)
                 .createCandidateSteps());
         return embedder;
     }
 
     protected List<String> storyPaths() {
-        StoryFinder finder = new StoryFinder();
-        return finder.findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""));
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""));
     }
 
 }

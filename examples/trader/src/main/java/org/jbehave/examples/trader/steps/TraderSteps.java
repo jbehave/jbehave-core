@@ -1,4 +1,4 @@
-package org.jbehave.examples.trader;
+package org.jbehave.examples.trader.steps;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,6 +22,7 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.examples.trader.TraderStory;
 import org.jbehave.examples.trader.model.Stock;
 import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.model.Stock.AlertStatus;
