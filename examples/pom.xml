@@ -34,11 +34,6 @@
       <artifactId>jbehave-core</artifactId>
       <version>${jbehave.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-ant</artifactId>
-      <version>${jbehave.version}</version>
-    </dependency>
   </dependencies>
 
   <build>
