@@ -87,7 +87,9 @@ public class Embedder {
     private List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
         List<Embeddable> embeddables = new ArrayList<Embeddable>();
         for (String className : classNames) {
-            embeddables.add(classLoader.newInstance(Embeddable.class, className));
+            if ( !classLoader.isAbstract(className)){
+                embeddables.add(classLoader.newInstance(Embeddable.class, className));
+            }
         }
         return embeddables;
     }

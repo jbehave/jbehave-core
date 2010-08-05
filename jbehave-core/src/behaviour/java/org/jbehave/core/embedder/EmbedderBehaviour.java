@@ -92,6 +92,35 @@ public class EmbedderBehaviour {
     }
 
     @Test
+    public void shouldNotRunStoriesAsEmbeddablesIfAbstract() throws Throwable {
+        // Given
+        StoryRunner runner = mock(StoryRunner.class);
+        EmbedderControls embedderControls = new EmbedderControls();
+        OutputStream out = new ByteArrayOutputStream();
+        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
+        String myStoryName = MyAbstractStory.class.getName();
+        String myOtherStoryName = MyOtherStory.class.getName();
+        List<String> classNames = asList(myStoryName, myOtherStoryName);
+        Embeddable myStory = new MyStory();
+        Embeddable myOtherStory = new MyOtherStory();
+        EmbedderClassLoader classLoader = mock(EmbedderClassLoader.class);
+        when(classLoader.isAbstract(myStoryName)).thenReturn(true);
+        when(classLoader.newInstance(Embeddable.class, myStoryName)).thenReturn(myStory);
+        when(classLoader.isAbstract(myOtherStoryName)).thenReturn(false);
+        when(classLoader.newInstance(Embeddable.class, myOtherStoryName)).thenReturn(myOtherStory);
+
+        // When
+        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
+        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+
+        // Then
+        assertThat(out.toString(), not(containsString("Running embeddable " + myStoryName)));
+        assertThat(out.toString(), containsString("Running embeddable " + myOtherStoryName));
+        assertThat(out.toString(), containsString("Generating stories view"));
+    }
+
+    @Test
     public void shouldNotRunStoriesAsEmbeddablesIfSkipFlagIsSet() throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
@@ -108,6 +137,7 @@ public class EmbedderBehaviour {
         when(classLoader.newInstance(Embeddable.class, myStoryName)).thenReturn(myStory);
         when(classLoader.newInstance(Embeddable.class, myOtherStoryName)).thenReturn(myOtherStory);
 
+        // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
         embedder.runStoriesAsEmbeddables(classNames, classLoader);
@@ -835,6 +865,9 @@ public class EmbedderBehaviour {
     private class MyStory extends JUnitStory {
     }
 
+    private abstract class MyAbstractStory extends JUnitStory {
+    }
+    
     private class MyFailingStory extends JUnitStory {
 
         @Override

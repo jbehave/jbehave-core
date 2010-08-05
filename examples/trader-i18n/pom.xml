@@ -7,7 +7,11 @@
     <version>3.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-trader-i18n-example</artifactId>
-  <name>JBehave Trader i18n Example</name>
+  <name>JBehave Trader I18n Example</name>
+
+  <properties>
+    <include.embeddables>**/i18n/*Stories.java</include.embeddables>
+  </properties>
 
   <dependencies>
     <dependency>
