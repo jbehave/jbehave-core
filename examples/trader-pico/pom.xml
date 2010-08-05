@@ -15,6 +15,11 @@
       <artifactId>jbehave-trader-example</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-pico</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
 
 </project>

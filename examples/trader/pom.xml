@@ -9,22 +9,4 @@
   <artifactId>jbehave-trader-example</artifactId>
   <name>JBehave Trader Example</name>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-guice</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-pico</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-spring</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
-
 </project>
