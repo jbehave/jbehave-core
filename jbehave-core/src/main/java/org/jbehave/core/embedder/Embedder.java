@@ -106,7 +106,7 @@ public class Embedder {
                     embedderMonitor.annotatedInstanceNotOfType(annotatedInstance, Embeddable.class);
                 }
             } catch (Throwable e) {
-                throw new RuntimeException(runner.toString(), e);
+                throw new AnnotatedEmbedderRunFailed(runner, e);
             }
         }
     }
@@ -127,7 +127,7 @@ public class Embedder {
             Class<?> annotatedClass = loadClass(annotatedClassName, classLoader);
             return (AnnotatedEmbedderRunner) runnerClass.getConstructor(Class.class).newInstance(annotatedClass);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new AnnotatedEmbedderRunnerInstantiationFailed(runnerClass, annotatedClassName, classLoader, e);
         }
     }
 
@@ -135,7 +135,7 @@ public class Embedder {
         try {
             return classLoader.loadClass(className);
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new ClassLoadingFailed(className, classLoader, e);
         }
     }
 
@@ -290,7 +290,38 @@ public class Embedder {
     }
 
     @SuppressWarnings("serial")
-    public class RunningStoriesFailed extends RuntimeException {
+    public static class ClassLoadingFailed extends RuntimeException {
+
+        public ClassLoadingFailed(String className, EmbedderClassLoader classLoader, Throwable cause) {
+            super("Failed to load class "+className+" with classLoader "+classLoader, cause);
+        }
+
+    }
+
+    @SuppressWarnings("serial")
+    public static class AnnotatedEmbedderRunnerInstantiationFailed extends RuntimeException {
+
+        public AnnotatedEmbedderRunnerInstantiationFailed(Class<?> runnerClass, String annotatedClassName,
+                EmbedderClassLoader classLoader, Throwable cause) {
+            super("Failed to instantiate annotated embedder runner " + runnerClass + " with annotatedClassName "
+                    + annotatedClassName + " and classLoader " + classLoader, cause);
+        }
+
+    }
+
+
+    @SuppressWarnings("serial")
+    public static class AnnotatedEmbedderRunFailed extends RuntimeException {
+
+        public AnnotatedEmbedderRunFailed(AnnotatedEmbedderRunner runner, Throwable cause) {
+            super("Annotated embedder run failed with runner "+runner.toString(), cause);
+        }
+
+
+    }
+
+    @SuppressWarnings("serial")
+    public static class RunningStoriesFailed extends RuntimeException {
 
         public RunningStoriesFailed(int stories, int scenarios, int failedScenarios) {
             super("Failures in running " + stories +" stories containing "+ scenarios + " scenarios (of which " + failedScenarios
@@ -307,7 +338,7 @@ public class Embedder {
     }
 
     @SuppressWarnings("serial")
-    public class ViewGenerationFailed extends RuntimeException {
+    public static class ViewGenerationFailed extends RuntimeException {
         public ViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewResources,
                 RuntimeException cause) {
             super("View generation failed to "+outputDirectory+" for formats "+formats+" and resources "+viewResources, cause);

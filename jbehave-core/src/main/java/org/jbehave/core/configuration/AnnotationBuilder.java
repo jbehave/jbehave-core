@@ -189,7 +189,7 @@ public class AnnotationBuilder {
             return (T) ofClass.newInstance();
         } catch (Exception e) {
             annotationMonitor.elementCreationFailed(ofClass, e);
-            throw new RuntimeException(e);
+            throw new InstantiationFailed(ofClass, type, e);
         }
     }
 
@@ -207,15 +207,28 @@ public class AnnotationBuilder {
 
     protected Object injectEmbedder(Embedder embedder, Class<?> annotatedClass) {
         try {
-            Object instance = annotatedClass.getConstructor().newInstance();
+            Object instance = annotatedClass.newInstance();
             if (instance instanceof Embeddable) {
                 ((Embeddable) instance).useEmbedder(embedder);
             }
             return instance;
         } catch (Exception e) {
             annotationMonitor.elementCreationFailed(annotatedClass, e);
-            throw new RuntimeException(e);
+            throw new InstantiationFailed(annotatedClass, e);
         }
+    }
+    
+    @SuppressWarnings("serial")
+    public static class InstantiationFailed extends RuntimeException {
+
+        public InstantiationFailed(Class<?> ofClass, Class<?> type, Throwable cause) {
+            super("Failed to instantiate class "+ofClass+" of type "+ type, cause);
+        }
+
+        public InstantiationFailed(Class<?> ofClass, Throwable cause) {
+            super("Failed to instantiate class "+ofClass, cause);
+        }
+
     }
 
 }

@@ -65,7 +65,7 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
 	}
 
 	private RuntimeException notAllowed() {
-		return new RuntimeException("Configuration elements are unmodifiable");
+		return new ModificationNotAllowed();
 	}
 
 	@Override
@@ -73,5 +73,13 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
 				.append(delegate).toString();
 	}
+	
+    @SuppressWarnings("serial")
+    public static class ModificationNotAllowed extends RuntimeException {
+        public ModificationNotAllowed(){
+            super("Configuration elements are unmodifiable");
+        }
+    }
+
 
 }

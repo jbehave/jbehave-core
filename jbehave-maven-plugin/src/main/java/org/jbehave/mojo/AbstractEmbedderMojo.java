@@ -163,11 +163,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @return A EmbedderClassLoader
      */
     protected EmbedderClassLoader createClassLoader() {
-        try {
-            return new EmbedderClassLoader(classpathElements());
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create " + EmbedderClassLoader.class, e);
-        }
+        return new EmbedderClassLoader(classpathElements());
     }
 
     private List<String> classpathElements() {

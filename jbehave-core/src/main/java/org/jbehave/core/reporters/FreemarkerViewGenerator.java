@@ -185,7 +185,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
             }
             return reports;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new ReportCreationFailed(reportFiles, e);
         }
     }
 
@@ -226,6 +226,15 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return new HashMap<String, Object>();
     }
 
+    @SuppressWarnings("serial")
+    public static class ReportCreationFailed extends RuntimeException {
+
+        public ReportCreationFailed(Map<String, List<File>> reportFiles, Exception cause) {
+            super("Report creation failed from file "+reportFiles, cause);
+        }
+    }
+
+    
     @SuppressWarnings("serial")
     public static class ViewGenerationFailedForTemplate extends RuntimeException {
 

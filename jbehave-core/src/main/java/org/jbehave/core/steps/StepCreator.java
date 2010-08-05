@@ -349,10 +349,10 @@ public class StepCreator {
 				if (e.getCause() != null) {
 					throw new BeforeOrAfterFailed(method, e.getCause());
 				} else {
-					throw new RuntimeException(e);
+					throw new BeforeOrAfterFailed(e);
 				}
 			} catch (Throwable t) {
-				throw new RuntimeException(t);
+				throw new BeforeOrAfterFailed(t);
 			}
 			return skipped();
 		}

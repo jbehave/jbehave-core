@@ -19,15 +19,15 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class EmbedderClassLoader extends URLClassLoader {
 
-    public EmbedderClassLoader(ClassLoader parent) throws MalformedURLException {
+    public EmbedderClassLoader(ClassLoader parent) {
         this(Arrays.<String>asList(), parent);
     }
 
-    public EmbedderClassLoader(List<String> classpathElements) throws MalformedURLException {
+    public EmbedderClassLoader(List<String> classpathElements) {
         this(classpathElements, Embedder.class.getClassLoader());
     }
 
-    public EmbedderClassLoader(List<String> classpathElements, ClassLoader parent) throws MalformedURLException {
+    public EmbedderClassLoader(List<String> classpathElements, ClassLoader parent) {
         super(classpathURLs(classpathElements), parent);
     }
 
@@ -70,14 +70,22 @@ public class EmbedderClassLoader extends URLClassLoader {
         return path.endsWith(".jar");
     }
 
-    private static URL[] classpathURLs(List<String> elements) throws MalformedURLException {
+    private static URL[] classpathURLs(List<String> elements) {
         List<URL> urls = new ArrayList<URL>();
         if (elements != null) {
             for (String element : elements) {
-                urls.add(new File(element).toURL());
+                urls.add(toURL(element));
             }
         }
         return urls.toArray(new URL[urls.size()]);
+    }
+
+    private static URL toURL(String element) {
+        try {
+            return new File(element).toURL();
+        } catch ( MalformedURLException e ){
+            throw new InvalidClasspathElement(element, e);
+        }
     }
 
     @Override
@@ -91,6 +99,15 @@ public class EmbedderClassLoader extends URLClassLoader {
 
         public InstantiationFailed(String className, Class<?> type, ClassLoader classLoader, Throwable cause) {
             super("Instantiation failed for" + className + " of type " + type + " using class loader "+classLoader, cause);
+        }
+
+    }
+
+    @SuppressWarnings("serial")
+    public static class InvalidClasspathElement extends RuntimeException {
+
+        public InvalidClasspathElement(String element, Throwable cause) {
+            super("Invalid classpath element " + element, cause);
         }
 
     }

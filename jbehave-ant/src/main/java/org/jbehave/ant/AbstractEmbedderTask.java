@@ -6,7 +6,6 @@ import static org.apache.tools.ant.Project.MSG_INFO;
 import static org.apache.tools.ant.Project.MSG_WARN;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -121,11 +120,7 @@ public abstract class AbstractEmbedderTask extends Task {
      * @return A EmbedderClassLoader
      */
     protected EmbedderClassLoader createClassLoader() {
-        try {
-            return new EmbedderClassLoader(this.getClass().getClassLoader());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Failed to create "+EmbedderClassLoader.class, e);
-        }
+        return new EmbedderClassLoader(this.getClass().getClassLoader());
     }
 
     protected EmbedderMonitor embedderMonitor() {

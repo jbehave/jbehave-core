@@ -83,27 +83,6 @@ public class StoryFinder {
         return classNames(normalise(scan(searchInDirectory, includes, excludes)));
     }
 
-    /**
-     * Load classes using the classloaded provided
-     * 
-     * @param classNames the List of class names
-     * @param classLoader the EmbedderClassLoader used to load classes
-     * @return The list of Classes loaded
-     */
-    public List<Class<?>> loadClasses(List<String> classNames, EmbedderClassLoader classLoader) {
-        List<Class<?>> classes = new ArrayList<Class<?>>();
-        for (String className : classNames) {
-            if (!classLoader.isAbstract(className)) {
-                try {
-                    classes.add(classLoader.loadClass(className));
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return classes;
-    }
-
     protected List<String> normalise(List<String> paths) {
         List<String> transformed = new ArrayList<String>(paths);
         CollectionUtils.transform(transformed, new Transformer() {

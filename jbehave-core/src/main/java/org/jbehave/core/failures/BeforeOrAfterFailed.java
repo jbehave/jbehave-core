@@ -16,4 +16,8 @@ public class BeforeOrAfterFailed extends RuntimeException {
 		super(format("Method {0}, annotated with {1}, failed", method,
 				asList(method.getAnnotations())), cause);
 	}
+
+    public BeforeOrAfterFailed(Throwable cause) {
+        super(cause);
+    }
 }
