@@ -9,6 +9,10 @@
   <artifactId>jbehave-trader-spring-example</artifactId>
   <name>JBehave Trader Spring Example</name>
 
+  <properties>
+    <include.embeddables>**/*StoriesUsingSpring.java</include.embeddables>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>

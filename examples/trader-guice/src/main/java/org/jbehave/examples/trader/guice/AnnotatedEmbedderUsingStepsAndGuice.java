@@ -1,7 +1,9 @@
 package org.jbehave.examples.trader.guice;
 
 import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+
+import java.util.List;
 
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
@@ -22,7 +24,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
- * Run stories via Embedder using JBehave's annotated configuration and steps using Guice
+ * Run stories via annotated embedder configuration and steps using Guice. The
+ * textual trader stories are exactly the same ones found in the
+ * jbehave-trader-example. Here we are only concerned with using the container
+ * to compose the configuration and the steps instances.
  */
 @RunWith(GuiceAnnotatedEmbedderRunner.class)
 @Configure()
@@ -34,8 +39,12 @@ public class AnnotatedEmbedderUsingStepsAndGuice extends InjectableEmbedder {
 
     @Test
     public void run() {
-        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/guice/stories/*.story"), asList("")));
+        injectedEmbedder().runStoriesAsPaths(storyPaths());
+    }
+
+    protected List<String> storyPaths() {
+        String searchInDirectory = codeLocationFromPath("../trader/src/main/java").getFile();
+        return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
     }
 
 }

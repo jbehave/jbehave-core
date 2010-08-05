@@ -21,4 +21,6 @@
 
   <bean class="org.jbehave.examples.trader.steps.SandpitSteps" />
 
+  <bean class="org.jbehave.examples.trader.steps.SearchSteps" />
+
 </beans>

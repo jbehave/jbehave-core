@@ -9,6 +9,10 @@
   <artifactId>jbehave-trader-guice-example</artifactId>
   <name>JBehave Trader Guice Example</name>
 
+  <properties>
+    <include.embeddables>**/*StoriesUsingGuice.java</include.embeddables>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>

@@ -9,6 +9,10 @@
   <artifactId>jbehave-trader-pico-example</artifactId>
   <name>JBehave Trader Pico Example</name>
 
+  <properties>
+    <include.embeddables>**/*StoriesUsingPico.java</include.embeddables>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
