@@ -1,6 +1,6 @@
 # Examples of replacements required when migrating from 2.x to 3.x 
 
-# Replace .scenario with other extension used for scenarios textual files
+# Replace .scenario with any other extension used for scenarios textual files
 
 groovy replaceAllInFiles.groovy .scenario GivenScenarios GivenStories
 

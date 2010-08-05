@@ -1,10 +1,7 @@
 Build system: 
 
 JDK required: 1.5+
-Ant (http://ant.apache.org) required: 1.7+ 
-(maven-ant-tasks-2.1.jar is required in $ANT_HOME/lib - download from http://maven.apache.org/ant-tasks/download.html)
-OR 
-Maven (http://maven.apache.org) required: 2.2+
+Maven (http://maven.apache.org) required: 2.2.1+
 
 Encoding: 
 
@@ -13,16 +10,16 @@ Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS
  
 IDE integration:
 
-Ant is supported by all major IDEs.
-Maven Eclipse (http://m2eclipse.sonatype.org/update):  builds classpath based on the dependencies declared in the POM.
+Maven is supported in Intellij IDEA out-of-the-box 
+Maven is supported in Eclipse via m2eclipse plugin (http://m2eclipse.sonatype.org/)
 
 Maven Build profiles:  
 
 - default: builds all releasable modules
-- reporting:  builds reports
-- distribution:  builds distribution
-- examples:  builds examples
-- gui:  builds examples that require non-headless mode (separated as they do not run on CI: http://builds.codehaus.org/browse/JBEHAVE)
+- reporting: builds reports
+- distribution: builds distribution
+- examples: builds all headless examples
+- gui: builds examples that require gui (i.e. non-headless) mode (separated as they do not run on CI: http://builds.codehaus.org/browse/JBEHAVE)
 - nt: no-test, builds skipping unit-test behaviours 
 
 Note:  profiles are additive and the default profile is always active.

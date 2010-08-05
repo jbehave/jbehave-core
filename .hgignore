@@ -1,5 +1,0 @@
-syntax: regexp
-^bin
-^working
-.DS_Store
-.svn
