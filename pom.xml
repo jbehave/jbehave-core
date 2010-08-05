@@ -73,7 +73,7 @@
 
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>
-    <testSourceDirectory>src/behaviour/java</testSourceDirectory>
+    <testSourceDirectory>src/test/java</testSourceDirectory>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
@@ -89,7 +89,7 @@
     </resources>
     <testResources>
       <testResource>
-        <directory>src/behaviour/resources</directory>
+        <directory>src/test/resources</directory>
         <filtering>false</filtering>
       </testResource>
       <testResource>
