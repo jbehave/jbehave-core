@@ -23,7 +23,7 @@ import org.jbehave.core.junit.AnnotatedEmbedderRunner;
  */
 public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
-    private static final String TEST_SCOPE = "test";
+    static final String TEST_SCOPE = "test";
 
     /**
      * @parameter expression="${project.build.sourceDirectory}"
@@ -69,7 +69,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    private List<String> compileClasspathElements;
+     List<String> compileClasspathElements;
 
     /**
      * Test classpath.
@@ -78,7 +78,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    private List<String> testClasspathElements;
+     List<String> testClasspathElements;
 
     /**
      * The boolean flag to skip stories
@@ -148,11 +148,11 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * 
      * @return A boolean <code>true</code> if test scoped
      */
-    private boolean isTestScope() {
+    boolean isTestScope() {
         return TEST_SCOPE.equals(scope);
     }
 
-    private String searchDirectory() {
+    String searchDirectory() {
         if (isTestScope()) {
             return testSourceDirectory;
         }
@@ -169,7 +169,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         return new EmbedderClassLoader(classpathElements());
     }
 
-    private List<String> classpathElements() {
+    List<String> classpathElements() {
         List<String> classpathElements = compileClasspathElements;
         if (isTestScope()) {
             classpathElements = testClasspathElements;

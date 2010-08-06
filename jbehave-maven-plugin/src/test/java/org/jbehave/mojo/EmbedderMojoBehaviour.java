@@ -3,20 +3,27 @@ package org.jbehave.mojo;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.io.File;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
+import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
+import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.junit.Test;
 
 public class EmbedderMojoBehaviour {
@@ -65,19 +72,166 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldCreateNewEmbedderWithAntMonitor(){
+    public void shouldCreateNewEmbedderWithMavenMonitor(){
+        // Given
+        Log log = mock(Log.class);
+        AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            public void execute() throws MojoExecutionException, MojoFailureException {
+            }
+        };
+        mojo.setLog(log);
+        // When
+        Embedder embedder = mojo.newEmbedder();
+        // Then
+        EmbedderMonitor embedderMonitor = embedder.embedderMonitor();
+        assertThat(embedderMonitor.toString(), containsString("MavenEmbedderMonitor"));
+
+        // and verify monitor calls are propagated to Mojo Log        
+        BatchFailures failures = new BatchFailures();
+        embedderMonitor.batchFailed(failures);
+        verify(log).warn("Failed to run batch " + failures);
+        
+        String name = "name";
+        Throwable cause = new RuntimeException();
+        embedderMonitor.embeddableFailed(name, cause);
+        verify(log).warn("Failed to run embeddable " + name, cause);
+
+        List<String> classNames = asList("name1", "name2");
+        embedderMonitor.embeddablesSkipped(classNames);
+        verify(log).info("Skipped embeddables " + classNames);                      
+
+        embedderMonitor.runningEmbeddable(name);
+        verify(log).info("Running embeddable " + name);
+
+        List<String> storyPaths = asList("/path1", "/path2");
+        embedderMonitor.storiesSkipped(storyPaths);
+        verify(log).info("Skipped stories " + storyPaths);                                    
+
+        String path = "/path";
+        embedderMonitor.storyFailed(path, cause);
+        verify(log).warn("Failed to run story " + path, cause);
+        
+        embedderMonitor.runningStory(path);
+        verify(log).info("Running story " + path);
+
+        Object annotatedInstance = new Object();
+        Class<?> type = Object.class;
+        embedderMonitor.annotatedInstanceNotOfType(annotatedInstance, type);
+        verify(log).warn("Annotated instance "+annotatedInstance+" not of type "+type);            
+
+        File outputDirectory = new File("/dir");
+        List<String> formats = asList(Format.CONSOLE.name(), Format.HTML.name());
+        Properties viewProperties = new Properties();
+        embedderMonitor.generatingStoriesView(outputDirectory, formats, viewProperties);
+        verify(log).info("Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'"
+                    + " and view properties '" + viewProperties + "'");
+        
+        embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats, viewProperties, cause);
+        verify(log).warn("Failed to generate stories view in outputDirectory " + outputDirectory + " using formats " + formats
+                    + " and view properties '" + viewProperties + "'", cause);
+
+        int stories = 2;
+        int scenarios = 4;
+        int failedScenarios = 1;
+        embedderMonitor.storiesViewGenerated(stories, scenarios, failedScenarios);
+        verify(log).info("Stories view generated with " + stories +" stories containing "+ scenarios + " scenarios (of which  " + failedScenarios + " failed)");
+
+        embedderMonitor.storiesViewNotGenerated();
+        verify(log).info("Stories view not generated");
+
+    }
+
+    @Test
+    public void shouldAllowTestScopedSearchDirectory(){
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
         // When
+        mojo.testSourceDirectory = "src/test";
+        mojo.scope = "test" ;
+        // Then
+        assertThat(mojo.searchDirectory(), equalTo("src/test"));
+    }
+
+    @Test
+    public void shouldAllowTestScopedClasspathElements(){
+        // Given
+        AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            public void execute() throws MojoExecutionException, MojoFailureException {
+            }
+        };
+        // When
+        List<String> classpathElements = asList("target/test-classes");
+        mojo.testClasspathElements = classpathElements;
+        mojo.scope = "test" ;
+        // Then
+        assertThat(mojo.classpathElements(), equalTo(classpathElements));
+    }
+
+    
+    @Test
+    public void shouldAllowSpecificationOfEmbedderClass(){
+        // Given
+        AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            public void execute() throws MojoExecutionException, MojoFailureException {
+            }
+        };
+        // When
+        mojo.embedderClass = MyEmbedder.class.getName();
         Embedder embedder = mojo.newEmbedder();
         // Then
-        EmbedderMonitor embedderMonitor = embedder.embedderMonitor();
-        assertThat(embedderMonitor.toString(), containsString("MavenEmbedderMonitor"));
+        assertThat(embedder.getClass().getName(), equalTo(MyEmbedder.class.getName()));
     }
     
+    public static class MyEmbedder extends Embedder {
+        
+    }
+
+    @Test
+    public void shouldAllowSpecificationOfInjectableEmbedderClass(){
+        // Given
+        AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            public void execute() throws MojoExecutionException, MojoFailureException {
+            }
+        };
+        // When
+        mojo.injectableEmbedderClass = MyInjectableEmbedder.class.getName();
+        Embedder embedder = mojo.newEmbedder();
+        // Then
+        assertThat(embedder.getClass().getName(), equalTo(MyEmbedder.class.getName()));
+    }
+    
+    public static class MyInjectableEmbedder extends InjectableEmbedder {
+
+        public MyInjectableEmbedder(){
+            useEmbedder(new MyEmbedder());
+        }
+        
+        public void run() throws Throwable {
+        }
+        
+    }
+
+    @Test
+    public void shouldAllowSpecificationOfStoryFinderClass(){
+        // Given
+        AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            public void execute() throws MojoExecutionException, MojoFailureException {
+            }
+        };
+        // When
+        mojo.storyFinderClass = MyStoryFinder.class.getName();
+        StoryFinder storyFinder = mojo.newStoryFinder();
+        // Then
+        assertThat(storyFinder.getClass().getName(), equalTo(MyStoryFinder.class.getName()));
+    }
+    
+    public static class MyStoryFinder extends StoryFinder {
+        
+    }
+
     @Test
     public void shouldGenerateStoriesView() throws MojoExecutionException, MojoFailureException{
         // Given

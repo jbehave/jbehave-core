@@ -106,7 +106,7 @@ public abstract class AbstractEmbedderTask extends Task {
         return TEST_SCOPE.equals(scope);
     }
 
-    private String searchDirectory() {
+    String searchDirectory() {
         if (isSourceTestScope()) {
             return testSourceDirectory;
         }
@@ -208,8 +208,8 @@ public abstract class AbstractEmbedderTask extends Task {
             log("Skipped stories " + storyPaths, MSG_INFO);                                    
         }
 
-        public void storyFailed(String path, Throwable e) {
-            log("Failed to run story " + path, e, MSG_WARN);
+        public void storyFailed(String path, Throwable cause) {
+            log("Failed to run story " + path, cause, MSG_WARN);
         }
 
         public void runningStory(String path) {
@@ -228,7 +228,7 @@ public abstract class AbstractEmbedderTask extends Task {
         public void storiesViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
                 Throwable cause) {
             log("Failed to generate stories view in outputDirectory " + outputDirectory + " using formats " + formats
-                    + " and view properties '" + viewProperties + "'", MSG_WARN);
+                    + " and view properties '" + viewProperties + "'", cause, MSG_WARN);
         }
 
         public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
@@ -237,7 +237,7 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void storiesViewNotGenerated() {
-            log("Stories view not generated ", MSG_INFO);
+            log("Stories view not generated", MSG_INFO);
         }
 
         @Override
