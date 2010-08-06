@@ -300,4 +300,8 @@ public abstract class AbstractEmbedderTask extends Task {
     public void setAnnotatedEmbedderRunnerClass(String annotatedEmbedderRunnerClass) {
         this.annotatedEmbedderRunnerClass = annotatedEmbedderRunnerClass;
     }
+    
+    public void setStoryFinderClass(String storyFinderClass){
+        this.storyFinderClass = storyFinderClass;
+    }
 }

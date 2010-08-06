@@ -13,6 +13,7 @@ import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
+import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -84,61 +85,63 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * 
      * @parameter default-value="false"
      */
-    private boolean skip;
+    boolean skip = false;
 
     /**
      * The boolean flag to run in batch mode
      * 
      * @parameter default-value="false"
      */
-    private boolean batch;
+    boolean batch = false;
 
     /**
      * The boolean flag to ignore failure in stories
      * 
      * @parameter default-value="false"
      */
-    private boolean ignoreFailureInStories;
+    boolean ignoreFailureInStories = false;
 
     /**
      * The boolean flag to ignore failure in view
      * 
      * @parameter default-value="false"
      */
-    private boolean ignoreFailureInView;
+    boolean ignoreFailureInView = false;
 
     /**
      * The boolean flag to generate view after stories are run
      * 
      * @parameter default-value="true"
      */
-    private boolean generateViewAfterStories;
+    boolean generateViewAfterStories = true;
 
     /**
      * The embedder class
      * 
      * @parameter default-value="org.jbehave.core.embedder.Embedder"
      */
-    private String embedderClass;
+    String embedderClass = Embedder.class.getName();
 
     /**
      * The class that is injected with the embedder
      * 
      * @parameter
      */
-    private String injectableEmbedderClass;
+    String injectableEmbedderClass;
 
     /**
      * The annotated embedder runner class
      * 
      * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
      */
-    protected String annotatedEmbedderRunnerClass;
+    protected String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
 
     /**
      * Used to find story paths and class names
+     * 
+     * @parameter
      */
-    private String storyFinderClass = StoryFinder.class.getName();
+    String storyFinderClass = StoryFinder.class.getName();
 
     /**
      * Determines if the scope of the mojo classpath is "test"
