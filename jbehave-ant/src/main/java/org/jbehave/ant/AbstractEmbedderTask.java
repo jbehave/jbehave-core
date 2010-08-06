@@ -95,7 +95,7 @@ public abstract class AbstractEmbedderTask extends Task {
     /**
      * Used to find story paths and class names
      */
-    private StoryFinder finder = new StoryFinder();
+    private String storyFinderClass = StoryFinder.class.getName();
 
     /**
      * Determines if the scope of the source directory is "test"
@@ -106,7 +106,7 @@ public abstract class AbstractEmbedderTask extends Task {
         return TEST_SCOPE.equals(scope);
     }
 
-    private String rootSourceDirectory() {
+    private String searchDirectory() {
         if (isSourceTestScope()) {
             return testSourceDirectory;
         }
@@ -133,18 +133,39 @@ public abstract class AbstractEmbedderTask extends Task {
                 .doIgnoreFailureInView(ignoreFailureInView));
     }
 
+    /**
+     * Finds story paths, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
+     * specified {@link #includes} and {@link #excludes}.
+     * 
+     * @return A List of story paths found
+     */
     protected List<String> storyPaths() {
         log("Searching for story paths including " + includes + " and excluding " + excludes, MSG_DEBUG);
-        List<String> storyPaths = finder.findPaths(rootSourceDirectory(), includes, excludes);
+        List<String> storyPaths = newStoryFinder().findPaths(searchDirectory(), includes, excludes);
         log("Found story paths: " + storyPaths, MSG_INFO);
         return storyPaths;
     }
 
+    /**
+     * Finds class names, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
+     * specified {@link #includes} and {@link #excludes}.
+     * 
+     * @return A List of class names found
+     */
     protected List<String> classNames() {
         log("Searching for class names including " + includes + " and excluding " + excludes, MSG_DEBUG);
-        List<String> classNames = finder.findClassNames(rootSourceDirectory(), includes, excludes);
+        List<String> classNames = newStoryFinder().findClassNames(searchDirectory(), includes, excludes);
         log("Found class names : " + classNames, MSG_INFO);
         return classNames;
+    }
+
+    /**
+     * Creates an instance of StoryFinder, using the {@link #storyFinderClass}
+     * 
+     * @return A StoryFinder
+     */
+    protected StoryFinder newStoryFinder() {
+        return createClassLoader().newInstance(StoryFinder.class, storyFinderClass);
     }
 
     /**

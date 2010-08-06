@@ -29,21 +29,21 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-    private String sourceDirectory;
+    String sourceDirectory;
 
     /**
      * @parameter expression="${project.build.testSourceDirectory}"
      * @required
      * @readonly
      */
-    private String testSourceDirectory;
+    String testSourceDirectory;
 
     /**
      * The scope of the mojo classpath, either "compile" or "test"
      * 
      * @parameter default-value="compile"
      */
-    private String scope;
+    String scope;
 
     /**
      * Include filters, relative to the root source directory determined by the
@@ -51,7 +51,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * 
      * @parameter
      */
-    private List<String> includes;
+    List<String> includes;
 
     /**
      * Exclude filters, relative to the root source directory determined by the
@@ -59,7 +59,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * 
      * @parameter
      */
-    private List<String> excludes;
+    List<String> excludes;
 
     /**
      * Compile classpath.
@@ -138,7 +138,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     /**
      * Used to find story paths and class names
      */
-    private StoryFinder finder = new StoryFinder();
+    private String storyFinderClass = StoryFinder.class.getName();
 
     /**
      * Determines if the scope of the mojo classpath is "test"
@@ -149,7 +149,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         return TEST_SCOPE.equals(scope);
     }
 
-    private String rootSourceDirectory() {
+    private String searchDirectory() {
         if (isTestScope()) {
             return testSourceDirectory;
         }
@@ -174,20 +174,41 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         return classpathElements;
     }
 
+    /**
+     * Finds story paths, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
+     * specified {@link #includes} and {@link #excludes}.
+     * 
+     * @return A List of story paths found
+     */
     protected List<String> storyPaths() {
         getLog().debug("Searching for story paths including " + includes + " and excluding " + excludes);
-        List<String> storyPaths = finder.findPaths(rootSourceDirectory(), includes, excludes);
+        List<String> storyPaths = newStoryFinder().findPaths(searchDirectory(), includes, excludes);
         getLog().info("Found story paths: " + storyPaths);
         return storyPaths;
     }
 
+    /**
+     * Finds class names, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
+     * specified {@link #includes} and {@link #excludes}.
+     * 
+     * @return A List of class names found
+     */
     protected List<String> classNames() {
         getLog().debug("Searching for class names including " + includes + " and excluding " + excludes);
-        List<String> classNames = finder.findClassNames(rootSourceDirectory(), includes, excludes);
+        List<String> classNames = newStoryFinder().findClassNames(searchDirectory(), includes, excludes);
         getLog().info("Found class names: " + classNames);
         return classNames;
     }
 
+    /**
+     * Creates an instance of StoryFinder, using the {@link #storyFinderClass}
+     * 
+     * @return A StoryFinder
+     */
+    protected StoryFinder newStoryFinder() {
+        return createClassLoader().newInstance(StoryFinder.class, storyFinderClass);
+    }
+    
     /**
      * Creates an instance of Embedder, either using
      * {@link #injectableEmbedderClass} (if set) or defaulting to
