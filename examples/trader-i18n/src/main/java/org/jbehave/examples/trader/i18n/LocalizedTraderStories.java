@@ -28,15 +28,15 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 
 /**
- * Abstract base ConfigurableEmbedder to run multiple stories via JUnit
- * in different languages.  The concrete extension need only specify:
+ * Abstract base ConfigurableEmbedder allowing localization of multiple stories
+ * via JUnit. The concrete extension need only specify:
  * <ul>
- *   <li>language: e.g. "fr", "it, "pt"</li>
- *   <li>story pattern to look up stories</li>
- *   <li>language-specific steps instance</li>
+ * <li>language: e.g. "fr", "it, "pt"</li>
+ * <li>story pattern to look up stories</li>
+ * <li>language-specific steps instance</li>
  * </ul>
  */
-public abstract class I18nTraderStories extends JUnitStories {
+public abstract class LocalizedTraderStories extends JUnitStories {
 
     @Override
     public Configuration configuration() {

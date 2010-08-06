@@ -1,7 +1,7 @@
 package org.jbehave.examples.trader.i18n;
 
 
-public class ItTraderStories extends I18nTraderStories {
+public class ItTraderStories extends LocalizedTraderStories {
     
     @Override
     protected String language() {
