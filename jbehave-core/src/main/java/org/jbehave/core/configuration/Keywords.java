@@ -227,7 +227,7 @@ public class Keywords {
     }
 
     @SuppressWarnings("serial")
-    public static final class KeywordNotFound extends RuntimeException {
+    public static class KeywordNotFound extends RuntimeException {
 
         public KeywordNotFound(String name, Map<String, String> keywords) {
             super("Keyword " + name + " not found amongst " + keywords);

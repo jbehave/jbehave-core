@@ -69,7 +69,7 @@ public class LocalizedKeywords extends Keywords {
     }
 
     @SuppressWarnings("serial")
-    public static final class ResourceBundleNotFound extends RuntimeException {
+    public static class ResourceBundleNotFound extends RuntimeException {
 
         public ResourceBundleNotFound(String bundleName, Locale locale, ClassLoader classLoader,
                 MissingResourceException cause) {
@@ -80,7 +80,7 @@ public class LocalizedKeywords extends Keywords {
     }
 
     @SuppressWarnings("serial")
-    public static final class LocalizedKeywordNotFound extends RuntimeException {
+    public static class LocalizedKeywordNotFound extends RuntimeException {
 
         public LocalizedKeywordNotFound(String name, ResourceBundle bundle) {
             super("Keyword" + name + " not found in resource bundle " + bundle);
