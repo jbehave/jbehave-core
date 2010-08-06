@@ -10,11 +10,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.jbehave.core.Embeddable;
-import org.jbehave.core.embedder.EmbedderClassLoader;
 
 /**
- * Finds stories from a file system, using Ant's {@link DirectoryScanner}.
+ * Finds stories by scanning file system. Stories can be either in the form of
+ * embeddable class names or story paths.
  */
 public class StoryFinder {
 
@@ -27,6 +26,22 @@ public class StoryFinder {
 
     public StoryFinder(DirectoryScanner scanner) {
         this.scanner = scanner;
+    }
+
+    /**
+     * Finds java source paths from a base directory, allowing for
+     * includes/excludes, and converts them to class names.
+     * 
+     * @param searchInDirectory
+     *            the base directory path to search in
+     * @param includes
+     *            the List of include patterns, or <code>null</code> if none
+     * @param excludes
+     *            the List of exclude patterns, or <code>null</code> if none
+     * @return A List of class names found
+     */
+    public List<String> findClassNames(String searchInDirectory, List<String> includes, List<String> excludes) {
+        return classNames(normalise(scan(searchInDirectory, includes, excludes)));
     }
 
     /**
@@ -66,23 +81,6 @@ public class StoryFinder {
             String prefixWith) {
         return normalise(prefix(prefixWith, scan(searchInDirectory, includes, excludes)));
     }
-
-    /**
-     * Finds java source paths from a base directory, allowing for includes/excludes, 
-     * and converts them to class names. 
-     * 
-     * @param searchInDirectory
-     *            the base directory path to search in
-     * @param includes
-     *            the List of include patterns, or <code>null</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>null</code> if none
-     * @return A List of class names found
-     */
-    public List<String> findClassNames(String searchInDirectory, List<String> includes, List<String> excludes){
-        return classNames(normalise(scan(searchInDirectory, includes, excludes)));
-    }
-
     protected List<String> normalise(List<String> paths) {
         List<String> transformed = new ArrayList<String>(paths);
         CollectionUtils.transform(transformed, new Transformer() {
@@ -107,7 +105,7 @@ public class StoryFinder {
         });
         return transformed;
     }
-    
+
     protected List<String> classNames(List<String> paths) {
         List<String> trasformed = new ArrayList<String>(paths);
         CollectionUtils.transform(trasformed, new Transformer() {
@@ -120,17 +118,6 @@ public class StoryFinder {
             }
         });
         return trasformed;
-    }
-
-
-    protected List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
-        List<Embeddable> embeddables = new ArrayList<Embeddable>();
-        for (String className : classNames) {
-            if (!classLoader.isAbstract(className)) {
-                embeddables.add(classLoader.newInstance(Embeddable.class, className));
-            }
-        }
-        return embeddables;
     }
 
     protected List<String> scan(String basedir, List<String> includes, List<String> excludes) {
@@ -147,6 +134,5 @@ public class StoryFinder {
         scanner.scan();
         return asList(scanner.getIncludedFiles());
     }
-
 
 }
