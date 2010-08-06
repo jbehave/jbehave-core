@@ -3,6 +3,7 @@ package org.jbehave.core.configuration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -209,7 +210,13 @@ public class AnnotationBuilder {
         try {
             Object instance = annotatedClass.newInstance();
             if (instance instanceof Embeddable) {
-                ((Embeddable) instance).useEmbedder(embedder);
+                Embeddable embeddable = (Embeddable) instance;
+                embeddable.useEmbedder(embedder);
+            }
+            if (instance instanceof ConfigurableEmbedder){
+                ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder) instance;
+                configurableEmbedder.useConfiguration(embedder.configuration());
+                configurableEmbedder.addSteps(embedder.candidateSteps());
             }
             return instance;
         } catch (Exception e) {

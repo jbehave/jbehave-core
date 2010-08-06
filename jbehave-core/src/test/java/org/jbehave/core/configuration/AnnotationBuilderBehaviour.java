@@ -6,7 +6,14 @@ import static org.hamcrest.Matchers.instanceOf;
 
 import java.util.List;
 
+import org.hamcrest.Matchers;
+import org.jbehave.core.ConfigurableEmbedder;
+import org.jbehave.core.InjectableEmbedder;
+import org.jbehave.core.annotations.Configure;
+import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.UsingSteps;
+import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
 import org.junit.Test;
@@ -47,6 +54,26 @@ public class AnnotationBuilderBehaviour {
         }
     }
 
+    @Test
+    public void shouldCreateEmbeddableInstanceFromInjectableEmbedder() {
+        AnnotationBuilder builderInjectable = new AnnotationBuilder(AnnotedInjectable.class);
+        Object instance = builderInjectable.embeddableInstance();
+        assertThat(instance, Matchers.instanceOf(InjectableEmbedder.class));
+        Embedder embedder = ((InjectableEmbedder) instance).injectedEmbedder();
+        assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
+        assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
+    }
+
+    @Test
+    public void shouldCreateEmbeddableInstanceFromConfigurableEmbedder() {
+        AnnotationBuilder builderConfigurable = new AnnotationBuilder(AnnotedConfigurable.class);
+        Object instance = builderConfigurable.embeddableInstance();
+        assertThat(instance, Matchers.instanceOf(ConfigurableEmbedder.class));
+        Embedder embedder = ((ConfigurableEmbedder) instance).configuredEmbedder();
+        assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
+        assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
+    }
+
     @UsingSteps(instances = { MySteps.class, MyOtherSteps.class })
     private static class Annotated {
 
@@ -83,4 +110,28 @@ public class AnnotationBuilderBehaviour {
 
     }
 
+    @Configure(keywords = MyKeywords.class)
+    @UsingEmbedder()
+    @UsingSteps(instances = {MySteps.class})
+    static class AnnotedInjectable extends InjectableEmbedder {
+
+        public void run() throws Throwable {
+        }
+
+    }
+    
+    @Configure(keywords = MyKeywords.class)
+    @UsingEmbedder()
+    @UsingSteps(instances = {MySteps.class})
+    static class AnnotedConfigurable extends ConfigurableEmbedder {
+
+        public void run() throws Throwable {
+        }
+
+    }
+
+    static class MyKeywords extends LocalizedKeywords {
+        
+    }
+   
 }

@@ -56,15 +56,15 @@ public abstract class ConfigurableEmbedder implements Embeddable {
         this.candidateSteps.addAll(steps);
     }
 
-    protected Configuration configuration() {
+    public Configuration configuration() {
         return configuration;
     }
 
-    protected List<CandidateSteps> candidateSteps() {
+    public List<CandidateSteps> candidateSteps() {
         return candidateSteps;
     }
 
-    protected Embedder configuredEmbedder() {
+    public Embedder configuredEmbedder() {
         embedder.useConfiguration(configuration());
         embedder.useCandidateSteps(candidateSteps());
         return embedder;
