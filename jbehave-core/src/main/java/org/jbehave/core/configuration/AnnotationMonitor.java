@@ -8,6 +8,4 @@ public interface AnnotationMonitor {
 
     void annotationNotFound(Class<? extends Annotation> annotation, Object annotatedInstance);
 
-    void annotationValueNotFound(String memberName, Class<? extends Annotation> annotation, Object annotatedInstance);
-
 }

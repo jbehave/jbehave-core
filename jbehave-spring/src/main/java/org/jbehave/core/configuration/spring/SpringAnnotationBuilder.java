@@ -40,9 +40,9 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
     @Override
     public Configuration buildConfiguration() throws AnnotationRequired {
         if (annotationFinder().isAnnotationPresent(UsingSpring.class)) {
-            if (annotationFinder().isAnnotationValuePresent(UsingSpring.class, "resources")) {
-                List<String> resources = annotationFinder().getAnnotatedValues(UsingSpring.class, String.class,
-                        "resources");
+            List<String> resources = annotationFinder()
+                    .getAnnotatedValues(UsingSpring.class, String.class, "resources");
+            if (resources.size() > 0) {
                 context = applicationContextFor(annotatedClass().getClassLoader(), resources);
             }
         } else {
@@ -84,16 +84,16 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
     @SuppressWarnings("unchecked")
     protected <T, V extends T> T instanceOf(final Class<T> type, final Class<V> ofClass) {
         if (context != null) {
-            if ( !type.equals(Object.class) ){
+            if (!type.equals(Object.class)) {
                 Map<String, Object> beansOfType = context.getBeansOfType(type);
                 if (beansOfType.size() > 0) {
                     return (T) beansOfType.values().iterator().next();
-                }                
+                }
             } else {
                 Map<String, Object> beansOfType = context.getBeansOfType(ofClass);
                 if (beansOfType.size() > 0) {
                     return (T) beansOfType.values().iterator().next();
-                }                                
+                }
             }
         }
         return super.instanceOf(type, ofClass);

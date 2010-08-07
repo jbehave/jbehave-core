@@ -36,12 +36,9 @@ public class AnnotationFinder {
             String memberName) {
         Annotation annotation = getAnnotation(annotationClass);
         if (annotation != null) {
-            Object value = getAnnotationValue(annotation, memberName);
-            if (value != null) {
-                return (T) value;
-            }
+            return (T) getAnnotationValue(annotation, memberName);
         }
-        throw new AnnotationRequired(annotationClass, memberName);
+        throw new AnnotationRequired(annotatedClass, annotationClass);
     }
 
     @SuppressWarnings("unchecked")
@@ -56,10 +53,9 @@ public class AnnotationFinder {
             list.add((T) value);
         }
         boolean inheritValues = true;
-        try {
-            inheritValues = getAnnotatedValue(annotationClass, boolean.class, createInheritMemberName(memberName));
-        } catch (AnnotationRequired e) {
-            // no inherit property found - assume true
+        String inheritMemberName = createInheritMemberName(memberName);
+        if (isAnnotationValuePresent(annotationClass, inheritMemberName)) {
+            inheritValues = getAnnotatedValue(annotationClass, boolean.class, inheritMemberName);
         }
         if (inheritValues) {
             Class<?> superClass = annotatedClass.getSuperclass();
@@ -95,7 +91,7 @@ public class AnnotationFinder {
         try {
             Method method = annotation.annotationType().getDeclaredMethod(attributeName, new Class[0]);
             return method.invoke(annotation);
-        } catch (Exception ex) {
+        } catch (Exception e) {
             return null;
         }
     }

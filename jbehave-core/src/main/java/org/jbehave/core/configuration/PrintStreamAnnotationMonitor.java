@@ -24,8 +24,4 @@ public class PrintStreamAnnotationMonitor implements AnnotationMonitor {
         output.println("Annotation " + annotation + " not found in "+annotatedInstance);        
     }
 
-    public void annotationValueNotFound(String memberName, Class<? extends Annotation> annotation,
-            Object annotatedInstance) {
-        output.println("Member "+memberName+" not found for aannotation " + annotation + " in "+annotatedInstance);                
-    }
 }

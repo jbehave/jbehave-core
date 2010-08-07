@@ -119,16 +119,11 @@ public class AnnotationBuilder {
         List<Object> stepsInstances = new ArrayList<Object>();
         InjectableStepsFactory factory = null;
         if (finder.isAnnotationPresent(UsingSteps.class)) {
-            if (finder.isAnnotationValuePresent(UsingSteps.class, "instances")) {
-                List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(UsingSteps.class, Object.class,
-                        "instances");
-                for (Class<Object> stepsClass : stepsClasses) {
-                    stepsInstances.add(instanceOf(Object.class, stepsClass));
-                }
-                factory = new InstanceStepsFactory(configuration, stepsInstances);
-            } else {
-                annotationMonitor.annotationValueNotFound("instances", UsingSteps.class, annotatedClass);
+            List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(UsingSteps.class, Object.class, "instances");
+            for (Class<Object> stepsClass : stepsClasses) {
+                stepsInstances.add(instanceOf(Object.class, stepsClass));
             }
+            factory = new InstanceStepsFactory(configuration, stepsInstances);
         } else {
             annotationMonitor.annotationNotFound(UsingSteps.class, annotatedClass);
         }
@@ -213,7 +208,7 @@ public class AnnotationBuilder {
                 Embeddable embeddable = (Embeddable) instance;
                 embeddable.useEmbedder(embedder);
             }
-            if (instance instanceof ConfigurableEmbedder){
+            if (instance instanceof ConfigurableEmbedder) {
                 ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder) instance;
                 configurableEmbedder.useConfiguration(embedder.configuration());
                 configurableEmbedder.addSteps(embedder.candidateSteps());
@@ -224,16 +219,16 @@ public class AnnotationBuilder {
             throw new InstantiationFailed(annotatedClass, e);
         }
     }
-    
+
     @SuppressWarnings("serial")
     public static class InstantiationFailed extends RuntimeException {
 
         public InstantiationFailed(Class<?> ofClass, Class<?> type, Throwable cause) {
-            super("Failed to instantiate class "+ofClass+" of type "+ type, cause);
+            super("Failed to instantiate class " + ofClass + " of type " + type, cause);
         }
 
         public InstantiationFailed(Class<?> ofClass, Throwable cause) {
-            super("Failed to instantiate class "+ofClass, cause);
+            super("Failed to instantiate class " + ofClass, cause);
         }
 
     }
