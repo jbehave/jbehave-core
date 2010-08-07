@@ -5,7 +5,11 @@ import org.jbehave.core.configuration.pico.PicoAnnotationBuilder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.junit.runners.model.InitializationError;
 
+/**
+ * AnnotatedEmbedderRunner that uses {@link PicoAnnotationBuilder}.
+ */
 public class PicoAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
+    
     private PicoAnnotationBuilder annotationBuilder;
 
     public PicoAnnotatedEmbedderRunner(Class<?> testClass) throws InitializationError {
@@ -13,7 +17,7 @@ public class PicoAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
         annotationBuilder = new PicoAnnotationBuilder(testClass());
     }
 
-    protected AnnotationBuilder annotationBuilder() {
+    public AnnotationBuilder annotationBuilder() {
         return annotationBuilder;
     }
 

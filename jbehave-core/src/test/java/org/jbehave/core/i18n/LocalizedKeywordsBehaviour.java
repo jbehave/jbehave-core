@@ -21,7 +21,6 @@ import static org.jbehave.core.configuration.Keywords.PENDING;
 import static org.jbehave.core.configuration.Keywords.SCENARIO;
 import static org.jbehave.core.configuration.Keywords.THEN;
 import static org.jbehave.core.configuration.Keywords.WHEN;
-import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -68,7 +67,7 @@ public class LocalizedKeywordsBehaviour {
     }
 
     @Test
-    public void shouldAllowKeywordsToBeOverriddenInStoryConfiguration() {
+    public void shouldAllowKeywordsToBeConfigured() {
         Configuration configuration = new MostUsefulConfiguration();
         ensureKeywordsAreLocalised(configuration, new Locale("en"));
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
@@ -76,7 +75,7 @@ public class LocalizedKeywordsBehaviour {
     }
 
     private void ensureKeywordsAreLocalised(Configuration configuration, Locale locale) {
-        Keywords keywords = keywordsFor(locale, null);
+        Keywords keywords = keywordsFor(locale, null, null);
         Map<StepType, String> startingWordsByType = keywords.startingWordsByType();
         assertThat(startingWordsByType.get(StepType.GIVEN), equalTo(keywords.given()));
         assertThat(startingWordsByType.get(StepType.WHEN), equalTo(keywords.when()));
@@ -86,7 +85,7 @@ public class LocalizedKeywordsBehaviour {
     }
 
     private void ensureKeywordsAreLocalisedFor(Locale locale, String bundleName) throws IOException {
-        Keywords keywords = keywordsFor(locale, bundleName);
+        Keywords keywords = keywordsFor(locale, bundleName, null);
         Properties properties = bundleFor(locale);
         ensureKeywordIs(properties, NARRATIVE, keywords.narrative());
         ensureKeywordIs(properties, IN_ORDER_TO, keywords.inOrderTo());
@@ -109,15 +108,20 @@ public class LocalizedKeywordsBehaviour {
     }
     
     private LocalizedKeywords keywordsFor(Locale locale) {
-        return keywordsFor(locale, null);
+        return keywordsFor(locale, null, null);
     }
         
-    private LocalizedKeywords keywordsFor(Locale locale, String bundleName) {
+    private LocalizedKeywords keywordsFor(Locale locale, String bundleName, ClassLoader classLoader) {
+        LocalizedKeywords keywords;
         if (bundleName == null) {
-            return (locale == null ? new LocalizedKeywords() : new LocalizedKeywords(locale));
+            keywords = (locale == null ? new LocalizedKeywords() : new LocalizedKeywords(locale));
         } else {
-            return new LocalizedKeywords(locale, bundleName, this.getClass().getClassLoader());
+            keywords = new LocalizedKeywords(locale, bundleName, classLoader);
         }
+        if ( locale != null ){
+            assertThat(keywords.getLocale(), equalTo(locale));
+        }
+        return keywords;
     }
 
     private Properties bundleFor(Locale locale) throws IOException {
@@ -132,7 +136,7 @@ public class LocalizedKeywordsBehaviour {
     }
 
     private void ensureKeywordIs(Properties properties, String key, String value) {
-        assertEquals(properties.getProperty(key, value), value);
+        assertThat(properties.getProperty(key, value), equalTo(value));
     }
 
 }

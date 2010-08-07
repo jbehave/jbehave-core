@@ -5,17 +5,20 @@ import org.jbehave.core.configuration.guice.GuiceAnnotationBuilder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.junit.runners.model.InitializationError;
 
+/**
+ * AnnotatedEmbedderRunner that uses {@link GuiceAnnotationBuilder}.
+ */
 public class GuiceAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
 
-    private GuiceAnnotationBuilder guiceAnnotationBuilder;
+    private GuiceAnnotationBuilder annotationBuilder;
 
     public GuiceAnnotatedEmbedderRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
-        this.guiceAnnotationBuilder = new GuiceAnnotationBuilder(testClass());
+        this.annotationBuilder = new GuiceAnnotationBuilder(testClass());
     }
 
-    protected AnnotationBuilder annotationBuilder() {
-        return guiceAnnotationBuilder;
+    public AnnotationBuilder annotationBuilder() {
+        return annotationBuilder;
     }
 
 }
