@@ -13,118 +13,115 @@ import org.hamcrest.Matcher;
 public class OutcomesTable {
 
     private static final List<String> FIELDS = asList("Description", "Value", "Matcher", "Verified");
-	private static final String NEWLINE = "\n";
+    private static final String NEWLINE = "\n";
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
 
-	private List<Outcome<?>> outcomes = new ArrayList<Outcome<?>>();
-	private List<Outcome<?>> failedOutcomes = new ArrayList<Outcome<?>>();
-	private OutcomesFailed failureCause;
+    private List<Outcome<?>> outcomes = new ArrayList<Outcome<?>>();
+    private List<Outcome<?>> failedOutcomes = new ArrayList<Outcome<?>>();
+    private OutcomesFailed failureCause;
 
-	public <T> void addOutcome(String description, T value, Matcher<T> matcher) {
-		outcomes.add(new Outcome<T>(description, value, matcher));
-	}
+    public <T> void addOutcome(String description, T value, Matcher<T> matcher) {
+        outcomes.add(new Outcome<T>(description, value, matcher));
+    }
 
-	public void verify() {
-		boolean failed = false;
-		failedOutcomes.clear();
-		for (Outcome<?> outcome : outcomes) {
-			if (!outcome.isVerified()) {
-				failedOutcomes.add(outcome);
-				failed = true;
-				break;
-			}
-		}
-		if (failed) {
-			failureCause = new OutcomesFailed(this);
-			throw failureCause;
-		}
-	}
+    public void verify() {
+        boolean failed = false;
+        failedOutcomes.clear();
+        for (Outcome<?> outcome : outcomes) {
+            if (!outcome.isVerified()) {
+                failedOutcomes.add(outcome);
+                failed = true;
+                break;
+            }
+        }
+        if (failed) {
+            failureCause = new OutcomesFailed(this);
+            throw failureCause;
+        }
+    }
 
-	public Throwable failureCause() {
-		return failureCause;
-	}
+    public Throwable failureCause() {
+        return failureCause;
+    }
 
-	public List<Outcome<?>> getOutcomes() {
-		return outcomes;
-	}
+    public List<Outcome<?>> getOutcomes() {
+        return outcomes;
+    }
 
-	public List<Outcome<?>> getFailedOutcomes() {
-		return failedOutcomes;
-	}
+    public List<Outcome<?>> getFailedOutcomes() {
+        return failedOutcomes;
+    }
 
-	public List<String> getOutcomeFields(){
-		return FIELDS;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (Iterator<String> iterator = FIELDS.iterator(); iterator.hasNext(); ) {
-			sb.append(HEADER_SEPARATOR).append(iterator.next());
-			if (!iterator.hasNext()){
-				sb.append(HEADER_SEPARATOR).append(NEWLINE);				
-			}
-		}
-		for (Outcome<?> outcome : outcomes) {
-			sb.append(VALUE_SEPARATOR).append(outcome.getDescription())
-			  .append(VALUE_SEPARATOR).append(outcome.getValue())
-			  .append(VALUE_SEPARATOR).append(outcome.getMatcher())
-			  .append(VALUE_SEPARATOR).append(outcome.isVerified())
-			  .append(VALUE_SEPARATOR).append(NEWLINE);
-		}
-		return sb.toString();
-	}
+    public List<String> getOutcomeFields() {
+        return FIELDS;
+    }
 
-	public static class Outcome<T> {
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Iterator<String> iterator = FIELDS.iterator(); iterator.hasNext();) {
+            sb.append(HEADER_SEPARATOR).append(iterator.next());
+            if (!iterator.hasNext()) {
+                sb.append(HEADER_SEPARATOR).append(NEWLINE);
+            }
+        }
+        for (Outcome<?> outcome : outcomes) {
+            sb.append(VALUE_SEPARATOR).append(outcome.getDescription()).append(VALUE_SEPARATOR).append(
+                    outcome.getValue()).append(VALUE_SEPARATOR).append(outcome.getMatcher()).append(VALUE_SEPARATOR)
+                    .append(outcome.isVerified()).append(VALUE_SEPARATOR).append(NEWLINE);
+        }
+        return sb.toString();
+    }
 
-		private final String description;
-		private final T value;
-		private final Matcher<T> matcher;
-		private final boolean verified;
-		
-		public Outcome(String description, T value, Matcher<T> matcher) {
-			this.description = description;
-			this.value = value;
-			this.matcher = matcher;
-			this.verified = matcher.matches(value);
-		}
+    public static class Outcome<T> {
 
-		public String getDescription() {
-			return description;
-		}
+        private final String description;
+        private final T value;
+        private final Matcher<T> matcher;
+        private final boolean verified;
 
-		public T getValue() {
-			return value;
-		}
+        public Outcome(String description, T value, Matcher<T> matcher) {
+            this.description = description;
+            this.value = value;
+            this.matcher = matcher;
+            this.verified = matcher.matches(value);
+        }
 
-		public Matcher<T> getMatcher() {
-			return matcher;
-		}
+        public String getDescription() {
+            return description;
+        }
 
-		public boolean isVerified() {
-			return verified;
-		}
+        public T getValue() {
+            return value;
+        }
 
-		@Override
-		public String toString() {
-			return ToStringBuilder.reflectionToString(this,
-					ToStringStyle.SHORT_PREFIX_STYLE);
-		}
-	}
+        public Matcher<T> getMatcher() {
+            return matcher;
+        }
 
-	@SuppressWarnings("serial")
-	public static class OutcomesFailed extends RuntimeException {
-		private OutcomesTable outcomes;
+        public boolean isVerified() {
+            return verified;
+        }
 
-		public OutcomesFailed(OutcomesTable outcomes) {
-			this.outcomes = outcomes;
-		}
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        }
+    }
 
-		public OutcomesTable outcomesTable() {
-			return outcomes;
-		}
+    @SuppressWarnings("serial")
+    public static class OutcomesFailed extends RuntimeException {
+        private OutcomesTable outcomes;
 
-	}
+        public OutcomesFailed(OutcomesTable outcomes) {
+            this.outcomes = outcomes;
+        }
+
+        public OutcomesTable outcomesTable() {
+            return outcomes;
+        }
+
+    }
 
 }

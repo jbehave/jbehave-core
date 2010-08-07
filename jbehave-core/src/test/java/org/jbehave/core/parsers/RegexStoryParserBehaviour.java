@@ -5,6 +5,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 
 import java.io.File;
 import java.util.List;
@@ -122,7 +124,7 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
-    public void shouldExtractStoryWithMultilineScenarioTitle() {
+    public void shouldParseStoryWithMultilineScenarioTitle() {
         String wholeStory = "Scenario: A title\n that is spread across\n multiple lines" + NL + NL +
                 "Given a step that's pending" + NL +
                 "When I run the scenario" + NL +
@@ -160,10 +162,25 @@ public class RegexStoryParserBehaviour {
         Description description = story.getDescription();
         assertThat(description.asString(), equalTo("Story: This is free-text description"));
         Narrative narrative = story.getNarrative();
-        assertThat(narrative, not(equalTo(Narrative.EMPTY)));
+        assertThat(narrative.isEmpty(), not(true));
         assertThat(narrative.inOrderTo().toString(), equalTo("renovate my house"));
         assertThat(narrative.asA().toString(), equalTo("customer"));
         assertThat(narrative.iWantTo().toString(), equalTo("get a loan"));
+    }
+
+    @Test
+    public void shouldParseStoryWithIncompleteNarrative() {
+        String wholeStory = "Story: This is free-text description"+ NL +
+                "Narrative: This is an incomplete narrative" + NL +
+                "In order to renovate my house" + NL +
+                "As a customer" + NL +
+                "Scenario:  A first scenario";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+        Description description = story.getDescription();
+        assertThat(description.asString(), equalTo("Story: This is free-text description"));
+        Narrative narrative = story.getNarrative();
+        assertThat(narrative.isEmpty(), is(true));
     }
 
     @Test
@@ -194,12 +211,15 @@ public class RegexStoryParserBehaviour {
 
         Story story = parser.parseStory(wholeStory, storyPath);
 
+        assertThat(story.toString(), containsString("This is just a story description"));
         assertThat(story.getDescription().asString(), equalTo("This is just a story description"));
 
+        assertThat(story.toString(), containsString("Narrative"));
         assertThat(story.getNarrative().inOrderTo(), equalTo("see what we're not delivering"));
         assertThat(story.getNarrative().asA(), equalTo("developer"));
         assertThat(story.getNarrative().iWantTo(), equalTo("see the narrative for my story when a scenario in that story breaks"));
 
+        assertThat(story.toString(), containsString("A pending scenario"));
         assertThat(story.getScenarios().get(0).getTitle(), equalTo("A pending scenario"));
         assertThat(story.getScenarios().get(0).getGivenStoryPaths().size(), equalTo(0));
         assertThat(story.getScenarios().get(0).getSteps(), equalTo(asList(
@@ -209,6 +229,7 @@ public class RegexStoryParserBehaviour {
                 "Then I should see this in the output"
         )));
 
+        assertThat(story.toString(), containsString("A passing scenario"));
         assertThat(story.getScenarios().get(1).getTitle(), equalTo("A passing scenario"));
         assertThat(story.getScenarios().get(1).getGivenStoryPaths().size(), equalTo(0));
         assertThat(story.getScenarios().get(1).getSteps(), equalTo(asList(
@@ -217,6 +238,7 @@ public class RegexStoryParserBehaviour {
                 "Then this should not be in the output"
         )));
 
+        assertThat(story.toString(), containsString("A failing scenario"));
         assertThat(story.getScenarios().get(2).getTitle(), equalTo("A failing scenario"));
         assertThat(story.getScenarios().get(2).getGivenStoryPaths().size(), equalTo(0));
         assertThat(story.getScenarios().get(2).getSteps(), equalTo(asList(

@@ -72,10 +72,8 @@ public class ExamplesTable {
         for (String column : row.split(buildRegex(separator))) {
             columns.add(column.trim());
         }
-        int size = columns.size();
-        if (size > 0) {
-            columns.remove(0);
-        }
+        // we'll always have a leading column to the left side of the separator which we ignore
+        columns.remove(0);
         return columns;
     }
 
