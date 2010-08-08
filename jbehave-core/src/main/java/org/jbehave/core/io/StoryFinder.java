@@ -19,13 +19,19 @@ public class StoryFinder {
 
     private static final String JAVA = ".java";
     private final DirectoryScanner scanner;
+    private final String classNameExtension;
 
     public StoryFinder() {
-        this(new DirectoryScanner());
+        this(JAVA);
     }
 
-    public StoryFinder(DirectoryScanner scanner) {
+    public StoryFinder(String classNameExtension) {
+        this(new DirectoryScanner(), classNameExtension);
+    }
+
+    public StoryFinder(DirectoryScanner scanner, String classNameExtension) {
         this.scanner = scanner;
+        this.classNameExtension = classNameExtension;
     }
 
     /**
@@ -111,10 +117,10 @@ public class StoryFinder {
         CollectionUtils.transform(trasformed, new Transformer() {
             public Object transform(Object input) {
                 String path = (String) input;
-                if (!StringUtils.endsWithIgnoreCase(path, JAVA)) {
+                if (!StringUtils.endsWithIgnoreCase(path, classNameExtension)) {
                     return input;
                 }
-                return StringUtils.removeEndIgnoreCase(path, JAVA).replace('/', '.');
+                return StringUtils.removeEndIgnoreCase(path, classNameExtension).replace('/', '.');
             }
         });
         return trasformed;

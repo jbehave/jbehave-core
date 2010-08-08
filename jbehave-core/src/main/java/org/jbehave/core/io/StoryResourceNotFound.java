@@ -12,12 +12,8 @@ public class StoryResourceNotFound extends RuntimeException {
         super("Story path '" + storyPath + "' not found by class loader " + classLoader);
     }
 
-    public StoryResourceNotFound(String storyPath, Exception cause) {
-        super("Story path '" + storyPath + "' not found: " + cause, cause);
-    }
-
     public StoryResourceNotFound(String storyPath, List<String> traversalPaths) {
-        super("Story path '" + storyPath + "' not found: while looking in '" + traversalPaths + "'");
+        super("Story path '" + storyPath + "' not found while looking in '" + traversalPaths + "'");
     }
 
 }

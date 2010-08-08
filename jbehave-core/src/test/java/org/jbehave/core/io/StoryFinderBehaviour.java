@@ -16,9 +16,10 @@ import org.junit.Test;
 
 public class StoryFinderBehaviour {
 
+    private StoryFinder finder = new StoryFinder();
+    
     @Test
     public void shouldFindPaths() {
-        StoryFinder finder = new StoryFinder();
         List<String> storyPaths = finder.findPaths("src/test/java", asList("**/stories/*_story"), asList(""));
         assertThat(storyPaths.size(), equalTo(4));
         assertThat(storyPaths, hasItem(containsString("/")));
@@ -29,7 +30,6 @@ public class StoryFinderBehaviour {
 
     @Test
     public void shouldFindPathsAndPrefixThem() {
-        StoryFinder finder = new StoryFinder();
         List<String> storyPaths = finder.findPaths("src/test/java", asList("**/stories/*_story"), asList(""), "file:");
         assertThat(storyPaths.size(), equalTo(4));
         assertThat(storyPaths, hasItem(containsString("/")));
@@ -39,8 +39,17 @@ public class StoryFinderBehaviour {
     }
 
     @Test
-    public void shouldFindClassNames() {
-        StoryFinder finder = new StoryFinder();
+    public void shouldFindPathsAndIgnorePrefixIfBlank() {
+        List<String> storyPaths = finder.findPaths("src/test/java", asList("**/stories/*_story"), asList(""), "");
+        assertThat(storyPaths.size(), equalTo(4));
+        assertThat(storyPaths, hasItem(containsString("/")));
+        assertThat(storyPaths, hasItem(not(startsWith("/"))));
+        assertThat(storyPaths, hasItem(startsWith("org/jbehave/core/io/stories")));
+        assertThat(storyPaths, hasItem(endsWith("_story")));
+    }
+
+    @Test
+    public void shouldFindClassNamesAndTrasformThemIfMatchingExtension() {
         List<String> classNames = finder.findClassNames("src/test/java", asList("**/stories/*.java"), asList(""));
         assertThat(classNames.size(), equalTo(3));
         assertThat(classNames, hasItem(not(containsString("/"))));
@@ -49,21 +58,37 @@ public class StoryFinderBehaviour {
     }
 
     @Test
+    public void shouldFindClassNamesButNotTransformThemIfNotMatchingExtension() {
+        List<String> classNames = finder.findClassNames("src/test/java", asList("**/stories/*.groovy"), asList(""));
+        assertThat(classNames.size(), equalTo(1));
+        assertThat(classNames, hasItem(containsString("/")));
+        assertThat(classNames, hasItem(endsWith(".groovy")));
+        assertThat(classNames, hasItem(startsWith("org/jbehave/core/io/stories")));
+    }
+        
+    @Test
+    public void shouldFindClassNamesAndTrasformThemIfMatchingCustomExtension() {
+        finder = new StoryFinder(".groovy");
+        List<String> classNames = finder.findClassNames("src/test/java", asList("**/stories/*.groovy"), asList(""));
+        assertThat(classNames.size(), equalTo(1));
+        assertThat(classNames, hasItem(not(containsString("/"))));
+        assertThat(classNames, hasItem(not(endsWith(".groovy"))));
+        assertThat(classNames, hasItem(startsWith("org.jbehave.core.io.stories")));
+    }
+
+    @Test
     public void shouldNormalisePaths(){
-        StoryFinder finder = new StoryFinder();
         assertThat(finder.normalise(asList("path/to/a.story", "/path/to/a.story")), equalTo(asList("path/to/a.story", "/path/to/a.story")));
         assertThat(finder.normalise(asList("path\\to\\a.story", "\\path\\to\\a.story")), equalTo(asList("path/to/a.story", "/path/to/a.story")));
     }
     
     @Test
     public void shouldIgnoreNullFiltersWhenFindingPaths() {
-        StoryFinder finder = new StoryFinder();
         assertThat(finder.findPaths("src/test/java", null, null).size(), greaterThan(0));
     }
 
     @Test
     public void shouldReturnEmptyListForInexistentBasedir() {
-        StoryFinder finder = new StoryFinder();
         assertThat(finder.findPaths("/inexistent", asList(""), asList("")).size(), equalTo(0));
     }
     

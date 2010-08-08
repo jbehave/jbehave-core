@@ -3,7 +3,6 @@ package org.jbehave.core.io;
 import static org.apache.commons.lang.StringUtils.removeEnd;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -21,13 +20,13 @@ public class CodeLocations {
 	public static URL codeLocationFromPath(String codeLocationPath) {
 		try {
 		    return new File(codeLocationPath).toURL();
-		} catch (MalformedURLException e) {
+		} catch (Exception e) {
 		    throw new InvalidCodeLocation(codeLocationPath);
 		}
 	}
 
 	@SuppressWarnings("serial")
-	public static class InvalidCodeLocation extends RuntimeException {
+    public static class InvalidCodeLocation extends RuntimeException {
 	
 		public InvalidCodeLocation(String path) {
 			super(path);

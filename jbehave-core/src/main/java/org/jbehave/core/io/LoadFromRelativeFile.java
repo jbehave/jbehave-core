@@ -2,7 +2,6 @@ package org.jbehave.core.io;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +18,10 @@ import org.apache.commons.io.IOUtils;
  * To work with something other than the default story locations, you will have
  * to specify them in the varargs constructor.
  * 
- * LoadFromRelativeFile loader = new
+ * StoryLoader loader = new
  * LoadFromRelativeFile(codeLocationFromClass(YourStory.class),
- * mavenModuleTestStoryFilePath("src/behaviour/java"),
- * intellijProjectTestStoryFilePath("src/behaviour/java"));
+ * mavenModuleTestStoryFilePath("src/test/java"),
+ * intellijProjectTestStoryFilePath("src/test/java"));
  * 
  * Convenience methods : {@link LoadFromRelativeFile#mavenModuleStoryFilePath},
  * {@link LoadFromRelativeFile#mavenModuleTestStoryFilePath}
@@ -48,22 +47,26 @@ public class LoadFromRelativeFile implements StoryLoader {
 
     public String loadStoryAsText(String storyPath) {
         List<String> traversalPaths = new ArrayList<String>();
+        String locationPath = new File(location.getFile()).getAbsolutePath();
         for (StoryFilePath traversal : traversals) {
-            try {
-                String filePath = new File(location.getFile()).getCanonicalPath() + "/";
-                filePath = filePath.replace(traversal.toRemove, traversal.relativePath) + "/" + storyPath;
-                File file = new File(filePath);
-                if (file.exists()) {
-                    return IOUtils.toString(new FileInputStream(file));
-                } else {
-                    traversalPaths.add(filePath);
-                }
-            } catch (IOException e) {
-                throw new StoryResourceNotFound(storyPath, e);
+            String filePath = locationPath.replace(traversal.toRemove, traversal.relativePath) + "/" + storyPath;
+            File file = new File(filePath);
+            if (file.exists()) {
+                return loadContent(filePath);
+            } else {
+                traversalPaths.add(filePath);
             }
         }
         throw new StoryResourceNotFound(storyPath, traversalPaths);
 
+    }
+
+    protected String loadContent(String path) {
+        try {
+            return IOUtils.toString(new FileInputStream(new File(path)));
+        } catch (Exception e) {
+            throw new InvalidStoryResource(path, e);
+        }
     }
 
     /**
