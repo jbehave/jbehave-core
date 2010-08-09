@@ -2,7 +2,6 @@ package org.jbehave.core.embedder;
 
 import java.io.File;
 import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -83,7 +82,7 @@ public class EmbedderClassLoader extends URLClassLoader {
     private static URL toURL(String element) {
         try {
             return new File(element).toURL();
-        } catch ( MalformedURLException e ){
+        } catch ( Exception e ){
             throw new InvalidClasspathElement(element, e);
         }
     }

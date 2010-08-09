@@ -1,5 +1,6 @@
 package org.jbehave.core.embedder;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -15,33 +16,42 @@ import java.util.List;
 
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
+import org.jbehave.core.embedder.EmbedderClassLoader.InvalidClasspathElement;
 import org.jbehave.core.junit.JUnitStory;
 import org.junit.Test;
 
 public class EmbedderClassLoaderBehaviour {
 
     @Test
-    public void shouldInstantiateNewEmbedder() throws MalformedURLException {
+    public void shouldInstantiateNewEmbedder() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThatIsInstantiated(classLoader, MyEmbedder.class.getName(), MyEmbedder.class);
     }
 
     @Test
-    public void shouldInstantiateNewStory() throws MalformedURLException {
+    public void shouldInstantiateNewStory() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
 
     @Test
-    public void shouldIdentifyIfStoryIsAbstract() throws MalformedURLException {
+    public void shouldIdentifyIfStoryIsAbstract() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThat(classLoader.isAbstract(MyStory.class.getName()), is(false));
         assertThat(classLoader.isAbstract(MyAbstractStory.class.getName()), is(true));
+        assertThat(classLoader.isAbstract("InexistentClass"), is(false));        
     }
 
     @Test
-    public void shouldIgnoreNullClasspathElements() throws MalformedURLException {
+    public void shouldIgnoreIfListOfClasspathElementsIsNull() {
         List<String> elements = null;
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(elements);
+        assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
+    }
+
+    @Test(expected=InvalidClasspathElement.class)
+    public void shouldNotIgnoreAnIndividualClasspathElementThatIsNull(){
+        List<String> elements = asList("target/classes", (String)null);
         EmbedderClassLoader classLoader = new EmbedderClassLoader(elements);
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
@@ -62,7 +72,7 @@ public class EmbedderClassLoaderBehaviour {
     }
 
     @Test(expected = InstantiationFailed.class)
-    public void shouldNotInstantiateClassWithInexistentName() throws MalformedURLException {
+    public void shouldNotInstantiateClassWithInexistentName() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         classLoader.newInstance(Embeddable.class, "InexistentClass");
     }

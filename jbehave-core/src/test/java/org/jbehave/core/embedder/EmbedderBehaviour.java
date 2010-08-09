@@ -33,6 +33,7 @@ import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.Embedder.AnnotatedEmbedderRunnerInstantiationFailed;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
 import org.jbehave.core.failures.BatchFailures;
@@ -645,6 +646,18 @@ public class EmbedderBehaviour {
                 asList(runWithEmbedderRunner), classLoader);
         // Then fail as expected
     }
+    
+    @Test(expected = AnnotatedEmbedderRunnerInstantiationFailed.class)
+    public void shouldFailWhenRunningInexistingStoriesWithAnnotatedEmbedderRunner() throws Throwable {
+        // Given
+        Embedder embedder = new Embedder();
+        String runWithEmbedderRunner = "InexistingRunner";
+        EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        // When
+        embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(),
+                asList(runWithEmbedderRunner), classLoader);
+        // Then fail as expected
+    }
 
     @Test
     public void shouldGenerateStoriesView() throws Throwable {
@@ -858,6 +871,20 @@ public class EmbedderBehaviour {
                 containsString("from steps instances:\norg.jbehave.core.embedder.EmbedderBehaviour$MySteps\n"));
     }
 
+    @Test
+    public void shouldAllowStringRepresentationOfEmbedder() throws Throwable {
+        // Given
+        Embedder embedder = new Embedder();
+
+        // When
+        String embedderAsString = embedder.toString();
+        
+        // Then
+        assertThat(embedderAsString, containsString(MostUsefulConfiguration.class.getSimpleName()));
+        assertThat(embedderAsString, containsString(StoryRunner.class.getSimpleName()));
+        assertThat(embedderAsString, containsString(PrintStreamEmbedderMonitor.class.getSimpleName()));
+    }
+    
     private String dos2unix(String string) {
         return string.replace("\r\n", "\n");
     }

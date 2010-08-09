@@ -26,6 +26,7 @@ import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.Description;
+import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -306,7 +307,6 @@ public class StoryRunnerBehaviour {
         verify(afterStep).perform();
     }
 
-
     @Test
     public void shouldHandlePendingStepsAccordingToStrategy() throws Throwable {
         // Given
@@ -330,6 +330,110 @@ public class StoryRunnerBehaviour {
 
         // Then
         verify(strategy).handleFailure(pendingResult.getFailure());
+    }
+
+    @Test
+    public void shouldRunScenarioWithExamplesTable() throws Throwable {
+        // Given
+        ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
+        Map<String, String> tableRow = examplesTable.getRow(0);
+        List<String> givenStories = asList();
+        Scenario scenario1 = new Scenario("my title 1", givenStories, examplesTable, asList("step <one>",
+                "step <two>"));
+        Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1));
+        List<CandidateStep> someCandidateSteps = asList();
+        Step step = mock(Step.class);
+        StepResult result = mock(StepResult.class);
+        when(step.perform()).thenReturn(result);
+        StoryReporter reporter = mock(StoryReporter.class);
+        StepCollector collector = mock(StepCollector.class);
+        FailureStrategy failureStrategy = mock(FailureStrategy.class);
+        Configuration configuration = configurationWith(reporter, collector, failureStrategy);
+        configuration.doDryRun(true);
+        CandidateSteps mySteps = mock(Steps.class);
+        when(mySteps.configuration()).thenReturn(configuration);
+        when(mySteps.listCandidates()).thenReturn(someCandidateSteps);
+        Step firstStep = mock(Step.class, "step <one>");
+        when(firstStep.perform()).thenReturn(successful("step <one>"));
+        Step secondStep = mock(Step.class, "step <two>");
+        when(secondStep.perform()).thenReturn(successful("step <two>"));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, tableRow)).thenReturn(
+                asList(firstStep, secondStep));
+        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        runner.run(configuration, asList(mySteps), story);
+
+        // Then
+        InOrder inOrder = inOrder(reporter, failureStrategy);
+        inOrder.verify(reporter).beforeStory(story, false);
+        inOrder.verify(reporter).beforeScenario("my title 1");
+        inOrder.verify(reporter).successful("step <one>");
+        inOrder.verify(reporter).successful("step <two>");
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).afterStory(false);
+    }
+
+
+    @Test
+    public void shouldRunStepsInDryRunMode() throws Throwable {
+        // Given
+        Scenario scenario1 = new Scenario("my title 1", asList("failingStep",
+                "successfulStep"));
+        Scenario scenario2 = new Scenario("my title 2", asList("successfulStep"));
+        Scenario scenario3 = new Scenario("my title 3", asList("successfulStep",
+                "pendingStep"));
+        Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1,
+                scenario2, scenario3));
+        List<CandidateStep> someCandidateSteps = asList();
+        Step step = mock(Step.class);
+        StepResult result = mock(StepResult.class);
+        when(step.perform()).thenReturn(result);
+        StoryReporter reporter = mock(StoryReporter.class);
+        StepCollector collector = mock(StepCollector.class);
+        FailureStrategy failureStrategy = mock(FailureStrategy.class);
+        Configuration configuration = configurationWith(reporter, collector, failureStrategy);
+        configuration.doDryRun(true);
+        CandidateSteps mySteps = mock(Steps.class);
+        when(mySteps.configuration()).thenReturn(configuration);
+        when(mySteps.listCandidates()).thenReturn(someCandidateSteps);
+        IllegalArgumentException anException = new IllegalArgumentException();
+        Step pendingStep = mock(Step.class);
+        Step successfulStep = mock(Step.class);
+        Step failingStep = mock(Step.class);
+        when(pendingStep.perform()).thenReturn(pending("pendingStep"));
+        when(successfulStep.perform()).thenReturn(successful("successfulStep"));
+        when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
+        when(failingStep.perform()).thenReturn(failed("failingStep", anException));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, tableRow)).thenReturn(
+                asList(failingStep, successfulStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario2, tableRow)).thenReturn(asList(successfulStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario3, tableRow)).thenReturn(
+                asList(successfulStep, pendingStep));
+        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        runner.run(configuration, asList(mySteps), story);
+
+        // Then
+        InOrder inOrder = inOrder(reporter, failureStrategy);
+        inOrder.verify(reporter).beforeStory(story, false);
+        inOrder.verify(reporter).beforeScenario("my title 1");
+        inOrder.verify(reporter).failed("failingStep", anException);
+        inOrder.verify(reporter).notPerformed("successfulStep");
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).beforeScenario("my title 2");
+        inOrder.verify(reporter).successful("successfulStep");
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).beforeScenario("my title 3");
+        inOrder.verify(reporter).successful("successfulStep");
+        inOrder.verify(reporter).pending("pendingStep");
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).afterStory(false);
+        inOrder.verify(failureStrategy).handleFailure(anException);
+
     }
 
 	private CandidateSteps mockStepsWithConfiguration() {
@@ -366,37 +470,13 @@ public class StoryRunnerBehaviour {
     private Configuration configurationWith(final StoryParser parser, final StoryLoader loader, final StoryReporter reporter,
                                                  final StepCollector collector, final FailureStrategy failureStrategy, final PendingStepStrategy pendingStrategy) {
 
-        return new MostUsefulConfiguration() {
-            @Override
-            public StoryParser storyParser() {
-                return parser;
-            }
-
-            @Override
-            public StoryLoader storyLoader() {
-                return loader;
-            }
-
-            @Override
-            public StepCollector stepCollector() {
-                return collector;
-            }
-
-            @Override
-            public StoryReporter defaultStoryReporter() {
-                return reporter;
-            }
-
-            @Override
-            public FailureStrategy failureStrategy() {
-                return failureStrategy;
-            }
-
-            @Override
-            public PendingStepStrategy pendingStepStrategy() {
-                return pendingStrategy;
-            }
-        };
+        return new MostUsefulConfiguration()
+            .useStoryParser(parser)
+            .useStoryLoader(loader)
+            .useStepCollector(collector)
+            .useDefaultStoryReporter(reporter)
+            .useFailureStrategy(failureStrategy)
+            .usePendingStepStrategy(pendingStrategy);
     }
 
 }
