@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.io.StoryLocation;
@@ -17,8 +18,8 @@ import org.jbehave.core.io.StoryLocation;
  */
 public class FilePrintStreamFactory implements PrintStreamFactory {
 
-	private final StoryLocation storyLocation;
-	private FileConfiguration configuration;
+	protected final StoryLocation storyLocation;
+	protected FileConfiguration configuration;
 	private File outputFile;
 
 	public FilePrintStreamFactory(StoryLocation storyLocation) {
@@ -33,7 +34,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 
 	public PrintStream createPrintStream() {
 		try {
-	        this.outputFile = outputFile();
+	        outputFile = outputFile();
 			outputFile.getParentFile().mkdirs();
 			return new FilePrintStream(outputFile, false);
 		} catch (Exception e) {
@@ -58,23 +59,38 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 		return new File(outputDirectory(), outputName());
 	}
 
+	/**
+	 * Return the file output directory, based on the {@link #storyLocation} and the {@link #configuration}
+	 * 
+	 * @return The File representing the output directory
+	 */
 	protected File outputDirectory() {
 		File codeLocationParent = new File(storyLocation.getCodeLocation().getFile()).getParentFile();
 		return new File(codeLocationParent.getPath().replace('\\','/'), configuration.getOutputDirectory());
 	}
 
+	/**
+     * Return the file output name, based on the {@link #storyLocation} and the {@link #configuration}
+     * 
+     * @return The file output name
+     */
 	protected String outputName() {
-		String storyName = storyLocation.getName().replace('/', '.');
-		if ( storyName.startsWith(".") ){
-			storyName = storyName.substring(1);
+		String name = storyLocation.getName().replace('/', '.');
+		if ( name.startsWith(".") ){
+			name = name.substring(1);
 		}
-		String name = stripPackage(storyName);
-		return name + "." + configuration.getExtension();
+		return stripPackage(name) + "." + configuration.getExtension();
 	}
 
-	private String stripPackage(String name) {
-		if ( name.lastIndexOf(".") != -1){
-			return name.substring(0, name.lastIndexOf("."));
+	/**
+	 * Strips package from name, i.e. the portion of the up to the last occurrence of '.' char.
+	 * 
+	 * @param name the name
+	 * @return The stripped name
+	 */
+	protected String stripPackage(String name) {
+		if ( StringUtils.contains(name, '.') ){
+		    return name.substring(0, name.lastIndexOf("."));
 		}
 		return name;
 	}
