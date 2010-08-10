@@ -3,7 +3,6 @@ package org.jbehave.core.reporters;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -30,14 +29,14 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 			FileConfiguration configuration) {
 		this.storyLocation = storyLocation;
 		this.configuration = configuration;
-		this.outputFile = outputFile();
 	}
 
 	public PrintStream createPrintStream() {
 		try {
+	        this.outputFile = outputFile();
 			outputFile.getParentFile().mkdirs();
 			return new FilePrintStream(outputFile, false);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new PrintStreamCreationFailed(outputFile, e);
 		}
 	}
@@ -49,6 +48,10 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 	public void useConfiguration(FileConfiguration configuration) {
 		this.configuration = configuration;
 		this.outputFile = outputFile();
+	}
+	
+	public FileConfiguration configuration(){
+	    return configuration;
 	}
 
 	protected File outputFile() {
@@ -138,8 +141,8 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 	}
 
 	@SuppressWarnings("serial")
-	private class PrintStreamCreationFailed extends RuntimeException {
-		public PrintStreamCreationFailed(File file, IOException cause) {
+	public class PrintStreamCreationFailed extends RuntimeException {
+		public PrintStreamCreationFailed(File file, Exception cause) {
 			super("Failed to create print stream for file " + file, cause);
 		}
 	}

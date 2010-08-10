@@ -1,6 +1,7 @@
 package org.jbehave.core.embedder;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
@@ -11,7 +12,6 @@ import java.util.Arrays;
 import java.util.Properties;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.hamcrest.Matchers;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.reporters.PrintStreamOutput.Format;
 import org.junit.Test;
@@ -42,9 +42,9 @@ public class EmbedderMonitorBehaviour {
    }
 
     @Test
-    public void shouldSupportOutputToSystemOut() throws Throwable {
+    public void shouldDelegateOutput() throws Throwable {
         EmbedderMonitor monitor = new ReportingFailuresEmbedderMonitor();
-        assertThat(monitor.toString(), Matchers.containsString("output="+PrintStream.class.getName()));
+        assertThat(monitor.toString(), containsString(ReportingFailuresEmbedderMonitor.class.getSimpleName()+"[output="));
    }
 
 }

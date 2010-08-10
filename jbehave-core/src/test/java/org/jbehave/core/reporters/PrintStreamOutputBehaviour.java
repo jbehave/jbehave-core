@@ -391,12 +391,13 @@ public class PrintStreamOutputBehaviour {
         // Given
         String storyPath = storyPath(MyStory.class);
         FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(CodeLocations.codeLocationFromClass(this.getClass()), storyPath));
-        File file = factory.getOutputFile();
+        File file = factory.outputFile();
         file.delete();
-        assertThat(!file.exists(), is(true));
-
+        assertThat(file.exists(), is(false));
+        
         // When
         PrintStream printStream = factory.createPrintStream();
+        file = factory.getOutputFile();
         printStream.print("Hello World");
 
         // Then
