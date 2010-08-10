@@ -10,7 +10,7 @@ import java.util.Properties;
  */
 public class ReportingFailuresEmbedderMonitor extends PrintStreamEmbedderMonitor {
 
-	public ReportingFailuresEmbedderMonitor() {
+    public ReportingFailuresEmbedderMonitor() {
         this(System.out);
     }
 
@@ -18,13 +18,20 @@ public class ReportingFailuresEmbedderMonitor extends PrintStreamEmbedderMonitor
         super(output);
     }
 
+    @Override
+    public void runningEmbeddable(String name) {
+    }
+
+    @Override
     public void runningStory(String path) {
     }
 
+    @Override
 	public void generatingStoriesView(File outputDirectory, List<String> formats,
 			Properties viewProperties) {
 	}
 	
+    @Override
 	public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
 	}
 	
