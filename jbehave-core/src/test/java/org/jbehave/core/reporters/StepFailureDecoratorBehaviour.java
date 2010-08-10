@@ -1,5 +1,6 @@
 package org.jbehave.core.reporters;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -9,9 +10,13 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
+import java.util.Map;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
 import org.junit.Before;
@@ -34,14 +39,23 @@ public class StepFailureDecoratorBehaviour {
         // Given
         Story story = new Story();
         boolean givenStory = false;
-
+        List<String> storyPaths = asList("/path1", "/path2");
+        List<String> steps = asList("Given step <one>", "Then step <two>");
+        ExamplesTable table = new ExamplesTable("|one|two|\n |1|2|\n");
+        Map<String, String> tableRow = table.getRow(0);
+        
         // When
+        decorator.dryRun();
         decorator.beforeStory(story, givenStory);
         decorator.beforeScenario("My core 1");
+        decorator.givenStories(storyPaths);
+        decorator.ignorable("!-- ignore me");
         decorator.successful("Given step 1.1");
         decorator.pending("When step 1.2");
         decorator.notPerformed("Then step 1.3");
-        decorator.dryRun();
+        decorator.beforeExamples(steps, table);
+        decorator.example(tableRow);
+        decorator.afterExamples();
         decorator.afterScenario();
         decorator.afterStory(givenStory);
 
@@ -50,9 +64,14 @@ public class StepFailureDecoratorBehaviour {
 
         inOrder.verify(delegate).beforeStory(story, givenStory);
         inOrder.verify(delegate).beforeScenario("My core 1");
+        inOrder.verify(delegate).givenStories(storyPaths);        
+        inOrder.verify(delegate).ignorable("!-- ignore me");
         inOrder.verify(delegate).successful("Given step 1.1");
         inOrder.verify(delegate).pending("When step 1.2");
         inOrder.verify(delegate).notPerformed("Then step 1.3");
+        inOrder.verify(delegate).beforeExamples(steps, table);        
+        inOrder.verify(delegate).example(tableRow);
+        inOrder.verify(delegate).afterExamples();
         inOrder.verify(delegate).afterScenario();
         inOrder.verify(delegate).afterStory(givenStory);
     }

@@ -23,7 +23,7 @@ public class StepFailureDecorator implements StoryReporter {
 	private final StoryReporter delegate;
 	private StepFailed failure;
 
-	public StepFailureDecorator(StoryReporter delegate) {
+    public StepFailureDecorator(StoryReporter delegate) {
 		this.delegate = delegate;
 	}
 

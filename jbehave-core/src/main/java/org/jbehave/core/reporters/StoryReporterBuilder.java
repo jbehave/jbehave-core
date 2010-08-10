@@ -210,6 +210,7 @@ public class StoryReporterBuilder {
         FilePrintStreamFactory factory = filePrintStreamFactory(storyPath);
         switch (format) {
         case CONSOLE:
+        default:
             return new ConsoleOutput(keywords).doReportFailureTrace(reportFailureTrace);
         case IDE_CONSOLE:
             return new IdeOnlyConsoleOutput(keywords).doReportFailureTrace(reportFailureTrace);
@@ -225,8 +226,6 @@ public class StoryReporterBuilder {
         case STATS:
             factory.useConfiguration(fileConfiguration("stats"));
             return new PostStoryStatisticsCollector(factory.createPrintStream());
-        default:
-            throw new UnsupportedReporterFormat(format);
         }
     }
 
@@ -236,15 +235,6 @@ public class StoryReporterBuilder {
 
     protected FileConfiguration fileConfiguration(String extension) {
         return new FileConfiguration(outputDirectory, extension);
-    }
-
-    @SuppressWarnings("serial")
-    public static class UnsupportedReporterFormat extends RuntimeException {
-
-        public UnsupportedReporterFormat(Format format) {
-            super("StoryReporter format " + format + " not supported");
-        }
-
     }
 
 }
