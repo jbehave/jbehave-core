@@ -14,6 +14,7 @@ import org.jbehave.core.reporters.StoryReporter;
  * <li>Pending</li>
  * <li>Successful</li>
  * <li>Ignorable</li>
+ * <li>Skipped</li>
  * </ul>
  */
 public abstract class AbstractStepResult implements StepResult {
@@ -81,9 +82,9 @@ public abstract class AbstractStepResult implements StepResult {
         }
     }
     
-    public static class SkippedStepResult extends AbstractStepResult {
+    public static class Skipped extends AbstractStepResult {
 
-    	public SkippedStepResult() {
+    	public Skipped() {
             super("");
         }
 
@@ -135,7 +136,7 @@ public abstract class AbstractStepResult implements StepResult {
 	}
 
 	public static StepResult pending(String step, PendingStepFound e) {
-		return new Pending(step, e);
+        return new Pending(step, e);
 	}
 
 	public static StepResult notPerformed(String step) {
@@ -147,7 +148,7 @@ public abstract class AbstractStepResult implements StepResult {
 	}
 	
 	public static StepResult skipped(){
-		return new SkippedStepResult();
+		return new Skipped();
 	}
 
 }

@@ -65,7 +65,7 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
 	 * @param type the Type of the steps instance
 	 * @return A boolean, <code>true</code> if at least one annotated method is found.
 	 */
-	protected boolean hasAnnotatedMethods(Type type) {
+    protected boolean hasAnnotatedMethods(Type type) {
 		if (type instanceof Class<?>) {
 			for (Method method : ((Class<?>) type).getMethods()) {
 				for (Annotation annotation : method.getAnnotations()) {

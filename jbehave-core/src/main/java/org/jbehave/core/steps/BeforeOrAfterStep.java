@@ -20,49 +20,48 @@ import org.jbehave.core.steps.StepCollector.Stage;
  */
 public class BeforeOrAfterStep {
 
-	private final Stage stage;
-	private final Method method;
-	private final StepCreator stepCreator;
-	private final Outcome outcome;
-	private StepMonitor stepMonitor = new SilentStepMonitor();
+    private final Stage stage;
+    private final Method method;
+    private final StepCreator stepCreator;
+    private final Outcome outcome;
+    private StepMonitor stepMonitor = new SilentStepMonitor();
 
-	public BeforeOrAfterStep(Stage stage, Method method, Object instance) {
-		this(stage, method, instance, Outcome.ANY);
-	}
+    public BeforeOrAfterStep(Stage stage, Method method, Object instance) {
+        this(stage, method, instance, Outcome.ANY);
+    }
 
-	public BeforeOrAfterStep(Stage stage, Method method, Object instance,
-			Outcome outcome) {
-		this.stage = stage;
-		this.method = method;
-		this.outcome = outcome;
-		this.stepCreator = new StepCreator(instance, stepMonitor);
-	}
+    public BeforeOrAfterStep(Stage stage, Method method, Object instance, Outcome outcome) {
+        this.stage = stage;
+        this.method = method;
+        this.outcome = outcome;
+        this.stepCreator = new StepCreator(instance, stepMonitor);
+    }
 
-	public Stage getStage() {
-		return stage;
-	}
+    public Stage getStage() {
+        return stage;
+    }
 
-	public Method getMethod() {
-		return method;
-	}
+    public Method getMethod() {
+        return method;
+    }
 
-	public Step createStep() {
-		return stepCreator.createBeforeOrAfterStep(method);
-	}
+    public Step createStep() {
+        return stepCreator.createBeforeOrAfterStep(method);
+    }
 
-	public Step createStepUponOutcome() {
-		return stepCreator.createAfterStepUponOutcome(method, outcome);
-	}
+    public Step createStepUponOutcome() {
+        return stepCreator.createAfterStepUponOutcome(method, outcome);
+    }
 
-	public void useStepMonitor(StepMonitor stepMonitor) {
-		this.stepMonitor = stepMonitor;
-		this.stepCreator.useStepMonitor(stepMonitor);
-	}
+    public void useStepMonitor(StepMonitor stepMonitor) {
+        this.stepMonitor = stepMonitor;
+        this.stepCreator.useStepMonitor(stepMonitor);
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append(method).append(stage).append(outcome).toString();
-	}
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(stage).append(method).append(outcome)
+                .append(stepMonitor).toString();
+    }
 
 }

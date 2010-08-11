@@ -9,8 +9,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
-import static org.jbehave.core.steps.StepType.AND;
 import static org.jbehave.core.steps.StepType.GIVEN;
+import static org.jbehave.core.steps.StepType.IGNORABLE;
 import static org.jbehave.core.steps.StepType.THEN;
 import static org.jbehave.core.steps.StepType.WHEN;
 import static org.mockito.Mockito.mock;
@@ -30,6 +30,7 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
@@ -47,16 +48,7 @@ public class CandidateStepBehaviour {
 
     private Map<String, String> tableRow = new HashMap<String, String>();
     private Paranamer paranamer = new CachingParanamer(new BytecodeReadingParanamer());
-    private Map<StepType, String> startingWords = startingWords();
-
-    private Map<StepType, String> startingWords() {
-        Map<StepType, String> map = new HashMap<StepType, String>();
-        map.put(GIVEN, "Given");
-        map.put(WHEN, "When");
-        map.put(THEN, "Then");
-        map.put(AND, "And");
-        return map;
-    }
+    private Map<StepType, String> startingWords = new LocalizedKeywords().startingWordsByType();
 
     private CandidateStep candidateStepWith(String patternAsString, StepType stepType, Method method, Object instance) {
         return new CandidateStep(patternAsString, 0, stepType, method, instance, startingWords,
@@ -91,6 +83,30 @@ public class CandidateStepBehaviour {
         Method method = SomeSteps.class.getMethod("aMethod");
         CandidateStep candidateStep = candidateStepWith("the grid should look like $grid", THEN, method, null);
         assertThat(candidateStep.matches("Then the grid should look like \n....\n....\n"), is(true));
+    }
+
+    @Test
+    public void shouldIgnoreStep() throws Exception {
+        Method method = SomeSteps.class.getMethod("aMethod");
+        CandidateStep candidateStep = candidateStepWith("", IGNORABLE, method, null);
+        assertThat(candidateStep.ignore("!-- ignore me"), is(true));
+    }
+
+    @Test
+    public void shouldNotMatchOrIgnoreStepWhenStartingWordNotFound() throws Exception {
+        Method method = SomeSteps.class.getMethod("aMethod");
+        Map<StepType, String> startingWordsByType = new HashMap<StepType, String>(); // empty list
+        CandidateStep candidateStep = new CandidateStep("windows on the $nth floor", 0, WHEN, method, null, startingWordsByType,
+                new RegexPrefixCapturingPatternParser(), new ParameterConverters());
+        assertThat(candidateStep.matches("When windows on the 1st floor"), is(false));
+        assertThat(candidateStep.ignore("!-- windows on the 1st floor"), is(false));
+    }
+
+    @Test
+    public void shouldProvideStepPriority() throws Exception {
+        Method method = SomeSteps.class.getMethod("aMethod");
+        CandidateStep candidateStep = candidateStepWith("I laugh", GIVEN, method, null);
+        assertThat(candidateStep.getPriority(), equalTo(0));
     }
 
     @Test

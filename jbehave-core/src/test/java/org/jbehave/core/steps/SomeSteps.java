@@ -7,6 +7,7 @@ import java.beans.MethodDescriptor;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.jbehave.core.model.ExamplesTable;
 
@@ -64,6 +65,14 @@ public class SomeSteps extends Steps {
     public void aMethodWithListOfNumbers(List<Number> args) {
         this.args = args;
     }
+    
+    public void aMethodWithSetOfStrings(Set<String> args) {
+        this.args = args;
+    }
+
+    public void aMethodWithSetOfNumbers(Set<Number> args) {
+        this.args = args;
+    }
 
     public void aMethodWithDate(Date args) {
         this.args = args;
@@ -76,7 +85,11 @@ public class SomeSteps extends Steps {
     public ExamplesTable aMethodReturningExamplesTable(String value){
     	return new ExamplesTable(value);
     }
-    
+
+    public ExamplesTable aFailingMethodReturningExamplesTable(String value){
+        throw new RuntimeException(value);
+    }
+
     public static Method methodFor(String methodName) throws IntrospectionException {
         BeanInfo beanInfo = Introspector.getBeanInfo(SomeSteps.class);
         for (MethodDescriptor md : beanInfo.getMethodDescriptors()) {

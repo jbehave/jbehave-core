@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.CandidateStep.StartingWordNotFound;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.Steps.DuplicateCandidateStepFoundException;
 import org.junit.Test;
 
@@ -96,8 +98,12 @@ public class StepsBehaviour {
         List<BeforeOrAfterStep> beforeAfterStories = steps.listBeforeOrAfterStories();
         assertThat(beforeAfterStories.size(), equalTo(2));        
         beforeAfterStories.get(0).createStep().perform();
+        assertThat(beforeAfterStories.get(0).getStage(), equalTo(Stage.BEFORE));
+        assertThat(beforeAfterStories.get(0).getMethod().getName(), equalTo("beforeStories"));
         assertThat(steps.beforeStories, is(true));
         beforeAfterStories.get(1).createStep().perform();
+        assertThat(beforeAfterStories.get(1).getStage(), equalTo(Stage.AFTER));
+        assertThat(beforeAfterStories.get(1).getMethod().getName(), equalTo("afterStories"));
         assertThat(steps.afterStories, is(true));
         
     }
@@ -109,8 +115,12 @@ public class StepsBehaviour {
         List<BeforeOrAfterStep> beforeAfterStory = steps.listBeforeOrAfterStory(false);
         assertThat(beforeAfterStory.size(), equalTo(2));        
         beforeAfterStory.get(0).createStep().perform();
+        assertThat(beforeAfterStory.get(0).getStage(), equalTo(Stage.BEFORE));
+        assertThat(beforeAfterStory.get(0).getMethod().getName(), equalTo("beforeStory"));
         assertThat(steps.beforeStory, is(true));
         beforeAfterStory.get(1).createStep().perform();
+        assertThat(beforeAfterStory.get(1).getStage(), equalTo(Stage.AFTER));
+        assertThat(beforeAfterStory.get(1).getMethod().getName(), equalTo("afterStory"));
         assertThat(steps.afterStory, is(true));
         
         List<BeforeOrAfterStep> beforeAfterGivenStory = steps.listBeforeOrAfterStory(true);
@@ -166,6 +176,16 @@ public class StepsBehaviour {
     	assertThat(steps.afterFailedScenario, is(true));
     }
     
+    @Test
+    public void shouldAllowBeforeOrAfterStepsToUseSpecifiedStepMonitor() {
+        MultipleAliasesSteps steps = new MultipleAliasesSteps();
+        List<BeforeOrAfterStep> beforeAfterStory = steps.listBeforeOrAfterStory(false);
+        BeforeOrAfterStep step = beforeAfterStory.get(0);
+        StepMonitor stepMonitor = new PrintStreamStepMonitor();
+        step.useStepMonitor(stepMonitor);
+        assertThat(step.toString(), Matchers.containsString(stepMonitor.getClass().getName()));
+    }
+
     @Test
     public void shouldAllowLocalizationOfSteps(){
         Configuration configuration = new MostUsefulConfiguration();
