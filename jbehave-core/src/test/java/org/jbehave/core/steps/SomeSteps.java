@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.model.ExamplesTable;
 
 public class SomeSteps extends Steps {
@@ -19,7 +20,14 @@ public class SomeSteps extends Steps {
     public Object args;
 
     public void aMethod() {
+    }
 
+    public void aFailingMethod() {
+        throw new RuntimeException();
+    }
+
+    public void aPendingMethod() {
+        throw new PendingStepFound("a step");
     }
 
     public void aMethodWith(String args) {

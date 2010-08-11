@@ -19,8 +19,10 @@ import java.util.Map;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
+import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -330,6 +332,30 @@ public class StoryRunnerBehaviour {
 
         // Then
         verify(strategy).handleFailure(pendingResult.getFailure());
+    }
+
+    @Test(expected = PendingStepFound.class)
+    public void shouldFailWithFailingUpongPendingStepsStrategy() throws Throwable {
+        // Given
+        StoryReporter reporter = mock(StoryReporter.class);
+        Step pendingStep = mock(Step.class);
+        StepResult pendingResult = pending("My step isn't defined!");
+        when(pendingStep.perform()).thenReturn(pendingResult);
+        PendingStepStrategy strategy = new FailingUponPendingStep();
+        StepCollector collector = mock(StepCollector.class);
+        CandidateSteps mySteps = mockStepsWithConfiguration();
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
+                asList(pendingStep));
+        Story story = new Story(asList(new Scenario()));
+        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        runner.run(configurationWithPendingStrategy(collector, reporter,
+                strategy), asList(mySteps), story);
+
+        // Then ... fail as expected
     }
 
     @Test

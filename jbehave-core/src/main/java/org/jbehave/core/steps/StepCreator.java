@@ -29,149 +29,155 @@ public class StepCreator {
     public static final String PARAMETER_NAME_END = ">";
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
-	public static final String PARAMETER_VALUE_NEWLINE = "NL";
-	private final Object stepsInstance;
-	private final ParameterConverters parameterConverters;
-	private final StepMatcher stepMatcher;
-	private final StepRunner beforeOrAfter;
-	private final StepRunner skip;
+    public static final String PARAMETER_VALUE_NEWLINE = "NL";
+    private final Object stepsInstance;
+    private final ParameterConverters parameterConverters;
+    private final StepMatcher stepMatcher;
+    private final StepRunner beforeOrAfter;
+    private final StepRunner skip;
     private StepMonitor stepMonitor;
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
 
     public StepCreator(Object stepsInstance, StepMonitor stepMonitor) {
-    	this(stepsInstance, null, null, stepMonitor);
+        this(stepsInstance, null, null, stepMonitor);
     }
 
-    public StepCreator(Object stepsInstance, ParameterConverters parameterConverters,
-			StepMatcher stepMatcher, StepMonitor stepMonitor) {
-		this.stepsInstance = stepsInstance;
-		this.parameterConverters = parameterConverters;
-		this.stepMatcher = stepMatcher;
-		this.stepMonitor = stepMonitor;
-		this.beforeOrAfter = new BeforeOrAfter();
-		this.skip = new Skip();
+    public StepCreator(Object stepsInstance, ParameterConverters parameterConverters, StepMatcher stepMatcher,
+            StepMonitor stepMonitor) {
+        this.stepsInstance = stepsInstance;
+        this.parameterConverters = parameterConverters;
+        this.stepMatcher = stepMatcher;
+        this.stepMonitor = stepMonitor;
+        this.beforeOrAfter = new BeforeOrAfter();
+        this.skip = new Skip();
     }
 
     public void useStepMonitor(StepMonitor stepMonitor) {
         this.stepMonitor = stepMonitor;
     }
 
-	public void useParanamer(Paranamer paranamer) {
-		this.paranamer = paranamer;
-	}
+    public void useParanamer(Paranamer paranamer) {
+        this.paranamer = paranamer;
+    }
 
-	public void doDryRun(boolean dryRun) {
-		this.dryRun = dryRun;
-	}
+    public void doDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
+    }
 
-	public Step createBeforeOrAfterStep(final Method method) {
-		return new Step() {
-			public StepResult doNotPerform() {
-				return beforeOrAfter.run(method);
-			}
+    public Step createBeforeOrAfterStep(final Method method) {
+        return new Step() {
+            public StepResult doNotPerform() {
+                return beforeOrAfter.run(method);
+            }
 
-			public StepResult perform() {
-				return beforeOrAfter.run(method);
-			}
-		};
-	}
+            public StepResult perform() {
+                return beforeOrAfter.run(method);
+            }
+        };
+    }
 
-	public Step createAfterStepUponOutcome(final Method method, Outcome outcome) {
-		switch ( outcome ){
-		case ANY: default:
-			return new Step() {
+    public Step createAfterStepUponOutcome(final Method method, Outcome outcome) {
+        switch (outcome) {
+        case ANY:
+        default:
+            return new Step() {
 
-				public StepResult doNotPerform() {
-					return beforeOrAfter.run(method);
-				}
+                public StepResult doNotPerform() {
+                    return beforeOrAfter.run(method);
+                }
 
-				public StepResult perform() {
-					return beforeOrAfter.run(method);
-				}
+                public StepResult perform() {
+                    return beforeOrAfter.run(method);
+                }
 
-			};
-		case SUCCESS:
-			return new Step() {
+            };
+        case SUCCESS:
+            return new Step() {
 
-				public StepResult doNotPerform() {
-					return skip.run(method);
-				}
+                public StepResult doNotPerform() {
+                    return skip.run(method);
+                }
 
-				public StepResult perform() {
-					return beforeOrAfter.run(method);
-				}
+                public StepResult perform() {
+                    return beforeOrAfter.run(method);
+                }
 
-			};
-		case FAILURE:
-			return new Step() {
+            };
+        case FAILURE:
+            return new Step() {
 
-				public StepResult doNotPerform() {
-					return beforeOrAfter.run(method);
-				}
+                public StepResult doNotPerform() {
+                    return beforeOrAfter.run(method);
+                }
 
-				public StepResult perform() {
-					return skip.run(method);
-				}
+                public StepResult perform() {
+                    return skip.run(method);
+                }
 
-			};
-		}
-	}
+            };
+        }
+    }
 
-	public Step createParametrisedStep(final Method method, final String stepAsString, final String stepWithoutStartingWord, final Map<String, String> tableRow) {
+    public Step createParametrisedStep(final Method method, final String stepAsString,
+            final String stepWithoutStartingWord, final Map<String, String> tableRow) {
         return new Step() {
             private Object[] convertedParameters;
-			private String parametrisedStep;
-			public StepResult perform() {
+            private String parametrisedStep;
+
+            public StepResult perform() {
                 try {
                     parametriseStep();
-					stepMonitor.performing(stepAsString, dryRun);
-					if (!dryRun) {
-						method.invoke(stepsInstance, convertedParameters);
-					}
-                    return successful(stepAsString).withParameterValues(parametrisedStep);
-                } catch ( ParameterNotFound e ){
-                    // step parametrisation failed, return pending StepResult                    
-                    return pending(stepAsString).withParameterValues(parametrisedStep);                    
-                } catch (Throwable t) {
-                    if (t instanceof InvocationTargetException && t.getCause() != null) {
-                        Throwable cause = t.getCause();
-                        if (cause instanceof PendingStepFound) {
-                            return pending(stepAsString, (PendingStepFound) cause).withParameterValues(parametrisedStep);
-                        } else {
-                            return failed(stepAsString, cause).withParameterValues(parametrisedStep);
-                        }
+                    stepMonitor.performing(stepAsString, dryRun);
+                    if (!dryRun) {
+                        method.invoke(stepsInstance, convertedParameters);
                     }
+                    return successful(stepAsString).withParameterValues(parametrisedStep);
+                } catch (ParameterNotFound e) {
+                    // step parametrisation failed, return pending StepResult
+                    return pending(stepAsString).withParameterValues(parametrisedStep);
+                } catch (InvocationTargetException e) {
+                    Throwable cause = e.getCause();
+                    if (cause instanceof PendingStepFound) {
+                        return pending(stepAsString, (PendingStepFound) cause).withParameterValues(parametrisedStep);
+                    } else {
+                        return failed(stepAsString, cause).withParameterValues(parametrisedStep);
+                    }
+                } catch (Throwable t) {
                     return failed(stepAsString, t).withParameterValues(parametrisedStep);
                 }
             }
 
             public StepResult doNotPerform() {
-				try {
+                try {
                     parametriseStep();
                 } catch (ParameterNotFound e) {
-                    // step parametrisation failed, but still return notPerformed StepResult
+                    // step parametrisation failed, but still return
+                    // notPerformed StepResult
                 }
                 return notPerformed(stepAsString).withParameterValues(parametrisedStep);
             }
-            
-            private void parametriseStep(){
-        		stepMatcher.find(stepWithoutStartingWord);
+
+            private void parametriseStep() {
+                stepMatcher.find(stepWithoutStartingWord);
                 String[] annotationNames = annotatedParameterNames(method);
                 String[] parameterNames = paranamer.lookupParameterNames(method, false);
                 Type[] types = method.getGenericParameterTypes();
                 String[] parameters = parametersForStep(tableRow, types, annotationNames, parameterNames);
                 convertedParameters = convertParameters(parameters, types);
-                parametrisedStep = parametrisedStep(stepAsString, tableRow, types, annotationNames, parameterNames, parameters);
+                parametrisedStep = parametrisedStep(stepAsString, tableRow, types, annotationNames, parameterNames,
+                        parameters);
             }
-            
+
         };
     }
-    
+
     /**
-     * Extract annotated parameter names from the @Named parameter annotations of the method
-	 *
-     * @param method the Method containing the annotations
+     * Extract annotated parameter names from the @Named parameter annotations
+     * of the method
+     * 
+     * @param method
+     *            the Method containing the annotations
      * @return An array of annotated parameter names, which <b>may</b> include
      *         <code>null</code> values for parameters that are not annotated
      */
@@ -196,18 +202,19 @@ public class StepCreator {
             return null;
         }
     }
-    
-    private String parametrisedStep(String stepAsString, Map<String, String> tableRow, Type[] types, String[] annotationNames,
-            String[] parameterNames, String[] parameters) {
+
+    private String parametrisedStep(String stepAsString, Map<String, String> tableRow, Type[] types,
+            String[] annotationNames, String[] parameterNames, String[] parameters) {
         String parametrisedStep = stepAsString;
         for (int position = 0; position < types.length; position++) {
-            parametrisedStep = replaceParameterValuesInStep(parametrisedStep, position, annotationNames, parameterNames, parameters, tableRow);
+            parametrisedStep = replaceParameterValuesInStep(parametrisedStep, position, annotationNames,
+                    parameterNames, parameters, tableRow);
         }
         return parametrisedStep;
     }
 
-    private String replaceParameterValuesInStep(String stepText, int position, String[] annotationNames, String[] parameterNames,
-            String[] parameters, Map<String, String> tableRow) {
+    private String replaceParameterValuesInStep(String stepText, int position, String[] annotationNames,
+            String[] parameterNames, String[] parameters, Map<String, String> tableRow) {
         int annotatedNamePosition = parameterPosition(annotationNames, position);
         int parameterNamePosition = parameterPosition(parameterNames, position);
         if (annotatedNamePosition != -1) {
@@ -215,28 +222,28 @@ public class StepCreator {
         } else if (parameterNamePosition != -1) {
             stepText = replaceTableValue(stepText, tableRow, parameterNames[position]);
         }
-        stepText = replaceParameterValue(stepText, position, parameters);        	
+        stepText = replaceParameterValue(stepText, position, parameters);
         return stepText;
     }
 
-	private String replaceParameterValue(String stepText, int position, String[] parameters) {
-		String value = parameters[position];
-		if (value != null) {
-		    stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
-		    stepText = stepText.replace("\n", PARAMETER_VALUE_NEWLINE);
-		}
-		return stepText;
-	}
+    private String replaceParameterValue(String stepText, int position, String[] parameters) {
+        String value = parameters[position];
+        if (value != null) {
+            stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+            stepText = stepText.replace("\n", PARAMETER_VALUE_NEWLINE);
+        }
+        return stepText;
+    }
 
-	private String replaceTableValue(String stepText, Map<String, String> tableRow,
-			String name) {
-		String value = getTableValue(tableRow, name);
-		if (value != null) {
-		    stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);		    
-		}
-		return stepText;
-	}
-    
+    private String replaceTableValue(String stepText, Map<String, String> tableRow, String name) {
+        String value = getTableValue(tableRow, name);
+        if (value != null) {
+            stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value
+                    + PARAMETER_VALUE_END);
+        }
+        return stepText;
+    }
+
     private String[] parametersForStep(Map<String, String> tableRow, Type[] types, String[] annotationNames,
             String[] parameterNames) {
         final String[] parameters = new String[types.length];
@@ -282,10 +289,10 @@ public class StepCreator {
         stepMonitor.foundParameter(parameter, position);
         return parameter;
     }
-    
+
     private String matchedParameter(String name) {
         String[] parameterNames = stepMatcher.parameterNames();
-		for (int i = 0; i < parameterNames.length; i++) {
+        for (int i = 0; i < parameterNames.length; i++) {
             String parameterName = parameterNames[i];
             if (name.equals(parameterName)) {
                 return matchedParameter(i);
@@ -294,14 +301,14 @@ public class StepCreator {
         throw new ParameterNotFound(name, parameterNames);
     }
 
-	private String matchedParameter(int position) {
-	    String[] parameterNames = stepMatcher.parameterNames();
+    private String matchedParameter(int position) {
+        String[] parameterNames = stepMatcher.parameterNames();
         int matchedPosition = position + 1;
-        if ( matchedPosition <= parameterNames.length ){
-	        return stepMatcher.parameter(matchedPosition);	        
-	    }
-	    throw new ParameterNotFound(position, parameterNames);
-	}
+        if (matchedPosition <= parameterNames.length) {
+            return stepMatcher.parameter(matchedPosition);
+        }
+        throw new ParameterNotFound(position, parameterNames);
+    }
 
     private int parameterPosition(String[] names, int position) {
         if (names.length == 0) {
@@ -319,7 +326,7 @@ public class StepCreator {
 
     private boolean isGroupName(String name) {
         String[] groupNames = stepMatcher.parameterNames();
-		for (String groupName : groupNames) {
+        for (String groupName : groupNames) {
             if (name.equals(groupName)) {
                 return true;
             }
@@ -336,61 +343,57 @@ public class StepCreator {
     }
 
     public interface StepRunner {
-        
-    	StepResult run(Method method);
+
+        StepResult run(Method method);
 
     }
-    
-	private class BeforeOrAfter implements StepRunner {
-		public StepResult run(Method method) {
-			try {
-				method.invoke(stepsInstance);
-			} catch (InvocationTargetException e) {
-				if (e.getCause() != null) {
-					throw new BeforeOrAfterFailed(method, e.getCause());
-				} else {
-					throw new BeforeOrAfterFailed(e);
-				}
-			} catch (Throwable t) {
-				throw new BeforeOrAfterFailed(t);
-			}
-			return skipped();
-		}
-	}
 
-	private class Skip implements StepRunner {
-		public StepResult run(Method method) {
-			return skipped();
-		}
-	}
-
-    public static Step createPendingStep(final String stepAsString){
-		return new Step(){
-		    public StepResult perform() {
-		        return pending(stepAsString);
-		    }
-
-		    public StepResult doNotPerform() {
-		        return pending(stepAsString);
-		    }			
-		};
+    private class BeforeOrAfter implements StepRunner {
+        public StepResult run(Method method) {
+            try {
+                method.invoke(stepsInstance);
+            } catch (InvocationTargetException e) {
+                throw new BeforeOrAfterFailed(method, e.getCause());
+            } catch (Throwable t) {
+                throw new BeforeOrAfterFailed(t);
+            }
+            return skipped();
+        }
     }
-    
-	public static Step createIgnorableStep(final String stepAsString){
-		return new Step(){
-		    public StepResult perform() {
-		        return ignorable(stepAsString);
-		    }
 
-		    public StepResult doNotPerform() {
-		        return ignorable(stepAsString);
-		    }			
-		};
-	}
-	
+    private class Skip implements StepRunner {
+        public StepResult run(Method method) {
+            return skipped();
+        }
+    }
+
+    public static Step createPendingStep(final String stepAsString) {
+        return new Step() {
+            public StepResult perform() {
+                return pending(stepAsString);
+            }
+
+            public StepResult doNotPerform() {
+                return pending(stepAsString);
+            }
+        };
+    }
+
+    public static Step createIgnorableStep(final String stepAsString) {
+        return new Step() {
+            public StepResult perform() {
+                return ignorable(stepAsString);
+            }
+
+            public StepResult doNotPerform() {
+                return ignorable(stepAsString);
+            }
+        };
+    }
 
     /**
-     * This is a different class, because the @Inject jar may not be in the classpath.
+     * This is a different class, because the @Inject jar may not be in the
+     * classpath.
      */
     public static class Jsr330Helper {
 
@@ -411,6 +414,5 @@ public class StepCreator {
             super("Parameter not found for position '" + position + "' amongst '" + asList(parameters) + "'");
         }
     }
-
 
 }
