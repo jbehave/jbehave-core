@@ -116,7 +116,7 @@ public class StoryReporterBuilder {
     private List<Format> formats = new ArrayList<Format>();
     private String outputDirectory = new FileConfiguration().getOutputDirectory();
     private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
-    private Properties viewResources = FreemarkerViewGenerator.defaultResources();
+    private Properties viewResources = FreemarkerViewGenerator.defaultViewProperties();
     private boolean reportFailureTrace = false;
     private Keywords keywords = new LocalizedKeywords();
 

@@ -42,7 +42,6 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -673,7 +672,7 @@ public class EmbedderBehaviour {
 
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
-        Properties viewResources = FreemarkerViewGenerator.defaultResources();
+        Properties viewResources = new Properties();
         when(viewGenerator.countStories()).thenReturn(2);
         when(viewGenerator.countScenarios()).thenReturn(2);
         when(viewGenerator.countFailedScenarios()).thenReturn(0);
@@ -699,7 +698,7 @@ public class EmbedderBehaviour {
 
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
-        Properties viewResources = FreemarkerViewGenerator.defaultResources();
+        Properties viewResources = new Properties();
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
         // Then
@@ -721,7 +720,7 @@ public class EmbedderBehaviour {
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
-        Properties viewResources = FreemarkerViewGenerator.defaultResources();
+        Properties viewResources = new Properties();
         doThrow(new RuntimeException()).when(viewGenerator).generateView(outputDirectory, formats, viewResources);
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
@@ -741,7 +740,7 @@ public class EmbedderBehaviour {
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
-        Properties viewResources = FreemarkerViewGenerator.defaultResources();
+        Properties viewResources = new Properties();
         when(viewGenerator.countStories()).thenReturn(1);
         when(viewGenerator.countScenarios()).thenReturn(2);
         when(viewGenerator.countFailedScenarios()).thenReturn(1);
@@ -763,7 +762,7 @@ public class EmbedderBehaviour {
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
-        Properties viewResources = FreemarkerViewGenerator.defaultResources();
+        Properties viewResources = new Properties();
         when(viewGenerator.countStories()).thenReturn(1);
         when(viewGenerator.countScenarios()).thenReturn(2);
         when(viewGenerator.countFailedScenarios()).thenReturn(1);

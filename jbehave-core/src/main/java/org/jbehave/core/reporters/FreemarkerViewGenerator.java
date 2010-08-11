@@ -27,83 +27,86 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 /**
- * <p>Freemarker-based {@link ViewGenerator}, using the file outputs of the
+ * <p>
+ * Freemarker-based {@link ViewGenerator}, using the file outputs of the
  * reporters for the given formats. The FTL templates for the index and single
- * views are injectable the {@link #generateView(File, List, Properties)}
- * but defaults are provided. To override, specify the path the
- * new template under keys "index", "decorated" and "nonDecorated".</p>
- * <p>The view generator provides the following resources:
- * <pre>
- * resources.setProperty("index", "ftl/jbehave-reports-index.ftl");
- * resources.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
- * resources.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
- * resources.setProperty("decorateNonHtml", "true");
- * resources.setProperty("defaultFormats", "stats");
- * resources.setProperty("viewDirectory", "view");
- * </pre>  
+ * views are injectable the {@link #generateView(File, List, Properties)} but
+ * defaults are provided. To override, specify the path the new template under
+ * keys "index", "decorated" and "nonDecorated".
  * </p>
+ * <p>
+ * The view generator provides the following resources:
+ * 
+ * <pre>
+ * resources.setProperty(&quot;index&quot;, &quot;ftl/jbehave-reports-index.ftl&quot;);
+ * resources.setProperty(&quot;decorated&quot;, &quot;ftl/jbehave-report-decorated.ftl&quot;);
+ * resources.setProperty(&quot;nonDecorated&quot;, &quot;ftl/jbehave-report-non-decorated.ftl&quot;);
+ * resources.setProperty(&quot;decorateNonHtml&quot;, &quot;true&quot;);
+ * resources.setProperty(&quot;defaultFormats&quot;, &quot;stats&quot;);
+ * resources.setProperty(&quot;viewDirectory&quot;, &quot;view&quot;);
+ * </pre>
+ * 
+ * </p>
+ * 
  * @author Mauro Talevi
  */
 public class FreemarkerViewGenerator implements ViewGenerator {
 
     private final Configuration configuration;
-    private Properties resources;
-	private List<Report> reports = new ArrayList<Report>();
+    private Properties viewProperties;
+    private List<Report> reports = new ArrayList<Report>();
 
     public FreemarkerViewGenerator() {
         this.configuration = configure();
     }
 
-    public static Properties defaultResources() {
-        Properties resources = new Properties();
-        resources.setProperty("index", "ftl/jbehave-reports-index.ftl");
-        resources.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
-        resources.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
-        resources.setProperty("decorateNonHtml", "true");
-        resources.setProperty("defaultFormats", "stats");
-        resources.setProperty("viewDirectory", "view");
-        return resources;
+    public static Properties defaultViewProperties() {
+        Properties properties = new Properties();
+        properties.setProperty("index", "ftl/jbehave-reports-index.ftl");
+        properties.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
+        properties.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
+        properties.setProperty("decorateNonHtml", "true");
+        properties.setProperty("defaultFormats", "stats");
+        properties.setProperty("viewDirectory", "view");
+        return properties;
     }
 
-    private Properties mergeWithDefault(Properties resources) {
-        Properties merged = defaultResources();
-        merged.putAll(resources);
+    private Properties mergeWithDefault(Properties properties) {
+        Properties merged = defaultViewProperties();
+        merged.putAll(properties);
         return merged;
     }
 
-    public void generateView(File outputDirectory, List<String> formats, Properties resources) {
-        this.resources = mergeWithDefault(resources);
+    public void generateView(File outputDirectory, List<String> formats, Properties viewProperties) {
+        this.viewProperties = mergeWithDefault(viewProperties);
         createIndex(outputDirectory, formats);
     }
 
-    public int countStories(){
-    	return reports.size();
-    }
-    
-    public int countScenarios(){
-		return count("scenarios", reports);
+    public int countStories() {
+        return reports.size();
     }
 
-    public int countFailedScenarios(){
-		return count("scenariosFailed", reports);
+    public int countScenarios() {
+        return count("scenarios", reports);
     }
 
-	private int count(String event, List<Report> reports) {
-		int count = 0;
-    	for (Report report : reports) {
-			Properties stats = report.asProperties("stats");
-			if ( stats != null ){
-				if ( stats.containsKey(event)){
-					int failed = Integer.parseInt((String)stats.get(event));
-					count = count + failed;
-				}
-			}
-		}
-    	return count;
-	}
-	
+    public int countFailedScenarios() {
+        return count("scenariosFailed", reports);
+    }
+
+    private int count(String event, List<Report> reports) {
+        int count = 0;
+        for (Report report : reports) {
+            Properties stats = report.asProperties("stats");
+            if (stats.containsKey(event)) {
+                count = count + Integer.parseInt((String) stats.get(event));
+            }
+        }
+        return count;
+    }
+
     private void createIndex(File outputDirectory, List<String> formats) {
-        String outputName = templateResource("viewDirectory")+"/index.html";
+        String outputName = templateResource("viewDirectory") + "/index.html";
         String index = templateResource("index");
         List<String> mergedFormats = mergeWithDefaults(formats);
         reports = toReports(indexedReportFiles(outputDirectory, outputName, mergedFormats));
@@ -115,7 +118,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     private List<String> mergeWithDefaults(List<String> formats) {
         List<String> merged = new ArrayList<String>();
-        merged.addAll(asList(templateResource("defaultFormats").split(",")));        
+        merged.addAll(asList(templateResource("defaultFormats").split(",")));
         merged.addAll(formats);
         return merged;
     }
@@ -169,14 +172,14 @@ public class FreemarkerViewGenerator implements ViewGenerator {
                     dataModel.put("body", IOUtils.toString(new FileReader(file)));
                     dataModel.put("format", format);
                     File outputDirectory = file.getParentFile();
-                    String outputName = viewDirectory+ "/" + fileName;
+                    String outputName = viewDirectory + "/" + fileName;
                     String template = decoratedTemplate;
                     if (!format.equals("html")) {
-                    	if ( decorateNonHtml ){
-                            outputName = outputName + ".html";                    		
-                    	} else {
+                        if (decorateNonHtml) {
+                            outputName = outputName + ".html";
+                        } else {
                             template = nonDecoratedTemplate;
-                    	}
+                        }
                     }
                     File written = write(outputDirectory, outputName, template, dataModel);
                     filesByFormat.put(format, written);
@@ -215,11 +218,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
     }
 
     private String templateResource(String format) {
-        String resource = resources.getProperty(format);
-        if (resource == null) {
-            throw new ViewTemplateNotFoundForFormat(format);
-        }
-        return resource;
+        return viewProperties.getProperty(format);
     }
 
     private Map<String, Object> newDataModel() {
@@ -230,25 +229,15 @@ public class FreemarkerViewGenerator implements ViewGenerator {
     public static class ReportCreationFailed extends RuntimeException {
 
         public ReportCreationFailed(Map<String, List<File>> reportFiles, Exception cause) {
-            super("Report creation failed from file "+reportFiles, cause);
+            super("Report creation failed from file " + reportFiles, cause);
         }
     }
 
-    
     @SuppressWarnings("serial")
     public static class ViewGenerationFailedForTemplate extends RuntimeException {
 
         public ViewGenerationFailedForTemplate(String resource, Exception cause) {
             super(resource, cause);
-        }
-
-    }
-
-    @SuppressWarnings("serial")
-    public static class ViewTemplateNotFoundForFormat extends RuntimeException {
-
-        public ViewTemplateNotFoundForFormat(String format) {
-            super(format);
         }
 
     }
@@ -270,11 +259,11 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         public Map<String, File> getFilesByFormat() {
             return filesByFormat;
         }
-        
-        public Properties asProperties(String format){
+
+        public Properties asProperties(String format) {
             Properties p = new Properties();
             File stats = filesByFormat.get(format);
-            if ( stats == null ){
+            if (stats == null) {
                 return p;
             }
             try {

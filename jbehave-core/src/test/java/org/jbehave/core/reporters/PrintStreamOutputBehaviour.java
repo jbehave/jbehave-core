@@ -386,7 +386,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
-    public void shouldCreateAndWriteToFilePrintStreamForStoryClass() throws IOException {
+    public void shouldCreateAndWriteToFilePrintStreamForStoryLocation() throws IOException {
 
         // Given
         String storyPath = storyPath(MyStory.class);
@@ -416,12 +416,35 @@ public class PrintStreamOutputBehaviour {
         // When
         narrateAnInterestingStory(reporter);
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
-        viewGenerator.generateView(outputDirectory, asList("html", "txt"), FreemarkerViewGenerator.defaultResources());
+        Properties viewProperties = new Properties();
+        viewGenerator.generateView(outputDirectory, asList("html", "txt"), viewProperties);
 
         // Then
         ensureFileExists(new File(outputDirectory, "view/index.html"));
+        ensureFileExists(new File(outputDirectory, "view/org.jbehave.core.reporters.my_story.txt.html"));
     }
 
+    @Test
+    public void shouldReportEventsToFilePrintStreamsAndGenerateViewWithoutDecoratingNonHtml() throws IOException {
+        final String storyPath = storyPath(MyStory.class);
+        File outputDirectory = new File("target/output");
+        StoryReporter reporter = new StoryReporterBuilder().withOutputDirectory(outputDirectory.getName())
+                .withFormats(HTML, TXT)
+                .build(storyPath);
+
+        // When
+        narrateAnInterestingStory(reporter);
+        ViewGenerator viewGenerator = new FreemarkerViewGenerator();
+        Properties viewProperties = new Properties();
+        viewProperties.setProperty("decorateNonHtml", "false");
+        viewGenerator.generateView(outputDirectory, asList("html", "txt"), viewProperties);
+
+        // Then
+        ensureFileExists(new File(outputDirectory, "view/index.html"));
+        ensureFileExists(new File(outputDirectory, "view/org.jbehave.core.reporters.my_story.txt"));
+    }
+
+    
     @Test
     public void shouldBuildPrintStreamReportersAndOverrideDefaultForAGivenFormat() throws IOException {
         final String storyPath = storyPath(MyStory.class);
@@ -446,13 +469,13 @@ public class PrintStreamOutputBehaviour {
         ensureFileExists(outputFile);
     }
 
-    private void ensureFileExists(File renderedOutput) throws IOException, FileNotFoundException {
-        assertThat(renderedOutput.exists(),  is(true));
-        assertThat(IOUtils.toString(new FileReader(renderedOutput)).length(), greaterThan(0));
+    private void ensureFileExists(File file) throws IOException, FileNotFoundException {
+        assertThat(file.exists(),  is(true));
+        assertThat(IOUtils.toString(new FileReader(file)).length(), greaterThan(0));
     }
 
     @Test(expected = ViewGenerationFailedForTemplate.class)
-    public void shouldFailRenderingOutputWithInexistentTemplates() throws IOException {
+    public void shouldFailGeneratingViewWithInexistentTemplates() throws IOException {
         // Given
         Properties templates = new Properties();
         templates.setProperty("index", "target/inexistent");
