@@ -17,8 +17,8 @@ import org.jbehave.core.io.StoryLocation;
  */
 public class FilePrintStreamFactory implements PrintStreamFactory {
 
-    protected final StoryLocation storyLocation;
-    protected FileConfiguration configuration;
+    private final StoryLocation storyLocation;
+    private FileConfiguration configuration;
     private File outputFile;
 
     public FilePrintStreamFactory(StoryLocation storyLocation) {
@@ -58,43 +58,74 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
     }
 
     /**
-     * Return the file output directory, based on the {@link #storyLocation} and
-     * the {@link #configuration}
+     * Return the file output directory, using the configured
+     * {@link FilePathResolver}
      * 
      * @return The File representing the output directory
      */
     protected File outputDirectory() {
-        File codeLocationParent = new File(storyLocation.getCodeLocation().getFile()).getParentFile();
-        return new File(codeLocationParent.getPath().replace('\\', '/'), configuration.getDirectory());
+        return new File(configuration.getPathResolver().resolveDirectory(storyLocation,
+                configuration.getRelativeDirectory()));
     }
 
     /**
-     * Return the file output name, based on the {@link #storyLocation} and the
-     * {@link #configuration}
+     * Return the file output name, using the configured
+     * {@link FilePathResolver}
      * 
      * @return The file output name
      */
     protected String outputName() {
-        String name = storyLocation.getName().replace('/', '.');
-        if (name.startsWith(".")) {
-            name = name.substring(1);
-        }
-        return stripPackage(name) + "." + configuration.getExtension();
+        return configuration.getPathResolver().resolveName(storyLocation, configuration.getExtension());
+    }
+
+    public static interface FilePathResolver {
+
+        String resolveDirectory(StoryLocation storyLocation, String relativeDirectory);
+
+        String resolveName(StoryLocation storyLocation, String extension);
+
     }
 
     /**
-     * Strips package from name, i.e. the portion of the up to the last
-     * occurrence of '.' char.
-     * 
-     * @param name
-     *            the name
-     * @return The stripped name
+     * Resolves directory from code location parent file.
      */
-    protected String stripPackage(String name) {
-        if (StringUtils.contains(name, '.')) {
-            return name.substring(0, name.lastIndexOf("."));
+    public static abstract class AbstractPathResolver implements FilePathResolver {
+
+        public String resolveDirectory(StoryLocation storyLocation, String relativeDirectory) {
+            File parent = new File(storyLocation.getCodeLocation().getFile()).getParentFile();
+            return parent.getPath().replace('\\', '/') + "/" + relativeDirectory;
         }
-        return name;
+
+    }
+
+    /**
+     * Resolves story location to java package convention, replacing '/' to '.'
+     */
+    public static class PackagePathResolver extends AbstractPathResolver {
+
+        public String resolveName(StoryLocation storyLocation, String extension) {
+            String name = storyLocation.getName().replace('/', '.');
+            if (name.startsWith(".")) {
+                name = name.substring(1);
+            }
+            return StringUtils.substringBeforeLast(name, ".") + "." + extension;
+        }
+
+    }
+
+    /**
+     * Resolves story location path to file name, considering portion from last '/'.
+     */
+    public static class NamePathResolver extends AbstractPathResolver {
+
+        public String resolveName(StoryLocation storyLocation, String extension) {
+            String name = storyLocation.getName();
+            if ( StringUtils.contains(name, '/') ){
+                name = StringUtils.substringAfterLast(storyLocation.getName(), "/");
+            }
+            return StringUtils.substringBeforeLast(name, ".") + "." + extension;
+        }
+
     }
 
     public static class FilePrintStream extends PrintStream {
@@ -118,35 +149,41 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
 
     /**
      * Configuration class for file print streams. Allows specification the
-     * directory and the file extension. Provides as defaults {@link #DIRECTORY}
-     * (relative to code location) and {@link #EXTENSION}.
+     * relative directory (relative to code location) and file extension.
+     * Provides as defaults {@link #RELATIVE_DIRECTORY} and {@link #EXTENSION}.
      */
     public static class FileConfiguration {
-        public static final String DIRECTORY = "jbehave-reports";
+        public static final String RELATIVE_DIRECTORY = "jbehave-reports";
         public static final String EXTENSION = "html";
 
-        private final String directory;
+        private final String relativeDirectory;
         private final String extension;
+        private final FilePathResolver pathResolver;
 
         public FileConfiguration() {
             this(EXTENSION);
         }
 
         public FileConfiguration(String extension) {
-            this(DIRECTORY, extension);
+            this(RELATIVE_DIRECTORY, extension, new PackagePathResolver());
         }
 
-        public FileConfiguration(String directory, String extension) {
-            this.directory = directory;
+        public FileConfiguration(String relativeDirectory, String extension, FilePathResolver pathResolver) {
+            this.relativeDirectory = relativeDirectory;
             this.extension = extension;
+            this.pathResolver = pathResolver;
         }
 
-        public String getDirectory() {
-            return directory;
+        public String getRelativeDirectory() {
+            return relativeDirectory;
         }
 
         public String getExtension() {
             return extension;
+        }
+
+        public FilePathResolver getPathResolver() {
+            return pathResolver;
         }
 
         @Override

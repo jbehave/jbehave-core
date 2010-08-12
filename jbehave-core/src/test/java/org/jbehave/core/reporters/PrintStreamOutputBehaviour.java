@@ -409,7 +409,7 @@ public class PrintStreamOutputBehaviour {
     public void shouldReportEventsToFilePrintStreamsAndGenerateView() throws IOException {
         final String storyPath = storyPath(MyStory.class);
         File outputDirectory = new File("target/output");
-        StoryReporter reporter = new StoryReporterBuilder().withOutputDirectory(outputDirectory.getName())
+        StoryReporter reporter = new StoryReporterBuilder().withRelativeDirectory(outputDirectory.getName())
         		.withFormats(HTML, TXT)
                 .build(storyPath);
 
@@ -428,7 +428,7 @@ public class PrintStreamOutputBehaviour {
     public void shouldReportEventsToFilePrintStreamsAndGenerateViewWithoutDecoratingNonHtml() throws IOException {
         final String storyPath = storyPath(MyStory.class);
         File outputDirectory = new File("target/output");
-        StoryReporter reporter = new StoryReporterBuilder().withOutputDirectory(outputDirectory.getName())
+        StoryReporter reporter = new StoryReporterBuilder().withRelativeDirectory(outputDirectory.getName())
                 .withFormats(HTML, TXT)
                 .build(storyPath);
 

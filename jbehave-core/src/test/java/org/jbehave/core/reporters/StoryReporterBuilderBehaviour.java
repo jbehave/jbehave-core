@@ -31,6 +31,8 @@ import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
+import org.jbehave.core.reporters.FilePrintStreamFactory.NamePathResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.PackagePathResolver;
 import org.junit.Test;
 
 public class StoryReporterBuilderBehaviour {
@@ -52,18 +54,32 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithCustomOuputDirectory() throws IOException {
-
+    public void shouldBuildWithCustomRelativeDirectory() throws IOException {
         // Given
         StoryReporterBuilder builder = new StoryReporterBuilder();
         String storyPath = storyPath(MyStory.class);
 
         // When
-        String outputDirectory = "my-reports";
-        builder.withOutputDirectory(outputDirectory).build(storyPath);
+        String relativeDirectory = "my-reports";
+        builder.withRelativeDirectory(relativeDirectory).build(storyPath);
 
         // Then
-        assertThat(builder.fileConfiguration("").getDirectory(), equalTo((outputDirectory)));
+        assertThat(builder.fileConfiguration("").getRelativeDirectory(), equalTo((relativeDirectory)));
+    }
+
+    @Test
+    public void shouldBuildWithCustomPathResolver() throws IOException {
+        // Given
+        StoryReporterBuilder builder = new StoryReporterBuilder();
+        String storyPath = storyPath(MyStory.class);
+
+        // When
+        assertThat(builder.pathResolver(), instanceOf(PackagePathResolver.class));
+        builder.withPathResolver(new NamePathResolver()).build(storyPath);
+
+        // Then
+        assertThat(builder.pathResolver(), instanceOf(NamePathResolver.class));
+        assertThat(builder.fileConfiguration("").getPathResolver(), instanceOf(NamePathResolver.class));
     }
 
     @Test
@@ -144,7 +160,7 @@ public class StoryReporterBuilderBehaviour {
         assertThat(out.toString(),
                 equalTo("Dato un passo che fallisce (FALLITO)\n(java.lang.RuntimeException: ouch)\n"));
     }
-    
+
     @Test
     public void shouldBuildWithReporterOfDifferentFormats() throws IOException {
         // Given
@@ -152,7 +168,8 @@ public class StoryReporterBuilderBehaviour {
         StoryReporterBuilder builder = new StoryReporterBuilder();
 
         // When
-        StoryReporter reporter = builder.withDefaultFormats().withFormats(CONSOLE, IDE_CONSOLE, HTML, STATS, TXT, XML).build(storyPath);
+        StoryReporter reporter = builder.withDefaultFormats().withFormats(CONSOLE, IDE_CONSOLE, HTML, STATS, TXT, XML)
+                .build(storyPath);
 
         // Then
         assertThat(builder.formats(), hasItems(CONSOLE, IDE_CONSOLE, HTML, STATS, TXT, XML));
@@ -192,7 +209,7 @@ public class StoryReporterBuilderBehaviour {
         assertThat(delegates.size(), equalTo(2));
         assertThat(delegates.contains(txtReporter), is(true));
     }
-    
+
     private String storyPath(Class<MyStory> storyClass) {
         StoryPathResolver resolver = new UnderscoredCamelCaseResolver(".story");
         return resolver.resolve(storyClass);

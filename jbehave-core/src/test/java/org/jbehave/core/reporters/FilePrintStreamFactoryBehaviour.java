@@ -11,6 +11,8 @@ import java.net.URL;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.NamePathResolver;
 import org.jbehave.core.reporters.FilePrintStreamFactory.PrintStreamCreationFailed;
 import org.junit.Test;
 
@@ -54,23 +56,35 @@ public class FilePrintStreamFactoryBehaviour {
         // Then
         assertThat(factory.configuration(), not(equalTo(configuration)));        
         assertThat(factory.configuration().toString(), containsString(FileConfiguration.EXTENSION));        
-        assertThat(factory.configuration().toString(), containsString(FileConfiguration.DIRECTORY));        
+        assertThat(factory.configuration().toString(), containsString(FileConfiguration.RELATIVE_DIRECTORY));        
     }
 
     @Test
-    public void shouldCreateOutputNameFromStoryPath() {
+    public void shouldResolveOutputNameFromStoryLocationWithDefaultResolver() {
         assertThatOutputNameIs("org/jbehave/examples/trader/stories/my_given.story",
-                "org.jbehave.examples.trader.stories.my_given.ext");
+                "org.jbehave.examples.trader.stories.my_given.ext", null);
         assertThatOutputNameIs("/org/jbehave/examples/trader/stories/my_given.story",
-                "org.jbehave.examples.trader.stories.my_given.ext");
-        assertThatOutputNameIs("my_given.story", "my_given.ext");
-        assertThatOutputNameIs("my_given", "my_given.ext");
+                "org.jbehave.examples.trader.stories.my_given.ext", null);
+        assertThatOutputNameIs("my_given.story", "my_given.ext", null);
+        assertThatOutputNameIs("my_given", "my_given.ext", null);
     }
 
-    private void assertThatOutputNameIs(String storyPath, String outputName) {
+    @Test
+    public void shouldResolveOutputNameFromStoryLocationWithNameResolver() {
+        FilePathResolver resolver = new NamePathResolver();
+        assertThatOutputNameIs("org/jbehave/examples/trader/stories/my_given.story",
+                "my_given.ext", resolver);
+        assertThatOutputNameIs("/org/jbehave/examples/trader/stories/my_given.story",
+                "my_given.ext", resolver);
+        assertThatOutputNameIs("my_given.story", "my_given.ext", resolver);
+        assertThatOutputNameIs("my_given", "my_given.ext", resolver);
+    }
+
+    private void assertThatOutputNameIs(String storyPath, String outputName, FilePathResolver pathResolver) {
         // Given
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
-        FileConfiguration configuration = new FileConfiguration("ext");
+        String extension = "ext";        
+        FileConfiguration configuration = (pathResolver != null ? new FileConfiguration("", extension, pathResolver) : new FileConfiguration(extension));
         // When
         FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration);
         // Then
@@ -99,7 +113,7 @@ public class FilePrintStreamFactoryBehaviour {
         FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration);
         factory.createPrintStream();
         File outputFile = factory.getOutputFile();
-        String expected = new File(codeLocation.getFile()).getParent().replace('\\', '/') + "/" + configuration.getDirectory() + "/"
+        String expected = new File(codeLocation.getFile()).getParent().replace('\\', '/') + "/" + configuration.getRelativeDirectory() + "/"
                 + "org.jbehave.examples.trader.stories.my_given." + configuration.getExtension();
         assertThat(outputFile.toString().replace('\\', '/'), equalTo(expected));
 

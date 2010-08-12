@@ -26,7 +26,7 @@ public class SpringStoryReporterBuilder extends StoryReporterBuilder {
     }
 
     public void setOutputDirectory(String outputDirectory) {
-        withOutputDirectory(outputDirectory);
+        withRelativeDirectory(outputDirectory);
     }
 
     public URL getCodeLocation() {

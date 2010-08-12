@@ -205,7 +205,7 @@ public class GuiceAnnotationBuilderBehaviour {
             viewResources.setProperty("decorateNonHtml", "true");
             bind(StoryReporterBuilder.class).toInstance(
                     new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML).withKeywords(
-                            new LocalizedKeywords(Locale.ITALIAN)).withOutputDirectory("my-output-directory")
+                            new LocalizedKeywords(Locale.ITALIAN)).withRelativeDirectory("my-output-directory")
                             .withViewResources(viewResources).withFailureTrace(true));
             Multibinder<ParameterConverter> multiBinder = Multibinder.newSetBinder(binder(), ParameterConverter.class);
             multiBinder.addBinding().toInstance(new CustomConverter());

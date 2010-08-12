@@ -15,6 +15,7 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
 
 /**
  * <p>
@@ -114,7 +115,8 @@ public class StoryReporterBuilder {
     }
 
     private List<Format> formats = new ArrayList<Format>();
-    private String outputDirectory = new FileConfiguration().getDirectory();
+    private String relativeDirectory = new FileConfiguration().getRelativeDirectory();
+    private FilePathResolver pathResolver = new FileConfiguration().getPathResolver();
     private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
     private Properties viewResources = FreemarkerViewGenerator.defaultViewProperties();
     private boolean reportFailureTrace = false;
@@ -124,6 +126,10 @@ public class StoryReporterBuilder {
         return filePrintStreamFactory("").outputDirectory();
     }
 
+    public FilePathResolver pathResolver(){
+        return pathResolver;
+    }
+    
     public URL codeLocation() {
         return codeLocation;
     }
@@ -156,8 +162,13 @@ public class StoryReporterBuilder {
         return viewResources;
     }
 
-    public StoryReporterBuilder withOutputDirectory(String outputDirectory) {
-        this.outputDirectory = outputDirectory;
+    public StoryReporterBuilder withRelativeDirectory(String relativeDirectory) {
+        this.relativeDirectory = relativeDirectory;
+        return this;
+    }
+
+    public StoryReporterBuilder withPathResolver(FilePathResolver pathResolver){
+        this.pathResolver = pathResolver;
         return this;
     }
 
@@ -234,7 +245,7 @@ public class StoryReporterBuilder {
     }
 
     protected FileConfiguration fileConfiguration(String extension) {
-        return new FileConfiguration(outputDirectory, extension);
+        return new FileConfiguration(relativeDirectory, extension, pathResolver);
     }
 
 }

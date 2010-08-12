@@ -165,7 +165,7 @@ public class PicoAnnotationBuilderBehaviour {
             viewResources.setProperty("index", "my-reports-index.ftl");
             viewResources.setProperty("decorateNonHtml", "true");
             container.addComponent(new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
-                    .withKeywords(new LocalizedKeywords(Locale.ITALIAN)).withOutputDirectory("my-output-directory")
+                    .withKeywords(new LocalizedKeywords(Locale.ITALIAN)).withRelativeDirectory("my-output-directory")
                     .withViewResources(viewResources).withFailureTrace(true));
         }
 
