@@ -43,7 +43,11 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
             List<String> resources = annotationFinder()
                     .getAnnotatedValues(UsingSpring.class, String.class, "resources");
             if (resources.size() > 0) {
-                context = applicationContextFor(annotatedClass().getClassLoader(), resources);
+                try {
+                    context = applicationContextFor(annotatedClass().getClassLoader(), resources);
+                } catch ( Exception e ){
+                    annotationMonitor().elementCreationFailed(ApplicationContext.class, e);
+                }
             }
         } else {
             annotationMonitor().annotationNotFound(UsingSpring.class, annotatedClass());

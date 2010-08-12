@@ -10,6 +10,9 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.STATS;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -24,6 +27,7 @@ import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.annotations.guice.UsingGuice;
 import org.jbehave.core.configuration.AnnotationBuilder;
+import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -162,6 +166,14 @@ public class GuiceAnnotationBuilderBehaviour {
             assertThat(((Steps) candidateSteps.get(i)).instance(), instanceOf(stepsClasses[i]));
         }
     }
+    
+    @Test
+    public void shouldNotBuildContainerIfModuleNotInstantiable() {
+        AnnotationMonitor annotationMonitor = mock(AnnotationMonitor.class);
+        AnnotationBuilder builderPrivateModule = new GuiceAnnotationBuilder(AnnotatedWithPrivateModule.class, annotationMonitor);
+        assertThatStepsInstancesAre(builderPrivateModule.buildCandidateSteps());
+        verify(annotationMonitor).elementCreationFailed(isA(Class.class), isA(Exception.class));
+    }
 
     @Configure()
     @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
@@ -186,6 +198,12 @@ public class GuiceAnnotationBuilderBehaviour {
     @Configure()
     @UsingGuice()
     private static class AnnotatedWithoutModules {
+
+    }
+    
+    @Configure()
+    @UsingGuice(modules = {PrivateModule.class} )
+    private static class AnnotatedWithPrivateModule {
 
     }
 
@@ -262,6 +280,15 @@ public class GuiceAnnotationBuilderBehaviour {
             bind(FooStepsWithDependency.class).in(Scopes.SINGLETON);
         }
 
+    }
+
+
+    private static class PrivateModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
+        }
+        
     }
 
 }

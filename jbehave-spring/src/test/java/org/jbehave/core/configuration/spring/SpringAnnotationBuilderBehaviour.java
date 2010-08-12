@@ -10,6 +10,9 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.STATS;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -21,6 +24,8 @@ import java.util.Locale;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.annotations.spring.UsingSpring;
+import org.jbehave.core.configuration.AnnotationBuilder;
+import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -123,6 +128,14 @@ public class SpringAnnotationBuilderBehaviour {
         }
     }
 
+    @Test
+    public void shouldNotBuildContainerIfResourceNotLoadable() {
+        AnnotationMonitor annotationMonitor = mock(AnnotationMonitor.class);
+        AnnotationBuilder builderUnloadableResource = new SpringAnnotationBuilder(AnnotatedWithUnloadableResource.class, annotationMonitor);
+        assertThatStepsInstancesAre(builderUnloadableResource.buildCandidateSteps());
+        verify(annotationMonitor).elementCreationFailed(isA(Class.class), isA(Exception.class));
+    }
+
     @Configure()
     @UsingSpring(resources = { "org/jbehave/core/configuration/spring/configuration.xml",
             "org/jbehave/core/steps/spring/steps.xml", "org/jbehave/core/steps/spring/steps-with-dependency.xml" })
@@ -143,6 +156,12 @@ public class SpringAnnotationBuilderBehaviour {
 
     }
 
+    @Configure()
+    @UsingSpring(resources = { "inexistent"} )
+    private static class AnnotatedWithUnloadableResource {
+
+    }
+    
     private static class NotAnnotated {
 
     }

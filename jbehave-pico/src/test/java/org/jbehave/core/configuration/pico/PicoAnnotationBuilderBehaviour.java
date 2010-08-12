@@ -10,6 +10,9 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.STATS;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,6 +25,7 @@ import java.util.Properties;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.annotations.pico.UsingPico;
+import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -110,10 +114,9 @@ public class PicoAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndPico() {
-        PicoAnnotationBuilder builderAnnotated = new PicoAnnotationBuilder(
-                AnnotatedUsingStepsAndPico.class);
+        PicoAnnotationBuilder builderAnnotated = new PicoAnnotationBuilder(AnnotatedUsingStepsAndPico.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class );
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
     }
 
     @Test
@@ -122,6 +125,15 @@ public class PicoAnnotationBuilderBehaviour {
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
         PicoAnnotationBuilder builderAnnotatedWithoutModules = new PicoAnnotationBuilder(AnnotatedWithoutModules.class);
         assertThatStepsInstancesAre(builderAnnotatedWithoutModules.buildCandidateSteps());
+    }
+
+    @Test
+    public void shouldNotBuildContainerIfModuleNotInstantiable() {
+        AnnotationMonitor annotationMonitor = mock(AnnotationMonitor.class);
+        PicoAnnotationBuilder builderPrivateModule = new PicoAnnotationBuilder(AnnotatedWithPrivateModule.class,
+                annotationMonitor);
+        assertThatStepsInstancesAre(builderPrivateModule.buildCandidateSteps());
+        verify(annotationMonitor).elementCreationFailed(isA(Class.class), isA(Exception.class));
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {
@@ -147,6 +159,12 @@ public class PicoAnnotationBuilderBehaviour {
     @Configure()
     @UsingPico()
     private static class AnnotatedWithoutModules {
+
+    }
+
+    @Configure()
+    @UsingPico(modules = { PrivateModule.class })
+    private static class AnnotatedWithPrivateModule {
 
     }
 
@@ -177,6 +195,14 @@ public class PicoAnnotationBuilderBehaviour {
             container.addComponent(FooSteps.class);
             container.addComponent(Integer.class, 42);
             container.addComponent(FooStepsWithDependency.class);
+        }
+
+    }
+
+    private static class PrivateModule implements PicoModule {
+
+        public void configure(MutablePicoContainer container) {
+            container.addComponent(StoryLoader.class, new LoadFromURL());
         }
 
     }
