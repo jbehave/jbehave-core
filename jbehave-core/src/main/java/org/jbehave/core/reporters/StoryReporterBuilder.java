@@ -52,7 +52,7 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
  * </p>
  * <p>
  * The builder configures the file-based reporters to output to the default file
- * directory {@link FileConfiguration#OUTPUT_DIRECTORY} as relative to the code
+ * directory {@link FileConfiguration#DIRECTORY} as relative to the code
  * location. In some case, e.g. with Ant class loader, the code source location
  * from class may not be properly set. In this case, we may specify it from a
  * file:
@@ -114,7 +114,7 @@ public class StoryReporterBuilder {
     }
 
     private List<Format> formats = new ArrayList<Format>();
-    private String outputDirectory = new FileConfiguration().getOutputDirectory();
+    private String outputDirectory = new FileConfiguration().getDirectory();
     private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
     private Properties viewResources = FreemarkerViewGenerator.defaultViewProperties();
     private boolean reportFailureTrace = false;

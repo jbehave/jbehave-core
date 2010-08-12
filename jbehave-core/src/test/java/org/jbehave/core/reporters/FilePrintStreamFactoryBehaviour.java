@@ -53,8 +53,8 @@ public class FilePrintStreamFactoryBehaviour {
         
         // Then
         assertThat(factory.configuration(), not(equalTo(configuration)));        
-        assertThat(factory.configuration().toString(), containsString(FileConfiguration.HTML));        
-        assertThat(factory.configuration().toString(), containsString(FileConfiguration.OUTPUT_DIRECTORY));        
+        assertThat(factory.configuration().toString(), containsString(FileConfiguration.EXTENSION));        
+        assertThat(factory.configuration().toString(), containsString(FileConfiguration.DIRECTORY));        
     }
 
     @Test
@@ -99,7 +99,7 @@ public class FilePrintStreamFactoryBehaviour {
         FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration);
         factory.createPrintStream();
         File outputFile = factory.getOutputFile();
-        String expected = new File(codeLocation.getFile()).getParent().replace('\\', '/') + "/" + configuration.getOutputDirectory() + "/"
+        String expected = new File(codeLocation.getFile()).getParent().replace('\\', '/') + "/" + configuration.getDirectory() + "/"
                 + "org.jbehave.examples.trader.stories.my_given." + configuration.getExtension();
         assertThat(outputFile.toString().replace('\\', '/'), equalTo(expected));
 
