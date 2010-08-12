@@ -22,6 +22,7 @@ import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.FilePrintStreamFactory.NamePathResolver;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
@@ -51,6 +52,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
                 .useDefaultStoryReporter(new ConsoleOutput(keywords))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
+                    .withPathResolver(new NamePathResolver())
                     .withDefaultFormats()
                     .withFormats(CONSOLE, TXT, HTML, XML)
                     .withFailureTrace(false)
