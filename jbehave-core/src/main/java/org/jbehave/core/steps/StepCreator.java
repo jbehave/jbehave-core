@@ -14,10 +14,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Map;
 
-import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
-import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.parsers.StepMatcher;
 
 import com.thoughtworks.paranamer.NullParanamer;
@@ -137,12 +136,7 @@ public class StepCreator {
                     // step parametrisation failed, return pending StepResult
                     return pending(stepAsString).withParameterValues(parametrisedStep);
                 } catch (InvocationTargetException e) {
-                    Throwable cause = e.getCause();
-                    if (cause instanceof PendingStepFound) {
-                        return pending(stepAsString, (PendingStepFound) cause).withParameterValues(parametrisedStep);
-                    } else {
-                        return failed(stepAsString, cause).withParameterValues(parametrisedStep);
-                    }
+                    return failed(stepAsString, e.getCause()).withParameterValues(parametrisedStep);
                 } catch (Throwable t) {
                     return failed(stepAsString, t).withParameterValues(parametrisedStep);
                 }
