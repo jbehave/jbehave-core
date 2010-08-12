@@ -1,7 +1,7 @@
 package org.jbehave.examples.trader.spring;
 
 import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class TraderStoriesUsingSpring extends TraderStories {
 
     @Override
     protected List<String> storyPaths() {
-        String searchInDirectory = codeLocationFromPath("../trader/src/main/java").getFile();
+        String searchInDirectory = codeLocationFromClass(this.getClass()).getFile()+"../../../trader/src/main/java";
         return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
 
     }
