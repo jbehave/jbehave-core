@@ -28,7 +28,7 @@ public class StepCreator {
     public static final String PARAMETER_NAME_END = ">";
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
-    public static final String PARAMETER_VALUE_NEWLINE = "NL";
+    public static final String PARAMETER_VALUE_NEWLINE = "\u2424";
     private final Object stepsInstance;
     private final ParameterConverters parameterConverters;
     private final StepMatcher stepMatcher;
