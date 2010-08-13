@@ -112,7 +112,7 @@ public class StoryReporterBuilderBehaviour {
 
         // Then
         assertThat(builder.codeLocation(), equalTo(codeLocation));
-        assertThat(builder.filePrintStreamFactory(storyPath).outputDirectory().getPath(),
+        assertThat(builder.filePrintStreamFactory(storyPath).outputDirectory().getPath().replace('\\', '/'),
                 endsWith("custom/jbehave-reports"));
 
     }
