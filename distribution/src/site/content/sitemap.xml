@@ -52,4 +52,13 @@
     <page>team-list.html</page>
     <page>source-repository.html</page>
   </section>
+  <section>
+    <name>Test Coverage</name>
+    <link title="JBehave Core">test-coverage/core/index.html</link>
+    <link title="JBehave Guice">test-coverage/guice/index.html</link>
+    <link title="JBehave Pico">test-coverage/pico/index.html</link>
+    <link title="JBehave Spring">test-coverage/spring/index.html</link>
+    <link title="JBehave Ant">test-coverage/ant/index.html</link>
+    <link title="JBehave Maven Plugin">test-coverage/maven-plugin/index.html</link>
+  </section>
 </sitemap>
