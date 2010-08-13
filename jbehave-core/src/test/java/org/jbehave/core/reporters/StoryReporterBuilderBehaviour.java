@@ -64,6 +64,7 @@ public class StoryReporterBuilderBehaviour {
         builder.withRelativeDirectory(relativeDirectory).build(storyPath);
 
         // Then
+        assertThat(builder.relativeDirectory(), equalTo((relativeDirectory)));
         assertThat(builder.fileConfiguration("").getRelativeDirectory(), equalTo((relativeDirectory)));
     }
 

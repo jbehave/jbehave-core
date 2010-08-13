@@ -32,7 +32,7 @@
         <value>XML</value>
       </list>
     </property>
-    <property name="outputDirectory" value="my-output-directory" />
+    <property name="relativeDirectory" value="my-output-directory" />
     <property name="keywords">
        <bean class="org.jbehave.core.i18n.LocalizedKeywords">
         <constructor-arg>

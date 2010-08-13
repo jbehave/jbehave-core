@@ -126,6 +126,10 @@ public class StoryReporterBuilder {
         return filePrintStreamFactory("").outputDirectory();
     }
 
+    public String relativeDirectory(){
+        return relativeDirectory;
+    }
+    
     public FilePathResolver pathResolver(){
         return pathResolver;
     }

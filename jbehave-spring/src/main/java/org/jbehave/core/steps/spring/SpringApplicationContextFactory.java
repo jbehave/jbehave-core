@@ -25,10 +25,6 @@ public class SpringApplicationContextFactory {
         this(null, classLoader, resources);
     }
 
-    public SpringApplicationContextFactory(ApplicationContext parent, String... resources) {
-        this(parent, parent.getClassLoader(), resources);
-    }
-
     public SpringApplicationContextFactory(ApplicationContext parent, ClassLoader classLoader, String... resources) {
         this.parent = parent;
         this.classLoader = classLoader;
