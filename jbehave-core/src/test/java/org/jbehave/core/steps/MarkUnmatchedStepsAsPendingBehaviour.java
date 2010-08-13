@@ -11,9 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
 import org.junit.Test;
@@ -23,7 +25,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     private Map<String, String> tableRow = new HashMap<String, String>();
 
     @Test
-    public void shouldMatchCandidateStepsToCreateExecutableSteps() {
+    public void shouldCreateExecutableStepsWhenCandidatesAreMatched() {
         // Given
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
 
@@ -45,7 +47,38 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldMarkAsPendingAnyStepsWhichAreNotAvailable() {
+    public void shouldCreateExecutableStepsOnlyFromPreviousNonAndStep() {
+        // Given
+        StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
+
+        CandidateSteps steps = mock(Steps.class);
+        CandidateStep candidate = mock(CandidateStep.class, "candidate");
+        CandidateStep andCandidate = mock(CandidateStep.class, "andCandidate");
+        Step step = mock(Step.class);
+        Step andStep = mock(Step.class);
+
+        String myStep = "my step";
+        when(candidate.matches(myStep)).thenReturn(true);
+        when(candidate.createMatchedStep(myStep, tableRow)).thenReturn(step);
+        when(andCandidate.isAndStep(myStep)).thenReturn(false);
+        String myAndStep = "my And step";
+        when(andCandidate.matches(myAndStep)).thenReturn(true);
+        when(andCandidate.isAndStep(myAndStep)).thenReturn(true);
+        when(andCandidate.createMatchedStep(myAndStep, tableRow)).thenReturn(andStep);
+
+        when(steps.listCandidates()).thenReturn(asList(candidate, andCandidate));
+
+        // When
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(myStep, myAndStep)),
+                tableRow);
+
+        // Then
+        assertThat(executableSteps.size(), equalTo(2));
+    }
+    
+    
+    @Test
+    public void shouldCreatePendingStepsWhenCandidatesAreNotMatched() {
         // Given
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
 
@@ -66,6 +99,28 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         assertThat(throwable, is(PendingStepFound.class));
         assertThat(throwable.getMessage(), equalTo(stepAsString));
     }
+    
+    @Test
+    public void shouldCreateIgnorableSteps() {
+        // Given
+        StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
+
+        CandidateStep candidate = mock(CandidateStep.class);
+        CandidateSteps steps = mock(Steps.class);
+
+        String stepAsString = "my ignorable step";
+        when(candidate.ignore(stepAsString)).thenReturn(true);
+        when(steps.listCandidates()).thenReturn(asList(candidate));
+
+        // When
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(stepAsString)),
+                tableRow);
+        // Then
+        assertThat(executableSteps.size(), equalTo(1));
+        StepResult result = executableSteps.get(0).perform();
+        assertThat(result, Matchers.instanceOf(Ignorable.class));
+    }
+
 
     @Test
     public void shouldCollectBeforeAndAfterScenarioAnnotatedSteps() {

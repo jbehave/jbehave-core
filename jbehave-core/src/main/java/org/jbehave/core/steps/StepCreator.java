@@ -284,7 +284,7 @@ public class StepCreator {
         return parameter;
     }
 
-    private String matchedParameter(String name) {
+    String matchedParameter(String name) {
         String[] parameterNames = stepMatcher.parameterNames();
         for (int i = 0; i < parameterNames.length; i++) {
             String parameterName = parameterNames[i];

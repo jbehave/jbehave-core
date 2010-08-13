@@ -16,10 +16,6 @@ public class ConsoleOutput extends TxtOutput {
 		this(new LocalizedKeywords());
 	}
 
-	public ConsoleOutput(Properties outputPatterns) {
-		this(outputPatterns, new LocalizedKeywords(), false);
-	}
-
 	public ConsoleOutput(Keywords keywords) {
 		this(new Properties(), keywords, false);
 	}

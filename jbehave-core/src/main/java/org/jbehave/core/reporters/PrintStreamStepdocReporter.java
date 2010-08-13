@@ -35,11 +35,7 @@ public class PrintStreamStepdocReporter implements StepdocReporter {
 	}
 
 	public void stepdocs(List<Stepdoc> stepdocs, List<Object> stepsInstances) {
-		if (stepdocs.size() > 0) {
-			outputStepdocs(stepdocs);
-		} else {
-			output("No stepdocs found");
-		}
+	    outputStepdocs(stepdocs);
 		outputStepsInstances(stepsInstances);
 	}
 

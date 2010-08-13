@@ -49,7 +49,8 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter);
 
         // Then
-        String expected = "An interesting story\n"
+        String expected = "DRY RUN\n"
+                +"An interesting story\n"
                 + "(/path/to/story)\n"
                 + "Narrative:\n"
                 + "In order to renovate my house\n"
@@ -96,7 +97,8 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter);
 
         // Then
-        String expected = "<div class=\"story\">\n<h1>An interesting story</h1>\n"
+        String expected = "<div class=\"dryRun\">DRY RUN</div>\n"
+                + "<div class=\"story\">\n<h1>An interesting story</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
                 + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
                 + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
@@ -156,7 +158,8 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter);
 
         // Then
-        String expected = "<div class=\"story\">\n<h1>An interesting story</h1>\n"
+        String expected =  "<div class=\"dryRun\">DRY RUN</div>\n"
+                + "<div class=\"story\">\n<h1>An interesting story</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
                 + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
                 + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
@@ -211,7 +214,8 @@ public class PrintStreamOutputBehaviour {
 
 
         // Then
-        String expected = "<story path=\"/path/to/story\" title=\"An interesting story\">\n"
+        String expected = "<dryRun>DRY RUN</dryRun>\n" 
+                + "<story path=\"/path/to/story\" title=\"An interesting story\">\n"
                 + "<narrative keyword=\"Narrative:\">\n"
                 + "  <inOrderTo keyword=\"In order to\">renovate my house</inOrderTo>\n"
                 + "  <asA keyword=\"As a\">customer</asA>\n"
@@ -247,6 +251,7 @@ public class PrintStreamOutputBehaviour {
         Story story = new Story("/path/to/story",
                 new Description("An interesting story"), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
         boolean givenStory = false;
+        reporter.dryRun();
         reporter.beforeStory(story, givenStory);
         String title = "I ask for a loan";
         reporter.beforeScenario(title);
@@ -356,7 +361,15 @@ public class PrintStreamOutputBehaviour {
         assertThatOutputIs(out, expected);
 
     }
-
+    
+    @Test
+    public void shouldReportEventsToIdeOnlyConsoleOutput() {
+        // When
+        narrateAnInterestingStory(new IdeOnlyConsoleOutput());
+        narrateAnInterestingStory(new IdeOnlyConsoleOutput(new LocalizedKeywords()));
+        narrateAnInterestingStory(new IdeOnlyConsoleOutput(new Properties(), new LocalizedKeywords(), true));        
+    }
+    
     @Test
     public void shouldReportEventsToPrintStreamInItalian() {
         // Given

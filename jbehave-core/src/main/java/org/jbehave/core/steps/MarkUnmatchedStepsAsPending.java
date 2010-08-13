@@ -16,7 +16,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 
 	private final StepFinder stepFinder;
 
-	public MarkUnmatchedStepsAsPending() {
+    public MarkUnmatchedStepsAsPending() {
 		this(new StepFinder());
 	}
 

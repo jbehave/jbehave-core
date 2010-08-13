@@ -1,8 +1,9 @@
 package org.jbehave.core.reporters;
 
+import static java.util.Arrays.asList;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -14,40 +15,35 @@ import org.jbehave.core.configuration.Keywords;
  * specialisation.
  */
 public class IdeOnlyConsoleOutput extends TxtOutput {
-	
-	public IdeOnlyConsoleOutput() {
-		super(output());
-	}
+
+    public IdeOnlyConsoleOutput() {
+        super(output());
+    }
 
     public IdeOnlyConsoleOutput(Keywords keywords) {
         super(output(), keywords);
     }
 
-	public IdeOnlyConsoleOutput(Properties outputPatterns) {
-		super(output(), outputPatterns);
-	}
+    public IdeOnlyConsoleOutput(Properties outputPatterns, Keywords keywords, boolean reportErrors) {
+        super(output(), outputPatterns, keywords, reportErrors);
+    }
 
-	public IdeOnlyConsoleOutput(Properties outputPatterns, Keywords keywords,
-			boolean reportErrors) {
-		super(output(), outputPatterns, keywords, reportErrors);
-	}
+    static PrintStream output() {
+        if (inIDE()) {
+            return System.out;
+        }
+        return new PrintStream(new ByteArrayOutputStream());
+    }
 
-    public static PrintStream output() {
-		if (inIDE()) {
-			return System.out;
-		}
-		return new PrintStream(new ByteArrayOutputStream());
-	}
-
-	private static boolean inIDE() {
-		List<String> idePackages = Arrays.asList("com.intellij", "org.eclipse");
-		for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
-			for (String idePackage : idePackages) {
-				if (ste.getClassName().startsWith(idePackage)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
+    static boolean inIDE() {
+        List<String> idePackages = asList("com.intellij", "org.eclipse");
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            for (String idePackage : idePackages) {
+                if (ste.getClassName().startsWith(idePackage)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

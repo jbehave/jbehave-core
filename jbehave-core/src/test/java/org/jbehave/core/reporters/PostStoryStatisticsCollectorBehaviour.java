@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -41,6 +42,20 @@ public class PostStoryStatisticsCollectorBehaviour {
         assertThat(out.toString(), containsString("stepsSuccessful=3"));
     }
 
+
+    @Test
+    public void shouldNotCountFailedScenariosIfExceptionsAreNull() {
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new PostStoryStatisticsCollector(new PrintStream(out));
+
+        // When
+        reporter.failed("a failed step", null);
+        reporter.failedOutcomes("some failed outcomes", null);
+        
+        // Then
+        assertThat(out.toString(), not(containsString("scenariosFailed")));
+    }
 
     private void narrateAnInterestingStory(StoryReporter reporter) {
         Story story = new Story("/path/to/story",

@@ -23,122 +23,118 @@ import org.jbehave.core.model.Story;
  */
 public class PostStoryStatisticsCollector implements StoryReporter {
 
-	private final OutputStream output;
-	private final Map<String, Integer> data = new HashMap<String, Integer>();
-	private final List<String> events = asList("steps", "stepsSuccessful",
-			"stepsIgnorable", "stepsPending", "stepsNotPerformed",
-			"stepsFailed", "scenarios", "scenariosFailed", "givenStories",
-			"examples");
+    private final OutputStream output;
+    private final Map<String, Integer> data = new HashMap<String, Integer>();
+    private final List<String> events = asList("steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
+            "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosFailed", "givenStories", "examples");
 
-	private Throwable cause;
-	private OutcomesTable outcomesFailed;
+    private Throwable cause;
+    private OutcomesTable outcomesFailed;
 
-	public PostStoryStatisticsCollector(OutputStream output) {
-		this.output = output;
-	}
+    public PostStoryStatisticsCollector(OutputStream output) {
+        this.output = output;
+    }
 
-	public void successful(String step) {
-		count("steps");
-		count("stepsSuccessful");
-	}
+    public void successful(String step) {
+        count("steps");
+        count("stepsSuccessful");
+    }
 
-	public void ignorable(String step) {
-		count("steps");
-		count("stepsIgnorable");
-	}
+    public void ignorable(String step) {
+        count("steps");
+        count("stepsIgnorable");
+    }
 
-	public void pending(String step) {
-		count("steps");
-		count("stepsPending");
-	}
+    public void pending(String step) {
+        count("steps");
+        count("stepsPending");
+    }
 
-	public void notPerformed(String step) {
-		count("steps");
-		count("stepsNotPerformed");
-	}
+    public void notPerformed(String step) {
+        count("steps");
+        count("stepsNotPerformed");
+    }
 
-	public void failed(String step, Throwable cause) {
-		this.cause = cause;
-		count("steps");
-		count("stepsFailed");
-	}
+    public void failed(String step, Throwable cause) {
+        this.cause = cause;
+        count("steps");
+        count("stepsFailed");
+    }
 
-	public void failedOutcomes(String step, OutcomesTable table){
-		this.outcomesFailed = table;
-		count("steps");
-		count("stepsFailed");
-	}
+    public void failedOutcomes(String step, OutcomesTable table) {
+        this.outcomesFailed = table;
+        count("steps");
+        count("stepsFailed");
+    }
 
-	public void beforeStory(Story story, boolean givenStory) {
-		resetData();
-	}
+    public void beforeStory(Story story, boolean givenStory) {
+        resetData();
+    }
 
-	public void afterStory(boolean givenStory) {
-		writeData();
-	}
+    public void afterStory(boolean givenStory) {
+        writeData();
+    }
 
-	public void givenStories(List<String> storyPaths) {
-		count("givenStories");
-	}
+    public void givenStories(List<String> storyPaths) {
+        count("givenStories");
+    }
 
-	public void beforeScenario(String title) {
-		cause = null;
-		outcomesFailed = null;
-	}
+    public void beforeScenario(String title) {
+        cause = null;
+        outcomesFailed = null;
+    }
 
-	public void afterScenario() {
-		count("scenarios");
-		if (cause != null || outcomesFailed != null) {
-			count("scenariosFailed");
-		}
-	}
+    public void afterScenario() {
+        count("scenarios");
+        if (cause != null || outcomesFailed != null) {
+            count("scenariosFailed");
+        }
+    }
 
-	public void beforeExamples(List<String> steps, ExamplesTable table) {
-	}
+    public void beforeExamples(List<String> steps, ExamplesTable table) {
+    }
 
-	public void example(Map<String, String> tableRow) {
-		count("examples");
-	}
+    public void example(Map<String, String> tableRow) {
+        count("examples");
+    }
 
-	public void afterExamples() {
-	}
-	
-	public void dryRun() {		
-	}
+    public void afterExamples() {
+    }
 
-	private void count(String event) {
-		Integer count = data.get(event);
-		if (count == null) {
-			count = 0;
-		}
-		count++;
-		data.put(event, count);
-	}
+    public void dryRun() {
+    }
 
-	private void writeData() {
-		Properties p = new Properties();
-		for (String event : data.keySet()) {
-			p.setProperty(event, data.get(event).toString());
-		}
-		try {
-			p.store(output, this.getClass().getName());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+    private void count(String event) {
+        Integer count = data.get(event);
+        if (count == null) {
+            count = 0;
+        }
+        count++;
+        data.put(event, count);
+    }
 
-	private void resetData() {
-		data.clear();
-		for (String event : events) {
-			data.put(event, 0);
-		}
-	}
+    private void writeData() {
+        Properties p = new Properties();
+        for (String event : data.keySet()) {
+            p.setProperty(event, data.get(event).toString());
+        }
+        try {
+            p.store(output, this.getClass().getName());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-	@Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-				.append(output).append(data).toString();
-	}
+    private void resetData() {
+        data.clear();
+        for (String event : events) {
+            data.put(event, 0);
+        }
+    }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(output).append(data).toString();
+    }
 
 }

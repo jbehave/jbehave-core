@@ -94,7 +94,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return count("scenariosFailed", reports);
     }
 
-    private int count(String event, List<Report> reports) {
+    int count(String event, List<Report> reports) {
         int count = 0;
         for (Report report : reports) {
             Properties stats = report.asProperties("stats");
@@ -123,7 +123,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return merged;
     }
 
-    private SortedMap<String, List<File>> indexedReportFiles(File outputDirectory, final String outputName,
+    SortedMap<String, List<File>> indexedReportFiles(File outputDirectory, final String outputName,
             final List<String> formats) {
         SortedMap<String, List<File>> reports = new TreeMap<String, List<File>>();
         if (outputDirectory == null || !outputDirectory.exists()) {
@@ -155,7 +155,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return reports;
     }
 
-    private List<Report> toReports(Map<String, List<File>> reportFiles) {
+    List<Report> toReports(Map<String, List<File>> reportFiles) {
         try {
             String decoratedTemplate = templateResource("decorated");
             String nonDecoratedTemplate = templateResource("nonDecorated");
@@ -263,12 +263,9 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         public Properties asProperties(String format) {
             Properties p = new Properties();
             File stats = filesByFormat.get(format);
-            if (stats == null) {
-                return p;
-            }
             try {
                 p.load(new FileInputStream(stats));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // return empty map
             }
             return p;
