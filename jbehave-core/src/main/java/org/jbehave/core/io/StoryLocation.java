@@ -13,11 +13,10 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * Abstraction of a story location, handling cases in which story path is defined
  * as a resource in classpath or as a URL.
  * </p>
- * <p>Given a code location and a story path, it provides the methods:
+ * <p>Given a code location URL and a story path, it provides the methods:
  * <ul>
- * <li>{@link #getPath()}: the story path</li>
- * <li>{@link #getLocation()}: the story URL, prefixing the code location if story path is not a URL</li>
- * <li>{@link #getName()}: the story path, removing the code location if the story path is a URL</li>
+ * <li>{@link #getURL()}: the story location URL, prefixing the code location if story path is not a URL</li>
+ * <li>{@link #getPath()}: the story location path, removing the code location if story path is a URL</li>
  * </ul>
  * </p>
  */
@@ -25,46 +24,41 @@ public class StoryLocation {
 
 	private final URL codeLocation;
 	private final String storyPath;
-	private final boolean url;
+	private final boolean storyPathIsURL;
 
 	public StoryLocation(URL codeLocation, String storyPath) {
 		this.codeLocation = codeLocation;
 		this.storyPath = storyPath;
-		this.url = isURL(storyPath);
+		this.storyPathIsURL = isURL(storyPath);
 	}
-
 
     public URL getCodeLocation() {
 		return codeLocation;
 	}
 
-	public String getPath() {
+	public String getStoryPath() {
 		return storyPath;
 	}
 
-	public String getLocation() {
-		if (url) {
+	public String getURL() {
+		if (storyPathIsURL) {
 			return storyPath;
 		} else {
 			return codeLocation + storyPath;
 		}
 	}
 
-	public String getName() {
-		if (url) {
+	public String getPath() {
+		if (storyPathIsURL) {
 			return removeStart(storyPath, codeLocation.toString());
 		} else {
 			return storyPath;
 		}
 	}
 
-	public boolean isURL() {
-		return url;
-	}
-
-	private boolean isURL(String storyPath) {
+	private boolean isURL(String path) {
 		try {
-			new URL(storyPath);
+			new URL(path);
 			return true;
 		} catch (MalformedURLException e) {
 			return false;

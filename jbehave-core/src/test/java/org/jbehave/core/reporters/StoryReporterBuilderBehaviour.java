@@ -31,8 +31,8 @@ import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
-import org.jbehave.core.reporters.FilePrintStreamFactory.NamePathResolver;
-import org.jbehave.core.reporters.FilePrintStreamFactory.PackagePathResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
 import org.junit.Test;
 
 public class StoryReporterBuilderBehaviour {
@@ -75,12 +75,12 @@ public class StoryReporterBuilderBehaviour {
         String storyPath = storyPath(MyStory.class);
 
         // When
-        assertThat(builder.pathResolver(), instanceOf(PackagePathResolver.class));
-        builder.withPathResolver(new NamePathResolver()).build(storyPath);
+        assertThat(builder.pathResolver(), instanceOf(ResolveToPackagedName.class));
+        builder.withPathResolver(new ResolveToSimpleName()).build(storyPath);
 
         // Then
-        assertThat(builder.pathResolver(), instanceOf(NamePathResolver.class));
-        assertThat(builder.fileConfiguration("").getPathResolver(), instanceOf(NamePathResolver.class));
+        assertThat(builder.pathResolver(), instanceOf(ResolveToSimpleName.class));
+        assertThat(builder.fileConfiguration("").getPathResolver(), instanceOf(ResolveToSimpleName.class));
     }
 
     @Test

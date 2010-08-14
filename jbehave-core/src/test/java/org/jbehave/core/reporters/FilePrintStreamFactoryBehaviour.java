@@ -12,7 +12,7 @@ import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
-import org.jbehave.core.reporters.FilePrintStreamFactory.NamePathResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
 import org.jbehave.core.reporters.FilePrintStreamFactory.PrintStreamCreationFailed;
 import org.junit.Test;
 
@@ -70,8 +70,8 @@ public class FilePrintStreamFactoryBehaviour {
     }
 
     @Test
-    public void shouldResolveOutputNameFromStoryLocationWithNameResolver() {
-        FilePathResolver resolver = new NamePathResolver();
+    public void shouldResolveOutputNameFromStoryLocationWithSimpleNameResolver() {
+        FilePathResolver resolver = new ResolveToSimpleName();
         assertThatOutputNameIs("org/jbehave/examples/trader/stories/my_given.story",
                 "my_given.ext", resolver);
         assertThatOutputNameIs("/org/jbehave/examples/trader/stories/my_given.story",

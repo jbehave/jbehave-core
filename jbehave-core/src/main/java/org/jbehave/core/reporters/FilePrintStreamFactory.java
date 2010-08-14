@@ -99,12 +99,12 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
     }
 
     /**
-     * Resolves story location to java package convention, replacing '/' to '.'
+     * Resolves story location path to java packaged name, replacing '/' with '.'
      */
-    public static class PackagePathResolver extends AbstractPathResolver {
+    public static class ResolveToPackagedName extends AbstractPathResolver {
 
         public String resolveName(StoryLocation storyLocation, String extension) {
-            String name = storyLocation.getName().replace('/', '.');
+            String name = storyLocation.getPath().replace('/', '.');
             if (name.startsWith(".")) {
                 name = name.substring(1);
             }
@@ -114,14 +114,14 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
     }
 
     /**
-     * Resolves story location path to file name, considering portion from last '/'.
+     * Resolves story location path to simple name, considering portion after last '/'.
      */
-    public static class NamePathResolver extends AbstractPathResolver {
+    public static class ResolveToSimpleName extends AbstractPathResolver {
 
         public String resolveName(StoryLocation storyLocation, String extension) {
-            String name = storyLocation.getName();
+            String name = storyLocation.getPath();
             if ( StringUtils.contains(name, '/') ){
-                name = StringUtils.substringAfterLast(storyLocation.getName(), "/");
+                name = StringUtils.substringAfterLast(name, "/");
             }
             return StringUtils.substringBeforeLast(name, ".") + "." + extension;
         }
@@ -165,7 +165,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
         }
 
         public FileConfiguration(String extension) {
-            this(RELATIVE_DIRECTORY, extension, new PackagePathResolver());
+            this(RELATIVE_DIRECTORY, extension, new ResolveToPackagedName());
         }
 
         public FileConfiguration(String relativeDirectory, String extension, FilePathResolver pathResolver) {
