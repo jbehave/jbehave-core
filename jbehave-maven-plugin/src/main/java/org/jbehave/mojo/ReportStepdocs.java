@@ -13,7 +13,7 @@ public class ReportStepdocs extends AbstractEmbedderMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
-        getLog().info("Generating stepdoc using embedder "+embedder);
+        getLog().info("Reporting stepdocs using embedder "+embedder);
         embedder.reportStepdocs();
     }
 

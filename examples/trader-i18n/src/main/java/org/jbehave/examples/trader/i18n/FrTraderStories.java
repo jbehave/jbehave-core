@@ -1,11 +1,17 @@
 package org.jbehave.examples.trader.i18n;
 
+import java.util.Locale;
 
 public class FrTraderStories extends LocalizedTraderStories {
     
     @Override
-    protected String language() {
-        return "fr";
+    protected Locale locale() {
+        return new Locale("fr");
+    }
+
+    @Override
+    protected String storyPattern() {
+        return "**/*.histoire";
     }
 
     @Override
@@ -13,9 +19,4 @@ public class FrTraderStories extends LocalizedTraderStories {
         return new FrTraderSteps();
     }
 
-    @Override
-    protected String storyPattern() {
-        return "**/fr_*.histoire";
-    }
- 
 }

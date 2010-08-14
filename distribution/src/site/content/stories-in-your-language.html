@@ -1,0 +1,201 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Stories in your language</title>
+</head>
+
+<body>
+
+<h2>Stories in your language</h2>
+
+<p>Effective communication of behaviour is the main objective of
+BDD. Therefore, writing stories in the <a
+	href="http://en.wikipedia.org/wiki/Language">language</a> spoken by the
+business users is essential. Both the patterns used to match the
+scenario steps to Java methods and the <a
+	href="javadoc/core/org/jbehave/core/configuration/Keywords.html">Keywords</a>
+need to be expressed in the appropriate language.</p>
+
+<p>By default, JBehave uses English as the story language, but
+supports stories to be written in any language. The <a
+	href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>
+provides keywords in any given locale for which a properties bundle is
+found, by default in <b>i18n/keywords_[locale].properties</b> in the <b>jbehave-core</b>
+jar.</p>
+<p>To write storeis in a given language, we need to specify three
+elements:</p>
+<ul>
+	<li>a locale, e.g. <b>new Locale("it")</b></li>
+	<li>a story pattern, as typically the extension of the story
+	resources is language specific, e.g. <b>**/*.storia</b>.</li>
+	<li>one or more steps instances with patterns written in the
+	appropriate language, e.g. <b>new ItTraderSteps()</b></li>
+</ul>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+public abstract class LocalizedTraderStories extends JUnitStories {
+
+    @Override
+    public Configuration configuration() {
+        ClassLoader classLoader = this.getClass().getClassLoader();
+        URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
+        Keywords keywords = new LocalizedKeywords(locale());
+        Configuration configuration = new MostUsefulConfiguration()
+                .useKeywords(keywords)
+                .useStoryParser(new RegexStoryParser(keywords))
+                .useStoryLoader(
+                        new LoadFromClasspath(classLoader))
+                .useDefaultStoryReporter(new ConsoleOutput(keywords))
+                .useStoryReporterBuilder(new StoryReporterBuilder()
+                    .withCodeLocation(codeLocation)
+                    .withPathResolver(new ResolveToSimpleName())
+                    .withDefaultFormats()
+                    .withFormats(CONSOLE, TXT, HTML, XML)
+                    .withFailureTrace(false)
+                    .withKeywords(keywords))
+                .useParameterConverters(
+                        new ParameterConverters()
+                                .addConverters(new ParameterConverters.ExamplesTableConverter(
+                                        keywords.examplesTableHeaderSeparator(),
+                                        keywords.examplesTableValueSeparator())));
+        return configuration;
+    }
+
+    @Override
+    public List<CandidateSteps> candidateSteps() {
+        return new InstanceStepsFactory(configuration(), traderSteps(), new BeforeAfterSteps())
+                .createCandidateSteps();
+    }
+
+    @Override
+    protected List<String> storyPaths() {
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList(storyPattern()), null);
+    }
+
+    protected abstract Locale locale();
+    
+    protected abstract String storyPattern();
+    
+    protected abstract Object traderSteps();
+    
+}
+]]>
+</script>
+<p>So, in the case of Italian, we'd have:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+public class ItTraderStories extends LocalizedTraderStories {
+    
+    @Override
+    protected Locale locale() {
+        return new Locale("it");
+    }
+
+    @Override
+    protected String storyPattern() {
+        return "**/*.storia";
+    }
+ 
+    @Override
+    protected Object traderSteps() {
+        return new ItTraderSteps();
+    }
+
+}
+]]>
+</script>
+<p>The patterns annotating the steps instance methods must be in the
+same language configured for the story parsing:</p>
+
+<pre class="brush: java">
+public class ItTraderSteps {
+
+    private Stock stock;
+    private ExamplesTable table;
+
+    @Given("ho un'azione con simbolo $symbol e una soglia di $threshold")
+    public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
+        stock = new Stock(symbol, threshold);
+    }
+
+}
+</pre>
+<p>Note that the keywords for a given locale not only allow the
+translation of the keywords used in parsing the textual story, but also
+the keywords used in the reporting of the story execution, e.g. <b>Pending</b>,
+<b>NotPerformed</b> and <b>Failed</b>.</p>
+
+<span class="followup">A working example of story running in
+different languages can be found in <b>trader-i18n</b> example (see <a
+	href="running-examples.html">running examples</a>).</span>
+
+<h2>Which encoding should I use for textual stories and Java source
+classes?</h2>
+
+<span class="followup">Always use encoding <b>UTF-8</b> for
+textual stories and Java source classes.</span>
+
+<h2>Which languages are supported out-of-the-box?</h2>
+
+<p>JBehave supports a number of languages out-of-the-box, allowing
+users to simply specify the locale in the <a
+	href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.
+You can verify which language is supported by looking at the <b>i18n/</b>
+directory in the <b>jbehave-core-resources.zip</b>. If you'd like your
+language to be supported, you can contribute the keywords in that
+language and we'll happily add the language to the list of those
+supported out-of-the-box.</p>
+
+<span class="followup">Note that Java resource bundles require
+non-English language characters to be expressed as Unicode escaped
+characters (of the form \uxxxx where xxxx is 4-digit Hexadecimal
+number), using ISO-8859-1 encoding. There are a number of tools that
+enable easy conversion between your non-English language characters and
+Unicode escaped characters. </span>
+
+<h2>How do I add my own keywords bundle?</h2>
+
+<p>Write a properties bundle containing the following keywords and
+save it as <b>i18n/keywords_xx.properties</b>. E.g. for Lolcatz we'll
+add <b>i18n/keywords_lc.properties</b>:</p>
+
+<pre class="brush: java">
+Narrative=Narratif:
+InOrderTo=In Oder to
+AsA=As a
+IWantTo=I Wan
+Scenario=I can haz:
+GivenStories=Gief I can haz:
+ExamplesTable=Exemples:
+ExamplesTableRow=Exemple:
+ExamplesTableHeaderSeparator=!!
+ExamplesTableValueSeparator=!
+Given=Gief
+When=Wen
+Then=Den
+And=And
+Ignorable=!--
+Pending=PENDING
+NotPerformed=NOT PERFORMED
+Failed=FAILED
+DryRun=Dry Run
+</pre>
+
+<p>Make sure the bundle is in the your classpath and invoke it as
+(if using default bundle name):</p>
+<pre class="brush: java">
+ Keywords keywords = new LocalizedKeywords(new Locale("lc"));
+</pre>
+
+<p>If using a non-standard bundle name, e.g. <b>mykeywords/keys</b>:</p>
+<pre class="brush: java">
+ ClassLoader classLoader = ... // the classloader where to find the bundle from
+ Keywords keywords = new LocalizedKeywords(new Locale("lc"), "mykeywords/keys", classLoader);
+</pre>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

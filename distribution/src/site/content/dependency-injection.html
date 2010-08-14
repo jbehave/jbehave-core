@@ -9,25 +9,31 @@
 <h2>Introduction</h2>
 
 <p><a href="http://www.martinfowler.com/articles/injection.html">Dependency
-Injection</a> has become an integral part of modern software design. We
+Injection</a> has become an integral part of any modern software design. We
 discuss here the different ways in which JBehave supports dependency
 injection.</p>
 
-<p>JBehave supports the following depency inejction containers:
+<p>JBehave supports the following dependency injection containers:
 <ul>
 	<li><a href="http://code.google.com/p/google-guice/">Guice</a>
-	(the extension module <b>jbehave-guice</b> needs to be added to the
+	(when the extension module <b>jbehave-guice</b> is added to the
 	classpath):</li>
 
-	<li><a href="http://picocontainer.org">PicoContainer</a> (the
-	extension module <b>jbehave-pico</b> needs to be added to the
-	classpath):</li>
+	<li><a href="http://picocontainer.org">PicoContainer</a> (when the
+	extension module <b>jbehave-pico</b> is added to the classpath):</li>
 
-	<li><a href="http://springframework.org">Spring</a> (the extension
-	module <b>jbehave-spring</b> needs to be added to the classpath):</li>
+	<li><a href="http://springframework.org">Spring</a> (when the
+	extension module <b>jbehave-spring</b> is added to the classpath):</li>
 </ul>
 </p>
 
+<p><span class="followup">Fully-working examples of running
+stories with dependency-injection support can be found in the <b>trader-[guice|pico|spring]</b>
+<a href="running-examples.html">examples</a>. Note that dependency
+injection examples only concentrate on the composition via the
+respective containers but do not replicate what is in the <b>trader</b>
+example. Indeed, they use the same stories and steps instances, simply
+configured in a different way.</span></p>
 
 <h2>Embedder class-level injection</h2>
 
@@ -37,7 +43,8 @@ injection.</p>
 for configuration and steps.</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-@RunWith(GuiceAnnotatedEmbedder.class)
+
+@RunWith(GuiceAnnotatedEmbedderRunner.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
@@ -45,8 +52,12 @@ public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 
     @Test
     public void run() {
-        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/guice/stories/*.story"), asList("")));
+        injectedEmbedder().runStoriesAsPaths(storyPaths());
+    }
+
+    protected List<String> storyPaths() {
+        String searchInDirectory = codeLocationFromPath("../trader/src/main/java").getFile();
+        return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
     }
 
     // Guice modules
@@ -59,8 +70,8 @@ public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
             bind(ParameterConverter.class).toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
             bind(StoryReporterBuilder.class).toInstance(
                     new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
-                            .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass()))
-                            .withFailureTrace(true));
+                            .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass())).withFailureTrace(
+                                    true));
         }
 
     }
@@ -70,12 +81,13 @@ public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
         @Override
         protected void configure() {
             bind(TradingService.class).in(Scopes.SINGLETON);
-            bind(TraderSteps.class).in(Scopes.SINGLETON);
+            bind(GuiceTraderSteps.class).in(Scopes.SINGLETON);
             bind(BeforeAfterSteps.class).in(Scopes.SINGLETON);
             bind(AndSteps.class).in(Scopes.SINGLETON);
             bind(CalendarSteps.class).in(Scopes.SINGLETON);
             bind(PriorityMatchingSteps.class).in(Scopes.SINGLETON);
             bind(SandpitSteps.class).in(Scopes.SINGLETON);
+            bind(SearchSteps.class).in(Scopes.SINGLETON);
         }
 
     }
@@ -91,7 +103,7 @@ separate modules for configuration and steps.</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-@RunWith(PicoAnnotatedEmbedder.class)
+@RunWith(PicoAnnotatedEmbedderRunner.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingPico(modules = { ConfigurationModule.class, StepsModule.class })
@@ -99,28 +111,29 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
     @Test
     public void run() {
-        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/pico/stories/*.story"), asList("")));
+        injectedEmbedder().runStoriesAsPaths(storyPaths());
+    }
+
+    protected List<String> storyPaths() {
+        String searchInDirectory = codeLocationFromPath("../trader/src/main/java").getFile();
+        return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
     }
 
     public static class ConfigurationModule implements PicoModule {
 
-        public void configure(MutablePicoContainer container){
+        public void configure(MutablePicoContainer container) {
             container.addComponent(StepPatternParser.class, new RegexPrefixCapturingPatternParser("%"));
             container.addComponent(StoryLoader.class, new LoadFromClasspath(this.getClass().getClassLoader()));
             container.addComponent(ParameterConverter.class, new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
-            container.addComponent(new StoryReporterBuilder()
-                .withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
-                .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass()))
-                .withFailureTrace(true)
-            );
+            container.addComponent(new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
+                    .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass())).withFailureTrace(true));
         }
 
     }
 
     public static class StepsModule implements PicoModule {
 
-        public void configure(MutablePicoContainer container){
+        public void configure(MutablePicoContainer container) {
             container.addComponent(TradingService.class);
             container.addComponent(TraderSteps.class);
             container.addComponent(BeforeAfterSteps.class);
@@ -128,6 +141,7 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
             container.addComponent(CalendarSteps.class);
             container.addComponent(PriorityMatchingSteps.class);
             container.addComponent(SandpitSteps.class);
+            container.addComponent(SearchSteps.class);
         }
 
     }
@@ -139,10 +153,10 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 <h3>Using Spring</h3>
 
 <p>When using Spring, we can specify the context from separate
-locations for configuration and steps.<script
-	type="syntaxhighlighter" class="brush: java">
+locations for configuration and steps.<script type="syntaxhighlighter"
+	class="brush: java">
 <![CDATA[
-@RunWith(SpringAnnotatedEmbedder.class)
+@RunWith(SpringAnnotatedEmbedderRunner.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSpring(resources = { "org/jbehave/examples/trader/spring/configuration.xml",
@@ -151,12 +165,15 @@ public class AnnotatedEmbedderUsingSpring extends InjectableEmbedder {
 
     @Test
     public void run() {
-        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/stories/*.story"), asList("")));
+        injectedEmbedder().runStoriesAsPaths(storyPaths());
+    }
+
+    protected List<String> storyPaths() {
+        String searchInDirectory = codeLocationFromPath("../trader/src/main/java").getFile();
+        return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
     }
 
 }
-]]>
 </script>
 
 <h2>Steps class-level injection</h2>

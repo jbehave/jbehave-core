@@ -28,10 +28,10 @@
     <page>pending-steps.html</page>
     <page>finding-steps.html</page>
     <page>prioritising-steps.html</page>
-    <page>stepdocs.html</page>
-    <page>running-stories.html</page>
     <page>locating-stories.html</page>
-    <page>i18n-stories.html</page>    
+    <page>reporting-stories.html</page>
+    <page>running-stories.html</page>
+    <page>stories-in-your-language.html</page>    
   </section>
   <section>
     <name>Advanced Topics</name>
@@ -43,7 +43,6 @@
     <page>parameters-table.html</page>
     <page>outcomes-table.html</page>
     <page>given-stories.html</page>
-    <page>reports.html</page>
   </section>
   <section>
     <name>Project Info</name>

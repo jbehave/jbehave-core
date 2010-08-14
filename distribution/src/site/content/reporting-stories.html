@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Reporting Stories</title>
+</head>
+
+<body>
+
+<h2>Story Reporters</h2>
+
+<p>Reporting is an essential element of BDD as it allows to monitor
+the outcome of the stories that have been run. At the heart of JBehave's
+reporting is the <a
+	href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>,
+to which events are reported as they occur.</p>
+
+<p>Currently, the story reporters supported are:</p>
+<ul>
+	<li><a
+		href="javadoc/core/org/jbehave/core/reporters/ConsoleOutput.html">ConsoleOutput</a>:
+	a text-based console output</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/reporters/IdeOnlyConsoleOutput.html">IdeOnlyConsoleOutput</a>:
+	a text-based console output, which only reports events when running in
+	IDEs (Eclipse and IDEA supported).</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/reporters/TxtOutput.html">TxtOutput</a>:
+	a text-based file output</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/reporters/HtmlOutput.html">HtmlOutput</a>:
+	an HTML file output</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/reporters/XmlOutput.html">XmlOutput</a>:
+	an XML file output</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/reporters/PostStoryStatisticsCollector.html">PostStoryStatisticsCollector</a>:
+	collects statistics and stores them as properties after story is run</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/reporters/DelegatingStoryReporter.html">DelegatingStoryReporter</a>:
+	delegates to any number of reporters as a proxy.</li>
+</ul>
+
+<p>The <a
+	href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>
+allows to configure multiple story reporters with pre-configured
+formats: CONSOLE, TXT, HTML and XML.</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+public abstract class TraderStory extends JUnitStory {
+
+    public TraderStory() {
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
+                .doIgnoreFailureInView(true);
+    }
+
+    @Override
+    public Configuration configuration() {
+        Class<? extends Embeddable> embeddableClass = this.getClass();
+        Properties viewResources = new Properties();
+        viewResources.put("decorateNonHtml", "true");
+        return new MostUsefulConfiguration()
+            .useStoryLoader(new LoadFromClasspath(embeddableClass))
+            .useStoryPathResolver(new UnderscoredCamelCaseResolver())
+            .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
+                .withDefaultFormats()
+                .withPathResolver(new ResolveToPackagedName())
+                .withViewResources(viewResources)
+                .withFormats(CONSOLE, TXT, HTML, XML))
+            .useParameterConverters(new ParameterConverters()
+                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
+            .useStepPatternParser(new RegexPrefixCapturingPatternParser(
+                            "%")) // use '%' instead of '$' to identify parameters
+            .useStepMonitor(new SilentStepMonitor());                               
+    }
+
+    @Override
+    public List<CandidateSteps> candidateSteps() {
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
+                new CalendarSteps(), new PriorityMatchingSteps(), new SandpitSteps(), new SearchSteps(),
+                new BeforeAfterSteps()).createCandidateSteps();
+    }
+       
+
+]]>
+</script>
+
+<span class="followup">For a fully-working example of reporting
+configuration you may consult the <a href="running-examples.html">examples</a>.
+Note that the configuration only needs to be done in one place, i.e. the
+parent story class, and not repeated in every story class that maps to a
+textual story. </span>
+
+<p>Note that we use the <a
+	href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>
+to implement a builder pattern for file-based reporters via the <a
+	href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.html">FilePrintStreamFactory</a>.
+The file path resolution strategy from a story path to a report file
+path is definable via the <a
+	href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.FilePathResolver.html">FilePathResolver</a>.
+By default, it uses the <a
+	href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.ResolveToPackagedName.html">ResolveToPackagedName</a>
+whereby the story path is resolved to a Java package. So, e.g., if the
+story path is <b>com/example/my_cool.story</b>, we'll end up with file
+report outputs of the form: <b>com.example.my_cool.[format]</b> (where <b>format</b>
+is any of <b>txt,html,xml</b> in the example above). An alternative
+strategy, is the <a
+	href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.ResolveToSimpleName.html">ResolveToSimpleName</a>,
+whereby only the simple name portion, without the package structure, is
+considered, i.e. we'd end up with file report outputs of the form: <b>my_cool.[format]</b></p>
+
+<span class="followup">The file-based print stream factory for
+the story reporting requires the story class to be provided in order to
+derive from it the output file paths (with the appropriate format
+extension). If you want to migrate multiple stories to using file-based
+reporting, an intermediate stepping stone might be to provide as a story
+class the parent class in which you build the story reporter
+(TraderStory.class in the example), which will result in all reporting
+(for a given format) to be appended to the same file. Then gradually you
+can refactor your story classes to provide their class to the parent (as
+the example shows). Otherwise, you may want to keep output in a single
+file, the choice is yours. </span>
+
+<p>The builder provides defaults for all the formats supported, but
+if the user needs to create a bespoke instance of a reporter for a given
+format, it can be easily done by overriding the default. E.g. to
+override the reporter for <b>TXT</b> format to use a ".text" extension:</p>
+<pre class="brush: java">
+        StoryReporterBuilder builder = new StoryReporterBuilder() {
+            public StoryReporter reporterFor(String storyPath, Format format) {
+                switch (format) {
+                case TXT:
+                    factory.useConfiguration(new FileConfiguration("text"));
+                    return new TxtOutput(factory.createPrintStream(), new Properties(), 
+                                                        new LocalizedKeywords(), true);                    
+                default:
+                    return super.reporterFor(storyPath, format);
+                }
+            }
+        };
+</pre>
+
+<h2>View Generation</h2>
+
+<p>The generation of the reports is only the first part of a
+complete HTML-based reporting solution. Next we generate the stories
+view, aggregating all the reports that have been configured and written
+to a given output directory, and presenting a collective index view for
+all formats configured. Moreover, we can style the reports, both for
+HTML and non-HTML report formats, by decorating their content with CSS
+and syntax highlighting. The decorating of non-HTML reports can be
+switched off if one prefers the raw content accessible via a URL:</p>
+
+<pre class="brush: java">
+    Properties viewResources = new Properties();
+	viewResources("decorateNonHtml","false");
+    new StoryReporterBuilder().useViewResources(viewResources);        
+</pre>
+
+<p>The view generation is the responsibility of the <a
+	href="javadoc/core/org/jbehave/core/reporters/ViewGenerator.html">ViewGenerator</a>.
+JBehave provides an implementation (<a
+	href="javadoc/core/org/jbehave/core/reporters/FreemarkerViewGenerator.html">FreemarkerViewGenerator.</a>)
+based on <a href="http://freemarker.org">Freemarker</a> to allow a
+templateable and easily styleable way to generate the view.</p>
+
+<p>The default resources required for the view generation are
+bundled in the <b>jbehave-core-resources.zip</b> but can be overridden.
+The Freemarker templates (the ftl/** files) need to be the classpath for
+the <b>FreemarkerViewGenerator</b> to find them, while the look and feel
+resources (the js/* and style/* files) need to be copied to the <b>target/jbehave-reports/view</b>
+directory (or wherever the index view is generated to) Also note that
+the default style makes use of images found in the <b>jbehave-site-resources.zip</b>.</p>
+
+<h2>Reporting Statistics</h2>
+
+<p>The story statistics report above is treated in the view
+generation slightly differently from other reports, in that the
+statistics are displayed on the index view page, if available. To ensure
+they are always available the story reporter builder is configured to
+have <b>stats</b> as a default format (although the default formats need
+to be added to the builder).</p>
+
+<h2>Default Formats</h2>
+
+<p>Default formats allow users to define a builder that can be used
+in multiple configurations without having to repeat tediously all the
+formats required, if these are used consistently. By default, "stats" is
+the only default format (used for collecting reporting statistics). To
+modify simply override the method <b>withDefaultFormats()</b>. E.g. to
+add "txt" as a default format:</p>
+<pre class="brush: java">
+        new StoryReporterBuilder(){
+               public StoryReporterBuilder withDefaultFormats() {
+                    return withFormats(STATS, TXT);
+               }
+        }
+</pre>
+
+<p>By default, JBehave writes file-based reports to the relative
+directory <b>jbehave-reports</b> (relative to the story class code
+source location, e.g. the <b>target</b> directory in Maven), but this
+can be changed via the builder:</p>
+
+<pre class="brush: java">
+        new StoryReporterBuilder().withRelativeDirectory("my-reports")
+</pre>
+
+<p>In some cases, we may want to set the code location explicitly
+from a file path:</p>
+
+<pre class="brush: java">
+    new StoryReporterBuilder().withCodeLocation(CodeLocations.codeLocationFromPath("build/classes"))
+</pre>
+
+<p>If the default formats or the output file directory are modified
+via the builder, then correspondingly we need to inform the view
+generator if these changes. See <a href="running-stories.html">running
+stories</a> for details on how to configure these changes.</p>
+
+<h2>Next?</h2>
+
+<span class="followup">The trader examples are configured to have
+a fully-working end-to-end use of JBehave reporting (be sure to read the
+instructions on <a href="running-examples.html">running examples</a>).
+After running the build simply open the page <b>target/jbehave-reports/view/index.html</b>
+of the appropriate trader example modules.</span>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

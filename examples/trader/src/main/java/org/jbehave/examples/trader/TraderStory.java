@@ -19,6 +19,7 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
@@ -65,6 +66,7 @@ public abstract class TraderStory extends JUnitStory {
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                 .withDefaultFormats()
+                .withPathResolver(new ResolveToPackagedName())
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML))
             .useParameterConverters(new ParameterConverters()

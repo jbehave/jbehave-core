@@ -9,7 +9,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * A Stepdoc represents the documentation on a single candidate step, which
  * includes:
  * <ul>
- * <li>the step type/li>
+ * <li>the step type</li>
  * <li>the pattern to match the candidate step that is configured in the
  * annotation</li>
  * <li>the method in the steps instance class</li>

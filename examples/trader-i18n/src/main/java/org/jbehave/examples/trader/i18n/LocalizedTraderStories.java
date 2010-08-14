@@ -43,7 +43,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
     public Configuration configuration() {
         ClassLoader classLoader = this.getClass().getClassLoader();
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
-        Keywords keywords = new LocalizedKeywords(new Locale(language()));
+        Keywords keywords = new LocalizedKeywords(locale());
         Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
                 .useStoryParser(new RegexStoryParser(keywords))
@@ -76,7 +76,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
         return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList(storyPattern()), null);
     }
 
-    protected abstract String language();
+    protected abstract Locale locale();
     
     protected abstract String storyPattern();
     
