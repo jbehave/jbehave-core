@@ -75,8 +75,10 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryWithStepsContainingKeywordsNotAtStartOfLine() {
-        String wholeStory = "Given a scenario Given" + NL +
+    public void shouldParseStoryWithScenarioTitleGivenStoriesAndStepsContainingKeywordsNotAtStartOfLine() {
+        String wholeStory = "Scenario: Show that we have Given/When/Then as part of description or step content"+ NL +
+                "GivenStories: GivenAStoryContainingAKeyword" + NL +
+                "Given a scenario Given" + NL +
                 "When I parse it to When" + NL +
                 "And I parse it to And" + NL +
                 "!-- And ignore me too" + NL +
@@ -88,7 +90,10 @@ public class RegexStoryParserBehaviour {
         Story story = parser.parseStory(
                 wholeStory, storyPath);
 
-        List<String> steps = story.getScenarios().get(0).getSteps();
+        Scenario scenario = story.getScenarios().get(0);
+        assertThat(scenario.getTitle(), equalTo("Show that we have Given/When/Then as part of description or step content"));
+        assertThat(scenario.getGivenStoryPaths(), equalTo(asList("GivenAStoryContainingAKeyword")));
+        List<String> steps = scenario.getSteps();
         assertThat(steps.get(0), equalTo("Given a scenario Given"));
         assertThat(steps.get(1), equalTo("When I parse it to When"));
         assertThat(steps.get(2), equalTo("And I parse it to And"));

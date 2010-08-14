@@ -83,11 +83,27 @@ public class RegexStoryParser implements StoryParser {
     private List<Scenario> parseScenariosFrom(
             String storyAsText) {
         List<Scenario> parsed = new ArrayList<Scenario>();
-        List<String> scenariosAsText = splitScenarios(storyAsText);
-        for (String scenarioAsText : scenariosAsText) {
+        for (String scenarioAsText : splitScenarios(storyAsText)) {
             parsed.add(parseScenario(scenarioAsText));
         }
         return parsed;
+    }
+
+    private List<String> splitScenarios(String storyAsText) {
+        List<String> scenarios = new ArrayList<String>();
+        String scenarioKeyword = keywords.scenario();
+
+        // remove anything after scenario keyword, if found
+        if ( StringUtils.contains(storyAsText, scenarioKeyword) ){
+            storyAsText = StringUtils.substringAfter(storyAsText, scenarioKeyword);
+        }
+
+        for (String scenarioAsText : storyAsText.split(scenarioKeyword)) {
+            if (scenarioAsText.trim().length() > 0) {
+                scenarios.add(scenarioKeyword + "\n" + scenarioAsText);
+            }
+        }
+        return scenarios;
     }
 
     private Scenario parseScenario(String scenarioAsText) {
@@ -130,33 +146,12 @@ public class RegexStoryParser implements StoryParser {
         List<String> steps = new ArrayList<String>();
         int startAt = 0;
         while (matcher.find(startAt)) {
-            steps.add(matcher.group(1));
+            steps.add(StringUtils.substringAfter(matcher.group(1), "\n"));
             startAt = matcher.start(4);
         }
         return steps;
     }
    
-    private List<String> splitScenarios(String storyAsText) {
-        List<String> scenarios = new ArrayList<String>();
-        String scenarioKeyword = keywords.scenario();
-
-        String allScenarios = null;
-        // chomp off anything before first keyword, if found
-        int keywordIndex = storyAsText.indexOf(scenarioKeyword);
-        if (keywordIndex != -1) {
-            allScenarios = storyAsText.substring(keywordIndex);
-        } else { // use all stories in file
-            allScenarios = storyAsText;
-        }
-
-        for (String scenario : allScenarios.split(scenarioKeyword)) {
-            if (scenario.trim().length() > 0) {
-                scenarios.add(scenarioKeyword + scenario);
-            }
-        }
-        return scenarios;
-    }
-
     // Regex Patterns
     
     private Pattern patternToPullDescriptionIntoGroupOne() {
@@ -174,18 +169,18 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullScenarioTitleIntoGroupOne() {
         String scenario = keywords.scenario();
-        String startingWords = concatenateWithOr(keywords.startingWords());
+        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         return compile(scenario + "((.|\\n)*?)\\s*(" + startingWords + ").*");
     }
 
     private Pattern patternToPullGivenStoriesIntoGroupOne() {
         String givenStories = keywords.givenStories();
-        String startingWords = concatenateWithOr(keywords.startingWords());
+        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         return compile(".*" + givenStories + "((.|\\n)*?)\\s*(" + startingWords + ").*");
     }
 
     private Pattern patternToPullStepsIntoGroupOne() {
-        String initialStartingWords = concatenateWithOr(keywords.startingWords());
+        String initialStartingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         String followingStartingWords = concatenateWithOr("\\n", "\\s", keywords.startingWords());
         String examplesTable = keywords.examplesTable();
         return compile("((" + initialStartingWords + ") (.)*?)\\s*(\\Z|"
