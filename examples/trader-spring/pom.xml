@@ -11,6 +11,8 @@
 
   <properties>
     <include.embeddables>**/*StoriesUsingSpring.java</include.embeddables>
+    <include.annotated.embedders>**/AnnotatedEmbedderUsingSpring*.java</include.annotated.embedders>
+    <annotated.embedder.runner>org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner</annotated.embedder.runner>
   </properties>
 
   <dependencies>

@@ -16,6 +16,8 @@
     <skip.embeddables.stories>false</skip.embeddables.stories>
     <include.embeddables>**/stories/*.java</include.embeddables>
     <include.paths>**/stories/*.story</include.paths>
+    <include.annotated.embedders>**/AnnotatedEmbedderUsing*.java</include.annotated.embedders>
+    <annotated.embedder.runner>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotated.embedder.runner>
     <jbehave.version>${project.version}</jbehave.version>
   </properties>
 
@@ -174,38 +176,12 @@
             <artifactId>jbehave-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>annotated-embedder-using-guice</id>
+                <id>with-annotated-embedder</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <annotatedEmbedderRunnerClass>org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
+                  <annotatedEmbedderRunnerClass>${annotated.embedder.runner}</annotatedEmbedderRunnerClass>
                   <includes>
-                    <include>**/AnnotatedEmbedderUsingGuice.java</include>
-                  </includes>
-                </configuration>
-                <goals>
-                  <goal>run-with-annotated-embedder</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>annotated-embedder-using-pico</id>
-                <phase>integration-test</phase>
-                <configuration>
-                  <annotatedEmbedderRunnerClass>org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
-                  <includes>
-                    <include>**/AnnotatedEmbedderUsingPico.java</include>
-                  </includes>
-                </configuration>
-                <goals>
-                  <goal>run-with-annotated-embedder</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>annotated-embedder-using-spring</id>
-                <phase>integration-test</phase>
-                <configuration>
-                  <annotatedEmbedderRunnerClass>org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
-                  <includes>
-                    <include>**/AnnotatedEmbedderUsingSpring.java</include>
+                    <include>${include.annotated.embedders}</include>
                   </includes>
                 </configuration>
                 <goals>
@@ -221,7 +197,7 @@
       </properties>
     </profile>
     <profile>
-      <id>stories-as-urls</id>
+      <id>as-urls</id>
       <build>
         <plugins>
           <plugin>
@@ -254,7 +230,7 @@
       </properties>
     </profile>
     <profile>
-      <id>stepdoc</id>
+      <id>stepdocs</id>
       <build>
         <plugins>
           <plugin>
@@ -262,7 +238,7 @@
             <artifactId>jbehave-maven-plugin</artifactId>
             <executions>
               <execution>
-                <id>stepdoc</id>
+                <id>stepdocs</id>
                 <phase>integration-test</phase>
                 <configuration>
                   <embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>

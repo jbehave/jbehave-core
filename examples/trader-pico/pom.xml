@@ -11,6 +11,8 @@
 
   <properties>
     <include.embeddables>**/*StoriesUsingPico.java</include.embeddables>
+    <include.annotated.embedders>**/AnnotatedEmbedderUsingPico*.java</include.annotated.embedders>
+    <annotated.embedder.runner>org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner</annotated.embedder.runner>
   </properties>
 
   <dependencies>

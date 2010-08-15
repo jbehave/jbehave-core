@@ -9,4 +9,9 @@
   <artifactId>jbehave-trader-example</artifactId>
   <name>JBehave Trader Example</name>
 
+  <properties>
+    <include.annotated.embedders>**/AnnotatedTraderEmbedder.java</include.annotated.embedders>
+    <annotated.embedder.runner>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotated.embedder.runner>
+  </properties>
+
 </project>

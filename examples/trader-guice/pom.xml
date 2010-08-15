@@ -11,6 +11,8 @@
 
   <properties>
     <include.embeddables>**/*StoriesUsingGuice.java</include.embeddables>
+    <include.annotated.embedders>**/AnnotatedEmbedderUsingGuice*.java</include.annotated.embedders>
+    <annotated.embedder.runner>org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner</annotated.embedder.runner>
   </properties>
 
   <dependencies>

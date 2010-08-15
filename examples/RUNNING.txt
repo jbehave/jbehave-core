@@ -52,6 +52,6 @@ You only need to use the codehaus-snapshots profile once, because once retrieved
 
 Once you've cached the parent POM, you can run the examples using a fixed version of JBehave:
 
-mvn clean install -Djbehave.version=3.0-rc2
+mvn clean install -Djbehave.version=3.0
 
  
