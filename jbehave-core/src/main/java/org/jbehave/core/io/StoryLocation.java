@@ -15,8 +15,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * </p>
  * <p>Given a code location URL and a story path, it provides the methods:
  * <ul>
- * <li>{@link #getURL()}: the story location URL, prefixing the code location if story path is not a URL</li>
- * <li>{@link #getPath()}: the story location path, removing the code location if story path is a URL</li>
+ * <li>{@link #getURL()}: the story location URL, prefixing the code location external form if story path is not a URL</li>
+ * <li>{@link #getPath()}: the story location path, removing the code location external form if story path is a URL</li>
  * </ul>
  * </p>
  */
@@ -44,13 +44,13 @@ public class StoryLocation {
 		if (storyPathIsURL) {
 			return storyPath;
 		} else {
-			return codeLocation + storyPath;
+			return codeLocation.toExternalForm() + storyPath;
 		}
 	}
 
 	public String getPath() {
 		if (storyPathIsURL) {
-			return removeStart(storyPath, codeLocation.toString());
+			return removeStart(storyPath, codeLocation.toExternalForm());
 		} else {
 			return storyPath;
 		}

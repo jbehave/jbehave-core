@@ -18,7 +18,7 @@ public class StoryLocationBehaviour {
 		StoryLocation storyLocation = new StoryLocation(codeLocation, storyPath);
 		assertThat(storyLocation.getCodeLocation(), equalTo(codeLocation));
         assertThat(storyLocation.getStoryPath(), equalTo(storyPath));
-        assertThat(storyLocation.getURL(), equalTo(codeLocation + storyPath));
+        assertThat(storyLocation.getURL(), equalTo(codeLocation.toExternalForm() + storyPath));
         assertThat(storyLocation.getPath(), equalTo(storyPath));
         assertThat(storyLocation.toString(), containsString("storyPathIsURL=false"));
     }
@@ -35,7 +35,7 @@ public class StoryLocationBehaviour {
         assertThat(storyLocation.getCodeLocation(), equalTo(codeLocation));
         assertThat(storyLocation.getStoryPath(), equalTo(storyPath));
         assertThat(storyLocation.getURL(), equalTo(storyPath));
-        assertThat(storyLocation.getPath(), equalTo(removeStart(storyPath, codeLocation.toString())));
+        assertThat(storyLocation.getPath(), equalTo(removeStart(storyPath, codeLocation.toExternalForm())));
         assertThat(storyLocation.toString(), containsString("storyPathIsURL=true"));
     }
 
