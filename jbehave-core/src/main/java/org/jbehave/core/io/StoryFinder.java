@@ -4,6 +4,8 @@ import static java.util.Arrays.asList;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -20,18 +22,24 @@ public class StoryFinder {
     private static final String JAVA = ".java";
     private final DirectoryScanner scanner;
     private final String classNameExtension;
+    private final Comparator<? super String> sortingComparator;
 
     public StoryFinder() {
         this(JAVA);
     }
 
     public StoryFinder(String classNameExtension) {
-        this(new DirectoryScanner(), classNameExtension);
+        this(new DirectoryScanner(), classNameExtension, null);
     }
 
-    public StoryFinder(DirectoryScanner scanner, String classNameExtension) {
+    public StoryFinder(Comparator<? super String> sortingComparator) {
+        this(new DirectoryScanner(), JAVA, sortingComparator);
+    }
+
+    public StoryFinder(DirectoryScanner scanner, String classNameExtension, Comparator<? super String> sortingComparator) {
         this.scanner = scanner;
         this.classNameExtension = classNameExtension;
+        this.sortingComparator = sortingComparator;
     }
 
     /**
@@ -47,7 +55,7 @@ public class StoryFinder {
      * @return A List of class names found
      */
     public List<String> findClassNames(String searchInDirectory, List<String> includes, List<String> excludes) {
-        return classNames(normalise(scan(searchInDirectory, includes, excludes)));
+        return classNames(normalise(sort(scan(searchInDirectory, includes, excludes))));
     }
 
     /**
@@ -63,7 +71,7 @@ public class StoryFinder {
      * @return A List of paths found
      */
     public List<String> findPaths(String searchInDirectory, List<String> includes, List<String> excludes) {
-        return normalise(scan(searchInDirectory, includes, excludes));
+        return normalise(sort(scan(searchInDirectory, includes, excludes)));
     }
 
     /**
@@ -85,8 +93,9 @@ public class StoryFinder {
      */
     public List<String> findPaths(String searchInDirectory, List<String> includes, List<String> excludes,
             String prefixWith) {
-        return normalise(prefix(prefixWith, scan(searchInDirectory, includes, excludes)));
+        return normalise(prefix(prefixWith, sort(scan(searchInDirectory, includes, excludes))));
     }
+
     protected List<String> normalise(List<String> paths) {
         List<String> transformed = new ArrayList<String>(paths);
         CollectionUtils.transform(transformed, new Transformer() {
@@ -117,13 +126,33 @@ public class StoryFinder {
         CollectionUtils.transform(trasformed, new Transformer() {
             public Object transform(Object input) {
                 String path = (String) input;
-                if (!StringUtils.endsWithIgnoreCase(path, classNameExtension)) {
+                if (!StringUtils.endsWithIgnoreCase(path, classNameExtension())) {
                     return input;
                 }
-                return StringUtils.removeEndIgnoreCase(path, classNameExtension).replace('/', '.');
+                return StringUtils.removeEndIgnoreCase(path, classNameExtension()).replace('/', '.');
             }
         });
         return trasformed;
+    }
+
+    protected String classNameExtension() {
+        return classNameExtension;
+    }
+
+    protected List<String> sort(List<String> input) {
+        List<String> sorted = new ArrayList<String>(input);
+        Collections.sort(sorted, sortingComparator());
+        return sorted;
+    }
+
+    /**
+     * Comparator used for sorting.  A <code>null</code> comparator means
+     * that {@link Collections#sort()} will use natural ordering.
+     * 
+     * @return A Comparator or <code>null</code> for natural ordering.
+     */
+    protected Comparator<? super String> sortingComparator() {
+        return sortingComparator;
     }
 
     protected List<String> scan(String basedir, List<String> includes, List<String> excludes) {

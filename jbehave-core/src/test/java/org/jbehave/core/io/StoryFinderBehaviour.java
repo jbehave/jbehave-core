@@ -10,6 +10,9 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.junit.Test;
@@ -66,6 +69,21 @@ public class StoryFinderBehaviour {
         assertThat(classNames, hasItem(startsWith("org/jbehave/core/io/stories")));
     }
         
+    @Test
+    public void shouldFindAndSortClassNamesWithCustomComparator() {
+        // comparator that sorts in reversed natural order
+        final Comparator<String> comparator = new Comparator<String>() {
+            public int compare(String o1, String o2) {
+                return -1*o1.compareTo(o2);
+            }
+        };
+        finder = new StoryFinder(comparator);
+        List<String> classNames = finder.findClassNames("src/test/java", asList("**/stories/*.java"), asList(""));
+        List<String> sorted = new ArrayList<String>(classNames);
+        Collections.sort(sorted, comparator);
+        assertThat(classNames.toString(), equalTo(sorted.toString()));
+    }
+
     @Test
     public void shouldFindClassNamesAndTrasformThemIfMatchingCustomExtension() {
         finder = new StoryFinder(".groovy");
