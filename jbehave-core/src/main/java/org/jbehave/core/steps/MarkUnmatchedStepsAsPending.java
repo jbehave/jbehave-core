@@ -10,7 +10,7 @@ import org.jbehave.core.steps.AbstractStepResult.Pending;
 
 /**
  * StepCollector that marks unmatched steps as {@link Pending}. It uses a
- * {@link StepFinder} to collect and prioritise {@link CandidateStep}s.
+ * {@link StepFinder} to collect and prioritise {@link StepCandidate}s.
  */
 public class MarkUnmatchedStepsAsPending implements StepCollector {
 
@@ -90,13 +90,12 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 
 	private void addMatchedScenarioSteps(Scenario scenario, List<Step> steps,
 			Map<String, String> tableRow, List<CandidateSteps> candidateSteps) {
-		List<CandidateStep> allCandidates = stepFinder
-				.collectCandidates(candidateSteps);
+        List<StepCandidate> allCandidates = stepFinder.collectCandidates(candidateSteps);
 		String previousNonAndStep = null;
 		for (String stepAsString : scenario.getSteps()) {
 			// pending is default step, overridden below
 			Step step = StepCreator.createPendingStep(stepAsString);
-			for (CandidateStep candidate : stepFinder.prioritise(stepAsString, allCandidates)) {
+			for (StepCandidate candidate : stepFinder.prioritise(stepAsString, allCandidates)) {
 				if (candidate.ignore(stepAsString)) {
 					// ignorable steps are added
 					// so they can be reported
@@ -118,7 +117,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 	}
 
 	private boolean matchesCandidate(String step, String previousNonAndStep,
-			CandidateStep candidate) {
+			StepCandidate candidate) {
 		if (previousNonAndStep != null) {
 			return candidate.matches(step, previousNonAndStep);
 		}

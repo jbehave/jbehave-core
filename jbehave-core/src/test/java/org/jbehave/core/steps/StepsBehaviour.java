@@ -15,9 +15,9 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.steps.CandidateStep.StartingWordNotFound;
+import org.jbehave.core.steps.StepCandidate.StartingWordNotFound;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.Steps.DuplicateCandidateStepFoundException;
+import org.jbehave.core.steps.Steps.DuplicateCandidateFound;
 import org.junit.Test;
 
 public class StepsBehaviour {
@@ -27,15 +27,15 @@ public class StepsBehaviour {
     @Test
     public void shouldListCandidateStepsFromAnnotatedMethodsWithSingleAlias() {
         SingleAliasSteps steps = new SingleAliasSteps();
-        List<CandidateStep> candidateSteps = steps.listCandidates();
-        assertThat(candidateSteps.size(), equalTo(6));
+        List<StepCandidate> candidates = steps.listCandidates();
+        assertThat(candidates.size(), equalTo(6));
 
-        findCandidateStep(candidateSteps, "GIVEN a given").createMatchedStep("Given a given", tableRow).perform();
-        findCandidateStep(candidateSteps, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow).perform();
-        findCandidateStep(candidateSteps, "WHEN a when").createMatchedStep("When a when", tableRow).perform();
-        findCandidateStep(candidateSteps, "WHEN a when alias").createMatchedStep("When a when alias", tableRow).perform();
-        findCandidateStep(candidateSteps, "THEN a then").createMatchedStep("Then a then", tableRow).perform();
-        findCandidateStep(candidateSteps, "THEN a then alias").createMatchedStep("Then a then alias", tableRow).perform();
+        findCandidate(candidates, "GIVEN a given").createMatchedStep("Given a given", tableRow).perform();
+        findCandidate(candidates, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow).perform();
+        findCandidate(candidates, "WHEN a when").createMatchedStep("When a when", tableRow).perform();
+        findCandidate(candidates, "WHEN a when alias").createMatchedStep("When a when alias", tableRow).perform();
+        findCandidate(candidates, "THEN a then").createMatchedStep("Then a then", tableRow).perform();
+        findCandidate(candidates, "THEN a then alias").createMatchedStep("Then a then alias", tableRow).perform();
         
         assertThat(steps.givens, equalTo(2));
         assertThat(steps.whens, equalTo(2));
@@ -45,18 +45,18 @@ public class StepsBehaviour {
 	@Test
     public void shouldListCandidateStepsFromAnnotatedMethodsWithMultipleAliases() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
-        List<CandidateStep> candidateSteps = steps.listCandidates();
-        assertThat(candidateSteps.size(), equalTo(9));
+        List<StepCandidate> candidates = steps.listCandidates();
+        assertThat(candidates.size(), equalTo(9));
         
-        findCandidateStep(candidateSteps, "GIVEN a given").createMatchedStep("Given a given", tableRow).perform();
-        findCandidateStep(candidateSteps, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow).perform();
-        findCandidateStep(candidateSteps, "GIVEN another given alias").createMatchedStep("Given another given alias", tableRow).perform();
-        findCandidateStep(candidateSteps, "WHEN a when").createMatchedStep("When a when", tableRow).perform();
-        findCandidateStep(candidateSteps, "WHEN a when alias").createMatchedStep("When a when alias", tableRow).perform();
-        findCandidateStep(candidateSteps, "WHEN another when alias").createMatchedStep("When another when alias", tableRow).perform();
-        findCandidateStep(candidateSteps, "THEN a then").createMatchedStep("Then a then", tableRow).perform();
-        findCandidateStep(candidateSteps, "THEN a then alias").createMatchedStep("Then a then alias", tableRow).perform();
-        findCandidateStep(candidateSteps, "THEN another then alias").createMatchedStep("Then another then alias", tableRow).perform();
+        findCandidate(candidates, "GIVEN a given").createMatchedStep("Given a given", tableRow).perform();
+        findCandidate(candidates, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow).perform();
+        findCandidate(candidates, "GIVEN another given alias").createMatchedStep("Given another given alias", tableRow).perform();
+        findCandidate(candidates, "WHEN a when").createMatchedStep("When a when", tableRow).perform();
+        findCandidate(candidates, "WHEN a when alias").createMatchedStep("When a when alias", tableRow).perform();
+        findCandidate(candidates, "WHEN another when alias").createMatchedStep("When another when alias", tableRow).perform();
+        findCandidate(candidates, "THEN a then").createMatchedStep("Then a then", tableRow).perform();
+        findCandidate(candidates, "THEN a then alias").createMatchedStep("Then a then alias", tableRow).perform();
+        findCandidate(candidates, "THEN another then alias").createMatchedStep("Then another then alias", tableRow).perform();
 
         assertThat(steps.givens, equalTo(3));
         assertThat(steps.whens, equalTo(3));
@@ -67,28 +67,28 @@ public class StepsBehaviour {
     public void shouldListCandidateStepsFromAnnotatedMethodsInPojo() {
         PojoSteps steps = new PojoSteps();
         Configuration configuration = new MostUsefulConfiguration();
-		List<CandidateStep> candidateSteps = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0).listCandidates();
-        assertThat(candidateSteps.size(), equalTo(6));
+		List<StepCandidate> candidates = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0).listCandidates();
+        assertThat(candidates.size(), equalTo(6));
 
-        findCandidateStep(candidateSteps, "GIVEN a given").createMatchedStep("Given a given", tableRow).perform();
-        findCandidateStep(candidateSteps, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow).perform();
-        findCandidateStep(candidateSteps, "WHEN a when").createMatchedStep("When a when", tableRow).perform();
-        findCandidateStep(candidateSteps, "WHEN a when alias").createMatchedStep("When a when alias", tableRow).perform();
-        findCandidateStep(candidateSteps, "THEN a then").createMatchedStep("Then a then", tableRow).perform();
-        findCandidateStep(candidateSteps, "THEN a then alias").createMatchedStep("Then a then alias", tableRow).perform();
+        findCandidate(candidates, "GIVEN a given").createMatchedStep("Given a given", tableRow).perform();
+        findCandidate(candidates, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow).perform();
+        findCandidate(candidates, "WHEN a when").createMatchedStep("When a when", tableRow).perform();
+        findCandidate(candidates, "WHEN a when alias").createMatchedStep("When a when alias", tableRow).perform();
+        findCandidate(candidates, "THEN a then").createMatchedStep("Then a then", tableRow).perform();
+        findCandidate(candidates, "THEN a then alias").createMatchedStep("Then a then alias", tableRow).perform();
         
         assertThat(steps.givens, equalTo(2));
         assertThat(steps.whens, equalTo(2));
         assertThat(steps.thens, equalTo(2));
     }
 
-    private CandidateStep findCandidateStep(List<CandidateStep> candidateSteps, String candidateStepAsString) {
-        for (CandidateStep candidateStep : candidateSteps) {
-            if ( candidateStepAsString.equals(candidateStep.toString()) ){
-                return candidateStep;
+    private StepCandidate findCandidate(List<StepCandidate> candidates, String candidateAsString) {
+        for (StepCandidate candidate : candidates) {
+            if ( candidateAsString.equals(candidate.toString()) ){
+                return candidate;
             }
         }
-        throw new RuntimeException("CandidateStep "+candidateStepAsString+" not found amongst "+candidateSteps);
+        throw new RuntimeException("StepCandidate "+candidateAsString+" not found amongst "+candidates);
     }
 
     @Test
@@ -191,12 +191,12 @@ public class StepsBehaviour {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
     	LocalizedSteps steps = new LocalizedSteps(configuration);
-        List<CandidateStep> candidateSteps = steps.listCandidates();
-        assertThat(candidateSteps.size(), equalTo(3));
+        List<StepCandidate> candidates = steps.listCandidates();
+        assertThat(candidates.size(), equalTo(3));
 
-        findCandidateStep(candidateSteps, "GIVEN un dato che").createMatchedStep("Dato che un dato che", tableRow).perform();
-        findCandidateStep(candidateSteps, "WHEN un quando").createMatchedStep("Quando un quando", tableRow).perform();
-        findCandidateStep(candidateSteps, "THEN un allora").createMatchedStep("Allora un allora", tableRow).perform();
+        findCandidate(candidates, "GIVEN un dato che").createMatchedStep("Dato che un dato che", tableRow).perform();
+        findCandidate(candidates, "WHEN un quando").createMatchedStep("Quando un quando", tableRow).perform();
+        findCandidate(candidates, "THEN un allora").createMatchedStep("Allora un allora", tableRow).perform();
 
         assertThat(steps.givens, equalTo(1));
         assertThat(steps.whens, equalTo(1));
@@ -211,13 +211,12 @@ public class StepsBehaviour {
     	beforeScenario.get(1).createStep().perform();
     }
 
-    @Test(expected=DuplicateCandidateStepFoundException.class)
+    @Test(expected=DuplicateCandidateFound.class)
     public void shouldFailIfDuplicateStepsAreEncountered() {
         DuplicateSteps steps = new DuplicateSteps();
-        List<CandidateStep> candidateSteps = steps.listCandidates();
-
-        assertThat(candidateSteps.size(), equalTo(2));
-        candidateSteps.get(0).createMatchedStep("Given a given", tableRow).perform();
+        List<StepCandidate> candidates = steps.listCandidates();
+        assertThat(candidates.size(), equalTo(2));
+        candidates.get(0).createMatchedStep("Given a given", tableRow).perform();
 
     }
 
@@ -226,11 +225,11 @@ public class StepsBehaviour {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
     	LocalizedSteps steps = new LocalizedSteps(configuration);
-        List<CandidateStep> candidateSteps = steps.listCandidates();
-        assertThat(candidateSteps.size(), equalTo(3));
+        List<StepCandidate> candidates = steps.listCandidates();
+        assertThat(candidates.size(), equalTo(3));
 
         // misspelled starting word 
-        candidateSteps.get(0).createMatchedStep("Dado che un dato che", tableRow); 
+        candidates.get(0).createMatchedStep("Dado che un dato che", tableRow); 
         
     }
     

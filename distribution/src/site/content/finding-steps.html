@@ -9,44 +9,42 @@
 <h2>Finding Steps</h2>
 
 <p>The matching of textual steps to Java methods, each representing
-a candidate step, is a key concept in creating a <a
+an executable step, is a key concept in creating a <a
 	href="http://en.wikipedia.org/wiki/Domain-specific_language">Domain-Specific
 Language (DSL)</a>. Once a DSL has been defined, we need a way to display
 the "grammar" of the DSL to enable to story writer to exercise that
 grammar in writing the scenarios.</p>
 
 <p>JBehave centers around the matching of textual steps with Java
-methods contained in <a
-	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
-instances. Each annotated method in the CandidateSteps instances
+methods contained in steps instances. Each annotated method in the steps instances
 corresponds to a <a
-	href="javadoc/core/org/jbehave/core/steps/CandidateStep.html">CandidateStep</a>,
+	href="javadoc/core/org/jbehave/core/steps/StepCandidate.html">StepCandidate</a>,
 which is responsible for the matching and for the creation of an
 executable step.</p>
 
 <p>When the number of CandidateSteps instances grows, it can become
-more difficult to find a matching candidate step. In this case, it is
+more difficult to find a matching step candidates. In this case, it is
 useful to make use of the <a
 	href="javadoc/core/org/jbehave/core/steps/StepFinder.html">StepFinder</a>
-to report matching candidate steps. JBehave provides the concept of <a
+to report matching candidates. JBehave provides the concept of <a
 	href="javadoc/core/org/jbehave/core/steps/Stepdoc.html">Stepdoc</a>, as
-a documentation facade around a single CandidateStep, i.e. a single
-annotated method in the CandidateSteps instance. This documentation
+a documentation facade around a single StepCandidate, i.e. a single
+annotated method in the steps instance. This documentation
 includes:</p>
 <ul>
-	<li>the associated annotation in the method of the CandidateSteps
+	<li>the associated annotation in the method of the steps instance
 	class</li>
-	<li>the pattern to match the candidate step that is configured in
+    <li>the method in the steps instance class</li>
+	<li>the pattern to match the step candidate that is configured in
 	the annotation</li>
-	<li>the alias patterns for the candidate step (optional)</li>
-	<li>the method in the CandidateSteps class</li>
+	<li>the alias patterns for the step candidate (optional)</li>
 </ul>
 
 <p>To find and report matchings Stepdocs via the Embedder:</p>
 <pre class="brush: java">
     Embedder embedder = new Embedder();
     embedder.useConfiguration(...); // specify your configuration
-    embedder.useCandidateSteps(...); // specify your candidate steps instances 
+    embedder.useCandidateSteps(...); // create your CandidateSteps using the InjectableStepsFactory from your steps instances 
     embedder.reportMatchingStepocs("Given a step that I'm looking to match")
 </pre>
 <p>The result of the search would by default be output to console,

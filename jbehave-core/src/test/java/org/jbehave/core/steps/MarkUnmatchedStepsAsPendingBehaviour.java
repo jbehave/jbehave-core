@@ -29,7 +29,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         // Given
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
 
-        CandidateStep candidate = mock(CandidateStep.class);
+        StepCandidate candidate = mock(StepCandidate.class);
         CandidateSteps steps = mock(Steps.class);
         Step executableStep = mock(Step.class);
 
@@ -52,8 +52,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
 
         CandidateSteps steps = mock(Steps.class);
-        CandidateStep candidate = mock(CandidateStep.class, "candidate");
-        CandidateStep andCandidate = mock(CandidateStep.class, "andCandidate");
+        StepCandidate candidate = mock(StepCandidate.class, "candidate");
+        StepCandidate andCandidate = mock(StepCandidate.class, "andCandidate");
         Step step = mock(Step.class);
         Step andStep = mock(Step.class);
 
@@ -82,7 +82,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         // Given
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
 
-        CandidateStep candidate = mock(CandidateStep.class);
+        StepCandidate candidate = mock(StepCandidate.class);
         CandidateSteps steps = mock(Steps.class);
 
         String stepAsString = "my step";
@@ -105,7 +105,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         // Given
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
 
-        CandidateStep candidate = mock(CandidateStep.class);
+        StepCandidate candidate = mock(StepCandidate.class);
         CandidateSteps steps = mock(Steps.class);
 
         String stepAsString = "my ignorable step";
@@ -148,13 +148,13 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps2.listBeforeOrAfterScenario()).thenReturn(asList(bafStep21, bafStep22));
 
         // And which have a 'normal' step that matches our scenario
-        CandidateStep candidate = mock(CandidateStep.class);
+        StepCandidate candidate = mock(StepCandidate.class);
         Step normalStep = mock(Step.class);
 
         when(candidate.matches("my step")).thenReturn(true);
         when(candidate.createMatchedStep("my step", tableRow)).thenReturn(normalStep);
         when(steps1.listCandidates()).thenReturn(asList(candidate));
-        when(steps2.listCandidates()).thenReturn(asList(new CandidateStep[] {}));
+        when(steps2.listCandidates()).thenReturn(asList(new StepCandidate[] {}));
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
@@ -246,10 +246,10 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         // and some methods split across them
         CandidateSteps steps1 = mock(Steps.class);
         CandidateSteps steps2 = mock(Steps.class);
-        CandidateStep candidate1 = mock(CandidateStep.class);
-        CandidateStep candidate2 = mock(CandidateStep.class);
-        CandidateStep candidate3 = mock(CandidateStep.class);
-        CandidateStep candidate4 = mock(CandidateStep.class);
+        StepCandidate candidate1 = mock(StepCandidate.class);
+        StepCandidate candidate2 = mock(StepCandidate.class);
+        StepCandidate candidate3 = mock(StepCandidate.class);
+        StepCandidate candidate4 = mock(StepCandidate.class);
         Step step1 = mock(Step.class);
         Step step2 = mock(Step.class);
         Step step3 = mock(Step.class);
@@ -288,10 +288,10 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         // and some methods split across them
         CandidateSteps steps1 = mock(Steps.class);
         CandidateSteps steps2 = mock(Steps.class);
-        CandidateStep candidate1 = mock(CandidateStep.class);
-        CandidateStep candidate2 = mock(CandidateStep.class);
-        CandidateStep candidate3 = mock(CandidateStep.class);
-        CandidateStep candidate4 = mock(CandidateStep.class);
+        StepCandidate candidate1 = mock(StepCandidate.class);
+        StepCandidate candidate2 = mock(StepCandidate.class);
+        StepCandidate candidate3 = mock(StepCandidate.class);
+        StepCandidate candidate4 = mock(StepCandidate.class);
         Step step1 = mock(Step.class);
         Step step2 = mock(Step.class);
         Step step3 = mock(Step.class);

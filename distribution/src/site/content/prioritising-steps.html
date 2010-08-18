@@ -27,11 +27,11 @@ which prioritises the steps according to the <a
 	href="http://www.merriampark.com/ld.htm">Levenshtein Distance</a>.</p>
 
 <p>To specify a custom strategy, simply create a StepFinder with the
-desired strategy, and override the default step finder in the
+desired strategy, and override the default step collector in the
 configuration:</p>
 <pre class="brush: java">
-   StepFinder stepFinder = new StepFinder(new ByLevenshteinDistance());
-   new MostUsefulConfiguration().useStepFinder(stepFinder);
+   StepCollector stepCollector = new MarkUnmatchedStepsAsPending(new StepFinder(new ByLevenshteinDistance()));
+   new MostUsefulConfiguration().useStepCollector(stepCollector);
 </pre>
 
 <div class="clear">

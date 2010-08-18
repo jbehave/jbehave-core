@@ -37,38 +37,42 @@ public class StepFinder {
     /**
      * Creates a StepFinder with a custom strategy
      * 
-     * @param prioritisingStrategy the PrioritisingStrategy
+     * @param prioritisingStrategy
+     *            the PrioritisingStrategy
      */
     public StepFinder(PrioritisingStrategy prioritisingStrategy) {
         this.prioritisingStrategy = prioritisingStrategy;
     }
 
     /**
-     * Returns the stepdocs for the candidates collected from the 
-     * given {@link CandidateSteps}.
+     * Returns the stepdocs for the candidates collected from the given
+     * {@link CandidateSteps}.
      * 
-     * @param candidateSteps the List of CandidateSteps
-     * @return The list of Stepdocs, one for each {@link CandidateStep}.
+     * @param candidateSteps
+     *            the List of CandidateSteps
+     * @return The List of Stepdocs, one for each {@link StepCandidate}.
      */
     public List<Stepdoc> stepdocs(List<CandidateSteps> candidateSteps) {
         List<Stepdoc> stepdocs = new LinkedList<Stepdoc>();
-        for (CandidateStep candidate : collectCandidates(candidateSteps)) {
+        for (StepCandidate candidate : collectCandidates(candidateSteps)) {
             stepdocs.add(new Stepdoc(candidate));
         }
         return stepdocs;
     }
 
     /**
-     * Finds matching steps, represented as {@link Stepdoc}s, for a 
-     * given textual step and a list of {@link CandidateSteps}.
+     * Finds matching steps, represented as {@link Stepdoc}s, for a given
+     * textual step and a list of {@link CandidateSteps}.
      * 
-     * @param stepAsText the textual step
-     * @param candidateSteps the List of CandidateSteps
-     * @return The list of Stepdocs, one for each matched {@link CandidateStep}.
+     * @param stepAsText
+     *            the textual step
+     * @param candidateSteps
+     *            the List of CandidateSteps
+     * @return The list of Stepdocs, one for each matched {@link StepCandidate}.
      */
     public List<Stepdoc> findMatching(String stepAsText, List<CandidateSteps> candidateSteps) {
         List<Stepdoc> matching = new ArrayList<Stepdoc>();
-        for (CandidateStep candidate : collectCandidates(candidateSteps)) {
+        for (StepCandidate candidate : collectCandidates(candidateSteps)) {
             if (candidate.matches(stepAsText)) {
                 matching.add(new Stepdoc(candidate));
             }
@@ -77,9 +81,10 @@ public class StepFinder {
     }
 
     /**
-     * Returns the steps POJO instances associated to CandidateSteps
+     * Returns the steps instances associated to CandidateSteps
      * 
-     * @param candidateSteps the List of CandidateSteps
+     * @param candidateSteps
+     *            the List of CandidateSteps
      * @return The List of steps instances
      */
     public List<Object> stepsInstances(List<CandidateSteps> candidateSteps) {
@@ -93,15 +98,14 @@ public class StepFinder {
     }
 
     /**
-     * Collects a list of step candidates from {@link CandidateSteps}
-     * instances.
+     * Collects a list of step candidates from {@link CandidateSteps} instances.
      * 
      * @param candidateSteps
      *            the list {@link CandidateSteps} instances
-     * @return A List of {@link CandidateStep}
+     * @return A List of {@link StepCandidate}
      */
-    public List<CandidateStep> collectCandidates(List<CandidateSteps> candidateSteps) {
-        List<CandidateStep> collected = new ArrayList<CandidateStep>();
+    public List<StepCandidate> collectCandidates(List<CandidateSteps> candidateSteps) {
+        List<StepCandidate> collected = new ArrayList<StepCandidate>();
         for (CandidateSteps steps : candidateSteps) {
             collected.addAll(steps.listCandidates());
         }
@@ -111,12 +115,14 @@ public class StepFinder {
     /**
      * Prioritises the list of step candidates that match a given step.
      * 
-     * @param stepAsText the textual step to match
-     * @param candidates the List of CandidateStep
+     * @param stepAsText
+     *            the textual step to match
+     * @param candidates
+     *            the List of StepCandidate
      * @return The prioritised list according to the
      *         {@link PrioritisingStrategy}.
      */
-    public List<CandidateStep> prioritise(String stepAsText, List<CandidateStep> candidates) {
+    public List<StepCandidate> prioritise(String stepAsText, List<StepCandidate> candidates) {
         return prioritisingStrategy.prioritise(stepAsText, candidates);
     }
 
@@ -125,20 +131,20 @@ public class StepFinder {
      */
     public static interface PrioritisingStrategy {
 
-        List<CandidateStep> prioritise(String stepAsString, List<CandidateStep> candidates);
+        List<StepCandidate> prioritise(String stepAsString, List<StepCandidate> candidates);
 
     }
 
     /**
      * Strategy to priorise step candidates by the
-     * {@link CandidateStep#getPriority()} field which is settable in the
+     * {@link StepCandidate#getPriority()} field which is settable in the
      * {@link Given}, {@link When}, {@link Then} annotations.
      */
     public static class ByPriorityField implements PrioritisingStrategy {
 
-        public List<CandidateStep> prioritise(String stepAsText, List<CandidateStep> candidates) {
-            Collections.sort(candidates, new Comparator<CandidateStep>() {
-                public int compare(CandidateStep o1, CandidateStep o2) {
+        public List<StepCandidate> prioritise(String stepAsText, List<StepCandidate> candidates) {
+            Collections.sort(candidates, new Comparator<StepCandidate>() {
+                public int compare(StepCandidate o1, StepCandidate o2) {
                     return o2.getPriority().compareTo(o1.getPriority());
                 }
             });
@@ -155,9 +161,9 @@ public class StepFinder {
 
         private LevenshteinDistance ld = new LevenshteinDistance();
 
-        public List<CandidateStep> prioritise(final String stepAsText, List<CandidateStep> candidates) {
-            Collections.sort(candidates, new Comparator<CandidateStep>() {
-                public int compare(CandidateStep o1, CandidateStep o2) {
+        public List<StepCandidate> prioritise(final String stepAsText, List<StepCandidate> candidates) {
+            Collections.sort(candidates, new Comparator<StepCandidate>() {
+                public int compare(StepCandidate o1, StepCandidate o2) {
                     String scoringPattern1 = scoringPattern(o1);
                     String scoringPattern2 = scoringPattern(o2);
                     String stepWithoutStartingWord = trimStartingWord(stepAsText);
@@ -168,9 +174,8 @@ public class StepFinder {
                     return result != 0 ? result : o2.getPriority().compareTo(o1.getPriority());
                 }
 
-                private String scoringPattern(CandidateStep candidate) {
-                    return candidate.getPatternAsString().replaceAll("\\s\\$\\w+\\s", " ")
-                            .replaceAll("\\$\\w+", "");
+                private String scoringPattern(StepCandidate candidate) {
+                    return candidate.getPatternAsString().replaceAll("\\s\\$\\w+\\s", " ").replaceAll("\\$\\w+", "");
                 }
 
                 private String trimStartingWord(String stepAsString) {

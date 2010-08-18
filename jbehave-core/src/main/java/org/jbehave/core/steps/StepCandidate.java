@@ -12,13 +12,13 @@ import org.jbehave.core.parsers.StepPatternParser;
 import com.thoughtworks.paranamer.Paranamer;
 
 /**
- * A CandidateStep is associated to a Java method annotated with {@link Given},
- * {@link When}, {@link Then} in a {@link CandidatesSteps} instance class. The
- * CandidateStep is responsible for matching the textual step against the
- * pattern contained in the method annotation via the {@link StepMatcher} and
- * for the creation of the matched executable step via the {@link StepCreator}.
+ * A StepCandidate is associated to a Java method annotated with {@link Given},
+ * {@link When}, {@link Then} in a steps instance class. The StepCandidate is
+ * responsible for matching the textual step against the pattern contained in
+ * the method annotation via the {@link StepMatcher} and for the creation of the
+ * matched executable step via the {@link StepCreator}.
  */
-public class CandidateStep {
+public class StepCandidate {
 
     private final String patternAsString;
     private final Integer priority;
@@ -30,7 +30,7 @@ public class CandidateStep {
     private final StepCreator stepCreator;
     private StepMonitor stepMonitor = new SilentStepMonitor();
 
-    public CandidateStep(String patternAsString, int priority, StepType stepType, Method method, Object stepsInstance,
+    public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Object stepsInstance,
             Map<StepType, String> startingWordsByType, StepPatternParser stepPatternParser,
             ParameterConverters parameterConverters) {
         this.patternAsString = patternAsString;

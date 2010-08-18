@@ -5,8 +5,8 @@ import java.util.List;
 import org.jbehave.core.configuration.Configuration;
 
 /**
- * Interface providing the list of candidate steps, representing methods
- * annotated with {@link Given @Given}, {@link When @When} or {@link Then @Then},
+ * Interface providing the list of step candidates, representing methods
+ * annotated with {@link Given @Given}, {@link When @When} or {@link Then @Then}
  * that can be matched. It also provides the list of before and after steps,
  * representing methods annotated with {@link BeforeStories @BeforeStories},
  * {@link AfterStories @AfterStories}, {@link BeforeStory @BeforeStory},
@@ -16,11 +16,11 @@ import org.jbehave.core.configuration.Configuration;
 public interface CandidateSteps {
 
     /**
-     * Returns the candidate steps that can be matched
+     * Returns the step candidates that can be matched
      * 
-     * @return The list of candidate steps
+     * @return The list of step candidates
      */
-    List<CandidateStep> listCandidates();
+    List<StepCandidate> listCandidates();
 
     /**
      * Returns the before or after stories steps
