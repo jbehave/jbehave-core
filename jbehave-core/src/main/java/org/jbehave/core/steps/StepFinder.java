@@ -9,40 +9,79 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 /**
- * Finds candidate steps matching a textual step from a list of
- * {@link CandidateSteps} instances. It prioritises them by the
- * {@link PrioritisingStrategy} provided, defaulting to {@link ByPriorityField}.
+ * <p>
+ * StepFinder is reponsible for finding and prioritising step candidates or
+ * finding steps instances from {@link CandidateSteps}, which are created using
+ * an {@link InjectableStepsFactory}.
+ * </p>
+ * <p>
+ * The {@link StepCandidate}s are responsible for the matching of a particular
+ * textual step and are sometimes represented as {@link Stepdoc}s, each of which
+ * is simply a facade documenting a candidate. The candidates can be prioritised
+ * via an injectable {@link PrioritisingStrategy}, defaulting to
+ * {@link ByPriorityField}. A more sophisticated strategy that can be used is
+ * the {@link ByLevenshteinDistance}.
+ * </p>
  */
 public class StepFinder {
 
     private PrioritisingStrategy prioritisingStrategy;
 
+    /**
+     * Creates a StepFinder with a {@link ByPriorityField} strategy
+     */
     public StepFinder() {
         this(new ByPriorityField());
     }
 
+    /**
+     * Creates a StepFinder with a custom strategy
+     * 
+     * @param prioritisingStrategy the PrioritisingStrategy
+     */
     public StepFinder(PrioritisingStrategy prioritisingStrategy) {
         this.prioritisingStrategy = prioritisingStrategy;
     }
 
-    public List<Stepdoc> stepdocs(List<CandidateSteps> steps) {
+    /**
+     * Returns the stepdocs for the candidates collected from the 
+     * given {@link CandidateSteps}.
+     * 
+     * @param candidateSteps the List of CandidateSteps
+     * @return The list of Stepdocs, one for each {@link CandidateStep}.
+     */
+    public List<Stepdoc> stepdocs(List<CandidateSteps> candidateSteps) {
         List<Stepdoc> stepdocs = new LinkedList<Stepdoc>();
-        for (CandidateStep candidate : collectCandidates(steps)) {
+        for (CandidateStep candidate : collectCandidates(candidateSteps)) {
             stepdocs.add(new Stepdoc(candidate));
         }
         return stepdocs;
     }
 
-    public List<Stepdoc> findMatching(String stepAsString, List<CandidateSteps> candidateSteps) {
+    /**
+     * Finds matching steps, represented as {@link Stepdoc}s, for a 
+     * given textual step and a list of {@link CandidateSteps}.
+     * 
+     * @param stepAsText the textual step
+     * @param candidateSteps the List of CandidateSteps
+     * @return The list of Stepdocs, one for each matched {@link CandidateStep}.
+     */
+    public List<Stepdoc> findMatching(String stepAsText, List<CandidateSteps> candidateSteps) {
         List<Stepdoc> matching = new ArrayList<Stepdoc>();
         for (CandidateStep candidate : collectCandidates(candidateSteps)) {
-            if (candidate.matches(stepAsString)) {
+            if (candidate.matches(stepAsText)) {
                 matching.add(new Stepdoc(candidate));
             }
         }
         return matching;
     }
 
+    /**
+     * Returns the steps POJO instances associated to CandidateSteps
+     * 
+     * @param candidateSteps the List of CandidateSteps
+     * @return The List of steps instances
+     */
     public List<Object> stepsInstances(List<CandidateSteps> candidateSteps) {
         List<Object> instances = new ArrayList<Object>();
         for (CandidateSteps steps : candidateSteps) {
@@ -54,57 +93,74 @@ public class StepFinder {
     }
 
     /**
-     * Collects a list of candidates for matching from {@link CandidateSteps}
+     * Collects a list of step candidates from {@link CandidateSteps}
      * instances.
      * 
      * @param candidateSteps
      *            the list {@link CandidateSteps} instances
-     * @return A List of {@link CandidateStep}s
+     * @return A List of {@link CandidateStep}
      */
     public List<CandidateStep> collectCandidates(List<CandidateSteps> candidateSteps) {
         List<CandidateStep> collected = new ArrayList<CandidateStep>();
-        for (CandidateSteps candidates : candidateSteps) {
-            collected.addAll(candidates.listCandidates());
+        for (CandidateSteps steps : candidateSteps) {
+            collected.addAll(steps.listCandidates());
         }
         return collected;
     }
 
-    public List<CandidateStep> prioritise(String stepAsString, List<CandidateStep> candidateSteps) {
-        return prioritisingStrategy.prioritise(stepAsString, candidateSteps);
+    /**
+     * Prioritises the list of step candidates that match a given step.
+     * 
+     * @param stepAsText the textual step to match
+     * @param candidates the List of CandidateStep
+     * @return The prioritised list according to the
+     *         {@link PrioritisingStrategy}.
+     */
+    public List<CandidateStep> prioritise(String stepAsText, List<CandidateStep> candidates) {
+        return prioritisingStrategy.prioritise(stepAsText, candidates);
     }
 
     /**
-     * Strategy to priorise candidate steps by the
+     * Defines the priorising strategy of step candidates
+     */
+    public static interface PrioritisingStrategy {
+
+        List<CandidateStep> prioritise(String stepAsString, List<CandidateStep> candidates);
+
+    }
+
+    /**
+     * Strategy to priorise step candidates by the
      * {@link CandidateStep#getPriority()} field which is settable in the
      * {@link Given}, {@link When}, {@link Then} annotations.
      */
     public static class ByPriorityField implements PrioritisingStrategy {
 
-        public List<CandidateStep> prioritise(String stepAsString, List<CandidateStep> candidateSteps) {
-            Collections.sort(candidateSteps, new Comparator<CandidateStep>() {
+        public List<CandidateStep> prioritise(String stepAsText, List<CandidateStep> candidates) {
+            Collections.sort(candidates, new Comparator<CandidateStep>() {
                 public int compare(CandidateStep o1, CandidateStep o2) {
                     return o2.getPriority().compareTo(o1.getPriority());
                 }
             });
-            return candidateSteps;
+            return candidates;
         }
 
     }
 
     /**
-     * Strategy to priorise candidate steps by Levenshtein Distance. C.f.
-     * http://www.merriampark.com/ld.htm
+     * Strategy to priorise candidate steps by <a
+     * href="http://www.merriampark.com/ld.htm">Levenshtein Distance</a>
      */
     public static class ByLevenshteinDistance implements PrioritisingStrategy {
 
         private LevenshteinDistance ld = new LevenshteinDistance();
 
-        public List<CandidateStep> prioritise(final String stepAsString, List<CandidateStep> candidateSteps) {
-            Collections.sort(candidateSteps, new Comparator<CandidateStep>() {
+        public List<CandidateStep> prioritise(final String stepAsText, List<CandidateStep> candidates) {
+            Collections.sort(candidates, new Comparator<CandidateStep>() {
                 public int compare(CandidateStep o1, CandidateStep o2) {
                     String scoringPattern1 = scoringPattern(o1);
                     String scoringPattern2 = scoringPattern(o2);
-                    String stepWithoutStartingWord = trimStartingWord(stepAsString);
+                    String stepWithoutStartingWord = trimStartingWord(stepAsText);
                     Integer score1 = 0 - ld.calculate(scoringPattern1, stepWithoutStartingWord);
                     Integer score2 = 0 - ld.calculate(scoringPattern2, stepWithoutStartingWord);
                     int result = score2.compareTo(score1);
@@ -112,8 +168,8 @@ public class StepFinder {
                     return result != 0 ? result : o2.getPriority().compareTo(o1.getPriority());
                 }
 
-                private String scoringPattern(CandidateStep candidateStep) {
-                    return candidateStep.getPatternAsString().replaceAll("\\s\\$\\w+\\s", " ")
+                private String scoringPattern(CandidateStep candidate) {
+                    return candidate.getPatternAsString().replaceAll("\\s\\$\\w+\\s", " ")
                             .replaceAll("\\$\\w+", "");
                 }
 
@@ -122,7 +178,7 @@ public class StepFinder {
                 }
 
             });
-            return candidateSteps;
+            return candidates;
         }
 
         private class LevenshteinDistance {
@@ -173,7 +229,7 @@ public class StepFinder {
                 // Step 7
                 return d[n][m];
             }
-            
+
             private int minimum(int a, int b, int c) {
                 int mi = a;
                 if (b < mi) {

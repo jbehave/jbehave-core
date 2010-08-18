@@ -8,21 +8,30 @@
 
 <h2>Prioriting Steps</h2>
 
-<p>The matching of candidate steps to textual steps is central to JBehave's design. 
-The first candidate step that matches is used to create an executable step.  In some case, though,
-one can have cases in which multiple candidate steps can match the same textual step, e.g. when
-the steps are very similar.</p>
+<p>The matching of step candidate to textual steps is central to
+JBehave's design. The first candidate that matches is used to
+create an executable step. In some case, though, one can have cases in
+which multiple candidates can match the same textual step, e.g.
+when the steps are very similar.</p>
 
-<p>In these cases, JBehave allows to specify a specific <a
-    href="javadoc/core/org/jbehave/core/steps/PrioritisingStrategy.html">PrioritisingStrategy</a>
-in the <a
-    href="javadoc/core/org/jbehave/core/steps/StepFinder.html">StepFinder</a>.  The default 
-    strategy is <a
-    href="javadoc/core/org/jbehave/core/steps/StepFinder.ByPriorityField.html">ByPriorityField</a>
-    which prioritises the steps by the priority field explicitly set in the Given/When/Then annotations.</p>
+<p>To address this concern, JBehave provide a <a
+	href="javadoc/core/org/jbehave/core/steps/StepFinder.html">StepFinder</a>
+which allows for a customisable <a
+	href="javadoc/core/org/jbehave/core/steps/StepFinder.PrioritisingStrategy.html">PrioritisingStrategy</a>.
+The default strategy is <a
+	href="javadoc/core/org/jbehave/core/steps/StepFinder.ByPriorityField.html">ByPriorityField</a>
+which prioritises the steps by the priority field explicitly set in the
+Given/When/Then annotations. An alternative strategy is the <a
+	href="javadoc/core/org/jbehave/core/steps/StepFinder.ByLevenshteinDistance.html">ByLevenshteinDistance</a>
+which prioritises the steps according to the <a
+	href="http://www.merriampark.com/ld.htm">Levenshtein Distance</a>.</p>
+
+<p>To specify a custom strategy, simply create a StepFinder with the
+desired strategy, and override the default step finder in the
+configuration:</p>
 <pre class="brush: java">
-   PrioritisingStrategy strategy = new ByPriorityField();
-   StepFinder stepFinder = new StepFinder(strategy);
+   StepFinder stepFinder = new StepFinder(new ByLevenshteinDistance());
+   new MostUsefulConfiguration().useStepFinder(stepFinder);
 </pre>
 
 <div class="clear">
