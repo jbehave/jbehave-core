@@ -36,6 +36,11 @@
       <artifactId>jbehave-core</artifactId>
       <version>${jbehave.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-ant</artifactId>
+      <version>${jbehave.version}</version>
+    </dependency>
   </dependencies>
 
   <build>
@@ -241,7 +246,7 @@
                 <id>stepdocs</id>
                 <phase>integration-test</phase>
                 <configuration>
-                  <embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>
+                  <embedderClass>org.jbehave.examples.trader.TraderEmbedder</embedderClass>
                 </configuration>
                 <goals>
                   <goal>report-stepdocs</goal>
@@ -272,12 +277,6 @@
                       includes="${include.embeddables}" skip="false"
                       generateViewAfterStories="true"
                       ignoreFailureInStories="true" ignoreFailureInView="${ignore.failure.view}" />
-                    <taskdef name="reportStepdocs"
-                      classname="org.jbehave.ant.ReportStepdocs"
-                      classpathref="maven.runtime.classpath" />
-                    <reportStepdocs
-                      embedderClass="org.jbehave.examples.trader.TraderEmbedder"
-                      skip="false" />
                   </tasks>
                 </configuration>
                 <goals>
