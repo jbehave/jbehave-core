@@ -32,6 +32,8 @@
     <page>locating-stories.html</page>
     <page>reporting-stories.html</page>
     <page>running-stories.html</page>
+    <page>ant-tasks.html</page>
+    <page>maven-goals.html</page>
     <page>stories-in-your-language.html</page>    
   </section>
   <section>

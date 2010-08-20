@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Maven Goals</title>
+</head>
+
+<body>
+
+<h2>Maven Goals</h2>
+
+<p>JBehave supports accessing the Embedder functionality via Maven
+goals:</p>
+
+<ul>
+	<li><a
+		href="javadoc/maven-plugin/org/jbehave/mojo/RunStoriesAsEmbeddables.html">run-stories-as-embeddables</a></li>
+	<li><a
+		href="javadoc/maven-plugin/org/jbehave/mojo/RunStoriesAsPaths.html">run-stories-as-paths</a></li>
+	<li><a
+		href="javadoc/maven-plugin/org/jbehave/mojo/RunStoriesWithAnnotatedEmbedderRunner.html">run-stories-with-annotated-embedder-runner</a></li>
+	<li><a
+		href="javadoc/maven-plugin/org/jbehave/mojo/ReportStepdocs.html">report-stepdocs</a></li>
+	<li><a
+		href="javadoc/maven-plugin/org/jbehave/mojo/GenerateStoriesView.html">generate-stories-view</a></li>
+</ul>
+
+<p>Maven goals support the following properties:</p>
+
+<ul>
+	<li>sourceDirectory: defaults to <b>src/main/java</b></li>
+	<li>testSourceDirectory: defaults to <b>src/test/java</b></li>
+	<li>scope: [compile|test], defaults to <b>compile</b></li>
+	<li>includes: list of include patterns</li>
+	<li>excludes: list of exclude patterns</li>
+	<li>batch: [true|false], defaults to <b>false</b></li>
+	<li>skip: [true|false], defaults to <b>false</b></li>
+	<li>ignoreFailureInStories: [true|false], defaults to <b>false</b></li>
+	<li>ignoreFailureInView: [true|false], defaults to <b>false</b></li>
+	<li>generateViewAfterStories: [true|false], defaults to <b>true</b></li>
+	<li>embedderClass: defaults to <a
+		href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>.</li>
+	<li>injectableEmbedderClass: defaults to <code>null</code></li>
+	<li>annotatedEmbedderRunnerClass: defaults <a
+		href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedderRunner.html">AnnotatedEmbedderRunner</a></li>
+	<li>storyFinderClass: defaults to <a
+		href="javadoc/core/org/jbehave/core/io/StoryFinder.html">StoryFinder</a></li>
+</ul>
+
+<p>An example of a typical Maven plugin usage is:</p>
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+    <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <version>[version]</version>
+        <executions>
+            <execution>
+                <id>run-stories-as-embeddables</id>
+                <phase>integration-test</phase>
+                <configuration>
+                    <includes>
+                        <include>**/*Stories.java</include>
+                    </includes>
+                    <ignoreFailureInStories>true</ignoreFailureInStories>
+                    <ignoreFailureInView>false</ignoreFailureInView>
+                </configuration>
+                <goals>
+                    <goal>run-stories-as-embeddables</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+]]>
+</script>
+
+<p>The default scope is <b>compile</b>, which means that the stories
+will be looked up in the POM source directory. If the scope is set to <b>test</b>
+the stories will be looked up in the POM test source directory.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

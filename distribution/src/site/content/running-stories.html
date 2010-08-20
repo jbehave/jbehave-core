@@ -13,24 +13,46 @@
 environments. The JBehave Core module contains support for running
 stories as JUnit tests - which can be run either in your favourite IDE
 or in your command-line build that supports JUnit tests. Other unit
-testing frameworks, e.g. TestNG, can also be used very easily, c.f. <a
-	href="faq.html">FAQ</a>.</p>
+testing frameworks, e.g. TestNG or Spring Test, can also be used very
+easily, c.f. <a href="faq.html">FAQ</a>.</p>
 
-<p>You can also run stories using the JBehave Ant or Maven
-extensions. Both support two way to lookup stories, by list of story
-classes or by Java path includes/excludes pattern. Below are examples on
-how to configure both extensions - using the trader example.</p>
-
-<h2>Embedder</h2>
-
-<p>JBehave provides a <a
+<p>You can also run stories using the JBehave <a
+	href="ant-tasks.html">Ant tasks</a> or <a href="maven-goals.html">Maven
+goals</a>, which provide a facade around the Embedder functionality.</p>
+<p>JBehave provides the <a
 	href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>
-as an entry point to running stories. The embedder allows the
-specification of the configuration and the candidate steps. Then one
-needs only to specify the paths of the stories to run.</p>
+as the core entry point to running stories. The Embedder can be
+configured in multiple way, c.f. the <a href="configuration.html">configuration</a>.</p>
+
+<h2>Multiple running modes</h2>
+
+<p>Stories can be run in different modes:</p>
+
+<ul>
+	<li>as embeddables: An <a
+		href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a> is
+	an abstraction of a running mode, which can run a single story, e.g. if
+	extending <a href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a>
+	or can run multiple stories, e.g. if extending <a
+		href="javadoc/core/org/jbehave/core/junit/JUnitStories.html">JUnitStories</a>.
+	The Embeddable instances allow their <a href="configuration.html">configuration</a>.
+	</li>
+	<li>as paths: once we have specified an instance of an <a
+		href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>,
+	with its configuration, we run stories specified by paths.</li>
+	<li>with annotated embedder runner: an <a
+		href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedderRunner.html">AnnotatedEmbedderRunner</a>
+	is an implementation of the JUnit Runner, which allows annotated
+	specification of the Embedder to be used to run the stories. C.f. <a
+		href="configuration.html">configuration</a> on how to use
+	annotatations to configure the Embedder.</li>
+</ul>
+
+<h2>Running Stories in a framework-neutral way</h2>
 
 <p>The Embedder can also be used to run the stories in any IDE
-environment, e.g. via JUnit, without the need to extend any base class.
+environment, without the need to extend any base class. In the following
+example we use JUnit annotatation to denote different running instances:
 </p>
 
 <script type="syntaxhighlighter" class="brush: java">
@@ -40,35 +62,37 @@ public class TraderStoryRunner {
 	@Test
 	public void runClasspathLoadedStoriesAsJUnit() {
 		// Embedder defines the configuration and candidate steps
-		Embedder embedder = new ClasspathTraderEmbedder();
-		embedder.runStoriesAsPaths(embedder.storyPaths());
+		Embedder embedder = new TraderEmbedder();
+        List<String> storyPaths = ... // use StoryFinder to look up paths
+		embedder.runStoriesAsPaths(storyPaths);
 	}
 
 	@Test
 	public void runURLLoadedStoriesAsJUnit() {
 		// Embedder defines the configuration and candidate steps
 		Embedder embedder = new URLTraderEmbedder();
-		embedder.runStoriesAsPaths(embedder.storyPaths());
+        List<String> storyPaths = ... // use StoryFinder to look up paths
+        embedder.runStoriesAsPaths(storyPaths);
 	}
 
 }
 ]]>
 </script>
 
-<p>where the Classpath/URLTraderEmbedder define the configuration
-using the loading from the classpath and URL resources, respectively.
-E.g.:</p>
+<p>where the TraderEmbedder/URLTraderEmbedder define the
+configuration using the loading from the classpath and URL resources,
+respectively. E.g.:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-public class ClasspathTraderEmbedder extends Embedder {
+public class TraderEmbedder extends Embedder {
 
 	@Override
 	public Configuration configuration() {
-		Class<? extends ClasspathTraderEmbedder> embedderClass = this.getClass();
+		Class<?> embedderClass = this.getClass();
         URL codeLocation = CodeLocations.codeLocationFromClass(embedderClass);
         Configuration configuration = new MostUsefulConfiguration()
-             .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
+             .useStoryLoader(new LoadFromClasspath(embedderClass))
              .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withCodeLocation(codeLocation)
         		.withDefaultFormats()
@@ -87,106 +111,59 @@ public class ClasspathTraderEmbedder extends Embedder {
                         new BeforeAfterSteps()).createCandidateSteps();
 	}
 
-	public List<String> storyPaths() {
-		StoryFinder finder = new StoryFinder();
-		return finder.findPaths("target/classes", "", asList("**/*.story"), asList(""));
-	}
+}
+]]>
+</script>
+
+<h2>Running Remote Stories</h2>
+
+<p>JBehave supports running both local and remote stories. To run
+remote stories, we need to use a URL-based loader with an appropriate
+remote code location.  The difference w.r.t. the local run is minimal:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+public class RemoteTraderStories extends TraderStories {
+
+    @Override
+    public Configuration configuration() {
+        return super.configuration()
+               .useStoryLoader(new LoadFromURL())
+               .useStoryReporterBuilder(
+                       new StoryReporterBuilder()
+                           .withCodeLocation(codeLocationFromURL("http://jbehave.org/reference/examples/stories/"))
+                           .withDefaultFormats()
+                           .withFormats(CONSOLE, TXT, HTML, XML));
+    }
+
+    @Override
+    protected List<String> storyPaths() {
+        // Specify story paths as remote URLs
+        String codeLocation = codeLocationFromURL("http://jbehave.org/reference/examples/stories/")
+                .toExternalForm();
+        return asList(codeLocation + "and_step.story");
+    }
 
 }
 ]]>
 </script>
 
-<h2>Running as Ant task</h2>
-
-<script type="syntaxhighlighter" class="brush: xml">
-<![CDATA[
-    <taskdef name="runStoriesAsPaths"
-             classname="org.jbehave.ant.RunStoriesAsPaths"
-             classpathref="your.runtime.classpath"/>
-
-    <runStoriesAsPaths
-    		embedderClass="org.jbehave.examples.trader.ClasspathTraderEmbedder"
-            includes="**/stories/*.story"
-            excludes="**/stories/*NonSuccessful.story"
-            skip="[true|false]"
-            batch="[true|false]"
-            ignoreFailureInStories="[true|false]"
-            ignoreFailureInReports="[true|false]"
-            generateViewAfterStories="[true|false]"
-            scope="[compile|test]"
-            sourceDirectory="[sourceDirectory|src/main/java]"
-            testSourceDirectory="[testSourceDirectory|src/test/java]"/>
-
-]]>
-</script>
-
-<p>Remember to include <b>jbehave-ant</b> to your runtime classpath.</p>
-
-<p>Note: we are using as default scope <b>compile</b>, which means
-that the stories will be looked up in the source directory (which can be
-optionally specified and defaults to <b>src/main/java</b>). If the scope
-is set to <b>test</b> the stories will be looked up in the test source
-directory (which can be optionally specified and defaults to <b>src/test/java</b>).
-</p>
-
-<h2>Running as Maven Plugin</h2>
-
-<script type="syntaxhighlighter" class="brush: xml">
-<![CDATA[
-    <plugin>
-        <groupId>org.jbehave</groupId>
-        <artifactId>jbehave-maven-plugin</artifactId>
-        <version>[version]</version>
-        <executions>
-            <execution>
-                <id>run-stories-as-paths</id>
-                <phase>integration-test</phase>
-                <configuration>
-                	<embedderClass>org.jbehave.examples.trader.ClasspathTraderEmbedder</embedderClass>                	
-		            <includes>
-                		<include>**/stories/*.story</include>
-             		</includes>
-              		<excludes>
-                		<exclude>**/stories/*NonSuccessful.story</exclude>
-              		</excludes>
-                    <skip>[true|false]</skip>
-                    <batch>[true|false]</batch>
-                    <ignoreFailureInStories>[true|false]</ignoreFailureInStories>
-                    <ignoreFailureInReports>[true|false]</ignoreFailureInReports>
-                    <generateViewAfterStories>[true|false]</generateViewAfterStories>
-                    <scope>[compile|test]</scope>
-                </configuration>
-                <goals>
-                    <goal>run-stories-as-paths</goal>
-                </goals>
-            </execution>
-        </executions>
-    </plugin>
-]]>
-</script>
-
-<p>Note: we are using as default scope <b>compile</b>, which means
-that the stories will be looked up in the POM source directory. If the
-scope is set to <b>test</b> the stories will be looked up in the POM
-test source directory.</p>
-
-<h2>Running Stories for reports</h2>
+<h2>Ignoring failures in stories</h2>
 
 <p>By default, the story runners are configured to <b>fail-fast</b>,
-i.e. the execution will stop at first failure (but will complete
-execution of the all the stories in the story or textual story file). To
-allow the generation of complete reports view, the runners need to be
-enabled to execute story in <b>batch</b> and <b>ignoreFailure</b> modes
-(i.e. setting these flags to <b>true</b>). In this way all stories will
-run and the build will be nominally successful but a full report can ben
-generated, including the failed and pending steps. Note that the batch
-mode is strictly speaking not essential but makes it easier to get a
-summary of the failed stories.</p>
+i.e. the execution will stop at first failed story (but will complete
+execution of the all the scenarios in the story first). To allow the
+generation of a complete stories view (reporting how many stories
+failed), the runners need to be enabled to run stories with <b>ignoreFailureInStories</b>
+flag set to <b>true</b>. In this way, all stories will run and the
+failure will be assessed only during the view generation. If any stories
+failed, the build will fail correspondingly. Should the need to ignore
+failure in the view arise (although generally not recommended), one can
+set the <b>ignoreFailureInView</b> flag to <b>true</b>.</p>
 
 <div class="clear">
 <hr />
 </div>
-
 
 </body>
 </html>

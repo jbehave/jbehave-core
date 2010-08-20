@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Ant Tasks</title>
+</head>
+
+<body>
+
+<h2>Ant Tasks</h2>
+
+<p>JBehave supports accessing the Embedder functionality via Ant
+tasks:</p>
+
+<ul>
+	<li><a
+		href="javadoc/ant/org/jbehave/ant/RunStoriesAsEmbeddables.html">RunStoriesAsEmbeddables</a></li>
+	<li><a href="javadoc/ant/org/jbehave/ant/RunStoriesAsPaths.html">RunStoriesAsPaths</a></li>
+	<li><a
+		href="javadoc/ant/org/jbehave/ant/RunStoriesWithAnnotatedEmbedderRunner.html">RunStoriesWithAnnotatedEmbedderRunner</a></li>
+	<li><a href="javadoc/ant/org/jbehave/ant/ReportStepdocs.html">ReportStepdocs</a></li>
+	<li><a href="javadoc/ant/org/jbehave/ant/GenerateStoriesView.html">GenerateStoriesView</a></li>
+</ul>
+
+<p>Ant tasks support the following properties:</p>
+
+<ul>
+	<li>sourceDirectory: defaults to <b>src/main/java</b></li>
+	<li>testSourceDirectory: defaults to <b>src/test/java</b></li>
+	<li>scope: [compile|test], defaults to <b>compile</b></li>
+	<li>includes: CSV of include patterns</li>
+	<li>excludes: CSV of exclude patterns</li>
+	<li>batch: [true|false], defaults to <b>false</b></li>
+	<li>skip: [true|false], defaults to <b>false</b></li>
+	<li>ignoreFailureInStories: [true|false], defaults to <b>false</b></li>
+	<li>ignoreFailureInView: [true|false], defaults to <b>false</b></li>
+	<li>generateViewAfterStories: [true|false], defaults to <b>true</b></li>
+	<li>embedderClass: defaults to <a
+		href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>.</li>
+	<li>injectableEmbedderClass: defaults to <code>null</code></li>
+	<li>annotatedEmbedderRunnerClass: defaults <a
+		href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedderRunner.html">AnnotatedEmbedderRunner</a></li>
+	<li>storyFinderClass: defaults to <a
+		href="javadoc/core/org/jbehave/core/io/StoryFinder.html">StoryFinder</a></li>
+</ul>
+
+<p>An example of a typical Ant task usage is:</p>
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+    <taskdef name="runStoriesAsEmbeddables"
+             classname="org.jbehave.ant.RunStoriesAsEmbeddables"
+             classpathref="your.runtime.classpath"/>
+
+    <runStoriesAsEmbeddables
+            includes="**/*Stories.java"
+            ignoreFailureInStories="true"
+            ignoreFailureInView="false"
+            generateViewAfterStories="true"/>
+
+]]>
+</script>
+
+<p>Remember to include <b>jbehave-ant</b> to your runtime classpath.</p>
+
+<p>The default scope is <b>compile</b>, which means that the stories
+will be looked up in the source directory (which defaults to <b>src/main/java</b>
+by can be overridden). If the scope is set to <b>test</b> the stories
+will be looked up in the test source directory (which defaults to <b>src/test/java</b>
+but can be overridden).</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>
