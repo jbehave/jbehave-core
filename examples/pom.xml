@@ -10,6 +10,10 @@
   <packaging>pom</packaging>
   <name>JBehave Examples</name>
 
+  <!--
+    These properties are the default properties for all executions. POMs
+    inheriting from this can override these properties
+  -->
   <properties>
     <batch>false</batch>
     <ignore.failure.view>true</ignore.failure.view>
@@ -52,6 +56,9 @@
     </resources>
     <pluginManagement>
       <plugins>
+
+        <!-- Here we unpack the jbehave resources for reports -->
+
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
@@ -98,6 +105,16 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
       </plugin>
+
+      <!--
+        Here we define the executions of the jbehave-maven-plugin for
+        running stories as embeddables
+      -->
+      <!--
+        This configuration is used by all the examples which need only
+        specify the ${include.embeddables} property
+      -->
+
       <plugin>
         <groupId>org.jbehave</groupId>
         <artifactId>jbehave-maven-plugin</artifactId>
@@ -141,6 +158,16 @@
       <id>as-paths</id>
       <build>
         <plugins>
+
+          <!--
+            Here we define the executions of the jbehave-maven-plugin
+            for running stories as paths
+          -->
+          <!--
+            This configuration is used by all the examples which need
+            only specify the ${include.paths} property
+          -->
+
           <plugin>
             <groupId>org.jbehave</groupId>
             <artifactId>jbehave-maven-plugin</artifactId>
@@ -176,6 +203,17 @@
       <id>with-annotated-embedder</id>
       <build>
         <plugins>
+
+          <!--
+            Here we define the executions of the jbehave-maven-plugin
+            for running stories with annotated embedder
+          -->
+          <!--
+            This configuration is used by all the examples which need
+            only specify the ${annotated.embedder.runner} and
+            ${include.annotated.embedders} properties
+          -->
+
           <plugin>
             <groupId>org.jbehave</groupId>
             <artifactId>jbehave-maven-plugin</artifactId>

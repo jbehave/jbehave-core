@@ -9,6 +9,7 @@
   <artifactId>jbehave-trader-i18n-example</artifactId>
   <name>JBehave Trader I18n Example</name>
 
+  <!-- Properties used to specify story running configured in jbehave-examples POM -->
   <properties>
     <include.embeddables>**/i18n/*Stories.java</include.embeddables>
   </properties>

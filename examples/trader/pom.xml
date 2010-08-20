@@ -9,7 +9,9 @@
   <artifactId>jbehave-trader-example</artifactId>
   <name>JBehave Trader Example</name>
 
+  <!-- Properties used to specify story running configured in jbehave-examples POM -->
   <properties>
+    <include.embeddables>**/stories/*.java</include.embeddables>
     <include.annotated.embedders>**/AnnotatedTraderEmbedder.java</include.annotated.embedders>
     <annotated.embedder.runner>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotated.embedder.runner>
   </properties>

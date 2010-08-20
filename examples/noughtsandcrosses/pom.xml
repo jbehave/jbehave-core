@@ -30,11 +30,9 @@
               <includes>
                 <include>**/stories/*.java</include>
               </includes>
-              <skip>false</skip>
               <scope>test</scope>
               <ignoreFailureInStories>true</ignoreFailureInStories>
-              <ignoreFailureInReports>true</ignoreFailureInReports>
-              <renderReportsAfterStories>true</renderReportsAfterStories>
+              <ignoreFailureInView>false</ignoreFailureInView>
             </configuration>
             <goals>
               <goal>run-stories-as-embeddables</goal>

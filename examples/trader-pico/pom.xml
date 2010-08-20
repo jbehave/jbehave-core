@@ -9,6 +9,7 @@
   <artifactId>jbehave-trader-pico-example</artifactId>
   <name>JBehave Trader Pico Example</name>
 
+  <!-- Properties used to specify story running configured in jbehave-examples POM -->
   <properties>
     <include.embeddables>**/*StoriesUsingPico.java</include.embeddables>
     <include.annotated.embedders>**/AnnotatedEmbedderUsingPico*.java</include.annotated.embedders>

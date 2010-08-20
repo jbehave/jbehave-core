@@ -9,6 +9,7 @@
   <artifactId>jbehave-trader-spring-example</artifactId>
   <name>JBehave Trader Spring Example</name>
 
+  <!-- Properties used to specify story running configured in jbehave-examples POM -->
   <properties>
     <include.embeddables>**/*StoriesUsingSpring.java</include.embeddables>
     <include.annotated.embedders>**/AnnotatedEmbedderUsingSpring*.java</include.annotated.embedders>
