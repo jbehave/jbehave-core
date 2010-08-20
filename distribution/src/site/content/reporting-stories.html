@@ -37,7 +37,7 @@ to which events are reported as they occur.</p>
 	collects statistics and stores them as properties after story is run</li>
 	<li><a
 		href="javadoc/core/org/jbehave/core/reporters/DelegatingStoryReporter.html">DelegatingStoryReporter</a>:
-	delegates to any number of reporters as a proxy.</li>
+	used by the StoryReporterBuilder to delegate to any number of reporters as a proxy.</li>
 </ul>
 
 <p>The <a
@@ -85,12 +85,6 @@ public abstract class TraderStory extends JUnitStory {
 ]]>
 </script>
 
-<span class="followup">For a fully-working example of reporting
-configuration you may consult the <a href="running-examples.html">examples</a>.
-Note that the configuration only needs to be done in one place, i.e. the
-parent story class, and not repeated in every story class that maps to a
-textual story. </span>
-
 <p>Note that we use the <a
 	href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>
 to implement a builder pattern for file-based reporters via the <a
@@ -108,18 +102,6 @@ strategy, is the <a
 	href="javadoc/core/org/jbehave/core/reporters/FilePrintStreamFactory.ResolveToSimpleName.html">ResolveToSimpleName</a>,
 whereby only the simple name portion, without the package structure, is
 considered, i.e. we'd end up with file report outputs of the form: <b>my_cool.[format]</b></p>
-
-<span class="followup">The file-based print stream factory for
-the story reporting requires the story class to be provided in order to
-derive from it the output file paths (with the appropriate format
-extension). If you want to migrate multiple stories to using file-based
-reporting, an intermediate stepping stone might be to provide as a story
-class the parent class in which you build the story reporter
-(TraderStory.class in the example), which will result in all reporting
-(for a given format) to be appended to the same file. Then gradually you
-can refactor your story classes to provide their class to the parent (as
-the example shows). Otherwise, you may want to keep output in a single
-file, the choice is yours. </span>
 
 <p>The builder provides defaults for all the formats supported, but
 if the user needs to create a bespoke instance of a reporter for a given
@@ -139,6 +121,31 @@ override the reporter for <b>TXT</b> format to use a ".text" extension:</p>
             }
         };
 </pre>
+
+<h2>Code Locations</h2>
+
+<p>The file-based print stream factory for the story reporting
+requires a <a href="javadoc/core/org/jbehave/core/io/StoryLocation.html">StoryLocation</a>
+to be provided in order to derive from it the output file paths (with
+the appropriate format extension). The story location, in turn, requires
+a code location URL and a story path.</p>
+
+<p>The code location URLs can be created from different sources, via
+static methods in the <a
+	href="javadoc/core/org/jbehave/core/io/CodeLocations.html">CodeLocations</a>
+utility class:</p>
+
+<ul>
+	<li><a
+		href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromClass(java.lang.Class)">codeLocationFromClass(java.lang.Class)</a>:
+	returns the code location of the class resource</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromPath(java.lang.String)">codeLocationFromFromPath(java.lang.String)</a>:
+	returns the code location of a local file path</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromURL(java.lang.String)">codeLocationFromFromURL(java.lang.String)</a>:
+	returns the code location of a generic url (from its String external form representation)</li>
+</ul>
 
 <h2>View Generation</h2>
 
@@ -174,12 +181,12 @@ the default style makes use of images found in the <b>jbehave-site-resources.zip
 
 <h2>Reporting Statistics</h2>
 
-<p>The story statistics report above is treated in the view
-generation slightly differently from other reports, in that the
-statistics are displayed on the index view page, if available. To ensure
-they are always available the story reporter builder is configured to
-have <b>stats</b> as a default format (although the default formats need
-to be added to the builder).</p>
+<p>The <b>PostStoryStatisticsCollector</b> is treated in the view generation
+slightly differently from other reports, in that the statistics are
+displayed on the index view page, if available. To ensure they are
+always available the story reporter builder is configured to have <b>stats</b>
+as a default format (although the default formats need to be added to
+the builder).</p>
 
 <h2>Default Formats</h2>
 
@@ -190,11 +197,11 @@ the only default format (used for collecting reporting statistics). To
 modify simply override the method <b>withDefaultFormats()</b>. E.g. to
 add "txt" as a default format:</p>
 <pre class="brush: java">
-        new StoryReporterBuilder(){
-               public StoryReporterBuilder withDefaultFormats() {
-                    return withFormats(STATS, TXT);
-               }
+    new StoryReporterBuilder(){
+        public StoryReporterBuilder withDefaultFormats() {
+            return withFormats(STATS, TXT);
         }
+    }
 </pre>
 
 <p>By default, JBehave writes file-based reports to the relative
@@ -203,20 +210,8 @@ source location, e.g. the <b>target</b> directory in Maven), but this
 can be changed via the builder:</p>
 
 <pre class="brush: java">
-        new StoryReporterBuilder().withRelativeDirectory("my-reports")
+    new StoryReporterBuilder().withRelativeDirectory("my-reports")
 </pre>
-
-<p>In some cases, we may want to set the code location explicitly
-from a file path:</p>
-
-<pre class="brush: java">
-    new StoryReporterBuilder().withCodeLocation(CodeLocations.codeLocationFromPath("build/classes"))
-</pre>
-
-<p>If the default formats or the output file directory are modified
-via the builder, then correspondingly we need to inform the view
-generator if these changes. See <a href="running-stories.html">running
-stories</a> for details on how to configure these changes.</p>
 
 <h2>Next?</h2>
 
