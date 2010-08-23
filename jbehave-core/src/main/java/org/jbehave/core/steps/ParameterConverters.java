@@ -24,12 +24,12 @@ import org.jbehave.core.model.ExamplesTable;
  * <p>
  * Several converters are provided out-of-the-box:
  * <ul>
- * <li>{@link ParameterConverters#NumberConverter}</li>
- * <li>{@link ParameterConverters#NumberListConverter}</li>
- * <li>{@link ParameterConverters#StringListConverter}</li>
- * <li>{@link ParameterConverters#DateConverter}</li>
- * <li>{@link ParameterConverters#ExamplesTableConverter}</li>
- * <li>{@link ParameterConverters#MethodReturningConverter}</li>
+ * <li>{@link ParameterConverters.NumberConverter NumberConverter}</li>
+ * <li>{@link ParameterConverters.NumberListConverter NumberListConverter}</li>
+ * <li>{@link ParameterConverters.StringListConverter StringListConverter}</li>
+ * <li>{@link ParameterConverters.DateConverter DateConverter}</li>
+ * <li>{@link ParameterConverters.ExamplesTableConverter ExamplesTableConverter}</li>
+ * <li>{@link ParameterConverters.MethodReturningConverter MethodReturningConverter}</li>
  * </ul>
  * </p>
  */
