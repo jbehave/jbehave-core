@@ -12,12 +12,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
@@ -33,9 +35,56 @@ import org.junit.Test;
 
 public class ParameterConvertersBehaviour {
 
+    private static String NAN = new DecimalFormatSymbols().getNaN();
+    private static String INFINITY = new DecimalFormatSymbols().getInfinity();
+
     @Test
-    public void shouldConvertValuesToNumbers() {
-        ParameterConverter converter = new NumberConverter();
+    public void shouldConvertValuesToNumbersWithDefaultNumberFormat() {
+        NumberConverter converter = new NumberConverter();
+        assertThatAllNumberTypesAreAccepted(converter);
+        assertThatAllNumbersAreConverted(converter);
+    }
+
+    @Test
+    public void shouldConvertValuesToNumbersWithLocalizedNumberFormat() {
+        ParameterConverter enConverter = new NumberConverter(NumberFormat.getInstance(Locale.ENGLISH));
+        assertThatAllNumberTypesAreAccepted(enConverter);
+        assertThatAllNumbersAreConverted(enConverter);
+        assertThat((Integer) enConverter.convertValue("100,000", Integer.class), equalTo(100000));
+        assertThat((Long) enConverter.convertValue("100,000", Long.class), equalTo(100000L));
+        assertThat((Float) enConverter.convertValue("100,000.01", Float.class), equalTo(100000.01f));
+        assertThat((Double) enConverter.convertValue("100,000.01", Double.class), equalTo(100000.01d));        
+        ParameterConverter frConverter = new NumberConverter(NumberFormat.getInstance(Locale.FRENCH));
+        assertThatAllNumberTypesAreAccepted(frConverter);
+        assertThatAllNumbersAreConverted(frConverter);
+        assertThat((Float) frConverter.convertValue("100000,01", Float.class), equalTo(100000.01f));
+        assertThat((Double) frConverter.convertValue("100000,01", Double.class), equalTo(100000.01d));
+    }
+
+    private void assertThatAllNumberTypesAreAccepted(ParameterConverter converter) {
+        assertThat(converter.accept(Byte.class), equalTo(true));
+        assertThat(converter.accept(byte.class), equalTo(true));
+        assertThat(converter.accept(Short.class), equalTo(true));
+        assertThat(converter.accept(short.class), equalTo(true));
+        assertThat(converter.accept(Integer.class), equalTo(true));
+        assertThat(converter.accept(int.class), equalTo(true));
+        assertThat(converter.accept(Float.class), equalTo(true));
+        assertThat(converter.accept(float.class), equalTo(true));
+        assertThat(converter.accept(Long.class), equalTo(true));
+        assertThat(converter.accept(long.class), equalTo(true));
+        assertThat(converter.accept(Double.class), equalTo(true));
+        assertThat(converter.accept(double.class), equalTo(true));
+        assertThat(converter.accept(BigInteger.class), equalTo(true));
+        assertThat(converter.accept(BigDecimal.class), equalTo(true));
+        assertThat(converter.accept(Number.class), equalTo(true));
+        assertThat(converter.accept(WrongType.class), equalTo(false));        
+    }
+
+    private void assertThatAllNumbersAreConverted(ParameterConverter converter) {
+        assertThat((Byte) converter.convertValue("127", Byte.class), equalTo(Byte.MAX_VALUE));
+        assertThat((Byte) converter.convertValue("-128", byte.class), equalTo(Byte.MIN_VALUE));
+        assertThat((Short) converter.convertValue("32767", Short.class), equalTo(Short.MAX_VALUE));
+        assertThat((Short) converter.convertValue("-32768", short.class), equalTo(Short.MIN_VALUE));
         assertThat((Integer) converter.convertValue("3", Integer.class), equalTo(3));
         assertThat((Integer) converter.convertValue("3", int.class), equalTo(3));
         assertThat((Float) converter.convertValue("3.0", Float.class), equalTo(3.0f));
@@ -44,25 +93,31 @@ public class ParameterConvertersBehaviour {
         assertThat((Long) converter.convertValue("3", long.class), equalTo(3L));
         assertThat((Double) converter.convertValue("3.0", Double.class), equalTo(3.0d));
         assertThat((Double) converter.convertValue("3.0", double.class), equalTo(3.0d));
-        assertThat((BigDecimal) converter.convertValue("3.0", BigDecimal.class), equalTo(new BigDecimal("3.0")));
         assertThat((BigInteger) converter.convertValue("3", BigInteger.class), equalTo(new BigInteger("3")));
-        assertThat((String) converter.convertValue("3.0", String.class), equalTo("3.0"));
+        assertThat((BigDecimal) converter.convertValue("3.0", BigDecimal.class), equalTo(new BigDecimal("3.0")));
+        assertThat((Number) converter.convertValue("3", Number.class), equalTo((Number)3L));
+    }
+
+    @Test(expected = ParameterConvertionFailed.class)
+    public void shouldFailToConvertInvalidNumbersWithNumberFormat() throws ParseException, IntrospectionException {
+        ParameterConverter converter = new NumberConverter();
+        converter.convertValue("abc", Long.class);
     }
 
     @Test
     public void shouldConvertNaNAndInfinityValuesToNumbers() {
         ParameterConverter converter = new NumberConverter();
-        assertThat((Float) converter.convertValue("Infinity", Float.class), equalTo(Float.POSITIVE_INFINITY));
-        assertThat((Float) converter.convertValue("-Infinity", Float.class), equalTo(Float.NEGATIVE_INFINITY));
-        assertThat((Float) converter.convertValue("NaN", Float.class), equalTo(Float.NaN));
-        assertThat((Double) converter.convertValue("NaN", Double.class), equalTo(Double.NaN));
-        assertThat((Double) converter.convertValue("Infinity", Double.class), equalTo(Double.POSITIVE_INFINITY));
-        assertThat((Double) converter.convertValue("-Infinity", Double.class), equalTo(Double.NEGATIVE_INFINITY));
+        assertThat((Float) converter.convertValue(NAN, Float.class), equalTo(Float.NaN));
+        assertThat((Float) converter.convertValue(INFINITY, Float.class), equalTo(Float.POSITIVE_INFINITY));
+        assertThat((Float) converter.convertValue("-"+INFINITY, Float.class), equalTo(Float.NEGATIVE_INFINITY));
+        assertThat((Double) converter.convertValue(NAN, Double.class), equalTo(Double.NaN));
+        assertThat((Double) converter.convertValue(INFINITY, Double.class), equalTo(Double.POSITIVE_INFINITY));
+        assertThat((Double) converter.convertValue("-"+INFINITY, Double.class), equalTo(Double.NEGATIVE_INFINITY));
     }
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldConvertCommaSeparatedValuesToListOfNumbers() throws ParseException, IntrospectionException {
+    public void shouldConvertCommaSeparatedValuesToListOfNumbersWithDefaultFormat() throws ParseException, IntrospectionException {
         ParameterConverter converter = new NumberListConverter();
         Type listOfNumbers = SomeSteps.methodFor("aMethodWithListOfNumbers").getGenericParameterTypes()[0];
         Type setOfNumbers = SomeSteps.methodFor("aMethodWithSetOfNumbers").getGenericParameterTypes()[0];
@@ -95,16 +150,17 @@ public class ParameterConvertersBehaviour {
     public void shouldConvertCommaSeparatedValuesOfSpecificNumberTypes() throws ParseException, IntrospectionException {
         ParameterConverter converter = new NumberListConverter();
         Type doublesType = SomeSteps.methodFor("aMethodWithListOfDoubles").getGenericParameterTypes()[0];
-        List<Double> doubles = (List<Double>) converter.convertValue("3, 0.5, 0.0, 8.00, NaN, Infinity", doublesType);
+        
+        List<Double> doubles = (List<Double>) converter.convertValue("3, 0.5, 0.0, 8.00, "+NAN+","+INFINITY, doublesType);
         assertThat(doubles.get(0), equalTo(3.0d));
         assertThat(doubles.get(1), equalTo(0.5d));
         assertThat(doubles.get(2), equalTo(0.0d));
         assertThat(doubles.get(3), equalTo(8.00d));
         assertThat(doubles.get(4), equalTo(Double.NaN));
         assertThat(doubles.get(5), equalTo(Double.POSITIVE_INFINITY));
-
+        
         Type floatsType = SomeSteps.methodFor("aMethodWithListOfFloats").getGenericParameterTypes()[0];
-        List<Float> floats = (List<Float>) converter.convertValue("3, 0.5, 0.0, 8.00, NaN, -Infinity", floatsType);
+        List<Float> floats = (List<Float>) converter.convertValue("3, 0.5, 0.0, 8.00, "+NAN+", -"+INFINITY, floatsType);
         assertThat(floats.get(0), equalTo(3.0f));
         assertThat(floats.get(1), equalTo(0.5f));
         assertThat(floats.get(2), equalTo(0.0f));

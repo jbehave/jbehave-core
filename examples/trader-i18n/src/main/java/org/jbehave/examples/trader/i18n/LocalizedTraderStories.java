@@ -8,6 +8,8 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.net.URL;
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +28,9 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
+import org.jbehave.core.steps.ParameterConverters.NumberConverter;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 
 /**
@@ -58,11 +63,17 @@ public abstract class LocalizedTraderStories extends JUnitStories {
                     .withFailureTrace(false)
                     .withKeywords(keywords))
                 .useParameterConverters(
-                        new ParameterConverters()
-                                .addConverters(new ParameterConverters.ExamplesTableConverter(
-                                        keywords.examplesTableHeaderSeparator(),
-                                        keywords.examplesTableValueSeparator())));
+                        new ParameterConverters().addConverters(customConverters(keywords)));
         return configuration;
+    }
+    
+    private ParameterConverter[] customConverters(Keywords keywords) {
+        List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
+        converters.add(new NumberConverter(NumberFormat.getInstance(locale())));
+        converters.add(new ExamplesTableConverter(
+                    keywords.examplesTableHeaderSeparator(),
+                    keywords.examplesTableValueSeparator()));
+        return converters.toArray(new ParameterConverter[converters.size()]);
     }
 
     @Override

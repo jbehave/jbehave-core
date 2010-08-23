@@ -22,13 +22,14 @@ import org.jbehave.core.model.ExamplesTable;
  * Facade responsible for converting parameter values to Java objects.
  * </p>
  * <p>
- * A number of default converters are provided:
+ * Several converters are provided out-of-the-box:
  * <ul>
  * <li>{@link ParameterConverters#NumberConverter}</li>
  * <li>{@link ParameterConverters#NumberListConverter}</li>
  * <li>{@link ParameterConverters#StringListConverter}</li>
  * <li>{@link ParameterConverters#DateConverter}</li>
  * <li>{@link ParameterConverters#ExamplesTableConverter}</li>
+ * <li>{@link ParameterConverters#MethodReturningConverter}</li>
  * </ul>
  * </p>
  */
@@ -95,62 +96,96 @@ public class ParameterConverters {
     }
 
     /**
-     * Converts values to numbers. Supports
+     * <p>
+     * Converts values to numbers, supporting any subclass of {@link Number}
+     * (including generic Number type), and it unboxed counterpart, using a
+     * {@link NumberFormat} to parse to a {@link Number} and to convert it to a
+     * specific number type:
      * <ul>
-     * <li>Integer, int</li>
-     * <li>Long, long</li>
-     * <li>Double, double</li>
-     * <li>Float, float</li>
-     * <li>BigDecimal, BigInteger</li>
+     * <li>Byte, byte: {@link Number#byteValue()}</li>
+     * <li>Short, short: {@link Number#shortValue()}</li>
+     * <li>Integer, int: {@link Number#intValue()}</li>
+     * <li>Float, float: {@link Number#floatValue()}</li>
+     * <li>Long, long: {@link Number#longValue()}</li>
+     * <li>Double, double: {@link Number#doubleValue()}</li>
+     * <li>BigInteger: {@link BigInteger#valueOf(Long)}</li>
+     * <li>BigDecimal: {@link BigDecimal#valueOf(Double)}</li></li>
      * </ul>
+     * If no number format is provided, it defaults to
+     * {@link NumberFormat#getInstance()}.
+     * <p>
+     * The localized instance {@link NumberFormat#getInstance(Locale)} can be
+     * used to convert numbers in specific locales.
+     * </p>
      */
     public static class NumberConverter implements ParameterConverter {
-        private static List<Class<?>> acceptedClasses = asList(new Class<?>[] { Integer.class, int.class, Long.class,
-                long.class, Double.class, double.class, Float.class, float.class, BigDecimal.class, BigInteger.class });
+
+        private static List<Class<?>> primitiveTypes = asList(new Class<?>[] { byte.class, short.class, int.class,
+                float.class, long.class, double.class });
+
+        private final NumberFormat numberFormat;
+
+        public NumberConverter() {
+            this(NumberFormat.getInstance());
+        }
+
+        public NumberConverter(NumberFormat numberFormat) {
+            this.numberFormat = numberFormat;
+        }
 
         public boolean accept(Type type) {
             if (type instanceof Class<?>) {
-                return acceptedClasses.contains(type);
+                return Number.class.isAssignableFrom((Class<?>) type) || primitiveTypes.contains(type);
             }
             return false;
         }
 
         public Object convertValue(String value, Type type) {
-            if (type == Integer.class || type == int.class) {
-                return Integer.valueOf(value);
-            } else if (type == Long.class || type == long.class) {
-                return Long.valueOf(value);
-            } else if (type == Double.class || type == double.class) {
-                return Double.valueOf(value);
-            } else if (type == Float.class || type == float.class) {
-                return Float.valueOf(value);
-            } else if (type == BigDecimal.class) {
-                return new BigDecimal(value);
-            } else if (type == BigInteger.class) {
-                return new BigInteger(value);
+            try {
+                Number n = numberFormat.parse(value);
+                if (type == Byte.class || type == byte.class) {
+                    return n.byteValue();
+                } else if (type == Short.class || type == short.class) {
+                    return n.shortValue();
+                } else if (type == Integer.class || type == int.class) {
+                    return n.intValue();
+                } else if (type == Float.class || type == float.class) {
+                    return n.floatValue();
+                } else if (type == Long.class || type == long.class) {
+                    return n.longValue();
+                } else if (type == Double.class || type == double.class) {
+                    return n.doubleValue();
+                } else if (type == BigInteger.class) {
+                    return BigInteger.valueOf(n.longValue());
+                } else if (type == BigDecimal.class) {
+                    return BigDecimal.valueOf(n.doubleValue());
+                } else {
+                    return n;
+                }
+            } catch (ParseException e) {
+                throw new ParameterConvertionFailed(value, e);
             }
-            return value;
         }
 
     }
 
     /**
      * Converts value to list of numbers. Splits value to a list, using an
-     * injectable value separator (defaults to ",") and converts each element of
-     * list via the {@link NumberCoverter}.
+     * injectable value separator (defaulting to ",") and converts each element
+     * of list via the {@link NumberConverter}, using the {@link NumberFormat}
+     * provided (defaulting to {@link NumberFormat#getInstance()}).
      */
     public static class NumberListConverter implements ParameterConverter {
 
-        private NumberConverter numberConverter = new NumberConverter();
-        private NumberFormat numberFormat;
-        private String valueSeparator;
+        private final NumberConverter numberConverter;
+        private final String valueSeparator;
 
         public NumberListConverter() {
             this(NumberFormat.getInstance(), COMMA);
         }
 
         public NumberListConverter(NumberFormat numberFormat, String valueSeparator) {
-            this.numberFormat = numberFormat;
+            this.numberConverter = new NumberConverter(numberFormat);
             this.valueSeparator = valueSeparator;
         }
 
@@ -176,28 +211,9 @@ public class ParameterConverters {
         public Object convertValue(String value, Type type) {
             Class<? extends Number> argumentType = (Class<? extends Number>) argumentType(type);
             List<String> values = trim(asList(value.split(valueSeparator)));
-            if (argumentType.equals(Number.class)) {
-                return convertWithNumberFormat(values);
-            }
-            return convertWithNumberConverter(values, argumentType);
-        }
-
-        private List<Number> convertWithNumberConverter(List<String> values, Class<? extends Number> type) {
-            List<Number> numbers = new ArrayList<Number>();
-            for (String value : values) {
-                numbers.add((Number) numberConverter.convertValue(value, type));
-            }
-            return numbers;
-        }
-
-        private List<Number> convertWithNumberFormat(List<String> values) {
             List<Number> numbers = new ArrayList<Number>();
             for (String numberValue : values) {
-                try {
-                    numbers.add(numberFormat.parse(numberValue));
-                } catch (ParseException e) {
-                    throw new ParameterConvertionFailed(numberValue, e);
-                }
+                numbers.add((Number) numberConverter.convertValue(numberValue, argumentType));
             }
             return numbers;
         }
