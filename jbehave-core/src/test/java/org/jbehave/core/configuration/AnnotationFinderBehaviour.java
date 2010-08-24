@@ -2,6 +2,7 @@ package org.jbehave.core.configuration;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 
 import java.lang.annotation.ElementType;
@@ -9,7 +10,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -37,15 +38,32 @@ public class AnnotationFinderBehaviour {
     }
 
     @Test
-    public void shouldInheritValuesIfInheritFlagNotPresent(){
+    public void shouldInheritValues(){
         AnnotationFinder inheritingAnnotated = new AnnotationFinder(InheritingAnnotated.class);
-        assertThat(inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values"), equalTo(Arrays.asList("2", "3", "1")));        
+        List<String> annotatedValues = inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values");
+        assertThat(annotatedValues.size(), equalTo(3));
+        assertThat(annotatedValues, hasItem("1"));        
+        assertThat(annotatedValues, hasItem("2"));        
+        assertThat(annotatedValues, hasItem("3"));        
+    }
+
+    @Test
+    public void shouldInheritValuesWithoutDuplicates(){
+        AnnotationFinder inheritingAnnotated = new AnnotationFinder(InheritingAnnotatedWithDuplicates.class);
+        List<String> annotatedValues = inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values");
+        assertThat(annotatedValues.size(), equalTo(3));
+        assertThat(annotatedValues, hasItem("1"));        
+        assertThat(annotatedValues, hasItem("2"));        
+        assertThat(annotatedValues, hasItem("3"));      
     }
 
     @Test
     public void shouldNotInheritValuesIfInheritFlagIsFalse(){
-        AnnotationFinder inheritingAnnotated = new AnnotationFinder(InheritingAnnotated.class);
-        assertThat(inheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values"), equalTo(Arrays.asList("2", "3", "1")));        
+        AnnotationFinder notInheritingAnnotated = new AnnotationFinder(NotInheritingAnnotated.class);
+        List<String> annotatedValues = notInheritingAnnotated.getAnnotatedValues(MyAnnotationWithMembers.class, String.class, "values");
+        assertThat(annotatedValues.size(), equalTo(2));
+        assertThat(annotatedValues, hasItem("2"));        
+        assertThat(annotatedValues, hasItem("3"));      
     }
 
     @MyAnnotationWithoutMembers()
@@ -56,6 +74,11 @@ public class AnnotationFinderBehaviour {
     
     @MyAnnotationWithMembers(flag = false, values = {"2", "3"})
     static class InheritingAnnotated extends Annotated{
+
+    }
+
+    @MyAnnotationWithMembers(flag = false, values = {"1", "2", "3"})
+    static class InheritingAnnotatedWithDuplicates extends Annotated{
 
     }
 

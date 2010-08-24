@@ -146,6 +146,13 @@ public class GuiceAnnotationBuilderBehaviour {
     }
 
     @Test
+    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndInheritingGuiceFromParent() {
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(InheritingAnnotatedUsingSteps.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
+    }
+
+    @Test
     public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndGuiceAndConverters() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
@@ -178,6 +185,17 @@ public class GuiceAnnotationBuilderBehaviour {
     @Configure()
     @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
     private static class AnnotatedUsingGuice {
+
+    }
+
+    @Configure()
+    @UsingGuice(modules = { ConfigurationModule.class })
+    private static class ParentAnnotatedUsingGuice {
+
+    }
+    
+    @UsingSteps(instances = { FooSteps.class })
+    private static class InheritingAnnotatedUsingSteps extends ParentAnnotatedUsingGuice {
 
     }
 

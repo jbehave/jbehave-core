@@ -73,9 +73,15 @@ public class AnnotationBuilderBehaviour {
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {
-        assertThat(candidateSteps.size(), equalTo(stepsClasses.length));
-        for (int i = 0; i < stepsClasses.length; i++) {
-            assertThat(((Steps) candidateSteps.get(i)).instance(), instanceOf(stepsClasses[i]));
+        for (Class<?> stepsClass : stepsClasses) {
+            boolean found = false;        
+            for ( CandidateSteps steps : candidateSteps ) {
+                Object instance = ((Steps) steps).instance();
+                if ( instance.getClass() ==  stepsClass ){
+                    found = true;
+                }
+            }
+            assertThat(found, is(true));            
         }
     }
 

@@ -113,6 +113,13 @@ public class SpringAnnotationBuilderBehaviour {
     }
 
     @Test
+    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndInheritingPicoFromParent() {
+        AnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(InheritingAnnotatedUsingSteps.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
+    }
+    
+    @Test
     public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         SpringAnnotationBuilder builderNotAnnotated = new SpringAnnotationBuilder(NotAnnotated.class);
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
@@ -150,6 +157,16 @@ public class SpringAnnotationBuilderBehaviour {
 
     }
 
+    @Configure()
+    @UsingSpring(resources = { "org/jbehave/core/configuration/spring/configuration.xml" })
+    private static class ParentAnnotatedUsingSpring {
+
+    }
+    
+    @UsingSteps(instances = { FooSteps.class })
+    private static class InheritingAnnotatedUsingSteps extends ParentAnnotatedUsingSpring {
+
+    }
     @Configure()
     @UsingSpring()
     private static class AnnotatedWithoutResources {

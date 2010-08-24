@@ -3,7 +3,9 @@ package org.jbehave.core.configuration;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -44,13 +46,13 @@ public class AnnotationFinder {
     @SuppressWarnings("unchecked")
     public <T, A extends Annotation> List<T> getAnnotatedValues(Class<A> annotationClass, Class<T> type,
             String memberName) {
-        List<T> list = new ArrayList<T>();
+        Set<T> set = new HashSet<T>();
         if (!isAnnotationPresent(annotationClass)) {
-            return list;
+            return new ArrayList(set);
         }
         Object[] values = getAnnotatedValue(annotationClass, Object[].class, memberName);
         for (Object value : values) {
-            list.add((T) value);
+            set.add((T) value);
         }
         boolean inheritValues = true;
         String inheritMemberName = createInheritMemberName(memberName);
@@ -60,10 +62,10 @@ public class AnnotationFinder {
         if (inheritValues) {
             Class<?> superClass = annotatedClass.getSuperclass();
             if (superClass != null && superClass != Object.class) {
-                list.addAll(new AnnotationFinder(superClass).getAnnotatedValues(annotationClass, type, memberName));
+                set.addAll(new AnnotationFinder(superClass).getAnnotatedValues(annotationClass, type, memberName));
             }
         }
-        return list;
+        return new ArrayList(set);
     }
 
     /**

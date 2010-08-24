@@ -25,6 +25,7 @@ import java.util.Properties;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.annotations.pico.UsingPico;
+import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
@@ -120,6 +121,13 @@ public class PicoAnnotationBuilderBehaviour {
     }
 
     @Test
+    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndInheritingPicoFromParent() {
+        AnnotationBuilder builderAnnotated = new PicoAnnotationBuilder(InheritingAnnotatedUsingSteps.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), FooSteps.class);
+    }
+
+    @Test
     public void shouldBuildEmptyStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         PicoAnnotationBuilder builderNotAnnotated = new PicoAnnotationBuilder(NotAnnotated.class);
         assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps());
@@ -149,6 +157,17 @@ public class PicoAnnotationBuilderBehaviour {
 
     }
 
+    @Configure()
+    @UsingPico(modules = { ConfigurationModule.class })
+    private static class ParentAnnotatedUsingPico {
+
+    }
+    
+    @UsingSteps(instances = { FooSteps.class })
+    private static class InheritingAnnotatedUsingSteps extends ParentAnnotatedUsingPico {
+
+    }
+    
     @Configure()
     @UsingSteps(instances = { FooSteps.class })
     @UsingPico(modules = { ConfigurationModule.class })
