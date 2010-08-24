@@ -5,14 +5,14 @@ Je veux contrôler les prix des actions
 
 Scénario:
 
-Etant donné que on a une action avec symbole STK1 et un seuil de 15.0
-Quand l'action est échangé au prix de 5.0
+Etant donné que on a une action avec symbole STK1 et un seuil de 15,0
+Quand l'action est échangé au prix de 5,0
 Alors le position de alerte est OFF
-Quand l'action est échangé au prix de 11.0
+Quand l'action est échangé au prix de 11,0
 Alors le position de alerte est OFF
-Quand l'action est échangé au prix de 16.0
+Quand l'action est échangé au prix de 16,0
 Alors le position de alerte est ON
-Quand l'action est échangé au prixxxxxxxxxx de 20.0
+Quand l'action est échangé au prixxxxxxxxxx de 20,0
 Alors le position de alerte est ON
 
 Scénario:
