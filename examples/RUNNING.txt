@@ -17,7 +17,7 @@ Alternatively, to run the examples in standalone mode, i.e. using the latest sna
   <repositories>
     <repository>
       <id>codehaus-snapshots</id>
-      <url>https://nexus.codehaus.org/content/repositories/codehaus-snapshots/</url>
+      <url>https://nexus.codehaus.org/content/groups/snapshots-group</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
@@ -29,7 +29,7 @@ Alternatively, to run the examples in standalone mode, i.e. using the latest sna
   <pluginRepositories>
     <pluginRepository>
       <id>codehaus-snapshots</id>
-      <url>https://nexus.codehaus.org/content/repositories/codehaus-snapshots/</url>
+      <url>https://nexus.codehaus.org/content/groups/snapshots-group</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
@@ -39,6 +39,18 @@ Alternatively, to run the examples in standalone mode, i.e. using the latest sna
     </pluginRepository>
   </pluginRepositories>
 </profile>
+
+(You may also need to add a proxy if behind a firewall
+<proxy>
+    <id>https-proxy</id>
+    <active>true</active>
+    <protocol>https</protocol>
+    <username>[username]</username>
+    <password>[password]</password>
+    <host>[host]</host>
+    <port>[port]</port>
+</proxy>
+)
 
 and build with additional profile from examples:
 
