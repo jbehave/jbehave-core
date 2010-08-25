@@ -51,21 +51,12 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
                 }
             }
             if ( modules.size() > 0 ){
-                container = picoContainerFor(modules);                
+                container = createPicoContainer(modules);                
             }
         } else {
             annotationMonitor().annotationNotFound(UsingPico.class, annotatedClass());
         }
         return super.buildConfiguration();
-    }
-
-    @SuppressWarnings("unchecked")
-    private PicoContainer picoContainerFor(List<PicoModule> modules) {
-        MutablePicoContainer container = instanceOf(MutablePicoContainer.class, annotationFinder().getAnnotatedValue(UsingPico.class, Class.class, "container"));
-        for (PicoModule module : modules) {
-            module.configure(container);
-        }
-        return container;
     }
 
     @Override
@@ -102,5 +93,16 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
         }
         return super.instanceOf(type, ofClass);
     }
+
+    @SuppressWarnings("unchecked")
+    protected PicoContainer createPicoContainer(List<PicoModule> modules) {
+        Class containerClass = annotationFinder().getAnnotatedValue(UsingPico.class, Class.class, "container");
+        MutablePicoContainer container = instanceOf(MutablePicoContainer.class, containerClass);
+        for (PicoModule module : modules) {
+            module.configure(container);
+        }
+        return container;
+    }
+
 
 }
