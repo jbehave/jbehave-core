@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.STATS;
@@ -199,6 +200,15 @@ public class GuiceAnnotationBuilderBehaviour {
         AnnotationBuilder builderPrivateModule = new GuiceAnnotationBuilder(AnnotatedWithPrivateModule.class, annotationMonitor);
         assertThatStepsInstancesAre(builderPrivateModule.buildCandidateSteps());
         verify(annotationMonitor).elementCreationFailed(isA(Class.class), isA(Exception.class));
+    }
+
+    @Test
+    public void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
+        GuiceAnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingStepsAndGuice.class);
+        builderAnnotated.buildConfiguration();
+        Injector injector = builderAnnotated.injector();
+        builderAnnotated.buildConfiguration();
+        assertThat(builderAnnotated.injector(), sameInstance(injector));
     }
 
     @Configure()

@@ -102,8 +102,15 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
     }
 
     protected ApplicationContext createApplicationContext(ClassLoader classLoader, List<String> resources) {
+        if ( context != null ){
+            return context;
+        }
         return new SpringApplicationContextFactory(classLoader, resources.toArray(new String[resources.size()]))
                 .createApplicationContext();
+    }
+
+    protected ApplicationContext applicationContext() {
+        return context;
     }
 
 }

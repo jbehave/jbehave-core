@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.STATS;
@@ -48,6 +49,7 @@ import org.jbehave.core.steps.pico.PicoStepsFactoryBehaviour.FooStepsWithDepende
 import org.junit.Assert;
 import org.junit.Test;
 import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.PicoContainer;
 
 public class PicoAnnotationBuilderBehaviour {
 
@@ -142,6 +144,15 @@ public class PicoAnnotationBuilderBehaviour {
                 annotationMonitor);
         assertThatStepsInstancesAre(builderPrivateModule.buildCandidateSteps());
         verify(annotationMonitor).elementCreationFailed(isA(Class.class), isA(Exception.class));
+    }
+
+    @Test
+    public void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
+        PicoAnnotationBuilder builderAnnotated = new PicoAnnotationBuilder(AnnotatedUsingStepsAndPico.class);
+        builderAnnotated.buildConfiguration();
+        PicoContainer picoContainer = builderAnnotated.picoContainer();
+        builderAnnotated.buildConfiguration();
+        assertThat(builderAnnotated.picoContainer(), sameInstance(picoContainer));
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {

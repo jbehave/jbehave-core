@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.STATS;
@@ -40,6 +41,7 @@ import org.jbehave.core.steps.spring.SpringStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.spring.SpringStepsFactoryBehaviour.FooStepsWithDependency;
 import org.junit.Assert;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 public class SpringAnnotationBuilderBehaviour {
 
@@ -141,6 +143,15 @@ public class SpringAnnotationBuilderBehaviour {
         AnnotationBuilder builderUnloadableResource = new SpringAnnotationBuilder(AnnotatedWithUnloadableResource.class, annotationMonitor);
         assertThatStepsInstancesAre(builderUnloadableResource.buildCandidateSteps());
         verify(annotationMonitor).elementCreationFailed(isA(Class.class), isA(Exception.class));
+    }
+
+    @Test
+    public void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
+        SpringAnnotationBuilder builderAnnotated = new SpringAnnotationBuilder(AnnotatedUsingStepsAndSpring.class);
+        builderAnnotated.buildConfiguration();
+        ApplicationContext applicationContext = builderAnnotated.applicationContext();
+        builderAnnotated.buildConfiguration();
+        assertThat(builderAnnotated.applicationContext(), sameInstance(applicationContext));
     }
 
     @Configure()

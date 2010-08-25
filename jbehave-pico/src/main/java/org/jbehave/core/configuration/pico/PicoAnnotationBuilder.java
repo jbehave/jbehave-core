@@ -96,6 +96,9 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
 
     @SuppressWarnings("unchecked")
     protected PicoContainer createPicoContainer(List<PicoModule> modules) {
+        if ( container != null ){
+            return container;
+        }
         Class containerClass = annotationFinder().getAnnotatedValue(UsingPico.class, Class.class, "container");
         MutablePicoContainer container = instanceOf(MutablePicoContainer.class, containerClass);
         for (PicoModule module : modules) {
@@ -104,5 +107,8 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
         return container;
     }
 
+    protected PicoContainer picoContainer() {
+        return container;
+    }
 
 }

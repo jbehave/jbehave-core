@@ -175,6 +175,9 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
     }
 
     protected Injector createInjector(List<Module> modules) {
+        if ( injector != null ){
+            return injector;
+        }
         Injector root = Guice.createInjector(new AbstractModule() {        
             @Override
             protected void configure() {
@@ -182,5 +185,9 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
             }
         });
         return root.createChildInjector(Modules.combine(modules));
+    }
+
+    protected Injector injector() {
+        return injector;
     }
 }
