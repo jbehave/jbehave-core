@@ -44,7 +44,7 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
                     .getAnnotatedValues(UsingSpring.class, String.class, "resources");
             if (resources.size() > 0) {
                 try {
-                    context = applicationContextFor(annotatedClass().getClassLoader(), resources);
+                    context = createApplicationContext(annotatedClass().getClassLoader(), resources);
                 } catch ( Exception e ){
                     annotationMonitor().elementCreationFailed(ApplicationContext.class, e);
                 }
@@ -86,24 +86,22 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
 
     @Override
     @SuppressWarnings("unchecked")
-    protected <T, V extends T> T instanceOf(final Class<T> type, final Class<V> ofClass) {
+    protected <T, V extends T> T instanceOf(Class<T> type, Class<V> ofClass) {
         if (context != null) {
+            Map<String, Object> beansOfType;
             if (!type.equals(Object.class)) {
-                Map<String, Object> beansOfType = context.getBeansOfType(type);
-                if (beansOfType.size() > 0) {
-                    return (T) beansOfType.values().iterator().next();
-                }
+                beansOfType = context.getBeansOfType(type);
             } else {
-                Map<String, Object> beansOfType = context.getBeansOfType(ofClass);
-                if (beansOfType.size() > 0) {
-                    return (T) beansOfType.values().iterator().next();
-                }
+                beansOfType = context.getBeansOfType(ofClass);
+            }
+            if (beansOfType.size() > 0) {
+                return (T) beansOfType.values().iterator().next();
             }
         }
         return super.instanceOf(type, ofClass);
     }
 
-    private ApplicationContext applicationContextFor(ClassLoader classLoader, List<String> resources) {
+    protected ApplicationContext createApplicationContext(ClassLoader classLoader, List<String> resources) {
         return new SpringApplicationContextFactory(classLoader, resources.toArray(new String[resources.size()]))
                 .createApplicationContext();
     }

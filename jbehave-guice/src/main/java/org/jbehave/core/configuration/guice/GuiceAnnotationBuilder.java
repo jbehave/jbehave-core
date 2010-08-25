@@ -26,161 +26,161 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.util.Modules;
 
 /**
- * Extends {@link AnnotationBuilder} to provide Guice-based 
- * dependency injection if {@link UsingGuice} annotation is present.
+ * Extends {@link AnnotationBuilder} to provide Guice-based dependency injection
+ * if {@link UsingGuice} annotation is present.
  * 
  * @author Cristiano Gavião
  * @author Mauro Talevi
  */
 public class GuiceAnnotationBuilder extends AnnotationBuilder {
 
-	public Injector injector;
+    public Injector injector;
 
-	public GuiceAnnotationBuilder(Class<?> annotatedClass) {
-		this(annotatedClass, new PrintStreamAnnotationMonitor());
-	}
+    public GuiceAnnotationBuilder(Class<?> annotatedClass) {
+        this(annotatedClass, new PrintStreamAnnotationMonitor());
+    }
 
-	public GuiceAnnotationBuilder(Class<?> annotatedClass, AnnotationMonitor annotationMonitor) {
-		super(annotatedClass, annotationMonitor);
-	}
+    public GuiceAnnotationBuilder(Class<?> annotatedClass, AnnotationMonitor annotationMonitor) {
+        super(annotatedClass, annotationMonitor);
+    }
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     public Configuration buildConfiguration() throws AnnotationRequired {
 
-		AnnotationFinder finder = annotationFinder();
-		if (finder.isAnnotationPresent(UsingGuice.class)) {
-			List<Class> moduleClasses = finder.getAnnotatedValues(UsingGuice.class, Class.class, "modules");
-			List<Module> modules = new ArrayList<Module>();
-			for (Class<Module> moduleClass : moduleClasses) {
-				try {
-					modules.add(moduleClass.newInstance());
-				} catch (Exception e) {
-					annotationMonitor().elementCreationFailed(moduleClass, e);
-				}
-			}
-			// creating injector with any modules found
-			if (modules.size() > 0) {
-				injector = rootInjector().createChildInjector(Modules.combine(modules));
-			}
-		} else {
-			annotationMonitor().annotationNotFound(UsingGuice.class, annotatedClass());
-		}
-		return super.buildConfiguration();
-	}
+        AnnotationFinder finder = annotationFinder();
+        if (finder.isAnnotationPresent(UsingGuice.class)) {
+            List<Class> moduleClasses = finder.getAnnotatedValues(UsingGuice.class, Class.class, "modules");
+            List<Module> modules = new ArrayList<Module>();
+            for (Class<Module> moduleClass : moduleClasses) {
+                try {
+                    modules.add(moduleClass.newInstance());
+                } catch (Exception e) {
+                    annotationMonitor().elementCreationFailed(moduleClass, e);
+                }
+            }
+            // creating injector with any modules found
+            if (modules.size() > 0) {
+                injector = createInjector(modules);
+            }
+        } else {
+            annotationMonitor().annotationNotFound(UsingGuice.class, annotatedClass());
+        }
+        return super.buildConfiguration();
+    }
 
     @Override
     public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
         List<CandidateSteps> steps = super.buildCandidateSteps(configuration);
-        if ( injector != null ){
-            InjectableStepsFactory factory = new GuiceStepsFactory(configuration, injector);            
+        if (injector != null) {
+            InjectableStepsFactory factory = new GuiceStepsFactory(configuration, injector);
             steps.addAll(0, factory.createCandidateSteps());
         }
         return steps;
     }
-    
-	@Override
-	protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
-	    ParameterConverters converters = super.parameterConverters(annotationFinder);
-		if (injector != null) {
-			return converters.addConverters(findConverters(injector));
-		}
-		return converters;
-	}
 
-	/**
-	 * Finds any {@link ParameterConverter} defined in the given injector and, if none found,
-	 * recurses to its parent.
-	 * 
-	 * @param injector
-	 * @return A List of ParameterConverter instances
-	 */
-	private List<ParameterConverter> findConverters(Injector injector) {
-		List<Binding<ParameterConverter>> bindingsByType = injector.findBindingsByType(new TypeLiteral<ParameterConverter>() {
-		});
-		if ((bindingsByType == null || bindingsByType.isEmpty() && injector.getParent() != null)) {
-			return findConverters(injector.getParent());
-		}
-        List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
-        for (Binding<ParameterConverter> binding : bindingsByType) {
-            if (binding != null) {
-                converters.add(binding.getProvider().get());
-            }
+    @Override
+    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
+        ParameterConverters converters = super.parameterConverters(annotationFinder);
+        if (injector != null) {
+            return converters.addConverters(findConverters(injector));
         }
         return converters;
-	}
+    }
 
-	@Override
-	protected <T, V extends T> T instanceOf(final Class<T> type, final Class<V> ofClass) {
-		if (injector != null) {
-			if (!type.equals(Object.class)) {
-				try {
-					boolean bindingFound = findBinding(injector, type);
-					if (bindingFound) {
-	                    // when binding found, just get the instance associated
-						return injector.getInstance(type);
-					} else {
-						// when binding not found, need to explicitly bind type + ofClass
-						Module module = new AbstractModule() {
+    /**
+     * Finds any {@link ParameterConverter} defined in the given injector and,
+     * if none found, recurses to its parent.
+     * 
+     * @param injector
+     *            the Injector
+     * @return A List of ParameterConverter instances
+     */
+    private List<ParameterConverter> findConverters(Injector injector) {
+        List<Binding<ParameterConverter>> bindingsByType = injector
+                .findBindingsByType(new TypeLiteral<ParameterConverter>() {
+                });
+        if (bindingsByType.isEmpty() && injector.getParent() != null) {
+            return findConverters(injector.getParent());
+        }
+        List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
+        for (Binding<ParameterConverter> binding : bindingsByType) {
+            converters.add(binding.getProvider().get());
+        }
+        return converters;
+    }
 
-							@Override
-							protected void configure() {
-								if (!type.equals(ofClass)) {
-									bind(type).to(ofClass);
-								} else {
-									// when type and oFClass are  
-								    // binding the ofClass
-									bind(ofClass);
-								}
-							}
-						};
+    @Override
+    protected <T, V extends T> T instanceOf(final Class<T> type, final Class<V> ofClass) {
+        if (injector != null) {
+            if (!type.equals(Object.class)) {
+                try {
+                    boolean bindingFound = findBinding(injector, type);
+                    if (bindingFound) {
+                        // when binding found, just get the instance associated
+                        return injector.getInstance(type);
+                    } else {
+                        // when binding not found, need to explicitly bind type
+                        // + ofClass
+                        Module module = new AbstractModule() {
 
-						injector = injector.createChildInjector(module);
-						return injector.getInstance(type);
-					}
-				} catch (Exception e) {
-				    // fall back on getting instance ofClass
-					return injector.getInstance(ofClass);
-				}
-			} else {
-				return injector.getBinding(ofClass).getProvider().get();
-			}
-		}
-		return super.instanceOf(type, ofClass);
-	}
+                            @Override
+                            protected void configure() {
+                                if (!type.equals(ofClass)) {
+                                    bind(type).to(ofClass);
+                                } else {
+                                    // when type and oFClass are
+                                    // binding the ofClass
+                                    bind(ofClass);
+                                }
+                            }
+                        };
 
-	/**
-	 * Finds binding for class in given injector and, if not found,
-	 * recurses to its parent.
-	 * 
-	 * @param injector the current Inject
-	 * @param type the Class
-	 * @return A boolean flag, <code>true</code> if binding found
-	 */
-	private boolean findBinding(Injector injector, Class<?> type) {
-		boolean found = false;
-		for (Key<?> key : injector.getBindings().keySet()) {
-			if (key.getTypeLiteral().getRawType().equals(type)) {
-				found = true;
-				break;
-			}
-		}
-		if (!found && injector.getParent() != null) {
-			return findBinding(injector.getParent(), type);
-		}
+                        injector = injector.createChildInjector(module);
+                        return injector.getInstance(type);
+                    }
+                } catch (Exception e) {
+                    // fall back on getting instance ofClass
+                    return injector.getInstance(ofClass);
+                }
+            } else {
+                return injector.getBinding(ofClass).getProvider().get();
+            }
+        }
+        return super.instanceOf(type, ofClass);
+    }
 
-		return found;
-	}
+    /**
+     * Finds binding for a type in the given injector and, if not found,
+     * recurses to its parent
+     * 
+     * @param injector
+     *            the current Injector
+     * @param type
+     *            the Class representing the type
+     * @return A boolean flag, <code>true</code> if binding found
+     */
+    private boolean findBinding(Injector injector, Class<?> type) {
+        boolean found = false;
+        for (Key<?> key : injector.getBindings().keySet()) {
+            if (key.getTypeLiteral().getRawType().equals(type)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found && injector.getParent() != null) {
+            return findBinding(injector.getParent(), type);
+        }
 
-	private Injector rootInjector() {
-		if (injector == null) {
-			injector = Guice.createInjector(new AbstractModule() {
+        return found;
+    }
 
-				@Override
-				protected void configure() {
-
-				}
-			});
-		}
-		return injector;
-	}
+    protected Injector createInjector(List<Module> modules) {
+        Injector root = Guice.createInjector(new AbstractModule() {        
+            @Override
+            protected void configure() {
+        
+            }
+        });
+        return root.createChildInjector(Modules.combine(modules));
+    }
 }
