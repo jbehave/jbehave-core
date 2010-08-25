@@ -51,6 +51,9 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Module;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 
@@ -81,6 +84,22 @@ public class GuiceAnnotationBuilderBehaviour {
     @Test
     public void shouldBuildConfigurationFromAnnotationsUsingConfigureAndGuiceConverters() {
         AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class);
+        Configuration configuration = builderAnnotated.buildConfiguration();
+        assertThatCustomObjectIsConverted(configuration.parameterConverters());
+        assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
+        assertThatExamplesTableIsConverted(configuration.parameterConverters());
+    }
+
+    @Test
+    public void shouldBuildConfigurationFromAnnotationsUsingInjectorWithoutParent() {
+        AnnotationBuilder builderAnnotated = new GuiceAnnotationBuilder(AnnotatedUsingConfigureAndGuiceConverters.class){
+
+            @Override
+            protected Injector createInjector(List<Module> modules) {
+                return Guice.createInjector(modules);
+            }
+            
+        };
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThatCustomObjectIsConverted(configuration.parameterConverters());
         assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
