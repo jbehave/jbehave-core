@@ -27,6 +27,7 @@
 
   <modules>
     <module>gameoflife</module>
+    <module>spring-security</module>
     <module>trader</module>
     <module>trader-i18n</module>
     <module>trader-guice</module>

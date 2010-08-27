@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.xsd">
+
+  <context:annotation-config />
+  
+  <context:component-scan base-package="com.learnthinkcode.example.jbehave"/>
+
+  <security:authentication-manager alias="authenticationManager"/>
+
+  <security:authentication-provider user-service-ref="userDetailsService">
+    <security:password-encoder ref="shaPasswordEncoder">
+      <security:salt-source system-wide="jb3h4v3" />
+    </security:password-encoder>
+  </security:authentication-provider>
+
+  <bean id="shaPasswordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder">
+    <constructor-arg value="256" />
+  </bean>
+
+  <bean id="authenticationEventListener" class="com.learnthinkcode.example.jbehave.service.AuthenticationEventListener" />
+  
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
+    <property name="url" value="jdbc:hsqldb:mem:jbehave" />
+    <!-- <property name="url" value="jdbc:hsqldb:file:${basedir}/target/database/jbehave;shutdown=true" /> -->
+    <property name="username" value="sa" />
+    <property name="password" value="" />
+  </bean>
+  
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+    <property name="dataSource" ref="dataSource" />
+    <property name="hibernateProperties">
+      <props>
+        <prop key="hibernate.hbm2ddl.auto">update</prop>
+        <prop key="hibernate.show_sql">true</prop>
+        <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+      </props>
+    </property>
+    <property name="packagesToScan" value="com.learnthinkcode.example.jbehave.domain" />
+  </bean>
+
+</beans>
