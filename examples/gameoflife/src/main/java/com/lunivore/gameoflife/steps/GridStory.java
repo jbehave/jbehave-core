@@ -1,42 +1,34 @@
 package com.lunivore.gameoflife.steps;
 
+import java.util.List;
+
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
-import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.ConsoleOutput;
-import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.StoryReporterBuilder.Format;
+import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InstanceStepsFactory;
 
 
 public class GridStory extends JUnitStory {
 
-	public GridStory() {
-		useConfiguration(new MostUsefulConfiguration() {
-			@Override
-			public StoryPathResolver storyPathResolver() {
-				// Default story path extension is ".story", but here were are using no extension
-				return new UnderscoredCamelCaseResolver("");
-			}
+    // Here we specify the configuration, starting from default MostUsefulConfiguration, and changing only what is needed
+    @Override
+    public Configuration configuration() {
+        return new MostUsefulConfiguration()
+            // where to find the stories
+            .useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))  
+            // CONSOLE and TXT reporting
+            .useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats().withFormats(Format.CONSOLE, Format.TXT)); 
+    }
 
-			@Override
-			public StoryLoader storyLoader(){
-				return new LoadFromClasspath(this.getClass().getClassLoader());
-			}
-			
-			@Override
-			public StoryParser storyParser() {
-				return new RegexStoryParser(keywords());
-			}
-
-			@Override
-			public StoryReporter defaultStoryReporter() {
-				return new ConsoleOutput();
-			}
-		});
-		addSteps(new GridSteps());
-	}
+    // Here we specify the steps classes
+    @Override
+    public List<CandidateSteps> candidateSteps() {        
+        // varargs, can have more that one steps classes
+        return new InstanceStepsFactory(configuration(), new GridSteps()).createCandidateSteps();
+    }
+    
 }

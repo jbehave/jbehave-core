@@ -11,108 +11,125 @@
 <h3>Write a textual story</h3>
 
 <p>Create a textual story file with a name that expresses the
-behaviour to verify, e.g. <b>i_can_toggle_a_cell.story</b> and define steps in
-it:</p>
+behaviour to verify, e.g. <b>i_can_toggle_a_cell.story</b> and define
+steps in it:</p>
 <pre class="brush: bdd">
-      Given a 5 by 5 game
-      When I toggle the cell at (2, 3)
-      Then the grid should look like
-      .....
-      .....
-      .....
-      ..X..
-      .....
-      When I toggle the cell at (2, 4)
-      Then the grid should look like
-      .....
-      .....
-      .....
-      ..X..
-      ..X..
-      When I toggle the cell at (2, 3)
-      Then the grid should look like
-      .....
-      .....
-      .....
-      .....
-      ..X..
+Given a 5 by 5 game
+When I toggle the cell at (2, 3)
+Then the grid should look like
+.....
+.....
+.....
+..X..
+.....
+When I toggle the cell at (2, 4)
+Then the grid should look like
+.....
+.....
+.....
+..X..
+..X..
+When I toggle the cell at (2, 3)
+Then the grid should look like
+.....
+.....
+.....
+.....
+..X..
 </pre>
 <p>Steps must start with one of the keywords highlighted (see <a
-    href="concepts.html">Concepts</a> for more details) and are not
-limited to a single line.  Also, unless otherwise indicated, a story
-has at least one implicit scenario, each of which is a collection of
-steps.</p>
+	href="concepts.html">Concepts</a> for more details) and are not limited
+to a single line. Also, unless otherwise indicated, a story has at least
+one implicit scenario, each of which is a collection of steps.</p>
 
-<h3>Map scenario steps to Java methods</h3>
+<h3>Map steps to Java methods</h3>
 
-<p>Define your <a
-    href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a>
-class, e.g. call it <b>GridSteps</b>, which will contain the Java
+<p>Define your <b>GridSteps</b> class, a simple POJO, which will contain the Java
 methods that are mapped to the textual steps. The methods need to
 annotated with one of the JBehave <a
-    href="javadoc/core/org/jbehave/core/annotations/package-summary.html">annotations</a>
+	href="javadoc/core/org/jbehave/core/annotations/package-summary.html">annotations</a>
 and the annotated value should contain a regex pattern that matches the
 textual step:</p>
 
-<pre class="brush: java">
-      public class GridSteps { // this is a POJO
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+public class GridSteps { // Look, Ma', I'm a POJO!
+    
+    private Game game;
+    private StringRenderer renderer;
 
-        private Game game;
-        private StringRenderer renderer;
+    @Given("a $width by $height game")
+    @Aliases(values={"a new game: $width by $height"})
+    public void theGameIsRunning(int width, int height) {
+        game = new Game(width, height);
+        renderer = new StringRenderer();
+        game.setObserver(renderer);
+    }
+    
+    @When("I toggle the cell at ($column, $row)")
+    public void iToggleTheCellAt(int column, int row) {
+        game.toggleCellAt(column, row);
+    }
+    
+    @Then("the grid should look like $grid")
+    @Aliases(values={"the grid should be $grid"})
+    public void theGridShouldLookLike(String grid) {
+        assertThat(renderer.asString(), equalTo(grid));
+    }
 
-        @Given("a $width by $height game")
-        public void theGameIsRunning(int width, int height) {
-            game = new Game(width, height);
-            renderer = new StringRenderer();
-            game.setObserver(renderer);
-        }
+}
+]]>
+</script>
 
-        @When("I toggle the cell at ($column, $row)")
-        public void iToggleTheCellAt(int column, int row) {
-            game.toggleCellAt(column, row);
-        }
-
-        @Then("the grid should look like $grid")
-        public void theGridShouldLookLike(String grid) {
-            Ensure.ensureThat(renderer.asString(), CoreMatchers.equalTo(grid));
-        }
-
-      }
-</pre>
-
-<h3>Map story to Java class</h3>
+<h3>Map textual story to Java Embeddable class</h3>
 
 <p>Define your <a
-    href="javadoc/core/org/jbehave/core/RunnableStory.html">RunnableStory</a>
-class with a name that can be mapped to the textual story filename,
-e.g. <b>ICanToggleACell.java</b>:</p>
+	href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>
+class (in our case <a
+	href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a>)
+with a name that can be mapped to the textual story filename, e.g. <b>ICanToggleACell.java</b>:</p>
 
-<pre class="brush: java">
-      public class ICanToggleACell extends JUnitStory {
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+public class ICanToggleACell extends JUnitStory {
 
-        public ICanToggleACell() {
-            addSteps(new InstanceStepsFactory(new GridSteps()).createCandidateSteps()); // varargs, can have lots of steps
-        }
-      }
-</pre>
-<p>The story is now configured to use the <b>GridSteps</b> that
-hold the step mappings.</p>
+    // Here we specify the configuration, starting from default MostUsefulConfiguration, and changing only what is needed
+    @Override
+    public Configuration configuration() {
+        return new MostUsefulConfiguration()
+            // where to find the stories
+            .useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))  
+            // CONSOLE and TXT reporting
+            .useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats().withFormats(Format.CONSOLE, Format.TXT)); 
+    }
 
-<h3>Run story in IDE</h3>
+    // Here we specify the steps classes
+    @Override
+    public List<CandidateSteps> candidateSteps() {        
+        // varargs, can have more that one steps classes
+        return new InstanceStepsFactory(configuration(), new GridSteps()).createCandidateSteps();
+    }
+}
+]]>
+</script>
+<p>The story is now configured to use the <b>GridSteps</b> that hold
+the step mappings.</p>
+
+<h3>Run story</h3>
 
 <p>Open your favourite IDE, the <b>ICanToggleACell.java</b> class
-will allow itself to run as a JUnit test. Be sure to check that you have
-all the required <a href="dependencies.html">dependencies</a> in your
-classpath.</p>
+will allow itself to run as a <a href="http://junit.org">JUnit</a> test.
+Be sure to check that you have all the required <a
+	href="dependencies.html">dependencies</a> in your classpath.</p>
 
 <h2>Next?</h2>
 
 <span class="followup">JBehave development has been
-example-driven and it is very instructive to go through one or more working
-examples in the source repository, which illustrate features. Be
+example-driven and it is very instructive to go through one or more
+working examples in the source repository, which illustrate features. Be
 sure to read about <a href="running-examples.html">running examples</a>.
 The examples also show command-line ways of <a
-    href="running-stories.html">running stories</a>.</span>
+	href="running-stories.html">running stories</a>.</span>
 
 </body>
 </html>

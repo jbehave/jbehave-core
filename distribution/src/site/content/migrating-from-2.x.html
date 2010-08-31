@@ -11,13 +11,13 @@
 <p><b>JBehave 3 is an evolution of JBehave 2</b>, based on the
 experience using it in commercial projects. With the benefit of this
 experience, we feel that the overall design stood well the wear and
-tear, but there were areas which called for improvements that would have
-broken backward compatibility.</p>
+tear, but there were areas which called for improvements that required
+to break backward compatibility.</p>
 
 <h2>Migration path from JBehave 2</h2>
 
 <p>From the textual stories point of view, these are almost
-completely backward compatible. The only exceptions being:
+completely backward compatible. The only exceptions being:</p>
 
 <ul>
 	<li><b>GivenScenarios</b> keyword has changed to <b>GivenStories</b>.
@@ -32,7 +32,6 @@ completely backward compatible. The only exceptions being:
 	at start of line is already universally adopted and but may encounter
 	the occasional failure due spurious spaces before the keywords.</li>
 </ul>
-</p>
 
 <p>From the Java point of view, significant changes have occurred,
 but only in the configuration of the running of the stories. The Steps
@@ -46,7 +45,7 @@ used without change in JBehave 3.</p>
 	place of <b>Scenario</b> where this refers to the textual or Java
 	representation reflecting the fact that scenarios in JBehave 2 were
 	already stories in all but name. Terminology concerning report
-	rendering has been changed to stories view generation.</li>
+	rendering has been changed to view generation.</li>
 	<li>The Ant tasks and Maven goals have also been renamed to
 	reflect the terminology change.</li>
 	<li>To facilitate the migration due to the terminology changes in
@@ -61,21 +60,22 @@ used without change in JBehave 3.</p>
 	source code of jbehave-core available to your IDE. Alternatively, check
 	the <a href="faq.html">FAQ</a> for other workarounds.</li>
 	<li>The concerns of running stories and view generation has been
-	centralised in an embeddable component - <b>Embedder</b> - which has
-	thin wrappers for running in multiple environments, e.g. JUnit,
-	Ant/Maven, Spring etc. Using the Embedder, the user can choose to run
-	multiple textual story using a single Java entry point. The embedder
-	behaviours can be controlled via <b>EmbedderControls</b>.</li>
+	centralised in an embeddable component - <b>Embedder</b> - around which
+	there are thin wrappers for running in multiple environments, e.g.
+	JUnit, Ant/Maven, Spring etc. Using the Embedder, the user can choose
+	to run multiple textual story using a single Java entry point. The
+	embedder behaviours can be controlled via <b>EmbedderControls</b>.</li>
 	<li>JUnitStory is now a JUnit-specific extension of <b>ConfigurableEmbedder</b>
 	and allows the overriding of the default MostUsefulConfiguration only
 	via the <b>useConfiguration</b> method, and the specification of <b>Steps</b>
-	only via the <b>addSteps</b> method.</li>
+	only via the <b>addSteps</b> method. Equivalently, the user can
+	override the methods <b>configuration()</b> and <b>candidateSteps()</b>.</li>
 	<li>Configuration has been consolidated into a single builder and
 	moved to <b>org.jbehave.core.configuration</b> package. Configuration
 	and CandidateSteps are now fully specifiable via <a
 		href="configuration.html">annotations</a>, with or without <a
 		href="dependency-injection.html">dependency injection</a>.</li>
-	<li>The textual story lookup paradigm has shifted from a <b>RunnableStory</b>
+	<li>The textual story lookup paradigm has shifted from an <b>Embeddable</b>
 	class to a story path, which can be resolved from the class via the <b>StoryPathResolver</b>,
 	and its implementations <b>UnderscoredCamelCaseResolver</b> and <b>CasePreservingResolver</b>.
 	As such, the <b>StoryLoader</b> implementations only define the model
@@ -88,8 +88,9 @@ used without change in JBehave 3.</p>
 <span class="followup">JBehave development has been
 example-driven and the examples illustrate all the features, migrated
 from 2.x or new in 3.x. Be sure check out the <a
-	href="running-examples.html">running examples</a>, as it's the best and
-most instructive way to get up to speed with the changes outlined above.</span>
+	href="running-examples.html">running examples</a>, as it's the quickest
+and most instructive way to get up to speed with the changes outlined
+above.</span>
 
 </body>
 </html>

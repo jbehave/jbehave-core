@@ -7,12 +7,11 @@ import org.jbehave.core.annotations.Aliases;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-import org.jbehave.core.steps.Steps;
 
 import com.lunivore.gameoflife.domain.Game;
 import com.lunivore.gameoflife.view.string.StringRenderer;
 
-public class GridSteps extends Steps {
+public class GridSteps {
     
     private Game game;
     private StringRenderer renderer;
