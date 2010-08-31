@@ -1,4 +1,6 @@
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.learnthinkcode.example</groupId>
   <artifactId>jbehave-spring-security-example</artifactId>
@@ -32,7 +34,10 @@
         </configuration>
       </plugin>
       <!-- unit and integration tests run via JUnit/Surefire -->
-      <!-- this is because we are using Spring-Test as the JUnit Runner rather than JBehave annotations -->
+      <!--
+        this is because we are using Spring-Test as the JUnit Runner
+        rather than JBehave annotations
+      -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -147,8 +152,12 @@
       <scope>compile</scope>
       <exclusions>
         <exclusion>
-          <artifactId>ehcache</artifactId>
           <groupId>net.sf.ehcache</groupId>
+          <artifactId>ehcache</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -158,6 +167,11 @@
       <version>1.4</version>
       <type>jar</type>
       <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>geronimo-spec</groupId>
+      <artifactId>geronimo-spec-jta</artifactId>
+      <version>1.0-M1</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
