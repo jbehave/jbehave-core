@@ -19,7 +19,7 @@ import org.junit.Test;
 
 public class StepCreatorBehaviour {
     
-    @Test(expected = BeforeOrAfterFailed.class )
+    @Test
     public void shouldHandleTargetInvocationFailureInBeforeOrAfterStep() throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
@@ -27,12 +27,15 @@ public class StepCreatorBehaviour {
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
-        stepCreator.createBeforeOrAfterStep(method).perform();
+        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method).perform();
 
-        // Then ... fail as expected
+        // Then
+        assertThat(stepResult, instanceOf(Failed.class));
+        assertThat(stepResult.getFailure(), instanceOf(BeforeOrAfterFailed.class));
+
     }
 
-    @Test(expected = BeforeOrAfterFailed.class )
+    @Test
     public void shouldHandleFailureInBeforeOrAfterStep() throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
@@ -40,9 +43,12 @@ public class StepCreatorBehaviour {
 
         // When
         Method method = null;
-        stepCreator.createBeforeOrAfterStep(method).perform();
+        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method).perform();
 
-        // Then ... fail as expected
+        // Then
+        assertThat(stepResult, instanceOf(Failed.class));
+        assertThat(stepResult.getFailure(), instanceOf(BeforeOrAfterFailed.class));
+
     }
 
     @Test

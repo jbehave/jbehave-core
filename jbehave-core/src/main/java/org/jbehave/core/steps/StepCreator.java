@@ -347,9 +347,9 @@ public class StepCreator {
             try {
                 method.invoke(stepsInstance);
             } catch (InvocationTargetException e) {
-                throw new BeforeOrAfterFailed(method, e.getCause());
+                return failed(method, new BeforeOrAfterFailed(e.getCause()));
             } catch (Throwable t) {
-                throw new BeforeOrAfterFailed(t);
+                return failed(method, new BeforeOrAfterFailed(t));
             }
             return skipped();
         }

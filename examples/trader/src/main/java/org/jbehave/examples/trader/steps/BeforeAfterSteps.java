@@ -9,7 +9,7 @@ import org.jbehave.core.annotations.BeforeStory;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 
 /**
- * Steps executed before and after each story and core
+ * Steps executed before and after stories/story/scenario
  */
 public class BeforeAfterSteps {
 

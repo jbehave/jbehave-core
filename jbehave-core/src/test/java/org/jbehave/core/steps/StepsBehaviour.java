@@ -2,6 +2,7 @@ package org.jbehave.core.steps;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.StepCandidate.StartingWordNotFound;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.Steps.DuplicateCandidateFound;
@@ -203,12 +205,14 @@ public class StepsBehaviour {
         assertThat(steps.thens, equalTo(1));    	    	
     }
 
-    @Test(expected=BeforeOrAfterFailed.class)
+    @Test
     public void shouldReportFailuresInBeforeAndAfterMethods() {
     	BeforeAndAfterSteps steps = new BeforeAndAfterSteps();
     	List<BeforeOrAfterStep> beforeScenario = steps.listBeforeOrAfterScenario();
     	beforeScenario.get(0).createStep().perform();
-    	beforeScenario.get(1).createStep().perform();
+    	StepResult stepResult = beforeScenario.get(1).createStep().perform();
+    	assertThat(stepResult, instanceOf(Failed.class));
+    	assertThat(stepResult.getFailure(), instanceOf(BeforeOrAfterFailed.class));
     }
 
     @Test(expected=DuplicateCandidateFound.class)

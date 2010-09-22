@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import java.lang.reflect.Method;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.failures.PendingStepFound;
@@ -21,56 +23,63 @@ public abstract class AbstractStepResult implements StepResult {
 
     public static class Failed extends AbstractStepResult {
 
-		public Failed(String step, Throwable throwable) {
-			super(step, throwable);
-		}
+        public Failed(String step, Throwable throwable) {
+            super(step, throwable);
+        }
 
-		public void describeTo(StoryReporter reporter) {
-			if ( throwable instanceof OutcomesFailed ){
-				reporter.failedOutcomes(parametrisedStep(), ((OutcomesFailed)throwable).outcomesTable());
-			} else {
-				reporter.failed(parametrisedStep(), throwable);				
-			}
-		}
-	}
+        public Failed(Method method, Throwable throwable) {
+            super(asString(method), throwable);
+        }
 
-	public static class NotPerformed extends AbstractStepResult {
+        private static String asString(Method method) {
+            return method != null ? method.toGenericString(): "";
+        }
 
-		public NotPerformed(String step) {
-			super(step);
-		}
+        public void describeTo(StoryReporter reporter) {
+            if (throwable instanceof OutcomesFailed) {
+                reporter.failedOutcomes(parametrisedStep(), ((OutcomesFailed) throwable).outcomesTable());
+            } else {
+                reporter.failed(parametrisedStep(), throwable);
+            }
+        }
+    }
 
-		public void describeTo(StoryReporter reporter) {
-			reporter.notPerformed(parametrisedStep());
-		}
-	}
-	
-	
-	public static class Pending extends AbstractStepResult {
-		public Pending(String step) {
-			this(step, new PendingStepFound(step));
-		}
+    public static class NotPerformed extends AbstractStepResult {
 
-		public Pending(String step, PendingStepFound e) {
-			super(step, e);
-		}
+        public NotPerformed(String step) {
+            super(step);
+        }
 
-		public void describeTo(StoryReporter reporter) {
-			reporter.pending(parametrisedStep());
-		}
-	}
+        public void describeTo(StoryReporter reporter) {
+            reporter.notPerformed(parametrisedStep());
+        }
+    }
 
-	public static class Successful extends AbstractStepResult {
+    public static class Pending extends AbstractStepResult {
+        public Pending(String step) {
+            this(step, new PendingStepFound(step));
+        }
+
+        public Pending(String step, PendingStepFound e) {
+            super(step, e);
+        }
+
+        public void describeTo(StoryReporter reporter) {
+            reporter.pending(parametrisedStep());
+        }
+    }
+
+    public static class Successful extends AbstractStepResult {
 
         public Successful(String string) {
-			super(string);
-		}
+            super(string);
+        }
 
-		public void describeTo(StoryReporter reporter) {
-			reporter.successful(parametrisedStep());
-		}
+        public void describeTo(StoryReporter reporter) {
+            reporter.successful(parametrisedStep());
+        }
 
-	}
+    }
 
     public static class Ignorable extends AbstractStepResult {
         public Ignorable(String step) {
@@ -81,10 +90,10 @@ public abstract class AbstractStepResult implements StepResult {
             reporter.ignorable(step);
         }
     }
-    
+
     public static class Skipped extends AbstractStepResult {
 
-    	public Skipped() {
+        public Skipped() {
             super("");
         }
 
@@ -92,18 +101,18 @@ public abstract class AbstractStepResult implements StepResult {
         }
     }
 
-	protected final String step;
+    protected final String step;
     private String parametrisedStep;
-	protected final Throwable throwable;
+    protected final Throwable throwable;
 
-	public AbstractStepResult(String step) {
-		this(step, null);
-	}
+    public AbstractStepResult(String step) {
+        this(step, null);
+    }
 
-	public AbstractStepResult(String step, Throwable throwable) {
-		this.step = step;
-		this.throwable = throwable;
-	}
+    public AbstractStepResult(String step, Throwable throwable) {
+        this.step = step;
+        this.throwable = throwable;
+    }
 
     public String parametrisedStep() {
         return parametrisedStep != null ? parametrisedStep : step;
@@ -114,41 +123,45 @@ public abstract class AbstractStepResult implements StepResult {
         return this;
     }
 
-	public Throwable getFailure() {
-		return throwable;
-	}
+    public Throwable getFailure() {
+        return throwable;
+    }
 
-	@Override
-	public String toString() {
-	    return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(parametrisedStep()).toString();
-	}
-	
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(parametrisedStep()).toString();
+    }
+
     public static StepResult successful(String step) {
-		return new Successful(step);
-	}
+        return new Successful(step);
+    }
 
     public static StepResult ignorable(String step) {
         return new Ignorable(step);
     }
 
-	public static StepResult pending(String step) {
-		return new Pending(step);
-	}
+    public static StepResult pending(String step) {
+        return new Pending(step);
+    }
 
-	public static StepResult pending(String step, PendingStepFound e) {
+    public static StepResult pending(String step, PendingStepFound e) {
         return new Pending(step, e);
-	}
+    }
 
-	public static StepResult notPerformed(String step) {
-		return new NotPerformed(step);
-	}
+    public static StepResult notPerformed(String step) {
+        return new NotPerformed(step);
+    }
 
-	public static StepResult failed(String step, Throwable e) {
-		return new Failed(step, e);
-	}
-	
-	public static StepResult skipped(){
-		return new Skipped();
-	}
+    public static StepResult failed(String step, Throwable e) {
+        return new Failed(step, e);
+    }
+
+    public static StepResult failed(Method method, Throwable e) {
+        return new Failed(method, e);
+    }
+
+    public static StepResult skipped() {
+        return new Skipped();
+    }
 
 }
