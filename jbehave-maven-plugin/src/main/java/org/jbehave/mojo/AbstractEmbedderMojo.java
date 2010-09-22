@@ -19,7 +19,7 @@ import org.jbehave.core.junit.AnnotatedEmbedderRunner;
  * Abstract mojo that holds all the configuration parameters to specify and load
  * stories.
  * 
- * @author Mauro Talevi
+ * @requiresDependencyResolution
  */
 public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
