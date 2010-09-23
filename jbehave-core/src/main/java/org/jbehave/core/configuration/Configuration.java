@@ -325,8 +325,9 @@ public abstract class Configuration {
         return this;
     }
 
-    public void useViewGenerator(ViewGenerator viewGenerator) {
+    public Configuration useViewGenerator(ViewGenerator viewGenerator) {
         this.viewGenerator = viewGenerator;
+        return this;
     }
 
 

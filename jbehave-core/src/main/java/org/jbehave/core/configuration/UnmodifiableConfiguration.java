@@ -151,7 +151,7 @@ public class UnmodifiableConfiguration extends Configuration {
     }
 
     @Override
-    public void useViewGenerator(ViewGenerator viewGenerator) {
+    public Configuration useViewGenerator(ViewGenerator viewGenerator) {
         throw notAllowed();
     }
 
