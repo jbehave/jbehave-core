@@ -12,6 +12,8 @@ import java.util.Properties;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
 import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.junit.Test;
 
@@ -45,5 +47,10 @@ public class SprintStoryReporterBuilderBehaviour {
         boolean reportFailureTrace = true;
         builder.setReportFailureTrace(reportFailureTrace);
         assertThat(builder.isReportFailureTrace(), equalTo(reportFailureTrace));
+        
+        FilePathResolver pathResolver = new FileConfiguration().getPathResolver();
+        builder.setPathResolver(pathResolver);
+        assertThat(builder.getPathResolver(), equalTo(pathResolver));
     }
+
 }

@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
 
 /**
  * Extends {@link StoryReporterBuilder} to provide getter/setter methods for all
@@ -49,12 +50,12 @@ public class SpringStoryReporterBuilder extends StoryReporterBuilder {
         withKeywords(keywords);
     }
     
-    public Properties getViewResources() {
-        return viewResources();
+    public FilePathResolver getPathResolver() {
+        return pathResolver();
     }
 
-    public void setViewResources(Properties viewResources) {
-        withViewResources(viewResources);
+    public void setPathResolver(FilePathResolver pathResolver) {
+        withPathResolver(pathResolver);
     }
 
     public boolean isReportFailureTrace() {
@@ -63,6 +64,14 @@ public class SpringStoryReporterBuilder extends StoryReporterBuilder {
 
     public void setReportFailureTrace(boolean reportFailureTrace) {
         withFailureTrace(reportFailureTrace);
+    }
+    
+    public Properties getViewResources() {
+        return viewResources();
+    }
+
+    public void setViewResources(Properties viewResources) {
+        withViewResources(viewResources);
     }
     
 }
