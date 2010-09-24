@@ -85,4 +85,8 @@ public class SpringStepsFactoryBehaviour {
         }
 
     }
+    
+    public static abstract class AbstractSteps {
+        
+    }
 }

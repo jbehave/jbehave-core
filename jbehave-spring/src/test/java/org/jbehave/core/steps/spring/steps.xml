@@ -7,4 +7,7 @@
   <bean id="fooSteps" class="org.jbehave.core.steps.spring.SpringStepsFactoryBehaviour$FooSteps">
   </bean>
 
+  <bean id="abstractSteps" class="org.jbehave.core.steps.spring.SpringStepsFactoryBehaviour$AbstractSteps" abstract="true">
+  </bean>
+
 </beans>

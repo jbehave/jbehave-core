@@ -1,5 +1,6 @@
 package org.jbehave.core.steps.spring;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +30,16 @@ public class SpringStepsFactory extends AbstractStepsFactory {
     protected List<Object> stepsInstances() {
         List<Object> steps = new ArrayList<Object>();
         for (String name : context.getBeanDefinitionNames()) {
-            Object bean = context.getBean(name);
-            if (hasAnnotatedMethods(bean.getClass())) {
-                steps.add(bean);
+            Class<?> type = context.getType(name);            
+            if ( isNotAbstract(type) && hasAnnotatedMethods(type)) {
+                steps.add(context.getBean(name));
             }
         }
         return steps;
+    }
+
+    protected boolean isNotAbstract(Class<?> type) {
+        return !Modifier.isAbstract(type.getModifiers());
     }
 
 }

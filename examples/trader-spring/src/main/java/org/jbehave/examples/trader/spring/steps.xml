@@ -23,4 +23,7 @@
 
   <bean class="org.jbehave.examples.trader.steps.SearchSteps" />
 
+  <!-- Abstract steps will be ignored -->
+  <bean class="org.jbehave.examples.trader.steps.AbstractSteps" abstract="true" />
+
 </beans>
