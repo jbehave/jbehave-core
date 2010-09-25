@@ -1,11 +1,11 @@
 package org.jbehave.core.reporters;
 
-import java.util.List;
-import java.util.Map;
-
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Allows the runner to report the state of running stories
@@ -19,7 +19,7 @@ public interface StoryReporter {
 
     void afterStory(boolean givenStory);
 
-    void beforeScenario(String title);
+    void beforeScenario(String scenarioTitle);
     
     void afterScenario();
     
