@@ -1,5 +1,5 @@
 <#ftl strip_whitespace=true>
-<#macro renderStat stats name class=""><#assign value = stats.get(name)!"N/A"><#if (value != "0")><span class="${class}"> ${value}</span><#else> ${value}</#if></#macro>
+<#macro renderStat stats name class=""><#assign value = stats.get(name)!0><#if (value != 0)><span class="${class}">${value}</span><#else>${value}</#if></#macro>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -38,37 +38,31 @@
 <#assign filesByFormat = report.filesByFormat>
 <tr>
 <td class="story">${report.name}</td>
-<#assign stats = report.asProperties("stats")>
-<#if (stats.size() > 0)>
-    <td>
-    <@renderStat stats "scenarios" "successful"/> 
-    </td>
-    <td>
-    <@renderStat stats "scenariosFailed" "failed"/>
-    </td>
-    <td>
-    <@renderStat stats "steps" />
-    </td>
-    <td>
-    <@renderStat stats "stepsSuccessful" "successful"/>
-    </td>
-    <td>
-    <@renderStat stats "stepsPending" "pending"/>
-    </td>
-    <td>
-    <@renderStat stats "stepsNotPerformed" "notPerformed" />
-    </td>
-    <td>
-    <@renderStat stats "stepsFailed" "failed"/>
-    </td>
-    <td>
-    <@renderStat stats "stepsIgnorable" "ignorable"/>
-    </td>
-<#else>
-    <td>
-    N/A
-    </td>
-</#if>
+<#assign stats = report.getStats()>
+<td>
+<@renderStat stats "scenarios" "successful"/> 
+</td>
+<td>
+<@renderStat stats "scenariosFailed" "failed"/>
+</td>
+<td>
+<@renderStat stats "steps" />
+</td>
+<td>
+<@renderStat stats "stepsSuccessful" "successful"/>
+</td>
+<td>
+<@renderStat stats "stepsPending" "pending"/>
+</td>
+<td>
+<@renderStat stats "stepsNotPerformed" "notPerformed" />
+</td>
+<td>
+<@renderStat stats "stepsFailed" "failed"/>
+</td>
+<td>
+<@renderStat stats "stepsIgnorable" "ignorable"/>
+</td>
 <td><#list filesByFormat.keySet() as format><#assign file = filesByFormat.get(format)><a href="${file.name}">${format}</a><#if format_has_next>|</#if></#list></td>
 </tr>
 </#list>

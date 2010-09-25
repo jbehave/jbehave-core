@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -271,5 +272,23 @@ public class FreemarkerViewGenerator implements ViewGenerator {
             return p;
         }
 
+        public Map<String,Integer> getStats(){
+            Properties p = asProperties("stats");
+            Map<String,Integer> stats = new HashMap<String, Integer>();
+            for ( Enumeration<?> e = p.propertyNames(); e.hasMoreElements(); ){
+                String key = (String) e.nextElement();
+                stats.put(key, valueOf(key, p));
+            }
+            return stats;
+        }
+
+        private Integer valueOf(String key, Properties p) {
+            try {
+                return Integer.valueOf(p.getProperty(key));
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
+        
     }
 }
