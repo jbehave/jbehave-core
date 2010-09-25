@@ -1,5 +1,5 @@
 <#ftl strip_whitespace=true>
-<#macro renderStat stats name description class=""><#assign value = stats.get(name)!"NA"><#if (value != "0")><span class="${class}"> ${value}</span><#else> ${value}</#if></#macro>
+<#macro renderStat stats name class=""><#assign value = stats.get(name)!"N/A"><#if (value != "0")><span class="${class}"> ${value}</span><#else> ${value}</#if></#macro>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -23,7 +23,7 @@
 
 <table>
 <tr>
-    <th>Name</th>
+    <th>Story</th>
     <th>Scenarios</th>
     <th>Failed Scenarios</th>
     <th>Steps</th>
@@ -37,32 +37,32 @@
 <#list reports as report>
 <#assign filesByFormat = report.filesByFormat>
 <tr>
-<td>${report.name}</td>
+<td class="story">${report.name}</td>
 <#assign stats = report.asProperties("stats")>
 <#if (stats.size() > 0)>
     <td>
-    <@renderStat stats "scenarios" "Scenarios:" "successful"/> 
+    <@renderStat stats "scenarios" "successful"/> 
     </td>
     <td>
-    <@renderStat stats "scenariosFailed" "Failure:" />
+    <@renderStat stats "scenariosFailed" "failed"/>
     </td>
     <td>
-    <@renderStat stats "steps" "Steps:" />
+    <@renderStat stats "steps" />
     </td>
     <td>
-    <@renderStat stats "stepsSuccessful" "Successful:" "successful"/>
+    <@renderStat stats "stepsSuccessful" "successful"/>
     </td>
     <td>
-    <@renderStat stats "stepsPending" "Pending:" "pending"/>
+    <@renderStat stats "stepsPending" "pending"/>
     </td>
     <td>
-    <@renderStat stats "stepsNotPerformed" "Not Performed:" "notPerformed" />
+    <@renderStat stats "stepsNotPerformed" "notPerformed" />
     </td>
     <td>
-    <@renderStat stats "stepsFailed" "Failed:" "failed"/>
+    <@renderStat stats "stepsFailed" "failed"/>
     </td>
     <td>
-    <@renderStat stats "stepsIgnorable" "Ignorable:" "ignorable"/>
+    <@renderStat stats "stepsIgnorable" "ignorable"/>
     </td>
 <#else>
     <td>
@@ -79,7 +79,7 @@
 <div class="clear"></div>
 <div id="footer">
 <div class="left">Generated at ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
-<div class="right">JBehave 3.x &#169; 2003-2010</div>
+<div class="right">JBehave &#169; 2003-2010</div>
 <div class="clear"></div>
 </div>
 
