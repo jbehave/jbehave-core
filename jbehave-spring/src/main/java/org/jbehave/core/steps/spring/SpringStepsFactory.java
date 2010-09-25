@@ -7,6 +7,7 @@ import java.util.List;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.AbstractStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 /**
@@ -31,15 +32,27 @@ public class SpringStepsFactory extends AbstractStepsFactory {
         List<Object> steps = new ArrayList<Object>();
         for (String name : context.getBeanDefinitionNames()) {
             Class<?> type = context.getType(name);            
-            if ( isNotAbstract(type) && hasAnnotatedMethods(type)) {
-                steps.add(context.getBean(name));
+            if ( isAllowed(type) && hasAnnotatedMethods(type)) {
+                try {
+                    steps.add(context.getBean(name));
+                } catch ( BeansException e ){
+                    // failed to get bean instance for whatever reason
+                    // we ignore it and move on
+                }
             }
         }
         return steps;
     }
 
-    protected boolean isNotAbstract(Class<?> type) {
-        return !Modifier.isAbstract(type.getModifiers());
+    /**
+     * Checks if type returned from context is allowed,
+     * i.e. not null and not abstract.
+     * 
+     * @param type the Class of the bean
+     * @return A boolean, <code>true</code> if allowed
+     */
+    protected boolean isAllowed(Class<?> type) {
+        return type != null && !Modifier.isAbstract(type.getModifiers());
     }
 
 }
