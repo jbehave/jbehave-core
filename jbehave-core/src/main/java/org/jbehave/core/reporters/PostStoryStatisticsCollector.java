@@ -26,7 +26,8 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<String, Integer>();
     private final List<String> events = asList("steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
-            "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosFailed", "givenStories", "examples");
+            "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosSuccessful", "scenariosFailed", "givenStories",
+            "examples");
 
     private Throwable cause;
     private OutcomesTable outcomesFailed;
@@ -88,6 +89,8 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         count("scenarios");
         if (cause != null || outcomesFailed != null) {
             count("scenariosFailed");
+        } else {
+            count("scenariosSuccessful");
         }
     }
 

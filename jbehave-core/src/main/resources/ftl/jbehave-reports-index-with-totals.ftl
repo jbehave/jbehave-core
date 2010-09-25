@@ -25,7 +25,8 @@
 <tr>
     <th>Story</th>
     <th>Scenarios</th>
-    <th>Failed Scenarios</th>
+    <th>Successful</th>
+    <th>Failed</th>
     <th>Steps</th>
     <th>Successful</th>
     <th>Pending</th>
@@ -41,7 +42,10 @@
 <td class="story">${story}</td>
 <#assign stats = report.getStats()>
 <td>
-<@renderStat stats "scenarios" "successful"/> 
+<@renderStat stats "scenarios"/> 
+</td>
+<td>
+<@renderStat stats "scenariosSuccessful" "successful"/> 
 </td>
 <td>
 <@renderStat stats "scenariosFailed" "failed"/>
@@ -75,7 +79,10 @@
 <td>Totals</td>
 <#assign stats = reportsAsMap.get("totals").getStats()>
 <td>
-<@renderStat stats "scenarios" "successful"/> 
+<@renderStat stats "scenarios"/> 
+</td>
+<td>
+<@renderStat stats "scenariosSuccessful" "successful"/> 
 </td>
 <td>
 <@renderStat stats "scenariosFailed" "failed"/>
@@ -113,10 +120,5 @@
 </div>
 
 </body>
-
-<!--  SyntaxHighlighter resources:  should be included at end of body -->
-<script type="text/javascript">
-	SyntaxHighlighter.all();
-</script>
 
 </html>
