@@ -9,7 +9,10 @@
   <artifactId>jbehave-trader-i18n-example</artifactId>
   <name>JBehave Trader I18n Example</name>
 
-  <!-- Properties used to specify story running configured in jbehave-examples POM -->
+  <!--
+    Properties used to specify story running configured in
+    jbehave-examples POM
+  -->
   <properties>
     <include.embeddables>**/i18n/*Stories.java</include.embeddables>
   </properties>
@@ -21,5 +24,40 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins> 
+      <!-- Unpack resources to access non-default reports index view (legacy view without totals) -->       
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-ftl</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <includes>ftl/*.ftl</includes>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.jbehave</groupId>
+                  <artifactId>jbehave-core</artifactId>
+                  <version>${jbehave.version}</version>
+                  <classifier>resources</classifier>
+                  <type>zip</type>
+                  <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
 
 </project>

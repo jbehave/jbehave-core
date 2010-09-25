@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Properties;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
@@ -47,8 +48,10 @@ public abstract class LocalizedTraderStories extends JUnitStories {
     @Override
     public Configuration configuration() {
         ClassLoader classLoader = this.getClass().getClassLoader();
-        URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
+        URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());        
         Keywords keywords = new LocalizedKeywords(locale());
+        Properties properties = new Properties();
+        properties.setProperty("index", "ftl/jbehave-reports-index.ftl");
         Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
                 .useStoryParser(new RegexStoryParser(keywords))
@@ -61,6 +64,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
                     .withDefaultFormats()
                     .withFormats(CONSOLE, TXT, HTML, XML)
                     .withFailureTrace(false)
+                    .withViewResources(properties)
                     .withKeywords(keywords))
                 .useParameterConverters(
                         new ParameterConverters().addConverters(customConverters(keywords)));
