@@ -10,6 +10,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -21,6 +23,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.builder.CompareToBuilder;
 
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
@@ -39,7 +42,7 @@ import freemarker.template.TemplateException;
  * The view generator provides the following resources:
  * 
  * <pre>
- * resources.setProperty(&quot;index&quot;, &quot;ftl/jbehave-reports-index.ftl&quot;);
+ * resources.setProperty(&quot;index&quot;, &quot;ftl/jbehave-reports-index-with-totals.ftl&quot;);
  * resources.setProperty(&quot;decorated&quot;, &quot;ftl/jbehave-report-decorated.ftl&quot;);
  * resources.setProperty(&quot;nonDecorated&quot;, &quot;ftl/jbehave-report-non-decorated.ftl&quot;);
  * resources.setProperty(&quot;decorateNonHtml&quot;, &quot;true&quot;);
@@ -55,7 +58,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     private final Configuration configuration;
     private Properties viewProperties;
-    private List<Report> reports = new ArrayList<Report>();
+    private Map<String, Report> reports = new HashMap<String, Report>();
 
     public FreemarkerViewGenerator() {
         this.configuration = configure();
@@ -63,7 +66,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     public static Properties defaultViewProperties() {
         Properties properties = new Properties();
-        properties.setProperty("index", "ftl/jbehave-reports-index.ftl");
+        properties.setProperty("index", "ftl/jbehave-reports-index-with-totals.ftl");
         properties.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
         properties.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
         properties.setProperty("decorateNonHtml", "true");
@@ -84,20 +87,20 @@ public class FreemarkerViewGenerator implements ViewGenerator {
     }
 
     public int countStories() {
-        return reports.size();
+        return reports.size() - 1; // don't count the totals reports
     }
 
     public int countScenarios() {
-        return count("scenarios", reports);
+        return count("scenarios", reports.values());
     }
 
     public int countFailedScenarios() {
-        return count("scenariosFailed", reports);
+        return count("scenariosFailed", reports.values());
     }
 
-    int count(String event, List<Report> reports) {
+    int count(String event, Collection<Report> collection) {
         int count = 0;
-        for (Report report : reports) {
+        for (Report report : collection) {
             Properties stats = report.asProperties("stats");
             if (stats.containsKey(event)) {
                 count = count + Integer.parseInt((String) stats.get(event));
@@ -112,7 +115,11 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         List<String> mergedFormats = mergeWithDefaults(formats);
         reports = toReports(indexedReportFiles(outputDirectory, outputName, mergedFormats));
         Map<String, Object> dataModel = newDataModel();
-        dataModel.put("reports", reports);
+        List<Report> reportsAsList = new ArrayList<Report>(reports.values());
+        Collections.sort(reportsAsList);
+        dataModel.put("reports", reportsAsList);
+        addTotalsReport();
+        dataModel.put("reportsAsMap", reports);
         dataModel.put("date", new Date());
         write(outputDirectory, outputName, index, dataModel);
     }
@@ -156,13 +163,13 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return reports;
     }
 
-    List<Report> toReports(Map<String, List<File>> reportFiles) {
+    Map<String, Report> toReports(Map<String, List<File>> reportFiles) {
         try {
             String decoratedTemplate = templateResource("decorated");
             String nonDecoratedTemplate = templateResource("nonDecorated");
             String viewDirectory = templateResource("viewDirectory");
             boolean decorateNonHtml = Boolean.valueOf(templateResource("decorateNonHtml"));
-            List<Report> reports = new ArrayList<Report>();
+            Map<String, Report> reports = new HashMap<String, Report>();
             for (String name : reportFiles.keySet()) {
                 Map<String, File> filesByFormat = new HashMap<String, File>();
                 for (File file : reportFiles.get(name)) {
@@ -185,12 +192,33 @@ public class FreemarkerViewGenerator implements ViewGenerator {
                     File written = write(outputDirectory, outputName, template, dataModel);
                     filesByFormat.put(format, written);
                 }
-                reports.add(new Report(name, filesByFormat));
+                reports.put(name, new Report(name, filesByFormat));
             }
             return reports;
         } catch (Exception e) {
             throw new ReportCreationFailed(reportFiles, e);
         }
+    }
+
+    private void addTotalsReport(){
+        Report totals = totals(reports.values());
+        reports.put(totals.getName(), totals);
+    }
+
+    private Report totals(Collection<Report> values) {
+        Map<String, Integer> totals = new HashMap<String, Integer>();
+        for (Report report : values) {
+            Map<String, Integer> stats = report.getStats();
+            for (String key : stats.keySet()) {
+                Integer total = totals.get(key);
+                if ( total == null ){
+                    total = 0;
+                }
+                total = total + stats.get(key);
+                totals.put(key, total);
+            }
+        }
+        return new Report("totals", new HashMap<String, File>(), totals);
     }
 
     private File write(File outputDirectory, String outputName, String resource, Map<String, Object> dataModel) {
@@ -243,14 +271,20 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     }
 
-    public static class Report {
+    public static class Report implements Comparable<Report>{
 
         private final String name;
         private final Map<String, File> filesByFormat;
+        private Map<String, Integer> stats;
 
-        public Report(String name, Map<String, File> filesByFormat) {
+        public Report(String name,  Map<String, File> filesByFormat) {
+            this(name, filesByFormat, null);
+        }
+
+        public Report(String name, Map<String, File> filesByFormat, Map<String, Integer> stats) {
             this.name = name;
             this.filesByFormat = filesByFormat;
+            this.stats = stats;
         }
 
         public String getName() {
@@ -273,11 +307,13 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         }
 
         public Map<String,Integer> getStats(){
-            Properties p = asProperties("stats");
-            Map<String,Integer> stats = new HashMap<String, Integer>();
-            for ( Enumeration<?> e = p.propertyNames(); e.hasMoreElements(); ){
-                String key = (String) e.nextElement();
-                stats.put(key, valueOf(key, p));
+            if ( stats ==  null ){
+                Properties p = asProperties("stats");
+                stats = new HashMap<String, Integer>();
+                for ( Enumeration<?> e = p.propertyNames(); e.hasMoreElements(); ){
+                    String key = (String) e.nextElement();
+                    stats.put(key, valueOf(key, p));
+                }                
             }
             return stats;
         }
@@ -288,6 +324,10 @@ public class FreemarkerViewGenerator implements ViewGenerator {
             } catch (NumberFormatException e) {
                 return 0;
             }
+        }
+
+        public int compareTo(Report that) {
+            return CompareToBuilder.reflectionCompare(this.getName(), that.getName());
         }
         
     }
