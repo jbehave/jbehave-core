@@ -25,16 +25,28 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * ...
  * !value m1!value m2| .... !value mn!
  * </pre>
+ * <p>Rows starting with ignorable separator are allowed and ignored:</p>
+ * <pre>
+ * |header 1|header 2| .... |header n|
+ * |-- A commented row --|
+ * |value 11|value 12| .... |value 1n|
+ * ...
+ * |-- Another commented row --|
+ * |value m1|value m2| .... |value mn|
+ * </pre>
+ * <p>Ignorable separator is injectable and defaults to "|--".</p>
  */
 public class ExamplesTable {
 
     private static final String NEWLINE = "\n";
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
+    private static final String IGNORE_SEPARATOR = "|--";
     private final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     private final String tableAsString;
     private final String headerSeparator;
     private final String valueSeparator;
+    private final String ignoreSeparator;
     private final List<String> headers = new ArrayList<String>();
 
     public ExamplesTable(String tableAsString) {
@@ -42,9 +54,14 @@ public class ExamplesTable {
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator) {
+        this(tableAsString, headerSeparator, valueSeparator, IGNORE_SEPARATOR);
+    }
+
+    public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator, String ignoreSeparator) {
         this.tableAsString = tableAsString;
         this.headerSeparator = headerSeparator;
         this.valueSeparator = valueSeparator;
+        this.ignoreSeparator = ignoreSeparator;
         parse();
     }
 
@@ -53,11 +70,15 @@ public class ExamplesTable {
         String[] rows = tableAsString.trim().split(NEWLINE);
         headers.clear();
         for (int row = 0; row < rows.length; row++) {
-            if (row == 0) {
-                List<String> columns = columnsFor(rows[row], headerSeparator);
+            String rowAsString = rows[row];
+            if ( rowAsString.startsWith(ignoreSeparator) ) {
+                // skip rows that start with ignore separator
+                continue;
+            } else if (row == 0) {
+                List<String> columns = columnsFor(rowAsString, headerSeparator);
                 headers.addAll(columns);
             } else {
-                List<String> columns = columnsFor(rows[row], valueSeparator);
+                List<String> columns = columnsFor(rowAsString, valueSeparator);
                 Map<String, String> map = new HashMap<String, String>();
                 for (int column = 0; column < columns.size(); column++) {
                     map.put(headers.get(column), columns.get(column));
