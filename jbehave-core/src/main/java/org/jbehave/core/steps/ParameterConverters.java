@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.jbehave.core.model.ExamplesTable;
 
@@ -35,23 +36,57 @@ import org.jbehave.core.model.ExamplesTable;
  */
 public class ParameterConverters {
 
+    static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
+    static final String DEFAULT_COMMA = ",";
+	
     private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
     private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
-    private static final String COMMA = ",";
-    private static final ParameterConverter[] DEFAULT_CONVERTERS = { new NumberConverter(), new NumberListConverter(),
-            new StringListConverter(), new DateConverter(), new ExamplesTableConverter() };
+    
     private final StepMonitor monitor;
     private final List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
 
+    /** 
+     * Default Parameters use a SilentStepMonitor, has English as Locale and use "," as list separator. 
+     */
     public ParameterConverters() {
         this(new SilentStepMonitor());
     }
 
+    /** 
+     * Default ParameterConverters have English as Locale and use "," as list separator. 
+     */
     public ParameterConverters(StepMonitor monitor) {
-        this.monitor = monitor;
-        this.addConverters(DEFAULT_CONVERTERS);
+    	this(monitor , DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_COMMA);
     }
 
+    /** 
+     * Creates an ParameterConvertors for a given Locale.  When selecting
+     * a listSeparator, please make sure that this character doesn't have a special
+     * meaning in your Locale (for instance "," is used as decimal separator in some Locale)
+     * @param monitor Monitor reporting the conversions
+     * @param locale The Locale to use when reading numbers
+     * @param listSeparator The list separator 
+     */
+    public ParameterConverters(StepMonitor monitor, Locale locale, String listSeparator) {
+        this.monitor = monitor;
+        String listSepRegexp = escapeRegexPunctuation(listSeparator);
+        ParameterConverter[] defaultConverters = {
+        	new NumberConverter(NumberFormat.getInstance(locale)),
+        	new NumberListConverter(NumberFormat.getInstance(locale), listSepRegexp), 
+        	new StringListConverter(listSepRegexp),
+        	new DateConverter(), 
+        	new ExamplesTableConverter()
+        };
+        this.addConverters(defaultConverters);
+    	
+    }
+    
+    //TODO : This is a duplicate from RegExpPrefixCapturing
+    private String escapeRegexPunctuation(String matchThis) {
+        return matchThis.replaceAll("([\\[\\]\\{\\}\\?\\^\\.\\*\\(\\)\\+\\\\])", "\\\\$1");
+    }
+
+    
     public ParameterConverters addConverters(ParameterConverter... converters) {
         return addConverters(asList(converters));
     }
@@ -112,7 +147,7 @@ public class ParameterConverters {
      * <li>BigDecimal: {@link BigDecimal#valueOf(Double)}</li></li>
      * </ul>
      * If no number format is provided, it defaults to
-     * {@link NumberFormat#getInstance()}.
+     * {@link NumberFormat#getInstance(Locale.ENGLISH)}.
      * <p>
      * The localized instance {@link NumberFormat#getInstance(Locale)} can be
      * used to convert numbers in specific locales.
@@ -126,7 +161,7 @@ public class ParameterConverters {
         private final NumberFormat numberFormat;
 
         public NumberConverter() {
-            this(NumberFormat.getInstance());
+            this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL));
         }
 
         public NumberConverter(NumberFormat numberFormat) {
@@ -173,7 +208,7 @@ public class ParameterConverters {
      * Converts value to list of numbers. Splits value to a list, using an
      * injectable value separator (defaulting to ",") and converts each element
      * of list via the {@link NumberConverter}, using the {@link NumberFormat}
-     * provided (defaulting to {@link NumberFormat#getInstance()}).
+     * provided (defaulting to {@link NumberFormat#getInstance(Locale.ENGLISH)}).
      */
     public static class NumberListConverter implements ParameterConverter {
 
@@ -181,9 +216,13 @@ public class ParameterConverters {
         private final String valueSeparator;
 
         public NumberListConverter() {
-            this(NumberFormat.getInstance(), COMMA);
+            this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL), DEFAULT_COMMA);
         }
 
+        /**
+         * @param numberFormat Specific NumberFormat to use.
+         * @param valueSeparator A regexp to use as list separate
+         */
         public NumberListConverter(NumberFormat numberFormat, String valueSeparator) {
             this.numberConverter = new NumberConverter(numberFormat);
             this.valueSeparator = valueSeparator;
@@ -230,9 +269,13 @@ public class ParameterConverters {
         private String valueSeparator;
 
         public StringListConverter() {
-            this(COMMA);
+            this(DEFAULT_COMMA);
         }
 
+        /**
+         * @param numberFormat Specific NumberFormat to use.
+         * @param valueSeparator A regexp to use as list separate
+         */
         public StringListConverter(String valueSeparator) {
             this.valueSeparator = valueSeparator;
         }
