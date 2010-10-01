@@ -148,7 +148,7 @@ public class AnnotationBuilder {
         Configuration configuration = buildConfiguration();
         List<CandidateSteps> candidateSteps = buildCandidateSteps(configuration);
 
-        Embedder embedder = instanceOf(Embedder.class, finder.getAnnotatedValue(UsingEmbedder.class, Class.class,
+        Embedder embedder = instanceOf(Embedder.class, (Class<? extends Embedder>)finder.getAnnotatedValue(UsingEmbedder.class, Class.class,
                 "embedder"));
         embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView);
