@@ -29,6 +29,7 @@ public class Keywords {
     public static final String EXAMPLES_TABLE_ROW = "ExamplesTableRow";
     public static final String EXAMPLES_TABLE_HEADER_SEPARATOR = "ExamplesTableHeaderSeparator";
     public static final String EXAMPLES_TABLE_VALUE_SEPARATOR = "ExamplesTableValueSeparator";
+    public static final String EXAMPLES_TABLE_IGNORABLE_SEPARATOR = "ExamplesTableIgnorableSeparator";
     public static final String GIVEN = "Given";
     public static final String WHEN = "When";
     public static final String THEN = "Then";
@@ -41,7 +42,8 @@ public class Keywords {
 
     public static final List<String> KEYWORDS = asList(NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SCENARIO,
             GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
-            EXAMPLES_TABLE_VALUE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE, PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
+            EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE,
+            PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
 
     private final String narrative;
     private final String inOrderTo;
@@ -53,6 +55,7 @@ public class Keywords {
     private final String examplesTableRow;
     private final String examplesTableHeaderSeparator;
     private final String examplesTableValueSeparator;
+    private final String examplesTableIgnorableSeparator;
     private final String given;
     private final String when;
     private final String then;
@@ -75,6 +78,7 @@ public class Keywords {
         keywords.put(EXAMPLES_TABLE_ROW, "Example:");
         keywords.put(EXAMPLES_TABLE_HEADER_SEPARATOR, "|");
         keywords.put(EXAMPLES_TABLE_VALUE_SEPARATOR, "|");
+        keywords.put(EXAMPLES_TABLE_IGNORABLE_SEPARATOR, "|--");
         keywords.put(GIVEN, "Given");
         keywords.put(WHEN, "When");
         keywords.put(THEN, "Then");
@@ -111,6 +115,7 @@ public class Keywords {
         this.examplesTableRow = keyword(EXAMPLES_TABLE_ROW, keywords);
         this.examplesTableHeaderSeparator = keyword(EXAMPLES_TABLE_HEADER_SEPARATOR, keywords);
         this.examplesTableValueSeparator = keyword(EXAMPLES_TABLE_VALUE_SEPARATOR, keywords);
+        this.examplesTableIgnorableSeparator = keyword(EXAMPLES_TABLE_IGNORABLE_SEPARATOR, keywords);
         this.given = keyword(GIVEN, keywords);
         this.when = keyword(WHEN, keywords);
         this.then = keyword(THEN, keywords);
@@ -168,6 +173,10 @@ public class Keywords {
 
     public String examplesTableValueSeparator() {
         return examplesTableValueSeparator;
+    }
+
+    public String examplesTableIgnorableSeparator() {
+        return examplesTableIgnorableSeparator;
     }
 
     public String given() {

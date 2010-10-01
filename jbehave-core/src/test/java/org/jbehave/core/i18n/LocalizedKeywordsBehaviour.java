@@ -7,6 +7,7 @@ import static org.jbehave.core.configuration.Keywords.AND;
 import static org.jbehave.core.configuration.Keywords.AS_A;
 import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE;
 import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_HEADER_SEPARATOR;
+import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_IGNORABLE_SEPARATOR;
 import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_ROW;
 import static org.jbehave.core.configuration.Keywords.EXAMPLES_TABLE_VALUE_SEPARATOR;
 import static org.jbehave.core.configuration.Keywords.FAILED;
@@ -97,6 +98,7 @@ public class LocalizedKeywordsBehaviour {
         ensureKeywordIs(properties, EXAMPLES_TABLE_ROW, keywords.examplesTableRow());
         ensureKeywordIs(properties, EXAMPLES_TABLE_HEADER_SEPARATOR, keywords.examplesTableHeaderSeparator());
         ensureKeywordIs(properties, EXAMPLES_TABLE_VALUE_SEPARATOR, keywords.examplesTableValueSeparator());
+        ensureKeywordIs(properties, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, keywords.examplesTableIgnorableSeparator());
         ensureKeywordIs(properties, GIVEN, keywords.given());
         ensureKeywordIs(properties, WHEN, keywords.when());
         ensureKeywordIs(properties, THEN, keywords.then());

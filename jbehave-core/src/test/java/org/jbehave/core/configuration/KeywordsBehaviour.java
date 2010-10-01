@@ -20,6 +20,7 @@ public class KeywordsBehaviour {
         assertEquals("Example:", keywords.examplesTableRow());
         assertEquals("|", keywords.examplesTableHeaderSeparator());
         assertEquals("|", keywords.examplesTableValueSeparator());
+        assertEquals("|--", keywords.examplesTableIgnorableSeparator());
         assertEquals("Given", keywords.given());
         assertEquals("When", keywords.when());
         assertEquals("Then", keywords.then());

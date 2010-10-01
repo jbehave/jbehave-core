@@ -8,9 +8,11 @@ import org.junit.Test;
 
 public class ExamplesTableBehaviour {
     
-    String tableAsString = "|one|two|\n" + "|11|12|\n" + "|21|22|\n";
+    private String tableAsString = "|one|two|\n" + "|11|12|\n" + "|21|22|\n";
 
-    String wikiTableAsString = "||one||two||\n" + "|11|12|\n" + "|21|22|\n";
+    private String wikiTableAsString = "||one||two||\n" + "|11|12|\n" + "|21|22|\n";
+
+    private String tableWithCommentsAsString = "|one|two|\n" + "|-- A comment --|\n" + "|11|12|\n" + "|-- Another comment --|\n" + "|21|22|\n";
 
     @Test
     public void shouldParseTableWithDefaultSeparators() {
@@ -50,7 +52,14 @@ public class ExamplesTableBehaviour {
         ensureTableContentIsParsed(table);
         assertThat(table.asString(), equalTo(untrimmedTableAsString));
     }
-    
+
+    @Test
+    public void shouldParseTableWithCommentLines() {
+        ExamplesTable table = new ExamplesTable(tableWithCommentsAsString);
+        assertThat(table.asString(), equalTo(tableWithCommentsAsString));
+        ensureTableContentIsParsed(table);
+    }
+
     @Test
     public void shouldParseEmptyTable() {
         String tableAsString = "";
