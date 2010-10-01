@@ -25,7 +25,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * ...
  * !value m1!value m2| .... !value mn!
  * </pre>
- * <p>Rows starting with ignorable separator are allowed and ignored:</p>
+ * <p>Rows starting with an ignorable separator are allowed and ignored:</p>
  * <pre>
  * |header 1|header 2| .... |header n|
  * |-- A commented row --|
@@ -34,19 +34,19 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * |-- Another commented row --|
  * |value m1|value m2| .... |value mn|
  * </pre>
- * <p>Ignorable separator is injectable and defaults to "|--".</p>
+ * <p>Ignorable separator is configurable and defaults to "|--".</p>
  */
 public class ExamplesTable {
 
     private static final String NEWLINE = "\n";
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
-    private static final String IGNORE_SEPARATOR = "|--";
+    private static final String IGNORABLE_SEPARATOR = "|--";
     private final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     private final String tableAsString;
     private final String headerSeparator;
     private final String valueSeparator;
-    private final String ignoreSeparator;
+    private final String ignorableSeparator;
     private final List<String> headers = new ArrayList<String>();
 
     public ExamplesTable(String tableAsString) {
@@ -54,14 +54,14 @@ public class ExamplesTable {
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator) {
-        this(tableAsString, headerSeparator, valueSeparator, IGNORE_SEPARATOR);
+        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR);
     }
 
-    public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator, String ignoreSeparator) {
+    public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator, String ignorableSeparator) {
         this.tableAsString = tableAsString;
         this.headerSeparator = headerSeparator;
         this.valueSeparator = valueSeparator;
-        this.ignoreSeparator = ignoreSeparator;
+        this.ignorableSeparator = ignorableSeparator;
         parse();
     }
 
@@ -71,7 +71,7 @@ public class ExamplesTable {
         headers.clear();
         for (int row = 0; row < rows.length; row++) {
             String rowAsString = rows[row];
-            if ( rowAsString.startsWith(ignoreSeparator) ) {
+            if ( rowAsString.startsWith(ignorableSeparator) ) {
                 // skip rows that start with ignore separator
                 continue;
             } else if (row == 0) {
