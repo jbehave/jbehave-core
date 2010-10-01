@@ -1,12 +1,12 @@
 package org.jbehave.core.reporters;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Filters out the reports from all stories that pass, The delegate receives
@@ -110,11 +110,11 @@ public class SilentSuccessFilter implements StoryReporter {
         scenarioState.report();
     }
 
-    public void beforeScenario(final String title) {
+    public void beforeScenario(final String scenarioTitle) {
         scenarioTodos = new ArrayList<Todo>();
         scenarioTodos.add(new Todo() {
             public void doNow() {
-                delegate.beforeScenario(title);
+                delegate.beforeScenario(scenarioTitle);
             }
         });
     }

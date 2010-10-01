@@ -1,16 +1,16 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 /**
  * Reporter which collects other {@link StoryReporter}s and delegates all
@@ -52,9 +52,9 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
-    public void beforeScenario(String title) {
+    public void beforeScenario(String scenarioTitle) {
         for (StoryReporter reporter : delegates) {
-            reporter.beforeScenario(title);
+            reporter.beforeScenario(scenarioTitle);
         }
     }
 
