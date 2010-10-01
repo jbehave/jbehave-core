@@ -42,21 +42,21 @@ public class ParameterConvertersBehaviour {
     public void shouldConvertValuesToNumbersWithDefaultNumberFormat() {
         NumberConverter converter = new NumberConverter();
         assertThatAllNumberTypesAreAccepted(converter);
-        assertThatAllNumbersAreConverted(converter);
+        assertThatAllNumbersAreConverted(converter, Locale.getDefault());
     }
 
     @Test
     public void shouldConvertValuesToNumbersWithLocalizedNumberFormat() {
         ParameterConverter enConverter = new NumberConverter(NumberFormat.getInstance(Locale.ENGLISH));
         assertThatAllNumberTypesAreAccepted(enConverter);
-        assertThatAllNumbersAreConverted(enConverter);
+        assertThatAllNumbersAreConverted(enConverter, Locale.ENGLISH);
         assertThat((Integer) enConverter.convertValue("100,000", Integer.class), equalTo(100000));
         assertThat((Long) enConverter.convertValue("100,000", Long.class), equalTo(100000L));
         assertThat((Float) enConverter.convertValue("100,000.01", Float.class), equalTo(100000.01f));
         assertThat((Double) enConverter.convertValue("100,000.01", Double.class), equalTo(100000.01d));        
         ParameterConverter frConverter = new NumberConverter(NumberFormat.getInstance(Locale.FRENCH));
         assertThatAllNumberTypesAreAccepted(frConverter);
-        assertThatAllNumbersAreConverted(frConverter);
+        assertThatAllNumbersAreConverted(frConverter, Locale.FRENCH);
         assertThat((Float) frConverter.convertValue("100000,01", Float.class), equalTo(100000.01f));
         assertThat((Double) frConverter.convertValue("100000,01", Double.class), equalTo(100000.01d));
     }
@@ -80,21 +80,24 @@ public class ParameterConvertersBehaviour {
         assertThat(converter.accept(WrongType.class), equalTo(false));        
     }
 
-    private void assertThatAllNumbersAreConverted(ParameterConverter converter) {
+    private void assertThatAllNumbersAreConverted(ParameterConverter converter, Locale locale) {
+    	DecimalFormatSymbols format = new DecimalFormatSymbols(locale);
+    	char dot = format.getDecimalSeparator();
+    	char minus = format.getMinusSign();
         assertThat((Byte) converter.convertValue("127", Byte.class), equalTo(Byte.MAX_VALUE));
-        assertThat((Byte) converter.convertValue("-128", byte.class), equalTo(Byte.MIN_VALUE));
+		assertThat((Byte) converter.convertValue(minus + "128", byte.class), equalTo(Byte.MIN_VALUE));
         assertThat((Short) converter.convertValue("32767", Short.class), equalTo(Short.MAX_VALUE));
-        assertThat((Short) converter.convertValue("-32768", short.class), equalTo(Short.MIN_VALUE));
+        assertThat((Short) converter.convertValue(minus + "32768", short.class), equalTo(Short.MIN_VALUE));
         assertThat((Integer) converter.convertValue("3", Integer.class), equalTo(3));
         assertThat((Integer) converter.convertValue("3", int.class), equalTo(3));
-        assertThat((Float) converter.convertValue("3.0", Float.class), equalTo(3.0f));
-        assertThat((Float) converter.convertValue("3.0", float.class), equalTo(3.0f));
+		assertThat((Float) converter.convertValue("3" + dot + "0", Float.class), equalTo(3.0f));
+        assertThat((Float) converter.convertValue("3" + dot + "0", float.class), equalTo(3.0f));
         assertThat((Long) converter.convertValue("3", Long.class), equalTo(3L));
         assertThat((Long) converter.convertValue("3", long.class), equalTo(3L));
-        assertThat((Double) converter.convertValue("3.0", Double.class), equalTo(3.0d));
-        assertThat((Double) converter.convertValue("3.0", double.class), equalTo(3.0d));
+        assertThat((Double) converter.convertValue("3" + dot + "0", Double.class), equalTo(3.0d));
+        assertThat((Double) converter.convertValue("3" + dot + "0", double.class), equalTo(3.0d));
         assertThat((BigInteger) converter.convertValue("3", BigInteger.class), equalTo(new BigInteger("3")));
-        assertThat((BigDecimal) converter.convertValue("3.0", BigDecimal.class), equalTo(new BigDecimal("3.0")));
+        assertThat((BigDecimal) converter.convertValue("3" + dot + "0", BigDecimal.class), equalTo(new BigDecimal("3.0")));
         assertThat((Number) converter.convertValue("3", Number.class), equalTo((Number)3L));
     }
 
@@ -148,7 +151,7 @@ public class ParameterConvertersBehaviour {
     @SuppressWarnings("unchecked")
     @Test
     public void shouldConvertCommaSeparatedValuesOfSpecificNumberTypes() throws ParseException, IntrospectionException {
-        ParameterConverter converter = new NumberListConverter();
+        ParameterConverter converter = new NumberListConverter(NumberFormat.getInstance(Locale.ENGLISH), ",");
         Type doublesType = SomeSteps.methodFor("aMethodWithListOfDoubles").getGenericParameterTypes()[0];
         
         List<Double> doubles = (List<Double>) converter.convertValue("3, 0.5, 0.0, 8.00, "+NAN+","+INFINITY, doublesType);
