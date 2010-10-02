@@ -1,8 +1,12 @@
 package org.jbehave.core.model;
 
 import static java.util.Arrays.asList;
+import static org.codehaus.plexus.util.StringUtils.isBlank;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -68,27 +72,43 @@ public class ExamplesTableBehaviour {
         assertThat(table.getHeaders().size(), equalTo(0));
         assertThat(table.getRows().size(), equalTo(0));
     }
-
+    
     @Test
-    public void shouldParseTableIgnoringDataBeforeLeftBoundarySeparator() {
-        String tableAsString = "one|two|\n 11|12|\n 21|22|\n";        
-        ExamplesTable table = new ExamplesTable(tableAsString);
-        assertThat(table.asString(), equalTo(tableAsString));
-        assertThat(table.getHeaders().size(), equalTo(1));
-        assertThat(table.getRows().size(), equalTo(2));
-        assertThat(tableElement(table, 0, "two"), equalTo("12"));        
-        assertThat(tableElement(table, 1, "two"), equalTo("22"));        
+    public void shouldParseTableWithBlankValues() {
+        String tableWithEmptyValues = "|one|two|\n |||\n | ||\n || |\n";
+        ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
+        assertThat(table.getRowCount(), equalTo(3));
+        for (Map<String,String> row : table.getRows()) {
+            assertThat(row.size(), equalTo(2));
+            for (String column : row.keySet() ) {
+                assertThat(isBlank(row.get(column)), is(true));                
+            }
+        }
+        assertThat(table.asString(), equalTo(tableWithEmptyValues));
     }
 
     @Test
-    public void shouldParseTableWithoutBoundarySeparators() {
+    public void shouldParseTableWithoutLeftBoundarySeparator() {
+        String tableAsString = "one|two|\n 11|12|\n 21|22|\n";        
+        ExamplesTable table = new ExamplesTable(tableAsString);
+        ensureTableContentIsParsed(table);
+        assertThat(table.asString(), equalTo(tableAsString));
+    }
+
+    @Test
+    public void shouldParseTableWithoutRightBoundarySeparator() {
+        String tableAsString = "|one|two\n |11|12\n |21|22\n";        
+        ExamplesTable table = new ExamplesTable(tableAsString);
+        ensureTableContentIsParsed(table);
+        assertThat(table.asString(), equalTo(tableAsString));
+    }
+
+    @Test
+    public void shouldParseTableWithoutAnyBoundarySeparators() {
         String tableAsString = "one|two\n 11|12\n 21|22\n";        
         ExamplesTable table = new ExamplesTable(tableAsString);
+        ensureTableContentIsParsed(table);
         assertThat(table.asString(), equalTo(tableAsString));
-        assertThat(table.getHeaders().size(), equalTo(1));
-        assertThat(table.getRows().size(), equalTo(2));
-        assertThat(tableElement(table, 0, "two"), equalTo("12"));        
-        assertThat(tableElement(table, 1, "two"), equalTo("22"));        
     }
 
     private void ensureTableContentIsParsed(ExamplesTable table) {

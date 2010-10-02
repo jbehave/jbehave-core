@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -72,7 +73,7 @@ public class ExamplesTable {
         for (int row = 0; row < rows.length; row++) {
             String rowAsString = rows[row];
             if ( rowAsString.startsWith(ignorableSeparator) ) {
-                // skip rows that start with ignore separator
+                // skip rows that start with ignorable separator
                 continue;
             } else if (row == 0) {
                 List<String> columns = columnsFor(rowAsString, headerSeparator);
@@ -90,11 +91,18 @@ public class ExamplesTable {
 
     private List<String> columnsFor(String row, String separator) {
         List<String> columns = new ArrayList<String>();
-        for (String column : row.split(buildRegex(separator))) {
+        // use split limit -1 to ensure that empty strings will not be discarted
+        for (String column : row.split(buildRegex(separator), -1)) {
             columns.add(column.trim());
         }
-        // we'll always have a leading column to the left side of the separator which we ignore
-        columns.remove(0);
+        // we could have a leading and a trailing empty column which we ignore
+        if ( StringUtils.isBlank(columns.get(0)) ){
+            columns.remove(0);
+        }
+        int lastIndex = columns.size() - 1;
+        if ( lastIndex != -1 && StringUtils.isBlank(columns.get(lastIndex))  ){
+            columns.remove(lastIndex);
+        }
         return columns;
     }
 
