@@ -7,8 +7,5 @@ If you use Ant, you can download and copy the dependencies by using the build.xm
 
 $ ant copy-dependencies
 
-Note: Requires maven-ant-tasks-2.1.jar in $ANT_HOME/lib
-      Download it from http://maven.apache.org/ant-tasks/download.html
-
 
 
