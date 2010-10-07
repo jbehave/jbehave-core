@@ -15,9 +15,9 @@
 
 	<target name="copy-dependencies" depends="setup">
 		<artifact:pom id="pom" file="pom.xml" />
-		<artifact:dependencies filesetId="dependency.fileset" pomRefId="pom" useScope="test" />
+		<artifact:dependencies filesetId="test.dependencies" pomRefId="pom" useScope="test" />
 		<copy todir=".">
-			<fileset refid="dependency.fileset" />
+			<fileset refid="test.dependencies" />
 			<mapper type="flatten" />
 		</copy>
 	</target>
