@@ -1,16 +1,14 @@
-JBehave dependencies are defined in the jbehave-distribution POM.
-
-Choose the desired version from:
-
-http://mvnrepository.com/artifact/org.jbehave/jbehave-distribution/
+JBehave dependencies are defined in the POM.
 
 If you use Maven or Ivy or Grape, you can define dependencies declaratively, 
 using groupId and artifactId detailed in the POM (see also docs/download.html).
 
-If you use Ant, download the POM with the desired version, rename it to pom.xml,
-and execute Ant target in build.xml provided:
+If you use Ant, you can download and copy the dependencies by using the build.xml provided:
 
 $ ant copy-dependencies
+
+Note: Requires maven-ant-tasks-2.1.jar in $ANT_HOME/lib
+      Download it from http://maven.apache.org/ant-tasks/download.html
 
 
 
