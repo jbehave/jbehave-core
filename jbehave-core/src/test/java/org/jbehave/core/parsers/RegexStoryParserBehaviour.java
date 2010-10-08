@@ -14,6 +14,7 @@ import java.util.List;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -41,6 +42,27 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
+    public void shouldParseStoryWithMeta() {
+        String wholeStory = "Meta: @theme parsing @ignore true" + NL +
+                "Scenario: " + NL +
+                "Meta: @author Mauro" + NL +
+                "Given a scenario " + NL +
+                "When I parse it" + NL +
+                "Then I should get steps";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+        assertThat(story.getPath(), equalTo(storyPath));
+        Meta storyMeta = story.getMeta();
+        assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
+        assertThat(storyMeta.getProperty("ignore"), equalTo("true"));
+        assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
+        Scenario scenario = story.getScenarios().get(0);
+        Meta scenarioMeta = scenario.getMeta();
+        assertThat(scenarioMeta.getProperty("author"), equalTo("Mauro"));
+    }
+    
+
+    @Test
     public void shouldParseStoryWithSimpleSteps() {
         String wholeStory = "Given a scenario" + NL +
                 "!-- ignore me" + NL +
@@ -55,7 +77,7 @@ public class RegexStoryParserBehaviour {
         assertThat(steps.get(2), equalTo("When I parse it"));
         assertThat(steps.get(3), equalTo("Then I should get steps"));
     }
-    
+
     @Test
     public void shouldParseStoryWithStepsContainingKeywordsAtStartOfOtherWords() {
         String wholeStory = "Given a scenario Givenly" + NL +

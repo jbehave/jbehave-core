@@ -12,6 +12,7 @@ public class Story {
 
     private final String path;
     private final Description description;
+    private final Meta meta;
     private final Narrative narrative;
     private final List<Scenario> scenarios;
     private String name;
@@ -25,18 +26,27 @@ public class Story {
     }
 
     public Story(Description description, Narrative narrative, List<Scenario> scenarios) {
-        this(null, description, narrative, scenarios);
+        this((String)null, description, narrative, scenarios);
     }
 
     public Story(String path, Description description, Narrative narrative, List<Scenario> scenarios) {
+        this(path, description, Meta.EMPTY, narrative, scenarios);
+    }
+
+    public Story(String path, Description description, Meta meta, Narrative narrative, List<Scenario> scenarios) {
         this.path = path;
         this.description = description;
+        this.meta = meta;
         this.narrative = narrative;
         this.scenarios = scenarios;
     }
 
     public Description getDescription() {
         return description;
+    }
+
+    public Meta getMeta() {
+        return meta;
     }
 
     public Narrative getNarrative() {
@@ -63,5 +73,6 @@ public class Story {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 
 }
