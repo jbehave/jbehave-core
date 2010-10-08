@@ -22,5 +22,12 @@
       <directory>src/lib</directory>
       <outputDirectory>/lib</outputDirectory>
     </fileSet>
+    <fileSet>
+      <directory>.</directory>
+      <outputDirectory>/lib</outputDirectory>
+      <includes>
+        <include>pom.xml</include>
+      </includes>
+    </fileSet>
   </fileSets>
 </assembly>
