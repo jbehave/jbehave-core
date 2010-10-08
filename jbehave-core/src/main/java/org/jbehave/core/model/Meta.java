@@ -21,6 +21,10 @@ public class Meta {
         this.properties = properties;
     }
 
+    public Properties getProperties(){
+        return properties;
+    }
+    
     public String getProperty(String name){
         String value = properties.getProperty(name);
         if ( value == null ){
@@ -29,9 +33,14 @@ public class Meta {
         return value;
     }
 
+    public boolean isEmpty() {
+        return EMPTY == this;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 
 }

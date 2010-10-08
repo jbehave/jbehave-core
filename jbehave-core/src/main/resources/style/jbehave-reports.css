@@ -125,6 +125,15 @@ div.story h2 {
   border-color: #ffcd13;
 }
 
+.meta {
+  text-align: left;
+  color: purple; 
+}
+
+.property {
+  margin-left: 10px;
+}
+
 .narrative {
   text-align: left;
   color: blue; 

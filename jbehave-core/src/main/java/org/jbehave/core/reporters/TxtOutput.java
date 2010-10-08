@@ -50,6 +50,9 @@ public class TxtOutput extends PrintStreamOutput {
 
     private static Properties defaultPatterns() {
         Properties patterns = new Properties();
+        patterns.setProperty("metaStart", "{0}\n");
+        patterns.setProperty("metaProperty", "{0}{1} {2}\n");    
+        patterns.setProperty("metaEnd", "\n");
         patterns.setProperty("successful", "{0}\n");
         patterns.setProperty("ignorable", "{0}\n");
         patterns.setProperty("pending", "{0} ({1})\n");

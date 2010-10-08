@@ -51,6 +51,9 @@ public class HtmlOutput extends PrintStreamOutput {
 
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
+        patterns.setProperty("metaStart", "<div class=\"meta\">\n<h2>{0}</h2>\n");
+        patterns.setProperty("metaProperty", "<div class=\"meta property\">{0}{1} {2}</div>\n");
+        patterns.setProperty("metaEnd", "</div>\n");
         patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
         patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
         patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");
