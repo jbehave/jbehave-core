@@ -29,7 +29,6 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Filter;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;

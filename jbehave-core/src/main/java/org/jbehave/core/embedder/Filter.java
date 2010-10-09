@@ -1,10 +1,11 @@
-package org.jbehave.core.model;
+package org.jbehave.core.embedder;
 
 import java.io.PrintStream;
 import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.model.Meta;
 
 /**
  * <p>

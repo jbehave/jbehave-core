@@ -41,7 +41,6 @@ import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.junit.JUnitStory;
-import org.jbehave.core.model.Filter;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
