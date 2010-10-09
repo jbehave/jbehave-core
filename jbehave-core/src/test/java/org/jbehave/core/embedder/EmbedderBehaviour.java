@@ -41,6 +41,8 @@ import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.junit.JUnitStory;
+import org.jbehave.core.model.Filter;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.StoryReporter;
@@ -345,12 +347,56 @@ public class EmbedderBehaviour {
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(configuration, candidateSteps, stories.get(storyPath));
+            verify(runner).run(configuration, candidateSteps, stories.get(storyPath), Filter.EMPTY);
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatStoriesViewGenerated(out);
     }
 
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldRunStoriesApplyingFilter() throws Throwable {
+        // Given
+        StoryRunner runner = mock(StoryRunner.class);
+        EmbedderControls embedderControls = new EmbedderControls();
+        OutputStream out = new ByteArrayOutputStream();
+        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
+        List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherStory.class);
+
+        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Configuration configuration = embedder.configuration();
+        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        StoryPathResolver resolver = configuration.storyPathResolver();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
+        Meta meta = mock(Meta.class);        
+        for (Class<? extends Embeddable> embeddable : embeddables) {
+            String storyPath = resolver.resolve(embeddable);
+            storyPaths.add(storyPath);
+            Story story = mock(Story.class);
+            when(story.getMeta()).thenReturn(meta);
+            stories.put(storyPath, story);
+            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            StoryReporter storyReporter = mock(StoryReporter.class);
+            configuration.useStoryReporter(storyPath, storyReporter);
+            assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
+        }
+        
+        // When
+        Filter filter = mock(Filter.class);
+        when(filter.allow(meta)).thenReturn(false);
+        embedder.useFilter(filter);
+        embedder.runStoriesAsPaths(storyPaths);
+        
+        // Then
+        for (String storyPath : storyPaths) {
+            verify(runner).run(configuration, candidateSteps, stories.get(storyPath), filter);
+            assertThat(out.toString(), containsString("Running story " + storyPath));
+        }
+        assertThatStoriesViewGenerated(out);
+    }
+    
     @SuppressWarnings("unchecked")
     @Test
     public void shouldNotRunStoriesIfSkipFlagIsSet() throws Throwable {
@@ -380,7 +426,7 @@ public class EmbedderBehaviour {
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner, never()).run(configuration, candidateSteps, stories.get(storyPath));
+            verify(runner, never()).run(configuration, candidateSteps, stories.get(storyPath), Filter.EMPTY);
             assertThat(out.toString(), not(containsString("Running story " + storyPath)));
         }
         assertThat(out.toString(), containsString("Skipped stories "+storyPaths));
@@ -411,7 +457,7 @@ public class EmbedderBehaviour {
         }
         for (String storyPath : storyPaths) {
             doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(configuration, candidateSteps,
-                    stories.get(storyPath));
+                    stories.get(storyPath), Filter.EMPTY);
         }
         // When
         embedder.runStoriesAsPaths(storyPaths);
@@ -445,7 +491,7 @@ public class EmbedderBehaviour {
         }
         for (String storyPath : storyPaths) {
             doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(configuration, candidateSteps,
-                    stories.get(storyPath));
+                    stories.get(storyPath), Filter.EMPTY);
         }
         
         // When
@@ -483,7 +529,7 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doNothing().when(runner).run(configuration, candidateSteps, stories.get(storyPath));
+            doNothing().when(runner).run(configuration, candidateSteps, stories.get(storyPath), Filter.EMPTY);
         }
         
         // When
@@ -521,7 +567,7 @@ public class EmbedderBehaviour {
         }
         for (String storyPath : storyPaths) {
             doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(configuration, candidateSteps,
-                    stories.get(storyPath));
+                    stories.get(storyPath), Filter.EMPTY);
         }
         
         // When 
@@ -559,7 +605,7 @@ public class EmbedderBehaviour {
             RuntimeException thrown = new RuntimeException(storyPath + " failed");
             failures.put(storyPath, thrown);
             doThrow(thrown).when(runner).run(configuration, candidateSteps,
-                    stories.get(storyPath));
+                    stories.get(storyPath), Filter.EMPTY);
         }
         
         // When
@@ -601,7 +647,7 @@ public class EmbedderBehaviour {
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(configuration, candidateSteps, stories.get(storyPath));
+            verify(runner).run(configuration, candidateSteps, stories.get(storyPath), Filter.EMPTY);
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThat(out.toString(), not(containsString("Generating stories view")));
