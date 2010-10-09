@@ -1,6 +1,8 @@
 package org.jbehave.core.model;
 
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -21,10 +23,14 @@ public class Meta {
         this.properties = properties;
     }
 
-    public Properties getProperties(){
-        return properties;
-    }
-    
+    public Set<String> getPropertyNames(){
+        Set<String> names = new TreeSet<String>();
+        for (Object key : properties.keySet()) {
+            names.add((String)key);
+        }
+        return names;
+    }    
+
     public String getProperty(String name){
         String value = properties.getProperty(name);
         if ( value == null ){

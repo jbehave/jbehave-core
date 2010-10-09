@@ -108,7 +108,7 @@ public class StoryRunnerBehaviour {
         // When
         FailureStrategy failureStrategy = mock(FailureStrategy.class);
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, collector, failureStrategy), asList(mySteps), story);
+        runner.run(configurationWith(reporter, collector, failureStrategy), asList(mySteps), story, new Filter());
 
         // Then
         InOrder inOrder = inOrder(reporter, failureStrategy);
@@ -166,7 +166,7 @@ public class StoryRunnerBehaviour {
         // When
         StoryRunner runner = new StoryRunner();
         runner.run(configurationWith(storyParser, storyLoader, reporter, collector, failureStrategy), asList(mySteps),
-                 story2);
+                 story2, new Filter());
 
         // Then
         InOrder inOrder = inOrder(reporter);
@@ -200,7 +200,7 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, collector), asList(mySteps), story);
+        runner.run(configurationWith(reporter, collector), asList(mySteps), story, new Filter());
 
         // Then
         verify(firstStepNormal).perform();
@@ -234,7 +234,7 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, collector, failureStrategy), asList(mySteps), story);
+        runner.run(configurationWith(reporter, collector, failureStrategy), asList(mySteps), story, new Filter());
 
         // Then
         verify(firstStepExceptional).perform();
@@ -270,7 +270,7 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, collector), asList(mySteps), story);
+        runner.run(configurationWith(reporter, collector), asList(mySteps), story, new Filter());
 
         // Then
         verify(pendingStep).perform();
@@ -294,7 +294,7 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, collector),asList(mySteps), story);
+        runner.run(configurationWith(reporter, collector),asList(mySteps), story, new Filter());
 
         // Then
         verify(beforeStep).perform();
@@ -320,7 +320,7 @@ public class StoryRunnerBehaviour {
         // When
         StoryRunner runner = new StoryRunner();
         runner.run(configurationWithPendingStrategy(collector, reporter,
-                strategy), asList(mySteps), story);
+                strategy), asList(mySteps), story, new Filter());
 
         // Then
         verify(strategy).handleFailure(pendingResult.getFailure());
@@ -345,7 +345,7 @@ public class StoryRunnerBehaviour {
         // When
         StoryRunner runner = new StoryRunner();
         runner.run(configurationWithPendingStrategy(collector, reporter,
-                strategy), asList(mySteps), story);
+                strategy), asList(mySteps), story, new Filter());
 
         // Then ... fail as expected
     }
@@ -378,7 +378,7 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configuration, asList(mySteps), story);
+        runner.run(configuration, asList(mySteps), story, new Filter());
 
         // Then
         InOrder inOrder = inOrder(reporter, failureStrategy);
@@ -427,7 +427,7 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configuration, asList(mySteps), story);
+        runner.run(configuration, asList(mySteps), story, new Filter());
 
         // Then
         InOrder inOrder = inOrder(reporter, failureStrategy);

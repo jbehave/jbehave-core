@@ -143,9 +143,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
         if (!story.getMeta().isEmpty()) {
             Meta meta = story.getMeta();
             print(format("metaStart", "{0}\n", keywords.meta()));
-            Properties properties = meta.getProperties();
-            for (Object key : properties.keySet()) {
-                print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), key, properties.get(key)));                
+            for (String name : meta.getPropertyNames() ){
+                print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));                
             }
             print(format("metaEnd", "\n"));
         }

@@ -54,19 +54,25 @@ public class StoryRunner {
 	 * Runs a Story with the given configuration and steps.  
 	 * 
 	 * @param configuration the Configuration used to run story
-	 * @param candidateSteps the List of CandidateSteps containing the candidate steps methods
-	 * @param story the Story to run
+     * @param candidateSteps the List of CandidateSteps containing the candidate steps methods
+     * @param story the Story to run
+     * @param filter the Filter to apply to the story Meta
 	 * @throws Throwable if failures occurred and FailureStrategy dictates it to be re-thrown.
 	 */
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story) throws Throwable {
-        run(configuration, candidateSteps, story, false);
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, Filter filter) throws Throwable {
+        run(configuration, candidateSteps, story, filter, false);
     }
 
-    private void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, boolean givenStory) throws Throwable {
+    private void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, Filter filter, boolean givenStory) throws Throwable {
         stepCollector = configuration.stepCollector();
         reporter = reporterFor(configuration, story, givenStory);
         pendingStepStrategy = configuration.pendingStepStrategy();
         failureStrategy = configuration.failureStrategy();
+
+        if ( !filter.allow(story.getMeta()) ){
+            return;
+        }
+
         resetFailureState(givenStory);
 
 		if (isDryRun(candidateSteps)) {
@@ -76,8 +82,11 @@ public class StoryRunner {
         reporter.beforeStory(story, givenStory);
         runStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.BEFORE);
         for (Scenario scenario : story.getScenarios()) {
+            if ( !filter.allow(scenario.getMeta())){
+                continue;
+            }
             reporter.beforeScenario(scenario.getTitle());
-            runGivenStories(configuration, candidateSteps, scenario); // first run any given stories, if any
+            runGivenStories(configuration, candidateSteps, scenario, filter); // first run any given stories, if any
             if (isExamplesTableScenario(scenario)) { // run as examples table scenario
                 runExamplesTableScenario(candidateSteps, scenario);
             } else { // run as plain old scenario
@@ -125,7 +134,7 @@ public class StoryRunner {
 	}
 	
     private void runGivenStories(Configuration configuration,
-                                 List<CandidateSteps> candidateSteps, Scenario scenario)
+                                 List<CandidateSteps> candidateSteps, Scenario scenario, Filter filter)
             throws Throwable {
         List<String> storyPaths = scenario.getGivenStoryPaths();
         if (storyPaths.size() > 0) {
@@ -133,7 +142,7 @@ public class StoryRunner {
             for (String storyPath : storyPaths) {
                 // run given story 
                 Story story = storyOfPath(configuration, storyPath);
-                run(configuration, candidateSteps, story, true);
+                run(configuration, candidateSteps, story, filter, true);
             }
         }
     }
