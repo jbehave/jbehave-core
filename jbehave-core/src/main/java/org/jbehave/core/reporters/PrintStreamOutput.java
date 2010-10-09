@@ -22,6 +22,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
@@ -139,6 +140,15 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void beforeStory(Story story, boolean givenStory) {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
+        if (!story.getMeta().isEmpty()) {
+            Meta meta = story.getMeta();
+            print(format("metaStart", "{0}\n", keywords.meta()));
+            Properties properties = meta.getProperties();
+            for (Object key : properties.keySet()) {
+                print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), key, properties.get(key)));                
+            }
+            print(format("metaEnd", "\n"));
+        }
         if (!story.getNarrative().isEmpty()) {
             Narrative narrative = story.getNarrative();
             print(format("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n", keywords.narrative(), keywords.inOrderTo(),

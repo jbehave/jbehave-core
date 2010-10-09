@@ -11,6 +11,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 public class Scenario {
 
     private final String title;
+    private final Meta meta;
     private final List<String> givenStoryPaths;
     private final List<String> steps;
     private final ExamplesTable examplesTable;
@@ -32,12 +33,21 @@ public class Scenario {
     }
     
     public Scenario(String title, List<String> givenStoryPaths, ExamplesTable examplesTable, List<String> steps) {
+        this(title, Meta.EMPTY, givenStoryPaths, examplesTable, steps);
+    }
+
+    public Scenario(String title, Meta meta, List<String> givenStoryPaths, ExamplesTable examplesTable, List<String> steps) {
         this.title = title;
+        this.meta = meta;
         this.givenStoryPaths = givenStoryPaths;
         this.steps = steps;
         this.examplesTable = examplesTable;
     }
 
+    public Meta getMeta(){
+        return meta;
+    }
+    
     public List<String> getGivenStoryPaths() {
         return unmodifiableList(givenStoryPaths);
     }

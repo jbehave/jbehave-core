@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Properties;
 
+import junit.framework.Assert;
+
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
@@ -28,6 +30,7 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
@@ -52,6 +55,10 @@ public class PrintStreamOutputBehaviour {
         String expected = "DRY RUN\n"
                 +"An interesting story\n"
                 + "(/path/to/story)\n"
+                + "Meta:\n"
+                + "@author Mauro\n"
+                + "@theme testing\n"
+                + "\n"
                 + "Narrative:\n"
                 + "In order to renovate my house\n"
                 + "As a customer\n"
@@ -100,6 +107,11 @@ public class PrintStreamOutputBehaviour {
         String expected = "<div class=\"dryRun\">DRY RUN</div>\n"
                 + "<div class=\"story\">\n<h1>An interesting story</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
+                + "<div class=\"meta\">\n"
+                + "<h2>Meta:</h2>\n"
+                + "<div class=\"meta property\">@author Mauro</div>\n"
+                + "<div class=\"meta property\">@theme testing</div>\n"
+                + "</div>\n"
                 + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
                 + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
                 + "<div class=\"element asA\"><span class=\"keyword asA\">As a</span> customer</div>\n"
@@ -161,6 +173,11 @@ public class PrintStreamOutputBehaviour {
         String expected =  "<div class=\"dryRun\">DRY RUN</div>\n"
                 + "<div class=\"story\">\n<h1>An interesting story</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
+                + "<div class=\"meta\">\n"
+                + "<h2>Meta:</h2>\n"
+                + "<div class=\"meta property\">@author Mauro</div>\n"
+                + "<div class=\"meta property\">@theme testing</div>\n"
+                + "</div>\n"
                 + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
                 + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
                 + "<div class=\"element asA\"><span class=\"keyword asA\">As a</span> customer</div>\n"
@@ -216,6 +233,10 @@ public class PrintStreamOutputBehaviour {
         // Then
         String expected = "<dryRun>DRY RUN</dryRun>\n" 
                 + "<story path=\"/path/to/story\" title=\"An interesting story\">\n"
+                + "<meta>\n"
+                + "<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
+                + "<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"
+                + "</meta>\n"
                 + "<narrative keyword=\"Narrative:\">\n"
                 + "  <inOrderTo keyword=\"In order to\">renovate my house</inOrderTo>\n"
                 + "  <asA keyword=\"As a\">customer</asA>\n"
@@ -248,8 +269,11 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void narrateAnInterestingStory(StoryReporter reporter) {
+        Properties meta = new Properties();
+        meta.setProperty("theme", "testing");
+        meta.setProperty("author", "Mauro");
         Story story = new Story("/path/to/story",
-                new Description("An interesting story"), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
+                new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
         boolean givenStory = false;
         reporter.dryRun();
         reporter.beforeStory(story, givenStory);
@@ -279,7 +303,8 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
-       assertThat(dos2unix(out.toString()), equalTo(expected));
+       Assert.assertEquals(dos2unix(out.toString()), expected);
+        //assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
     private String dos2unix(String string) {

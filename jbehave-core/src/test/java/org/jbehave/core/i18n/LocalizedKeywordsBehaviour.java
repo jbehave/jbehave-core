@@ -16,6 +16,8 @@ import static org.jbehave.core.configuration.Keywords.GIVEN_STORIES;
 import static org.jbehave.core.configuration.Keywords.IGNORABLE;
 import static org.jbehave.core.configuration.Keywords.IN_ORDER_TO;
 import static org.jbehave.core.configuration.Keywords.I_WANT_TO;
+import static org.jbehave.core.configuration.Keywords.META;
+import static org.jbehave.core.configuration.Keywords.META_PROPERTY;
 import static org.jbehave.core.configuration.Keywords.NARRATIVE;
 import static org.jbehave.core.configuration.Keywords.NOT_PERFORMED;
 import static org.jbehave.core.configuration.Keywords.PENDING;
@@ -88,6 +90,8 @@ public class LocalizedKeywordsBehaviour {
     private void ensureKeywordsAreLocalisedFor(Locale locale, String bundleName) throws IOException {
         Keywords keywords = keywordsFor(locale, bundleName, null);
         Properties properties = bundleFor(locale);
+        ensureKeywordIs(properties, META, keywords.meta());
+        ensureKeywordIs(properties, META_PROPERTY, keywords.metaProperty());
         ensureKeywordIs(properties, NARRATIVE, keywords.narrative());
         ensureKeywordIs(properties, IN_ORDER_TO, keywords.inOrderTo());
         ensureKeywordIs(properties, AS_A, keywords.asA());

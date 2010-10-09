@@ -19,6 +19,8 @@ import org.jbehave.core.steps.StepType;
  */
 public class Keywords {
 
+    public static final String META = "Meta";
+    public static final String META_PROPERTY = "MetaProperty";
     public static final String NARRATIVE = "Narrative";
     public static final String IN_ORDER_TO = "InOrderTo";
     public static final String AS_A = "AsA";
@@ -40,11 +42,13 @@ public class Keywords {
     public static final String FAILED = "Failed";
     public static final String DRY_RUN = "DryRun";
 
-    public static final List<String> KEYWORDS = asList(NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SCENARIO,
+    public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SCENARIO,
             GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE,
             PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
 
+    private final String meta;
+    private final String metaProperty;    
     private final String narrative;
     private final String inOrderTo;
     private final String asA;
@@ -68,6 +72,8 @@ public class Keywords {
 
     public static Map<String, String> defaultKeywords() {
         Map<String, String> keywords = new HashMap<String, String>();
+        keywords.put(META, "Meta:");
+        keywords.put(META_PROPERTY, "@");
         keywords.put(NARRATIVE, "Narrative:");
         keywords.put(IN_ORDER_TO, "In order to:");
         keywords.put(AS_A, "As a:");
@@ -105,6 +111,8 @@ public class Keywords {
      *            the Map of keywords indexed by their name
      */
     public Keywords(Map<String, String> keywords) {
+        this.meta = keyword(META, keywords);
+        this.metaProperty = keyword(META_PROPERTY, keywords);
         this.narrative = keyword(NARRATIVE, keywords);
         this.inOrderTo = keyword(IN_ORDER_TO, keywords);
         this.asA = keyword(AS_A, keywords);
@@ -133,6 +141,15 @@ public class Keywords {
             throw new KeywordNotFound(name, keywords);
         }
         return keyword;
+    }
+    
+
+    public String meta() {
+        return meta;
+    }
+
+    public String metaProperty() {
+        return metaProperty;
     }
 
     public String narrative() {
@@ -243,4 +260,5 @@ public class Keywords {
         }
 
     }
+
 }
