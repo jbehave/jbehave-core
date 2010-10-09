@@ -61,7 +61,26 @@ public class RegexStoryParserBehaviour {
         assertThat(scenarioMeta.getProperty("author"), equalTo("Mauro"));
     }
     
-
+    @Test
+    public void shouldAllowSpacesInMetaProperties() {
+        String wholeStory = "Meta: @ theme parsing @ ignore true" + NL +
+                "Scenario: " + NL +
+                "Meta: @authors Mauro Paul" + NL +
+                "Given a scenario " + NL +
+                "When I parse it" + NL +
+                "Then I should get steps";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+        assertThat(story.getPath(), equalTo(storyPath));
+        Meta storyMeta = story.getMeta();
+        assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
+        assertThat(storyMeta.getProperty("ignore"), equalTo("true"));
+        assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
+        Scenario scenario = story.getScenarios().get(0);
+        Meta scenarioMeta = scenario.getMeta();
+        assertThat(scenarioMeta.getProperty("authors"), equalTo("Mauro Paul"));
+    }
+    
     @Test
     public void shouldParseStoryWithSimpleSteps() {
         String wholeStory = "Given a scenario" + NL +

@@ -6,7 +6,7 @@
 
 <body>
 
-<h2>Providing meta information</h2>
+<h2>Providing Meta Information</h2>
 
 <p>BDD encourages as much information as is meaningful to the
 business to be included in the stories and scenarios. But as these
@@ -20,26 +20,43 @@ specification of meta information, both at story and scenario level.</p>
 <pre class="brush: bdd">
     Meta:
     @author Mauro
-    @theme UI
+    @themes UI Usability
 
     Scenario:  A scenario in which the user can view all relevant information via UI    
     Meta:
-    @ignore false    
+    @skip false    
     Given ... // normal scenario steps
 
     Scenario:  A scenario which we cannot run every time due to some technical contraint
     Meta:
-    @ignore true    
+    @skip true    
     Given ... // normal scenario steps
-
 </pre>
 
 <p>When JBehave encounters the keyword <b>Meta:</b>, it collects the
-following pairs of properties, where the property name is prefixed by <b>@</b>.
-The meta property names are not constrained by JBehave, so the user can
-chose whatever names are appropriate. JBehave simply collects them as
-part of the story and scenario and makes them available for arbitrary
-purposes, e.g. filtering in the running of the stories.</p>
+provided name-value properties, separated by property keyword <b>@</b>.
+Both keywords are configurable and localizable.</p>
+
+<p>By convention, the first space in the property separates the name
+from the value, e.g. in the property "themes UI Usability", the name is
+"themes" and the value is "UI Usability".</p>
+
+<p>Note that spaces are also allowed after the property keyword <b>@</b>,
+but these will be ignored in the parsing. E.g. if we wrote:</p>
+
+<pre class="brush: bdd">
+    Meta:
+    @ author Mauro
+    @ themes UI Usability
+</pre>
+
+<p>the property names would still be "author" and "themes".</p>
+
+<p>It is important to note that the meta property names are not
+constrained so users can chose whatever names are most appropriate for
+the information they are trying to convey. The properties are collected
+as part of the story and scenario parsing and made available for
+arbitrary purposes, e.g. filtering in the running of the stories.</p>
 
 <div class="clear">
 <hr />
