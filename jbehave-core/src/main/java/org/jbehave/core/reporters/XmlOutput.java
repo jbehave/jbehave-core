@@ -51,7 +51,7 @@ public class XmlOutput extends PrintStreamOutput {
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("metaStart", "<meta>\n");
-        patterns.setProperty("metaProperty", "<property prefix=\"{0}\" name=\"{1}\" value=\"{2}\"/>\n");        
+        patterns.setProperty("metaProperty", "<property keyword=\"{0}\" name=\"{1}\" value=\"{2}\"/>\n");        
         patterns.setProperty("metaEnd", "</meta>\n");
         patterns.setProperty("successful", "<step outcome=\"successful\">{0}</step>\n");
         patterns.setProperty("ignorable", "<step outcome=\"ignorable\">{0}</step>\n");

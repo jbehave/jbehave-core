@@ -75,10 +75,10 @@ public class RegexStoryParser implements StoryParser {
 
     private Meta createMeta(String meta) {
         Properties properties = new Properties();
-        for (String pair : meta.split(keywords.metaPrefix())) {
-            if ( StringUtils.isNotEmpty(pair) ){
-                String key = StringUtils.substringBefore(pair, SPACE).trim();
-                String value = StringUtils.substringAfter(pair, SPACE).trim();
+        for (String propertyPair : meta.split(keywords.metaProperty())) {
+            if ( StringUtils.isNotEmpty(propertyPair) ){
+                String key = StringUtils.substringBefore(propertyPair, SPACE).trim();
+                String value = StringUtils.substringAfter(propertyPair, SPACE).trim();
                 properties.setProperty(key, value);                
             }
         }
