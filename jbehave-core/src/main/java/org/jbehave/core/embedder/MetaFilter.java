@@ -27,9 +27,9 @@ import org.jbehave.core.model.Meta;
  * 
  * </p>
  */
-public class Filter {
+public class MetaFilter {
 
-    public static final Filter EMPTY = new Filter();
+    public static final MetaFilter EMPTY = new MetaFilter();
 
     private static final String SPACE = " ";
     private final Properties include = new Properties();
@@ -37,15 +37,15 @@ public class Filter {
     private final String filterAsString;
     private final FilterMonitor monitor;
 
-    public Filter() {
+    public MetaFilter() {
         this("");
     }
 
-    public Filter(String filterAsString) {
+    public MetaFilter(String filterAsString) {
         this(filterAsString, new PrintStreamFilterMonitor());
     }
 
-    public Filter(String filterAsString, FilterMonitor monitor) {
+    public MetaFilter(String filterAsString, FilterMonitor monitor) {
         this.filterAsString = filterAsString;
         this.monitor = monitor;
         parse(include, "+");
@@ -118,7 +118,7 @@ public class Filter {
 
     public static interface FilterMonitor {
 
-        void notAllowed(Filter filter, Meta meta);
+        void notAllowed(MetaFilter filter, Meta meta);
 
     }
 
@@ -134,7 +134,7 @@ public class Filter {
             this.out = out;
         }
 
-        public void notAllowed(Filter filter, Meta meta) {
+        public void notAllowed(MetaFilter filter, Meta meta) {
             out.println(filter + " does not allow " + meta);
         }
 

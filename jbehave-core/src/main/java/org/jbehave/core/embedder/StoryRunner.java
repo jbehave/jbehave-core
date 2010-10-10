@@ -59,11 +59,11 @@ public class StoryRunner {
      * @param filter the Filter to apply to the story Meta
 	 * @throws Throwable if failures occurred and FailureStrategy dictates it to be re-thrown.
 	 */
-    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, Filter filter) throws Throwable {
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter) throws Throwable {
         run(configuration, candidateSteps, story, filter, false);
     }
 
-    private void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, Filter filter, boolean givenStory) throws Throwable {
+    private void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter, boolean givenStory) throws Throwable {
         stepCollector = configuration.stepCollector();
         reporter = reporterFor(configuration, story, givenStory);
         pendingStepStrategy = configuration.pendingStepStrategy();
@@ -134,7 +134,7 @@ public class StoryRunner {
 	}
 	
     private void runGivenStories(Configuration configuration,
-                                 List<CandidateSteps> candidateSteps, Scenario scenario, Filter filter)
+                                 List<CandidateSteps> candidateSteps, Scenario scenario, MetaFilter filter)
             throws Throwable {
         List<String> storyPaths = scenario.getGivenStoryPaths();
         if (storyPaths.size() > 0) {

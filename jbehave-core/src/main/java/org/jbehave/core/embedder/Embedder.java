@@ -32,7 +32,7 @@ public class Embedder {
     private EmbedderControls embedderControls = new EmbedderControls();
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
-    private Filter filter = Filter.EMPTY;
+    private MetaFilter metaFilter = MetaFilter.EMPTY;
 
     public Embedder() {
         this(new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -158,7 +158,7 @@ public class Embedder {
             try {
                 embedderMonitor.runningStory(storyPath);
                 Story story = storyRunner.storyOfPath(configuration, storyPath);
-                storyRunner.run(configuration, candidateSteps, story, filter);
+                storyRunner.run(configuration, candidateSteps, story, metaFilter);
             } catch (Throwable e) {
                 if (embedderControls.batch()) {
                     // collect and postpone decision to throw exception
@@ -261,8 +261,8 @@ public class Embedder {
         return embedderMonitor;
     }
 
-    public Filter filter(){
-        return filter;
+    public MetaFilter metaFilter(){
+        return metaFilter;
     }
     
     public StoryRunner storyRunner() {
@@ -285,8 +285,8 @@ public class Embedder {
         this.embedderMonitor = embedderMonitor;
     }
 
-    public void useFilter(Filter filter){
-        this.filter = filter;        
+    public void useMetaFilter(MetaFilter metaFilter){
+        this.metaFilter = metaFilter;        
     }
 
     public void useStoryRunner(StoryRunner storyRunner) {

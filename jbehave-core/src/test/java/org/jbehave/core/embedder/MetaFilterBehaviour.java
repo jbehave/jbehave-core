@@ -5,12 +5,12 @@ import static org.hamcrest.Matchers.equalTo;
 
 import org.junit.Test;
 
-public class FilterBehaviour {
+public class MetaFilterBehaviour {
 
     @Test
     public void shouldParseIncludesAndExcludes(){
         String filterAsString = "+author Mauro -theme smoke testing +map UI -author Paul";
-        Filter filter = new Filter(filterAsString);
+        MetaFilter filter = new MetaFilter(filterAsString);
         assertThat(filter.asString(), equalTo(filterAsString));
         assertThat(filter.include().toString(), equalTo("{author=Mauro, map=UI}"));
         assertThat(filter.exclude().toString(), equalTo("{author=Paul, theme=smoke testing}"));
