@@ -98,6 +98,11 @@ public abstract class AbstractEmbedderTask extends Task {
      * Used to find story paths and class names
      */
     private String storyFinderClass = StoryFinder.class.getName();
+    
+    /**
+     * The meta filter
+     */
+    private String metaFilter = "";
 
     /**
      * Determines if the scope of the source directory is "test"
@@ -184,7 +189,9 @@ public abstract class AbstractEmbedderTask extends Task {
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
-        embedder.useEmbedderMonitor(embedderMonitor());
+        EmbedderMonitor embedderMonitor = embedderMonitor();
+        embedder.useEmbedderMonitor(embedderMonitor);
+        embedder.useMetaFilter(new MetaFilter(metaFilter, embedderMonitor));
         embedder.useEmbedderControls(embedderControls());
         return embedder;
     }
@@ -310,4 +317,9 @@ public abstract class AbstractEmbedderTask extends Task {
     public void setStoryFinderClass(String storyFinderClass){
         this.storyFinderClass = storyFinderClass;
     }
+    
+    public void setMetaFilter(String metaFilter){
+        this.metaFilter = metaFilter;        
+    }
+    
 }

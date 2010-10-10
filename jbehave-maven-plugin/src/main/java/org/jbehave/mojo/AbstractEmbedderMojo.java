@@ -137,7 +137,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
      */
     protected String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
-
+    
     /**
      * Used to find story paths and class names
      * 
@@ -145,6 +145,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      */
     String storyFinderClass = StoryFinder.class.getName();
 
+    /**
+     * The meta filter
+     * 
+     * @parameter default-value=""
+     */
+    String metaFilter = "";
+    
     /**
      * Determines if the scope of the mojo classpath is "test"
      * 
@@ -229,7 +236,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
-        embedder.useEmbedderMonitor(embedderMonitor());
+        EmbedderMonitor embedderMonitor = embedderMonitor();
+        embedder.useEmbedderMonitor(embedderMonitor);
+        embedder.useMetaFilter(new MetaFilter(metaFilter, embedderMonitor));
         embedder.useEmbedderControls(embedderControls());
         return embedder;
     }

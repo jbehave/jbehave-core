@@ -21,6 +21,7 @@
     <include.embeddables>**/stories/*.java</include.embeddables>
     <include.paths>**/stories/*.story</include.paths>
     <include.annotated.embedders>**/AnnotatedEmbedderUsing*.java</include.annotated.embedders>
+    <meta.filter></meta.filter>
     <annotated.embedder.runner>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotated.embedder.runner>
     <jbehave.version>${project.version}</jbehave.version>
   </properties>
@@ -133,6 +134,7 @@
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
+              <metaFilter>${meta.filter}</metaFilter>
             </configuration>
             <goals>
               <goal>run-stories-as-embeddables</goal>
