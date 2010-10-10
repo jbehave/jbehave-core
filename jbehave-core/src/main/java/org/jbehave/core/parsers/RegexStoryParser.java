@@ -5,8 +5,9 @@ import static java.util.regex.Pattern.compile;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,8 +29,6 @@ public class RegexStoryParser implements StoryParser {
 
     private static final String NONE = "";
     private static final String COMMA = ",";
-    private static final String SPACE = " ";
-
     private final Keywords keywords;
 
     public RegexStoryParser() {
@@ -74,13 +73,10 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Meta createMeta(String meta) {
-        Properties properties = new Properties();
+        Set<String> properties = new HashSet<String>();
         for (String property : meta.split(keywords.metaProperty())) {
-            String trimmed = property.trim();
-            if ( StringUtils.isNotEmpty(trimmed) ){
-                String key = StringUtils.substringBefore(trimmed, SPACE).trim();
-                String value = StringUtils.substringAfter(trimmed, SPACE).trim();
-                properties.setProperty(key, value);                
+            if ( !StringUtils.isBlank(property) ){
+                properties.add(property);
             }
         }
         return new Meta(properties);            

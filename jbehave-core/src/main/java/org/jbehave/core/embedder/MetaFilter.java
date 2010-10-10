@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Meta.Property;
 
 /**
  * <p>
@@ -30,7 +31,6 @@ public class MetaFilter {
 
     public static final MetaFilter EMPTY = new MetaFilter();
 
-    private static final String SPACE = " ";
     private final Properties include = new Properties();
     private final Properties exclude = new Properties();
     private final String filterAsString;
@@ -54,10 +54,8 @@ public class MetaFilter {
     private void parse(Properties properties, String prefix) {
         properties.clear();
         for (String found : found(prefix)) {
-            String property = StringUtils.removeStartIgnoreCase(found, prefix);
-            String name = StringUtils.substringBefore(property, SPACE).trim();
-            String value = StringUtils.substringAfter(property, SPACE).trim();
-            properties.setProperty(name, value);
+            Property property = new Property(StringUtils.removeStartIgnoreCase(found, prefix));            
+            properties.setProperty(property.getName(), property.getValue());
         }
     }
 
