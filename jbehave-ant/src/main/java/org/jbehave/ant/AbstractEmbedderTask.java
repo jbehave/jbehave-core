@@ -16,10 +16,12 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
+import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.model.Meta;
 
 /**
  * Abstract task that holds all the configuration parameters to specify and load
@@ -198,6 +200,10 @@ public abstract class AbstractEmbedderTask extends Task {
 
         public void embeddablesSkipped(List<String> classNames) {
             log("Skipped embeddables " + classNames, MSG_INFO);                        
+        }
+
+        public void metaNotAllowed(Meta meta, MetaFilter filter) {
+            log(meta +" not allowed by "+filter.asString(), MSG_INFO);        
         }
 
         public void runningEmbeddable(String name) {

@@ -1,6 +1,5 @@
 package org.jbehave.core.embedder;
 
-import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -35,17 +34,17 @@ public class MetaFilter {
     private final Properties include = new Properties();
     private final Properties exclude = new Properties();
     private final String filterAsString;
-    private final FilterMonitor monitor;
+    private final EmbedderMonitor monitor;
 
     public MetaFilter() {
         this("");
     }
 
     public MetaFilter(String filterAsString) {
-        this(filterAsString, new PrintStreamFilterMonitor());
+        this(filterAsString, new PrintStreamEmbedderMonitor());
     }
 
-    public MetaFilter(String filterAsString, FilterMonitor monitor) {
+    public MetaFilter(String filterAsString, EmbedderMonitor monitor) {
         this.filterAsString = filterAsString;
         this.monitor = monitor;
         parse(include, "+");
@@ -76,16 +75,16 @@ public class MetaFilter {
     }
 
     public boolean allow(Meta meta) {
-        boolean allow = true;
+        boolean allowed = true;
         if (!include.isEmpty() && exclude.isEmpty()) {
-            allow = match(include, meta);
+            allowed = match(include, meta);
         } else if (include.isEmpty() && !exclude.isEmpty()) {
-            allow = !match(exclude, meta);
+            allowed = !match(exclude, meta);
         }
-        if (!allow) {
-            monitor.notAllowed(this, meta);
+        if (!allowed) {
+            monitor.metaNotAllowed(meta, this);
         }
-        return allow;
+        return allowed;
     }
 
     private boolean match(Properties properties, Meta meta) {
@@ -116,27 +115,4 @@ public class MetaFilter {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
-    public static interface FilterMonitor {
-
-        void notAllowed(MetaFilter filter, Meta meta);
-
-    }
-
-    public static class PrintStreamFilterMonitor implements FilterMonitor {
-
-        private PrintStream out;
-
-        public PrintStreamFilterMonitor() {
-            this(System.out);
-        }
-
-        public PrintStreamFilterMonitor(PrintStream out) {
-            this.out = out;
-        }
-
-        public void notAllowed(MetaFilter filter, Meta meta) {
-            out.println(filter + " does not allow " + meta);
-        }
-
-    }
 }

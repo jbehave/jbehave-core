@@ -10,10 +10,12 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
+import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.model.Meta;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -256,6 +258,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("Skipped embeddables " + classNames);            
         }
 
+        public void metaNotAllowed(Meta meta, MetaFilter filter) {
+            getLog().info(meta +" not allowed by "+filter.asString());        
+        }
+        
         public void runningEmbeddable(String name) {
             getLog().info("Running embeddable " + name);
         }

@@ -8,6 +8,7 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.model.Meta;
 
 /**
  * Monitor that reports to a {@link PrintStream}, defaulting to
@@ -35,6 +36,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
 
     public void embeddablesSkipped(List<String> classNames) {
         print("Skipped embeddables "+classNames);        
+    }
+    
+    public void metaNotAllowed(Meta meta, MetaFilter filter) {
+        print(meta +" not allowed by "+filter.asString());        
     }
 
     public void runningEmbeddable(String name) {

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.model.Meta;
 
 
 
@@ -16,6 +17,8 @@ public interface EmbedderMonitor {
     
     void embeddablesSkipped(List<String> classNames);
 
+    void metaNotAllowed(Meta meta, MetaFilter filter);
+    
     void runningStory(String path);
 
     void storyFailed(String path, Throwable cause);
