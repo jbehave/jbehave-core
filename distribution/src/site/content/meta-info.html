@@ -58,6 +58,29 @@ the information they are trying to convey. The properties are collected
 as part of the story and scenario parsing and made available for
 arbitrary purposes, e.g. filtering in the running of the stories.</p>
 
+<h2>Filtering on Meta Information</h2>
+
+<p>Once we have defined the meta properties, we can use a filter to
+allow or not the running of a given story or scenario based on the meta
+information. The filtering is controlled by the <a
+	href="javadoc/core/org/jbehave/core/embedder/MetaFilter.html">MetaFilter</a>
+via the <a href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>:
+</p>
+
+<pre class="brush: java">
+
+    Embedder embedder = ... // define as required
+    embedder.useMetaFilter(new MetaFilter("+author Mauro -skip true");
+    
+</pre>
+
+<p>The filter is expressed as sequence of meta properties, where the
+property keyword "@" is replaced by "+" or "-" according to whether the
+property should be included or excluded by the filter.</p>
+
+<p>The meta filter can also be specified via Ant or Maven, using the
+"metaFilter" attribute or configuration element.</p>
+
 <div class="clear">
 <hr />
 </div>
