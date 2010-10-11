@@ -22,7 +22,7 @@ import org.jbehave.core.model.Meta.Property;
  * by a space), prefixed by "+" for inclusion and "-" for exclusion. E.g.:
  * 
  * <pre>
- * new Filter("+author Mauro -theme smoke testing +map UI -author Paul")
+ * new Filter("+author Mauro -theme smoke testing +map *API -skip")
  * </pre>
  * 
  * </p>
@@ -60,7 +60,7 @@ public class MetaFilter {
     }
 
     private Set<String> found(String prefix) {
-        Matcher matcher = findAllPrefixedWords(prefix).matcher(filterAsString);
+        Matcher matcher = findAllPrefixed(prefix).matcher(filterAsString);
         Set<String> found = new HashSet<String>();
         while (matcher.find()) {
             found.add(matcher.group().trim());
@@ -68,8 +68,8 @@ public class MetaFilter {
         return found;
     }
 
-    private Pattern findAllPrefixedWords(String prefix) {
-        return Pattern.compile("(\\" + prefix + "(\\w|\\s)*)", Pattern.DOTALL);
+    private Pattern findAllPrefixed(String prefix) {
+        return Pattern.compile("(\\" + prefix + "(\\w|\\s|\\*)*)", Pattern.DOTALL);
     }
 
     public boolean allow(Meta meta) {
@@ -87,9 +87,16 @@ public class MetaFilter {
 
     private boolean match(Properties properties, Meta meta) {
         for (Object key : properties.keySet()) {
+            String property = (String)properties.get(key);
             for (String metaName : meta.getPropertyNames()) {
                 if (key.equals(metaName)) {
-                    return properties.get(key).equals(meta.getProperty(metaName));
+                    String value = meta.getProperty(metaName);
+                    if ( StringUtils.isBlank(value) ){
+                        return true;
+                    } else if ( property.contains("*") ){
+                        return value.matches(property.replace("*", ".*"));
+                    }
+                    return properties.get(key).equals(value);
                 }
             }
         }

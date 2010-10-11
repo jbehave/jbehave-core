@@ -1,6 +1,6 @@
 Story: Any free-text description can go here (and Story: is also optional)
 
-Meta: @theme trading @ignore true
+Meta: @theme trading @skip
 
 Narrative: The narrative is keyword based
 

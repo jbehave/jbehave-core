@@ -5,9 +5,7 @@ import static java.util.regex.Pattern.compile;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -73,7 +71,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Meta createMeta(String meta) {
-        Set<String> properties = new HashSet<String>();
+        List<String> properties = new ArrayList<String>();
         for (String property : meta.split(keywords.metaProperty())) {
             if ( !StringUtils.isBlank(property) ){
                 properties.add(property);

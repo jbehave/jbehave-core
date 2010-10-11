@@ -1,5 +1,7 @@
 package org.jbehave.core.model;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -24,13 +26,13 @@ public class Meta {
         this.properties = properties;
     }
 
-    public Meta(Set<String> properties) {
+    public Meta(List<String> properties) {
         this.properties = new Properties();
         parse(properties);
     }
 
-    private void parse(Set<String> propertiesAsString) {
-        for (String propertyAsString : propertiesAsString) {
+    private void parse(List<String> propertiesAsString) {
+        for (String propertyAsString : new HashSet<String>(propertiesAsString)) {
             Property property = new Property(propertyAsString);
             this.properties.setProperty(property.getName(), property.getValue());
         }
