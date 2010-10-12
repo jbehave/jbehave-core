@@ -62,12 +62,20 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Meta parseStoryMetaFrom(String storyAsText) {
-        Matcher findingMeta = patternToPullStoryMetaIntoGroupOne().matcher(storyAsText);
+        Matcher findingMeta = patternToPullStoryMetaIntoGroupOne().matcher(preScenarioText(storyAsText));
         if (findingMeta.matches()) {
             String meta = findingMeta.group(1).trim();
             return createMeta(meta);
         }
         return Meta.EMPTY;
+    }
+
+    private String preScenarioText(String storyAsText) {
+        String[] split = storyAsText.split(keywords.scenario());
+        if ( split.length > 0 ){
+            return split[0];
+        }
+        return storyAsText;
     }
 
     private Meta createMeta(String meta) {
@@ -187,8 +195,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern patternToPullStoryMetaIntoGroupOne() {
-        String narrativeOrScenario = concatenateWithOr(keywords.narrative(), keywords.scenario());
-        return compile(".*" + keywords.meta() + "(.*?)\\s*(" + narrativeOrScenario + ").*", DOTALL);
+        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + keywords.narrative() + ").*", DOTALL);
     }
 
     private Pattern patternToPullNarrativeIntoGroupOne() {

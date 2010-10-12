@@ -43,27 +43,28 @@ public class RegexStoryParserBehaviour {
 
     @Test
     public void shouldParseStoryWithMeta() {
-        String wholeStory = "Meta: @theme parsing @ignore true" + NL +
+        String wholeStory = "Meta: @theme parsing @skip" + NL +
                 "Scenario: " + NL +
                 "Meta: @author Mauro" + NL +
-                "Given a scenario " + NL +
-                "When I parse it" + NL +
-                "Then I should get steps";
+                "Given a step " + NL +
+                "Scenario: " + NL +
+                "Meta: @author Paul" + NL +
+                "Given another step ";
         Story story = parser.parseStory(
                 wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
         Meta storyMeta = story.getMeta();
         assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
-        assertThat(storyMeta.getProperty("ignore"), equalTo("true"));
+        assertThat(storyMeta.getProperty("skip"), equalTo(""));
         assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
-        Scenario scenario = story.getScenarios().get(0);
-        Meta scenarioMeta = scenario.getMeta();
-        assertThat(scenarioMeta.getProperty("author"), equalTo("Mauro"));
+        List<Scenario> scenarios = story.getScenarios();
+        assertThat(scenarios.get(0).getMeta().getProperty("author"), equalTo("Mauro"));
+        assertThat(scenarios.get(1).getMeta().getProperty("author"), equalTo("Paul"));
     }
     
     @Test
     public void shouldAllowSpacesInMetaProperties() {
-        String wholeStory = "Meta: @ theme parsing @ ignore true" + NL +
+        String wholeStory = "Meta: @ theme parsing @ skip" + NL +
                 "Scenario: " + NL +
                 "Meta: @authors Mauro Paul" + NL +
                 "Given a scenario " + NL +
@@ -74,11 +75,8 @@ public class RegexStoryParserBehaviour {
         assertThat(story.getPath(), equalTo(storyPath));
         Meta storyMeta = story.getMeta();
         assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
-        assertThat(storyMeta.getProperty("ignore"), equalTo("true"));
-        assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
-        Scenario scenario = story.getScenarios().get(0);
-        Meta scenarioMeta = scenario.getMeta();
-        assertThat(scenarioMeta.getProperty("authors"), equalTo("Mauro Paul"));
+        assertThat(storyMeta.getProperty("skip"), equalTo(""));
+        assertThat(story.getScenarios().get(0).getMeta().getProperty("authors"), equalTo("Mauro Paul"));
     }
     
     @Test

@@ -8,7 +8,7 @@ Meta:
 
 @skip
 
-Given the wind blows
+Given I do nothing
 
 Scenario: A scenario with an author
 
@@ -16,5 +16,5 @@ Meta:
 
 @author Mauro
 
-Given the wind blows
+Given I do nothing
 
