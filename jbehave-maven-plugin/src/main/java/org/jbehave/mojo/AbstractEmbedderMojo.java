@@ -268,7 +268,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void metaNotAllowed(Meta meta, MetaFilter filter) {
-            getLog().info(meta +" not allowed by "+filter.asString());        
+            getLog().info(meta +" not allowed by filter '"+filter.asString()+"'");        
         }
         
         public void runningEmbeddable(String name) {

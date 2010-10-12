@@ -210,7 +210,7 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void metaNotAllowed(Meta meta, MetaFilter filter) {
-            log(meta +" not allowed by "+filter.asString(), MSG_INFO);        
+            log(meta +" not allowed by filter '"+filter.asString()+"'", MSG_INFO);        
         }
 
         public void runningEmbeddable(String name) {

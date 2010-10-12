@@ -22,7 +22,7 @@ import org.jbehave.core.model.Meta.Property;
  * by a space), prefixed by "+" for inclusion and "-" for exclusion. E.g.:
  * 
  * <pre>
- * new Filter("+author Mauro -theme smoke testing +map *API -skip")
+ * new Filter(&quot;+author Mauro -theme smoke testing +map *API -skip&quot;)
  * </pre>
  * 
  * </p>
@@ -54,7 +54,7 @@ public class MetaFilter {
     private void parse(Properties properties, String prefix) {
         properties.clear();
         for (String found : found(prefix)) {
-            Property property = new Property(StringUtils.removeStartIgnoreCase(found, prefix));            
+            Property property = new Property(StringUtils.removeStartIgnoreCase(found, prefix));
             properties.setProperty(property.getName(), property.getValue());
         }
     }
@@ -73,11 +73,15 @@ public class MetaFilter {
     }
 
     public boolean allow(Meta meta) {
-        boolean allowed = true;
+        boolean allowed;
         if (!include.isEmpty() && exclude.isEmpty()) {
             allowed = match(include, meta);
         } else if (include.isEmpty() && !exclude.isEmpty()) {
             allowed = !match(exclude, meta);
+        } else if (!include.isEmpty() && !exclude.isEmpty()) {
+            allowed = match(merge(include, exclude), meta) && !match(exclude, meta);
+        } else {
+            allowed = true;
         }
         if (!allowed) {
             monitor.metaNotAllowed(meta, this);
@@ -85,15 +89,29 @@ public class MetaFilter {
         return allowed;
     }
 
+    private Properties merge(Properties include, Properties exclude) {
+        Set<Object> in = new HashSet<Object>(include.keySet());
+        in.addAll(exclude.keySet());
+        Properties merged = new Properties();
+        for (Object key : in) {
+            if (include.containsKey(key)) {
+                merged.put(key, include.get(key));
+            } else if (exclude.containsKey(key)) {
+                merged.put(key, exclude.get(key));
+            }
+        }
+        return merged;
+    }
+
     private boolean match(Properties properties, Meta meta) {
         for (Object key : properties.keySet()) {
-            String property = (String)properties.get(key);
+            String property = (String) properties.get(key);
             for (String metaName : meta.getPropertyNames()) {
                 if (key.equals(metaName)) {
                     String value = meta.getProperty(metaName);
-                    if ( StringUtils.isBlank(value) ){
+                    if (StringUtils.isBlank(value)) {
                         return true;
-                    } else if ( property.contains("*") ){
+                    } else if (property.contains("*")) {
                         return value.matches(property.replace("*", ".*"));
                     }
                     return properties.get(key).equals(value);

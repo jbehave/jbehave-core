@@ -20,23 +20,40 @@ public class MetaFilterBehaviour {
 
     @Test
     public void shouldFilterByNameAndValue() {
-        assertAllowed("+theme smoke testing", "theme smoke testing", true);
-        assertAllowed("+theme smoke testing", "theme testing", false);
+        assertFilterAllowsProperty("+theme smoke testing", "theme smoke testing", true);
+        assertFilterAllowsProperty("+theme smoke testing", "theme testing", false);
     }
 
     @Test
     public void shouldFilterByNameOnly() {
-        assertAllowed("-skip", "skip", false);
+        assertFilterAllowsProperty("-skip", "skip", false);
+    }
+    
+    @Test
+    public void shouldFilterWithBothIncludeAndExclude() {
+        assertFilterAllowsProperty("+theme smoke testing -skip", "theme smoke testing", true);
+        assertFilterAllowsProperty("+theme smoke testing -skip", "skip", false);
+        assertFilterAllowsProperty("+theme smoke testing", "theme smoke testing", true);
+        assertFilterAllowsProperty("+theme smoke testing", "theme testing", false);
+        assertFilterAllowsProperty("-skip", "theme testing", true);
+        assertFilterAllowsProperty("-skip", "skip", false);
+        assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme smoke testing", true);
+        assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme UI", false);
+    }
+
+    @Test
+    public void shouldFilterWithIncludeWinningOverExclude() {
+        assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme smoke testing", true);
+        assertFilterAllowsProperty("+theme smoke testing -theme UI", "theme UI", false);
     }
 
     @Test
     public void shouldFilterByValueWithAsterisk() {
-        assertAllowed("+map *API", "map Service API", true);
+        assertFilterAllowsProperty("+map *API", "map Service API", true);
     }
 
-    private void assertAllowed(String filterAsString, String property, boolean allowed) {
-        MetaFilter filter = new MetaFilter(filterAsString);
-        assertThat(filter.allow(new Meta(asList(property))), equalTo(allowed));
+    private void assertFilterAllowsProperty(String filter, String property, boolean allowed) {
+        assertThat(new MetaFilter(filter).allow(new Meta(asList(property))), equalTo(allowed));
     }
 
 }
