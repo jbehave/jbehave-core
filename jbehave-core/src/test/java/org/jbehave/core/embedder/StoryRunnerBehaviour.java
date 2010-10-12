@@ -13,6 +13,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -448,6 +450,53 @@ public class StoryRunnerBehaviour {
 
     }
 
+    @Test
+    public void shouldNotRunStoriesNotAllowedByFilter() throws Throwable {
+        // Given
+        StoryReporter reporter = mock(StoryReporter.class);
+        StepCollector collector = mock(StepCollector.class);
+        CandidateSteps mySteps = new Steps();
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
+                Arrays.<Step>asList());
+        Meta meta = mock(Meta.class);
+        Story story = new Story("", Description.EMPTY, meta, Narrative.EMPTY, asList(new Scenario()));
+        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+        MetaFilter filter = mock(MetaFilter.class);
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        when(filter.allow(meta)).thenReturn(false);
+        runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
+
+        // Then
+        verify(reporter, never()).beforeStory(story, false);
+    }
+
+    
+    @Test
+    public void shouldNotRunScenariosNotAllowedByFilter() throws Throwable {
+        // Given
+        StoryReporter reporter = mock(StoryReporter.class);
+        StepCollector collector = mock(StepCollector.class);
+        CandidateSteps mySteps = new Steps();
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
+                Arrays.<Step>asList());
+        Meta meta = mock(Meta.class);
+        Story story = new Story("", Description.EMPTY, Meta.EMPTY, Narrative.EMPTY, asList(new Scenario("", meta, asList(""), new ExamplesTable(""), asList(""))));
+        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+        MetaFilter filter = mock(MetaFilter.class);
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        when(filter.allow(Meta.EMPTY)).thenReturn(true);
+        when(filter.allow(meta)).thenReturn(false);
+        runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
+
+        // Then
+        verify(reporter).beforeStory(story, false);
+        verify(reporter, never()).beforeScenario("");
+    }
+    
     private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean givenStory, StepCollector collector, CandidateSteps mySteps) {
         List<Step> steps = asList();
         when(collector.collectBeforeOrAfterStorySteps(asList(mySteps), story, Stage.BEFORE, givenStory)).thenReturn(steps);
