@@ -71,7 +71,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-     List<String> compileClasspathElements;
+    List<String> compileClasspathElements;
 
     /**
      * Test classpath.
@@ -80,7 +80,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-     List<String> testClasspathElements;
+    List<String> testClasspathElements;
 
     /**
      * The boolean flag to skip stories
@@ -137,7 +137,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
      */
     protected String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
-    
+
     /**
      * Used to find story paths and class names
      * 
@@ -148,10 +148,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     /**
      * The meta filter
      * 
-     * @parameter default-value=""
+     * @parameter
      */
-    String metaFilter = "";
-    
+    String metaFilter;
+
     /**
      * Determines if the scope of the mojo classpath is "test"
      * 
@@ -187,8 +187,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     /**
-     * Finds story paths, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
-     * specified {@link #includes} and {@link #excludes}.
+     * Finds story paths, using the {@link #newStoryFinder()}, in the
+     * {@link #searchDirectory()} given specified {@link #includes} and
+     * {@link #excludes}.
      * 
      * @return A List of story paths found
      */
@@ -200,8 +201,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     /**
-     * Finds class names, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
-     * specified {@link #includes} and {@link #excludes}.
+     * Finds class names, using the {@link #newStoryFinder()}, in the
+     * {@link #searchDirectory()} given specified {@link #includes} and
+     * {@link #excludes}.
      * 
      * @return A List of class names found
      */
@@ -220,7 +222,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     protected StoryFinder newStoryFinder() {
         return createClassLoader().newInstance(StoryFinder.class, storyFinderClass);
     }
-    
+
     /**
      * Creates an instance of Embedder, either using
      * {@link #injectableEmbedderClass} (if set) or defaulting to
@@ -238,7 +240,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
-        embedder.useMetaFilter(new MetaFilter(metaFilter, embedderMonitor));
+        if (metaFilter != null) {
+            embedder.useMetaFilter(new MetaFilter(metaFilter, embedderMonitor));
+        }
         embedder.useEmbedderControls(embedderControls());
         return embedder;
     }
@@ -256,21 +260,21 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     protected class MavenEmbedderMonitor implements EmbedderMonitor {
 
         public void batchFailed(BatchFailures failures) {
-            getLog().warn("Failed to run batch " + failures);            
+            getLog().warn("Failed to run batch " + failures);
         }
 
         public void embeddableFailed(String name, Throwable cause) {
-            getLog().warn("Failed to run embeddable " + name, cause);            
+            getLog().warn("Failed to run embeddable " + name, cause);
         }
 
         public void embeddablesSkipped(List<String> classNames) {
-            getLog().info("Skipped embeddables " + classNames);            
+            getLog().info("Skipped embeddables " + classNames);
         }
 
         public void metaNotAllowed(Meta meta, MetaFilter filter) {
-            getLog().info(meta +" not allowed by filter '"+filter.asString()+"'");        
+            getLog().info(meta + " not allowed by filter '" + filter.asString() + "'");
         }
-        
+
         public void runningEmbeddable(String name) {
             getLog().info("Running embeddable " + name);
         }
@@ -280,7 +284,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void storiesSkipped(List<String> storyPaths) {
-            getLog().info("Skipped stories " + storyPaths);            
+            getLog().info("Skipped stories " + storyPaths);
         }
 
         public void storyFailed(String path, Throwable cause) {

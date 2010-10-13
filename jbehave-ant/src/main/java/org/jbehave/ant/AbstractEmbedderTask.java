@@ -43,14 +43,14 @@ public abstract class AbstractEmbedderTask extends Task {
     private String scope = "compile";
 
     /**
-     * Include filters, relative to the root source directory determined
-     * by the scope
+     * Include filters, relative to the root source directory determined by the
+     * scope
      */
     private List<String> includes = new ArrayList<String>();
 
     /**
-     * Exclude filters, relative to the root source directory determined
-     * by the scope
+     * Exclude filters, relative to the root source directory determined by the
+     * scope
      */
     private List<String> excludes = new ArrayList<String>();
 
@@ -98,11 +98,11 @@ public abstract class AbstractEmbedderTask extends Task {
      * Used to find story paths and class names
      */
     private String storyFinderClass = StoryFinder.class.getName();
-    
+
     /**
      * The meta filter
      */
-    private String metaFilter = "";
+    private String metaFilter;
 
     /**
      * Determines if the scope of the source directory is "test"
@@ -121,8 +121,8 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     /**
-     * Creates the EmbedderClassLoader with the classpath element of the selected
-     * scope
+     * Creates the EmbedderClassLoader with the classpath element of the
+     * selected scope
      * 
      * @return A EmbedderClassLoader
      */
@@ -141,8 +141,9 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     /**
-     * Finds story paths, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
-     * specified {@link #includes} and {@link #excludes}.
+     * Finds story paths, using the {@link #newStoryFinder()}, in the
+     * {@link #searchDirectory()} given specified {@link #includes} and
+     * {@link #excludes}.
      * 
      * @return A List of story paths found
      */
@@ -154,8 +155,9 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     /**
-     * Finds class names, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
-     * specified {@link #includes} and {@link #excludes}.
+     * Finds class names, using the {@link #newStoryFinder()}, in the
+     * {@link #searchDirectory()} given specified {@link #includes} and
+     * {@link #excludes}.
      * 
      * @return A List of class names found
      */
@@ -176,22 +178,25 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     /**
-     * Creates an instance of Embedder, either using {@link #injectableEmbedderClass} (if set)
-     * or defaulting to {@link #embedderClass}.
+     * Creates an instance of Embedder, either using
+     * {@link #injectableEmbedderClass} (if set) or defaulting to
+     * {@link #embedderClass}.
      * 
      * @return An Embedder
      */
     protected Embedder newEmbedder() {
         Embedder embedder = null;
         EmbedderClassLoader classLoader = createClassLoader();
-        if ( injectableEmbedderClass != null ){
+        if (injectableEmbedderClass != null) {
             embedder = classLoader.newInstance(InjectableEmbedder.class, injectableEmbedderClass).injectedEmbedder();
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
-        embedder.useMetaFilter(new MetaFilter(metaFilter, embedderMonitor));
+        if (metaFilter != null) {
+            embedder.useMetaFilter(new MetaFilter(metaFilter, embedderMonitor));
+        }
         embedder.useEmbedderControls(embedderControls());
         return embedder;
     }
@@ -202,15 +207,15 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void embeddableFailed(String name, Throwable cause) {
-            log("Failed to run embeddable " + name, cause, MSG_WARN);            
+            log("Failed to run embeddable " + name, cause, MSG_WARN);
         }
 
         public void embeddablesSkipped(List<String> classNames) {
-            log("Skipped embeddables " + classNames, MSG_INFO);                        
+            log("Skipped embeddables " + classNames, MSG_INFO);
         }
 
         public void metaNotAllowed(Meta meta, MetaFilter filter) {
-            log(meta +" not allowed by filter '"+filter.asString()+"'", MSG_INFO);        
+            log(meta + " not allowed by filter '" + filter.asString() + "'", MSG_INFO);
         }
 
         public void runningEmbeddable(String name) {
@@ -218,7 +223,7 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void storiesSkipped(List<String> storyPaths) {
-            log("Skipped stories " + storyPaths, MSG_INFO);                                    
+            log("Skipped stories " + storyPaths, MSG_INFO);
         }
 
         public void storyFailed(String path, Throwable cause) {
@@ -230,9 +235,9 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
-            log("Annotated instance "+annotatedInstance+" not of type "+type, MSG_WARN);            
+            log("Annotated instance " + annotatedInstance + " not of type " + type, MSG_WARN);
         }
-        
+
         public void generatingStoriesView(File outputDirectory, List<String> formats, Properties viewProperties) {
             log("Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'"
                     + " and view properties '" + viewProperties + "'", MSG_INFO);
@@ -245,8 +250,8 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
-            log("Stories view generated with " + stories +" stories containing "+ scenarios + " scenarios (of which  " + failedScenarios + " failed)",
-                    MSG_INFO);
+            log("Stories view generated with " + stories + " stories containing " + scenarios
+                    + " scenarios (of which  " + failedScenarios + " failed)", MSG_INFO);
         }
 
         public void storiesViewNotGenerated() {
@@ -313,13 +318,13 @@ public abstract class AbstractEmbedderTask extends Task {
     public void setAnnotatedEmbedderRunnerClass(String annotatedEmbedderRunnerClass) {
         this.annotatedEmbedderRunnerClass = annotatedEmbedderRunnerClass;
     }
-    
-    public void setStoryFinderClass(String storyFinderClass){
+
+    public void setStoryFinderClass(String storyFinderClass) {
         this.storyFinderClass = storyFinderClass;
     }
-    
-    public void setMetaFilter(String metaFilter){
-        this.metaFilter = metaFilter;        
+
+    public void setMetaFilter(String metaFilter) {
+        this.metaFilter = metaFilter;
     }
-    
+
 }

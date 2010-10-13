@@ -131,6 +131,13 @@ div.story h2 {
   margin-bottom: 10px;
 }
 
+.filter {
+  text-align: left;
+  color: red; 
+  margin-left: 10px;
+  margin-bottom: 10px;
+}
+
 div.keyword {
   margin-left: 10px;
 }

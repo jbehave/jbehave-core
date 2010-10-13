@@ -71,7 +71,6 @@ import org.jbehave.core.model.OutcomesTable.Outcome;
  */
 public abstract class PrintStreamOutput implements StoryReporter {
 
-    private static final String NOT_ALLOWED_BY = "!~"; //TODO i18n
     private static final String EMPTY = "";
 
     public enum Format { TXT, HTML, XML }
@@ -140,6 +139,15 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("outcomesTableEnd", "\n"));
 	}
 
+    public void storyNotAllowed(Story story, String filter) {
+        print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
+        if (!story.getMeta().isEmpty()) {
+            Meta meta = story.getMeta();
+            print(meta);
+        }
+        print(format("filter", "{0}\n", filter));
+    }
+
     public void beforeStory(Story story, boolean givenStory) {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
         if (!story.getMeta().isEmpty()) {
@@ -167,6 +175,12 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void givenStories(List<String> storyPaths) {
         print(format("givenStories", "{0} {1}\n", keywords.givenStories(), storyPaths));
+    }
+
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), scenario.getTitle()));
+        scenarioMeta(scenario.getMeta());
+        print(format("filter", "{0}\n", filter));
     }
 
     public void beforeScenario(String title) {
@@ -200,15 +214,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
             print(format("examplesStep", "{0}\n", step));
         }
         print(table);
-    }
-
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
-        print(format("scenarioNotAllowed", "{0} {1} {2} {3}\n", keywords.scenario(), scenario.getTitle(), NOT_ALLOWED_BY, filter));
-    }
-
-    public void storyNotAllowed(Story story, String filter) {
-        String storyKeyword = "Story"; //TODO i18n
-        print(format("storyNotAllowed", "{0} {1} {2} {3}\n", storyKeyword, story.getPath(), NOT_ALLOWED_BY, filter));
     }
 
 	private void print(ExamplesTable table) {
