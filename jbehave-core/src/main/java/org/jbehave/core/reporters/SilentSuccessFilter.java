@@ -47,6 +47,15 @@ public class SilentSuccessFilter implements StoryReporter {
         };
     }
 
+    public void storyNotAllowed(final Story story, final String filter) {
+        beforeStoryState = new State() {
+            public void report() {
+                delegate.storyNotAllowed(story, filter);
+            }
+        };
+        beforeStoryState.report();
+    }
+
     public void afterStory(boolean givenStory) {
         afterStoryState.report();
     }
@@ -121,6 +130,15 @@ public class SilentSuccessFilter implements StoryReporter {
         });
     }
 
+    public void scenarioNotAllowed(final Scenario scenario, final String filter) {
+        scenarioState = new State() {
+            public void report() {
+                delegate.scenarioNotAllowed(scenario, filter);
+            }
+        };
+        scenarioState.report();
+    }
+
     public void scenarioMeta(final Meta meta) {
         scenarioTodos = new ArrayList<Todo>();
         scenarioTodos.add(new Todo() {
@@ -162,14 +180,6 @@ public class SilentSuccessFilter implements StoryReporter {
         });
     }
     
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
-    }
-
-    public void storyNotAllowed(Story story, String filter) {
-    }
-
-
-
     private static interface Todo {
         void doNow();
     }

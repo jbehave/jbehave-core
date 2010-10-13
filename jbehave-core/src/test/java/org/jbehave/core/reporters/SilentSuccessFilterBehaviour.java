@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -33,6 +35,7 @@ public class SilentSuccessFilterBehaviour {
         filter.dryRun();
         filter.beforeStory(story, givenStory);
         filter.beforeScenario("My scenario 1");
+        filter.scenarioMeta(Meta.EMPTY);
         filter.successful("Given step 1.1");
         filter.ignorable("!-- ignore me");
         filter.successful("When step 1.2");
@@ -103,6 +106,27 @@ public class SilentSuccessFilterBehaviour {
 
         inOrder.verify(delegate).afterScenario();
         inOrder.verify(delegate).afterStory(givenStory);
+
+    }
+
+    @Test
+    public void shouldNotPassSilentlyOutputNotAllowedByMetaFilter() {
+        // Given
+        StoryReporter delegate = mock(StoryReporter.class);
+        SilentSuccessFilter filter = new SilentSuccessFilter(delegate);
+        Story story = new Story();
+        Scenario scenario = new Scenario();
+
+        String metaFilter = "";
+        // When
+        filter.storyNotAllowed(story, metaFilter);
+        filter.scenarioNotAllowed(scenario, metaFilter);
+
+        // Then
+        InOrder inOrder = inOrder(delegate);
+
+        inOrder.verify(delegate).storyNotAllowed(story, metaFilter);
+        inOrder.verify(delegate).scenarioNotAllowed(scenario, metaFilter);
 
     }
 

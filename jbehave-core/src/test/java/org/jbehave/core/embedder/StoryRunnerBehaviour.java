@@ -462,16 +462,18 @@ public class StoryRunnerBehaviour {
         Story story = new Story("", Description.EMPTY, meta, Narrative.EMPTY, asList(new Scenario()));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
         MetaFilter filter = mock(MetaFilter.class);
-
+        String filterAsString = "-some property";
+        
         // When
         StoryRunner runner = new StoryRunner();
         when(filter.allow(meta)).thenReturn(false);
+        when(filter.asString()).thenReturn(filterAsString);
         runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
 
         // Then
         verify(reporter, never()).beforeStory(story, false);
+        verify(reporter).storyNotAllowed(story, filterAsString);
     }
-
     
     @Test
     public void shouldNotRunScenariosNotAllowedByFilter() throws Throwable {
@@ -485,16 +487,19 @@ public class StoryRunnerBehaviour {
         Story story = new Story("", Description.EMPTY, Meta.EMPTY, Narrative.EMPTY, asList(new Scenario("", meta, asList(""), new ExamplesTable(""), asList(""))));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
         MetaFilter filter = mock(MetaFilter.class);
+        String filterAsString = "-some property";
 
         // When
         StoryRunner runner = new StoryRunner();
         when(filter.allow(Meta.EMPTY)).thenReturn(true);
         when(filter.allow(meta)).thenReturn(false);
+        when(filter.asString()).thenReturn(filterAsString);
         runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
 
         // Then
         verify(reporter).beforeStory(story, false);
         verify(reporter, never()).beforeScenario("");
+        verify(reporter).scenarioNotAllowed(story.getScenarios().get(0), filterAsString);
     }
     
     private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean givenStory, StepCollector collector, CandidateSteps mySteps) {

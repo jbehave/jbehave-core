@@ -16,10 +16,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Properties;
-
-import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -89,6 +88,29 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
+    public void shouldReportEventsToTxtOutputWhenNotAllowedByFilter() {
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new TxtOutput(new PrintStream(out));
+
+        // When
+        narrateAnInterestingStoryNotAllowedByFilter(reporter);
+
+        // Then
+        String expected = "An interesting story\n"
+                +"(/path/to/story)\n"
+                +"Meta:\n"
+                +"@author Mauro\n"
+                +"@theme testing\n\n"
+                +"-theme testing\n"
+                +"Scenario: A scenario\n"
+                +"Meta:\n"+"@author Mauro\n"
+                +"@theme testing\n\n"
+                +"-theme testing\n";
+        assertThatOutputIs(out, expected);
+    }
+
+    @Test
     public void shouldReportEventsToHtmlOutput() {
         // Given
         final OutputStream out = new ByteArrayOutputStream();
@@ -104,7 +126,7 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter);
 
         // Then
-        String expected = "<div class=\"dryRun\">DRY RUN</div>\n"
+        String expected = "<div class=\"dryRun\">DRY RUN</div>\n"+""
                 + "<div class=\"story\">\n<h1>An interesting story</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
                 + "<div class=\"meta\">\n"
@@ -150,6 +172,35 @@ public class PrintStreamOutputBehaviour {
         assertThatOutputIs(out, expected);
     }
 
+    @Test
+    public void shouldReportEventsToHtmlOutputWhenNotAllowedByFilter() {
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new HtmlOutput(new PrintStream(out));
+
+        // When
+        narrateAnInterestingStoryNotAllowedByFilter(reporter);
+
+        // Then
+        String expected ="<div class=\"story\">\n"
+            +"<h1>An interesting story</h1>\n"
+            +"<div class=\"path\">/path/to/story</div>\n"
+            +"<div class=\"meta\">\n"
+            +"<div class=\"keyword\">Meta:</div>\n"
+            +"<div class=\"property\">@author Mauro</div>\n"
+            +"<div class=\"property\">@theme testing</div>\n"
+            +"</div>\n"+"<div class=\"filter\">-theme testing</div>\n"
+            +"<div class=\"scenario\">\n"
+            +"<h2>Scenario: A scenario</h2>\n"
+            +"<div class=\"meta\">\n"
+            +"<div class=\"keyword\">Meta:</div>\n"
+            +"<div class=\"property\">@author Mauro</div>\n"
+            +"<div class=\"property\">@theme testing</div>\n"
+            +"</div>\n"
+            +"<div class=\"filter\">-theme testing</div>\n";
+        assertThatOutputIs(out, expected);
+    }
+    
     @Test
     public void shouldReportEventsToHtmlOutputUsingCustomPatterns() {
         // Given
@@ -268,6 +319,30 @@ public class PrintStreamOutputBehaviour {
         assertThatOutputIs(out, expected);
     }
 
+    @Test
+    public void shouldReportEventsToXmlOutputWhenNotAllowedByFilter() {
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new XmlOutput(new PrintStream(out));
+
+        // When
+        narrateAnInterestingStoryNotAllowedByFilter(reporter);
+
+        // Then
+        String expected = "<story path=\"/path/to/story\" title=\"An interesting story\">\n"
+            +"<meta>\n"
+            +"<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
+            +"<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"
+            +"</meta>\n"
+            +"<filter>-theme testing</filter>\n"
+            +"<scenario keyword=\"Scenario:\" title=\"A scenario\">\n"
+            +"<meta>\n"+"<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
+            +"<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"
+            +"</meta>\n"+"<filter>-theme testing</filter>\n";
+        assertThatOutputIs(out, expected);
+    }
+
+
     private void narrateAnInterestingStory(StoryReporter reporter) {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
@@ -277,8 +352,7 @@ public class PrintStreamOutputBehaviour {
         boolean givenStory = false;
         reporter.dryRun();
         reporter.beforeStory(story, givenStory);
-        String title = "I ask for a loan";
-        reporter.beforeScenario(title);
+        reporter.beforeScenario("I ask for a loan");
         reporter.givenStories(asList("/given/story1,/given/story2"));
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
@@ -302,9 +376,20 @@ public class PrintStreamOutputBehaviour {
         reporter.afterStory(givenStory);
     }
 
+    private void narrateAnInterestingStoryNotAllowedByFilter(StoryReporter reporter) {
+        Properties meta = new Properties();
+        meta.setProperty("theme", "testing");
+        meta.setProperty("author", "Mauro");
+        Story story = new Story("/path/to/story",
+                new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"), 
+                Arrays.asList(new Scenario("A scenario", new Meta(meta), new ArrayList<String>(), new ExamplesTable(""), new ArrayList<String>())));
+        reporter.storyNotAllowed(story, "-theme testing");
+        reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
+    }
+
     private void assertThatOutputIs(OutputStream out, String expected) {
-       Assert.assertEquals(dos2unix(out.toString()), expected);
-        //assertThat(dos2unix(out.toString()), equalTo(expected));
+       //Assert.assertEquals(dos2unix(out.toString()), expected);
+        assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
     private String dos2unix(String string) {

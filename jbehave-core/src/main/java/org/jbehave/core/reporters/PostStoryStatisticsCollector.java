@@ -27,9 +27,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<String, Integer>();
-    private final List<String> events = asList("steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
+    private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
             "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosSuccessful", "scenariosFailed", "givenStories",
-            "examples", "scenariosNotAllowed", "storiesNotAllowed");
+            "examples");
 
     private Throwable cause;
     private OutcomesTable outcomesFailed;
@@ -74,6 +74,12 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         resetData();
     }
 
+    public void storyNotAllowed(Story story, String filter) {
+        resetData();
+        count("notAllowed");
+        writeData();
+    }
+
     public void afterStory(boolean givenStory) {
         writeData();
     }
@@ -85,6 +91,10 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     public void beforeScenario(String title) {
         cause = null;
         outcomesFailed = null;
+    }
+
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        count("scenariosNotAllowed");
     }
 
     public void scenarioMeta(Meta meta) {
@@ -110,14 +120,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void dryRun() {
-    }
-
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
-        count("scenariosNotAllowed");
-    }
-
-    public void storyNotAllowed(Story story, String filter) {
-        count("storiesNotAllowed");
     }
 
     private void count(String event) {
