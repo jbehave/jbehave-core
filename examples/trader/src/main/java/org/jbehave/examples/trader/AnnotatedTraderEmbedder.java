@@ -36,7 +36,8 @@ import org.junit.runner.RunWith;
 @RunWith(AnnotatedEmbedderRunner.class)
 @Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
+                metaFilter = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class AnnotatedTraderEmbedder extends InjectableEmbedder {

@@ -19,5 +19,6 @@ public @interface UsingEmbedder {
 	boolean generateViewAfterStories()  default true;
 	boolean ignoreFailureInStories()  default false;
 	boolean ignoreFailureInView()  default false;
+	String metaFilter() default "";
 
 }

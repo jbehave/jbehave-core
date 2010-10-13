@@ -1,6 +1,7 @@
 package org.jbehave.ant;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.tools.ant.Project.MSG_DEBUG;
 import static org.apache.tools.ant.Project.MSG_INFO;
 import static org.apache.tools.ant.Project.MSG_WARN;
@@ -102,7 +103,7 @@ public abstract class AbstractEmbedderTask extends Task {
     /**
      * The meta filter
      */
-    private String metaFilter;
+    private String metaFilter = "";
 
     /**
      * Determines if the scope of the source directory is "test"
@@ -194,7 +195,7 @@ public abstract class AbstractEmbedderTask extends Task {
         }
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
-        if (metaFilter != null) {
+        if ( isNotBlank(metaFilter) ) {
             embedder.useMetaFilter(new MetaFilter(metaFilter, embedderMonitor));
         }
         embedder.useEmbedderControls(embedderControls());

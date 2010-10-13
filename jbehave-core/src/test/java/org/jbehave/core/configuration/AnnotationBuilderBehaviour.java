@@ -74,14 +74,14 @@ public class AnnotationBuilderBehaviour {
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {
         for (Class<?> stepsClass : stepsClasses) {
-            boolean found = false;        
-            for ( CandidateSteps steps : candidateSteps ) {
+            boolean found = false;
+            for (CandidateSteps steps : candidateSteps) {
                 Object instance = ((Steps) steps).instance();
-                if ( instance.getClass() ==  stepsClass ){
+                if (instance.getClass() == stepsClass) {
                     found = true;
                 }
             }
-            assertThat(found, is(true));            
+            assertThat(found, is(true));
         }
     }
 
@@ -92,6 +92,7 @@ public class AnnotationBuilderBehaviour {
         assertThat(instance, Matchers.instanceOf(InjectableEmbedder.class));
         Embedder embedder = ((InjectableEmbedder) instance).injectedEmbedder();
         assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
+        assertThat(embedder.metaFilter().asString(), equalTo("+embedder injectable"));
         assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
     }
 
@@ -102,6 +103,7 @@ public class AnnotationBuilderBehaviour {
         assertThat(instance, Matchers.instanceOf(ConfigurableEmbedder.class));
         Embedder embedder = ((ConfigurableEmbedder) instance).configuredEmbedder();
         assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
+        assertThat(embedder.metaFilter().asString(), equalTo("+embedder configurable"));
         assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
     }
 
@@ -124,11 +126,11 @@ public class AnnotationBuilderBehaviour {
         }
 
         public Object convertValue(String value, Type type) {
-            return value+"Converted";
+            return value + "Converted";
         }
-        
+
     }
-    
+
     @UsingSteps(instances = { MyOtherOtherSteps.class })
     static class AnnotatedInheriting extends Annotated {
 
@@ -172,7 +174,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Configure(keywords = MyKeywords.class)
-    @UsingEmbedder()
+    @UsingEmbedder(metaFilter = "+embedder injectable")
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedInjectable extends InjectableEmbedder {
 
@@ -182,7 +184,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Configure(keywords = MyKeywords.class)
-    @UsingEmbedder()
+    @UsingEmbedder(metaFilter = "+embedder configurable")
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedConfigurable extends ConfigurableEmbedder {
 
