@@ -1,7 +1,9 @@
 package org.jbehave.core.reporters;
 
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
 import java.util.List;
@@ -15,12 +17,18 @@ import java.util.Map;
  */
 public interface StoryReporter {
 
+    void storyNotAllowed(Story story, String filter);
+
     void beforeStory(Story story, boolean givenStory);
 
     void afterStory(boolean givenStory);
 
+    void scenarioNotAllowed(Scenario scenario, String filter);
+
     void beforeScenario(String scenarioTitle);
     
+    void scenarioMeta(Meta meta);
+
     void afterScenario();
     
 	void givenStories(List<String> storyPaths);

@@ -70,6 +70,7 @@ public class StoryRunner {
         failureStrategy = configuration.failureStrategy();
 
         if ( !filter.allow(story.getMeta()) ){
+            reporter.storyNotAllowed(story, filter.asString());
             return;
         }
 
@@ -83,9 +84,11 @@ public class StoryRunner {
         runStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.BEFORE);
         for (Scenario scenario : story.getScenarios()) {
             if ( !filter.allow(scenario.getMeta())){
+                reporter.scenarioNotAllowed(scenario, filter.asString());
                 continue;
             }
             reporter.beforeScenario(scenario.getTitle());
+            reporter.scenarioMeta(scenario.getMeta());
             runGivenStories(configuration, candidateSteps, scenario, filter); // first run any given stories, if any
             if (isExamplesTableScenario(scenario)) { // run as examples table scenario
                 runExamplesTableScenario(candidateSteps, scenario);

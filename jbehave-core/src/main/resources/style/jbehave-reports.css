@@ -128,6 +128,11 @@ div.story h2 {
 .meta {
   text-align: left;
   color: purple; 
+  margin-bottom: 10px;
+}
+
+div.keyword {
+  margin-left: 10px;
 }
 
 .property {

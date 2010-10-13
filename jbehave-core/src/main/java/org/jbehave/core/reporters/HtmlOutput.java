@@ -51,8 +51,8 @@ public class HtmlOutput extends PrintStreamOutput {
 
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
-        patterns.setProperty("metaStart", "<div class=\"meta\">\n<h2>{0}</h2>\n");
-        patterns.setProperty("metaProperty", "<div class=\"meta property\">{0}{1} {2}</div>\n");
+        patterns.setProperty("metaStart", "<div class=\"meta\">\n<div class=\"keyword\">{0}</div>\n");
+        patterns.setProperty("metaProperty", "<div class=\"property\">{0}{1} {2}</div>\n");
         patterns.setProperty("metaEnd", "</div>\n");
         patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
         patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
@@ -94,6 +94,8 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueEnd", "</span>");
         patterns.setProperty("parameterValueNewline", "<br/>");
         patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");        
+        patterns.setProperty("scenarioNotAllowed", "<div class=\"scenario notAllowed\">{0} {1} {2} {3}\n</div>\n");
+        patterns.setProperty("storyNotAllowed", "<div class=\"story notAllowed\">{0} {1} {2} {3}\n</div>\n");
         return patterns;
     }
 

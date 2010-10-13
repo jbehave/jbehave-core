@@ -92,6 +92,8 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueStart", "");
         patterns.setProperty("parameterValueEnd", "");
         patterns.setProperty("parameterValueNewline", "\n");        
+        patterns.setProperty("scenarioNotAllowed", "{0} {1} {2} {3}\n");
+        patterns.setProperty("storyNotAllowed", "{0} {1} {2} {3}\n");
         return patterns;
     }
 

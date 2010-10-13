@@ -208,21 +208,18 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern patternToPullScenarioTitleIntoGroupOne() {
-        String scenario = keywords.scenario();
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(scenario + "((.|\\n)*?)\\s*(" + startingWords + ").*");
+        return compile(keywords.scenario() + "((.|\\n)*?)\\s*(" +  keywords.meta() + "|" + startingWords  + ").*");
     }
 
     private Pattern patternToPullScenarioMetaIntoGroupOne() {
-        String givenStories = keywords.givenStories();
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(".*"+ keywords.meta() + "(.*?)\\s*(" + givenStories + "|" + startingWords + ").*", DOTALL);
+        return compile(".*"+ keywords.meta() + "(.*?)\\s*(" + keywords.givenStories() + "|" + startingWords + ").*", DOTALL);
     }
 
     private Pattern patternToPullGivenStoriesIntoGroupOne() {
-        String givenStories = keywords.givenStories();
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(".*" + givenStories + "((.|\\n)*?)\\s*(" + startingWords + ").*");
+        return compile(".*" + keywords.givenStories() + "((.|\\n)*?)\\s*(" + startingWords + ").*");
     }
 
     private Pattern patternToPullStepsIntoGroupOne() {

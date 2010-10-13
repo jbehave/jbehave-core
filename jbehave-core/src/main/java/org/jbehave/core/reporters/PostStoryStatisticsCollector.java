@@ -12,7 +12,9 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
 /**
@@ -27,7 +29,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     private final Map<String, Integer> data = new HashMap<String, Integer>();
     private final List<String> events = asList("steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
             "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosSuccessful", "scenariosFailed", "givenStories",
-            "examples");
+            "examples", "scenariosNotAllowed", "storiesNotAllowed");
 
     private Throwable cause;
     private OutcomesTable outcomesFailed;
@@ -85,6 +87,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         outcomesFailed = null;
     }
 
+    public void scenarioMeta(Meta meta) {
+    }
+
     public void afterScenario() {
         count("scenarios");
         if (cause != null || outcomesFailed != null) {
@@ -105,6 +110,14 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void dryRun() {
+    }
+
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        count("scenariosNotAllowed");
+    }
+
+    public void storyNotAllowed(Story story, String filter) {
+        count("storiesNotAllowed");
     }
 
     private void count(String event) {

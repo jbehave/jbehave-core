@@ -25,6 +25,7 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.OutcomesTable.Outcome;
 
@@ -70,6 +71,7 @@ import org.jbehave.core.model.OutcomesTable.Outcome;
  */
 public abstract class PrintStreamOutput implements StoryReporter {
 
+    private static final String NOT_ALLOWED_BY = "!~"; //TODO i18n
     private static final String EMPTY = "";
 
     public enum Format { TXT, HTML, XML }
@@ -142,17 +144,21 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
         if (!story.getMeta().isEmpty()) {
             Meta meta = story.getMeta();
-            print(format("metaStart", "{0}\n", keywords.meta()));
-            for (String name : meta.getPropertyNames() ){
-                print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));                
-            }
-            print(format("metaEnd", "\n"));
+            print(meta);
         }
         if (!story.getNarrative().isEmpty()) {
             Narrative narrative = story.getNarrative();
             print(format("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n", keywords.narrative(), keywords.inOrderTo(),
                     narrative.inOrderTo(), keywords.asA(), narrative.asA(), keywords.iWantTo(), narrative.iWantTo()));
         }
+    }
+
+    private void print(Meta meta) {
+        print(format("metaStart", "{0}\n", keywords.meta()));
+        for (String name : meta.getPropertyNames() ){
+            print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));                
+        }
+        print(format("metaEnd", "\n"));
     }
 
     public void afterStory(boolean givenStory) {
@@ -166,6 +172,12 @@ public abstract class PrintStreamOutput implements StoryReporter {
     public void beforeScenario(String title) {
         cause = null;
         print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), title));
+    }
+
+    public void scenarioMeta(Meta meta) {
+        if (!meta.isEmpty()) {
+            print(meta);
+        }
     }
 
     public void afterScenario() {
@@ -188,6 +200,15 @@ public abstract class PrintStreamOutput implements StoryReporter {
             print(format("examplesStep", "{0}\n", step));
         }
         print(table);
+    }
+
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        print(format("scenarioNotAllowed", "{0} {1} {2} {3}\n", keywords.scenario(), scenario.getTitle(), NOT_ALLOWED_BY, filter));
+    }
+
+    public void storyNotAllowed(Story story, String filter) {
+        String storyKeyword = "Story"; //TODO i18n
+        print(format("storyNotAllowed", "{0} {1} {2} {3}\n", storyKeyword, story.getPath(), NOT_ALLOWED_BY, filter));
     }
 
 	private void print(ExamplesTable table) {

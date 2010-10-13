@@ -1,7 +1,9 @@
 package org.jbehave.core.reporters;
 
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
 import java.util.ArrayList;
@@ -119,6 +121,15 @@ public class SilentSuccessFilter implements StoryReporter {
         });
     }
 
+    public void scenarioMeta(final Meta meta) {
+        scenarioTodos = new ArrayList<Todo>();
+        scenarioTodos.add(new Todo() {
+            public void doNow() {
+                delegate.scenarioMeta(meta);
+            }
+        });
+    }
+
     public void givenStories(final List<String> storyPaths) {
         scenarioTodos.add(new Todo() {
             public void doNow() {
@@ -150,6 +161,14 @@ public class SilentSuccessFilter implements StoryReporter {
             }
         });
     }
+    
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+    }
+
+    public void storyNotAllowed(Story story, String filter) {
+    }
+
+
 
     private static interface Todo {
         void doNow();

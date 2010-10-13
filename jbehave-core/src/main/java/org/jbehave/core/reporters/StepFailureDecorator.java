@@ -2,7 +2,9 @@ package org.jbehave.core.reporters;
 
 import org.jbehave.core.failures.StepFailed;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
 import java.util.List;
@@ -41,6 +43,10 @@ public class StepFailureDecorator implements StoryReporter {
     public void beforeScenario(String scenarioTitle) {
 		delegate.beforeScenario(scenarioTitle);
 	}
+
+    public void scenarioMeta(Meta meta) {
+        delegate.scenarioMeta(meta);
+    }
 
     public void beforeStory(Story story, boolean givenStory) {
         failure = null;
@@ -92,4 +98,13 @@ public class StepFailureDecorator implements StoryReporter {
 	public void dryRun() {
 		delegate.dryRun();
 	}
+
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        delegate.scenarioNotAllowed(scenario, filter);
+    }
+
+    public void storyNotAllowed(Story story, String filter) {
+        delegate.storyNotAllowed(story, filter);
+    }
+    
 }

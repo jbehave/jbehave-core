@@ -44,10 +44,10 @@ public class RegexStoryParserBehaviour {
     @Test
     public void shouldParseStoryWithMeta() {
         String wholeStory = "Meta: @theme parsing @skip" + NL +
-                "Scenario: " + NL +
+                "Scenario: A scenario" + NL +
                 "Meta: @author Mauro" + NL +
                 "Given a step " + NL +
-                "Scenario: " + NL +
+                "Scenario: Another scenario" + NL +
                 "Meta: @author Paul" + NL +
                 "Given another step ";
         Story story = parser.parseStory(
@@ -58,7 +58,9 @@ public class RegexStoryParserBehaviour {
         assertThat(storyMeta.getProperty("skip"), equalTo(""));
         assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
         List<Scenario> scenarios = story.getScenarios();
+        assertThat(scenarios.get(0).getTitle(), equalTo("A scenario"));
         assertThat(scenarios.get(0).getMeta().getProperty("author"), equalTo("Mauro"));
+        assertThat(scenarios.get(1).getTitle(), equalTo("Another scenario"));
         assertThat(scenarios.get(1).getMeta().getProperty("author"), equalTo("Paul"));
     }
     

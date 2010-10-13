@@ -3,7 +3,9 @@ package org.jbehave.core.reporters;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
 import java.util.Collection;
@@ -55,6 +57,12 @@ public class DelegatingStoryReporter implements StoryReporter {
     public void beforeScenario(String scenarioTitle) {
         for (StoryReporter reporter : delegates) {
             reporter.beforeScenario(scenarioTitle);
+        }
+    }
+
+    public void scenarioMeta(Meta meta) {
+        for (StoryReporter reporter : delegates) {
+            reporter.scenarioMeta(meta);
         }
     }
 
@@ -130,6 +138,18 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
 	}
 	
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        for (StoryReporter reporter : delegates) {
+            reporter.scenarioNotAllowed(scenario, filter);
+        }
+    }
+
+    public void storyNotAllowed(Story story, String filter) {
+        for (StoryReporter reporter : delegates) {
+            reporter.storyNotAllowed(story, filter);
+        }
+    }
+	
     public Collection<StoryReporter> getDelegates() {
         return delegates;
     }
@@ -138,4 +158,5 @@ public class DelegatingStoryReporter implements StoryReporter {
     public String toString() {
     	return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 }
