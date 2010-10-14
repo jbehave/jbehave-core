@@ -45,7 +45,7 @@ public class AnnotatedTraderEmbedder extends InjectableEmbedder {
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/*.story"), asList("")));
+                asList("**/meta*.story"), asList("")));
     }
 
     public static class MyReportBuilder extends StoryReporterBuilder {

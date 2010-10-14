@@ -46,6 +46,10 @@ public class Meta {
         return names;
     }
 
+    public boolean hasProperty(String name) {
+        return properties.containsKey(name);
+    }
+
     public String getProperty(String name) {
         String value = properties.getProperty(name);
         if (value == null) {
@@ -61,6 +65,21 @@ public class Meta {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public static Meta inherit(Meta child, Meta parent) {
+        Set<String> names = new HashSet<String>(child.getPropertyNames());
+        // only names that are not already present in the child are added
+        names.addAll(parent.getPropertyNames());
+        Properties inherited = new Properties();
+        for (String name : names) {
+            if (child.hasProperty(name)) {
+                inherited.put(name, child.getProperty(name));
+            } else if (parent.hasProperty(name)) {
+                inherited.put(name, parent.getProperty(name));
+            }
+        }
+        return new Meta(inherited);
     }
 
     public static class Property {

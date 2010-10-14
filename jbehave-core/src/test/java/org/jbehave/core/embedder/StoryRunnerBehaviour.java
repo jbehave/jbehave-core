@@ -484,15 +484,16 @@ public class StoryRunnerBehaviour {
         when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(tableRow))).thenReturn(
                 Arrays.<Step>asList());
         Meta meta = mock(Meta.class);
-        Story story = new Story("", Description.EMPTY, Meta.EMPTY, Narrative.EMPTY, asList(new Scenario("", meta, asList(""), new ExamplesTable(""), asList(""))));
+        Meta storyMeta = mock(Meta.class);
+        Story story = new Story("", Description.EMPTY, storyMeta, Narrative.EMPTY, asList(new Scenario("", meta, asList(""), new ExamplesTable(""), asList(""))));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
         MetaFilter filter = mock(MetaFilter.class);
         String filterAsString = "-some property";
 
         // When
         StoryRunner runner = new StoryRunner();
-        when(filter.allow(Meta.EMPTY)).thenReturn(true);
-        when(filter.allow(meta)).thenReturn(false);
+        when(filter.allow(storyMeta)).thenReturn(true);
+        when(filter.allow(Meta.inherit(meta, storyMeta))).thenReturn(false);
         when(filter.asString()).thenReturn(filterAsString);
         runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
 
