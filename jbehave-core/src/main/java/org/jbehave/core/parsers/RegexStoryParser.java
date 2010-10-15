@@ -219,20 +219,18 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullGivenStoriesIntoGroupOne() {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(".*" + keywords.givenStories() + "((.|\\n)*?)\\s*(" + startingWords + ").*");
+        return compile(".*\\n" + keywords.givenStories() + "((.|\\n)*?)\\s*(" + startingWords + ").*");
     }
 
     private Pattern patternToPullStepsIntoGroupOne() {
         String initialStartingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         String followingStartingWords = concatenateWithOr("\\n", "\\s", keywords.startingWords());
-        String examplesTable = keywords.examplesTable();
-        return compile("((" + initialStartingWords + ") (.)*?)\\s*(\\Z|" + followingStartingWords + "|" + examplesTable
+        return compile("((" + initialStartingWords + ") (.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"+ keywords.examplesTable()
                 + ")", DOTALL);
     }
 
     private Pattern patternToPullExamplesTableIntoGroupOne() {
-        String table = keywords.examplesTable();
-        return compile(".*" + table + "\\s*(.*)", DOTALL);
+        return compile(".*\\n" + keywords.examplesTable() + "\\s*(.*)", DOTALL);
     }
 
     private String concatenateWithOr(String... keywords) {

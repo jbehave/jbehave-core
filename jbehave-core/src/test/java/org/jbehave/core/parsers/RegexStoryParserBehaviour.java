@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -139,14 +140,45 @@ public class RegexStoryParserBehaviour {
         assertThat(steps.get(1), equalTo("When I parse it to When"));
         assertThat(steps.get(2), equalTo("And I parse it to And"));
         assertThat(steps.get(3), equalTo("!-- And ignore me too"));
-        assertThat(steps.get(4), equalTo("Then I should get steps Then"));
-        
+        assertThat(steps.get(4), equalTo("Then I should get steps Then"));        
         assertThat(story.getScenarios().get(0).getExamplesTable().asString(), 
                     equalTo("|Given|When|Then|And|" + NL +
                             "|Dato che|Quando|Allora|E|" + NL +
                             "|Dado que|Quando|Então|E|"));
     }
 
+    @Test
+    public void shouldParseStoryWithGivenStoriesAndExamplesCommentedOut() {
+        String wholeStory = "Scenario: Show that we can comment out GivenStories and Examples portions of a scenario"+ NL +
+                "!-- GivenStories: AGivenStoryToBeCommented" + NL +
+                "Given a scenario Given" + NL +
+                "When I parse it to When" + NL +
+                "And I parse it to And" + NL +
+                "!-- And ignore me too" + NL +
+                "Then I should get steps Then" + NL +
+                "!-- Examples:" + NL +
+                "|Comment|Me|Out|" + NL +
+                "|yes|we|can|" + NL;
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+
+        Scenario scenario = story.getScenarios().get(0);
+        assertThat(scenario.getTitle(), equalTo("Show that we can comment out GivenStories and Examples portions of a scenario"));
+        assertThat(scenario.getGivenStoryPaths(), equalTo(Arrays.<String>asList()));
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("!-- GivenStories: AGivenStoryToBeCommented"));
+        assertThat(steps.get(1), equalTo("Given a scenario Given"));
+        assertThat(steps.get(2), equalTo("When I parse it to When"));
+        assertThat(steps.get(3), equalTo("And I parse it to And"));
+        assertThat(steps.get(4), equalTo("!-- And ignore me too"));
+        assertThat(steps.get(5), equalTo("Then I should get steps Then"));
+        assertThat(steps.get(6), 
+                equalTo("!-- Examples:" + NL +
+                        "|Comment|Me|Out|" + NL +
+                        "|yes|we|can|"));
+        assertThat(scenario.getExamplesTable().asString(), equalTo(""));
+    }
+    
     @Test
     public void shouldParseStoryWithMultilineSteps() {
         String wholeStory = "Given a scenario" + NL +
