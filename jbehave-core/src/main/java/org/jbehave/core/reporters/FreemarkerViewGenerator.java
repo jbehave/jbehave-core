@@ -24,6 +24,7 @@ import java.util.TreeMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.jbehave.core.model.StoryMap;
 
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
@@ -34,7 +35,7 @@ import freemarker.template.TemplateException;
  * <p>
  * Freemarker-based {@link ViewGenerator}, using the file outputs of the
  * reporters for the given formats. The FTL templates for the index and single
- * views are injectable the {@link #generateView(File, List, Properties)} but
+ * views are injectable the {@link #generateReportsView(File, List, Properties)} but
  * defaults are provided. To override, specify the path the new template under
  * keys "index", "decorated" and "nonDecorated".
  * </p>
@@ -42,6 +43,7 @@ import freemarker.template.TemplateException;
  * The view generator provides the following resources:
  * 
  * <pre>
+ * resources.setProperty(&quot;maps&quot;, &quot;ftl/jbehave-story-maps.ftl&quot;);
  * resources.setProperty(&quot;index&quot;, &quot;ftl/jbehave-reports-index-with-totals.ftl&quot;);
  * resources.setProperty(&quot;decorated&quot;, &quot;ftl/jbehave-report-decorated.ftl&quot;);
  * resources.setProperty(&quot;nonDecorated&quot;, &quot;ftl/jbehave-report-non-decorated.ftl&quot;);
@@ -66,6 +68,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     public static Properties defaultViewProperties() {
         Properties properties = new Properties();
+        properties.setProperty("maps", "ftl/jbehave-story-maps.ftl");
         properties.setProperty("index", "ftl/jbehave-reports-index-with-totals.ftl");
         properties.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
         properties.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
@@ -81,21 +84,30 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return merged;
     }
 
-    public void generateView(File outputDirectory, List<String> formats, Properties viewProperties) {
+    public void generateStoryMapsView(File outputDirectory, List<StoryMap> storyMaps, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
-        createIndex(outputDirectory, formats);
+        createMaps(outputDirectory, storyMaps);
     }
 
-    public int countStories() {
-        return reports.size() - 1; // don't count the totals reports
+    private void createMaps(File outputDirectory, List<StoryMap> storyMaps) {
+        String outputName = templateResource("viewDirectory") + "/maps.html";
+        String maps = templateResource("maps");
+        Map<String, Object> dataModel = newDataModel();
+        dataModel.put("storyMaps", storyMaps);
+        dataModel.put("date", new Date());
+        write(outputDirectory, outputName, maps, dataModel);
     }
 
-    public int countScenarios() {
-        return count("scenarios", reports.values());
+    public void generateReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
+        this.viewProperties = mergeWithDefault(viewProperties);
+        createReportsIndex(outputDirectory, formats);
     }
 
-    public int countFailedScenarios() {
-        return count("scenariosFailed", reports.values());
+    public ReportsCount getReportsCount(){
+        int stories = reports.size() - 1; // don't count the totals reports
+        int scenarios = count("scenarios", reports.values());
+        int failedScenarios = count("scenariosFailed", reports.values());
+        return new ReportsCount(stories, scenarios, failedScenarios);
     }
 
     int count(String event, Collection<Report> collection) {
@@ -109,7 +121,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return count;
     }
 
-    private void createIndex(File outputDirectory, List<String> formats) {
+    private void createReportsIndex(File outputDirectory, List<String> formats) {
         String outputName = templateResource("viewDirectory") + "/index.html";
         String index = templateResource("index");
         List<String> mergedFormats = mergeWithDefaults(formats);
@@ -331,4 +343,5 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         }
         
     }
+
 }

@@ -18,6 +18,15 @@ import org.junit.Test;
 public class TraderStoryRunner {
 
     @Test
+    public void mapStories() {
+        Embedder embedder = new Embedder();
+        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/*.story"), asList(""));
+        List<String> filters = asList("+theme *", "-skip");
+        embedder.mapStoriesAsPaths(storyPaths, filters);
+    }
+
+    @Test
     public void runClasspathLoadedStoriesAsJUnit() {
         // Embedder defines the configuration and candidate steps
         Embedder embedder = new TraderEmbedder();

@@ -540,7 +540,7 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter);
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         Properties viewProperties = new Properties();
-        viewGenerator.generateView(outputDirectory, asList("html", "txt"), viewProperties);
+        viewGenerator.generateReportsView(outputDirectory, asList("html", "txt"), viewProperties);
 
         // Then
         ensureFileExists(new File(outputDirectory, "view/index.html"));
@@ -560,7 +560,7 @@ public class PrintStreamOutputBehaviour {
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         Properties viewProperties = new Properties();
         viewProperties.setProperty("decorateNonHtml", "false");
-        viewGenerator.generateView(outputDirectory, asList("html", "txt"), viewProperties);
+        viewGenerator.generateReportsView(outputDirectory, asList("html", "txt"), viewProperties);
 
         // Then
         ensureFileExists(new File(outputDirectory, "view/index.html"));
@@ -605,7 +605,7 @@ public class PrintStreamOutputBehaviour {
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         // When
         File outputDirectory = new File("target");
-        viewGenerator.generateView(outputDirectory, asList("html"), templates);
+        viewGenerator.generateReportsView(outputDirectory, asList("html"), templates);
         // Then ... fail as expected
     }
 

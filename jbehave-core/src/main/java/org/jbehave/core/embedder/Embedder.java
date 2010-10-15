@@ -13,6 +13,8 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryMap;
+import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
@@ -41,6 +43,33 @@ public class Embedder {
     public Embedder(StoryRunner storyRunner, EmbedderMonitor embedderMonitor) {
         this.storyRunner = storyRunner;
         this.embedderMonitor = embedderMonitor;
+    }
+
+    public void mapStoriesAsPaths(List<String> storyPaths, List<String> filters) {
+        EmbedderControls embedderControls = embedderControls();
+        if (embedderControls.skip()) {
+            embedderMonitor.storiesSkipped(storyPaths);
+            return;
+        }
+
+        StoryMapper storyMapper = new StoryMapper();
+
+        for (String filter : filters) {
+            for (String storyPath : storyPaths) {
+                Story story = storyRunner.storyOfPath(configuration, storyPath);
+                storyMapper.map(story, new MetaFilter(filter));
+            }
+        }
+
+        generateStoryMapsView(storyMapper.getStoryMaps());
+        
+    }
+
+    private void generateStoryMapsView(List<StoryMap> storyMaps) {
+        StoryReporterBuilder builder = configuration().storyReporterBuilder();
+        File outputDirectory = builder.outputDirectory();
+        ViewGenerator viewGenerator = configuration().viewGenerator();
+        viewGenerator.generateStoryMapsView(outputDirectory, storyMaps, builder.viewResources());
     }
 
     public void runStoriesAsEmbeddables(List<String> classNames, EmbedderClassLoader classLoader) {
@@ -88,13 +117,13 @@ public class Embedder {
     private List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
         List<Embeddable> embeddables = new ArrayList<Embeddable>();
         for (String className : classNames) {
-            if ( !classLoader.isAbstract(className)){
+            if (!classLoader.isAbstract(className)) {
                 embeddables.add(classLoader.newInstance(Embeddable.class, className));
             }
         }
         return embeddables;
     }
-    
+
     public void runStoriesWithAnnotatedEmbedderRunner(String runnerClass, List<String> classNames,
             EmbedderClassLoader classLoader) {
         List<AnnotatedEmbedderRunner> runners = annotatedEmbedderRunners(runnerClass, classNames, classLoader);
@@ -149,9 +178,9 @@ public class Embedder {
 
         Configuration configuration = configuration();
         List<CandidateSteps> candidateSteps = candidateSteps();
-        
+
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
-        
+
         BatchFailures batchFailures = new BatchFailures();
         buildReporters(configuration, storyPaths);
         for (String storyPath : storyPaths) {
@@ -174,7 +203,7 @@ public class Embedder {
         }
 
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
-        
+
         if (embedderControls.batch() && batchFailures.size() > 0) {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.batchFailed(batchFailures);
@@ -211,17 +240,15 @@ public class Embedder {
         ViewGenerator viewGenerator = configuration().viewGenerator();
         try {
             embedderMonitor.generatingStoriesView(outputDirectory, formats, viewResources);
-            viewGenerator.generateView(outputDirectory, formats, viewResources);
+            viewGenerator.generateReportsView(outputDirectory, formats, viewResources);
         } catch (RuntimeException e) {
             embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats, viewResources, e);
             throw new ViewGenerationFailed(outputDirectory, formats, viewResources, e);
         }
-        int stories = viewGenerator.countStories();
-        int scenarios = viewGenerator.countScenarios();
-        int failedScenarios = viewGenerator.countFailedScenarios();
-        embedderMonitor.storiesViewGenerated(stories, scenarios, failedScenarios);
-        if (!embedderControls.ignoreFailureInView() && failedScenarios > 0) {
-            throw new RunningStoriesFailed(stories, scenarios, failedScenarios);
+        ReportsCount count = viewGenerator.getReportsCount(); //countStories();
+        embedderMonitor.storiesViewGenerated(count.getStories(), count.getScenarios(), count.getFailedScenarios());
+        if (!embedderControls.ignoreFailureInView() && count.getFailedScenarios() > 0) {
+            throw new RunningStoriesFailed(count.getStories(), count.getScenarios(), count.getFailedScenarios());
         }
 
     }
@@ -261,10 +288,10 @@ public class Embedder {
         return embedderMonitor;
     }
 
-    public MetaFilter metaFilter(){
+    public MetaFilter metaFilter() {
         return metaFilter;
     }
-    
+
     public StoryRunner storyRunner() {
         return storyRunner;
     }
@@ -285,8 +312,8 @@ public class Embedder {
         this.embedderMonitor = embedderMonitor;
     }
 
-    public void useMetaFilter(MetaFilter metaFilter){
-        this.metaFilter = metaFilter;        
+    public void useMetaFilter(MetaFilter metaFilter) {
+        this.metaFilter = metaFilter;
     }
 
     public void useStoryRunner(StoryRunner storyRunner) {
@@ -302,7 +329,7 @@ public class Embedder {
     public static class ClassLoadingFailed extends RuntimeException {
 
         public ClassLoadingFailed(String className, EmbedderClassLoader classLoader, Throwable cause) {
-            super("Failed to load class "+className+" with classLoader "+classLoader, cause);
+            super("Failed to load class " + className + " with classLoader " + classLoader, cause);
         }
 
     }
@@ -318,14 +345,12 @@ public class Embedder {
 
     }
 
-
     @SuppressWarnings("serial")
     public static class AnnotatedEmbedderRunFailed extends RuntimeException {
 
         public AnnotatedEmbedderRunFailed(AnnotatedEmbedderRunner runner, Throwable cause) {
-            super("Annotated embedder run failed with runner "+runner.toString(), cause);
+            super("Annotated embedder run failed with runner " + runner.toString(), cause);
         }
-
 
     }
 
@@ -333,8 +358,8 @@ public class Embedder {
     public static class RunningStoriesFailed extends RuntimeException {
 
         public RunningStoriesFailed(int stories, int scenarios, int failedScenarios) {
-            super("Failures in running " + stories +" stories containing "+ scenarios + " scenarios (of which " + failedScenarios
-            + " failed)");
+            super("Failures in running " + stories + " stories containing " + scenarios + " scenarios (of which "
+                    + failedScenarios + " failed)");
         }
 
         public RunningStoriesFailed(BatchFailures failures) {
@@ -350,7 +375,8 @@ public class Embedder {
     public static class ViewGenerationFailed extends RuntimeException {
         public ViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewResources,
                 RuntimeException cause) {
-            super("View generation failed to "+outputDirectory+" for formats "+formats+" and resources "+viewResources, cause);
+            super("View generation failed to " + outputDirectory + " for formats " + formats + " and resources "
+                    + viewResources, cause);
         }
     }
 }

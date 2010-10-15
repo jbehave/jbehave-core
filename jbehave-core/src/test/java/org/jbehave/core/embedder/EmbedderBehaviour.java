@@ -44,6 +44,7 @@ import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
+import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
@@ -718,13 +719,11 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.countStories()).thenReturn(2);
-        when(viewGenerator.countScenarios()).thenReturn(2);
-        when(viewGenerator.countFailedScenarios()).thenReturn(0);
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 2, 0));
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
         // Then
-        verify(viewGenerator).generateView(outputDirectory, formats, viewResources);
+        verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
         assertThatStoriesViewGenerated(out);
     }
 
@@ -747,7 +746,7 @@ public class EmbedderBehaviour {
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
         // Then
-        verify(viewGenerator, never()).generateView(outputDirectory, formats, viewResources);
+        verify(viewGenerator, never()).generateReportsView(outputDirectory, formats, viewResources);
         assertThat(out.toString(), not(containsString("Generating stories view")));
         assertThat(out.toString(), not(containsString("Stories view generated")));
     }
@@ -766,7 +765,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        doThrow(new RuntimeException()).when(viewGenerator).generateView(outputDirectory, formats, viewResources);
+        doThrow(new RuntimeException()).when(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
         // Then fail as expected
@@ -786,9 +785,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.countStories()).thenReturn(1);
-        when(viewGenerator.countScenarios()).thenReturn(2);
-        when(viewGenerator.countFailedScenarios()).thenReturn(1);
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 2, 1));
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
         // Then fail as expected
@@ -808,13 +805,11 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.countStories()).thenReturn(1);
-        when(viewGenerator.countScenarios()).thenReturn(2);
-        when(viewGenerator.countFailedScenarios()).thenReturn(1);
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 2, 1));
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
         // Then
-        verify(viewGenerator).generateView(outputDirectory, formats, viewResources);
+        verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
         assertThatStoriesViewGenerated(out);
     }
 

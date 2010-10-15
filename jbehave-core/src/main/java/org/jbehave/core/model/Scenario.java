@@ -24,6 +24,10 @@ public class Scenario {
         this("", steps);
     }
 
+    public Scenario(String title, Meta meta) {
+        this(title, meta, Arrays.<String>asList(), new ExamplesTable(""), Arrays.<String>asList());
+    }
+
     public Scenario(String title, List<String> steps) {
         this(title, Arrays.<String>asList(), new ExamplesTable(""), steps);
     }
