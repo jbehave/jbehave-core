@@ -35,11 +35,11 @@
     <th>Ignorable</th>
     <th>View</th>
 </tr>
-<#list reportsAsMap.keySet() as story>
-<#assign report = reportsAsMap.get(story)>
-<#if story != "totals">
+<#list reportsAsMap.keySet() as key>
+<#assign report = reportsAsMap.get(key)>
+<#if key != "totals">
 <tr>
-<td class="story">${story}</td>
+<td class="story">${report.name}</td>
 <#assign stats = report.getStats()>
 <td>
 <@renderStat stats "scenarios"/> 

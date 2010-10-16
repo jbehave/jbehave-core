@@ -11,8 +11,11 @@ public class UnderscoredToCapitalized implements StoryNameResolver {
         String name = path;
         if ( contains(name, '/') ){
             name = substringAfterLast(name, "/");
+            name = substringBefore(name, ".");
+        } else if ( contains(name, '.') ){
+            name = substringAfterLast(name, ".");
         }
-        return capitalize(substringBefore(name, ".").replace("_", " "));
+        return capitalize(name.replace("_", " "));
     }
     
 }
