@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>jbehave-examples</artifactId>
+    <groupId>org.jbehave</groupId>
+    <version>3.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbehave-trader-groovy-example</artifactId>
+  <name>JBehave Trader Groovy Example</name>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/java</directory>
+        <filtering>false</filtering>
+        <excludes>
+          <exclude>**/*.java</exclude>
+        </excludes>
+      </resource>
+      <resource>
+        <directory>${basedir}/src/main/groovy</directory>
+        <filtering>false</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy</artifactId>
+      <version>1.7.4</version>
+    </dependency>
+  </dependencies>
+
+</project>
