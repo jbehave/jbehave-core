@@ -22,18 +22,28 @@
 <h2>Story Reports</h2>
 
 <table>
+<colgroup class="story"></colgroup>
+<colgroup span="3" class="scenarios"></colgroup>
+<colgroup span="6" class="steps"></colgroup>
+<colgroup class="view"></colgroup>
 <tr>
     <th>Story</th>
-    <th>Scenarios</th>
+    <th colspan="3">Scenarios</th>
+    <th colspan="6">Steps</th>
+    <th>View</th>
+</tr>
+<tr>
+    <th></th>
+    <th>Total</th>
     <th>Successful</th>
     <th>Failed</th>
-    <th>Steps</th>
+    <th>Total</th>
     <th>Successful</th>
     <th>Pending</th>
     <th>Not Performed</th>
     <th>Failed</th>
-    <th>Ignorable</th>
-    <th>View</th>
+    <th>Ignored</th>
+    <th></th>
 </tr>
 <#list reportsAsMap.keySet() as key>
 <#assign report = reportsAsMap.get(key)>
@@ -75,7 +85,7 @@
 </tr>
 </#if>
 </#list>
-<tr>
+<tr class="totals">
 <td>Totals</td>
 <#assign stats = reportsAsMap.get("totals").getStats()>
 <td>
