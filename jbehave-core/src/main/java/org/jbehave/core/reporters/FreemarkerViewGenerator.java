@@ -24,6 +24,10 @@ import java.util.TreeMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.io.StoryNameResolver;
+import org.jbehave.core.io.UnderscoredToCapitalized;
 import org.jbehave.core.model.StoryLanes;
 import org.jbehave.core.model.StoryMap;
 
@@ -62,7 +66,8 @@ public class FreemarkerViewGenerator implements ViewGenerator {
     private final Configuration configuration;
     private Properties viewProperties;
     private Map<String, Report> reports = new HashMap<String, Report>();
-
+    private StoryNameResolver nameResolver = new UnderscoredToCapitalized();
+    
     public FreemarkerViewGenerator() {
         this.configuration = configure();
     }
@@ -146,9 +151,9 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     SortedMap<String, List<File>> indexedReportFiles(File outputDirectory, final String outputName,
             final List<String> formats) {
-        SortedMap<String, List<File>> reports = new TreeMap<String, List<File>>();
+        SortedMap<String, List<File>> reportFiles = new TreeMap<String, List<File>>();
         if (outputDirectory == null || !outputDirectory.exists()) {
-            return reports;
+            return reportFiles;
         }
         String[] fileNames = outputDirectory.list(new FilenameFilter() {
             public boolean accept(File dir, String name) {
@@ -166,14 +171,14 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         });
         for (String fileName : fileNames) {
             String name = FilenameUtils.getBaseName(fileName);
-            List<File> filesByName = reports.get(name);
+            List<File> filesByName = reportFiles.get(name);
             if (filesByName == null) {
                 filesByName = new ArrayList<File>();
-                reports.put(name, filesByName);
+                reportFiles.put(name, filesByName);
             }
             filesByName.add(new File(outputDirectory, fileName));
         }
-        return reports;
+        return reportFiles;
     }
 
     Map<String, Report> toReports(Map<String, List<File>> reportFiles) {
@@ -205,7 +210,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
                     File written = write(outputDirectory, outputName, template, dataModel);
                     filesByFormat.put(format, written);
                 }
-                reports.put(name, new Report(name, filesByFormat));
+                reports.put(name, new Report(nameResolver.resolveName(name), filesByFormat));
             }
             return reports;
         } catch (Exception e) {
@@ -343,6 +348,10 @@ public class FreemarkerViewGenerator implements ViewGenerator {
             return CompareToBuilder.reflectionCompare(this.getName(), that.getName());
         }
 
+        @Override
+        public String toString() {
+            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(name).toString();
+        }
     }
 
 }

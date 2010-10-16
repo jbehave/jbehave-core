@@ -31,8 +31,8 @@
 </#list>
 </tr>
 <#list stories as story>
-<tr class="story">
-<td>${story.name}</td>
+<tr>
+<td class="name">${story.name}</td>
 <#list lanes as lane>
 <td>
 <#assign inLane = storyLanes.inLane(lane, story)>
