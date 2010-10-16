@@ -5,7 +5,7 @@ import static org.apache.commons.lang.StringUtils.substringAfterLast;
 import static org.apache.commons.lang.StringUtils.substringBefore;
 import static org.apache.commons.lang.WordUtils.capitalize;
 
-public class FromUnderscoredToCapitalized implements StoryNameResolver {
+public class UnderscoredToCapitalized implements StoryNameResolver {
 
     public String resolveName(String path) {
         String name = path;

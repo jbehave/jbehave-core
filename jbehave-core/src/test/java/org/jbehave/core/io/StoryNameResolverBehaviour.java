@@ -9,7 +9,7 @@ public class StoryNameResolverBehaviour {
 
     @Test
     public void shouldResolveUnderscoredToCapitalized() {
-        StoryNameResolver resolver = new FromUnderscoredToCapitalized();
+        StoryNameResolver resolver = new UnderscoredToCapitalized();
         assertThat(resolver.resolveName("org/jbehave/core/io/camel_case.story"), equalTo("Camel Case"));
         assertThat(resolver.resolveName("camel_case.story"), equalTo("Camel Case"));
         assertThat(resolver.resolveName("camel_case"), equalTo("Camel Case"));
