@@ -24,6 +24,7 @@ import java.util.TreeMap;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
+import org.jbehave.core.model.StoryLanes;
 import org.jbehave.core.model.StoryMap;
 
 import freemarker.template.Configuration;
@@ -35,9 +36,9 @@ import freemarker.template.TemplateException;
  * <p>
  * Freemarker-based {@link ViewGenerator}, using the file outputs of the
  * reporters for the given formats. The FTL templates for the index and single
- * views are injectable the {@link #generateReportsView(File, List, Properties)} but
- * defaults are provided. To override, specify the path the new template under
- * keys "index", "decorated" and "nonDecorated".
+ * views are injectable the {@link #generateReportsView(File, List, Properties)}
+ * but defaults are provided. To override, specify the path the new template
+ * under keys "index", "decorated" and "nonDecorated".
  * </p>
  * <p>
  * The view generator provides the following resources:
@@ -93,7 +94,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         String outputName = templateResource("viewDirectory") + "/maps.html";
         String maps = templateResource("maps");
         Map<String, Object> dataModel = newDataModel();
-        dataModel.put("storyMaps", storyMaps);
+        dataModel.put("storyLanes", new StoryLanes(storyMaps));
         dataModel.put("date", new Date());
         write(outputDirectory, outputName, maps, dataModel);
     }
@@ -103,7 +104,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         createReportsIndex(outputDirectory, formats);
     }
 
-    public ReportsCount getReportsCount(){
+    public ReportsCount getReportsCount() {
         int stories = reports.size() - 1; // don't count the totals reports
         int scenarios = count("scenarios", reports.values());
         int failedScenarios = count("scenariosFailed", reports.values());
@@ -212,7 +213,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         }
     }
 
-    private void addTotalsReport(){
+    private void addTotalsReport() {
         Report totals = totals(reports.values());
         reports.put(totals.getName(), totals);
     }
@@ -223,7 +224,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
             Map<String, Integer> stats = report.getStats();
             for (String key : stats.keySet()) {
                 Integer total = totals.get(key);
-                if ( total == null ){
+                if (total == null) {
                     total = 0;
                 }
                 total = total + stats.get(key);
@@ -283,13 +284,13 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     }
 
-    public static class Report implements Comparable<Report>{
+    public static class Report implements Comparable<Report> {
 
         private final String name;
         private final Map<String, File> filesByFormat;
         private Map<String, Integer> stats;
 
-        public Report(String name,  Map<String, File> filesByFormat) {
+        public Report(String name, Map<String, File> filesByFormat) {
             this(name, filesByFormat, null);
         }
 
@@ -318,14 +319,14 @@ public class FreemarkerViewGenerator implements ViewGenerator {
             return p;
         }
 
-        public Map<String,Integer> getStats(){
-            if ( stats ==  null ){
+        public Map<String, Integer> getStats() {
+            if (stats == null) {
                 Properties p = asProperties("stats");
                 stats = new HashMap<String, Integer>();
-                for ( Enumeration<?> e = p.propertyNames(); e.hasMoreElements(); ){
+                for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
                     String key = (String) e.nextElement();
                     stats.put(key, valueOf(key, p));
-                }                
+                }
             }
             return stats;
         }
@@ -341,7 +342,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         public int compareTo(Report that) {
             return CompareToBuilder.reflectionCompare(this.getName(), that.getName());
         }
-        
+
     }
 
 }

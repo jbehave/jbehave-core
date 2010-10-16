@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -20,7 +21,7 @@ import org.jbehave.core.model.StoryMap;
 public class StoryMapper {
 
     private Map<String, Set<Story>> map = new HashMap<String, Set<Story>>();
-
+    
     /**
      * Maps a story if it is allowed by the meta filter
      * 
@@ -38,13 +39,15 @@ public class StoryMapper {
                     allowed.add(scenario);
                 }
             }
-
             add(metaFilter.asString(), filteredStory(story, allowed));
         }
     }
 
     private Story filteredStory(Story story, List<Scenario> scenarios) {
-        return new Story(story.getPath(), story.getDescription(), story.getMeta(), story.getNarrative(), scenarios);
+        Story filtered = new Story(story.getPath(), story.getDescription(), story.getMeta(), story.getNarrative(), scenarios);
+        String name = StringUtils.substringAfterLast(story.getPath(), "/");
+        filtered.namedAs(name);        
+        return filtered;
     }
 
     public StoryMap getStoryMap(String filter) {
@@ -60,8 +63,7 @@ public class StoryMapper {
     }
 
     private void add(String filter, Story story) {
-        Set<Story> stories = storiesFor(filter);
-        stories.add(story);
+        storiesFor(filter).add(story);
     }
 
     private Set<Story> storiesFor(String filter) {

@@ -21,16 +21,24 @@
 
 <h2>Story Maps</h2>
 
+<#assign lanes = storyLanes.getLanes()>
+<#assign stories = storyLanes.getStories()>
+
 <table>
-<tr><th>Meta Pattern</th><th>Story Names</th></tr>
-<#list storyMaps as storyMap>
-<tr>
-<td>${storyMap.metaPattern}</td>
-<td>
-<#list storyMap.getStoryNames() as name>
-${name}<br/>
+<tr><th>Story Name</th>
+<#list lanes as lane>
+<th>${lane}</th>
 </#list>
+</tr>
+<#list stories as story>
+<tr class="story">
+<td>${story.name}</td>
+<#list lanes as lane>
+<td>
+<#assign inLane = storyLanes.inLane(lane, story)>
+${inLane?string("x", "")}
 </td>
+</#list>
 </tr>
 </#list>
 </table>

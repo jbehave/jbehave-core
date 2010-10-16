@@ -42,9 +42,8 @@ public class StoryMapperBehaviour {
         List<StoryMap> storyMaps = mapper.getStoryMaps();
         assertThat(storyMaps.size(), equalTo(1));
         StoryMap storyMap = storyMaps.get(0);
-        assertThat(storyMap.getMetaPattern(), equalTo(filterAsString));
+        assertThat(storyMap.getMetaFilter(), equalTo(filterAsString));
         assertThat(storyMap.getStories().get(0).getPath(), equalTo(story2.getPath()));
-        assertThat(storyMap.getStoryNames(), equalTo(asList("story2")));
         assertThat(storyMap.getStoryPaths(), equalTo(asList(story2.getPath())));
     }
   

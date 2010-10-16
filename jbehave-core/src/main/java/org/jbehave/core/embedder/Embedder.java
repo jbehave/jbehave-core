@@ -54,15 +54,16 @@ public class Embedder {
 
         StoryMapper storyMapper = new StoryMapper();
 
-        for (String filter : filters) {
-            for (String storyPath : storyPaths) {
-                Story story = storyRunner.storyOfPath(configuration, storyPath);
+        for (String storyPath : storyPaths) {
+            Story story = storyRunner.storyOfPath(configuration, storyPath);
+            storyMapper.map(story, new MetaFilter(""));
+            for (String filter : filters) {
                 storyMapper.map(story, new MetaFilter(filter));
             }
         }
 
         generateStoryMapsView(storyMapper.getStoryMaps());
-        
+
     }
 
     private void generateStoryMapsView(List<StoryMap> storyMaps) {
@@ -245,7 +246,7 @@ public class Embedder {
             embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats, viewResources, e);
             throw new ViewGenerationFailed(outputDirectory, formats, viewResources, e);
         }
-        ReportsCount count = viewGenerator.getReportsCount(); //countStories();
+        ReportsCount count = viewGenerator.getReportsCount(); // countStories();
         embedderMonitor.storiesViewGenerated(count.getStories(), count.getScenarios(), count.getFailedScenarios());
         if (!embedderControls.ignoreFailureInView() && count.getFailedScenarios() > 0) {
             throw new RunningStoriesFailed(count.getStories(), count.getScenarios(), count.getFailedScenarios());
