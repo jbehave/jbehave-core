@@ -151,12 +151,12 @@ div.maps table th {
 }
 
 div.maps table td {
-	text-align: left;
+	text-align: center;
 	padding: 5px;
 }
 
-div.maps table td.story {
-	text-align: center;
+div.maps table td.name {
+	text-align: left;
 	padding: 5px;
 }
 
