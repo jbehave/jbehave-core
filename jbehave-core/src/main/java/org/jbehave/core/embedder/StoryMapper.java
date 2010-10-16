@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.jbehave.core.io.FromUnderscoredToCapitalized;
+import org.jbehave.core.io.StoryNameResolver;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -21,6 +22,7 @@ import org.jbehave.core.model.StoryMap;
 public class StoryMapper {
 
     private Map<String, Set<Story>> map = new HashMap<String, Set<Story>>();
+    private StoryNameResolver nameResolver = new FromUnderscoredToCapitalized();
     
     /**
      * Maps a story if it is allowed by the meta filter
@@ -45,8 +47,7 @@ public class StoryMapper {
 
     private Story filteredStory(Story story, List<Scenario> scenarios) {
         Story filtered = new Story(story.getPath(), story.getDescription(), story.getMeta(), story.getNarrative(), scenarios);
-        String name = StringUtils.substringAfterLast(story.getPath(), "/");
-        filtered.namedAs(name);        
+        filtered.namedAs(nameResolver.resolveName(story.getPath()));        
         return filtered;
     }
 
