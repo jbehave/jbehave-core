@@ -39,5 +39,7 @@ public interface EmbedderMonitor {
 
     void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type);
 
+    void mappingStory(String storyPath, List<String> metaFilters);
+
  
 }

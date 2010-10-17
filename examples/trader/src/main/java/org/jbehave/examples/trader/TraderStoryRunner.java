@@ -20,7 +20,7 @@ public class TraderStoryRunner {
     @Test
     public void mapStories() {
         Embedder embedder = new Embedder();
-        embedder.useMetaFilters(asList("+theme *", "-skip"));
+        embedder.useMetaFilters(asList("+author *", "+theme *", "-skip"));
         List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/*.story"), asList(""));
         embedder.mapStoriesAsPaths(storyPaths);

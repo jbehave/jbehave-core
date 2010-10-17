@@ -1,6 +1,7 @@
 Meta: 
 
 @theme filtering
+@author Mauro
 
 Scenario: A scenario to be skipped
 
@@ -13,8 +14,6 @@ Given I do nothing
 Scenario: A scenario with an author
 
 Meta:  
-
-@author Mauro
 
 Given I do nothing
 

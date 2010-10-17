@@ -320,6 +320,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("Stories view not generated");
         }
 
+        public void mappingStory(String storyPath, List<String> metaFilters) {
+            getLog().info("Mapping story "+storyPath+" with meta filters "+metaFilters);
+        }
+
         @Override
         public String toString() {
             return this.getClass().getSimpleName();

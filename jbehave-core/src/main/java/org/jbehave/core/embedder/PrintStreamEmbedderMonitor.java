@@ -82,6 +82,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     public void storiesViewNotGenerated() {
         print("Stories view not generated");
     }
+    
+    public void mappingStory(String storyPath, List<String> metaFilters) {
+        print("Mapping story "+storyPath+" with meta filters "+metaFilters);
+    }
 
     @Override
     public String toString() {

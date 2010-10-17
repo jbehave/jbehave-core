@@ -258,6 +258,10 @@ public abstract class AbstractEmbedderTask extends Task {
             log("Stories view not generated", MSG_INFO);
         }
 
+        public void mappingStory(String storyPath, List<String> metaFilters) {
+            log("Mapping story "+storyPath+" with meta filters "+metaFilters, MSG_INFO);
+        }
+
         @Override
         public String toString() {
             return this.getClass().getSimpleName();

@@ -70,16 +70,52 @@ via the <a href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder<
 <pre class="brush: java">
 
     Embedder embedder = ... // define as required
-    embedder.useMetaFilter(new MetaFilter("+author Mauro -skip true");
+    embedder.useMetaFilters(asList("+author Mauro", "+theme filtering", "-skip"));
     
 </pre>
 
-<p>The filter is expressed as sequence of meta properties, where the
-property keyword "@" is replaced by "+" or "-" according to whether the
-property should be included or excluded by the filter.</p>
+<p>The filters are expressed as sequence of meta properties, where
+the property keyword "@" is replaced by "+" or "-" according to whether
+the property should be included or excluded by the filter.</p>
 
 <p>The meta filter can also be specified via Ant or Maven, using the
-"metaFilter" attribute or configuration element.</p>
+"metaFilters" attribute or configuration element.</p>
+
+<h2>Story Mapping</h2>
+
+<p>The meta filters can also be used to create Story Maps, where
+each filter a subset of stories that are allowed by the filter.</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>map-stories</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <includes>
+                <include>${include.paths}</include>
+              </includes>
+              <metaFilters>
+                <metaFilter>+author *</metaFilter>
+                <metaFilter>+theme *</metaFilter>
+                <metaFilter>-skip</metaFilter>
+              </metaFilters>              
+            </configuration>
+            <goals>
+              <goal>map-stories-as-paths</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>    
+]]>
+</script>
+
+<p>The resulting output is found in <b>target/jbehave-reports/maps.html</b>,
+which uses a Swim Lane view to display the results of the mapping.</p>
 
 <div class="clear">
 <hr />

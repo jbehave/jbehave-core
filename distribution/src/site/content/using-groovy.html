@@ -31,9 +31,7 @@ public class TraderGroovyStories extends JUnitStories {
 
     @Override
     public List<CandidateSteps> candidateSteps() {
-        GroovyResourceFinder resourceFinder = new GroovyResourceFinder(codeLocationFromClass(this.getClass()),
-                "**/groovy/*.groovy", "");
-        return new GroovyStepsFactory(configuration(), resourceFinder).createCandidateSteps();
+        return new GroovyStepsFactory(configuration(), new GroovyContext()).createCandidateSteps();
     }
 
 }
@@ -65,6 +63,29 @@ class ExampleGroovySteps {
       assertNotNull(date);
   }
 
+}
+]]>
+</script>
+
+<h2>Using Annotations</h2>
+
+<script type="syntaxhighlighter" class="brush: java">
+@RunWith(GroovyAnnotatedEmbedderRunner.class)
+@Configure()
+@UsingEmbedder();
+@UsingGroovy()
+public class AnnotatedEmbedderUsingGroovy extends InjectableEmbedder {
+
+    @Test
+    public void run() {
+        injectedEmbedder().runStoriesAsPaths(storyPaths());
+    }
+
+    protected List<String> storyPaths() {
+        return new StoryFinder()
+                .findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), null);
+    }
+    
 }
 ]]>
 </script>
