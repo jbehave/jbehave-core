@@ -18,8 +18,7 @@ public class TraderGroovyStories extends JUnitStories {
 
     @Override
     public Configuration configuration() {
-        return new MostUsefulConfiguration()
-                .useStoryReporterBuilder(new StoryReporterBuilder().withFormats(HTML));
+        return new MostUsefulConfiguration().useStoryReporterBuilder(new StoryReporterBuilder().withFormats(HTML));
     }
 
     @Override
@@ -30,8 +29,9 @@ public class TraderGroovyStories extends JUnitStories {
 
     @Override
     public List<CandidateSteps> candidateSteps() {
-        return new GroovyStepsFactory(configuration(), asList("/org/jbehave/examples/groovy/steps/ExampleGroovySteps.groovy"))
-                .createCandidateSteps();
+        List<String> groovyResources = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/*.groovy"), null);
+        return new GroovyStepsFactory(new MostUsefulConfiguration(), groovyResources).createCandidateSteps();
     }
 
 }

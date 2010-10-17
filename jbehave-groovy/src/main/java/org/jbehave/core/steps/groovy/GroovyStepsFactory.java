@@ -39,7 +39,8 @@ public class GroovyStepsFactory extends AbstractStepsFactory {
 
     private Object newInstance(String resource) {
         try {
-            File file = new File(this.getClass().getResource(resource).toURI());
+            String name = resource.startsWith("/") ? resource : "/" + resource;
+            File file = new File(this.getClass().getResource(name).toURI());
             return classLoader.parseClass(file).newInstance();
         } catch (Exception e) {
             throw new GroovyClassInstantiationFailed(classLoader, resource, e);
