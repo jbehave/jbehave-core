@@ -1,4 +1,4 @@
-package org.jbehave.core.steps.groovy;
+package org.jbehave.core.configuration.groovy;
 
 import static java.util.Arrays.asList;
 
@@ -10,9 +10,9 @@ import org.jbehave.core.io.StoryFinder;
 
 public class GroovyResourceFinder {
 
+    private URL codeLocation;
     private String include;
     private String exclude;
-    private URL codeLocation;
 
     public GroovyResourceFinder(){
         this(CodeLocations.codeLocationFromPath("src/main/groovy"), "**/*.groovy", "");

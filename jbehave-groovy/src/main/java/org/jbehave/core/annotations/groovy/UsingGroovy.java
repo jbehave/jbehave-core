@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.jbehave.core.steps.groovy.GroovyResourceFinder;
+import org.jbehave.core.configuration.groovy.GroovyResourceFinder;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.TYPE })

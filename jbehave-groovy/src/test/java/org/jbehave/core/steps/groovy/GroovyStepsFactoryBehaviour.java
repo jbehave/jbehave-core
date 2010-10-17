@@ -11,6 +11,7 @@ import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.configuration.groovy.GroovyContext;
+import org.jbehave.core.configuration.groovy.GroovyResourceFinder;
 import org.jbehave.core.configuration.groovy.GroovyContext.GroovyClassInstantiationFailed;
 import org.junit.Test;
 

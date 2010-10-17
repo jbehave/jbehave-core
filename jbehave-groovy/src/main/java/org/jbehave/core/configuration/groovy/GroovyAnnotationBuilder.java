@@ -11,7 +11,6 @@ import org.jbehave.core.configuration.AnnotationRequired;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.groovy.GroovyResourceFinder;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory;
 
 /**

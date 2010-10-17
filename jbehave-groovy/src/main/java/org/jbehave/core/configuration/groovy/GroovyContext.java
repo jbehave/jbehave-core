@@ -7,7 +7,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.steps.groovy.GroovyResourceFinder;
 
 public class GroovyContext {
 
