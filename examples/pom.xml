@@ -135,7 +135,9 @@
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
-              <metaFilter>${meta.filter}</metaFilter>
+              <metaFilters>
+                <metaFilter>${meta.filter}</metaFilter>
+              </metaFilters>
             </configuration>
             <goals>
               <goal>run-stories-as-embeddables</goal>

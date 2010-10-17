@@ -1,7 +1,6 @@
 package org.jbehave.ant;
 
 import static java.util.Arrays.asList;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.tools.ant.Project.MSG_DEBUG;
 import static org.apache.tools.ant.Project.MSG_INFO;
 import static org.apache.tools.ant.Project.MSG_WARN;
@@ -101,9 +100,9 @@ public abstract class AbstractEmbedderTask extends Task {
     private String storyFinderClass = StoryFinder.class.getName();
 
     /**
-     * The meta filter
+     * The meta filters
      */
-    private String metaFilter = "";
+    private List<String> metaFilters = asList();
 
     /**
      * Determines if the scope of the source directory is "test"
@@ -195,8 +194,8 @@ public abstract class AbstractEmbedderTask extends Task {
         }
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
-        if ( isNotBlank(metaFilter) ) {
-            embedder.useMetaFilter(metaFilter);
+        if ( !metaFilters.isEmpty() ) {
+            embedder.useMetaFilters(metaFilters);
         }
         embedder.useEmbedderControls(embedderControls());
         return embedder;
@@ -324,8 +323,8 @@ public abstract class AbstractEmbedderTask extends Task {
         this.storyFinderClass = storyFinderClass;
     }
 
-    public void setMetaFilter(String metaFilter) {
-        this.metaFilter = metaFilter;
+    public void setMetaFilters(String metaFiltersCSV) {
+        this.metaFilters = asList(metaFiltersCSV.split(","));
     }
 
 }

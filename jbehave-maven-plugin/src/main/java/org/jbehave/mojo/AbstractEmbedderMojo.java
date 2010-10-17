@@ -1,6 +1,6 @@
 package org.jbehave.mojo;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static java.util.Arrays.asList;
 
 import java.io.File;
 import java.util.List;
@@ -150,9 +150,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     /**
      * The meta filter
      * 
-     * @parameter default-value=""
+     * @parameter
      */
-    String metaFilter = "";
+    List<String> metaFilters = asList();
 
     /**
      * Determines if the scope of the mojo classpath is "test"
@@ -242,8 +242,8 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
-        if (isNotBlank(metaFilter)) {
-            embedder.useMetaFilter(metaFilter);
+        if ( !metaFilters.isEmpty() ) {
+            embedder.useMetaFilters(metaFilters);
         }
         embedder.useEmbedderControls(embedderControls());
         return embedder;

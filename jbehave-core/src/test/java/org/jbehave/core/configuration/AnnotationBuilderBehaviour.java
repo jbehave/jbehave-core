@@ -1,5 +1,6 @@
 package org.jbehave.core.configuration;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
@@ -92,7 +93,7 @@ public class AnnotationBuilderBehaviour {
         assertThat(instance, Matchers.instanceOf(InjectableEmbedder.class));
         Embedder embedder = ((InjectableEmbedder) instance).injectedEmbedder();
         assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
-        assertThat(embedder.metaFilter(), equalTo("+embedder injectable"));
+        assertThat(embedder.metaFilters(), equalTo(asList("+embedder injectable")));
         assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
     }
 
@@ -103,7 +104,7 @@ public class AnnotationBuilderBehaviour {
         assertThat(instance, Matchers.instanceOf(ConfigurableEmbedder.class));
         Embedder embedder = ((ConfigurableEmbedder) instance).configuredEmbedder();
         assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
-        assertThat(embedder.metaFilter(), equalTo("+embedder configurable"));
+        assertThat(embedder.metaFilters(), equalTo(asList("+embedder configurable")));
         assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
     }
 
@@ -174,7 +175,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Configure(keywords = MyKeywords.class)
-    @UsingEmbedder(metaFilter = "+embedder injectable")
+    @UsingEmbedder(metaFilters = "+embedder injectable")
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedInjectable extends InjectableEmbedder {
 
@@ -184,7 +185,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Configure(keywords = MyKeywords.class)
-    @UsingEmbedder(metaFilter = "+embedder configurable")
+    @UsingEmbedder(metaFilters = "+embedder configurable")
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedConfigurable extends ConfigurableEmbedder {
 

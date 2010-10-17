@@ -1,7 +1,5 @@
 package org.jbehave.core.configuration;
 
-import static org.codehaus.plexus.util.StringUtils.isNotBlank;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -156,9 +154,9 @@ public class AnnotationBuilder {
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView);
         embedder.useConfiguration(configuration);
         embedder.useCandidateSteps(candidateSteps);
-        String metaFilter = finder.getAnnotatedValue(UsingEmbedder.class, String.class, "metaFilter");
-        if ( isNotBlank(metaFilter)){
-            embedder.useMetaFilter(metaFilter);
+        List<String> metaFilters = finder.getAnnotatedValues(UsingEmbedder.class, String.class, "metaFilters");
+        if ( !metaFilters.isEmpty() ){
+            embedder.useMetaFilters(metaFilters);
         }
         return embedder;
     }

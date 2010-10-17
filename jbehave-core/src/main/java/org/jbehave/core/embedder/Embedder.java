@@ -2,9 +2,11 @@ package org.jbehave.core.embedder;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.Embeddable;
@@ -34,7 +36,7 @@ public class Embedder {
     private EmbedderControls embedderControls = new EmbedderControls();
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
-    private String metaFilter = "";
+    private List<String> metaFilters = Arrays.asList();
 
     public Embedder() {
         this(new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -184,7 +186,7 @@ public class Embedder {
 
         BatchFailures batchFailures = new BatchFailures();
         buildReporters(configuration, storyPaths);
-        MetaFilter filter = new MetaFilter(metaFilter, embedderMonitor);
+        MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, ""), embedderMonitor);
         for (String storyPath : storyPaths) {
             try {
                 embedderMonitor.runningStory(storyPath);
@@ -290,8 +292,8 @@ public class Embedder {
         return embedderMonitor;
     }
 
-    public String metaFilter() {
-        return metaFilter;
+    public List<String> metaFilters() {
+        return metaFilters;
     }
 
     public StoryRunner storyRunner() {
@@ -314,8 +316,8 @@ public class Embedder {
         this.embedderMonitor = embedderMonitor;
     }
 
-    public void useMetaFilter(String metaFilter) {
-        this.metaFilter = metaFilter;
+    public void useMetaFilters(List<String> metaFilters) {
+        this.metaFilters = metaFilters;
     }
 
     public void useStoryRunner(StoryRunner storyRunner) {
