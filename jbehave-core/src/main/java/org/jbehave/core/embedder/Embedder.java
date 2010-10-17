@@ -186,7 +186,7 @@ public class Embedder {
 
         BatchFailures batchFailures = new BatchFailures();
         buildReporters(configuration, storyPaths);
-        MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, ""), embedderMonitor);
+        MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, " "), embedderMonitor);
         for (String storyPath : storyPaths) {
             try {
                 embedderMonitor.runningStory(storyPath);
