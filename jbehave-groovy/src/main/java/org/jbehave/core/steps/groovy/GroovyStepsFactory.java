@@ -12,29 +12,47 @@ import org.jbehave.core.steps.AbstractStepsFactory;
 
 public class GroovyStepsFactory extends AbstractStepsFactory {
 
-    private final GroovyClassLoader classLoader = new GroovyClassLoader();
-    private final List<String> groovyResources;
+    private final GroovyClassLoader classLoader;
+    private final List<String> resources;
 
-    public GroovyStepsFactory(Configuration configuration, List<String> groovyResources) {
+    public GroovyStepsFactory(Configuration configuration, List<String> resources) {
+        this(configuration, new GroovyClassLoader(), resources);
+    }
+
+    public GroovyStepsFactory(Configuration configuration, GroovyClassLoader classLoader, List<String> resources) {
         super(configuration);
-        this.groovyResources = groovyResources;
+        this.classLoader = classLoader;
+        this.resources = resources;
     }
 
     @Override
     protected List<Object> stepsInstances() {
         List<Object> instances = new ArrayList<Object>();
-        for (String resource : groovyResources) {
-            instances.add(newInstanceFromScript(resource));                
+        for (String resource : resources) {
+            Object object = newInstance(resource);
+            if (hasAnnotatedMethods(object.getClass())) {
+                instances.add(object);
+            }
         }
         return instances;
     }
-    
-    private Object newInstanceFromScript(String resource) {
+
+    private Object newInstance(String resource) {
         try {
             File file = new File(this.getClass().getResource(resource).toURI());
             return classLoader.parseClass(file).newInstance();
         } catch (Exception e) {
-            throw new RuntimeException(format("Could not create new instance from Groovy script '{0}'", resource), e);
+            throw new GroovyClassInstantiationFailed(classLoader, resource, e);
         }
+    }
+
+    @SuppressWarnings("serial")
+    public static final class GroovyClassInstantiationFailed extends RuntimeException {
+
+        public GroovyClassInstantiationFailed(GroovyClassLoader classLoader, String resource, Exception cause) {
+            super(format("Failed to create new instance of class from resource '{0}' using Groovy class loader '{1}'",
+                    resource, classLoader), cause);
+        }
+
     }
 }
