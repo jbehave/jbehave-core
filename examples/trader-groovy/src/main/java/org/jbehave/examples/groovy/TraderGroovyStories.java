@@ -12,6 +12,7 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.groovy.GroovyResourceFinder;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory;
 
 public class TraderGroovyStories extends JUnitStories {
@@ -29,9 +30,9 @@ public class TraderGroovyStories extends JUnitStories {
 
     @Override
     public List<CandidateSteps> candidateSteps() {
-        List<String> groovyResources = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/*.groovy"), null);
-        return new GroovyStepsFactory(configuration(), groovyResources).createCandidateSteps();
+        GroovyResourceFinder resourceFinder = new GroovyResourceFinder(codeLocationFromClass(this.getClass()),
+                "**/groovy/*.groovy", "");
+        return new GroovyStepsFactory(configuration(), resourceFinder).createCandidateSteps();
     }
 
 }

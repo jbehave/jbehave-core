@@ -15,6 +15,10 @@ public class GroovyStepsFactory extends AbstractStepsFactory {
     private final GroovyClassLoader classLoader;
     private final List<String> resources;
 
+    public GroovyStepsFactory(Configuration configuration, GroovyResourceFinder resourceFinder) {
+        this(configuration, new GroovyClassLoader(), resourceFinder.findResources());
+    }
+
     public GroovyStepsFactory(Configuration configuration, List<String> resources) {
         this(configuration, new GroovyClassLoader(), resources);
     }

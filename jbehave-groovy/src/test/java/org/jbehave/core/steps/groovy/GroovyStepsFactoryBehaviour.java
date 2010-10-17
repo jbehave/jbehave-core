@@ -10,7 +10,6 @@ import java.util.List;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory.GroovyClassInstantiationFailed;
 import org.junit.Test;
 
@@ -18,9 +17,9 @@ public class GroovyStepsFactoryBehaviour {
 
     @Test
     public void shouldCreateStepsInstancesFromGroovyWhenAnnotated() {
-        List<String> resources = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/groovy/*.groovy"), asList("**/groovy/invalid*.groovy"));
-        GroovyStepsFactory factory = new GroovyStepsFactory(new MostUsefulConfiguration(), resources);
+        GroovyResourceFinder resourceFinder = new GroovyResourceFinder(codeLocationFromClass(this.getClass()),
+                "**/groovy/*.groovy", "**/groovy/invalid*.groovy");
+        GroovyStepsFactory factory = new GroovyStepsFactory(new MostUsefulConfiguration(), resourceFinder);
         List<Object> instances = factory.stepsInstances();
         MatcherAssert.assertThat(instances.size(), Matchers.equalTo(1));
         Object object = instances.get(0);
