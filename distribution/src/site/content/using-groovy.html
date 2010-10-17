@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Using Groovy</title>
+</head>
+
+<body>
+
+<h2>Writing Steps in Groovy</h2>
+
+<p><a href="http://groovy.codehaus.org">Groovy</a> is a very powerful dynamic scripting language
+that compiles directly to the JVM.</p>
+
+<p>JBehave supports writing Steps classes directly in Groovy, using the <a
+    href="javadoc/guice/org/jbehave/core/steps/groovy/GroovyStepsFactory.html">GroovyStepsFactory</a>
+    and providing the list of Groovy scripts as classpath resources:
+</p>
+<script type="syntaxhighlighter" class="brush: java">
+public class TraderGroovyStories extends JUnitStories {
+
+    @Override
+    public Configuration configuration() {
+        return new MostUsefulConfiguration().useStoryReporterBuilder(new StoryReporterBuilder().withFormats(HTML));
+    }
+
+    @Override
+    protected List<String> storyPaths() {
+        return new StoryFinder()
+                .findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), null);
+    }
+
+    @Override
+    public List<CandidateSteps> candidateSteps() {
+        List<String> groovyResources = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
+                asList("**/*.groovy"), null);
+        return new GroovyStepsFactory(new MostUsefulConfiguration(), groovyResources).createCandidateSteps();
+    }
+
+}
+]]>
+</script>
+
+<p>The Groovy script needs to include annotated methods, just as you would in Java:</p>
+<script type="syntaxhighlighter" class="brush: java">
+import org.jbehave.core.annotations.Given
+import org.jbehave.core.annotations.Then
+import org.jbehave.core.annotations.When
+
+import static junit.framework.Assert.assertNotNull;
+
+class ExampleGroovySteps {
+
+  @Given("a date of \$date")
+  def aDate(Date date) {
+    assertNotNull(date);
+  }
+
+  @When("\$days days pass")
+  def daysPass(int days) {
+    assertNotNull(days);
+  }
+
+  @Then("the date is \$date")
+  def theDate(Date date) {
+      assertNotNull(date);
+  }
+
+}
+]]>
+</script>
+
+<div class="clear">
+<hr />
+</div>
+</body>
+</html>
