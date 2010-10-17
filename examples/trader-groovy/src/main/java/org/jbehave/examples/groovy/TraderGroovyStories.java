@@ -8,11 +8,11 @@ import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.configuration.groovy.GroovyContext;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.groovy.GroovyResourceFinder;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory;
 
 public class TraderGroovyStories extends JUnitStories {
@@ -30,9 +30,7 @@ public class TraderGroovyStories extends JUnitStories {
 
     @Override
     public List<CandidateSteps> candidateSteps() {
-        GroovyResourceFinder resourceFinder = new GroovyResourceFinder(codeLocationFromClass(this.getClass()),
-                "**/groovy/*.groovy", "");
-        return new GroovyStepsFactory(configuration(), resourceFinder).createCandidateSteps();
+        return new GroovyStepsFactory(configuration(), new GroovyContext()).createCandidateSteps();
     }
 
 }
