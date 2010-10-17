@@ -29,9 +29,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy</artifactId>
-      <version>1.7.4</version>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-groovy</artifactId>
+      <version>${project.version}</version>
     </dependency>
   </dependencies>
 

@@ -18,6 +18,7 @@
     <module>jbehave-core</module>
     <module>jbehave-ant</module>
     <module>jbehave-maven-plugin</module>
+    <module>jbehave-groovy</module>
     <module>jbehave-guice</module>
     <module>jbehave-pico</module>
     <module>jbehave-spring</module>
