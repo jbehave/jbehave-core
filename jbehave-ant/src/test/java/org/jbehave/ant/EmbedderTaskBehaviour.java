@@ -204,6 +204,37 @@ public class EmbedderTaskBehaviour {
     }
     
     @Test
+    public void shouldMapStoriesAsPaths(){
+        // Given
+        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        MapStoriesAsPaths task = new MapStoriesAsPaths(){
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+            
+            @Override
+            protected EmbedderClassLoader createClassLoader() {
+                return classLoader;
+            }
+
+        };
+        String searchInDirectory = "src/test/java/";
+        task.setSourceDirectory(searchInDirectory);
+        List<String> includes = asList("**/stories/*.story");
+        task.setIncludes(StringUtils.join(includes, "'"));
+        List<String> excludes = asList();
+        task.setExcludes(StringUtils.join(excludes, "'"));
+        List<String> storyPaths = new StoryFinder().findPaths(searchInDirectory, includes, excludes);
+        
+        // When
+        task.execute();
+        
+        // Then 
+        verify(embedder).mapStoriesAsPaths(storyPaths);
+    }
+    
+    @Test
     public void shouldGenerateStoriesView(){
         // Given
         GenerateStoriesView task = new GenerateStoriesView(){

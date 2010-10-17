@@ -233,6 +233,37 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
+    public void shouldMapStoriesAsPaths() throws MojoExecutionException, MojoFailureException{
+        // Given
+        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        MapStoriesAsPaths mojo = new MapStoriesAsPaths(){
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+            
+            @Override
+            protected EmbedderClassLoader createClassLoader() {
+                return classLoader;
+            }
+
+        };
+        String searchInDirectory = "src/test/java/";
+        mojo.sourceDirectory = searchInDirectory;
+        List<String> includes = asList("**/stories/*.story");
+        mojo.includes = includes;
+        List<String> excludes = asList();
+        mojo.excludes = excludes;
+        List<String> storyPaths = new StoryFinder().findPaths(searchInDirectory, includes, excludes);
+        
+        // When
+        mojo.execute();
+        
+        // Then 
+        verify(embedder).mapStoriesAsPaths(storyPaths);
+    }
+
+    @Test
     public void shouldGenerateStoriesView() throws MojoExecutionException, MojoFailureException{
         // Given
         GenerateStoriesView mojo = new GenerateStoriesView(){

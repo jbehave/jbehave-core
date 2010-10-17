@@ -47,7 +47,7 @@ public class Embedder {
         this.embedderMonitor = embedderMonitor;
     }
 
-    public void mapStoriesAsPaths(List<String> storyPaths, List<String> filters) {
+    public void mapStoriesAsPaths(List<String> storyPaths) {
         EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
             embedderMonitor.storiesSkipped(storyPaths);
@@ -55,11 +55,10 @@ public class Embedder {
         }
 
         StoryMapper storyMapper = new StoryMapper();
-
         for (String storyPath : storyPaths) {
             Story story = storyRunner.storyOfPath(configuration, storyPath);
             storyMapper.map(story, new MetaFilter(""));
-            for (String filter : filters) {
+            for (String filter : metaFilters) {
                 storyMapper.map(story, new MetaFilter(filter));
             }
         }
