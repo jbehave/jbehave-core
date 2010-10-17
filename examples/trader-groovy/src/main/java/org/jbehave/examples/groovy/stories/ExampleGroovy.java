@@ -4,5 +4,5 @@ import org.jbehave.examples.groovy.TraderGroovyStories;
 
 /**
  */
-public class AndStep extends TraderGroovyStories {
+public class ExampleGroovy extends TraderGroovyStories {
 }

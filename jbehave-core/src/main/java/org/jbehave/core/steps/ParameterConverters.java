@@ -294,7 +294,7 @@ public class ParameterConverters {
                 return dateFormat.parse(value);
             } catch (ParseException e) {
                 throw new ParameterConvertionFailed("Could not convert value " + value + " with date format "
-                        + dateFormat, e);
+                        + (dateFormat instanceof SimpleDateFormat ? ((SimpleDateFormat) dateFormat).toPattern() : dateFormat), e);
             }
         }
 

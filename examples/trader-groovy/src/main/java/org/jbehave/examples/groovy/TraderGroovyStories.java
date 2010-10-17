@@ -44,7 +44,7 @@ public class TraderGroovyStories extends JUnitStories {
 
     private List<Object> candidates() {
         final ArrayList<Object> candidates = new ArrayList<Object>();
-        candidates.add(groovyScript("/org/jbehave/examples/groovy/steps/AndSteps.groovy"));
+        candidates.add(groovyScript("/org/jbehave/examples/groovy/steps/ExampleGroovySteps.groovy"));
         return candidates;
     }
 
