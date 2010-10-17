@@ -31,7 +31,7 @@ public class TraderGroovyStories extends JUnitStories {
     public List<CandidateSteps> candidateSteps() {
         List<String> groovyResources = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
                 asList("**/*.groovy"), null);
-        return new GroovyStepsFactory(new MostUsefulConfiguration(), groovyResources).createCandidateSteps();
+        return new GroovyStepsFactory(configuration(), groovyResources).createCandidateSteps();
     }
 
 }
