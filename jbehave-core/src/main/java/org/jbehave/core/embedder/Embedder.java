@@ -34,7 +34,7 @@ public class Embedder {
     private EmbedderControls embedderControls = new EmbedderControls();
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
-    private MetaFilter metaFilter = MetaFilter.EMPTY;
+    private String metaFilter = "";
 
     public Embedder() {
         this(new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -184,11 +184,12 @@ public class Embedder {
 
         BatchFailures batchFailures = new BatchFailures();
         buildReporters(configuration, storyPaths);
+        MetaFilter filter = new MetaFilter(metaFilter, embedderMonitor);
         for (String storyPath : storyPaths) {
             try {
                 embedderMonitor.runningStory(storyPath);
                 Story story = storyRunner.storyOfPath(configuration, storyPath);
-                storyRunner.run(configuration, candidateSteps, story, metaFilter);
+                storyRunner.run(configuration, candidateSteps, story, filter);
             } catch (Throwable e) {
                 if (embedderControls.batch()) {
                     // collect and postpone decision to throw exception
@@ -289,7 +290,7 @@ public class Embedder {
         return embedderMonitor;
     }
 
-    public MetaFilter metaFilter() {
+    public String metaFilter() {
         return metaFilter;
     }
 
@@ -313,7 +314,7 @@ public class Embedder {
         this.embedderMonitor = embedderMonitor;
     }
 
-    public void useMetaFilter(MetaFilter metaFilter) {
+    public void useMetaFilter(String metaFilter) {
         this.metaFilter = metaFilter;
     }
 

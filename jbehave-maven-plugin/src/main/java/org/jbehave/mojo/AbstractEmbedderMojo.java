@@ -243,7 +243,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
         if (isNotBlank(metaFilter)) {
-            embedder.useMetaFilter(new MetaFilter(metaFilter, embedderMonitor));
+            embedder.useMetaFilter(metaFilter);
         }
         embedder.useEmbedderControls(embedderControls());
         return embedder;

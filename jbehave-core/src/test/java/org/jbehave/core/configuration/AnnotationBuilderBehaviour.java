@@ -92,7 +92,7 @@ public class AnnotationBuilderBehaviour {
         assertThat(instance, Matchers.instanceOf(InjectableEmbedder.class));
         Embedder embedder = ((InjectableEmbedder) instance).injectedEmbedder();
         assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
-        assertThat(embedder.metaFilter().asString(), equalTo("+embedder injectable"));
+        assertThat(embedder.metaFilter(), equalTo("+embedder injectable"));
         assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
     }
 
@@ -103,7 +103,7 @@ public class AnnotationBuilderBehaviour {
         assertThat(instance, Matchers.instanceOf(ConfigurableEmbedder.class));
         Embedder embedder = ((ConfigurableEmbedder) instance).configuredEmbedder();
         assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
-        assertThat(embedder.metaFilter().asString(), equalTo("+embedder configurable"));
+        assertThat(embedder.metaFilter(), equalTo("+embedder configurable"));
         assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
     }
 

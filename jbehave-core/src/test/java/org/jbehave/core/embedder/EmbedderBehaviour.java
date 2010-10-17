@@ -53,6 +53,7 @@ import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Steps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 
 public class EmbedderBehaviour {
 
@@ -347,7 +348,7 @@ public class EmbedderBehaviour {
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(configuration, candidateSteps, stories.get(storyPath), MetaFilter.EMPTY);
+            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.isA(MetaFilter.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatStoriesViewGenerated(out);
@@ -386,12 +387,11 @@ public class EmbedderBehaviour {
         // When
         MetaFilter filter = mock(MetaFilter.class);
         when(filter.allow(meta)).thenReturn(false);
-        embedder.useMetaFilter(filter);
         embedder.runStoriesAsPaths(storyPaths);
         
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(configuration, candidateSteps, stories.get(storyPath), filter);
+            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),  Matchers.eq(stories.get(storyPath)),  Matchers.isA(MetaFilter.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatStoriesViewGenerated(out);
@@ -456,8 +456,8 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(configuration, candidateSteps,
-                    stories.get(storyPath), MetaFilter.EMPTY);
+            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
+                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
         }
         // When
         embedder.runStoriesAsPaths(storyPaths);
@@ -490,8 +490,8 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(configuration, candidateSteps,
-                    stories.get(storyPath), MetaFilter.EMPTY);
+            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
+                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
         }
         
         // When
@@ -566,8 +566,8 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(configuration, candidateSteps,
-                    stories.get(storyPath), MetaFilter.EMPTY);
+            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
+                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
         }
         
         // When 
@@ -604,8 +604,8 @@ public class EmbedderBehaviour {
         for (String storyPath : storyPaths) {
             RuntimeException thrown = new RuntimeException(storyPath + " failed");
             failures.put(storyPath, thrown);
-            doThrow(thrown).when(runner).run(configuration, candidateSteps,
-                    stories.get(storyPath), MetaFilter.EMPTY);
+            doThrow(thrown).when(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
+                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
         }
         
         // When
@@ -647,7 +647,7 @@ public class EmbedderBehaviour {
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(configuration, candidateSteps, stories.get(storyPath), MetaFilter.EMPTY);
+            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThat(out.toString(), not(containsString("Generating stories view")));

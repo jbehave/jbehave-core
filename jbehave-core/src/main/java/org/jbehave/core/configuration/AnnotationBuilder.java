@@ -11,7 +11,6 @@ import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.embedder.Embedder;
-import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
@@ -159,7 +158,7 @@ public class AnnotationBuilder {
         embedder.useCandidateSteps(candidateSteps);
         String metaFilter = finder.getAnnotatedValue(UsingEmbedder.class, String.class, "metaFilter");
         if ( isNotBlank(metaFilter)){
-            embedder.useMetaFilter(new MetaFilter(metaFilter));
+            embedder.useMetaFilter(metaFilter);
         }
         return embedder;
     }
