@@ -17,7 +17,7 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
 import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.junit.Test;
 
-public class SprintStoryReporterBuilderBehaviour {
+public class SpringStoryReporterBuilderBehaviour {
 
     @Test
     public void shouldAllowUseOfGettersAndSetters(){
