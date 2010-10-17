@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.jbehave.core.io.UnderscoredToCapitalized;
 import org.jbehave.core.io.StoryNameResolver;
+import org.jbehave.core.io.UnderscoredToCapitalized;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -23,7 +23,7 @@ public class StoryMapper {
 
     private Map<String, Set<Story>> map = new HashMap<String, Set<Story>>();
     private StoryNameResolver nameResolver = new UnderscoredToCapitalized();
-    
+
     /**
      * Maps a story if it is allowed by the meta filter
      * 
@@ -34,21 +34,21 @@ public class StoryMapper {
      */
     public void map(Story story, MetaFilter metaFilter) {
         if (metaFilter.allow(story.getMeta())) {
-            List<Scenario> allowed = new ArrayList<Scenario>();
+            boolean allowed = false;
             for (Scenario scenario : story.getScenarios()) {
                 // scenario also inherits meta from story
-                if (metaFilter.allow(Meta.inherit(scenario.getMeta(), story.getMeta()))) {
-                    allowed.add(scenario);
+                Meta inherited = scenario.getMeta().inheritFrom(story.getMeta());
+                if (metaFilter.allow(inherited)) {
+                    allowed = true;
+                    break;
                 }
             }
-            add(metaFilter.asString(), filteredStory(story, allowed));
+            if (allowed) {
+                // TODO move naming to view generator
+                story.namedAs(nameResolver.resolveName(story.getPath()));
+                add(metaFilter.asString(), story);
+            }
         }
-    }
-
-    private Story filteredStory(Story story, List<Scenario> scenarios) {
-        Story filtered = new Story(story.getPath(), story.getDescription(), story.getMeta(), story.getNarrative(), scenarios);
-        filtered.namedAs(nameResolver.resolveName(story.getPath()));        
-        return filtered;
     }
 
     public StoryMap getStoryMap(String filter) {

@@ -58,16 +58,11 @@ public class Meta {
         return value;
     }
 
-    public boolean isEmpty() {
-        return EMPTY == this;
+    public Meta inheritFrom(Meta meta) {       
+        return inherit(this, meta);
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-    public static Meta inherit(Meta child, Meta parent) {
+    private Meta inherit(Meta child, Meta parent) {
         Set<String> names = new HashSet<String>(child.getPropertyNames());
         // only names that are not already present in the child are added
         names.addAll(parent.getPropertyNames());
@@ -80,6 +75,15 @@ public class Meta {
             }
         }
         return new Meta(inherited);
+    }
+
+    public boolean isEmpty() {
+        return EMPTY == this;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
     public static class Property {
@@ -109,4 +113,5 @@ public class Meta {
         }
 
     }
+
 }

@@ -493,7 +493,8 @@ public class StoryRunnerBehaviour {
         // When
         StoryRunner runner = new StoryRunner();
         when(filter.allow(storyMeta)).thenReturn(true);
-        when(filter.allow(Meta.inherit(meta, storyMeta))).thenReturn(false);
+        when(meta.inheritFrom(storyMeta)).thenReturn(meta);
+        when(filter.allow(meta)).thenReturn(false);
         when(filter.asString()).thenReturn(filterAsString);
         runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
 

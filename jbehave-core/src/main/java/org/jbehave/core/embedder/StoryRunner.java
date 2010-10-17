@@ -10,7 +10,6 @@ import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporter;
@@ -85,7 +84,7 @@ public class StoryRunner {
         runStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.BEFORE);
         for (Scenario scenario : story.getScenarios()) {
             // scenario also inherits meta from story
-            if ( !filter.allow(Meta.inherit(scenario.getMeta(), story.getMeta())) ){
+            if ( !filter.allow(scenario.getMeta().inheritFrom(story.getMeta())) ){
                 reporter.scenarioNotAllowed(scenario, filter.asString());
                 continue;
             }
