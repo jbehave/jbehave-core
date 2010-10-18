@@ -15,7 +15,8 @@ that compiles directly to the JVM.</p>
     href="javadoc/guice/org/jbehave/core/steps/groovy/GroovyStepsFactory.html">GroovyStepsFactory</a>
     and providing the list of Groovy scripts as classpath resources:
 </p>
-<script type="syntaxhighlighter" class="brush: java">
+<script type="syntaxhighlighter" class="brush: groovy">
+<![CDATA[
 public class TraderGroovyStories extends JUnitStories {
 
     @Override
@@ -31,7 +32,8 @@ public class TraderGroovyStories extends JUnitStories {
 
     @Override
     public List<CandidateSteps> candidateSteps() {
-        return new GroovyStepsFactory(configuration(), new GroovyContext()).createCandidateSteps();
+        GroovyResourceFinder resourceFinder = new GroovyResourceFinder(codeLocationFromPath("src/main/groovy"), "**/*.story", "");
+        return new GroovyStepsFactory(configuration(), new GroovyContext(resourceFinder)).createCandidateSteps();
     }
 
 }

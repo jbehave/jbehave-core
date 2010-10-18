@@ -9,7 +9,7 @@
   <packaging>pom</packaging>
   <name>JBehave Distribution</name>
   <properties>
-    <jbehave.site.version>3.0</jbehave.site.version>
+    <jbehave.site.version>3.1</jbehave.site.version>
   </properties>
   <dependencies>
     <dependency>
@@ -266,7 +266,7 @@
           <compositionFilePath>config/xsite.xml</compositionFilePath>
           <sitemapPath>content/sitemap.xml</sitemapPath>
           <templatesDirectoryPath>${project.build.directory}/templates</templatesDirectoryPath>
-          <skinPath>xsite-skin.html</skinPath>
+          <skinPath>xsite-skin.ftl</skinPath>
           <resourcePaths>resources</resourcePaths>
           <outputDirectoryPath>${project.build.directory}/site</outputDirectoryPath>
           <publishedVersion>${project.version}</publishedVersion>

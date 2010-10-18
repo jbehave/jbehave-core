@@ -79,7 +79,7 @@
                   <artifactItem>
                     <groupId>org.jbehave.site</groupId>
                     <artifactId>jbehave-site-resources</artifactId>
-                    <version>3.0</version>
+                    <version>3.1</version>
                     <type>zip</type>
                     <outputDirectory>${project.build.directory}/jbehave-reports/view</outputDirectory>
                   </artifactItem>
