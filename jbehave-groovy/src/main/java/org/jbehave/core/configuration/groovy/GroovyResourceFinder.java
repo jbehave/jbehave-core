@@ -1,7 +1,5 @@
 package org.jbehave.core.configuration.groovy;
 
-import static java.util.Arrays.asList;
-
 import java.net.URL;
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class GroovyResourceFinder {
     }
 
     public List<String> findResources() {
-        return new StoryFinder().findPaths(codeLocation.getFile(), asList(include), asList(exclude));
+        return new StoryFinder().findPaths(codeLocation, include, exclude);
     }
 
 }

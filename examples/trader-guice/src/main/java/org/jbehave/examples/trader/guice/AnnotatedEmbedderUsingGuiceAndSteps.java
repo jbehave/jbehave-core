@@ -1,6 +1,5 @@
 package org.jbehave.examples.trader.guice;
 
-import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 import java.util.List;
@@ -43,8 +42,7 @@ public class AnnotatedEmbedderUsingGuiceAndSteps extends InjectableEmbedder {
     }
 
     protected List<String> storyPaths() {
-        String searchInDirectory = codeLocationFromPath("../trader/src/main/java").getFile();
-        return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
+        return new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "");
     }
 
 }

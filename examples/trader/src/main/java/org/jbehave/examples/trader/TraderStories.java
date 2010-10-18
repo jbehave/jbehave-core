@@ -1,6 +1,5 @@
 package org.jbehave.examples.trader;
 
-import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
@@ -77,7 +76,7 @@ public class TraderStories extends JUnitStories {
 
     @Override
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), null);
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
                 
     }
         

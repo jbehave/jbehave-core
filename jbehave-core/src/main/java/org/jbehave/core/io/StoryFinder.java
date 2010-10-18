@@ -3,6 +3,7 @@ package org.jbehave.core.io;
 import static java.util.Arrays.asList;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -56,6 +57,22 @@ public class StoryFinder {
      */
     public List<String> findClassNames(String searchInDirectory, List<String> includes, List<String> excludes) {
         return classNames(normalise(sort(scan(searchInDirectory, includes, excludes))));
+    }
+
+    /**
+     * Finds paths from a base URL, allowing for single include/exclude pattern. Paths
+     * found are normalised by {@link StoryFinder#normalise(List<String>)}.
+     * 
+     * @param searchInURL
+     *            the base URL to search in 
+     * @param include
+     *            the include pattern, or <code>""</code> if none
+     * @param exclude
+     *            the exclude pattern, or <code>""</code> if none
+     * @return A List of paths found
+     */
+    public List<String> findPaths(URL searchInURL, String include, String exclude) {
+        return findPaths(searchInURL.getFile(), asList(include), asList(exclude));
     }
 
     /**

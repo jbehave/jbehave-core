@@ -1,6 +1,5 @@
 package org.jbehave.examples.trader;
 
-import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
@@ -8,6 +7,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
@@ -44,8 +44,8 @@ public class AnnotatedTraderEmbedder extends InjectableEmbedder {
 
     @Test
     public void run() {
-        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/meta*.story"), asList("")));
+        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/meta*.story", "");
+        injectedEmbedder().runStoriesAsPaths(storyPaths);
     }
 
     public static class MyReportBuilder extends StoryReporterBuilder {

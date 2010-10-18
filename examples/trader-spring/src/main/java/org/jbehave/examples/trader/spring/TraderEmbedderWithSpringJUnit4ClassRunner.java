@@ -1,7 +1,6 @@
 package org.jbehave.examples.trader.spring;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 import java.util.List;
 
@@ -55,7 +54,7 @@ public class TraderEmbedderWithSpringJUnit4ClassRunner {
     }
 
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList("**/*.story"), asList(""));
+        return new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "");
     }
 
 }
