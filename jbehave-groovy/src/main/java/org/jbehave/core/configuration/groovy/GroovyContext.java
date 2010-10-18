@@ -1,5 +1,6 @@
 package org.jbehave.core.configuration.groovy;
 
+import static java.text.MessageFormat.format;
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
 
@@ -7,11 +8,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.text.MessageFormat.format;
-
 public class GroovyContext {
 
-    private final JBehaveGroovyClassLoader classLoader;
+    private final GroovyClassLoader classLoader;
     private final List<String> resources;
     private List<Object> instances;
 
@@ -24,14 +23,14 @@ public class GroovyContext {
     }
 
     public GroovyContext(List<String> resources) {
-        this(new JBehaveGroovyClassLoader(), resources);
+        this(new BytecodeGroovyClassLoader(), resources);
     }
 
-    public GroovyContext(JBehaveGroovyClassLoader classLoader, GroovyResourceFinder resourceFinder) {
+    public GroovyContext(GroovyClassLoader classLoader, GroovyResourceFinder resourceFinder) {
         this(classLoader, resourceFinder.findResources());
     }
 
-    public GroovyContext(JBehaveGroovyClassLoader classLoader, List<String> resources) {
+    public GroovyContext(GroovyClassLoader classLoader, List<String> resources) {
         this.classLoader = classLoader;
         this.resources = resources;
         this.instances = createGroovyInstances();
@@ -43,8 +42,8 @@ public class GroovyContext {
 
     @SuppressWarnings("unchecked")
     public <T> T getInstanceOfType(Class<T> type) {
-        for (Object instance : instances ) {
-            if (type.isAssignableFrom(instance.getClass()) ) {
+        for (Object instance : instances) {
+            if (type.isAssignableFrom(instance.getClass())) {
                 return (T) instance;
             }
         }
