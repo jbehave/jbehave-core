@@ -1,8 +1,9 @@
 package org.jbehave.core.configuration;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.failures.FailingUponPendingStep;
@@ -35,8 +36,8 @@ import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
 
-import com.thoughtworks.paranamer.NullParanamer;
-import com.thoughtworks.paranamer.Paranamer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -318,6 +319,10 @@ public abstract class Configuration {
     public Configuration useParanamer(Paranamer paranamer) {
         this.paranamer = paranamer;
         return this;
+    }
+
+    public Configuration useParanamer() {
+        return useParanamer(new CachingParanamer(new BytecodeReadingParanamer()));
     }
 
     public Configuration useParameterConverters(ParameterConverters parameterConverters) {
