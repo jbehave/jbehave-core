@@ -65,7 +65,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     private final Configuration configuration;
     private Properties viewProperties;
-    private Map<String, Report> reports = new HashMap<String, Report>();
+    private List<Report> reports = new ArrayList<Report>();
     private StoryNameResolver nameResolver = new UnderscoredToCapitalized();
     
     public FreemarkerViewGenerator() {
@@ -99,7 +99,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         String outputName = templateResource("viewDirectory") + "/maps.html";
         String maps = templateResource("maps");
         Map<String, Object> dataModel = newDataModel();
-        dataModel.put("storyLanes", new StoryLanes(storyMaps));
+        dataModel.put("storyLanes", new StoryLanes(storyMaps, nameResolver));
         dataModel.put("date", new Date());
         write(outputDirectory, outputName, maps, dataModel);
     }
@@ -111,14 +111,14 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     public ReportsCount getReportsCount() {
         int stories = reports.size() - 1; // don't count the totals reports
-        int scenarios = count("scenarios", reports.values());
-        int failedScenarios = count("scenariosFailed", reports.values());
+        int scenarios = count("scenarios", reports);
+        int failedScenarios = count("scenariosFailed", reports);
         return new ReportsCount(stories, scenarios, failedScenarios);
     }
 
-    int count(String event, Collection<Report> collection) {
+    int count(String event, Collection<Report> reports) {
         int count = 0;
-        for (Report report : collection) {
+        for (Report report : reports) {
             Properties stats = report.asProperties("stats");
             if (stats.containsKey(event)) {
                 count = count + Integer.parseInt((String) stats.get(event));
@@ -131,13 +131,9 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         String outputName = templateResource("viewDirectory") + "/index.html";
         String index = templateResource("index");
         List<String> mergedFormats = mergeWithDefaults(formats);
-        reports = toReports(indexedReportFiles(outputDirectory, outputName, mergedFormats));
+        reports = createReports(readReportFiles(outputDirectory, outputName, mergedFormats));
         Map<String, Object> dataModel = newDataModel();
-        List<Report> reportsAsList = new ArrayList<Report>(reports.values());
-        Collections.sort(reportsAsList);
-        dataModel.put("reports", reportsAsList);
-        addTotalsReport();
-        dataModel.put("reportsAsMap", reports);
+        dataModel.put("reportsTable", new ReportsTable(reports, nameResolver));
         dataModel.put("date", new Date());
         write(outputDirectory, outputName, index, dataModel);
     }
@@ -149,7 +145,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return merged;
     }
 
-    SortedMap<String, List<File>> indexedReportFiles(File outputDirectory, final String outputName,
+    SortedMap<String, List<File>> readReportFiles(File outputDirectory, final String outputName,
             final List<String> formats) {
         SortedMap<String, List<File>> reportFiles = new TreeMap<String, List<File>>();
         if (outputDirectory == null || !outputDirectory.exists()) {
@@ -181,13 +177,13 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return reportFiles;
     }
 
-    Map<String, Report> toReports(Map<String, List<File>> reportFiles) {
+    List<Report> createReports(Map<String, List<File>> reportFiles) {
         try {
             String decoratedTemplate = templateResource("decorated");
             String nonDecoratedTemplate = templateResource("nonDecorated");
             String viewDirectory = templateResource("viewDirectory");
             boolean decorateNonHtml = Boolean.valueOf(templateResource("decorateNonHtml"));
-            Map<String, Report> reports = new HashMap<String, Report>();
+            List<Report> reports = new ArrayList<Report>();
             for (String name : reportFiles.keySet()) {
                 Map<String, File> filesByFormat = new HashMap<String, File>();
                 for (File file : reportFiles.get(name)) {
@@ -210,33 +206,12 @@ public class FreemarkerViewGenerator implements ViewGenerator {
                     File written = write(outputDirectory, outputName, template, dataModel);
                     filesByFormat.put(format, written);
                 }
-                reports.put(name, new Report(nameResolver.resolveName(name), filesByFormat));
+                reports.add(new Report(name, filesByFormat));
             }
             return reports;
         } catch (Exception e) {
             throw new ReportCreationFailed(reportFiles, e);
         }
-    }
-
-    private void addTotalsReport() {
-        Report totals = totals(reports.values());
-        reports.put(totals.getName(), totals);
-    }
-
-    private Report totals(Collection<Report> values) {
-        Map<String, Integer> totals = new HashMap<String, Integer>();
-        for (Report report : values) {
-            Map<String, Integer> stats = report.getStats();
-            for (String key : stats.keySet()) {
-                Integer total = totals.get(key);
-                if (total == null) {
-                    total = 0;
-                }
-                total = total + stats.get(key);
-                totals.put(key, total);
-            }
-        }
-        return new Report("totals", new HashMap<String, File>(), totals);
     }
 
     private File write(File outputDirectory, String outputName, String resource, Map<String, Object> dataModel) {
@@ -289,24 +264,91 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     }
 
-    public static class Report implements Comparable<Report> {
+    public static class ReportsTable{
 
-        private final String name;
-        private final Map<String, File> filesByFormat;
-        private Map<String, Integer> stats;
+        private final Map<String, Report> reports = new HashMap<String, Report>();
+        private final StoryNameResolver nameResolver;
 
-        public Report(String name, Map<String, File> filesByFormat) {
-            this(name, filesByFormat, null);
+        public ReportsTable(List<Report> reports, StoryNameResolver nameResolver) {           
+            this.nameResolver = nameResolver;
+            index(reports);
+            addTotalsReport();
         }
 
-        public Report(String name, Map<String, File> filesByFormat, Map<String, Integer> stats) {
-            this.name = name;
+        private void index(List<Report> reports) {
+            for (Report report : reports) {                
+                report.nameAs(nameResolver.resolveName(report.getPath()));
+                this.reports.put(report.getName(), report);
+            }
+        }
+
+        private void addTotalsReport() {
+            Report report = totals(reports.values());
+            report.nameAs(nameResolver.resolveName(report.getPath()));
+            reports.put(report.getName(), report);
+        }
+
+        private Report totals(Collection<Report> values) {
+            Map<String, Integer> totals = new HashMap<String, Integer>();
+            for (Report report : values) {
+                Map<String, Integer> stats = report.getStats();
+                for (String key : stats.keySet()) {
+                    Integer total = totals.get(key);
+                    if (total == null) {
+                        total = 0;
+                    }
+                    total = total + stats.get(key);
+                    totals.put(key, total);
+                }
+            }
+            return new Report("totals", new HashMap<String, File>(), totals);
+        }
+        
+        
+        public List<Report> getReports(){
+            List<Report> list = new ArrayList<Report>(reports.values());
+            Collections.sort(list);
+            return list;
+        }
+        
+        public List<String> getReportNames(){
+            List<String> list = new ArrayList<String>(reports.keySet());
+            Collections.sort(list);
+            return list;
+        }
+        
+        public Report getReport(String name){
+            return reports.get(name);
+        }
+    }
+
+    public static class Report implements Comparable<Report> {
+
+        private final String path;
+        private final Map<String, File> filesByFormat;
+        private Map<String, Integer> stats;
+        private String name;
+
+        public Report(String path, Map<String, File> filesByFormat) {
+            this(path, filesByFormat, null);
+        }
+
+        public Report(String path, Map<String, File> filesByFormat, Map<String, Integer> stats) {
+            this.path = path;
             this.filesByFormat = filesByFormat;
             this.stats = stats;
         }
 
+        public String getPath() {
+            return path;
+        }
+
         public String getName() {
-            return name;
+            return name != null ? name : path;
+        }
+
+        public void nameAs(String name) {
+            this.name = name;
         }
 
         public Map<String, File> getFilesByFormat() {
@@ -350,7 +392,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
         @Override
         public String toString() {
-            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(name).toString();
+            return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(path).toString();
         }
     }
 

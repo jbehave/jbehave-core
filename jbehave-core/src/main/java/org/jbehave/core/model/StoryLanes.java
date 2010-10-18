@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.io.StoryNameResolver;
+
 /**
  *  Represents a <a href="http://en.wikipedia.org/wiki/Swim_lane">Swim Lane</a> view of 
  *  {@link StoryMap}s.
@@ -12,14 +14,19 @@ import java.util.Map;
 public class StoryLanes {
 
     private Map<String, StoryMap> indexed = new HashMap<String, StoryMap>();
+    private final StoryNameResolver nameResolver;
 
-    public StoryLanes(List<StoryMap> storyMaps) {
+    public StoryLanes(List<StoryMap> storyMaps, StoryNameResolver nameResolver) {
+        this.nameResolver = nameResolver;
         index(storyMaps);
     }
 
     private void index(List<StoryMap> storyMaps) {
         for (StoryMap storyMap : storyMaps) {
             indexed.put(storyMap.getMetaFilter(), storyMap);
+            for (Story story : storyMap.getStories()) {
+                story.namedAs(nameResolver.resolveName(story.getPath()));
+            }
         }
     }
 

@@ -24,7 +24,7 @@
 
 <table>
 <tr><th>Name</th><th>Statistics</th><th>View</th></tr>
-<#list reports as report>
+<#list reportsTable.getReports() as report>
 <#assign filesByFormat = report.filesByFormat>
 <tr>
 <td>${report.name}</td>

@@ -45,9 +45,10 @@
     <th>Ignored</th>
     <th></th>
 </tr>
-<#list reportsAsMap.keySet() as key>
-<#assign report = reportsAsMap.get(key)>
-<#if key != "totals">
+<#assign reportNames = reportsTable.getReportNames()>
+<#list reportNames as name>
+<#assign report = reportsTable.getReport(name)>
+<#if name != "Totals">
 <tr>
 <td class="story">${report.name}</td>
 <#assign stats = report.getStats()>
@@ -87,7 +88,7 @@
 </#list>
 <tr class="totals">
 <td>Totals</td>
-<#assign stats = reportsAsMap.get("totals").getStats()>
+<#assign stats = reportsTable.getReport("Totals").getStats()>
 <td>
 <@renderStat stats "scenarios"/> 
 </td>
