@@ -1,16 +1,17 @@
 package org.jbehave.core.configuration.groovy;
 
-import static java.text.MessageFormat.format;
 import groovy.lang.GroovyClassLoader;
+import groovy.lang.GroovyCodeSource;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.text.MessageFormat.format;
 
 public class GroovyContext {
 
-    private final GroovyClassLoader classLoader;
+    private final JBehaveGroovyClassLoader classLoader;
     private final List<String> resources;
     private List<Object> instances;
 
@@ -23,14 +24,14 @@ public class GroovyContext {
     }
 
     public GroovyContext(List<String> resources) {
-        this(new GroovyClassLoader(), resources);
+        this(new JBehaveGroovyClassLoader(), resources);
     }
 
-    public GroovyContext(GroovyClassLoader classLoader, GroovyResourceFinder resourceFinder) {
+    public GroovyContext(JBehaveGroovyClassLoader classLoader, GroovyResourceFinder resourceFinder) {
         this(classLoader, resourceFinder.findResources());
     }
 
-    public GroovyContext(GroovyClassLoader classLoader, List<String> resources) {
+    public GroovyContext(JBehaveGroovyClassLoader classLoader, List<String> resources) {
         this.classLoader = classLoader;
         this.resources = resources;
         this.instances = createGroovyInstances();
@@ -54,7 +55,7 @@ public class GroovyContext {
         try {
             String name = resource.startsWith("/") ? resource : "/" + resource;
             File file = new File(this.getClass().getResource(name).toURI());
-            return classLoader.parseClass(file).newInstance();
+            return classLoader.parseClass(new GroovyCodeSource(file), true).newInstance();
         } catch (Exception e) {
             throw new GroovyClassInstantiationFailed(classLoader, resource, e);
         }

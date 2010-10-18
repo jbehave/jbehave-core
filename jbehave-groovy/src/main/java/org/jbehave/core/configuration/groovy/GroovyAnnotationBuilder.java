@@ -1,9 +1,5 @@
 package org.jbehave.core.configuration.groovy;
 
-import groovy.lang.GroovyClassLoader;
-
-import java.util.List;
-
 import org.jbehave.core.annotations.groovy.UsingGroovy;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.AnnotationMonitor;
@@ -12,6 +8,8 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory;
+
+import java.util.List;
 
 /**
  * Extends {@link AnnotationBuilder} using Groovy-based resources if
@@ -35,12 +33,12 @@ public class GroovyAnnotationBuilder extends AnnotationBuilder {
     @Override
     public Configuration buildConfiguration() throws AnnotationRequired {
         if (annotationFinder().isAnnotationPresent(UsingGroovy.class)) {
-            Class<GroovyClassLoader> classLoaderClass = annotationFinder().getAnnotatedValue(UsingGroovy.class,
+            Class<JBehaveGroovyClassLoader> classLoaderClass = annotationFinder().getAnnotatedValue(UsingGroovy.class,
                     Class.class, "classLoader");
             Class<GroovyResourceFinder> resourceFinderClass = annotationFinder().getAnnotatedValue(UsingGroovy.class,
                     Class.class, "resourceFinder");
             try {
-                GroovyClassLoader classLoader = super.instanceOf(classLoaderClass, classLoaderClass);
+                JBehaveGroovyClassLoader classLoader = super.instanceOf(classLoaderClass, classLoaderClass);
                 GroovyResourceFinder resourceFinder = super.instanceOf(resourceFinderClass, resourceFinderClass);
                 context = createGroovyContext(classLoader, resourceFinder);
             } catch (Exception e) {
@@ -74,7 +72,7 @@ public class GroovyAnnotationBuilder extends AnnotationBuilder {
         return super.instanceOf(type, ofClass);
     }
 
-    protected GroovyContext createGroovyContext(GroovyClassLoader classLoader, GroovyResourceFinder resourceFinder) {
+    protected GroovyContext createGroovyContext(JBehaveGroovyClassLoader classLoader, GroovyResourceFinder resourceFinder) {
         if (context != null) {
             return context;
         }
