@@ -50,14 +50,32 @@ public class GroovyContext {
         throw new GroovyInstanceNotFound(type);
     }
 
+    /**
+     * Creates an object instance from the Groovy resource
+     * 
+     * @param resource the Groovy resource to parse
+     * @return An Object instance
+     */
     public Object newInstance(String resource) {
         try {
             String name = resource.startsWith("/") ? resource : "/" + resource;
             File file = new File(this.getClass().getResource(name).toURI());
-            return classLoader.parseClass(new GroovyCodeSource(file), true).newInstance();
+            return newInstance(classLoader.parseClass(new GroovyCodeSource(file), true));
         } catch (Exception e) {
             throw new GroovyClassInstantiationFailed(classLoader, resource, e);
         }
+    }
+
+    /**
+     * Creates an instance from the parsed Groovy class. This method can be
+     * overriden to do some dependency injection on Groovy classes.
+     * 
+     * @param parsedClass the parsed Class to instantiate
+     * @return An Object instance of the parsed Class
+     * @throws Exception if instantiation or injection fails
+     */
+    public Object newInstance(Class<?> parsedClass) throws Exception {
+        return parsedClass.newInstance();
     }
 
     private List<Object> createGroovyInstances() {
