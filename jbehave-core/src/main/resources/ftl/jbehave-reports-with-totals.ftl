@@ -22,21 +22,23 @@
 <h2>Story Reports</h2>
 
 <table>
-<colgroup class="story"></colgroup>
-<colgroup span="3" class="scenarios"></colgroup>
+<colgroup span="2" class="stories"></colgroup>
+<colgroup span="4" class="scenarios"></colgroup>
 <colgroup span="6" class="steps"></colgroup>
 <colgroup class="view"></colgroup>
 <tr>
-    <th>Story Name</th>
-    <th colspan="3">Scenarios</th>
+    <th colspan="2">Stories</th>
+    <th colspan="4">Scenarios</th>
     <th colspan="6">Steps</th>
     <th>View</th>
 </tr>
 <tr>
-    <th></th>
+    <th>Name</th>
+    <th>Not Allowed</th>
     <th>Total</th>
     <th>Successful</th>
     <th>Failed</th>
+    <th>Not Allowed</th>
     <th>Total</th>
     <th>Successful</th>
     <th>Pending</th>
@@ -46,12 +48,16 @@
     <th></th>
 </tr>
 <#assign reportNames = reportsTable.getReportNames()>
+<#assign totalReports = reportNames.size() - 1>
 <#list reportNames as name>
 <#assign report = reportsTable.getReport(name)>
 <#if name != "Totals">
 <tr>
 <td class="story">${report.name}</td>
 <#assign stats = report.getStats()>
+<td>
+<@renderStat stats "notAllowed" "failed"/>
+</td>
 <td>
 <@renderStat stats "scenarios"/> 
 </td>
@@ -60,6 +66,9 @@
 </td>
 <td>
 <@renderStat stats "scenariosFailed" "failed"/>
+</td>
+<td>
+<@renderStat stats "scenariosNotAllowed" "failed"/>
 </td>
 <td>
 <@renderStat stats "steps" />
@@ -87,8 +96,11 @@
 </#if>
 </#list>
 <tr class="totals">
-<td>Totals</td>
+<td>Totals (${totalReports})</td>
 <#assign stats = reportsTable.getReport("Totals").getStats()>
+<td>
+<@renderStat stats "notAllowed" "failed"/>
+</td>
 <td>
 <@renderStat stats "scenarios"/> 
 </td>
@@ -97,6 +109,9 @@
 </td>
 <td>
 <@renderStat stats "scenariosFailed" "failed"/>
+</td>
+<td>
+<@renderStat stats "scenariosNotAllowed" "failed"/>
 </td>
 <td>
 <@renderStat stats "steps" />
