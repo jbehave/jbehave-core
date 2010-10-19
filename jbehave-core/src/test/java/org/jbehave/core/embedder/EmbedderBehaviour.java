@@ -729,7 +729,7 @@ public class EmbedderBehaviour {
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 2, 0, 0));
-        embedder.generateStoriesView(outputDirectory, formats, viewResources);
+        embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then
         verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
@@ -752,7 +752,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        embedder.generateStoriesView(outputDirectory, formats, viewResources);
+        embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then
         verify(viewGenerator, never()).generateReportsView(outputDirectory, formats, viewResources);
@@ -775,7 +775,7 @@ public class EmbedderBehaviour {
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
         doThrow(new RuntimeException()).when(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
-        embedder.generateStoriesView(outputDirectory, formats, viewResources);
+        embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then fail as expected
     }
@@ -795,7 +795,7 @@ public class EmbedderBehaviour {
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 2, 1, 1));
-        embedder.generateStoriesView(outputDirectory, formats, viewResources);
+        embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then fail as expected
     }
@@ -815,7 +815,7 @@ public class EmbedderBehaviour {
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
         when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 2, 1, 0));
-        embedder.generateStoriesView(outputDirectory, formats, viewResources);
+        embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then
         verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);

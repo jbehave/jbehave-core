@@ -113,7 +113,7 @@ public class Embedder {
         }
 
         if (embedderControls.generateViewAfterStories()) {
-            generateStoriesView();
+            generateReportsView();
         }
 
     }
@@ -217,7 +217,7 @@ public class Embedder {
         }
 
         if (embedderControls.generateViewAfterStories()) {
-            generateStoriesView();
+            generateReportsView();
         }
 
     }
@@ -227,14 +227,14 @@ public class Embedder {
         configuration.useStoryReporters(reporterBuilder.build(storyPaths));
     }
 
-    public void generateStoriesView() {
+    public void generateReportsView() {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
         File outputDirectory = builder.outputDirectory();
         List<String> formatNames = builder.formatNames(true);
-        generateStoriesView(outputDirectory, formatNames, builder.viewResources());
+        generateReportsView(outputDirectory, formatNames, builder.viewResources());
     }
 
-    public void generateStoriesView(File outputDirectory, List<String> formats, Properties viewResources) {
+    public void generateReportsView(File outputDirectory, List<String> formats, Properties viewResources) {
         EmbedderControls embedderControls = embedderControls();
 
         if (embedderControls.skip()) {

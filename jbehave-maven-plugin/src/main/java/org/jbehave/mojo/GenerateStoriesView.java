@@ -14,7 +14,7 @@ public class GenerateStoriesView extends AbstractEmbedderMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
         getLog().info("Generating stories view using embedder "+embedder);
-        embedder.generateStoriesView();
+        embedder.generateReportsView();
     }
 
 }

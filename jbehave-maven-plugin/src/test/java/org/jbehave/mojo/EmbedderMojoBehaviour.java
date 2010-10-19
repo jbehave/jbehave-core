@@ -286,7 +286,7 @@ public class EmbedderMojoBehaviour {
         mojo.execute();
 
         // Then
-        verify(embedder).generateStoriesView();
+        verify(embedder).generateReportsView();
     }
 
     @Test

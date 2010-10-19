@@ -262,7 +262,7 @@ public class EmbedderTaskBehaviour {
         task.execute();
 
         // Then
-        verify(embedder).generateStoriesView();
+        verify(embedder).generateReportsView();
     }
 
     @Test
