@@ -139,7 +139,7 @@ div.reports table td.story {
 }
 
 .lane {
-    border: 1px solid #000;
+    border-left: 1px solid #000;
 }
 
 .maps {
