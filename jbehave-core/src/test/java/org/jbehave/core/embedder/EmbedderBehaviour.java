@@ -78,9 +78,10 @@ public class EmbedderBehaviour {
         Configuration configuration = new MostUsefulConfiguration();
         CandidateSteps steps = mock(CandidateSteps.class);
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        embedder.useClassLoader(classLoader);
         embedder.useConfiguration(configuration);
         embedder.useCandidateSteps(asList(steps));
-        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+        embedder.runStoriesAsEmbeddables(classNames);
 
         // Then
         for (Embeddable embeddable : embeddables) {
@@ -114,8 +115,9 @@ public class EmbedderBehaviour {
 
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        embedder.useClassLoader(classLoader);
         embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
-        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+        embedder.runStoriesAsEmbeddables(classNames);
 
         // Then
         assertThat(out.toString(), not(containsString("Running embeddable " + myStoryName)));
@@ -142,8 +144,9 @@ public class EmbedderBehaviour {
 
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        embedder.useClassLoader(classLoader);
         embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
-        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+        embedder.runStoriesAsEmbeddables(classNames);
 
         // Then
         for (Embeddable embeddable : embeddables) {
@@ -171,7 +174,8 @@ public class EmbedderBehaviour {
 
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
-        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+        embedder.useClassLoader(classLoader);
+        embedder.runStoriesAsEmbeddables(classNames);
 
         // Then fail as expected
     }
@@ -195,7 +199,8 @@ public class EmbedderBehaviour {
 
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
-        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+        embedder.useClassLoader(classLoader);
+        embedder.runStoriesAsEmbeddables(classNames);
 
         // Then
         assertThat(out.toString(), containsString("Running embeddable " + myStoryName));
@@ -224,7 +229,8 @@ public class EmbedderBehaviour {
 
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
-        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+        embedder.useClassLoader(classLoader);
+        embedder.runStoriesAsEmbeddables(classNames);
 
         // Then
         for (Embeddable story : embeddables) {
@@ -252,7 +258,8 @@ public class EmbedderBehaviour {
 
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
-        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+        embedder.useClassLoader(classLoader);
+        embedder.runStoriesAsEmbeddables(classNames);
 
         // Then fail as expected
 
@@ -277,7 +284,8 @@ public class EmbedderBehaviour {
 
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
-        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+        embedder.useClassLoader(classLoader);
+        embedder.runStoriesAsEmbeddables(classNames);
 
         // Then
         for (Embeddable embeddable : embeddables) {
@@ -307,7 +315,8 @@ public class EmbedderBehaviour {
 
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
-        embedder.runStoriesAsEmbeddables(classNames, classLoader);
+        embedder.useClassLoader(classLoader);
+        embedder.runStoriesAsEmbeddables(classNames);
 
         // Then
         for (Embeddable embeddable : embeddables) {
@@ -658,11 +667,11 @@ public class EmbedderBehaviour {
     public void shouldRunStoriesWithAnnotatedEmbedderRunnerIfEmbeddable() throws Throwable {
         // Given
         Embedder embedder = new Embedder();
+        embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = RunningWithAnnotatedEmbedderRunner.class.getName();
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         // When
         embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(),
-                asList(runWithEmbedderRunner), classLoader);
+                asList(runWithEmbedderRunner));
         // Then
         assertThat(RunningWithAnnotatedEmbedderRunner.hasRun, is(true));
     }
@@ -671,11 +680,11 @@ public class EmbedderBehaviour {
     public void shouldNotRunStoriesWithAnnotatedEmbedderRunnerIfNotEmbeddable() throws Throwable {
         // Given
         Embedder embedder = new Embedder();
+        embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = NotEmbeddableWithAnnotatedEmbedderRunner.class.getName();
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         // When
         embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(),
-                asList(runWithEmbedderRunner), classLoader);
+                asList(runWithEmbedderRunner));
         // Then
         assertThat(NotEmbeddableWithAnnotatedEmbedderRunner.hasRun, is(false));
     }
@@ -684,11 +693,11 @@ public class EmbedderBehaviour {
     public void shouldRethowFailuresWhenRunningWithAnnotatedEmbedderRunner() throws Throwable {
         // Given
         Embedder embedder = new Embedder();
+        embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = FailingWithAnnotatedEmbedderRunner.class.getName();
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         // When
         embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(),
-                asList(runWithEmbedderRunner), classLoader);
+                asList(runWithEmbedderRunner));
         // Then fail as expected
     }
     
@@ -696,11 +705,11 @@ public class EmbedderBehaviour {
     public void shouldFailWhenRunningInexistingStoriesWithAnnotatedEmbedderRunner() throws Throwable {
         // Given
         Embedder embedder = new Embedder();
+        embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = "InexistingRunner";
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         // When
         embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(),
-                asList(runWithEmbedderRunner), classLoader);
+                asList(runWithEmbedderRunner));
         // Then fail as expected
     }
 

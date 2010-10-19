@@ -76,7 +76,7 @@ public class Embedder {
         viewGenerator.generateStoryMapsView(outputDirectory, storyMaps, builder.viewResources());
     }
 
-    public void runStoriesAsEmbeddables(List<String> classNames, EmbedderClassLoader classLoader) {
+    public void runStoriesAsEmbeddables(List<String> classNames) {
         EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
             embedderMonitor.embeddablesSkipped(classNames);
@@ -84,7 +84,7 @@ public class Embedder {
         }
 
         BatchFailures batchFailures = new BatchFailures();
-        for (Embeddable embeddable : embeddables(classNames, classLoader)) {
+        for (Embeddable embeddable : embeddables(classNames, classLoader())) {
             String name = embeddable.getClass().getName();
             try {
                 embedderMonitor.runningEmbeddable(name);
@@ -128,9 +128,8 @@ public class Embedder {
         return embeddables;
     }
 
-    public void runStoriesWithAnnotatedEmbedderRunner(String runnerClass, List<String> classNames,
-            EmbedderClassLoader classLoader) {
-        List<AnnotatedEmbedderRunner> runners = annotatedEmbedderRunners(runnerClass, classNames, classLoader);
+    public void runStoriesWithAnnotatedEmbedderRunner(String runnerClass, List<String> classNames) {
+        List<AnnotatedEmbedderRunner> runners = annotatedEmbedderRunners(runnerClass, classNames, classLoader());
         for (AnnotatedEmbedderRunner runner : runners) {
             try {
                 Object annotatedInstance = runner.createTest();
