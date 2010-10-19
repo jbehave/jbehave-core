@@ -104,6 +104,8 @@ public abstract class AbstractEmbedderTask extends Task {
      */
     private List<String> metaFilters = asList();
 
+    private EmbedderClassLoader classLoader;
+
     /**
      * Determines if the scope of the source directory is "test"
      * 
@@ -126,8 +128,11 @@ public abstract class AbstractEmbedderTask extends Task {
      * 
      * @return A EmbedderClassLoader
      */
-    protected EmbedderClassLoader createClassLoader() {
-        return new EmbedderClassLoader(this.getClass().getClassLoader());
+    protected EmbedderClassLoader classLoader() {
+        if ( classLoader == null ){
+            classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        }
+        return classLoader;
     }
 
     protected EmbedderMonitor embedderMonitor() {
@@ -174,7 +179,7 @@ public abstract class AbstractEmbedderTask extends Task {
      * @return A StoryFinder
      */
     protected StoryFinder newStoryFinder() {
-        return createClassLoader().newInstance(StoryFinder.class, storyFinderClass);
+        return classLoader().newInstance(StoryFinder.class, storyFinderClass);
     }
 
     /**
@@ -186,12 +191,13 @@ public abstract class AbstractEmbedderTask extends Task {
      */
     protected Embedder newEmbedder() {
         Embedder embedder = null;
-        EmbedderClassLoader classLoader = createClassLoader();
+        EmbedderClassLoader classLoader = classLoader();
         if (injectableEmbedderClass != null) {
             embedder = classLoader.newInstance(InjectableEmbedder.class, injectableEmbedderClass).injectedEmbedder();
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
+        embedder.useClassLoader(classLoader);
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
         if ( !metaFilters.isEmpty() ) {

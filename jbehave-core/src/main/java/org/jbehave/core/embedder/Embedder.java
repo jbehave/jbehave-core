@@ -37,6 +37,7 @@ public class Embedder {
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
     private List<String> metaFilters = Arrays.asList();
+    private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
 
     public Embedder() {
         this(new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -276,6 +277,10 @@ public class Embedder {
         reporter.stepdocsMatching(stepAsString, matching, stepsInstances);
     }
 
+    public EmbedderClassLoader classLoader(){
+        return classLoader;
+    }
+    
     public Configuration configuration() {
         return configuration;
     }
@@ -298,6 +303,10 @@ public class Embedder {
 
     public StoryRunner storyRunner() {
         return storyRunner;
+    }
+
+    public void useClassLoader(EmbedderClassLoader classLoader) {
+        this.classLoader = classLoader;
     }
 
     public void useConfiguration(Configuration configuration) {

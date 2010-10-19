@@ -17,7 +17,7 @@ public class RunStoriesWithAnnotatedEmbedderRunner extends AbstractEmbedderMojo 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
         getLog().info("Running stories with annotated embedder "+annotatedEmbedderRunnerClass);
-        embedder.runStoriesWithAnnotatedEmbedderRunner(annotatedEmbedderRunnerClass, classNames(), createClassLoader());
+        embedder.runStoriesWithAnnotatedEmbedderRunner(annotatedEmbedderRunnerClass, classNames(), classLoader());
     }
 
 }

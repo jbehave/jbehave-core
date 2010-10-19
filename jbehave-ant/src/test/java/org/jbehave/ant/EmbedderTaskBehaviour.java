@@ -214,7 +214,7 @@ public class EmbedderTaskBehaviour {
             }
             
             @Override
-            protected EmbedderClassLoader createClassLoader() {
+            protected EmbedderClassLoader classLoader() {
                 return classLoader;
             }
 
@@ -280,7 +280,7 @@ public class EmbedderTaskBehaviour {
             }
             
             @Override
-            protected EmbedderClassLoader createClassLoader() {
+            protected EmbedderClassLoader classLoader() {
                 return classLoader;
             }
 
@@ -311,7 +311,7 @@ public class EmbedderTaskBehaviour {
             }
             
             @Override
-            protected EmbedderClassLoader createClassLoader() {
+            protected EmbedderClassLoader classLoader() {
                 return classLoader;
             }
 
@@ -342,7 +342,7 @@ public class EmbedderTaskBehaviour {
             }
             
             @Override
-            protected EmbedderClassLoader createClassLoader() {
+            protected EmbedderClassLoader classLoader() {
                 return classLoader;
             }
 

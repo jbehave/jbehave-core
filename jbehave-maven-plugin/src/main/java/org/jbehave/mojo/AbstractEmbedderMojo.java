@@ -154,6 +154,8 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      */
     List<String> metaFilters = asList();
 
+    private EmbedderClassLoader classLoader;
+
     /**
      * Determines if the scope of the mojo classpath is "test"
      * 
@@ -171,13 +173,16 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     /**
-     * Creates the EmbedderClassLoader with the classpath element of the
-     * selected scope
+     * Returns the EmbedderClassLoader with the classpath element of the
+     * selected scope.
      * 
-     * @return A EmbedderClassLoader
+     * @return An EmbedderClassLoader
      */
-    protected EmbedderClassLoader createClassLoader() {
-        return new EmbedderClassLoader(classpathElements());
+    protected EmbedderClassLoader classLoader() {
+        if ( classLoader == null ){
+            classLoader = new EmbedderClassLoader(classpathElements());
+        }
+        return classLoader;
     }
 
     List<String> classpathElements() {
@@ -222,7 +227,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @return A StoryFinder
      */
     protected StoryFinder newStoryFinder() {
-        return createClassLoader().newInstance(StoryFinder.class, storyFinderClass);
+        return classLoader().newInstance(StoryFinder.class, storyFinderClass);
     }
 
     /**
@@ -234,12 +239,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      */
     protected Embedder newEmbedder() {
         Embedder embedder = null;
-        EmbedderClassLoader classLoader = createClassLoader();
+        EmbedderClassLoader classLoader = classLoader();
         if (injectableEmbedderClass != null) {
             embedder = classLoader.newInstance(InjectableEmbedder.class, injectableEmbedderClass).injectedEmbedder();
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
+        embedder.useClassLoader(classLoader);
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
         if ( !metaFilters.isEmpty() ) {

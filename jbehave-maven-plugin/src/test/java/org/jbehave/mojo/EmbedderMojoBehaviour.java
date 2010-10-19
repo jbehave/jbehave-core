@@ -243,7 +243,7 @@ public class EmbedderMojoBehaviour {
             }
             
             @Override
-            protected EmbedderClassLoader createClassLoader() {
+            protected EmbedderClassLoader classLoader() {
                 return classLoader;
             }
 
@@ -309,7 +309,7 @@ public class EmbedderMojoBehaviour {
             }
             
             @Override
-            protected EmbedderClassLoader createClassLoader() {
+            protected EmbedderClassLoader classLoader() {
                 return classLoader;
             }
 
@@ -340,7 +340,7 @@ public class EmbedderMojoBehaviour {
             }
             
             @Override
-            protected EmbedderClassLoader createClassLoader() {
+            protected EmbedderClassLoader classLoader() {
                 return classLoader;
             }
 
@@ -371,7 +371,7 @@ public class EmbedderMojoBehaviour {
             }
             
             @Override
-            protected EmbedderClassLoader createClassLoader() {
+            protected EmbedderClassLoader classLoader() {
                 return classLoader;
             }
 
