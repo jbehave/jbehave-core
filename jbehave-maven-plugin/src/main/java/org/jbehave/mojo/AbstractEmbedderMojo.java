@@ -18,6 +18,7 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.reporters.ReportsCount;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -303,27 +304,30 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().warn("Annotated instance " + annotatedInstance + " not of type " + type);
         }
 
-        public void generatingStoriesView(File outputDirectory, List<String> formats, Properties viewProperties) {
+        public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
             getLog().info(
-                    "Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'"
+                    "Generating reports view to '" + outputDirectory + "' using formats '" + formats + "'"
                             + " and view properties '" + viewProperties + "'");
         }
 
-        public void storiesViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
+        public void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
                 Throwable cause) {
-            String message = "Failed to generate stories view in outputDirectory " + outputDirectory
-                    + " using formats " + formats + " and view properties '" + viewProperties + "'";
+            String message = "Failed to generate reports view to '" + outputDirectory + "' using formats '" + formats + "'"
+                            + " and view properties '" + viewProperties + "'";
             getLog().warn(message, cause);
         }
 
-        public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
-            getLog().info(
-                    "Stories view generated with " + stories + " stories containing " + scenarios
-                            + " scenarios (of which  " + failedScenarios + " failed)");
+        public void reportsViewGenerated(ReportsCount count) {
+            getLog().info("Reports view generated with " + count.getStories() + " stories containing " + count.getScenarios() + " scenarios (of which  "
+                    + count.getScenariosFailed() + " failed)");
+            if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
+                getLog().info("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  " + count.getScenariosNotAllowed()
+                        + " scenarios");
+            }
         }
 
-        public void storiesViewNotGenerated() {
-            getLog().info("Stories view not generated");
+        public void reportsViewNotGenerated() {
+            getLog().info("Reports view not generated");
         }
 
         public void mappingStory(String storyPath, List<String> metaFilters) {

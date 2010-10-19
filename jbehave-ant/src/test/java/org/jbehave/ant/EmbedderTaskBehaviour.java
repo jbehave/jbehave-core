@@ -23,6 +23,7 @@ import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class EmbedderTaskBehaviour {
     private Embedder embedder = mock(Embedder.class);
 
     @Test
-    public void shouldCreateNewEmbedderWithDefaultControls(){
+    public void shouldCreateNewEmbedderWithDefaultControls() {
         // Given
         AbstractEmbedderTask task = new AbstractEmbedderTask() {
         };
@@ -43,11 +44,11 @@ public class EmbedderTaskBehaviour {
         assertThat(embedderControls.generateViewAfterStories(), is(true));
         assertThat(embedderControls.ignoreFailureInStories(), is(false));
         assertThat(embedderControls.ignoreFailureInView(), is(false));
-        assertThat(embedderControls.skip(), is(false));        
+        assertThat(embedderControls.skip(), is(false));
     }
 
     @Test
-    public void shouldCreateNewEmbedderWithGivenControls(){
+    public void shouldCreateNewEmbedderWithGivenControls() {
         // Given
         AbstractEmbedderTask task = new AbstractEmbedderTask() {
         };
@@ -64,11 +65,11 @@ public class EmbedderTaskBehaviour {
         assertThat(embedderControls.generateViewAfterStories(), is(false));
         assertThat(embedderControls.ignoreFailureInStories(), is(true));
         assertThat(embedderControls.ignoreFailureInView(), is(true));
-        assertThat(embedderControls.skip(), is(true));        
+        assertThat(embedderControls.skip(), is(true));
     }
 
     @Test
-    public void shouldCreateNewEmbedderWithAntMonitor(){
+    public void shouldCreateNewEmbedderWithAntMonitor() {
         // Given
         Project project = mock(Project.class);
         AbstractEmbedderTask task = new AbstractEmbedderTask() {
@@ -80,11 +81,11 @@ public class EmbedderTaskBehaviour {
         EmbedderMonitor embedderMonitor = embedder.embedderMonitor();
         assertThat(embedderMonitor.toString(), equalTo("AntEmbedderMonitor"));
 
-        // and verify monitor calls are propagated to Project log        
+        // and verify monitor calls are propagated to Project log
         BatchFailures failures = new BatchFailures();
         embedderMonitor.batchFailed(failures);
         verify(project).log(task, "Failed to run batch " + failures, MSG_WARN);
-        
+
         String name = "name";
         Throwable cause = new RuntimeException();
         embedderMonitor.embeddableFailed(name, cause);
@@ -92,52 +93,65 @@ public class EmbedderTaskBehaviour {
 
         List<String> classNames = asList("name1", "name2");
         embedderMonitor.embeddablesSkipped(classNames);
-        verify(project).log(task, "Skipped embeddables " + classNames, MSG_INFO);                        
+        verify(project).log(task, "Skipped embeddables " + classNames, MSG_INFO);
 
         embedderMonitor.runningEmbeddable(name);
         verify(project).log(task, "Running embeddable " + name, MSG_INFO);
 
         List<String> storyPaths = asList("/path1", "/path2");
         embedderMonitor.storiesSkipped(storyPaths);
-        verify(project).log(task, "Skipped stories " + storyPaths, MSG_INFO);                                    
+        verify(project).log(task, "Skipped stories " + storyPaths, MSG_INFO);
 
         String path = "/path";
         embedderMonitor.storyFailed(path, cause);
         verify(project).log(task, "Failed to run story " + path, cause, MSG_WARN);
-        
+
         embedderMonitor.runningStory(path);
         verify(project).log(task, "Running story " + path, MSG_INFO);
 
         Object annotatedInstance = new Object();
         Class<?> type = Object.class;
         embedderMonitor.annotatedInstanceNotOfType(annotatedInstance, type);
-        verify(project).log(task, "Annotated instance "+annotatedInstance+" not of type "+type, MSG_WARN);            
+        verify(project).log(task, "Annotated instance " + annotatedInstance + " not of type " + type, MSG_WARN);
 
         File outputDirectory = new File("/dir");
         List<String> formats = asList(Format.CONSOLE.name(), Format.HTML.name());
         Properties viewProperties = new Properties();
-        embedderMonitor.generatingStoriesView(outputDirectory, formats, viewProperties);
-        verify(project).log(task, "Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'"
-                    + " and view properties '" + viewProperties + "'", MSG_INFO);
-        
-        embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats, viewProperties, cause);
-        verify(project).log(task, "Failed to generate stories view in outputDirectory " + outputDirectory + " using formats " + formats
-                    + " and view properties '" + viewProperties + "'", cause, MSG_WARN);
+        embedderMonitor.generatingReportsView(outputDirectory, formats, viewProperties);
+        verify(project).log(
+                task,
+                "Generating reports view to '" + outputDirectory + "' using formats '" + formats + "'"
+                        + " and view properties '" + viewProperties + "'", MSG_INFO);
+
+        embedderMonitor.reportsViewGenerationFailed(outputDirectory, formats, viewProperties, cause);
+        verify(project).log(
+                task,
+                "Failed to generate reports view to '" + outputDirectory + "' using formats '" + formats + "'"
+                        + " and view properties '" + viewProperties + "'", cause, MSG_WARN);
 
         int stories = 2;
+        int storiesNotAllowed = 1;
         int scenarios = 4;
-        int failedScenarios = 1;
-        embedderMonitor.storiesViewGenerated(stories, scenarios, failedScenarios);
-        verify(project).log(task, "Stories view generated with " + stories +" stories containing "+ scenarios + " scenarios (of which  " + failedScenarios + " failed)",
-                    MSG_INFO);
+        int scenariosFailed = 1;
+        int scenariosNotAllowed = 0;
+        embedderMonitor.reportsViewGenerated(new ReportsCount(stories, storiesNotAllowed, scenarios, scenariosFailed,
+                scenariosNotAllowed));
+        verify(project).log(
+                task,
+                "Reports view generated with " + stories + " stories containing " + scenarios
+                        + " scenarios (of which  " + scenariosFailed + " failed)", MSG_INFO);
+        verify(project).log(
+                task,
+                "Meta filters did not allow " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
+                        + " scenarios", MSG_INFO);
 
-        embedderMonitor.storiesViewNotGenerated();
-        verify(project).log(task, "Stories view not generated", MSG_INFO);
+        embedderMonitor.reportsViewNotGenerated();
+        verify(project).log(task, "Reports view not generated", MSG_INFO);
 
     }
-    
+
     @Test
-    public void shouldAllowTestScopedSearchDirectory(){
+    public void shouldAllowTestScopedSearchDirectory() {
         // Given
         AbstractEmbedderTask task = new AbstractEmbedderTask() {
         };
@@ -149,7 +163,7 @@ public class EmbedderTaskBehaviour {
     }
 
     @Test
-    public void shouldAllowSpecificationOfEmbedderClass(){
+    public void shouldAllowSpecificationOfEmbedderClass() {
         // Given
         AbstractEmbedderTask task = new AbstractEmbedderTask() {
         };
@@ -159,13 +173,13 @@ public class EmbedderTaskBehaviour {
         // Then
         assertThat(embedder.getClass().getName(), equalTo(MyEmbedder.class.getName()));
     }
-    
+
     public static class MyEmbedder extends Embedder {
-        
+
     }
 
     @Test
-    public void shouldAllowSpecificationOfInjectableEmbedderClass(){
+    public void shouldAllowSpecificationOfInjectableEmbedderClass() {
         // Given
         AbstractEmbedderTask task = new AbstractEmbedderTask() {
         };
@@ -178,17 +192,17 @@ public class EmbedderTaskBehaviour {
 
     public static class MyInjectableEmbedder extends InjectableEmbedder {
 
-        public MyInjectableEmbedder(){
+        public MyInjectableEmbedder() {
             useEmbedder(new MyEmbedder());
         }
-        
+
         public void run() throws Throwable {
         }
-        
+
     }
 
     @Test
-    public void shouldAllowSpecificationOfStoryFinderClass(){
+    public void shouldAllowSpecificationOfStoryFinderClass() {
         // Given
         AbstractEmbedderTask task = new AbstractEmbedderTask() {
         };
@@ -198,21 +212,21 @@ public class EmbedderTaskBehaviour {
         // Then
         assertThat(storyFinder.getClass().getName(), equalTo(MyStoryFinder.class.getName()));
     }
-    
+
     public static class MyStoryFinder extends StoryFinder {
-        
+
     }
-    
+
     @Test
-    public void shouldMapStoriesAsPaths(){
+    public void shouldMapStoriesAsPaths() {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
-        MapStoriesAsPaths task = new MapStoriesAsPaths(){
+        MapStoriesAsPaths task = new MapStoriesAsPaths() {
             @Override
             protected Embedder newEmbedder() {
                 return embedder;
             }
-            
+
             @Override
             protected EmbedderClassLoader classLoader() {
                 return classLoader;
@@ -226,59 +240,58 @@ public class EmbedderTaskBehaviour {
         List<String> excludes = asList();
         task.setExcludes(StringUtils.join(excludes, "'"));
         List<String> storyPaths = new StoryFinder().findPaths(searchInDirectory, includes, excludes);
-        
+
         // When
         task.execute();
-        
-        // Then 
+
+        // Then
         verify(embedder).mapStoriesAsPaths(storyPaths);
     }
-    
+
     @Test
-    public void shouldGenerateStoriesView(){
+    public void shouldGenerateStoriesView() {
         // Given
-        GenerateStoriesView task = new GenerateStoriesView(){
+        GenerateStoriesView task = new GenerateStoriesView() {
             @Override
             protected Embedder newEmbedder() {
                 return embedder;
             }
-            
+
         };
         // When
         task.execute();
-        
-        // Then 
+
+        // Then
         verify(embedder).generateStoriesView();
     }
 
-
     @Test
-    public void shouldReportStepdocs(){
+    public void shouldReportStepdocs() {
         // Given
-        ReportStepdocs task = new ReportStepdocs(){
-            @Override
-            protected Embedder newEmbedder() {
-                return embedder;
-            }            
-            
-        };
-        // When
-        task.execute();
-        
-        // Then 
-        verify(embedder).reportStepdocs();
-    }
-    
-    @Test
-    public void shouldRunStoriesAsEmbeddables(){
-        // Given
-        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
-        RunStoriesAsEmbeddables task = new RunStoriesAsEmbeddables(){
+        ReportStepdocs task = new ReportStepdocs() {
             @Override
             protected Embedder newEmbedder() {
                 return embedder;
             }
-            
+
+        };
+        // When
+        task.execute();
+
+        // Then
+        verify(embedder).reportStepdocs();
+    }
+
+    @Test
+    public void shouldRunStoriesAsEmbeddables() {
+        // Given
+        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        RunStoriesAsEmbeddables task = new RunStoriesAsEmbeddables() {
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+
             @Override
             protected EmbedderClassLoader classLoader() {
                 return classLoader;
@@ -292,24 +305,24 @@ public class EmbedderTaskBehaviour {
         List<String> excludes = asList();
         task.setExcludes(StringUtils.join(excludes, "'"));
         List<String> classNames = new StoryFinder().findClassNames(searchInDirectory, includes, excludes);
-        
+
         // When
         task.execute();
-        
-        // Then 
+
+        // Then
         verify(embedder).runStoriesAsEmbeddables(classNames);
     }
-    
+
     @Test
-    public void shouldRunStoriesAsPaths(){
+    public void shouldRunStoriesAsPaths() {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
-        RunStoriesAsPaths task = new RunStoriesAsPaths(){
+        RunStoriesAsPaths task = new RunStoriesAsPaths() {
             @Override
             protected Embedder newEmbedder() {
                 return embedder;
             }
-            
+
             @Override
             protected EmbedderClassLoader classLoader() {
                 return classLoader;
@@ -323,24 +336,24 @@ public class EmbedderTaskBehaviour {
         List<String> excludes = asList();
         task.setExcludes(StringUtils.join(excludes, "'"));
         List<String> storyPaths = new StoryFinder().findPaths(searchInDirectory, includes, excludes);
-        
+
         // When
         task.execute();
-        
-        // Then 
+
+        // Then
         verify(embedder).runStoriesAsPaths(storyPaths);
     }
-    
+
     @Test
-    public void shouldRunStoriesWithAnnotatedEmbedderRunner(){
+    public void shouldRunStoriesWithAnnotatedEmbedderRunner() {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
-        RunStoriesWithAnnotatedEmbedderRunner task = new RunStoriesWithAnnotatedEmbedderRunner(){
+        RunStoriesWithAnnotatedEmbedderRunner task = new RunStoriesWithAnnotatedEmbedderRunner() {
             @Override
             protected Embedder newEmbedder() {
                 return embedder;
             }
-            
+
             @Override
             protected EmbedderClassLoader classLoader() {
                 return classLoader;
@@ -356,12 +369,12 @@ public class EmbedderTaskBehaviour {
         List<String> excludes = asList();
         task.setExcludes(StringUtils.join(excludes, "'"));
         List<String> classNames = new StoryFinder().findClassNames(searchInDirectory, includes, excludes);
-        
+
         // When
         task.execute();
-        
-        // Then 
+
+        // Then
         verify(embedder).runStoriesWithAnnotatedEmbedderRunner(runnerClass, classNames);
     }
-    
+
 }

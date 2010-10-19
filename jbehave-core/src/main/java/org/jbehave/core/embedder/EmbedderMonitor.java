@@ -6,8 +6,7 @@ import java.util.Properties;
 
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
-
-
+import org.jbehave.core.reporters.ReportsCount;
 
 public interface EmbedderMonitor {
 
@@ -27,15 +26,15 @@ public interface EmbedderMonitor {
 
     void batchFailed(BatchFailures failures);
 
-	void generatingStoriesView(File outputDirectory, List<String> formats,
+	void generatingReportsView(File outputDirectory, List<String> formats,
 			Properties viewProperties);
 
-	void storiesViewGenerationFailed(File outputDirectory, List<String> formats,
+	void reportsViewGenerationFailed(File outputDirectory, List<String> formats,
 			Properties viewProperties, Throwable cause);
 
-	void storiesViewGenerated(int stories, int scenarios, int failedScenarios);
+	void reportsViewGenerated(ReportsCount count);
 
-	void storiesViewNotGenerated();
+	void reportsViewNotGenerated();
 
     void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type);
 

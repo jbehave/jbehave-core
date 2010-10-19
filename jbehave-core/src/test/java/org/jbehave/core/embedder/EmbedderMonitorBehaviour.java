@@ -14,6 +14,7 @@ import java.util.Properties;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.reporters.PrintStreamOutput.Format;
+import org.jbehave.core.reporters.ReportsCount;
 import org.junit.Test;
 
 public class EmbedderMonitorBehaviour {
@@ -33,8 +34,8 @@ public class EmbedderMonitorBehaviour {
         ReportingFailuresEmbedderMonitor monitor = new ReportingFailuresEmbedderMonitor(new PrintStream(out));
         monitor.runningEmbeddable("embeddable");
         monitor.runningStory("/path");
-        monitor.generatingStoriesView(new File("target"), Arrays.asList(Format.HTML.name()), new Properties());
-        monitor.storiesViewGenerated(1, 2, 1);
+        monitor.generatingReportsView(new File("target"), Arrays.asList(Format.HTML.name()), new Properties());
+        monitor.reportsViewGenerated(new ReportsCount(1, 0, 2, 1, 0));
         assertThat(out.toString(), is(""));
         monitor.batchFailed(new BatchFailures());
         monitor.storyFailed("/path", new RuntimeException());

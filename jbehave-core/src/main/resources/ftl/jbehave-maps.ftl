@@ -5,7 +5,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>JBehave Story Maps</title>
+<title>JBehave Maps</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <style type="text/css" media="all">
 @import url( "./style/jbehave-reports.css" );

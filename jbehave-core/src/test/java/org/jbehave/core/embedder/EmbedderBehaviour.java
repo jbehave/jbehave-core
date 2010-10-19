@@ -91,8 +91,8 @@ public class EmbedderBehaviour {
     }
 
     private void assertThatStoriesViewGenerated(OutputStream out) {
-        assertThat(out.toString(), containsString("Generating stories view"));
-        assertThat(out.toString(), containsString("Stories view generated"));
+        assertThat(out.toString(), containsString("Generating reports view"));
+        assertThat(out.toString(), containsString("Reports view generated"));
     }
 
     @Test
@@ -122,7 +122,7 @@ public class EmbedderBehaviour {
         // Then
         assertThat(out.toString(), not(containsString("Running embeddable " + myStoryName)));
         assertThat(out.toString(), containsString("Running embeddable " + myOtherStoryName));
-        assertThat(out.toString(), containsString("Generating stories view"));
+        assertThat(out.toString(), containsString("Generating reports view"));
     }
 
     @Test
@@ -728,7 +728,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 2, 0));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 2, 0, 0));
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
         // Then
@@ -794,7 +794,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 2, 1));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 2, 1, 1));
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
         // Then fail as expected
@@ -814,7 +814,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 2, 1));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 2, 1, 0));
         embedder.generateStoriesView(outputDirectory, formats, viewResources);
 
         // Then

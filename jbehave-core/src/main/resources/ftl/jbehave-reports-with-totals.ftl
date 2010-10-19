@@ -27,7 +27,7 @@
 <colgroup span="6" class="steps"></colgroup>
 <colgroup class="view"></colgroup>
 <tr>
-    <th>Story</th>
+    <th>Story Name</th>
     <th colspan="3">Scenarios</th>
     <th colspan="6">Steps</th>
     <th>View</th>

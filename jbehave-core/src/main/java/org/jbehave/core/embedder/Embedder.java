@@ -73,7 +73,7 @@ public class Embedder {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
         File outputDirectory = builder.outputDirectory();
         ViewGenerator viewGenerator = configuration().viewGenerator();
-        viewGenerator.generateStoryMapsView(outputDirectory, storyMaps, builder.viewResources());
+        viewGenerator.generateMapsView(outputDirectory, storyMaps, builder.viewResources());
     }
 
     public void runStoriesAsEmbeddables(List<String> classNames) {
@@ -238,21 +238,21 @@ public class Embedder {
         EmbedderControls embedderControls = embedderControls();
 
         if (embedderControls.skip()) {
-            embedderMonitor.storiesViewNotGenerated();
+            embedderMonitor.reportsViewNotGenerated();
             return;
         }
         ViewGenerator viewGenerator = configuration().viewGenerator();
         try {
-            embedderMonitor.generatingStoriesView(outputDirectory, formats, viewResources);
+            embedderMonitor.generatingReportsView(outputDirectory, formats, viewResources);
             viewGenerator.generateReportsView(outputDirectory, formats, viewResources);
         } catch (RuntimeException e) {
-            embedderMonitor.storiesViewGenerationFailed(outputDirectory, formats, viewResources, e);
+            embedderMonitor.reportsViewGenerationFailed(outputDirectory, formats, viewResources, e);
             throw new ViewGenerationFailed(outputDirectory, formats, viewResources, e);
         }
-        ReportsCount count = viewGenerator.getReportsCount(); // countStories();
-        embedderMonitor.storiesViewGenerated(count.getStories(), count.getScenarios(), count.getFailedScenarios());
-        if (!embedderControls.ignoreFailureInView() && count.getFailedScenarios() > 0) {
-            throw new RunningStoriesFailed(count.getStories(), count.getScenarios(), count.getFailedScenarios());
+        ReportsCount count = viewGenerator.getReportsCount(); 
+        embedderMonitor.reportsViewGenerated(count);
+        if (!embedderControls.ignoreFailureInView() && count.getScenariosFailed() > 0) {
+            throw new RunningStoriesFailed(count.getStories(), count.getScenarios(), count.getScenariosFailed());
         }
 
     }

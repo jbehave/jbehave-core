@@ -601,7 +601,7 @@ public class PrintStreamOutputBehaviour {
     public void shouldFailGeneratingViewWithInexistentTemplates() throws IOException {
         // Given
         Properties templates = new Properties();
-        templates.setProperty("index", "target/inexistent");
+        templates.setProperty("reports", "target/inexistent");
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         // When
         File outputDirectory = new File("target");

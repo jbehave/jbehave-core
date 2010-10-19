@@ -12,7 +12,7 @@ import org.jbehave.core.model.StoryMap;
  */
 public interface ViewGenerator {
     
-    void generateStoryMapsView(File outputDirectory, List<StoryMap> storyMaps,
+    void generateMapsView(File outputDirectory, List<StoryMap> storyMaps,
             Properties viewResources);
 
 	void generateReportsView(File outputDirectory, List<String> formats,

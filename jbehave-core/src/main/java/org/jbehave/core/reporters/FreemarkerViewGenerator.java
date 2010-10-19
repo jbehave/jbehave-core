@@ -38,25 +38,22 @@ import freemarker.template.TemplateException;
 
 /**
  * <p>
- * Freemarker-based {@link ViewGenerator}, using the file outputs of the
- * reporters for the given formats. The FTL templates for the index and single
- * views are injectable the {@link #generateReportsView(File, List, Properties)}
- * but defaults are provided. To override, specify the path the new template
- * under keys "index", "decorated" and "nonDecorated".
- * </p>
+ * Freemarker-based {@link ViewGenerator}, which uses the configured FTL
+ * templates for the views. The default view properties are overridable via the 
+ * method {@link Properties} parameter.  To override, specify the path to the 
+ * new template under the appropriate key:
  * <p>
  * The view generator provides the following resources:
  * 
  * <pre>
- * resources.setProperty(&quot;maps&quot;, &quot;ftl/jbehave-story-maps.ftl&quot;);
- * resources.setProperty(&quot;index&quot;, &quot;ftl/jbehave-reports-index-with-totals.ftl&quot;);
+ * resources.setProperty(&quot;maps&quot;, &quot;ftl/jbehave-maps.ftl&quot;);
+ * resources.setProperty(&quot;reports&quot;, &quot;ftl/jbehave-reports-with-totals.ftl&quot;);
  * resources.setProperty(&quot;decorated&quot;, &quot;ftl/jbehave-report-decorated.ftl&quot;);
  * resources.setProperty(&quot;nonDecorated&quot;, &quot;ftl/jbehave-report-non-decorated.ftl&quot;);
  * resources.setProperty(&quot;decorateNonHtml&quot;, &quot;true&quot;);
  * resources.setProperty(&quot;defaultFormats&quot;, &quot;stats&quot;);
  * resources.setProperty(&quot;viewDirectory&quot;, &quot;view&quot;);
  * </pre>
- * 
  * </p>
  * 
  * @author Mauro Talevi
@@ -67,15 +64,15 @@ public class FreemarkerViewGenerator implements ViewGenerator {
     private Properties viewProperties;
     private List<Report> reports = new ArrayList<Report>();
     private StoryNameResolver nameResolver = new UnderscoredToCapitalized();
-    
+
     public FreemarkerViewGenerator() {
         this.configuration = configure();
     }
 
     public static Properties defaultViewProperties() {
         Properties properties = new Properties();
-        properties.setProperty("maps", "ftl/jbehave-story-maps.ftl");
-        properties.setProperty("index", "ftl/jbehave-reports-index-with-totals.ftl");
+        properties.setProperty("maps", "ftl/jbehave-maps.ftl");
+        properties.setProperty("reports", "ftl/jbehave-reports-with-totals.ftl");
         properties.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
         properties.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
         properties.setProperty("decorateNonHtml", "true");
@@ -90,30 +87,35 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return merged;
     }
 
-    public void generateStoryMapsView(File outputDirectory, List<StoryMap> storyMaps, Properties viewProperties) {
+    public void generateMapsView(File outputDirectory, List<StoryMap> storyMaps, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
-        createMaps(outputDirectory, storyMaps);
-    }
-
-    private void createMaps(File outputDirectory, List<StoryMap> storyMaps) {
         String outputName = templateResource("viewDirectory") + "/maps.html";
-        String maps = templateResource("maps");
+        String mapsTemplate = templateResource("maps");
         Map<String, Object> dataModel = newDataModel();
         dataModel.put("storyLanes", new StoryLanes(storyMaps, nameResolver));
         dataModel.put("date", new Date());
-        write(outputDirectory, outputName, maps, dataModel);
+        write(outputDirectory, outputName, mapsTemplate, dataModel);
     }
 
     public void generateReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
-        createReportsIndex(outputDirectory, formats);
+        String outputName = templateResource("viewDirectory") + "/index.html";
+        String reportsTemplate = templateResource("reports");
+        List<String> mergedFormats = mergeFormatsWithDefaults(formats);
+        reports = createReports(readReportFiles(outputDirectory, outputName, mergedFormats));
+        Map<String, Object> dataModel = newDataModel();
+        dataModel.put("reportsTable", new ReportsTable(reports, nameResolver));
+        dataModel.put("date", new Date());
+        write(outputDirectory, outputName, reportsTemplate, dataModel);
     }
 
     public ReportsCount getReportsCount() {
-        int stories = reports.size() - 1; // don't count the totals reports
+        int stories = reports.size();
+        int storiesNotAllowed = count("storiesNotAllowed", reports);
         int scenarios = count("scenarios", reports);
-        int failedScenarios = count("scenariosFailed", reports);
-        return new ReportsCount(stories, scenarios, failedScenarios);
+        int scenariosFailed = count("scenariosFailed", reports);
+        int scenariosNotAllowed = count("scenariosNotAllowed", reports);
+        return new ReportsCount(stories, storiesNotAllowed, scenarios, scenariosFailed, scenariosNotAllowed);
     }
 
     int count(String event, Collection<Report> reports) {
@@ -127,54 +129,11 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return count;
     }
 
-    private void createReportsIndex(File outputDirectory, List<String> formats) {
-        String outputName = templateResource("viewDirectory") + "/index.html";
-        String index = templateResource("index");
-        List<String> mergedFormats = mergeWithDefaults(formats);
-        reports = createReports(readReportFiles(outputDirectory, outputName, mergedFormats));
-        Map<String, Object> dataModel = newDataModel();
-        dataModel.put("reportsTable", new ReportsTable(reports, nameResolver));
-        dataModel.put("date", new Date());
-        write(outputDirectory, outputName, index, dataModel);
-    }
-
-    private List<String> mergeWithDefaults(List<String> formats) {
+    private List<String> mergeFormatsWithDefaults(List<String> formats) {
         List<String> merged = new ArrayList<String>();
         merged.addAll(asList(templateResource("defaultFormats").split(",")));
         merged.addAll(formats);
         return merged;
-    }
-
-    SortedMap<String, List<File>> readReportFiles(File outputDirectory, final String outputName,
-            final List<String> formats) {
-        SortedMap<String, List<File>> reportFiles = new TreeMap<String, List<File>>();
-        if (outputDirectory == null || !outputDirectory.exists()) {
-            return reportFiles;
-        }
-        String[] fileNames = outputDirectory.list(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return !name.equals(outputName) && hasFormats(name, formats);
-            }
-
-            private boolean hasFormats(String name, List<String> formats) {
-                for (String format : formats) {
-                    if (name.endsWith(format)) {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-        for (String fileName : fileNames) {
-            String name = FilenameUtils.getBaseName(fileName);
-            List<File> filesByName = reportFiles.get(name);
-            if (filesByName == null) {
-                filesByName = new ArrayList<File>();
-                reportFiles.put(name, filesByName);
-            }
-            filesByName.add(new File(outputDirectory, fileName));
-        }
-        return reportFiles;
     }
 
     List<Report> createReports(Map<String, List<File>> reportFiles) {
@@ -212,6 +171,38 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         } catch (Exception e) {
             throw new ReportCreationFailed(reportFiles, e);
         }
+    }
+
+    SortedMap<String, List<File>> readReportFiles(File outputDirectory, final String outputName,
+            final List<String> formats) {
+        SortedMap<String, List<File>> reportFiles = new TreeMap<String, List<File>>();
+        if (outputDirectory == null || !outputDirectory.exists()) {
+            return reportFiles;
+        }
+        String[] fileNames = outputDirectory.list(new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                return !name.equals(outputName) && hasFormats(name, formats);
+            }
+
+            private boolean hasFormats(String name, List<String> formats) {
+                for (String format : formats) {
+                    if (name.endsWith(format)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+        for (String fileName : fileNames) {
+            String name = FilenameUtils.getBaseName(fileName);
+            List<File> filesByName = reportFiles.get(name);
+            if (filesByName == null) {
+                filesByName = new ArrayList<File>();
+                reportFiles.put(name, filesByName);
+            }
+            filesByName.add(new File(outputDirectory, fileName));
+        }
+        return reportFiles;
     }
 
     private File write(File outputDirectory, String outputName, String resource, Map<String, Object> dataModel) {
@@ -264,19 +255,19 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     }
 
-    public static class ReportsTable{
+    public static class ReportsTable {
 
         private final Map<String, Report> reports = new HashMap<String, Report>();
         private final StoryNameResolver nameResolver;
 
-        public ReportsTable(List<Report> reports, StoryNameResolver nameResolver) {           
+        public ReportsTable(List<Report> reports, StoryNameResolver nameResolver) {
             this.nameResolver = nameResolver;
             index(reports);
             addTotalsReport();
         }
 
         private void index(List<Report> reports) {
-            for (Report report : reports) {                
+            for (Report report : reports) {
                 report.nameAs(nameResolver.resolveName(report.getPath()));
                 this.reports.put(report.getName(), report);
             }
@@ -303,21 +294,20 @@ public class FreemarkerViewGenerator implements ViewGenerator {
             }
             return new Report("totals", new HashMap<String, File>(), totals);
         }
-        
-        
-        public List<Report> getReports(){
+
+        public List<Report> getReports() {
             List<Report> list = new ArrayList<Report>(reports.values());
             Collections.sort(list);
             return list;
         }
-        
-        public List<String> getReportNames(){
+
+        public List<String> getReportNames() {
             List<String> list = new ArrayList<String>(reports.keySet());
             Collections.sort(list);
             return list;
         }
-        
-        public Report getReport(String name){
+
+        public Report getReport(String name) {
             return reports.get(name);
         }
     }
