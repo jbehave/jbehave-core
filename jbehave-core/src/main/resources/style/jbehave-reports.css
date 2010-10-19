@@ -100,7 +100,7 @@ table {
 	border-collapse: collapse;
 }
 
-.scenarios {
+.stories {
     border: 1px solid #000;
 }
 
@@ -136,6 +136,10 @@ div.reports table td {
 div.reports table td.story {
 	text-align: left;
 	padding: 5px;
+}
+
+.lane {
+    border: 1px solid #000;
 }
 
 .maps {

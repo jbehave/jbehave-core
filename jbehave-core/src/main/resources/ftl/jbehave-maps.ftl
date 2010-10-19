@@ -27,14 +27,14 @@
 <table>
 <tr><th>Story Name</th>
 <#list lanes as lane>
-<th>${lane}</th>
+<th class="lane">${lane}</th>
 </#list>
 </tr>
 <#list stories as story>
 <tr>
 <td class="name">${story.name}</td>
 <#list lanes as lane>
-<td>
+<td class="lane">
 <#assign inLane = storyLanes.inLane(lane, story)>
 ${inLane?string("x", "")}
 </td>
