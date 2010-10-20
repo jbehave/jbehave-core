@@ -6,22 +6,35 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
 
 public class ExamplesTableBehaviour {
     
-    private String tableAsString = "|one|two|\n" + "|11|12|\n" + "|21|22|\n";
+    private String tableAsString = 
+            "|one|two|\n" + 
+            "|11|12|\n" + 
+            "|21|22|\n";
 
-    private String wikiTableAsString = "||one||two||\n" + "|11|12|\n" + "|21|22|\n";
+    private String wikiTableAsString = 
+            "||one||two||\n" + 
+            "|11|12|\n" + 
+            "|21|22|\n";
 
-    private String tableWithCommentsAsString = "|one|two|\n" + "|-- A comment --|\n" + "|11|12|\n" + "|-- Another comment --|\n" + "|21|22|\n";
+    private String tableWithCommentsAsString = 
+            "|one|two|\n" + 
+            "|-- A comment --|\n" + 
+            "|11|12|\n" + 
+            "|-- Another comment --|\n" + 
+            "|21|22|\n";
 
     @Test
     public void shouldParseTableWithDefaultSeparators() {
         ExamplesTable table = new ExamplesTable(tableAsString);
-        ensureTableContentIsParsed(table);
+        ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
     }
 
@@ -33,7 +46,7 @@ public class ExamplesTableBehaviour {
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
-        ensureTableContentIsParsed(table);
+        ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableWithCustomSeparator));
     }
 
@@ -45,7 +58,7 @@ public class ExamplesTableBehaviour {
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
-        ensureTableContentIsParsed(table);
+        ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableWithCustomSeparator));
     }
 
@@ -53,7 +66,7 @@ public class ExamplesTableBehaviour {
     public void shouldTrimTableBeforeParsing() {
         String untrimmedTableAsString = "\n    \n" + tableAsString + "\n    \n";
         ExamplesTable table = new ExamplesTable(untrimmedTableAsString);
-        ensureTableContentIsParsed(table);
+        ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(untrimmedTableAsString));
     }
 
@@ -61,7 +74,7 @@ public class ExamplesTableBehaviour {
     public void shouldParseTableWithCommentLines() {
         ExamplesTable table = new ExamplesTable(tableWithCommentsAsString);
         assertThat(table.asString(), equalTo(tableWithCommentsAsString));
-        ensureTableContentIsParsed(table);
+        ensureColumnOrderIsPreserved(table);
     }
 
     @Test
@@ -91,7 +104,7 @@ public class ExamplesTableBehaviour {
     public void shouldParseTableWithoutLeftBoundarySeparator() {
         String tableAsString = "one|two|\n 11|12|\n 21|22|\n";        
         ExamplesTable table = new ExamplesTable(tableAsString);
-        ensureTableContentIsParsed(table);
+        ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
     }
 
@@ -99,7 +112,7 @@ public class ExamplesTableBehaviour {
     public void shouldParseTableWithoutRightBoundarySeparator() {
         String tableAsString = "|one|two\n |11|12\n |21|22\n";        
         ExamplesTable table = new ExamplesTable(tableAsString);
-        ensureTableContentIsParsed(table);
+        ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
     }
 
@@ -107,21 +120,28 @@ public class ExamplesTableBehaviour {
     public void shouldParseTableWithoutAnyBoundarySeparators() {
         String tableAsString = "one|two\n 11|12\n 21|22\n";        
         ExamplesTable table = new ExamplesTable(tableAsString);
-        ensureTableContentIsParsed(table);
+        ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
     }
 
-    private void ensureTableContentIsParsed(ExamplesTable table) {
+    private void ensureColumnOrderIsPreserved(ExamplesTable table) {
         assertThat(table.getHeaders(), equalTo(asList("one", "two")));
-        assertThat(table.getRows().size(), equalTo(2));
-        assertThat(tableElement(table, 0, "one"), equalTo("11"));
-        assertThat(tableElement(table, 0, "two"), equalTo("12"));
-        assertThat(tableElement(table, 1, "one"), equalTo("21"));
-        assertThat(tableElement(table, 1, "two"), equalTo("22"));
+        List<Map<String, String>> rows = table.getRows();
+        assertThat(rows.size(), equalTo(2));
+        ensureRowContentIs(rows, 0, asList("11", "12"));
+        ensureRowContentIs(rows, 1, asList("21", "22"));
+        ensureCellContentIs(table, 0, "one", "11");
+        ensureCellContentIs(table, 0, "two", "12");
+        ensureCellContentIs(table, 1, "one", "21");
+        ensureCellContentIs(table, 1, "two", "22");
     }
 
-    private String tableElement(ExamplesTable table, int row, String header) {
-        return table.getRow(row).get(header);
+    private void ensureRowContentIs(List<Map<String, String>> rows, int row, List<String> expected) {
+        assertThat(new ArrayList<String>(rows.get(row).values()), equalTo(expected));
+    }
+
+    private void ensureCellContentIs(ExamplesTable table, int row, String header, String value) {
+        assertThat(table.getRow(row).get(header), equalTo(value));
     }
 
 }

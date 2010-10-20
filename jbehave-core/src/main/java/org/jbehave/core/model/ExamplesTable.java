@@ -1,7 +1,7 @@
 package org.jbehave.core.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +80,7 @@ public class ExamplesTable {
                 headers.addAll(columns);
             } else {
                 List<String> columns = columnsFor(rowAsString, valueSeparator);
-                Map<String, String> map = new HashMap<String, String>();
+                Map<String, String> map = createRowMap();
                 for (int column = 0; column < columns.size(); column++) {
                     map.put(headers.get(column), columns.get(column));
                 }
@@ -113,6 +113,10 @@ public class ExamplesTable {
             sb.append("\\").append(c);
         }
         return sb.toString();
+    }
+
+    protected Map<String, String> createRowMap() {
+        return new LinkedHashMap<String, String>();
     }
 
     public List<String> getHeaders() {

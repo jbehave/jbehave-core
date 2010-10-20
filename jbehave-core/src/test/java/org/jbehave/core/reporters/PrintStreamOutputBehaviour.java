@@ -32,11 +32,12 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class PrintStreamOutputBehaviour {
@@ -80,8 +81,8 @@ public class PrintStreamOutputBehaviour {
                 + "\n"
                 + "|money|to|\n" + "|$30|Mauro|\n"
                 + "|$50|Paul|\n" + "\n\n" // Examples table
-                + "\nExample: {to=Mauro, money=$30}\n"
-                + "\nExample: {to=Paul, money=$50}\n"
+                + "\nExample: {money=$30, to=Mauro}\n"
+                + "\nExample: {money=$50, to=Paul}\n"
                 + "\n" // end of examples
                 + "\n\n"; // end of scenario and story
         assertThatOutputIs(out, expected);
@@ -162,10 +163,15 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
                 + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
                 + "<table>\n" + "<thead>\n"
-                + "<tr>\n<th>money</th><th>to</th></tr>\n" + "</thead>\n" + "<tbody>\n"
-                + "<tr>\n<td>$30</td><td>Mauro</td></tr>\n" + "<tr>\n<td>$50</td><td>Paul</td></tr>\n" + "</tbody>\n"
-                + "</table>\n" + "\n<h3 class=\"example\">Example: {to=Mauro, money=$30}</h3>\n"
-                + "\n<h3 class=\"example\">Example: {to=Paul, money=$50}</h3>\n" + "</div>\n" + // end
+                + "<tr>\n<th>money</th><th>to</th></tr>\n" 
+                + "</thead>\n" + "<tbody>\n"
+                + "<tr>\n<td>$30</td><td>Mauro</td></tr>\n" 
+                + "<tr>\n<td>$50</td><td>Paul</td></tr>\n"
+                + "</tbody>\n"
+                + "</table>\n" 
+                + "\n<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
+                + "\n<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n" 
+                + "</div>\n" + // end
                 // of
                 // examples
                 "</div>\n</div>\n"; // end of scenario and story
@@ -257,10 +263,15 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
                 + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
                 + "<table>\n" + "<thead>\n"
-                + "<tr>\n<th>money</th><th>to</th></tr>\n" + "</thead>\n" + "<tbody>\n"
-                + "<tr>\n<td>$30</td><td>Mauro</td></tr>\n" + "<tr>\n<td>$50</td><td>Paul</td></tr>\n" + "</tbody>\n"
-                + "</table>\n" + "\n<h3 class=\"example\">Example: {to=Mauro, money=$30}</h3>\n"
-                + "\n<h3 class=\"example\">Example: {to=Paul, money=$50}</h3>\n" + "</div><!-- after examples -->\n"
+                + "<tr>\n<th>money</th><th>to</th></tr>\n" 
+                + "</thead>\n" + "<tbody>\n"
+                + "<tr>\n<td>$30</td><td>Mauro</td></tr>\n" 
+                + "<tr>\n<td>$50</td><td>Paul</td></tr>\n"
+                + "</tbody>\n"
+                + "</table>\n" 
+                + "\n<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
+                + "\n<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n" 
+                + "</div><!-- after examples -->\n"
                 + "</div><!-- after scenario -->\n" + "</div><!-- after story -->\n";
         assertThatOutputIs(out, expected);
     }
@@ -312,9 +323,11 @@ public class PrintStreamOutputBehaviour {
                 + "<parameters>\n"
                 + "<names><name>money</name><name>to</name></names>\n"
                 + "<values><value>$30</value><value>Mauro</value></values>\n"
-                + "<values><value>$50</value><value>Paul</value></values>\n" + "</parameters>\n"
-                + "\n<example keyword=\"Example:\">{to=Mauro, money=$30}</example>\n"
-                + "\n<example keyword=\"Example:\">{to=Paul, money=$50}</example>\n" + "</examples>\n"
+                + "<values><value>$50</value><value>Paul</value></values>\n" 
+                + "</parameters>\n"
+                + "\n<example keyword=\"Example:\">{money=$30, to=Mauro}</example>\n"
+                + "\n<example keyword=\"Example:\">{money=$50, to=Paul}</example>\n" 
+                + "</examples>\n"
                 + "</scenario>\n" + "</story>\n";
         assertThatOutputIs(out, expected);
     }
@@ -388,8 +401,8 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
-       //Assert.assertEquals(dos2unix(out.toString()), expected);
-        assertThat(dos2unix(out.toString()), equalTo(expected));
+        Assert.assertEquals(dos2unix(out.toString()), expected);
+        //assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
     private String dos2unix(String string) {
