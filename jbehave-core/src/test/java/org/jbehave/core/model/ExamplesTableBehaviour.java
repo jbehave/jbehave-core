@@ -9,6 +9,7 @@ import static org.hamcrest.Matchers.is;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.junit.Test;
 
@@ -18,6 +19,11 @@ public class ExamplesTableBehaviour {
             "|one|two|\n" + 
             "|11|12|\n" + 
             "|21|22|\n";
+
+    private String tableWithSpacesAsString = 
+        "|one |two | |\n" + 
+        "|11 |12 | |\n" + 
+        "| 21| 22| |\n";
 
     private String wikiTableAsString = 
             "||one||two||\n" + 
@@ -123,6 +129,17 @@ public class ExamplesTableBehaviour {
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
     }
+    
+    @Test
+    public void shouldParseTablePreservingWhitespace() {
+        String tableWithProperties = "{trim=false}\n"+tableWithSpacesAsString;
+        ExamplesTable table = new ExamplesTable(tableWithProperties);
+        Properties properties = table.getProperties();
+        assertThat(properties.size(), equalTo(1));
+        assertThat(properties.getProperty("trim"), equalTo("false"));
+        ensureWhitespaceIsPreserved(table);
+        assertThat(table.asString(), equalTo(tableWithProperties));
+    }
 
     private void ensureColumnOrderIsPreserved(ExamplesTable table) {
         assertThat(table.getHeaders(), equalTo(asList("one", "two")));
@@ -134,6 +151,20 @@ public class ExamplesTableBehaviour {
         ensureCellContentIs(table, 0, "two", "12");
         ensureCellContentIs(table, 1, "one", "21");
         ensureCellContentIs(table, 1, "two", "22");
+    }
+
+    private void ensureWhitespaceIsPreserved(ExamplesTable table) {
+        assertThat(table.getHeaders(), equalTo(asList("one ", "two ", " ")));
+        List<Map<String, String>> rows = table.getRows();
+        assertThat(rows.size(), equalTo(2));
+        ensureRowContentIs(rows, 0, asList("11 ", "12 ", " "));
+        ensureRowContentIs(rows, 1, asList(" 21", " 22", " "));
+        ensureCellContentIs(table, 0, "one ", "11 ");
+        ensureCellContentIs(table, 0, "two ", "12 ");
+        ensureCellContentIs(table, 0, " ", " ");
+        ensureCellContentIs(table, 1, "one ", " 21");
+        ensureCellContentIs(table, 1, "two ", " 22");
+        ensureCellContentIs(table, 1, " ", " ");
     }
 
     private void ensureRowContentIs(List<Map<String, String>> rows, int row, List<String> expected) {
