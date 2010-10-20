@@ -9,10 +9,8 @@
   <artifactId>jbehave-trader-example</artifactId>
   <name>JBehave Trader Example</name>
 
-  <!--
-    Properties used to specify story running configured in
-    jbehave-examples POM
-  -->
+  <!-- Properties used to specify story running configured in jbehave-examples 
+    POM -->
   <properties>
     <include.embeddables>**/stories/*.java</include.embeddables>
     <include.annotated.embedders>**/AnnotatedTraderEmbedder.java</include.annotated.embedders>
@@ -36,7 +34,13 @@
                 <metaFilter>+author *</metaFilter>
                 <metaFilter>+theme *</metaFilter>
                 <metaFilter>-skip</metaFilter>
-              </metaFilters>              
+              </metaFilters>
+              <systemProperties>
+                <property>
+                  <name>java.awt.headless</name>
+                  <value>true</value>
+                </property>
+              </systemProperties>
             </configuration>
             <goals>
               <goal>map-stories-as-paths</goal>

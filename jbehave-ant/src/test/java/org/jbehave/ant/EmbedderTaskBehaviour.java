@@ -9,7 +9,9 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
@@ -150,6 +152,23 @@ public class EmbedderTaskBehaviour {
 
     }
 
+    @Test
+    public void shouldCreateNewEmbedderWithSystemProperties() throws IOException {
+        // Given
+        AbstractEmbedderTask task = new AbstractEmbedderTask() {
+        };
+        // When
+        Properties systemProperties = new Properties();
+        systemProperties.setProperty("one", "1");
+        systemProperties.setProperty("two", "2");        
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        systemProperties.store(out, "");
+        task.setSystemProperties(out.toString());
+        Embedder embedder = task.newEmbedder();
+        // Then
+        assertThat(embedder.systemProperties(), equalTo(systemProperties));
+    }
+    
     @Test
     public void shouldAllowTestScopedSearchDirectory() {
         // Given

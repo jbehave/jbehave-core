@@ -92,6 +92,14 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("Mapping story " + storyPath + " with meta filters " + metaFilters);
     }
 
+    public void processingSystemProperties(Properties properties) {
+        print("Processing system properties " + properties);
+    }
+
+    public void systemPropertySet(String name, String value) {
+        print("System property '" + name + "' set to '"+value+"'");
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -104,5 +112,6 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     protected void printStackTrace(Throwable e) {
         e.printStackTrace(output);
     }
+
 
 }

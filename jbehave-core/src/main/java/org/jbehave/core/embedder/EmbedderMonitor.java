@@ -40,5 +40,8 @@ public interface EmbedderMonitor {
 
     void mappingStory(String storyPath, List<String> metaFilters);
 
+    void processingSystemProperties(Properties properties);
+
+    void systemPropertySet(String name, String value);
  
 }

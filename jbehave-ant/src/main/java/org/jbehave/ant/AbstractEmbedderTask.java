@@ -6,11 +6,13 @@ import static org.apache.tools.ant.Project.MSG_INFO;
 import static org.apache.tools.ant.Project.MSG_WARN;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.filters.StringInputStream;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
@@ -105,6 +107,14 @@ public abstract class AbstractEmbedderTask extends Task {
      */
     private List<String> metaFilters = asList();
 
+    /**
+     * The system properties
+     */
+    private Properties systemProperties = new Properties();
+
+    /**
+     * The classloader
+     */
     private EmbedderClassLoader classLoader;
 
     /**
@@ -199,6 +209,7 @@ public abstract class AbstractEmbedderTask extends Task {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
         embedder.useClassLoader(classLoader);
+        embedder.useSystemProperties(systemProperties);
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
         if ( !metaFilters.isEmpty() ) {
@@ -273,6 +284,14 @@ public abstract class AbstractEmbedderTask extends Task {
             log("Mapping story "+storyPath+" with meta filters "+metaFilters, MSG_INFO);
         }
 
+        public void processingSystemProperties(Properties properties) {
+            log("Processing system properties " + properties, MSG_INFO);
+        }
+        
+        public void systemPropertySet(String name, String value) {
+            log("System property '" + name + "' set to '"+value+"'", MSG_INFO);
+        }
+
         @Override
         public String toString() {
             return this.getClass().getSimpleName();
@@ -340,6 +359,20 @@ public abstract class AbstractEmbedderTask extends Task {
 
     public void setMetaFilters(String metaFiltersCSV) {
         this.metaFilters = asList(metaFiltersCSV.split(","));
+    }
+    
+    public void setSystemProperties(String systemPropertiesCSV){
+        this.systemProperties = loadProperties(systemPropertiesCSV);
+    }
+
+    private Properties loadProperties(String systemPropertiesCSV) {
+        Properties properties = new Properties();
+        try {
+            properties.load(new StringInputStream(systemPropertiesCSV.replace(",", "\n")));
+        } catch (IOException e) {
+            // return empty map
+        }
+        return properties;
     }
 
 }

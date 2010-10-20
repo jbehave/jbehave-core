@@ -152,6 +152,23 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
+    public void shouldCreateNewEmbedderWithSystemProperties() {
+        // Given
+        AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            public void execute() throws MojoExecutionException, MojoFailureException {
+            }
+        };
+        // When
+        Properties systemProperties = new Properties();
+        systemProperties.setProperty("one", "1");
+        systemProperties.setProperty("two", "2");        
+        mojo.systemProperties = systemProperties;
+        Embedder embedder = mojo.newEmbedder();
+        // Then
+        assertThat(embedder.systemProperties(), equalTo(systemProperties));
+    }
+
+    @Test
     public void shouldAllowTestScopedSearchDirectory() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
@@ -360,7 +377,7 @@ public class EmbedderMojoBehaviour {
         List<String> excludes = asList();
         mojo.excludes = excludes;
         List<String> storyPaths = new StoryFinder().findPaths(searchInDirectory, includes, excludes);
-
+        
         // When
         mojo.execute();
 

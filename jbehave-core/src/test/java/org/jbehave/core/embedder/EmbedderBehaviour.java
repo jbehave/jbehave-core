@@ -405,7 +405,38 @@ public class EmbedderBehaviour {
         }
         assertThatStoriesViewGenerated(out);
     }
-    
+
+    @Test
+    public void shouldProcessSystemProperties() throws Throwable {
+        
+        // Given
+        StoryRunner runner = mock(StoryRunner.class);
+        EmbedderControls embedderControls = new EmbedderControls();
+        OutputStream out = new ByteArrayOutputStream();
+        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
+        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        
+        // When
+        embedder.processSystemProperties();
+        
+        // Then
+        assertThat(out.toString(), containsString("Processing system properties " + embedder.systemProperties()));
+        assertThat(out.toString(), not(containsString("System property")));
+
+        // When
+        Properties systemProperties = new Properties();
+        systemProperties.setProperty("first", "one");
+        systemProperties.setProperty("second", "");        
+        embedder.useSystemProperties(systemProperties);
+        embedder.processSystemProperties();
+        
+        // Then
+        assertThat(out.toString(), containsString("Processing system properties " + systemProperties));
+        assertThat(out.toString(), containsString("System property 'first' set to 'one'"));
+        assertThat(out.toString(), containsString("System property 'second' set to ''"));
+
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void shouldNotRunStoriesIfSkipFlagIsSet() throws Throwable {

@@ -33,11 +33,12 @@ public class Embedder {
 
     private Configuration configuration = new MostUsefulConfiguration();
     private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+    private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
     private EmbedderControls embedderControls = new EmbedderControls();
+    private List<String> metaFilters = Arrays.asList();
+    private Properties systemProperties = new Properties();
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
-    private List<String> metaFilters = Arrays.asList();
-    private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
 
     public Embedder() {
         this(new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -49,6 +50,7 @@ public class Embedder {
     }
 
     public void mapStoriesAsPaths(List<String> storyPaths) {
+        processSystemProperties();
         EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
             embedderMonitor.storiesSkipped(storyPaths);
@@ -173,6 +175,8 @@ public class Embedder {
     }
 
     public void runStoriesAsPaths(List<String> storyPaths) {
+        processSystemProperties();
+
         EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
             embedderMonitor.storiesSkipped(storyPaths);
@@ -181,7 +185,7 @@ public class Embedder {
 
         Configuration configuration = configuration();
         List<CandidateSteps> candidateSteps = candidateSteps();
-
+        
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
 
         BatchFailures batchFailures = new BatchFailures();
@@ -220,6 +224,19 @@ public class Embedder {
             generateReportsView();
         }
 
+    }
+
+    public void processSystemProperties() {
+        Properties properties = systemProperties();
+        embedderMonitor.processingSystemProperties(properties);
+        if ( !properties.isEmpty() ){
+            for (Object key : properties.keySet()) {
+                String name = (String)key;
+                String value = properties.getProperty(name);
+                System.setProperty(name, value);
+                embedderMonitor.systemPropertySet(name, value);
+            }
+        }
     }
 
     private void buildReporters(Configuration configuration, List<String> storyPaths) {
@@ -304,6 +321,10 @@ public class Embedder {
         return storyRunner;
     }
 
+    public Properties systemProperties() {
+        return systemProperties;
+    }
+
     public void useClassLoader(EmbedderClassLoader classLoader) {
         this.classLoader = classLoader;
     }
@@ -330,6 +351,10 @@ public class Embedder {
 
     public void useStoryRunner(StoryRunner storyRunner) {
         this.storyRunner = storyRunner;
+    }
+
+    public void useSystemProperties(Properties systemProperties) {
+        this.systemProperties = systemProperties;
     }
 
     @Override

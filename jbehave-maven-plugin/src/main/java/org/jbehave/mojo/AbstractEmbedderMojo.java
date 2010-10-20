@@ -155,6 +155,16 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      */
     List<String> metaFilters = asList();
 
+    /**
+     * The system properties
+     * 
+     * @parameter
+     */
+    Properties systemProperties = new Properties();
+
+    /**
+     * The class loader
+     */
     private EmbedderClassLoader classLoader;
 
     /**
@@ -247,6 +257,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
         embedder.useClassLoader(classLoader);
+        embedder.useSystemProperties(systemProperties);
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
         if ( !metaFilters.isEmpty() ) {
@@ -332,6 +343,14 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void mappingStory(String storyPath, List<String> metaFilters) {
             getLog().info("Mapping story "+storyPath+" with meta filters "+metaFilters);
+        }
+
+        public void processingSystemProperties(Properties properties) {
+            getLog().info("Processing system properties " + properties);
+        }
+        
+        public void systemPropertySet(String name, String value) {
+            getLog().info("System property '" + name + "' set to '"+value+"'");
         }
 
         @Override
