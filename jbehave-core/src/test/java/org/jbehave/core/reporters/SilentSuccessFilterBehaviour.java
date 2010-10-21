@@ -7,10 +7,10 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
@@ -25,7 +25,7 @@ public class SilentSuccessFilterBehaviour {
         // Given
         StoryReporter delegate = mock(StoryReporter.class);
         SilentSuccessFilter filter = new SilentSuccessFilter(delegate);
-        List<String> givenStories = asList("path/to/story1", "path/to/story2");
+        GivenStories givenStories = new GivenStories("path/to/story1,path/to/story2");
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         IllegalArgumentException anException = new IllegalArgumentException();
         Story story = new Story();

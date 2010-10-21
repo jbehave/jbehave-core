@@ -14,6 +14,7 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
@@ -26,7 +27,6 @@ import org.jbehave.core.model.Story;
 public class RegexStoryParser implements StoryParser {
 
     private static final String NONE = "";
-    private static final String COMMA = ",";
     private final Keywords keywords;
 
     public RegexStoryParser() {
@@ -138,9 +138,12 @@ public class RegexStoryParser implements StoryParser {
         String title = findScenarioTitle(scenarioAsText);
         Meta meta = findScenarioMeta(scenarioAsText);
         ExamplesTable examplesTable = findExamplesTable(scenarioAsText);
-        List<String> givenStoryPaths = findGivenStoryPaths(scenarioAsText);
+        GivenStories givenStories = findGivenStories(scenarioAsText);
+        if ( givenStories.requireExamplesTable() ){
+            givenStories.useExamplesTable(examplesTable);
+        }
         List<String> steps = findSteps(scenarioAsText);
-        return new Scenario(title, meta, givenStoryPaths, examplesTable, steps);
+        return new Scenario(title, meta, givenStories, examplesTable, steps);
     }
     
     private String findScenarioTitle(String scenarioAsText) {
@@ -163,17 +166,10 @@ public class RegexStoryParser implements StoryParser {
         return new ExamplesTable(table, keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator());
     }
 
-    private List<String> findGivenStoryPaths(String scenarioAsText) {
+    private GivenStories findGivenStories(String scenarioAsText) {
         Matcher findingGivenStories = patternToPullGivenStoriesIntoGroupOne().matcher(scenarioAsText);
         String givenStories = findingGivenStories.find() ? findingGivenStories.group(1).trim() : NONE;
-        List<String> givenStoryPaths = new ArrayList<String>();
-        for (String storyPath : givenStories.split(COMMA)) {
-            String trimmed = storyPath.trim();
-            if (trimmed.length() > 0) {
-                givenStoryPaths.add(trimmed);
-            }
-        }
-        return givenStoryPaths;
+        return new GivenStories(givenStories);
     }
 
     private List<String> findSteps(String scenarioAsText) {

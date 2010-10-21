@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
@@ -84,8 +85,12 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         writeData();
     }
 
+    public void givenStories(GivenStories givenStories) {
+        count("givenStories");            
+    }
+
     public void givenStories(List<String> storyPaths) {
-        count("givenStories");
+        count("givenStories");            
     }
 
     public void beforeScenario(String title) {

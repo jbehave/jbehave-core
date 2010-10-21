@@ -29,6 +29,7 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -64,7 +65,7 @@ public class PrintStreamOutputBehaviour {
                 + "As a customer\n"
                 + "I want to get a loan\n"
                 + "Scenario: I ask for a loan\n"
-                + "GivenStories: [/given/story1,/given/story2]\n"
+                + "GivenStories: /given/story1,/given/story2\n"
                 + "Given I have a balance of $50\n"
                 + "!-- A comment\n"
                 + "When I request $20\n"
@@ -141,7 +142,7 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">I want to</span> get a loan</div>\n"
                 + "</div>\n"
                 + "<div class=\"scenario\">\n<h2>Scenario: I ask for a loan</h2>\n"
-                + "<div class=\"givenStories\">GivenStories: [/given/story1,/given/story2]</div>\n"
+                + "<div class=\"givenStories\">GivenStories: /given/story1,/given/story2</div>\n"
                 + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
                 + "<div class=\"step ignorable\">!-- A comment</div>\n"
                 + "<div class=\"step successful\">When I request $20</div>\n"
@@ -241,7 +242,7 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">I want to</span> get a loan</div>\n"
                 + "</div>\n"
                 + "<div class=\"scenario\">\n<h2>Scenario: I ask for a loan</h2>\n"
-                + "<div class=\"givenStories\">GivenStories: [/given/story1,/given/story2]</div>\n"
+                + "<div class=\"givenStories\">GivenStories: /given/story1,/given/story2</div>\n"
                 + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
                 + "<div class=\"step ignorable\">!-- A comment</div>\n"
                 + "<div class=\"step successful\">When I request $20</div>\n"
@@ -305,7 +306,7 @@ public class PrintStreamOutputBehaviour {
                 + "  <iWantTo keyword=\"I want to\">get a loan</iWantTo>\n"
                 + "</narrative>\n"
                 + "<scenario keyword=\"Scenario:\" title=\"I ask for a loan\">\n"
-                + "<givenStories keyword=\"GivenStories:\" paths=\"[/given/story1,/given/story2]\"/>\n"
+                + "<givenStories keyword=\"GivenStories:\" paths=\"/given/story1,/given/story2\"/>\n"
                 + "<step outcome=\"successful\">Given I have a balance of $50</step>\n"
                 + "<step outcome=\"ignorable\">!-- A comment</step>\n"
                 + "<step outcome=\"successful\">When I request $20</step>\n"
@@ -366,7 +367,7 @@ public class PrintStreamOutputBehaviour {
         reporter.dryRun();
         reporter.beforeStory(story, givenStory);
         reporter.beforeScenario("I ask for a loan");
-        reporter.givenStories(asList("/given/story1,/given/story2"));
+        reporter.givenStories(new GivenStories("/given/story1,/given/story2"));
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
@@ -395,7 +396,7 @@ public class PrintStreamOutputBehaviour {
         meta.setProperty("author", "Mauro");
         Story story = new Story("/path/to/story",
                 new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"), 
-                Arrays.asList(new Scenario("A scenario", new Meta(meta), new ArrayList<String>(), new ExamplesTable(""), new ArrayList<String>())));
+                Arrays.asList(new Scenario("A scenario", new Meta(meta), GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>())));
         reporter.storyNotAllowed(story, "-theme testing");
         reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
     }

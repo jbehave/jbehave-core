@@ -12,9 +12,9 @@ public class Scenario {
 
     private final String title;
     private final Meta meta;
-    private final List<String> givenStoryPaths;
     private final List<String> steps;
     private final ExamplesTable examplesTable;
+    private final GivenStories givenStories;
 
     public Scenario() {
         this(Arrays.<String>asList());
@@ -25,35 +25,27 @@ public class Scenario {
     }
 
     public Scenario(String title, Meta meta) {
-        this(title, meta, Arrays.<String>asList(), new ExamplesTable(""), Arrays.<String>asList());
+        this(title, meta, GivenStories.EMPTY, ExamplesTable.EMPTY, Arrays.<String>asList());
     }
 
     public Scenario(String title, List<String> steps) {
-        this(title, Arrays.<String>asList(), new ExamplesTable(""), steps);
+        this(title, Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY, steps);
     }
 
-    public Scenario(String title, List<String> givenStoryPaths, List<String> steps) {
-        this(title, givenStoryPaths, new ExamplesTable(""), steps);
-    }
-    
-    public Scenario(String title, List<String> givenStoryPaths, ExamplesTable examplesTable, List<String> steps) {
-        this(title, Meta.EMPTY, givenStoryPaths, examplesTable, steps);
-    }
-
-    public Scenario(String title, Meta meta, List<String> givenStoryPaths, ExamplesTable examplesTable, List<String> steps) {
+    public Scenario(String title, Meta meta, GivenStories givenStories, ExamplesTable examplesTable, List<String> steps) {
         this.title = title;
         this.meta = meta;
-        this.givenStoryPaths = givenStoryPaths;
+        this.givenStories = givenStories;
         this.steps = steps;
         this.examplesTable = examplesTable;
     }
-
+    
     public Meta getMeta(){
         return meta;
     }
-    
-    public List<String> getGivenStoryPaths() {
-        return unmodifiableList(givenStoryPaths);
+
+    public GivenStories getGivenStories() {
+        return givenStories;
     }
 
     public List<String> getSteps() {

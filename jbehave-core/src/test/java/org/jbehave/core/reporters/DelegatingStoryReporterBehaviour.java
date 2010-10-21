@@ -6,9 +6,8 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
-import java.util.List;
-
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -22,7 +21,7 @@ public class DelegatingStoryReporterBehaviour {
         // Given
         StoryReporter delegate = mock(StoryReporter.class);
         DelegatingStoryReporter delegator = new DelegatingStoryReporter(delegate);
-        List<String> givenStories = asList("path/to/story1", "path/to/story2");
+        GivenStories givenStories = new GivenStories("path/to/story1, path/to/story2");
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         IllegalArgumentException anException = new IllegalArgumentException();
         Story story = new Story();

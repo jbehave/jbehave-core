@@ -68,6 +68,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * </p>
  */
 public class ExamplesTable {
+    public static final ExamplesTable EMPTY = new ExamplesTable("");
 
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";

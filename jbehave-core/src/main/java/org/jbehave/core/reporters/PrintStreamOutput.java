@@ -22,12 +22,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.model.OutcomesTable.Outcome;
 
 /**
  * <p>
@@ -171,6 +172,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void afterStory(boolean givenStory) {
         print(format("afterStory", "\n"));
+    }
+
+    public void givenStories(GivenStories givenStories) {
+        print(format("givenStories", "{0} {1}\n", keywords.givenStories(), givenStories.asString()));
     }
 
     public void givenStories(List<String> storyPaths) {

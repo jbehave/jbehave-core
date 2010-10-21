@@ -30,6 +30,7 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
@@ -40,9 +41,9 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepResult;
 import org.jbehave.core.steps.Steps;
-import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.Test;
 import org.mockito.InOrder;
 
@@ -134,8 +135,8 @@ public class StoryRunnerBehaviour {
     public void shouldRunGivenStoriesBeforeSteps() throws Throwable {
         // Given
         Scenario scenario1 = new Scenario("core 1", asList("successfulStep"));
-        List<String> givenStories = asList("/path/to/given/story1");
-        Scenario scenario2 = new Scenario("core 2", givenStories,
+        GivenStories givenStories = new GivenStories("/path/to/given/story1");
+        Scenario scenario2 = new Scenario("core 2", Meta.EMPTY, givenStories, ExamplesTable.EMPTY, 
                 asList("anotherSuccessfulStep"));
         Story story1 = new Story(new Description("story 1"), Narrative.EMPTY, asList(scenario1));
         Story story2 = new Story(new Description("story 2"), Narrative.EMPTY, asList(scenario2));
@@ -357,8 +358,7 @@ public class StoryRunnerBehaviour {
         // Given
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         Map<String, String> tableRow = examplesTable.getRow(0);
-        List<String> givenStories = asList();
-        Scenario scenario1 = new Scenario("my title 1", givenStories, examplesTable, asList("step <one>",
+        Scenario scenario1 = new Scenario("my title 1", Meta.EMPTY, GivenStories.EMPTY, examplesTable, asList("step <one>",
                 "step <two>"));
         Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1));
         Step step = mock(Step.class);
@@ -485,7 +485,7 @@ public class StoryRunnerBehaviour {
                 Arrays.<Step>asList());
         Meta meta = mock(Meta.class);
         Meta storyMeta = mock(Meta.class);
-        Story story = new Story("", Description.EMPTY, storyMeta, Narrative.EMPTY, asList(new Scenario("", meta, asList(""), new ExamplesTable(""), asList(""))));
+        Story story = new Story("", Description.EMPTY, storyMeta, Narrative.EMPTY, asList(new Scenario("", meta, GivenStories.EMPTY, ExamplesTable.EMPTY, asList(""))));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
         MetaFilter filter = mock(MetaFilter.class);
         String filterAsString = "-some property";

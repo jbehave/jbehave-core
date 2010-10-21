@@ -15,6 +15,7 @@ import java.util.Properties;
 
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -99,7 +100,8 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.beforeStory(story, givenStory);
         reporter.beforeScenario("I ask for a loan");
         reporter.scenarioMeta(Meta.EMPTY);
-        reporter.givenStories(asList("/given/story1,/given/story2"));
+        GivenStories givenStories = new GivenStories("/given/story1,/given/story2");
+        reporter.givenStories(givenStories);
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
@@ -130,7 +132,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         meta.setProperty("author", "Mauro");
         Story story = new Story("/path/to/story", new Description("An interesting story"), new Meta(meta),
                 new Narrative("renovate my house", "customer", "get a loan"), Arrays.asList(new Scenario("A scenario",
-                        new Meta(meta), new ArrayList<String>(), new ExamplesTable(""), new ArrayList<String>())));
+                        new Meta(meta), GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>())));
         if (storyNotAllowed) {
             reporter.storyNotAllowed(story, "-theme testing");
         } else {
