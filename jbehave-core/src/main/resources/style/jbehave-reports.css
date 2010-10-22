@@ -138,6 +138,10 @@ div.reports table td.story {
 	padding: 5px;
 }
 
+div.reports table td a {
+    color: #555;
+}
+
 .lane {
     border-left: 1px solid #000;
 }

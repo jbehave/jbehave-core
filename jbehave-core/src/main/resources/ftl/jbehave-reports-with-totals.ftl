@@ -53,8 +53,15 @@
 <#assign report = reportsTable.getReport(name)>
 <#if name != "Totals">
 <tr>
-<td class="story">${report.name}</td>
 <#assign stats = report.getStats()>
+<#assign failed = stats.get("scenariosFailed")!0>
+<#assign storyClass = "story">
+<#if failed != 0>
+    <#assign storyClass = storyClass + " failed">
+<#else>
+    <#assign storyClass = storyClass + " successful">
+</#if>
+<td class="${storyClass}">${report.name}</td>
 <td>
 <@renderStat stats "notAllowed" "failed"/>
 </td>
