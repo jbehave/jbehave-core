@@ -104,11 +104,11 @@ public class StoryRunner {
             }
             reporter.beforeScenario(scenario.getTitle());
             reporter.scenarioMeta(scenario.getMeta());
-            // run any given stories, if any
+            // run given stories, if any
             runGivenStories(configuration, candidateSteps, scenario, filter);
-            if (isExamplesTableScenario(scenario)) {
-                // run as examples table scenario
-                runExamplesTableScenario(candidateSteps, scenario);
+            if (isParametrisedByExamples(scenario)) {
+                // run parametrised scenarios by examples
+                runParametrisedScenariosByExamples(candidateSteps, scenario);
             } else { // run as plain old scenario
                 runScenarioSteps(candidateSteps, scenario, storyParameters);
             }
@@ -155,26 +155,26 @@ public class StoryRunner {
     private void runGivenStories(Configuration configuration, List<CandidateSteps> candidateSteps, Scenario scenario,
             MetaFilter filter) throws Throwable {
         GivenStories givenStories = scenario.getGivenStories();
-        if (givenStories.getStories().size() > 0) {
+        if (givenStories.getPaths().size() > 0) {
             reporter.givenStories(givenStories);
             for (GivenStory givenStory : givenStories.getStories()) {
-                // run given story
+                // run given story, using any parameters if provided
                 Story story = storyOfPath(configuration, givenStory.getPath());
                 run(configuration, candidateSteps, story, filter, true, givenStory.getParameters());
             }
         }
     }
 
-    private boolean isExamplesTableScenario(Scenario scenario) {
-        return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireExamplesTable();
+    private boolean isParametrisedByExamples(Scenario scenario) {
+        return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireParameters();
     }
 
-    private void runExamplesTableScenario(List<CandidateSteps> candidateSteps, Scenario scenario) {
+    private void runParametrisedScenariosByExamples(List<CandidateSteps> candidateSteps, Scenario scenario) {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.beforeExamples(scenario.getSteps(), table);
-        for (Map<String, String> tableRow : table.getRows()) {
-            reporter.example(tableRow);
-            runScenarioSteps(candidateSteps, scenario, tableRow);
+        for (Map<String, String> scenarioParameters : table.getRows()) {
+            reporter.example(scenarioParameters);
+            runScenarioSteps(candidateSteps, scenario, scenarioParameters);
         }
         reporter.afterExamples();
     }
@@ -183,8 +183,8 @@ public class StoryRunner {
         runSteps(stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory));
     }
 
-    private void runScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> tableRow) {
-        runSteps(stepCollector.collectScenarioSteps(candidateSteps, scenario, tableRow));
+    private void runScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> parameters) {
+        runSteps(stepCollector.collectScenarioSteps(candidateSteps, scenario, parameters));
     }
 
     /**

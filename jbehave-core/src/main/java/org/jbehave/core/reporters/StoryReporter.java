@@ -34,9 +34,6 @@ public interface StoryReporter {
 
     void givenStories(GivenStories givenStories);
 
-    /**
-     *  @deprecated Use #givenStories(GivenStories)
-     */
 	void givenStories(List<String> storyPaths);
 
     void beforeExamples(List<String> steps, ExamplesTable table);

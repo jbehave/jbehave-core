@@ -2,7 +2,9 @@ package org.jbehave.core.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -32,12 +34,28 @@ public class GivenStories {
 
     public List<GivenStory> getStories() {
         for (GivenStory givenStory : givenStories) {            
-            int examplesRow = givenStory.getExamplesRow();
-            if ( examplesRow > -1 && examplesRow < examplesTable.getRowCount() ){
-                givenStory.useParameters(examplesTable.getRow(examplesRow));
-            }
+            givenStory.useParameters(parametersByAnchor(givenStory.getAnchor()));
         }
         return givenStories;
+    }
+
+    private Map<String, String> parametersByAnchor(String anchor) {
+        int examplesRow = -1;
+        if ( !StringUtils.isBlank(anchor) ){
+            try {
+                examplesRow = Integer.parseInt(anchor);
+            } catch (NumberFormatException e) {
+                // continue
+            }
+        }
+        Map<String, String> parameters = null;
+        if ( examplesRow > -1 && examplesRow < examplesTable.getRowCount() ){
+             parameters = examplesTable.getRow(examplesRow);
+        }
+        if ( parameters == null ){
+            return new HashMap<String, String>();
+        }
+        return parameters;
     }
 
     public List<String> getPaths() {
@@ -48,9 +66,9 @@ public class GivenStories {
         return Collections.unmodifiableList(paths);
     }
 
-    public boolean requireExamplesTable() {
+    public boolean requireParameters() {
         for (GivenStory givenStory : givenStories) {
-            if ( givenStory.getExamplesRow() > -1 ){
+            if ( givenStory.hasAnchor() ){
                 return true;
             }
         }

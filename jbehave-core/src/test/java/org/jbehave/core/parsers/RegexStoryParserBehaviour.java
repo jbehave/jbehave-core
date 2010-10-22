@@ -15,6 +15,8 @@ import java.util.List;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
@@ -428,7 +430,51 @@ public class RegexStoryParserBehaviour {
 				"Given a step");
     }
 
-	private void parseStoryWithGivenStories(String wholeStory) {
+    @Test
+    public void shouldParseStoryWithScenarioContainingParametrisedGivenStories() {
+        String wholeStory = 
+            "GivenStories: path/to/one#{0},path/to/two#{1},path/to/three#{2},path/to/four" + NL + NL +
+            "Given a step" + NL+
+            "Examples:" + NL +
+            "|one|two|" + NL +  
+            "|11|12|" + NL +
+            "|21|22|";
+        Story story = parser.parseStory(wholeStory, storyPath);
+
+        Scenario scenario = story.getScenarios().get(0);
+        GivenStories givenStories = scenario.getGivenStories();
+        assertThat(givenStories.asString(), equalTo("path/to/one#{0},path/to/two#{1},path/to/three#{2},path/to/four"));
+        assertThat(givenStories.getPaths(), equalTo(asList(
+                "path/to/one#{0}", // matches first parameters row
+                "path/to/two#{1}", // matches second parameters row
+                "path/to/three#{2}", // does not match any parameters row
+                "path/to/four"))); // does not require parameters
+        assertThat(givenStories.requireParameters(), equalTo(true));
+        GivenStory givenStory1 = givenStories.getStories().get(0);
+        assertThat(givenStory1.hasAnchor(), equalTo(true));
+        assertThat(givenStory1.getAnchor(), equalTo("0"));
+        assertThat(givenStory1.getPath(), equalTo("path/to/one"));
+        assertThat(givenStory1.getParameters().get("one"), equalTo("11"));
+        assertThat(givenStory1.getParameters().get("two"), equalTo("12"));
+        GivenStory givenStory2 = givenStories.getStories().get(1);
+        assertThat(givenStory2.hasAnchor(), equalTo(true));
+        assertThat(givenStory2.getAnchor(), equalTo("1"));
+        assertThat(givenStory2.getPath(), equalTo("path/to/two"));
+        assertThat(givenStory2.getParameters().get("one"), equalTo("21"));
+        assertThat(givenStory2.getParameters().get("two"), equalTo("22"));
+        GivenStory givenStory3 = givenStories.getStories().get(2);
+        assertThat(givenStory3.hasAnchor(), equalTo(true));
+        assertThat(givenStory3.getAnchor(), equalTo("2"));
+        assertThat(givenStory3.getPath(), equalTo("path/to/three"));
+        assertThat(givenStory3.getParameters().size(), equalTo(0));
+        GivenStory givenStory4 = givenStories.getStories().get(3);
+        assertThat(givenStory4.hasAnchor(), equalTo(false));
+        assertThat(givenStory4.getAnchor(), equalTo(""));
+        assertThat(givenStory4.getPath(), equalTo("path/to/four"));
+        assertThat(givenStory4.getParameters().size(), equalTo(0));
+    }
+    
+    private void parseStoryWithGivenStories(String wholeStory) {
 		Story story = parser.parseStory(wholeStory, storyPath);
 
         Scenario scenario = story.getScenarios().get(0);

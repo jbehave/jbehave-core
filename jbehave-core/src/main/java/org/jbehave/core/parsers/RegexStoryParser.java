@@ -72,20 +72,17 @@ public class RegexStoryParser implements StoryParser {
 
     private String preScenarioText(String storyAsText) {
         String[] split = storyAsText.split(keywords.scenario());
-        if ( split.length > 0 ){
-            return split[0];
-        }
-        return storyAsText;
+        return split.length > 0 ? split[0] : storyAsText;
     }
 
     private Meta createMeta(String meta) {
         List<String> properties = new ArrayList<String>();
         for (String property : meta.split(keywords.metaProperty())) {
-            if ( !StringUtils.isBlank(property) ){
+            if (!StringUtils.isBlank(property)) {
                 properties.add(property);
             }
         }
-        return new Meta(properties);            
+        return new Meta(properties);
     }
 
     private Narrative parseNarrativeFrom(String storyAsText) {
@@ -139,13 +136,13 @@ public class RegexStoryParser implements StoryParser {
         Meta meta = findScenarioMeta(scenarioAsText);
         ExamplesTable examplesTable = findExamplesTable(scenarioAsText);
         GivenStories givenStories = findGivenStories(scenarioAsText);
-        if ( givenStories.requireExamplesTable() ){
+        if (givenStories.requireParameters()) {
             givenStories.useExamplesTable(examplesTable);
         }
         List<String> steps = findSteps(scenarioAsText);
         return new Scenario(title, meta, givenStories, examplesTable, steps);
     }
-    
+
     private String findScenarioTitle(String scenarioAsText) {
         Matcher findingTitle = patternToPullScenarioTitleIntoGroupOne().matcher(scenarioAsText);
         return findingTitle.find() ? findingTitle.group(1).trim() : NONE;
@@ -205,12 +202,13 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullScenarioTitleIntoGroupOne() {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(keywords.scenario() + "((.|\\n)*?)\\s*(" +  keywords.meta() + "|" + startingWords  + ").*");
+        return compile(keywords.scenario() + "((.|\\n)*?)\\s*(" + keywords.meta() + "|" + startingWords + ").*");
     }
 
     private Pattern patternToPullScenarioMetaIntoGroupOne() {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(".*"+ keywords.meta() + "(.*?)\\s*(" + keywords.givenStories() + "|" + startingWords + ").*", DOTALL);
+        return compile(".*" + keywords.meta() + "(.*?)\\s*(" + keywords.givenStories() + "|" + startingWords + ").*",
+                DOTALL);
     }
 
     private Pattern patternToPullGivenStoriesIntoGroupOne() {
@@ -221,8 +219,9 @@ public class RegexStoryParser implements StoryParser {
     private Pattern patternToPullStepsIntoGroupOne() {
         String initialStartingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         String followingStartingWords = concatenateWithOr("\\n", "\\s", keywords.startingWords());
-        return compile("((" + initialStartingWords + ") (.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"+ keywords.examplesTable()
-                + ")", DOTALL);
+        return compile(
+                "((" + initialStartingWords + ") (.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"
+                        + keywords.examplesTable() + ")", DOTALL);
     }
 
     private Pattern patternToPullExamplesTableIntoGroupOne() {
