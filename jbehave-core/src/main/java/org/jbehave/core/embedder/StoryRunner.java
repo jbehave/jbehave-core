@@ -44,32 +44,41 @@ public class StoryRunner {
      * Run steps before or after a collection of stories. Steps are execute only
      * <b>once</b> per collection of stories.
      * 
-     * @param configuration
-     *            the Configuration used to find the steps to run
-     * @param candidateSteps
-     *            List of CandidateSteps containing the candidate steps methods
-     * @param stage
-     *            the Stage
+     * @param configuration the Configuration used to find the steps to run
+     * @param candidateSteps List of CandidateSteps containing the candidate
+     *            steps methods
+     * @param stage the Stage
      */
     public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
         runSteps(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
     }
-
+    
+    
     /**
      * Runs a Story with the given configuration and steps.
      * 
-     * @param configuration
-     *            the Configuration used to run story
-     * @param candidateSteps
-     *            the List of CandidateSteps containing the candidate steps
-     *            methods
-     * @param story
-     *            the Story to run
-     * @param filter
-     *            the Filter to apply to the story Meta
-     * @throws Throwable
-     *             if failures occurred and FailureStrategy dictates it to be
-     *             re-thrown.
+     * @param configuration the Configuration used to run story
+     * @param candidateSteps the List of CandidateSteps containing the candidate
+     *            steps methods
+     * @param story the Story to run
+     * @throws Throwable if failures occurred and FailureStrategy dictates it to
+     *             be re-thrown.
+     */
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story)
+            throws Throwable {
+        run(configuration, candidateSteps, story, MetaFilter.EMPTY, false, new HashMap<String, String>());
+    }
+
+    /**
+     * Runs a Story with the given configuration and steps, applying the given meta filter.
+     * 
+     * @param configuration the Configuration used to run story
+     * @param candidateSteps the List of CandidateSteps containing the candidate
+     *            steps methods
+     * @param story the Story to run
+     * @param filter the Filter to apply to the story Meta
+     * @throws Throwable if failures occurred and FailureStrategy dictates it to
+     *             be re-thrown.
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter)
             throws Throwable {
@@ -190,8 +199,7 @@ public class StoryRunner {
     /**
      * Runs a list of steps, while keeping state
      * 
-     * @param steps
-     *            the Steps to run
+     * @param steps the Steps to run
      */
     private void runSteps(List<Step> steps) {
         if (steps == null || steps.size() == 0)
