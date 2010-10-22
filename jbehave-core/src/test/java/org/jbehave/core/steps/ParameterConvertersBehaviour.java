@@ -1,9 +1,15 @@
 package org.jbehave.core.steps;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.steps.ParameterConverters.DateConverter;
+import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
+import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
+import org.jbehave.core.steps.ParameterConverters.NumberConverter;
+import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.ParameterConvertionFailed;
+import org.jbehave.core.steps.ParameterConverters.StringListConverter;
+import org.junit.Test;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
@@ -22,16 +28,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.steps.ParameterConverters.DateConverter;
-import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
-import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
-import org.jbehave.core.steps.ParameterConverters.NumberConverter;
-import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
-import org.jbehave.core.steps.ParameterConverters.ParameterConvertionFailed;
-import org.jbehave.core.steps.ParameterConverters.StringListConverter;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
 
 public class ParameterConvertersBehaviour {
 
@@ -98,6 +98,8 @@ public class ParameterConvertersBehaviour {
         assertThat((Double) converter.convertValue("3" + dot + "0", double.class), equalTo(3.0d));
         assertThat((BigInteger) converter.convertValue("3", BigInteger.class), equalTo(new BigInteger("3")));
         assertThat((BigDecimal) converter.convertValue("3" + dot + "0", BigDecimal.class), equalTo(new BigDecimal("3.0")));
+        assertThat((BigDecimal) converter.convertValue("3" + dot + "00", BigDecimal.class), equalTo(new BigDecimal("3.00"))); // currency
+        assertThat((BigDecimal) converter.convertValue("3" + dot + "000", BigDecimal.class), equalTo(new BigDecimal("3.000"))); // something else!
         assertThat((Number) converter.convertValue("3", Number.class), equalTo((Number)3L));
     }
 

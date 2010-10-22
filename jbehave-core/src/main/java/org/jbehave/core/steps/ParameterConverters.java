@@ -1,6 +1,6 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
+import org.jbehave.core.model.ExamplesTable;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.jbehave.core.model.ExamplesTable;
+import static java.util.Arrays.asList;
 
 /**
  * <p>
@@ -158,7 +158,7 @@ public class ParameterConverters {
                 } else if (type == BigInteger.class) {
                     return BigInteger.valueOf(n.longValue());
                 } else if (type == BigDecimal.class) {
-                    return BigDecimal.valueOf(n.doubleValue());
+                    return new BigDecimal(ensureAllDigitsArePresent(n.doubleValue(), value));
                 } else {
                     return n;
                 }
@@ -167,6 +167,20 @@ public class ParameterConverters {
             }
         }
 
+        private static String ensureAllDigitsArePresent(double valueReducedToDouble, String valueAsString) {
+            String value = "" + valueReducedToDouble; // might have dropped trailing "0";
+            int i = -1;
+            for (char c : valueAsString.toCharArray()) {
+                if (Character.isDigit(c)) {
+                    i = value.indexOf(c, i+1);
+                    if (i == -1) {
+                        value = value + c; // should be a "0" if missing
+                        i = value.length();
+                    }
+                }
+            }
+            return value;
+        }
     }
 
     /**
