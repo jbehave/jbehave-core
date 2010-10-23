@@ -23,6 +23,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -175,7 +176,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void givenStories(GivenStories givenStories) {
-        print(format("givenStories", "{0} {1}\n", keywords.givenStories(), givenStories.asString()));
+        print(format("givenStoriesStart", "{0}\n", keywords.givenStories()));
+        for (GivenStory givenStory : givenStories.getStories()) {
+            print(format("givenStory", "{0} {1}\n", givenStory.asString(), (givenStory.hasAnchor() ? givenStory.getParameters() : "")));
+        }
+        print(format("givenStoriesEnd", "\n"));
     }
 
     public void givenStories(List<String> storyPaths) {

@@ -63,6 +63,9 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("afterScenario", "</div>\n");
         patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
         patterns.setProperty("givenStories", "<div class=\"givenStories\">{0} {1}</div>\n");
+        patterns.setProperty("givenStoriesStart", "<div class=\"givenStories\">{0}\n");
+        patterns.setProperty("givenStory", "<div class=\"givenStory\">{0} {1}</div>\n");
+        patterns.setProperty("givenStoriesEnd", "</div>\n");
         patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
         patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
         patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");

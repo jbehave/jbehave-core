@@ -62,6 +62,9 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("afterScenario", "\n");
         patterns.setProperty("afterScenarioWithFailure", "\n{0}\n");
         patterns.setProperty("givenStories", "{0} {1}\n");
+        patterns.setProperty("givenStoriesStart", "{0}\n");
+        patterns.setProperty("givenStory", "{0} {1}\n");
+        patterns.setProperty("givenStoriesEnd", "\n");
         patterns.setProperty("successful", "{0}\n");
         patterns.setProperty("ignorable", "{0}\n");
         patterns.setProperty("pending", "{0} ({1})\n");

@@ -41,7 +41,6 @@ body {
 
 h2 {
 	background-color: #ffcd13;
-	opacity: 0.75;
 	margin-bottom: 10px;
 	padding: 5px 10px;
 }
@@ -94,6 +93,10 @@ b {
 	margin-left: 30px;
 	margin-top: 30px;
 	text-align: left;
+}
+
+h2.reports {
+    opacity: 0.75;
 }
 
 table {
@@ -216,13 +219,18 @@ span.inOrderTo,span.asA,span.iWantTo {
 	font-weight: bold;
 }
 
-.path,.givenScenarios {
-	font-weight: bold;
+.givenStories {
+	font-weight: bolder;
 	font-size: 16px;
-	color: black;
-	opacity: 0.75;
 	margin-bottom: 10px;
 	padding: 5px 10px;
+}
+
+.path {
+    font-weight: bolder;
+	font-size: 16px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
 }
 
 .scenario {

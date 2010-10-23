@@ -63,6 +63,9 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("afterScenario", "</scenario>\n");
         patterns.setProperty("afterScenarioWithFailure", "<failure>{0}</failure>\n</scenario>\n");
         patterns.setProperty("givenStories", "<givenStories keyword=\"{0}\" paths=\"{1}\"/>\n");
+        patterns.setProperty("givenStoriesStart", "<givenStories keyword=\"{0}\">\n");
+        patterns.setProperty("givenStory", "<givenStory parameters=\"{1}\">{0}</givenStory>\n");
+        patterns.setProperty("givenStoriesEnd", "</givenStories>\n");
         patterns.setProperty("successful", "<step outcome=\"successful\">{0}</step>\n");
         patterns.setProperty("ignorable", "<step outcome=\"ignorable\">{0}</step>\n");
         patterns.setProperty("pending", "<step outcome=\"pending\" keyword=\"{1}\">{0}</step>\n");
