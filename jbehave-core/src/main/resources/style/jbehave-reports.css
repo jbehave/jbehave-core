@@ -95,8 +95,8 @@ b {
 	text-align: left;
 }
 
-h2.reports {
-    opacity: 0.75;
+.reports h2 {
+    opacity: 0.85;
 }
 
 table {
@@ -121,27 +121,28 @@ table {
     font-weight: bold;
 }	
 
-div.reports table {
+.reports table {
 	border: solid;
 }
 
-div.reports table th {
+.reports table th {
+	border-bottom: 1px solid #000;
 	text-align: center;
 	font-weight: bold;
 	padding: 10px;
 }
 
-div.reports table td {
+.reports table td {
 	text-align: center;
 	padding: 5px;
 }
 
-div.reports table td.story {
+.reports table td.story {
 	text-align: left;
 	padding: 5px;
 }
 
-div.reports table td a {
+.reports table td a {
     color: #555;
 }
 
@@ -155,22 +156,22 @@ div.reports table td a {
 	text-align: left;
 }
 
-div.maps table {
+.maps table {
 	border: solid;
 }
 
-div.maps table th {
+.maps table th {
 	text-align: center;
 	font-weight: bold;
 	padding: 10px;
 }
 
-div.maps table td {
+.maps table td {
 	text-align: center;
 	padding: 5px;
 }
 
-div.maps table td.name {
+.maps table td.name {
 	text-align: left;
 	padding: 5px;
 }
@@ -180,7 +181,7 @@ div.maps table td.name {
 	margin-left: 10px;
 }
 
-div.story h2 {
+.story h2 {
 	background-color: #fff;
 	border-color: #ffcd13;
 }
@@ -198,7 +199,7 @@ div.story h2 {
 	margin-bottom: 10px;
 }
 
-div.keyword {
+.keyword {
 	margin-left: 10px;
 }
 
@@ -219,18 +220,12 @@ span.inOrderTo,span.asA,span.iWantTo {
 	font-weight: bold;
 }
 
-.givenStories {
+.givenStories, .path {
 	font-weight: bolder;
 	font-size: 16px;
+    opacity: 0.85;
 	margin-bottom: 10px;
 	padding: 5px 10px;
-}
-
-.path {
-    font-weight: bolder;
-	font-size: 16px;
-    margin-bottom: 10px;
-    padding: 5px 10px;
 }
 
 .scenario {
@@ -284,49 +279,56 @@ span.inOrderTo,span.asA,span.iWantTo {
 	text-weight: bold;
 }
 
-div.examples table {
+.examples {
+	margin-left: 10px;
+    padding-bottom: 20px;
+}
+
+.examples h3 {
+	opacity: 0.85;
+}
+
+.examples table {
 	border: solid;
 	margin-top: 12px;
 	margin-left: 12px;
 }
 
-div.examples table th {
+.examples table th, td {
 	text-align: center;
-	font-weight: bold;
+	padding-left: 5px;
+    padding-right: 5px;
+    border-left: 1px solid;	
 }
 
-div.examples table td {
-	text-align: center;
+.examples table th {
+    font-weight: bold;
 }
 
-div.examples {
-	padding-bottom: 20px;
-}
-
-div.outcomes table {
+.outcomes table {
 	border: solid;
 	margin-top: 12px;
 	margin-left: 12px;
 }
 
-div.outcomes table th {
+.outcomes table th {
 	text-align: center;
 	font-weight: bold;
 }
 
-div.outcomes table tr.notVerified {
+.outcomes table tr.notVerified {
 	color: red;
 }
 
-div.outcomes table tr.verified {
+.outcomes table tr.verified {
 	color: green;
 }
 
-div.outcomes table td {
+.outcomes table td {
 	text-align: center;
 }
 
-div.outcomes {
+.outcomes {
 	padding-bottom: 20px;
 }
 

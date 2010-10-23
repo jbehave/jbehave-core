@@ -103,7 +103,7 @@
 </#if>
 </#list>
 <tr class="totals">
-<td>Totals (${totalReports})</td>
+<td>${totalReports}</td>
 <#assign stats = reportsTable.getReport("Totals").getStats()>
 <td>
 <@renderStat stats "notAllowed" "failed"/>
@@ -139,6 +139,7 @@
 <@renderStat stats "stepsIgnorable" "ignorable"/>
 </td>
 <td>
+Totals
 </td>
 </tr>
 </table>
