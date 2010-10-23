@@ -85,6 +85,21 @@ public class Embedder {
         }
     }
 
+
+    public void runAsEmbeddables(List<String> classNames) {
+        for (Embeddable embeddable : embeddables(classNames, classLoader())) {
+            String name = embeddable.getClass().getName();
+            try {
+                embedderMonitor.runningEmbeddable(name);
+                embeddable.useEmbedder(this);
+                embeddable.run();
+            } catch (Throwable e) {
+                embedderMonitor.embeddableFailed(name, e);
+                throw new EmbeddableFailed(name, e);
+            }
+        }
+    }
+
     public void runStoriesAsEmbeddables(List<String> classNames) {
         EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
@@ -399,6 +414,15 @@ public class Embedder {
     }
 
     @SuppressWarnings("serial")
+    public static class EmbeddableFailed extends RuntimeException {
+
+        public EmbeddableFailed(String name, Throwable cause) {
+            super("Failure embeddable " + name, cause);
+        }
+        
+    }
+
+    @SuppressWarnings("serial")
     public static class RunningStoriesFailed extends RuntimeException {
 
         public RunningStoriesFailed(int stories, int scenarios, int failedScenarios) {
@@ -411,7 +435,7 @@ public class Embedder {
         }
 
         public RunningStoriesFailed(String name, Throwable cause) {
-            super("Failures in running story " + name, cause);
+            super("Failures in running stories " + name, cause);
         }
     }
 

@@ -41,6 +41,7 @@ import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.junit.JUnitStory;
+import org.jbehave.core.junit.JUnitStoryMaps;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
@@ -56,6 +57,33 @@ import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 
 public class EmbedderBehaviour {
+
+    @Test
+    public void shouldMapStoriesAsEmbeddables() throws Throwable {
+        // Given
+        StoryRunner runner = mock(StoryRunner.class);
+        OutputStream out = new ByteArrayOutputStream();
+        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
+        String myStoryMapsName = MyStory.class.getName();
+        List<String> classNames = asList(myStoryMapsName);
+        Embeddable myEmbeddable = new MyStoryMaps();
+        List<Embeddable> embeddables = asList(myEmbeddable);
+        EmbedderClassLoader classLoader = mock(EmbedderClassLoader.class);
+        when(classLoader.newInstance(Embeddable.class, myStoryMapsName)).thenReturn(myEmbeddable);
+
+        // When
+        Configuration configuration = new MostUsefulConfiguration();
+        Embedder embedder = embedderWith(runner, new EmbedderControls(), monitor);
+        embedder.useClassLoader(classLoader);
+        embedder.useConfiguration(configuration);
+        embedder.runAsEmbeddables(classNames);
+
+        // Then
+        assertThat(MyStoryMaps.run, is(true));
+        for (Embeddable embeddable : embeddables) {
+            assertThat(out.toString(), containsString("Running embeddable " + embeddable.getClass().getName()));
+        }
+    }
 
     @Test
     public void shouldRunStoriesAsEmbeddables() throws Throwable {
@@ -966,6 +994,21 @@ public class EmbedderBehaviour {
     
     private String dos2unix(String string) {
         return string.replace("\r\n", "\n");
+    }
+
+    private static class MyStoryMaps extends JUnitStoryMaps {
+
+        static boolean run = false;
+
+        @Override
+        public void run() throws Throwable {
+            run = true;
+        }
+
+        @Override
+        protected List<String> storyPaths() {
+            return asList("**/*.story");
+        }
     }
 
     private class MyStory extends JUnitStory {

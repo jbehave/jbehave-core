@@ -28,7 +28,7 @@
             <phase>integration-test</phase>
             <configuration>
               <includes>
-                <include>${include.paths}</include>
+                <include>**/*StoryMaps.java</include>
               </includes>
               <metaFilters>
                 <metaFilter>+author *</metaFilter>
@@ -43,7 +43,7 @@
               </systemProperties>
             </configuration>
             <goals>
-              <goal>map-stories-as-paths</goal>
+              <goal>map-stories-as-embeddables</goal>
             </goals>
           </execution>
         </executions>

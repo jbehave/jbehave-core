@@ -259,6 +259,37 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
+    public void shouldMapStoriesAsEmbeddables() throws MojoExecutionException, MojoFailureException {
+        // Given
+        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        MapStoriesAsEmbeddables mojo = new MapStoriesAsEmbeddables() {
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+
+            @Override
+            protected EmbedderClassLoader classLoader() {
+                return classLoader;
+            }
+
+        };
+        String searchInDirectory = "src/test/java/";
+        mojo.sourceDirectory = searchInDirectory;
+        List<String> includes = asList("**/*StoryMaps.java");
+        mojo.includes = includes;
+        List<String> excludes = asList();
+        mojo.excludes = excludes;
+        List<String> classNames = new StoryFinder().findClassNames(searchInDirectory, includes, excludes);
+
+        // When
+        mojo.execute();
+
+        // Then
+        verify(embedder).runAsEmbeddables(classNames);
+    }
+
+    @Test
     public void shouldMapStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
