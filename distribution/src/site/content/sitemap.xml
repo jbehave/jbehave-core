@@ -42,8 +42,8 @@
     <page>dependency-injection.html</page>
     <page>parameter-injection.html</page>
     <page>parameter-converters.html</page>
-    <page>examples-table.html</page>
-    <page>parameters-table.html</page>
+    <page>parametrised-scenarios.html</page>
+    <page>tabular-parameters.html</page>
     <page>outcomes-table.html</page>
     <page>given-stories.html</page>
     <page>meta-info.html</page>

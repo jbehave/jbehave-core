@@ -1,17 +1,17 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Examples Table</title>
+<title>Parametrised Scenarios</title>
 </head>
 
 <body>
 
-<h2>Examples Table</h2>
+<h2>Parametrised Scenarios</h2>
 
-<p>Story writers often find themselves repeating scenarios, or
-parts thereof, by simply changing some parameter values. These are ideal
-candidates for using JBehave Table Examples feature. Let's look at the
-example:</p>
+<p>Story writers often find themselves repeating scenarios, or parts
+thereof, by simply changing some parameter values. These are ideal
+candidates for using JBehave's parametrisation features. Let's look at
+the example:</p>
 
 <pre class="brush: bdd">
     Given a stock of symbol STK1 and a threshold of 10.0
@@ -38,17 +38,18 @@ values. We can then rewrite this scenario as:</p>
 ]]>
 </script>
 
-<p>The <b>Examples:</b> keyword signals that the scenario should be
-repeated for as many times as there are data rows in the examples table.
-At each execution, the named parameters are taken from the corresponding
-row.</p>
+<p>The <b>Examples:</b> keyword signals that the entire scenario is
+parametrised and should be epeated for as many times as there are data
+rows in the examples table. At each execution, the named parameters are
+taken from the corresponding row.</p>
+
 <p>One important difference to underline in using table examples is
 that they require <a href="parameter-injection.html">named
 parameters</a> for the step candidates to be matched to Java methods. The
 named parameters allow the parameters to be injected using the table row
 values with the corresponding header name, instead of being extracted
-from the annotation pattern match. As such, <b>the step annotation pattern
-must hold the verbatim textual step</b>. e.g.:</p>
+from the annotation pattern match. As such, <b>the step annotation
+pattern must hold the verbatim textual step</b>. e.g.:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
@@ -59,14 +60,16 @@ must hold the verbatim textual step</b>. e.g.:</p>
 ]]>
 </script>
 
-<p>Also note that while the characters delimiting the parameter names in the regex pattern are
-purely conventional - they only serve the purpose of matching the step method in a readable manner - 
-the use of the angle brackets is required as it is used to replace the name with the value in the reporting.
-</p>
+<p>Also note that while the characters delimiting the parameter
+names in the regex pattern are purely conventional - they only serve the
+purpose of matching the step method in a readable manner - the use of
+the angle brackets is required as it is used to replace the name with
+the value in the reporting.</p>
 
-<p>It is also important to note that the same (<code>@Named</code>-annotated) methods can match steps 
-that are executed both as standalone or via examples table, provided that both regex patterns are configured,
-one as the main pattern and one as an alias:</p>
+<p>It is also important to note that the same (<code>@Named</code>-annotated)
+methods can match steps that are executed both as standalone or via
+examples table, provided that both regex patterns are configured, one as
+the main pattern and one as an alias:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
@@ -78,7 +81,8 @@ one as the main pattern and one as an alias:</p>
 ]]>
 </script>
 
-<p>Moreover, the examples table alias can happily co-exists with other standalone aliases:</p>
+<p>Moreover, the examples table alias can happily co-exists with
+other standalone aliases:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
