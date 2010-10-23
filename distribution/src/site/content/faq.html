@@ -20,26 +20,27 @@ page.</p>
 
 <h3>How do I use JBehave within my development environment?</h3>
 
-<p>Stories can be run on command-line (typically for continous-integration)
-or in any modern Java IDE that supports unit testing frameworks
-(<a href="http://junit.org">JUnit</a> supported by default, but any 
-test framework can be easily adopted).  Read more on <a
+<p>Stories can be run on command-line (typically for
+continous-integration) or in any modern Java IDE that supports unit
+testing frameworks (<a href="http://junit.org">JUnit</a> supported by
+default, but any test framework can be easily adopted). Read more on <a
 	href="running-stories.html">running stories</a>.</p>
-<p>Note that stories can also be run via web runner, 
-although the web support is not part of JBehave Core. For
-more info on web support refer to <a
-	href="http://jbehave.org/reference/web/stable">JBehave Web</a>.</p>
+<p>Note that stories can also be run via web runner, although the
+web support is not part of JBehave Core. For more info on web support
+refer to <a href="http://jbehave.org/reference/web/stable">JBehave
+Web</a>.</p>
 
 <h3>Which testing frameworks does JBehave support?</h3>
 
 <p>JBehave comes bundled with out-the-box JUnit support but has no
-tie-in to JUnit. You can easily configure stories to run with
-other testing framework, such as TestNG or Spring's Test module (see <a
-    href="developing-stories.html">developing stories</a> for more
+tie-in to JUnit. You can easily configure stories to run with other
+testing framework, such as TestNG or Spring's Test module (see <a
+	href="developing-stories.html">developing stories</a> for more
 details).</p>
 
 <p>A quick fix to run with TestNG is simply to annotate the run()
-method in your root JUnitStory/Stories class with the TestNG @Test annotation:</p>
+method in your root JUnitStory/Stories class with the TestNG @Test
+annotation:</p>
 
 <pre class="brush: java">
 public class YourStory extends JUnitStory/Stories {
@@ -52,25 +53,27 @@ public class YourStory extends JUnitStory/Stories {
 }
 </pre>
 
-<p>Note that this is just one way to run stories and if you use other Embedder-based
-methods you'll need to change the test annotation used correspondingly.</p>
+<p>Note that this is just one way to run stories and if you use
+other Embedder-based methods you'll need to change the test annotation
+used correspondingly.</p>
 
 <h3>What libraries does JBehave depend on?</h3>
 
 <p>Check the <a href="dependencies.html">dependencies</a> details.</p>
 
-<h3>IDE can't seem to recognise the JUnitStory/Stories as a JUnit test</h3>
+<h3>IDE can't seem to recognise the JUnitStory/Stories as a JUnit
+test</h3>
 
-<p>Some IDEs need to be aware of the JBehave source
-to enable the JUnit plugin for stories, as they can't spot the <b>@Test</b>
-annotation in a class jar. The link to the core sources is available
-from the <a href="download.html">download</a> page.</p>
+<p>Some IDEs need to be aware of the JBehave source to enable the
+JUnit plugin for stories, as they can't spot the <b>@Test</b> annotation
+in a class jar. The link to the core sources is available from the <a
+	href="download.html">download</a> page.</p>
 
 <p>Alternatively, <a href="http://m2eclipse.sonatype.org">M2Eclipse</a>
 users can downlaod the sources automatically.</p>
 
-<p>A simple workaround is to override the JUnitStory/Stories run() method
-annotated with @Test</p>
+<p>A simple workaround is to override the JUnitStory/Stories run()
+method annotated with @Test</p>
 
 <pre class="brush: java">
 public class YourStory extends JUnitStory/Stories {
@@ -113,9 +116,11 @@ setting system property <b>"org.jbehave.core.configuration.silentsuccess"</b>.</
 
 <h3>Can my steps classes be POJOs?</h3>
 
-<p>Yes, in fact it's recommended to write steps as POJOs and create instances of
-<a href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
-via the <a href="javadoc/core/org/jbehave/core/steps/InstanceStepsFactory.html">InstanceStepsFactory</a>
+<p>Yes, in fact it's recommended to write steps as POJOs and create
+instances of <a
+	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
+via the <a
+	href="javadoc/core/org/jbehave/core/steps/InstanceStepsFactory.html">InstanceStepsFactory</a>
 </p>
 <pre class="brush: java">
     Configuration configuration = new MostUsefulConfiguration(); // adapt configuration to your needs
@@ -123,38 +128,36 @@ via the <a href="javadoc/core/org/jbehave/core/steps/InstanceStepsFactory.html">
 </pre>
 
 <p>Alternatively, one can extend the <a
-	href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a> class, although not recommended as it 
-	provides tie-in with the implementation of the <a
-    href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a> interface, which is 
-    subject to change.</p>
+	href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a> class,
+although not recommended as it provides tie-in with the implementation
+of the <a href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
+interface, which is subject to change.</p>
 
 <h3>Can I use dependency injection to compose my steps classes?</h3>
 
-<p>Yes, Guice, PicoContainer and Spring are supported. 
-See <a href="dependency-injection.html">dependency injection</a> page for more details.</p>
+<p>Yes, Guice, PicoContainer and Spring are supported. See <a
+	href="dependency-injection.html">dependency injection</a> page for more
+details.</p>
 
 <h3>Can I use annotations to configure my stories?</h3>
 
-<p>Yes, both annotated and programmatic configuration is supported. 
-See <a href="configuration.html">configuration</a> page for more details.</p>
+<p>Yes, both annotated and programmatic configuration is supported.
+See <a href="configuration.html">configuration</a> page for more
+details.</p>
 
 <h3>Can I insert comments in the textual scenarios?</h3>
 
-<p>Yes, one can add them the scenario title, which allows free text
-up the first keyword of the scenario, e.g. the first Given, provided this is at the beginning of a line.
-Any keyword not at the beginning of a line, i.e. not preceded by a newline character, will be ignored.
-</p>
+<p>Yes, at various levels:</p>
 
-<p>One can also insert ignorable steps between executable steps, using keyword "!--" (which can be changed via i18n properties)</p>
-<pre class="brush: bdd">
-Scenario: This is a description of the scenario, of the intended behaviour and its verification
-
-Given a precondition
-!-- This is an ignorable step after a Given step, used to insert a comment,
-which can be multiline, just like any other step!
-When something happens
-Then outcome is verified 
-</pre>
+<ul>
+	<li>In scenario title, which allows free text up the first step
+	starting word of the scenario (e.g. the first Given), provided this is
+	at the beginning of a line. Any keyword not at the beginning of a line,
+	i.e. not preceded by a newline character, will be ignored.</li>
+	<li>Between executable steps, using keyword "!--" (which can be
+	changed via i18n properties).</li>
+	<li>Between example table rows, using separator "|--".</li>
+</ul>
 
 </body>
 </html>
