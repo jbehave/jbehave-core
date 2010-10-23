@@ -156,6 +156,10 @@ table {
 	text-align: left;
 }
 
+.maps h2 {
+    opacity: 0.85;
+}
+
 .maps table {
 	border: solid;
 }

@@ -33,6 +33,7 @@ goals:</p>
 	<li>scope: [compile|test], defaults to <b>compile</b></li>
 	<li>includes: list of include patterns</li>
 	<li>excludes: list of exclude patterns</li>
+    <li>metaFilters: list of meta filters</li>
 	<li>batch: [true|false], defaults to <b>false</b></li>
 	<li>skip: [true|false], defaults to <b>false</b></li>
 	<li>ignoreFailureInStories: [true|false], defaults to <b>false</b></li>
@@ -62,6 +63,10 @@ goals:</p>
                     <includes>
                         <include>**/*Stories.java</include>
                     </includes>
+                    <metaFilters>
+                        <metaFilter>+author *</metaFilter>
+                        <metaFilter>-skip</metaFilter>
+                    </metaFilters>
                     <ignoreFailureInStories>true</ignoreFailureInStories>
                     <ignoreFailureInView>false</ignoreFailureInView>
                 </configuration>

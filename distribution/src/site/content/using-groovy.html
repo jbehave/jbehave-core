@@ -75,7 +75,7 @@ class ExampleGroovySteps {
 @RunWith(GroovyAnnotatedEmbedderRunner.class)
 @Configure()
 @UsingEmbedder();
-@UsingGroovy()
+@UsingGroovy(classLoader = MyGroovyClassLoader.class, resourceFinder = MyGroovyResourceFinder.class)
 public class AnnotatedEmbedderUsingGroovy extends InjectableEmbedder {
 
     @Test

@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Meta Filtering</title>
+</head>
+
+<body>
+
+<h2>Meta Filters</h2>
+
+<p>One of the principal use cases for defining <a
+	href="meta-info.html">meta info</a> in our stories is to be able to
+filter the stories based on the meta info provided.</p>
+
+<p>A meta filter has a structure that mirrors that of the meta
+properties, i.e. it's expressed as a sequence of name-value patterns:</p>
+<pre class="brush: plain">
+   meta filter :== ([+|-] [name] [value pattern])+
+</pre>
+<p>where <b>[+|-]</b> indicates if the filter should include or
+exclude the meta property and the <b>[value pattern]</b> can be either
+an exact match of the property value (including empty value) or use the
+<b>*</b> matching notation.</p>
+
+<p>The following are all valid meta filters:</p>
+<pre class="brush: plain">
+   +author Mauro
+   +theme filtering
+   +author * +theme filtering
+   +author * +theme filtering -skip
+   -skip
+</pre>
+
+<p>Let's now look at how the filtering is done. JBehave provides a <a
+	href="javadoc/core/org/jbehave/core/embedder/MetaFilter.html">MetaFilter</a>
+component that interprets the parses the textual meta filter and
+provides a method to determine if a <a
+	href="javadoc/core/org/jbehave/core/model/Meta.html">Meta</a> instance is allowed or not:
+</p>
+
+<pre class="brush: java">
+MetaFilter metaFilter = new MetaFilter("+author * -skip");
+Meta meta = ... // contains meta info as parsed from the textual story
+boolean allowed = metaFilter.allow(meta);    
+</pre>
+
+<p>A few examples of meta filters and properties that allowed or not allowed:
+<table>
+<thead><th>Meta Filter</th><th>Meta Property</th><th>Allowed</th></thead>
+<tbody>
+<tr><td>+theme smoke testing -skip</td><td>@theme smoke testing</td><td>true</td></tr>
+<tr><td>+theme smoke testing -skip</td><td>@skip</td><td>false</td></tr>
+<tr><td>+theme smoke testing</td><td>@theme smoke testing</td><td>true</td></tr>
+<tr><td>+theme smoke testing</td><td>@theme testing</td><td>false</td></tr>
+<tr><td>-skip</td><td>@theme testing</td><td>true</td></tr>
+<tr><td>-skip</td><td>@skip</td><td>false</td></tr>
+<tr><td>+theme smoke testing -theme UI</td><td>@theme smoke testing</td><td>true</td></tr>
+<tr><td>+theme smoke testing -theme UI</td><td>@theme UI</td><td>false</td></tr>
+</tbody>
+</table>
+
+</p>
+
+<h2>Configuring Meta Filters</h2>
+
+<p>As usual, JBehave allow multiple equivalent ways of
+configuration. One can specify the meta filters directly via the
+Embedder, either programmatically or via the annotation:</p>
+
+<pre class="brush: java">
+
+Embedder embedder = ... // define as required
+embedder.useMetaFilters(asList("+author Mauro", "+theme filtering", "-skip"));
+    
+</pre>
+
+<pre class="brush: java">
+
+@RunWith(AnnotatedEmbedderRunner.class)
+@UsingEmbedder(metaFilters = {"+author Mauro", "+theme filtering", "-skip"})
+public class AnnotatedTraderEmbedder extends InjectableEmbedder {
+}
+</pre>
+
+<span class="followup">Note that because of its additive
+sequential nature, the meta filters will all be joined together when
+running the stories. Have different meta filters comes into play when
+doing <a href="story-mapping.html">story mapping</a>.</span>
+
+<p>The meta filter can also be specified via <a
+	href="ant-tasks.html">Ant tasks</a> or <a href="maven-goals.html">Maven
+goals</a>, using the "metaFilters" attribute or configuration element.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

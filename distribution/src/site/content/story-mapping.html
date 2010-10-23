@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Story Mapping</title>
+</head>
+
+<body>
+
+<h2>Story Mapping</h2>
+
+<p>The <a href="meta-filtering.html">meta filtering</a> can be used
+to create Story Maps, where each meta filter maps to a subset of
+stories, based on the meta properties that are set in the stories.</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>map-stories</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <includes>
+                <include>${include.paths}</include>
+              </includes>
+              <metaFilters>
+                <metaFilter>+author *</metaFilter>
+                <metaFilter>+theme *</metaFilter>
+                <metaFilter>-skip</metaFilter>
+              </metaFilters>              
+            </configuration>
+            <goals>
+              <goal>map-stories-as-paths</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>    
+]]>
+</script>
+
+<p>The resulting output is found in <b>target/jbehave-reports/maps.html</b>,
+which uses a <a href="http://en.wikipedia.org/wiki/Swim_lane">Swim
+Lane</a> view to display the results of the mapping.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>
