@@ -1058,9 +1058,15 @@ public class EmbedderBehaviour {
         }
 
         @Override
+        protected List<String> metaFilters() {
+            return asList("+some property");
+        }
+
+        @Override
         protected List<String> storyPaths() {
             return asList("**/*.story");
         }
+
     }
 
     private class MyStory extends JUnitStory {

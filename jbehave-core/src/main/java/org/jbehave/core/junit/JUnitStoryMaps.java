@@ -7,7 +7,8 @@ import org.junit.Test;
 
 /**
  * <p>
- * JUnit-runnable entry-point to map stories specified by {@link JUnitStoryMaps#storyPaths()}.
+ * JUnit-runnable entry-point to map stories specified by {@link #storyPaths()},
+ * using the meta filters specified by {@link #metaFilters()}.
  * </p>
  */
 public abstract class JUnitStoryMaps extends ConfigurableEmbedder {
@@ -16,6 +17,8 @@ public abstract class JUnitStoryMaps extends ConfigurableEmbedder {
     public void run() throws Throwable {
         configuredEmbedder().mapStoriesAsPaths(storyPaths());
     }
+
+    protected abstract List<String> metaFilters();
 
     protected abstract List<String> storyPaths();
 

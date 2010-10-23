@@ -12,6 +12,55 @@
 to create Story Maps, where each meta filter maps to a subset of
 stories, based on the meta properties that are set in the stories.</p>
 
+<p>Story mapping requires as inputs the stories to map and the
+filters to maps against. As usual, JBehave allow multiple equivalent
+ways of mapping stories:</p>
+
+<ul>
+	<li>as embeddables: extending <a
+		href="javadoc/core/org/jbehave/core/junit/JUnitStoryMaps.html">JUnitStoryMaps</a>
+	and specifying the meta filter and story paths. Extending
+	JUnitStoryMaps allows us to configure the underlying Embedder, e.g. to
+	specify the code location in the story reporter builder to ensure the report get written
+	to the correct output directory (important when running multi-module builds).</li>
+	<li>as paths: once we have specified an instance of an Embedder,
+	with its meta filters, we map stories specified by paths.</li>
+</ul>
+
+<p>A concrete example of the embeddable route woud be:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+public class TraderStoryMaps extends JUnitStoryMaps {
+    
+    public TraderStoryMaps() {
+        configuredEmbedder().useMetaFilters(metaFilters());
+    }
+
+    @Override
+    public Configuration configuration() {
+        return new MostUsefulConfiguration()
+            .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass())));
+    }
+
+    @Override
+    protected List<String> metaFilters() {
+        return asList("+author *", "theme *","-skip");
+    }
+
+    @Override
+    protected List<String> storyPaths() {
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
+                
+    }
+        
+}
+]]>
+</script>
+
+<p>Both Embedder methods are accessible via Ant tasks or Maven goals.</p>
+
 <script type="syntaxhighlighter" class="brush: xml">
 <![CDATA[
       <plugin>
@@ -23,7 +72,7 @@ stories, based on the meta properties that are set in the stories.</p>
             <phase>integration-test</phase>
             <configuration>
               <includes>
-                <include>${include.paths}</include>
+                <include>**/stories/*.story</include>
               </includes>
               <metaFilters>
                 <metaFilter>+author *</metaFilter>
@@ -40,10 +89,19 @@ stories, based on the meta properties that are set in the stories.</p>
 ]]>
 </script>
 
-<p>The resulting output is found in <b>target/jbehave-reports/maps.html</b>,
-which uses a <a href="http://en.wikipedia.org/wiki/Swim_lane">Swim
-Lane</a> view to display the results of the mapping.</p>
+<p>The resulting output uses a <a
+	href="http://en.wikipedia.org/wiki/Swim_lane">Swim Lane</a> view to
+display the results of the mapping, with one lane per meta filter.</p>
 
+<p>The maps view is by default available in the <b>target/jbehave-reports/view/maps.html</b>.</p>
+
+<span class="followup">It is important to note that the story mapping execution needs to be
+necessarily separate from the story running, since the use the meta filters in fundamentally different ways.
+In story mapping, the filters are kept disjoint and stories mapped against each one of them separately.
+In story running, the filters are joined and stories are run against the joined filter.
+Still, the maps and executions provide complementary views and should be run one after the other,
+ideally writing to the same output directory.</span>
+    
 <div class="clear">
 <hr />
 </div>
