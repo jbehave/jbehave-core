@@ -13,8 +13,11 @@
 tasks:</p>
 
 <ul>
+    <li><a
+        href="javadoc/ant/org/jbehave/ant/MapStoriesAsEmbeddables.html">MapStoriesAsEmbeddables</a></li>
 	<li><a
 		href="javadoc/ant/org/jbehave/ant/RunStoriesAsEmbeddables.html">RunStoriesAsEmbeddables</a></li>
+    <li><a href="javadoc/ant/org/jbehave/ant/MapStoriesAsPaths.html">MapStoriesAsPaths</a></li>
 	<li><a href="javadoc/ant/org/jbehave/ant/RunStoriesAsPaths.html">RunStoriesAsPaths</a></li>
 	<li><a
 		href="javadoc/ant/org/jbehave/ant/RunStoriesWithAnnotatedEmbedderRunner.html">RunStoriesWithAnnotatedEmbedderRunner</a></li>
@@ -31,6 +34,7 @@ tasks:</p>
 	<li>includes: CSV of include patterns</li>
 	<li>excludes: CSV of exclude patterns</li>
 	<li>metaFilters: CSV of meta filters</li>
+    <li>systemProperties: CSV of system properties to set during execution</li>	
 	<li>batch: [true|false], defaults to <b>false</b></li>
 	<li>skip: [true|false], defaults to <b>false</b></li>
 	<li>ignoreFailureInStories: [true|false], defaults to <b>false</b></li>
@@ -54,6 +58,8 @@ tasks:</p>
 
     <runStoriesAsEmbeddables
             includes="**/*Stories.java"
+            metaFilters="+author *,-skip"
+            systemProperties="java.awt.headless=true"
             ignoreFailureInStories="true"
             ignoreFailureInView="false"
             generateViewAfterStories="true"/>

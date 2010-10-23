@@ -13,6 +13,10 @@
 goals:</p>
 
 <ul>
+    <li><a
+        href="javadoc/maven-plugin/org/jbehave/mojo/MapStoriesAsEmbeddables.html">map-stories-as-embeddables</a></li>
+    <li><a
+        href="javadoc/maven-plugin/org/jbehave/mojo/MapStoriesAsPaths.html">map-stories-as-paths</a></li>
 	<li><a
 		href="javadoc/maven-plugin/org/jbehave/mojo/RunStoriesAsEmbeddables.html">run-stories-as-embeddables</a></li>
 	<li><a
@@ -34,6 +38,7 @@ goals:</p>
 	<li>includes: list of include patterns</li>
 	<li>excludes: list of exclude patterns</li>
 	<li>metaFilters: list of meta filters</li>
+	<li>systemProperties: list of system properties to set during execution</li>
 	<li>batch: [true|false], defaults to <b>false</b></li>
 	<li>skip: [true|false], defaults to <b>false</b></li>
 	<li>ignoreFailureInStories: [true|false], defaults to <b>false</b></li>
@@ -67,6 +72,12 @@ goals:</p>
                         <metaFilter>+author *</metaFilter>
                         <metaFilter>-skip</metaFilter>
                     </metaFilters>
+                    <systemProperties>
+                        <property>
+                          <name>java.awt.headless</name>
+                          <value>true</value>
+                        </property>
+                    </systemProperties>
                     <ignoreFailureInStories>true</ignoreFailureInStories>
                     <ignoreFailureInView>false</ignoreFailureInView>
                 </configuration>
