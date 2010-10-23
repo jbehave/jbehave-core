@@ -13,7 +13,7 @@
 <script language="javascript" src="./js/sh-3.0.83/shBrushRuby.js"></script>
 <script language="javascript" src="./js/sh-3.0.83/shBrushScala.js"></script>
 <script language="javascript" src="./js/sh-3.0.83/shBrushXml.js"></script>
-<script language="javascript" src="./js/shBrushTxt.js"></script>
+<script language="javascript" src="./js/shBrushBdd.js"></script>
 <script type="text/javascript">
     SyntaxHighlighter.defaults['gutter'] = false;
     SyntaxHighlighter.defaults['toolbar'] = false;    

@@ -24,6 +24,7 @@
     <meta.filter></meta.filter>
     <annotated.embedder.runner>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotated.embedder.runner>
     <jbehave.version>${project.version}</jbehave.version>
+    <jbehave.site.version>3.1.1</jbehave.site.version>
   </properties>
 
   <modules>
@@ -79,7 +80,7 @@
                   <artifactItem>
                     <groupId>org.jbehave.site</groupId>
                     <artifactId>jbehave-site-resources</artifactId>
-                    <version>3.1</version>
+                    <version>${jbehave.site.version}</version>
                     <type>zip</type>
                     <outputDirectory>${project.build.directory}/jbehave-reports/view</outputDirectory>
                   </artifactItem>
