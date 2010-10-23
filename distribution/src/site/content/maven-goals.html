@@ -33,7 +33,7 @@ goals:</p>
 	<li>scope: [compile|test], defaults to <b>compile</b></li>
 	<li>includes: list of include patterns</li>
 	<li>excludes: list of exclude patterns</li>
-    <li>metaFilters: list of meta filters</li>
+	<li>metaFilters: list of meta filters</li>
 	<li>batch: [true|false], defaults to <b>false</b></li>
 	<li>skip: [true|false], defaults to <b>false</b></li>
 	<li>ignoreFailureInStories: [true|false], defaults to <b>false</b></li>
@@ -82,6 +82,36 @@ goals:</p>
 <p>The default scope is <b>compile</b>, which means that the stories
 will be looked up in the POM source directory. If the scope is set to <b>test</b>
 the stories will be looked up in the POM test source directory.</p>
+
+<h2>ClassLoading Logging Frameworks</h2>
+
+<p>JBehave uses FreeMarker to generate template-based reports.
+FreeMarker uses its own version of a logging facade framework which
+auto-discovers different logging frameworks, notably JDK Logging and
+Apache log4j. When using the JBehave Maven Plugin, and depending on the
+rest of your POM configuration, you may need to add Apache log4j as
+Plugin Dependency (as opposed to the Project Dependency) if you find
+that it's not able to load its classes, e.g.:</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+    <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <version>[version]</version>
+        <executions>
+            <!-- define executions as normal -->
+        </executions>
+        <dependencies>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.16</version>
+            </dependency>
+        </dependencies>
+    </plugin>
+]]>
+</script>
 
 <div class="clear">
 <hr />
