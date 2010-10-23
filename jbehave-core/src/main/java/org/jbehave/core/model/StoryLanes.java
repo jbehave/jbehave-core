@@ -3,33 +3,22 @@ package org.jbehave.core.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.jbehave.core.io.StoryNameResolver;
 
 /**
  * Represents a <a href="http://en.wikipedia.org/wiki/Swim_lane">Swim Lane</a>
- * view of {@link StoryMap}s.
+ * view of {@link StoryMaps}.
  */
 public class StoryLanes {
 
-    private Map<String, StoryMap> indexed = new HashMap<String, StoryMap>();
+    private final StoryMaps storyMaps;
     private final StoryNameResolver nameResolver;
 
-    public StoryLanes(List<StoryMap> storyMaps, StoryNameResolver nameResolver) {
+    public StoryLanes(StoryMaps storyMaps, StoryNameResolver nameResolver) {
+        this.storyMaps = storyMaps;
         this.nameResolver = nameResolver;
-        index(storyMaps);
-    }
-
-    private void index(List<StoryMap> storyMaps) {
-        for (StoryMap storyMap : storyMaps) {
-            indexed.put(storyMap.getMetaFilter(), storyMap);
-            for (Story story : storyMap.getStories()) {
-                story.namedAs(nameResolver.resolveName(story.getPath()));
-            }
-        }
     }
 
     public List<Story> getStories() {
@@ -43,7 +32,7 @@ public class StoryLanes {
     }
 
     public List<String> getLanes() {
-        List<String> lanes = new ArrayList<String>(indexed.keySet());
+        List<String> lanes = storyMaps.getMetaFilters();
         lanes.remove(""); // don't want to display all stories again
         Collections.sort(lanes);
         return lanes;
@@ -59,11 +48,20 @@ public class StoryLanes {
     }
 
     private List<Story> laneStories(String lane) {
-        StoryMap storyMap = indexed.get(lane);
+        StoryMap storyMap = storyMaps.getMap(lane);
         if (storyMap == null) {
             return new ArrayList<Story>();
         }
-        return storyMap.getStories();
+        List<Story> stories = storyMap.getStories();
+        nameStories(stories);
+        return stories;
+    }
+
+    private void nameStories(List<Story> stories) {
+        for (Story story : stories) {
+            story.namedAs(nameResolver.resolveName(story.getPath()));
+        }
+        
     }
 
 }

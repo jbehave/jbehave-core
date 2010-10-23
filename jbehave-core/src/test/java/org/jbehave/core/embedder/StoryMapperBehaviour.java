@@ -6,14 +6,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMap;
+import org.jbehave.core.model.StoryMaps;
 import org.junit.Test;
 
 public class StoryMapperBehaviour {
@@ -39,9 +38,9 @@ public class StoryMapperBehaviour {
         mapper.map(story2, filter);
 
         // Then
-        List<StoryMap> storyMaps = mapper.getStoryMaps();
-        assertThat(storyMaps.size(), equalTo(1));
-        StoryMap storyMap = storyMaps.get(0);
+        StoryMaps storyMaps = mapper.getStoryMaps();
+        assertThat(storyMaps.getMaps().size(), equalTo(1));
+        StoryMap storyMap = storyMaps.getMap(filterAsString);
         assertThat(storyMap.getMetaFilter(), equalTo(filterAsString));
         assertThat(storyMap.getStories().get(0).getPath(), equalTo(story2.getPath()));
         assertThat(storyMap.getStoryPaths(), equalTo(asList(story2.getPath())));

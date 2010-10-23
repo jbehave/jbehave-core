@@ -11,6 +11,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMap;
+import org.jbehave.core.model.StoryMaps;
 
 /**
  * Maps {@link Story}s by a {@link MetaFilter}.
@@ -50,12 +51,12 @@ public class StoryMapper {
         return new StoryMap(filter, storiesFor(filter));
     }
 
-    public List<StoryMap> getStoryMaps() {
+    public StoryMaps getStoryMaps() {
         List<StoryMap> maps = new ArrayList<StoryMap>();
         for (String filter : map.keySet()) {
             maps.add(getStoryMap(filter));
         }
-        return maps;
+        return new StoryMaps(maps);
     }
 
     private void add(String filter, Story story) {

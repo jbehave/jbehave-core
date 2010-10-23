@@ -9,6 +9,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
 /**
@@ -92,6 +93,17 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("Mapping story " + storyPath + " with meta filters " + metaFilters);
     }
 
+    public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
+        print("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                + " and view properties '" + viewProperties + "'");
+    }
+
+    public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
+            Throwable cause) {
+        print("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                + " and view properties '" + viewProperties + "'");
+    }
+
     public void processingSystemProperties(Properties properties) {
         print("Processing system properties " + properties);
     }
@@ -112,6 +124,5 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     protected void printStackTrace(Throwable e) {
         e.printStackTrace(output);
     }
-
 
 }

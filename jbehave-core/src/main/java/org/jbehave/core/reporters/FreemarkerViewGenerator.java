@@ -29,7 +29,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.io.StoryNameResolver;
 import org.jbehave.core.io.UnderscoredToCapitalized;
 import org.jbehave.core.model.StoryLanes;
-import org.jbehave.core.model.StoryMap;
+import org.jbehave.core.model.StoryMaps;
 
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
@@ -87,7 +87,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return merged;
     }
 
-    public void generateMapsView(File outputDirectory, List<StoryMap> storyMaps, Properties viewProperties) {
+    public void generateMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
         String outputName = templateResource("viewDirectory") + "/maps.html";
         String mapsTemplate = templateResource("maps");

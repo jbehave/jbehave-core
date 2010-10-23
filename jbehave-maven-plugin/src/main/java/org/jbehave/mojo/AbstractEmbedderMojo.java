@@ -18,6 +18,7 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
 /**
@@ -343,6 +344,17 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void mappingStory(String storyPath, List<String> metaFilters) {
             getLog().info("Mapping story "+storyPath+" with meta filters "+metaFilters);
+        }
+        
+        public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
+            getLog().info("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'");
+        }
+
+        public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
+                Throwable cause) {
+            getLog().info("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'");
         }
 
         public void processingSystemProperties(Properties properties) {

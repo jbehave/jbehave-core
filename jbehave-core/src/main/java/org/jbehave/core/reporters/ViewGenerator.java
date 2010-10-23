@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
-import org.jbehave.core.model.StoryMap;
+import org.jbehave.core.model.StoryMaps;
 
 /**
  * A view generator is responsible for creating a collective views of stories, 
@@ -12,7 +12,7 @@ import org.jbehave.core.model.StoryMap;
  */
 public interface ViewGenerator {
     
-    void generateMapsView(File outputDirectory, List<StoryMap> storyMaps,
+    void generateMapsView(File outputDirectory, StoryMaps storyMaps,
             Properties viewResources);
 
 	void generateReportsView(File outputDirectory, List<String> formats,

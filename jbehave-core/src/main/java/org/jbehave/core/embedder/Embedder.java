@@ -15,15 +15,15 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryMap;
+import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Stepdoc;
-import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * Represents an entry point to all of JBehave's functionality that is
@@ -67,15 +67,22 @@ public class Embedder {
             }
         }
 
-        generateStoryMapsView(storyMapper.getStoryMaps());
+        generateMapsView(storyMapper.getStoryMaps());
 
     }
 
-    private void generateStoryMapsView(List<StoryMap> storyMaps) {
+    private void generateMapsView(StoryMaps storyMaps) {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
         File outputDirectory = builder.outputDirectory();
+        Properties viewResources = builder.viewResources();
         ViewGenerator viewGenerator = configuration().viewGenerator();
-        viewGenerator.generateMapsView(outputDirectory, storyMaps, builder.viewResources());
+        try {
+            embedderMonitor.generatingMapsView(outputDirectory, storyMaps, viewResources);
+            viewGenerator.generateMapsView(outputDirectory, storyMaps, viewResources);
+        } catch (RuntimeException e) {
+            embedderMonitor.mapsViewGenerationFailed(outputDirectory, storyMaps, viewResources, e);
+            throw new ViewGenerationFailed(outputDirectory, storyMaps, viewResources, e);
+        }
     }
 
     public void runStoriesAsEmbeddables(List<String> classNames) {
@@ -413,6 +420,12 @@ public class Embedder {
         public ViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewResources,
                 RuntimeException cause) {
             super("View generation failed to " + outputDirectory + " for formats " + formats + " and resources "
+                    + viewResources, cause);
+        }
+
+        public ViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewResources,
+                RuntimeException cause) {
+            super("View generation failed to " + outputDirectory + " for story maps "+ storyMaps +" for resources "
                     + viewResources, cause);
         }
     }

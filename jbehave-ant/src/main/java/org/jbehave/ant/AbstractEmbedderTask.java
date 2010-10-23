@@ -24,6 +24,7 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
 /**
@@ -284,6 +285,18 @@ public abstract class AbstractEmbedderTask extends Task {
             log("Mapping story "+storyPath+" with meta filters "+metaFilters, MSG_INFO);
         }
 
+
+        public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
+            log("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'", MSG_INFO);
+        }
+
+        public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
+                Throwable cause) {
+            log("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'", MSG_INFO);
+        }
+
         public void processingSystemProperties(Properties properties) {
             log("Processing system properties " + properties, MSG_INFO);
         }
@@ -296,7 +309,6 @@ public abstract class AbstractEmbedderTask extends Task {
         public String toString() {
             return this.getClass().getSimpleName();
         }
-
     }
 
     // Setters used by Task to inject dependencies
