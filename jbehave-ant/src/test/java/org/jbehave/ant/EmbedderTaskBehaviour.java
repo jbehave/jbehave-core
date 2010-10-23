@@ -360,7 +360,7 @@ public class EmbedderTaskBehaviour {
         task.execute();
 
         // Then
-        verify(embedder).runStoriesAsEmbeddables(classNames);
+        verify(embedder).runAsEmbeddables(classNames);
     }
 
     @Test

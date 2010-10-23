@@ -20,6 +20,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -34,6 +35,7 @@ import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder.AnnotatedEmbedderRunnerInstantiationFailed;
+import org.jbehave.core.embedder.Embedder.RunningEmbeddablesFailed;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
 import org.jbehave.core.failures.BatchFailures;
@@ -44,6 +46,8 @@ import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.junit.JUnitStoryMaps;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryMap;
+import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StoryReporter;
@@ -64,12 +68,12 @@ public class EmbedderBehaviour {
         StoryRunner runner = mock(StoryRunner.class);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
-        String myStoryMapsName = MyStory.class.getName();
-        List<String> classNames = asList(myStoryMapsName);
+        String myEmbeddableName = MyStoryMaps.class.getName();
+        List<String> classNames = asList(myEmbeddableName);
         Embeddable myEmbeddable = new MyStoryMaps();
         List<Embeddable> embeddables = asList(myEmbeddable);
         EmbedderClassLoader classLoader = mock(EmbedderClassLoader.class);
-        when(classLoader.newInstance(Embeddable.class, myStoryMapsName)).thenReturn(myEmbeddable);
+        when(classLoader.newInstance(Embeddable.class, myEmbeddableName)).thenReturn(myEmbeddable);
 
         // When
         Configuration configuration = new MostUsefulConfiguration();
@@ -79,10 +83,52 @@ public class EmbedderBehaviour {
         embedder.runAsEmbeddables(classNames);
 
         // Then
-        assertThat(MyStoryMaps.run, is(true));
         for (Embeddable embeddable : embeddables) {
             assertThat(out.toString(), containsString("Running embeddable " + embeddable.getClass().getName()));
         }
+        assertThat(MyStoryMaps.run, is(true));
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldMapStoriesAsPaths() throws Throwable {
+        // Given
+        StoryMapper mapper = mock(StoryMapper.class);
+        StoryRunner runner = mock(StoryRunner.class);
+        EmbedderControls embedderControls = new EmbedderControls();
+        OutputStream out = new ByteArrayOutputStream();
+        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
+
+        Embedder embedder = embedderWith(mapper, runner, embedderControls, monitor);
+        Configuration configuration = embedder.configuration();
+        List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherStory.class);
+        StoryPathResolver resolver = configuration.storyPathResolver();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
+        for (Class<? extends Embeddable> embeddable : embeddables) {
+            String storyPath = resolver.resolve(embeddable);
+            storyPaths.add(storyPath);
+            Story story = mock(Story.class);
+            stories.put(storyPath, story);
+            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+        }
+        
+        // When
+        StoryMaps storyMaps = mock(StoryMaps.class);
+        when(mapper.getStoryMaps()).thenReturn(storyMaps);
+        when(storyMaps.getMaps()).thenReturn(asList(new StoryMap("filter", new HashSet<Story>(stories.values()))));
+        embedder.mapStoriesAsPaths(storyPaths);
+
+        // Then
+        for (String storyPath : storyPaths) {
+            verify(mapper).map(Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
+            assertThat(out.toString(), containsString("Mapping story " + storyPath));
+        }
+        assertThatMapsViewGenerated(out);
+    }
+
+    private void assertThatMapsViewGenerated(OutputStream out) {
+        assertThat(out.toString(), containsString("Generating maps view"));
     }
 
     @Test
@@ -109,16 +155,16 @@ public class EmbedderBehaviour {
         embedder.useClassLoader(classLoader);
         embedder.useConfiguration(configuration);
         embedder.useCandidateSteps(asList(steps));
-        embedder.runStoriesAsEmbeddables(classNames);
+        embedder.runAsEmbeddables(classNames);
 
         // Then
         for (Embeddable embeddable : embeddables) {
             assertThat(out.toString(), containsString("Running embeddable " + embeddable.getClass().getName()));
         }
-        assertThatStoriesViewGenerated(out);
+        assertThatReportsViewGenerated(out);
     }
 
-    private void assertThatStoriesViewGenerated(OutputStream out) {
+    private void assertThatReportsViewGenerated(OutputStream out) {
         assertThat(out.toString(), containsString("Generating reports view"));
         assertThat(out.toString(), containsString("Reports view generated"));
     }
@@ -145,7 +191,7 @@ public class EmbedderBehaviour {
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
-        embedder.runStoriesAsEmbeddables(classNames);
+        embedder.runAsEmbeddables(classNames);
 
         // Then
         assertThat(out.toString(), not(containsString("Running embeddable " + myStoryName)));
@@ -174,7 +220,7 @@ public class EmbedderBehaviour {
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
-        embedder.runStoriesAsEmbeddables(classNames);
+        embedder.runAsEmbeddables(classNames);
 
         // Then
         for (Embeddable embeddable : embeddables) {
@@ -183,7 +229,7 @@ public class EmbedderBehaviour {
         assertThat(out.toString(), not(containsString("Generating stories view")));
     }
 
-    @Test(expected = RunningStoriesFailed.class)
+    @Test(expected = RunningEmbeddablesFailed.class)
     public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureInStoriesFlagIsNotSet()
             throws Throwable {
         // Given
@@ -203,7 +249,7 @@ public class EmbedderBehaviour {
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
-        embedder.runStoriesAsEmbeddables(classNames);
+        embedder.runAsEmbeddables(classNames);
 
         // Then fail as expected
     }
@@ -228,7 +274,7 @@ public class EmbedderBehaviour {
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
-        embedder.runStoriesAsEmbeddables(classNames);
+        embedder.runAsEmbeddables(classNames);
 
         // Then
         assertThat(out.toString(), containsString("Running embeddable " + myStoryName));
@@ -258,7 +304,7 @@ public class EmbedderBehaviour {
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
-        embedder.runStoriesAsEmbeddables(classNames);
+        embedder.runAsEmbeddables(classNames);
 
         // Then
         for (Embeddable story : embeddables) {
@@ -267,7 +313,7 @@ public class EmbedderBehaviour {
         }
     }
 
-    @Test(expected = RunningStoriesFailed.class)
+    @Test(expected = RunningEmbeddablesFailed.class)
     public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesInBatchIfIgnoreFailureInStoriesFlagIsNotSet()
             throws Throwable {
         // Given
@@ -287,7 +333,7 @@ public class EmbedderBehaviour {
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
-        embedder.runStoriesAsEmbeddables(classNames);
+        embedder.runAsEmbeddables(classNames);
 
         // Then fail as expected
 
@@ -313,7 +359,7 @@ public class EmbedderBehaviour {
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
-        embedder.runStoriesAsEmbeddables(classNames);
+        embedder.runAsEmbeddables(classNames);
 
         // Then
         for (Embeddable embeddable : embeddables) {
@@ -344,7 +390,7 @@ public class EmbedderBehaviour {
         // When
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
-        embedder.runStoriesAsEmbeddables(classNames);
+        embedder.runAsEmbeddables(classNames);
 
         // Then
         for (Embeddable embeddable : embeddables) {
@@ -388,7 +434,7 @@ public class EmbedderBehaviour {
             verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.isA(MetaFilter.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
-        assertThatStoriesViewGenerated(out);
+        assertThatReportsViewGenerated(out);
     }
 
     
@@ -431,7 +477,7 @@ public class EmbedderBehaviour {
             verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),  Matchers.eq(stories.get(storyPath)),  Matchers.isA(MetaFilter.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
-        assertThatStoriesViewGenerated(out);
+        assertThatReportsViewGenerated(out);
     }
 
     @Test
@@ -773,7 +819,7 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldGenerateStoriesView() throws Throwable {
+    public void shouldGenerateReportsViewFromExistingReports() throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
@@ -792,7 +838,7 @@ public class EmbedderBehaviour {
 
         // Then
         verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
-        assertThatStoriesViewGenerated(out);
+        assertThatReportsViewGenerated(out);
     }
 
     @Test
@@ -878,7 +924,7 @@ public class EmbedderBehaviour {
 
         // Then
         verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
-        assertThatStoriesViewGenerated(out);
+        assertThatReportsViewGenerated(out);
     }
 
     @Test
@@ -902,7 +948,13 @@ public class EmbedderBehaviour {
     }
 
     private Embedder embedderWith(StoryRunner runner, EmbedderControls embedderControls, EmbedderMonitor monitor) {
-        Embedder embedder = new Embedder(runner, monitor);
+        Embedder embedder = new Embedder(new StoryMapper(), runner, monitor);
+        embedder.useEmbedderControls(embedderControls);
+        return embedder;
+    }
+
+    private Embedder embedderWith(StoryMapper mapper, StoryRunner runner, EmbedderControls embedderControls, EmbedderMonitor monitor) {
+        Embedder embedder = new Embedder(mapper, runner, monitor);
         embedder.useEmbedderControls(embedderControls);
         return embedder;
     }

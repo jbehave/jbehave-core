@@ -382,7 +382,7 @@ public class EmbedderMojoBehaviour {
         mojo.execute();
 
         // Then
-        verify(embedder).runStoriesAsEmbeddables(classNames);
+        verify(embedder).runAsEmbeddables(classNames);
     }
 
     @Test

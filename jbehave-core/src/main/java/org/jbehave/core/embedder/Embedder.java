@@ -37,14 +37,16 @@ public class Embedder {
     private EmbedderControls embedderControls = new EmbedderControls();
     private List<String> metaFilters = Arrays.asList();
     private Properties systemProperties = new Properties();
+    private StoryMapper storyMapper;
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
 
     public Embedder() {
-        this(new StoryRunner(), new PrintStreamEmbedderMonitor());
+        this(new StoryMapper(), new StoryRunner(), new PrintStreamEmbedderMonitor());
     }
 
-    public Embedder(StoryRunner storyRunner, EmbedderMonitor embedderMonitor) {
+    public Embedder(StoryMapper storyMapper, StoryRunner storyRunner, EmbedderMonitor embedderMonitor) {
+        this.storyMapper = storyMapper;
         this.storyRunner = storyRunner;
         this.embedderMonitor = embedderMonitor;
     }
@@ -57,7 +59,6 @@ public class Embedder {
             return;
         }
 
-        StoryMapper storyMapper = new StoryMapper();
         for (String storyPath : storyPaths) {
             Story story = storyRunner.storyOfPath(configuration, storyPath);
             embedderMonitor.mappingStory(storyPath, metaFilters);
@@ -85,22 +86,7 @@ public class Embedder {
         }
     }
 
-
     public void runAsEmbeddables(List<String> classNames) {
-        for (Embeddable embeddable : embeddables(classNames, classLoader())) {
-            String name = embeddable.getClass().getName();
-            try {
-                embedderMonitor.runningEmbeddable(name);
-                embeddable.useEmbedder(this);
-                embeddable.run();
-            } catch (Throwable e) {
-                embedderMonitor.embeddableFailed(name, e);
-                throw new EmbeddableFailed(name, e);
-            }
-        }
-    }
-
-    public void runStoriesAsEmbeddables(List<String> classNames) {
         EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
             embedderMonitor.embeddablesSkipped(classNames);
@@ -122,7 +108,7 @@ public class Embedder {
                     if (embedderControls.ignoreFailureInStories()) {
                         embedderMonitor.embeddableFailed(name, e);
                     } else {
-                        throw new RunningStoriesFailed(name, e);
+                        throw new RunningEmbeddablesFailed(name, e);
                     }
                 }
             }
@@ -132,12 +118,8 @@ public class Embedder {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.batchFailed(batchFailures);
             } else {
-                throw new RunningStoriesFailed(batchFailures);
+                throw new RunningEmbeddablesFailed(batchFailures);
             }
-        }
-
-        if (embedderControls.generateViewAfterStories()) {
-            generateReportsView();
         }
 
     }
@@ -414,10 +396,14 @@ public class Embedder {
     }
 
     @SuppressWarnings("serial")
-    public static class EmbeddableFailed extends RuntimeException {
+    public static class RunningEmbeddablesFailed extends RuntimeException {
 
-        public EmbeddableFailed(String name, Throwable cause) {
-            super("Failure embeddable " + name, cause);
+        public RunningEmbeddablesFailed(String name, Throwable cause) {
+            super("Failures in running embeddable " + name, cause);
+        }
+
+        public RunningEmbeddablesFailed(BatchFailures batchFailures) {
+            super("Failures in running embeddables in batch: " + batchFailures);
         }
         
     }
