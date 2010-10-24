@@ -1,20 +1,33 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Migrating from JBehave 2</title>
+<title>Migration Paths</title>
 </head>
 
 <body>
 
-<h2>The reasons for JBehave 3</h2>
+<h2>From 3.0 to 3.1</h2>
 
-<p><b>JBehave 3 is an evolution of JBehave 2</b>, based on the
-experience using it in commercial projects. With the benefit of this
-experience, we feel that the overall design stood well the wear and
-tear, but there were areas which called for improvements that required
-to break backward compatibility.</p>
+<p>The Story Maps view has been added to the Story Reports view. As
+such, the default output directory has been renamed from <b>jbehave-reports</b>
+to <b>jbehave</b>. The main index view in <b>target/jbehave/view/index.html</b>
+now links to both the maps and reports views (<b>view/maps.html</b> and
+<b>view/reports.html</b>, respectively). Currently, it assumes that both
+views are generated and there is no check on whether these views exist
+of not. An upcoming enhancement will detect which views have actually
+been generated.</p>
 
-<h2>Migration path from JBehave 2</h2>
+<p>Operationally, users should change the target directory of the
+jbehave view resources to <b>target/jbehave/view</b>. They should also
+use the latest released version <b>3.1.1</b> of the <b>jbehave-site-resources.zip</b>.</p>
+
+<h2>From 2.x to 3.0</h2>
+
+<p>JBehave 3.x is an evolution of 2.x, based on the experience using
+it in commercial projects. With the benefit of this experience, we feel
+that the overall design stood well the wear and tear, but there were
+areas which called for improvements that required to break backward
+compatibility.</p>
 
 <p>From the textual stories point of view, these are almost
 completely backward compatible. The only exceptions being:</p>
