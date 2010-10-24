@@ -18,6 +18,7 @@ import java.util.Properties;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
@@ -184,7 +185,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void givenStories(List<String> storyPaths) {
-        print(format("givenStories", "{0} {1}\n", keywords.givenStories(), storyPaths));
+        givenStories(new GivenStories(StringUtils.join(storyPaths, ",")));
     }
 
     public void scenarioNotAllowed(Scenario scenario, String filter) {

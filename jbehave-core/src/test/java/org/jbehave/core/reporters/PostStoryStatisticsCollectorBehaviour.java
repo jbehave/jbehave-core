@@ -19,9 +19,9 @@ import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.junit.Test;
 
 public class PostStoryStatisticsCollectorBehaviour {
@@ -100,8 +100,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.beforeStory(story, givenStory);
         reporter.beforeScenario("I ask for a loan");
         reporter.scenarioMeta(Meta.EMPTY);
-        GivenStories givenStories = new GivenStories("/given/story1,/given/story2");
-        reporter.givenStories(givenStories);
+        reporter.givenStories(asList("path/to/story1", "path/to/story2"));
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");

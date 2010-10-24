@@ -6,6 +6,9 @@ import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
@@ -21,7 +24,8 @@ public class DelegatingStoryReporterBehaviour {
         // Given
         StoryReporter delegate = mock(StoryReporter.class);
         DelegatingStoryReporter delegator = new DelegatingStoryReporter(delegate);
-        GivenStories givenStories = new GivenStories("path/to/story1, path/to/story2");
+        List<String> givenStoryPaths = asList("path/to/story1", "path/to/story2");
+        GivenStories givenStories = new GivenStories(StringUtils.join(givenStoryPaths, ","));
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         IllegalArgumentException anException = new IllegalArgumentException();
         Story story = new Story();
@@ -37,6 +41,7 @@ public class DelegatingStoryReporterBehaviour {
         delegator.beforeScenario("My scenario 1");
         delegator.scenarioNotAllowed(scenario, filter);
         delegator.scenarioMeta(Meta.EMPTY);
+        delegator.givenStories(givenStoryPaths);
         delegator.givenStories(givenStories);
         delegator.successful("Given step 1.1");
         delegator.ignorable("!-- ignore me");
@@ -68,6 +73,7 @@ public class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).beforeScenario("My scenario 1");
         inOrder.verify(delegate).scenarioNotAllowed(scenario, filter);
         inOrder.verify(delegate).scenarioMeta(Meta.EMPTY);
+        inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).successful("Given step 1.1");
         inOrder.verify(delegate).ignorable("!-- ignore me");

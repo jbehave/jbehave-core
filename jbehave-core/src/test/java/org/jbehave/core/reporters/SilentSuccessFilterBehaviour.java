@@ -7,6 +7,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
@@ -25,11 +26,12 @@ public class SilentSuccessFilterBehaviour {
         // Given
         StoryReporter delegate = mock(StoryReporter.class);
         SilentSuccessFilter filter = new SilentSuccessFilter(delegate);
-        GivenStories givenStories = new GivenStories("path/to/story1,path/to/story2");
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         IllegalArgumentException anException = new IllegalArgumentException();
         Story story = new Story();
         boolean givenStory = false;
+        GivenStories givenStories = new GivenStories("path/to/story1,path/to/story2");
+        List<String> givenStoryPaths = asList("path/to/story1","path/to/story2");
 
         // When
         filter.dryRun();
@@ -44,6 +46,7 @@ public class SilentSuccessFilterBehaviour {
 
         filter.beforeScenario("My scenario 2");
         filter.givenStories(givenStories);
+        filter.givenStories(givenStoryPaths);        
         filter.successful("Given step 2.1");
         filter.pending("When step 2.2");
         filter.notPerformed("Then step 2.3");
@@ -89,6 +92,7 @@ public class SilentSuccessFilterBehaviour {
         inOrder.verify(delegate).beforeStory(story, givenStory);
         inOrder.verify(delegate).beforeScenario("My scenario 2");
         inOrder.verify(delegate).givenStories(givenStories);
+        inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).successful("Given step 2.1");
         inOrder.verify(delegate).pending("When step 2.2");
         inOrder.verify(delegate).notPerformed("Then step 2.3");
