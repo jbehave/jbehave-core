@@ -10,10 +10,8 @@
   <packaging>pom</packaging>
   <name>JBehave Examples</name>
 
-  <!--
-    These properties are the default properties for all executions. POMs
-    inheriting from this can override these properties
-  -->
+  <!-- These properties are the default properties for all executions. POMs 
+    inheriting from this can override these properties -->
   <properties>
     <batch>false</batch>
     <ignore.failure.view>true</ignore.failure.view>
@@ -25,7 +23,6 @@
     <annotated.embedder.runner>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotated.embedder.runner>
     <jbehave.version>${project.version}</jbehave.version>
     <jbehave.site.version>3.1.1</jbehave.site.version>
-    <jbehave.view.directory>${project.build.directory}/jbehave/view</jbehave.view.directory>
   </properties>
 
   <modules>
@@ -50,6 +47,19 @@
       <artifactId>jbehave-ant</artifactId>
       <version>${jbehave.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-core</artifactId>
+      <version>${jbehave.version}</version>
+      <classifier>resources</classifier>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave.site</groupId>
+      <artifactId>jbehave-site-resources</artifactId>
+      <version>${jbehave.site.version}</version>
+      <type>zip</type>
+    </dependency>
   </dependencies>
 
   <build>
@@ -61,43 +71,6 @@
     </resources>
     <pluginManagement>
       <plugins>
-
-        <!-- Here we unpack the jbehave resources for reports -->
-
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <executions>
-            <execution>
-              <id>unpack-report-resources</id>
-              <phase>generate-resources</phase>
-              <goals>
-                <goal>unpack</goal>
-              </goals>
-              <configuration>
-                <overWriteReleases>false</overWriteReleases>
-                <overWriteSnapshots>true</overWriteSnapshots>
-                <artifactItems>
-                  <artifactItem>
-                    <groupId>org.jbehave.site</groupId>
-                    <artifactId>jbehave-site-resources</artifactId>
-                    <version>${jbehave.site.version}</version>
-                    <type>zip</type>
-                    <outputDirectory>${jbehave.view.directory}</outputDirectory>
-                  </artifactItem>
-                  <artifactItem>
-                    <groupId>org.jbehave</groupId>
-                    <artifactId>jbehave-core</artifactId>
-                    <version>${jbehave.version}</version>
-                    <classifier>resources</classifier>
-                    <type>zip</type>
-                    <outputDirectory>${jbehave.view.directory}</outputDirectory>
-                  </artifactItem>
-                </artifactItems>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
         <plugin>
           <groupId>org.jbehave</groupId>
           <artifactId>jbehave-maven-plugin</artifactId>
@@ -106,24 +79,22 @@
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-      </plugin>
-
-      <!--
-        Here we define the executions of the jbehave-maven-plugin for
-        running stories as embeddables
-      -->
-      <!--
-        This configuration is used by all the examples which need only
-        specify the ${include.embeddables} property
-      -->
+      <!-- Here we define the executions of the jbehave-maven-plugin for 
+        running stories as embeddables -->
+      <!-- This configuration is used by all the examples which need only 
+        specify the ${include.embeddables} property -->
 
       <plugin>
         <groupId>org.jbehave</groupId>
         <artifactId>jbehave-maven-plugin</artifactId>
         <executions>
+          <execution>
+            <id>unpack-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack-resources</goal>
+            </goals>
+          </execution>
           <execution>
             <id>embeddable-stories</id>
             <phase>integration-test</phase>
@@ -167,14 +138,10 @@
       <build>
         <plugins>
 
-          <!--
-            Here we define the executions of the jbehave-maven-plugin
-            for running stories as paths
-          -->
-          <!--
-            This configuration is used by all the examples which need
-            only specify the ${include.paths} property
-          -->
+          <!-- Here we define the executions of the jbehave-maven-plugin 
+            for running stories as paths -->
+          <!-- This configuration is used by all the examples which need 
+            only specify the ${include.paths} property -->
 
           <plugin>
             <groupId>org.jbehave</groupId>
@@ -212,15 +179,11 @@
       <build>
         <plugins>
 
-          <!--
-            Here we define the executions of the jbehave-maven-plugin
-            for running stories with annotated embedder
-          -->
-          <!--
-            This configuration is used by all the examples which need
-            only specify the ${annotated.embedder.runner} and
-            ${include.annotated.embedders} properties
-          -->
+          <!-- Here we define the executions of the jbehave-maven-plugin 
+            for running stories with annotated embedder -->
+          <!-- This configuration is used by all the examples which need 
+            only specify the ${annotated.embedder.runner} and ${include.annotated.embedders} 
+            properties -->
 
           <plugin>
             <groupId>org.jbehave</groupId>
