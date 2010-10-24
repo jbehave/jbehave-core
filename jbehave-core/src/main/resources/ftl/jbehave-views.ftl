@@ -5,7 +5,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>JBehave Maps</title>
+<title>JBehave Views</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <style type="text/css" media="all">
 @import url( "./style/jbehave-core.css" );
@@ -17,31 +17,27 @@
 <div class="clear"></div>
 </div>
 
-<div class="maps">
+<div class="views">
 
-<h2>Story Maps</h2>
-
-<#assign lanes = storyLanes.getLanes()>
-<#assign stories = storyLanes.getStories()>
+<h2>Story Views</h2>
 
 <table>
-<tr><th>Story Name</th>
-<#list lanes as lane>
-<th class="lane">${lane}</th>
-</#list>
+<thead>
+<tr><th>Name</th><th>Description</th><th>View</th></tr>
+</thead>
+<tbody>
+<tr><td>Story Maps</td>
+    <td>A view on the story maps generated for the configured meta filters and stories</td>
+    <td><a href="maps.html">html</a></td>
 </tr>
-<#list stories as story>
 <tr>
-<td class="name">${story.name}</td>
-<#list lanes as lane>
-<td class="lane">
-<#assign inLane = storyLanes.inLane(lane, story)>
-${inLane?string("x", "")}
-</td>
-</#list>
+    <td>Story Reports</td>
+    <td>A view on the story reports generated when running the stories</td>
+    <td><a href="reports.html">html</a></td>
 </tr>
-</#list>
+</tbody>
 </table>
+
 <br />
 </div>
 

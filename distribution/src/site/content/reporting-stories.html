@@ -37,7 +37,8 @@ to which events are reported as they occur.</p>
 	collects statistics and stores them as properties after story is run</li>
 	<li><a
 		href="javadoc/core/org/jbehave/core/reporters/DelegatingStoryReporter.html">DelegatingStoryReporter</a>:
-	used by the StoryReporterBuilder to delegate to any number of reporters as a proxy.</li>
+	used by the StoryReporterBuilder to delegate to any number of reporters
+	as a proxy.</li>
 </ul>
 
 <p>The <a
@@ -144,7 +145,8 @@ utility class:</p>
 	returns the code location of a local file path</li>
 	<li><a
 		href="javadoc/core/org/jbehave/core/io/CodeLocations.html#codeLocationFromURL(java.lang.String)">codeLocationFromFromURL(java.lang.String)</a>:
-	returns the code location of a generic url (from its String external form representation)</li>
+	returns the code location of a generic url (from its String external
+	form representation)</li>
 </ul>
 
 <h2>View Generation</h2>
@@ -175,18 +177,19 @@ templateable and easily styleable way to generate the view.</p>
 bundled in the <b>jbehave-core-resources.zip</b> but can be overridden.
 The Freemarker templates (the ftl/** files) need to be the classpath for
 the <b>FreemarkerViewGenerator</b> to find them, while the look and feel
-resources (the js/* and style/* files) need to be copied to the <b>target/jbehave-reports/view</b>
-directory (or wherever the index view is generated to) Also note that
-the default style makes use of images found in the <b>jbehave-site-resources.zip</b>.</p>
+resources (the js/* and style/* files) need to be copied to the <b>target/jbehave/view</b>
+directory (or wherever the story reporter builder relative directory is
+configured to be). Also note that the default style makes use of images
+found in the <b>jbehave-site-resources.zip</b>.</p>
 
 <h2>Reporting Statistics</h2>
 
-<p>The <b>PostStoryStatisticsCollector</b> is treated in the view generation
-slightly differently from other reports, in that the statistics are
-displayed on the index view page, if available. To ensure they are
-always available the story reporter builder is configured to have <b>stats</b>
-as a default format (although the default formats need to be added to
-the builder).</p>
+<p>The <b>PostStoryStatisticsCollector</b> is treated in the view
+generation slightly differently from other reports, in that the
+statistics are displayed on the index view page, if available. To ensure
+they are always available the story reporter builder is configured to
+have <b>stats</b> as a default format (although the default formats need
+to be added to the builder).</p>
 
 <h2>Default Formats</h2>
 
@@ -205,12 +208,12 @@ add "txt" as a default format:</p>
 </pre>
 
 <p>By default, JBehave writes file-based reports to the relative
-directory <b>jbehave-reports</b> (relative to the story class code
-source location, e.g. the <b>target</b> directory in Maven), but this
-can be changed via the builder:</p>
+directory <b>jbehave</b> (relative to the story class code source
+location, e.g. the <b>target</b> directory in Maven), but this can be
+changed via the builder:</p>
 
 <pre class="brush: java">
-    new StoryReporterBuilder().withRelativeDirectory("my-reports")
+    new StoryReporterBuilder().withRelativeDirectory("my-output")
 </pre>
 
 <h2>Next?</h2>
@@ -218,7 +221,7 @@ can be changed via the builder:</p>
 <span class="followup">The trader examples are configured to have
 a fully-working end-to-end use of JBehave reporting (be sure to read the
 instructions on <a href="running-examples.html">running examples</a>).
-After running the build simply open the page <b>target/jbehave-reports/view/index.html</b>
+After running the build simply open the page <b>target/jbehave/view/reports.html</b>
 of the appropriate trader example modules.</span>
 
 <div class="clear">

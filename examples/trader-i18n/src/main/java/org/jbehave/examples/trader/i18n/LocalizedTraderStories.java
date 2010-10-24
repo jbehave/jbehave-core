@@ -50,7 +50,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());        
         Keywords keywords = new LocalizedKeywords(locale());
         Properties properties = new Properties();
-        properties.setProperty("index", "ftl/jbehave-reports-index.ftl");
+        properties.setProperty("reports", "ftl/jbehave-reports.ftl");
         Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
                 .useStoryParser(new RegexStoryParser(keywords))

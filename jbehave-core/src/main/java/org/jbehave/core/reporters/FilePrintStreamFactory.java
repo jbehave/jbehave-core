@@ -153,7 +153,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
      * Provides as defaults {@link #RELATIVE_DIRECTORY} and {@link #EXTENSION}.
      */
     public static class FileConfiguration {
-        public static final String RELATIVE_DIRECTORY = "jbehave-reports";
+        public static final String RELATIVE_DIRECTORY = "jbehave";
         public static final String EXTENSION = "html";
 
         private final String relativeDirectory;

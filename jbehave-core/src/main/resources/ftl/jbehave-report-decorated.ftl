@@ -3,7 +3,7 @@
 <head>
 <title>${name}</title>
 <style type="text/css" media="all">
-@import url( "./style/jbehave-reports.css" );
+@import url( "./style/jbehave-core.css" );
 </style>
 </head>
 <body>

@@ -46,6 +46,7 @@ import freemarker.template.TemplateException;
  * The view generator provides the following resources:
  * 
  * <pre>
+ * resources.setProperty(&quot;views&quot;, &quot;ftl/jbehave-views.ftl&quot;);
  * resources.setProperty(&quot;maps&quot;, &quot;ftl/jbehave-maps.ftl&quot;);
  * resources.setProperty(&quot;reports&quot;, &quot;ftl/jbehave-reports-with-totals.ftl&quot;);
  * resources.setProperty(&quot;decorated&quot;, &quot;ftl/jbehave-report-decorated.ftl&quot;);
@@ -71,6 +72,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     public static Properties defaultViewProperties() {
         Properties properties = new Properties();
+        properties.setProperty("views", "ftl/jbehave-views.ftl");
         properties.setProperty("maps", "ftl/jbehave-maps.ftl");
         properties.setProperty("reports", "ftl/jbehave-reports-with-totals.ftl");
         properties.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
@@ -87,6 +89,14 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         return merged;
     }
 
+    private void generateViewsIndex(File outputDirectory) {
+        String outputName = templateResource("viewDirectory") + "/index.html";
+        String viewsTemplate = templateResource("views");        
+        Map<String, Object> dataModel = newDataModel();
+        dataModel.put("date", new Date());
+        write(outputDirectory, outputName, viewsTemplate, dataModel);        
+    }
+
     public void generateMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
         String outputName = templateResource("viewDirectory") + "/maps.html";
@@ -95,11 +105,12 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         dataModel.put("storyLanes", new StoryLanes(storyMaps, nameResolver));
         dataModel.put("date", new Date());
         write(outputDirectory, outputName, mapsTemplate, dataModel);
+        generateViewsIndex(outputDirectory);
     }
 
     public void generateReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
-        String outputName = templateResource("viewDirectory") + "/index.html";
+        String outputName = templateResource("viewDirectory") + "/reports.html";
         String reportsTemplate = templateResource("reports");
         List<String> mergedFormats = mergeFormatsWithDefaults(formats);
         reports = createReports(readReportFiles(outputDirectory, outputName, mergedFormats));
@@ -107,6 +118,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         dataModel.put("reportsTable", new ReportsTable(reports, nameResolver));
         dataModel.put("date", new Date());
         write(outputDirectory, outputName, reportsTemplate, dataModel);
+        generateViewsIndex(outputDirectory);
     }
 
     public ReportsCount getReportsCount() {

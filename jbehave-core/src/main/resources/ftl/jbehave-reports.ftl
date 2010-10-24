@@ -8,7 +8,7 @@
 <title>JBehave Reports</title>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <style type="text/css" media="all">
-@import url( "./style/jbehave-reports.css" );
+@import url( "./style/jbehave-core.css" );
 </style>
 </head>
 

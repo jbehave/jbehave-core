@@ -25,6 +25,7 @@
     <annotated.embedder.runner>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotated.embedder.runner>
     <jbehave.version>${project.version}</jbehave.version>
     <jbehave.site.version>3.1.1</jbehave.site.version>
+    <jbehave.view.directory>${project.build.directory}/jbehave/view</jbehave.view.directory>
   </properties>
 
   <modules>
@@ -82,7 +83,7 @@
                     <artifactId>jbehave-site-resources</artifactId>
                     <version>${jbehave.site.version}</version>
                     <type>zip</type>
-                    <outputDirectory>${project.build.directory}/jbehave-reports/view</outputDirectory>
+                    <outputDirectory>${jbehave.view.directory}</outputDirectory>
                   </artifactItem>
                   <artifactItem>
                     <groupId>org.jbehave</groupId>
@@ -90,7 +91,7 @@
                     <version>${jbehave.version}</version>
                     <classifier>resources</classifier>
                     <type>zip</type>
-                    <outputDirectory>${project.build.directory}/jbehave-reports/view</outputDirectory>
+                    <outputDirectory>${jbehave.view.directory}</outputDirectory>
                   </artifactItem>
                 </artifactItems>
               </configuration>
