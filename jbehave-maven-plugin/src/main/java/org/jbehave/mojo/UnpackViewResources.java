@@ -66,10 +66,10 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
 
     private File viewDirectory() {
         StoryReporterBuilder storyReporterBuilder = newEmbedder().configuration().storyReporterBuilder();
-        String buildDirectory = project.getBuild().getDirectory();
-        String name = storyReporterBuilder.outputDirectory().getName();
+        String build = project.getBuild().getDirectory();
+        String output = storyReporterBuilder.outputDirectory().getName();
         String view = storyReporterBuilder.viewResources().getProperty("viewDirectory");
-        return new File(buildDirectory + "/" + name + "/" + view);
+        return new File(build + "/" + output + "/" + view);
     }
 
     private Set<Artifact> resourceArtifacts() {

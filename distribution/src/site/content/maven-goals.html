@@ -27,6 +27,8 @@ goals:</p>
 		href="javadoc/maven-plugin/org/jbehave/mojo/ReportStepdocs.html">report-stepdocs</a></li>
 	<li><a
 		href="javadoc/maven-plugin/org/jbehave/mojo/GenerateStoriesView.html">generate-stories-view</a></li>
+    <li><a
+        href="javadoc/maven-plugin/org/jbehave/mojo/UnpackViewResources.html">unpack-view-resources</a></li>
 </ul>
 
 <p>Maven goals support the following properties:</p>
@@ -51,6 +53,15 @@ goals:</p>
 		href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedderRunner.html">AnnotatedEmbedderRunner</a></li>
 	<li>storyFinderClass: defaults to <a
 		href="javadoc/core/org/jbehave/core/io/StoryFinder.html">StoryFinder</a></li>
+</ul>
+
+<p>In addition, the <b>unpack-view-resources</b> goal supports the properties:</p>
+
+<ul>
+    <li>resourceArtifactIds: list of resource artifactIds, optional (defaults to <b>{"jbehave-site-resources", "jbehave-core"}</b>)</li>
+    <li>resourceTypes: list of resource types, optional (defaults to <b>{"zip"}</b>)</li>
+    <li>resourceIncludes: the pattern of includes when unpacking each resource, optional (defaults to includes all)</li>
+    <li>resourceExcludes: the pattern of excludes when unpacking each resource, optional (defaults to excludes none)</li>
 </ul>
 
 <p>An example of a typical Maven plugin usage is:</p>

@@ -182,6 +182,12 @@ directory (or wherever the story reporter builder relative directory is
 configured to be). Also note that the default style makes use of images
 found in the <b>jbehave-site-resources.zip</b>.</p>
 
+<span class="followup">Maven users can use the <b>unpack-view-resources</b>
+goal which will derive the view directory from the configured Embedder
+and unpack to it the resources specified as normal project dependencies
+(provided they match the type and artifactId filters, see <a
+	href="maven-goals.html">maven goals</a> for more details).</span>
+
 <h2>Reporting Statistics</h2>
 
 <p>The <b>PostStoryStatisticsCollector</b> is treated in the view

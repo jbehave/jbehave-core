@@ -512,6 +512,46 @@ public class EmbedderMojoBehaviour {
         verify(siteArchiver).extract();
     }
 
+    @Test
+    public void shouldNotUnpackViewResourcesThatDoNotMatchTheFilters() throws MojoExecutionException, MojoFailureException, NoSuchArchiverException, ArchiverException {
+        // Given
+        UnpackViewResources mojo = new UnpackViewResources() {
+            @Override
+            protected Embedder newEmbedder() {
+                return new Embedder();
+            }
+
+        };
+        ArchiverManager archiveManager = mock(ArchiverManager.class);        
+        MavenProject project = mock(MavenProject.class);              
+        
+        File resourcesFile = new File("some");
+        Artifact someResources = mock(Artifact.class);
+        when(someResources.getArtifactId()).thenReturn("some-resources");
+        when(someResources.getType()).thenReturn("jar");        
+        when(someResources.getFile()).thenReturn(resourcesFile);        
+
+        Set<Artifact> allArtifacts = new HashSet<Artifact>();
+        allArtifacts.add(someResources);
+        
+        String buildDirectory = "target";
+        Build build = new Build();
+        build.setDirectory(buildDirectory);
+        
+        // When
+        mojo.project = project;
+        mojo.archiverManager = archiveManager;
+        mojo.resourceIncludes = "ftl/*";
+        mojo.resourcesExcludes = "com/*";
+        when(project.getArtifacts()).thenReturn(allArtifacts);
+        when(project.getBuild()).thenReturn(build);
+
+        mojo.execute();
+
+        // Then
+        verify(archiveManager, Mockito.never()).getUnArchiver(resourcesFile);
+    }
+
     
     @Test(expected=MojoExecutionException.class)
     public void shouldNotIgnoreFailureInUnpackingViewResources() throws MojoExecutionException, MojoFailureException, NoSuchArchiverException, ArchiverException {

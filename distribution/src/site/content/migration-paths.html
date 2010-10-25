@@ -14,12 +14,17 @@ to <b>jbehave</b>. The main index view in <b>target/jbehave/view/index.html</b>
 now links to both the maps and reports views (<b>view/maps.html</b> and
 <b>view/reports.html</b>, respectively). Currently, it assumes that both
 views are generated and there is no check on whether these views exist
-of not. An upcoming enhancement will detect which views have actually
-been generated.</p>
+or not. An upcoming enhancement will determine which views have actually
+been generated and enabled the links accordingly.</p>
 
-<p>Operationally, users should change the target directory of the
-jbehave view resources to <b>target/jbehave/view</b>. They should also
-use the latest released version <b>3.1.1</b> of the <b>jbehave-site-resources.zip</b>.</p>
+<p>Operationally, users should change the target view directory of
+the jbehave view resources to <b>target/jbehave/view</b>. Maven users
+can use the new <b>unpack-view-resources</b> goal which will derive the
+view directory from the configured Embedder.</p>
+
+<p>It is also recommended to use the latest released version <b>3.1.1</b>
+of the <b>jbehave-site-resources.zip</b>, which uses a SyntaxHighlighter BDD brush
+to decorate all plain-text output.</p>
 
 <h2>From 2.x to 3.0</h2>
 
