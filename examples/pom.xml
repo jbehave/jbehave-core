@@ -89,10 +89,10 @@
         <artifactId>jbehave-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>unpack-resources</id>
+            <id>unpack-view-resources</id>
             <phase>process-resources</phase>
             <goals>
-              <goal>unpack-resources</goal>
+              <goal>unpack-view-resources</goal>
             </goals>
           </execution>
           <execution>

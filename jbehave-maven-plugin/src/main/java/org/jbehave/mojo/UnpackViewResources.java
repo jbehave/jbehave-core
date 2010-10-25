@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Predicate;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -18,10 +20,10 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
  * Mojo to unpack resources to view directory, whose location is derived from
  * the configured StoryReporterBuilder accessible from the Embedder.
  * 
- * @goal unpack-resources
+ * @goal unpack-view-resources
  * @phase process-resources
  */
-public class UnpackResources extends AbstractEmbedderMojo {
+public class UnpackViewResources extends AbstractEmbedderMojo {
 
     /**
      * @parameter expression="${project}"
@@ -34,6 +36,11 @@ public class UnpackResources extends AbstractEmbedderMojo {
      * @component
      */
     private ArchiverManager archiverManager;
+
+    /**
+     * @parameter
+     */
+    private String[] resourceArtifactIds = new String[] { "jbehave-site-resources", "jbehave-core" };
 
     /**
      * @parameter
@@ -64,28 +71,38 @@ public class UnpackResources extends AbstractEmbedderMojo {
     }
 
     private Set<Artifact> resourceArtifacts() {
-        Set<Artifact> artifacts = new HashSet<Artifact>();
-        for (Artifact artifact : allArtifacts()) {
-            if (isAllowed(artifact)) {
-                artifacts.add(artifact);
+        Set<Artifact> artifacts = allArtifacts();
+        CollectionUtils.filter(artifacts, new Predicate() {
+            public boolean evaluate(Object object) {
+                Artifact artifact = (Artifact) object;
+                return allowedBy("artifactId", artifact.getArtifactId(), resourceArtifactIds)
+                    && allowedBy("type", artifact.getType(), resourceTypes);
             }
-        }
+        });
         return artifacts;
     }
 
-    private boolean isAllowed(Artifact artifact) {
-        for (String type : resourceTypes) {
-            if (type.equals(artifact.getType())) {
-                return true;
+    private boolean allowedBy(String name, String property, String[] values) {
+        boolean allowed = false;
+        if (values.length > 0) {
+            for (String value : values) {
+                if (property.equals(value)) {
+                    allowed = true;
+                    break;
+                }
             }
+        } else {
+            allowed = true;
         }
-        getLog().debug("Artifact " + artifact + " not allowed for resource types " + Arrays.asList(resourceTypes));
-        return false;
+        if (!allowed) {
+            getLog().debug("Artifact property "+name+" not allowed by values " + Arrays.asList(values));
+        }
+        return allowed;
     }
 
     @SuppressWarnings("unchecked")
     private Set<Artifact> allArtifacts() {
-        return project.getArtifacts();
+        return new HashSet<Artifact>(project.getArtifacts());
     }
 
     private void unpack(File file, File destination, String includes, String excludes) throws MojoExecutionException {
