@@ -7,14 +7,24 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.Build;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.archiver.ArchiverException;
+import org.codehaus.plexus.archiver.UnArchiver;
+import org.codehaus.plexus.archiver.manager.ArchiverManager;
+import org.codehaus.plexus.archiver.manager.NoSuchArchiverException;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
@@ -447,6 +457,56 @@ public class EmbedderMojoBehaviour {
 
         // Then
         verify(embedder).runStoriesWithAnnotatedEmbedderRunner(runnerClass, classNames);
+    }
+
+    @Test
+    public void shouldUnpackViewResources() throws MojoExecutionException, MojoFailureException, NoSuchArchiverException, ArchiverException {
+        // Given
+        UnpackViewResources mojo = new UnpackViewResources() {
+            @Override
+            protected Embedder newEmbedder() {
+                return new Embedder();
+            }
+
+        };
+        ArchiverManager archiveManager = mock(ArchiverManager.class);        
+        MavenProject project = mock(MavenProject.class);              
+        
+        File coreFile = new File("core");
+        Artifact coreResources = mock(Artifact.class);
+        when(coreResources.getArtifactId()).thenReturn("jbehave-core");
+        when(coreResources.getType()).thenReturn("zip");        
+        when(coreResources.getFile()).thenReturn(coreFile);        
+        File siteFile = new File("site");
+        Artifact siteResources = mock(Artifact.class);
+        when(siteResources.getArtifactId()).thenReturn("jbehave-site-resources");
+        when(siteResources.getType()).thenReturn("zip");        
+        when(siteResources.getFile()).thenReturn(siteFile);        
+
+        Set<Artifact> allArtifacts = new HashSet<Artifact>();
+        allArtifacts.add(coreResources);
+        allArtifacts.add(siteResources);
+        
+        String buildDirectory = "target";
+        Build build = new Build();
+        build.setDirectory(buildDirectory);
+        
+        UnArchiver coreArchiver = mock(UnArchiver.class);
+        UnArchiver siteArchiver = mock(UnArchiver.class);
+        
+        // When
+        mojo.project = project;
+        mojo.archiverManager = archiveManager;
+        when(project.getArtifacts()).thenReturn(allArtifacts);
+        when(project.getBuild()).thenReturn(build);
+        when(archiveManager.getUnArchiver(coreFile)).thenReturn(coreArchiver);
+        when(archiveManager.getUnArchiver(siteFile)).thenReturn(siteArchiver);
+
+        mojo.execute();
+
+        // Then
+        verify(coreArchiver).extract();
+        verify(siteArchiver).extract();
     }
 
 }

@@ -30,32 +30,32 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
      * @readonly
      * @required
      */
-    private MavenProject project;
+    MavenProject project;
 
     /**
      * @component
      */
-    private ArchiverManager archiverManager;
+    ArchiverManager archiverManager;
 
     /**
      * @parameter
      */
-    private String[] resourceArtifactIds = new String[] { "jbehave-site-resources", "jbehave-core" };
+    String[] resourceArtifactIds = new String[] { "jbehave-site-resources", "jbehave-core" };
 
     /**
      * @parameter
      */
-    private String[] resourceTypes = new String[] { "zip" };
+    String[] resourceTypes = new String[] { "zip" };
 
     /**
      * @parameter
      */
-    private String resourceIncludes;
+    String resourceIncludes;
 
     /**
      * @parameter
      */
-    private String resourcesExcludes;
+    String resourcesExcludes;
 
     public void execute() throws MojoExecutionException {
         File destination = viewDirectory();
@@ -66,8 +66,10 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
 
     private File viewDirectory() {
         StoryReporterBuilder storyReporterBuilder = newEmbedder().configuration().storyReporterBuilder();
-        return new File(project.getBuild().getDirectory() + "/" + storyReporterBuilder.outputDirectory().getName()
-                + "/" + storyReporterBuilder.viewResources().getProperty("viewDirectory"));
+        String buildDirectory = project.getBuild().getDirectory();
+        String name = storyReporterBuilder.outputDirectory().getName();
+        String view = storyReporterBuilder.viewResources().getProperty("viewDirectory");
+        return new File(buildDirectory + "/" + name + "/" + view);
     }
 
     private Set<Artifact> resourceArtifacts() {
@@ -76,7 +78,7 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
             public boolean evaluate(Object object) {
                 Artifact artifact = (Artifact) object;
                 return allowedBy("artifactId", artifact.getArtifactId(), resourceArtifactIds)
-                    && allowedBy("type", artifact.getType(), resourceTypes);
+                        && allowedBy("type", artifact.getType(), resourceTypes);
             }
         });
         return artifacts;
@@ -95,7 +97,7 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
             allowed = true;
         }
         if (!allowed) {
-            getLog().debug("Artifact property "+name+" not allowed by values " + Arrays.asList(values));
+            getLog().debug("Artifact property " + name + " not allowed by values " + Arrays.asList(values));
         }
         return allowed;
     }
