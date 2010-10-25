@@ -130,7 +130,7 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
 
             getLog().info("Unpacked " + file + " to " + destination);
         } catch (Exception e) {
-            throw new MojoExecutionException("Failed unpacking file: " + file + " to " + destination, e);
+            throw new MojoExecutionException("Failed unpacking " + file + " to " + destination, e);
         }
     }
 

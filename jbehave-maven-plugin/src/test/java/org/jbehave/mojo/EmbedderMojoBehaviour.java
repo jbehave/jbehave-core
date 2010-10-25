@@ -36,6 +36,7 @@ import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class EmbedderMojoBehaviour {
 
@@ -497,6 +498,8 @@ public class EmbedderMojoBehaviour {
         // When
         mojo.project = project;
         mojo.archiverManager = archiveManager;
+        mojo.resourceIncludes = "ftl/*";
+        mojo.resourcesExcludes = "com/*";
         when(project.getArtifacts()).thenReturn(allArtifacts);
         when(project.getBuild()).thenReturn(build);
         when(archiveManager.getUnArchiver(coreFile)).thenReturn(coreArchiver);
@@ -507,6 +510,58 @@ public class EmbedderMojoBehaviour {
         // Then
         verify(coreArchiver).extract();
         verify(siteArchiver).extract();
+    }
+
+    
+    @Test(expected=MojoExecutionException.class)
+    public void shouldNotIgnoreFailureInUnpackingViewResources() throws MojoExecutionException, MojoFailureException, NoSuchArchiverException, ArchiverException {
+        // Given
+        UnpackViewResources mojo = new UnpackViewResources() {
+            @Override
+            protected Embedder newEmbedder() {
+                return new Embedder();
+            }
+
+        };
+        ArchiverManager archiveManager = mock(ArchiverManager.class);        
+        MavenProject project = mock(MavenProject.class);              
+        
+        File coreFile = new File("core");
+        Artifact coreResources = mock(Artifact.class);
+        when(coreResources.getArtifactId()).thenReturn("jbehave-core");
+        when(coreResources.getType()).thenReturn("zip");        
+        when(coreResources.getFile()).thenReturn(coreFile);        
+        File siteFile = new File("site");
+        Artifact siteResources = mock(Artifact.class);
+        when(siteResources.getArtifactId()).thenReturn("jbehave-site-resources");
+        when(siteResources.getType()).thenReturn("zip");        
+        when(siteResources.getFile()).thenReturn(siteFile);        
+
+        Set<Artifact> allArtifacts = new HashSet<Artifact>();
+        allArtifacts.add(coreResources);
+        allArtifacts.add(siteResources);
+        
+        String buildDirectory = "target";
+        Build build = new Build();
+        build.setDirectory(buildDirectory);
+        
+        UnArchiver coreArchiver = mock(UnArchiver.class);
+        UnArchiver siteArchiver = mock(UnArchiver.class);
+        
+        // When
+        mojo.project = project;
+        mojo.archiverManager = archiveManager;
+        when(project.getArtifacts()).thenReturn(allArtifacts);
+        when(project.getBuild()).thenReturn(build);
+        when(archiveManager.getUnArchiver(coreFile)).thenReturn(coreArchiver);
+        when(archiveManager.getUnArchiver(siteFile)).thenReturn(siteArchiver);
+        Mockito.doThrow(new ArchiverException("bum")).when(siteArchiver).extract();
+        
+        mojo.execute();
+
+        // Then
+        verify(coreArchiver).extract();
+        // and fail as expected ... 
     }
 
 }
