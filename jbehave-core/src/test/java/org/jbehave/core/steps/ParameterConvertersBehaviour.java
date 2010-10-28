@@ -54,6 +54,7 @@ public class ParameterConvertersBehaviour {
         assertThat((Long) enConverter.convertValue("100,000", Long.class), equalTo(100000L));
         assertThat((Float) enConverter.convertValue("100,000.01", Float.class), equalTo(100000.01f));
         assertThat((Double) enConverter.convertValue("100,000.01", Double.class), equalTo(100000.01d));        
+        assertThat((Double) enConverter.convertValue("1,00,000.01", Double.class), equalTo(100000.01d)); //Hindi style       
         ParameterConverter frConverter = new NumberConverter(NumberFormat.getInstance(Locale.FRENCH));
         assertThatAllNumberTypesAreAccepted(frConverter);
         assertThatAllNumbersAreConverted(frConverter, Locale.FRENCH);
@@ -99,6 +100,7 @@ public class ParameterConvertersBehaviour {
         assertThat((BigInteger) converter.convertValue("3", BigInteger.class), equalTo(new BigInteger("3")));
         assertThat((BigDecimal) converter.convertValue("3" + dot + "0", BigDecimal.class), equalTo(new BigDecimal("3.0")));
         assertThat((BigDecimal) converter.convertValue("3" + dot + "00", BigDecimal.class), equalTo(new BigDecimal("3.00"))); // currency
+        assertThat((BigDecimal) converter.convertValue("30000000", BigDecimal.class), equalTo(new BigDecimal(30000000))); 
         assertThat((BigDecimal) converter.convertValue("3" + dot + "000", BigDecimal.class), equalTo(new BigDecimal("3.000"))); // something else!
         assertThat((Number) converter.convertValue("3", Number.class), equalTo((Number)3L));
     }

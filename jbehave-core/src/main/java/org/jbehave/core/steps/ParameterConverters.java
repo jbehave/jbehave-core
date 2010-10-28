@@ -158,7 +158,7 @@ public class ParameterConverters {
                 } else if (type == BigInteger.class) {
                     return BigInteger.valueOf(n.longValue());
                 } else if (type == BigDecimal.class) {
-                    return new BigDecimal(ensureAllDigitsArePresent(n.doubleValue(), value));
+                    return new BigDecimal(canonicalize(value));
                 } else {
                     return n;
                 }
@@ -167,20 +167,18 @@ public class ParameterConverters {
             }
         }
 
-        private static String ensureAllDigitsArePresent(double valueReducedToDouble, String valueAsString) {
-            String value = "" + valueReducedToDouble; // might have dropped trailing "0";
-            int i = -1;
-            for (char c : valueAsString.toCharArray()) {
-                if (Character.isDigit(c)) {
-                    i = value.indexOf(c, i+1);
-                    if (i == -1) {
-                        value = value + c; // should be a "0" if missing
-                        i = value.length();
-                    }
-                }
+        private String canonicalize(String value) {
+            char dpSep = numberFormat.format(1.01).charAt(1);
+            int dpPosn = value.lastIndexOf(dpSep);
+            value = value.trim();
+            if (dpPosn != -1) {
+                String sf = value.substring(0, dpPosn).replace("[^0-9]", "");
+                String dp = value.substring(dpPosn+1);
+                return sf + "." + dp;
             }
-            return value;
+            return value.replace(' ', ',');
         }
+
     }
 
     /**
