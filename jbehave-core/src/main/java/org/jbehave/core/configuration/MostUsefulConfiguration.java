@@ -1,5 +1,6 @@
 package org.jbehave.core.configuration;
 
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -47,8 +48,8 @@ import com.thoughtworks.paranamer.Paranamer;
 public class MostUsefulConfiguration extends Configuration {
 
     public MostUsefulConfiguration() {
-    	doDryRun(false);
         useKeywords(new LocalizedKeywords());
+        useStoryControls(new StoryControls());
         useStoryLoader(new LoadFromClasspath());
         useStoryParser(new RegexStoryParser(keywords()));
         useFailureStrategy(new RethrowingFailure());

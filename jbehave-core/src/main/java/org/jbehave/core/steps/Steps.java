@@ -166,7 +166,7 @@ public class Steps implements CandidateSteps {
         StepCandidate step = createCandidate(method, stepType, stepPatternAsString, priority, configuration);
         step.useStepMonitor(configuration.stepMonitor());
         step.useParanamer(configuration.paranamer());
-        step.doDryRun(configuration.dryRun());
+        step.doDryRun(configuration.storyControls().dryRun());
         candidates.add(step);
     }
 

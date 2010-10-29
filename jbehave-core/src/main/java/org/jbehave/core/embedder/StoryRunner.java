@@ -33,11 +33,11 @@ public class StoryRunner {
 
     private State state = new FineSoFar();
     private FailureStrategy currentStrategy;
-    private PendingStepStrategy pendingStepStrategy;
-    private StoryReporter reporter;
     private FailureStrategy failureStrategy;
+    private PendingStepStrategy pendingStepStrategy;
     private Throwable storyFailure;
     private StepCollector stepCollector;
+    private StoryReporter reporter;
     private String reporterStoryPath;
 
     /**
@@ -84,6 +84,18 @@ public class StoryRunner {
             throws Throwable {
         run(configuration, candidateSteps, story, filter, false, new HashMap<String, String>());
     }
+    
+    /**
+     * Returns the parsed story from the given path
+     * 
+     * @param configuration the Configuration used to run story
+     * @param storyPath the story path 
+     * @return The parsed Story
+     */
+    public Story storyOfPath(Configuration configuration, String storyPath) {
+        String storyAsText = configuration.storyLoader().loadStoryAsText(storyPath);
+        return configuration.storyParser().parseStory(storyAsText, storyPath);
+    }
 
     private void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter,
             boolean givenStory, Map<String, String> storyParameters) throws Throwable {
@@ -99,7 +111,7 @@ public class StoryRunner {
 
         resetFailureState(givenStory);
 
-        if (isDryRun(candidateSteps)) {
+        if (configuration.storyControls().dryRun() ){
             reporter.dryRun();
         }
 
@@ -109,6 +121,9 @@ public class StoryRunner {
             // scenario also inherits meta from story
             if (!filter.allow(scenario.getMeta().inheritFrom(story.getMeta()))) {
                 reporter.scenarioNotAllowed(scenario, filter.asString());
+                continue;
+            }
+            if ( failureOccurred() && configuration.storyControls().skipScenariosAfterFailure() ){
                 continue;
             }
             reporter.beforeScenario(scenario.getTitle());
@@ -128,18 +143,8 @@ public class StoryRunner {
         currentStrategy.handleFailure(storyFailure);
     }
 
-    public Story storyOfPath(Configuration configuration, String storyPath) {
-        String storyAsText = configuration.storyLoader().loadStoryAsText(storyPath);
-        return configuration.storyParser().parseStory(storyAsText, storyPath);
-    }
-
-    private boolean isDryRun(List<CandidateSteps> candidateSteps) {
-        for (CandidateSteps steps : candidateSteps) {
-            if (steps.configuration().dryRun()) {
-                return true;
-            }
-        }
-        return false;
+    private boolean failureOccurred() {
+        return storyFailure != null;
     }
 
     private StoryReporter reporterFor(Configuration configuration, Story story, boolean givenStory) {
