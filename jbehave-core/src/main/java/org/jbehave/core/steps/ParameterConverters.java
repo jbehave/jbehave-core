@@ -168,12 +168,12 @@ public class ParameterConverters {
         }
 
         private String canonicalize(String value) {
-            char dpSep = numberFormat.format(1.01).charAt(1);
-            int dpPosn = value.lastIndexOf(dpSep);
+            char decimalPointSeparator = numberFormat.format(1.01).charAt(1);
+            int decimalPointPosition = value.lastIndexOf(decimalPointSeparator);
             value = value.trim();
-            if (dpPosn != -1) {
-                String sf = value.substring(0, dpPosn).replace("[^0-9]", "");
-                String dp = value.substring(dpPosn+1);
+            if (decimalPointPosition != -1) {
+                String sf = value.substring(0, decimalPointPosition).replace("[^0-9]", "");
+                String dp = value.substring(decimalPointPosition+1);
                 return sf + "." + dp;
             }
             return value.replace(' ', ',');
