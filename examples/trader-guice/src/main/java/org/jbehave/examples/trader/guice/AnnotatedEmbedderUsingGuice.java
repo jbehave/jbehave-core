@@ -14,6 +14,7 @@ import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.guice.UsingGuice;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
@@ -65,6 +66,7 @@ public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 
         @Override
         protected void configure() {
+            bind(StoryControls.class).toInstance(new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
             bind(StepPatternParser.class).toInstance(new RegexPrefixCapturingPatternParser("%"));
             bind(StoryLoader.class).toInstance(new LoadFromClasspath(this.getClass().getClassLoader()));
             bind(ParameterConverter.class).toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));

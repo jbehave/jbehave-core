@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.EmbedderControls;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -29,11 +30,11 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -43,39 +44,41 @@ import com.thoughtworks.paranamer.Paranamer;
 @Inherited
 public @interface Configure {
 
-	Class<? extends Keywords> keywords() default LocalizedKeywords.class;
+    Class<? extends Keywords> keywords() default LocalizedKeywords.class;
 
-	Class<? extends StepCollector> stepCollector() default MarkUnmatchedStepsAsPending.class;
+    Class<? extends StoryControls> storyControls() default StoryControls.class;
 
-	Class<? extends StoryParser> storyParser() default RegexStoryParser.class;
+    Class<? extends StepCollector> stepCollector() default MarkUnmatchedStepsAsPending.class;
 
-	Class<? extends StoryLoader> storyLoader() default LoadFromClasspath.class;
+    Class<? extends StoryParser> storyParser() default RegexStoryParser.class;
 
-	Class<? extends StoryPathResolver> storyPathResolver() default UnderscoredCamelCaseResolver.class;
+    Class<? extends StoryLoader> storyLoader() default LoadFromClasspath.class;
 
-	Class<? extends StoryReporter> defaultStoryReporter() default ConsoleOutput.class;
+    Class<? extends StoryPathResolver> storyPathResolver() default UnderscoredCamelCaseResolver.class;
 
-	Class<? extends StepdocReporter> stepdocReporter() default PrintStreamStepdocReporter.class;
+    Class<? extends StoryReporter> defaultStoryReporter() default ConsoleOutput.class;
 
-	Class<? extends FailureStrategy> failureStrategy() default RethrowingFailure.class;
+    Class<? extends StepdocReporter> stepdocReporter() default PrintStreamStepdocReporter.class;
 
-	Class<? extends PendingStepStrategy> pendingStepStrategy() default PassingUponPendingStep.class;
+    Class<? extends FailureStrategy> failureStrategy() default RethrowingFailure.class;
 
-	Class<? extends StepPatternParser> stepPatternParser() default RegexPrefixCapturingPatternParser.class;
+    Class<? extends PendingStepStrategy> pendingStepStrategy() default PassingUponPendingStep.class;
 
-	Class<? extends StepFinder> stepFinder() default StepFinder.class;
+    Class<? extends StepPatternParser> stepPatternParser() default RegexPrefixCapturingPatternParser.class;
 
-	Class<? extends StepMonitor> stepMonitor() default SilentStepMonitor.class;
+    Class<? extends StepFinder> stepFinder() default StepFinder.class;
 
-	Class<? extends ParameterConverter>[] parameterConverters() default {};
-	
-	boolean inheritParameterConverters() default true;
+    Class<? extends StepMonitor> stepMonitor() default SilentStepMonitor.class;
 
-	Class<? extends Paranamer> paranamer() default NullParanamer.class;
+    Class<? extends ParameterConverter>[] parameterConverters() default {};
 
-	Class<? extends EmbedderControls> embedderControls() default EmbedderControls.class;
+    boolean inheritParameterConverters() default true;
 
-	Class<? extends ViewGenerator> viewGenerator() default FreemarkerViewGenerator.class;
+    Class<? extends Paranamer> paranamer() default NullParanamer.class;
 
-	Class<? extends StoryReporterBuilder> storyReporterBuilder() default StoryReporterBuilder.class;
+    Class<? extends EmbedderControls> embedderControls() default EmbedderControls.class;
+
+    Class<? extends ViewGenerator> viewGenerator() default FreemarkerViewGenerator.class;
+
+    Class<? extends StoryReporterBuilder> storyReporterBuilder() default StoryReporterBuilder.class;
 }
