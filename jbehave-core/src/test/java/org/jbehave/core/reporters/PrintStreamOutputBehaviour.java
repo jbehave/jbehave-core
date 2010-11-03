@@ -16,10 +16,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Properties;
-
-import junit.framework.Assert;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -30,14 +29,16 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class PrintStreamOutputBehaviour {
@@ -64,7 +65,10 @@ public class PrintStreamOutputBehaviour {
                 + "As a customer\n"
                 + "I want to get a loan\n"
                 + "Scenario: I ask for a loan\n"
-                + "GivenStories: [/given/story1,/given/story2]\n"
+                + "GivenStories:\n"
+                + "/given/story1 \n"
+                + "/given/story2 \n"
+                + "\n"
                 + "Given I have a balance of $50\n"
                 + "!-- A comment\n"
                 + "When I request $20\n"
@@ -81,10 +85,33 @@ public class PrintStreamOutputBehaviour {
                 + "\n"
                 + "|money|to|\n" + "|$30|Mauro|\n"
                 + "|$50|Paul|\n" + "\n\n" // Examples table
-                + "\nExample: {to=Mauro, money=$30}\n"
-                + "\nExample: {to=Paul, money=$50}\n"
+                + "\nExample: {money=$30, to=Mauro}\n"
+                + "\nExample: {money=$50, to=Paul}\n"
                 + "\n" // end of examples
                 + "\n\n"; // end of scenario and story
+        assertThatOutputIs(out, expected);
+    }
+
+    @Test
+    public void shouldReportEventsToTxtOutputWhenNotAllowedByFilter() {
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new TxtOutput(new PrintStream(out));
+
+        // When
+        narrateAnInterestingStoryNotAllowedByFilter(reporter);
+
+        // Then
+        String expected = "An interesting story\n"
+                +"(/path/to/story)\n"
+                +"Meta:\n"
+                +"@author Mauro\n"
+                +"@theme testing\n\n"
+                +"-theme testing\n"
+                +"Scenario: A scenario\n"
+                +"Meta:\n"+"@author Mauro\n"
+                +"@theme testing\n\n"
+                +"-theme testing\n";
         assertThatOutputIs(out, expected);
     }
 
@@ -104,21 +131,24 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter);
 
         // Then
-        String expected = "<div class=\"dryRun\">DRY RUN</div>\n"
+        String expected = "<div class=\"dryRun\">DRY RUN</div>\n"+""
                 + "<div class=\"story\">\n<h1>An interesting story</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
                 + "<div class=\"meta\">\n"
-                + "<h2>Meta:</h2>\n"
-                + "<div class=\"meta property\">@author Mauro</div>\n"
-                + "<div class=\"meta property\">@theme testing</div>\n"
+                + "<div class=\"keyword\">Meta:</div>\n"
+                + "<div class=\"property\">@author Mauro</div>\n"
+                + "<div class=\"property\">@theme testing</div>\n"
                 + "</div>\n"
                 + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
                 + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
                 + "<div class=\"element asA\"><span class=\"keyword asA\">As a</span> customer</div>\n"
                 + "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">I want to</span> get a loan</div>\n"
                 + "</div>\n"
-                + "<div class=\"scenario\">\n<h2>Scenario: I ask for a loan</h2>\n"
-                + "<div class=\"givenStories\">GivenStories: [/given/story1,/given/story2]</div>\n"
+                + "<div class=\"scenario\">\n<h2>Scenario: I ask for a loan</h2>\n"                
+                + "<div class=\"givenStories\">GivenStories:\n"
+                + "<div class=\"givenStory\">/given/story1 </div>\n"
+                + "<div class=\"givenStory\">/given/story2 </div>\n"
+                + "</div>\n" 
                 + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
                 + "<div class=\"step ignorable\">!-- A comment</div>\n"
                 + "<div class=\"step successful\">When I request $20</div>\n"
@@ -140,16 +170,50 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
                 + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
                 + "<table>\n" + "<thead>\n"
-                + "<tr>\n<th>money</th><th>to</th></tr>\n" + "</thead>\n" + "<tbody>\n"
-                + "<tr>\n<td>$30</td><td>Mauro</td></tr>\n" + "<tr>\n<td>$50</td><td>Paul</td></tr>\n" + "</tbody>\n"
-                + "</table>\n" + "\n<h3 class=\"example\">Example: {to=Mauro, money=$30}</h3>\n"
-                + "\n<h3 class=\"example\">Example: {to=Paul, money=$50}</h3>\n" + "</div>\n" + // end
+                + "<tr>\n<th>money</th><th>to</th></tr>\n" 
+                + "</thead>\n" + "<tbody>\n"
+                + "<tr>\n<td>$30</td><td>Mauro</td></tr>\n" 
+                + "<tr>\n<td>$50</td><td>Paul</td></tr>\n"
+                + "</tbody>\n"
+                + "</table>\n" 
+                + "\n<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
+                + "\n<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n" 
+                + "</div>\n" + // end
                 // of
                 // examples
                 "</div>\n</div>\n"; // end of scenario and story
         assertThatOutputIs(out, expected);
     }
 
+    @Test
+    public void shouldReportEventsToHtmlOutputWhenNotAllowedByFilter() {
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new HtmlOutput(new PrintStream(out));
+
+        // When
+        narrateAnInterestingStoryNotAllowedByFilter(reporter);
+
+        // Then
+        String expected ="<div class=\"story\">\n"
+            +"<h1>An interesting story</h1>\n"
+            +"<div class=\"path\">/path/to/story</div>\n"
+            +"<div class=\"meta\">\n"
+            +"<div class=\"keyword\">Meta:</div>\n"
+            +"<div class=\"property\">@author Mauro</div>\n"
+            +"<div class=\"property\">@theme testing</div>\n"
+            +"</div>\n"+"<div class=\"filter\">-theme testing</div>\n"
+            +"<div class=\"scenario\">\n"
+            +"<h2>Scenario: A scenario</h2>\n"
+            +"<div class=\"meta\">\n"
+            +"<div class=\"keyword\">Meta:</div>\n"
+            +"<div class=\"property\">@author Mauro</div>\n"
+            +"<div class=\"property\">@theme testing</div>\n"
+            +"</div>\n"
+            +"<div class=\"filter\">-theme testing</div>\n";
+        assertThatOutputIs(out, expected);
+    }
+    
     @Test
     public void shouldReportEventsToHtmlOutputUsingCustomPatterns() {
         // Given
@@ -174,9 +238,9 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"story\">\n<h1>An interesting story</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
                 + "<div class=\"meta\">\n"
-                + "<h2>Meta:</h2>\n"
-                + "<div class=\"meta property\">@author Mauro</div>\n"
-                + "<div class=\"meta property\">@theme testing</div>\n"
+                + "<div class=\"keyword\">Meta:</div>\n"
+                + "<div class=\"property\">@author Mauro</div>\n"
+                + "<div class=\"property\">@theme testing</div>\n"
                 + "</div>\n"
                 + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
                 + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
@@ -184,7 +248,10 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">I want to</span> get a loan</div>\n"
                 + "</div>\n"
                 + "<div class=\"scenario\">\n<h2>Scenario: I ask for a loan</h2>\n"
-                + "<div class=\"givenStories\">GivenStories: [/given/story1,/given/story2]</div>\n"
+                + "<div class=\"givenStories\">GivenStories:\n"
+                + "<div class=\"givenStory\">/given/story1 </div>\n"
+                + "<div class=\"givenStory\">/given/story2 </div>\n"
+                + "</div>\n" 
                 + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
                 + "<div class=\"step ignorable\">!-- A comment</div>\n"
                 + "<div class=\"step successful\">When I request $20</div>\n"
@@ -206,10 +273,15 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
                 + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
                 + "<table>\n" + "<thead>\n"
-                + "<tr>\n<th>money</th><th>to</th></tr>\n" + "</thead>\n" + "<tbody>\n"
-                + "<tr>\n<td>$30</td><td>Mauro</td></tr>\n" + "<tr>\n<td>$50</td><td>Paul</td></tr>\n" + "</tbody>\n"
-                + "</table>\n" + "\n<h3 class=\"example\">Example: {to=Mauro, money=$30}</h3>\n"
-                + "\n<h3 class=\"example\">Example: {to=Paul, money=$50}</h3>\n" + "</div><!-- after examples -->\n"
+                + "<tr>\n<th>money</th><th>to</th></tr>\n" 
+                + "</thead>\n" + "<tbody>\n"
+                + "<tr>\n<td>$30</td><td>Mauro</td></tr>\n" 
+                + "<tr>\n<td>$50</td><td>Paul</td></tr>\n"
+                + "</tbody>\n"
+                + "</table>\n" 
+                + "\n<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
+                + "\n<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n" 
+                + "</div><!-- after examples -->\n"
                 + "</div><!-- after scenario -->\n" + "</div><!-- after story -->\n";
         assertThatOutputIs(out, expected);
     }
@@ -243,7 +315,10 @@ public class PrintStreamOutputBehaviour {
                 + "  <iWantTo keyword=\"I want to\">get a loan</iWantTo>\n"
                 + "</narrative>\n"
                 + "<scenario keyword=\"Scenario:\" title=\"I ask for a loan\">\n"
-                + "<givenStories keyword=\"GivenStories:\" paths=\"[/given/story1,/given/story2]\"/>\n"
+                + "<givenStories keyword=\"GivenStories:\">\n"
+                + "<givenStory parameters=\"\">/given/story1</givenStory>\n"
+                + "<givenStory parameters=\"\">/given/story2</givenStory>\n"
+                + "</givenStories>\n"
                 + "<step outcome=\"successful\">Given I have a balance of $50</step>\n"
                 + "<step outcome=\"ignorable\">!-- A comment</step>\n"
                 + "<step outcome=\"successful\">When I request $20</step>\n"
@@ -261,12 +336,38 @@ public class PrintStreamOutputBehaviour {
                 + "<parameters>\n"
                 + "<names><name>money</name><name>to</name></names>\n"
                 + "<values><value>$30</value><value>Mauro</value></values>\n"
-                + "<values><value>$50</value><value>Paul</value></values>\n" + "</parameters>\n"
-                + "\n<example keyword=\"Example:\">{to=Mauro, money=$30}</example>\n"
-                + "\n<example keyword=\"Example:\">{to=Paul, money=$50}</example>\n" + "</examples>\n"
+                + "<values><value>$50</value><value>Paul</value></values>\n" 
+                + "</parameters>\n"
+                + "\n<example keyword=\"Example:\">{money=$30, to=Mauro}</example>\n"
+                + "\n<example keyword=\"Example:\">{money=$50, to=Paul}</example>\n" 
+                + "</examples>\n"
                 + "</scenario>\n" + "</story>\n";
         assertThatOutputIs(out, expected);
     }
+
+    @Test
+    public void shouldReportEventsToXmlOutputWhenNotAllowedByFilter() {
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new XmlOutput(new PrintStream(out));
+
+        // When
+        narrateAnInterestingStoryNotAllowedByFilter(reporter);
+
+        // Then
+        String expected = "<story path=\"/path/to/story\" title=\"An interesting story\">\n"
+            +"<meta>\n"
+            +"<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
+            +"<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"
+            +"</meta>\n"
+            +"<filter>-theme testing</filter>\n"
+            +"<scenario keyword=\"Scenario:\" title=\"A scenario\">\n"
+            +"<meta>\n"+"<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
+            +"<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"
+            +"</meta>\n"+"<filter>-theme testing</filter>\n";
+        assertThatOutputIs(out, expected);
+    }
+
 
     private void narrateAnInterestingStory(StoryReporter reporter) {
         Properties meta = new Properties();
@@ -277,9 +378,8 @@ public class PrintStreamOutputBehaviour {
         boolean givenStory = false;
         reporter.dryRun();
         reporter.beforeStory(story, givenStory);
-        String title = "I ask for a loan";
-        reporter.beforeScenario(title);
-        reporter.givenStories(asList("/given/story1,/given/story2"));
+        reporter.beforeScenario("I ask for a loan");
+        reporter.givenStories(asList("/given/story1","/given/story2"));
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
@@ -302,8 +402,19 @@ public class PrintStreamOutputBehaviour {
         reporter.afterStory(givenStory);
     }
 
+    private void narrateAnInterestingStoryNotAllowedByFilter(StoryReporter reporter) {
+        Properties meta = new Properties();
+        meta.setProperty("theme", "testing");
+        meta.setProperty("author", "Mauro");
+        Story story = new Story("/path/to/story",
+                new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"), 
+                Arrays.asList(new Scenario("A scenario", new Meta(meta), GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>())));
+        reporter.storyNotAllowed(story, "-theme testing");
+        reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
+    }
+
     private void assertThatOutputIs(OutputStream out, String expected) {
-       Assert.assertEquals(dos2unix(out.toString()), expected);
+        Assert.assertEquals(dos2unix(out.toString()), expected);
         //assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
@@ -455,7 +566,7 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter);
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         Properties viewProperties = new Properties();
-        viewGenerator.generateView(outputDirectory, asList("html", "txt"), viewProperties);
+        viewGenerator.generateReportsView(outputDirectory, asList("html", "txt"), viewProperties);
 
         // Then
         ensureFileExists(new File(outputDirectory, "view/index.html"));
@@ -475,7 +586,7 @@ public class PrintStreamOutputBehaviour {
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         Properties viewProperties = new Properties();
         viewProperties.setProperty("decorateNonHtml", "false");
-        viewGenerator.generateView(outputDirectory, asList("html", "txt"), viewProperties);
+        viewGenerator.generateReportsView(outputDirectory, asList("html", "txt"), viewProperties);
 
         // Then
         ensureFileExists(new File(outputDirectory, "view/index.html"));
@@ -516,11 +627,11 @@ public class PrintStreamOutputBehaviour {
     public void shouldFailGeneratingViewWithInexistentTemplates() throws IOException {
         // Given
         Properties templates = new Properties();
-        templates.setProperty("index", "target/inexistent");
+        templates.setProperty("reports", "target/inexistent");
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         // When
         File outputDirectory = new File("target");
-        viewGenerator.generateView(outputDirectory, asList("html"), templates);
+        viewGenerator.generateReportsView(outputDirectory, asList("html"), templates);
         // Then ... fail as expected
     }
 

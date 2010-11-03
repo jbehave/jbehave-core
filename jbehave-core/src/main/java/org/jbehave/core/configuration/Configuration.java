@@ -1,10 +1,12 @@
 package org.jbehave.core.configuration;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
@@ -35,8 +37,8 @@ import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
 
-import com.thoughtworks.paranamer.NullParanamer;
-import com.thoughtworks.paranamer.Paranamer;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>
@@ -56,9 +58,9 @@ import com.thoughtworks.paranamer.Paranamer;
 public abstract class Configuration {
 
     /**
-     * Dry run is switched off by default
+     * Use default story controls
      */
-    private boolean dryRun = false;
+    private StoryControls storyControls = new StoryControls();
 
     /**
      * Use English language for keywords
@@ -158,12 +160,16 @@ public abstract class Configuration {
      */
     private ViewGenerator viewGenerator = new FreemarkerViewGenerator();
 
-    public boolean dryRun() {
-        return dryRun;
-    }
-
     public Keywords keywords() {
         return keywords;
+    }
+
+    public boolean dryRun() {
+        return storyControls.dryRun();
+    }
+    
+    public StoryControls storyControls() {
+        return storyControls;
     }
 
     public StoryParser storyParser() {
@@ -235,16 +241,21 @@ public abstract class Configuration {
         return viewGenerator;
     }
 
-    public Configuration doDryRun(Boolean dryRun) {
-        this.dryRun = dryRun;
-        return this;
-    }
-
     public Configuration useKeywords(Keywords keywords) {
         this.keywords = keywords;
         return this;
     }
 
+    public Configuration doDryRun(Boolean dryRun) {
+        this.storyControls.doDryRun(dryRun);
+        return this;
+    }
+    
+    public Configuration useStoryControls(StoryControls storyControls){
+        this.storyControls = storyControls;
+        return this;
+    }
+    
     public Configuration usePendingStepStrategy(PendingStepStrategy pendingStepStrategy) {
         this.pendingStepStrategy = pendingStepStrategy;
         return this;
@@ -320,6 +331,10 @@ public abstract class Configuration {
         return this;
     }
 
+    public Configuration useParanamer() {
+        return useParanamer(new CachingParanamer(new BytecodeReadingParanamer()));
+    }
+
     public Configuration useParameterConverters(ParameterConverters parameterConverters) {
         this.parameterConverters = parameterConverters;
         return this;
@@ -329,6 +344,5 @@ public abstract class Configuration {
         this.viewGenerator = viewGenerator;
         return this;
     }
-
 
 }

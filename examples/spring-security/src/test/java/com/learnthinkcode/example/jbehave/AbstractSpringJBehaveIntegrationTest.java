@@ -60,14 +60,14 @@ abstract public class AbstractSpringJBehaveIntegrationTest extends JUnitStory {
 		//
 		// report in all formats but based on the class name, not the story location
 		//
-		Properties properties = new Properties();
-        properties.setProperty("index", "view/ftl/jbehave-reports-index.ftl");
-        properties.setProperty("decorated", "view/ftl/jbehave-report-decorated.ftl");
-        properties.setProperty("nonDecorated", "view/ftl/jbehave-report-non-decorated.ftl");
+		Properties viewProperties = new Properties();
+        viewProperties.setProperty("reports", "view/ftl/jbehave-reports.ftl");
+        viewProperties.setProperty("decorated", "view/ftl/jbehave-report-decorated.ftl");
+        viewProperties.setProperty("nonDecorated", "view/ftl/jbehave-report-non-decorated.ftl");
 		StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
 		storyReporterBuilder.withCodeLocation(CodeLocations.codeLocationFromClass(getClass()));
 		storyReporterBuilder.withFormats(STATS, CONSOLE, TXT, HTML, XML);
-		storyReporterBuilder.withViewResources(properties);
+		storyReporterBuilder.withViewResources(viewProperties);
 		storyReporterBuilder.withPathResolver(new ClassnameFilePathResolver(getClass().getName()));
 		result.useStoryReporterBuilder(storyReporterBuilder);
 		return result;

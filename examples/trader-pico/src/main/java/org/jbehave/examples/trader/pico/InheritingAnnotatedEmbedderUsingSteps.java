@@ -1,6 +1,5 @@
 package org.jbehave.examples.trader.pico;
 
-import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 import java.util.List;
@@ -26,8 +25,7 @@ public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedd
     }
 
     protected List<String> storyPaths() {
-        String searchInDirectory = codeLocationFromPath("../trader/src/main/java").getFile();
-        return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
+        return new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "");
     }
 
 }

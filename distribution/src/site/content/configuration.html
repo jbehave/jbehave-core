@@ -8,8 +8,8 @@
 
 <h2>Configuration</h2>
 
-<p>JBehave 3 was designed to be highly embeddable in its
-configuration and execution. At the heart, we have the <a
+<p>JBehave was designed to be highly embeddable in its
+configuration and execution. At its heart, we have the <a
 	href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>
 interface, which can specify the <a
 	href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>
@@ -31,7 +31,8 @@ methods:</p>
 CandidateSteps. Although it has sensible defaults for the configuration
 (such as <a
 	href="javadoc/core/org/jbehave/core/configuration/MostUsefulConfiguration.html">MostUsefulConfiguration</a>)
-we need, for any significant story running, to configure at least one steps instance.</p>
+we need, for any significant story running, to configure at least one
+steps instance.</p>
 
 <span class="followup">JBehave allows multiple paths to the
 configuration of the Embedder, so that users can choose the one that
@@ -45,29 +46,37 @@ configuration of the Embedded via annotations is:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-@RunWith(AnnotatedEmbedder.class)
-@Configure(storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
+@RunWith(AnnotatedEmbedderRunner.class)
+@Configure(storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
+                metaFilters = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
-        PriorityMatchingSteps.class, SandpitSteps.class })
-public class TraderAnnotatedEmbedder extends InjectableEmbedder {
+        PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
+public class AnnotatedTraderEmbedder extends InjectableEmbedder {
 
     @Test
     public void run() {
-        injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/*.story"), asList("")));
+        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
+        injectedEmbedder().runStoriesAsPaths(storyPaths);
     }
 
-    public static class MyReportBuilder extends StoryReporterBuilder {
-        public MyReportBuilder() {
-            this.withFormats(CONSOLE, TXT, HTML, XML).withDefaultFormats();
+    public static class MyStoryControls extends StoryControls {
+        public MyStoryControls() {
+            doDryRun(false);
+            doSkipScenariosAfterFailure(false);
         }
     }
 
     public static class MyStoryLoader extends LoadFromClasspath {
         public MyStoryLoader() {
-            super(TraderAnnotatedEmbedder.class.getClassLoader());
+            super(AnnotatedTraderEmbedder.class.getClassLoader());
+        }
+    }
+
+    public static class MyReportBuilder extends StoryReporterBuilder {
+        public MyReportBuilder() {
+            this.withFormats(CONSOLE, TXT, HTML, XML).withDefaultFormats();
         }
     }
 
@@ -189,6 +198,7 @@ public abstract class TraderStory extends JUnitStory {
         viewProperties.put("decorateNonHtml", "true");
         URL codeLocation = CodeLocations.codeLocationFromClass(storyClass);
         Configuration configuration = new MostUsefulConfiguration()
+                .useStoryControls(new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false))
                 .useStoryLoader(new LoadFromClasspath(storyClass.getClassLoader()))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
@@ -276,6 +286,9 @@ come with a default behaviour, configured in the <a
 	given story matching a list of candidate steps. The default
 	implementation is <a
 		href="javadoc/core/org/jbehave/core/steps/MarkUnmatchedStepsAsPending.html">MarkUnmatchedStepsAsPending</a>.</li>
+	<li><a
+		href="javadoc/core/org/jbehave/core/embedder/StoryControls.html">StoryControls</a>:
+	Controls the story execution workflow.</li>
 	<li><a href="javadoc/core/org/jbehave/core/io/StoryParser.html">StoryParser</a>:
 	Parses stories contained in a textual story file. The default
 	implementation is <a

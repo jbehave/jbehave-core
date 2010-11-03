@@ -50,9 +50,22 @@ public class XmlOutput extends PrintStreamOutput {
 
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
+        patterns.setProperty("dryRun", "<dryRun>{0}</dryRun>\n");        
+        patterns.setProperty("beforeStory", "<story path=\"{1}\" title=\"{0}\">\n");
+        patterns.setProperty("afterStory", "</story>\n");
         patterns.setProperty("metaStart", "<meta>\n");
         patterns.setProperty("metaProperty", "<property keyword=\"{0}\" name=\"{1}\" value=\"{2}\"/>\n");        
         patterns.setProperty("metaEnd", "</meta>\n");
+        patterns.setProperty("filter", "<filter>{0}</filter>\n");        
+        patterns.setProperty("narrative", "<narrative keyword=\"{0}\">\n  <inOrderTo keyword=\"{1}\">{2}</inOrderTo>\n  <asA keyword=\"{3}\">{4}</asA>\n  <iWantTo keyword=\"{5}\">{6}</iWantTo>\n</narrative>\n");
+        patterns.setProperty("beforeScenario", "<scenario keyword=\"{0}\" title=\"{1}\">\n");
+        patterns.setProperty("scenarioNotAllowed", "<notAllowed pattern=\"{0}\"/>\n");        
+        patterns.setProperty("afterScenario", "</scenario>\n");
+        patterns.setProperty("afterScenarioWithFailure", "<failure>{0}</failure>\n</scenario>\n");
+        patterns.setProperty("givenStories", "<givenStories keyword=\"{0}\" paths=\"{1}\"/>\n");
+        patterns.setProperty("givenStoriesStart", "<givenStories keyword=\"{0}\">\n");
+        patterns.setProperty("givenStory", "<givenStory parameters=\"{1}\">{0}</givenStory>\n");
+        patterns.setProperty("givenStoriesEnd", "</givenStories>\n");
         patterns.setProperty("successful", "<step outcome=\"successful\">{0}</step>\n");
         patterns.setProperty("ignorable", "<step outcome=\"ignorable\">{0}</step>\n");
         patterns.setProperty("pending", "<step outcome=\"pending\" keyword=\"{1}\">{0}</step>\n");
@@ -68,13 +81,6 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("outcomesTableRowEnd", "</outcome>\n");
         patterns.setProperty("outcomesTableBodyEnd", "");
         patterns.setProperty("outcomesTableEnd", "</outcomes>\n");
-        patterns.setProperty("beforeStory", "<story path=\"{1}\" title=\"{0}\">\n");
-        patterns.setProperty("narrative", "<narrative keyword=\"{0}\">\n  <inOrderTo keyword=\"{1}\">{2}</inOrderTo>\n  <asA keyword=\"{3}\">{4}</asA>\n  <iWantTo keyword=\"{5}\">{6}</iWantTo>\n</narrative>\n");
-        patterns.setProperty("afterStory", "</story>\n");
-        patterns.setProperty("beforeScenario", "<scenario keyword=\"{0}\" title=\"{1}\">\n");
-        patterns.setProperty("afterScenario", "</scenario>\n");
-        patterns.setProperty("afterScenarioWithFailure", "<failure>{0}</failure>\n</scenario>\n");
-        patterns.setProperty("givenStories", "<givenStories keyword=\"{0}\" paths=\"{1}\"/>\n");
         patterns.setProperty("beforeExamples", "<examples keyword=\"{0}\">\n");
         patterns.setProperty("examplesStep", "<step>{0}</step>\n");
         patterns.setProperty("afterExamples", "</examples>\n");
@@ -92,7 +98,6 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueStart", "<parameter>");
         patterns.setProperty("parameterValueEnd", "</parameter>");
         patterns.setProperty("parameterValueNewline", "\n");        
-        patterns.setProperty("dryRun", "<dryRun>{0}</dryRun>\n");        
         return patterns;
     }
 

@@ -49,6 +49,8 @@ public class SpringAnnotationBuilderBehaviour {
     public void shouldBuildConfigurationFromAnnotations() {
         SpringAnnotationBuilder builder = new SpringAnnotationBuilder(AnnotatedUsingSpring.class);
         Configuration configuration = builder.buildConfiguration();
+        assertThat(configuration.storyControls().dryRun(), is(true));
+        assertThat(configuration.storyControls().skipScenariosAfterFailure(), is(true));
         assertThat(configuration.failureStrategy(), instanceOf(SilentlyAbsorbingFailure.class));
         assertThat(configuration.storyLoader(), instanceOf(LoadFromURL.class));
         assertThat(configuration.stepPatternParser(), instanceOf(RegexPrefixCapturingPatternParser.class));

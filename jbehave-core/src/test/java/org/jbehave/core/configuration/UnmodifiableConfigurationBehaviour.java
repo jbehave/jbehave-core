@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 import org.hamcrest.Matchers;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
@@ -33,6 +34,7 @@ public class UnmodifiableConfigurationBehaviour {
         Configuration unmodifiable = new UnmodifiableConfiguration(delegate);
         assertThat(unmodifiable.dryRun(), is(delegate.dryRun()));
         assertThat(unmodifiable.keywords(), is(delegate.keywords()));
+        assertThat(unmodifiable.storyControls(), is(delegate.storyControls()));
         assertThat(unmodifiable.storyLoader(), is(delegate.storyLoader()));
         assertThat(unmodifiable.storyParser(), is(delegate.storyParser()));
         assertThat(unmodifiable.storyPathResolver(), is(delegate.storyPathResolver()));
@@ -54,8 +56,9 @@ public class UnmodifiableConfigurationBehaviour {
             IllegalAccessException {
         Configuration delegate = new MostUsefulConfiguration();
         Configuration unmodifiable = new UnmodifiableConfiguration(delegate);
-        assertThatNotAllowed(unmodifiable, "doDryRun", Boolean.class);
         assertThatNotAllowed(unmodifiable, "useKeywords", Keywords.class);
+        assertThatNotAllowed(unmodifiable, "doDryRun", Boolean.class);
+        assertThatNotAllowed(unmodifiable, "useStoryControls", StoryControls.class);
         assertThatNotAllowed(unmodifiable, "useStoryLoader", StoryLoader.class);
         assertThatNotAllowed(unmodifiable, "useStoryParser", StoryParser.class);
         assertThatNotAllowed(unmodifiable, "useDefaultStoryReporter", StoryReporter.class);

@@ -18,15 +18,19 @@ import java.util.Properties;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Story;
 import org.jbehave.core.model.OutcomesTable.Outcome;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 
 /**
  * <p>
@@ -138,15 +142,20 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("outcomesTableEnd", "\n"));
 	}
 
+    public void storyNotAllowed(Story story, String filter) {
+        print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
+        if (!story.getMeta().isEmpty()) {
+            Meta meta = story.getMeta();
+            print(meta);
+        }
+        print(format("filter", "{0}\n", filter));
+    }
+
     public void beforeStory(Story story, boolean givenStory) {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
         if (!story.getMeta().isEmpty()) {
             Meta meta = story.getMeta();
-            print(format("metaStart", "{0}\n", keywords.meta()));
-            for (String name : meta.getPropertyNames() ){
-                print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));                
-            }
-            print(format("metaEnd", "\n"));
+            print(meta);
         }
         if (!story.getNarrative().isEmpty()) {
             Narrative narrative = story.getNarrative();
@@ -155,17 +164,45 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
+    private void print(Meta meta) {
+        print(format("metaStart", "{0}\n", keywords.meta()));
+        for (String name : meta.getPropertyNames() ){
+            print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));                
+        }
+        print(format("metaEnd", "\n"));
+    }
+
     public void afterStory(boolean givenStory) {
         print(format("afterStory", "\n"));
     }
 
+    public void givenStories(GivenStories givenStories) {
+        print(format("givenStoriesStart", "{0}\n", keywords.givenStories()));
+        for (GivenStory givenStory : givenStories.getStories()) {
+            print(format("givenStory", "{0} {1}\n", givenStory.asString(), (givenStory.hasAnchor() ? givenStory.getParameters() : "")));
+        }
+        print(format("givenStoriesEnd", "\n"));
+    }
+
     public void givenStories(List<String> storyPaths) {
-        print(format("givenStories", "{0} {1}\n", keywords.givenStories(), storyPaths));
+        givenStories(new GivenStories(StringUtils.join(storyPaths, ",")));
+    }
+
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), scenario.getTitle()));
+        scenarioMeta(scenario.getMeta());
+        print(format("filter", "{0}\n", filter));
     }
 
     public void beforeScenario(String title) {
         cause = null;
         print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), title));
+    }
+
+    public void scenarioMeta(Meta meta) {
+        if (!meta.isEmpty()) {
+            print(meta);
+        }
     }
 
     public void afterScenario() {

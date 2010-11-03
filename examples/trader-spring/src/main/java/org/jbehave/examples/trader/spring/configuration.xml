@@ -4,10 +4,6 @@
   xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
-  <bean class="org.jbehave.core.parsers.RegexPrefixCapturingPatternParser">
-    <constructor-arg value="%" />
-  </bean>
-
   <bean class="org.jbehave.core.io.LoadFromClasspath">
     <constructor-arg>
       <bean class="org.jbehave.core.embedder.EmbedderClassLoader">
@@ -26,6 +22,15 @@
         <constructor-arg value="yyyy-MM-dd" />
       </bean>
     </constructor-arg>
+  </bean>
+
+  <bean class="org.jbehave.core.parsers.RegexPrefixCapturingPatternParser">
+    <constructor-arg value="%" />
+  </bean>
+
+  <bean class="org.jbehave.core.configuration.spring.SpringStoryControls">
+    <property name="dryRun" value="true" />
+    <property name="skipScenariosAfterFailure" value="false" />
   </bean>
 
   <bean

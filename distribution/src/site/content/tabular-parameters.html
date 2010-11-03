@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Tabular Parameters</title>
+</head>
+
+<body>
+
+<h2>Tabular Parameters</h2>
+
+<p>Scenario writers may want to express parameters in a tabular
+structure. For example:</p>
+
+<pre class="brush: bdd">
+Given the traders: 
+|name|rank|
+|Larry|Stooge 3|
+|Moe|Stooge 1|
+|Curly|Stooge 2|
+When Traders are subset to ".*y" by name
+Then the traders returned are:
+|name|rank|
+|Larry|Stooge 3|
+|Curly|Stooge 2|
+</pre>
+
+<p>JBehave supports multi-line parameters out-of-the-box and the
+user only needs to declare the parameter type as <a
+	href="javadoc/core/org/jbehave/core/model/ExamplesTable.html">ExamplesTable</a>
+for it to be automatically parsed as a tabular structure:</p>
+
+<pre class="brush: java">
+    @Given("the traders: $tradersTable")
+    public void theTraders(ExamplesTable tradersTable) {
+        this.traders = toTraders(tradersTable);
+    }
+
+    private List toTraders(ExamplesTable table) {
+        List traders = new ArrayList();
+        List rows = table.getRows();
+        for (Map row : rows) {
+            String name = row.get("name");
+            String rank = row.get("rank");
+            traders.add(new Trader(name, rank));
+        }
+        Collections.sort(traders);
+        return traders;
+    }
+</pre>
+
+<p><b>Note</b>: Under the hood, JBehave users the same table parsing
+functionality of the <a href="parametrised-scenarios.html">parametrised
+scenarios</a>, but there is a fundamental difference between these two use
+cases: with parametrised scenarios, the scenario is run for each line of
+the table (using in each execution the parameter values of the given
+row), while in using tabular parameters we are simply using the tabular
+structure as a parameter, and how this structure is interpreted is up to
+the scenario writer. The difference is in the <b>Examples:</b> keyword,
+which is only present for parametrised scenarios.</p>
+
+<h2>Preserving whitespace</h2>
+
+<p>By default, value in the table are trimmed, i.e. any preceding and trailing whitespace 
+is removed.  This is the most useful and common usecase.  If, for some reason, you need
+to preserve the whitespace, you can specify an optional parsing property:</p>
+
+<pre class="brush: bdd">
+{trim=false}
+|name |rank    |
+|Larry|Stooge 3|
+|Moe  |Stooge 1|
+|Curly|Stooge 2|
+</pre>
+
+<div class="clear">
+<hr />
+</div>
+</body>
+</html>

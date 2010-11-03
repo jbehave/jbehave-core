@@ -31,6 +31,7 @@ import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -57,6 +58,8 @@ public class PicoAnnotationBuilderBehaviour {
     public void shouldBuildConfigurationFromAnnotations() {
         PicoAnnotationBuilder builder = new PicoAnnotationBuilder(AnnotatedUsingPico.class);
         Configuration configuration = builder.buildConfiguration();
+        assertThat(configuration.storyControls().dryRun(), is(true));
+        assertThat(configuration.storyControls().skipScenariosAfterFailure(), is(true));
         assertThat(configuration.failureStrategy(), instanceOf(SilentlyAbsorbingFailure.class));
         assertThat(configuration.storyLoader(), instanceOf(LoadFromURL.class));
         assertThat(configuration.stepPatternParser(), instanceOf(RegexPrefixCapturingPatternParser.class));
@@ -205,6 +208,7 @@ public class PicoAnnotationBuilderBehaviour {
     public static class ConfigurationModule implements PicoModule {
 
         public void configure(MutablePicoContainer container) {
+            container.addComponent(StoryControls.class, new StoryControls().doDryRun(true).doSkipScenariosAfterFailure(true));
             container.addComponent(FailureStrategy.class, SilentlyAbsorbingFailure.class);
             container.addComponent(StepPatternParser.class, new RegexPrefixCapturingPatternParser("MyPrefix"));
             container.addComponent(StoryLoader.class, new LoadFromURL());

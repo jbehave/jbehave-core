@@ -8,6 +8,9 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.StoryMaps;
+import org.jbehave.core.reporters.ReportsCount;
 
 /**
  * Monitor that reports to a {@link PrintStream}, defaulting to
@@ -30,11 +33,15 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
 
     public void embeddableFailed(String name, Throwable cause) {
         print("Failed to run embeddable " + name);
-        printStackTrace(cause);        
+        printStackTrace(cause);
     }
 
     public void embeddablesSkipped(List<String> classNames) {
-        print("Skipped embeddables "+classNames);        
+        print("Skipped embeddables " + classNames);
+    }
+
+    public void metaNotAllowed(Meta meta, MetaFilter filter) {
+        print(meta + " not allowed by filter '" + filter.asString() + "'");
     }
 
     public void runningEmbeddable(String name) {
@@ -51,31 +58,58 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     }
 
     public void storiesSkipped(List<String> storyPaths) {
-        print("Skipped stories "+storyPaths);        
+        print("Skipped stories " + storyPaths);
     }
-    
+
     public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
         print("Annotated instance " + annotatedInstance + " if not of type " + type);
     }
 
-    public void generatingStoriesView(File outputDirectory, List<String> formats, Properties viewProperties) {
-        print("Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'"
+    public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
+        print("Generating reports view to '" + outputDirectory + "' using formats '" + formats + "'"
                 + " and view properties '" + viewProperties + "'");
     }
 
-    public void storiesViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
+    public void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
             Throwable cause) {
-        print("Failed to generate stories view in outputDirectory " + outputDirectory + " using formats " + formats
+        print("Failed to generate reports view to '" + outputDirectory + "' using formats '" + formats
+                + "' and view properties '" + viewProperties + "'");
+    }
+
+    public void reportsViewGenerated(ReportsCount count) {
+        print("Reports view generated with " + count.getStories() + " stories containing " + count.getScenarios() + " scenarios (of which  "
+                + count.getScenariosFailed() + " failed)");
+        if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
+            print("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  " + count.getScenariosNotAllowed()
+                    + " scenarios");
+        }
+    }
+
+    public void reportsViewNotGenerated() {
+        print("Reports view not generated");
+    }
+
+    public void mappingStory(String storyPath, List<String> metaFilters) {
+        print("Mapping story " + storyPath + " with meta filters " + metaFilters);
+    }
+
+    public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
+        print("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
                 + " and view properties '" + viewProperties + "'");
     }
 
-    public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
-        print("Stories view generated with " + stories + " stories containing " + scenarios + " scenarios (of which  "
-                + failedScenarios + " failed)");
+    public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
+            Throwable cause) {
+        print("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                + " and view properties '" + viewProperties + "'");
     }
 
-    public void storiesViewNotGenerated() {
-        print("Stories view not generated");
+    public void processingSystemProperties(Properties properties) {
+        print("Processing system properties " + properties);
+    }
+
+    public void systemPropertySet(String name, String value) {
+        print("System property '" + name + "' set to '"+value+"'");
     }
 
     @Override
@@ -90,6 +124,5 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     protected void printStackTrace(Throwable e) {
         e.printStackTrace(output);
     }
-
 
 }

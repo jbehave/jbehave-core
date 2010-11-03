@@ -9,6 +9,7 @@ import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
@@ -23,10 +24,10 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 import com.thoughtworks.paranamer.Paranamer;
 
@@ -79,6 +80,7 @@ public class AnnotationBuilder {
         configuration.usePendingStepStrategy(configurationElement(finder, "pendingStepStrategy",
                 PendingStepStrategy.class));
         configuration.useParanamer(configurationElement(finder, "paranamer", Paranamer.class));
+        configuration.useStoryControls(configurationElement(finder, "storyControls", StoryControls.class));
         configuration.useStepCollector(configurationElement(finder, "stepCollector", StepCollector.class));
         configuration.useStepdocReporter(configurationElement(finder, "stepdocReporter", StepdocReporter.class));
         configuration.useStepFinder(configurationElement(finder, "stepFinder", StepFinder.class));
@@ -154,6 +156,10 @@ public class AnnotationBuilder {
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView);
         embedder.useConfiguration(configuration);
         embedder.useCandidateSteps(candidateSteps);
+        List<String> metaFilters = finder.getAnnotatedValues(UsingEmbedder.class, String.class, "metaFilters");
+        if ( !metaFilters.isEmpty() ){
+            embedder.useMetaFilters(metaFilters);
+        }
         return embedder;
     }
 

@@ -5,6 +5,8 @@ import java.io.PrintStream;
 import java.util.List;
 import java.util.Properties;
 
+import org.jbehave.core.reporters.ReportsCount;
+
 /**
  * Monitor that reports to {@link PrintStream} only failure events
  */
@@ -27,12 +29,11 @@ public class ReportingFailuresEmbedderMonitor extends PrintStreamEmbedderMonitor
     }
 
     @Override
-	public void generatingStoriesView(File outputDirectory, List<String> formats,
-			Properties viewProperties) {
-	}
-	
+    public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
+    }
+
     @Override
-	public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
-	}
-	
+    public void reportsViewGenerated(ReportsCount count) {
+    }
+
 }

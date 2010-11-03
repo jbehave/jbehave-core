@@ -3,18 +3,23 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.2-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-distribution</artifactId>
   <packaging>pom</packaging>
   <name>JBehave Distribution</name>
   <properties>
-    <jbehave.site.version>3.0</jbehave.site.version>
+    <jbehave.site.version>3.1.1</jbehave.site.version>
   </properties>
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>jbehave-groovy</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -65,6 +70,46 @@
             </configuration>
           </execution>
           <execution>
+            <id>unpack-javadoc-groovy</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site/javadoc/groovy</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>jbehave-groovy</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>javadoc</classifier>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-javadoc-guice</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site/javadoc/guice</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>jbehave-guice</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>javadoc</classifier>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
             <id>unpack-javadoc-pico</id>
             <phase>generate-resources</phase>
             <goals>
@@ -98,26 +143,6 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-spring</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>javadoc</classifier>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <execution>
-            <id>unpack-javadoc-guice</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/site/javadoc/guice</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>jbehave-guice</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
@@ -235,13 +260,13 @@
       <plugin>
         <groupId>org.codehaus.xsite</groupId>
         <artifactId>xsite-maven-plugin</artifactId>
-        <version>1.1.2</version>
+        <version>1.2</version>
         <configuration>
           <sourceDirectoryPath>${basedir}/src/site/</sourceDirectoryPath>
           <compositionFilePath>config/xsite.xml</compositionFilePath>
           <sitemapPath>content/sitemap.xml</sitemapPath>
           <templatesDirectoryPath>${project.build.directory}/templates</templatesDirectoryPath>
-          <skinPath>xsite-skin.html</skinPath>
+          <skinPath>xsite-skin.ftl</skinPath>
           <resourcePaths>resources</resourcePaths>
           <outputDirectoryPath>${project.build.directory}/site</outputDirectoryPath>
           <publishedVersion>${project.version}</publishedVersion>

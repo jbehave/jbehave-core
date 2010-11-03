@@ -1,12 +1,18 @@
 package org.jbehave.core.reporters;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.junit.Test;
 import org.mockito.InOrder;
@@ -15,19 +21,27 @@ public class DelegatingStoryReporterBehaviour {
 
     @Test
     public void shouldDelegateReporterEvents() {
+        // Given
         StoryReporter delegate = mock(StoryReporter.class);
         DelegatingStoryReporter delegator = new DelegatingStoryReporter(delegate);
-        List<String> givenStories = asList("path/to/story1", "path/to/story2");
+        List<String> givenStoryPaths = asList("path/to/story1", "path/to/story2");
+        GivenStories givenStories = new GivenStories(StringUtils.join(givenStoryPaths, ","));
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
         IllegalArgumentException anException = new IllegalArgumentException();
         Story story = new Story();
         boolean givenStory = false;
+        Scenario scenario = new Scenario();
+        String filter = "-some property";
         
+        // When
         delegator.dryRun();
         
         delegator.beforeStory(story, givenStory);        
-        
-        delegator.beforeScenario("My core 1");
+        delegator.storyNotAllowed(story, filter);
+        delegator.beforeScenario("My scenario 1");
+        delegator.scenarioNotAllowed(scenario, filter);
+        delegator.scenarioMeta(Meta.EMPTY);
+        delegator.givenStories(givenStoryPaths);
         delegator.givenStories(givenStories);
         delegator.successful("Given step 1.1");
         delegator.ignorable("!-- ignore me");
@@ -38,7 +52,7 @@ public class DelegatingStoryReporterBehaviour {
         delegator.afterExamples();
         delegator.afterScenario();
        
-        delegator.beforeScenario("My core 2");
+        delegator.beforeScenario("My scenario 2");
         delegator.successful("Given step 2.1");
         delegator.successful("When step 2.2");
         delegator.failed("Then step 2.3", anException);
@@ -46,13 +60,20 @@ public class DelegatingStoryReporterBehaviour {
         
         delegator.afterStory(givenStory);
         
+        // Then        
+        assertThat(delegator.toString(), containsString(delegate.toString()));
+        
         InOrder inOrder = inOrder(delegate);
                 
         inOrder.verify(delegate).dryRun();        
 
         inOrder.verify(delegate).beforeStory(story, givenStory);
-
-        inOrder.verify(delegate).beforeScenario("My core 1");
+        inOrder.verify(delegate).storyNotAllowed(story, filter);
+        
+        inOrder.verify(delegate).beforeScenario("My scenario 1");
+        inOrder.verify(delegate).scenarioNotAllowed(scenario, filter);
+        inOrder.verify(delegate).scenarioMeta(Meta.EMPTY);
+        inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).successful("Given step 1.1");
         inOrder.verify(delegate).ignorable("!-- ignore me");
@@ -63,7 +84,7 @@ public class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).afterExamples();
         inOrder.verify(delegate).afterScenario();
         
-        inOrder.verify(delegate).beforeScenario("My core 2");
+        inOrder.verify(delegate).beforeScenario("My scenario 2");
         inOrder.verify(delegate).successful("Given step 2.1");
         inOrder.verify(delegate).successful("When step 2.2");
         inOrder.verify(delegate).failed("Then step 2.3", anException);        

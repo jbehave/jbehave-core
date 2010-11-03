@@ -12,6 +12,7 @@ import java.util.Properties;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathResolver;
@@ -61,6 +62,7 @@ public abstract class TraderStory extends JUnitStory {
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
         return new MostUsefulConfiguration()
+            .useStoryControls(new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false))
             .useStoryLoader(new LoadFromClasspath(embeddableClass))
             .useStoryPathResolver(new UnderscoredCamelCaseResolver())
             .useStoryReporterBuilder(new StoryReporterBuilder()

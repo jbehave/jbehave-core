@@ -13,7 +13,7 @@ public class GenerateStoriesView extends AbstractEmbedderTask {
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
 		log("Generating stories view using embedder " + embedder, MSG_INFO);
-        embedder.generateStoriesView();
+        embedder.generateReportsView();
     }
     
 }

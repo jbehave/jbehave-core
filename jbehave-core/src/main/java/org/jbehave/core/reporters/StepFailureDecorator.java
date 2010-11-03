@@ -2,7 +2,10 @@ package org.jbehave.core.reporters;
 
 import org.jbehave.core.failures.StepFailed;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
 import java.util.List;
@@ -42,6 +45,10 @@ public class StepFailureDecorator implements StoryReporter {
 		delegate.beforeScenario(scenarioTitle);
 	}
 
+    public void scenarioMeta(Meta meta) {
+        delegate.scenarioMeta(meta);
+    }
+
     public void beforeStory(Story story, boolean givenStory) {
         failure = null;
         delegate.beforeStory(story, givenStory);
@@ -73,11 +80,15 @@ public class StepFailureDecorator implements StoryReporter {
 		delegate.successful(step);
 	}
 
-	public void givenStories(List<String> storyPaths) {
-		delegate.givenStories(storyPaths);
+	public void givenStories(GivenStories givenStories) {
+		delegate.givenStories(givenStories);
 	}
 
-	public void beforeExamples(List<String> steps, ExamplesTable table) {
+    public void givenStories(List<String> storyPaths) {
+        delegate.givenStories(storyPaths);
+    }
+
+    public void beforeExamples(List<String> steps, ExamplesTable table) {
 		delegate.beforeExamples(steps, table);
 	}
 
@@ -92,4 +103,13 @@ public class StepFailureDecorator implements StoryReporter {
 	public void dryRun() {
 		delegate.dryRun();
 	}
+
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        delegate.scenarioNotAllowed(scenario, filter);
+    }
+
+    public void storyNotAllowed(Story story, String filter) {
+        delegate.storyNotAllowed(story, filter);
+    }
+    
 }

@@ -4,16 +4,51 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-examples</artifactId>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.2-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-trader-example</artifactId>
   <name>JBehave Trader Example</name>
 
-  <!-- Properties used to specify story running configured in jbehave-examples POM -->
+  <!-- Properties used to specify story running configured in jbehave-examples 
+    POM -->
   <properties>
     <include.embeddables>**/stories/*.java</include.embeddables>
     <include.annotated.embedders>**/AnnotatedTraderEmbedder.java</include.annotated.embedders>
     <annotated.embedder.runner>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotated.embedder.runner>
   </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>map-stories</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <includes>
+                <include>**/*StoryMaps.java</include>
+              </includes>
+              <metaFilters>
+                <metaFilter>+author *</metaFilter>
+                <metaFilter>+theme *</metaFilter>
+                <metaFilter>-skip</metaFilter>
+              </metaFilters>
+              <systemProperties>
+                <property>
+                  <name>java.awt.headless</name>
+                  <value>true</value>
+                </property>
+              </systemProperties>
+            </configuration>
+            <goals>
+              <goal>map-stories-as-embeddables</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

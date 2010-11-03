@@ -12,7 +12,10 @@ import java.util.Properties;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
 /**
@@ -25,7 +28,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<String, Integer>();
-    private final List<String> events = asList("steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
+    private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
             "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosSuccessful", "scenariosFailed", "givenStories",
             "examples");
 
@@ -72,17 +75,34 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         resetData();
     }
 
+    public void storyNotAllowed(Story story, String filter) {
+        resetData();
+        count("notAllowed");
+        writeData();
+    }
+
     public void afterStory(boolean givenStory) {
         writeData();
     }
 
+    public void givenStories(GivenStories givenStories) {
+        count("givenStories");            
+    }
+
     public void givenStories(List<String> storyPaths) {
-        count("givenStories");
+        count("givenStories");            
     }
 
     public void beforeScenario(String title) {
         cause = null;
         outcomesFailed = null;
+    }
+
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        count("scenariosNotAllowed");
+    }
+
+    public void scenarioMeta(Meta meta) {
     }
 
     public void afterScenario() {

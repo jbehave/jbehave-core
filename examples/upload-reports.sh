@@ -14,4 +14,6 @@ zip -r $EXAMPLE.zip $EXAMPLE
 
 scp $EXAMPLE.zip jbehave.org:
 
-ssh jbehave.org "rm -r $EXAMPLE; unzip -uo $EXAMPLE.zip; rm -r /var/www/jbehave.org/reference/examples/$EXAMPLE; mv -f $EXAMPLE /var/www/jbehave.org/reference/examples"
+EXAMPLES="/var/www/jbehave.org/reference/examples"
+
+ssh jbehave.org "rm -r $EXAMPLE; unzip -uo $EXAMPLE.zip; mkdir -p $EXAMPLES; rm -r $EXAMPLES/$EXAMPLE; mv -f $EXAMPLE $EXAMPLES"

@@ -13,6 +13,10 @@
 goals:</p>
 
 <ul>
+    <li><a
+        href="javadoc/maven-plugin/org/jbehave/mojo/MapStoriesAsEmbeddables.html">map-stories-as-embeddables</a></li>
+    <li><a
+        href="javadoc/maven-plugin/org/jbehave/mojo/MapStoriesAsPaths.html">map-stories-as-paths</a></li>
 	<li><a
 		href="javadoc/maven-plugin/org/jbehave/mojo/RunStoriesAsEmbeddables.html">run-stories-as-embeddables</a></li>
 	<li><a
@@ -23,6 +27,8 @@ goals:</p>
 		href="javadoc/maven-plugin/org/jbehave/mojo/ReportStepdocs.html">report-stepdocs</a></li>
 	<li><a
 		href="javadoc/maven-plugin/org/jbehave/mojo/GenerateStoriesView.html">generate-stories-view</a></li>
+    <li><a
+        href="javadoc/maven-plugin/org/jbehave/mojo/UnpackViewResources.html">unpack-view-resources</a></li>
 </ul>
 
 <p>Maven goals support the following properties:</p>
@@ -33,6 +39,8 @@ goals:</p>
 	<li>scope: [compile|test], defaults to <b>compile</b></li>
 	<li>includes: list of include patterns</li>
 	<li>excludes: list of exclude patterns</li>
+	<li>metaFilters: list of meta filters</li>
+	<li>systemProperties: list of system properties to set during execution</li>
 	<li>batch: [true|false], defaults to <b>false</b></li>
 	<li>skip: [true|false], defaults to <b>false</b></li>
 	<li>ignoreFailureInStories: [true|false], defaults to <b>false</b></li>
@@ -45,6 +53,15 @@ goals:</p>
 		href="javadoc/core/org/jbehave/core/junit/AnnotatedEmbedderRunner.html">AnnotatedEmbedderRunner</a></li>
 	<li>storyFinderClass: defaults to <a
 		href="javadoc/core/org/jbehave/core/io/StoryFinder.html">StoryFinder</a></li>
+</ul>
+
+<p>In addition, the <b>unpack-view-resources</b> goal supports the properties:</p>
+
+<ul>
+    <li>resourceArtifactIds: list of resource artifactIds, optional (defaults to <b>{"jbehave-site-resources", "jbehave-core"}</b>)</li>
+    <li>resourceTypes: list of resource types, optional (defaults to <b>{"zip"}</b>)</li>
+    <li>resourceIncludes: the pattern of includes when unpacking each resource, optional (defaults to includes all)</li>
+    <li>resourceExcludes: the pattern of excludes when unpacking each resource, optional (defaults to excludes none)</li>
 </ul>
 
 <p>An example of a typical Maven plugin usage is:</p>
@@ -62,6 +79,16 @@ goals:</p>
                     <includes>
                         <include>**/*Stories.java</include>
                     </includes>
+                    <metaFilters>
+                        <metaFilter>+author *</metaFilter>
+                        <metaFilter>-skip</metaFilter>
+                    </metaFilters>
+                    <systemProperties>
+                        <property>
+                          <name>java.awt.headless</name>
+                          <value>true</value>
+                        </property>
+                    </systemProperties>
                     <ignoreFailureInStories>true</ignoreFailureInStories>
                     <ignoreFailureInView>false</ignoreFailureInView>
                 </configuration>
@@ -77,6 +104,36 @@ goals:</p>
 <p>The default scope is <b>compile</b>, which means that the stories
 will be looked up in the POM source directory. If the scope is set to <b>test</b>
 the stories will be looked up in the POM test source directory.</p>
+
+<h2>ClassLoading Logging Frameworks</h2>
+
+<p>JBehave uses FreeMarker to generate template-based reports.
+FreeMarker uses its own version of a logging facade framework which
+auto-discovers different logging frameworks, notably JDK Logging and
+Apache log4j. When using the JBehave Maven Plugin, and depending on the
+rest of your POM configuration, you may need to add Apache log4j as
+Plugin Dependency (as opposed to the Project Dependency) if you find
+that it's not able to load its classes, e.g.:</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+    <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <version>[version]</version>
+        <executions>
+            <!-- define executions as normal -->
+        </executions>
+        <dependencies>
+            <dependency>
+                <groupId>log4j</groupId>
+                <artifactId>log4j</artifactId>
+                <version>1.2.16</version>
+            </dependency>
+        </dependencies>
+    </plugin>
+]]>
+</script>
 
 <div class="clear">
 <hr />

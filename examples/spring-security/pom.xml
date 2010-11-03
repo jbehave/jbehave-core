@@ -5,13 +5,14 @@
   <groupId>com.learnthinkcode.example</groupId>
   <artifactId>jbehave-spring-security-example</artifactId>
   <name>JBehave Spring Security Example</name>
-  <version>3.1-SNAPSHOT</version>
+  <version>3.2-SNAPSHOT</version>
   <organization>
     <name>LearnThinkCode</name>
     <url>http://www.learnthinkcode.com</url>
   </organization>
   <properties>
     <jbehave.version>${project.version}</jbehave.version>
+    <jbehave.view.directory>${project.build.directory}/jbehave/view</jbehave.view.directory>
   </properties>
   <build>
     <plugins>
@@ -88,7 +89,7 @@
             <phase>post-integration-test</phase>
             <configuration>
               <tasks>
-                <copy todir="target/jbehave-reports/view">
+                <copy todir="${jbehave.view.directory}">
                   <fileset dir="src/test/resources/view" />
                 </copy>
               </tasks>

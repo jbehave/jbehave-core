@@ -16,7 +16,7 @@ public class RunStoriesWithAnnotatedEmbedderRunner extends AbstractEmbedderTask 
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
         log("Running stories with annotated embedder " + annotatedEmbedderRunnerClass, MSG_INFO);
-        embedder.runStoriesWithAnnotatedEmbedderRunner(annotatedEmbedderRunnerClass, classNames(), createClassLoader());
+        embedder.runStoriesWithAnnotatedEmbedderRunner(annotatedEmbedderRunnerClass, classNames());
     }
 
 }

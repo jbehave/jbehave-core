@@ -1,16 +1,19 @@
 package org.jbehave.core.reporters;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Story;
+import static java.util.Arrays.asList;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Arrays.asList;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 
 /**
  * Reporter which collects other {@link StoryReporter}s and delegates all
@@ -58,6 +61,12 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
+    public void scenarioMeta(Meta meta) {
+        for (StoryReporter reporter : delegates) {
+            reporter.scenarioMeta(meta);
+        }
+    }
+
     public void beforeStory(Story story, boolean givenStory) {
         for (StoryReporter reporter : delegates) {
             reporter.beforeStory(story, givenStory);
@@ -91,6 +100,12 @@ public class DelegatingStoryReporter implements StoryReporter {
     public void failedOutcomes(String step, OutcomesTable table) {
         for (StoryReporter reporter : delegates) {
             reporter.failedOutcomes(step, table);
+        }
+    }
+
+    public void givenStories(GivenStories givenStories) {
+        for (StoryReporter reporter : delegates) {
+            reporter.givenStories(givenStories);
         }
     }
 
@@ -130,6 +145,18 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
 	}
 	
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        for (StoryReporter reporter : delegates) {
+            reporter.scenarioNotAllowed(scenario, filter);
+        }
+    }
+
+    public void storyNotAllowed(Story story, String filter) {
+        for (StoryReporter reporter : delegates) {
+            reporter.storyNotAllowed(story, filter);
+        }
+    }
+	
     public Collection<StoryReporter> getDelegates() {
         return delegates;
     }
@@ -138,4 +165,5 @@ public class DelegatingStoryReporter implements StoryReporter {
     public String toString() {
     	return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 }

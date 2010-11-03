@@ -1,5 +1,7 @@
 package org.jbehave.mojo;
 
+import static java.util.Arrays.asList;
+
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
@@ -10,10 +12,14 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
+import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.StoryMaps;
+import org.jbehave.core.reporters.ReportsCount;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -69,7 +75,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-     List<String> compileClasspathElements;
+    List<String> compileClasspathElements;
 
     /**
      * Test classpath.
@@ -78,7 +84,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @required
      * @readonly
      */
-     List<String> testClasspathElements;
+    List<String> testClasspathElements;
 
     /**
      * The boolean flag to skip stories
@@ -144,6 +150,25 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     String storyFinderClass = StoryFinder.class.getName();
 
     /**
+     * The meta filter
+     * 
+     * @parameter
+     */
+    List<String> metaFilters = asList();
+
+    /**
+     * The system properties
+     * 
+     * @parameter
+     */
+    Properties systemProperties = new Properties();
+
+    /**
+     * The class loader
+     */
+    private EmbedderClassLoader classLoader;
+
+    /**
      * Determines if the scope of the mojo classpath is "test"
      * 
      * @return A boolean <code>true</code> if test scoped
@@ -160,13 +185,16 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     /**
-     * Creates the EmbedderClassLoader with the classpath element of the
-     * selected scope
+     * Returns the EmbedderClassLoader with the classpath element of the
+     * selected scope.
      * 
-     * @return A EmbedderClassLoader
+     * @return An EmbedderClassLoader
      */
-    protected EmbedderClassLoader createClassLoader() {
-        return new EmbedderClassLoader(classpathElements());
+    protected EmbedderClassLoader classLoader() {
+        if ( classLoader == null ){
+            classLoader = new EmbedderClassLoader(classpathElements());
+        }
+        return classLoader;
     }
 
     List<String> classpathElements() {
@@ -178,8 +206,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     /**
-     * Finds story paths, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
-     * specified {@link #includes} and {@link #excludes}.
+     * Finds story paths, using the {@link #newStoryFinder()}, in the
+     * {@link #searchDirectory()} given specified {@link #includes} and
+     * {@link #excludes}.
      * 
      * @return A List of story paths found
      */
@@ -191,8 +220,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     /**
-     * Finds class names, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
-     * specified {@link #includes} and {@link #excludes}.
+     * Finds class names, using the {@link #newStoryFinder()}, in the
+     * {@link #searchDirectory()} given specified {@link #includes} and
+     * {@link #excludes}.
      * 
      * @return A List of class names found
      */
@@ -209,9 +239,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @return A StoryFinder
      */
     protected StoryFinder newStoryFinder() {
-        return createClassLoader().newInstance(StoryFinder.class, storyFinderClass);
+        return classLoader().newInstance(StoryFinder.class, storyFinderClass);
     }
-    
+
     /**
      * Creates an instance of Embedder, either using
      * {@link #injectableEmbedderClass} (if set) or defaulting to
@@ -221,13 +251,19 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      */
     protected Embedder newEmbedder() {
         Embedder embedder = null;
-        EmbedderClassLoader classLoader = createClassLoader();
+        EmbedderClassLoader classLoader = classLoader();
         if (injectableEmbedderClass != null) {
             embedder = classLoader.newInstance(InjectableEmbedder.class, injectableEmbedderClass).injectedEmbedder();
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
-        embedder.useEmbedderMonitor(embedderMonitor());
+        embedder.useClassLoader(classLoader);
+        embedder.useSystemProperties(systemProperties);
+        EmbedderMonitor embedderMonitor = embedderMonitor();
+        embedder.useEmbedderMonitor(embedderMonitor);
+        if ( !metaFilters.isEmpty() ) {
+            embedder.useMetaFilters(metaFilters);
+        }
         embedder.useEmbedderControls(embedderControls());
         return embedder;
     }
@@ -245,15 +281,19 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     protected class MavenEmbedderMonitor implements EmbedderMonitor {
 
         public void batchFailed(BatchFailures failures) {
-            getLog().warn("Failed to run batch " + failures);            
+            getLog().warn("Failed to run batch " + failures);
         }
 
         public void embeddableFailed(String name, Throwable cause) {
-            getLog().warn("Failed to run embeddable " + name, cause);            
+            getLog().warn("Failed to run embeddable " + name, cause);
         }
 
         public void embeddablesSkipped(List<String> classNames) {
-            getLog().info("Skipped embeddables " + classNames);            
+            getLog().info("Skipped embeddables " + classNames);
+        }
+
+        public void metaNotAllowed(Meta meta, MetaFilter filter) {
+            getLog().info(meta + " not allowed by filter '" + filter.asString() + "'");
         }
 
         public void runningEmbeddable(String name) {
@@ -265,7 +305,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void storiesSkipped(List<String> storyPaths) {
-            getLog().info("Skipped stories " + storyPaths);            
+            getLog().info("Skipped stories " + storyPaths);
         }
 
         public void storyFailed(String path, Throwable cause) {
@@ -276,27 +316,53 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().warn("Annotated instance " + annotatedInstance + " not of type " + type);
         }
 
-        public void generatingStoriesView(File outputDirectory, List<String> formats, Properties viewProperties) {
+        public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
             getLog().info(
-                    "Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'"
+                    "Generating reports view to '" + outputDirectory + "' using formats '" + formats + "'"
                             + " and view properties '" + viewProperties + "'");
         }
 
-        public void storiesViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
+        public void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
                 Throwable cause) {
-            String message = "Failed to generate stories view in outputDirectory " + outputDirectory
-                    + " using formats " + formats + " and view properties '" + viewProperties + "'";
+            String message = "Failed to generate reports view to '" + outputDirectory + "' using formats '" + formats + "'"
+                            + " and view properties '" + viewProperties + "'";
             getLog().warn(message, cause);
         }
 
-        public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
-            getLog().info(
-                    "Stories view generated with " + stories + " stories containing " + scenarios
-                            + " scenarios (of which  " + failedScenarios + " failed)");
+        public void reportsViewGenerated(ReportsCount count) {
+            getLog().info("Reports view generated with " + count.getStories() + " stories containing " + count.getScenarios() + " scenarios (of which  "
+                    + count.getScenariosFailed() + " failed)");
+            if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
+                getLog().info("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  " + count.getScenariosNotAllowed()
+                        + " scenarios");
+            }
         }
 
-        public void storiesViewNotGenerated() {
-            getLog().info("Stories view not generated");
+        public void reportsViewNotGenerated() {
+            getLog().info("Reports view not generated");
+        }
+
+        public void mappingStory(String storyPath, List<String> metaFilters) {
+            getLog().info("Mapping story "+storyPath+" with meta filters "+metaFilters);
+        }
+        
+        public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
+            getLog().info("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'");
+        }
+
+        public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
+                Throwable cause) {
+            getLog().info("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'");
+        }
+
+        public void processingSystemProperties(Properties properties) {
+            getLog().info("Processing system properties " + properties);
+        }
+        
+        public void systemPropertySet(String name, String value) {
+            getLog().info("System property '" + name + "' set to '"+value+"'");
         }
 
         @Override

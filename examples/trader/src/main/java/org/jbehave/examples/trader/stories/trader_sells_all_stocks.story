@@ -1,7 +1,5 @@
 Story: Any free-text description can go here (and Story: is also optional)
 
-Meta: @theme trading @ignore true
-
 Narrative: The narrative is keyword based
 
 In order to cut my losses

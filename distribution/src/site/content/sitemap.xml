@@ -12,7 +12,7 @@
     <page>release-notes.html</page>
     <page>building-source.html</page>
     <page>running-examples.html</page>
-    <page>migrating-from-2.x.html</page>
+    <page>migration-paths.html</page>
   </section>
   <section>
     <name>BDD Concepts</name>
@@ -42,11 +42,14 @@
     <page>dependency-injection.html</page>
     <page>parameter-injection.html</page>
     <page>parameter-converters.html</page>
-    <page>examples-table.html</page>
-    <page>parameters-table.html</page>
+    <page>parametrised-scenarios.html</page>
+    <page>tabular-parameters.html</page>
     <page>outcomes-table.html</page>
     <page>given-stories.html</page>
     <page>meta-info.html</page>
+    <page>meta-filtering.html</page>
+    <page>story-mapping.html</page>
+    <page>using-groovy.html</page>    
   </section>
   <section>
     <name>Project Info</name>

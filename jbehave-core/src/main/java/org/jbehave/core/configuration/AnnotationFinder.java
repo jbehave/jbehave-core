@@ -48,7 +48,7 @@ public class AnnotationFinder {
             String memberName) {
         Set<T> set = new HashSet<T>();
         if (!isAnnotationPresent(annotationClass)) {
-            return new ArrayList(set);
+            return new ArrayList<T>(set);
         }
         Object[] values = getAnnotatedValue(annotationClass, Object[].class, memberName);
         for (Object value : values) {
@@ -65,7 +65,7 @@ public class AnnotationFinder {
                 set.addAll(new AnnotationFinder(superClass).getAnnotatedValues(annotationClass, type, memberName));
             }
         }
-        return new ArrayList(set);
+        return new ArrayList<T>(set);
     }
 
     /**

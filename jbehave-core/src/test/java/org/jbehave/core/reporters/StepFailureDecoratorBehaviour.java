@@ -17,6 +17,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
 import org.junit.Before;
@@ -39,16 +40,16 @@ public class StepFailureDecoratorBehaviour {
         // Given
         Story story = new Story();
         boolean givenStory = false;
-        List<String> storyPaths = asList("/path1", "/path2");
         List<String> steps = asList("Given step <one>", "Then step <two>");
         ExamplesTable table = new ExamplesTable("|one|two|\n |1|2|\n");
         Map<String, String> tableRow = table.getRow(0);
-        
+
         // When
         decorator.dryRun();
         decorator.beforeStory(story, givenStory);
         decorator.beforeScenario("My core 1");
-        decorator.givenStories(storyPaths);
+        GivenStories givenStories = new GivenStories("/path1,/path2");
+        decorator.givenStories(givenStories);
         decorator.ignorable("!-- ignore me");
         decorator.successful("Given step 1.1");
         decorator.pending("When step 1.2");
@@ -64,12 +65,12 @@ public class StepFailureDecoratorBehaviour {
 
         inOrder.verify(delegate).beforeStory(story, givenStory);
         inOrder.verify(delegate).beforeScenario("My core 1");
-        inOrder.verify(delegate).givenStories(storyPaths);        
+        inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).ignorable("!-- ignore me");
         inOrder.verify(delegate).successful("Given step 1.1");
         inOrder.verify(delegate).pending("When step 1.2");
         inOrder.verify(delegate).notPerformed("Then step 1.3");
-        inOrder.verify(delegate).beforeExamples(steps, table);        
+        inOrder.verify(delegate).beforeExamples(steps, table);
         inOrder.verify(delegate).example(tableRow);
         inOrder.verify(delegate).afterExamples();
         inOrder.verify(delegate).afterScenario();
@@ -86,7 +87,8 @@ public class StepFailureDecoratorBehaviour {
         decorator.failedOutcomes("When outcomes fail", table);
 
         // Then
-        verify(delegate).failed(eq("When I have a bad idea"), argThat(hasMessage("'" + "When I have a bad idea" + "': " + t.getMessage())));
+        verify(delegate).failed(eq("When I have a bad idea"),
+                argThat(hasMessage("'" + "When I have a bad idea" + "': " + t.getMessage())));
         verify(delegate).failedOutcomes(eq("When outcomes fail"), eq(table));
     }
 

@@ -1,12 +1,15 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Story;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 
 /**
  * Filters out the reports from all stories that pass, The delegate receives
@@ -43,6 +46,15 @@ public class SilentSuccessFilter implements StoryReporter {
                 beforeStoryState = State.SILENT;
             }
         };
+    }
+
+    public void storyNotAllowed(final Story story, final String filter) {
+        beforeStoryState = new State() {
+            public void report() {
+                delegate.storyNotAllowed(story, filter);
+            }
+        };
+        beforeStoryState.report();
     }
 
     public void afterStory(boolean givenStory) {
@@ -119,6 +131,32 @@ public class SilentSuccessFilter implements StoryReporter {
         });
     }
 
+    public void scenarioNotAllowed(final Scenario scenario, final String filter) {
+        scenarioState = new State() {
+            public void report() {
+                delegate.scenarioNotAllowed(scenario, filter);
+            }
+        };
+        scenarioState.report();
+    }
+
+    public void scenarioMeta(final Meta meta) {
+        scenarioTodos = new ArrayList<Todo>();
+        scenarioTodos.add(new Todo() {
+            public void doNow() {
+                delegate.scenarioMeta(meta);
+            }
+        });
+    }
+
+    public void givenStories(final GivenStories givenStories) {
+        scenarioTodos.add(new Todo() {
+            public void doNow() {
+                delegate.givenStories(givenStories);
+            }
+        });
+    }
+
     public void givenStories(final List<String> storyPaths) {
         scenarioTodos.add(new Todo() {
             public void doNow() {
@@ -150,7 +188,7 @@ public class SilentSuccessFilter implements StoryReporter {
             }
         });
     }
-
+    
     private static interface Todo {
         void doNow();
     }

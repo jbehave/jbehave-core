@@ -1,12 +1,12 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>Meta Information</title>
+<title>Meta Info</title>
 </head>
 
 <body>
 
-<h2>Providing Meta Information</h2>
+<h2>Providing Meta Info</h2>
 
 <p>BDD encourages as much information as is meaningful to the
 business to be included in the stories and scenarios. But as these
@@ -15,7 +15,8 @@ all this information. It will also become necessary to organise the
 growing number of stories by different criterias.</p>
 
 <p>To help users better manage their stories, JBehave allow the
-specification of meta information, both at story and scenario level.</p>
+specification of meta information, both at story and scenario level.
+<b>Meta information is provided as a list of name-value properties</b>, e.g.:</p>
 
 <pre class="brush: bdd">
     Meta:
@@ -30,16 +31,18 @@ specification of meta information, both at story and scenario level.</p>
     Scenario:  A scenario which we cannot run every time due to some technical contraint
     Meta:
     @skip true    
+    @ignored    
     Given ... // normal scenario steps
 </pre>
 
 <p>When JBehave encounters the keyword <b>Meta:</b>, it collects the
-provided name-value properties, separated by property keyword <b>@</b>.
+provided name-value properties, separated by the property keyword <b>@</b>.
 Both keywords are configurable and localizable.</p>
 
-<p>By convention, the first space in the property separates the name
+<p>For each given property, the first space separates the name
 from the value, e.g. in the property "themes UI Usability", the name is
-"themes" and the value is "UI Usability".</p>
+"themes" and the value is "UI Usability".  The value can also be empty, 
+as in the case of the "ignored" property.</p>
 
 <p>Note that spaces are also allowed after the property keyword <b>@</b>,
 but these will be ignored in the parsing. E.g. if we wrote:</p>
@@ -56,7 +59,8 @@ but these will be ignored in the parsing. E.g. if we wrote:</p>
 constrained so users can chose whatever names are most appropriate for
 the information they are trying to convey. The properties are collected
 as part of the story and scenario parsing and made available for
-arbitrary purposes, e.g. filtering in the running of the stories.</p>
+different uses, e.g. <a href="meta-filtering.html">meta filtering</a> 
+or <a href="story-mapping.html">story mapping</a>.</p>
 
 <div class="clear">
 <hr />

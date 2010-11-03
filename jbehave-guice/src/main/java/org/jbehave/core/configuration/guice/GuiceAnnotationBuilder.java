@@ -44,11 +44,11 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
         super(annotatedClass, annotationMonitor);
     }
 
-    @SuppressWarnings("unchecked")
     public Configuration buildConfiguration() throws AnnotationRequired {
 
         AnnotationFinder finder = annotationFinder();
         if (finder.isAnnotationPresent(UsingGuice.class)) {
+            @SuppressWarnings("rawtypes")
             List<Class> moduleClasses = finder.getAnnotatedValues(UsingGuice.class, Class.class, "modules");
             List<Module> modules = new ArrayList<Module>();
             for (Class<Module> moduleClass : moduleClasses) {

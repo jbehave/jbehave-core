@@ -6,20 +6,26 @@ import static org.apache.tools.ant.Project.MSG_INFO;
 import static org.apache.tools.ant.Project.MSG_WARN;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.filters.StringInputStream;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
+import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.StoryMaps;
+import org.jbehave.core.reporters.ReportsCount;
 
 /**
  * Abstract task that holds all the configuration parameters to specify and load
@@ -41,14 +47,14 @@ public abstract class AbstractEmbedderTask extends Task {
     private String scope = "compile";
 
     /**
-     * Include filters, relative to the root source directory determined
-     * by the scope
+     * Include filters, relative to the root source directory determined by the
+     * scope
      */
     private List<String> includes = new ArrayList<String>();
 
     /**
-     * Exclude filters, relative to the root source directory determined
-     * by the scope
+     * Exclude filters, relative to the root source directory determined by the
+     * scope
      */
     private List<String> excludes = new ArrayList<String>();
 
@@ -98,6 +104,21 @@ public abstract class AbstractEmbedderTask extends Task {
     private String storyFinderClass = StoryFinder.class.getName();
 
     /**
+     * The meta filters
+     */
+    private List<String> metaFilters = asList();
+
+    /**
+     * The system properties
+     */
+    private Properties systemProperties = new Properties();
+
+    /**
+     * The classloader
+     */
+    private EmbedderClassLoader classLoader;
+
+    /**
      * Determines if the scope of the source directory is "test"
      * 
      * @return A boolean <code>true</code> if test scoped
@@ -114,13 +135,16 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     /**
-     * Creates the EmbedderClassLoader with the classpath element of the selected
-     * scope
+     * Creates the EmbedderClassLoader with the classpath element of the
+     * selected scope
      * 
      * @return A EmbedderClassLoader
      */
-    protected EmbedderClassLoader createClassLoader() {
-        return new EmbedderClassLoader(this.getClass().getClassLoader());
+    protected EmbedderClassLoader classLoader() {
+        if ( classLoader == null ){
+            classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        }
+        return classLoader;
     }
 
     protected EmbedderMonitor embedderMonitor() {
@@ -134,8 +158,9 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     /**
-     * Finds story paths, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
-     * specified {@link #includes} and {@link #excludes}.
+     * Finds story paths, using the {@link #newStoryFinder()}, in the
+     * {@link #searchDirectory()} given specified {@link #includes} and
+     * {@link #excludes}.
      * 
      * @return A List of story paths found
      */
@@ -147,8 +172,9 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     /**
-     * Finds class names, using the {@link #newStoryFinder()}, in the {@link #searchDirectory()} given
-     * specified {@link #includes} and {@link #excludes}.
+     * Finds class names, using the {@link #newStoryFinder()}, in the
+     * {@link #searchDirectory()} given specified {@link #includes} and
+     * {@link #excludes}.
      * 
      * @return A List of class names found
      */
@@ -165,24 +191,31 @@ public abstract class AbstractEmbedderTask extends Task {
      * @return A StoryFinder
      */
     protected StoryFinder newStoryFinder() {
-        return createClassLoader().newInstance(StoryFinder.class, storyFinderClass);
+        return classLoader().newInstance(StoryFinder.class, storyFinderClass);
     }
 
     /**
-     * Creates an instance of Embedder, either using {@link #injectableEmbedderClass} (if set)
-     * or defaulting to {@link #embedderClass}.
+     * Creates an instance of Embedder, either using
+     * {@link #injectableEmbedderClass} (if set) or defaulting to
+     * {@link #embedderClass}.
      * 
      * @return An Embedder
      */
     protected Embedder newEmbedder() {
         Embedder embedder = null;
-        EmbedderClassLoader classLoader = createClassLoader();
-        if ( injectableEmbedderClass != null ){
+        EmbedderClassLoader classLoader = classLoader();
+        if (injectableEmbedderClass != null) {
             embedder = classLoader.newInstance(InjectableEmbedder.class, injectableEmbedderClass).injectedEmbedder();
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
-        embedder.useEmbedderMonitor(embedderMonitor());
+        embedder.useClassLoader(classLoader);
+        embedder.useSystemProperties(systemProperties);
+        EmbedderMonitor embedderMonitor = embedderMonitor();
+        embedder.useEmbedderMonitor(embedderMonitor);
+        if ( !metaFilters.isEmpty() ) {
+            embedder.useMetaFilters(metaFilters);
+        }
         embedder.useEmbedderControls(embedderControls());
         return embedder;
     }
@@ -193,11 +226,15 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void embeddableFailed(String name, Throwable cause) {
-            log("Failed to run embeddable " + name, cause, MSG_WARN);            
+            log("Failed to run embeddable " + name, cause, MSG_WARN);
         }
 
         public void embeddablesSkipped(List<String> classNames) {
-            log("Skipped embeddables " + classNames, MSG_INFO);                        
+            log("Skipped embeddables " + classNames, MSG_INFO);
+        }
+
+        public void metaNotAllowed(Meta meta, MetaFilter filter) {
+            log(meta + " not allowed by filter '" + filter.asString() + "'", MSG_INFO);
         }
 
         public void runningEmbeddable(String name) {
@@ -205,7 +242,7 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void storiesSkipped(List<String> storyPaths) {
-            log("Skipped stories " + storyPaths, MSG_INFO);                                    
+            log("Skipped stories " + storyPaths, MSG_INFO);
         }
 
         public void storyFailed(String path, Throwable cause) {
@@ -217,34 +254,61 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
-            log("Annotated instance "+annotatedInstance+" not of type "+type, MSG_WARN);            
+            log("Annotated instance " + annotatedInstance + " not of type " + type, MSG_WARN);
         }
-        
-        public void generatingStoriesView(File outputDirectory, List<String> formats, Properties viewProperties) {
-            log("Generating stories view in '" + outputDirectory + "' using formats '" + formats + "'"
+
+        public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
+            log("Generating reports view to '" + outputDirectory + "' using formats '" + formats + "'"
                     + " and view properties '" + viewProperties + "'", MSG_INFO);
         }
 
-        public void storiesViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
+        public void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
                 Throwable cause) {
-            log("Failed to generate stories view in outputDirectory " + outputDirectory + " using formats " + formats
+            log("Failed to generate reports view to '" + outputDirectory + "' using formats '" + formats + "'"
                     + " and view properties '" + viewProperties + "'", cause, MSG_WARN);
         }
 
-        public void storiesViewGenerated(int stories, int scenarios, int failedScenarios) {
-            log("Stories view generated with " + stories +" stories containing "+ scenarios + " scenarios (of which  " + failedScenarios + " failed)",
-                    MSG_INFO);
+        public void reportsViewGenerated(ReportsCount count) {
+            log("Reports view generated with " + count.getStories() + " stories containing " + count.getScenarios() + " scenarios (of which  "
+                    + count.getScenariosFailed() + " failed)", MSG_INFO);
+            if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
+                log("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  " + count.getScenariosNotAllowed()
+                        + " scenarios", MSG_INFO);
+            }
         }
 
-        public void storiesViewNotGenerated() {
-            log("Stories view not generated", MSG_INFO);
+        public void reportsViewNotGenerated() {
+            log("Reports view not generated", MSG_INFO);
+        }
+
+        public void mappingStory(String storyPath, List<String> metaFilters) {
+            log("Mapping story "+storyPath+" with meta filters "+metaFilters, MSG_INFO);
+        }
+
+
+        public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
+            log("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'", MSG_INFO);
+        }
+
+        public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
+                Throwable cause) {
+            log("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'", MSG_INFO);
+        }
+
+        public void processingSystemProperties(Properties properties) {
+            log("Processing system properties " + properties, MSG_INFO);
+        }
+        
+        public void systemPropertySet(String name, String value) {
+            log("System property '" + name + "' set to '"+value+"'", MSG_INFO);
         }
 
         @Override
         public String toString() {
             return this.getClass().getSimpleName();
         }
-
     }
 
     // Setters used by Task to inject dependencies
@@ -300,8 +364,27 @@ public abstract class AbstractEmbedderTask extends Task {
     public void setAnnotatedEmbedderRunnerClass(String annotatedEmbedderRunnerClass) {
         this.annotatedEmbedderRunnerClass = annotatedEmbedderRunnerClass;
     }
-    
-    public void setStoryFinderClass(String storyFinderClass){
+
+    public void setStoryFinderClass(String storyFinderClass) {
         this.storyFinderClass = storyFinderClass;
     }
+
+    public void setMetaFilters(String metaFiltersCSV) {
+        this.metaFilters = asList(metaFiltersCSV.split(","));
+    }
+    
+    public void setSystemProperties(String systemPropertiesCSV){
+        this.systemProperties = loadProperties(systemPropertiesCSV);
+    }
+
+    private Properties loadProperties(String systemPropertiesCSV) {
+        Properties properties = new Properties();
+        try {
+            properties.load(new StringInputStream(systemPropertiesCSV.replace(",", "\n")));
+        } catch (IOException e) {
+            // return empty map
+        }
+        return properties;
+    }
+
 }

@@ -50,9 +50,21 @@ public class TxtOutput extends PrintStreamOutput {
 
     private static Properties defaultPatterns() {
         Properties patterns = new Properties();
+        patterns.setProperty("dryRun", "{0}\n");
+        patterns.setProperty("beforeStory", "{0}\n({1})\n");
+        patterns.setProperty("afterStory", "\n");
         patterns.setProperty("metaStart", "{0}\n");
         patterns.setProperty("metaProperty", "{0}{1} {2}\n");    
         patterns.setProperty("metaEnd", "\n");
+        patterns.setProperty("filter", "{0}\n");
+        patterns.setProperty("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n");
+        patterns.setProperty("beforeScenario", "{0} {1}\n");
+        patterns.setProperty("afterScenario", "\n");
+        patterns.setProperty("afterScenarioWithFailure", "\n{0}\n");
+        patterns.setProperty("givenStories", "{0} {1}\n");
+        patterns.setProperty("givenStoriesStart", "{0}\n");
+        patterns.setProperty("givenStory", "{0} {1}\n");
+        patterns.setProperty("givenStoriesEnd", "\n");
         patterns.setProperty("successful", "{0}\n");
         patterns.setProperty("ignorable", "{0}\n");
         patterns.setProperty("pending", "{0} ({1})\n");
@@ -68,13 +80,6 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("outcomesTableRowEnd", "\n");
         patterns.setProperty("outcomesTableBodyEnd", "");
         patterns.setProperty("outcomesTableEnd", "");
-        patterns.setProperty("beforeStory", "{0}\n({1})\n");
-        patterns.setProperty("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n");
-        patterns.setProperty("afterStory", "\n");
-        patterns.setProperty("beforeScenario", "{0} {1}\n");
-        patterns.setProperty("afterScenario", "\n");
-        patterns.setProperty("afterScenarioWithFailure", "\n{0}\n");
-        patterns.setProperty("givenStories", "{0} {1}\n");
         patterns.setProperty("beforeExamples", "{0}\n");
         patterns.setProperty("examplesStep", "{0}\n");
         patterns.setProperty("afterExamples", "\n");
@@ -91,7 +96,7 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("example", "\n{0} {1}\n");
         patterns.setProperty("parameterValueStart", "");
         patterns.setProperty("parameterValueEnd", "");
-        patterns.setProperty("parameterValueNewline", "\n");        
+        patterns.setProperty("parameterValueNewline", "\n");     
         return patterns;
     }
 

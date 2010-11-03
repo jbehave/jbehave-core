@@ -37,10 +37,10 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
         super(annotatedClass, annotationMonitor);
     }
 
-    @SuppressWarnings({ "unchecked" })
     public Configuration buildConfiguration() throws AnnotationRequired {
         AnnotationFinder finder = annotationFinder();
         if (finder.isAnnotationPresent(UsingPico.class)) {
+            @SuppressWarnings("rawtypes")
             List<Class> moduleClasses = finder.getAnnotatedValues(UsingPico.class, Class.class, "modules");
             List<PicoModule> modules = new ArrayList<PicoModule>();
             for (Class<PicoModule> moduleClass : moduleClasses) {
@@ -99,6 +99,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
         if ( container != null ){
             return container;
         }
+        @SuppressWarnings("rawtypes")
         Class containerClass = annotationFinder().getAnnotatedValue(UsingPico.class, Class.class, "container");
         MutablePicoContainer container = instanceOf(MutablePicoContainer.class, containerClass);
         for (PicoModule module : modules) {

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
@@ -55,10 +56,6 @@ public class UnmodifiableConfiguration extends Configuration {
         return delegate.keywords();
     }
 
-    public boolean dryRun() {
-        return delegate.dryRun();
-    }
-
     public ParameterConverters parameterConverters() {
         return delegate.parameterConverters();
     }
@@ -77,6 +74,14 @@ public class UnmodifiableConfiguration extends Configuration {
 
     public StepPatternParser stepPatternParser() {
         return delegate.stepPatternParser();
+    }
+
+    public boolean dryRun() {
+        return delegate.dryRun();
+    }
+
+    public StoryControls storyControls() {
+        return delegate.storyControls();
     }
 
     public StoryLoader storyLoader() {
@@ -116,17 +121,22 @@ public class UnmodifiableConfiguration extends Configuration {
     }
 
     @Override
+    public Configuration doDryRun(Boolean dryRun) {
+        throw notAllowed();
+    }
+
+    @Override
+    public Configuration useStoryControls(StoryControls storyControls) {
+        throw notAllowed();
+    }
+
+    @Override
     public Configuration useStoryParser(StoryParser storyParser) {
         throw notAllowed();
     }
 
     @Override
     public Configuration useDefaultStoryReporter(StoryReporter storyReporter) {
-        throw notAllowed();
-    }
-
-    @Override
-    public Configuration doDryRun(Boolean dryRun) {
         throw notAllowed();
     }
 

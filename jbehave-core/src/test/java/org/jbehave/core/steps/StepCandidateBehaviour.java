@@ -352,7 +352,7 @@ public class StepCandidateBehaviour {
     @Test
     public void shouldPerformStepsInDryRunMode() {
         Configuration configuration = new MostUsefulConfiguration();
-        configuration.doDryRun(true);
+        configuration.storyControls().doDryRun(true);
         NamedTypeSteps steps = new NamedTypeSteps(configuration);
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));

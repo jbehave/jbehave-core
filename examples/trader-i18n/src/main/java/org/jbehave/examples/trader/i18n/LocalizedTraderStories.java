@@ -1,6 +1,5 @@
 package org.jbehave.examples.trader.i18n;
 
-import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
@@ -51,7 +50,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());        
         Keywords keywords = new LocalizedKeywords(locale());
         Properties properties = new Properties();
-        properties.setProperty("index", "ftl/jbehave-reports-index.ftl");
+        properties.setProperty("reports", "ftl/jbehave-reports.ftl");
         Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
                 .useStoryParser(new RegexStoryParser(keywords))
@@ -88,7 +87,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
 
     @Override
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(), asList(storyPattern()), null);
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), storyPattern(), "");
     }
 
     protected abstract Locale locale();

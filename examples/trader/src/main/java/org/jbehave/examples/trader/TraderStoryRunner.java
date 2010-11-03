@@ -18,12 +18,19 @@ import org.junit.Test;
 public class TraderStoryRunner {
 
     @Test
+    public void mapStories() {
+        Embedder embedder = new Embedder();
+        embedder.useMetaFilters(asList("+author *", "+theme *", "-skip"));
+        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
+        embedder.mapStoriesAsPaths(storyPaths);
+    }
+
+    @Test
     public void runClasspathLoadedStoriesAsJUnit() {
         // Embedder defines the configuration and candidate steps
         Embedder embedder = new TraderEmbedder();
         embedder.embedderControls().doIgnoreFailureInStories(true);
-        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-                asList("**/*.story"), asList(""));
+        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
         embedder.runStoriesAsPaths(storyPaths);
     }
 
@@ -33,7 +40,7 @@ public class TraderStoryRunner {
         Embedder embedder = new URLTraderEmbedder();
         String codeLocation = codeLocationFromClass(this.getClass()).getFile();
         List<String> storyPaths = new StoryFinder().findPaths(codeLocation, asList(
-                "**/trader_is_alerted_of_status.story", "**/traders_can_be_subset.story"), asList(""), "file:"
+                "**/trader_is_alerted_of_status.story", "**/traders_can_be_subset.story"), null, "file:"
                 + codeLocation);
         embedder.runStoriesAsPaths(storyPaths);
     }

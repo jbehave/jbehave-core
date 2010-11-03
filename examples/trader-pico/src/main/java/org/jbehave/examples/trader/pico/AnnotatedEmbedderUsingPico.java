@@ -1,6 +1,5 @@
 package org.jbehave.examples.trader.pico;
 
-import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
 import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
@@ -16,6 +15,7 @@ import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.pico.UsingPico;
 import org.jbehave.core.configuration.pico.PicoModule;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
@@ -58,15 +58,15 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
     }
 
     protected List<String> storyPaths() {
-        String searchInDirectory = codeLocationFromPath("../trader/src/main/java").getFile();
-        return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
+        return new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "");
     }
 
     public static class ConfigurationModule implements PicoModule {
 
         public void configure(MutablePicoContainer container) {
-            container.addComponent(StepPatternParser.class, new RegexPrefixCapturingPatternParser("%"));
+            container.addComponent(StoryControls.class, new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
             container.addComponent(StoryLoader.class, new LoadFromClasspath(this.getClass().getClassLoader()));
+            container.addComponent(StepPatternParser.class, new RegexPrefixCapturingPatternParser("%"));
             container.addComponent(ParameterConverter.class, new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
             container.addComponent(new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
                     .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass())).withFailureTrace(true));
