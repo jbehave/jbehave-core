@@ -42,7 +42,7 @@ public class ParameterConvertersBehaviour {
     public void shouldConvertValuesToNumbersWithDefaultNumberFormat() {
         NumberConverter converter = new NumberConverter();
         assertThatAllNumberTypesAreAccepted(converter);
-        assertThatAllNumbersAreConverted(converter, Locale.getDefault());
+        assertThatAllNumbersAreConverted(converter, ParameterConverters.DEFAULT_NUMBER_FORMAT_LOCAL);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class ParameterConvertersBehaviour {
         assertThat(converter.accept(listOfNumbers), is(true));
         assertThat(converter.accept(setOfNumbers), is(false));
         List<Number> list = (List<Number>) converter.convertValue("3, 0.5, 6.1f, 8.00", listOfNumbers);
-        NumberFormat numberFormat = NumberFormat.getInstance();
+        NumberFormat numberFormat = NumberFormat.getInstance(ParameterConverters.DEFAULT_NUMBER_FORMAT_LOCAL);
         assertThat(list.get(0), equalTo(numberFormat.parse("3")));
         assertThat(list.get(1), equalTo(numberFormat.parse("0.5")));
         assertThat(list.get(2), equalTo(numberFormat.parse("6.1f")));
