@@ -1,6 +1,9 @@
 package org.jbehave.core.io;
 
-import static java.util.Arrays.asList;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 import java.io.File;
 import java.net.URL;
@@ -8,11 +11,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.codehaus.plexus.util.Scanner;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.plexus.util.DirectoryScanner;
+import static java.util.Arrays.asList;
 
 /**
  * Finds stories by scanning file system. Stories can be either in the form of
@@ -21,7 +22,6 @@ import org.codehaus.plexus.util.DirectoryScanner;
 public class StoryFinder {
 
     private static final String JAVA = ".java";
-    private final DirectoryScanner scanner;
     private final String classNameExtension;
     private final Comparator<? super String> sortingComparator;
 
@@ -30,15 +30,14 @@ public class StoryFinder {
     }
 
     public StoryFinder(String classNameExtension) {
-        this(new DirectoryScanner(), classNameExtension, null);
+        this(classNameExtension, null);
     }
 
     public StoryFinder(Comparator<? super String> sortingComparator) {
-        this(new DirectoryScanner(), JAVA, sortingComparator);
+        this(JAVA, sortingComparator);
     }
 
-    public StoryFinder(DirectoryScanner scanner, String classNameExtension, Comparator<? super String> sortingComparator) {
-        this.scanner = scanner;
+    private StoryFinder(String classNameExtension, Comparator<? super String> sortingComparator) {
         this.classNameExtension = classNameExtension;
         this.sortingComparator = sortingComparator;
     }
@@ -173,6 +172,7 @@ public class StoryFinder {
     }
 
     protected List<String> scan(String basedir, List<String> includes, List<String> excludes) {
+        DirectoryScanner scanner = new DirectoryScanner();
         if (!new File(basedir).exists()) {
             return new ArrayList<String>();
         }
