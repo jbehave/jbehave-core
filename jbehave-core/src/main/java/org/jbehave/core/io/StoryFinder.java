@@ -1,9 +1,6 @@
 package org.jbehave.core.io;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.plexus.util.DirectoryScanner;
+import static java.util.Arrays.asList;
 
 import java.io.File;
 import java.net.URL;
@@ -11,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.codehaus.plexus.util.Scanner;
 
-import static java.util.Arrays.asList;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 /**
  * Finds stories by scanning file system. Stories can be either in the form of
