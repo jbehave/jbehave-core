@@ -55,11 +55,13 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 	}
 
 	public List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps,
-			Scenario scenario, Map<String, String> tableRow) {
+			Scenario scenario, Map<String, String> parameters, boolean skipBeforeAndAfterScenarioSteps) {
 		List<Step> steps = new ArrayList<Step>();
 
-		addMatchedScenarioSteps(scenario, steps, tableRow, candidateSteps);
-		addBeforeAndAfterScenarioSteps(steps, candidateSteps);
+		addMatchedScenarioSteps(scenario, steps, parameters, candidateSteps);
+		if ( !skipBeforeAndAfterScenarioSteps ){
+		    addBeforeAndAfterScenarioSteps(steps, candidateSteps);
+		}
 
 		return steps;
 	}
@@ -89,7 +91,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 	}
 
 	private void addMatchedScenarioSteps(Scenario scenario, List<Step> steps,
-			Map<String, String> tableRow, List<CandidateSteps> candidateSteps) {
+			Map<String, String> namedParameters, List<CandidateSteps> candidateSteps) {
         List<StepCandidate> allCandidates = stepFinder.collectCandidates(candidateSteps);
 		String previousNonAndStep = null;
 		for (String stepAsString : scenario.getSteps()) {
@@ -104,7 +106,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 				}
 				if (matchesCandidate(stepAsString, previousNonAndStep,
 						candidate)) {
-					step = candidate.createMatchedStep(stepAsString, tableRow);
+					step = candidate.createMatchedStep(stepAsString, namedParameters);
 					if (!candidate.isAndStep(stepAsString)) {
 						// only update previous step if not AND step
 						previousNonAndStep = stepAsString;

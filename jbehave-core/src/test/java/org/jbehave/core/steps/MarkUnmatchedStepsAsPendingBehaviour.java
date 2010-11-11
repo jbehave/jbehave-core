@@ -22,7 +22,8 @@ import org.junit.Test;
 
 public class MarkUnmatchedStepsAsPendingBehaviour {
 
-    private Map<String, String> tableRow = new HashMap<String, String>();
+    private Map<String, String> parameters = new HashMap<String, String>();
+    private boolean skipBeforeAndAfterSteps = false;
 
     @Test
     public void shouldCreateExecutableStepsWhenCandidatesAreMatched() {
@@ -34,12 +35,12 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step executableStep = mock(Step.class);
 
         when(candidate.matches("my step")).thenReturn(true);
-        when(candidate.createMatchedStep("my step", tableRow)).thenReturn(executableStep);
+        when(candidate.createMatchedStep("my step", parameters)).thenReturn(executableStep);
         when(steps.listCandidates()).thenReturn(asList(candidate));
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList("my step")),
-                tableRow);
+                parameters, skipBeforeAndAfterSteps);
 
         // Then
         assertThat(executableSteps.size(), equalTo(1));
@@ -59,18 +60,18 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         String myStep = "my step";
         when(candidate.matches(myStep)).thenReturn(true);
-        when(candidate.createMatchedStep(myStep, tableRow)).thenReturn(step);
+        when(candidate.createMatchedStep(myStep, parameters)).thenReturn(step);
         when(andCandidate.isAndStep(myStep)).thenReturn(false);
         String myAndStep = "my And step";
         when(andCandidate.matches(myAndStep)).thenReturn(true);
         when(andCandidate.isAndStep(myAndStep)).thenReturn(true);
-        when(andCandidate.createMatchedStep(myAndStep, tableRow)).thenReturn(andStep);
+        when(andCandidate.createMatchedStep(myAndStep, parameters)).thenReturn(andStep);
 
         when(steps.listCandidates()).thenReturn(asList(candidate, andCandidate));
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(myStep, myAndStep)),
-                tableRow);
+                parameters, skipBeforeAndAfterSteps);
 
         // Then
         assertThat(executableSteps.size(), equalTo(2));
@@ -91,7 +92,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(stepAsString)),
-                tableRow);
+                parameters, skipBeforeAndAfterSteps);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform();
@@ -114,7 +115,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(stepAsString)),
-                tableRow);
+                parameters, skipBeforeAndAfterSteps);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform();
@@ -152,14 +153,14 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step normalStep = mock(Step.class);
 
         when(candidate.matches("my step")).thenReturn(true);
-        when(candidate.createMatchedStep("my step", tableRow)).thenReturn(normalStep);
+        when(candidate.createMatchedStep("my step", parameters)).thenReturn(normalStep);
         when(steps1.listCandidates()).thenReturn(asList(candidate));
         when(steps2.listCandidates()).thenReturn(asList(new StepCandidate[] {}));
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
         List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps1, steps2), new Scenario(
-                asList("my step")), tableRow);
+                asList("my step")), parameters, skipBeforeAndAfterSteps);
 
         // Then all before and after steps should be added
         assertThat(executableSteps, equalTo(asList(stepBefore1, stepBefore2, normalStep, stepAfter1, stepAfter2)));
@@ -268,15 +269,15 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(candidate2.getPriority()).thenReturn(2);
         when(candidate3.getPriority()).thenReturn(3);
         when(candidate4.getPriority()).thenReturn(4);
-        when(candidate1.createMatchedStep(stepAsString, tableRow)).thenReturn(step1);
-        when(candidate2.createMatchedStep(stepAsString, tableRow)).thenReturn(step2);
-        when(candidate3.createMatchedStep(stepAsString, tableRow)).thenReturn(step3);
-        when(candidate4.createMatchedStep(stepAsString, tableRow)).thenReturn(step4);
+        when(candidate1.createMatchedStep(stepAsString, parameters)).thenReturn(step1);
+        when(candidate2.createMatchedStep(stepAsString, parameters)).thenReturn(step2);
+        when(candidate3.createMatchedStep(stepAsString, parameters)).thenReturn(step3);
+        when(candidate4.createMatchedStep(stepAsString, parameters)).thenReturn(step4);
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
         List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), new Scenario(asList(stepAsString)),
-                tableRow);
+                parameters, skipBeforeAndAfterSteps);
 
         // Then the step with highest priority is returned
         assertThat(step4, equalTo(steps.get(0)));
@@ -310,14 +311,14 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(candidate2.getPatternAsString()).thenReturn("When I do something ");
         when(candidate3.getPatternAsString()).thenReturn("Then I do something");
         when(candidate4.getPatternAsString()).thenReturn("And I do something");
-        when(candidate1.createMatchedStep(stepAsString, tableRow)).thenReturn(step1);
-        when(candidate2.createMatchedStep(stepAsString, tableRow)).thenReturn(step2);
-        when(candidate3.createMatchedStep(stepAsString, tableRow)).thenReturn(step3);
-        when(candidate4.createMatchedStep(stepAsString, tableRow)).thenReturn(step4);
+        when(candidate1.createMatchedStep(stepAsString, parameters)).thenReturn(step1);
+        when(candidate2.createMatchedStep(stepAsString, parameters)).thenReturn(step2);
+        when(candidate3.createMatchedStep(stepAsString, parameters)).thenReturn(step3);
+        when(candidate4.createMatchedStep(stepAsString, parameters)).thenReturn(step4);
 
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending(new StepFinder(new ByLevenshteinDistance()));
         List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), new Scenario(asList(stepAsString)),
-                tableRow);
+                parameters, skipBeforeAndAfterSteps);
 
         // Then the step with highest priority is returned
         assertThat(step4, equalTo(steps.get(0)));

@@ -7,34 +7,44 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * Holds flags used by the StoryRunner to control story execution flow.
  */
 public class StoryControls {
-	
-	private boolean dryRun = false;
-	private boolean skipScenariosAfterFailure = false;
 
-	public StoryControls() {
-	}
+    private boolean dryRun = false;
+    private boolean skipScenariosAfterFailure = false;
+    private boolean skipBeforeAndAfterScenarioStepsIfGivenStory;
 
-	public boolean dryRun() {
-		return dryRun;
-	}
+    public StoryControls() {
+    }
 
-	public boolean skipScenariosAfterFailure() {
-		return skipScenariosAfterFailure;
-	}
+    public boolean dryRun() {
+        return dryRun;
+    }
 
-	public StoryControls doDryRun(boolean dryRun) {
-		this.dryRun = dryRun;
-		return this;
-	}
+    public boolean skipScenariosAfterFailure() {
+        return skipScenariosAfterFailure;
+    }
 
-	public StoryControls doSkipScenariosAfterFailure(boolean skipScenariosAfterFailure) {
-		this.skipScenariosAfterFailure = skipScenariosAfterFailure;
-		return this;
-	}
+    public boolean skipBeforeAndAfterScenarioStepsIfGivenStory() {
+        return skipBeforeAndAfterScenarioStepsIfGivenStory;
+    }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-	}
+    public StoryControls doDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
+        return this;
+    }
+
+    public StoryControls doSkipScenariosAfterFailure(boolean skipScenariosAfterFailure) {
+        this.skipScenariosAfterFailure = skipScenariosAfterFailure;
+        return this;
+    }
+
+    public StoryControls doSkipBeforeAndAfterScenarioStepsIfGivenStory(boolean skipBeforeAndAfterScenarioStepsIfGivenStory) {
+        this.skipBeforeAndAfterScenarioStepsIfGivenStory = skipBeforeAndAfterScenarioStepsIfGivenStory;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 
 }

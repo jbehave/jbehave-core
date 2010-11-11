@@ -130,11 +130,12 @@ public class StoryRunner {
             reporter.scenarioMeta(scenario.getMeta());
             // run given stories, if any
             runGivenStories(configuration, candidateSteps, scenario, filter);
+            boolean skipBeforeAndAfterScenarioSteps = ( givenStory ? configuration.storyControls().skipBeforeAndAfterScenarioStepsIfGivenStory() : false);
             if (isParametrisedByExamples(scenario)) {
                 // run parametrised scenarios by examples
-                runParametrisedScenariosByExamples(candidateSteps, scenario);
+                runParametrisedScenariosByExamples(candidateSteps, scenario, skipBeforeAndAfterScenarioSteps);
             } else { // run as plain old scenario
-                runScenarioSteps(candidateSteps, scenario, storyParameters);
+                runScenarioSteps(candidateSteps, scenario, storyParameters, skipBeforeAndAfterScenarioSteps);
             }
             reporter.afterScenario();
         }
@@ -183,12 +184,12 @@ public class StoryRunner {
         return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireParameters();
     }
 
-    private void runParametrisedScenariosByExamples(List<CandidateSteps> candidateSteps, Scenario scenario) {
+    private void runParametrisedScenariosByExamples(List<CandidateSteps> candidateSteps, Scenario scenario, boolean skipBeforeAndAfterScenarioSteps) {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.beforeExamples(scenario.getSteps(), table);
         for (Map<String, String> scenarioParameters : table.getRows()) {
             reporter.example(scenarioParameters);
-            runScenarioSteps(candidateSteps, scenario, scenarioParameters);
+            runScenarioSteps(candidateSteps, scenario, scenarioParameters, skipBeforeAndAfterScenarioSteps);
         }
         reporter.afterExamples();
     }
@@ -197,8 +198,8 @@ public class StoryRunner {
         runSteps(stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory));
     }
 
-    private void runScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> parameters) {
-        runSteps(stepCollector.collectScenarioSteps(candidateSteps, scenario, parameters));
+    private void runScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> scenarioParameters, boolean skipBeforeAndAfterScenarioSteps) {
+        runSteps(stepCollector.collectScenarioSteps(candidateSteps, scenario, scenarioParameters, skipBeforeAndAfterScenarioSteps));
     }
 
     /**

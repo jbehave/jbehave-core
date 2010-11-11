@@ -20,6 +20,7 @@ public interface StepCollector {
 
     List<Step> collectBeforeOrAfterStorySteps(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean givenStory);
 
-    List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> tableRow);
+    List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario,
+            Map<String, String> parameters, boolean skipBeforeAndAfterScenarioSteps);
 
 }

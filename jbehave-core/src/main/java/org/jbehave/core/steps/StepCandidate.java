@@ -120,8 +120,8 @@ public class StepCandidate {
         return stepStartsWithWord(stepAsString, andWord);
     }
 
-    public Step createMatchedStep(String stepAsString, Map<String, String> tableRow) {
-        return stepCreator.createParametrisedStep(method, stepAsString, stripStartingWord(stepAsString), tableRow);
+    public Step createMatchedStep(String stepAsString, Map<String, String> namedParameters) {
+        return stepCreator.createParametrisedStep(method, stepAsString, stripStartingWord(stepAsString), namedParameters);
     }
 
     private String stripStartingWord(final String stepAsString) {
