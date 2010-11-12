@@ -43,7 +43,27 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 		return steps;
 	}
 
-	private List<Step> createSteps(List<BeforeOrAfterStep> beforeOrAfter,
+	
+	
+    /**
+     * {@inheritDoc}
+     */
+    public List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Stage stage)
+    {
+        List<Step> steps = new ArrayList<Step>();
+        for (CandidateSteps candidates : candidateSteps)
+        {
+            List<BeforeOrAfterStep> beforeOrAfterScenarioSteps = candidates.listBeforeOrAfterScenario();
+            if (stage == Stage.BEFORE)
+                steps.addAll(createSteps(beforeOrAfterScenarioSteps, stage));
+            else
+                steps.addAll(createStepsUponOutcome(beforeOrAfterScenarioSteps, stage));
+        }
+
+        return steps;
+    }
+
+    private List<Step> createSteps(List<BeforeOrAfterStep> beforeOrAfter,
 			Stage stage) {
 		List<Step> steps = new ArrayList<Step>();
 		for (BeforeOrAfterStep step : beforeOrAfter) {
@@ -55,28 +75,12 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 	}
 
 	public List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps,
-			Scenario scenario, Map<String, String> parameters, boolean skipBeforeAndAfterScenarioSteps) {
+			Scenario scenario, Map<String, String> parameters) {
 		List<Step> steps = new ArrayList<Step>();
 
 		addMatchedScenarioSteps(scenario, steps, parameters, candidateSteps);
-		if ( !skipBeforeAndAfterScenarioSteps ){
-		    addBeforeAndAfterScenarioSteps(steps, candidateSteps);
-		}
 
 		return steps;
-	}
-
-	private void addBeforeAndAfterScenarioSteps(List<Step> steps,
-			List<CandidateSteps> candidateSteps) {
-		for (CandidateSteps candidates : candidateSteps) {
-			steps.addAll(0, createSteps(candidates.listBeforeOrAfterScenario(),
-					Stage.BEFORE));
-		}
-
-		for (CandidateSteps candidates : candidateSteps) {
-			steps.addAll(createStepsUponOutcome(candidates
-					.listBeforeOrAfterScenario(), Stage.AFTER));
-		}
 	}
 
 	private List<Step> createStepsUponOutcome(

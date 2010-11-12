@@ -23,7 +23,6 @@ import org.junit.Test;
 public class MarkUnmatchedStepsAsPendingBehaviour {
 
     private Map<String, String> parameters = new HashMap<String, String>();
-    private boolean skipBeforeAndAfterSteps = false;
 
     @Test
     public void shouldCreateExecutableStepsWhenCandidatesAreMatched() {
@@ -40,7 +39,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList("my step")),
-                parameters, skipBeforeAndAfterSteps);
+                parameters);
 
         // Then
         assertThat(executableSteps.size(), equalTo(1));
@@ -71,7 +70,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(myStep, myAndStep)),
-                parameters, skipBeforeAndAfterSteps);
+                parameters);
 
         // Then
         assertThat(executableSteps.size(), equalTo(2));
@@ -92,7 +91,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(stepAsString)),
-                parameters, skipBeforeAndAfterSteps);
+                parameters);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform();
@@ -115,7 +114,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When
         List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(stepAsString)),
-                parameters, skipBeforeAndAfterSteps);
+                parameters);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform();
@@ -148,22 +147,15 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps1.listBeforeOrAfterScenario()).thenReturn(asList(bafStep11, bafStep12));
         when(steps2.listBeforeOrAfterScenario()).thenReturn(asList(bafStep21, bafStep22));
 
-        // And which have a 'normal' step that matches our scenario
-        StepCandidate candidate = mock(StepCandidate.class);
-        Step normalStep = mock(Step.class);
-
-        when(candidate.matches("my step")).thenReturn(true);
-        when(candidate.createMatchedStep("my step", parameters)).thenReturn(normalStep);
-        when(steps1.listCandidates()).thenReturn(asList(candidate));
-        when(steps2.listCandidates()).thenReturn(asList(new StepCandidate[] {}));
-
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
-        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps1, steps2), new Scenario(
-                asList("my step")), parameters, skipBeforeAndAfterSteps);
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.BEFORE);
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.AFTER);
 
+        
         // Then all before and after steps should be added
-        assertThat(executableSteps, equalTo(asList(stepBefore1, stepBefore2, normalStep, stepAfter1, stepAfter2)));
+        assertThat(beforeSteps, equalTo(asList(stepBefore1, stepBefore2)));
+        assertThat(afterSteps, equalTo(asList(stepAfter1, stepAfter2)));
     }
 
     @Test
@@ -277,7 +269,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
         List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), new Scenario(asList(stepAsString)),
-                parameters, skipBeforeAndAfterSteps);
+                parameters);
 
         // Then the step with highest priority is returned
         assertThat(step4, equalTo(steps.get(0)));
@@ -318,7 +310,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending(new StepFinder(new ByLevenshteinDistance()));
         List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), new Scenario(asList(stepAsString)),
-                parameters, skipBeforeAndAfterSteps);
+                parameters);
 
         // Then the step with highest priority is returned
         assertThat(step4, equalTo(steps.get(0)));

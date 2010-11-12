@@ -38,7 +38,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.AbstractStepResult;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
@@ -51,7 +50,6 @@ import org.mockito.InOrder;
 public class StoryRunnerBehaviour {
 
     private Map<String, String> parameters = new HashMap<String, String>();
-    private boolean skipBeforeAndAfterScenarioSteps = false;
 
     @Test
     public void shouldRunStepsBeforeAndAfterStories() throws Throwable {
@@ -97,16 +95,15 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = new Steps();
         IllegalArgumentException anException = new IllegalArgumentException();
         Step pendingStep = mock(Step.class);
-        Step successfulStep = mock(Step.class);
+        Step successfulStep = mockSuccesfulStep("successfulStep");
         Step failingStep = mock(Step.class);
         when(pendingStep.perform()).thenReturn(pending("pendingStep"));
-        when(successfulStep.perform()).thenReturn(successful("successfulStep"));
         when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
         when(failingStep.perform()).thenReturn(failed("failingStep", anException));
-        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(
                 asList(failingStep, successfulStep));
-        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(asList(successfulStep));
-        when(collector.collectScenarioSteps(asList(mySteps), scenario3, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(
+        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(asList(successfulStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario3, parameters)).thenReturn(
                 asList(successfulStep, pendingStep));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
@@ -152,15 +149,13 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
-        Step successfulStep = mock(Step.class);
-        when(successfulStep.perform()).thenReturn(successful("successfulStep"));
-        Step anotherSuccessfulStep = mock(Step.class);
-        when(anotherSuccessfulStep.perform()).thenReturn(successful("anotherSuccessfulStep"));
+        Step successfulStep = mockSuccesfulStep("successfulStep");
+        Step anotherSuccessfulStep = mockSuccesfulStep("anotherSuccessfulStep");
         boolean givenStory = false;
         givenStoryWithNoBeforeOrAfterSteps(story1, givenStory, collector, mySteps);
-        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(asList(successfulStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(asList(successfulStep));
         givenStoryWithNoBeforeOrAfterSteps(story2, givenStory, collector, mySteps);
-        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(
+        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(
                 asList(anotherSuccessfulStep));
         when(storyLoader.loadStoryAsText("/path/to/given/story1")).thenReturn("storyContent");
         when(storyParser.parseStory("storyContent", "/path/to/given/story1")).thenReturn(story1);
@@ -187,16 +182,15 @@ public class StoryRunnerBehaviour {
     public void shouldNotPerformStepsAfterFailedOrPendingSteps() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
-        Step firstStepNormal = mock(Step.class);
+        Step firstStepNormal = mockSuccesfulStep("Given I succeed");
         Step secondStepPending = mock(Step.class);
         Step thirdStepNormal = mock(Step.class);
         Step fourthStepAlsoPending = mock(Step.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         Scenario scenario = new Scenario();
-        when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario), eq(parameters), eq(skipBeforeAndAfterScenarioSteps))).thenReturn(
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario), eq(parameters))).thenReturn(
                 asList(firstStepNormal, secondStepPending, thirdStepNormal, fourthStepAlsoPending));
-        when(firstStepNormal.perform()).thenReturn(successful("Given I succeed"));
         when(secondStepPending.perform()).thenReturn(pending("When I am pending"));
         when(thirdStepNormal.doNotPerform()).thenReturn(notPerformed("Then I should not be performed"));
         when(fourthStepAlsoPending.doNotPerform()).thenReturn(
@@ -234,7 +228,7 @@ public class StoryRunnerBehaviour {
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         Scenario scenario = new Scenario();
-        when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario), eq(parameters), eq(skipBeforeAndAfterScenarioSteps))).thenReturn(
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario), eq(parameters))).thenReturn(
                 asList(firstStepExceptional, secondStepNotPerformed));
         Story story = new Story(asList(scenario));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
@@ -269,10 +263,10 @@ public class StoryRunnerBehaviour {
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         Scenario scenario1 = new Scenario();
-        when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario1), eq(parameters), eq(skipBeforeAndAfterScenarioSteps))).thenReturn(
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario1), eq(parameters))).thenReturn(
                 asList(failedStep));
         Scenario scenario2 = new Scenario();
-        when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario2), eq(parameters), eq(skipBeforeAndAfterScenarioSteps))).thenReturn(
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario2), eq(parameters))).thenReturn(
                 asList(neverExecutedStep));
         Story story = new Story(asList(scenario1, scenario2));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
@@ -308,22 +302,22 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
-        Step successfulStep = mock(Step.class);
-        when(successfulStep.perform()).thenReturn(successful("successfulStep"));
-        Step anotherSuccessfulStep = mock(Step.class);
-        when(anotherSuccessfulStep.perform()).thenReturn(successful("anotherSuccessfulStep"));
-        boolean givenStory = false;
-        givenStoryWithNoBeforeOrAfterSteps(story1, givenStory, collector, mySteps);
-        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(asList(successfulStep));
-        givenStoryWithNoBeforeOrAfterSteps(story2, givenStory, collector, mySteps);
-        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(
+        Step successfulStep = mockSuccesfulStep("successfulStep");
+        Step anotherSuccessfulStep = mockSuccesfulStep("anotherSuccessfulStep");
+        givenStoryWithNoBeforeOrAfterSteps(story1, false, collector, mySteps);
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(asList(successfulStep));
+        givenStoryWithNoBeforeOrAfterSteps(story2, true, collector, mySteps);
+        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(
                 asList(anotherSuccessfulStep));
         when(storyLoader.loadStoryAsText("/path/to/given/story1")).thenReturn("storyContent");
         when(storyParser.parseStory("storyContent", "/path/to/given/story1")).thenReturn(story1);
-        givenStoryWithNoBeforeOrAfterSteps(story1, givenStory, collector, mySteps);
-        givenStoryWithNoBeforeOrAfterSteps(story2, givenStory, collector, mySteps);
         FailureStrategy failureStrategy = mock(FailureStrategy.class);
 
+        Step beforeStep = mockSuccesfulStep("SuccessfulBeforeScenarioStep");
+        Step afterStep = mockSuccesfulStep("SuccessfulAfterScenarioStep");
+        when(collector.collectBeforeOrAfterScenarioSteps(asList(mySteps), Stage.BEFORE)).thenReturn(asList(beforeStep));
+        when(collector.collectBeforeOrAfterScenarioSteps(asList(mySteps), Stage.AFTER)).thenReturn(asList(afterStep));
+        
         // When
         StoryRunner runner = new StoryRunner();
         Configuration configuration = configurationWith(storyParser, storyLoader, reporter, collector, failureStrategy);
@@ -331,9 +325,15 @@ public class StoryRunnerBehaviour {
         runner.run(configuration, asList(mySteps), story2);
 
         // Then
-        verify(collector).collectScenarioSteps(eq(asList(mySteps)), eq(scenario1), eq(parameters), eq(true));
-        verify(collector).collectScenarioSteps(eq(asList(mySteps)), eq(scenario2), eq(parameters), eq(false));
+        verify(collector).collectScenarioSteps(asList(mySteps), scenario1, parameters);
+        verify(collector).collectScenarioSteps(asList(mySteps), scenario2, parameters);
 
+        InOrder inOrder = inOrder(beforeStep, successfulStep, anotherSuccessfulStep, afterStep);
+        
+        inOrder.verify(beforeStep).perform();
+        inOrder.verify(successfulStep).perform();
+        inOrder.verify(anotherSuccessfulStep).perform();
+        inOrder.verify(afterStep).perform();
     }
 
     @Test
@@ -341,15 +341,14 @@ public class StoryRunnerBehaviour {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
         Step pendingStep = mock(Step.class);
-        Step secondStep = mock(Step.class);
         when(pendingStep.perform()).thenReturn(pending("pendingStep"));
-        when(secondStep.perform()).thenReturn(successful("secondStep"));
+        Step secondStep = mockSuccesfulStep("secondStep");
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();    
         Scenario scenario1 = new Scenario();
         Scenario scenario2 = new Scenario();
-        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(asList(pendingStep));
-        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(asList(secondStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(asList(pendingStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(asList(secondStep));
         Story story = new Story(asList(scenario1, scenario2));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
@@ -368,10 +367,8 @@ public class StoryRunnerBehaviour {
     public void shouldRunBeforeAndAfterStorySteps() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
-        Step beforeStep = mock(Step.class);
-        Step afterStep = mock(Step.class);
-        when(beforeStep.perform()).thenReturn(successful("beforeStep"));
-        when(afterStep.perform()).thenReturn(successful("secondStep"));
+        Step beforeStep = mockSuccesfulStep("beforeStep");
+        Step afterStep = mockSuccesfulStep("secondStep");
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         Story story = new Story();
@@ -397,7 +394,7 @@ public class StoryRunnerBehaviour {
         PendingStepStrategy strategy = mock(PendingStepStrategy.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
-        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters), eq(skipBeforeAndAfterScenarioSteps))).thenReturn(
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
                 asList(pendingStep));
         Story story = new Story(asList(new Scenario()));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
@@ -422,7 +419,7 @@ public class StoryRunnerBehaviour {
         PendingStepStrategy strategy = new FailingUponPendingStep();
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
-        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters), eq(skipBeforeAndAfterScenarioSteps))).thenReturn(
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
                 asList(pendingStep));
         Story story = new Story(asList(new Scenario()));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
@@ -453,11 +450,9 @@ public class StoryRunnerBehaviour {
         Configuration configuration = configurationWith(reporter, collector, failureStrategy);
         configuration.storyControls().doDryRun(true);
         CandidateSteps mySteps = new Steps(configuration);
-        Step firstStep = mock(Step.class, "step <one>");
-        when(firstStep.perform()).thenReturn(successful("step <one>"));
-        Step secondStep = mock(Step.class, "step <two>");
-        when(secondStep.perform()).thenReturn(successful("step <two>"));
-        when(collector.collectScenarioSteps(asList(mySteps), scenario1,tableRow, skipBeforeAndAfterScenarioSteps)).thenReturn(
+        Step firstStep = mockSuccesfulStep("step <one>");
+        Step secondStep = mockSuccesfulStep("step <two>");
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1,tableRow)).thenReturn(
                 asList(firstStep, secondStep));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
@@ -497,16 +492,15 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = new Steps(configuration);
         IllegalArgumentException anException = new IllegalArgumentException();
         Step pendingStep = mock(Step.class);
-        Step successfulStep = mock(Step.class);
+        Step successfulStep = mockSuccesfulStep("successfulStep");
         Step failingStep = mock(Step.class);
         when(pendingStep.perform()).thenReturn(pending("pendingStep"));
-        when(successfulStep.perform()).thenReturn(successful("successfulStep"));
         when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
         when(failingStep.perform()).thenReturn(failed("failingStep", anException));
-        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(
                 asList(failingStep, successfulStep));
-        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(asList(successfulStep));
-        when(collector.collectScenarioSteps(asList(mySteps), scenario3, parameters, skipBeforeAndAfterScenarioSteps)).thenReturn(
+        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(asList(successfulStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario3, parameters)).thenReturn(
                 asList(successfulStep, pendingStep));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
@@ -539,7 +533,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
-        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters), eq(skipBeforeAndAfterScenarioSteps))).thenReturn(
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
                 Arrays.<Step>asList());
         Meta meta = mock(Meta.class);
         Story story = new Story("", Description.EMPTY, meta, Narrative.EMPTY, asList(new Scenario()));
@@ -564,7 +558,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
-        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters), eq(skipBeforeAndAfterScenarioSteps))).thenReturn(
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
                 Arrays.<Step>asList());
         Meta meta = mock(Meta.class);
         Meta storyMeta = mock(Meta.class);
@@ -624,4 +618,16 @@ public class StoryRunnerBehaviour {
             .usePendingStepStrategy(pendingStrategy);
     }
 
+    /**
+     * Creates a mock {@link Step}, that performs successfully with the specified result.
+     * 
+     * @param result the result.
+     * @return the {@link Step}.
+     */
+    private Step mockSuccesfulStep(String result)
+    {
+        Step afterStep = mock(Step.class, result);
+        when(afterStep.perform()).thenReturn(successful(result));
+        return afterStep;
+    }
 }
