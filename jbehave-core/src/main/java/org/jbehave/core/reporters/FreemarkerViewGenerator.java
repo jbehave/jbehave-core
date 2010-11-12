@@ -64,9 +64,14 @@ public class FreemarkerViewGenerator implements ViewGenerator {
     private final Configuration configuration;
     private Properties viewProperties;
     private List<Report> reports = new ArrayList<Report>();
-    private StoryNameResolver nameResolver = new UnderscoredToCapitalized();
+    private final StoryNameResolver nameResolver;
 
     public FreemarkerViewGenerator() {
+        this(new UnderscoredToCapitalized());
+    }
+
+    public FreemarkerViewGenerator(StoryNameResolver nameResolver) {
+        this.nameResolver = nameResolver;
         this.configuration = configure();
     }
 
@@ -304,7 +309,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
                     totals.put(key, total);
                 }
             }
-            return new Report("totals", new HashMap<String, File>(), totals);
+            return new Report("Totals", new HashMap<String, File>(), totals);
         }
 
         public List<Report> getReports() {
