@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.annotations.AfterScenario;
-import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
@@ -52,7 +50,7 @@ public class StoryRunner {
      * @param stage the Stage
      */
     public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
-        runSteps(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
+        runStepsWhileKeepingState(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
     }
     
     
@@ -101,8 +99,6 @@ public class StoryRunner {
 
     private void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter,
             boolean givenStory, Map<String, String> storyParameters) throws Throwable {
-        boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(configuration, givenStory);
-
         stepCollector = configuration.stepCollector();
         reporter = reporterFor(configuration, story, givenStory);
         pendingStepStrategy = configuration.pendingStepStrategy();
@@ -120,8 +116,13 @@ public class StoryRunner {
             reporter.dryRun();
         }
 
+        // run before story steps, if any
         reporter.beforeStory(story, givenStory);
-        runStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.BEFORE);
+        runBeforeOrAfterStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.BEFORE);
+        
+        // determine if before and after scenario steps should be run
+        boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(configuration, givenStory);
+        
         for (Scenario scenario : story.getScenarios()) {
             // scenario also inherits meta from story
             if (!filter.allow(scenario.getMeta().inheritFrom(story.getMeta()))) {
@@ -133,10 +134,12 @@ public class StoryRunner {
             }
             reporter.beforeScenario(scenario.getTitle());
             reporter.scenarioMeta(scenario.getMeta());
-            
-            if (runBeforeAndAfterScenarioSteps)
+
+            // run before scenario steps, if allowed
+            if (runBeforeAndAfterScenarioSteps) {
                 runBeforeOrAfterScenarioSteps(candidateSteps, scenario, Stage.BEFORE);
-            
+            }
+
             // run given stories, if any
             runGivenStories(configuration, candidateSteps, scenario, filter);
             if (isParametrisedByExamples(scenario)) {
@@ -146,27 +149,26 @@ public class StoryRunner {
                 runScenarioSteps(candidateSteps, scenario, storyParameters);
             }
 
-            if (runBeforeAndAfterScenarioSteps)
+            // run after scenario steps, if allowed
+            if (runBeforeAndAfterScenarioSteps) {
                 runBeforeOrAfterScenarioSteps(candidateSteps, scenario, Stage.AFTER);
+            }
 
             reporter.afterScenario();
         }
-        runStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.AFTER);
+
+        // run after story steps, if any
+        runBeforeOrAfterStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.AFTER);        
         reporter.afterStory(givenStory);
+        
+        // handle any failure according to strategy
         currentStrategy.handleFailure(storyFailure);
     }
 
-
-    /**
-     * Returns whether the {@link BeforeScenario} and {@link AfterScenario} {@link Step}s should be run.
-     * 
-     * @param configuration the {@link Configuration}.
-     * @param givenStory whether we are currently running a given story.
-     * @return whether the {@link BeforeScenario} and {@link AfterScenario} {@link Step}s should be run.
-     */
     private boolean shouldRunBeforeOrAfterScenarioSteps(Configuration configuration, boolean givenStory) {
-        if (!configuration.storyControls().skipBeforeAndAfterScenarioStepsIfGivenStory())
+        if (!configuration.storyControls().skipBeforeAndAfterScenarioStepsIfGivenStory()){
             return true;
+        }
         
         return !givenStory;
     }
@@ -221,44 +223,30 @@ public class StoryRunner {
         reporter.afterExamples();
     }
 
-    private void runStorySteps(List<CandidateSteps> candidateSteps, Story story, boolean givenStory, Stage stage) {
-        runSteps(stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory));
+    private void runBeforeOrAfterStorySteps(List<CandidateSteps> candidateSteps, Story story, boolean givenStory, Stage stage) {
+        runStepsWhileKeepingState(stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory));
     }
 
-    /**
-     * Runs the {@link Step}s marked {@link BeforeScenario} or {@link AfterScenario}.
-     * 
-     * @param candidateSteps the {@link CandidateSteps}.
-     * @param scenario the {@link Scenario}.
-     * @param stage the Stage.
-     */
     private void runBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Stage stage) {
-        runSteps(stepCollector.collectBeforeOrAfterScenarioSteps(candidateSteps, stage));
+        runStepsWhileKeepingState(stepCollector.collectBeforeOrAfterScenarioSteps(candidateSteps, stage));
     }
 
     private void runScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> scenarioParameters) {
-        runSteps(stepCollector.collectScenarioSteps(candidateSteps, scenario, scenarioParameters));
+        runStepsWhileKeepingState(stepCollector.collectScenarioSteps(candidateSteps, scenario, scenarioParameters));
     }
 
-    /**
-     * Runs a list of steps, while keeping state
-     * 
-     * @param steps the Steps to run
-     */
-    private void runSteps(List<Step> steps) {
-        if (steps == null || steps.size() == 0)
+    private void runStepsWhileKeepingState(List<Step> steps) {
+        if (steps == null || steps.size() == 0){
             return;
+        }
         state = new FineSoFar();
         for (Step step : steps) {
             state.run(step);
         }
     }
 
-    private class SomethingHappened implements State {
-        public void run(Step step) {
-            StepResult result = step.doNotPerform();
-            result.describeTo(reporter);
-        }
+    private interface State {
+        void run(Step step);
     }
 
     private final class FineSoFar implements State {
@@ -289,8 +277,11 @@ public class StoryRunner {
         }
     }
 
-    private interface State {
-        void run(Step step);
+    private class SomethingHappened implements State {
+        public void run(Step step) {
+            StepResult result = step.doNotPerform();
+            result.describeTo(reporter);
+        }
     }
 
     @Override

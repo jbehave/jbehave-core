@@ -14,7 +14,8 @@ import org.jbehave.core.model.Story;
 
 /**
  * Represents the strategy for the collection of executable {@link Step}s from a
- * given story or scenario matching a list of {@link CandidateSteps}.
+ * story or scenario matching a list of {@link CandidateSteps}. It also collects the 
+ * steps to run at before/after stages.
  */
 public interface StepCollector {
     enum Stage {
@@ -25,8 +26,8 @@ public interface StepCollector {
      * Collects all of the {@link BeforeStories} or {@link AfterStories} steps to execute.
      * 
      * @param candidateSteps
-     * @param stage
-     * @return
+     * @param stage the {@link Stage} of execution
+     * @return A List of executable {@link Step}s 
      */
     List<Step> collectBeforeOrAfterStoriesSteps(List<CandidateSteps> candidateSteps, Stage stage);
 
@@ -35,9 +36,9 @@ public interface StepCollector {
      * 
      * @param candidateSteps the {@link CandidateSteps}.
      * @param story the {@link Story}.
-     * @param stage the {@link Stage}.
-     * @param givenStory
-     * @return
+     * @param stage the {@link Stage} of execution
+     * @param givenStory whether {@link Story} is a given story
+     * @return A List of executable {@link Step}s 
      */
     List<Step> collectBeforeOrAfterStorySteps(List<CandidateSteps> candidateSteps, Story story, Stage stage, boolean givenStory);
 
@@ -46,7 +47,7 @@ public interface StepCollector {
      * 
      * @param candidateSteps the {@link CandidateSteps}.
      * @param parameters the parameters.
-     * @return the {@link Step}s to execute.
+     * @return A List of executable {@link Step}s 
      */
     List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Stage stage);
 
@@ -56,7 +57,7 @@ public interface StepCollector {
      * @param candidateSteps the {@link CandidateSteps}.
      * @param scenario the {@link Scenario}.
      * @param parameters the parameters.
-     * @return the {@link Step}s to execute.
+     * @return A List of executable {@link Step}s 
      */
     List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> parameters);
 }

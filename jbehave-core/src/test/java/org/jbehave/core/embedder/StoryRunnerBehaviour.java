@@ -95,7 +95,7 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = new Steps();
         IllegalArgumentException anException = new IllegalArgumentException();
         Step pendingStep = mock(Step.class);
-        Step successfulStep = mockSuccesfulStep("successfulStep");
+        Step successfulStep = mockSuccessfulStep("successfulStep");
         Step failingStep = mock(Step.class);
         when(pendingStep.perform()).thenReturn(pending("pendingStep"));
         when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
@@ -149,8 +149,8 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
-        Step successfulStep = mockSuccesfulStep("successfulStep");
-        Step anotherSuccessfulStep = mockSuccesfulStep("anotherSuccessfulStep");
+        Step successfulStep = mockSuccessfulStep("successfulStep");
+        Step anotherSuccessfulStep = mockSuccessfulStep("anotherSuccessfulStep");
         boolean givenStory = false;
         givenStoryWithNoBeforeOrAfterSteps(story1, givenStory, collector, mySteps);
         when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(asList(successfulStep));
@@ -182,7 +182,7 @@ public class StoryRunnerBehaviour {
     public void shouldNotPerformStepsAfterFailedOrPendingSteps() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
-        Step firstStepNormal = mockSuccesfulStep("Given I succeed");
+        Step firstStepNormal = mockSuccessfulStep("Given I succeed");
         Step secondStepPending = mock(Step.class);
         Step thirdStepNormal = mock(Step.class);
         Step fourthStepAlsoPending = mock(Step.class);
@@ -231,7 +231,8 @@ public class StoryRunnerBehaviour {
         when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario), eq(parameters))).thenReturn(
                 asList(firstStepExceptional, secondStepNotPerformed));
         Story story = new Story(asList(scenario));
-        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
 
         // When
         StoryRunner runner = new StoryRunner();
@@ -242,12 +243,12 @@ public class StoryRunnerBehaviour {
         verify(secondStepNotPerformed).doNotPerform();
 
         InOrder inOrder = inOrder(reporter, failureStrategy);
-        inOrder.verify(reporter).beforeStory((Story) anyObject(), eq(false));
+        inOrder.verify(reporter).beforeStory((Story) anyObject(), eq(givenStory));
         inOrder.verify(reporter).beforeScenario((String) anyObject());
         inOrder.verify(reporter).failed("When I fail", failure.getFailure());
         inOrder.verify(reporter).notPerformed("Then I should not be performed");
         inOrder.verify(reporter).afterScenario();
-        inOrder.verify(reporter).afterStory(false);
+        inOrder.verify(reporter).afterStory(givenStory);
         inOrder.verify(failureStrategy).handleFailure(failure.getFailure());
     }
 
@@ -302,8 +303,8 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
-        Step successfulStep = mockSuccesfulStep("successfulStep");
-        Step anotherSuccessfulStep = mockSuccesfulStep("anotherSuccessfulStep");
+        Step successfulStep = mockSuccessfulStep("successfulStep");
+        Step anotherSuccessfulStep = mockSuccessfulStep("anotherSuccessfulStep");
         givenStoryWithNoBeforeOrAfterSteps(story1, false, collector, mySteps);
         when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(asList(successfulStep));
         givenStoryWithNoBeforeOrAfterSteps(story2, true, collector, mySteps);
@@ -313,8 +314,8 @@ public class StoryRunnerBehaviour {
         when(storyParser.parseStory("storyContent", "/path/to/given/story1")).thenReturn(story1);
         FailureStrategy failureStrategy = mock(FailureStrategy.class);
 
-        Step beforeStep = mockSuccesfulStep("SuccessfulBeforeScenarioStep");
-        Step afterStep = mockSuccesfulStep("SuccessfulAfterScenarioStep");
+        Step beforeStep = mockSuccessfulStep("SuccessfulBeforeScenarioStep");
+        Step afterStep = mockSuccessfulStep("SuccessfulAfterScenarioStep");
         when(collector.collectBeforeOrAfterScenarioSteps(asList(mySteps), Stage.BEFORE)).thenReturn(asList(beforeStep));
         when(collector.collectBeforeOrAfterScenarioSteps(asList(mySteps), Stage.AFTER)).thenReturn(asList(afterStep));
         
@@ -342,7 +343,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         Step pendingStep = mock(Step.class);
         when(pendingStep.perform()).thenReturn(pending("pendingStep"));
-        Step secondStep = mockSuccesfulStep("secondStep");
+        Step secondStep = mockSuccessfulStep("secondStep");
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();    
         Scenario scenario1 = new Scenario();
@@ -351,7 +352,6 @@ public class StoryRunnerBehaviour {
         when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(asList(secondStep));
         Story story = new Story(asList(scenario1, scenario2));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
-
 
         // When
         StoryRunner runner = new StoryRunner();
@@ -367,13 +367,14 @@ public class StoryRunnerBehaviour {
     public void shouldRunBeforeAndAfterStorySteps() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
-        Step beforeStep = mockSuccesfulStep("beforeStep");
-        Step afterStep = mockSuccesfulStep("secondStep");
+        Step beforeStep = mockSuccessfulStep("beforeStep");
+        Step afterStep = mockSuccessfulStep("secondStep");
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         Story story = new Story();
-        when(collector.collectBeforeOrAfterStorySteps(asList(mySteps), story, Stage.BEFORE, false)).thenReturn(asList(beforeStep));
-        when(collector.collectBeforeOrAfterStorySteps(asList(mySteps), story, Stage.AFTER, false)).thenReturn(asList(afterStep));
+        boolean givenStory = false;
+        when(collector.collectBeforeOrAfterStorySteps(asList(mySteps), story, Stage.BEFORE, givenStory)).thenReturn(asList(beforeStep));
+        when(collector.collectBeforeOrAfterStorySteps(asList(mySteps), story, Stage.AFTER, givenStory)).thenReturn(asList(afterStep));
 
         // When
         StoryRunner runner = new StoryRunner();
@@ -399,7 +400,6 @@ public class StoryRunnerBehaviour {
         Story story = new Story(asList(new Scenario()));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
 
-
         // When
         StoryRunner runner = new StoryRunner();
         runner.run(configurationWithPendingStrategy(collector, reporter,
@@ -423,7 +423,6 @@ public class StoryRunnerBehaviour {
                 asList(pendingStep));
         Story story = new Story(asList(new Scenario()));
         givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
-
 
         // When
         StoryRunner runner = new StoryRunner();
@@ -450,11 +449,12 @@ public class StoryRunnerBehaviour {
         Configuration configuration = configurationWith(reporter, collector, failureStrategy);
         configuration.storyControls().doDryRun(true);
         CandidateSteps mySteps = new Steps(configuration);
-        Step firstStep = mockSuccesfulStep("step <one>");
-        Step secondStep = mockSuccesfulStep("step <two>");
+        Step firstStep = mockSuccessfulStep("step <one>");
+        Step secondStep = mockSuccessfulStep("step <two>");
         when(collector.collectScenarioSteps(asList(mySteps), scenario1,tableRow)).thenReturn(
                 asList(firstStep, secondStep));
-        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
 
         // When
         StoryRunner runner = new StoryRunner();
@@ -462,12 +462,12 @@ public class StoryRunnerBehaviour {
 
         // Then
         InOrder inOrder = inOrder(reporter, failureStrategy);
-        inOrder.verify(reporter).beforeStory(story, false);
+        inOrder.verify(reporter).beforeStory(story, givenStory);
         inOrder.verify(reporter).beforeScenario("my title 1");
         inOrder.verify(reporter).successful("step <one>");
         inOrder.verify(reporter).successful("step <two>");
         inOrder.verify(reporter).afterScenario();
-        inOrder.verify(reporter).afterStory(false);
+        inOrder.verify(reporter).afterStory(givenStory);
     }
 
 
@@ -492,7 +492,7 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = new Steps(configuration);
         IllegalArgumentException anException = new IllegalArgumentException();
         Step pendingStep = mock(Step.class);
-        Step successfulStep = mockSuccesfulStep("successfulStep");
+        Step successfulStep = mockSuccessfulStep("successfulStep");
         Step failingStep = mock(Step.class);
         when(pendingStep.perform()).thenReturn(pending("pendingStep"));
         when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
@@ -502,7 +502,8 @@ public class StoryRunnerBehaviour {
         when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(asList(successfulStep));
         when(collector.collectScenarioSteps(asList(mySteps), scenario3, parameters)).thenReturn(
                 asList(successfulStep, pendingStep));
-        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
 
         // When
         StoryRunner runner = new StoryRunner();
@@ -510,7 +511,7 @@ public class StoryRunnerBehaviour {
 
         // Then
         InOrder inOrder = inOrder(reporter, failureStrategy);
-        inOrder.verify(reporter).beforeStory(story, false);
+        inOrder.verify(reporter).beforeStory(story, givenStory);
         inOrder.verify(reporter).beforeScenario("my title 1");
         inOrder.verify(reporter).failed("failingStep", anException);
         inOrder.verify(reporter).notPerformed("successfulStep");
@@ -522,7 +523,7 @@ public class StoryRunnerBehaviour {
         inOrder.verify(reporter).successful("successfulStep");
         inOrder.verify(reporter).pending("pendingStep");
         inOrder.verify(reporter).afterScenario();
-        inOrder.verify(reporter).afterStory(false);
+        inOrder.verify(reporter).afterStory(givenStory);
         inOrder.verify(failureStrategy).handleFailure(anException);
 
     }
@@ -537,7 +538,8 @@ public class StoryRunnerBehaviour {
                 Arrays.<Step>asList());
         Meta meta = mock(Meta.class);
         Story story = new Story("", Description.EMPTY, meta, Narrative.EMPTY, asList(new Scenario()));
-        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
         MetaFilter filter = mock(MetaFilter.class);
         String filterAsString = "-some property";
         
@@ -548,7 +550,7 @@ public class StoryRunnerBehaviour {
         runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
 
         // Then
-        verify(reporter, never()).beforeStory(story, false);
+        verify(reporter, never()).beforeStory(story, givenStory);
         verify(reporter).storyNotAllowed(story, filterAsString);
     }
     
@@ -563,7 +565,8 @@ public class StoryRunnerBehaviour {
         Meta meta = mock(Meta.class);
         Meta storyMeta = mock(Meta.class);
         Story story = new Story("", Description.EMPTY, storyMeta, Narrative.EMPTY, asList(new Scenario("", meta, GivenStories.EMPTY, ExamplesTable.EMPTY, asList(""))));
-        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
         MetaFilter filter = mock(MetaFilter.class);
         String filterAsString = "-some property";
 
@@ -576,7 +579,7 @@ public class StoryRunnerBehaviour {
         runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
 
         // Then
-        verify(reporter).beforeStory(story, false);
+        verify(reporter).beforeStory(story, givenStory);
         verify(reporter, never()).beforeScenario("");
         verify(reporter).scenarioNotAllowed(story.getScenarios().get(0), filterAsString);
     }
@@ -618,16 +621,9 @@ public class StoryRunnerBehaviour {
             .usePendingStepStrategy(pendingStrategy);
     }
 
-    /**
-     * Creates a mock {@link Step}, that performs successfully with the specified result.
-     * 
-     * @param result the result.
-     * @return the {@link Step}.
-     */
-    private Step mockSuccesfulStep(String result)
-    {
-        Step afterStep = mock(Step.class, result);
-        when(afterStep.perform()).thenReturn(successful(result));
-        return afterStep;
+    private Step mockSuccessfulStep(String result) {
+        Step step = mock(Step.class, result);
+        when(step.perform()).thenReturn(successful(result));
+        return step;
     }
 }

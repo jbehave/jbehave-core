@@ -43,16 +43,9 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 		return steps;
 	}
 
-	
-	
-    /**
-     * {@inheritDoc}
-     */
-    public List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Stage stage)
-    {
+    public List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Stage stage) {
         List<Step> steps = new ArrayList<Step>();
-        for (CandidateSteps candidates : candidateSteps)
-        {
+        for (CandidateSteps candidates : candidateSteps) {
             List<BeforeOrAfterStep> beforeOrAfterScenarioSteps = candidates.listBeforeOrAfterScenario();
             if (stage == Stage.BEFORE)
                 steps.addAll(createSteps(beforeOrAfterScenarioSteps, stage));
@@ -77,9 +70,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 	public List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps,
 			Scenario scenario, Map<String, String> parameters) {
 		List<Step> steps = new ArrayList<Step>();
-
 		addMatchedScenarioSteps(scenario, steps, parameters, candidateSteps);
-
 		return steps;
 	}
 
