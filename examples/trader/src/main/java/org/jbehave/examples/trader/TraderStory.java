@@ -1,10 +1,5 @@
 package org.jbehave.examples.trader;
 
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
@@ -18,14 +13,16 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
+import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
-import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
+import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
+import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.examples.trader.service.TradingService;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
@@ -34,6 +31,11 @@ import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
 import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
 import org.jbehave.examples.trader.steps.TraderSteps;
+
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 /**
  * <p>
@@ -72,7 +74,9 @@ public abstract class TraderStory extends JUnitStory {
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML))
             .useParameterConverters(new ParameterConverters()
-                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
+                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")), // use custom date pattern
+                                   // allow laoding of examples tables from classpath
+                                   new ExamplesTableConverter(new ExamplesTableFactory(new LoadFromClasspath(embeddableClass))))) 
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters
             .useStepMonitor(new SilentStepMonitor());                               

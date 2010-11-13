@@ -1,8 +1,5 @@
 package org.jbehave.core.parsers;
 
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.compile;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +11,15 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.compile;
 
 /**
  * Pattern-based story parser, which uses the keywords provided to parse the
@@ -28,13 +29,19 @@ public class RegexStoryParser implements StoryParser {
 
     private static final String NONE = "";
     private final Keywords keywords;
+    private final ExamplesTableFactory tableFactory;
 
     public RegexStoryParser() {
         this(new LocalizedKeywords());
     }
 
     public RegexStoryParser(Keywords keywords) {
+        this(keywords, new ExamplesTableFactory());
+    }
+    
+    public RegexStoryParser(Keywords keywords, ExamplesTableFactory tableFactory) {
         this.keywords = keywords;
+        this.tableFactory = tableFactory;
     }
 
     public Story parseStory(String storyAsText) {
@@ -159,8 +166,8 @@ public class RegexStoryParser implements StoryParser {
 
     private ExamplesTable findExamplesTable(String scenarioAsText) {
         Matcher findingTable = patternToPullExamplesTableIntoGroupOne().matcher(scenarioAsText);
-        String table = findingTable.find() ? findingTable.group(1).trim() : NONE;
-        return new ExamplesTable(table, keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator());
+        String tableInput = findingTable.find() ? findingTable.group(1).trim() : NONE;
+        return tableFactory.createExamplesTable(tableInput);
     }
 
     private GivenStories findGivenStories(String scenarioAsText) {

@@ -19,8 +19,10 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
+import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -73,9 +75,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
     private ParameterConverter[] customConverters(Keywords keywords) {
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
         converters.add(new NumberConverter(NumberFormat.getInstance(locale())));
-        converters.add(new ExamplesTableConverter(
-                    keywords.examplesTableHeaderSeparator(),
-                    keywords.examplesTableValueSeparator()));
+        converters.add(new ExamplesTableConverter(new ExamplesTableFactory(keywords, new LoadFromURL())));
         return converters.toArray(new ParameterConverter[converters.size()]);
     }
 

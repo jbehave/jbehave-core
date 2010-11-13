@@ -297,8 +297,8 @@ public class GuiceAnnotationBuilderBehaviour {
     public static class MyExampleTableConverter extends ParameterConverters.ExamplesTableConverter {
 
         public MyExampleTableConverter() {
-            super("||", "|");
         }
+
     }
 
     public static class MyDateConverter extends ParameterConverters.DateConverter {

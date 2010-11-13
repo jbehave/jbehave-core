@@ -9,14 +9,16 @@ import java.util.List;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Defaults to working from classes compiled to Maven-style
- * 'target/test-classes', with story source in 'src/test/java'
+ * Loads story resources from relative file paths that are
+ * traversal to a given location.
  * 
- * LoadFromRelativeFile loader = new
+ * StoryLoader loader = new
  * LoadFromRelativeFile(codeLocationFromClass(YourStory.class));
  * 
- * To work with something other than the default story locations, you will have
- * to specify them in the varargs constructor.
+ * By default, it uses traversal directory
+ * 'target/test-classes' with source dir in 'src/test/java'.
+ * 
+ * Other traversal locations can be specified via the varargs constructor:
  * 
  * StoryLoader loader = new
  * LoadFromRelativeFile(codeLocationFromClass(YourStory.class),
@@ -28,10 +30,10 @@ import org.apache.commons.io.IOUtils;
  * {@link LoadFromRelativeFile#intellijProjectStoryFilePath}
  * {@link LoadFromRelativeFile#intellijProjectTestStoryFilePath}
  * 
- * See also {@link StoryLocation#codeLocationFromClass}
+ * @see {@link CodeLocations#codeLocationFromClass(Class)}
  * 
  */
-public class LoadFromRelativeFile implements StoryLoader {
+public class LoadFromRelativeFile implements ResourceLoader, StoryLoader {
 
     private final StoryFilePath[] traversals;
     private final URL location;
@@ -44,12 +46,12 @@ public class LoadFromRelativeFile implements StoryLoader {
         this.traversals = traversals;
         this.location = location;
     }
-
-    public String loadStoryAsText(String storyPath) {
+    
+    public String loadResourceAsText(String resourcePath) {
         List<String> traversalPaths = new ArrayList<String>();
         String locationPath = new File(location.getFile()).getAbsolutePath();
         for (StoryFilePath traversal : traversals) {
-            String filePath = locationPath.replace(traversal.toRemove, traversal.relativePath) + "/" + storyPath;
+            String filePath = locationPath.replace(traversal.toRemove, traversal.relativePath) + "/" + resourcePath;
             File file = new File(filePath);
             if (file.exists()) {
                 return loadContent(filePath);
@@ -57,8 +59,11 @@ public class LoadFromRelativeFile implements StoryLoader {
                 traversalPaths.add(filePath);
             }
         }
-        throw new StoryResourceNotFound(storyPath, traversalPaths);
+        throw new StoryResourceNotFound(resourcePath, traversalPaths);
+    }
 
+    public String loadStoryAsText(String storyPath) {
+        return loadResourceAsText(storyPath);
     }
 
     protected String loadContent(String path) {

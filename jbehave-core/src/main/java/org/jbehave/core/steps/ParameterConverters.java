@@ -1,6 +1,7 @@
 package org.jbehave.core.steps;
 
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.ExamplesTableFactory;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -356,20 +357,18 @@ public class ParameterConverters {
     }
 
     /**
-     * Converts value to {@link ExamplesTable}
+     * Converts value to {@link ExamplesTable} using a {@link ExamplesTableFactory}.
      */
     public static class ExamplesTableConverter implements ParameterConverter {
 
-        private String headerSeparator;
-        private String valueSeparator;
+        private final ExamplesTableFactory factory;
 
         public ExamplesTableConverter() {
-            this("|", "|");
+            this(new ExamplesTableFactory());
         }
-
-        public ExamplesTableConverter(String headerSeparator, String valueSeparator) {
-            this.headerSeparator = headerSeparator;
-            this.valueSeparator = valueSeparator;
+        
+        public ExamplesTableConverter(ExamplesTableFactory factory){
+            this.factory = factory;            
         }
 
         public boolean accept(Type type) {
@@ -380,7 +379,7 @@ public class ParameterConverters {
         }
 
         public Object convertValue(String value, Type type) {
-            return new ExamplesTable(value, headerSeparator, valueSeparator);
+            return factory.createExamplesTable(value);
         }
 
     }

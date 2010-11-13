@@ -8,9 +8,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * Loads story content from classpath resources.
+ * Loads story resources from classpath.
  */
-public class LoadFromClasspath implements StoryLoader {
+public class LoadFromClasspath implements ResourceLoader, StoryLoader {
 
     private final ClassLoader classLoader;
 
@@ -26,20 +26,25 @@ public class LoadFromClasspath implements StoryLoader {
         this.classLoader = classLoader;
     }
 
-    public String loadStoryAsText(String storyPath) {
-        InputStream stream = classLoader.getResourceAsStream(storyPath);
+    public String loadResourceAsText(String resourcePath) {
+        InputStream stream = classLoader.getResourceAsStream(resourcePath);
         if (stream == null) {
-            throw new StoryResourceNotFound(storyPath, classLoader);
+            throw new StoryResourceNotFound(resourcePath, classLoader);
         }
         try {
             return IOUtils.toString(stream);
         } catch (IOException e) {
-            throw new InvalidStoryResource(storyPath, stream, e);
+            throw new InvalidStoryResource(resourcePath, stream, e);
         }
+    }
+
+    public String loadStoryAsText(String storyPath) {
+        return loadResourceAsText(storyPath);
     }
 
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 }
