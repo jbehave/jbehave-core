@@ -26,7 +26,7 @@ Then the traders returned are:
 
 <p>JBehave supports multi-line parameters out-of-the-box and the
 user only needs to declare the parameter type as <a
-	href="javadoc/core/org/jbehave/core/model/ExamplesTable.html">ExamplesTable</a>
+    href="javadoc/core/org/jbehave/core/model/ExamplesTable.html">ExamplesTable</a>
 for it to be automatically parsed as a tabular structure:</p>
 
 <pre class="brush: java">
@@ -60,9 +60,10 @@ which is only present for parametrised scenarios.</p>
 
 <h2>Preserving whitespace</h2>
 
-<p>By default, value in the table are trimmed, i.e. any preceding and trailing whitespace 
-is removed.  This is the most useful and common usecase.  If, for some reason, you need
-to preserve the whitespace, you can specify an optional parsing property:</p>
+<p>By default, value in the table are trimmed, i.e. any preceding
+and trailing whitespace is removed. This is the most useful and common
+usecase. If, for some reason, you need to preserve the whitespace, you
+can specify an optional parsing property:</p>
 
 <pre class="brush: bdd">
 {trim=false}
@@ -72,6 +73,24 @@ to preserve the whitespace, you can specify an optional parsing property:</p>
 |Curly|Stooge 2|
 </pre>
 
+<h2>Loading tabular parameter from an external resource</h2>
+
+<p>The tabular parameter con also be loaded from an external
+resource, be it a classpath resource or a URL.</p>
+<script type="syntaxhighlighter" class="brush: bdd">
+<![CDATA[
+Given the traders: org/jbehave/examples/trader/stories/traders.table    
+]]>
+</script>
+
+<p>We need to enable theExamplesTable parameter converter to find
+the resource with the appropriate resource loader configured via the <a
+    href="javadoc/core/org/jbehave/core/model/ExamplesTableFactory.html">ExamplesTableFactory</a>:
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    new ParameterConverters().addConverters(new ExamplesTableConverter(new ExamplesTableFactory(new LoadFromClasspath(this.getClass()))))
+]]>
+</script>
 <div class="clear">
 <hr />
 </div>

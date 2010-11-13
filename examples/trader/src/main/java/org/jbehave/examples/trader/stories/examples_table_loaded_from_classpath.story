@@ -1,4 +1,4 @@
-Scenario: Traders can be loaded as table parameter from a classpath resource
+Scenario:  Table parameter loaded from a classpath resource
 
 Given the traders: org/jbehave/examples/trader/stories/traders.table
 !-- This is a comment, which will be ignored in the execution
@@ -10,4 +10,11 @@ Then the traders returned are:
 |Larry|Stooge 3|
 |Curly|Stooge 2|
 
+Scenario: Parameters table loaded from a classpath resource
 
+Given a stock of <symbol> and a <threshold>
+When the stock is traded with <price>
+Then the trader is alerted with <status>
+
+Examples:
+org/jbehave/examples/trader/stories/trades.table

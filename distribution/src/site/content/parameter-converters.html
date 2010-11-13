@@ -97,9 +97,7 @@ instances will take precedence over the default ones:</p>
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
         converters.add(new NumberConverter(NumberFormat.getInstance(locale()))); // custom number format
         converters.add(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));  // custom date pattern
-        converters.add(new ExamplesTableConverter(
-                    keywords.examplesTableHeaderSeparator(),
-                    keywords.examplesTableValueSeparator()));  // custom table separators
+        converters.add(new ExamplesTableConverter(new ExamplesTableFactory(new LoadFromClasspath(this.getClass()))); // custom examples table loader
         return converters.toArray(new ParameterConverter[converters.size()]);
     }
 

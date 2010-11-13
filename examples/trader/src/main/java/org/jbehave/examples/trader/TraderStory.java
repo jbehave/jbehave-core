@@ -15,6 +15,7 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
+import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
@@ -63,9 +64,12 @@ public abstract class TraderStory extends JUnitStory {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
+        // allows loading examples tables from external resources
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LoadFromClasspath(embeddableClass));
         return new MostUsefulConfiguration()
             .useStoryControls(new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false))
             .useStoryLoader(new LoadFromClasspath(embeddableClass))
+            .useStoryParser(new RegexStoryParser(examplesTableFactory))
             .useStoryPathResolver(new UnderscoredCamelCaseResolver())
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
@@ -75,8 +79,7 @@ public abstract class TraderStory extends JUnitStory {
                 .withFormats(CONSOLE, TXT, HTML, XML))
             .useParameterConverters(new ParameterConverters()
                     .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")), // use custom date pattern
-                                   // allow laoding of examples tables from classpath
-                                   new ExamplesTableConverter(new ExamplesTableFactory(new LoadFromClasspath(embeddableClass))))) 
+                                   new ExamplesTableConverter(examplesTableFactory))) 
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters
             .useStepMonitor(new SilentStepMonitor());                               

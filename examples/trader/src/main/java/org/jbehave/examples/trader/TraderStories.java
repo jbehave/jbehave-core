@@ -17,13 +17,16 @@ import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
+import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
+import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
+import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.examples.trader.service.TradingService;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
@@ -53,15 +56,19 @@ public class TraderStories extends JUnitStories {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
+        // allows loading examples tables from external resources
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LoadFromClasspath(embeddableClass));
         return new MostUsefulConfiguration()
             .useStoryLoader(new LoadFromClasspath(embeddableClass))
+            .useStoryParser(new RegexStoryParser(examplesTableFactory)) 
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                 .withDefaultFormats()
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML))
             .useParameterConverters(new ParameterConverters()
-                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
+                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")), // use custom date pattern
+                                   new ExamplesTableConverter(examplesTableFactory)))                     
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters
             .useStepMonitor(new SilentStepMonitor());                               
