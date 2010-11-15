@@ -1,5 +1,20 @@
 package org.jbehave.core.steps;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.failures.BeforeOrAfterFailed;
+import org.jbehave.core.parsers.StepMatcher;
+
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
+
 import static java.util.Arrays.asList;
 import static org.jbehave.core.steps.AbstractStepResult.failed;
 import static org.jbehave.core.steps.AbstractStepResult.ignorable;
@@ -7,20 +22,6 @@ import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
 import static org.jbehave.core.steps.AbstractStepResult.skipped;
 import static org.jbehave.core.steps.AbstractStepResult.successful;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
-import java.util.Map;
-
-import org.jbehave.core.annotations.Named;
-import org.jbehave.core.annotations.AfterScenario.Outcome;
-import org.jbehave.core.failures.BeforeOrAfterFailed;
-import org.jbehave.core.parsers.StepMatcher;
-
-import com.thoughtworks.paranamer.NullParanamer;
-import com.thoughtworks.paranamer.Paranamer;
 
 public class StepCreator {
 
@@ -73,6 +74,7 @@ public class StepCreator {
             public StepResult perform() {
                 return beforeOrAfter.run(method);
             }
+
         };
     }
 
@@ -116,6 +118,21 @@ public class StepCreator {
 
             };
         }
+    }
+
+    public Map<String, String> matchedParameters(final Method method, final String stepAsString,
+            final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
+        stepMatcher.find(stepWithoutStartingWord);
+        String[] annotationNames = annotatedParameterNames(method);
+        String[] parameterNames = paranamer.lookupParameterNames(method, false);
+        Type[] types = method.getGenericParameterTypes();
+        String[] names = (annotationNames.length > 0 ? annotationNames : parameterNames);
+        String[] parameters = parametersForStep(namedParameters, types, annotationNames, parameterNames);
+        Map<String, String> matchedParameters = new HashMap<String, String>();
+        for ( int i = 0; i < names.length; i++ ){
+            matchedParameters.put(names[i], parameters[i]);
+        }
+        return matchedParameters;
     }
 
     public Step createParametrisedStep(final Method method, final String stepAsString,

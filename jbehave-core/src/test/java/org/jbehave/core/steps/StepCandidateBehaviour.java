@@ -1,21 +1,5 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
-import static org.jbehave.core.steps.StepType.GIVEN;
-import static org.jbehave.core.steps.StepType.IGNORABLE;
-import static org.jbehave.core.steps.StepType.THEN;
-import static org.jbehave.core.steps.StepType.WHEN;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -25,8 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
+import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -44,6 +29,25 @@ import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.nullValue;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.jbehave.core.steps.StepType.GIVEN;
+import static org.jbehave.core.steps.StepType.IGNORABLE;
+import static org.jbehave.core.steps.StepType.THEN;
+import static org.jbehave.core.steps.StepType.WHEN;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 public class StepCandidateBehaviour {
 
     private Map<String, String> namedParameters = new HashMap<String, String>();
@@ -58,63 +62,63 @@ public class StepCandidateBehaviour {
     @Test
     public void shouldMatchStepWithoutParameters() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate stepCandidate = candidateWith("I laugh", GIVEN, method, null);
-        assertThat(stepCandidate.matches("Given I laugh"), is(true));
+        StepCandidate candidate = candidateWith("I laugh", GIVEN, method, null);
+        assertThat(candidate.matches("Given I laugh"), is(true));
     }
 
     @Test
     public void shouldMatchStepWithParameters() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate stepCandidate = candidateWith("windows on the $nth floor", WHEN, method, null);
-        assertThat(stepCandidate.matches("When windows on the 1st floor"), is(true));
-        assertThat(stepCandidate.matches("When windows on the 1st floor are open"), is(not(true)));
+        StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, null);
+        assertThat(candidate.matches("When windows on the 1st floor"), is(true));
+        assertThat(candidate.matches("When windows on the 1st floor are open"), is(not(true)));
     }
 
     @Test
     public void shouldMatchAndStepOnlyWithPreviousStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate stepCandidate = candidateWith("windows on the $nth floor", WHEN, method, null);
-        assertThat(stepCandidate.matches("And windows on the 1st floor"), is(not(true)));
-        assertThat(stepCandidate.matches("And windows on the 1st floor", "When windows on the 1st floor"), is(true));
+        StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, null);
+        assertThat(candidate.matches("And windows on the 1st floor"), is(not(true)));
+        assertThat(candidate.matches("And windows on the 1st floor", "When windows on the 1st floor"), is(true));
     }
 
     @Test
     public void shouldMatchMultilineStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate stepCandidate = candidateWith("the grid should look like $grid", THEN, method, null);
-        assertThat(stepCandidate.matches("Then the grid should look like \n....\n....\n"), is(true));
+        StepCandidate candidate = candidateWith("the grid should look like $grid", THEN, method, null);
+        assertThat(candidate.matches("Then the grid should look like \n....\n....\n"), is(true));
     }
 
     @Test
     public void shouldIgnoreStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate stepCandidate = candidateWith("", IGNORABLE, method, null);
-        assertThat(stepCandidate.ignore("!-- ignore me"), is(true));
+        StepCandidate candidate = candidateWith("", IGNORABLE, method, null);
+        assertThat(candidate.ignore("!-- ignore me"), is(true));
     }
 
     @Test
     public void shouldNotMatchOrIgnoreStepWhenStartingWordNotFound() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         Map<StepType, String> startingWordsByType = new HashMap<StepType, String>(); // empty list
-        StepCandidate stepCandidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, startingWordsByType,
+        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, startingWordsByType,
                 new RegexPrefixCapturingPatternParser(), new ParameterConverters());
-        assertThat(stepCandidate.matches("When windows on the 1st floor"), is(false));
-        assertThat(stepCandidate.ignore("!-- windows on the 1st floor"), is(false));
+        assertThat(candidate.matches("When windows on the 1st floor"), is(false));
+        assertThat(candidate.ignore("!-- windows on the 1st floor"), is(false));
     }
 
     @Test
     public void shouldProvideStepPriority() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate stepCandidate = candidateWith("I laugh", GIVEN, method, null);
-        assertThat(stepCandidate.getPriority(), equalTo(0));
+        StepCandidate candidate = candidateWith("I laugh", GIVEN, method, null);
+        assertThat(candidate.getPriority(), equalTo(0));
     }
 
     @Test
     public void shouldCreatePerformableStepUsingTheMatchedString() throws Exception {
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
-        StepCandidate stepCandidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
-        stepCandidate.createMatchedStep("Then I live on the 1st floor", namedParameters).perform();
+        StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
+        candidate.createMatchedStep("Then I live on the 1st floor", namedParameters).perform();
         assertThat((String) someSteps.args, equalTo("1st"));
     }
 
@@ -123,8 +127,8 @@ public class StepCandidateBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
-        StepCandidate stepCandidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
-        StepResult result = stepCandidate.createMatchedStep("Then I live on the 1st floor", namedParameters).perform();
+        StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
+        StepResult result = candidate.createMatchedStep("Then I live on the 1st floor", namedParameters).perform();
         result.describeTo(reporter);
         verify(reporter).successful(
                 "Then I live on the " + PARAMETER_VALUE_START + "1st" + PARAMETER_VALUE_END + " floor");
@@ -137,8 +141,8 @@ public class StepCandidateBehaviour {
         String systemNewline = System.getProperty("line.separator");
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
-        StepCandidate stepCandidate = candidateWith("the grid should look like $grid", THEN, method, someSteps);
-        stepCandidate.createMatchedStep(
+        StepCandidate candidate = candidateWith("the grid should look like $grid", THEN, method, someSteps);
+        candidate.createMatchedStep(
                 "Then the grid should look like" + windowsNewline + ".." + unixNewline + ".." + windowsNewline,
                 namedParameters).perform();
         assertThat((String) someSteps.args, equalTo(".." + systemNewline + ".." + systemNewline));
@@ -156,8 +160,8 @@ public class StepCandidateBehaviour {
     private <T> void assertThatNumberIsConverted(String patternAsString, Class<T> type, T number) throws Exception {
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", type);
-        StepCandidate stepCandidate = candidateWith(patternAsString, THEN, method, someSteps);
-        stepCandidate.createMatchedStep("Then I should live in no. 14", namedParameters).perform();
+        StepCandidate candidate = candidateWith(patternAsString, THEN, method, someSteps);
+        candidate.createMatchedStep("Then I should live in no. 14", namedParameters).perform();
         assertThat((T) someSteps.args, equalTo(number));
     }
 
@@ -346,7 +350,23 @@ public class StepCandidateBehaviour {
         assertThat(candidates.size(), equalTo(1));
         StepResult stepResult = candidates.get(0).createMatchedStep("When outcome fails for Bar upon verification",
                 namedParameters).perform();
-        assertThat(stepResult.getFailure(), Matchers.instanceOf(OutcomesFailed.class));
+        assertThat(stepResult.getFailure(), instanceOf(OutcomesFailed.class));
+    }
+    
+    @Test
+    public void shouldMatchCompositeStepsAndCreateComposedSteps() {
+        CompositeSteps steps = new CompositeSteps();
+        List<StepCandidate> candidates = steps.listCandidates();
+        assertThat(candidates.size(), equalTo(3));
+        StepCandidate candidate = candidates.get(0);
+        assertThat(candidate.isComposite(), is(true));
+        List<Step> composedSteps = candidate.createComposedSteps("Given customer has previously bought a product", namedParameters, candidates);
+        assertThat(composedSteps.size(), equalTo(2));
+        for (Step step : composedSteps) {
+            step.perform();
+        }
+        assertThat(steps.loggedIn, is(true));
+        assertThat(steps.added, is(true));
     }
 
     @Test
@@ -412,6 +432,29 @@ public class StepCandidateBehaviour {
             OutcomesTable outcomes = new OutcomesTable();
             outcomes.addOutcome("failing", name, equalTo(""));
             outcomes.verify();
+        }
+
+    }
+
+    static class CompositeSteps extends Steps {
+
+        private boolean loggedIn;
+        private boolean added;
+
+        @Given("$customer has previously bought a $product")
+        @Composite(steps = { "Given <customer> is logged in", 
+                             "When a <product> is added to the cart" })
+        public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
+        }
+
+        @Given("<customer> is logged in")
+        public void aCustomerIsLoggedIn(@Named("customer") String customer) {
+            loggedIn = true;
+        }
+
+        @When("a <product> is added to the cart")
+        public void aProductIsAddedToCart(@Named("product") String product) {
+            added = true;
         }
 
     }

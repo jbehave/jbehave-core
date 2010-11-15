@@ -1,13 +1,5 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
-import static org.jbehave.core.annotations.AfterScenario.Outcome.FAILURE;
-import static org.jbehave.core.annotations.AfterScenario.Outcome.SUCCESS;
-import static org.jbehave.core.steps.StepType.GIVEN;
-import static org.jbehave.core.steps.StepType.THEN;
-import static org.jbehave.core.steps.StepType.WHEN;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -15,23 +7,32 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.annotations.AfterStories;
 import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.annotations.AfterStories;
 import org.jbehave.core.annotations.AfterStory;
 import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Aliases;
-import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.annotations.BeforeStory;
+import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.steps.StepCollector.Stage;
+
+import static java.util.Arrays.asList;
+import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
+import static org.jbehave.core.annotations.AfterScenario.Outcome.FAILURE;
+import static org.jbehave.core.annotations.AfterScenario.Outcome.SUCCESS;
+import static org.jbehave.core.steps.StepType.GIVEN;
+import static org.jbehave.core.steps.StepType.THEN;
+import static org.jbehave.core.steps.StepType.WHEN;
 
 /**
  * <p>
@@ -163,11 +164,14 @@ public class Steps implements CandidateSteps {
     private void addCandidate(List<StepCandidate> candidates, Method method, StepType stepType,
             String stepPatternAsString, int priority) {
         checkForDuplicateCandidates(candidates, stepType, stepPatternAsString);
-        StepCandidate step = createCandidate(method, stepType, stepPatternAsString, priority, configuration);
-        step.useStepMonitor(configuration.stepMonitor());
-        step.useParanamer(configuration.paranamer());
-        step.doDryRun(configuration.storyControls().dryRun());
-        candidates.add(step);
+        StepCandidate candidate = createCandidate(method, stepType, stepPatternAsString, priority, configuration);
+        candidate.useStepMonitor(configuration.stepMonitor());
+        candidate.useParanamer(configuration.paranamer());
+        candidate.doDryRun(configuration.storyControls().dryRun());
+        if ( method.isAnnotationPresent(Composite.class)){
+            candidate.composedOf(method.getAnnotation(Composite.class).steps());
+        }
+        candidates.add(candidate);
     }
 
     private void checkForDuplicateCandidates(List<StepCandidate> candidates, StepType stepType, String patternAsString) {

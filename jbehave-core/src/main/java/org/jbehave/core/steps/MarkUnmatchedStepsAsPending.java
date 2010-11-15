@@ -85,35 +85,39 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 		return steps;
 	}
 
-	private void addMatchedScenarioSteps(Scenario scenario, List<Step> steps,
-			Map<String, String> namedParameters, List<CandidateSteps> candidateSteps) {
+    private void addMatchedScenarioSteps(Scenario scenario, List<Step> steps, Map<String, String> namedParameters,
+            List<CandidateSteps> candidateSteps) {
         List<StepCandidate> allCandidates = stepFinder.collectCandidates(candidateSteps);
-		String previousNonAndStep = null;
-		for (String stepAsString : scenario.getSteps()) {
-			// pending is default step, overridden below
-			Step step = StepCreator.createPendingStep(stepAsString);
-			for (StepCandidate candidate : stepFinder.prioritise(stepAsString, allCandidates)) {
-				if (candidate.ignore(stepAsString)) {
-					// ignorable steps are added
-					// so they can be reported
-					step = StepCreator.createIgnorableStep(stepAsString);
-					break;
-				}
-				if (matchesCandidate(stepAsString, previousNonAndStep,
-						candidate)) {
-					step = candidate.createMatchedStep(stepAsString, namedParameters);
-					if (!candidate.isAndStep(stepAsString)) {
-						// only update previous step if not AND step
-						previousNonAndStep = stepAsString;
-					}
-					break;
-				}
-			}
-			steps.add(step);
-		}
-	}
+        String previousNonAndStep = null;
+        for (String stepAsString : scenario.getSteps()) {
+            // pending is default step, overridden below
+            Step step = StepCreator.createPendingStep(stepAsString);
+            List<Step> composedSteps = new ArrayList<Step>();
+            for (StepCandidate candidate : stepFinder.prioritise(stepAsString, allCandidates)) {
+                if (candidate.ignore(stepAsString)) {
+                    // ignorable steps are added
+                    // so they can be reported
+                    step = StepCreator.createIgnorableStep(stepAsString);
+                    break;
+                }
+                if (matchesCandidate(stepAsString, previousNonAndStep, candidate)) {
+                    step = candidate.createMatchedStep(stepAsString, namedParameters);
+                    if (candidate.isComposite()) {
+                        composedSteps = candidate.createComposedSteps(stepAsString, namedParameters, allCandidates);
+                    }
+                    if (!candidate.isAndStep(stepAsString)) {
+                        // only update previous step if not AND step
+                        previousNonAndStep = stepAsString;
+                    }
+                    break;
+                }
+            }
+            steps.add(step);
+            steps.addAll(composedSteps);
+        }
+    }
 
-	private boolean matchesCandidate(String step, String previousNonAndStep,
+    private boolean matchesCandidate(String step, String previousNonAndStep,
 			StepCandidate candidate) {
 		if (previousNonAndStep != null) {
 			return candidate.matches(step, previousNonAndStep);

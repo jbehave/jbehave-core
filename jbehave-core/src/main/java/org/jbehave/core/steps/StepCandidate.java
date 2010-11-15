@@ -1,8 +1,11 @@
 package org.jbehave.core.steps;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
@@ -29,6 +32,7 @@ public class StepCandidate {
     private final StepMatcher stepMatcher;
     private final StepCreator stepCreator;
     private StepMonitor stepMonitor = new SilentStepMonitor();
+    private String[] composedSteps;
 
     public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Object stepsInstance,
             Map<StepType, String> startingWordsByType, StepPatternParser stepPatternParser,
@@ -80,6 +84,14 @@ public class StepCandidate {
         this.stepCreator.useParanamer(paranamer);
     }
 
+    public void composedOf(String[] steps) {
+        this.composedSteps = steps;        
+    }
+    
+    public boolean isComposite() {
+        return composedSteps != null && composedSteps.length > 0;
+    }
+
     public boolean ignore(String stepAsString) {
         try {
             String ignoreWord = startingWordFor(StepType.IGNORABLE);
@@ -122,6 +134,29 @@ public class StepCandidate {
 
     public Step createMatchedStep(String stepAsString, Map<String, String> namedParameters) {
         return stepCreator.createParametrisedStep(method, stepAsString, stripStartingWord(stepAsString), namedParameters);
+    }
+    
+    public List<Step> createComposedSteps(String stepAsString, Map<String, String> namedParameters,
+            List<StepCandidate> allCandidates) {
+        Map<String, String> matchedParameters = stepCreator.matchedParameters(method, stepAsString, stripStartingWord(stepAsString), namedParameters);
+        List<Step> steps = new ArrayList<Step>();
+        for (String composedStep : composedSteps) {
+            StepCandidate candidate = findComposedCandidate(composedStep, allCandidates);
+            if ( candidate != null ){
+                steps.add(candidate.createMatchedStep(composedStep, matchedParameters));
+            }
+        }
+        return steps;
+    }
+
+    private StepCandidate findComposedCandidate(String composedStep, List<StepCandidate> allCandidates) {
+        for (StepCandidate candidate : allCandidates) {
+            if ( StringUtils.startsWith(composedStep, candidate.getStartingWord()) &&
+                 StringUtils.endsWith(composedStep, candidate.getPatternAsString()) ){
+                return candidate;
+            }
+        }
+        return null;
     }
 
     private String stripStartingWord(final String stepAsString) {
@@ -175,5 +210,6 @@ public class StepCandidate {
         }
 
     }
+
 
 }

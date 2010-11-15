@@ -78,6 +78,45 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     
     
     @Test
+    public void shouldCreateExecutableStepsWhenACompositeStepIsMatched() {
+        // Given
+        StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
+
+        StepCandidate compositeCandidate = mock(StepCandidate.class, "compositeCandidate");
+        StepCandidate composedCandidate1 = mock(StepCandidate.class, "composedCandidate1");
+        StepCandidate composedCandidate2 = mock(StepCandidate.class, "composedCandidate2");
+        CandidateSteps steps = mock(Steps.class);
+        Step executableCompositeStep = mock(Step.class, "composite");
+        Step executableComposedStep1 = mock(Step.class, "composed1");
+        Step executableComposedStep2 = mock(Step.class, "composed2");
+
+        List<StepCandidate> allCandidates = asList(compositeCandidate, composedCandidate1, composedCandidate2);
+        when(steps.listCandidates()).thenReturn(allCandidates);
+        String compositeStepAsString = "my composite step";
+        when(compositeCandidate.matches(compositeStepAsString)).thenReturn(true);
+        when(compositeCandidate.createMatchedStep(compositeStepAsString, parameters)).thenReturn(executableCompositeStep);
+        when(compositeCandidate.isComposite()).thenReturn(true);
+        when(compositeCandidate.createComposedSteps(compositeStepAsString, parameters, allCandidates)).thenReturn(asList(executableComposedStep1, executableComposedStep2));
+        String composedStep1AsString = "my composed step 1";
+        when(composedCandidate1.matches(composedStep1AsString)).thenReturn(true);
+        when(composedCandidate1.createMatchedStep(composedStep1AsString, parameters)).thenReturn(executableComposedStep1);
+        String composedStep2AsString = "my composed step 2";
+        when(composedCandidate2.matches(composedStep2AsString)).thenReturn(true);
+        when(composedCandidate2.createMatchedStep(composedStep1AsString, parameters)).thenReturn(executableComposedStep2);
+
+        // When
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(compositeStepAsString)),
+                parameters);
+
+        // Then
+        assertThat(executableSteps.size(), equalTo(3));
+        assertThat(executableSteps.get(0), equalTo(executableCompositeStep));
+        assertThat(executableSteps.get(1), equalTo(executableComposedStep1));
+        assertThat(executableSteps.get(2), equalTo(executableComposedStep2));
+    }
+
+    
+    @Test
     public void shouldCreatePendingStepsWhenCandidatesAreNotMatched() {
         // Given
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
