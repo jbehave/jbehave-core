@@ -138,7 +138,12 @@ public class StepCandidate {
     
     public List<Step> createComposedSteps(String stepAsString, Map<String, String> namedParameters,
             List<StepCandidate> allCandidates) {
-        Map<String, String> matchedParameters = stepCreator.matchedParameters(method, stepAsString, stripStartingWord(stepAsString), namedParameters);
+        Map<String, String> matchedParameters;
+        if ( namedParameters.isEmpty() ){
+            matchedParameters = stepCreator.matchedParameters(method, stepAsString, stripStartingWord(stepAsString), namedParameters);
+        } else {
+            matchedParameters = namedParameters;
+        }
         List<Step> steps = new ArrayList<Step>();
         for (String composedStep : composedSteps) {
             StepCandidate candidate = findComposedCandidate(composedStep, allCandidates);

@@ -1,5 +1,6 @@
 package org.jbehave.examples.trader.steps;
 
+import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -7,11 +8,12 @@ import org.jbehave.core.annotations.When;
 
 public class CompositeSteps {
 
-    @Given("%customer has previously bought a %product")
+    @Given("%customer has previously bought a %product") // used in normal parameter matching
+    @Alias("<customer> has previously bought a <product>") // used in parameterised scenarios
     @Composite(steps = { "Given <customer> is logged in", 
                          "Given <customer> has a cart", 
-                         "When a <product> is added to the cart" })
-    public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
+                         "When a <product> is added to the cart" })  
+    public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters 
     }
 
     @Given("<customer> is logged in")
