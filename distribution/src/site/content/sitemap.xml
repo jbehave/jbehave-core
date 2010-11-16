@@ -42,10 +42,11 @@
     <page>dependency-injection.html</page>
     <page>parameter-injection.html</page>
     <page>parameter-converters.html</page>
+    <page>composite-steps.html</page>
     <page>parametrised-scenarios.html</page>
+    <page>given-stories.html</page>
     <page>tabular-parameters.html</page>
     <page>outcomes-table.html</page>
-    <page>given-stories.html</page>
     <page>meta-info.html</page>
     <page>meta-filtering.html</page>
     <page>story-mapping.html</page>

@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Composite Steps</title>
+</head>
+
+<body>
+
+<h2>Composite Steps</h2>
+
+<p>BDD allows the scenario writer to vary the focus of the portion
+of the system under test, or the boundary of the system for the specific
+scenario. Some scenarios can be very detailed, zooming into the
+step-by-step process, others can be at a higher level, zooming out to
+give a bird's eye overview.</p>
+
+<p>Allowing the composition of steps into groups whose execution can
+be triggered by the matching of a single step, called <b>composite
+step</b>, can be a very useful and powerful feature.</p>
+
+<p>As usual, let's start with an example. Let's assume we've already
+defined a few steps.</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Given("<customer> has a cart")
+    public void aCustomerHasACart(@Named("customer") String customer) {
+    }
+
+    @When("a <product> is added to the cart")
+    public void aProductIsAddedToCart(@Named("product") String product) {
+    }
+]]>
+</script>
+
+<p>Now we want to define a composite step that takes both parameters
+(<b>customer</b> and <b>product</b>) and executes the two "composed"
+steps with the parameter values provided, i.e. we want the composed
+steps to be executed when the following step is matched:</p>
+
+<pre class="brush: bdd">
+Given Mr Jones previously bought a ticket
+</pre>
+
+<p>where <b>Mr Jones</b> and <b>ticket</b> are parameter values for
+<b>customer</b> and <b>product</b>. To this end, we define a new method
+and annotated as per usual, e.g. with the <b>@Given</b> annotation:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Given("%customer has previously bought a %product") // used in normal parameter matching
+    @Alias("<customer> has previously bought a <product>") // used in parameterised scenarios
+    @Composite(steps = { "Given <customer> is logged in", 
+                         "Given <customer> has a cart", 
+                         "When a <product> is added to the cart" })  
+    public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters 
+    }
+]]>
+</script>
+
+<p>The novelty here is the introduction of the <a
+    href="javadoc/core/org/jbehave/core/annotations/Composite.html">@Composite</a>
+annotation. Composite steps are identified by this method-level
+annotation, which is independent of the @Given/@When/@Then annotations.
+The @Composite is optional and complements any of the @Given/@When/@Then
+annotations. Once the composite step is matched (via any of the
+supported mechanisms, e.g. <a
+    href="parameter-injection.html">parameter injection</a> or <a
+    href="parametrised-scenarios.html">parameterised scenarios</a>), if
+the @Composite annotation is found on the matched method, the "composed"
+steps defined in the @Composite annotations are created using the
+parameters specified in the @Named annotations of the composite step. In
+other words, the composed steps are treated as a group of parametrised
+steps, much in the same way as the steps in a parametrised scenario.</p>
+
+<p>Executing the composite step above is equivalent to executing:</p>
+
+<pre class="brush: bdd">
+Given Mr Jones previously bought a ticket
+Given Mr Jones is logged in
+Given Mr Jones has a cart
+When a ticket is added to the cart
+</pre>
+
+<p>Note that the composite step is executed before the composed
+steps. The annotated method may of course be left to do nothing, as it's
+primary scope is to provide the compostion to other steps. It is also
+important to note that the composite step method needs to define named
+parameters (even if it uses matched parameters), as these are then used
+by the composed steps.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -354,19 +355,38 @@ public class StepCandidateBehaviour {
     }
     
     @Test
-    public void shouldMatchCompositeStepsAndCreateComposedSteps() {
+    public void shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters() {
         CompositeSteps steps = new CompositeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
-        assertThat(candidates.size(), equalTo(3));
+        assertThat(candidates.size(), equalTo(4));
         StepCandidate candidate = candidates.get(0);
         assertThat(candidate.isComposite(), is(true));
-        List<Step> composedSteps = candidate.createComposedSteps("Given customer has previously bought a product", namedParameters, candidates);
+        List<Step> composedSteps = candidate.createComposedSteps("Given Mr Jones has previously bought a ticket", namedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform();
         }
-        assertThat(steps.loggedIn, is(true));
-        assertThat(steps.added, is(true));
+        assertThat(steps.loggedIn, equalTo("Mr Jones"));
+        assertThat(steps.added, equalTo("ticket"));
+    }
+
+    @Test
+    public void shouldMatchCompositeStepsAndCreateComposedStepsUsingNamedParameters() {
+        CompositeSteps steps = new CompositeSteps();
+        List<StepCandidate> candidates = steps.listCandidates();
+        assertThat(candidates.size(), equalTo(4));
+        StepCandidate candidate = candidates.get(0);
+        assertThat(candidate.isComposite(), is(true));
+        Map<String, String> namedParameters = new HashMap<String, String>();
+        namedParameters.put("customer", "Mr Jones");
+        namedParameters.put("product", "ticket");
+        List<Step> composedSteps = candidate.createComposedSteps("Given <customer> has previously bought a <product>", namedParameters, candidates);
+        assertThat(composedSteps.size(), equalTo(2));
+        for (Step step : composedSteps) {
+            step.perform();
+        }
+        assertThat(steps.loggedIn, equalTo("Mr Jones"));
+        assertThat(steps.added, equalTo("ticket"));
     }
 
     @Test
@@ -438,23 +458,24 @@ public class StepCandidateBehaviour {
 
     static class CompositeSteps extends Steps {
 
-        private boolean loggedIn;
-        private boolean added;
+        private String loggedIn;
+        private String added;
 
-        @Given("$customer has previously bought a $product")
+        @Given("$customer has previously bought a $product") // used with matched parameters
+        @Alias("<customer> has previously bough a <product>") // used with named parameters
         @Composite(steps = { "Given <customer> is logged in", 
                              "When a <product> is added to the cart" })
-        public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
+        public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { 
         }
 
         @Given("<customer> is logged in")
         public void aCustomerIsLoggedIn(@Named("customer") String customer) {
-            loggedIn = true;
+            loggedIn = customer;
         }
 
         @When("a <product> is added to the cart")
         public void aProductIsAddedToCart(@Named("product") String product) {
-            added = true;
+            added = product;
         }
 
     }
