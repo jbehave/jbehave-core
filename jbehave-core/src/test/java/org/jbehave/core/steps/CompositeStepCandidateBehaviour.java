@@ -1,7 +1,6 @@
 package org.jbehave.core.steps;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import org.jbehave.core.annotations.Alias;
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -25,7 +24,6 @@ public class CompositeStepCandidateBehaviour {
     public void shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters() {
         CompositeSteps steps = new CompositeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
-        assertThat(candidates.size(), equalTo(4));
         StepCandidate candidate = candidates.get(0);
         assertThat(candidate.isComposite(), is(true));
         List<Step> composedSteps = candidate.createComposedSteps("Given Mr Jones has previously bought a ticket", namedParameters, candidates);
@@ -37,11 +35,34 @@ public class CompositeStepCandidateBehaviour {
         assertThat(steps.added, equalTo("ticket"));
     }
 
+    static class CompositeSteps extends Steps {
+
+        private String loggedIn;
+        private String added;
+
+        @Given("$customer has previously bought a $product")
+        @Composite(steps = { "Given <customer> is logged in",
+                             "When a <product> is added to the cart" })
+        public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
+        }
+
+        @Given("<customer> is logged in")
+        public void aCustomerIsLoggedIn(@Named("customer") String customer) {
+            loggedIn = customer;
+        }
+
+        @When("a <product> is added to the cart")
+        public void aProductIsAddedToCart(@Named("product") String product) {
+            added = product;
+        }
+
+    }
+
+
     @Test
     public void shouldMatchCompositeStepsAndCreateComposedStepsUsingNamedParameters() {
-        CompositeSteps steps = new CompositeSteps();
+        CompositeStepsUsingNamedParameters steps = new CompositeStepsUsingNamedParameters();
         List<StepCandidate> candidates = steps.listCandidates();
-        assertThat(candidates.size(), equalTo(4));
         StepCandidate candidate = candidates.get(0);
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> namedParameters = new HashMap<String, String>();
@@ -56,13 +77,12 @@ public class CompositeStepCandidateBehaviour {
         assertThat(steps.added, equalTo("ticket"));
     }
 
-    static class CompositeSteps extends Steps {
+    static class CompositeStepsUsingNamedParameters extends Steps {
 
         private String loggedIn;
         private String added;
 
-        @Given("$customer has previously bought a $product") // used with matched parameters
-        @Alias("<customer> has previously bough a <product>") // used with named parameters
+        @Given("<customer> has previously bough a <product>")
         @Composite(steps = { "Given <customer> is logged in",
                              "When a <product> is added to the cart" })
         public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
@@ -85,7 +105,6 @@ public class CompositeStepCandidateBehaviour {
     public void shouldMatchCompositeStepsAndCreateComposedStepsUsingParanamerNamedParameters() {
         CompositeStepsWithoutNamedAnnotation steps = new CompositeStepsWithoutNamedAnnotation();
         List<StepCandidate> candidates = steps.listCandidates();
-        assertThat(candidates.size(), equalTo(4));
         StepCandidate candidate = candidates.get(0);
         candidate.useParanamer(new BytecodeReadingParanamer());
         assertThat(candidate.isComposite(), is(true));
