@@ -1,18 +1,9 @@
 package org.jbehave.core.steps;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.MethodDescriptor;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.jbehave.core.annotations.Alias;
-import org.jbehave.core.annotations.Composite;
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -26,20 +17,22 @@ import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.StepCandidate.StartingWordNotFound;
 import org.junit.Test;
 
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import com.thoughtworks.paranamer.CachingParanamer;
-import com.thoughtworks.paranamer.Paranamer;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.MethodDescriptor;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.jbehave.core.steps.StepType.GIVEN;
@@ -353,41 +346,6 @@ public class StepCandidateBehaviour {
                 namedParameters).perform();
         assertThat(stepResult.getFailure(), instanceOf(OutcomesFailed.class));
     }
-    
-    @Test
-    public void shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters() {
-        CompositeSteps steps = new CompositeSteps();
-        List<StepCandidate> candidates = steps.listCandidates();
-        assertThat(candidates.size(), equalTo(4));
-        StepCandidate candidate = candidates.get(0);
-        assertThat(candidate.isComposite(), is(true));
-        List<Step> composedSteps = candidate.createComposedSteps("Given Mr Jones has previously bought a ticket", namedParameters, candidates);
-        assertThat(composedSteps.size(), equalTo(2));
-        for (Step step : composedSteps) {
-            step.perform();
-        }
-        assertThat(steps.loggedIn, equalTo("Mr Jones"));
-        assertThat(steps.added, equalTo("ticket"));
-    }
-
-    @Test
-    public void shouldMatchCompositeStepsAndCreateComposedStepsUsingNamedParameters() {
-        CompositeSteps steps = new CompositeSteps();
-        List<StepCandidate> candidates = steps.listCandidates();
-        assertThat(candidates.size(), equalTo(4));
-        StepCandidate candidate = candidates.get(0);
-        assertThat(candidate.isComposite(), is(true));
-        Map<String, String> namedParameters = new HashMap<String, String>();
-        namedParameters.put("customer", "Mr Jones");
-        namedParameters.put("product", "ticket");
-        List<Step> composedSteps = candidate.createComposedSteps("Given <customer> has previously bought a <product>", namedParameters, candidates);
-        assertThat(composedSteps.size(), equalTo(2));
-        for (Step step : composedSteps) {
-            step.perform();
-        }
-        assertThat(steps.loggedIn, equalTo("Mr Jones"));
-        assertThat(steps.added, equalTo("ticket"));
-    }
 
     @Test
     public void shouldPerformStepsInDryRunMode() {
@@ -452,30 +410,6 @@ public class StepCandidateBehaviour {
             OutcomesTable outcomes = new OutcomesTable();
             outcomes.addOutcome("failing", name, equalTo(""));
             outcomes.verify();
-        }
-
-    }
-
-    static class CompositeSteps extends Steps {
-
-        private String loggedIn;
-        private String added;
-
-        @Given("$customer has previously bought a $product") // used with matched parameters
-        @Alias("<customer> has previously bough a <product>") // used with named parameters
-        @Composite(steps = { "Given <customer> is logged in", 
-                             "When a <product> is added to the cart" })
-        public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { 
-        }
-
-        @Given("<customer> is logged in")
-        public void aCustomerIsLoggedIn(@Named("customer") String customer) {
-            loggedIn = customer;
-        }
-
-        @When("a <product> is added to the cart")
-        public void aProductIsAddedToCart(@Named("product") String product) {
-            added = product;
         }
 
     }
