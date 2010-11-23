@@ -18,15 +18,14 @@ import static org.hamcrest.Matchers.is;
 
 public class CompositeStepCandidateBehaviour {
 
-    private Map<String, String> namedParameters = new HashMap<String, String>();
-
     @Test
     public void shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters() {
         CompositeSteps steps = new CompositeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidates.get(0);
         assertThat(candidate.isComposite(), is(true));
-        List<Step> composedSteps = candidate.createComposedSteps("Given Mr Jones has previously bought a ticket", namedParameters, candidates);
+        Map<String, String> noNamedParameters = new HashMap<String, String>();
+        List<Step> composedSteps = candidate.createComposedSteps("Given Mr Jones has previously bought a ticket", noNamedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform();
