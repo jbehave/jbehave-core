@@ -7,11 +7,13 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
+import org.jbehave.core.annotations.UsingPaths;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
+import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.parsers.StepPatternParser;
@@ -161,6 +163,17 @@ public class AnnotationBuilder {
             embedder.useMetaFilters(metaFilters);
         }
         return embedder;
+    }
+
+    public List<String> findPaths() {
+        if (!finder.isAnnotationPresent(UsingPaths.class)) {
+            return new ArrayList<String>();
+        }
+
+        String searchIn = finder.getAnnotatedValue(UsingPaths.class, String.class, "searchIn");
+        List<String> includes = finder.getAnnotatedValues(UsingPaths.class, String.class, "includes");
+        List<String> excludes = finder.getAnnotatedValues(UsingPaths.class, String.class, "excludes");
+        return new StoryFinder().findPaths(searchIn, includes, excludes);
     }
 
     private boolean control(AnnotationFinder finder, String name) {

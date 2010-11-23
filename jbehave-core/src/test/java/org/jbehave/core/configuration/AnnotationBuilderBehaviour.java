@@ -1,12 +1,5 @@
 package org.jbehave.core.configuration;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -15,14 +8,25 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
+import org.jbehave.core.annotations.UsingPaths;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.configuration.AnnotationBuilder.InstantiationFailed;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.Steps;
 import org.junit.Test;
+
+import static java.util.Arrays.asList;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class AnnotationBuilderBehaviour {
 
@@ -106,6 +110,12 @@ public class AnnotationBuilderBehaviour {
         assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
         assertThat(embedder.metaFilters(), equalTo(asList("+embedder configurable")));
         assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
+    }
+
+    @Test
+    public void shouldFindStoryPaths() {
+        AnnotationBuilder annotatedWithPaths = new AnnotationBuilder(AnnotatedWithPaths.class);
+        assertThat(annotatedWithPaths.findPaths().size(), greaterThan(0));
     }
 
     @Test(expected = InstantiationFailed.class)
@@ -208,4 +218,9 @@ public class AnnotationBuilderBehaviour {
 
     }
 
+    @UsingPaths(searchIn="src/test/java", includes={"**/stories/*story"})
+    private static class AnnotatedWithPaths {
+
+    }
+    
 }
