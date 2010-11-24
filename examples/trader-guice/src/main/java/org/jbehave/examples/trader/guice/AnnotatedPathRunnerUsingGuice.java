@@ -2,6 +2,7 @@ package org.jbehave.examples.trader.guice;
 
 import java.text.SimpleDateFormat;
 
+import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.UsingPaths;
@@ -11,7 +12,7 @@ import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.junit.AnnotatedPathRunner;
+import org.jbehave.core.junit.guice.GuiceAnnotatedPathRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -42,12 +43,12 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
  * jbehave-trader-example. Here we are only concerned with using the container
  * to compose the configuration and the steps instances.
  */
-@RunWith(AnnotatedPathRunner.class)
+@RunWith(GuiceAnnotatedPathRunner.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
 @UsingPaths(searchIn = "../trader/src/main/java", includes = { "**/*.story" }, excludes = { "**/examples_table*.story" })
-public class AnnotatedPathRunnerUsingGuice {
+public class AnnotatedPathRunnerUsingGuice extends InjectableEmbedder {
     // Guice modules
     public static class ConfigurationModule extends AbstractModule {
         @Override
@@ -76,6 +77,9 @@ public class AnnotatedPathRunnerUsingGuice {
             bind(SandpitSteps.class).in(Scopes.SINGLETON);
             bind(SearchSteps.class).in(Scopes.SINGLETON);
         }
+    }
+
+    public void run() throws Throwable {        
     }
 
 }
