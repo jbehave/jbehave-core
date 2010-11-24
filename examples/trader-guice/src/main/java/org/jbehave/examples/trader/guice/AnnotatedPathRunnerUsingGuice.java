@@ -2,7 +2,6 @@ package org.jbehave.examples.trader.guice;
 
 import java.text.SimpleDateFormat;
 
-import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.UsingPaths;
@@ -48,7 +47,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
 @UsingPaths(searchIn = "../trader/src/main/java", includes = { "**/*.story" }, excludes = { "**/examples_table*.story" })
-public class AnnotatedPathRunnerUsingGuice extends InjectableEmbedder {
+public class AnnotatedPathRunnerUsingGuice {
     // Guice modules
     public static class ConfigurationModule extends AbstractModule {
         @Override
@@ -77,9 +76,6 @@ public class AnnotatedPathRunnerUsingGuice extends InjectableEmbedder {
             bind(SandpitSteps.class).in(Scopes.SINGLETON);
             bind(SearchSteps.class).in(Scopes.SINGLETON);
         }
-    }
-
-    public void run() throws Throwable {        
     }
 
 }

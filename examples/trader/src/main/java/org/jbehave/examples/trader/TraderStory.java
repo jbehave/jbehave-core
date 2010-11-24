@@ -50,7 +50,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
  * <p>
  * Users wanting to run multiple stories via the same Java class (new to JBehave
  * 3) should look at {@link TraderStories}, {@link TraderStoryRunner} or
- * {@link AnnotatedTraderEmbedder}
+ * {@link TraderAnnotatedEmbedderRunner}
  * </p>
  */
 public abstract class TraderStory extends JUnitStory {

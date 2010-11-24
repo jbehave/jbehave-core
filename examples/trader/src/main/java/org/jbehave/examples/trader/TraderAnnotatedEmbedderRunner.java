@@ -21,10 +21,10 @@ import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
-import org.jbehave.examples.trader.AnnotatedTraderEmbedder.MyDateConverter;
-import org.jbehave.examples.trader.AnnotatedTraderEmbedder.MyReportBuilder;
-import org.jbehave.examples.trader.AnnotatedTraderEmbedder.MyStoryControls;
-import org.jbehave.examples.trader.AnnotatedTraderEmbedder.MyStoryLoader;
+import org.jbehave.examples.trader.TraderAnnotatedEmbedderRunner.MyDateConverter;
+import org.jbehave.examples.trader.TraderAnnotatedEmbedderRunner.MyReportBuilder;
+import org.jbehave.examples.trader.TraderAnnotatedEmbedderRunner.MyStoryControls;
+import org.jbehave.examples.trader.TraderAnnotatedEmbedderRunner.MyStoryLoader;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
                 metaFilters = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
-public class AnnotatedTraderEmbedder extends InjectableEmbedder {
+public class TraderAnnotatedEmbedderRunner extends InjectableEmbedder {
 
     @Test
     public void run() {
@@ -59,7 +59,7 @@ public class AnnotatedTraderEmbedder extends InjectableEmbedder {
 
     public static class MyStoryLoader extends LoadFromClasspath {
         public MyStoryLoader() {
-            super(AnnotatedTraderEmbedder.class.getClassLoader());
+            super(TraderAnnotatedEmbedderRunner.class.getClassLoader());
         }
     }
 
