@@ -98,6 +98,7 @@ public class ParameterConverters {
     }
 
     public Object convert(String value, Type type) {
+
         // check if any converters accepts type
         for (ParameterConverter converter : converters) {
             if (converter.accept(type)) {
@@ -106,8 +107,11 @@ public class ParameterConverters {
                 return converted;
             }
         }
-        // default to String
-        return replaceNewlinesWithSystemNewlines(value);
+
+        if (type == String.class)
+            return replaceNewlinesWithSystemNewlines(value);
+
+        throw new ParameterConvertionFailed("No parameter converter for " + type);
     }
 
     private Object replaceNewlinesWithSystemNewlines(String value) {
@@ -125,10 +129,13 @@ public class ParameterConverters {
     @SuppressWarnings("serial")
     public static class ParameterConvertionFailed extends RuntimeException {
 
+        public ParameterConvertionFailed(String message) {
+            super(message);
+        }
+
         public ParameterConvertionFailed(String message, Throwable cause) {
             super(message, cause);
         }
-
     }
 
     /**

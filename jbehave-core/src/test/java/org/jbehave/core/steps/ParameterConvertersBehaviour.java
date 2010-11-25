@@ -291,6 +291,11 @@ public class ParameterConvertersBehaviour {
         converter.convertValue(value, ExamplesTable.class);
     }
 
+    @Test(expected = ParameterConvertionFailed.class)
+    public void shouldFailToConvertToUnknownType() throws ParseException, IntrospectionException {
+        new ParameterConverters().convert("abc", WrongType.class);
+    }
+
     static class WrongType {
 
     }
