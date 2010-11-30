@@ -1,11 +1,5 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.ExamplesTable;
@@ -14,6 +8,12 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
 
 /**
  * Reporter which collects other {@link StoryReporter}s and delegates all
@@ -43,9 +43,9 @@ public class DelegatingStoryReporter implements StoryReporter {
         this(asList(delegates));
     }
 
-    public void afterScenario() {
+    public void afterScenario(boolean givenStory) {
         for (StoryReporter reporter : delegates) {
-            reporter.afterScenario();
+            reporter.afterScenario(givenStory);
         }
     }
 
@@ -55,15 +55,15 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
-    public void beforeScenario(String scenarioTitle) {
+    public void beforeScenario(String scenarioTitle, boolean givenStory) {
         for (StoryReporter reporter : delegates) {
-            reporter.beforeScenario(scenarioTitle);
+            reporter.beforeScenario(scenarioTitle, givenStory);
         }
     }
 
-    public void scenarioMeta(Meta meta) {
+    public void scenarioMeta(Meta meta, boolean givenStory) {
         for (StoryReporter reporter : delegates) {
-            reporter.scenarioMeta(meta);
+            reporter.scenarioMeta(meta, givenStory);
         }
     }
 
@@ -145,9 +145,9 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
 	}
 	
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
+    public void scenarioNotAllowed(Scenario scenario, String filter, boolean givenStory) {
         for (StoryReporter reporter : delegates) {
-            reporter.scenarioNotAllowed(scenario, filter);
+            reporter.scenarioNotAllowed(scenario, filter, givenStory);
         }
     }
 

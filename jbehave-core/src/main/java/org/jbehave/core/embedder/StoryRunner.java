@@ -126,14 +126,14 @@ public class StoryRunner {
         for (Scenario scenario : story.getScenarios()) {
             // scenario also inherits meta from story
             if (!filter.allow(scenario.getMeta().inheritFrom(story.getMeta()))) {
-                reporter.scenarioNotAllowed(scenario, filter.asString());
+                reporter.scenarioNotAllowed(scenario, filter.asString(), givenStory);
                 continue;
             }
             if ( failureOccurred() && configuration.storyControls().skipScenariosAfterFailure() ){
                 continue;
             }
-            reporter.beforeScenario(scenario.getTitle());
-            reporter.scenarioMeta(scenario.getMeta());
+            reporter.beforeScenario(scenario.getTitle(), givenStory);
+            reporter.scenarioMeta(scenario.getMeta(), givenStory);
 
             // run before scenario steps, if allowed
             if (runBeforeAndAfterScenarioSteps) {
@@ -154,7 +154,7 @@ public class StoryRunner {
                 runBeforeOrAfterScenarioSteps(candidateSteps, scenario, Stage.AFTER);
             }
 
-            reporter.afterScenario();
+            reporter.afterScenario(givenStory);
         }
 
         // run after story steps, if any

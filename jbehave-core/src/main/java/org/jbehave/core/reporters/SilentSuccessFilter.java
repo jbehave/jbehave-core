@@ -1,15 +1,15 @@
 package org.jbehave.core.reporters;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Filters out the reports from all stories that pass, The delegate receives
@@ -113,38 +113,38 @@ public class SilentSuccessFilter implements StoryReporter {
         });
     }
 
-    public void afterScenario() {
+    public void afterScenario(final boolean givenStory) {
         scenarioTodos.add(new Todo() {
             public void doNow() {
-                delegate.afterScenario();
+                delegate.afterScenario(givenStory);
             }
         });
         scenarioState.report();
     }
 
-    public void beforeScenario(final String scenarioTitle) {
+    public void beforeScenario(final String scenarioTitle, final boolean givenStory) {
         scenarioTodos = new ArrayList<Todo>();
         scenarioTodos.add(new Todo() {
             public void doNow() {
-                delegate.beforeScenario(scenarioTitle);
+                delegate.beforeScenario(scenarioTitle, givenStory);
             }
         });
     }
 
-    public void scenarioNotAllowed(final Scenario scenario, final String filter) {
+    public void scenarioNotAllowed(final Scenario scenario, final String filter, final boolean givenStory) {
         scenarioState = new State() {
             public void report() {
-                delegate.scenarioNotAllowed(scenario, filter);
+                delegate.scenarioNotAllowed(scenario, filter, givenStory);
             }
         };
         scenarioState.report();
     }
 
-    public void scenarioMeta(final Meta meta) {
+    public void scenarioMeta(final Meta meta, final boolean givenStory) {
         scenarioTodos = new ArrayList<Todo>();
         scenarioTodos.add(new Todo() {
             public void doNow() {
-                delegate.scenarioMeta(meta);
+                delegate.scenarioMeta(meta, givenStory);
             }
         });
     }

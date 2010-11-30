@@ -42,8 +42,8 @@ public class PostStoryStatisticsCollectorBehaviour {
     public void shouldCollectStoryStatistics() {
         narrateAnInterestingStory();
 
-        assertThat(out.toString(), containsString("scenarios=4"));
-        assertThat(out.toString(), containsString("scenariosSuccessful=3"));
+        assertThat(out.toString(), containsString("scenarios=2"));
+        assertThat(out.toString(), containsString("scenariosSuccessful=1"));
         assertThat(out.toString(), containsString("scenariosFailed=1"));
         assertThat(out.toString(), containsString("examples=2"));
         assertThat(out.toString(), containsString("givenStories=1"));
@@ -94,30 +94,30 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.beforeStory(story, false);
 
         // 1st scenario
-        reporter.beforeScenario("I ask for a loan");
-        reporter.scenarioMeta(Meta.EMPTY);
+        reporter.beforeScenario("I ask for a loan", false);
+        reporter.scenarioMeta(Meta.EMPTY, false);
         reporter.givenStories(asList("path/to/story1", "path/to/story2"));
 
         // 1st given story
         reporter.beforeStory(story, true);
-        reporter.beforeScenario("my credit rating is good");
-        reporter.afterScenario();
+        reporter.beforeScenario("my credit rating is good", true);
+        reporter.afterScenario(true);
         reporter.afterStory(true);
 
         // 2nd given story
         reporter.beforeStory(story, true);
-        reporter.beforeScenario("the bank has $300 to loan");
-        reporter.afterScenario();
+        reporter.beforeScenario("the bank has $300 to loan", true);
+        reporter.afterScenario(true);
         reporter.afterStory(true);
 
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
-        reporter.afterScenario();
+        reporter.afterScenario(false);
 
         // 2nd scenario
-        reporter.beforeScenario("A failing scenario");
+        reporter.beforeScenario("A failing scenario", false);
         OutcomesTable outcomesTable = new OutcomesTable();
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         try {
@@ -132,7 +132,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.example(table.getRow(0));
         reporter.example(table.getRow(1));
         reporter.afterExamples();
-        reporter.afterScenario();
+        reporter.afterScenario(false);
         reporter.afterStory(false);
     }
 
@@ -147,7 +147,7 @@ public class PostStoryStatisticsCollectorBehaviour {
             reporter.storyNotAllowed(story, "-theme testing");
         } else {
             reporter.beforeStory(story, false);
-            reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
+            reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing", false);
             reporter.afterStory(false);
         }
     }

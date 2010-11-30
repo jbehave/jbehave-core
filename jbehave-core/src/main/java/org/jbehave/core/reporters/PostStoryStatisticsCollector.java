@@ -97,19 +97,22 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         count("givenStories");            
     }
 
-    public void beforeScenario(String title) {
+    public void beforeScenario(String title, boolean givenStory) {
         cause = null;
         outcomesFailed = null;
     }
 
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
+    public void scenarioNotAllowed(Scenario scenario, String filter, boolean givenStory) {
         count("scenariosNotAllowed");
     }
 
-    public void scenarioMeta(Meta meta) {
+    public void scenarioMeta(Meta meta, boolean givenStory) {
     }
 
-    public void afterScenario() {
+    public void afterScenario(boolean givenStory) {
+        if (givenStory)
+            return;
+
         count("scenarios");
         if (cause != null || outcomesFailed != null) {
             count("scenariosFailed");
