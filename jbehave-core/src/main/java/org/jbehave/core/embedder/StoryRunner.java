@@ -160,9 +160,11 @@ public class StoryRunner {
         // run after story steps, if any
         runBeforeOrAfterStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.AFTER);        
         reporter.afterStory(givenStory);
-        
+
         // handle any failure according to strategy
-        currentStrategy.handleFailure(storyFailure);
+        if (!givenStory) {
+            currentStrategy.handleFailure(storyFailure);
+        }
     }
 
     private boolean shouldRunBeforeOrAfterScenarioSteps(Configuration configuration, boolean givenStory) {
