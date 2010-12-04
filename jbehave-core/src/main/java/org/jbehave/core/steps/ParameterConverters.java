@@ -108,8 +108,9 @@ public class ParameterConverters {
             }
         }
 
-        if (type == String.class)
+        if (type == String.class) {
             return replaceNewlinesWithSystemNewlines(value);
+        }
 
         throw new ParameterConvertionFailed("No parameter converter for " + type);
     }
