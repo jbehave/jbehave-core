@@ -19,8 +19,8 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.ExamplesTable.Row;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Record;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.TraderStory;
@@ -95,7 +95,7 @@ public class TraderSteps {
     @Then("the current trader activity is: %tradersTable")
     public void theTradersAre(ExamplesTable tradersTable) {
         for ( int count = 0; count < tradersTable.getRowCount(); count++ ){
-            Row row = tradersTable.getRowAsParameters(count);
+            Record row = tradersTable.getRowAsRecord(count);
             System.out.println(row.valueAs("name", Trader.class).getName() + " has done " + row.valueAs("trades", Integer.class) + " trades");            
         }
     }

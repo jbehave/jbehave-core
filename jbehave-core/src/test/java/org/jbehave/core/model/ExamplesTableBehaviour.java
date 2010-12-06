@@ -1,10 +1,8 @@
 package org.jbehave.core.model;
 
-import static java.util.Arrays.asList;
-import static org.codehaus.plexus.util.StringUtils.isBlank;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
+import org.junit.Test;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -19,10 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jbehave.core.model.ExamplesTable.Row;
-import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.codehaus.plexus.util.StringUtils.isBlank;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 public class ExamplesTableBehaviour {
     
@@ -198,10 +197,10 @@ public class ExamplesTableBehaviour {
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
 
         // Then
-        Row rowOfIntegers = examplesTable.getRowAsParameters(0);
+        Record rowOfIntegers = examplesTable.getRowAsRecord(0);
         assertThat(rowOfIntegers.valueAs("one", Integer.class), equalTo(11));
         assertThat(rowOfIntegers.valueAs("two", Integer.class), equalTo(22));
-        Row rowOfDates = examplesTable.getRowAsParameters(1);
+        Record rowOfDates = examplesTable.getRowAsRecord(1);
         assertThat(rowOfDates.valueAs("one", Date.class), equalTo(convertDate("1/1/2010")));
         assertThat(rowOfDates.valueAs("two", Date.class), equalTo(convertDate("2/2/2010")));
     }
