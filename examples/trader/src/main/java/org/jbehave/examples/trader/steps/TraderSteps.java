@@ -19,6 +19,7 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.ExamplesTable.Row;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -79,7 +80,7 @@ public class TraderSteps {
         traders.clear();
         traders.addAll(toTraders(tradersTable));
     }
-
+    
     @When("traders are subset to \"%regex\" by name")
     @Alias("traders are filtered by \"%regex\"")
     public void subsetTradersByName(String regex) {
@@ -90,7 +91,15 @@ public class TraderSteps {
             }
         }
     }
-    
+
+    @Then("the current trader activity is: %tradersTable")
+    public void theTradersAre(ExamplesTable tradersTable) {
+        for ( int count = 0; count < tradersTable.getRowCount(); count++ ){
+            Row row = tradersTable.getRowAsParameters(count);
+            System.out.println(row.valueAs("name", Trader.class).getName() + " has done " + row.valueAs("trades", Integer.class) + " trades");            
+        }
+    }
+
     @Then("the traders returned are: %tradersTable")
     public void theTradersReturnedAre(ExamplesTable tradersTable) {
         OutcomesTable outcomes = new OutcomesTable();
@@ -154,7 +163,12 @@ public class TraderSteps {
     
     // Method used as dynamical parameter converter
     @AsParameterConverter
-    public Trader createTrader(String name){
+    public Trader retrieveTrader(String name){
+        for (Trader trader : traders) {
+            if ( trader.getName().equals(name)){
+                return trader;
+            }
+        }
     	return mockTradePersister().retrieveTrader(name);
     }
     

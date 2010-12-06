@@ -1,9 +1,5 @@
 package org.jbehave.core.model;
 
-import static java.lang.Boolean.parseBoolean;
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.compile;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +13,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.steps.ParameterConverters;
+
+import static java.lang.Boolean.parseBoolean;
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.compile;
 
 /**
  * <p>
@@ -64,7 +65,12 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * | header 1 | header 2 | .... | header n |
  * | value 11 | value 12 | .... | value 1n |
  * </pre>
+ * </p>
  * 
+ * <p>
+ * The table also allows the retrieval of row values as converted parameters.  
+ * Use {@link #getRowAsParameters(int)} and invoke {@link Row#valueAs(String, Class)}
+ * specifying the header and the class type of the parameter.
  * </p>
  */
 public class ExamplesTable {
@@ -78,6 +84,7 @@ public class ExamplesTable {
     private final String headerSeparator;
     private final String valueSeparator;
     private final String ignorableSeparator;
+    private final ParameterConverters parameterConverters;
     private final List<String> headers = new ArrayList<String>();
     private final Properties properties = new Properties();
     private boolean trim = true;
@@ -87,14 +94,16 @@ public class ExamplesTable {
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator) {
-        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR);
+        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR, new ParameterConverters());
     }
 
-    public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator, String ignorableSeparator) {
+    public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
+            String ignorableSeparator, ParameterConverters parameterConverters) {
         this.tableAsString = tableAsString;
         this.headerSeparator = headerSeparator;
         this.valueSeparator = valueSeparator;
         this.ignorableSeparator = ignorableSeparator;
+        this.parameterConverters = parameterConverters;
         parse();
     }
 
@@ -191,6 +200,10 @@ public class ExamplesTable {
         return data.get(row);
     }
 
+    public Row getRowAsParameters(int row){
+        return new Row(getRow(row), parameterConverters);
+    }
+    
     public int getRowCount() {
         return data.size();
     }
@@ -216,4 +229,21 @@ public class ExamplesTable {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
+    public static class Row {
+
+        private final Map<String, String> data;
+        private final ParameterConverters parameterConverters;
+
+        public Row(Map<String, String> data, ParameterConverters parameterConverters) {
+            this.data = data;
+            this.parameterConverters = parameterConverters;
+        }
+
+        @SuppressWarnings("unchecked")
+        public <T> T valueAs(String name, Class<T> type){
+            String value = data.get(name);
+            return (T) parameterConverters.convert(value, type);
+        }
+        
+    }
 }

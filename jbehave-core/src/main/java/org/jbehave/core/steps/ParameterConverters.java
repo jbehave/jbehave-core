@@ -1,8 +1,5 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.ExamplesTableFactory;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -16,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.ExamplesTableFactory;
 
 import static java.util.Arrays.asList;
 
@@ -70,18 +70,21 @@ public class ParameterConverters {
      */
     public ParameterConverters(StepMonitor monitor, Locale locale, String listSeparator) {
         this.monitor = monitor;
-        String listSepRegexp = escapeRegexPunctuation(listSeparator);
-        ParameterConverter[] defaultConverters = {
-        	new NumberConverter(NumberFormat.getInstance(locale)),
-        	new NumberListConverter(NumberFormat.getInstance(locale), listSepRegexp), 
-        	new StringListConverter(listSepRegexp),
-        	new DateConverter(), 
-        	new ExamplesTableConverter()
-        };
-        this.addConverters(defaultConverters);
-    	
+        this.addConverters(defaultConverters(locale, listSeparator));    	
     }
     
+    protected ParameterConverter[] defaultConverters(Locale locale, String listSeparator) {
+        String escapedListSeparator = escapeRegexPunctuation(listSeparator);
+        ParameterConverter[] defaultConverters = {
+            new NumberConverter(NumberFormat.getInstance(locale)),
+            new NumberListConverter(NumberFormat.getInstance(locale), escapedListSeparator), 
+            new StringListConverter(escapedListSeparator),
+            new DateConverter(), 
+            new ExamplesTableConverter(new ExamplesTableFactory(this))
+        };
+        return defaultConverters;
+    }
+
     //TODO : This is a duplicate from RegExpPrefixCapturing
     private String escapeRegexPunctuation(String matchThis) {
         return matchThis.replaceAll("([\\[\\]\\{\\}\\?\\^\\.\\*\\(\\)\\+\\\\])", "\\\\$1");
@@ -370,11 +373,11 @@ public class ParameterConverters {
     public static class ExamplesTableConverter implements ParameterConverter {
 
         private final ExamplesTableFactory factory;
-
-        public ExamplesTableConverter() {
-            this(new ExamplesTableFactory());
-        }
         
+        public ExamplesTableConverter(){
+            this(new ExamplesTableFactory());           
+        }
+
         public ExamplesTableConverter(ExamplesTableFactory factory){
             this.factory = factory;            
         }

@@ -6,11 +6,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.MethodDescriptor;
+import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jbehave.core.model.ExamplesTable.Row;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.junit.Test;
 
 public class ExamplesTableBehaviour {
@@ -174,5 +185,40 @@ public class ExamplesTableBehaviour {
     private void ensureCellContentIs(ExamplesTable table, int row, String header, String value) {
         assertThat(table.getRow(row).get(header), equalTo(value));
     }
+
+    @Test
+    public void shouldConvertParameterValuesOfTableRow() throws Exception {
+        // Given
+        ParameterConverters parameterConverters = new ParameterConverters();
+        parameterConverters.addConverters(new MethodReturningConverter(methodFor("convertDate"), this));
+        ExamplesTableFactory factory = new ExamplesTableFactory(parameterConverters);
+
+        // When
+        String tableAsString = "|one|two|\n|11|22|\n|1/1/2010|2/2/2010|";
+        ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
+
+        // Then
+        Row rowOfIntegers = examplesTable.getRowAsParameters(0);
+        assertThat(rowOfIntegers.valueAs("one", Integer.class), equalTo(11));
+        assertThat(rowOfIntegers.valueAs("two", Integer.class), equalTo(22));
+        Row rowOfDates = examplesTable.getRowAsParameters(1);
+        assertThat(rowOfDates.valueAs("one", Date.class), equalTo(convertDate("1/1/2010")));
+        assertThat(rowOfDates.valueAs("two", Date.class), equalTo(convertDate("2/2/2010")));
+    }
+
+    public Date convertDate(String value) throws ParseException {
+        return new SimpleDateFormat("dd/MM/yyyy").parse(value);
+    }
+
+    public static Method methodFor(String methodName) throws IntrospectionException {
+        BeanInfo beanInfo = Introspector.getBeanInfo(ExamplesTableBehaviour.class);
+        for (MethodDescriptor md : beanInfo.getMethodDescriptors()) {
+            if (md.getMethod().getName().equals(methodName)) {
+                return md.getMethod();
+            }
+        }
+        return null;
+    }
+
 
 }

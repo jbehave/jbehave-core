@@ -13,6 +13,7 @@ import java.util.Properties;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
@@ -56,8 +57,13 @@ public class TraderStories extends JUnitStories {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
-        // allows loading examples tables from external resources
-        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LoadFromClasspath(embeddableClass));
+        // Start from default ParameterConverters instance
+        ParameterConverters parameterConverters = new ParameterConverters();
+        // factory to allow parameter conversion and loading from external resources (used by StoryParser too)
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), new LoadFromClasspath(embeddableClass), parameterConverters);
+        // add custom coverters
+        parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
+                new ExamplesTableConverter(examplesTableFactory));
         return new MostUsefulConfiguration()
             .useStoryLoader(new LoadFromClasspath(embeddableClass))
             .useStoryParser(new RegexStoryParser(examplesTableFactory)) 
@@ -66,9 +72,7 @@ public class TraderStories extends JUnitStories {
                 .withDefaultFormats()
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML))
-            .useParameterConverters(new ParameterConverters()
-                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")), // use custom date pattern
-                                   new ExamplesTableConverter(examplesTableFactory)))                     
+            .useParameterConverters(parameterConverters)                     
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters
             .useStepMonitor(new SilentStepMonitor());                               

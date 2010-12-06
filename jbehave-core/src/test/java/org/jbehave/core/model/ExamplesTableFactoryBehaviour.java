@@ -1,6 +1,5 @@
 package org.jbehave.core.model;
 
-import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.ResourceLoader;
 import org.junit.Test;
 
@@ -31,7 +30,7 @@ public class ExamplesTableFactoryBehaviour {
     public void shouldCreateExamplesTableFromResourceInput() {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
-        ExamplesTableFactory factory = new ExamplesTableFactory(new LocalizedKeywords(), resourceLoader);
+        ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader);
         
         // When
         String resourcePath = "/path/to/table";

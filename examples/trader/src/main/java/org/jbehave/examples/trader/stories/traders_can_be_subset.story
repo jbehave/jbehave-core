@@ -5,6 +5,11 @@ Given the traders:
 |Larry|Stooge 3|
 |Moe  |Stooge 1|
 |Curly|Stooge 2|
+Then the current trader activity is: 
+|name |trades|
+|Larry|30000 |
+|Moe  |10000 |
+|Curly|20000 |
 !-- This is a comment, which will be ignored in the execution
 When traders are subset to ".*y" by name
 !-- This is another comment, also ignored, 
