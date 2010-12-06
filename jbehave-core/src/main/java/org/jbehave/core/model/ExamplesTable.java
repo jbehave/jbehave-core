@@ -90,6 +90,8 @@ public class ExamplesTable {
     private final Properties properties = new Properties();
     private boolean trim = true;
 
+    private Record defaults;
+
     public ExamplesTable(String tableAsString) {
         this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR);
     }
@@ -106,6 +108,18 @@ public class ExamplesTable {
         this.ignorableSeparator = ignorableSeparator;
         this.parameterConverters = parameterConverters;
         parse();
+    }
+
+    private ExamplesTable(ExamplesTable other, Record defaults) {
+        this.data.addAll(other.data);
+        this.tableAsString = other.tableAsString;
+        this.headerSeparator = other.headerSeparator;
+        this.valueSeparator = other.valueSeparator;
+        this.ignorableSeparator = other.ignorableSeparator;
+        this.parameterConverters = other.parameterConverters;
+        this.headers.addAll(other.headers);
+        this.properties.putAll(other.properties);
+        this.defaults = defaults;
     }
 
     private void parse() {
@@ -189,6 +203,10 @@ public class ExamplesTable {
         return new LinkedHashMap<String, String>();
     }
 
+    public ExamplesTable withDefaults(Record defaults) {
+        return new ExamplesTable(this, new ChainedRecord(defaults, this.defaults));
+    }
+
     public Properties getProperties() {
         return properties;
     }
@@ -201,8 +219,8 @@ public class ExamplesTable {
         return data.get(row);
     }
 
-    public Record getRowAsRecord(int row) {
-        return new Record(getRow(row), parameterConverters);
+    public ConvertingRecord getRowAsRecord(int row) {
+        return createRecord(getRow(row));
     }
 
     public int getRowCount() {
@@ -211,6 +229,20 @@ public class ExamplesTable {
 
     public List<Map<String, String>> getRows() {
         return data;
+    }
+
+    public List<ConvertingRecord> getRecords() {
+        List<ConvertingRecord> rows = new ArrayList<ConvertingRecord>();
+
+        for (Map<String, String> each : getRows()) {
+            rows.add(createRecord(each));
+        }
+
+        return rows;
+    }
+
+    private ConvertingRecord createRecord(Map<String, String> each) {
+        return new ConvertingRecord(new ChainedRecord(new MapRecord(each), defaults), parameterConverters);
     }
 
     public String getHeaderSeparator() {

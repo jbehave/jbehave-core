@@ -1,9 +1,5 @@
 package org.jbehave.examples.trader.steps;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -18,17 +14,21 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.model.ConvertingRecord;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Record;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.TraderStory;
 import org.jbehave.examples.trader.model.Stock;
-import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.model.Stock.AlertStatus;
+import org.jbehave.examples.trader.model.Trader;
 import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 /**
  * POJO holding the candidate steps for the trader example.  
@@ -94,8 +94,7 @@ public class TraderSteps {
 
     @Then("the current trader activity is: %tradersTable")
     public void theTradersAre(ExamplesTable tradersTable) {
-        for ( int count = 0; count < tradersTable.getRowCount(); count++ ){
-            Record row = tradersTable.getRowAsRecord(count);
+        for (ConvertingRecord row : tradersTable.getRecords()) {
             System.out.println(row.valueAs("name", Trader.class).getName() + " has done " + row.valueAs("trades", Integer.class) + " trades");            
         }
     }

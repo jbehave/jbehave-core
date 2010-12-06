@@ -13,14 +13,14 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class RecordBehaviour {
+public class ConvertingRecordBehaviour {
 
     private Map<String, String> map;
 
     @Mock
     private ValueConverter converters;
 
-    private Record row;
+    private ConvertingRecord row;
 
     @Before
     public void setUp() throws Exception {
@@ -29,7 +29,7 @@ public class RecordBehaviour {
         map = new HashMap<String, String>();
         map.put("one", "11");
 
-        row = new Record(map, converters);
+        row = new ConvertingRecord(new MapRecord(map), converters);
     }
 
     @Test
