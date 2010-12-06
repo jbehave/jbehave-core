@@ -234,5 +234,6 @@ public class ExamplesTableBehaviour {
         assertThat(record.value("three"), is("99"));
         assertThat(record.valueAs("three", Integer.class), is(Integer.valueOf(99)));
 
+        assertThat(record.valueAs("XX", Integer.class, "13"), is(Integer.valueOf(13)));
     }
 }

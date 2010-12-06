@@ -8,6 +8,7 @@ import org.jbehave.core.steps.ParameterConverters;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,8 @@ import static java.util.regex.Pattern.compile;
  * </p>
  */
 public class ExamplesTable {
+    private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
+
     public static final ExamplesTable EMPTY = new ExamplesTable("");
 
     private static final String HEADER_SEPARATOR = "|";
@@ -90,7 +93,7 @@ public class ExamplesTable {
     private final Properties properties = new Properties();
     private boolean trim = true;
 
-    private Record defaults;
+    private final Record defaults;
 
     public ExamplesTable(String tableAsString) {
         this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR);
@@ -107,6 +110,7 @@ public class ExamplesTable {
         this.valueSeparator = valueSeparator;
         this.ignorableSeparator = ignorableSeparator;
         this.parameterConverters = parameterConverters;
+        this.defaults = new MapRecord(EMPTY_MAP);
         parse();
     }
 
@@ -204,6 +208,7 @@ public class ExamplesTable {
     }
 
     public ExamplesTable withDefaults(Record defaults) {
+
         return new ExamplesTable(this, new ChainedRecord(defaults, this.defaults));
     }
 
