@@ -28,9 +28,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<String, Integer>();
-    private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
-            "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosSuccessful", "scenariosFailed", "givenStories",
-            "examples");
+    private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "steps", "stepsSuccessful",
+            "stepsIgnorable", "stepsPending", "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosSuccessful",
+            "scenariosFailed", "givenStories", "examples");
 
     private Throwable cause;
     private OutcomesTable outcomesFailed;
@@ -72,8 +72,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void beforeStory(Story story, boolean givenStory) {
-        if (givenStory)
+        if (givenStory) {
             return;
+        }
         resetData();
     }
 
@@ -84,17 +85,18 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void afterStory(boolean givenStory) {
-        if (givenStory)
+        if (givenStory) {
             return;
+        }
         writeData();
     }
 
     public void givenStories(GivenStories givenStories) {
-        count("givenStories");            
+        count("givenStories");
     }
 
     public void givenStories(List<String> storyPaths) {
-        count("givenStories");            
+        count("givenStories");
     }
 
     public void beforeScenario(String title, boolean givenStory) {
@@ -110,8 +112,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void afterScenario(boolean givenStory) {
-        if (givenStory)
+        if (givenStory) {
             return;
+        }
 
         count("scenarios");
         if (cause != null || outcomesFailed != null) {
