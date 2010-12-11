@@ -1,18 +1,5 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
-
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -22,21 +9,39 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.junit.Before;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Properties;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
+
 public class PostStoryStatisticsCollectorBehaviour {
+    private OutputStream out;
+    private PrintStream printStream;
+
+    private PostStoryStatisticsCollector reporter;
+
+    @Before
+    public void setUp() throws Exception {
+        out = new ByteArrayOutputStream();
+        printStream = new PrintStream(out);
+        reporter = new PostStoryStatisticsCollector(printStream);
+    }
 
     @Test
     public void shouldCollectStoryStatistics() {
-        // Given
-        OutputStream out = new ByteArrayOutputStream();
-        PrintStream print = new PrintStream(out);
-        StoryReporter reporter = new PostStoryStatisticsCollector(print);
+        narrateAnInterestingStory();
 
-        // When
-        narrateAnInterestingStory(reporter);
-
-        // Then
         assertThat(out.toString(), containsString("scenarios=2"));
         assertThat(out.toString(), containsString("scenariosSuccessful=1"));
         assertThat(out.toString(), containsString("scenariosFailed=1"));
@@ -48,34 +53,24 @@ public class PostStoryStatisticsCollectorBehaviour {
         assertThat(out.toString(), containsString("stepsIgnorable=1"));
         assertThat(out.toString(), containsString("stepsNotPerformed=1"));
         assertThat(out.toString(), containsString("stepsSuccessful=3"));
-        assertThat(reporter.toString(), containsString(print.toString()));
+        assertThat(reporter.toString(), containsString(printStream.toString()));
     }
 
     @Test
     public void shouldCollectStoryStatisticsWhenStoryNotAllowedByFilter() {
-        // Given
-        OutputStream out = new ByteArrayOutputStream();
-        StoryReporter reporter = new PostStoryStatisticsCollector(new PrintStream(out));
+        narrateAnInterestingStoryNotAllowedByFilter(true);
+        String statistics = out.toString();
 
-        // When
-        narrateAnInterestingStoryNotAllowedByFilter(reporter, true);
-
-        // Then
-        assertThat(out.toString(), containsString("notAllowed=1"));
+        assertThat(statistics, containsString("notAllowed=1"));
     }
 
     @Test
     public void shouldCollectStoryStatisticsWhenScenariosNotAllowedByFilter() {
-        // Given
-        OutputStream out = new ByteArrayOutputStream();
-        StoryReporter reporter = new PostStoryStatisticsCollector(new PrintStream(out));
+        narrateAnInterestingStoryNotAllowedByFilter(false);
+        String statistics = out.toString();
 
-        // When
-        narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
-
-        // Then
-        assertThat(out.toString(), containsString("notAllowed=0"));
-        assertThat(out.toString(), containsString("scenariosNotAllowed=1"));
+        assertThat(statistics, containsString("notAllowed=0"));
+        assertThat(statistics, containsString("scenariosNotAllowed=1"));
     }
 
     @Test
@@ -92,21 +87,37 @@ public class PostStoryStatisticsCollectorBehaviour {
         assertThat(out.toString(), not(containsString("scenariosFailed")));
     }
 
-    private void narrateAnInterestingStory(StoryReporter reporter) {
+    private void narrateAnInterestingStory() {
         Story story = new Story("/path/to/story", new Description("An interesting story"), new Narrative(
                 "renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
-        boolean givenStory = false;
         reporter.dryRun();
-        reporter.beforeStory(story, givenStory);
-        reporter.beforeScenario("I ask for a loan");
-        reporter.scenarioMeta(Meta.EMPTY);
+        reporter.beforeStory(story, false);
+
+        // 1st scenario
+        reporter.beforeScenario("I ask for a loan", false);
+        reporter.scenarioMeta(Meta.EMPTY, false);
         reporter.givenStories(asList("path/to/story1", "path/to/story2"));
+
+        // 1st given story
+        reporter.beforeStory(story, true);
+        reporter.beforeScenario("my credit rating is good", true);
+        reporter.afterScenario(true);
+        reporter.afterStory(true);
+
+        // 2nd given story
+        reporter.beforeStory(story, true);
+        reporter.beforeScenario("the bank has $300 to loan", true);
+        reporter.afterScenario(true);
+        reporter.afterStory(true);
+
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
-        reporter.afterScenario();
-        reporter.beforeScenario("A failing scenario");
+        reporter.afterScenario(false);
+
+        // 2nd scenario
+        reporter.beforeScenario("A failing scenario", false);
         OutcomesTable outcomesTable = new OutcomesTable();
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         try {
@@ -121,11 +132,11 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.example(table.getRow(0));
         reporter.example(table.getRow(1));
         reporter.afterExamples();
-        reporter.afterScenario();
-        reporter.afterStory(givenStory);
+        reporter.afterScenario(false);
+        reporter.afterStory(false);
     }
 
-    private void narrateAnInterestingStoryNotAllowedByFilter(StoryReporter reporter, boolean storyNotAllowed) {
+    private void narrateAnInterestingStoryNotAllowedByFilter(boolean storyNotAllowed) {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
@@ -136,10 +147,8 @@ public class PostStoryStatisticsCollectorBehaviour {
             reporter.storyNotAllowed(story, "-theme testing");
         } else {
             reporter.beforeStory(story, false);
-            reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
+            reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing", false);
             reporter.afterStory(false);
         }
-
     }
-
 }

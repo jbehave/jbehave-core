@@ -1,20 +1,5 @@
 package org.jbehave.core.reporters;
 
-import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
-import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_NEWLINE;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.ArrayUtils;
@@ -31,6 +16,21 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
+import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_NEWLINE;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 
 /**
  * <p>
@@ -188,24 +188,24 @@ public abstract class PrintStreamOutput implements StoryReporter {
         givenStories(new GivenStories(StringUtils.join(storyPaths, ",")));
     }
 
-    public void scenarioNotAllowed(Scenario scenario, String filter) {
+    public void scenarioNotAllowed(Scenario scenario, String filter, boolean givenStory) {
         print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), scenario.getTitle()));
-        scenarioMeta(scenario.getMeta());
+        scenarioMeta(scenario.getMeta(), givenStory);
         print(format("filter", "{0}\n", filter));
     }
 
-    public void beforeScenario(String title) {
+    public void beforeScenario(String title, boolean givenStory) {
         cause = null;
         print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), title));
     }
 
-    public void scenarioMeta(Meta meta) {
+    public void scenarioMeta(Meta meta, boolean givenStory) {
         if (!meta.isEmpty()) {
             print(meta);
         }
     }
 
-    public void afterScenario() {
+    public void afterScenario(boolean givenStory) {
         if (cause != null && reportFailureTrace) {
             print(format("afterScenarioWithFailure", "\n{0}\n", stackTrace(cause)));
         } else {
