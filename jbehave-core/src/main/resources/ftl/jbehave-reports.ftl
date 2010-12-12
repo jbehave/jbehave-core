@@ -31,6 +31,7 @@
 <#assign stats = report.asProperties("stats")>
 <#if (stats.size() > 0)>
 <@renderStat stats "scenarios" "Scenarios:" /> (<@renderStat stats "scenariosSuccessful" "Successful:" "successful"/>; <@renderStat stats "scenariosFailed" "Failed:" "failed" />)<br/>
+<@renderStat stats "givenStoryScenarios" "GivenStory Scenarios:" /> (<@renderStat stats "givenStoryScenariosSuccessful" "Successful:" "successful"/>; <@renderStat stats "givenStoryScenariosFailed" "Failed:" "failed" />)<br/>
 <@renderStat stats "steps" "Steps:" /> (<@renderStat stats "stepsSuccessful" "Successful:" "successful"/>; <@renderStat stats "stepsPending" "Pending:" "pending"/>; <@renderStat stats "stepsNotPerformed" "Not Performed:" "notPerformed" />; <@renderStat stats "stepsFailed" "Failed:" "failed"/>; <@renderStat stats "stepsIgnorable" "Ignorable:" "ignorable"/>;)<br/>
 <#else>
 N/A

@@ -28,12 +28,14 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<String, Integer>();
-    private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "steps", "stepsSuccessful",
-            "stepsIgnorable", "stepsPending", "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosSuccessful",
-            "scenariosFailed", "givenStories", "examples");
+    private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "givenStoryScenariosNotAllowed",
+            "steps", "stepsSuccessful", "stepsIgnorable", "stepsPending", "stepsNotPerformed", "stepsFailed",
+            "scenarios", "scenariosSuccessful", "scenariosFailed", "givenStoryScenarios",
+            "givenStoryScenariosSuccessful", "givenStoryScenariosFailed", "givenStories", "examples");
 
     private Throwable cause;
     private OutcomesTable outcomesFailed;
+    private boolean givenStory;
 
     public PostStoryStatisticsCollector(OutputStream output) {
         this.output = output;
@@ -72,10 +74,10 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void beforeStory(Story story, boolean givenStory) {
-        if (givenStory) {
-            return;
+        this.givenStory = givenStory;
+        if (!givenStory) {
+            resetData();
         }
-        resetData();
     }
 
     public void storyNotAllowed(Story story, String filter) {
@@ -85,10 +87,10 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void afterStory(boolean givenStory) {
-        if (givenStory) {
-            return;
+        this.givenStory = !givenStory;
+        if (!givenStory) {
+            writeData();
         }
-        writeData();
     }
 
     public void givenStories(GivenStories givenStories) {
@@ -99,28 +101,36 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         count("givenStories");
     }
 
-    public void beforeScenario(String title, boolean givenStory) {
+    public void beforeScenario(String title) {
         cause = null;
         outcomesFailed = null;
     }
 
-    public void scenarioNotAllowed(Scenario scenario, String filter, boolean givenStory) {
-        count("scenariosNotAllowed");
-    }
-
-    public void scenarioMeta(Meta meta, boolean givenStory) {
-    }
-
-    public void afterScenario(boolean givenStory) {
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
         if (givenStory) {
-            return;
-        }
-
-        count("scenarios");
-        if (cause != null || outcomesFailed != null) {
-            count("scenariosFailed");
+            count("givenStoryScenariosNotAllowed");
         } else {
-            count("scenariosSuccessful");
+            count("scenariosNotAllowed");
+        }
+    }
+
+    public void scenarioMeta(Meta meta) {
+    }
+
+    public void afterScenario() {
+        if (givenStory) {
+            countScenarios("givenStoryScenarios");
+        } else {
+            countScenarios("scenarios");
+        }
+    }
+
+    private void countScenarios(String namespace) {
+        count(namespace);
+        if (cause != null || outcomesFailed != null) {
+            count(namespace + "Failed");
+        } else {
+            count(namespace + "Successful");
         }
     }
 

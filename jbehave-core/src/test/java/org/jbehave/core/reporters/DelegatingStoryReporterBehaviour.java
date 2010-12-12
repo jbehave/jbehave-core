@@ -38,9 +38,9 @@ public class DelegatingStoryReporterBehaviour {
         
         delegator.beforeStory(story, givenStory);        
         delegator.storyNotAllowed(story, filter);
-        delegator.beforeScenario("My scenario 1", false);
-        delegator.scenarioNotAllowed(scenario, filter, false);
-        delegator.scenarioMeta(Meta.EMPTY, false);
+        delegator.beforeScenario("My scenario 1");
+        delegator.scenarioNotAllowed(scenario, filter);
+        delegator.scenarioMeta(Meta.EMPTY);
         delegator.givenStories(givenStoryPaths);
         delegator.givenStories(givenStories);
         delegator.successful("Given step 1.1");
@@ -50,13 +50,13 @@ public class DelegatingStoryReporterBehaviour {
         delegator.beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
         delegator.example(examplesTable.getRow(0));
         delegator.afterExamples();
-        delegator.afterScenario(false);
+        delegator.afterScenario();
        
-        delegator.beforeScenario("My scenario 2", true);
+        delegator.beforeScenario("My scenario 2");
         delegator.successful("Given step 2.1");
         delegator.successful("When step 2.2");
         delegator.failed("Then step 2.3", anException);
-        delegator.afterScenario(true);
+        delegator.afterScenario();
         
         delegator.afterStory(givenStory);
         
@@ -70,9 +70,9 @@ public class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).beforeStory(story, givenStory);
         inOrder.verify(delegate).storyNotAllowed(story, filter);
         
-        inOrder.verify(delegate).beforeScenario("My scenario 1", false);
-        inOrder.verify(delegate).scenarioNotAllowed(scenario, filter, false);
-        inOrder.verify(delegate).scenarioMeta(Meta.EMPTY, false);
+        inOrder.verify(delegate).beforeScenario("My scenario 1");
+        inOrder.verify(delegate).scenarioNotAllowed(scenario, filter);
+        inOrder.verify(delegate).scenarioMeta(Meta.EMPTY);
         inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).successful("Given step 1.1");
@@ -82,13 +82,13 @@ public class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
         inOrder.verify(delegate).example(examplesTable.getRow(0));
         inOrder.verify(delegate).afterExamples();
-        inOrder.verify(delegate).afterScenario(false);
+        inOrder.verify(delegate).afterScenario();
         
-        inOrder.verify(delegate).beforeScenario("My scenario 2", true);
+        inOrder.verify(delegate).beforeScenario("My scenario 2");
         inOrder.verify(delegate).successful("Given step 2.1");
         inOrder.verify(delegate).successful("When step 2.2");
         inOrder.verify(delegate).failed("Then step 2.3", anException);        
-        inOrder.verify(delegate).afterScenario(true);
+        inOrder.verify(delegate).afterScenario();
         
         inOrder.verify(delegate).afterStory(givenStory);
         

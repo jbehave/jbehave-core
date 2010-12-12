@@ -52,16 +52,16 @@ public class NullStoryReporter implements StoryReporter {
     public void givenStories(List<String> storyPaths) {
     }
 
-    public void beforeScenario(String title, boolean givenStory) {
+    public void beforeScenario(String title) {
     }
 
-    public void scenarioNotAllowed(Scenario scenario, String filter, boolean givenStory) {
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
     }
 
-    public void scenarioMeta(Meta meta, boolean givenStory) {
+    public void scenarioMeta(Meta meta) {
     }
 
-    public void afterScenario(boolean givenStory) {
+    public void afterScenario() {
     }
 
     public void beforeExamples(List<String> steps, ExamplesTable table) {

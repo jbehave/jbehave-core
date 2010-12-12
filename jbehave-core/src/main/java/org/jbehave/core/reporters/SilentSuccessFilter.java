@@ -113,38 +113,38 @@ public class SilentSuccessFilter implements StoryReporter {
         });
     }
 
-    public void afterScenario(final boolean givenStory) {
+    public void afterScenario() {
         scenarioTodos.add(new Todo() {
             public void doNow() {
-                delegate.afterScenario(givenStory);
+                delegate.afterScenario();
             }
         });
         scenarioState.report();
     }
 
-    public void beforeScenario(final String scenarioTitle, final boolean givenStory) {
+    public void beforeScenario(final String scenarioTitle) {
         scenarioTodos = new ArrayList<Todo>();
         scenarioTodos.add(new Todo() {
             public void doNow() {
-                delegate.beforeScenario(scenarioTitle, givenStory);
+                delegate.beforeScenario(scenarioTitle);
             }
         });
     }
 
-    public void scenarioNotAllowed(final Scenario scenario, final String filter, final boolean givenStory) {
+    public void scenarioNotAllowed(final Scenario scenario, final String filter) {
         scenarioState = new State() {
             public void report() {
-                delegate.scenarioNotAllowed(scenario, filter, givenStory);
+                delegate.scenarioNotAllowed(scenario, filter);
             }
         };
         scenarioState.report();
     }
 
-    public void scenarioMeta(final Meta meta, final boolean givenStory) {
+    public void scenarioMeta(final Meta meta) {
         scenarioTodos = new ArrayList<Todo>();
         scenarioTodos.add(new Todo() {
             public void doNow() {
-                delegate.scenarioMeta(meta, givenStory);
+                delegate.scenarioMeta(meta);
             }
         });
     }

@@ -43,9 +43,9 @@ public class DelegatingStoryReporter implements StoryReporter {
         this(asList(delegates));
     }
 
-    public void afterScenario(boolean givenStory) {
+    public void afterScenario() {
         for (StoryReporter reporter : delegates) {
-            reporter.afterScenario(givenStory);
+            reporter.afterScenario();
         }
     }
 
@@ -55,15 +55,15 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
-    public void beforeScenario(String scenarioTitle, boolean givenStory) {
+    public void beforeScenario(String scenarioTitle) {
         for (StoryReporter reporter : delegates) {
-            reporter.beforeScenario(scenarioTitle, givenStory);
+            reporter.beforeScenario(scenarioTitle);
         }
     }
 
-    public void scenarioMeta(Meta meta, boolean givenStory) {
+    public void scenarioMeta(Meta meta) {
         for (StoryReporter reporter : delegates) {
-            reporter.scenarioMeta(meta, givenStory);
+            reporter.scenarioMeta(meta);
         }
     }
 
@@ -145,9 +145,9 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
 	}
 	
-    public void scenarioNotAllowed(Scenario scenario, String filter, boolean givenStory) {
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
         for (StoryReporter reporter : delegates) {
-            reporter.scenarioNotAllowed(scenario, filter, givenStory);
+            reporter.scenarioNotAllowed(scenario, filter);
         }
     }
 

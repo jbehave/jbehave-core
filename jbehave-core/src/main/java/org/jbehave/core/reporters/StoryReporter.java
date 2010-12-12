@@ -24,13 +24,13 @@ public interface StoryReporter {
 
     void afterStory(boolean givenStory);
 
-    void scenarioNotAllowed(Scenario scenario, String filter, boolean givenStory);
+    void scenarioNotAllowed(Scenario scenario, String filter);
 
-    void beforeScenario(String scenarioTitle, boolean givenStory);
+    void beforeScenario(String scenarioTitle);
     
-    void scenarioMeta(Meta meta, boolean givenStory);
+    void scenarioMeta(Meta meta);
 
-    void afterScenario(boolean givenStory);
+    void afterScenario();
 
     void givenStories(GivenStories givenStories);
 
