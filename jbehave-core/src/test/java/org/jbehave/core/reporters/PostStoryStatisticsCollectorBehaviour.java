@@ -94,30 +94,30 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.beforeStory(story, false);
 
         // 1st scenario
-        reporter.beforeScenario("I ask for a loan", false);
-        reporter.scenarioMeta(Meta.EMPTY, false);
+        reporter.beforeScenario("I ask for a loan");
+        reporter.scenarioMeta(Meta.EMPTY);
         reporter.givenStories(asList("path/to/story1", "path/to/story2"));
 
         // 1st given story
         reporter.beforeStory(story, true);
-        reporter.beforeScenario("my credit rating is good", true);
-        reporter.afterScenario(true);
+        reporter.beforeScenario("my credit rating is good");
+        reporter.afterScenario();
         reporter.afterStory(true);
 
         // 2nd given story
         reporter.beforeStory(story, true);
-        reporter.beforeScenario("the bank has $300 to loan", true);
-        reporter.afterScenario(true);
+        reporter.beforeScenario("the bank has $300 to loan");
+        reporter.afterScenario();
         reporter.afterStory(true);
 
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
-        reporter.afterScenario(false);
+        reporter.afterScenario();
 
         // 2nd scenario
-        reporter.beforeScenario("A failing scenario", false);
+        reporter.beforeScenario("A failing scenario");
         OutcomesTable outcomesTable = new OutcomesTable();
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         try {
@@ -132,7 +132,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.example(table.getRow(0));
         reporter.example(table.getRow(1));
         reporter.afterExamples();
-        reporter.afterScenario(false);
+        reporter.afterScenario();
         reporter.afterStory(false);
     }
 
@@ -147,7 +147,7 @@ public class PostStoryStatisticsCollectorBehaviour {
             reporter.storyNotAllowed(story, "-theme testing");
         } else {
             reporter.beforeStory(story, false);
-            reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing", false);
+            reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
             reporter.afterStory(false);
         }
     }

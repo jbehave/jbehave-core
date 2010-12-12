@@ -49,7 +49,7 @@ public class StepFailureDecoratorBehaviour {
         // When
         decorator.dryRun();
         decorator.beforeStory(story, givenStory);
-        decorator.beforeScenario("My core 1", givenStory);
+        decorator.beforeScenario("My core 1");
         GivenStories givenStories = new GivenStories("/path1,/path2");
         decorator.givenStories(givenStories);
         decorator.ignorable("!-- ignore me");
@@ -59,14 +59,14 @@ public class StepFailureDecoratorBehaviour {
         decorator.beforeExamples(steps, table);
         decorator.example(tableRow);
         decorator.afterExamples();
-        decorator.afterScenario(givenStory);
+        decorator.afterScenario();
         decorator.afterStory(givenStory);
 
         // Then
         InOrder inOrder = inOrder(delegate);
 
         inOrder.verify(delegate).beforeStory(story, givenStory);
-        inOrder.verify(delegate).beforeScenario("My core 1", givenStory);
+        inOrder.verify(delegate).beforeScenario("My core 1");
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).ignorable("!-- ignore me");
         inOrder.verify(delegate).successful("Given step 1.1");
@@ -75,7 +75,7 @@ public class StepFailureDecoratorBehaviour {
         inOrder.verify(delegate).beforeExamples(steps, table);
         inOrder.verify(delegate).example(tableRow);
         inOrder.verify(delegate).afterExamples();
-        inOrder.verify(delegate).afterScenario(givenStory);
+        inOrder.verify(delegate).afterScenario();
         inOrder.verify(delegate).afterStory(givenStory);
     }
 

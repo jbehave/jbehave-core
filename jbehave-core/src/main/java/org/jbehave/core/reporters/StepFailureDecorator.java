@@ -30,8 +30,8 @@ public class StepFailureDecorator implements StoryReporter {
 		this.delegate = delegate;
 	}
 
-    public void afterScenario(boolean givenStory) {
-        delegate.afterScenario(givenStory);
+    public void afterScenario() {
+        delegate.afterScenario();
 	}
 
 	public void afterStory(boolean givenStory) {
@@ -41,12 +41,12 @@ public class StepFailureDecorator implements StoryReporter {
 		}
 	}
 
-    public void beforeScenario(String scenarioTitle, boolean givenStory) {
-        delegate.beforeScenario(scenarioTitle, givenStory);
+    public void beforeScenario(String scenarioTitle) {
+        delegate.beforeScenario(scenarioTitle);
 	}
 
-    public void scenarioMeta(Meta meta, boolean givenStory) {
-        delegate.scenarioMeta(meta, givenStory);
+    public void scenarioMeta(Meta meta) {
+        delegate.scenarioMeta(meta);
     }
 
     public void beforeStory(Story story, boolean givenStory) {
@@ -104,8 +104,8 @@ public class StepFailureDecorator implements StoryReporter {
 		delegate.dryRun();
 	}
 
-    public void scenarioNotAllowed(Scenario scenario, String filter, boolean givenStory) {
-        delegate.scenarioNotAllowed(scenario, filter, givenStory);
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
+        delegate.scenarioNotAllowed(scenario, filter);
     }
 
     public void storyNotAllowed(Story story, String filter) {

@@ -49,15 +49,15 @@ public class NullStoryReporterBehaviour {
         reporter.beforeStory(story, false);
 
         // successful scenario
-        reporter.beforeScenario("A successful scenario", false);
+        reporter.beforeScenario("A successful scenario");
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
-        reporter.afterScenario(false);
+        reporter.afterScenario();
 
         // failing scenario
-        reporter.beforeScenario("A failing scenario", false);
+        reporter.beforeScenario("A failing scenario");
         OutcomesTable outcomesTable = new OutcomesTable();
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         try {
@@ -72,7 +72,7 @@ public class NullStoryReporterBehaviour {
         reporter.example(table.getRow(0));
         reporter.example(table.getRow(1));
         reporter.afterExamples();
-        reporter.afterScenario(false);
+        reporter.afterScenario();
         reporter.afterStory(false);
     }
 

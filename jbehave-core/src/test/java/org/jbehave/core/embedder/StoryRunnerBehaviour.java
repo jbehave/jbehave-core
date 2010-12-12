@@ -115,17 +115,17 @@ public class StoryRunnerBehaviour {
         // Then
         InOrder inOrder = inOrder(reporter, failureStrategy);
         inOrder.verify(reporter).beforeStory(story, false);
-        inOrder.verify(reporter).beforeScenario("my title 1", false);
+        inOrder.verify(reporter).beforeScenario("my title 1");
         inOrder.verify(reporter).failed("failingStep", anException);
         inOrder.verify(reporter).notPerformed("successfulStep");
-        inOrder.verify(reporter).afterScenario(false);
-        inOrder.verify(reporter).beforeScenario("my title 2", false);
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).beforeScenario("my title 2");
         inOrder.verify(reporter).successful("successfulStep");
-        inOrder.verify(reporter).afterScenario(false);
-        inOrder.verify(reporter).beforeScenario("my title 3", false);
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).beforeScenario("my title 3");
         inOrder.verify(reporter).successful("successfulStep");
         inOrder.verify(reporter).pending("pendingStep");
-        inOrder.verify(reporter).afterScenario(false);
+        inOrder.verify(reporter).afterScenario();
         inOrder.verify(reporter).afterStory(false);
         inOrder.verify(failureStrategy).handleFailure(anException);
     }
@@ -244,10 +244,10 @@ public class StoryRunnerBehaviour {
 
         InOrder inOrder = inOrder(reporter, failureStrategy);
         inOrder.verify(reporter).beforeStory((Story) anyObject(), eq(givenStory));
-        inOrder.verify(reporter).beforeScenario((String) anyObject(), eq(false));
+        inOrder.verify(reporter).beforeScenario((String) anyObject());
         inOrder.verify(reporter).failed("When I fail", failure.getFailure());
         inOrder.verify(reporter).notPerformed("Then I should not be performed");
-        inOrder.verify(reporter).afterScenario(false);
+        inOrder.verify(reporter).afterScenario();
         inOrder.verify(reporter).afterStory(givenStory);
         inOrder.verify(failureStrategy).handleFailure(failure.getFailure());
     }
@@ -463,10 +463,10 @@ public class StoryRunnerBehaviour {
         // Then
         InOrder inOrder = inOrder(reporter, failureStrategy);
         inOrder.verify(reporter).beforeStory(story, givenStory);
-        inOrder.verify(reporter).beforeScenario("my title 1", false);
+        inOrder.verify(reporter).beforeScenario("my title 1");
         inOrder.verify(reporter).successful("step <one>");
         inOrder.verify(reporter).successful("step <two>");
-        inOrder.verify(reporter).afterScenario(false);
+        inOrder.verify(reporter).afterScenario();
         inOrder.verify(reporter).afterStory(givenStory);
     }
 
@@ -512,17 +512,17 @@ public class StoryRunnerBehaviour {
         // Then
         InOrder inOrder = inOrder(reporter, failureStrategy);
         inOrder.verify(reporter).beforeStory(story, givenStory);
-        inOrder.verify(reporter).beforeScenario("my title 1", false);
+        inOrder.verify(reporter).beforeScenario("my title 1");
         inOrder.verify(reporter).failed("failingStep", anException);
         inOrder.verify(reporter).notPerformed("successfulStep");
-        inOrder.verify(reporter).afterScenario(false);
-        inOrder.verify(reporter).beforeScenario("my title 2", false);
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).beforeScenario("my title 2");
         inOrder.verify(reporter).successful("successfulStep");
-        inOrder.verify(reporter).afterScenario(false);
-        inOrder.verify(reporter).beforeScenario("my title 3", false);
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).beforeScenario("my title 3");
         inOrder.verify(reporter).successful("successfulStep");
         inOrder.verify(reporter).pending("pendingStep");
-        inOrder.verify(reporter).afterScenario(false);
+        inOrder.verify(reporter).afterScenario();
         inOrder.verify(reporter).afterStory(givenStory);
         inOrder.verify(failureStrategy).handleFailure(anException);
 
@@ -580,8 +580,8 @@ public class StoryRunnerBehaviour {
 
         // Then
         verify(reporter).beforeStory(story, givenStory);
-        verify(reporter, never()).beforeScenario("", false);
-        verify(reporter).scenarioNotAllowed(story.getScenarios().get(0), filterAsString, givenStory);
+        verify(reporter, never()).beforeScenario("");
+        verify(reporter).scenarioNotAllowed(story.getScenarios().get(0), filterAsString);
     }
     
     private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean givenStory, StepCollector collector, CandidateSteps mySteps) {
