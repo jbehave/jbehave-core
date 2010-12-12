@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class NullStoryReporterBehaviour {
@@ -49,13 +48,15 @@ public class NullStoryReporterBehaviour {
         reporter.dryRun();
         reporter.beforeStory(story, false);
 
+        // successful scenario
+        reporter.beforeScenario("A successful scenario", false);
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
         reporter.afterScenario(false);
 
-        // 2nd scenario
+        // failing scenario
         reporter.beforeScenario("A failing scenario", false);
         OutcomesTable outcomesTable = new OutcomesTable();
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
