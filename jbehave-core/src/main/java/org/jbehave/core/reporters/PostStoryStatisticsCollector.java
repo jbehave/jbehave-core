@@ -28,9 +28,10 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<String, Integer>();
-    private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "steps", "stepsSuccessful",
-            "stepsIgnorable", "stepsPending", "stepsNotPerformed", "stepsFailed", "scenarios", "scenariosSuccessful",
-            "scenariosFailed", "givenStories", "examples");
+    private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "givenStoryScenariosNotAllowed",
+            "steps", "stepsSuccessful", "stepsIgnorable", "stepsPending", "stepsNotPerformed", "stepsFailed",
+            "scenarios", "scenariosSuccessful", "scenariosFailed", "givenStoryScenarios",
+            "givenStoryScenariosSuccessful", "givenStoryScenariosFailed", "givenStories", "examples");
 
     private Throwable cause;
     private OutcomesTable outcomesFailed;
@@ -74,10 +75,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     public void beforeStory(Story story, boolean givenStory) {
         this.givenStory = givenStory;
-        if (givenStory) {
-            return;
+        if (!givenStory) {
+            resetData();
         }
-        resetData();
     }
 
     public void storyNotAllowed(Story story, String filter) {
@@ -88,10 +88,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     public void afterStory(boolean givenStory) {
         this.givenStory = !givenStory;
-        if (givenStory) {
-            return;
+        if (!givenStory) {
+            writeData();
         }
-        writeData();
     }
 
     public void givenStories(GivenStories givenStories) {
@@ -108,7 +107,11 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void scenarioNotAllowed(Scenario scenario, String filter) {
-        count("scenariosNotAllowed");
+        if (givenStory) {
+            count("givenStoryScenariosNotAllowed");
+        } else {
+            count("scenariosNotAllowed");
+        }
     }
 
     public void scenarioMeta(Meta meta) {
@@ -116,14 +119,18 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     public void afterScenario() {
         if (givenStory) {
-            return;
-        }
-
-        count("scenarios");
-        if (cause != null || outcomesFailed != null) {
-            count("scenariosFailed");
+            countScenarios("givenStoryScenarios");
         } else {
-            count("scenariosSuccessful");
+            countScenarios("scenarios");
+        }
+    }
+
+    private void countScenarios(String namespace) {
+        count(namespace);
+        if (cause != null || outcomesFailed != null) {
+            count(namespace + "Failed");
+        } else {
+            count(namespace + "Successful");
         }
     }
 

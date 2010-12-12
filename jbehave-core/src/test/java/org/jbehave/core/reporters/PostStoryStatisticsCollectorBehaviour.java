@@ -42,6 +42,9 @@ public class PostStoryStatisticsCollectorBehaviour {
     public void shouldCollectStoryStatistics() {
         narrateAnInterestingStory();
 
+        assertThat(out.toString(), containsString("givenStoryScenarios=2"));
+        assertThat(out.toString(), containsString("givenStoryScenariosSuccessful=2"));
+        assertThat(out.toString(), containsString("givenStoryScenariosFailed=0"));
         assertThat(out.toString(), containsString("scenarios=2"));
         assertThat(out.toString(), containsString("scenariosSuccessful=1"));
         assertThat(out.toString(), containsString("scenariosFailed=1"));
