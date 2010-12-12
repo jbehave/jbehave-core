@@ -34,14 +34,12 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     /**
      * @parameter expression="${project.build.sourceDirectory}"
      * @required
-     * @readonly
      */
     String sourceDirectory;
 
     /**
      * @parameter expression="${project.build.testSourceDirectory}"
      * @required
-     * @readonly
      */
     String testSourceDirectory;
 
