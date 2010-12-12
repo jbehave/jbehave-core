@@ -1,9 +1,5 @@
 package org.jbehave.core.embedder;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
@@ -20,6 +16,10 @@ import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepResult;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Runs a {@link Story}, given a {@link Configuration} and a list of

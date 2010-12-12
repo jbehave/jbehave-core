@@ -1,18 +1,15 @@
 package org.jbehave.core.reporters;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.IDE_CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.STATS;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.CodeLocations;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.junit.JUnitStory;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,17 +20,19 @@ import java.util.Collection;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.CodeLocations;
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.io.UnderscoredCamelCaseResolver;
-import org.jbehave.core.junit.JUnitStory;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
-import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
-import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.IDE_CONSOLE;
+import static org.jbehave.core.reporters.Format.STATS;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML;
 
 public class StoryReporterBuilderBehaviour {
 
@@ -191,12 +190,12 @@ public class StoryReporterBuilderBehaviour {
         final StoryReporter txtReporter = new TxtOutput(factory.createPrintStream(), new Properties(),
                 new LocalizedKeywords(), true);
         StoryReporterBuilder builder = new StoryReporterBuilder() {
-            public StoryReporter reporterFor(String storyPath, Format format) {
-                switch (format) {
-                case TXT:
-                    factory.useConfiguration(new FileConfiguration("text"));
+            @Override
+            public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
+                if (format == org.jbehave.core.reporters.Format.TXT) {
+                    factory.useConfiguration(new FilePrintStreamFactory.FileConfiguration("text"));
                     return txtReporter;
-                default:
+                } else {
                     return super.reporterFor(storyPath, format);
                 }
             }

@@ -14,7 +14,7 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
-import org.jbehave.core.reporters.StoryReporterBuilder.Format;
+import org.jbehave.core.reporters.Format;
 import org.junit.Test;
 
 public class SpringStoryReporterBuilderBehaviour {

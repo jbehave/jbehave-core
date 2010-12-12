@@ -16,7 +16,6 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,8 +37,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
 
 public class PrintStreamOutputBehaviour {
 
@@ -600,13 +599,12 @@ public class PrintStreamOutputBehaviour {
         final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(CodeLocations.codeLocationFromClass(this.getClass()), storyPath));
         StoryReporter reporter = new StoryReporterBuilder() {
             @Override
-            public StoryReporter reporterFor(String storyPath, Format format) {
-                switch (format) {
-                    case TXT:
-                        factory.useConfiguration(new FileConfiguration("text"));
-                        return new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
-                    default:
-                        return super.reporterFor(storyPath, format);
+            public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
+                if (format == org.jbehave.core.reporters.Format.TXT) {
+                    factory.useConfiguration(new FilePrintStreamFactory.FileConfiguration("text"));
+                    return new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
+                } else {
+                    return super.reporterFor(storyPath, format);
                 }
             }
         }.withFormats(TXT).build(storyPath);
