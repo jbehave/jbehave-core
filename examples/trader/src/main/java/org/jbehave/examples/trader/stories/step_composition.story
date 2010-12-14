@@ -1,3 +1,7 @@
+Meta: 
+
+@theme parametrisation
+
 Scenario: Composite steps in action.  
 
 !-- Composite steps are identified by the @Composite method-level annotation, which is independent of the 

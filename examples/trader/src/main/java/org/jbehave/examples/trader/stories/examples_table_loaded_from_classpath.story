@@ -1,3 +1,7 @@
+Meta: 
+
+@theme parametrisation
+
 Scenario:  Table parameter loaded from a classpath resource
 
 Given the traders: org/jbehave/examples/trader/stories/traders.table

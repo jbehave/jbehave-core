@@ -1,6 +1,7 @@
 package org.jbehave.examples.trader;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -59,6 +60,8 @@ public abstract class TraderStory extends JUnitStory {
     public TraderStory() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
                 .doIgnoreFailureInView(true);
+//        Uncomment to set meta filter, which can also be set via Ant or Maven
+//        configuredEmbedder().useMetaFilters(Arrays.asList("+theme parametrisation"));
     }
 
     @Override

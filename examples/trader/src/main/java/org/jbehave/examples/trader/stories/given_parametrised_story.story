@@ -1,3 +1,7 @@
+Meta: 
+
+@theme parametrisation
+
 Scenario: A scenario that depends on a story with parameters specified via examples row
 
 GivenStories: org/jbehave/examples/trader/stories/parametrised.story#{0}
