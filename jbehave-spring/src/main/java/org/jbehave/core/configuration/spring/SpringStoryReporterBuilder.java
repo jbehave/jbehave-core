@@ -1,12 +1,12 @@
 package org.jbehave.core.configuration.spring;
 
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
+import org.jbehave.core.reporters.StoryReporterBuilder;
+
 import java.net.URL;
 import java.util.List;
 import java.util.Properties;
-
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
 
 /**
  * Extends {@link StoryReporterBuilder} to provide getter/setter methods for all
@@ -14,12 +14,12 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
  */
 public class SpringStoryReporterBuilder extends StoryReporterBuilder {
 
-    public List<Format> getFormats() {
+    public List<org.jbehave.core.reporters.Format> getFormats() {
         return formats();
     }
 
-    public void setFormats(List<Format> formats) {
-        withFormats(formats.toArray(new Format[formats.size()]));
+    public void setFormats(List<org.jbehave.core.reporters.Format> formats) {
+        withFormats(formats.toArray(new org.jbehave.core.reporters.Format[formats.size()]));
     }
 
     public String getOutputDirectory() {

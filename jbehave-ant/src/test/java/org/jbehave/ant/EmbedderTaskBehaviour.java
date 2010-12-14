@@ -25,8 +25,8 @@ import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.ReportsCount;
-import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.junit.Test;
 
 public class EmbedderTaskBehaviour {

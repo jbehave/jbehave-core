@@ -16,7 +16,6 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Assert;
 import org.junit.Test;
@@ -38,8 +37,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
 
 public class PrintStreamOutputBehaviour {
 
@@ -378,7 +377,7 @@ public class PrintStreamOutputBehaviour {
         boolean givenStory = false;
         reporter.dryRun();
         reporter.beforeStory(story, givenStory);
-        reporter.beforeScenario("I ask for a loan", false);
+        reporter.beforeScenario("I ask for a loan");
         reporter.givenStories(asList("/given/story1","/given/story2"));
         reporter.successful("Given I have a balance of $50");
         reporter.ignorable("!-- A comment");
@@ -398,7 +397,7 @@ public class PrintStreamOutputBehaviour {
         reporter.example(table.getRow(0));
         reporter.example(table.getRow(1));
         reporter.afterExamples();
-        reporter.afterScenario(false);
+        reporter.afterScenario();
         reporter.afterStory(givenStory);
     }
 
@@ -410,7 +409,7 @@ public class PrintStreamOutputBehaviour {
                 new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"), 
                 Arrays.asList(new Scenario("A scenario", new Meta(meta), GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>())));
         reporter.storyNotAllowed(story, "-theme testing");
-        reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing", false);
+        reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
@@ -433,13 +432,13 @@ public class PrintStreamOutputBehaviour {
                 new LocalizedKeywords(), true);
 
         // When
-        reporter.beforeScenario("A title", false);
+        reporter.beforeScenario("A title");
         reporter.successful("Given I have a balance of $50");
         reporter.successful("When I request $20");
         reporter.failed("When I ask Liz for a loan of $100", exception);
         reporter.pending("Then I should have a balance of $30");
         reporter.notPerformed("Then I should have $20");
-        reporter.afterScenario(false);
+        reporter.afterScenario();
 
         // Then
         String expected = "Scenario: A title\n" 
@@ -457,13 +456,13 @@ public class PrintStreamOutputBehaviour {
         reporter = new TxtOutput(new PrintStream(out));
 
         // When
-        reporter.beforeScenario("A title", false);
+        reporter.beforeScenario("A title");
         reporter.successful("Given I have a balance of $50");
         reporter.successful("When I request $20");
         reporter.failed("When I ask Liz for a loan of $100", exception);
         reporter.pending("Then I should have a balance of $30");
         reporter.notPerformed("Then I should have $20");
-        reporter.afterScenario(false);
+        reporter.afterScenario();
 
         // Then
         assertThat(out.toString().contains(stackTrace.toString()), is(false));
@@ -600,13 +599,12 @@ public class PrintStreamOutputBehaviour {
         final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(CodeLocations.codeLocationFromClass(this.getClass()), storyPath));
         StoryReporter reporter = new StoryReporterBuilder() {
             @Override
-            public StoryReporter reporterFor(String storyPath, Format format) {
-                switch (format) {
-                    case TXT:
-                        factory.useConfiguration(new FileConfiguration("text"));
-                        return new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
-                    default:
-                        return super.reporterFor(storyPath, format);
+            public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
+                if (format == org.jbehave.core.reporters.Format.TXT) {
+                    factory.useConfiguration(new FilePrintStreamFactory.FileConfiguration("text"));
+                    return new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
+                } else {
+                    return super.reporterFor(storyPath, format);
                 }
             }
         }.withFormats(TXT).build(storyPath);

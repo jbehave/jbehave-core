@@ -111,10 +111,22 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
 public class StoryReporterBuilder {
 
     public enum Format {
-        CONSOLE, IDE_CONSOLE, TXT, HTML, XML, STATS
+        CONSOLE(org.jbehave.core.reporters.Format.CONSOLE),
+        IDE_CONSOLE(org.jbehave.core.reporters.Format.IDE_CONSOLE),
+        TXT(org.jbehave.core.reporters.Format.TXT),
+        HTML(org.jbehave.core.reporters.Format.HTML),
+        XML(org.jbehave.core.reporters.Format.XML),
+        STATS(org.jbehave.core.reporters.Format.STATS);
+
+        private org.jbehave.core.reporters.Format realFormat;
+
+        Format(org.jbehave.core.reporters.Format realFormat) {
+            this.realFormat = realFormat;
+        }
+
     }
 
-    private List<Format> formats = new ArrayList<Format>();
+    private List<org.jbehave.core.reporters.Format> formats = new ArrayList<org.jbehave.core.reporters.Format>();
     private String relativeDirectory = new FileConfiguration().getRelativeDirectory();
     private FilePathResolver pathResolver = new FileConfiguration().getPathResolver();
     private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
@@ -138,13 +150,13 @@ public class StoryReporterBuilder {
         return codeLocation;
     }
 
-    public List<Format> formats() {
+    public List<org.jbehave.core.reporters.Format> formats() {
         return formats;
     }
 
     public List<String> formatNames(boolean toLowerCase) {
         List<String> names = new ArrayList<String>();
-        for (Format format : formats) {
+        for (org.jbehave.core.reporters.Format format : formats) {
             String name = format.name();
             if (toLowerCase) {
                 name = name.toLowerCase();
@@ -185,7 +197,22 @@ public class StoryReporterBuilder {
         return withFormats(Format.STATS);
     }
 
+    /**
+     * Use the other withFormats() signature
+     * @param formats
+     * @return
+     */
+    @Deprecated
     public StoryReporterBuilder withFormats(Format... formats) {
+        List<org.jbehave.core.reporters.Format> formatz = new ArrayList<org.jbehave.core.reporters.Format>();
+        for (Format format : formats) {
+            formatz.add(format.realFormat);
+        }
+        this.formats.addAll(formatz);
+        return this;
+    }
+
+    public StoryReporterBuilder withFormats(org.jbehave.core.reporters.Format... formats) {
         this.formats.addAll(asList(formats));
         return this;
     }
@@ -206,8 +233,8 @@ public class StoryReporterBuilder {
     }
 
     public StoryReporter build(String storyPath) {
-        Map<Format, StoryReporter> delegates = new HashMap<Format, StoryReporter>();
-        for (Format format : formats) {
+        Map<org.jbehave.core.reporters.Format, StoryReporter> delegates = new HashMap<org.jbehave.core.reporters.Format, StoryReporter>();
+        for (org.jbehave.core.reporters.Format format : formats) {
             delegates.put(format, reporterFor(storyPath, format));
         }
         return new DelegatingStoryReporter(delegates.values());
@@ -223,25 +250,12 @@ public class StoryReporterBuilder {
 
     public StoryReporter reporterFor(String storyPath, Format format) {
         FilePrintStreamFactory factory = filePrintStreamFactory(storyPath);
-        switch (format) {
-        case CONSOLE:
-        default:
-            return new ConsoleOutput(keywords).doReportFailureTrace(reportFailureTrace);
-        case IDE_CONSOLE:
-            return new IdeOnlyConsoleOutput(keywords).doReportFailureTrace(reportFailureTrace);
-        case TXT:
-            factory.useConfiguration(fileConfiguration("txt"));
-            return new TxtOutput(factory.createPrintStream(), keywords).doReportFailureTrace(reportFailureTrace);
-        case HTML:
-            factory.useConfiguration(fileConfiguration("html"));
-            return new HtmlOutput(factory.createPrintStream(), keywords).doReportFailureTrace(reportFailureTrace);
-        case XML:
-            factory.useConfiguration(fileConfiguration("xml"));
-            return new XmlOutput(factory.createPrintStream(), keywords).doReportFailureTrace(reportFailureTrace);
-        case STATS:
-            factory.useConfiguration(fileConfiguration("stats"));
-            return new PostStoryStatisticsCollector(factory.createPrintStream());
-        }
+        return format.realFormat.createStoryReporter(factory, this);
+    }
+
+    public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
+        FilePrintStreamFactory factory = filePrintStreamFactory(storyPath);
+        return format.createStoryReporter(factory, this);
     }
 
     protected FilePrintStreamFactory filePrintStreamFactory(String storyPath) {

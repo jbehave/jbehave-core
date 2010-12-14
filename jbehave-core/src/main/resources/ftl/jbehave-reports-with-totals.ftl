@@ -24,16 +24,22 @@
 <table>
 <colgroup span="2" class="stories"></colgroup>
 <colgroup span="4" class="scenarios"></colgroup>
+<colgroup span="4" class="scenarios"></colgroup>
 <colgroup span="6" class="steps"></colgroup>
 <colgroup class="view"></colgroup>
 <tr>
     <th colspan="2">Stories</th>
     <th colspan="4">Scenarios</th>
+    <th colspan="4">GivenStory Scenarios</th>
     <th colspan="6">Steps</th>
     <th>View</th>
 </tr>
 <tr>
     <th>Name</th>
+    <th>Not Allowed</th>
+    <th>Total</th>
+    <th>Successful</th>
+    <th>Failed</th>
     <th>Not Allowed</th>
     <th>Total</th>
     <th>Successful</th>
@@ -78,6 +84,18 @@
 <@renderStat stats "scenariosNotAllowed" "failed"/>
 </td>
 <td>
+<@renderStat stats "givenStoryScenarios"/> 
+</td>
+<td>
+<@renderStat stats "givenStoryScenariosSuccessful" "successful"/> 
+</td>
+<td>
+<@renderStat stats "givenStoryScenariosFailed" "failed"/>
+</td>
+<td>
+<@renderStat stats "givenStoryScenariosNotAllowed" "failed"/>
+</td>
+<td>
 <@renderStat stats "steps" />
 </td>
 <td>
@@ -119,6 +137,18 @@
 </td>
 <td>
 <@renderStat stats "scenariosNotAllowed" "failed"/>
+</td>
+<td>
+<@renderStat stats "givenStoryScenarios"/> 
+</td>
+<td>
+<@renderStat stats "givenStoryScenariosSuccessful" "successful"/> 
+</td>
+<td>
+<@renderStat stats "givenStoryScenariosFailed" "failed"/>
+</td>
+<td>
+<@renderStat stats "givenStoryScenariosNotAllowed" "failed"/>
 </td>
 <td>
 <@renderStat stats "steps" />

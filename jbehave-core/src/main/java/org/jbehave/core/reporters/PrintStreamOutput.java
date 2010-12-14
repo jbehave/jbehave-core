@@ -188,24 +188,24 @@ public abstract class PrintStreamOutput implements StoryReporter {
         givenStories(new GivenStories(StringUtils.join(storyPaths, ",")));
     }
 
-    public void scenarioNotAllowed(Scenario scenario, String filter, boolean givenStory) {
+    public void scenarioNotAllowed(Scenario scenario, String filter) {
         print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), scenario.getTitle()));
-        scenarioMeta(scenario.getMeta(), givenStory);
+        scenarioMeta(scenario.getMeta());
         print(format("filter", "{0}\n", filter));
     }
 
-    public void beforeScenario(String title, boolean givenStory) {
+    public void beforeScenario(String title) {
         cause = null;
         print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), title));
     }
 
-    public void scenarioMeta(Meta meta, boolean givenStory) {
+    public void scenarioMeta(Meta meta) {
         if (!meta.isEmpty()) {
             print(meta);
         }
     }
 
-    public void afterScenario(boolean givenStory) {
+    public void afterScenario() {
         if (cause != null && reportFailureTrace) {
             print(format("afterScenarioWithFailure", "\n{0}\n", stackTrace(cause)));
         } else {
