@@ -1,7 +1,5 @@
 package org.jbehave.core.steps;
 
-import com.thoughtworks.paranamer.NullParanamer;
-import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
@@ -13,6 +11,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 
 import static java.util.Arrays.asList;
 import static org.jbehave.core.steps.AbstractStepResult.failed;
@@ -161,7 +162,8 @@ public class StepCreator {
             public StepResult doNotPerform() {
                 try {
                     parametriseStep();
-                } catch (ParameterNotFound e) {
+                    // } catch (ParameterNotFound e) {
+                } catch (Throwable t) {
                     // step parametrisation failed, but still return
                     // notPerformed StepResult
                 }

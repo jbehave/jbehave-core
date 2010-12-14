@@ -1,9 +1,5 @@
 package org.jbehave.core.reporters;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-
 import org.hamcrest.Matchers;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
@@ -14,11 +10,17 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class NullStoryReporterBehaviour {
+
+    private final String NL = System.getProperty("line.separator");
 
     @Test
     public void shouldOnlyReportOverriddenMethods() {
@@ -38,7 +40,7 @@ public class NullStoryReporterBehaviour {
             
         };
         narrateAnInterestingStory(reporter);
-        assertThat(out.toString(), Matchers.equalTo("beforeStory\nafterStory\n"));
+        assertThat(out.toString(), Matchers.equalTo("beforeStory" + NL + "afterStory" + NL));
     }
 
 

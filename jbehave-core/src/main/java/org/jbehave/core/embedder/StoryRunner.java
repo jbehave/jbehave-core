@@ -30,8 +30,6 @@ import java.util.Map;
  * @author Paul Hammant
  */
 public class StoryRunner {
-
-    private State state = new FineSoFar();
     private FailureStrategy currentStrategy;
     private FailureStrategy failureStrategy;
     private PendingStepStrategy pendingStepStrategy;
@@ -241,28 +239,28 @@ public class StoryRunner {
         if (steps == null || steps.size() == 0){
             return;
         }
-        state = new FineSoFar();
+        State state = new FineSoFar();
         for (Step step : steps) {
-            state.run(step);
+            state = state.run(step);
         }
     }
 
     private interface State {
-        void run(Step step);
+        State run(Step step);
     }
 
     private final class FineSoFar implements State {
 
-        public void run(Step step) {
-
+        public State run(Step step) {
             StepResult result = step.perform();
             result.describeTo(reporter);
             Throwable scenarioFailure = result.getFailure();
-            if (scenarioFailure != null) {
-                state = new SomethingHappened();
-                storyFailure = mostImportantOf(storyFailure, scenarioFailure);
-                currentStrategy = strategyFor(storyFailure);
-            }
+            if (scenarioFailure == null)
+                return this;
+
+            storyFailure = mostImportantOf(storyFailure, scenarioFailure);
+            currentStrategy = strategyFor(storyFailure);
+            return new SomethingHappened();
         }
 
         private Throwable mostImportantOf(Throwable failure1, Throwable failure2) {
@@ -280,9 +278,10 @@ public class StoryRunner {
     }
 
     private class SomethingHappened implements State {
-        public void run(Step step) {
+        public State run(Step step) {
             StepResult result = step.doNotPerform();
             result.describeTo(reporter);
+            return this;
         }
     }
 

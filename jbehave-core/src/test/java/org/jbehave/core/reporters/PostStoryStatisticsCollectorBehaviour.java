@@ -42,20 +42,22 @@ public class PostStoryStatisticsCollectorBehaviour {
     public void shouldCollectStoryStatistics() {
         narrateAnInterestingStory();
 
-        assertThat(out.toString(), containsString("givenStoryScenarios=2"));
-        assertThat(out.toString(), containsString("givenStoryScenariosSuccessful=2"));
-        assertThat(out.toString(), containsString("givenStoryScenariosFailed=0"));
         assertThat(out.toString(), containsString("scenarios=2"));
         assertThat(out.toString(), containsString("scenariosSuccessful=1"));
         assertThat(out.toString(), containsString("scenariosFailed=1"));
+
+        assertThat(out.toString(), containsString("givenStories=2"));
+        assertThat(out.toString(), containsString("givenStoryScenarios=3"));
+        assertThat(out.toString(), containsString("givenStoryScenariosSuccessful=3"));
+        assertThat(out.toString(), containsString("givenStoryScenariosFailed=0"));
+
         assertThat(out.toString(), containsString("examples=2"));
-        assertThat(out.toString(), containsString("givenStories=1"));
-        assertThat(out.toString(), containsString("steps=7"));
+        assertThat(out.toString(), containsString("steps=8"));
         assertThat(out.toString(), containsString("stepsFailed=1"));
         assertThat(out.toString(), containsString("stepsPending=1"));
         assertThat(out.toString(), containsString("stepsIgnorable=1"));
         assertThat(out.toString(), containsString("stepsNotPerformed=1"));
-        assertThat(out.toString(), containsString("stepsSuccessful=3"));
+        assertThat(out.toString(), containsString("stepsSuccessful=4"));
         assertThat(reporter.toString(), containsString(printStream.toString()));
     }
 
@@ -110,6 +112,14 @@ public class PostStoryStatisticsCollectorBehaviour {
         // 2nd given story
         reporter.beforeStory(story, true);
         reporter.beforeScenario("the bank has $300 to loan");
+        reporter.givenStories(asList("path/to/nested/story1"));
+
+        reporter.beforeStory(story, true);
+        reporter.beforeScenario("initialise static");
+        reporter.successful("the bank has customers");
+        reporter.afterScenario();
+        reporter.afterStory(true);
+
         reporter.afterScenario();
         reporter.afterStory(true);
 
