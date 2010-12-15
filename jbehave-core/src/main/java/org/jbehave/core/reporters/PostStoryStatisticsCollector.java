@@ -35,7 +35,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     private Throwable cause;
     private OutcomesTable outcomesFailed;
-    private int givenStory;
+    private int givenStories;
 
     public PostStoryStatisticsCollector(OutputStream output) {
         this.output = output;
@@ -75,7 +75,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     public void beforeStory(Story story, boolean givenStory) {
         if (givenStory) {
-            this.givenStory++;
+            this.givenStories++;
         }
 
         if (!givenStory) {
@@ -91,7 +91,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     public void afterStory(boolean givenStory) {
         if (givenStory) {
-            this.givenStory--;
+            this.givenStories--;
         }
 
         if (!givenStory) {
@@ -113,7 +113,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void scenarioNotAllowed(Scenario scenario, String filter) {
-        if (givenStory > 0) {
+        if (givenStories > 0) {
             count("givenStoryScenariosNotAllowed");
         } else {
             count("scenariosNotAllowed");
@@ -124,7 +124,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void afterScenario() {
-        if (givenStory > 0) {
+        if (givenStories > 0) {
             countScenarios("givenStoryScenarios");
         } else {
             countScenarios("scenarios");
