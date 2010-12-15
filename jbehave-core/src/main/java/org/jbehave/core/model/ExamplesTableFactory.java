@@ -22,7 +22,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
  * to allow the ExamplesTable to convert row values. 
  * <p>
  * <b>NOTE</b>: Users needing parameter conversion
- * in the ExamplesTable, i.e. invoking {@link ExamplesTable#getRowAsParameters(int)}, will need
+ * in the ExamplesTable, i.e. invoking {@link ExamplesTable#getRowAsRecord(int)}, will need
  * to use a factory constructor providing explicitly the ParameterConverters instance
  * configured in the {@link Configuration#useParameterConverters(ParameterConverters)}.  
  * </p>

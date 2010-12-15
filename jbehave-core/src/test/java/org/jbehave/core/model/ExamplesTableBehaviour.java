@@ -1,10 +1,8 @@
 package org.jbehave.core.model;
 
-import static java.util.Arrays.asList;
-import static org.codehaus.plexus.util.StringUtils.isBlank;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
+import org.junit.Test;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -19,34 +17,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import org.jbehave.core.model.ExamplesTable.Row;
-import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.codehaus.plexus.util.StringUtils.isBlank;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 public class ExamplesTableBehaviour {
-    
-    private String tableAsString = 
-            "|one|two|\n" + 
-            "|11|12|\n" + 
-            "|21|22|\n";
 
-    private String tableWithSpacesAsString = 
-        "|one |two | |\n" + 
-        "|11 |12 | |\n" + 
-        "| 21| 22| |\n";
+    private String tableAsString = "|one|two|\n" + "|11|12|\n" + "|21|22|\n";
 
-    private String wikiTableAsString = 
-            "||one||two||\n" + 
-            "|11|12|\n" + 
-            "|21|22|\n";
+    private String tableWithSpacesAsString = "|one |two | |\n" + "|11 |12 | |\n" + "| 21| 22| |\n";
 
-    private String tableWithCommentsAsString = 
-            "|one|two|\n" + 
-            "|-- A comment --|\n" + 
-            "|11|12|\n" + 
-            "|-- Another comment --|\n" + 
-            "|21|22|\n";
+    private String wikiTableAsString = "||one||two||\n" + "|11|12|\n" + "|21|22|\n";
+
+    private String tableWithCommentsAsString = "|one|two|\n" + "|-- A comment --|\n" + "|11|12|\n"
+            + "|-- Another comment --|\n" + "|21|22|\n";
 
     @Test
     public void shouldParseTableWithDefaultSeparators() {
@@ -102,16 +88,16 @@ public class ExamplesTableBehaviour {
         assertThat(table.getHeaders().size(), equalTo(0));
         assertThat(table.getRows().size(), equalTo(0));
     }
-    
+
     @Test
     public void shouldParseTableWithBlankValues() {
         String tableWithEmptyValues = "|one|two|\n |||\n | ||\n || |\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
         assertThat(table.getRowCount(), equalTo(3));
-        for (Map<String,String> row : table.getRows()) {
+        for (Map<String, String> row : table.getRows()) {
             assertThat(row.size(), equalTo(2));
-            for (String column : row.keySet() ) {
-                assertThat(isBlank(row.get(column)), is(true));                
+            for (String column : row.keySet()) {
+                assertThat(isBlank(row.get(column)), is(true));
             }
         }
         assertThat(table.asString(), equalTo(tableWithEmptyValues));
@@ -119,7 +105,7 @@ public class ExamplesTableBehaviour {
 
     @Test
     public void shouldParseTableWithoutLeftBoundarySeparator() {
-        String tableAsString = "one|two|\n 11|12|\n 21|22|\n";        
+        String tableAsString = "one|two|\n 11|12|\n 21|22|\n";
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
@@ -127,7 +113,7 @@ public class ExamplesTableBehaviour {
 
     @Test
     public void shouldParseTableWithoutRightBoundarySeparator() {
-        String tableAsString = "|one|two\n |11|12\n |21|22\n";        
+        String tableAsString = "|one|two\n |11|12\n |21|22\n";
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
@@ -135,15 +121,15 @@ public class ExamplesTableBehaviour {
 
     @Test
     public void shouldParseTableWithoutAnyBoundarySeparators() {
-        String tableAsString = "one|two\n 11|12\n 21|22\n";        
+        String tableAsString = "one|two\n 11|12\n 21|22\n";
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo(tableAsString));
     }
-    
+
     @Test
     public void shouldParseTablePreservingWhitespace() {
-        String tableWithProperties = "{trim=false}\n"+tableWithSpacesAsString;
+        String tableWithProperties = "{trim=false}\n" + tableWithSpacesAsString;
         ExamplesTable table = new ExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
         assertThat(properties.size(), equalTo(1));
@@ -198,10 +184,10 @@ public class ExamplesTableBehaviour {
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
 
         // Then
-        Row rowOfIntegers = examplesTable.getRowAsParameters(0);
+        ConvertingRecord rowOfIntegers = examplesTable.getRowAsRecord(0);
         assertThat(rowOfIntegers.valueAs("one", Integer.class), equalTo(11));
         assertThat(rowOfIntegers.valueAs("two", Integer.class), equalTo(22));
-        Row rowOfDates = examplesTable.getRowAsParameters(1);
+        ConvertingRecord rowOfDates = examplesTable.getRowAsRecord(1);
         assertThat(rowOfDates.valueAs("one", Date.class), equalTo(convertDate("1/1/2010")));
         assertThat(rowOfDates.valueAs("two", Date.class), equalTo(convertDate("2/2/2010")));
     }
@@ -220,5 +206,34 @@ public class ExamplesTableBehaviour {
         return null;
     }
 
+    @Test
+    public void shouldUseDefaultsRow() throws Exception {
+        // Given
+        ParameterConverters parameterConverters = new ParameterConverters();
+        parameterConverters.addConverters(new MethodReturningConverter(methodFor("convertDate"), this));
+        ExamplesTableFactory factory = new ExamplesTableFactory(parameterConverters);
 
+        // When
+        String tableDefaultsAsString = "|three|\n|99|";
+        ExamplesTable defaultsTable = factory.createExamplesTable(tableDefaultsAsString);
+
+        ConvertingRecord defaultsRecord = defaultsTable.getRowAsRecord(0);
+        String tableAsString = "|one|\n|11|\n|22|";
+        ExamplesTable examplesTable = factory.createExamplesTable(tableAsString).withDefaults(defaultsRecord);
+
+        // Then
+        ConvertingRecord record = examplesTable.getRowAsRecord(0);
+        assertThat(record.value("one"), is("11"));
+        assertThat(record.valueAs("one", Integer.class), is(Integer.valueOf(11)));
+        assertThat(record.value("three"), is("99"));
+        assertThat(record.valueAs("three", Integer.class), is(Integer.valueOf(99)));
+
+        record = examplesTable.getRowAsRecord(1);
+        assertThat(record.value("one"), is("22"));
+        assertThat(record.valueAs("one", Integer.class), is(Integer.valueOf(22)));
+        assertThat(record.value("three"), is("99"));
+        assertThat(record.valueAs("three", Integer.class), is(Integer.valueOf(99)));
+
+        assertThat(record.valueAs("XX", Integer.class, "13"), is(Integer.valueOf(13)));
+    }
 }

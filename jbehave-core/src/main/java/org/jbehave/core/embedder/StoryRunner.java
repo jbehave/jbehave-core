@@ -140,7 +140,7 @@ public class StoryRunner {
 
             // run given stories, if any
             runGivenStories(configuration, candidateSteps, scenario, filter);
-            if (isParametrisedByExamples(scenario)) {
+            if (isParameterisedByExamples(scenario)) {
                 // run parametrised scenarios by examples
                 runParametrisedScenariosByExamples(candidateSteps, scenario);
             } else { // run as plain old scenario
@@ -209,7 +209,7 @@ public class StoryRunner {
         }
     }
 
-    private boolean isParametrisedByExamples(Scenario scenario) {
+    private boolean isParameterisedByExamples(Scenario scenario) {
         return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireParameters();
     }
 

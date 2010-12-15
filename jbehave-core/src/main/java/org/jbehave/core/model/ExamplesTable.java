@@ -1,8 +1,14 @@
 package org.jbehave.core.model;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.steps.ParameterConverters;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,19 +16,14 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.steps.ParameterConverters;
-
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.DOTALL;
 import static java.util.regex.Pattern.compile;
 
 /**
  * <p>
- * Represents a tabular structure that holds rows of example data for parameters
- * named via the column headers:
+ * Represents a tabular structure that holds rows of example data for parameters named via the
+ * column headers:
  * <p/>
  * 
  * <pre>
@@ -32,8 +33,8 @@ import static java.util.regex.Pattern.compile;
  * |value m1|value m2| .... |value mn|
  * </pre>
  * <p>
- * Different header and value column separators can be specified to replace the
- * default separator "|":
+ * Different header and value column separators can be specified to replace the default separator
+ * "|":
  * </p>
  * 
  * <pre>
@@ -65,15 +66,18 @@ import static java.util.regex.Pattern.compile;
  * | header 1 | header 2 | .... | header n |
  * | value 11 | value 12 | .... | value 1n |
  * </pre>
+ * 
  * </p>
  * 
  * <p>
- * The table also allows the retrieval of row values as converted parameters.  
- * Use {@link #getRowAsParameters(int)} and invoke {@link Row#valueAs(String, Class)}
- * specifying the header and the class type of the parameter.
+ * The table also allows the retrieval of row values as converted parameters. Use
+ * {@link #getRowAsRecord(int)} and invoke {@link Record#valueAs(String, Class)} specifying the
+ * header and the class type of the parameter.
  * </p>
  */
 public class ExamplesTable {
+    private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
+
     public static final ExamplesTable EMPTY = new ExamplesTable("");
 
     private static final String HEADER_SEPARATOR = "|";
@@ -84,10 +88,12 @@ public class ExamplesTable {
     private final String headerSeparator;
     private final String valueSeparator;
     private final String ignorableSeparator;
-    private final ParameterConverters parameterConverters;
+    private final ValueConverter parameterConverters;
     private final List<String> headers = new ArrayList<String>();
     private final Properties properties = new Properties();
     private boolean trim = true;
+
+    private final Record defaults;
 
     public ExamplesTable(String tableAsString) {
         this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR);
@@ -98,13 +104,26 @@ public class ExamplesTable {
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-            String ignorableSeparator, ParameterConverters parameterConverters) {
+            String ignorableSeparator, ValueConverter parameterConverters) {
         this.tableAsString = tableAsString;
         this.headerSeparator = headerSeparator;
         this.valueSeparator = valueSeparator;
         this.ignorableSeparator = ignorableSeparator;
         this.parameterConverters = parameterConverters;
+        this.defaults = new MapRecord(EMPTY_MAP);
         parse();
+    }
+
+    private ExamplesTable(ExamplesTable other, Record defaults) {
+        this.data.addAll(other.data);
+        this.tableAsString = other.tableAsString;
+        this.headerSeparator = other.headerSeparator;
+        this.valueSeparator = other.valueSeparator;
+        this.ignorableSeparator = other.ignorableSeparator;
+        this.parameterConverters = other.parameterConverters;
+        this.headers.addAll(other.headers);
+        this.properties.putAll(other.properties);
+        this.defaults = defaults;
     }
 
     private void parse() {
@@ -188,6 +207,11 @@ public class ExamplesTable {
         return new LinkedHashMap<String, String>();
     }
 
+    public ExamplesTable withDefaults(Record defaults) {
+
+        return new ExamplesTable(this, new ChainedRecord(defaults, this.defaults));
+    }
+
     public Properties getProperties() {
         return properties;
     }
@@ -200,16 +224,30 @@ public class ExamplesTable {
         return data.get(row);
     }
 
-    public Row getRowAsParameters(int row){
-        return new Row(getRow(row), parameterConverters);
+    public ConvertingRecord getRowAsRecord(int row) {
+        return createRecord(getRow(row));
     }
-    
+
     public int getRowCount() {
         return data.size();
     }
 
     public List<Map<String, String>> getRows() {
         return data;
+    }
+
+    public List<ConvertingRecord> getRecords() {
+        List<ConvertingRecord> rows = new ArrayList<ConvertingRecord>();
+
+        for (Map<String, String> each : getRows()) {
+            rows.add(createRecord(each));
+        }
+
+        return rows;
+    }
+
+    private ConvertingRecord createRecord(Map<String, String> each) {
+        return new ConvertingRecord(new ChainedRecord(new MapRecord(each), defaults), parameterConverters);
     }
 
     public String getHeaderSeparator() {
@@ -227,23 +265,5 @@ public class ExamplesTable {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-    public static class Row {
-
-        private final Map<String, String> data;
-        private final ParameterConverters parameterConverters;
-
-        public Row(Map<String, String> data, ParameterConverters parameterConverters) {
-            this.data = data;
-            this.parameterConverters = parameterConverters;
-        }
-
-        @SuppressWarnings("unchecked")
-        public <T> T valueAs(String name, Class<T> type){
-            String value = data.get(name);
-            return (T) parameterConverters.convert(value, type);
-        }
-        
     }
 }
