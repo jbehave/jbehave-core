@@ -43,7 +43,7 @@
 
 <div class="clear"></div>
 <div id="footer">
-<div class="left">Generated at ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
+<div class="left">Generated on ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
 <div class="right">JBehave &#169; 2003-2010</div>
 <div class="clear"></div>
 </div>
