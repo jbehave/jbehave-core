@@ -25,8 +25,8 @@ import static java.util.regex.Pattern.compile;
 
 /**
  * <p>
- * Represents a tabular structure that holds rows of example data for parameters named via the
- * column headers:
+ * Represents a tabular structure that holds rows of example data for parameters
+ * named via the column headers:
  * <p/>
  * 
  * <pre>
@@ -36,8 +36,8 @@ import static java.util.regex.Pattern.compile;
  * |value m1|value m2| .... |value mn|
  * </pre>
  * <p>
- * Different header and value column separators can be specified to replace the default separator
- * "|":
+ * Different header and value column separators can be specified to replace the
+ * default separator "|":
  * </p>
  * 
  * <pre>
@@ -73,9 +73,10 @@ import static java.util.regex.Pattern.compile;
  * </p>
  * 
  * <p>
- * The table also allows the retrieval of row values as converted parameters. Use
- * {@link #getRowAsParameters(int)} and invoke {@link Parameters#valueAs(String, Class)} specifying the
- * header and the class type of the parameter.
+ * The table also allows the retrieval of row values as converted parameters.
+ * Use {@link #getRowAsParameters(int)} and invoke
+ * {@link Parameters#valueAs(String, Class)} specifying the header and the class
+ * type of the parameter.
  * </p>
  */
 public class ExamplesTable {
@@ -249,11 +250,8 @@ public class ExamplesTable {
     }
 
     private Parameters createParameters(Map<String, String> values) {
-        return new ConvertedParameters(chainWithDefaults(values), parameterConverters);
-    }
-
-    private Map<String, String> chainWithDefaults(Map<String, String> values) {
-        return new ChainedParameters(new ConvertedParameters(values, parameterConverters), defaults).values();
+        return new ConvertedParameters(new ChainedParameters(new ConvertedParameters(values, parameterConverters),
+                defaults), parameterConverters);
     }
 
     public String getHeaderSeparator() {

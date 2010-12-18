@@ -210,18 +210,25 @@ public class ExamplesTableBehaviour {
 
         // Then
         Parameters firstRow = examplesTable.getRowAsParameters(0);
+        assertThat(firstRow.hasValue("one"), is(true));
         assertThat(firstRow.valueAs("one", String.class), is("11"));
         assertThat(firstRow.valueAs("one", Integer.class), is(11));
+        assertThat(firstRow.hasValue("three"), is(true));
         assertThat(firstRow.valueAs("three", String.class), is("99"));
         assertThat(firstRow.valueAs("three", Integer.class), is(99));
+        assertThat(firstRow.hasValue("XX"), is(false));
+        assertThat(firstRow.valueAs("XX", Integer.class, 13), is(13));
         
         Parameters secondRow = examplesTable.getRowAsParameters(1);
+        assertThat(secondRow.hasValue("one"), is(true));
         assertThat(secondRow.valueAs("one", String.class), is("22"));
         assertThat(secondRow.valueAs("one", Integer.class), is(22));
+        assertThat(secondRow.hasValue("three"), is(true));
         assertThat(secondRow.valueAs("three", String.class), is("99"));
         assertThat(secondRow.valueAs("three", Integer.class), is(99));
-
-        assertThat(firstRow.valueAs("XX", Integer.class, 13), is(13));
+        assertThat(secondRow.hasValue("XX"), is(false));
+        assertThat(secondRow.valueAs("XX", Integer.class, 13), is(13));
+        
     }
 
     public Date convertDate(String value) throws ParseException {

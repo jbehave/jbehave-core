@@ -2,7 +2,6 @@ package org.jbehave.core.steps;
 
 import java.util.Map;
 
-
 /**
  * Implementation of Parameters that uses {@link ParameterConverters} to convert
  * values.
@@ -13,7 +12,18 @@ public class ConvertedParameters implements Parameters {
     private final ParameterConverters parameterConverters;
 
     /**
-     * Creates an instance of ConvertedParameters
+     * Creates an instance of ConvertedParameters from a Parameters delegate
+     * which provides the values
+     * 
+     * @param delegate the Parameters delegate to get the values from
+     * @param parameterConverters the ParameterConverters used for conversion
+     */
+    public ConvertedParameters(Parameters delegate, ParameterConverters parameterConverters) {
+        this(delegate.values(), parameterConverters);
+    }
+
+    /**
+     * Creates an instance of ConvertedParameters with given values
      * 
      * @param values the Map<String,String> of values
      * @param parameterConverters the ParameterConverters used for conversion
