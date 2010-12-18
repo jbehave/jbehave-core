@@ -1,8 +1,9 @@
-package org.jbehave.core.model;
+package org.jbehave.core.steps;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbehave.core.steps.ConvertedParameters;
 import org.jbehave.core.steps.ParameterConverters;
 import org.junit.Before;
 import org.junit.Test;

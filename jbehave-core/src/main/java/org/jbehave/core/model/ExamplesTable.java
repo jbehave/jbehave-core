@@ -14,7 +14,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.steps.ChainedParameters;
+import org.jbehave.core.steps.ConvertedParameters;
 import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.Parameters;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.DOTALL;

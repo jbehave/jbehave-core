@@ -1,6 +1,7 @@
 package org.jbehave.core.model;
 
 import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.Parameters;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.junit.Test;
 

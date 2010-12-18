@@ -1,8 +1,7 @@
-package org.jbehave.core.model;
+package org.jbehave.core.steps;
 
 import java.util.Map;
 
-import org.jbehave.core.steps.ParameterConverters;
 
 /**
  * Implementation of Parameters that uses {@link ParameterConverters} to convert
