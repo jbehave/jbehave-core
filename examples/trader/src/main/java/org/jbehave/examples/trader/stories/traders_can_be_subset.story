@@ -1,6 +1,6 @@
 Scenario: Traders can be searched by name
 
-Given the traders: 
+Given the trader ranks: 
 |name |rank    |
 |Larry|Stooge 3|
 |Moe  |Stooge 1|

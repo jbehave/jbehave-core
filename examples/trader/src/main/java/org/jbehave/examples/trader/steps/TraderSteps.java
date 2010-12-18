@@ -45,6 +45,7 @@ public class TraderSteps {
     private List<Trader> traders = new ArrayList<Trader>();
     private List<Trader> searchedTraders;
 	private Date date;
+    private ExamplesTable ranksTable;
       
 	public TraderSteps() {
 		this(new TradingService());
@@ -77,10 +78,11 @@ public class TraderSteps {
         this.trader = trader;
     }
 
-    @Given("the traders: %tradersTable")
-    public void theTraders(ExamplesTable tradersTable) {
+    @Given("the trader ranks: %ranksTable")
+    public void theTraderRanks(ExamplesTable ranksTable) {
+        this.ranksTable = ranksTable;
         traders.clear();
-        traders.addAll(toTraders(tradersTable));
+        traders.addAll(toTraders(ranksTable));
     }
     
     @When("traders are subset to \"%regex\" by name")
@@ -94,10 +96,11 @@ public class TraderSteps {
         }
     }
 
-    @Then("the current trader activity is: %tradersTable")
-    public void theTradersAre(ExamplesTable tradersTable) {
-        for (Parameters row : tradersTable.getRowsAsParameters()) {
-            System.out.println(row.valueAs("name", Trader.class).getName() + " has done " + row.valueAs("trades", Integer.class) + " trades");            
+    @Then("the current trader activity is: %activityTable")
+    public void theTradersActivityIs(ExamplesTable activityTable) {
+        for (int i = 0; i < activityTable.getRowCount(); i++) {
+            Parameters row = activityTable.withDefaults(this.ranksTable.getRowAsParameters(i)).getRowAsParameters(i);
+            System.out.println(row.valueAs("name", Trader.class).getName() + " ("+row.valueAs("rank", String.class, "N/A")+") has done " + row.valueAs("trades", Integer.class) + " trades");            
         }
     }
 
