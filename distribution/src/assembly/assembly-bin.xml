@@ -15,10 +15,6 @@
       </includes>
     </fileSet>
     <fileSet>
-      <directory>target/site</directory>
-      <outputDirectory>/docs</outputDirectory>
-    </fileSet>
-    <fileSet>
       <directory>src/lib</directory>
       <outputDirectory>/lib</outputDirectory>
     </fileSet>
@@ -28,6 +24,14 @@
       <includes>
         <include>pom.xml</include>
       </includes>
+    </fileSet>
+    <fileSet>
+      <directory>target/plugins</directory>
+      <outputDirectory>/plugins</outputDirectory>
+    </fileSet>
+    <fileSet>
+      <directory>target/site</directory>
+      <outputDirectory>/docs</outputDirectory>
     </fileSet>
   </fileSets>
 </assembly>
