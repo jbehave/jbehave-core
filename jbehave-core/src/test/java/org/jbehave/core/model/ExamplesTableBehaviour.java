@@ -184,12 +184,43 @@ public class ExamplesTableBehaviour {
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
 
         // Then
-        ConvertingRecord rowOfIntegers = examplesTable.getRowAsRecord(0);
-        assertThat(rowOfIntegers.valueAs("one", Integer.class), equalTo(11));
-        assertThat(rowOfIntegers.valueAs("two", Integer.class), equalTo(22));
-        ConvertingRecord rowOfDates = examplesTable.getRowAsRecord(1);
-        assertThat(rowOfDates.valueAs("one", Date.class), equalTo(convertDate("1/1/2010")));
-        assertThat(rowOfDates.valueAs("two", Date.class), equalTo(convertDate("2/2/2010")));
+        Parameters integers = examplesTable.getRowAsParameters(0);
+        assertThat(integers.valueAs("one", Integer.class), equalTo(11));
+        assertThat(integers.valueAs("two", Integer.class), equalTo(22));
+        Parameters dates = examplesTable.getRowAsParameters(1);
+        assertThat(dates.valueAs("one", Date.class), equalTo(convertDate("1/1/2010")));
+        assertThat(dates.valueAs("two", Date.class), equalTo(convertDate("2/2/2010")));
+    }
+
+    @Test
+    public void shouldConvertParameterValuesOfTableRowWithDefaults() throws Exception {
+        // Given
+        ParameterConverters parameterConverters = new ParameterConverters();
+        parameterConverters.addConverters(new MethodReturningConverter(methodFor("convertDate"), this));
+        ExamplesTableFactory factory = new ExamplesTableFactory(parameterConverters);
+
+        // When
+        String tableDefaultsAsString = "|three|\n|99|";
+        ExamplesTable defaultsTable = factory.createExamplesTable(tableDefaultsAsString);
+
+        Parameters defaults = defaultsTable.getRowAsParameters(0);
+        String tableAsString = "|one|\n|11|\n|22|";
+        ExamplesTable examplesTable = factory.createExamplesTable(tableAsString).withDefaults(defaults);
+
+        // Then
+        Parameters firstRow = examplesTable.getRowAsParameters(0);
+        assertThat(firstRow.valueAs("one", String.class), is("11"));
+        assertThat(firstRow.valueAs("one", Integer.class), is(11));
+        assertThat(firstRow.valueAs("three", String.class), is("99"));
+        assertThat(firstRow.valueAs("three", Integer.class), is(99));
+        
+        Parameters secondRow = examplesTable.getRowAsParameters(1);
+        assertThat(secondRow.valueAs("one", String.class), is("22"));
+        assertThat(secondRow.valueAs("one", Integer.class), is(22));
+        assertThat(secondRow.valueAs("three", String.class), is("99"));
+        assertThat(secondRow.valueAs("three", Integer.class), is(99));
+
+        assertThat(firstRow.valueAs("XX", Integer.class, 13), is(13));
     }
 
     public Date convertDate(String value) throws ParseException {
@@ -206,34 +237,4 @@ public class ExamplesTableBehaviour {
         return null;
     }
 
-    @Test
-    public void shouldUseDefaultsRow() throws Exception {
-        // Given
-        ParameterConverters parameterConverters = new ParameterConverters();
-        parameterConverters.addConverters(new MethodReturningConverter(methodFor("convertDate"), this));
-        ExamplesTableFactory factory = new ExamplesTableFactory(parameterConverters);
-
-        // When
-        String tableDefaultsAsString = "|three|\n|99|";
-        ExamplesTable defaultsTable = factory.createExamplesTable(tableDefaultsAsString);
-
-        ConvertingRecord defaultsRecord = defaultsTable.getRowAsRecord(0);
-        String tableAsString = "|one|\n|11|\n|22|";
-        ExamplesTable examplesTable = factory.createExamplesTable(tableAsString).withDefaults(defaultsRecord);
-
-        // Then
-        ConvertingRecord record = examplesTable.getRowAsRecord(0);
-        assertThat(record.value("one"), is("11"));
-        assertThat(record.valueAs("one", Integer.class), is(Integer.valueOf(11)));
-        assertThat(record.value("three"), is("99"));
-        assertThat(record.valueAs("three", Integer.class), is(Integer.valueOf(99)));
-
-        record = examplesTable.getRowAsRecord(1);
-        assertThat(record.value("one"), is("22"));
-        assertThat(record.valueAs("one", Integer.class), is(Integer.valueOf(22)));
-        assertThat(record.value("three"), is("99"));
-        assertThat(record.valueAs("three", Integer.class), is(Integer.valueOf(99)));
-
-        assertThat(record.valueAs("XX", Integer.class, "13"), is(Integer.valueOf(13)));
-    }
 }

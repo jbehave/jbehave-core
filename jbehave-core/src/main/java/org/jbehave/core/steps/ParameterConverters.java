@@ -1,9 +1,5 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.ExamplesTableFactory;
-import org.jbehave.core.model.ValueConverter;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -17,6 +13,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.ExamplesTableFactory;
 
 import static java.util.Arrays.asList;
 
@@ -36,7 +35,7 @@ import static java.util.Arrays.asList;
  * </ul>
  * </p>
  */
-public class ParameterConverters implements ValueConverter {
+public class ParameterConverters {
 
     static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
     static final String DEFAULT_COMMA = ",";

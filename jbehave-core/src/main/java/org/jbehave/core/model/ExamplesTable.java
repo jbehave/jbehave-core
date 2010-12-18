@@ -1,10 +1,5 @@
 package org.jbehave.core.model;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.steps.ParameterConverters;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,6 +10,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.steps.ParameterConverters;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.DOTALL;
@@ -71,7 +71,7 @@ import static java.util.regex.Pattern.compile;
  * 
  * <p>
  * The table also allows the retrieval of row values as converted parameters. Use
- * {@link #getRowAsRecord(int)} and invoke {@link Record#valueAs(String, Class)} specifying the
+ * {@link #getRowAsParameters(int)} and invoke {@link Parameters#valueAs(String, Class)} specifying the
  * header and the class type of the parameter.
  * </p>
  */
@@ -88,12 +88,12 @@ public class ExamplesTable {
     private final String headerSeparator;
     private final String valueSeparator;
     private final String ignorableSeparator;
-    private final ValueConverter parameterConverters;
+    private final ParameterConverters parameterConverters;
     private final List<String> headers = new ArrayList<String>();
     private final Properties properties = new Properties();
     private boolean trim = true;
 
-    private final Record defaults;
+    private final Parameters defaults;
 
     public ExamplesTable(String tableAsString) {
         this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR);
@@ -104,17 +104,17 @@ public class ExamplesTable {
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-            String ignorableSeparator, ValueConverter parameterConverters) {
+            String ignorableSeparator, ParameterConverters parameterConverters) {
         this.tableAsString = tableAsString;
         this.headerSeparator = headerSeparator;
         this.valueSeparator = valueSeparator;
         this.ignorableSeparator = ignorableSeparator;
         this.parameterConverters = parameterConverters;
-        this.defaults = new MapRecord(EMPTY_MAP);
+        this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
         parse();
     }
 
-    private ExamplesTable(ExamplesTable other, Record defaults) {
+    private ExamplesTable(ExamplesTable other, Parameters defaults) {
         this.data.addAll(other.data);
         this.tableAsString = other.tableAsString;
         this.headerSeparator = other.headerSeparator;
@@ -207,9 +207,8 @@ public class ExamplesTable {
         return new LinkedHashMap<String, String>();
     }
 
-    public ExamplesTable withDefaults(Record defaults) {
-
-        return new ExamplesTable(this, new ChainedRecord(defaults, this.defaults));
+    public ExamplesTable withDefaults(Parameters defaults) {
+        return new ExamplesTable(this, new ChainedParameters(defaults, this.defaults));
     }
 
     public Properties getProperties() {
@@ -224,8 +223,8 @@ public class ExamplesTable {
         return data.get(row);
     }
 
-    public ConvertingRecord getRowAsRecord(int row) {
-        return createRecord(getRow(row));
+    public Parameters getRowAsParameters(int row) {
+        return createParameters(getRow(row));
     }
 
     public int getRowCount() {
@@ -236,18 +235,22 @@ public class ExamplesTable {
         return data;
     }
 
-    public List<ConvertingRecord> getRecords() {
-        List<ConvertingRecord> rows = new ArrayList<ConvertingRecord>();
+    public List<Parameters> getRowsAsParameters() {
+        List<Parameters> rows = new ArrayList<Parameters>();
 
-        for (Map<String, String> each : getRows()) {
-            rows.add(createRecord(each));
+        for (Map<String, String> row : getRows()) {
+            rows.add(createParameters(row));
         }
 
         return rows;
     }
 
-    private ConvertingRecord createRecord(Map<String, String> each) {
-        return new ConvertingRecord(new ChainedRecord(new MapRecord(each), defaults), parameterConverters);
+    private Parameters createParameters(Map<String, String> values) {
+        return new ConvertedParameters(chainWithDefaults(values), parameterConverters);
+    }
+
+    private Map<String, String> chainWithDefaults(Map<String, String> values) {
+        return new ChainedParameters(new ConvertedParameters(values, parameterConverters), defaults).values();
     }
 
     public String getHeaderSeparator() {

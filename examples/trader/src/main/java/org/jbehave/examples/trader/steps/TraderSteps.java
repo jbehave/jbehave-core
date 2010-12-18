@@ -14,9 +14,9 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-import org.jbehave.core.model.ConvertingRecord;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Parameters;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.trader.TraderStory;
@@ -27,7 +27,9 @@ import org.jbehave.examples.trader.persistence.TraderPersister;
 import org.jbehave.examples.trader.service.TradingService;
 
 import static java.util.Arrays.asList;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.equalTo;
 
 /**
@@ -94,7 +96,7 @@ public class TraderSteps {
 
     @Then("the current trader activity is: %tradersTable")
     public void theTradersAre(ExamplesTable tradersTable) {
-        for (ConvertingRecord row : tradersTable.getRecords()) {
+        for (Parameters row : tradersTable.getRowsAsParameters()) {
             System.out.println(row.valueAs("name", Trader.class).getName() + " has done " + row.valueAs("trades", Integer.class) + " trades");            
         }
     }
