@@ -29,34 +29,87 @@ user only needs to declare the parameter type as <a
     href="javadoc/core/org/jbehave/core/model/ExamplesTable.html">ExamplesTable</a>
 for it to be automatically parsed as a tabular structure:</p>
 
-<pre class="brush: java">
-    @Given("the traders: $tradersTable")
-    public void theTraders(ExamplesTable tradersTable) {
-        this.traders = toTraders(tradersTable);
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Given("the traders ranks are: $ranksTable")
+    public void theTraders(ExamplesTable ranksTable) {
+        this.ranksTable = ranksTable;
+        this.traders = toTraders(ranksTable);
     }
 
     private List toTraders(ExamplesTable table) {
         List traders = new ArrayList();
-        List rows = table.getRows();
-        for (Map row : rows) {
+        for (Map<String,String> row : table.getRows()) {
             String name = row.get("name");
             String rank = row.get("rank");
             traders.add(new Trader(name, rank));
         }
-        Collections.sort(traders);
         return traders;
     }
+]]>
+</script>
+
+<h2>Row values as converted parameters</h2>
+
+<p>Besides retrieveing the row values as String name-value pairs,
+the user retrieve them as <a
+    href="javadoc/core/org/jbehave/core/steps/Parameters.html">Parameters</a>,
+which allow the values to converted to the desidered type, using the
+same <a
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a>
+defined in the stories configuration:</p>
+
+<pre class="brush: bdd">
+The the traders activity is: 
+|name|trades|
+|Larry|3000|
+|Moe|1000|
+|Curly|2000|
 </pre>
 
-<p><b>Note</b>: Under the hood, JBehave users the same table parsing
-functionality of the <a href="parametrised-scenarios.html">parametrised
-scenarios</a>, but there is a fundamental difference between these two use
-cases: with parametrised scenarios, the scenario is run for each line of
-the table (using in each execution the parameter values of the given
-row), while in using tabular parameters we are simply using the tabular
-structure as a parameter, and how this structure is interpreted is up to
-the scenario writer. The difference is in the <b>Examples:</b> keyword,
-which is only present for parametrised scenarios.</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Then("the traders activity is: $activityTable")
+    public void theTradersActivity(ExamplesTable activityTable) {
+        for (Parameters row : rows.getRowsAsParameters()) {
+            Trader trader = row.valueAs("name", Trader.class);
+            int trades = row.valueAs("trades", Integer.class);
+            System.out.println(trader.getName() + " has done " + trades + " trades");
+        }
+    }
+]]>
+</script>
+
+<p>In order not to repeat values in tabular structures, defaults are supported that allow re-use of previous defined tables: </p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Then("the current trader activity is: $activityTable")
+    public void theTradersActivityIs(ExamplesTable activityTable) {
+        for (int i = 0; i < activityTable.getRowCount(); i++) {
+            Parameters row = activityTable.withDefaults(this.ranksTable.getRowAsParameters(i)).getRowAsParameters(i);
+            System.out.println(row.valueAs("name", Trader.class).getName() + " ("+row.valueAs("rank", String.class, "N/A")+") has done " + row.valueAs("trades", Integer.class) + " trades");            
+        }
+    }
+]]>
+</script>
+
+<p>In this example, the row parameters are the union (for the corresponding row number) of the ranks and activity tables.  Note
+that any existing value in the row map of data will not be overridden.</p>
+
+<p>Finally, the Parameters facade also allows for specification of a default value if the parameter name is not found:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Then("the current trader activity is: $activityTable")
+    public void theTradersActivityIs(ExamplesTable activityTable) {
+        Parameters row = activityTable.getRowAsParameters(0);
+        String name = row.valueAs("name", String.class);
+        String organisation = row.valueAs("organisation", String.class, "N/A");
+        System.out.println(name + " is part of organisation: " + organisation);
+    }
+]]>
+</script>
 
 <h2>Preserving whitespace</h2>
 
@@ -91,6 +144,16 @@ the resource with the appropriate resource loader configured via the <a
     new ParameterConverters().addConverters(new ExamplesTableConverter(new ExamplesTableFactory(new LoadFromClasspath(this.getClass()))))
 ]]>
 </script>
+
+<p><b>Note</b>: Under the hood, JBehave users the same table parsing
+functionality of the <a href="parametrised-scenarios.html">parametrised
+scenarios</a>, but there is a fundamental difference between these two use
+cases: with parametrised scenarios, the scenario is run for each line of
+the table (using in each execution the parameter values of the given
+row), while in using tabular parameters we are simply using the tabular
+structure as a parameter, and how this structure is interpreted is up to
+the scenario writer. The difference is in the <b>Examples:</b> keyword,
+which is only present for parametrised scenarios.</p>
 <div class="clear">
 <hr />
 </div>
