@@ -2,6 +2,7 @@ package org.jbehave.core.io;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.io.LoadFromRelativeFile.intellijProjectStoryFilePath;
 import static org.jbehave.core.io.LoadFromRelativeFile.intellijProjectTestStoryFilePath;
 import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleStoryFilePath;
@@ -9,6 +10,8 @@ import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleTestStoryFileP
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.io.LoadFromRelativeFile.StoryFilePath;
@@ -163,6 +166,23 @@ public class StoryLoaderBehaviour {
         // Then fail as expected
         loader.loadContent(storyPath);
 
+    }
+
+    @Test
+    public void shouldLoadStoryFromRelativeFilePathsWithSpace() throws MalformedURLException, URISyntaxException {
+        // Given
+        String storyPath = "MyPendingStory.txt";
+        String storyAsText = "Given my step";
+        java.net.URL url = CodeLocations.codeLocationFromClass(MyPendingStory.class);
+        java.io.File folderWithSpacesInName = new java.io.File(url.toURI().getPath() + "/org/jbehave/core/io/stories/foldername has spaces");
+        java.net.URL urlThatHasEscapedSpaces = folderWithSpacesInName.toURI().toURL();
+        assertThat(folderWithSpacesInName.exists(), is(true));
+
+        // When
+        StoryLoader loader = new LoadFromRelativeFile(urlThatHasEscapedSpaces);
+
+        // Then
+        assertThat(loader.loadStoryAsText(storyPath), equalTo(storyAsText));
     }
     
 
