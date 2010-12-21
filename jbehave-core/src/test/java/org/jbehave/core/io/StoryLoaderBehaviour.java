@@ -170,28 +170,21 @@ public class StoryLoaderBehaviour {
 
     @Test
     public void shouldLoadStoryFromRelativeFilePathsWithSpace() throws MalformedURLException, URISyntaxException {
-        // Given
-        String storyPath = "MyPendingStory.txt";
-        String storyAsText = "Given my step";
-        java.net.URL url = CodeLocations.codeLocationFromClass(MyPendingStory.class);
-        java.io.File folderWithSpacesInName = new java.io.File(url.toURI().getPath() + "/org/jbehave/core/io/stories/foldername has spaces");
-        java.net.URL urlThatHasEscapedSpaces = folderWithSpacesInName.toURI().toURL();
-        assertThat(folderWithSpacesInName.exists(), is(true));
+        shouldWorkForPath("/org/jbehave/core/io/stories/foldername has spaces");
 
-        // When
-        StoryLoader loader = new LoadFromRelativeFile(urlThatHasEscapedSpaces);
-
-        // Then
-        assertThat(loader.loadStoryAsText(storyPath), equalTo(storyAsText));
     }
 
     @Test
     public void shouldLoadStoryFromRelativeFilePathsWithBizarreName() throws MalformedURLException, URISyntaxException {
+        shouldWorkForPath("/org/jbehave/core/io/stories/[mage_hg]");
+    }
+
+    private void shouldWorkForPath(String path) throws URISyntaxException, MalformedURLException {
         // Given
         String storyPath = "MyPendingStory.txt";
         String storyAsText = "Given my step";
         java.net.URL url = CodeLocations.codeLocationFromClass(MyPendingStory.class);
-        java.io.File folderWithSpacesInName = new java.io.File(url.toURI().getPath() + "/org/jbehave/core/io/stories/[mage_hg]");
+        java.io.File folderWithSpacesInName = new java.io.File(url.toURI().getPath() + path);
         java.net.URL urlThatHasEscapedSpaces = folderWithSpacesInName.toURI().toURL();
         assertThat(folderWithSpacesInName.exists(), is(true));
 
