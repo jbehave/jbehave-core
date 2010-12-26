@@ -1,0 +1,27 @@
+<settings>
+  <pluginGroups>
+    <pluginGroup>org.jbehave</pluginGroup>
+    <pluginGroup>org.sonatype.plugins</pluginGroup>
+  </pluginGroups>
+  <profiles>
+    <profile>
+      <!-- Required for dependencies of JBehave Hudson Plugin -->
+      <id>glassfish</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>glassfish</id>
+          <url>http://maven.glassfish.org/content/groups/public/</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>glassfish</id>
+          <url>http://maven.glassfish.org/content/groups/public/</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+</settings>

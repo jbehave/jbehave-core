@@ -37,3 +37,10 @@ Building a release with Maven:
 
 - mvn release:prepare -Preporting,distribution
 - mvn release:perform -Preporting,distribution
+
+Settings configuration:
+
+The build requires the profile "glassfish" contained in settings.xml to be active.  
+Users can either add the profile to their own ~/.m2/settings.xml (ensuring it is active) or can build with -s settings.xml option:
+
+- mvn -s settings.xml <goal>
