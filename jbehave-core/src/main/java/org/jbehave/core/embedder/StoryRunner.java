@@ -64,7 +64,7 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story)
             throws Throwable {
-        StoryRunContext context = new StoryRunContext(configuration, MetaFilter.EMPTY, candidateSteps);
+        StoryRunContext context = new StoryRunContext(configuration, MetaFilter.EMPTY, candidateSteps, story.getPath());
         run(story, new HashMap<String, String>(), context);
     }
 
@@ -81,7 +81,7 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter)
             throws Throwable {
-        StoryRunContext context = new StoryRunContext(configuration, filter, candidateSteps);
+        StoryRunContext context = new StoryRunContext(configuration, filter, candidateSteps, story.getPath());
         run(story, new HashMap<String, String>(), context);
     }
     
@@ -204,9 +204,10 @@ public class StoryRunner {
         if (givenStories.getPaths().size() > 0) {
             reporter.givenStories(givenStories);
             for (GivenStory givenStory : givenStories.getStories()) {
+                StoryRunContext childContext = context.forGivenStory(givenStory);
                 // run given story, using any parameters if provided
-                Story story = storyOfPath(context.configuration(), givenStory.getPath());
-                run(story, givenStory.getParameters(), context.forGivenStory());
+                Story story = storyOfPath(context.configuration(), childContext.path());
+                run(story, givenStory.getParameters(), childContext);
             }
         }
     }

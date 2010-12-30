@@ -13,6 +13,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
+import org.jbehave.core.io.PathCalculator;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
@@ -97,6 +98,7 @@ public class AnnotationBuilder {
                 StoryReporterBuilder.class));
         configuration.useViewGenerator(configurationElement(finder, "viewGenerator", ViewGenerator.class));
         configuration.useParameterConverters(parameterConverters(finder));
+        configuration.usePathCalculator(configurationElement(finder, "pathCalculator", PathCalculator.class));
         return configuration;
     }
 
@@ -187,7 +189,7 @@ public class AnnotationBuilder {
 
     @SuppressWarnings("unchecked")
     private <T> Class<T> elementImplementation(AnnotationFinder finder, String name) {
-        return (Class<T>) finder.getAnnotatedValue(Configure.class, Class.class, name);
+        return finder.getAnnotatedValue(Configure.class, Class.class, name);
     }
 
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
@@ -201,7 +203,7 @@ public class AnnotationBuilder {
 
     protected <T, V extends T> T instanceOf(Class<T> type, Class<V> ofClass) {
         try {
-            return (T) ofClass.newInstance();
+            return ofClass.newInstance();
         } catch (Exception e) {
             annotationMonitor.elementCreationFailed(ofClass, e);
             throw new InstantiationFailed(ofClass, type, e);

@@ -1,9 +1,8 @@
 package org.jbehave.core.configuration;
 
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import com.thoughtworks.paranamer.CachingParanamer;
-import com.thoughtworks.paranamer.NullParanamer;
-import com.thoughtworks.paranamer.Paranamer;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryControls;
@@ -14,7 +13,9 @@ import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.AbsolutePathCalculator;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.PathCalculator;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
@@ -37,8 +38,10 @@ import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 
 /**
  * <p>
@@ -160,6 +163,8 @@ public abstract class Configuration {
      */
     private ViewGenerator viewGenerator = new FreemarkerViewGenerator();
 
+    private PathCalculator pathCalculator = new AbsolutePathCalculator();
+
     public Keywords keywords() {
         return keywords;
     }
@@ -239,6 +244,10 @@ public abstract class Configuration {
     
     public ViewGenerator viewGenerator() {
         return viewGenerator;
+    }
+
+    public PathCalculator pathCalculator() {
+        return pathCalculator;
     }
 
     public Configuration useKeywords(Keywords keywords) {
@@ -345,4 +354,8 @@ public abstract class Configuration {
         return this;
     }
 
+    public Configuration usePathCalculator(PathCalculator pathCalculator) {
+        this.pathCalculator = pathCalculator;
+        return this;
+    }
 }

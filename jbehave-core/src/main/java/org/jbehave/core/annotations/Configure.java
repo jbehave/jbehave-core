@@ -14,7 +14,9 @@ import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.RethrowingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.AbsolutePathCalculator;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.PathCalculator;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
@@ -79,6 +81,8 @@ public @interface Configure {
     Class<? extends EmbedderControls> embedderControls() default EmbedderControls.class;
 
     Class<? extends ViewGenerator> viewGenerator() default FreemarkerViewGenerator.class;
+
+    Class<? extends PathCalculator> pathCalculator() default AbsolutePathCalculator.class;
 
     Class<? extends StoryReporterBuilder> storyReporterBuilder() default StoryReporterBuilder.class;
 }
