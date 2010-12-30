@@ -12,6 +12,7 @@ import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.GivenStory;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporter;
@@ -34,7 +35,6 @@ public class StoryRunner {
     private FailureStrategy failureStrategy;
     private PendingStepStrategy pendingStepStrategy;
     private Throwable storyFailure;
-    private StepCollector stepCollector;
     private StoryReporter reporter;
     private String reporterStoryPath;
 
@@ -50,8 +50,7 @@ public class StoryRunner {
     public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
         runStepsWhileKeepingState(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
     }
-    
-    
+
     /**
      * Runs a Story with the given configuration and steps.
      * 
@@ -99,13 +98,12 @@ public class StoryRunner {
 
     private void run(Story story, Map<String, String> storyParameters, StoryRunContext context)
             throws Throwable {
-        stepCollector = context.configuration().stepCollector();
         reporter = reporterFor(context, story);
         pendingStepStrategy = context.configuration().pendingStepStrategy();
         failureStrategy = context.configuration().failureStrategy();
         
-        if (!context.metaFilter().allow(story.getMeta())) {
-            reporter.storyNotAllowed(story, context.metaFilter().asString());
+        if (context.isFiltered(story.getMeta())) {
+            reporter.storyNotAllowed(story, context.metaFilterAsString());
             return;
         }
 
@@ -124,8 +122,8 @@ public class StoryRunner {
         
         for (Scenario scenario : story.getScenarios()) {
             // scenario also inherits meta from story
-            if (!context.metaFilter().allow(scenario.getMeta().inheritFrom(story.getMeta()))) {
-                reporter.scenarioNotAllowed(scenario, context.metaFilter().asString());
+            if (context.isFiltered(scenario.getMeta().inheritFrom(story.getMeta()))) {
+                reporter.scenarioNotAllowed(scenario, context.metaFilterAsString());
                 continue;
             }
             if (failureOccurred() && context.configuration().storyControls().skipScenariosAfterFailure()) {
@@ -227,19 +225,15 @@ public class StoryRunner {
     }
 
     private void runBeforeOrAfterStorySteps(StoryRunContext context, Story story, Stage stage) {
-        List<CandidateSteps> candidateSteps = context.candidateSteps();
-        boolean givenStory = context.givenStory();
-        runStepsWhileKeepingState(stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory));
+        runStepsWhileKeepingState(context.collectBeforeOrAfterStorySteps(story, stage));
     }
 
     private void runBeforeOrAfterScenarioSteps(StoryRunContext context, Scenario scenario, Stage stage) {
-        List<CandidateSteps> candidateSteps = context.candidateSteps();
-        runStepsWhileKeepingState(stepCollector.collectBeforeOrAfterScenarioSteps(candidateSteps, stage));
+        runStepsWhileKeepingState(context.collectBeforeOrAfterScenarioSteps(stage));
     }
 
     private void runScenarioSteps(StoryRunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
-        List<CandidateSteps> candidateSteps = context.candidateSteps();
-        runStepsWhileKeepingState(stepCollector.collectScenarioSteps(candidateSteps, scenario, scenarioParameters));
+        runStepsWhileKeepingState(context.collectScenarioSteps(scenario, scenarioParameters));
     }
 
     private void runStepsWhileKeepingState(List<Step> steps) {
@@ -297,4 +291,72 @@ public class StoryRunner {
         return this.getClass().getSimpleName();
     }
 
+    /**
+     * The context for running a {@link Story}.
+     */
+    private class StoryRunContext {
+        private final List<CandidateSteps> candidateSteps;
+        private final MetaFilter filter;
+        private final Configuration configuration;
+        private final String path;
+        private final boolean givenStory;
+
+        private final StepCollector stepCollector;
+
+        public StoryRunContext(Configuration configuration, MetaFilter filter, List<CandidateSteps> steps, String path) {
+            this(configuration, filter, steps, path, false);
+        }
+
+        private StoryRunContext(Configuration configuration, MetaFilter filter, List<CandidateSteps> steps,
+                String path, boolean givenStory) {
+            this.configuration = configuration;
+            this.filter = filter;
+            this.candidateSteps = steps;
+            this.path = path;
+            this.givenStory = givenStory;
+
+            this.stepCollector = configuration.stepCollector();
+        }
+
+        public boolean dryRun() {
+            return configuration.storyControls().dryRun();
+        }
+
+        public Configuration configuration() {
+            return configuration;
+        }
+
+        public boolean givenStory() {
+            return givenStory;
+        }
+
+        public String path() {
+            return path;
+        }
+
+        public boolean isFiltered(Meta meta) {
+            return !filter.allow(meta);
+        }
+
+        public String metaFilterAsString() {
+            return filter.asString();
+        }
+
+        public List<Step> collectBeforeOrAfterStorySteps(Story story, Stage stage) {
+            return stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory);
+        }
+
+        public List<Step> collectBeforeOrAfterScenarioSteps(Stage stage) {
+            return stepCollector.collectBeforeOrAfterScenarioSteps(candidateSteps, stage);
+        }
+
+        public List<Step> collectScenarioSteps(Scenario scenario, Map<String, String> parameters) {
+            return stepCollector.collectScenarioSteps(candidateSteps, scenario, parameters);
+        }
+
+        public StoryRunContext forGivenStory(GivenStory story) {
+            String actualPath = configuration.pathCalculator().calculate(path, story.getPath());
+            return new StoryRunContext(configuration, filter, candidateSteps, actualPath, true);
+        }
+    }
 }
