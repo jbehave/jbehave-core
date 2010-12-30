@@ -1,5 +1,9 @@
 package org.jbehave.core.embedder;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
@@ -16,10 +20,6 @@ import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepResult;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Runs a {@link Story}, given a {@link Configuration} and a list of
@@ -64,7 +64,8 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story)
             throws Throwable {
-        run(configuration, candidateSteps, story, MetaFilter.EMPTY, false, new HashMap<String, String>());
+        StoryRunContext context = new StoryRunContext(configuration, MetaFilter.EMPTY, candidateSteps);
+        run(story, new HashMap<String, String>(), context);
     }
 
     /**
@@ -80,7 +81,8 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter)
             throws Throwable {
-        run(configuration, candidateSteps, story, filter, false, new HashMap<String, String>());
+        StoryRunContext context = new StoryRunContext(configuration, filter, candidateSteps);
+        run(story, new HashMap<String, String>(), context);
     }
     
     /**
@@ -95,39 +97,38 @@ public class StoryRunner {
         return configuration.storyParser().parseStory(storyAsText, storyPath);
     }
 
-    private void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter,
-            boolean givenStory, Map<String, String> storyParameters) throws Throwable {
-        stepCollector = configuration.stepCollector();
-        reporter = reporterFor(configuration, story, givenStory);
-        pendingStepStrategy = configuration.pendingStepStrategy();
-        failureStrategy = configuration.failureStrategy();
-
+    private void run(Story story, Map<String, String> storyParameters, StoryRunContext context)
+            throws Throwable {
+        stepCollector = context.configuration().stepCollector();
+        reporter = reporterFor(context, story);
+        pendingStepStrategy = context.configuration().pendingStepStrategy();
+        failureStrategy = context.configuration().failureStrategy();
         
-        if (!filter.allow(story.getMeta())) {
-            reporter.storyNotAllowed(story, filter.asString());
+        if (!context.metaFilter().allow(story.getMeta())) {
+            reporter.storyNotAllowed(story, context.metaFilter().asString());
             return;
         }
 
-        resetFailureState(givenStory);
+        resetFailureState(context.givenStory());
 
-        if (configuration.storyControls().dryRun() ){
+        if (context.dryRun()) {
             reporter.dryRun();
         }
 
         // run before story steps, if any
-        reporter.beforeStory(story, givenStory);
-        runBeforeOrAfterStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.BEFORE);
+        reporter.beforeStory(story, context.givenStory());
+        runBeforeOrAfterStorySteps(context, story, StepCollector.Stage.BEFORE);
         
         // determine if before and after scenario steps should be run
-        boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(configuration, givenStory);
+        boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
         
         for (Scenario scenario : story.getScenarios()) {
             // scenario also inherits meta from story
-            if (!filter.allow(scenario.getMeta().inheritFrom(story.getMeta()))) {
-                reporter.scenarioNotAllowed(scenario, filter.asString());
+            if (!context.metaFilter().allow(scenario.getMeta().inheritFrom(story.getMeta()))) {
+                reporter.scenarioNotAllowed(scenario, context.metaFilter().asString());
                 continue;
             }
-            if ( failureOccurred() && configuration.storyControls().skipScenariosAfterFailure() ){
+            if (failureOccurred() && context.configuration().storyControls().skipScenariosAfterFailure()) {
                 continue;
             }
             reporter.beforeScenario(scenario.getTitle());
@@ -135,50 +136,52 @@ public class StoryRunner {
 
             // run before scenario steps, if allowed
             if (runBeforeAndAfterScenarioSteps) {
-                runBeforeOrAfterScenarioSteps(candidateSteps, scenario, Stage.BEFORE);
+                runBeforeOrAfterScenarioSteps(context, scenario, Stage.BEFORE);
             }
 
             // run given stories, if any
-            runGivenStories(configuration, candidateSteps, scenario, filter);
+            runGivenStories(scenario, context);
             if (isParameterisedByExamples(scenario)) {
                 // run parametrised scenarios by examples
-                runParametrisedScenariosByExamples(candidateSteps, scenario);
+                runParametrisedScenariosByExamples(context, scenario);
             } else { // run as plain old scenario
-                runScenarioSteps(candidateSteps, scenario, storyParameters);
+                runScenarioSteps(context, scenario, storyParameters);
             }
 
             // run after scenario steps, if allowed
             if (runBeforeAndAfterScenarioSteps) {
-                runBeforeOrAfterScenarioSteps(candidateSteps, scenario, Stage.AFTER);
+                runBeforeOrAfterScenarioSteps(context, scenario, Stage.AFTER);
             }
 
             reporter.afterScenario();
         }
 
         // run after story steps, if any
-        runBeforeOrAfterStorySteps(candidateSteps, story, givenStory, StepCollector.Stage.AFTER);        
-        reporter.afterStory(givenStory);
+        runBeforeOrAfterStorySteps(context, story, StepCollector.Stage.AFTER);
+        reporter.afterStory(context.givenStory());
 
         // handle any failure according to strategy
-        if (!givenStory) {
+        if (!context.givenStory()) {
             currentStrategy.handleFailure(storyFailure);
         }
     }
 
-    private boolean shouldRunBeforeOrAfterScenarioSteps(Configuration configuration, boolean givenStory) {
+    private boolean shouldRunBeforeOrAfterScenarioSteps(StoryRunContext context) {
+        Configuration configuration = context.configuration();
         if (!configuration.storyControls().skipBeforeAndAfterScenarioStepsIfGivenStory()){
             return true;
         }
         
-        return !givenStory;
+        return !context.givenStory();
     }
 
     private boolean failureOccurred() {
         return storyFailure != null;
     }
 
-    private StoryReporter reporterFor(Configuration configuration, Story story, boolean givenStory) {
-        if (givenStory) {
+    private StoryReporter reporterFor(StoryRunContext context, Story story) {
+        Configuration configuration = context.configuration();
+        if (context.givenStory()) {
             return configuration.storyReporter(reporterStoryPath);
         } else {
             // store parent story path for reporting
@@ -196,15 +199,14 @@ public class StoryRunner {
         storyFailure = null;
     }
 
-    private void runGivenStories(Configuration configuration, List<CandidateSteps> candidateSteps, Scenario scenario,
-            MetaFilter filter) throws Throwable {
+    private void runGivenStories(Scenario scenario, StoryRunContext context) throws Throwable {
         GivenStories givenStories = scenario.getGivenStories();
         if (givenStories.getPaths().size() > 0) {
             reporter.givenStories(givenStories);
             for (GivenStory givenStory : givenStories.getStories()) {
                 // run given story, using any parameters if provided
-                Story story = storyOfPath(configuration, givenStory.getPath());
-                run(configuration, candidateSteps, story, filter, true, givenStory.getParameters());
+                Story story = storyOfPath(context.configuration(), givenStory.getPath());
+                run(story, givenStory.getParameters(), context.forGivenStory());
             }
         }
     }
@@ -213,25 +215,29 @@ public class StoryRunner {
         return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireParameters();
     }
 
-    private void runParametrisedScenariosByExamples(List<CandidateSteps> candidateSteps, Scenario scenario) {
+    private void runParametrisedScenariosByExamples(StoryRunContext context, Scenario scenario) {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.beforeExamples(scenario.getSteps(), table);
         for (Map<String, String> scenarioParameters : table.getRows()) {
             reporter.example(scenarioParameters);
-            runScenarioSteps(candidateSteps, scenario, scenarioParameters);
+            runScenarioSteps(context, scenario, scenarioParameters);
         }
         reporter.afterExamples();
     }
 
-    private void runBeforeOrAfterStorySteps(List<CandidateSteps> candidateSteps, Story story, boolean givenStory, Stage stage) {
+    private void runBeforeOrAfterStorySteps(StoryRunContext context, Story story, Stage stage) {
+        List<CandidateSteps> candidateSteps = context.candidateSteps();
+        boolean givenStory = context.givenStory();
         runStepsWhileKeepingState(stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory));
     }
 
-    private void runBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Stage stage) {
+    private void runBeforeOrAfterScenarioSteps(StoryRunContext context, Scenario scenario, Stage stage) {
+        List<CandidateSteps> candidateSteps = context.candidateSteps();
         runStepsWhileKeepingState(stepCollector.collectBeforeOrAfterScenarioSteps(candidateSteps, stage));
     }
 
-    private void runScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> scenarioParameters) {
+    private void runScenarioSteps(StoryRunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
+        List<CandidateSteps> candidateSteps = context.candidateSteps();
         runStepsWhileKeepingState(stepCollector.collectScenarioSteps(candidateSteps, scenario, scenarioParameters));
     }
 
