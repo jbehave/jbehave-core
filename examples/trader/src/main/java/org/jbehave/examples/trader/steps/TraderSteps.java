@@ -79,6 +79,7 @@ public class TraderSteps {
     }
 
     @Given("the trader ranks: %ranksTable")
+    @Alias("the traders: %ranksTable")
     public void theTraderRanks(ExamplesTable ranksTable) {
         this.ranksTable = ranksTable;
         traders.clear();
