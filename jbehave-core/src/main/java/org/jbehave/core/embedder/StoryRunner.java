@@ -63,8 +63,8 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story)
             throws Throwable {
-        StoryRunContext context = new StoryRunContext(configuration, MetaFilter.EMPTY, candidateSteps, story.getPath());
-        run(story, new HashMap<String, String>(), context);
+        RunContext context = new RunContext(configuration, MetaFilter.EMPTY, candidateSteps, story.getPath());
+        run(context, story, new HashMap<String, String>());
     }
 
     /**
@@ -80,8 +80,8 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter)
             throws Throwable {
-        StoryRunContext context = new StoryRunContext(configuration, filter, candidateSteps, story.getPath());
-        run(story, new HashMap<String, String>(), context);
+        RunContext context = new RunContext(configuration, filter, candidateSteps, story.getPath());
+        run(context, story, new HashMap<String, String>());
     }
     
     /**
@@ -96,13 +96,13 @@ public class StoryRunner {
         return configuration.storyParser().parseStory(storyAsText, storyPath);
     }
 
-    private void run(Story story, Map<String, String> storyParameters, StoryRunContext context)
+    private void run(RunContext context, Story story, Map<String, String> storyParameters)
             throws Throwable {
         reporter = reporterFor(context, story);
         pendingStepStrategy = context.configuration().pendingStepStrategy();
         failureStrategy = context.configuration().failureStrategy();
         
-        if (context.isFiltered(story.getMeta())) {
+        if (context.metaNotAllowed(story.getMeta())) {
             reporter.storyNotAllowed(story, context.metaFilterAsString());
             return;
         }
@@ -122,7 +122,7 @@ public class StoryRunner {
         
         for (Scenario scenario : story.getScenarios()) {
             // scenario also inherits meta from story
-            if (context.isFiltered(scenario.getMeta().inheritFrom(story.getMeta()))) {
+            if (context.metaNotAllowed(scenario.getMeta().inheritFrom(story.getMeta()))) {
                 reporter.scenarioNotAllowed(scenario, context.metaFilterAsString());
                 continue;
             }
@@ -164,7 +164,7 @@ public class StoryRunner {
         }
     }
 
-    private boolean shouldRunBeforeOrAfterScenarioSteps(StoryRunContext context) {
+    private boolean shouldRunBeforeOrAfterScenarioSteps(RunContext context) {
         Configuration configuration = context.configuration();
         if (!configuration.storyControls().skipBeforeAndAfterScenarioStepsIfGivenStory()){
             return true;
@@ -177,7 +177,7 @@ public class StoryRunner {
         return storyFailure != null;
     }
 
-    private StoryReporter reporterFor(StoryRunContext context, Story story) {
+    private StoryReporter reporterFor(RunContext context, Story story) {
         Configuration configuration = context.configuration();
         if (context.givenStory()) {
             return configuration.storyReporter(reporterStoryPath);
@@ -197,15 +197,15 @@ public class StoryRunner {
         storyFailure = null;
     }
 
-    private void runGivenStories(Scenario scenario, StoryRunContext context) throws Throwable {
+    private void runGivenStories(Scenario scenario, RunContext context) throws Throwable {
         GivenStories givenStories = scenario.getGivenStories();
         if (givenStories.getPaths().size() > 0) {
             reporter.givenStories(givenStories);
             for (GivenStory givenStory : givenStories.getStories()) {
-                StoryRunContext childContext = context.forGivenStory(givenStory);
+                RunContext childContext = context.childContextFor(givenStory);
                 // run given story, using any parameters if provided
                 Story story = storyOfPath(context.configuration(), childContext.path());
-                run(story, givenStory.getParameters(), childContext);
+                run(childContext, story, givenStory.getParameters());
             }
         }
     }
@@ -214,7 +214,7 @@ public class StoryRunner {
         return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireParameters();
     }
 
-    private void runParametrisedScenariosByExamples(StoryRunContext context, Scenario scenario) {
+    private void runParametrisedScenariosByExamples(RunContext context, Scenario scenario) {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.beforeExamples(scenario.getSteps(), table);
         for (Map<String, String> scenarioParameters : table.getRows()) {
@@ -224,15 +224,15 @@ public class StoryRunner {
         reporter.afterExamples();
     }
 
-    private void runBeforeOrAfterStorySteps(StoryRunContext context, Story story, Stage stage) {
+    private void runBeforeOrAfterStorySteps(RunContext context, Story story, Stage stage) {
         runStepsWhileKeepingState(context.collectBeforeOrAfterStorySteps(story, stage));
     }
 
-    private void runBeforeOrAfterScenarioSteps(StoryRunContext context, Scenario scenario, Stage stage) {
+    private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Stage stage) {
         runStepsWhileKeepingState(context.collectBeforeOrAfterScenarioSteps(stage));
     }
 
-    private void runScenarioSteps(StoryRunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
+    private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
         runStepsWhileKeepingState(context.collectScenarioSteps(scenario, scenarioParameters));
     }
 
@@ -292,9 +292,9 @@ public class StoryRunner {
     }
 
     /**
-     * The context for running a {@link Story}.
+     * The context for running a story.
      */
-    private class StoryRunContext {
+    private class RunContext {
         private final List<CandidateSteps> candidateSteps;
         private final MetaFilter filter;
         private final Configuration configuration;
@@ -303,11 +303,11 @@ public class StoryRunner {
 
         private final StepCollector stepCollector;
 
-        public StoryRunContext(Configuration configuration, MetaFilter filter, List<CandidateSteps> steps, String path) {
+        public RunContext(Configuration configuration, MetaFilter filter, List<CandidateSteps> steps, String path) {
             this(configuration, filter, steps, path, false);
         }
 
-        private StoryRunContext(Configuration configuration, MetaFilter filter, List<CandidateSteps> steps,
+        private RunContext(Configuration configuration, MetaFilter filter, List<CandidateSteps> steps,
                 String path, boolean givenStory) {
             this.configuration = configuration;
             this.filter = filter;
@@ -334,7 +334,7 @@ public class StoryRunner {
             return path;
         }
 
-        public boolean isFiltered(Meta meta) {
+        public boolean metaNotAllowed(Meta meta) {
             return !filter.allow(meta);
         }
 
@@ -354,9 +354,9 @@ public class StoryRunner {
             return stepCollector.collectScenarioSteps(candidateSteps, scenario, parameters);
         }
 
-        public StoryRunContext forGivenStory(GivenStory story) {
-            String actualPath = configuration.pathCalculator().calculate(path, story.getPath());
-            return new StoryRunContext(configuration, filter, candidateSteps, actualPath, true);
+        public RunContext childContextFor(GivenStory givenStory) {
+            String actualPath = configuration.pathCalculator().calculate(path, givenStory.getPath());
+            return new RunContext(configuration, filter, candidateSteps, actualPath, true);
         }
     }
 }
