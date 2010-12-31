@@ -85,9 +85,9 @@ public class StepCandidate {
     }
 
     public void composedOf(String[] steps) {
-        this.composedSteps = steps;        
+        this.composedSteps = steps;
     }
-    
+
     public boolean isComposite() {
         return composedSteps != null && composedSteps.length > 0;
     }
@@ -133,31 +133,36 @@ public class StepCandidate {
     }
 
     public Step createMatchedStep(String stepAsString, Map<String, String> namedParameters) {
-        return stepCreator.createParametrisedStep(method, stepAsString, stripStartingWord(stepAsString), namedParameters);
+        return stepCreator.createParametrisedStep(method, stepAsString, stripStartingWord(stepAsString),
+                namedParameters);
     }
-    
+
     public List<Step> createComposedSteps(String stepAsString, Map<String, String> namedParameters,
             List<StepCandidate> allCandidates) {
         Map<String, String> matchedParameters;
-        if ( namedParameters.isEmpty() ){
-            matchedParameters = stepCreator.matchedParameters(method, stepAsString, stripStartingWord(stepAsString), namedParameters);
+        if (namedParameters.isEmpty()) {
+            matchedParameters = stepCreator.matchedParameters(method, stepAsString, stripStartingWord(stepAsString),
+                    namedParameters);
         } else {
             matchedParameters = namedParameters;
         }
         List<Step> steps = new ArrayList<Step>();
         for (String composedStep : composedSteps) {
             StepCandidate candidate = findComposedCandidate(composedStep, allCandidates);
-            if ( candidate != null ){
+            if (candidate != null) {
                 steps.add(candidate.createMatchedStep(composedStep, matchedParameters));
+            } else {
+                steps.add(StepCreator.createPendingStep(composedStep));
             }
+
         }
         return steps;
     }
 
     private StepCandidate findComposedCandidate(String composedStep, List<StepCandidate> allCandidates) {
         for (StepCandidate candidate : allCandidates) {
-            if ( StringUtils.startsWith(composedStep, candidate.getStartingWord()) &&
-                 StringUtils.endsWith(composedStep, candidate.getPatternAsString()) ){
+            if (StringUtils.startsWith(composedStep, candidate.getStartingWord())
+                    && StringUtils.endsWith(composedStep, candidate.getPatternAsString())) {
                 return candidate;
             }
         }
@@ -215,6 +220,5 @@ public class StepCandidate {
         }
 
     }
-
 
 }
