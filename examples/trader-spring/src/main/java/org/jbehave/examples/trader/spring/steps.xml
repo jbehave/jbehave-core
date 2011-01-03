@@ -5,23 +5,25 @@
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
 
 
-  <bean id="traderSteps" class="org.jbehave.examples.trader.steps.TraderSteps">
-    <constructor-arg>
-      <bean class="org.jbehave.examples.trader.service.TradingService"/>
-    </constructor-arg>
-  </bean>
-
   <bean class="org.jbehave.examples.trader.steps.BeforeAfterSteps" />
 
   <bean class="org.jbehave.examples.trader.steps.AndSteps" />
 
   <bean class="org.jbehave.examples.trader.steps.CalendarSteps" />
 
+  <bean class="org.jbehave.examples.trader.steps.CompositeSteps" />
+
   <bean class="org.jbehave.examples.trader.steps.PriorityMatchingSteps" />
 
   <bean class="org.jbehave.examples.trader.steps.SandpitSteps" />
 
   <bean class="org.jbehave.examples.trader.steps.SearchSteps" />
+
+  <bean id="traderSteps" class="org.jbehave.examples.trader.steps.TraderSteps">
+    <constructor-arg>
+      <bean class="org.jbehave.examples.trader.service.TradingService"/>
+    </constructor-arg>
+  </bean>
 
   <!-- Abstract steps will be ignored -->
   <bean class="org.jbehave.examples.trader.steps.AbstractSteps" abstract="true" />
