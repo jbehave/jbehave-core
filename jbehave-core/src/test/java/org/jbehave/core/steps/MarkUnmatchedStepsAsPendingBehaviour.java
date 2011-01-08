@@ -180,16 +180,17 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(bafStep12.getStage()).thenReturn(Stage.BEFORE);
         when(bafStep12.createStep()).thenReturn(stepBefore2);
         when(bafStep21.getStage()).thenReturn(Stage.AFTER);
-        when(bafStep21.createStepUponOutcome()).thenReturn(stepAfter1);
+        boolean failureOccured = true;
+        when(bafStep21.createStepUponOutcome(failureOccured)).thenReturn(stepAfter1);
         when(bafStep22.getStage()).thenReturn(Stage.AFTER);
-        when(bafStep22.createStepUponOutcome()).thenReturn(stepAfter2);
+        when(bafStep22.createStepUponOutcome(failureOccured)).thenReturn(stepAfter2);
         when(steps1.listBeforeOrAfterScenario()).thenReturn(asList(bafStep11, bafStep12));
         when(steps2.listBeforeOrAfterScenario()).thenReturn(asList(bafStep21, bafStep22));
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.BEFORE);
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.AFTER);
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.BEFORE, failureOccured);
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.AFTER, failureOccured);
 
         
         // Then all before and after steps should be added

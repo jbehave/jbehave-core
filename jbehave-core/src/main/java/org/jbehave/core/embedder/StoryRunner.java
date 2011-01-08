@@ -347,7 +347,7 @@ public class StoryRunner {
         }
 
         public List<Step> collectBeforeOrAfterScenarioSteps(Stage stage) {
-            return stepCollector.collectBeforeOrAfterScenarioSteps(candidateSteps, stage);
+            return stepCollector.collectBeforeOrAfterScenarioSteps(candidateSteps, stage, storyFailure !=null);
         }
 
         public List<Step> collectScenarioSteps(Scenario scenario, Map<String, String> parameters) {

@@ -46,10 +46,11 @@ public interface StepCollector {
      * Collects all of the {@link BeforeScenario} or {@link AfterScenario} steps to execute.
      * 
      * @param candidateSteps the {@link CandidateSteps}.
+     * @param failureOccured whether a failure occured in the scenario execution
      * @param parameters the parameters.
      * @return A List of executable {@link Step}s 
      */
-    List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Stage stage);
+    List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Stage stage, boolean failureOccured);
 
     /**
      * Collects all of the {@link Step}s to execute for a scenario.

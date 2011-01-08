@@ -134,7 +134,7 @@ public class StepsBehaviour {
     }
     
     @Test
-    public void shouldProvideStepsToBePerformedBeforeAndAfterScenarios() {
+    public void shouldProvideStepsToBePerformedBeforeAndAfterScenariosWithFailureOccuring() {
     	MultipleAliasesSteps steps = new MultipleAliasesSteps();
     	List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario();
 		assertThat(beforeAfterScenario.size(), equalTo(4));
@@ -142,19 +142,45 @@ public class StepsBehaviour {
     	beforeAfterScenario.get(0).createStep().perform();
     	assertThat(steps.beforeScenario, is(true));
 
-    	// uponOutcome=ANY
-    	beforeAfterScenario.get(1).createStepUponOutcome().perform();
+    	boolean failureOccured = true;
+        // uponOutcome=ANY
+    	beforeAfterScenario.get(1).createStepUponOutcome(failureOccured).perform();
     	assertThat(steps.afterAnyScenario, is(true));
     	
     	// uponOutcome=SUCCESS
-    	beforeAfterScenario.get(2).createStepUponOutcome().perform();
-    	assertThat(steps.afterSuccessfulScenario, is(true));
+    	beforeAfterScenario.get(2).createStepUponOutcome(failureOccured).perform();
+    	assertThat(steps.afterSuccessfulScenario, is(false));
     	
 		// uponOutcome=FAILURE    	
-    	beforeAfterScenario.get(3).createStepUponOutcome().perform();
-    	assertThat(steps.afterFailedScenario, is(false));
+    	beforeAfterScenario.get(3).createStepUponOutcome(failureOccured).perform();
+    	assertThat(steps.afterFailedScenario, is(true));
 
     }
+
+    @Test
+    public void shouldProvideStepsToBePerformedBeforeAndAfterScenariosWithNoFailureOccuring() {
+        MultipleAliasesSteps steps = new MultipleAliasesSteps();
+        List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario();
+        assertThat(beforeAfterScenario.size(), equalTo(4));
+        
+        beforeAfterScenario.get(0).createStep().perform();
+        assertThat(steps.beforeScenario, is(true));
+
+        boolean failureOccured = false;
+        // uponOutcome=ANY
+        beforeAfterScenario.get(1).createStepUponOutcome(failureOccured).perform();
+        assertThat(steps.afterAnyScenario, is(true));
+        
+        // uponOutcome=SUCCESS
+        beforeAfterScenario.get(2).createStepUponOutcome(failureOccured).perform();
+        assertThat(steps.afterSuccessfulScenario, is(true));
+        
+        // uponOutcome=FAILURE      
+        beforeAfterScenario.get(3).createStepUponOutcome(failureOccured).perform();
+        assertThat(steps.afterFailedScenario, is(false));
+
+    }
+    
     
     @Test
     public void shouldProvideStepsToBeNotPerformedAfterScenarioUponOutcome() {
@@ -165,16 +191,17 @@ public class StepsBehaviour {
     	beforeAfterScenario.get(0).createStep().doNotPerform();
     	assertThat(steps.beforeScenario, is(true));
 
+        boolean failureOccured = true;
     	// uponOutcome=ANY
-    	beforeAfterScenario.get(1).createStepUponOutcome().doNotPerform();
+    	beforeAfterScenario.get(1).createStepUponOutcome(failureOccured).doNotPerform();
     	assertThat(steps.afterAnyScenario, is(true));
     	
     	// uponOutcome=SUCCESS
-    	beforeAfterScenario.get(2).createStepUponOutcome().doNotPerform();
+    	beforeAfterScenario.get(2).createStepUponOutcome(failureOccured).doNotPerform();
     	assertThat(steps.afterSuccessfulScenario, is(false));
     	
 		// uponOutcome=FAILURE    	
-    	beforeAfterScenario.get(3).createStepUponOutcome().doNotPerform();
+    	beforeAfterScenario.get(3).createStepUponOutcome(failureOccured).doNotPerform();
     	assertThat(steps.afterFailedScenario, is(true));
     }
     

@@ -78,7 +78,7 @@ public class StepCreator {
         };
     }
 
-    public Step createAfterStepUponOutcome(final Method method, Outcome outcome) {
+    public Step createAfterStepUponOutcome(final Method method, final Outcome outcome, final boolean failureOccured) {
         switch (outcome) {
         case ANY:
         default:
@@ -97,11 +97,11 @@ public class StepCreator {
             return new Step() {
 
                 public StepResult doNotPerform() {
-                    return skip.run(method);
+                    return (failureOccured ? skip.run(method) : beforeOrAfter.run(method));
                 }
 
                 public StepResult perform() {
-                    return beforeOrAfter.run(method);
+                    return (failureOccured ? skip.run(method) : beforeOrAfter.run(method));
                 }
 
             };
@@ -109,11 +109,11 @@ public class StepCreator {
             return new Step() {
 
                 public StepResult doNotPerform() {
-                    return beforeOrAfter.run(method);
+                    return (failureOccured ? beforeOrAfter.run(method) : skip.run(method));
                 }
 
                 public StepResult perform() {
-                    return skip.run(method);
+                    return (failureOccured ? beforeOrAfter.run(method) : skip.run(method));
                 }
 
             };
@@ -129,7 +129,7 @@ public class StepCreator {
         String[] names = (annotationNames.length > 0 ? annotationNames : parameterNames);
         String[] parameters = parametersForStep(namedParameters, types, annotationNames, parameterNames);
         Map<String, String> matchedParameters = new HashMap<String, String>();
-        for ( int i = 0; i < names.length; i++ ){
+        for (int i = 0; i < names.length; i++) {
             matchedParameters.put(names[i], parameters[i]);
         }
         return matchedParameters;
@@ -177,8 +177,8 @@ public class StepCreator {
                 Type[] types = method.getGenericParameterTypes();
                 String[] parameters = parametersForStep(namedParameters, types, annotationNames, parameterNames);
                 convertedParameters = convertParameters(parameters, types);
-                parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, annotationNames, parameterNames,
-                        parameters);
+                parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, annotationNames,
+                        parameterNames, parameters);
             }
 
         };
@@ -188,8 +188,7 @@ public class StepCreator {
      * Extract annotated parameter names from the @Named parameter annotations
      * of the method
      * 
-     * @param method
-     *            the Method containing the annotations
+     * @param method the Method containing the annotations
      * @return An array of annotated parameter names, which <b>may</b> include
      *         <code>null</code> values for parameters that are not annotated
      */
@@ -363,7 +362,7 @@ public class StepCreator {
     private class BeforeOrAfter implements StepRunner {
         public StepResult run(Method method) {
             if (method == null) {
-                return failed(method, new BeforeOrAfterFailed(new NullPointerException("method")));                
+                return failed(method, new BeforeOrAfterFailed(new NullPointerException("method")));
             }
             try {
                 method.invoke(stepsInstance);

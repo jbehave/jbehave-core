@@ -49,8 +49,8 @@ public class BeforeOrAfterStep {
         return stepCreator.createBeforeOrAfterStep(method);
     }
 
-    public Step createStepUponOutcome() {
-        return stepCreator.createAfterStepUponOutcome(method, outcome);
+    public Step createStepUponOutcome(boolean failureOccured) {
+        return stepCreator.createAfterStepUponOutcome(method, outcome, failureOccured);
     }
 
     public void useStepMonitor(StepMonitor stepMonitor) {
