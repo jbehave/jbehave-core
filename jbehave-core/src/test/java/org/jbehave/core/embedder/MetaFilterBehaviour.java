@@ -25,12 +25,6 @@ public class MetaFilterBehaviour {
     }
 
     @Test
-    public void shouldAllowUnderScoresToRepresentSpacesForTheSakeOfHudson() {
-        assertFilterAllowsProperty("+theme_smoke_testing", "theme smoke testing", true);
-        assertFilterAllowsProperty("+theme_smoke_testing", "theme testing", false);
-    }
-
-    @Test
     public void shouldFilterByNameOnly() {
         assertFilterAllowsProperty("-skip", "skip", false);
     }
