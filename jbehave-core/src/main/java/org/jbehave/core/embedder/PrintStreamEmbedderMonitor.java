@@ -41,7 +41,7 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     }
 
     public void metaNotAllowed(Meta meta, MetaFilter filter) {
-        print(meta + " not allowed by filter '" + filter.asString() + "'");
+        print(meta + " excluded by filter '" + filter.asString() + "'");
     }
 
     public void runningEmbeddable(String name) {

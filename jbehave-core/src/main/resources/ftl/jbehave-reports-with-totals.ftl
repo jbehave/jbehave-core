@@ -36,15 +36,15 @@
 </tr>
 <tr>
     <th>Name</th>
-    <th>Not Allowed</th>
+    <th>Excluded</th>
     <th>Total</th>
     <th>Successful</th>
     <th>Failed</th>
-    <th>Not Allowed</th>
+    <th>Excluded</th>
     <th>Total</th>
     <th>Successful</th>
     <th>Failed</th>
-    <th>Not Allowed</th>
+    <th>Excluded</th>
     <th>Total</th>
     <th>Successful</th>
     <th>Pending</th>
