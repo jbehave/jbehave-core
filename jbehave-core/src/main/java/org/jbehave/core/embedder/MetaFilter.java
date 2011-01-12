@@ -1,16 +1,16 @@
 package org.jbehave.core.embedder;
 
-import java.util.HashSet;
-import java.util.Properties;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Meta.Property;
+
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -41,7 +41,7 @@ public class MetaFilter {
     }
 
     public MetaFilter(String filterAsString) {
-        this(filterAsString, new PrintStreamEmbedderMonitor());
+        this(filterAsString.replace('_', ' '), new PrintStreamEmbedderMonitor());
     }
 
     public MetaFilter(String filterAsString, EmbedderMonitor monitor) {

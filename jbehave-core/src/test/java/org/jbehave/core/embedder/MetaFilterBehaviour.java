@@ -1,11 +1,11 @@
 package org.jbehave.core.embedder;
 
+import org.jbehave.core.model.Meta;
+import org.junit.Test;
+
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-
-import org.jbehave.core.model.Meta;
-import org.junit.Test;
 
 public class MetaFilterBehaviour {
 
@@ -22,6 +22,12 @@ public class MetaFilterBehaviour {
     public void shouldFilterByNameAndValue() {
         assertFilterAllowsProperty("+theme smoke testing", "theme smoke testing", true);
         assertFilterAllowsProperty("+theme smoke testing", "theme testing", false);
+    }
+
+    @Test
+    public void shouldAllowUnderScoresToRepresentSpacesForTheSakeOfHudson() {
+        assertFilterAllowsProperty("+theme_smoke_testing", "theme smoke testing", true);
+        assertFilterAllowsProperty("+theme_smoke_testing", "theme testing", false);
     }
 
     @Test
