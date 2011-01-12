@@ -41,11 +41,11 @@ public class MetaFilter {
     }
 
     public MetaFilter(String filterAsString) {
-        this(filterAsString.replace('_', ' '), new PrintStreamEmbedderMonitor());
+        this(filterAsString, new PrintStreamEmbedderMonitor());
     }
 
     public MetaFilter(String filterAsString, EmbedderMonitor monitor) {
-        this.filterAsString = filterAsString;
+        this.filterAsString = filterAsString.replace('_', ' ');
         this.monitor = monitor;
         parse(include, "+");
         parse(exclude, "-");
