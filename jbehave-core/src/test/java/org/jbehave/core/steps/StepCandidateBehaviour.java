@@ -7,6 +7,7 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
@@ -344,7 +345,7 @@ public class StepCandidateBehaviour {
         assertThat(candidates.size(), equalTo(1));
         StepResult stepResult = candidates.get(0).createMatchedStep("When outcome fails for Bar upon verification",
                 namedParameters).perform(null);
-        assertThat(stepResult.getFailure(), instanceOf(CorrelatedException.class));
+        assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
         assertThat(stepResult.getFailure().getCause(), instanceOf(OutcomesFailed.class));
     }
 

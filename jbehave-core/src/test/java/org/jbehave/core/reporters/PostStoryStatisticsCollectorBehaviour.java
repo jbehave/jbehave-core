@@ -1,5 +1,6 @@
 package org.jbehave.core.reporters;
 
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -9,7 +10,6 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.CorrelatedException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -136,7 +136,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         try {
             outcomesTable.verify();
-        } catch (CorrelatedException e) {
+        } catch (UUIDExceptionWrapper e) {
             reporter.failedOutcomes("Then I don't return loan", ((OutcomesFailed)e.getCause()).outcomesTable());
         }
         reporter.pending("Then I should have a balance of $30");

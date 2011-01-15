@@ -1,10 +1,7 @@
 package org.jbehave.core.embedder;
 
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.failures.FailureStrategy;
-import org.jbehave.core.failures.PendingStepFound;
-import org.jbehave.core.failures.PendingStepStrategy;
-import org.jbehave.core.failures.SilentlyAbsorbingFailure;
+import org.jbehave.core.failures.*;
 import org.jbehave.core.model.*;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.*;
@@ -26,7 +23,7 @@ public class StoryRunner {
     private FailureStrategy currentStrategy;
     private FailureStrategy failureStrategy;
     private PendingStepStrategy pendingStepStrategy;
-    private CorrelatedException storyFailure;
+    private UUIDExceptionWrapper storyFailure;
     private StoryReporter reporter;
     private String reporterStoryPath;
 
@@ -247,7 +244,7 @@ public class StoryRunner {
         public State run(Step step) {
             StepResult result = step.perform(storyFailure);
             result.describeTo(reporter);
-            CorrelatedException scenarioFailure = result.getFailure();
+            UUIDExceptionWrapper scenarioFailure = result.getFailure();
             if (scenarioFailure == null)
                 return this;
 
@@ -256,7 +253,7 @@ public class StoryRunner {
             return new SomethingHappened();
         }
 
-        private CorrelatedException mostImportantOf(CorrelatedException failure1, CorrelatedException failure2) {
+        private UUIDExceptionWrapper mostImportantOf(UUIDExceptionWrapper failure1, UUIDExceptionWrapper failure2) {
             return failure1 == null ? failure2 : failure1.getCause() instanceof PendingStepFound ? (failure2 == null ? failure1
                     : failure2) : failure1;
         }

@@ -1,5 +1,6 @@
 package org.jbehave.core.reporters;
 
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.failures.StepFailed;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -7,7 +8,6 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.CorrelatedException;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,7 @@ import java.util.Map;
 public class StepFailureDecorator implements StoryReporter {
 
 	private final StoryReporter delegate;
-	private CorrelatedException failure;
+	private UUIDExceptionWrapper failure;
 
     public StepFailureDecorator(StoryReporter delegate) {
 		this.delegate = delegate;
@@ -56,7 +56,7 @@ public class StepFailureDecorator implements StoryReporter {
     }
 
 	public void failed(String step, Throwable cause) {
-		failure = (CorrelatedException) cause;
+		failure = (UUIDExceptionWrapper) cause;
 		delegate.failed(step, failure);
 	}
 

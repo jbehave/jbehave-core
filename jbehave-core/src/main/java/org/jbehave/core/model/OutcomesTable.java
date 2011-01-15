@@ -3,7 +3,8 @@ package org.jbehave.core.model;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.hamcrest.Matcher;
-import org.jbehave.core.steps.CorrelatedException;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -20,7 +21,7 @@ public class OutcomesTable {
 
     private List<Outcome<?>> outcomes = new ArrayList<Outcome<?>>();
     private List<Outcome<?>> failedOutcomes = new ArrayList<Outcome<?>>();
-    private CorrelatedException failureCause;
+    private UUIDExceptionWrapper failureCause;
 
     public <T> void addOutcome(String description, T value, Matcher<T> matcher) {
         outcomes.add(new Outcome<T>(description, value, matcher));
@@ -37,12 +38,12 @@ public class OutcomesTable {
             }
         }
         if (failed) {
-            failureCause = new CorrelatedException(new OutcomesFailed(this));
+            failureCause = new UUIDExceptionWrapper(new OutcomesFailed(this));
             throw failureCause;
         }
     }
 
-    public CorrelatedException failureCause() {
+    public UUIDExceptionWrapper failureCause() {
         return failureCause;
     }
 
@@ -112,7 +113,7 @@ public class OutcomesTable {
     }
 
     @SuppressWarnings("serial")
-    public static class OutcomesFailed extends CorrelatedException {
+    public static class OutcomesFailed extends UUIDExceptionWrapper {
         private OutcomesTable outcomes;
 
         public OutcomesFailed(OutcomesTable outcomes) {

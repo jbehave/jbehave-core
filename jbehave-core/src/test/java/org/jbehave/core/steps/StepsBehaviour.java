@@ -5,6 +5,8 @@ import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.StepCandidate.StartingWordNotFound;
@@ -239,7 +241,7 @@ public class StepsBehaviour {
     	beforeScenario.get(0).createStep().perform(null);
     	StepResult stepResult = beforeScenario.get(1).createStep().perform(null);
     	assertThat(stepResult, instanceOf(Failed.class));
-    	assertThat(stepResult.getFailure(), instanceOf(CorrelatedException.class));
+    	assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
     	assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
     }
 

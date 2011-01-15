@@ -6,7 +6,7 @@ import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.CorrelatedException;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.Test;
 import org.mockito.InOrder;
 
@@ -28,7 +28,7 @@ public class DelegatingStoryReporterBehaviour {
         List<String> givenStoryPaths = asList("path/to/story1", "path/to/story2");
         GivenStories givenStories = new GivenStories(StringUtils.join(givenStoryPaths, ","));
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
-        CorrelatedException anException = new CorrelatedException(new IllegalArgumentException());
+        UUIDExceptionWrapper anException = new UUIDExceptionWrapper(new IllegalArgumentException());
         Story story = new Story();
         boolean givenStory = false;
         Scenario scenario = new Scenario();

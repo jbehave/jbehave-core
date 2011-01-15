@@ -1,6 +1,8 @@
 package org.jbehave.core.steps;
 
 import org.jbehave.core.failures.BeforeOrAfterFailed;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
@@ -31,7 +33,7 @@ public class StepCreatorBehaviour {
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
-        assertThat(stepResult.getFailure(), instanceOf(CorrelatedException.class));
+        assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
         assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
 
     }
@@ -48,7 +50,7 @@ public class StepCreatorBehaviour {
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
-        assertThat(stepResult.getFailure(), instanceOf(CorrelatedException.class));
+        assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
         assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
 
     }

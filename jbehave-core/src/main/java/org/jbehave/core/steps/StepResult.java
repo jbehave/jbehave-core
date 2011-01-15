@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.reporters.StoryReporter;
 
 public interface StepResult {
@@ -10,6 +12,6 @@ public interface StepResult {
 
 	void describeTo(StoryReporter reporter);
 
-	CorrelatedException getFailure();
+	UUIDExceptionWrapper getFailure();
 
 }

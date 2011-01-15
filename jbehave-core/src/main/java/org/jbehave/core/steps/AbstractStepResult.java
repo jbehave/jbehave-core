@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.failures.PendingStepFound;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.StoryReporter;
 
@@ -23,11 +24,11 @@ public abstract class AbstractStepResult implements StepResult {
 
     public static class Failed extends AbstractStepResult {
 
-        public Failed(String step, CorrelatedException throwable) {
+        public Failed(String step, UUIDExceptionWrapper throwable) {
             super(step, throwable);
         }
 
-        public Failed(Method method, CorrelatedException throwable) {
+        public Failed(Method method, UUIDExceptionWrapper throwable) {
             super(asString(method), throwable);
         }
 
@@ -103,13 +104,13 @@ public abstract class AbstractStepResult implements StepResult {
 
     protected final String step;
     private String parametrisedStep;
-    protected final CorrelatedException throwable;
+    protected final UUIDExceptionWrapper throwable;
 
     public AbstractStepResult(String step) {
         this(step, null);
     }
 
-    public AbstractStepResult(String step, CorrelatedException throwable) {
+    public AbstractStepResult(String step, UUIDExceptionWrapper throwable) {
         this.step = step;
         this.throwable = throwable;
     }
@@ -123,7 +124,7 @@ public abstract class AbstractStepResult implements StepResult {
         return this;
     }
 
-    public CorrelatedException getFailure() {
+    public UUIDExceptionWrapper getFailure() {
         return throwable;
     }
 
@@ -152,11 +153,11 @@ public abstract class AbstractStepResult implements StepResult {
         return new NotPerformed(step);
     }
 
-    public static StepResult failed(String step, CorrelatedException e) {
+    public static StepResult failed(String step, UUIDExceptionWrapper e) {
         return new Failed(step, e);
     }
 
-    public static StepResult failed(Method method, CorrelatedException e) {
+    public static StepResult failed(Method method, UUIDExceptionWrapper e) {
         return new Failed(method, e);
     }
 

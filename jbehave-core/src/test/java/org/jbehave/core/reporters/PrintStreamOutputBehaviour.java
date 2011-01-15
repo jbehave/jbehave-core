@@ -1,6 +1,8 @@
 package org.jbehave.core.reporters;
 
 import org.apache.commons.io.IOUtils;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
@@ -17,7 +19,6 @@ import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
-import org.jbehave.core.steps.CorrelatedException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -390,7 +391,7 @@ public class PrintStreamOutputBehaviour {
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         try {
         	outcomesTable.verify();
-        } catch ( CorrelatedException e ){
+        } catch ( UUIDExceptionWrapper e ){
         	reporter.failedOutcomes("Then I don't return loan", ((OutcomesFailed)e.getCause()).outcomesTable());
         }
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
@@ -425,7 +426,7 @@ public class PrintStreamOutputBehaviour {
     @Test
     public void shouldReportFailureTraceWhenToldToDoSo() {
         // Given
-        CorrelatedException exception = new CorrelatedException(new RuntimeException("Leave my money alone!"));
+        UUIDExceptionWrapper exception = new UUIDExceptionWrapper(new RuntimeException("Leave my money alone!"));
         OutputStream stackTrace = new ByteArrayOutputStream();
         exception.printStackTrace(new PrintStream(stackTrace));
         OutputStream out = new ByteArrayOutputStream();
@@ -472,7 +473,7 @@ public class PrintStreamOutputBehaviour {
     @Test
     public void shouldReportEventsToTxtOutputWithCustomPatterns() {
         // Given
-        CorrelatedException exception = new CorrelatedException(new RuntimeException("Leave my money alone!"));
+        UUIDExceptionWrapper exception = new UUIDExceptionWrapper(new RuntimeException("Leave my money alone!"));
         OutputStream out = new ByteArrayOutputStream();
         Properties patterns = new Properties();
         patterns.setProperty("pending", "{0} - {1} - need to implement me\n");
@@ -509,7 +510,7 @@ public class PrintStreamOutputBehaviour {
     @Test
     public void shouldReportEventsToPrintStreamInItalian() {
         // Given
-        CorrelatedException exception = new CorrelatedException(new RuntimeException("Lasciate in pace i miei soldi!"));
+        UUIDExceptionWrapper exception = new UUIDExceptionWrapper(new RuntimeException("Lasciate in pace i miei soldi!"));
         OutputStream out = new ByteArrayOutputStream();
         LocalizedKeywords keywords = new LocalizedKeywords(Locale.ITALIAN);
         StoryReporter reporter = new TxtOutput(new PrintStream(out), new Properties(), keywords,

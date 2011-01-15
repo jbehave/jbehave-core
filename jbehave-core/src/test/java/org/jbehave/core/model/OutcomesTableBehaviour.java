@@ -2,7 +2,7 @@ package org.jbehave.core.model;
 
 import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
-import org.jbehave.core.steps.CorrelatedException;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.Test;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class OutcomesTableBehaviour {
         table.addOutcome("a failure", two, is(false));
         try {
             table.verify();
-        } catch (CorrelatedException ce) {
+        } catch (UUIDExceptionWrapper ce) {
             OutcomesFailed e = (OutcomesFailed) ce.getCause();
             assertThat(e.outcomesTable().getOutcomes().size(), equalTo(2));
             List<Outcome<?>> failedOutcomes = e.outcomesTable().getFailedOutcomes();

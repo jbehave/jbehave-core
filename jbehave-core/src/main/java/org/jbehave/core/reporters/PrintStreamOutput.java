@@ -7,6 +7,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.GivenStory;
@@ -16,7 +17,6 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.CorrelatedException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -115,7 +115,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     public void failed(String step, Throwable correlatedFailure) {
         this.cause = correlatedFailure;
         // {3} is not used here, but is in WebDriver's Failing Screenshot thingy. WebDriverHtmlOutput extends HtmlOutput (diff module)
-        print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), correlatedFailure.getCause(), ((CorrelatedException) correlatedFailure).getUUID()));
+        print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), correlatedFailure.getCause(), ((UUIDExceptionWrapper) correlatedFailure).getUUID()));
     }
 
     public void failedOutcomes(String step, OutcomesTable table) {

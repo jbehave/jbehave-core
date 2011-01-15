@@ -56,58 +56,58 @@ public class StoryRunnerBehaviour {
         verify(afterStep).perform(null);
     }
     
-//    @Test
-//    public void shouldRunStepsInStoryAndReportResultsToReporter() throws Throwable {
-//        // Given
-//        Scenario scenario1 = new Scenario("my title 1", asList("failingStep",
-//                "successfulStep"));
-//        Scenario scenario2 = new Scenario("my title 2", asList("successfulStep"));
-//        Scenario scenario3 = new Scenario("my title 3", asList("successfulStep",
-//                "pendingStep"));
-//        Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1,
-//                scenario2, scenario3));
-//        Step step = mock(Step.class);
-//        StepResult result = mock(StepResult.class);
-//        when(step.perform(Matchers.<CorrelatedException>any())).thenReturn(result);
-//        StoryReporter reporter = mock(StoryReporter.class);
-//        StepCollector collector = mock(StepCollector.class);
-//        CandidateSteps mySteps = new Steps();
-//        CorrelatedException anException = new CorrelatedException(new IllegalArgumentException());
-//        Step pendingStep = mock(Step.class);
-//        Step successfulStep = mockSuccessfulStep("successfulStep");
-//        Step failingStep = mock(Step.class);
-//        when(pendingStep.perform(Matchers.<CorrelatedException>any())).thenReturn(pending("pendingStep"));
-//        when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
-//        when(failingStep.perform(Matchers.<CorrelatedException>any())).thenReturn(failed("failingStep", anException));
-//        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(
-//                asList(failingStep, successfulStep));
-//        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(asList(successfulStep));
-//        when(collector.collectScenarioSteps(asList(mySteps), scenario3, parameters)).thenReturn(
-//                asList(successfulStep, pendingStep));
-//        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
-//
-//        // When
-//        FailureStrategy failureStrategy = mock(FailureStrategy.class);
-//        StoryRunner runner = new StoryRunner();
-//        runner.run(configurationWith(reporter, collector, failureStrategy), asList(mySteps), story);
-//
-//        // Then
-//        InOrder inOrder = inOrder(reporter, failureStrategy);
-//        inOrder.verify(reporter).beforeStory(story, false);
-//        inOrder.verify(reporter).beforeScenario("my title 1");
-//        inOrder.verify(reporter).failed("failingStep", anException);
-//        inOrder.verify(reporter).notPerformed("successfulStep");
-//        inOrder.verify(reporter).afterScenario();
-//        inOrder.verify(reporter).beforeScenario("my title 2");
-//        inOrder.verify(reporter).successful("successfulStep");
-//        inOrder.verify(reporter).afterScenario();
-//        inOrder.verify(reporter).beforeScenario("my title 3");
-//        inOrder.verify(reporter).successful("successfulStep");
-//        inOrder.verify(reporter).pending("pendingStep");
-//        inOrder.verify(reporter).afterScenario();
-//        inOrder.verify(reporter).afterStory(false);
-//        inOrder.verify(failureStrategy).handleFailure(anException);
-//    }
+    @Test
+    public void shouldRunStepsInStoryAndReportResultsToReporter() throws Throwable {
+        // Given
+        Scenario scenario1 = new Scenario("my title 1", asList("failingStep",
+                "successfulStep"));
+        Scenario scenario2 = new Scenario("my title 2", asList("successfulStep"));
+        Scenario scenario3 = new Scenario("my title 3", asList("successfulStep",
+                "pendingStep"));
+        Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1,
+                scenario2, scenario3));
+        Step step = mock(Step.class);
+        StepResult result = mock(StepResult.class);
+        when(step.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(result);
+        StoryReporter reporter = mock(StoryReporter.class);
+        StepCollector collector = mock(StepCollector.class);
+        CandidateSteps mySteps = new Steps();
+        UUIDExceptionWrapper anException = new UUIDExceptionWrapper(new IllegalArgumentException());
+        Step pendingStep = mock(Step.class);
+        Step successfulStep = mockSuccessfulStep("successfulStep");
+        Step failingStep = mock(Step.class);
+        when(pendingStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(pending("pendingStep"));
+        when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
+        when(failingStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(failed("failingStep", anException));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(
+                asList(failingStep, successfulStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(asList(successfulStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario3, parameters)).thenReturn(
+                asList(successfulStep, pendingStep));
+        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+
+        // When
+        FailureStrategy failureStrategy = mock(FailureStrategy.class);
+        StoryRunner runner = new StoryRunner();
+        runner.run(configurationWith(reporter, collector, failureStrategy), asList(mySteps), story);
+
+        // Then
+        InOrder inOrder = inOrder(reporter, failureStrategy);
+        inOrder.verify(reporter).beforeStory(story, false);
+        inOrder.verify(reporter).beforeScenario("my title 1");
+        inOrder.verify(reporter).failed("failingStep", anException);
+        inOrder.verify(reporter).notPerformed("successfulStep");
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).beforeScenario("my title 2");
+        inOrder.verify(reporter).successful("successfulStep");
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).beforeScenario("my title 3");
+        inOrder.verify(reporter).successful("successfulStep");
+        inOrder.verify(reporter).pending("pendingStep");
+        inOrder.verify(reporter).afterScenario();
+        inOrder.verify(reporter).afterStory(false);
+        inOrder.verify(failureStrategy).handleFailure(anException);
+    }
 
     @Test
     public void shouldRunGivenStoriesBeforeSteps() throws Throwable {
@@ -199,7 +199,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         Step firstStepExceptional = mock(Step.class);
         Step secondStepNotPerformed = mock(Step.class);
-        StepResult failure = failed("When I fail", new CorrelatedException(new IllegalStateException()));
+        StepResult failure = failed("When I fail", new UUIDExceptionWrapper(new IllegalStateException()));
         StepResult notPerformed = notPerformed("Then I should not be performed");
         when(firstStepExceptional.perform(null)).thenReturn(failure);
         when(secondStepNotPerformed.doNotPerform()).thenReturn(notPerformed);
@@ -237,7 +237,7 @@ public class StoryRunnerBehaviour {
         StoryReporter reporter = mock(StoryReporter.class);
         Step failedStep = mock(Step.class);
         Step neverExecutedStep = mock(Step.class);
-        StepResult failed = failed("When I fail", new CorrelatedException(new IllegalStateException()));
+        StepResult failed = failed("When I fail", new UUIDExceptionWrapper(new IllegalStateException()));
         when(failedStep.perform(null)).thenReturn(failed);
         FailureStrategy failureStrategy = mock(FailureStrategy.class);
         StepCollector collector = mock(StepCollector.class);
@@ -338,8 +338,8 @@ public class StoryRunnerBehaviour {
         runner.run(configurationWith(reporter, collector), asList(mySteps), story);
 
         // Then
-        verify(pendingStep).perform(Matchers.<CorrelatedException>any());
-        verify(secondStep).perform(Matchers.<CorrelatedException>any());
+        verify(pendingStep).perform(Matchers.<UUIDExceptionWrapper>any());
+        verify(secondStep).perform(Matchers.<UUIDExceptionWrapper>any());
         verify(secondStep, never()).doNotPerform();
     }
 
@@ -470,13 +470,13 @@ public class StoryRunnerBehaviour {
         Configuration configuration = configurationWith(reporter, collector, failureStrategy);
         configuration.storyControls().doDryRun(true);
         CandidateSteps mySteps = new Steps(configuration);
-        CorrelatedException anException = new CorrelatedException(new IllegalArgumentException());
+        UUIDExceptionWrapper anException = new UUIDExceptionWrapper(new IllegalArgumentException());
         Step pendingStep = mock(Step.class, "pendingStep");
         Step successfulStep = mockSuccessfulStep("successfulStep");
         Step failingStep = mock(Step.class, "failingStep");
-        when(pendingStep.perform(Matchers.<CorrelatedException>any())).thenReturn(pending("pendingStep"));
+        when(pendingStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(pending("pendingStep"));
         when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
-        when(failingStep.perform(Matchers.<CorrelatedException>any())).thenReturn(failed("failingStep", anException));
+        when(failingStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(failed("failingStep", anException));
         when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(
                 asList(failingStep, successfulStep));
         when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(asList(successfulStep));
@@ -603,7 +603,7 @@ public class StoryRunnerBehaviour {
 
     private Step mockSuccessfulStep(String result) {
         Step step = mock(Step.class, result);
-        when(step.perform(Matchers.<CorrelatedException>any())).thenReturn(successful(result));
+        when(step.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(successful(result));
         return step;
     }
 }
