@@ -50,7 +50,7 @@
     <th>Pending</th>
     <th>Not Performed</th>
     <th>Failed</th>
-    <th>Ignored</th>
+    <th>Comments</th>
     <th></th>
 </tr>
 <#assign reportNames = reportsTable.getReportNames()>
@@ -115,7 +115,7 @@
 </td>
 <td>
 <#assign filesByFormat = report.filesByFormat>
-<#list filesByFormat.keySet() as format><#assign file = filesByFormat.get(format)><a href="${file.name}">${format}</a><#if format_has_next>|</#if></#list>
+<#list filesByFormat.keySet() as format><#assign file = filesByFormat.get(format)><a href="${file.name}">${format}</a><#if format_has_next> |</#if></#list>
 </td>
 </tr>
 </#if>
