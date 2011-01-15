@@ -28,7 +28,7 @@ public class CompositeStepCandidateBehaviour {
         List<Step> composedSteps = candidate.createComposedSteps("Given Mr Jones has previously bought a ticket", noNamedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
-            step.perform();
+            step.perform(null);
         }
         assertThat(steps.loggedIn, equalTo("Mr Jones"));
         assertThat(steps.added, equalTo("ticket"));
@@ -70,7 +70,7 @@ public class CompositeStepCandidateBehaviour {
         List<Step> composedSteps = candidate.createComposedSteps("Given <customer> has previously bought a <product>", namedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
-            step.perform();
+            step.perform(null);
         }
         assertThat(steps.loggedIn, equalTo("Mr Jones"));
         assertThat(steps.added, equalTo("ticket"));
@@ -113,7 +113,7 @@ public class CompositeStepCandidateBehaviour {
         List<Step> composedSteps = candidate.createComposedSteps("Given <customer> has previously bought a <product>", namedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
-            step.perform();
+            step.perform(null);
         }
         assertThat(steps.loggedIn, equalTo("Mr Jones"));
         assertThat(steps.added, equalTo("ticket"));

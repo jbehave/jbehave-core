@@ -6,6 +6,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.CorrelatedException;
 import org.junit.Test;
 import org.mockito.InOrder;
 
@@ -27,7 +28,7 @@ public class SilentSuccessFilterBehaviour {
         StoryReporter delegate = mock(StoryReporter.class);
         SilentSuccessFilter filter = new SilentSuccessFilter(delegate);
         ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
-        IllegalArgumentException anException = new IllegalArgumentException();
+        CorrelatedException anException = new CorrelatedException(new IllegalArgumentException());
         Story story = new Story();
         GivenStories givenStories = new GivenStories("path/to/story1,path/to/story2");
         List<String> givenStoryPaths = asList("path/to/story1","path/to/story2");

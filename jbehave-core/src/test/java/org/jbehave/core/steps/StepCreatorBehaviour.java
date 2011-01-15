@@ -1,13 +1,5 @@
 package org.jbehave.core.steps;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.beans.IntrospectionException;
-import java.lang.reflect.Method;
-
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
@@ -15,6 +7,14 @@ import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.junit.Test;
+
+import java.beans.IntrospectionException;
+import java.lang.reflect.Method;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class StepCreatorBehaviour {
@@ -27,11 +27,12 @@ public class StepCreatorBehaviour {
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
-        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method).perform();
+        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method).perform(null);
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
-        assertThat(stepResult.getFailure(), instanceOf(BeforeOrAfterFailed.class));
+        assertThat(stepResult.getFailure(), instanceOf(CorrelatedException.class));
+        assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
 
     }
 
@@ -43,11 +44,12 @@ public class StepCreatorBehaviour {
 
         // When
         Method method = null;
-        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method).perform();
+        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method).perform(null);
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
-        assertThat(stepResult.getFailure(), instanceOf(BeforeOrAfterFailed.class));
+        assertThat(stepResult.getFailure(), instanceOf(CorrelatedException.class));
+        assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
 
     }
 
@@ -59,7 +61,7 @@ public class StepCreatorBehaviour {
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
-        StepResult stepResult = stepCreator.createParametrisedStep(method, "When I fail", "I fail", null).perform();
+        StepResult stepResult = stepCreator.createParametrisedStep(method, "When I fail", "I fail", null).perform(null);
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
@@ -73,7 +75,7 @@ public class StepCreatorBehaviour {
 
         // When
         Method method = null;
-        StepResult stepResult = stepCreator.createParametrisedStep(method, "When I fail", "I fail", null).perform();
+        StepResult stepResult = stepCreator.createParametrisedStep(method, "When I fail", "I fail", null).perform(null);
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
@@ -100,9 +102,9 @@ public class StepCreatorBehaviour {
         Step pendingStep = StepCreator.createPendingStep("When I'm pending");
 
         // Then
-        assertThat(ignorableStep.perform(), instanceOf(Ignorable.class));
+        assertThat(ignorableStep.perform(null), instanceOf(Ignorable.class));
         assertThat(ignorableStep.doNotPerform(), instanceOf(Ignorable.class));
-        assertThat(pendingStep.perform(), instanceOf(Pending.class));
+        assertThat(pendingStep.perform(null), instanceOf(Pending.class));
         assertThat(pendingStep.doNotPerform(), instanceOf(Pending.class));
     }
 

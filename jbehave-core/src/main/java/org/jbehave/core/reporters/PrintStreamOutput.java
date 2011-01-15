@@ -16,6 +16,7 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.CorrelatedException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -84,6 +85,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     private final Keywords keywords;
     private boolean reportFailureTrace;
     private Throwable cause;
+
     
     protected PrintStreamOutput(Format format, PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace) {
@@ -110,9 +112,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("notPerformed", "{0} ({1})\n", step, keywords.notPerformed()));
     }
 
-    public void failed(String step, Throwable cause) {
-        this.cause = cause;
-        print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), cause));        
+    public void failed(String step, Throwable correlatedFailure) {
+        this.cause = correlatedFailure;
+        // {3} is not used here, but is in WebDriver's Failing Screenshot thingy. WebDriverHtmlOutput extends HtmlOutput (diff module)
+        print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), correlatedFailure.getCause(), ((CorrelatedException) correlatedFailure).getUUID()));
     }
 
     public void failedOutcomes(String step, OutcomesTable table) {
@@ -347,5 +350,9 @@ public abstract class PrintStreamOutput implements StoryReporter {
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}
+
+    protected void overwritePattern(String key, String pattern) {
+        outputPatterns.put(key, pattern);
+    }
 
 }

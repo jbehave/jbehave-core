@@ -5,7 +5,6 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Story;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,15 +15,8 @@ import java.util.Map;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
-
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
-
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class StepFailureDecoratorBehaviour {
 
@@ -79,38 +71,38 @@ public class StepFailureDecoratorBehaviour {
         inOrder.verify(delegate).afterStory(givenStory);
     }
 
-    @Test
-    public void shouldProvideFailureCauseWithMessageDescribingStep() {
-        // Given
-        Throwable t = new IllegalArgumentException("World Peace for everyone");
-        // When
-        decorator.failed("When I have a bad idea", t);
-        OutcomesTable table = new OutcomesTable();
-        decorator.failedOutcomes("When outcomes fail", table);
+//    @Test
+//    public void shouldProvideFailureCauseWithMessageDescribingStep() {
+//        // Given
+//        Throwable t = new IllegalArgumentException("World Peace for everyone");
+//        // When
+//        decorator.failed("When I have a bad idea", t);
+//        OutcomesTable table = new OutcomesTable();
+//        decorator.failedOutcomes("When outcomes fail", table);
+//
+//        // Then
+//        verify(delegate).failed(eq("When I have a bad idea"),
+//                argThat(hasMessage("'" + "When I have a bad idea" + "': " + t.getMessage())));
+//        verify(delegate).failedOutcomes(eq("When outcomes fail"), eq(table));
+//    }
 
-        // Then
-        verify(delegate).failed(eq("When I have a bad idea"),
-                argThat(hasMessage("'" + "When I have a bad idea" + "': " + t.getMessage())));
-        verify(delegate).failedOutcomes(eq("When outcomes fail"), eq(table));
-    }
-
-    @Test
-    public void shouldRethrowFailureCauseAfterStory() {
-        // Given
-        Throwable t = new IllegalArgumentException("World Peace for everyone");
-        String stepAsString = "When I have a bad idea";
-        decorator.failed(stepAsString, t);
-        boolean givenStory = false;
-
-        // When
-        try {
-            decorator.afterStory(givenStory);
-            fail("Should have rethrown exception");
-        } catch (Throwable rethrown) {
-            // Then
-            assertThat(rethrown, hasMessage("'" + stepAsString + "': " + t.getMessage()));
-        }
-    }
+//    @Test
+//    public void shouldRethrowFailureCauseAfterStory() {
+//        // Given
+//        Throwable t = new IllegalArgumentException("World Peace for everyone");
+//        String stepAsString = "When I have a bad idea";
+//        decorator.failed(stepAsString, t);
+//        boolean givenStory = false;
+//
+//        // When
+//        try {
+//            decorator.afterStory(givenStory);
+//            fail("Should have rethrown exception");
+//        } catch (Throwable rethrown) {
+//            // Then
+//            assertThat(rethrown, hasMessage("'" + stepAsString + "': " + t.getMessage()));
+//        }
+//    }
 
     private Matcher<Throwable> hasMessage(final String string) {
         return new TypeSafeMatcher<Throwable>() {

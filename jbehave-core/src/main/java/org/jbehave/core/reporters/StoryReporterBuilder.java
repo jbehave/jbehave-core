@@ -262,7 +262,7 @@ public class StoryReporterBuilder {
         return new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), fileConfiguration(""));
     }
 
-    protected FileConfiguration fileConfiguration(String extension) {
+    public FileConfiguration fileConfiguration(String extension) {
         return new FileConfiguration(relativeDirectory, extension, pathResolver);
     }
 

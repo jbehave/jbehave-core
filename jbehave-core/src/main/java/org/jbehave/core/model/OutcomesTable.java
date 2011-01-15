@@ -1,14 +1,15 @@
 package org.jbehave.core.model;
 
-import static java.util.Arrays.asList;
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.hamcrest.Matcher;
+import org.jbehave.core.steps.CorrelatedException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.hamcrest.Matcher;
+import static java.util.Arrays.asList;
 
 public class OutcomesTable {
 
@@ -19,7 +20,7 @@ public class OutcomesTable {
 
     private List<Outcome<?>> outcomes = new ArrayList<Outcome<?>>();
     private List<Outcome<?>> failedOutcomes = new ArrayList<Outcome<?>>();
-    private OutcomesFailed failureCause;
+    private CorrelatedException failureCause;
 
     public <T> void addOutcome(String description, T value, Matcher<T> matcher) {
         outcomes.add(new Outcome<T>(description, value, matcher));
@@ -36,12 +37,12 @@ public class OutcomesTable {
             }
         }
         if (failed) {
-            failureCause = new OutcomesFailed(this);
+            failureCause = new CorrelatedException(new OutcomesFailed(this));
             throw failureCause;
         }
     }
 
-    public Throwable failureCause() {
+    public CorrelatedException failureCause() {
         return failureCause;
     }
 
@@ -111,7 +112,7 @@ public class OutcomesTable {
     }
 
     @SuppressWarnings("serial")
-    public static class OutcomesFailed extends RuntimeException {
+    public static class OutcomesFailed extends CorrelatedException {
         private OutcomesTable outcomes;
 
         public OutcomesFailed(OutcomesTable outcomes) {

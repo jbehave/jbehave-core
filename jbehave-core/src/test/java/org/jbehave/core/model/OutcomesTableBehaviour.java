@@ -1,14 +1,15 @@
 package org.jbehave.core.model;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import org.jbehave.core.model.OutcomesTable.Outcome;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
+import org.jbehave.core.steps.CorrelatedException;
+import org.junit.Test;
 
 import java.util.List;
 
-import org.jbehave.core.model.OutcomesTable.Outcome;
-import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 public class OutcomesTableBehaviour {
 
@@ -34,7 +35,8 @@ public class OutcomesTableBehaviour {
         table.addOutcome("a failure", two, is(false));
         try {
             table.verify();
-        } catch (OutcomesFailed e) {
+        } catch (CorrelatedException ce) {
+            OutcomesFailed e = (OutcomesFailed) ce.getCause();
             assertThat(e.outcomesTable().getOutcomes().size(), equalTo(2));
             List<Outcome<?>> failedOutcomes = e.outcomesTable().getFailedOutcomes();
             assertThat(failedOutcomes.size(), equalTo(1));

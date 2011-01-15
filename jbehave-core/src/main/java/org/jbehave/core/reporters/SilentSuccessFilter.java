@@ -1,11 +1,6 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
+import org.jbehave.core.model.*;
 
 import java.util.ArrayList;
 import java.util.List;

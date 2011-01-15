@@ -1,16 +1,5 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.hamcrest.Matchers;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.model.Scenario;
@@ -19,6 +8,17 @@ import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
 import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MarkUnmatchedStepsAsPendingBehaviour {
 
@@ -133,7 +133,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 parameters);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
-        StepResult result = executableSteps.get(0).perform();
+        StepResult result = executableSteps.get(0).perform(null);
         Throwable throwable = result.getFailure();
         assertThat(throwable, is(PendingStepFound.class));
         assertThat(throwable.getMessage(), equalTo(stepAsString));
@@ -156,7 +156,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 parameters);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
-        StepResult result = executableSteps.get(0).perform();
+        StepResult result = executableSteps.get(0).perform(null);
         assertThat(result, Matchers.instanceOf(Ignorable.class));
     }
 

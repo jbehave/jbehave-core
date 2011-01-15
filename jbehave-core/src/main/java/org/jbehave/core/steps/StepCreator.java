@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import com.thoughtworks.paranamer.NullParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
@@ -12,16 +14,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.thoughtworks.paranamer.NullParanamer;
-import com.thoughtworks.paranamer.Paranamer;
-
 import static java.util.Arrays.asList;
-import static org.jbehave.core.steps.AbstractStepResult.failed;
-import static org.jbehave.core.steps.AbstractStepResult.ignorable;
-import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
-import static org.jbehave.core.steps.AbstractStepResult.pending;
-import static org.jbehave.core.steps.AbstractStepResult.skipped;
-import static org.jbehave.core.steps.AbstractStepResult.successful;
+import static org.jbehave.core.steps.AbstractStepResult.*;
 
 public class StepCreator {
 
@@ -71,7 +65,7 @@ public class StepCreator {
                 return beforeOrAfter.run(method);
             }
 
-            public StepResult perform() {
+            public StepResult perform(CorrelatedException storyFailureIfItHappened) {
                 return beforeOrAfter.run(method);
             }
 
@@ -88,7 +82,7 @@ public class StepCreator {
                     return beforeOrAfter.run(method);
                 }
 
-                public StepResult perform() {
+                public StepResult perform(CorrelatedException storyFailureIfItHappened) {
                     return beforeOrAfter.run(method);
                 }
 
@@ -100,7 +94,7 @@ public class StepCreator {
                     return (failureOccured ? skip.run(method) : beforeOrAfter.run(method));
                 }
 
-                public StepResult perform() {
+                public StepResult perform(CorrelatedException storyFailureIfItHappened) {
                     return (failureOccured ? skip.run(method) : beforeOrAfter.run(method));
                 }
 
@@ -112,8 +106,8 @@ public class StepCreator {
                     return (failureOccured ? beforeOrAfter.run(method) : skip.run(method));
                 }
 
-                public StepResult perform() {
-                    return (failureOccured ? beforeOrAfter.run(method) : skip.run(method));
+                public StepResult perform(CorrelatedException storyFailureIfItHappened) {
+                    return (failureOccured ? beforeOrAfter.run(method, storyFailureIfItHappened) : skip.run(method));
                 }
 
             };
@@ -141,7 +135,7 @@ public class StepCreator {
             private Object[] convertedParameters;
             private String parametrisedStep;
 
-            public StepResult perform() {
+            public StepResult perform(CorrelatedException storyFailureIfItHappened) {
                 try {
                     parametriseStep();
                     stepMonitor.performing(stepAsString, dryRun);
@@ -153,9 +147,12 @@ public class StepCreator {
                     // step parametrisation failed, return pending StepResult
                     return pending(stepAsString).withParameterValues(parametrisedStep);
                 } catch (InvocationTargetException e) {
-                    return failed(stepAsString, e.getCause()).withParameterValues(parametrisedStep);
+                    if (e.getCause() instanceof CorrelatedException) {
+                        return failed(stepAsString, ((CorrelatedException)e.getCause())).withParameterValues(parametrisedStep);
+                    }
+                    return failed(stepAsString, new CorrelatedException(e.getCause())).withParameterValues(parametrisedStep);
                 } catch (Throwable t) {
-                    return failed(stepAsString, t).withParameterValues(parametrisedStep);
+                    return failed(stepAsString, new CorrelatedException(t)).withParameterValues(parametrisedStep);
                 }
             }
 
@@ -356,34 +353,49 @@ public class StepCreator {
     public interface StepRunner {
 
         StepResult run(Method method);
+        StepResult run(Method method, CorrelatedException failureIfItHappened);
 
     }
 
     private class BeforeOrAfter implements StepRunner {
+
         public StepResult run(Method method) {
+            return run(method, null);
+
+        }
+        public StepResult run(Method method, CorrelatedException failureIfItHappened) {
             if (method == null) {
-                return failed(method, new BeforeOrAfterFailed(new NullPointerException("method")));
+                return failed(method, new CorrelatedException(new BeforeOrAfterFailed(new NullPointerException("method"))));
             }
             try {
-                method.invoke(stepsInstance);
+                if (method.getParameterTypes().length == 0) {
+                    method.invoke(stepsInstance);
+                } else {
+                    method.invoke(stepsInstance, failureIfItHappened);
+                }
             } catch (InvocationTargetException e) {
-                return failed(method, new BeforeOrAfterFailed(method, e.getCause()));
+                return failed(method, new CorrelatedException(new BeforeOrAfterFailed(method, e.getCause())));
             } catch (Throwable t) {
-                return failed(method, new BeforeOrAfterFailed(method, t));
+                return failed(method, new CorrelatedException(new BeforeOrAfterFailed(method, t)));
             }
             return skipped();
         }
     }
 
     private class Skip implements StepRunner {
+
         public StepResult run(Method method) {
+            return run(method, null);
+
+        }
+        public StepResult run(Method method, CorrelatedException failureIfItHappened) {
             return skipped();
         }
     }
 
     public static Step createPendingStep(final String stepAsString) {
         return new Step() {
-            public StepResult perform() {
+            public StepResult perform(CorrelatedException storyFailureIfItHappened) {
                 return pending(stepAsString);
             }
 
@@ -395,7 +407,7 @@ public class StepCreator {
 
     public static Step createIgnorableStep(final String stepAsString) {
         return new Step() {
-            public StepResult perform() {
+            public StepResult perform(CorrelatedException storyFailureIfItHappened) {
                 return ignorable(stepAsString);
             }
 

@@ -9,6 +9,7 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
+import org.jbehave.core.steps.CorrelatedException;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -154,7 +155,7 @@ public class StoryReporterBuilderBehaviour {
 
         // When
         StoryReporter reporter = builder.withDefaultFormats().withFormats(TXT).withKeywords(keywords).build(storyPath);
-        reporter.failed("Dato un passo che fallisce", new RuntimeException("ouch"));
+        reporter.failed("Dato un passo che fallisce", new CorrelatedException(new RuntimeException("ouch")));
 
         // Then
         assertThat(builder.keywords(), equalTo(keywords));

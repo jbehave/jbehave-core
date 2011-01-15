@@ -1,26 +1,18 @@
 package org.jbehave.core.embedder;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.GivenStory;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
+import org.jbehave.core.model.*;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.Step;
-import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.StepResult;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Runs a {@link Story}, given a {@link Configuration} and a list of
@@ -34,7 +26,7 @@ public class StoryRunner {
     private FailureStrategy currentStrategy;
     private FailureStrategy failureStrategy;
     private PendingStepStrategy pendingStepStrategy;
-    private Throwable storyFailure;
+    private CorrelatedException storyFailure;
     private StoryReporter reporter;
     private String reporterStoryPath;
 
@@ -253,9 +245,9 @@ public class StoryRunner {
     private final class FineSoFar implements State {
 
         public State run(Step step) {
-            StepResult result = step.perform();
+            StepResult result = step.perform(storyFailure);
             result.describeTo(reporter);
-            Throwable scenarioFailure = result.getFailure();
+            CorrelatedException scenarioFailure = result.getFailure();
             if (scenarioFailure == null)
                 return this;
 
@@ -264,8 +256,8 @@ public class StoryRunner {
             return new SomethingHappened();
         }
 
-        private Throwable mostImportantOf(Throwable failure1, Throwable failure2) {
-            return failure1 == null ? failure2 : failure1 instanceof PendingStepFound ? (failure2 == null ? failure1
+        private CorrelatedException mostImportantOf(CorrelatedException failure1, CorrelatedException failure2) {
+            return failure1 == null ? failure2 : failure1.getCause() instanceof PendingStepFound ? (failure2 == null ? failure1
                     : failure2) : failure1;
         }
 

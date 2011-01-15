@@ -5,7 +5,7 @@ package org.jbehave.core.steps;
  */
 public interface Step {
 
-    StepResult perform();
+    StepResult perform(CorrelatedException storyFailureIfItHappened);
 
     StepResult doNotPerform();
 

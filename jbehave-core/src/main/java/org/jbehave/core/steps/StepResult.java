@@ -10,6 +10,6 @@ public interface StepResult {
 
 	void describeTo(StoryReporter reporter);
 
-	Throwable getFailure();
+	CorrelatedException getFailure();
 
 }

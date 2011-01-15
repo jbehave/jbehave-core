@@ -17,6 +17,7 @@ import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
+import org.jbehave.core.steps.CorrelatedException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -75,7 +76,7 @@ public class PrintStreamOutputBehaviour {
                 + "Then I should have a balance of $30 (PENDING)\n"
                 + "Then I should have $20 (NOT PERFORMED)\n"
                 + "Then I don't return loan (FAILED)\n"
-                + "(org.jbehave.core.model.OutcomesTable$OutcomesFailed)\n" 
+                + "(org.jbehave.core.model.OutcomesTable$OutcomesFailed)\n"
                 + "|Description|Value|Matcher|Verified|\n"
                 + "|I don't return all|100|<50.0>|false|\n"                
                 + "Examples:\n"
@@ -389,8 +390,8 @@ public class PrintStreamOutputBehaviour {
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         try {
         	outcomesTable.verify();
-        } catch ( OutcomesFailed e ){
-        	reporter.failedOutcomes("Then I don't return loan", e.outcomesTable());
+        } catch ( CorrelatedException e ){
+        	reporter.failedOutcomes("Then I don't return loan", ((OutcomesFailed)e.getCause()).outcomesTable());
         }
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
@@ -413,7 +414,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
-        Assert.assertEquals(dos2unix(out.toString()), expected);
+        Assert.assertEquals(dos2unix(out.toString().replaceAll("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}", "**UUID**")), expected);
         //assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
@@ -424,7 +425,7 @@ public class PrintStreamOutputBehaviour {
     @Test
     public void shouldReportFailureTraceWhenToldToDoSo() {
         // Given
-        IllegalAccessException exception = new IllegalAccessException("Leave my money alone!");
+        CorrelatedException exception = new CorrelatedException(new RuntimeException("Leave my money alone!"));
         OutputStream stackTrace = new ByteArrayOutputStream();
         exception.printStackTrace(new PrintStream(stackTrace));
         OutputStream out = new ByteArrayOutputStream();
@@ -445,7 +446,7 @@ public class PrintStreamOutputBehaviour {
         		+ "Given I have a balance of $50\n" 
         		+ "When I request $20\n"
                 + "When I ask Liz for a loan of $100 (FAILED)\n"
-                + "(java.lang.IllegalAccessException: Leave my money alone!)\n"
+                + "(java.lang.RuntimeException: Leave my money alone!)\n"
                 + "Then I should have a balance of $30 (PENDING)\n"
                 + "Then I should have $20 (NOT PERFORMED)\n" 
                 + "\n" + dos2unix(stackTrace.toString()) + "\n";
@@ -471,7 +472,7 @@ public class PrintStreamOutputBehaviour {
     @Test
     public void shouldReportEventsToTxtOutputWithCustomPatterns() {
         // Given
-        IllegalAccessException exception = new IllegalAccessException("Leave my money alone!");
+        CorrelatedException exception = new CorrelatedException(new RuntimeException("Leave my money alone!"));
         OutputStream out = new ByteArrayOutputStream();
         Properties patterns = new Properties();
         patterns.setProperty("pending", "{0} - {1} - need to implement me\n");
@@ -508,7 +509,7 @@ public class PrintStreamOutputBehaviour {
     @Test
     public void shouldReportEventsToPrintStreamInItalian() {
         // Given
-        IllegalAccessException exception = new IllegalAccessException("Lasciate in pace i miei soldi!");
+        CorrelatedException exception = new CorrelatedException(new RuntimeException("Lasciate in pace i miei soldi!"));
         OutputStream out = new ByteArrayOutputStream();
         LocalizedKeywords keywords = new LocalizedKeywords(Locale.ITALIAN);
         StoryReporter reporter = new TxtOutput(new PrintStream(out), new Properties(), keywords,
@@ -525,7 +526,7 @@ public class PrintStreamOutputBehaviour {
         String expected = "Dato che ho un saldo di $50\n" 
         		+ "Quando richiedo $20\n"
                 + "Quando chiedo a Liz un prestito di $100 (FALLITO)\n"
-                + "(java.lang.IllegalAccessException: Lasciate in pace i miei soldi!)\n"
+                + "(java.lang.RuntimeException: Lasciate in pace i miei soldi!)\n"
                 + "Allora dovrei avere un saldo di $30 (IN SOSPESO)\n"
                 + "Allora dovrei avere $20 (NON ESEGUITO)\n";
 

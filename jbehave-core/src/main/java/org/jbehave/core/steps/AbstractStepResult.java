@@ -1,12 +1,12 @@
 package org.jbehave.core.steps;
 
-import java.lang.reflect.Method;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.StoryReporter;
+
+import java.lang.reflect.Method;
 
 /**
  * Represents the possible step results:
@@ -23,11 +23,11 @@ public abstract class AbstractStepResult implements StepResult {
 
     public static class Failed extends AbstractStepResult {
 
-        public Failed(String step, Throwable throwable) {
+        public Failed(String step, CorrelatedException throwable) {
             super(step, throwable);
         }
 
-        public Failed(Method method, Throwable throwable) {
+        public Failed(Method method, CorrelatedException throwable) {
             super(asString(method), throwable);
         }
 
@@ -103,13 +103,13 @@ public abstract class AbstractStepResult implements StepResult {
 
     protected final String step;
     private String parametrisedStep;
-    protected final Throwable throwable;
+    protected final CorrelatedException throwable;
 
     public AbstractStepResult(String step) {
         this(step, null);
     }
 
-    public AbstractStepResult(String step, Throwable throwable) {
+    public AbstractStepResult(String step, CorrelatedException throwable) {
         this.step = step;
         this.throwable = throwable;
     }
@@ -123,7 +123,7 @@ public abstract class AbstractStepResult implements StepResult {
         return this;
     }
 
-    public Throwable getFailure() {
+    public CorrelatedException getFailure() {
         return throwable;
     }
 
@@ -152,11 +152,11 @@ public abstract class AbstractStepResult implements StepResult {
         return new NotPerformed(step);
     }
 
-    public static StepResult failed(String step, Throwable e) {
+    public static StepResult failed(String step, CorrelatedException e) {
         return new Failed(step, e);
     }
 
-    public static StepResult failed(Method method, Throwable e) {
+    public static StepResult failed(Method method, CorrelatedException e) {
         return new Failed(method, e);
     }
 
