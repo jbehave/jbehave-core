@@ -6,7 +6,6 @@ import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.parsers.StepMatcher;
 
 import java.lang.annotation.Annotation;
@@ -26,6 +25,7 @@ public class StepCreator {
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
     public static final String PARAMETER_VALUE_NEWLINE = "\u2424";
+    public static final UUIDExceptionWrapper NO_FAILURE = new UUIDExceptionWrapper("no failure");
     private final Object stepsInstance;
     private final ParameterConverters parameterConverters;
     private final StepMatcher stepMatcher;
@@ -64,11 +64,11 @@ public class StepCreator {
     public Step createBeforeOrAfterStep(final Method method) {
         return new Step() {
             public StepResult doNotPerform() {
-                return beforeOrAfter.run(method);
+                return beforeOrAfter.run(method, NO_FAILURE);
             }
 
             public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                return beforeOrAfter.run(method);
+                return beforeOrAfter.run(method, NO_FAILURE);
             }
 
         };
@@ -81,11 +81,11 @@ public class StepCreator {
             return new Step() {
 
                 public StepResult doNotPerform() {
-                    return beforeOrAfter.run(method);
+                    return beforeOrAfter.run(method, NO_FAILURE);
                 }
 
                 public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                    return beforeOrAfter.run(method);
+                    return beforeOrAfter.run(method, NO_FAILURE);
                 }
 
             };
@@ -93,11 +93,11 @@ public class StepCreator {
             return new Step() {
 
                 public StepResult doNotPerform() {
-                    return (failureOccured ? skip.run(method) : beforeOrAfter.run(method));
+                    return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfter.run(method, NO_FAILURE));
                 }
 
                 public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                    return (failureOccured ? skip.run(method) : beforeOrAfter.run(method));
+                    return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfter.run(method, NO_FAILURE));
                 }
 
             };
@@ -105,11 +105,11 @@ public class StepCreator {
             return new Step() {
 
                 public StepResult doNotPerform() {
-                    return (failureOccured ? beforeOrAfter.run(method) : skip.run(method));
+                    return (failureOccured ? beforeOrAfter.run(method, NO_FAILURE) : skip.run(method, NO_FAILURE));
                 }
 
                 public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                    return (failureOccured ? beforeOrAfter.run(method, storyFailureIfItHappened) : skip.run(method));
+                    return (failureOccured ? beforeOrAfter.run(method, storyFailureIfItHappened) : skip.run(method, NO_FAILURE));
                 }
 
             };
@@ -354,17 +354,12 @@ public class StepCreator {
 
     public interface StepRunner {
 
-        StepResult run(Method method);
         StepResult run(Method method, UUIDExceptionWrapper failureIfItHappened);
 
     }
 
     private class BeforeOrAfter implements StepRunner {
 
-        public StepResult run(Method method) {
-            return run(method, null);
-
-        }
         public StepResult run(Method method, UUIDExceptionWrapper failureIfItHappened) {
             if (method == null) {
                 return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(new NullPointerException("method"))));
@@ -386,10 +381,6 @@ public class StepCreator {
 
     private class Skip implements StepRunner {
 
-        public StepResult run(Method method) {
-            return run(method, null);
-
-        }
         public StepResult run(Method method, UUIDExceptionWrapper failureIfItHappened) {
             return skipped();
         }
