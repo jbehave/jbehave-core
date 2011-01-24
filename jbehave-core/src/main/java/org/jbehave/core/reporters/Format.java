@@ -42,6 +42,9 @@ public abstract class Format {
         }
     };
 
+    /**
+     * STATS is not just about output formats, it is needed by the final reports.html summary page.
+     */
     public static final Format STATS = new Format("STATS") {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory, StoryReporterBuilder storyReporterBuilder) {
