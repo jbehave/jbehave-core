@@ -1,12 +1,14 @@
 package org.jbehave.core.reporters;
 
-import java.util.Properties;
-
 public abstract class Format {
 
-    public static final Format CONSOLE = new ConsoleFormat(false);
+    public static final Format CONSOLE = new Format("CONSOLE") {
 
-    public static final Format CONSOLE_WITH_STACK_TRACES = new ConsoleFormat(true);
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory, StoryReporterBuilder storyReporterBuilder) {
+            return new ConsoleOutput(storyReporterBuilder.keywords()).doReportFailureTrace(storyReporterBuilder.reportFailureTrace());
+        }
+    };
 
     public static final Format IDE_CONSOLE = new Format("IDE_CONSOLE") {
         @Override
@@ -23,9 +25,14 @@ public abstract class Format {
         }
     };
 
-    public static final Format HTML = new HtmlFormat(false);
+    public static final Format HTML = new Format("HTML") {
 
-    public static final Format HTML_WITH_STACK_TRACES = new HtmlFormat(true);
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory, StoryReporterBuilder storyReporterBuilder) {
+            factory.useConfiguration(storyReporterBuilder.fileConfiguration("html"));
+            return new HtmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()).doReportFailureTrace(storyReporterBuilder.reportFailureTrace());
+        }
+    };
 
     public static final Format XML = new Format("XML") {
         @Override
@@ -55,32 +62,4 @@ public abstract class Format {
         return name;
     }
 
-    private static class ConsoleFormat extends Format {
-        private final boolean withTraces;
-
-        public ConsoleFormat(boolean withTraces) {
-            super("CONSOLE");
-            this.withTraces = withTraces;
-        }
-
-        @Override
-        public StoryReporter createStoryReporter(FilePrintStreamFactory factory, StoryReporterBuilder storyReporterBuilder) {
-            return new ConsoleOutput(new Properties(), storyReporterBuilder.keywords(), false).doReportFailureTrace(storyReporterBuilder.reportFailureTrace());
-        }
-    }
-
-    private static class HtmlFormat extends Format {
-        private boolean withTraces;
-
-        public HtmlFormat(boolean withTraces) {
-            super("HTML");
-            this.withTraces = withTraces;
-        }
-
-        @Override
-        public StoryReporter createStoryReporter(FilePrintStreamFactory factory, StoryReporterBuilder storyReporterBuilder) {
-            factory.useConfiguration(storyReporterBuilder.fileConfiguration("html"));
-            return new HtmlOutput(factory.createPrintStream(), new Properties(), storyReporterBuilder.keywords(), withTraces).doReportFailureTrace(storyReporterBuilder.reportFailureTrace());
-        }
-    }
 }
