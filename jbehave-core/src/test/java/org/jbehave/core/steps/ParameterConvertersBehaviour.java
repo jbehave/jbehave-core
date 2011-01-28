@@ -2,6 +2,8 @@ package org.jbehave.core.steps;
 
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
+import org.jbehave.core.steps.ParameterConverters.EnumConverter;
+import org.jbehave.core.steps.ParameterConverters.EnumListConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
@@ -299,4 +301,41 @@ public class ParameterConvertersBehaviour {
     static class WrongType {
 
     }
+    
+    @Test
+    public void shouldConvertEnumParameter() throws IntrospectionException {
+        ParameterConverter converter = new EnumConverter();
+        assertThat(converter.accept(TestEnum.class), equalTo(true));
+        assertThat(converter.accept(WrongType.class), is(false));
+        assertThat(converter.accept(mock(Type.class)), is(false));
+        Type type = SomeSteps.methodFor("aMethodWithEnum").getGenericParameterTypes()[0];
+        assertThat((TestEnum) converter.convertValue("ONE", type), equalTo(TestEnum.ONE));
+    }
+    
+    
+    @Test(expected = ParameterConvertionFailed.class)
+    public void ShouldFailToConvertParameterToEnum() throws IntrospectionException {
+        ParameterConverter converter = new EnumConverter();
+        Type type = SomeSteps.methodFor("aMethodWithEnum").getGenericParameterTypes()[0];
+        converter.convertValue("FOUR", type);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldConvertEnumListParameter() throws IntrospectionException {
+        ParameterConverter converter = new EnumListConverter();
+        Type type = SomeSteps.methodFor("aMethodWithEnumList").getGenericParameterTypes()[0];
+        assertThat(converter.accept(type), equalTo(true));
+        List<TestEnum> list = (List<TestEnum>)converter.convertValue("ONE,TWO,THREE", type);
+        assertThat(list.get(0), equalTo(TestEnum.ONE));
+        assertThat(list.get(1), equalTo(TestEnum.TWO));
+        assertThat(list.get(2), equalTo(TestEnum.THREE));
+    }
+    
+    public enum TestEnum {
+        ONE,
+        TWO,
+        THREE;
+    }
+    
 }

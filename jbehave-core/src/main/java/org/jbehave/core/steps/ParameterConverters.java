@@ -366,7 +366,79 @@ public class ParameterConverters {
         }
 
     }
+    
+    /**
+     * Parses value to any {@link Enum}
+     */
+    public static class EnumConverter implements ParameterConverter {
 
+        public boolean accept(Type type) {
+            if (type instanceof Class<?>) {
+                return ((Class<?>) type).isEnum();
+            }
+            return false;
+        }
+
+        public Object convertValue(String value, Type type) {
+            String typeClass = ((Class<?>) type).getName();
+            Class<?> enumClass = (Class<?>) type;
+            Method valueOfMethod = null;
+            try {
+                valueOfMethod = enumClass.getMethod("valueOf", new Class[] { String.class });
+                return valueOfMethod.invoke(enumClass, new Object[] { value });
+            } catch (Exception e) {
+                throw new ParameterConvertionFailed("Conversion error: " + value + " on Enum: " + typeClass, e);
+            }
+        }
+    }
+ 
+    /**
+     * Parses value to list of the same {@link Enum}, using an injectable
+     * value separator (defaults to ",") and trimming each element of the
+     * list.
+     */
+    public static class EnumListConverter implements ParameterConverter {
+        private final EnumConverter enumConverter;
+        private String valueSeparator;
+
+        public EnumListConverter() {
+            this(DEFAULT_COMMA);
+        }
+        
+        public EnumListConverter(String valueSeparator) {
+            this.enumConverter = new EnumConverter();
+            this.valueSeparator = valueSeparator;
+        }
+
+        public boolean accept(Type type) {
+            if (type instanceof ParameterizedType) {
+                Type rawType = rawType(type);
+                Type argumentType = argumentType(type);
+                return List.class.isAssignableFrom((Class<?>) rawType)
+                        && enumConverter.accept(argumentType);
+            }
+            return false;
+        }
+
+        public Object convertValue(String value, Type type) {
+            Type argumentType = argumentType(type);
+            List<String> values = trim(asList(value.split(valueSeparator)));
+            List<Enum<?>> enums = new ArrayList<Enum<?>>();
+            for (String string : values) {
+                enums.add((Enum<?>) enumConverter.convertValue(string, argumentType));
+            }
+            return enums;
+        }
+
+        private Type rawType(Type type) {
+            return ((ParameterizedType) type).getRawType();
+        }
+
+        private Type argumentType(Type type) {
+            return ((ParameterizedType) type).getActualTypeArguments()[0];
+        }
+    }
+    
     /**
      * Converts value to {@link ExamplesTable} using a {@link ExamplesTableFactory}.
      */

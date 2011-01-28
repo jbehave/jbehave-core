@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.steps.ParameterConvertersBehaviour.TestEnum;
 
 public class SomeSteps extends Steps {
 
@@ -96,6 +97,14 @@ public class SomeSteps extends Steps {
 
     public ExamplesTable aFailingMethodReturningExamplesTable(String value){
         throw new RuntimeException(value);
+    }
+    
+    public void aMethodWithEnum(TestEnum value) {
+        this.args = value;
+    }
+
+    public void aMethodWithEnumList(List<TestEnum> value) {
+        this.args = value;
     }
 
     public static Method methodFor(String methodName) throws IntrospectionException {
