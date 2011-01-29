@@ -303,18 +303,18 @@ public class ParameterConvertersBehaviour {
     }
     
     @Test
-    public void shouldConvertEnumParameter() throws IntrospectionException {
+    public void shouldConvertEnum() throws IntrospectionException {
         ParameterConverter converter = new EnumConverter();
-        assertThat(converter.accept(TestEnum.class), equalTo(true));
+        assertThat(converter.accept(SomeEnum.class), equalTo(true));
         assertThat(converter.accept(WrongType.class), is(false));
         assertThat(converter.accept(mock(Type.class)), is(false));
         Type type = SomeSteps.methodFor("aMethodWithEnum").getGenericParameterTypes()[0];
-        assertThat((TestEnum) converter.convertValue("ONE", type), equalTo(TestEnum.ONE));
+        assertThat((SomeEnum) converter.convertValue("ONE", type), equalTo(SomeEnum.ONE));
     }
     
     
     @Test(expected = ParameterConvertionFailed.class)
-    public void ShouldFailToConvertParameterToEnum() throws IntrospectionException {
+    public void shouldFailToConvertEnumForValueNotDefined() throws IntrospectionException {
         ParameterConverter converter = new EnumConverter();
         Type type = SomeSteps.methodFor("aMethodWithEnum").getGenericParameterTypes()[0];
         converter.convertValue("FOUR", type);
@@ -322,20 +322,14 @@ public class ParameterConvertersBehaviour {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void shouldConvertEnumListParameter() throws IntrospectionException {
+    public void shouldConvertEnumList() throws IntrospectionException {
         ParameterConverter converter = new EnumListConverter();
         Type type = SomeSteps.methodFor("aMethodWithEnumList").getGenericParameterTypes()[0];
         assertThat(converter.accept(type), equalTo(true));
-        List<TestEnum> list = (List<TestEnum>)converter.convertValue("ONE,TWO,THREE", type);
-        assertThat(list.get(0), equalTo(TestEnum.ONE));
-        assertThat(list.get(1), equalTo(TestEnum.TWO));
-        assertThat(list.get(2), equalTo(TestEnum.THREE));
-    }
-    
-    public enum TestEnum {
-        ONE,
-        TWO,
-        THREE;
+        List<SomeEnum> list = (List<SomeEnum>)converter.convertValue("ONE,TWO,THREE", type);
+        assertThat(list.get(0), equalTo(SomeEnum.ONE));
+        assertThat(list.get(1), equalTo(SomeEnum.TWO));
+        assertThat(list.get(2), equalTo(SomeEnum.THREE));
     }
     
 }

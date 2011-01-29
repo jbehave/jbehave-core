@@ -360,7 +360,7 @@ public class ParameterConverters {
             try {
                 return dateFormat.parse(value);
             } catch (ParseException e) {
-                throw new ParameterConvertionFailed("Could not convert value " + value + " with date format "
+                throw new ParameterConvertionFailed("Failed to convert value " + value + " with date format "
                         + (dateFormat instanceof SimpleDateFormat ? ((SimpleDateFormat) dateFormat).toPattern() : dateFormat), e);
             }
         }
@@ -387,7 +387,7 @@ public class ParameterConverters {
                 valueOfMethod = enumClass.getMethod("valueOf", new Class[] { String.class });
                 return valueOfMethod.invoke(enumClass, new Object[] { value });
             } catch (Exception e) {
-                throw new ParameterConvertionFailed("Conversion error: " + value + " on Enum: " + typeClass, e);
+                throw new ParameterConvertionFailed("Failed to convert " + value + " for Enum " + typeClass, e);
             }
         }
     }
