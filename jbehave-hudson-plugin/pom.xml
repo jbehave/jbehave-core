@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbehave</groupId>
@@ -17,7 +18,7 @@
     <dependency>
       <groupId>org.jvnet.hudson.plugins</groupId>
       <artifactId>xunit</artifactId>
-      <version>1.9</version>
+      <version>1.13</version>
     </dependency>
     <dependency>
       <groupId>org.jvnet.hudson.main</groupId>
@@ -56,8 +57,7 @@
     <!-- Since new versions need to overwrite old versions, it's better not 
       to have version number in the .hpi file name. -->
     <finalName>${project.artifactId}</finalName>
-    <!-- Maven recognizes <packaging>hpi</packaging> defined in maven-hpi-plugin. 
-      <extensions>true</extensions> by making Maven read the plugin's Plexus. -->
+    <!-- Maven recognizes packaging=hpi via the extension mechanism -->
     <defaultGoal>package</defaultGoal>
     <plugins>
       <plugin>
