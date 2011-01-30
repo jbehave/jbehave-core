@@ -9,16 +9,18 @@
   <artifactId>jbehave-hudson-plugin</artifactId>
   <packaging>hpi</packaging>
   <name>JBehave Hudson Plugin</name>
-
+  <url>http://jbehave.org/reference/stable/hudson-plugin.html</url>
+  
   <properties>
     <hudson.version>1.355</hudson.version>
+    <xunit.plugin.version>1.9</xunit.plugin.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.jvnet.hudson.plugins</groupId>
       <artifactId>xunit</artifactId>
-      <version>1.13</version>
+      <version>${xunit.plugin.version}</version>
     </dependency>
     <dependency>
       <groupId>org.jvnet.hudson.main</groupId>
