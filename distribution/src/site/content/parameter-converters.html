@@ -24,16 +24,16 @@ this point clear: the textual step</p>
         // ...
     }
 </pre>
-<p>where the two arguments which are identified as parameters in matching
-the textual step to the annotation pattern are: "STK1" and "1.0". These
-are converted respectively to a <b>String</b> and a <b>double</b>.</p>
+<p>where the two arguments which are identified as parameters in
+matching the textual step to the annotation pattern are: "STK1" and
+"1.0". These are converted respectively to a <b>String</b> and a <b>double</b>.</p>
 <p>If we had comma-separated values, e.g</p>
 <pre class="brush: bdd">
     Given a stock of symbols STK1,STK2 and thresholds of 10.0,20.0
 </pre>
 <p>these would handled automatically as well, provided the type of
 the parameter was a <a
-	href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/List.html">List</a></p>
+    href="http://java.sun.com/j2se/1.5.0/docs/api/java/util/List.html">List</a></p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     @Given("a stock of symbols $symbols and thresholds $thresholds")
@@ -59,22 +59,26 @@ would typically look like:</p>
 
 <p>JBehave provides out-of-the-box support for several types.</p>
 <p>At the core of the parameter conversion mechanism lies the <a
-	href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a>
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a>
 facade. The built-in support for Java types is provided by
 implementations of this interface. Specifically:</p>
 <ul>
-	<li><a
-		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.NumberConverter.html">NumberConverter</a></li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.NumberListConverter.html">NumberListConverter</a></li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.StringListConverter.html">StringListConverter</a></li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.DateConverter.html">DateConverter</a></li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ExamplesTableConverter.html">ExamplesTableConverter</a></li>
-	<li><a
-		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.MethodReturningConverter.html">MethodReturningConverter</a></li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/steps/ParameterConverters.NumberConverter.html">NumberConverter</a></li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/steps/ParameterConverters.NumberListConverter.html">NumberListConverter</a></li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/steps/ParameterConverters.StringListConverter.html">StringListConverter</a></li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/steps/ParameterConverters.DateConverter.html">DateConverter</a></li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/steps/ParameterConverters.EnumConverter.html">EnumConverter</a></li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/steps/ParameterConverters.EnumListConverter.html">EnumListConverter</a></li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ExamplesTableConverter.html">ExamplesTableConverter</a></li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/steps/ParameterConverters.MethodReturningConverter.html">MethodReturningConverter</a></li>
 </ul>
 
 <h3>Customising parameter converters</h3>
@@ -108,7 +112,7 @@ instances will take precedence over the default ones:</p>
 
 <p>Users can define their own custom parameter converters by
 implementing the <a
-	href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverter</a>
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverter</a>
 interface.</p>
 <p>Let's consider the use case where we have persistable objects
 accessible via persister interface from a String identifier. Then a
@@ -151,7 +155,7 @@ way of the step implementation. E.g. given the converter:</p>
 option as the conversion is much more dynamical in nature. In this case,
 one can annotated Steps method to act as parameter converters when
 annotated by <a
-	href="javadoc/core/org/jbehave/core/annotations/AsParameterConverter.html">@AsParameterConverter</a>:
+    href="javadoc/core/org/jbehave/core/annotations/AsParameterConverter.html">@AsParameterConverter</a>:
 </p>
 
 <pre class="brush: java">
@@ -165,9 +169,9 @@ annotated by <a
     }
 </pre>
 <p>The parameter converter configuration is done in the <a
-	href="javadoc/core/org/jbehave/core/steps/AbstractStepsFactory.html">AbstractStepsFactory</a>
+    href="javadoc/core/org/jbehave/core/steps/AbstractStepsFactory.html">AbstractStepsFactory</a>
 so you can use any implementation of <a
-	href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
+    href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
 that extends the abstract implementation, e.g.:</p>
 <pre class="brush: java">
     public MyStory() {
