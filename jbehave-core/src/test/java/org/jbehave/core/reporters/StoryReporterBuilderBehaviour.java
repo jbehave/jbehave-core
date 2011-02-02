@@ -1,7 +1,15 @@
 package org.jbehave.core.reporters;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.URL;
+import java.util.Collection;
+import java.util.Locale;
+import java.util.Properties;
+
 import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
@@ -13,22 +21,16 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.net.URL;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Properties;
-
 import static org.hamcrest.CoreMatchers.equalTo;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.IDE_CONSOLE;
@@ -169,15 +171,21 @@ public class StoryReporterBuilderBehaviour {
         // Given
         String storyPath = storyPath(MyStory.class);
         StoryReporterBuilder builder = new StoryReporterBuilder();
+        Locale locale = Locale.getDefault();
 
         // When
-        StoryReporter reporter = builder.withDefaultFormats().withFormats(CONSOLE, IDE_CONSOLE, HTML, STATS, TXT, XML)
+        StoryReporter reporter = builder.withDefaultFormats().withFormats(CONSOLE, IDE_CONSOLE, HTML, STATS, TXT, XML).withKeywords(new LocalizedKeywords(locale))
                 .build(storyPath);
 
         // Then
         assertThat(builder.formats(), hasItems(CONSOLE, IDE_CONSOLE, HTML, STATS, TXT, XML));
-        assertThat(builder.formatNames(true), hasItems("console", "ide_console", "html", "stats", "txt", "xml"));
-        assertThat(builder.formatNames(false), hasItems("CONSOLE", "IDE_CONSOLE", "HTML", "STATS", "TXT", "XML"));
+        String[] upperCaseNames = new String[]{"CONSOLE", "IDE_CONSOLE", "HTML", "STATS", "TXT", "XML"};
+        assertThat(builder.formatNames(false), hasItems(upperCaseNames));
+        String[] lowerCaseNames = new String[6];
+        for ( int i = 0; i < upperCaseNames.length; i++ ) {
+            lowerCaseNames[i] = upperCaseNames[i].toLowerCase(locale);
+        }
+        assertThat(builder.formatNames(true), hasItems(lowerCaseNames));
         assertThat(reporter, instanceOf(DelegatingStoryReporter.class));
         Collection<StoryReporter> delegates = ((DelegatingStoryReporter) reporter).getDelegates();
         assertThat(delegates.size(), equalTo(6));
