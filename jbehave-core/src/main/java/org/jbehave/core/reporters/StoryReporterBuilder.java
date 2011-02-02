@@ -1,12 +1,11 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -16,6 +15,8 @@ import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
+
+import static java.util.Arrays.asList;
 
 /**
  * <p>
@@ -155,11 +156,15 @@ public class StoryReporterBuilder {
     }
 
     public List<String> formatNames(boolean toLowerCase) {
+        Locale locale = Locale.getDefault();
+        if ( keywords instanceof LocalizedKeywords ){
+            locale = ((LocalizedKeywords)keywords).getLocale();
+        }        
         List<String> names = new ArrayList<String>();
         for (org.jbehave.core.reporters.Format format : formats) {
             String name = format.name();
             if (toLowerCase) {
-                name = name.toLowerCase();
+                name = name.toLowerCase(locale);
             }
             names.add(name);
         }
