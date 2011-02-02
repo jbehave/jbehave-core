@@ -178,8 +178,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void afterStory(boolean givenStory) {
         print(format("afterStory", "\n"));
-        output.flush();
-        output.close();
     }
 
     public void givenStories(GivenStories givenStories) {
