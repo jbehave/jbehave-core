@@ -17,6 +17,8 @@ public interface StoryReporter {
 
     void beforeStory(Story story, boolean givenStory);
 
+    void narrative(Narrative narrative);
+
     void afterStory(boolean givenStory);
 
     void scenarioNotAllowed(Scenario scenario, String filter);

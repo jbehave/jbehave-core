@@ -35,6 +35,9 @@ public class NullStoryReporter implements StoryReporter {
     public void beforeStory(Story story, boolean givenStory) {
     }
 
+    public void narrative(final Narrative narrative) {
+    }
+
     public void storyNotAllowed(Story story, String filter) {
     }
 

@@ -150,11 +150,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
 	}
 
     public void storyNotAllowed(Story story, String filter) {
-        print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
-        if (!story.getMeta().isEmpty()) {
-            Meta meta = story.getMeta();
-            print(meta);
-        }
         print(format("filter", "{0}\n", filter));
     }
 
@@ -164,8 +159,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
             Meta meta = story.getMeta();
             print(meta);
         }
-        if (!story.getNarrative().isEmpty()) {
-            Narrative narrative = story.getNarrative();
+    }
+
+    public void narrative(Narrative narrative) {
+        if (!narrative.isEmpty()) {
             print(format("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n", keywords.narrative(), keywords.inOrderTo(),
                     narrative.inOrderTo(), keywords.asA(), narrative.asA(), keywords.iWantTo(), narrative.iWantTo()));
         }
@@ -198,8 +195,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void scenarioNotAllowed(Scenario scenario, String filter) {
-        print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), scenario.getTitle()));
-        scenarioMeta(scenario.getMeta());
         print(format("filter", "{0}\n", filter));
     }
 

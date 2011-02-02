@@ -78,6 +78,10 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         }
     }
 
+    public void narrative(final Narrative narrative) {
+    }
+
+
     public void storyNotAllowed(Story story, String filter) {
         resetData();
         count("notAllowed");

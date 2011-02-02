@@ -68,6 +68,12 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
+    public void narrative(final Narrative narrative) {
+        for (StoryReporter reporter : delegates) {
+            reporter.narrative(narrative);
+        }
+    }
+
     public void beforeExamples(List<String> steps, ExamplesTable table) {
         for (StoryReporter reporter : delegates) {
             reporter.beforeExamples(steps, table);

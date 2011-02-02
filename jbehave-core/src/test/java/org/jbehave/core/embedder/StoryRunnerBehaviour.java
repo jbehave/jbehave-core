@@ -530,8 +530,9 @@ public class StoryRunnerBehaviour {
         runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
 
         // Then
-        verify(reporter, never()).beforeStory(story, givenStory);
+        verify(reporter).beforeStory(story, givenStory);
         verify(reporter).storyNotAllowed(story, filterAsString);
+        verify(reporter).afterStory(givenStory);
     }
     
     @Test
@@ -560,8 +561,9 @@ public class StoryRunnerBehaviour {
 
         // Then
         verify(reporter).beforeStory(story, givenStory);
-        verify(reporter, never()).beforeScenario("");
+        verify(reporter).beforeScenario("");
         verify(reporter).scenarioNotAllowed(story.getScenarios().get(0), filterAsString);
+        verify(reporter).afterScenario();
     }
     
     private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean givenStory, StepCollector collector, CandidateSteps mySteps) {

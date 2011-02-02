@@ -2,12 +2,7 @@ package org.jbehave.core.reporters;
 
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.failures.StepFailed;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
+import org.jbehave.core.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -55,7 +50,11 @@ public class StepFailureDecorator implements StoryReporter {
         delegate.beforeStory(story, givenStory);
     }
 
-	public void failed(String step, Throwable cause) {
+    public void narrative(Narrative narrative) {
+        delegate.narrative(narrative);
+    }
+
+    public void failed(String step, Throwable cause) {
 		failure = (UUIDExceptionWrapper) cause;
 		delegate.failed(step, failure);
 	}

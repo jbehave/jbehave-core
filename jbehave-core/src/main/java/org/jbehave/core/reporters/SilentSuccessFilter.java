@@ -43,6 +43,16 @@ public class SilentSuccessFilter implements StoryReporter {
         };
     }
 
+    public void narrative(final Narrative narrative) {
+        beforeStoryState = new State() {
+            public void report() {
+                delegate.narrative(narrative);
+            }
+        };
+        beforeStoryState.report();
+    }
+
+
     public void storyNotAllowed(final Story story, final String filter) {
         beforeStoryState = new State() {
             public void report() {

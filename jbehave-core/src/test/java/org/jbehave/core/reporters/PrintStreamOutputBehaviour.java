@@ -2,33 +2,19 @@ package org.jbehave.core.reporters;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
-import org.jbehave.core.model.Description;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.*;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
@@ -112,7 +98,7 @@ public class PrintStreamOutputBehaviour {
                 +"Scenario: A scenario\n"
                 +"Meta:\n"+"@author Mauro\n"
                 +"@theme testing\n\n"
-                +"-theme testing\n";
+                +"-theme testing\n\n\n";
         assertThatOutputIs(out, expected);
     }
 
@@ -211,7 +197,9 @@ public class PrintStreamOutputBehaviour {
             +"<div class=\"property\">@author Mauro</div>\n"
             +"<div class=\"property\">@theme testing</div>\n"
             +"</div>\n"
-            +"<div class=\"filter\">-theme testing</div>\n";
+            +"<div class=\"filter\">-theme testing</div>\n"
+            +"</div>\n"
+            +"</div>\n";
         assertThatOutputIs(out, expected);
     }
     
@@ -365,7 +353,9 @@ public class PrintStreamOutputBehaviour {
             +"<scenario keyword=\"Scenario:\" title=\"A scenario\">\n"
             +"<meta>\n"+"<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
             +"<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"
-            +"</meta>\n"+"<filter>-theme testing</filter>\n";
+            +"</meta>\n"+"<filter>-theme testing</filter>\n"
+            +"</scenario>\n"
+            +"</story>\n";
         assertThatOutputIs(out, expected);
     }
 
@@ -379,6 +369,7 @@ public class PrintStreamOutputBehaviour {
         boolean givenStory = false;
         reporter.dryRun();
         reporter.beforeStory(story, givenStory);
+        reporter.narrative(story.getNarrative());
         reporter.beforeScenario("I ask for a loan");
         reporter.givenStories(asList("/given/story1","/given/story2"));
         reporter.successful("Given I have a balance of $50");
@@ -410,13 +401,17 @@ public class PrintStreamOutputBehaviour {
         Story story = new Story("/path/to/story",
                 new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"), 
                 Arrays.asList(new Scenario("A scenario", new Meta(meta), GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>())));
+        reporter.beforeStory(story, false);
         reporter.storyNotAllowed(story, "-theme testing");
+        reporter.beforeScenario(story.getScenarios().get(0).getTitle());
+        reporter.scenarioMeta(story.getScenarios().get(0).getMeta());
         reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
+        reporter.afterScenario();
+        reporter.afterStory(false);
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
-        Assert.assertEquals(dos2unix(out.toString().replaceAll("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}", "**UUID**")), expected);
-        //assertThat(dos2unix(out.toString()), equalTo(expected));
+        Assert.assertEquals(expected, dos2unix(out.toString().replaceAll("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}", "**UUID**")));
     }
 
     private String dos2unix(String string) {

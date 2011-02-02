@@ -90,11 +90,6 @@ public class StoryRunner {
         reporter = reporterFor(context, story);
         pendingStepStrategy = context.configuration().pendingStepStrategy();
         failureStrategy = context.configuration().failureStrategy();
-        
-        if (context.metaNotAllowed(story.getMeta())) {
-            reporter.storyNotAllowed(story, context.metaFilterAsString());
-            return;
-        }
 
         resetFailureState(context.givenStory());
 
@@ -104,47 +99,68 @@ public class StoryRunner {
 
         // run before story steps, if any
         reporter.beforeStory(story, context.givenStory());
-        runBeforeOrAfterStorySteps(context, story, StepCollector.Stage.BEFORE);
-        
-        // determine if before and after scenario steps should be run
-        boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
-        
-        for (Scenario scenario : story.getScenarios()) {
-            // scenario also inherits meta from story
-            if (context.metaNotAllowed(scenario.getMeta().inheritFrom(story.getMeta()))) {
-                reporter.scenarioNotAllowed(scenario, context.metaFilterAsString());
-                continue;
-            }
-            if (failureOccurred() && context.configuration().storyControls().skipScenariosAfterFailure()) {
-                continue;
-            }
-            reporter.beforeScenario(scenario.getTitle());
-            reporter.scenarioMeta(scenario.getMeta());
 
-            // run before scenario steps, if allowed
-            if (runBeforeAndAfterScenarioSteps) {
-                runBeforeOrAfterScenarioSteps(context, scenario, Stage.BEFORE);
-            }
+        boolean storyAllowed = true;
 
-            // run given stories, if any
-            runGivenStories(scenario, context);
-            if (isParameterisedByExamples(scenario)) {
-                // run parametrised scenarios by examples
-                runParametrisedScenariosByExamples(context, scenario);
-            } else { // run as plain old scenario
-                runScenarioSteps(context, scenario, storyParameters);
-            }
-
-            // run after scenario steps, if allowed
-            if (runBeforeAndAfterScenarioSteps) {
-                runBeforeOrAfterScenarioSteps(context, scenario, Stage.AFTER);
-            }
-
-            reporter.afterScenario();
+        if (context.metaNotAllowed(story.getMeta())) {
+            reporter.storyNotAllowed(story, context.metaFilterAsString());
+            storyAllowed = false;
         }
 
-        // run after story steps, if any
-        runBeforeOrAfterStorySteps(context, story, StepCollector.Stage.AFTER);
+        if (storyAllowed) {
+
+            reporter.narrative(story.getNarrative());
+
+            runBeforeOrAfterStorySteps(context, story, StepCollector.Stage.BEFORE);
+
+            // determine if before and after scenario steps should be run
+            boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
+
+            for (Scenario scenario : story.getScenarios()) {
+                // scenario also inherits meta from story
+                boolean scenarioAllowed = true;
+                if (failureOccurred() && context.configuration().storyControls().skipScenariosAfterFailure()) {
+                    continue;
+                }
+                reporter.beforeScenario(scenario.getTitle());
+                reporter.scenarioMeta(scenario.getMeta());
+
+                if (context.metaNotAllowed(scenario.getMeta().inheritFrom(story.getMeta()))) {
+                    reporter.scenarioNotAllowed(scenario, context.metaFilterAsString());
+                    scenarioAllowed = false;
+                }
+
+                if (scenarioAllowed) {
+
+                    // run before scenario steps, if allowed
+                    if (runBeforeAndAfterScenarioSteps) {
+                        runBeforeOrAfterScenarioSteps(context, scenario, Stage.BEFORE);
+                    }
+
+                    // run given stories, if any
+                    runGivenStories(scenario, context);
+                    if (isParameterisedByExamples(scenario)) {
+                        // run parametrised scenarios by examples
+                        runParametrisedScenariosByExamples(context, scenario);
+                    } else { // run as plain old scenario
+                        runScenarioSteps(context, scenario, storyParameters);
+                    }
+
+                    // run after scenario steps, if allowed
+                    if (runBeforeAndAfterScenarioSteps) {
+                        runBeforeOrAfterScenarioSteps(context, scenario, Stage.AFTER);
+                    }
+
+                }
+
+                reporter.afterScenario();
+            }
+
+            // run after story steps, if any
+            runBeforeOrAfterStorySteps(context, story, StepCollector.Stage.AFTER);
+
+        }
+
         reporter.afterStory(context.givenStory());
 
         // handle any failure according to strategy
