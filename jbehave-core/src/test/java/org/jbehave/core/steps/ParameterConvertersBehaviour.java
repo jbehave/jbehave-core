@@ -1,6 +1,8 @@
 package org.jbehave.core.steps;
 
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.steps.ParameterConverters.BooleanConverter;
+import org.jbehave.core.steps.ParameterConverters.BooleanListConverter;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.EnumConverter;
 import org.jbehave.core.steps.ParameterConverters.EnumListConverter;
@@ -331,5 +333,26 @@ public class ParameterConvertersBehaviour {
         assertThat(list.get(1), equalTo(SomeEnum.TWO));
         assertThat(list.get(2), equalTo(SomeEnum.THREE));
     }
-    
+
+    @Test
+    public void shouldConvertBoolean() throws IntrospectionException {
+        ParameterConverter converter = new BooleanConverter();
+        assertThat(converter.accept(Boolean.class), equalTo(true));
+        assertThat(converter.accept(WrongType.class), is(false));
+        assertThat(converter.accept(mock(Type.class)), is(false));
+        Type type = SomeSteps.methodFor("aMethodWithBoolean").getGenericParameterTypes()[0];
+        assertThat((Boolean) converter.convertValue("true", type), is(true));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldConvertBooleanList() throws IntrospectionException {
+        ParameterConverter converter = new BooleanListConverter();
+        Type type = SomeSteps.methodFor("aMethodWithBooleanList").getGenericParameterTypes()[0];
+        assertThat(converter.accept(type), equalTo(true));
+        List<Boolean> list = (List<Boolean>) converter.convertValue("true,false,true", type);
+        assertThat(list.get(0), is(true));
+        assertThat(list.get(1), is(false));
+        assertThat(list.get(2), is(true));
+    }
 }

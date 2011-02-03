@@ -106,6 +106,14 @@ public class SomeSteps extends Steps {
         this.args = value;
     }
 
+    public void aMethodWithBoolean(Boolean value) {
+        this.args = value;
+    }
+
+    public void aMethodWithBooleanList(List<Boolean> value) {
+        this.args = value;
+    }
+
     public static Method methodFor(String methodName) throws IntrospectionException {
         BeanInfo beanInfo = Introspector.getBeanInfo(SomeSteps.class);
         for (MethodDescriptor md : beanInfo.getMethodDescriptors()) {

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 
@@ -39,6 +40,8 @@ public class ParameterConverters {
 
     static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
     static final String DEFAULT_COMMA = ",";
+    static final String DEFAULT_TRUE_VALUE = "true";
+    static final String DEFAULT_FALSE_VALUE = "false";
 	
     private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
     private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
@@ -366,7 +369,78 @@ public class ParameterConverters {
         }
 
     }
-    
+
+    public static class BooleanConverter implements ParameterConverter {
+        private String trueValue;
+        private String falseValue;
+
+        public BooleanConverter() {
+            this(DEFAULT_TRUE_VALUE, DEFAULT_FALSE_VALUE);
+        }
+
+        public BooleanConverter(String trueValue, String falseValue) {
+            this.trueValue = trueValue;
+            this.falseValue = falseValue;
+        }
+
+        public boolean accept(Type type) {
+            if (type instanceof Class<?>) {
+                return Boolean.class.isAssignableFrom((Class<?>) type);
+            }
+            return false;
+        }
+
+        public Object convertValue(String value, Type type) {
+            return BooleanUtils.toBoolean(value, trueValue, falseValue);
+        }
+    }
+
+    public static class BooleanListConverter implements ParameterConverter {
+        private final BooleanConverter booleanConverter;
+        private String valueSeparator;
+
+        public BooleanListConverter() {
+            this(DEFAULT_COMMA, DEFAULT_TRUE_VALUE, DEFAULT_FALSE_VALUE);
+        }
+
+        public BooleanListConverter(String valueSeparator) {
+            this(valueSeparator, DEFAULT_TRUE_VALUE, DEFAULT_FALSE_VALUE);
+        }
+
+        public BooleanListConverter(String valueSeparator, String trueValue, String falseValue) {
+            this.valueSeparator = valueSeparator;
+            booleanConverter = new BooleanConverter(trueValue, falseValue);
+        }
+
+        public boolean accept(Type type) {
+            if (type instanceof ParameterizedType) {
+                Type rawType = rawType(type);
+                Type argumentType = argumentType(type);
+                return List.class.isAssignableFrom((Class<?>) rawType)
+                        && Boolean.class.isAssignableFrom((Class<?>) argumentType);
+            }
+            return false;
+        }
+
+        public Object convertValue(String value, Type type) {
+            List<String> values = trim(asList(value.split(valueSeparator)));
+            List<Boolean> booleans = new ArrayList<Boolean>();
+
+            for (String booleanValue : values) {
+                booleans.add((Boolean) booleanConverter.convertValue(booleanValue, type));
+            }
+            return booleans;
+        }
+
+        private Type rawType(Type type) {
+            return ((ParameterizedType) type).getRawType();
+        }
+
+        private Type argumentType(Type type) {
+            return ((ParameterizedType) type).getActualTypeArguments()[0];
+        }
+    }
+
     /**
      * Parses value to any {@link Enum}
      */
