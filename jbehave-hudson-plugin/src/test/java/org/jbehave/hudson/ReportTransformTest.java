@@ -6,6 +6,7 @@ import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.transform.Result;
@@ -25,8 +26,8 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
+import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.reporters.StoryReporterBuilder.Format;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
@@ -61,6 +62,7 @@ public class ReportTransformTest {
 								new StoryReporterBuilder().withDefaultFormats()
 										.withFormats(Format.XML))
 						.useFailureStrategy(new SilentlyAbsorbingFailure())
+						
 						.useStepCollector(new MarkUnmatchedStepsAsPending(new StepFinder(new ByLevenshteinDistance())));
 
 				return configuration;
@@ -73,6 +75,8 @@ public class ReportTransformTest {
 						.createCandidateSteps();
 			}
 		};
+		
+		embedder.useMetaFilters(Arrays.asList("-skip true"));
 
 		ArrayList<String> storyPaths = new ArrayList<String>();
 		storyPaths.add("all_successful.story");
@@ -81,6 +85,8 @@ public class ReportTransformTest {
 		storyPaths.add("given_story.story");
 		storyPaths.add("given_failing_story.story");
 		storyPaths.add("failure_followed_by_given_story.story");
+		storyPaths.add("filter_scenario.story");
+		storyPaths.add("filter_story.story");
 
 		try {
 			embedder.runStoriesAsPaths(storyPaths);
@@ -95,7 +101,7 @@ public class ReportTransformTest {
 		Document document = tranformReport(REPORT_PATH + "all_successful.xml");
 
 		assertEquals("0", eng.evaluate(TESTSUITE_FAILURE_ATTRIBUTTE, document));
-		assertEquals("1", eng.evaluate(TESTSUITE_TOTAL_TESTS_ATTRIBUTTE, document));
+		assertEquals("3", eng.evaluate(TESTSUITE_TOTAL_TESTS_ATTRIBUTTE, document));
 		assertEquals("0", eng.evaluate(TESTSUITE_SKIPPED_ATTRIBUTTE, document));
 	}
 	
@@ -158,6 +164,28 @@ public class ReportTransformTest {
 		assertEquals("1", eng.evaluate(TESTSUITE_TESTCASE_FAILURE, document));
 	}
 
+	@Test
+	public void transformFilterScenarioReport() throws FileNotFoundException, Throwable {
+		Document document = tranformReport(REPORT_PATH + "filter_scenario.xml");
+
+		assertEquals("1", eng.evaluate(TESTSUITE_FAILURE_ATTRIBUTTE, document));
+		assertEquals("2", eng.evaluate(TESTSUITE_TOTAL_TESTS_ATTRIBUTTE, document));
+		assertEquals("0", eng.evaluate(TESTSUITE_SKIPPED_ATTRIBUTTE, document));
+		assertEquals("2", eng.evaluate(TESTSUITE_TESTCASE_COUNT, document));
+		assertEquals("1", eng.evaluate(TESTSUITE_TESTCASE_FAILURE, document));
+	}
+	
+	@Test
+	public void transformFilterStoryReport() throws FileNotFoundException, Throwable {
+		Document document = tranformReport(REPORT_PATH + "filter_story.xml");
+
+		assertEquals("0", eng.evaluate(TESTSUITE_FAILURE_ATTRIBUTTE, document));
+		assertEquals("0", eng.evaluate(TESTSUITE_TOTAL_TESTS_ATTRIBUTTE, document));
+		assertEquals("0", eng.evaluate(TESTSUITE_SKIPPED_ATTRIBUTTE, document));
+		assertEquals("0", eng.evaluate(TESTSUITE_TESTCASE_COUNT, document));
+		assertEquals("0", eng.evaluate(TESTSUITE_TESTCASE_FAILURE, document));
+	}
+	
 	private Document tranformReport(String reportFile)
 			throws TransformerFactoryConfigurationError,
 			TransformerConfigurationException, TransformerException {

@@ -1,3 +1,7 @@
+Narrative: A test case
+Meta:
+@author Alan 
+
 Scenario: A scenario with a example table with a single failure
 Given a test with <param1>
 When a test is executed with <param2>

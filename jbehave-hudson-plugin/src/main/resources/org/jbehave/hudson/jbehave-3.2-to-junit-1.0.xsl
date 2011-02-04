@@ -48,23 +48,45 @@
 			</xsl:when>			
 			<xsl:otherwise>
 				<!-- calculate failures and pending (ignores) -->
-				<xsl:variable name="numberOfFails" select="$failures + count($element[boolean(step/@outcome='failed')])" />
-				<xsl:variable name="numberSkipped" select="$ignores + count($element[boolean(step/@outcome[.='pending']) and not(step/@outcome='failed')])" />
+				<xsl:variable name="numberOfFails">
+                  <xsl:choose>
+                    <xsl:when test="boolean($element[1]//step/@outcome='failed')">
+                      <xsl:value-of select="$failures + 1" />
+                    </xsl:when>
+                    <xsl:otherwise><xsl:value-of select="$failures" /></xsl:otherwise>
+                  </xsl:choose>
+                </xsl:variable>
+				<xsl:variable name="numberSkipped" >
+                  <xsl:choose>
+                    <xsl:when test="boolean($element[1]//step/@outcome[.='pending']) and not($element[1]//step[@outcome='failed'])">
+                      <xsl:value-of select="$ignores + 1"/>
+                    </xsl:when>
+                    <xsl:otherwise><xsl:value-of select="$ignores"/></xsl:otherwise>
+                  </xsl:choose>
+                </xsl:variable>
+                <xsl:variable name="totalExecuted">
+                  <xsl:choose>
+                    <xsl:when test="boolean($element[1][boolean(step) and not(step/ancestor::story/preceding-sibling::givenStories)])">
+                      <xsl:value-of select="$totalTests + 1" />
+                    </xsl:when>
+                    <xsl:otherwise><xsl:value-of select="$totalTests" /></xsl:otherwise>
+                  </xsl:choose>
+                </xsl:variable>
 				
 				<xsl:choose>
 					<xsl:when test="boolean(count($element/following-sibling::scenario) > 0)">				
 						<xsl:call-template name="scenario">
 							<xsl:with-param name="failures" select="$numberOfFails"/>
 							<xsl:with-param name="ignores" select="$numberSkipped"/>
-							<xsl:with-param name="totalTests" select="$totalTests + 1"/>
-							<xsl:with-param name="element" select="$element/following-sibling::scenario[0]"/>
+							<xsl:with-param name="totalTests" select="$totalExecuted"/>
+							<xsl:with-param name="element" select="$element/following-sibling::scenario"/>
 						</xsl:call-template>				 
 					</xsl:when>
 					<xsl:otherwise>
 						<xsl:call-template name="reportBody">
 							<xsl:with-param name="numberOfFails" select="$numberOfFails"/>
 							<xsl:with-param name="numberSkipped" select="$numberSkipped"/>
-							<xsl:with-param name="testCount" select="$totalTests + 1"/>
+							<xsl:with-param name="testCount" select="$totalExecuted"/>
 							<xsl:with-param name="element" select="$element"/>
 						</xsl:call-template>
 					</xsl:otherwise>
@@ -93,7 +115,7 @@
 					<xsl:with-param name="failures" select="$failures"/>
 					<xsl:with-param name="ignores" select="$ignores"/>
 					<xsl:with-param name="totalTests" select="$totalTests"/>
-					<xsl:with-param name="element" select="$element[1]/ancestor::scenario/following-sibling::scenario[0]"/>
+					<xsl:with-param name="element" select="$element[1]/ancestor::scenario/following-sibling::scenario[1]"/>
 				</xsl:call-template>				 
 			</xsl:when>
 			<xsl:otherwise>
@@ -201,7 +223,7 @@
 						
 					</xsl:for-each>
 				</xsl:when>
-				<xsl:otherwise>
+				<xsl:when test="boolean(child::step)">
 					<testcase name="{$scenarioName}">
 					<xsl:choose>
 						<xsl:when test="boolean(descendant::step[@outcome='failed'])">
@@ -212,7 +234,7 @@
 						</xsl:when>
 					</xsl:choose>
 					</testcase>			
-				</xsl:otherwise>
+				</xsl:when>
 			</xsl:choose>			
 		</xsl:for-each>
 		</testsuite>
