@@ -360,7 +360,7 @@ public class PrintStreamOutputBehaviour {
     }
 
 
-    private void narrateAnInterestingStory(StoryReporter reporter) {
+    public static void narrateAnInterestingStory(StoryReporter reporter) {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
