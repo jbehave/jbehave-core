@@ -1,10 +1,11 @@
 package org.jbehave.core.io;
 
-import static java.util.regex.Pattern.compile;
-
+import java.util.Locale;
 import java.util.regex.Matcher;
 
 import org.jbehave.core.Embeddable;
+
+import static java.util.regex.Pattern.compile;
 
 /**
  * <p>
@@ -36,6 +37,7 @@ public class UnderscoredCamelCaseResolver extends AbstractStoryPathResolver {
 	public static final String NUMBERS_AS_UPPER_CASE_LETTERS_PATTERN = "([A-Z0-9].*?)([A-Z0-9]|\\z)";
 	private static final String UNDERSCORE = "_";
 	private final String resolutionPattern;
+    private final Locale locale;
     private String wordToRemove = "";
 
     public UnderscoredCamelCaseResolver() {
@@ -46,11 +48,17 @@ public class UnderscoredCamelCaseResolver extends AbstractStoryPathResolver {
 		this(extension, NUMBERS_AS_LOWER_CASE_LETTERS_PATTERN);
 	}
 
-	public UnderscoredCamelCaseResolver(String extension,
-			String resolutionPattern) {
-		super(extension);
-		this.resolutionPattern = resolutionPattern;
-	}
+    public UnderscoredCamelCaseResolver(String extension,
+            String resolutionPattern) {
+        this(extension, resolutionPattern, Locale.getDefault());
+    }
+
+    public UnderscoredCamelCaseResolver(String extension,
+            String resolutionPattern, Locale locale) {
+        super(extension);
+        this.resolutionPattern = resolutionPattern;
+        this.locale = locale;
+    }
 
 	@Override
 	protected String resolveName(
@@ -62,7 +70,7 @@ public class UnderscoredCamelCaseResolver extends AbstractStoryPathResolver {
 		int startAt = 0;
 		StringBuilder builder = new StringBuilder();
 		while (matcher.find(startAt)) {
-			builder.append(matcher.group(1).toLowerCase());
+			builder.append(matcher.group(1).toLowerCase(locale));
 			builder.append(UNDERSCORE);
 			startAt = matcher.start(2);
 		}
