@@ -3,7 +3,7 @@ package org.jbehave.core.reporters;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,10 +46,10 @@ public class CrossReference extends Format {
     }
 
     private void outputFile(String name, XStream xstream, StoryReporterBuilder storyReporterBuilder, XrefRoot root){
-        File outputDir = storyReporterBuilder.outputDirectory();
+        File outputDir = new File(storyReporterBuilder.outputDirectory(), "view");
         outputDir.mkdirs();
         try {
-            OutputStreamWriter writer = makeWriter(new File(outputDir, name));
+            Writer writer = makeWriter(new File(outputDir, name));
             writer.write(configure(xstream).toXML(root));
             writer.flush();
             writer.close();
@@ -68,7 +68,7 @@ public class CrossReference extends Format {
 
     }
 
-    protected OutputStreamWriter makeWriter(File file) throws IOException {
+    protected Writer makeWriter(File file) throws IOException {
         return new FileWriter(file);
     }
 
