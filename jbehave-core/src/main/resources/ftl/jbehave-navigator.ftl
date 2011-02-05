@@ -31,7 +31,7 @@
     <script type="text/javascript">
       MyController.$inject=["$resource"];
        function MyController($resource) {
-        this.Story = $resource("stories.json");
+        this.Story = $resource("xref.json");
         this.data = this.Story.get({});
        }
        MyController.prototype = {
@@ -103,10 +103,11 @@
                   </table>
                         
             </div>
+            <div class="clear"></div>
             <div id="footer">
-                <p>Footer stuff.</p>
-            </div>
-        
+            <div class="left">Generated on ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
+            <div class="right">JBehave &#169; 2003-2010</div>
+            <div class="clear"></div>        
         
         <div style="clear: both;"></div>
     
