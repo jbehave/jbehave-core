@@ -16,6 +16,7 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
+import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -83,6 +84,21 @@ public class Embedder {
         } catch (RuntimeException e) {
             embedderMonitor.mapsViewGenerationFailed(outputDirectory, storyMaps, viewResources, e);
             throw new ViewGenerationFailed(outputDirectory, storyMaps, viewResources, e);
+        }
+    }
+
+    public void generateNavigatorView(CrossReference xref) {
+        StoryReporterBuilder builder = configuration().storyReporterBuilder();
+        xref.outputToFiles(builder);
+        File outputDirectory = builder.outputDirectory();
+        Properties viewResources = builder.viewResources();
+        ViewGenerator viewGenerator = configuration().viewGenerator();
+        try {
+            embedderMonitor.generatingNavigatorView(outputDirectory, viewResources);
+            viewGenerator.generateNavigatorView(outputDirectory,viewResources);
+        } catch (RuntimeException e) {
+            embedderMonitor.navigatorViewGenerationFailed(outputDirectory, viewResources, e);
+            throw new ViewGenerationFailed(outputDirectory, viewResources, e);
         }
     }
 
@@ -437,6 +453,10 @@ public class Embedder {
                 RuntimeException cause) {
             super("View generation failed to " + outputDirectory + " for story maps "+ storyMaps +" for resources "
                     + viewResources, cause);
+        }
+
+        public ViewGenerationFailed(File outputDirectory, Properties viewResources, RuntimeException e) {
+            // TODO Auto-generated constructor stub
         }
     }
 }

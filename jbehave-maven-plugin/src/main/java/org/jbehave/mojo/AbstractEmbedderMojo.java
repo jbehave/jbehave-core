@@ -351,8 +351,16 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
                 Throwable cause) {
-            getLog().info("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
-                    + " and view properties '" + viewProperties + "'");
+            getLog().warn("Failed to generate maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'", cause);
+        }
+
+        public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
+            getLog().info("Generating navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'");
+        }
+
+        public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
+            getLog().warn("Failed to generate navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'", cause);
         }
 
         public void processingSystemProperties(Properties properties) {
@@ -367,6 +375,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         public String toString() {
             return this.getClass().getSimpleName();
         }
+
 
     }
 }

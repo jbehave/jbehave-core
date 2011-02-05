@@ -44,8 +44,13 @@ public interface EmbedderMonitor {
 
     void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties, Throwable cause);
 
+    void generatingNavigatorView(File outputDirectory, Properties viewResources);
+
+    void navigatorViewGenerationFailed(File outputDirectory, Properties viewResources, Throwable cause);
+
     void processingSystemProperties(Properties properties);
 
     void systemPropertySet(String name, String value);
+
 
 }

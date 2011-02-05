@@ -100,8 +100,20 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
 
     public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
             Throwable cause) {
-        print("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+        print("Failed to generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
                 + " and view properties '" + viewProperties + "'");
+        printStackTrace(cause);        
+    }
+
+    @Override
+    public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
+        print("Generating navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'");
+    }
+
+    @Override
+    public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
+        print("Failed to generating navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'");
+        printStackTrace(cause);        
     }
 
     public void processingSystemProperties(Properties properties) {

@@ -48,6 +48,7 @@ import freemarker.template.TemplateException;
  * <pre>
  * resources.setProperty(&quot;views&quot;, &quot;ftl/jbehave-views.ftl&quot;);
  * resources.setProperty(&quot;maps&quot;, &quot;ftl/jbehave-maps.ftl&quot;);
+ * resources.setProperty(&quot;navigator&quot;, &quot;ftl/jbehave-navigator.ftl&quot;);
  * resources.setProperty(&quot;reports&quot;, &quot;ftl/jbehave-reports-with-totals.ftl&quot;);
  * resources.setProperty(&quot;decorated&quot;, &quot;ftl/jbehave-report-decorated.ftl&quot;);
  * resources.setProperty(&quot;nonDecorated&quot;, &quot;ftl/jbehave-report-non-decorated.ftl&quot;);
@@ -79,6 +80,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         Properties properties = new Properties();
         properties.setProperty("views", "ftl/jbehave-views.ftl");
         properties.setProperty("maps", "ftl/jbehave-maps.ftl");
+        properties.setProperty("navigator", "ftl/jbehave-navigator.ftl");
         properties.setProperty("reports", "ftl/jbehave-reports-with-totals.ftl");
         properties.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
         properties.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
@@ -110,6 +112,16 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         dataModel.put("storyLanes", new StoryLanes(storyMaps, nameResolver));
         dataModel.put("date", new Date());
         write(outputDirectory, outputName, mapsTemplate, dataModel);
+        generateViewsIndex(outputDirectory);
+    }
+
+    public void generateNavigatorView(File outputDirectory, Properties viewProperties) {
+        this.viewProperties = mergeWithDefault(viewProperties);
+        String outputName = templateResource("viewDirectory") + "/navigator.html";
+        String navigatorTemplate = templateResource("navigator");
+        Map<String, Object> dataModel = newDataModel();
+        dataModel.put("date", new Date());
+        write(outputDirectory, outputName, navigatorTemplate, dataModel);
         generateViewsIndex(outputDirectory);
     }
 

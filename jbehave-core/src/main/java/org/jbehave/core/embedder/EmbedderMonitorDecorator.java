@@ -87,6 +87,14 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
         delegate.mapsViewGenerationFailed(outputDirectory, storyMaps, viewProperties, cause);
     }
 
+    public void generatingNavigatorView(File outputDirectory, Properties viewResources) {
+        delegate.generatingNavigatorView(outputDirectory, viewResources);
+    }
+
+    public void navigatorViewGenerationFailed(File outputDirectory, Properties viewResources, Throwable cause) {
+        delegate.navigatorViewGenerationFailed(outputDirectory, viewResources, cause);
+    }
+
     public void processingSystemProperties(Properties properties) {
         delegate.processingSystemProperties(properties);
     }

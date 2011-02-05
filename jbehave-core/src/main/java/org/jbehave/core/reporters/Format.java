@@ -41,7 +41,7 @@ public abstract class Format {
             return new XmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()).doReportFailureTrace(storyReporterBuilder.reportFailureTrace());
         }
     };
-
+    
     /**
      * STATS is not just about output formats, it is needed by the final reports.html summary page.
      */

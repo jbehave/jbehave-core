@@ -26,6 +26,14 @@ public class TraderStoryRunner {
     }
 
     @Test
+    public void navigateStories() {
+        TraderEmbedder embedder = new TraderEmbedder();
+        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
+        embedder.runStoriesAsPaths(storyPaths);
+        embedder.generateNavigatorView(embedder.getCrossReference());
+    }
+
+    @Test
     public void runClasspathLoadedStoriesAsJUnit() {
         // Embedder defines the configuration and candidate steps
         Embedder embedder = new TraderEmbedder();

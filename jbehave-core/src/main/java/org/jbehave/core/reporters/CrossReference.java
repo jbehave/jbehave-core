@@ -28,7 +28,11 @@ public class CrossReference extends Format {
     private StepMonitor stepMonitor = new XrefStepMonitor();
 
     public CrossReference() {
-        super("XREF");
+        this("XREF");
+    }
+
+    public CrossReference(String name) {
+        super(name);
     }
 
     public StepMonitor getStepMonitor() {

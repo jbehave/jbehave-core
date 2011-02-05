@@ -293,8 +293,17 @@ public abstract class AbstractEmbedderTask extends Task {
 
         public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
                 Throwable cause) {
-            log("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
-                    + " and view properties '" + viewProperties + "'", MSG_INFO);
+            log("Failed to generate maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                    + " and view properties '" + viewProperties + "'", cause, MSG_WARN);
+        }
+
+
+        public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
+            log("Generating navigator view to '" + outputDirectory + "' using  properties '" + viewProperties + "'", MSG_INFO);
+        }
+
+        public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
+            log("Failed to generating navigator view to '" + outputDirectory + "' using  properties '" + viewProperties + "'", cause, MSG_WARN);            
         }
 
         public void processingSystemProperties(Properties properties) {
