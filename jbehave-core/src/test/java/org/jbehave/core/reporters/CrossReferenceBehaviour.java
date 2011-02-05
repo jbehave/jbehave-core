@@ -15,40 +15,39 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-public class CrossReferenceOutputBehavior {
+public class CrossReferenceBehaviour {
 
     @Test
-    public void handlingOfStoriesAndStepsShouldMakeXmlAndJsonFilesOnTheFileSystem() throws Exception {
+    public void shouldProduceXmlAndJsonOutputsOfStoriesAndSteps() throws Exception {
 
-        // would put something on the file system, but we're subverting that.
-        FilePrintStreamFactory psf = mock(FilePrintStreamFactory.class);
+        // Given
+        FilePrintStreamFactory factory = mock(FilePrintStreamFactory.class);
 
-
-        final List<ByteArrayOutputStream> baoss = new ArrayList<ByteArrayOutputStream>();
+        final List<ByteArrayOutputStream> output = new ArrayList<ByteArrayOutputStream>();
         final File zebra = new File("zebra");
 
-        CrossReferenceOutput cro = new CrossReferenceOutput() {
+        CrossReference crossReference = new CrossReference() {
             @Override
             protected OutputStreamWriter makeWriter(File file) throws IOException {
                 assertTrue(file.getCanonicalPath().contains("zebra"));
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                baoss.add(baos);
+                output.add(baos);
                 return new OutputStreamWriter(baos);
             }
         };
 
-        StoryReporterBuilder srb = mock(StoryReporterBuilder.class);
-        when(srb.outputDirectory()).thenReturn(zebra);
+        StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
+        when(builder.outputDirectory()).thenReturn(zebra);
 
-        // interactions
-        PrintStreamOutputBehaviour.narrateAnInterestingStory(cro.createStoryReporter(psf, srb));
-        cro.getStepMonitor().stepMatchesPattern("a", true, "[abc]", Object.class.getDeclaredMethods()[0], new Object());
+        // When
+        PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder));
+        crossReference.getStepMonitor().stepMatchesPattern("a", true, "[abc]", Object.class.getDeclaredMethods()[0], new Object());
 
-        verifyNoMoreInteractions(psf, srb);
+        // generate XML and JSON        
+        verifyNoMoreInteractions(factory, builder);
+        crossReference.outputToFiles(builder); 
 
-        // generate XML and JSON
-        cro.outputToFiles(srb); // fills two ByteArrayOutputStreams above.
-
+        // Then
         assertEquals("<xref>\n" +
                 "  <meta>\n" +
                 "    <string>author=Mauro</string>\n" +
@@ -56,7 +55,7 @@ public class CrossReferenceOutputBehavior {
                 "theme=testing</string>\n" +
                 "  </meta>\n" +
                 "  <stories>\n" +
-                "    <org.jbehave.core.reporters.CrossReferenceOutput_-Stori>\n" +
+                "    <xrefStory>\n" +
                 "      <description>An interesting story</description>\n" +
                 "      <narrative>In order to renovate my house\n" +
                 "As a customer\n" +
@@ -68,17 +67,17 @@ public class CrossReferenceOutputBehavior {
                 "theme=testing\n" +
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
-                "    </org.jbehave.core.reporters.CrossReferenceOutput_-Stori>\n" +
+                "    </xrefStory>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
-                "    <StepMatch>\n" +
+                "    <stepMatch>\n" +
                 "      <storyPath>/path/to/story</storyPath>\n" +
                 "      <scenarioTitle>I ask for a loan</scenarioTitle>\n" +
                 "      <step>a</step>\n" +
                 "      <pattern>[abc]</pattern>\n" +
-                "    </StepMatch>\n" +
+                "    </stepMatch>\n" +
                 "  </stepMatches>\n" +
-                "</xref>", baoss.get(0).toString()); // xml
+                "</xref>", output.get(0).toString()); // xml
 
         assertEquals("{'xref': {\n" +
                 "  'meta': [\n" +
@@ -103,7 +102,7 @@ public class CrossReferenceOutputBehavior {
                 "      'pattern': '[abc]'\n" +
                 "    }\n" +
                 "  ]\n" +
-                "}}", baoss.get(1).toString().replace('\"', '\'')); // json
+                "}}", output.get(1).toString().replace('\"', '\'')); // json
 
     }
 }
