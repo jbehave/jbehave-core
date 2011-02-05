@@ -1,10 +1,10 @@
 package org.jbehave.core.configuration.groovy;
 
 import groovy.lang.GroovyClassLoader;
+import groovyjarjarasm.asm.ClassWriter;
 import org.codehaus.groovy.ast.ClassNode;
 import org.codehaus.groovy.control.CompilationUnit;
 import org.codehaus.groovy.control.SourceUnit;
-import org.objectweb.asm.ClassWriter;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

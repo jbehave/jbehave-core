@@ -17,8 +17,8 @@
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy</artifactId>
-      <version>1.7.4</version>
+      <artifactId>groovy-all</artifactId>
+      <version>1.7.6</version>
     </dependency>
   </dependencies>
 
