@@ -71,10 +71,8 @@ public class CrossReference extends Format {
     private XStream configure(XStream xstream) {
         xstream.setMode(XStream.NO_REFERENCES);
         xstream.alias("xref", XrefRoot.class);
-        xstream.alias("xrefStory", XrefStory.class);
+        xstream.alias("story", XrefStory.class);
         xstream.alias("stepMatch", StepMatch.class);
-        xstream.alias("story", Story.class);
-        xstream.alias("scenario", Scenario.class);
         xstream.omitField(ExamplesTable.class, "parameterConverters");
         xstream.omitField(ExamplesTable.class, "defaults");
         return xstream;

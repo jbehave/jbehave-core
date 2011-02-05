@@ -55,7 +55,7 @@ public class CrossReferenceBehaviour {
                 "theme=testing</string>\n" +
                 "  </meta>\n" +
                 "  <stories>\n" +
-                "    <xrefStory>\n" +
+                "    <story>\n" +
                 "      <description>An interesting story</description>\n" +
                 "      <narrative>In order to renovate my house\n" +
                 "As a customer\n" +
@@ -67,7 +67,7 @@ public class CrossReferenceBehaviour {
                 "theme=testing\n" +
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
-                "    </xrefStory>\n" +
+                "    </story>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
                 "    <stepMatch>\n" +
