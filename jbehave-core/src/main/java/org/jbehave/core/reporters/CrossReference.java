@@ -1,13 +1,5 @@
 package org.jbehave.core.reporters;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.StepMonitor;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,6 +9,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.StepMonitor;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 public class CrossReference extends Format {
 
@@ -39,12 +41,12 @@ public class CrossReference extends Format {
     }
 
     public void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
-        XrefRoot root = new XrefRoot(stepMatches, stories);
-        outputFile("xref.xml", new XStream(), storyReporterBuilder, root);
-        outputFile("xref.json", new XStream(new JsonHierarchicalStreamDriver()), storyReporterBuilder, root);
+        XrefRoot root = new XrefRoot(stepMatches, stories, storyReporterBuilder);
+        outputFile("xref.xml", new XStream(), root, storyReporterBuilder);
+        outputFile("xref.json", new XStream(new JsonHierarchicalStreamDriver()), root, storyReporterBuilder);
     }
 
-    private void outputFile(String name, XStream xstream, StoryReporterBuilder storyReporterBuilder, XrefRoot root){
+    private void outputFile(String name, XStream xstream, XrefRoot root, StoryReporterBuilder storyReporterBuilder){
         File outputDir = new File(storyReporterBuilder.outputDirectory(), "view");
         outputDir.mkdirs();
         try {
@@ -113,10 +115,10 @@ public class CrossReference extends Format {
         private List<XrefStory> stories = new ArrayList<XrefStory>();
         private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
 
-        public XrefRoot(List<StepMatch> stepMatches, List<Story> stories) {
+        public XrefRoot(List<StepMatch> stepMatches, List<Story> stories, StoryReporterBuilder storyReporterBuilder) {
             this.stepMatches = stepMatches;
             for (Story story : stories) {
-                this.stories.add(new XrefStory(story, this));
+                this.stories.add(new XrefStory(story, this, storyReporterBuilder));
             }
         }
     }
@@ -130,15 +132,15 @@ public class CrossReference extends Format {
         private String meta = "";
         private String scenarios = "";
 
-        public XrefStory(Story story, XrefRoot root) {
+        public XrefStory(Story story, XrefRoot root, StoryReporterBuilder storyReporterBuilder) {
             Narrative narrative = story.getNarrative();
             if (!narrative.isEmpty()) {
                 this.narrative = "In order to " + narrative.inOrderTo() + "\n" + "As a " + narrative.asA() + "\n"
                         + "I want to " + narrative.iWantTo() + "\n";
             }
             this.description = story.getDescription().asString();
-            this.name = story.getName().replace(".story", "");
-            this.path = story.getPath().replace(".story", "");
+            this.name = story.getName();
+            this.path = storyReporterBuilder.pathResolver().resolveName(new StoryLocation(null, story.getPath()), "html");
             for (String next : story.getMeta().getPropertyNames()) {
                 String property = meta + next + "=" + story.getMeta().getProperty(next);
                 root.meta.add(property);

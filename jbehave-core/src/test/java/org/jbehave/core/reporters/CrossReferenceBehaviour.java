@@ -1,13 +1,15 @@
 package org.jbehave.core.reporters;
 
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -38,6 +40,8 @@ public class CrossReferenceBehaviour {
 
         StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
         when(builder.outputDirectory()).thenReturn(zebra);
+        FilePathResolver pathResolver = new ResolveToPackagedName();
+        when(builder.pathResolver()).thenReturn(pathResolver);
 
         // When
         PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder));
@@ -62,7 +66,7 @@ public class CrossReferenceBehaviour {
                 "I want to get a loan\n" +
                 "</narrative>\n" +
                 "      <name>/path/to/story</name>\n" +
-                "      <path>/path/to/story</path>\n" +
+                "      <path>path.to.html</path>\n" +
                 "      <meta>author=Mauro\n" +
                 "theme=testing\n" +
                 "</meta>\n" +
@@ -89,7 +93,7 @@ public class CrossReferenceBehaviour {
                 "      'description': 'An interesting story',\n" +
                 "      'narrative': 'In order to renovate my house\\u000aAs a customer\\u000aI want to get a loan\\u000a',\n" +
                 "      'name': '/path/to/story',\n" +
-                "      'path': '/path/to/story',\n" +
+                "      'path': 'path.to.html',\n" +
                 "      'meta': 'author=Mauro\\u000atheme=testing\\u000a',\n" +
                 "      'scenarios': ''\n" +
                 "    }\n" +
