@@ -20,7 +20,14 @@ public abstract class AbstractStoryPathResolver implements
         return formatPath(resolveDirectory(embeddableClass), resolveName(embeddableClass), extension);
 	}
 
-	private String formatPath(String directory, String name,
+    public String removeSuffix(String path) {
+        if (path.endsWith(extension)) {
+            return path.substring(0, path.length() - extension.length());
+        }
+        return path;
+    }
+
+    private String formatPath(String directory, String name,
 			String extension) {
 		StringBuffer sb = new StringBuffer();
 		if (directory.length() > 0) {

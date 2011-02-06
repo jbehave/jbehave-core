@@ -89,7 +89,7 @@ public class Embedder {
 
     public void generateNavigatorView(CrossReference xref) {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
-        xref.outputToFiles(builder);
+        xref.outputToFiles(builder, configuration().storyPathResolver());
         File outputDirectory = builder.outputDirectory();
         Properties viewResources = builder.viewResources();
         ViewGenerator viewGenerator = configuration().viewGenerator();

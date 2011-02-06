@@ -12,4 +12,5 @@ public interface StoryPathResolver {
 
     String resolve(Class<? extends Embeddable> embeddableClass);
 
+    String removeSuffix(String name);
 }

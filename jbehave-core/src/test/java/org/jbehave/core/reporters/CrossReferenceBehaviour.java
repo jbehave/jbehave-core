@@ -1,5 +1,6 @@
 package org.jbehave.core.reporters;
 
+import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -11,9 +12,7 @@ import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CrossReferenceBehaviour {
 
@@ -45,7 +44,7 @@ public class CrossReferenceBehaviour {
 
         // generate XML and JSON        
         verifyNoMoreInteractions(factory, builder);
-        crossReference.outputToFiles(builder); 
+        crossReference.outputToFiles(builder, new UnderscoredCamelCaseResolver());
 
         // Then
         assertEquals("<xref>\n" +

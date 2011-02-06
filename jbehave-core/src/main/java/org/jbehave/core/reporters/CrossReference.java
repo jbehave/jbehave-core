@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
@@ -38,8 +39,8 @@ public class CrossReference extends Format {
         return stepMonitor;
     }
 
-    public void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
-        XrefRoot root = new XrefRoot(stepMatches, stories);
+    public void outputToFiles(StoryReporterBuilder storyReporterBuilder, StoryPathResolver storyPathResolver) {
+        XrefRoot root = new XrefRoot(stepMatches, stories, storyPathResolver);
         outputFile("xref.xml", new XStream(), storyReporterBuilder, root);
         outputFile("xref.json", new XStream(new JsonHierarchicalStreamDriver()), storyReporterBuilder, root);
     }
@@ -113,10 +114,10 @@ public class CrossReference extends Format {
         private List<XrefStory> stories = new ArrayList<XrefStory>();
         private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
 
-        public XrefRoot(List<StepMatch> stepMatches, List<Story> stories) {
+        public XrefRoot(List<StepMatch> stepMatches, List<Story> stories, StoryPathResolver storyPathResolver) {
             this.stepMatches = stepMatches;
             for (Story story : stories) {
-                this.stories.add(new XrefStory(story, this));
+                this.stories.add(new XrefStory(story, this, storyPathResolver));
             }
         }
     }
@@ -130,14 +131,14 @@ public class CrossReference extends Format {
         private String meta = "";
         private String scenarios = "";
 
-        public XrefStory(Story story, XrefRoot root) {
+        public XrefStory(Story story, XrefRoot root, StoryPathResolver storyPathResolver) {
             Narrative narrative = story.getNarrative();
             if (!narrative.isEmpty()) {
                 this.narrative = "In order to " + narrative.inOrderTo() + "\n" + "As a " + narrative.asA() + "\n"
                         + "I want to " + narrative.iWantTo() + "\n";
             }
             this.description = story.getDescription().asString();
-            this.name = story.getName().replace(".story", "");
+            this.name = storyPathResolver.removeSuffix(story.getName());
             this.path = story.getPath().replace(".story", "");
             for (String next : story.getMeta().getPropertyNames()) {
                 String property = meta + next + "=" + story.getMeta().getProperty(next);
