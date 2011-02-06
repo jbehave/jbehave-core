@@ -1,11 +1,5 @@
 package org.jbehave.examples.trader;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
@@ -26,7 +20,6 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.examples.trader.service.TradingService;
@@ -38,6 +31,12 @@ import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
 import org.jbehave.examples.trader.steps.TraderSteps;
 
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML;
+
 /**
  * <p>
  * Example of how multiple stories can be run via JUnit.
@@ -48,6 +47,8 @@ import org.jbehave.examples.trader.steps.TraderSteps;
  */
 public class TraderStories extends JUnitStories {
     
+    private final CrossReference xref = new CrossReference();
+
     public TraderStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
                 .doIgnoreFailureInView(true);
@@ -73,11 +74,11 @@ public class TraderStories extends JUnitStories {
                 .withDefaultFormats()
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML)
-                .withCrossReference(new CrossReference())) // required for navigator view
+                .withCrossReference(xref)) // required for navigator view
             .useParameterConverters(parameterConverters)                     
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters
-            .useStepMonitor(new SilentStepMonitor());                               
+            .useStepMonitor(xref.getStepMonitor());                               
     }
 
     @Override

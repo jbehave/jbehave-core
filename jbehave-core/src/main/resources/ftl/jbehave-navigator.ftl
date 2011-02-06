@@ -109,6 +109,8 @@
                       </td>
                     </tr>
                   </table>  
+                  
+                  <!-- 
                   <h2>Steps</h2>
                   <table border="1">
                     <tr>
@@ -124,12 +126,14 @@
                       <td>{{match.step}}</td>
                      </tr>
                   </table>
+                  -->
                         
             </div>
             <div id="footer">
-                <p>Footer stuff.</p>
+                <div class="left">Generated on ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
+                <div class="right">JBehave &#169; 2003-2010</div>
+                <div class="clear"></div>
             </div>
-        
         
         <div style="clear: both;"></div>
     

@@ -57,6 +57,8 @@ import static org.jbehave.core.reporters.Format.XML;
  */
 public abstract class TraderStory extends JUnitStory {
 
+    private final CrossReference xref = new CrossReference();
+
     public TraderStory() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
                 .doIgnoreFailureInView(true);
@@ -88,11 +90,11 @@ public abstract class TraderStory extends JUnitStory {
                 .withPathResolver(new ResolveToPackagedName())
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML)
-                .withCrossReference(new CrossReference()))  // required for navigator view
+                .withCrossReference(xref))  // required for navigator view
             .useParameterConverters(parameterConverters)
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters
-            .useStepMonitor(new SilentStepMonitor());                               
+            .useStepMonitor(xref.getStepMonitor());                               
     }
 
     @Override
