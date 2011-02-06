@@ -3,16 +3,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ng="http://angularjs.org" xml:lang="en" lang="en">
 
 <head>
-	<script type="text/javascript" ng:autobind src="js/angular-0.9.9.min.js"></script>
-	<script type="text/javascript" src="js/jquery-1.5.js" charset="utf-8"></script>
-	<script type="text/javascript" src="js/cornerz.js" charset="utf-8"></script>
-
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    
+    <script type="text/javascript" ng:autobind src="js/angular-0.9.9.min.js"></script>
+    <script type="text/javascript" src="js/cornerz-0.6.js" ></script>
+    <script type="text/javascript" src="js/jquery-1.5.js" ></script>
+    <script type="text/javascript" src="js/jquery-ui.min-1.7.1.js"></script>
+    <script type="text/javascript" src="js/jquery-framedialog-1.1.2.js"></script> 
     <link rel="stylesheet" type="text/css" href="style/jbehave-navigator.css" />
-    <!--[if lt IE 7]>
-        <link rel="stylesheet" type="text/css" href="style/style-ie.css" />
-    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="style/jquery-ui.css">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    
+    <title>JBehave Story Navigator</title>
     
     <script type="text/javascript">
     $(document).ready(function(){
@@ -23,6 +24,7 @@
         $('#footer').cornerz({
             background: "#black" });
     });
+    
     </script>
 </head>
 
@@ -36,13 +38,34 @@
        }
        MyController.prototype = {
           showScenarios: function(story) {
-               alert(story.scenarios);
+        
+            var $dialog = $('<div></div>')
+                        .html(story.scenarios)
+                        .dialog({
+                            autoOpen: false,
+                            title: 'Scenarios for ' + story.path
+                        });
+
+            $dialog.dialog('open');
+            // prevent the default action, e.g., following a link
           },
-          openViewTab: function(story) {
-               alert("2" + story.scenarios);
+          showResults: function(story) {
+       
+            jQuery.FrameDialog.create({
+                    width: 1000,
+                    height: 700,
+                    closeText: 'foo',
+                    url: story.path.replace('story','html'),
+                    title: 'Results For ' + story.path,
+                    closeOnEscape: true,
+                    buttons: [
+                        {
+                        }
+                    ]
+                })
           },
           openEditTab: function(story) {
-               alert("3" + story.scenarios);
+               alert("TODO");
           }
         };
       </script>
@@ -58,7 +81,7 @@
             <div ng:controller="MyController" id="main-content">
                   <table>
                     <tr>
-                        <th colspan="5">Use fields for each columns to subset stories, and/or the following for scenarios themselves: <input name="search.scenarios"/></th>
+                        <th colspan="5">Use fields to search stories, and/or search scenarios: <input name="search.scenarios"/></th>
                     </tr>
                     <tr>
                       <th><a href ng:click="predicate = 'path'">Path</a>(<a href ng:click="predicate = '-path'">^</a>)</th>
@@ -80,19 +103,19 @@
                       <td>{{story.meta}}</td>
                       <td>{{story.narrative}}</td>
                       <td>
-                        <button ng:click="showScenarios(story)">Preview</button>
-                        <button ng:click="openViewTab(story)">Full Story</button>
-                        <button ng:click="openEditTab(story)">Edit</button>
+                        <button ng:click="showScenarios(story)">Scenarios</button>
+                        <button ng:click="showResults(story)">Results</button>
+                        <!--button ng:click="openEditTab(story)">Edit</button-->
                       </td>
                     </tr>
                   </table>  
-                  <h2>Step List</h2>
+                  <h2>Steps</h2>
                   <table border="1">
                     <tr>
-                      <th>num</th>
-                      <th>Story</th>
+                      <th>Number</th>
+                      <th>Story Path</th>
                       <th>Scenario Title</th>
-                      <th>Name</th>
+                      <th>Step</th>
                     </tr>
                     <tr ng:repeat="match in data.xref.stepMatches">
                       <td>{{$index + 1}}</td>
@@ -103,11 +126,10 @@
                   </table>
                         
             </div>
-            <div class="clear"></div>
             <div id="footer">
-            <div class="left">Generated on ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
-            <div class="right">JBehave &#169; 2003-2010</div>
-            <div class="clear"></div>        
+                <p>Footer stuff.</p>
+            </div>
+        
         
         <div style="clear: both;"></div>
     
@@ -115,3 +137,4 @@
 
 </body>
 
+</html>
