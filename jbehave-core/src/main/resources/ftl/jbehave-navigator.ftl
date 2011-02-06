@@ -55,7 +55,7 @@
                     width: 1000,
                     height: 700,
                     closeText: 'foo',
-                    url: story.path.replace('story','html'),
+                    url: story.path,
                     title: 'Results For ' + story.path,
                     closeOnEscape: true,
                     buttons: [

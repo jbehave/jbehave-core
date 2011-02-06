@@ -226,40 +226,7 @@ public class Embedder {
 
         if (embedderControls.generateViewAfterStories()) {
             generateReportsView();
-        }
-
-        generateNavigatorView();
-    }
-
-    public void generateNavigatorView() {
-        StoryReporterBuilder builder = configuration().storyReporterBuilder();
-        if (builder.hasCrossReference()) {
-            builder.crossReference().outputToFiles(builder);
-            File outputDirectory = builder.outputDirectory();
-            Properties viewResources = builder.viewResources();
-            ViewGenerator viewGenerator = configuration().viewGenerator();
-            try {
-                embedderMonitor.generatingNavigatorView(outputDirectory, viewResources);
-                viewGenerator.generateNavigatorView(outputDirectory, viewResources);
-            } catch (RuntimeException e) {
-                embedderMonitor.navigatorViewGenerationFailed(outputDirectory, viewResources, e);
-                throw new ViewGenerationFailed(outputDirectory, viewResources, e);
-            }
-        } else {
-            embedderMonitor.navigatorViewNotGenerated();            
-        }
-    }
-
-    public void processSystemProperties() {
-        Properties properties = systemProperties();
-        embedderMonitor.processingSystemProperties(properties);
-        if (!properties.isEmpty()) {
-            for (Object key : properties.keySet()) {
-                String name = (String) key;
-                String value = properties.getProperty(name);
-                System.setProperty(name, value);
-                embedderMonitor.systemPropertySet(name, value);
-            }
+            generateNavigatorView();
         }
     }
 
@@ -298,6 +265,25 @@ public class Embedder {
 
     }
 
+    public void generateNavigatorView() {
+        StoryReporterBuilder builder = configuration().storyReporterBuilder();
+        if (builder.hasCrossReference()) {
+            builder.crossReference().outputToFiles(builder);
+            File outputDirectory = builder.outputDirectory();
+            Properties viewResources = builder.viewResources();
+            ViewGenerator viewGenerator = configuration().viewGenerator();
+            try {
+                embedderMonitor.generatingNavigatorView(outputDirectory, viewResources);
+                viewGenerator.generateNavigatorView(outputDirectory, viewResources);
+            } catch (RuntimeException e) {
+                embedderMonitor.navigatorViewGenerationFailed(outputDirectory, viewResources, e);
+                throw new ViewGenerationFailed(outputDirectory, viewResources, e);
+            }
+        } else {
+            embedderMonitor.navigatorViewNotGenerated();            
+        }
+    }
+
     public void reportStepdocs() {
         Configuration configuration = configuration();
         List<CandidateSteps> candidateSteps = candidateSteps();
@@ -315,6 +301,19 @@ public class Embedder {
         List<Stepdoc> matching = finder.findMatching(stepAsString, candidateSteps);
         List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
         reporter.stepdocsMatching(stepAsString, matching, stepsInstances);
+    }
+    
+    public void processSystemProperties() {
+        Properties properties = systemProperties();
+        embedderMonitor.processingSystemProperties(properties);
+        if (!properties.isEmpty()) {
+            for (Object key : properties.keySet()) {
+                String name = (String) key;
+                String value = properties.getProperty(name);
+                System.setProperty(name, value);
+                embedderMonitor.systemPropertySet(name, value);
+            }
+        }
     }
 
     public EmbedderClassLoader classLoader() {
