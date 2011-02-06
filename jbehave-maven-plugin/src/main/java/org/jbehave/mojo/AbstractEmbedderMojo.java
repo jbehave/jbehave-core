@@ -363,6 +363,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().warn("Failed to generate navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'", cause);
         }
 
+        public void navigatorViewNotGenerated() {
+            getLog().warn("Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder");
+        }
+
         public void processingSystemProperties(Properties properties) {
             getLog().info("Processing system properties " + properties);
         }

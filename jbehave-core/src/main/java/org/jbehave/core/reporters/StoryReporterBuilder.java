@@ -134,6 +134,7 @@ public class StoryReporterBuilder {
     private Properties viewResources = FreemarkerViewGenerator.defaultViewProperties();
     private boolean reportFailureTrace = false;
     private Keywords keywords = new LocalizedKeywords();
+    private CrossReference crossReference;
 
     public File outputDirectory() {
         return filePrintStreamFactory("").outputDirectory();
@@ -195,6 +196,21 @@ public class StoryReporterBuilder {
 
     public StoryReporterBuilder withCodeLocation(URL codeLocation) {
         this.codeLocation = codeLocation;
+        return this;
+    }
+
+    public CrossReference crossReference() {
+        return crossReference;
+    }
+    
+
+    public boolean hasCrossReference() {
+        return crossReference != null;
+    }
+
+    public StoryReporterBuilder withCrossReference(CrossReference crossReference){
+        this.crossReference = crossReference;
+        this.formats.add(crossReference);
         return this;
     }
 

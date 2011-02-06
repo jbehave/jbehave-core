@@ -1,13 +1,13 @@
 package org.jbehave.examples.trader;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-
 import java.util.List;
 
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.junit.Test;
+
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 /**
  * Example of how to use one or more Embedders to embed the story running into
@@ -23,14 +23,6 @@ public class TraderStoryRunner {
         embedder.useMetaFilters(asList("+author *", "+theme *", "-skip"));
         List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
         embedder.mapStoriesAsPaths(storyPaths);
-    }
-
-    @Test
-    public void navigateStories() {
-        TraderEmbedder embedder = new TraderEmbedder();
-        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
-        embedder.runStoriesAsPaths(storyPaths);
-        embedder.generateNavigatorView(embedder.getCrossReference());
     }
 
     @Test

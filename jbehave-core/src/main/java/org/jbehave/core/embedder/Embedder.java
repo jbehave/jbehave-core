@@ -16,7 +16,6 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
-import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -84,21 +83,6 @@ public class Embedder {
         } catch (RuntimeException e) {
             embedderMonitor.mapsViewGenerationFailed(outputDirectory, storyMaps, viewResources, e);
             throw new ViewGenerationFailed(outputDirectory, storyMaps, viewResources, e);
-        }
-    }
-
-    public void generateNavigatorView(CrossReference xref) {
-        StoryReporterBuilder builder = configuration().storyReporterBuilder();
-        xref.outputToFiles(builder);
-        File outputDirectory = builder.outputDirectory();
-        Properties viewResources = builder.viewResources();
-        ViewGenerator viewGenerator = configuration().viewGenerator();
-        try {
-            embedderMonitor.generatingNavigatorView(outputDirectory, viewResources);
-            viewGenerator.generateNavigatorView(outputDirectory,viewResources);
-        } catch (RuntimeException e) {
-            embedderMonitor.navigatorViewGenerationFailed(outputDirectory, viewResources, e);
-            throw new ViewGenerationFailed(outputDirectory, viewResources, e);
         }
     }
 
@@ -205,7 +189,7 @@ public class Embedder {
 
         Configuration configuration = configuration();
         List<CandidateSteps> candidateSteps = candidateSteps();
-        
+
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
 
         BatchFailures batchFailures = new BatchFailures();
@@ -244,14 +228,34 @@ public class Embedder {
             generateReportsView();
         }
 
+        generateNavigatorView();
+    }
+
+    public void generateNavigatorView() {
+        StoryReporterBuilder builder = configuration().storyReporterBuilder();
+        if (builder.hasCrossReference()) {
+            builder.crossReference().outputToFiles(builder);
+            File outputDirectory = builder.outputDirectory();
+            Properties viewResources = builder.viewResources();
+            ViewGenerator viewGenerator = configuration().viewGenerator();
+            try {
+                embedderMonitor.generatingNavigatorView(outputDirectory, viewResources);
+                viewGenerator.generateNavigatorView(outputDirectory, viewResources);
+            } catch (RuntimeException e) {
+                embedderMonitor.navigatorViewGenerationFailed(outputDirectory, viewResources, e);
+                throw new ViewGenerationFailed(outputDirectory, viewResources, e);
+            }
+        } else {
+            embedderMonitor.navigatorViewNotGenerated();            
+        }
     }
 
     public void processSystemProperties() {
         Properties properties = systemProperties();
         embedderMonitor.processingSystemProperties(properties);
-        if ( !properties.isEmpty() ){
+        if (!properties.isEmpty()) {
             for (Object key : properties.keySet()) {
-                String name = (String)key;
+                String name = (String) key;
                 String value = properties.getProperty(name);
                 System.setProperty(name, value);
                 embedderMonitor.systemPropertySet(name, value);
@@ -286,7 +290,7 @@ public class Embedder {
             embedderMonitor.reportsViewGenerationFailed(outputDirectory, formats, viewResources, e);
             throw new ViewGenerationFailed(outputDirectory, formats, viewResources, e);
         }
-        ReportsCount count = viewGenerator.getReportsCount(); 
+        ReportsCount count = viewGenerator.getReportsCount();
         embedderMonitor.reportsViewGenerated(count);
         if (!embedderControls.ignoreFailureInView() && count.getScenariosFailed() > 0) {
             throw new RunningStoriesFailed(count.getStories(), count.getScenarios(), count.getScenariosFailed());
@@ -313,10 +317,10 @@ public class Embedder {
         reporter.stepdocsMatching(stepAsString, matching, stepsInstances);
     }
 
-    public EmbedderClassLoader classLoader(){
+    public EmbedderClassLoader classLoader() {
         return classLoader;
     }
-    
+
     public Configuration configuration() {
         return configuration;
     }
@@ -421,7 +425,7 @@ public class Embedder {
         public RunningEmbeddablesFailed(BatchFailures batchFailures) {
             super("Failures in running embeddables in batch: " + batchFailures);
         }
-        
+
     }
 
     @SuppressWarnings("serial")
@@ -451,7 +455,7 @@ public class Embedder {
 
         public ViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewResources,
                 RuntimeException cause) {
-            super("View generation failed to " + outputDirectory + " for story maps "+ storyMaps +" for resources "
+            super("View generation failed to " + outputDirectory + " for story maps " + storyMaps + " for resources "
                     + viewResources, cause);
         }
 

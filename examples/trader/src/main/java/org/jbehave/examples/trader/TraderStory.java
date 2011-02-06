@@ -19,6 +19,7 @@ import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -87,7 +88,8 @@ public abstract class TraderStory extends JUnitStory {
                 .withDefaultFormats()
                 .withPathResolver(new ResolveToPackagedName())
                 .withViewResources(viewResources)
-                .withFormats(CONSOLE, TXT, HTML, XML))
+                .withFormats(CONSOLE, TXT, HTML, XML)
+                .withCrossReference(new CrossReference()))
             .useParameterConverters(parameterConverters)
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters

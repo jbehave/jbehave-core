@@ -48,9 +48,10 @@ public interface EmbedderMonitor {
 
     void navigatorViewGenerationFailed(File outputDirectory, Properties viewResources, Throwable cause);
 
+    void navigatorViewNotGenerated();
+
     void processingSystemProperties(Properties properties);
 
     void systemPropertySet(String name, String value);
-
 
 }

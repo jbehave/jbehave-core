@@ -305,6 +305,10 @@ public abstract class AbstractEmbedderTask extends Task {
         public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
             log("Failed to generating navigator view to '" + outputDirectory + "' using  properties '" + viewProperties + "'", cause, MSG_WARN);            
         }
+        
+        public void navigatorViewNotGenerated() {
+            log("Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder", MSG_WARN);
+        }
 
         public void processingSystemProperties(Properties properties) {
             log("Processing system properties " + properties, MSG_INFO);

@@ -21,6 +21,7 @@ import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -71,7 +72,8 @@ public class TraderStories extends JUnitStories {
                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                 .withDefaultFormats()
                 .withViewResources(viewResources)
-                .withFormats(CONSOLE, TXT, HTML, XML))
+                .withFormats(CONSOLE, TXT, HTML, XML)
+                .withCrossReference(new CrossReference()))
             .useParameterConverters(parameterConverters)                     
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters

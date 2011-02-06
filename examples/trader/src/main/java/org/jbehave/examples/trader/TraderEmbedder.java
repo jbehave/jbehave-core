@@ -32,8 +32,6 @@ import static org.jbehave.core.reporters.Format.XML;
  */
 public class TraderEmbedder extends Embedder {
 
-    private CrossReference xref = new CrossReference();
-    
     @Override
     public EmbedderControls embedderControls() {
         return super.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
@@ -47,7 +45,8 @@ public class TraderEmbedder extends Embedder {
 			.useStoryReporterBuilder(new StoryReporterBuilder()
         		.withCodeLocation(CodeLocations.codeLocationFromClass(embedderClass))
         		.withDefaultFormats()
-				.withFormats(CONSOLE, TXT, HTML, XML, xref))
+				.withFormats(CONSOLE, TXT, HTML, XML)
+				.withCrossReference(new CrossReference()))
             .useParameterConverters(new ParameterConverters()
                 	.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
@@ -59,10 +58,6 @@ public class TraderEmbedder extends Embedder {
     public List<CandidateSteps> candidateSteps() {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new BeforeAfterSteps())
                 .createCandidateSteps();
-    }
-
-    public CrossReference getCrossReference(){
-        return xref;
     }
 
 }

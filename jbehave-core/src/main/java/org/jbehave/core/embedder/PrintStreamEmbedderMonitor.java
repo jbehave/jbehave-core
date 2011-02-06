@@ -116,6 +116,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         printStackTrace(cause);        
     }
 
+    public void navigatorViewNotGenerated() {
+        print("Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder");
+    }
+
     public void processingSystemProperties(Properties properties) {
         print("Processing system properties " + properties);
     }

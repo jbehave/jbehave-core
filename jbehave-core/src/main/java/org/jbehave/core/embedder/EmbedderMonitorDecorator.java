@@ -95,6 +95,10 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
         delegate.navigatorViewGenerationFailed(outputDirectory, viewResources, cause);
     }
 
+    public void navigatorViewNotGenerated() {
+        delegate.navigatorViewNotGenerated();        
+    }
+
     public void processingSystemProperties(Properties properties) {
         delegate.processingSystemProperties(properties);
     }
