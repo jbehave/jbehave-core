@@ -1,5 +1,13 @@
 package org.jbehave.core.reporters;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.StepMonitor;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -9,15 +17,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.StepMonitor;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 public class CrossReference extends Format {
 
@@ -138,8 +137,8 @@ public class CrossReference extends Format {
                         + "I want to " + narrative.iWantTo() + "\n";
             }
             this.description = story.getDescription().asString();
-            this.name = story.getName();
-            this.path = story.getPath();
+            this.name = story.getName().replace(".story", "");
+            this.path = story.getPath().replace(".story", "");
             for (String next : story.getMeta().getPropertyNames()) {
                 String property = meta + next + "=" + story.getMeta().getProperty(next);
                 root.meta.add(property);
