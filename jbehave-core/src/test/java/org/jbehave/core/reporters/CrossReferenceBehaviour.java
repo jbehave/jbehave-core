@@ -66,7 +66,8 @@ public class CrossReferenceBehaviour {
                 "I want to get a loan\n" +
                 "</narrative>\n" +
                 "      <name>/path/to/story</name>\n" +
-                "      <path>path.to.html</path>\n" +
+                "      <path>/path/to/story</path>\n" +
+                "      <html>path.to.html</html>\n" +
                 "      <meta>author=Mauro\n" +
                 "theme=testing\n" +
                 "</meta>\n" +
@@ -93,7 +94,8 @@ public class CrossReferenceBehaviour {
                 "      'description': 'An interesting story',\n" +
                 "      'narrative': 'In order to renovate my house\\u000aAs a customer\\u000aI want to get a loan\\u000a',\n" +
                 "      'name': '/path/to/story',\n" +
-                "      'path': 'path.to.html',\n" +
+                "      'path': '/path/to/story',\n" +
+                "      'html': 'path.to.html',\n" +
                 "      'meta': 'author=Mauro\\u000atheme=testing\\u000a',\n" +
                 "      'scenarios': ''\n" +
                 "    }\n" +

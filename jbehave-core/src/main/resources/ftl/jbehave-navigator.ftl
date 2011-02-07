@@ -37,6 +37,21 @@
         this.data = this.Story.get({});
        }
        MyController.prototype = {
+          showResults: function(story) {
+       
+            jQuery.FrameDialog.create({
+                    width: 1000,
+                    height: 700,
+                    closeText: 'foo',
+                    url: story.html,
+                    title: 'Results For ' + story.path,
+                    closeOnEscape: true,
+                    buttons: [
+                        {
+                        }
+                    ]
+                })
+          },
           showScenarios: function(story) {
         
             var $dialog = $('<div></div>')
@@ -48,21 +63,6 @@
 
             $dialog.dialog('open');
             // prevent the default action, e.g., following a link
-          },
-          showResults: function(story) {
-       
-            jQuery.FrameDialog.create({
-                    width: 1000,
-                    height: 700,
-                    closeText: 'foo',
-                    url: story.path,
-                    title: 'Results For ' + story.path,
-                    closeOnEscape: true,
-                    buttons: [
-                        {
-                        }
-                    ]
-                })
           },
           openEditTab: function(story) {
                alert("TODO");
@@ -81,7 +81,7 @@
             <div ng:controller="MyController" id="main-content">
                   <table>
                     <tr>
-                        <th colspan="5">Use fields to search stories, and/or search scenarios: <input name="search.scenarios"/></th>
+                        <th colspan="5">Use columns to filter stories by content and/or search text in scenarios: <input name="search.scenarios"/></th>
                     </tr>
                     <tr>
                       <th><a href ng:click="predicate = 'path'">Path</a>(<a href ng:click="predicate = '-path'">^</a>)</th>
@@ -103,14 +103,14 @@
                       <td>{{story.meta}}</td>
                       <td>{{story.narrative}}</td>
                       <td>
-                        <button ng:click="showScenarios(story)">Scenarios</button>
                         <button ng:click="showResults(story)">Results</button>
+                        <!--button ng:click="showScenarios(story)">Scenarios</button-->
                         <!--button ng:click="openEditTab(story)">Edit</button-->
                       </td>
                     </tr>
                   </table>  
                   
-                  <!-- 
+                  <!-- TODO: introduce a more significant structure for the steps.  Currently they can be read directly from the story results dialog.
                   <h2>Steps</h2>
                   <table border="1">
                     <tr>

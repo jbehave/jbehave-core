@@ -129,6 +129,7 @@ public class CrossReference extends Format {
         private String narrative = "";
         private String name;
         private String path;
+        private String html;
         private String meta = "";
         private String scenarios = "";
 
@@ -140,7 +141,8 @@ public class CrossReference extends Format {
             }
             this.description = story.getDescription().asString();
             this.name = story.getName();
-            this.path = storyReporterBuilder.pathResolver().resolveName(new StoryLocation(null, story.getPath()), "html");
+            this.path = story.getPath();
+            this.html = storyReporterBuilder.pathResolver().resolveName(new StoryLocation(null, story.getPath()), "html");
             for (String next : story.getMeta().getPropertyNames()) {
                 String property = meta + next + "=" + story.getMeta().getProperty(next);
                 root.meta.add(property);
