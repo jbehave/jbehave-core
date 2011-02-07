@@ -5,6 +5,92 @@
 </head>
 <body>
 
+<h1>JBehave Core - Version 3.2 (Feb xx, 2011)</h1>
+        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-370'>JBEHAVE-370</a>] -         IDE_CONSOLE no longer any different to IDE (w.r.t console output)
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-377'>JBEHAVE-377</a>] -         BigDecimal parameter conversion fails for numbers with seven or more significant digits.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-389'>JBEHAVE-389</a>] -         Spaces in Path breaks LoadFromRelativeFile
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-397'>JBEHAVE-397</a>] -         Failure to execute all scenarios within a story.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-401'>JBEHAVE-401</a>] -         XML Scenario reporter doesn&#39;t always include a closing story xml tag
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-402'>JBEHAVE-402</a>] -         The sourceDirectory property of the jbehave-maven-plugin is read-only in maven 2.2.1
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-407'>JBEHAVE-407</a>] -         Failing Scenarios are Reported as Successfull
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-409'>JBEHAVE-409</a>] -         @Composite step is executing &quot;successfully&quot; when one of its sub-steps is Pending.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-420'>JBEHAVE-420</a>] -         Output formats have broken XML, HTML (etc) - missing endScenario and endStory in the case of meta-filters that exclude
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-422'>JBEHAVE-422</a>] -         Maven goal run-stories-with-annotated-embedder-runner doesn&#39;t exist
+</li>
+</ul>
+    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-234'>JBEHAVE-234</a>] -         Improve JUnit integration
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-379'>JBEHAVE-379</a>] -         Allow scenarios following a failed scenarios to be skipped in a single story
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-380'>JBEHAVE-380</a>] -         Allow story controls to be configurable via annotations 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-384'>JBEHAVE-384</a>] -         Allow Before and After Scenario steps to be skipped if running a GivenStory
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-386'>JBEHAVE-386</a>] -         Allow different StoryNameResolvers to be used in report generation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-387'>JBEHAVE-387</a>] -         Allow ExamplesTable to be loaded from external resources
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-396'>JBEHAVE-396</a>] -         Throw exception if ParameterConverters cannot convert to the desired type.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-399'>JBEHAVE-399</a>] -         Count scenarios in a story separately from those in the GivenStories.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-404'>JBEHAVE-404</a>] -         Open up Format ( CONSOLE, STATS etc) to allow third party implementations.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-408'>JBEHAVE-408</a>] -         GivenStories should be able to be loaded relative to the story depending on them.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-410'>JBEHAVE-410</a>] -         WebDriverProvider#takeScreenshot() should return a boolean to say if the screenshot has been taken
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-413'>JBEHAVE-413</a>] -         Failing steps could be assigned a unique failure-context that could to a) name screenshots, and b) be used in HTML reports
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-418'>JBEHAVE-418</a>] -         Stacktraces for failure &#39;yes&#39; vs &#39;no&#39; should be settable with the &#39;enum&#39; like list of output formats.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-419'>JBEHAVE-419</a>] -         Generic Parameter Converter for Enum classes.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-421'>JBEHAVE-421</a>] -         Use of String.toUpper/LowerCase() should be locale-aware
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-426'>JBEHAVE-426</a>] -         BooleanConverter and BooleanListConverter
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-388'>JBEHAVE-388</a>] -         Support composition of steps
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-394'>JBEHAVE-394</a>] -         Hudson Plugin to import JBehave reports
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-398'>JBEHAVE-398</a>] -         Provide table row values as converted parameters
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-403'>JBEHAVE-403</a>] -         NullStoryReporter to facilitate subclassing, and use in conjunction with DelegatingStoryReporter
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-427'>JBEHAVE-427</a>] -         Interactive Story Navigator view 
+</li>
+</ul>
+    
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-393'>JBEHAVE-393</a>] -         Split trader example different running modes into separate modules 
+</li>
+</ul>
+
 <h1>JBehave Core - Version 3.1.2 (Nov 13, 2010)</h1>
             
 <h2>        Improvement
