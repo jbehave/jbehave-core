@@ -41,7 +41,7 @@
        
             jQuery.FrameDialog.create({
                     width: 1000,
-                    height: 700,
+                    height: 600,
                     closeText: 'foo',
                     url: story.html,
                     title: 'Results For ' + story.path,
@@ -55,10 +55,12 @@
           showScenarios: function(story) {
         
             var $dialog = $('<div></div>')
-                        .html(story.scenarios)
+                        .html('<pre>'+story.scenarios+'</pre>')
                         .dialog({
+                            width: 800,
+                            height: 400,
                             autoOpen: false,
-                            title: 'Scenarios for ' + story.path
+                            title: 'Scenarios for ' + story.path                            
                         });
 
             $dialog.dialog('open');
@@ -104,7 +106,7 @@
                       <td>{{story.narrative}}</td>
                       <td>
                         <button ng:click="showResults(story)">Results</button>
-                        <!--button ng:click="showScenarios(story)">Scenarios</button-->
+                        <button ng:click="showScenarios(story)">Scenarios</button>
                         <!--button ng:click="openEditTab(story)">Edit</button-->
                       </td>
                     </tr>
