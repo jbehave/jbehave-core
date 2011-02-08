@@ -1,5 +1,9 @@
 package org.jbehave.core.reporters;
 
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -7,15 +11,9 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
-import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
-import org.junit.Test;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CrossReferenceBehaviour {
 
@@ -49,14 +47,15 @@ public class CrossReferenceBehaviour {
 
         // generate XML and JSON        
         verifyNoMoreInteractions(factory, builder);
-        crossReference.outputToFiles(builder); 
+        crossReference.outputToFiles(builder);
+
+        System.out.println("AAA{" + output.get(0).toString() + "}AAA");
 
         // Then
         assertEquals("<xref>\n" +
                 "  <meta>\n" +
+                "    <string>theme=testing</string>\n" +
                 "    <string>author=Mauro</string>\n" +
-                "    <string>author=Mauro\n" +
-                "theme=testing</string>\n" +
                 "  </meta>\n" +
                 "  <stories>\n" +
                 "    <story>\n" +
@@ -86,8 +85,8 @@ public class CrossReferenceBehaviour {
 
         assertEquals("{'xref': {\n" +
                 "  'meta': [\n" +
-                "    'author=Mauro',\n" +
-                "    'author=Mauro\\u000atheme=testing'\n" +
+                "    'theme=testing',\n" +
+                "    'author=Mauro'\n" +
                 "  ],\n" +
                 "  'stories': [\n" +
                 "    {\n" +
