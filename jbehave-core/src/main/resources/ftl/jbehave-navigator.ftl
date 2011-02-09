@@ -90,6 +90,7 @@
                       <th><a href ng:click="predicate = 'description'">Description</a>(<a href ng:click="predicate = '-description'">^</a>)</th>
                       <th><a href ng:click="predicate = 'meta'">Meta</a>(<a href ng:click="predicate = '-meta'">^</a>)</th>
                       <th><a href ng:click="predicate = 'narrative'">Narrative</a>(<a href ng:click="predicate = '-narrative'">^</a>)</th>
+                      <th>State</th>
                       <th>Action</th>
                     </tr>
                     <tr>
@@ -98,12 +99,14 @@
                       <th><select name="search.meta"><option value="=" selected>**All**</option><option ng:repeat="permutation in data.xref.meta">{{permutation}}</option></select></th>
                       <th><input name="search.narrative"/></th>
                       <th></th>
+                      <th></th>
                     </tr>
                     <tr ng:repeat="story in data.xref.stories.$filter(search).$orderBy(predicate)">
                       <td>{{story.path}}</td>
                       <td>{{story.description}}</td>
                       <td>{{story.meta}}</td>
                       <td>{{story.narrative}}</td>
+                      <td><img src="images/passed-{{story.passed}}.gif" alt="Story Passed == {{story.passed}}" /></td>
                       <td>
                         <button ng:click="showResults(story)">Results</button>
                         <button ng:click="showScenarios(story)">Scenarios</button>

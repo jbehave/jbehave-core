@@ -37,7 +37,7 @@ public class PrintStreamOutputBehaviour {
         StoryReporter reporter = new TxtOutput(new PrintStream(out));
 
         // When
-        narrateAnInterestingStory(reporter);
+        narrateAnInterestingStory(reporter, false);
 
         // Then
         String expected = "DRY RUN\n"
@@ -115,7 +115,7 @@ public class PrintStreamOutputBehaviour {
         StoryReporter reporter = new HtmlOutput(factory.createPrintStream());
 
         // When
-        narrateAnInterestingStory(reporter);
+        narrateAnInterestingStory(reporter, false);
 
         // Then
         String expected = "<div class=\"dryRun\">DRY RUN</div>\n"+""
@@ -220,7 +220,7 @@ public class PrintStreamOutputBehaviour {
         StoryReporter reporter = new HtmlOutput(factory.createPrintStream(), patterns);
 
         // When
-        narrateAnInterestingStory(reporter);
+        narrateAnInterestingStory(reporter, false);
 
         // Then
         String expected =  "<div class=\"dryRun\">DRY RUN</div>\n"
@@ -288,7 +288,7 @@ public class PrintStreamOutputBehaviour {
         StoryReporter reporter = new XmlOutput(factory.createPrintStream());
 
         // When
-        narrateAnInterestingStory(reporter);
+        narrateAnInterestingStory(reporter, false);
 
 
         // Then
@@ -360,7 +360,7 @@ public class PrintStreamOutputBehaviour {
     }
 
 
-    public static void narrateAnInterestingStory(StoryReporter reporter) {
+    public static void narrateAnInterestingStory(StoryReporter reporter, boolean withFailure) {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
@@ -376,7 +376,11 @@ public class PrintStreamOutputBehaviour {
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
-        reporter.pending("Then I should have a balance of $30");
+        if (withFailure) {
+            reporter.failed("Then I should have a balance of $30", new NullPointerException());
+        } else {
+            reporter.pending("Then I should have a balance of $30");
+        }
         reporter.notPerformed("Then I should have $20");
         OutcomesTable outcomesTable = new OutcomesTable();
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
@@ -497,9 +501,9 @@ public class PrintStreamOutputBehaviour {
     @Test
     public void shouldReportEventsToIdeOnlyConsoleOutput() {
         // When
-        narrateAnInterestingStory(new IdeOnlyConsoleOutput());
-        narrateAnInterestingStory(new IdeOnlyConsoleOutput(new LocalizedKeywords()));
-        narrateAnInterestingStory(new IdeOnlyConsoleOutput(new Properties(), new LocalizedKeywords(), true));        
+        narrateAnInterestingStory(new IdeOnlyConsoleOutput(), false);
+        narrateAnInterestingStory(new IdeOnlyConsoleOutput(new LocalizedKeywords()), false);
+        narrateAnInterestingStory(new IdeOnlyConsoleOutput(new Properties(), new LocalizedKeywords(), true), false);
     }
     
     @Test
@@ -559,7 +563,7 @@ public class PrintStreamOutputBehaviour {
                 .build(storyPath);
 
         // When
-        narrateAnInterestingStory(reporter);
+        narrateAnInterestingStory(reporter, false);
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         Properties viewProperties = new Properties();
         viewGenerator.generateReportsView(outputDirectory, asList("html", "txt"), viewProperties);
@@ -578,7 +582,7 @@ public class PrintStreamOutputBehaviour {
                 .build(storyPath);
 
         // When
-        narrateAnInterestingStory(reporter);
+        narrateAnInterestingStory(reporter, false);
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         Properties viewProperties = new Properties();
         viewProperties.setProperty("decorateNonHtml", "false");
@@ -607,7 +611,7 @@ public class PrintStreamOutputBehaviour {
         }.withFormats(TXT).build(storyPath);
 
         // When
-        narrateAnInterestingStory(reporter);
+        narrateAnInterestingStory(reporter, false);
 
         // Then
         File outputFile = factory.getOutputFile();
