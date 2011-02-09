@@ -33,12 +33,8 @@ public class ConvertedParameters implements Parameters {
         this.parameterConverters = parameterConverters;
     }
 
-    public boolean hasValue(String name) {
-        return values.containsKey(name);
-    }
-
     public <T> T valueAs(String name, Class<T> type) {
-        return convert(type, values.get(name));
+        return convert(values.get(name), type);
     }
 
     public <T> T valueAs(String name, Class<T> type, T defaultValue) {
@@ -48,7 +44,7 @@ public class ConvertedParameters implements Parameters {
         return defaultValue;
     }
 
-    private <T> T convert(Class<T> type, String value) {
+    private <T> T convert(String value, Class<T> type) {
         return type.cast(parameterConverters.convert(value, type));
     }
 

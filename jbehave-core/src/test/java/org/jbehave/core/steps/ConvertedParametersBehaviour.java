@@ -15,37 +15,34 @@ import static org.hamcrest.Matchers.is;
 public class ConvertedParametersBehaviour {
 
     private Map<String, String> map;
-
-    private ConvertedParameters parameters;
+    private Parameters parameters;
 
     @Before
     public void setUp() throws Exception {
-
         map = new HashMap<String, String>();
         map.put("one", "11");
-
         parameters = new ConvertedParameters(map, new ParameterConverters());
     }
 
     @Test
     public void shouldReturnParameterValueConvertedToGivenType() throws Exception {
-        assertThat(parameters.hasValue("one"), is(true));
+        assertThat(parameters.values().containsKey("one"), is(true));
         assertThat(parameters.valueAs("one", String.class), is("11"));
         assertThat(parameters.valueAs("one", Integer.class), is(11));
     }
 
     @Test
     public void shouldIgnoreDefaultValueWhenConvertingAParameterThatIsFound() throws Exception {
-        assertThat(parameters.hasValue("one"), is(true));
+        assertThat(parameters.values().containsKey("one"), is(true));
         assertThat(parameters.valueAs("one", Integer.class, 3), is(11));
         assertThat(parameters.valueAs("one", String.class, "3"), is("11"));
     }
 
     @Test
     public void shouldReturnDefaultValueWhenConvertingAParameterNotFound() throws Exception {
-        assertThat(parameters.hasValue("XX"), is(false));
+        assertThat(parameters.values().containsKey("XX"), is(false));
         assertThat(parameters.valueAs("XX", String.class, "3"), is("3"));
-        assertThat(parameters.hasValue("XXX"), is(false));
+        assertThat(parameters.values().containsKey("XXX"), is(false));
         assertThat(parameters.valueAs("XXX", Integer.class, 3), is(3));
     }
 
