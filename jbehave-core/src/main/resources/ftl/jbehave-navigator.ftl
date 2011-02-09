@@ -55,7 +55,7 @@
           showScenarios: function(story) {
         
             var $dialog = $('<div></div>')
-                        .html('<pre>'+story.scenarios+'</pre>')
+                        .html('<pre>'+story.scenarios.replace("\n","<br>")+'</pre>')
                         .dialog({
                             width: 800,
                             height: 400,
@@ -70,6 +70,9 @@
                alert("TODO");
           }
         };
+        angular.filter('newlines', function(text){
+          return text.replace(/\n/g, '<br/>');
+        });
       </script>
 
     <div id="page-wrap">
@@ -105,7 +108,7 @@
                       <td>{{story.path}}</td>
                       <td>{{story.description}}</td>
                       <td>{{story.meta}}</td>
-                      <td>{{story.narrative}}</td>
+                      <td>{{story.narrative | newlines | html}}</td>
                       <td><img src="images/passed-{{story.passed}}.gif" alt="Story Passed == {{story.passed}}" /></td>
                       <td>
                         <button ng:click="showResults(story)">Results</button>
