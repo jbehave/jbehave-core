@@ -33,10 +33,6 @@ public class ConvertedParameters implements Parameters {
         this.parameterConverters = parameterConverters;
     }
 
-    public boolean hasValue(String name) {
-        return values.containsKey(name);
-    }
-
     public <T> T valueAs(String name, Class<T> type) {
         return convert(type, values.get(name));
     }
