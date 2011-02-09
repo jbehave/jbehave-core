@@ -42,7 +42,7 @@ public class CrossReferenceBehaviour {
         when(builder.pathResolver()).thenReturn(pathResolver);
 
         // When
-        PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder));
+        PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
         crossReference.getStepMonitor().stepMatchesPattern("a", true, "[abc]", Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON        
@@ -71,15 +71,20 @@ public class CrossReferenceBehaviour {
                 "theme=testing\n" +
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
+                "      <passed>false</passed>\n" +
                 "    </story>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
-                "    <stepMatch>\n" +
-                "      <storyPath>/path/to/story</storyPath>\n" +
-                "      <scenarioTitle>I ask for a loan</scenarioTitle>\n" +
-                "      <step>a</step>\n" +
-                "      <pattern>[abc]</pattern>\n" +
-                "    </stepMatch>\n" +
+                "    <entry>\n" +
+                "      <string>[abc]</string>\n" +
+                "      <list>\n" +
+                "        <stepMatch>\n" +
+                "          <storyPath>/path/to/story</storyPath>\n" +
+                "          <scenarioTitle>I ask for a loan</scenarioTitle>\n" +
+                "          <step>a</step>\n" +
+                "        </stepMatch>\n" +
+                "      </list>\n" +
+                "    </entry>\n" +
                 "  </stepMatches>\n" +
                 "</xref>", output.get(0).toString()); // xml
 
@@ -96,16 +101,21 @@ public class CrossReferenceBehaviour {
                 "      'path': '/path/to/story',\n" +
                 "      'html': 'path.to.html',\n" +
                 "      'meta': 'author=Mauro\\u000atheme=testing\\u000a',\n" +
-                "      'scenarios': ''\n" +
+                "      'scenarios': '',\n" +
+                "      'passed': false\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  'stepMatches': [\n" +
-                "    {\n" +
-                "      'storyPath': '/path/to/story',\n" +
-                "      'scenarioTitle': 'I ask for a loan',\n" +
-                "      'step': 'a',\n" +
-                "      'pattern': '[abc]'\n" +
-                "    }\n" +
+                "    [\n" +
+                "      '[abc]',\n" +
+                "      [\n" +
+                "        {\n" +
+                "          'storyPath': '/path/to/story',\n" +
+                "          'scenarioTitle': 'I ask for a loan',\n" +
+                "          'step': 'a'\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    ]\n" +
                 "  ]\n" +
                 "}}", output.get(1).toString().replace('\"', '\'')); // json
 

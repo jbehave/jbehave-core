@@ -4,6 +4,7 @@ import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -15,8 +16,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class CrossReference extends Format {
@@ -24,8 +27,9 @@ public class CrossReference extends Format {
     private String currentStoryPath;
     private String currentScenarioTitle;
     private List<Story> stories = new ArrayList<Story>();
-    private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
+    private Map<String, List<StepMatch>> stepMatches = new HashMap<String, List<StepMatch>>();
     private StepMonitor stepMonitor = new XrefStepMonitor();
+    private Set<String> failingStories = new HashSet<String>();
 
     public CrossReference() {
         this("XREF");
@@ -40,7 +44,7 @@ public class CrossReference extends Format {
     }
 
     public void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
-        XrefRoot root = new XrefRoot(stepMatches, stories, storyReporterBuilder);
+        XrefRoot root = new XrefRoot(stepMatches, stories, storyReporterBuilder, failingStories);
         outputFile("xref.xml", new XStream(), root, storyReporterBuilder);
         outputFile("xref.json", new XStream(new JsonHierarchicalStreamDriver()), root, storyReporterBuilder);
     }
@@ -93,6 +97,12 @@ public class CrossReference extends Format {
             }
 
             @Override
+            public void failed(String step, Throwable cause) {
+                super.failed(step, cause);
+                failingStories.add(currentStoryPath);
+            }
+
+            @Override
             public void beforeScenario(String title) {
                 currentScenarioTitle = title;
             }
@@ -102,7 +112,12 @@ public class CrossReference extends Format {
     private class XrefStepMonitor extends StepMonitor.NULL {
         public void stepMatchesPattern(String step, boolean matches, String pattern, Method method, Object stepsInstance) {
             if (matches) {
-                stepMatches.add(new StepMatch(currentStoryPath, currentScenarioTitle, step, pattern));
+                List<StepMatch> val = stepMatches.get(pattern);
+                if (val == null) {
+                    val = new ArrayList<StepMatch>();
+                    stepMatches.put(pattern, val);
+                }
+                val.add(new StepMatch(currentStoryPath, currentScenarioTitle, step));
             }
             super.stepMatchesPattern(step, matches, pattern, method, stepsInstance);
         }
@@ -112,12 +127,12 @@ public class CrossReference extends Format {
     private static class XrefRoot {
         private Set<String> meta = new HashSet<String>();
         private List<XrefStory> stories = new ArrayList<XrefStory>();
-        private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
+        private Map<String, List<StepMatch>> stepMatches;
 
-        public XrefRoot(List<StepMatch> stepMatches, List<Story> stories, StoryReporterBuilder storyReporterBuilder) {
+        public XrefRoot(Map<String, List<StepMatch>> stepMatches, List<Story> stories, StoryReporterBuilder storyReporterBuilder, Set<String> failures) {
             this.stepMatches = stepMatches;
             for (Story story : stories) {
-                this.stories.add(new XrefStory(story, this, storyReporterBuilder));
+                this.stories.add(new XrefStory(story, this, storyReporterBuilder, !failures.contains(story.getPath())));
             }
         }
     }
@@ -131,8 +146,9 @@ public class CrossReference extends Format {
         private String html;
         private String meta = "";
         private String scenarios = "";
+        private boolean passed;
 
-        public XrefStory(Story story, XrefRoot root, StoryReporterBuilder storyReporterBuilder) {
+        public XrefStory(Story story, XrefRoot root, StoryReporterBuilder storyReporterBuilder, boolean passed) {
             Narrative narrative = story.getNarrative();
             if (!narrative.isEmpty()) {
                 this.narrative = "In order to " + narrative.inOrderTo() + "\n" + "As a " + narrative.asA() + "\n"
@@ -141,9 +157,11 @@ public class CrossReference extends Format {
             this.description = story.getDescription().asString();
             this.name = story.getName();
             this.path = story.getPath();
+            this.passed = passed;
             this.html = storyReporterBuilder.pathResolver().resolveName(new StoryLocation(null, story.getPath()), "html");
-            for (String next : story.getMeta().getPropertyNames()) {
-                String property = next + "=" + story.getMeta().getProperty(next);
+            Meta storyMeta = story.getMeta();
+            for (String next : storyMeta.getPropertyNames()) {
+                String property = next + "=" + storyMeta.getProperty(next);
                 root.meta.add(property);
                 this.meta = this.meta + property + "\n";
 
@@ -164,13 +182,11 @@ public class CrossReference extends Format {
         private final String storyPath;
         private final String scenarioTitle;
         private final String step;
-        private final String pattern;
 
-        public StepMatch(String storyPath, String scenarioTitle, String step, String pattern) {
+        public StepMatch(String storyPath, String scenarioTitle, String step) {
             this.storyPath = storyPath;
             this.scenarioTitle = scenarioTitle;
             this.step = step;
-            this.pattern = pattern;
         }
     }
 
