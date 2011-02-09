@@ -34,7 +34,7 @@ public class ConvertedParameters implements Parameters {
     }
 
     public <T> T valueAs(String name, Class<T> type) {
-        return convert(type, values.get(name));
+        return convert(values.get(name), type);
     }
 
     public <T> T valueAs(String name, Class<T> type, T defaultValue) {
@@ -44,7 +44,7 @@ public class ConvertedParameters implements Parameters {
         return defaultValue;
     }
 
-    private <T> T convert(Class<T> type, String value) {
+    private <T> T convert(String value, Class<T> type) {
         return type.cast(parameterConverters.convert(value, type));
     }
 
