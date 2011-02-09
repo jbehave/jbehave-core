@@ -14,10 +14,11 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.steps.ChainedParameters;
+import org.jbehave.core.steps.ChainedRow;
 import org.jbehave.core.steps.ConvertedParameters;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.Parameters;
+import org.jbehave.core.steps.Row;
 
 import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.DOTALL;
@@ -97,7 +98,7 @@ public class ExamplesTable {
     private final Properties properties = new Properties();
     private boolean trim = true;
 
-    private final Parameters defaults;
+    private final Row defaults;
 
     public ExamplesTable(String tableAsString) {
         this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR);
@@ -118,7 +119,7 @@ public class ExamplesTable {
         parse();
     }
 
-    private ExamplesTable(ExamplesTable other, Parameters defaults) {
+    private ExamplesTable(ExamplesTable other, Row defaults) {
         this.data.addAll(other.data);
         this.tableAsString = other.tableAsString;
         this.headerSeparator = other.headerSeparator;
@@ -212,7 +213,7 @@ public class ExamplesTable {
     }
 
     public ExamplesTable withDefaults(Parameters defaults) {
-        return new ExamplesTable(this, new ChainedParameters(defaults, this.defaults));
+        return new ExamplesTable(this, new ChainedRow(defaults, this.defaults));
     }
 
     public Properties getProperties() {
@@ -250,7 +251,7 @@ public class ExamplesTable {
     }
 
     private Parameters createParameters(Map<String, String> values) {
-        return new ConvertedParameters(new ChainedParameters(new ConvertedParameters(values, parameterConverters),
+        return new ConvertedParameters(new ChainedRow(new ConvertedParameters(values, parameterConverters),
                 defaults), parameterConverters);
     }
 

@@ -12,14 +12,14 @@ public class ConvertedParameters implements Parameters {
     private final ParameterConverters parameterConverters;
 
     /**
-     * Creates an instance of ConvertedParameters from a Parameters delegate
-     * which provides the values
+     * Creates an instance of ConvertedParameters from a Row which provides the
+     * values
      * 
-     * @param delegate the Parameters delegate to get the values from
+     * @param row the Row to get the values from
      * @param parameterConverters the ParameterConverters used for conversion
      */
-    public ConvertedParameters(Parameters delegate, ParameterConverters parameterConverters) {
-        this(delegate.values(), parameterConverters);
+    public ConvertedParameters(Row row, ParameterConverters parameterConverters) {
+        this(row.values(), parameterConverters);
     }
 
     /**

@@ -1,8 +1,7 @@
 package org.jbehave.core.steps;
 
-import java.util.Map;
 
-public interface Parameters {
+public interface Parameters extends Row {
 
     /**
      * Determines if the parameter of a given name is found
@@ -31,12 +30,5 @@ public interface Parameters {
      * @return The value of type <T>
      */
     <T> T valueAs(String name, Class<T> type, T defaultValue);
-
-    /**
-     * Returns the map of all the values as Strings
-     * 
-     * @return The Map of values
-     */
-    Map<String, String> values();
 
 }
