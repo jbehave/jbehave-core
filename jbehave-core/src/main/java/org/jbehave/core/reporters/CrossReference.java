@@ -44,9 +44,13 @@ public class CrossReference extends Format {
     }
 
     public void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
-        XrefRoot root = new XrefRoot(stepMatches, stories, storyReporterBuilder, failingStories);
+        XrefRoot root = makeXRefRootNode(storyReporterBuilder, stepMatches, stories, failingStories);
         outputFile("xref.xml", new XStream(), root, storyReporterBuilder);
         outputFile("xref.json", new XStream(new JsonHierarchicalStreamDriver()), root, storyReporterBuilder);
+    }
+
+    protected XrefRoot makeXRefRootNode(StoryReporterBuilder storyReporterBuilder, Map<String, List<StepMatch>> stepMatches, List<Story> stories, Set<String> failingStories) {
+        return new XrefRoot(stepMatches, stories, storyReporterBuilder, failingStories);
     }
 
     private void outputFile(String name, XStream xstream, XrefRoot root, StoryReporterBuilder storyReporterBuilder){
@@ -78,12 +82,20 @@ public class CrossReference extends Format {
 
     private XStream configure(XStream xstream) {
         xstream.setMode(XStream.NO_REFERENCES);
-        xstream.alias("xref", XrefRoot.class);
-        xstream.alias("story", XrefStory.class);
+        xStreamAliasForXRefRoot(xstream);
+        xStreamAliasForXRefStory(xstream);
         xstream.alias("stepMatch", StepMatch.class);
         xstream.omitField(ExamplesTable.class, "parameterConverters");
         xstream.omitField(ExamplesTable.class, "defaults");
         return xstream;
+    }
+
+    protected void xStreamAliasForXRefStory(XStream xstream) {
+        xstream.alias("story", XrefStory.class);
+    }
+
+    protected void xStreamAliasForXRefRoot(XStream xstream) {
+        xstream.alias("xref", XrefRoot.class);
     }
 
     @Override
@@ -121,10 +133,10 @@ public class CrossReference extends Format {
             }
             super.stepMatchesPattern(step, matches, pattern, method, stepsInstance);
         }
-    };
+    }
 
     @SuppressWarnings("unused")
-    private static class XrefRoot {
+    protected static class XrefRoot {
         private Set<String> meta = new HashSet<String>();
         private List<XrefStory> stories = new ArrayList<XrefStory>();
         private Map<String, List<StepMatch>> stepMatches;
@@ -132,13 +144,17 @@ public class CrossReference extends Format {
         public XrefRoot(Map<String, List<StepMatch>> stepMatches, List<Story> stories, StoryReporterBuilder storyReporterBuilder, Set<String> failures) {
             this.stepMatches = stepMatches;
             for (Story story : stories) {
-                this.stories.add(new XrefStory(story, this, storyReporterBuilder, !failures.contains(story.getPath())));
+                this.stories.add(makeXRefStoryNode(storyReporterBuilder, story, !failures.contains(story.getPath()), this));
             }
+        }
+
+        protected XrefStory makeXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed, XrefRoot root) {
+            return new XrefStory(story, root, storyReporterBuilder, passed);
         }
     }
 
     @SuppressWarnings("unused")
-    private static class XrefStory {
+    public static class XrefStory {
         private String description;
         private String narrative = "";
         private String name;
@@ -162,9 +178,11 @@ public class CrossReference extends Format {
             Meta storyMeta = story.getMeta();
             for (String next : storyMeta.getPropertyNames()) {
                 String property = next + "=" + storyMeta.getProperty(next);
-                root.meta.add(property);
-                this.meta = this.meta + property + "\n";
-
+                addMetaProperty(property, root.meta);
+                String newMeta = appendMetaProperty(property, this.meta);
+                if (newMeta != null) {
+                    this.meta = newMeta;
+                }
             }
             for (Scenario scenario : story.getScenarios()) {
                 String body = "Scenario:" + scenario.getTitle() + "\n";
@@ -175,10 +193,18 @@ public class CrossReference extends Format {
                 scenarios = scenarios + body + "\n\n";
             }
         }
+
+        protected String appendMetaProperty(String property, String meta) {
+            return meta + property + "\n";
+        }
+
+        protected void addMetaProperty(String property, Set<String> meta) {
+            meta.add(property);
+        }
     }
 
     @SuppressWarnings("unused")
-    private static class StepMatch {
+    protected static class StepMatch {
         private final String storyPath;
         private final String scenarioTitle;
         private final String step;
