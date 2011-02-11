@@ -136,7 +136,7 @@ public class CrossReference extends Format {
     }
 
     @SuppressWarnings("unused")
-    protected static class XrefRoot {
+    public static class XrefRoot {
         private Set<String> meta = new HashSet<String>();
         private List<XrefStory> stories = new ArrayList<XrefStory>();
         private Map<String, List<StepMatch>> stepMatches;
@@ -204,7 +204,7 @@ public class CrossReference extends Format {
     }
 
     @SuppressWarnings("unused")
-    protected static class StepMatch {
+    public static class StepMatch {
         private final String storyPath;
         private final String scenarioTitle;
         private final String step;
