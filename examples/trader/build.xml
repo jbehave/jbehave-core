@@ -1,6 +1,6 @@
 
 <!--
-    Note: Use of <artifact:dependencies/> requires maven-ant-tasks-2.1.jar in $ANT_HOME/lib
+    Note: Use of <artifact:dependencies/> requires maven-ant-tasks-2.1.1.jar in $ANT_HOME/lib
           Download it from http://maven.apache.org/ant-tasks/download.html
   -->
 <project name="trader" default="build" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
