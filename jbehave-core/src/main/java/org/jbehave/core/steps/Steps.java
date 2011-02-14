@@ -218,9 +218,7 @@ public class Steps implements CandidateSteps {
     public List<BeforeOrAfterStep> listBeforeOrAfterScenario() {
         List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
         steps.addAll(stepsHaving(Stage.BEFORE, BeforeScenario.class));
-        steps.addAll(stepsHaving(Stage.AFTER, AfterScenario.class, ANY));
-        steps.addAll(stepsHaving(Stage.AFTER, AfterScenario.class, SUCCESS));
-        steps.addAll(stepsHaving(Stage.AFTER, AfterScenario.class, FAILURE));
+        steps.addAll(stepsHaving(Stage.AFTER, AfterScenario.class, ANY, SUCCESS, FAILURE));
         return steps;
     }
 
@@ -258,12 +256,14 @@ public class Steps implements CandidateSteps {
     }
 
     private List<BeforeOrAfterStep> stepsHaving(Stage stage, Class<? extends AfterScenario> annotationClass,
-            Outcome outcome) {
+            Outcome... outcomes) {
         List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
         for (Method method : annotatatedMethods(annotationClass)) {
             AfterScenario annotation = method.getAnnotation(annotationClass);
-            if (outcome.equals(annotation.uponOutcome())) {
-                steps.add(createBeforeOrAfterStep(stage, method, outcome));
+            for (Outcome outcome : outcomes) {
+                if (outcome.equals(annotation.uponOutcome())) {
+                    steps.add(createBeforeOrAfterStep(stage, method, outcome));
+                }
             }
         }
         return steps;
