@@ -1,6 +1,9 @@
 package org.jbehave.core.steps;
 
+import com.thoughtworks.xstream.XStream;
 import org.hamcrest.Matchers;
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -9,14 +12,17 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -354,6 +360,55 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // Then the step with highest priority is returned
         assertThat(step4, equalTo(steps.get(0)));
+    }
+
+    @Test
+    public void afterScenarioStepsShouldBeInReverseOrder() throws Throwable {
+        MarkUnmatchedStepsAsPending foo = new MarkUnmatchedStepsAsPending();
+        List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
+        steps.add(new ClassWithMethodsAandB());
+        steps.add(new ClassWithMethodsCandD());
+        String stepsAsString = steps.toString(); // includes object ID numbers from JVM
+
+        XStream xs = new XStream();
+
+        List<Step> subset = foo.collectBeforeOrAfterScenarioSteps(steps, Stage.BEFORE, false);
+        String subsetAsXML = xs.toXML(subset);
+        assertTrue(subsetAsXML.indexOf("<name>a</name>") > -1); // there
+        assertEquals(subsetAsXML.indexOf("<name>b</name>"), -1); // not there
+        assertTrue(subsetAsXML.indexOf("<name>c</name>") > -1); // there
+        assertEquals(subsetAsXML.indexOf("<name>d</name>"), -1); // not there
+        assertTrue(subsetAsXML.indexOf("<name>a</name>") < subsetAsXML.indexOf("<name>c</name>")); // there
+
+        assertEquals(stepsAsString, steps.toString()); // steps have not been mutated.
+
+        subset = foo.collectBeforeOrAfterScenarioSteps(steps, Stage.AFTER, false);
+        subsetAsXML = xs.toXML(subset);
+        assertEquals(subsetAsXML.indexOf("<name>a</name>"), -1); // not there
+        assertTrue(subsetAsXML.indexOf("<name>b</name>") > -1); // there
+        assertEquals(subsetAsXML.indexOf("<name>c</name>"), -1); // not there
+        assertTrue(subsetAsXML.indexOf("<name>d</name>") > -1); // there
+        assertTrue(subsetAsXML.indexOf("<name>d</name>") < subsetAsXML.indexOf("<name>b</name>")); // there AND IN REVERSE ORDER
+
+    }
+
+    public static class ClassWithMethodsAandB extends Steps {
+        @BeforeScenario
+        public void a() {
+        }
+        @AfterScenario
+        public void b() {
+        }
+
+    }
+
+    public static class ClassWithMethodsCandD extends Steps {
+        @BeforeScenario
+        public void c() {
+        }
+        @AfterScenario
+        public void d() {
+        }
     }
 
 }
