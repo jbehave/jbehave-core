@@ -249,15 +249,15 @@ public class CrossReferenceBehaviour {
         }
 
         @Override
-        protected CrossReference.XrefStory makeXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed, CrossReference.XrefRoot root) {
-            return new MyXrefStory(story, storyReporterBuilder, passed, root);
+        protected CrossReference.XrefStory makeXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed) {
+            return new MyXrefStory(story, storyReporterBuilder, passed);
         }
     }
 
     private static class MyXrefStory extends CrossReference.XrefStory {
         private String theme;
-        public MyXrefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed, CrossReference.XrefRoot root) {
-            super(story, root, storyReporterBuilder, passed);
+        public MyXrefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed) {
+            super(story, storyReporterBuilder, passed);
         }
 
         @Override

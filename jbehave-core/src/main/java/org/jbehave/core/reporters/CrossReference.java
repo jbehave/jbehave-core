@@ -144,17 +144,35 @@ public class CrossReference extends Format {
         public XrefRoot(Map<String, List<StepMatch>> stepMatches, List<Story> stories, StoryReporterBuilder storyReporterBuilder, Set<String> failures) {
             this.stepMatches = stepMatches;
             for (Story story : stories) {
-                this.stories.add(makeXRefStoryNode(storyReporterBuilder, story, !failures.contains(story.getPath()), this));
+                this.stories.add(createXRefStoryNode(storyReporterBuilder, story, !failures.contains(story.getPath()), this));
             }
         }
 
-        protected XrefStory makeXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed, XrefRoot root) {
-            return new XrefStory(story, root, storyReporterBuilder, passed);
+        /*
+         * Ensure that XrefStory is instantiated completely, before secondary methods are invoked (or overridden)
+         */
+        protected final XrefStory createXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed, XrefRoot root) {
+            XrefStory xrefStory = makeXRefStoryNode(storyReporterBuilder, story, passed);
+            xrefStory.processMetaTags(root);
+            xrefStory.processScenarios();
+            return xrefStory;
+        }
+
+        /**
+         * Override this is you want to add fields to the JSON.  Specifically, create a subclass of XrefStory to return.
+         * @param storyReporterBuilder the story reporter builder
+         * @param story the story
+         * @param passed the story passed (or failed)
+         * @return
+         */
+        protected XrefStory makeXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed) {
+            return new XrefStory(story, storyReporterBuilder, passed);
         }
     }
 
     @SuppressWarnings("unused")
     public static class XrefStory {
+        private transient Story story; // don't turn into JSON.
         private String description;
         private String narrative = "";
         private String name;
@@ -164,7 +182,8 @@ public class CrossReference extends Format {
         private String scenarios = "";
         private boolean passed;
 
-        public XrefStory(Story story, XrefRoot root, StoryReporterBuilder storyReporterBuilder, boolean passed) {
+        public XrefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed) {
+            this.story = story;
             Narrative narrative = story.getNarrative();
             if (!narrative.isEmpty()) {
                 this.narrative = "In order to " + narrative.inOrderTo() + "\n" + "As a " + narrative.asA() + "\n"
@@ -175,6 +194,20 @@ public class CrossReference extends Format {
             this.path = story.getPath();
             this.passed = passed;
             this.html = storyReporterBuilder.pathResolver().resolveName(new StoryLocation(null, story.getPath()), "html");
+        }
+
+        protected void processScenarios() {
+            for (Scenario scenario : story.getScenarios()) {
+                String body = "Scenario:" + scenario.getTitle() + "\n";
+                List<String> steps = scenario.getSteps();
+                for (String step : steps) {
+                    body = body + step + "\n";
+                }
+                scenarios = scenarios + body + "\n\n";
+            }
+        }
+
+        protected void processMetaTags(XrefRoot root) {
             Meta storyMeta = story.getMeta();
             for (String next : storyMeta.getPropertyNames()) {
                 String property = next + "=" + storyMeta.getProperty(next);
@@ -183,14 +216,6 @@ public class CrossReference extends Format {
                 if (newMeta != null) {
                     this.meta = newMeta;
                 }
-            }
-            for (Scenario scenario : story.getScenarios()) {
-                String body = "Scenario:" + scenario.getTitle() + "\n";
-                List<String> steps = scenario.getSteps();
-                for (String step : steps) {
-                    body = body + step + "\n";
-                }
-                scenarios = scenarios + body + "\n\n";
             }
         }
 
