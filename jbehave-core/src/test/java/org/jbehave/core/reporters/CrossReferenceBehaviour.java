@@ -10,10 +10,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -28,7 +25,7 @@ public class CrossReferenceBehaviour {
         FilePrintStreamFactory factory = mock(FilePrintStreamFactory.class);
 
         final List<ByteArrayOutputStream> output = new ArrayList<ByteArrayOutputStream>();
-        final File zebra = new File("zebra");
+        final File zebra = new File("target/zebra");
 
         CrossReference crossReference = new CrossReference() {
             @Override
@@ -132,7 +129,7 @@ public class CrossReferenceBehaviour {
         FilePrintStreamFactory factory = mock(FilePrintStreamFactory.class);
 
         final List<ByteArrayOutputStream> output = new ArrayList<ByteArrayOutputStream>();
-        final File zebra = new File("zebra");
+        final File zebra = new File("target/zebra");
 
         CrossReference crossReference = new CrossReference() {
             @Override
@@ -144,8 +141,8 @@ public class CrossReferenceBehaviour {
             }
 
             @Override
-            protected XrefRoot makeXRefRootNode(StoryReporterBuilder storyReporterBuilder, Map<String, List<CrossReference.StepMatch>> stepMatches, List<Story> stories, Set<String> failingStories) {
-                return new MyXrefRoot(stepMatches, stories, storyReporterBuilder, failingStories);
+            protected XrefRoot makeXRefRootNode(Map<String, List<CrossReference.StepMatch>> stepMatches) {
+                return new MyXrefRoot(stepMatches);
             }
 
             @Override
@@ -208,6 +205,9 @@ public class CrossReferenceBehaviour {
                 "      </list>\n" +
                 "    </entry>\n" +
                 "  </stepMatches>\n" +
+                "  <themes>\n" +
+                "    <string>testing</string>\n" +
+                "  </themes>\n" +
                 "</xref>", output.get(0).toString()); // xml
 
         assertEquals("{'xref': {\n" +
@@ -238,32 +238,39 @@ public class CrossReferenceBehaviour {
                 "        }\n" +
                 "      ]\n" +
                 "    ]\n" +
+                "  ],\n" +
+                "  'themes': [\n" +
+                "    'testing'\n" +
                 "  ]\n" +
                 "}}", output.get(1).toString().replace('\"', '\'')); // json
 
     }
 
     private static class MyXrefRoot extends CrossReference.XrefRoot {
-        public MyXrefRoot(Map<String, List<CrossReference.StepMatch>> stepMatches, List<Story> stories, StoryReporterBuilder storyReporterBuilder, Set<String> failingStories) {
-            super(stepMatches, stories, storyReporterBuilder, failingStories);
+        Set<String> themes = new HashSet<String>();
+        public MyXrefRoot(Map<String, List<CrossReference.StepMatch>> stepMatches) {
+            super(stepMatches);
         }
 
         @Override
         protected CrossReference.XrefStory makeXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed) {
-            return new MyXrefStory(story, storyReporterBuilder, passed);
+            return new MyXrefStory(story, storyReporterBuilder, passed, themes);
         }
     }
 
     private static class MyXrefStory extends CrossReference.XrefStory {
         private String theme;
-        public MyXrefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed) {
+        private transient Set<String> themes = new HashSet<String>();
+        public MyXrefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed, Set<String> themes) {
             super(story, storyReporterBuilder, passed);
+            this.themes = themes;
         }
 
         @Override
         protected String appendMetaProperty(String property, String meta) {
             if (property.startsWith("theme")) {
                 this.theme = property.substring(property.indexOf("=")+1);
+                themes.add(this.theme);
                 return null;
             } else {
                 return super.appendMetaProperty(property, meta);

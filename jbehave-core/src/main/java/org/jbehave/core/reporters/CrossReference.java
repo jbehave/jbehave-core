@@ -44,13 +44,19 @@ public class CrossReference extends Format {
     }
 
     public void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
-        XrefRoot root = makeXRefRootNode(storyReporterBuilder, stepMatches, stories, failingStories);
+        XrefRoot root = createXRefRootNode(storyReporterBuilder, stepMatches, stories, failingStories);
         outputFile("xref.xml", new XStream(), root, storyReporterBuilder);
         outputFile("xref.json", new XStream(new JsonHierarchicalStreamDriver()), root, storyReporterBuilder);
     }
 
-    protected XrefRoot makeXRefRootNode(StoryReporterBuilder storyReporterBuilder, Map<String, List<StepMatch>> stepMatches, List<Story> stories, Set<String> failingStories) {
-        return new XrefRoot(stepMatches, stories, storyReporterBuilder, failingStories);
+    protected final XrefRoot createXRefRootNode(StoryReporterBuilder storyReporterBuilder, Map<String, List<StepMatch>> stepMatches, List<Story> stories, Set<String> failingStories) {
+        XrefRoot xrefRoot = makeXRefRootNode(stepMatches);
+        xrefRoot.processStories(stories, storyReporterBuilder, failingStories);
+        return xrefRoot;
+    }
+
+    protected XrefRoot makeXRefRootNode(Map<String, List<StepMatch>> stepMatches) {
+        return new XrefRoot(stepMatches);
     }
 
     private void outputFile(String name, XStream xstream, XrefRoot root, StoryReporterBuilder storyReporterBuilder){
@@ -141,8 +147,11 @@ public class CrossReference extends Format {
         private List<XrefStory> stories = new ArrayList<XrefStory>();
         private Map<String, List<StepMatch>> stepMatches;
 
-        public XrefRoot(Map<String, List<StepMatch>> stepMatches, List<Story> stories, StoryReporterBuilder storyReporterBuilder, Set<String> failures) {
+        public XrefRoot(Map<String, List<StepMatch>> stepMatches) {
             this.stepMatches = stepMatches;
+        }
+
+        protected void processStories(List<Story> stories, StoryReporterBuilder storyReporterBuilder, Set<String> failures) {
             for (Story story : stories) {
                 this.stories.add(createXRefStoryNode(storyReporterBuilder, story, !failures.contains(story.getPath()), this));
             }
