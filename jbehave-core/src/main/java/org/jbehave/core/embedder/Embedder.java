@@ -225,8 +225,11 @@ public class Embedder {
         }
 
         if (embedderControls.generateViewAfterStories()) {
-            generateReportsView();
-            generateNavigatorView();
+            try {
+                generateReportsView();
+            } finally {
+                generateNavigatorView();
+            }
         }
     }
 
