@@ -90,17 +90,21 @@
                             name="search.scenarios"/></th>
                 </tr>
                 <tr>
-                    <th><a href ng:click="predicate = 'path'">Path</a>(<a href ng:click="predicate = '-path'">^</a>)
+                    <th>
+                        <a href ng:click="predicate = 'path'">Path</a>(<a href ng:click="predicate = '-path'">^</a>)
                     </th>
-                    <th><a href ng:click="predicate = 'description'">Description</a>(<a href
-                                                                                        ng:click="predicate = '-description'">^</a>)
+                    <th>
+                        <a href ng:click="predicate = 'description'">Description</a>(<a href ng:click="predicate = '-description'">^</a>)
                     </th>
-                    <th><a href ng:click="predicate = 'meta'">Meta</a>(<a href ng:click="predicate = '-meta'">^</a>)
+                    <th>
+                        <a href ng:click="predicate = 'meta'">Meta</a>(<a href ng:click="predicate = '-meta'">^</a>)
                     </th>
-                    <th><a href ng:click="predicate = 'narrative'">Narrative</a>(<a href
-                                                                                    ng:click="predicate = '-narrative'">^</a>)
+                    <th>
+                        <a href ng:click="predicate = 'narrative'">Narrative</a>(<a href ng:click="predicate = '-narrative'">^</a>)
                     </th>
-                    <th>State</th>
+                    <th>
+                        <a href ng:click="predicate = 'passed'">Status</a>(<a href ng:click="predicate = '-passed'">^</a>)
+                    </th>
                     <th>Action</th>
                 </tr>
                 <tr>
