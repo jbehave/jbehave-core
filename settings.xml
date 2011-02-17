@@ -23,5 +23,37 @@
         </pluginRepository>
       </pluginRepositories>
     </profile>
+   <profile>
+     <id>codehaus</id>
+     <repositories>
+       <repository>
+         <id>codehaus-public-repository-group</id>
+         <name>Codehaus Public Repository Group</name>
+         <url>https://nexus.codehaus.org/content/groups/public/</url>
+         <layout>default</layout>
+         <releases>
+           <enabled>true</enabled>
+           <updatePolicy>never</updatePolicy>
+         </releases>
+         <snapshots>
+           <enabled>true</enabled>
+           <updatePolicy>never</updatePolicy>
+         </snapshots>
+       </repository>
+     </repositories>
+     <pluginRepositories>
+       <pluginRepository>
+         <id>codehaus-public-repository-group</id>
+         <name>Codehaus Public Repository Group</name>
+         <url>https://nexus.codehaus.org/content/groups/public/</url>
+         <releases>
+           <enabled>true</enabled>
+         </releases>
+         <snapshots>
+           <enabled>true</enabled>
+         </snapshots>
+       </pluginRepository>
+     </pluginRepositories>
+   </profile>
   </profiles>
 </settings>
