@@ -4,8 +4,8 @@
 
 <head>
     <script type="text/javascript" ng:autobind src="js/angular-0.9.9.min.js"></script>
-    <script type="text/javascript" src="js/cornerz-0.6.js" ></script>
     <script type="text/javascript" src="js/jquery-1.5.js" ></script>
+    <script type="text/javascript" src="js/cornerz-0.6.js" ></script>
     <script type="text/javascript" src="js/jquery-ui.min-1.7.1.js"></script>
     <script type="text/javascript" src="js/jquery-framedialog-1.1.2.js"></script> 
     <link rel="stylesheet" type="text/css" href="style/jbehave-navigator.css" />
@@ -138,7 +138,7 @@
                         
             </div>
             <div id="footer">
-                <div class="left">Generated on ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
+                <div class="left">Data Generated ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
                 <div class="right">JBehave &#169; 2003-2010</div>
                 <div class="clear"></div>
             </div>
