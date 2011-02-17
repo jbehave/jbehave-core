@@ -123,7 +123,7 @@
                     <td>{{story.description}}</td>
                     <td>{{story.meta}}</td>
                     <td>{{story.narrative | newlines | html}}</td>
-                    <td><img src="images/passed-{{story.passed}}.gif" alt="Story Passed == {{story.passed}}"/></td>
+                    <td><img src="images/passed-{{story.passed}}.png" alt="Story Passed == {{story.passed}}"/></td>
                     <td>
                         <button ng:click="showResults(story)">Results</button>
                         <button ng:click="showScenarios(story)">Scenarios</button>
