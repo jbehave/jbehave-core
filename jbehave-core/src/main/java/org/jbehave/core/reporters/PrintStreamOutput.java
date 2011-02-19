@@ -220,10 +220,9 @@ public abstract class PrintStreamOutput implements StoryReporter {
         cause.printStackTrace(new PrintStream(out));
         String stackTrace = out.toString();
         // don't print past certain parts of the stack.
-//        stackTrace = cutOff(stackTrace, "org.jbehave.core.embedder.");
-//        stackTrace = cutOff(stackTrace, "org.junit.runners.");
-//        stackTrace = cutOff(stackTrace, "org.apache.maven.surefire.");
-//        System.out.println("==> " + stackTrace);
+        stackTrace = cutOff(stackTrace, "org.jbehave.core.embedder.");
+        stackTrace = cutOff(stackTrace, "org.junit.runners.");
+        stackTrace = cutOff(stackTrace, "org.apache.maven.surefire.");
         return stackTrace;
     }
 

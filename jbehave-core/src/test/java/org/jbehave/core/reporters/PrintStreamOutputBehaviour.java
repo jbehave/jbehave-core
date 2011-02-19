@@ -27,6 +27,8 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PrintStreamOutputBehaviour {
 
@@ -415,7 +417,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
-        Assert.assertEquals(expected, dos2unix(out.toString()));
+        assertEquals(expected, dos2unix(out.toString()));
     }
 
     private String dos2unix(String string) {
@@ -449,8 +451,10 @@ public class PrintStreamOutputBehaviour {
                 + "(java.lang.RuntimeException: Leave my money alone!)\n"
                 + "Then I should have a balance of $30 (PENDING)\n"
                 + "Then I should have $20 (NOT PERFORMED)\n" 
-                + "\n" + dos2unix(stackTrace.toString()) + "\n";
-        assertThatOutputIs(out, expected);
+                + "\n";
+        String s = dos2unix(out.toString());
+        assertTrue(s.indexOf("at org.jbehave.core.reporters.PrintStreamOutputBehaviour.shouldReportFailureTraceWhenToldToDoSo(") > -1);
+
 
         // Given
         out = new ByteArrayOutputStream();
