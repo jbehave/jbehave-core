@@ -415,7 +415,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     private void assertThatOutputIs(OutputStream out, String expected) {
-        Assert.assertEquals(expected, dos2unix(out.toString().replaceAll("[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}", "**UUID**")));
+        Assert.assertEquals(expected, dos2unix(out.toString()));
     }
 
     private String dos2unix(String string) {

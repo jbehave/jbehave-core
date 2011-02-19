@@ -218,7 +218,22 @@ public abstract class PrintStreamOutput implements StoryReporter {
     private String stackTrace(Throwable cause) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();        
         cause.printStackTrace(new PrintStream(out));
-        return out.toString();
+        String stackTrace = out.toString();
+        // don't print past certain parts of the stack.
+//        stackTrace = cutOff(stackTrace, "org.jbehave.core.embedder.");
+//        stackTrace = cutOff(stackTrace, "org.junit.runners.");
+//        stackTrace = cutOff(stackTrace, "org.apache.maven.surefire.");
+//        System.out.println("==> " + stackTrace);
+        return stackTrace;
+    }
+
+    private String cutOff(String stackTrace, String at) {
+        if (stackTrace.indexOf(at) > -1) {
+            int ix = stackTrace.indexOf(at);
+            ix = stackTrace.indexOf("\n", ix);
+            stackTrace = stackTrace.substring(0,ix);
+        }
+        return stackTrace;
     }
 
     public void beforeExamples(List<String> steps, ExamplesTable table) {
