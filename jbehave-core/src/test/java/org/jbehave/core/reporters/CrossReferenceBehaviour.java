@@ -110,7 +110,7 @@ public class CrossReferenceBehaviour {
                 "</xref>", output.get(0).toString()); // xml
 
 
-        /System.out.println("BBB{" + output.get(1).toString() + "}BBB");
+        //System.out.println("BBB{" + output.get(1).toString() + "}BBB");
 
         assertEquals("{'xref': {\n" +
                 "  'whenMade': 1234,\n" +
