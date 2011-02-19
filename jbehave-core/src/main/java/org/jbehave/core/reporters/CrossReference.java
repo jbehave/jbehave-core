@@ -149,11 +149,14 @@ public class CrossReference extends Format {
     }
 
     public static class XrefRoot {
+        private long whenMade = currentTime();
+        protected String createdBy = "JBehave";
         private Set<String> meta = new HashSet<String>();
         private List<XrefStory> stories = new ArrayList<XrefStory>();
         private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
 
-        public XrefRoot() {
+        protected long currentTime() {
+            return System.currentTimeMillis();
         }
 
         protected void processStories(List<Story> stories, StoryReporterBuilder storyReporterBuilder, Set<String> failures) {

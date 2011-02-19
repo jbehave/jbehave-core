@@ -42,6 +42,16 @@ public class CrossReferenceBehaviour {
                 output.add(baos);
                 return new OutputStreamWriter(baos);
             }
+
+            @Override
+            protected void xStreamAliasForXRefRoot(XStream xstream) {
+                xstream.alias("xref", MyXrefRoot2.class);
+            }
+
+            @Override
+            protected XrefRoot makeXRefRootNode() {
+                return new MyXrefRoot2();
+            }
         };
 
         StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
@@ -61,6 +71,8 @@ public class CrossReferenceBehaviour {
 
         // Then
         assertEquals("<xref>\n" +
+                "  <whenMade>1234</whenMade>\n" +
+                "  <createdBy>JBehave</createdBy>\n" +
                 "  <meta>\n" +
                 "    <string>theme=testing</string>\n" +
                 "    <string>author=Mauro</string>\n" +
@@ -101,6 +113,8 @@ public class CrossReferenceBehaviour {
         System.out.println("BBB{" + output.get(1).toString() + "}BBB");
 
         assertEquals("{'xref': {\n" +
+                "  'whenMade': 1234,\n" +
+                "  'createdBy': 'JBehave',\n" +
                 "  'meta': [\n" +
                 "    'theme=testing',\n" +
                 "    'author=Mauro'\n" +
@@ -185,6 +199,8 @@ public class CrossReferenceBehaviour {
 
         // Then
         assertEquals("<xref>\n" +
+                "  <whenMade>1234</whenMade>\n" +
+                "  <createdBy>JBehave</createdBy>\n" +
                 "  <meta>\n" +
                 "    <string>author=Mauro</string>\n" +
                 "  </meta>\n" +
@@ -226,6 +242,8 @@ public class CrossReferenceBehaviour {
         System.out.println("DDD{" + output.get(1).toString() + "}DDD");
 
         assertEquals("{'xref': {\n" +
+                "  'whenMade': 1234,\n" +
+                "  'createdBy': 'JBehave',\n" +
                 "  'meta': [\n" +
                 "    'author=Mauro'\n" +
                 "  ],\n" +
@@ -269,6 +287,11 @@ public class CrossReferenceBehaviour {
         }
 
         @Override
+        protected long currentTime() {
+            return 1234;
+        }
+
+        @Override
         protected CrossReference.XrefStory makeXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed) {
             return new MyXrefStory(story, storyReporterBuilder, passed, themes);
         }
@@ -302,4 +325,10 @@ public class CrossReferenceBehaviour {
     }
 
 
+    private static class MyXrefRoot2 extends CrossReference.XrefRoot {
+        @Override
+        protected long currentTime() {
+            return 1234;
+        }
+    }
 }
