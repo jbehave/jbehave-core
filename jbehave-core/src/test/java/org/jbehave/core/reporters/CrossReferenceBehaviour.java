@@ -67,7 +67,7 @@ public class CrossReferenceBehaviour {
         verifyNoMoreInteractions(factory, builder);
         crossReference.outputToFiles(builder);
 
-        System.out.println("AAA{" + output.get(0).toString() + "}AAA");
+        //System.out.println("AAA{" + output.get(0).toString() + "}AAA");
 
         // Then
         assertEquals("<xref>\n" +
@@ -110,7 +110,7 @@ public class CrossReferenceBehaviour {
                 "</xref>", output.get(0).toString()); // xml
 
 
-        System.out.println("BBB{" + output.get(1).toString() + "}BBB");
+        /System.out.println("BBB{" + output.get(1).toString() + "}BBB");
 
         assertEquals("{'xref': {\n" +
                 "  'whenMade': 1234,\n" +
@@ -195,7 +195,7 @@ public class CrossReferenceBehaviour {
         verifyNoMoreInteractions(factory, builder);
         crossReference.outputToFiles(builder);
 
-        System.out.println("CCC{" + output.get(0).toString() + "}CCC");
+        //System.out.println("CCC{" + output.get(0).toString() + "}CCC");
 
         // Then
         assertEquals("<xref>\n" +
@@ -239,7 +239,7 @@ public class CrossReferenceBehaviour {
                 "  </themes>\n" +
                 "</xref>", output.get(0).toString()); // xml
 
-        System.out.println("DDD{" + output.get(1).toString() + "}DDD");
+        //System.out.println("DDD{" + output.get(1).toString() + "}DDD");
 
         assertEquals("{'xref': {\n" +
                 "  'whenMade': 1234,\n" +
