@@ -62,57 +62,18 @@ public class StepCreator {
     }
 
     public Step createBeforeOrAfterStep(final Method method) {
-        return new Step() {
-            public StepResult doNotPerform() {
-                return beforeOrAfter.run(method, NO_FAILURE);
-            }
-
-            public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                return beforeOrAfter.run(method, NO_FAILURE);
-            }
-
-        };
+        return new BeforeOrAfterStep(method);
     }
 
     public Step createAfterStepUponOutcome(final Method method, final Outcome outcome, final boolean failureOccured) {
         switch (outcome) {
         case ANY:
         default:
-            return new Step() {
-
-                public StepResult doNotPerform() {
-                    return beforeOrAfter.run(method, NO_FAILURE);
-                }
-
-                public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                    return beforeOrAfter.run(method, NO_FAILURE);
-                }
-
-            };
+            return new AnyOrDefaultStep(method);
         case SUCCESS:
-            return new Step() {
-
-                public StepResult doNotPerform() {
-                    return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfter.run(method, NO_FAILURE));
-                }
-
-                public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                    return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfter.run(method, NO_FAILURE));
-                }
-
-            };
+            return new SuccessStep(failureOccured, method);
         case FAILURE:
-            return new Step() {
-
-                public StepResult doNotPerform() {
-                    return (failureOccured ? beforeOrAfter.run(method, NO_FAILURE) : skip.run(method, NO_FAILURE));
-                }
-
-                public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                    return (failureOccured ? beforeOrAfter.run(method, storyFailureIfItHappened) : skip.run(method, NO_FAILURE));
-                }
-
-            };
+            return new FailureStep(failureOccured, method);
         }
     }
 
@@ -133,54 +94,7 @@ public class StepCreator {
 
     public Step createParametrisedStep(final Method method, final String stepAsString,
             final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
-        return new Step() {
-            private Object[] convertedParameters;
-            private String parametrisedStep;
-
-            public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                try {
-                    parametriseStep();
-                    stepMonitor.performing(stepAsString, dryRun);
-                    if (!dryRun) {
-                        method.invoke(stepsInstance, convertedParameters);
-                    }
-                    return successful(stepAsString).withParameterValues(parametrisedStep);
-                } catch (ParameterNotFound e) {
-                    // step parametrisation failed, return pending StepResult
-                    return pending(stepAsString).withParameterValues(parametrisedStep);
-                } catch (InvocationTargetException e) {
-                    if (e.getCause() instanceof UUIDExceptionWrapper) {
-                        return failed(stepAsString, ((UUIDExceptionWrapper)e.getCause())).withParameterValues(parametrisedStep);
-                    }
-                    return failed(stepAsString, new UUIDExceptionWrapper(e.getCause())).withParameterValues(parametrisedStep);
-                } catch (Throwable t) {
-                    return failed(stepAsString, new UUIDExceptionWrapper(t)).withParameterValues(parametrisedStep);
-                }
-            }
-
-            public StepResult doNotPerform() {
-                try {
-                    parametriseStep();
-                    // } catch (ParameterNotFound e) {
-                } catch (Throwable t) {
-                    // step parametrisation failed, but still return
-                    // notPerformed StepResult
-                }
-                return notPerformed(stepAsString).withParameterValues(parametrisedStep);
-            }
-
-            private void parametriseStep() {
-                stepMatcher.find(stepWithoutStartingWord);
-                String[] annotationNames = annotatedParameterNames(method);
-                String[] parameterNames = paranamer.lookupParameterNames(method, false);
-                Type[] types = method.getGenericParameterTypes();
-                String[] parameters = parametersForStep(namedParameters, types, annotationNames, parameterNames);
-                convertedParameters = convertParameters(parameters, types);
-                parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, annotationNames,
-                        parameterNames, parameters);
-            }
-
-        };
+        return new ParameterizedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
     }
 
     /**
@@ -387,27 +301,11 @@ public class StepCreator {
     }
 
     public static Step createPendingStep(final String stepAsString) {
-        return new Step() {
-            public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                return pending(stepAsString);
-            }
-
-            public StepResult doNotPerform() {
-                return pending(stepAsString);
-            }
-        };
+        return new PendingStep(stepAsString);
     }
 
     public static Step createIgnorableStep(final String stepAsString) {
-        return new Step() {
-            public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-                return ignorable(stepAsString);
-            }
-
-            public StepResult doNotPerform() {
-                return ignorable(stepAsString);
-            }
-        };
+        return new IgnorableStep(stepAsString);
     }
 
     /**
@@ -433,5 +331,172 @@ public class StepCreator {
             super("Parameter not found for position '" + position + "' amongst '" + asList(parameters) + "'");
         }
     }
+
+    private class BeforeOrAfterStep implements Step {
+        private final Method method;
+
+        public BeforeOrAfterStep(Method method) {
+            this.method = method;
+        }
+
+        public StepResult doNotPerform() {
+            return beforeOrAfter.run(method, NO_FAILURE);
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return beforeOrAfter.run(method, NO_FAILURE);
+        }
+
+    }
+
+    private class AnyOrDefaultStep implements Step {
+
+        private final Method method;
+
+        public AnyOrDefaultStep(Method method) {
+            this.method = method;
+        }
+
+        public StepResult doNotPerform() {
+            return beforeOrAfter.run(method, NO_FAILURE);
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return beforeOrAfter.run(method, NO_FAILURE);
+        }
+
+    }
+
+    private class SuccessStep implements Step {
+
+        private final boolean failureOccured;
+        private final Method method;
+
+        public SuccessStep(boolean failureOccured, Method method) {
+            this.failureOccured = failureOccured;
+            this.method = method;
+        }
+
+        public StepResult doNotPerform() {
+            return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfter.run(method, NO_FAILURE));
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfter.run(method, NO_FAILURE));
+        }
+
+    }
+
+    private class FailureStep implements Step {
+
+        private final boolean failureOccured;
+        private final Method method;
+
+        public FailureStep(boolean failureOccured, Method method) {
+            this.failureOccured = failureOccured;
+            this.method = method;
+        }
+
+        public StepResult doNotPerform() {
+            return (failureOccured ? beforeOrAfter.run(method, NO_FAILURE) : skip.run(method, NO_FAILURE));
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return (failureOccured ? beforeOrAfter.run(method, storyFailureIfItHappened) : skip.run(method, NO_FAILURE));
+        }
+
+    }
+
+    private class ParameterizedStep implements Step {
+        private Object[] convertedParameters;
+        private String parametrisedStep;
+        private final String stepAsString;
+        private final Method method;
+        private final String stepWithoutStartingWord;
+        private final Map<String, String> namedParameters;
+
+        public ParameterizedStep(String stepAsString, Method method, String stepWithoutStartingWord, Map<String, String> namedParameters) {
+            this.stepAsString = stepAsString;
+            this.method = method;
+            this.stepWithoutStartingWord = stepWithoutStartingWord;
+            this.namedParameters = namedParameters;
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            try {
+                parametriseStep();
+                stepMonitor.performing(stepAsString, dryRun);
+                if (!dryRun) {
+                    method.invoke(stepsInstance, convertedParameters);
+                }
+                return successful(stepAsString).withParameterValues(parametrisedStep);
+            } catch (ParameterNotFound e) {
+                // step parametrisation failed, return pending StepResult
+                return pending(stepAsString).withParameterValues(parametrisedStep);
+            } catch (InvocationTargetException e) {
+                if (e.getCause() instanceof UUIDExceptionWrapper) {
+                    return failed(stepAsString, ((UUIDExceptionWrapper)e.getCause())).withParameterValues(parametrisedStep);
+                }
+                return failed(stepAsString, new UUIDExceptionWrapper(e.getCause())).withParameterValues(parametrisedStep);
+            } catch (Throwable t) {
+                return failed(stepAsString, new UUIDExceptionWrapper(t)).withParameterValues(parametrisedStep);
+            }
+        }
+
+        public StepResult doNotPerform() {
+            try {
+                parametriseStep();
+                // } catch (ParameterNotFound e) {
+            } catch (Throwable t) {
+                // step parametrisation failed, but still return
+                // notPerformed StepResult
+            }
+            return notPerformed(stepAsString).withParameterValues(parametrisedStep);
+        }
+
+        private void parametriseStep() {
+            stepMatcher.find(stepWithoutStartingWord);
+            String[] annotationNames = annotatedParameterNames(method);
+            String[] parameterNames = paranamer.lookupParameterNames(method, false);
+            Type[] types = method.getGenericParameterTypes();
+            String[] parameters = parametersForStep(namedParameters, types, annotationNames, parameterNames);
+            convertedParameters = convertParameters(parameters, types);
+            parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, annotationNames,
+                    parameterNames, parameters);
+        }
+
+    }
+
+    private static class PendingStep implements Step {
+         private final String stepAsString;
+
+         public PendingStep(String stepAsString) {
+             this.stepAsString = stepAsString;
+         }
+
+         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+             return pending(stepAsString);
+         }
+
+         public StepResult doNotPerform() {
+             return pending(stepAsString);
+         }
+     }
+
+     private static class IgnorableStep implements Step {
+         private final String stepAsString;
+
+         public IgnorableStep(String stepAsString) {
+             this.stepAsString = stepAsString;
+         }
+
+         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+             return ignorable(stepAsString);
+         }
+
+         public StepResult doNotPerform() {
+             return ignorable(stepAsString);
+         }
+     }
 
 }
