@@ -47,7 +47,7 @@ public class PrintStreamStepMonitor implements StepMonitor {
 	}
 
 	public void stepMatchesPattern(String step, boolean matches,
-			String pattern, Method method, Object stepsInstance) {
+			Pattern pattern, Method method, Object stepsInstance) {
 		String message = format(STEP_MATCHES_PATTERN, step, (matches ? MATCHES
 				: DOES_NOT_MATCH), pattern, method, asList(method
 				.getAnnotations()), stepsInstance);

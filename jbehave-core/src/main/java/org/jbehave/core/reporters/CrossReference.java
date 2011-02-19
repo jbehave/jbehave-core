@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Meta;
@@ -15,19 +16,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CrossReference extends Format {
 
-    private String currentStoryPath;
+    private Story currentStory;
     private String currentScenarioTitle;
     private List<Story> stories = new ArrayList<Story>();
-    private Map<String, List<StepMatch>> stepMatches = new HashMap<String, List<StepMatch>>();
+    private Map<String, StepMatch> stepMatches = new HashMap<String, StepMatch>();
     private StepMonitor stepMonitor = new XrefStepMonitor();
     private Set<String> failingStories = new HashSet<String>();
 
@@ -44,19 +40,20 @@ public class CrossReference extends Format {
     }
 
     public void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
-        XrefRoot root = createXRefRootNode(storyReporterBuilder, stepMatches, stories, failingStories);
+        XrefRoot root = createXRefRootNode(storyReporterBuilder, stories, failingStories);
+        root.addStepMatches(stepMatches);
         outputFile("xref.xml", new XStream(), root, storyReporterBuilder);
         outputFile("xref.json", new XStream(new JsonHierarchicalStreamDriver()), root, storyReporterBuilder);
     }
 
-    protected final XrefRoot createXRefRootNode(StoryReporterBuilder storyReporterBuilder, Map<String, List<StepMatch>> stepMatches, List<Story> stories, Set<String> failingStories) {
-        XrefRoot xrefRoot = makeXRefRootNode(stepMatches);
+    protected final XrefRoot createXRefRootNode(StoryReporterBuilder storyReporterBuilder, List<Story> stories, Set<String> failingStories) {
+        XrefRoot xrefRoot = makeXRefRootNode();
         xrefRoot.processStories(stories, storyReporterBuilder, failingStories);
         return xrefRoot;
     }
 
-    protected XrefRoot makeXRefRootNode(Map<String, List<StepMatch>> stepMatches) {
-        return new XrefRoot(stepMatches);
+    protected XrefRoot makeXRefRootNode() {
+        return new XrefRoot();
     }
 
     private void outputFile(String name, XStream xstream, XrefRoot root, StoryReporterBuilder storyReporterBuilder){
@@ -91,6 +88,8 @@ public class CrossReference extends Format {
         xStreamAliasForXRefRoot(xstream);
         xStreamAliasForXRefStory(xstream);
         xstream.alias("stepMatch", StepMatch.class);
+        xstream.alias("pattern", StepMonitor.Pattern.class);
+        xstream.alias("use", StepMatchDetail.class);
         xstream.omitField(ExamplesTable.class, "parameterConverters");
         xstream.omitField(ExamplesTable.class, "defaults");
         return xstream;
@@ -111,13 +110,13 @@ public class CrossReference extends Format {
             @Override
             public void beforeStory(Story story, boolean givenStory) {
                 stories.add(story);
-                currentStoryPath = story.getPath();
+                currentStory = story;
             }
 
             @Override
             public void failed(String step, Throwable cause) {
                 super.failed(step, cause);
-                failingStories.add(currentStoryPath);
+                failingStories.add(currentStory.getPath());
             }
 
             @Override
@@ -128,14 +127,16 @@ public class CrossReference extends Format {
     }
 
     private class XrefStepMonitor extends StepMonitor.NULL {
-        public void stepMatchesPattern(String step, boolean matches, String pattern, Method method, Object stepsInstance) {
+        public void stepMatchesPattern(String step, boolean matches, Pattern pattern, Method method, Object stepsInstance) {
             if (matches) {
-                List<StepMatch> val = stepMatches.get(pattern);
+                String key = pattern.getPseudoPattern();
+                StepMatch val = stepMatches.get(key);
                 if (val == null) {
-                    val = new ArrayList<StepMatch>();
-                    stepMatches.put(pattern, val);
+                    val = new StepMatch(key, pattern.getPattern());
+                    stepMatches.put(key, val);
                 }
-                val.add(new StepMatch(currentStoryPath, currentScenarioTitle, step));
+                // find canonical ref for same stepMatch
+                val.usages.add(new StepMatchDetail(currentStory.getPath(), currentScenarioTitle, step));
             }
             super.stepMatchesPattern(step, matches, pattern, method, stepsInstance);
         }
@@ -145,10 +146,9 @@ public class CrossReference extends Format {
     public static class XrefRoot {
         private Set<String> meta = new HashSet<String>();
         private List<XrefStory> stories = new ArrayList<XrefStory>();
-        private Map<String, List<StepMatch>> stepMatches;
+        private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
 
-        public XrefRoot(Map<String, List<StepMatch>> stepMatches) {
-            this.stepMatches = stepMatches;
+        public XrefRoot() {
         }
 
         protected void processStories(List<Story> stories, StoryReporterBuilder storyReporterBuilder, Set<String> failures) {
@@ -176,6 +176,13 @@ public class CrossReference extends Format {
          */
         protected XrefStory makeXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed) {
             return new XrefStory(story, storyReporterBuilder, passed);
+        }
+
+        protected void addStepMatches(Map<String, StepMatch> stepMatchMap) {
+            for (String key : stepMatchMap.keySet()) {
+                StepMatch stepMatch = stepMatchMap.get(key);
+                stepMatches.add(stepMatch);
+            }
         }
     }
 
@@ -238,15 +245,50 @@ public class CrossReference extends Format {
     }
 
     @SuppressWarnings("unused")
-    public static class StepMatch {
-        private final String storyPath;
-        private final String scenarioTitle;
+    public static class StepMatchDetail {
+        private final String story;
+        private final String scenario;
         private final String step;
 
-        public StepMatch(String storyPath, String scenarioTitle, String step) {
-            this.storyPath = storyPath;
-            this.scenarioTitle = scenarioTitle;
+        public StepMatchDetail(String story, String scenario, String step) {
+            this.story = story;
+            this.scenario = scenario;
             this.step = step;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static class StepMatch {
+        private final String pseudoPattern;
+        private final String regexPattern;
+        // not in hashcode or equals()
+        private final Set<StepMatchDetail> usages = new HashSet<StepMatchDetail>();
+
+        public StepMatch(String pseudoPattern, String regexPattern) {
+            this.pseudoPattern = pseudoPattern;
+            this.regexPattern = regexPattern;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            StepMatch stepMatch = (StepMatch) o;
+
+            if (pseudoPattern != null ? !pseudoPattern.equals(stepMatch.pseudoPattern) : stepMatch.pseudoPattern != null)
+                return false;
+            if (regexPattern != null ? !regexPattern.equals(stepMatch.regexPattern) : stepMatch.regexPattern != null)
+                return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = pseudoPattern != null ? pseudoPattern.hashCode() : 0;
+            result = 31 * result + (regexPattern != null ? regexPattern.hashCode() : 0);
+            return result;
         }
     }
 

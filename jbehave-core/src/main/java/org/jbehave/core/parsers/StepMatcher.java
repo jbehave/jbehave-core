@@ -12,4 +12,6 @@ public interface StepMatcher {
 
 	String pattern();
 
+	String pseudoPattern();
+
 }

@@ -119,7 +119,7 @@ public class StepCandidate {
             }
             stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType, method, stepsInstance);
             boolean matchesPattern = stepMatcher.matches(stripStartingWord(step));
-            stepMonitor.stepMatchesPattern(step, matchesPattern, stepMatcher.pattern(), method, stepsInstance);
+            stepMonitor.stepMatchesPattern(step, matchesPattern, new StepMonitor.Pattern(stepMatcher.pattern(), stepMatcher.pseudoPattern()) , method, stepsInstance);
             // must match both type and pattern
             return matchesType && matchesPattern;
         } catch (StartingWordNotFound e) {

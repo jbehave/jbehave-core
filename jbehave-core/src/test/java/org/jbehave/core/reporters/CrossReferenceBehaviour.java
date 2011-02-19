@@ -4,6 +4,7 @@ import com.thoughtworks.xstream.XStream;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.jbehave.core.steps.StepMonitor;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -44,7 +45,7 @@ public class CrossReferenceBehaviour {
 
         // When
         PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
-        crossReference.getStepMonitor().stepMatchesPattern("a", true, "[abc]", Object.class.getDeclaredMethods()[0], new Object());
+        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepMonitor.Pattern("[abc]", "(def)"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON        
         verifyNoMoreInteractions(factory, builder);
@@ -76,18 +77,22 @@ public class CrossReferenceBehaviour {
                 "    </story>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
-                "    <entry>\n" +
-                "      <string>[abc]</string>\n" +
-                "      <list>\n" +
-                "        <stepMatch>\n" +
-                "          <storyPath>/path/to/story</storyPath>\n" +
-                "          <scenarioTitle>I ask for a loan</scenarioTitle>\n" +
+                "    <stepMatch>\n" +
+                "      <pseudoPattern>(def)</pseudoPattern>\n" +
+                "      <regexPattern>[abc]</regexPattern>\n" +
+                "      <usages>\n" +
+                "        <use>\n" +
+                "          <story>/path/to/story</story>\n" +
+                "          <scenario>I ask for a loan</scenario>\n" +
                 "          <step>a</step>\n" +
-                "        </stepMatch>\n" +
-                "      </list>\n" +
-                "    </entry>\n" +
+                "        </use>\n" +
+                "      </usages>\n" +
+                "    </stepMatch>\n" +
                 "  </stepMatches>\n" +
                 "</xref>", output.get(0).toString()); // xml
+
+
+        System.out.println("BBB{" + output.get(1).toString() + "}BBB");
 
         assertEquals("{'xref': {\n" +
                 "  'meta': [\n" +
@@ -107,16 +112,17 @@ public class CrossReferenceBehaviour {
                 "    }\n" +
                 "  ],\n" +
                 "  'stepMatches': [\n" +
-                "    [\n" +
-                "      '[abc]',\n" +
-                "      [\n" +
+                "    {\n" +
+                "      'pseudoPattern': '(def)',\n" +
+                "      'regexPattern': '[abc]',\n" +
+                "      'usages': [\n" +
                 "        {\n" +
-                "          'storyPath': '/path/to/story',\n" +
-                "          'scenarioTitle': 'I ask for a loan',\n" +
+                "          'story': '/path/to/story',\n" +
+                "          'scenario': 'I ask for a loan',\n" +
                 "          'step': 'a'\n" +
                 "        }\n" +
                 "      ]\n" +
-                "    ]\n" +
+                "    }\n" +
                 "  ]\n" +
                 "}}", output.get(1).toString().replace('\"', '\'')); // json
 
@@ -141,8 +147,8 @@ public class CrossReferenceBehaviour {
             }
 
             @Override
-            protected XrefRoot makeXRefRootNode(Map<String, List<CrossReference.StepMatch>> stepMatches) {
-                return new MyXrefRoot(stepMatches);
+            protected XrefRoot makeXRefRootNode() {
+                return new MyXrefRoot();
             }
 
             @Override
@@ -163,13 +169,13 @@ public class CrossReferenceBehaviour {
 
         // When
         PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
-        crossReference.getStepMonitor().stepMatchesPattern("a", true, "[abc]", Object.class.getDeclaredMethods()[0], new Object());
+        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepMonitor.Pattern("[abc]", "(def)"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON
         verifyNoMoreInteractions(factory, builder);
         crossReference.outputToFiles(builder);
 
-        System.out.println("AAA{" + output.get(0).toString() + "}AAA");
+        System.out.println("CCC{" + output.get(0).toString() + "}CCC");
 
         // Then
         assertEquals("<xref>\n" +
@@ -194,21 +200,24 @@ public class CrossReferenceBehaviour {
                 "    </story>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
-                "    <entry>\n" +
-                "      <string>[abc]</string>\n" +
-                "      <list>\n" +
-                "        <stepMatch>\n" +
-                "          <storyPath>/path/to/story</storyPath>\n" +
-                "          <scenarioTitle>I ask for a loan</scenarioTitle>\n" +
+                "    <stepMatch>\n" +
+                "      <pseudoPattern>(def)</pseudoPattern>\n" +
+                "      <regexPattern>[abc]</regexPattern>\n" +
+                "      <usages>\n" +
+                "        <use>\n" +
+                "          <story>/path/to/story</story>\n" +
+                "          <scenario>I ask for a loan</scenario>\n" +
                 "          <step>a</step>\n" +
-                "        </stepMatch>\n" +
-                "      </list>\n" +
-                "    </entry>\n" +
+                "        </use>\n" +
+                "      </usages>\n" +
+                "    </stepMatch>\n" +
                 "  </stepMatches>\n" +
                 "  <themes>\n" +
                 "    <string>testing</string>\n" +
                 "  </themes>\n" +
                 "</xref>", output.get(0).toString()); // xml
+
+        System.out.println("DDD{" + output.get(1).toString() + "}DDD");
 
         assertEquals("{'xref': {\n" +
                 "  'meta': [\n" +
@@ -228,16 +237,17 @@ public class CrossReferenceBehaviour {
                 "    }\n" +
                 "  ],\n" +
                 "  'stepMatches': [\n" +
-                "    [\n" +
-                "      '[abc]',\n" +
-                "      [\n" +
+                "    {\n" +
+                "      'pseudoPattern': '(def)',\n" +
+                "      'regexPattern': '[abc]',\n" +
+                "      'usages': [\n" +
                 "        {\n" +
-                "          'storyPath': '/path/to/story',\n" +
-                "          'scenarioTitle': 'I ask for a loan',\n" +
+                "          'story': '/path/to/story',\n" +
+                "          'scenario': 'I ask for a loan',\n" +
                 "          'step': 'a'\n" +
                 "        }\n" +
                 "      ]\n" +
-                "    ]\n" +
+                "    }\n" +
                 "  ],\n" +
                 "  'themes': [\n" +
                 "    'testing'\n" +
@@ -248,8 +258,8 @@ public class CrossReferenceBehaviour {
 
     private static class MyXrefRoot extends CrossReference.XrefRoot {
         Set<String> themes = new HashSet<String>();
-        public MyXrefRoot(Map<String, List<CrossReference.StepMatch>> stepMatches) {
-            super(stepMatches);
+        public MyXrefRoot() {
+            super();
         }
 
         @Override

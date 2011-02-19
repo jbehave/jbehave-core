@@ -7,12 +7,14 @@ public class RegexStepMatcher implements StepMatcher {
 
 	private final Pattern pattern;
 	private final String[] parameterNames;
-	private Matcher matcher;
+    private String pseudoPattern;
+    private Matcher matcher;
 
-	public RegexStepMatcher(Pattern pattern, String[] parameterNames) {
+	public RegexStepMatcher(Pattern pattern, String[] parameterNames, String stepPattern) {
 		this.pattern = pattern;
-		this.parameterNames = parameterNames;		
-	}
+		this.parameterNames = parameterNames;
+        this.pseudoPattern = stepPattern;
+    }
 	
 	public boolean matches(String stepWithoutStartingWord){
 		matcher(stepWithoutStartingWord);
@@ -38,6 +40,10 @@ public class RegexStepMatcher implements StepMatcher {
 
 	public String pattern() {
 		return pattern.pattern();
+	}
+
+	public String pseudoPattern() {
+		return pseudoPattern;
 	}
 
 }
