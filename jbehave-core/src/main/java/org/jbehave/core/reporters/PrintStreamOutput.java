@@ -113,9 +113,9 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void failed(String step, Throwable storyFailure) {
-        this.cause = storyFailure;
         // storyFailure be used if a subclass has rewritten the "failed" pattern to have a {3} as WebDriverHtmlOutput (jbehave-web) does.
         if (storyFailure instanceof UUIDExceptionWrapper) {
+            this.cause = storyFailure.getCause();
             print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), storyFailure.getCause(), ((UUIDExceptionWrapper) storyFailure).getUUID()));
         } else {
             throw new ClassCastException("field storyFailure should be an instance of UUIDExceptionWrapper, but is not.");

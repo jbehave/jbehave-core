@@ -427,9 +427,9 @@ public class PrintStreamOutputBehaviour {
         // Given
         UUIDExceptionWrapper exception = new UUIDExceptionWrapper(new RuntimeException("Leave my money alone!"));
         OutputStream stackTrace = new ByteArrayOutputStream();
-        exception.printStackTrace(new PrintStream(stackTrace));
+        exception.getCause().printStackTrace(new PrintStream(stackTrace));
         OutputStream out = new ByteArrayOutputStream();
-        StoryReporter reporter = new TxtOutput(new PrintStream(out), new Properties(),
+        TxtOutput reporter = new TxtOutput(new PrintStream(out), new Properties(),
                 new LocalizedKeywords(), true);
 
         // When
