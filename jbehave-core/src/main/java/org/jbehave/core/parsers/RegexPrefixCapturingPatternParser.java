@@ -42,8 +42,8 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 	}
 	
 	public StepMatcher parseStep(String stepPattern) {
-		return new RegexStepMatcher(buildPattern(stepPattern),
-				extractParameterNames(stepPattern), stepPattern);
+		return new RegexStepMatcher(stepPattern,
+				buildPattern(stepPattern), extractParameterNames(stepPattern));
 	}
 
 	private Pattern buildPattern(String stepPattern) {

@@ -3,6 +3,8 @@ package org.jbehave.core.steps;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import org.jbehave.core.model.StepPattern;
+
 /**
  * Interface to monitor step events
  */
@@ -12,7 +14,7 @@ public interface StepMonitor {
         public void stepMatchesType(String stepAsString, String previousAsString, boolean matchesType, StepType stepType, Method method, Object stepsInstance) {
         }
 
-        public void stepMatchesPattern(String step, boolean matches, Pattern pattern, Method method, Object stepsInstance) {
+        public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method, Object stepsInstance) {
         }
 
         public void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass) {
@@ -40,41 +42,10 @@ public interface StepMonitor {
         }
     }
 
-    public static class Pattern {
-
-        String pattern;
-        private String pseudoPattern;
-
-        public Pattern(String pattern, String pseudoPattern) {
-            this.pattern = pattern;
-            this.pseudoPattern = pseudoPattern;
-        }
-
-        public String getPseudoPattern() {
-            return pseudoPattern;
-        }
-
-        public String getPattern() {
-            return pattern;
-        }
-
-        public int length() {
-            return pattern.length();
-        }
-
-        public char charAt(int i) {
-            return pattern.charAt(i);
-        }
-
-        public CharSequence subSequence(int i, int i1) {
-            return pattern.subSequence(i, i1);
-        }
-    }
-
 	void stepMatchesType(String stepAsString, String previousAsString,
 			boolean matchesType, StepType stepType, Method method, Object stepsInstance);
 
-	void stepMatchesPattern(String step, boolean matches, Pattern pattern,
+	void stepMatchesPattern(String step, boolean matches, StepPattern stepPattern,
 			Method method, Object stepsInstance);
 
     void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass);

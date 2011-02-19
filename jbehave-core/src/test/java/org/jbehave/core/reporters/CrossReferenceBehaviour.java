@@ -1,21 +1,27 @@
 package org.jbehave.core.reporters;
 
-import com.thoughtworks.xstream.XStream;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
-import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
-import org.jbehave.core.steps.StepMonitor;
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.jbehave.core.model.StepPattern;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.junit.Test;
+
+import com.thoughtworks.xstream.XStream;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 public class CrossReferenceBehaviour {
 
@@ -45,7 +51,7 @@ public class CrossReferenceBehaviour {
 
         // When
         PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
-        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepMonitor.Pattern("[abc]", "(def)"), Object.class.getDeclaredMethods()[0], new Object());
+        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern("(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON        
         verifyNoMoreInteractions(factory, builder);
@@ -78,8 +84,8 @@ public class CrossReferenceBehaviour {
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
                 "    <stepMatch>\n" +
-                "      <pseudoPattern>(def)</pseudoPattern>\n" +
-                "      <regexPattern>[abc]</regexPattern>\n" +
+                "      <annotatedPattern>(def)</annotatedPattern>\n" +
+                "      <resolvedPattern>[abc]</resolvedPattern>\n" +
                 "      <usages>\n" +
                 "        <use>\n" +
                 "          <story>/path/to/story</story>\n" +
@@ -113,8 +119,8 @@ public class CrossReferenceBehaviour {
                 "  ],\n" +
                 "  'stepMatches': [\n" +
                 "    {\n" +
-                "      'pseudoPattern': '(def)',\n" +
-                "      'regexPattern': '[abc]',\n" +
+                "      'annotatedPattern': '(def)',\n" +
+                "      'resolvedPattern': '[abc]',\n" +
                 "      'usages': [\n" +
                 "        {\n" +
                 "          'story': '/path/to/story',\n" +
@@ -169,7 +175,7 @@ public class CrossReferenceBehaviour {
 
         // When
         PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
-        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepMonitor.Pattern("[abc]", "(def)"), Object.class.getDeclaredMethods()[0], new Object());
+        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern("(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON
         verifyNoMoreInteractions(factory, builder);
@@ -201,8 +207,8 @@ public class CrossReferenceBehaviour {
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
                 "    <stepMatch>\n" +
-                "      <pseudoPattern>(def)</pseudoPattern>\n" +
-                "      <regexPattern>[abc]</regexPattern>\n" +
+                "      <annotatedPattern>(def)</annotatedPattern>\n" +
+                "      <resolvedPattern>[abc]</resolvedPattern>\n" +
                 "      <usages>\n" +
                 "        <use>\n" +
                 "          <story>/path/to/story</story>\n" +
@@ -238,8 +244,8 @@ public class CrossReferenceBehaviour {
                 "  ],\n" +
                 "  'stepMatches': [\n" +
                 "    {\n" +
-                "      'pseudoPattern': '(def)',\n" +
-                "      'regexPattern': '[abc]',\n" +
+                "      'annotatedPattern': '(def)',\n" +
+                "      'resolvedPattern': '[abc]',\n" +
                 "      'usages': [\n" +
                 "        {\n" +
                 "          'story': '/path/to/story',\n" +

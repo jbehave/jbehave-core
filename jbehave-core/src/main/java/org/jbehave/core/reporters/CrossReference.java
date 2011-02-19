@@ -1,22 +1,28 @@
 package org.jbehave.core.reporters;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import org.apache.commons.collections.iterators.ArrayListIterator;
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.StepMonitor;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.StepPattern;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.StepMonitor;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 public class CrossReference extends Format {
 
@@ -88,7 +94,7 @@ public class CrossReference extends Format {
         xStreamAliasForXRefRoot(xstream);
         xStreamAliasForXRefStory(xstream);
         xstream.alias("stepMatch", StepMatch.class);
-        xstream.alias("pattern", StepMonitor.Pattern.class);
+        xstream.alias("pattern", StepPattern.class);
         xstream.alias("use", StepMatchDetail.class);
         xstream.omitField(ExamplesTable.class, "parameterConverters");
         xstream.omitField(ExamplesTable.class, "defaults");
@@ -127,12 +133,12 @@ public class CrossReference extends Format {
     }
 
     private class XrefStepMonitor extends StepMonitor.NULL {
-        public void stepMatchesPattern(String step, boolean matches, Pattern pattern, Method method, Object stepsInstance) {
+        public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method, Object stepsInstance) {
             if (matches) {
-                String key = pattern.getPseudoPattern();
+                String key = pattern.annotated();
                 StepMatch val = stepMatches.get(key);
                 if (val == null) {
-                    val = new StepMatch(key, pattern.getPattern());
+                    val = new StepMatch(key, pattern.resolved());
                     stepMatches.put(key, val);
                 }
                 // find canonical ref for same stepMatch
@@ -142,7 +148,6 @@ public class CrossReference extends Format {
         }
     }
 
-    @SuppressWarnings("unused")
     public static class XrefRoot {
         private Set<String> meta = new HashSet<String>();
         private List<XrefStory> stories = new ArrayList<XrefStory>();
@@ -257,16 +262,15 @@ public class CrossReference extends Format {
         }
     }
 
-    @SuppressWarnings("unused")
     public static class StepMatch {
-        private final String pseudoPattern;
-        private final String regexPattern;
+        private final String annotatedPattern;
+        private final String resolvedPattern;
         // not in hashcode or equals()
         private final Set<StepMatchDetail> usages = new HashSet<StepMatchDetail>();
 
-        public StepMatch(String pseudoPattern, String regexPattern) {
-            this.pseudoPattern = pseudoPattern;
-            this.regexPattern = regexPattern;
+        public StepMatch(String annotatedPattern, String resolvedPattern) {
+            this.annotatedPattern = annotatedPattern;
+            this.resolvedPattern = resolvedPattern;
         }
 
         @Override
@@ -276,9 +280,9 @@ public class CrossReference extends Format {
 
             StepMatch stepMatch = (StepMatch) o;
 
-            if (pseudoPattern != null ? !pseudoPattern.equals(stepMatch.pseudoPattern) : stepMatch.pseudoPattern != null)
+            if (annotatedPattern != null ? !annotatedPattern.equals(stepMatch.annotatedPattern) : stepMatch.annotatedPattern != null)
                 return false;
-            if (regexPattern != null ? !regexPattern.equals(stepMatch.regexPattern) : stepMatch.regexPattern != null)
+            if (resolvedPattern != null ? !resolvedPattern.equals(stepMatch.resolvedPattern) : stepMatch.resolvedPattern != null)
                 return false;
 
             return true;
@@ -286,8 +290,8 @@ public class CrossReference extends Format {
 
         @Override
         public int hashCode() {
-            int result = pseudoPattern != null ? pseudoPattern.hashCode() : 0;
-            result = 31 * result + (regexPattern != null ? regexPattern.hashCode() : 0);
+            int result = annotatedPattern != null ? annotatedPattern.hashCode() : 0;
+            result = 31 * result + (resolvedPattern != null ? resolvedPattern.hashCode() : 0);
             return result;
         }
     }

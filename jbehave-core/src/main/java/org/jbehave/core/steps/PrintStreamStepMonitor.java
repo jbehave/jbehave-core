@@ -1,11 +1,13 @@
 package org.jbehave.core.steps;
 
-import static java.text.MessageFormat.format;
-import static java.util.Arrays.asList;
-
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+
+import org.jbehave.core.model.StepPattern;
+
+import static java.text.MessageFormat.format;
+import static java.util.Arrays.asList;
 
 /**
  * StepMonitor that prints to a {@link PrintStream}, defaulting to
@@ -47,9 +49,9 @@ public class PrintStreamStepMonitor implements StepMonitor {
 	}
 
 	public void stepMatchesPattern(String step, boolean matches,
-			Pattern pattern, Method method, Object stepsInstance) {
+			StepPattern stepPattern, Method method, Object stepsInstance) {
 		String message = format(STEP_MATCHES_PATTERN, step, (matches ? MATCHES
-				: DOES_NOT_MATCH), pattern, method, asList(method
+				: DOES_NOT_MATCH), stepPattern, method, asList(method
 				.getAnnotations()), stepsInstance);
 		print(output, message);
 	}

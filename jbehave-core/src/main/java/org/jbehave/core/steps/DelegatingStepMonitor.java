@@ -3,7 +3,7 @@ package org.jbehave.core.steps;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-// Moved from 'web' ... ooops
+import org.jbehave.core.model.StepPattern;
 
 public class DelegatingStepMonitor implements StepMonitor {
 
@@ -21,8 +21,8 @@ public class DelegatingStepMonitor implements StepMonitor {
     	delegate.stepMatchesType(stepAsString, previousAsString, matchesType, stepType, method, stepsInstance);
     }
 
-    public void stepMatchesPattern(String step, boolean matches, Pattern pattern, Method method, Object stepsInstance) {
-    	delegate.stepMatchesPattern(step, matches, pattern, method, stepsInstance);
+    public void stepMatchesPattern(String step, boolean matches, StepPattern stepPattern, Method method, Object stepsInstance) {
+    	delegate.stepMatchesPattern(step, matches, stepPattern, method, stepsInstance);
     }
 
     public void foundParameter(String parameter, int position) {

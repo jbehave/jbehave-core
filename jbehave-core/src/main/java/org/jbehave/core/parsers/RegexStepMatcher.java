@@ -3,17 +3,19 @@ package org.jbehave.core.parsers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jbehave.core.model.StepPattern;
+
 public class RegexStepMatcher implements StepMatcher {
 
-	private final Pattern pattern;
+	private final Pattern regexPattern;
 	private final String[] parameterNames;
-    private String pseudoPattern;
+    private final StepPattern stepPattern;
     private Matcher matcher;
 
-	public RegexStepMatcher(Pattern pattern, String[] parameterNames, String stepPattern) {
-		this.pattern = pattern;
+	public RegexStepMatcher(String annotatedPattern, Pattern regexPattern, String[] parameterNames) {
+		this.regexPattern = regexPattern;
 		this.parameterNames = parameterNames;
-        this.pseudoPattern = stepPattern;
+        this.stepPattern = new StepPattern(annotatedPattern, regexPattern.pattern());
     }
 	
 	public boolean matches(String stepWithoutStartingWord){
@@ -31,19 +33,16 @@ public class RegexStepMatcher implements StepMatcher {
 	}
 
 	private void matcher(String patternToMatch){
-		matcher = pattern.matcher(patternToMatch);
+		matcher = regexPattern.matcher(patternToMatch);
 	}
 
 	public String[] parameterNames(){
 		return parameterNames;
 	}
 
-	public String pattern() {
-		return pattern.pattern();
-	}
+    public StepPattern pattern() {
+        return stepPattern;
+    }
 
-	public String pseudoPattern() {
-		return pseudoPattern;
-	}
 
 }
