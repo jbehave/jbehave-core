@@ -225,11 +225,7 @@ public class Embedder {
         }
 
         if (embedderControls.generateViewAfterStories()) {
-            try {
-                generateReportsView();
-            } finally {
-                generateNavigatorView();
-            }
+            generateReportsView();
         }
     }
 
@@ -268,25 +264,6 @@ public class Embedder {
 
     }
 
-    public void generateNavigatorView() {
-        StoryReporterBuilder builder = configuration().storyReporterBuilder();
-        if (builder.hasCrossReference()) {
-            builder.crossReference().outputToFiles(builder);
-            File outputDirectory = builder.outputDirectory();
-            Properties viewResources = builder.viewResources();
-            ViewGenerator viewGenerator = configuration().viewGenerator();
-            try {
-                embedderMonitor.generatingNavigatorView(outputDirectory, viewResources);
-                viewGenerator.generateNavigatorView(outputDirectory, viewResources);
-            } catch (RuntimeException e) {
-                embedderMonitor.navigatorViewGenerationFailed(outputDirectory, viewResources, e);
-                throw new ViewGenerationFailed(outputDirectory, viewResources, e);
-            }
-        } else {
-            embedderMonitor.navigatorViewNotGenerated();            
-        }
-    }
-
     public void reportStepdocs() {
         Configuration configuration = configuration();
         List<CandidateSteps> candidateSteps = candidateSteps();
@@ -305,7 +282,7 @@ public class Embedder {
         List<Object> stepsInstances = finder.stepsInstances(candidateSteps);
         reporter.stepdocsMatching(stepAsString, matching, stepsInstances);
     }
-    
+
     public void processSystemProperties() {
         Properties properties = systemProperties();
         embedderMonitor.processingSystemProperties(properties);

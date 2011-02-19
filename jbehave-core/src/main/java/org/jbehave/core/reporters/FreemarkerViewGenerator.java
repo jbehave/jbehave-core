@@ -115,16 +115,6 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         generateViewsIndex(outputDirectory);
     }
 
-    public void generateNavigatorView(File outputDirectory, Properties viewProperties) {
-        this.viewProperties = mergeWithDefault(viewProperties);
-        String outputName = templateResource("viewDirectory") + "/navigator.html";
-        String navigatorTemplate = templateResource("navigator");
-        Map<String, Object> dataModel = newDataModel();
-        dataModel.put("date", new Date());
-        write(outputDirectory, outputName, navigatorTemplate, dataModel);
-        generateViewsIndex(outputDirectory);
-    }
-
     public void generateReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
         String outputName = templateResource("viewDirectory") + "/reports.html";

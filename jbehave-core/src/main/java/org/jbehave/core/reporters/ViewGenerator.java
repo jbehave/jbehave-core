@@ -15,8 +15,6 @@ public interface ViewGenerator {
     void generateMapsView(File outputDirectory, StoryMaps storyMaps,
             Properties viewResources);
 
-    void generateNavigatorView(File outputDirectory, Properties viewResources);
-
     void generateReportsView(File outputDirectory, List<String> formats,
 			Properties viewResources);
 
