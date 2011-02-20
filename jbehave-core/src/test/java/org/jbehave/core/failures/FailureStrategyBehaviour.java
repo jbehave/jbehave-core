@@ -9,9 +9,14 @@ public class FailureStrategyBehaviour {
         new SilentlyAbsorbingFailure().handleFailure(new IllegalStateException());
     }
 
-    @Test(expected=IllegalStateException.class)
+    @Test(expected = IllegalStateException.class)
     public void shouldAllowFailuresToBeRethrown() throws Throwable {
         new RethrowingFailure().handleFailure(new IllegalStateException());
     }
-    
+
+    @Test(expected = IllegalStateException.class)
+    public void shouldAllowFailuresToBeRethrownWhenWrappedAsUUIDExceptions() throws Throwable {
+        new RethrowingFailure().handleFailure(new UUIDExceptionWrapper(new IllegalStateException()));
+    }
+
 }
