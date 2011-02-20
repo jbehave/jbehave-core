@@ -3,6 +3,7 @@ package org.jbehave.core.junit;
 import java.util.List;
 
 import org.jbehave.core.ConfigurableEmbedder;
+import org.jbehave.core.embedder.Embedder;
 import org.junit.Test;
 
 /**
@@ -14,7 +15,12 @@ public abstract class JUnitStories extends ConfigurableEmbedder {
 
     @Test
     public void run() throws Throwable {
-        configuredEmbedder().runStoriesAsPaths(storyPaths());
+        Embedder embedder = configuredEmbedder();
+        try {
+            embedder.runStoriesAsPaths(storyPaths());
+        } finally {
+            embedder.generateCrossReference();
+        }
     }
 
     protected abstract List<String> storyPaths();
