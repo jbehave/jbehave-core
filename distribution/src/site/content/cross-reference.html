@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type" />
+  <title>Cross Reference</title>
+</head>
+<body>
+<h2>Cross Reference<br />
+</h2>
+JBehave can generate a JSON and XML cross reference at the end of a
+run.&nbsp; Details of Stories and Scenarios are in the document, as are
+details of step matches.<br />
+<br />
+The intended use of these is with webapps, and we have one to start
+with called Story Navigator (link TBA)<br />
+<h2>Setup</h2>
+<pre>public class YourStories extends JUnitStories {<br />&nbsp;&nbsp;&nbsp; private CrossReference crossReference = new CrossReference();<br />&nbsp;&nbsp;&nbsp; @Override<br />&nbsp;&nbsp;&nbsp; public Configuration configuration() {<br />&nbsp;&nbsp;&nbsp; return new SeleniumConfiguration()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .useStepMonitor(crossReference.getStepMonitor()))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .useStoryReporterBuilder(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new StoryReporterBuilder()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .withCrossReference(crossReference));<br />&nbsp;&nbsp;&nbsp; }<br />}</pre>
+<br />
+We are hiding other methods in the above code fragment to make it clear
+just what you have to do for setting up the cross reference.&nbsp; In
+particular:<br />
+<ul>
+  <li>you are likely to be chaining more than one step monitor together
+in the useStepMonitor(..) line</li>
+  <li>your StoryReporter has more&nbsp; configuration typically</li>
+  <li>there are other methods to implement in JUnitStories for finding
+steps and stories.</li>
+</ul>
+Real example: See <a
+ href="https://github.com/jbehave/jbehave-tutorial/blob/master/etsy-stories/src/main/java/org/jbehave/tutorials/etsy/EtsyDotComStories.java">EtsyStories</a>
+in the <a href="https://github.com/jbehave/jbehave-tutorial">tutorial</a>.<br />
+</body>
+</html>
