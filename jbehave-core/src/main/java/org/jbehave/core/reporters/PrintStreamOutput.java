@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
@@ -215,14 +216,80 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
+    private static class Replacement {
+        private final Pattern from;
+        private final String to;
+        private Replacement(Pattern from, String to) {
+            this.from = from;
+            this.to = to;
+        }
+    }
+
+    private static Replacement[] REPLACEMENTS = new Replacement[]{
+            new Replacement(
+                    Pattern.compile(
+                            "\\tat sun.reflect.NativeMethodAccessorImpl.invoke0\\(Native Method\\)\\n" +
+                            "\\tat sun.reflect.NativeMethodAccessorImpl.invoke\\(NativeMethodAccessorImpl.java:\\d+\\)\\n" +
+                            "\\tat sun.reflect.DelegatingMethodAccessorImpl.invoke\\(DelegatingMethodAccessorImpl.java:\\d+\\)\\n" +
+                            "\\tat java.lang.reflect.Method.invoke\\(Method.java:\\d+\\)"),
+                    "\t(reflection-invoke)"),
+            new Replacement(
+                    Pattern.compile(
+                            "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaMethod.invoke\\(ClosureMetaMethod.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite\\$PojoMetaMethodSiteNoUnwrapNoCoerce.invoke\\(PojoMetaMethodSite.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite.call\\(PojoMetaMethodSite.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall\\(CallSiteArray.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"),
+                    "\t(groovy-closure-invoke)"),
+            new Replacement(
+                    Pattern.compile(
+                            "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
+                            "\\tat groovy.lang.MetaMethod.doMethodInvoke\\(MetaMethod.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod\\(ClosureMetaClass.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeMethodOnCurrentN\\(ScriptBytecodeAdapter.java:\\d+\\)"),
+                    "\t(groovy-instance-method-invoke)"),
+
+            new Replacement(
+                    Pattern.compile(
+                            "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\n" +
+                            "\\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaMethod.invoke\\(ClosureMetaMethod.java:\\d+\\)\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite\\$PojoMetaMethodSiteNoUnwrapNoCoerce.invoke\\(PojoMetaMethodSite.java:\\d+\\)\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite.call\\(PojoMetaMethodSite.java:\\d+\\)\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"),
+                    "\t(groovy-abstract-method-invoke)"),
+
+            new Replacement(
+                    Pattern.compile(
+                            "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
+                            "\\tat groovy.lang.MetaMethod.doMethodInvoke\\(MetaMethod.java:\\d+\\)\\n" +
+                            "\\tat groovy.lang.MetaClassImpl.invokeStaticMethod\\(MetaClassImpl.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod\\(InvokerHelper.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeStaticMethodN\\(ScriptBytecodeAdapter.java:\\d+\\)"),
+                    "\t(groovy-static-method-invoke)")
+
+    };
+
+
     private String stackTrace(Throwable cause) {
         ByteArrayOutputStream out = new ByteArrayOutputStream();        
         cause.printStackTrace(new PrintStream(out));
-        String stackTrace = out.toString();
-        // don't print past certain parts of the stack.
+        return stackTrace(out.toString());
+    }
+
+    protected String stackTrace(String stackTrace) {
+        // don't print past certain parts of the stack.  Try them even though they may be redundant.
         stackTrace = cutOff(stackTrace, "org.jbehave.core.embedder.");
         stackTrace = cutOff(stackTrace, "org.junit.runners.");
         stackTrace = cutOff(stackTrace, "org.apache.maven.surefire.");
+
+        //System.out.println("=====before>" + stackTrace + "<==========");
+
+        // replace whole series of lines with '\t(summary)'  The end-user will thank us.
+        for (Replacement replacement : REPLACEMENTS) {
+            stackTrace = replacement.from.matcher(stackTrace).replaceAll(replacement.to);
+        }
         return stackTrace;
     }
 
@@ -230,7 +297,9 @@ public abstract class PrintStreamOutput implements StoryReporter {
         if (stackTrace.indexOf(at) > -1) {
             int ix = stackTrace.indexOf(at);
             ix = stackTrace.indexOf("\n", ix);
-            stackTrace = stackTrace.substring(0,ix);
+            if (ix != -1) {
+                stackTrace = stackTrace.substring(0,ix);
+            }
         }
         return stackTrace;
     }
