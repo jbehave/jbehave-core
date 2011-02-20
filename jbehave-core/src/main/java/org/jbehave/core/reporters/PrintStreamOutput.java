@@ -119,7 +119,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
             this.cause = storyFailure.getCause();
             print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), storyFailure.getCause(), ((UUIDExceptionWrapper) storyFailure).getUUID()));
         } else {
-            throw new ClassCastException("field storyFailure should be an instance of UUIDExceptionWrapper, but is not.");
+            throw new ClassCastException(storyFailure +" should be an instance of UUIDExceptionWrapper");
         }
     }
 
