@@ -4,6 +4,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.parsers.RegexStepMatcher;
 import org.jbehave.core.parsers.StepMatcher;
+import org.jbehave.core.steps.StepType;
 
 /**
  * <p>
@@ -14,10 +15,12 @@ import org.jbehave.core.parsers.StepMatcher;
  */
 public class StepPattern {
 
+    private StepType stepType;
     private final String annotated;
     private final String resolved;
     
-    public StepPattern(String annotated, String resolved) {
+    public StepPattern(StepType stepType, String annotated, String resolved) {
+        this.stepType = stepType;
         this.annotated = annotated;
         this.resolved = resolved;
     }
@@ -37,8 +40,16 @@ public class StepPattern {
 	public String resolved(){
 	    return resolved;
 	}
-	
-	@Override
+
+    /**
+     * Return the step type
+     * @return The enum for the StepType
+     */
+    public StepType type() {
+        return stepType;
+    }
+
+    @Override
 	public String toString() {
 	    return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
 	}

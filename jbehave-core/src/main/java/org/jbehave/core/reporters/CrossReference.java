@@ -23,6 +23,7 @@ import org.jbehave.core.steps.StepMonitor;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import org.jbehave.core.steps.StepType;
 
 public class CrossReference extends Format {
 
@@ -141,10 +142,10 @@ public class CrossReference extends Format {
         public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method,
                 Object stepsInstance) {
             if (matches) {
-                String key = pattern.annotated();
+                String key = pattern.type() + pattern.annotated();
                 StepMatch stepMatch = stepMatches.get(key);
                 if (stepMatch == null) {
-                    stepMatch = new StepMatch(key, pattern.resolved());
+                    stepMatch = new StepMatch(pattern.type(), pattern.annotated(), pattern.resolved());
                     stepMatches.put(key, stepMatch);
                 }
                 // find canonical ref for same stepMatch
@@ -285,12 +286,14 @@ public class CrossReference extends Format {
     }
 
     public static class StepMatch {
-        private final String annotatedPattern;
+        private final StepType type; // key
+        private final String annotatedPattern; // key
+        // these not in hashcode or equals()
         private final String resolvedPattern;
-        // not in hashcode or equals()
         private final Set<StepUsage> usages = new HashSet<StepUsage>();
 
-        public StepMatch(String annotatedPattern, String resolvedPattern) {
+        public StepMatch(StepType type, String annotatedPattern, String resolvedPattern) {
+            this.type = type;
             this.annotatedPattern = annotatedPattern;
             this.resolvedPattern = resolvedPattern;
         }
@@ -307,8 +310,7 @@ public class CrossReference extends Format {
             if (annotatedPattern != null ? !annotatedPattern.equals(stepMatch.annotatedPattern)
                     : stepMatch.annotatedPattern != null)
                 return false;
-            if (resolvedPattern != null ? !resolvedPattern.equals(stepMatch.resolvedPattern)
-                    : stepMatch.resolvedPattern != null)
+            if (type != stepMatch.type)
                 return false;
 
             return true;
@@ -316,8 +318,8 @@ public class CrossReference extends Format {
 
         @Override
         public int hashCode() {
-            int result = annotatedPattern != null ? annotatedPattern.hashCode() : 0;
-            result = 31 * result + (resolvedPattern != null ? resolvedPattern.hashCode() : 0);
+            int result = type != null ? type.hashCode() : 0;
+            result = 31 * result + (annotatedPattern != null ? annotatedPattern.hashCode() : 0);
             return result;
         }
     }

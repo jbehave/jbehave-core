@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
+import org.jbehave.core.steps.StepType;
 import org.junit.Test;
 
 public class RegexPrefixCapturingPatternParserBehaviour {
@@ -43,7 +44,7 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     @Test
     public void shouldEscapeExistingRegexPunctuationUsedInPatterns() {
         StepMatcher aMatcherWithAllTheRegexPunctuation = parser
-                .parseStep("$regexp should not be confused by []{}?^.*()+\\");
+                .parseStep(StepType.GIVEN, "$regexp should not be confused by []{}?^.*()+\\");
         assertThat(aMatcherWithAllTheRegexPunctuation.matches("[]{}?^.*()+\\ should not be confused by []{}?^.*()+\\"),
                 is(true));
         assertThat(aMatcherWithAllTheRegexPunctuation.parameter(1), equalTo("[]{}?^.*()+\\"));
@@ -51,14 +52,14 @@ public class RegexPrefixCapturingPatternParserBehaviour {
 
     private void assertThatPatternMatchesStep(StepPatternParser parser, String pattern, String step,
             String... parametersNames) {
-        StepMatcher stepMatcher = parser.parseStep(pattern);
+        StepMatcher stepMatcher = parser.parseStep(StepType.GIVEN, pattern);
         assertThat(stepMatcher.matches(step), is(true));
         assertThat(stepMatcher.parameterNames(), equalTo(parametersNames));
     }
 
     @Test
     public void shouldNotCareSoMuchAboutWhitespace() {
-        StepMatcher stepMatcher = parser.parseStep("The grid looks like $grid");
+        StepMatcher stepMatcher = parser.parseStep(StepType.GIVEN, "The grid looks like $grid");
 
         // Given an argument on a new line
         assertThat(stepMatcher.matches("The grid looks like\n" + "..\n" + "..\n"), is(true));
@@ -75,7 +76,7 @@ public class RegexPrefixCapturingPatternParserBehaviour {
 
     @Test
     public void shouldExtractParameterNamesFromStepPattern() {
-        String[] names = parser.parseStep("The grid $name looks like $grid").parameterNames();
+        String[] names = parser.parseStep(StepType.GIVEN, "The grid $name looks like $grid").parameterNames();
         assertThat(names.length, equalTo(2));
         assertThat(names[0], equalTo("name"));
         assertThat(names[1], equalTo("grid"));

@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.steps.StepType;
 
 /**
  * A step pattern parser that provides a step matcher which will capture
@@ -41,8 +42,8 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 	    return prefix;
 	}
 	
-	public StepMatcher parseStep(String stepPattern) {
-		return new RegexStepMatcher(stepPattern,
+	public StepMatcher parseStep(StepType stepType, String stepPattern) {
+		return new RegexStepMatcher(stepType, stepPattern,
 				buildPattern(stepPattern), extractParameterNames(stepPattern));
 	}
 

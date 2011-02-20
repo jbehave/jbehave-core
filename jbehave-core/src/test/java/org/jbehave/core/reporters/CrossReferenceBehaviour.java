@@ -13,6 +13,7 @@ import org.jbehave.core.model.StepPattern;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.jbehave.core.steps.StepType;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
@@ -61,7 +62,7 @@ public class CrossReferenceBehaviour {
 
         // When
         PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
-        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern("(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
+        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern(StepType.GIVEN, "(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON        
         verifyNoMoreInteractions(factory, builder);
@@ -96,6 +97,7 @@ public class CrossReferenceBehaviour {
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
                 "    <stepMatch>\n" +
+                "      <type>GIVEN</type>\n" +
                 "      <annotatedPattern>(def)</annotatedPattern>\n" +
                 "      <resolvedPattern>[abc]</resolvedPattern>\n" +
                 "      <usages>\n" +
@@ -133,6 +135,7 @@ public class CrossReferenceBehaviour {
                 "  ],\n" +
                 "  'stepMatches': [\n" +
                 "    {\n" +
+                "      'type': 'GIVEN',\n" +
                 "      'annotatedPattern': '(def)',\n" +
                 "      'resolvedPattern': '[abc]',\n" +
                 "      'usages': [\n" +
@@ -189,7 +192,7 @@ public class CrossReferenceBehaviour {
 
         // When
         PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
-        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern("(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
+        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern(StepType.GIVEN, "(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON
         verifyNoMoreInteractions(factory, builder);
@@ -223,6 +226,7 @@ public class CrossReferenceBehaviour {
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
                 "    <stepMatch>\n" +
+                "      <type>GIVEN</type>\n" +
                 "      <annotatedPattern>(def)</annotatedPattern>\n" +
                 "      <resolvedPattern>[abc]</resolvedPattern>\n" +
                 "      <usages>\n" +
@@ -262,6 +266,7 @@ public class CrossReferenceBehaviour {
                 "  ],\n" +
                 "  'stepMatches': [\n" +
                 "    {\n" +
+                "      'type': 'GIVEN',\n" +
                 "      'annotatedPattern': '(def)',\n" +
                 "      'resolvedPattern': '[abc]',\n" +
                 "      'usages': [\n" +

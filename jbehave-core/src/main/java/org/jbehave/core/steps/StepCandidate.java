@@ -43,7 +43,7 @@ public class StepCandidate {
         this.method = method;
         this.stepsInstance = stepsInstance;
         this.startingWordsByType = startingWordsByType;
-        this.stepMatcher = stepPatternParser.parseStep(patternAsString);
+        this.stepMatcher = stepPatternParser.parseStep(stepType, patternAsString);
         this.stepCreator = new StepCreator(stepsInstance, parameterConverters, stepMatcher, stepMonitor);
     }
 

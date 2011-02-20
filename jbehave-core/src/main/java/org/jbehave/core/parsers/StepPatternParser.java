@@ -1,5 +1,7 @@
 package org.jbehave.core.parsers;
 
+import org.jbehave.core.steps.StepType;
+
 /**
  * <p>
  * Parses a step pattern, as provided in the method annotations, creating a
@@ -13,10 +15,10 @@ package org.jbehave.core.parsers;
  * will match
  * 
  * <pre>
- * I give £10 to Fred
+ * I give ï¿½10 to Fred
  * </pre>
  * 
- * and the captured parameters will be &quot;£10&quot; and &quot;Fred&quot;.
+ * and the captured parameters will be &quot;ï¿½10&quot; and &quot;Fred&quot;.
  * </p>
  * 
  */
@@ -25,10 +27,12 @@ public interface StepPatternParser {
 	/**
 	 * Parses a step pattern to create a step matcher
 	 * 
-	 * @param stepPattern the step pattern
-	 * @return A StepMatcher that will capture the parameters associated with a
+	 *
+     * @param stepType
+     * @param stepPattern the step pattern
+     * @return A StepMatcher that will capture the parameters associated with a
 	 *         step
 	 */
-	StepMatcher parseStep(String stepPattern);
+	StepMatcher parseStep(StepType stepType, String stepPattern);
 
 }
