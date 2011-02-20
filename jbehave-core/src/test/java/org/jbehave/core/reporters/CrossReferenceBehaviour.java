@@ -44,12 +44,12 @@ public class CrossReferenceBehaviour {
             }
 
             @Override
-            protected void xStreamAliasForXRefRoot(XStream xstream) {
+            protected void aliasForXRefRoot(XStream xstream) {
                 xstream.alias("xref", MyXrefRoot2.class);
             }
 
             @Override
-            protected XrefRoot makeXRefRootNode() {
+            protected XRefRoot newXRefRoot() {
                 return new MyXrefRoot2();
             }
         };
@@ -167,17 +167,17 @@ public class CrossReferenceBehaviour {
             }
 
             @Override
-            protected XrefRoot makeXRefRootNode() {
+            protected XRefRoot newXRefRoot() {
                 return new MyXrefRoot();
             }
 
             @Override
-            protected void xStreamAliasForXRefStory(XStream xstream) {
+            protected void aliasForXRefStory(XStream xstream) {
                 xstream.alias("story", MyXrefStory.class);
             }
 
             @Override
-            protected void xStreamAliasForXRefRoot(XStream xstream) {
+            protected void aliasForXRefRoot(XStream xstream) {
                 xstream.alias("xref", MyXrefRoot.class);
             }
         };
@@ -280,7 +280,7 @@ public class CrossReferenceBehaviour {
 
     }
 
-    private static class MyXrefRoot extends CrossReference.XrefRoot {
+    private static class MyXrefRoot extends CrossReference.XRefRoot {
         Set<String> themes = new HashSet<String>();
         public MyXrefRoot() {
             super();
@@ -292,12 +292,20 @@ public class CrossReferenceBehaviour {
         }
 
         @Override
-        protected CrossReference.XrefStory makeXRefStoryNode(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed) {
+        protected CrossReference.XRefStory createXRefStory(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed) {
             return new MyXrefStory(story, storyReporterBuilder, passed, themes);
         }
     }
+    
 
-    private static class MyXrefStory extends CrossReference.XrefStory {
+    private static class MyXrefRoot2 extends CrossReference.XRefRoot {
+        @Override
+        protected long currentTime() {
+            return 1234;
+        }
+    }
+
+    private static class MyXrefStory extends CrossReference.XRefStory {
         private String theme;
         private transient Set<String> themes = new HashSet<String>();
         public MyXrefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed, Set<String> themes) {
@@ -324,11 +332,4 @@ public class CrossReferenceBehaviour {
         }
     }
 
-
-    private static class MyXrefRoot2 extends CrossReference.XrefRoot {
-        @Override
-        protected long currentTime() {
-            return 1234;
-        }
-    }
 }
