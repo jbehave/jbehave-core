@@ -20,7 +20,11 @@ public abstract class JUnitStory extends ConfigurableEmbedder {
         Embedder embedder = configuredEmbedder();
         StoryPathResolver pathResolver = embedder.configuration().storyPathResolver();
         String storyPath = pathResolver.resolve(this.getClass());
-        embedder.runStoriesAsPaths(asList(storyPath));
+        try {
+            embedder.runStoriesAsPaths(asList(storyPath));
+        } finally {
+            embedder.generateCrossReference();
+        }
     }
 
  
