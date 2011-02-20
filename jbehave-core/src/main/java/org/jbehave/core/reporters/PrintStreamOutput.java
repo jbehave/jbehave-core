@@ -267,7 +267,14 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat groovy.lang.MetaClassImpl.invokeStaticMethod\\(MetaClassImpl.java:\\d+\\)\\n" +
                             "\\tat org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod\\(InvokerHelper.java:\\d+\\)\\n" +
                             "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeStaticMethodN\\(ScriptBytecodeAdapter.java:\\d+\\)"),
-                    "\t(groovy-static-method-invoke)")
+                    "\t(groovy-static-method-invoke)"),
+
+            // This one last.
+            new Replacement(
+                    Pattern.compile(
+                            "\\t\\(reflection\\-invoke\\)\\n" +
+                                    "\\t\\(groovy\\-"),
+                    "\t(groovy-")
 
     };
 

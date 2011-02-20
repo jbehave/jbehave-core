@@ -693,13 +693,10 @@ public class PrintStreamOutputBehaviour {
                 "     got: <false>\n" +
                 "\n" +
                 "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
-                "\t(reflection-invoke)\n" +
                 "\t(groovy-static-method-invoke)\n" +
                 "\tat com.github.tanob.groobe.AssertionSupport.assertWithFailureMessage(AssertionSupport.groovy:32)\n" +
-                "\t(reflection-invoke)\n" +
                 "\t(groovy-instance-method-invoke)\n" +
                 "\tat com.github.tanob.groobe.AssertionSupport$_assertTransformedDelegateAndOneParam_closure3.doCall(AssertionSupport.groovy:20)\n" +
-                "\t(reflection-invoke)\n" +
                 "\t(groovy-closure-invoke)\n" +
                 "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
                 "\t(reflection-invoke)\n" +
