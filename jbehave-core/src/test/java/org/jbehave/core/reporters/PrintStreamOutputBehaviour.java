@@ -640,7 +640,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
-    public void foo() throws IOException {
+    public void stackTracesShouldBeCompressible() throws IOException {
 
         String start = "java.lang.AssertionError: cart should have contained 68467780\n" +
                 "Expected: is <true>\n" +
