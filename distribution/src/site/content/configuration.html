@@ -205,7 +205,8 @@ public abstract class TraderStory extends JUnitStory {
                 	.withDefaultFormats()
                 	.withViewResources(viewProperties)
                 	.withFormats(CONSOLE, TXT, HTML, XML)
-                	.withFailureTrace(false))
+                    .withFailureTrace(true)
+                	.withFailureTraceCompression(false))
                 .useStoryPathResolver(storyPathResolver)
                 .useStepMonitor(new SilentStepMonitor())
                 .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));

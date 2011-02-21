@@ -73,7 +73,15 @@ import static java.util.Arrays.asList;
  * <pre>
  * new StoryReporterBuilder().withFailureTrace(true)
  * </pre>
+ * </p>
+ * <p>
+ * If failure trace is reported, it is with the full stack trace.  In some cases,
+ * it's useful to have it compressed, eliminating unnecessary lines that are not very
+ * informative:
  * 
+ * <pre>
+ * new StoryReporterBuilder().withFailureTraceCompression(true)
+ * </pre>
  * </p>
  * 
  * <p>
@@ -133,6 +141,7 @@ public class StoryReporterBuilder {
     private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
     private Properties viewResources = FreemarkerViewGenerator.defaultViewProperties();
     private boolean reportFailureTrace = false;
+    private boolean compressFailureTrace = false;
     private Keywords keywords = new LocalizedKeywords();
     private CrossReference crossReference;
 
@@ -178,6 +187,10 @@ public class StoryReporterBuilder {
 
     public boolean reportFailureTrace() {
         return reportFailureTrace;
+    }
+
+    public boolean compressFailureTrace() {
+        return compressFailureTrace;
     }
 
     public Properties viewResources() {
@@ -240,6 +253,11 @@ public class StoryReporterBuilder {
 
     public StoryReporterBuilder withFailureTrace(boolean reportFailureTrace) {
         this.reportFailureTrace = reportFailureTrace;
+        return this;
+    }
+
+    public StoryReporterBuilder withFailureTraceCompression(boolean compressFailureTrace) {
+        this.compressFailureTrace = compressFailureTrace;
         return this;
     }
 

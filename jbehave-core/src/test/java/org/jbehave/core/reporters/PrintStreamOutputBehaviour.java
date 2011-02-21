@@ -685,7 +685,7 @@ public class PrintStreamOutputBehaviour {
                 "\tat org.jbehave.core.steps.StepCreator$ParameterizedStep.perform(StepCreator.java:430)\n" +
                 "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)";
 
-        TxtOutput reporter = new TxtOutput(new PrintStream(new ByteArrayOutputStream()), new Properties(), new LocalizedKeywords(), true);
+        TxtOutput reporter = new TxtOutput(new PrintStream(new ByteArrayOutputStream()), new Properties(), new LocalizedKeywords(), true, true);
 
         assertEquals(
                 "java.lang.AssertionError: cart should have contained 68467780\n" +

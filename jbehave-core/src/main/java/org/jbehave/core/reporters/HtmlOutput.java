@@ -39,7 +39,12 @@ public class HtmlOutput extends PrintStreamOutput {
 
     public HtmlOutput(PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace) {
-        super(HTML, output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace);
+        this(output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace, false);
+    }
+
+    public HtmlOutput(PrintStream output, Properties outputPatterns,
+            Keywords keywords, boolean reportFailureTrace, boolean compressFailureTrace) {
+        super(HTML, output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace, compressFailureTrace);
     }
 
     private static Properties mergeWithDefault(Properties outputPatterns) {

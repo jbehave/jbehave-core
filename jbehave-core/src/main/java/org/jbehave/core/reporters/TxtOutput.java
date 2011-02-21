@@ -38,7 +38,12 @@ public class TxtOutput extends PrintStreamOutput {
 
     public TxtOutput(PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace) {
-        super(TXT, output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace);
+        this(output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace, false);
+    }
+
+    public TxtOutput(PrintStream output, Properties outputPatterns,
+            Keywords keywords, boolean reportFailureTrace, boolean compressFailureTrace) {
+        super(TXT, output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace, compressFailureTrace);
     }
 
     private static Properties mergeWithDefault(Properties outputPatterns) {
