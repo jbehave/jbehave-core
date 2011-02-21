@@ -1,33 +1,153 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type" />
-  <title>Cross Reference</title>
+<title>Cross Reference</title>
 </head>
 <body>
-<h2>Cross Reference<br />
-</h2>
-JBehave can generate a JSON and XML cross reference at the end of a
-run.&nbsp; Details of Stories and Scenarios are in the document, as are
-details of step matches.<br />
-<br />
-The intended use of these is with webapps, and we have one to start
-with called Story Navigator (link TBA)<br />
-<h2>Setup</h2>
-<pre>public class YourStories extends JUnitStories {<br />&nbsp;&nbsp;&nbsp; private CrossReference crossReference = new CrossReference();<br />&nbsp;&nbsp;&nbsp; @Override<br />&nbsp;&nbsp;&nbsp; public Configuration configuration() {<br />&nbsp;&nbsp;&nbsp; return new SeleniumConfiguration()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .useStepMonitor(crossReference.getStepMonitor()))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .useStoryReporterBuilder(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new StoryReporterBuilder()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .withCrossReference(crossReference));<br />&nbsp;&nbsp;&nbsp; }<br />}</pre>
-<br />
-We are hiding other methods in the above code fragment to make it clear
-just what you have to do for setting up the cross reference.&nbsp; In
-particular:<br />
-<ul>
-  <li>you are likely to be chaining more than one step monitor together
-in the useStepMonitor(..) line</li>
-  <li>your StoryReporter has more&nbsp; configuration typically</li>
-  <li>there are other methods to implement in JUnitStories for finding
-steps and stories.</li>
-</ul>
-Real example: See <a
- href="https://github.com/jbehave/jbehave-tutorial/blob/master/etsy-stories/src/main/java/org/jbehave/tutorials/etsy/EtsyDotComStories.java">EtsyStories</a>
-in the <a href="https://github.com/jbehave/jbehave-tutorial">tutorial</a>.<br />
+<h2>Cross Reference</h2>
+
+<p>The <a
+    href="javadoc/core/org/jbehave/core/reporters/CrossReference.html">CrossReference</a>
+is a special report <a
+    href="javadoc/core/org/jbehave/core/reporters/Format.html">Format</a>
+that build a cross reference of stories being executed during the run.
+It provides both JSON and XML representations, detailing both the
+stories and scenarios run, as well as the step matches.</p>
+
+<p>These representations can then be used by any app that can
+navigate its contents and render it interactively.</p>
+
+<p>A typical xref.json file is:</p>
+
+<pre class="brush: plain">
+{"xref": {
+  "whenMade": 1298245533227,
+  "createdBy": "JBehave",
+  "meta": [
+  ],
+  "stories": [
+    {
+      "description": "",
+      "narrative": "",
+      "name": "unmatched_search_term.story",
+      "path": "org/jbehave/examples/trader/stories/unmatched_search_term.story",
+      "html": "org.jbehave.examples.trader.stories.unmatched_search_term.html",
+      "meta": "",
+      "scenarios": "Scenario:Search term does match examples table header\u000aG
+iven that I am on Google's Homepage\u000aWhen I enter the search term ridiculou
+sSearchTerm and proceed\u000aThen I should see ridiculous things\u000a\u000a\u0
+00aScenario:Search term does not match examples table header and step is marked 
+as pending\u000aGiven that I am on Google's Homepage\u000aWhen I enter the searc
+h term ridiculousSearchTerm and proceed\u000aThen I should see ridiculous thin
+gs\u000a\u000a\u000a",
+      "passed": true
+    }
+  ],
+  "stepMatches": [
+    {
+      "type": "GIVEN",
+      "annotatedPattern": "that I am on Google's Homepage",
+      "resolvedPattern": "that\\s+I\\s+am\\s+on\\s+Google's\\s+Homepage",
+      "usages": [
+        {
+          "story": "org/jbehave/examples/trader/stories/unmatched_search_term.st
+ory",
+          "scenario": "Search term does match examples table header",
+          "step": "Given that I am on Google's Homepage"
+        },
+        {
+          "story": "org/jbehave/examples/trader/stories/unmatched_search_term.st
+ory",
+          "scenario": "Search term does not match examples table header and step
+ is marked as pending",
+          "step": "Given that I am on Google's Homepage"
+        }
+      ]
+    },
+    {
+      "type": "WHEN",
+      "annotatedPattern": "I enter the search term ridiculousSearchTerm and pr
+oceed",
+      "resolvedPattern": "I\\s+enter\\s+the\\s+search\\s+term\\s+ridiculousSear
+chTerm\\s+and\\s+proceed",
+      "usages": [
+        {
+          "story": "org/jbehave/examples/trader/stories/unmatched_search_term.st
+ory",
+          "scenario": "Search term does not match examples table header and step
+ is marked as pending",
+          "step": "When I enter the search term ridiculousSearchTerm and proce
+ed"
+        },
+        {
+          "story": "org/jbehave/examples/trader/stories/unmatched_search_term.st
+ory",
+          "scenario": "Search term does match examples table header",
+          "step": "When I enter the search term ridiculousSearchTerm and proce
+ed"
+        }
+      ]
+    },
+    {
+      "type": "THEN",
+      "annotatedPattern": "I should see ridiculous things",
+      "resolvedPattern": "I\\s+should\\s+see\\s+ridiculous\\s+things",
+      "usages": [
+        {
+          "story": "org/jbehave/examples/trader/stories/unmatched_search_term.st
+ory",
+          "scenario": "Search term does not match examples table header and step
+ is marked as pending",
+          "step": "Then I should see ridiculous things"
+        },
+        {
+          "story": "org/jbehave/examples/trader/stories/unmatched_search_term.st
+ory",
+          "scenario": "Search term does match examples table header",
+          "step": "Then I should see ridiculous things"
+        }
+      ]
+    }
+  ]
+}}
+</pre>
+<h2>Configuration</h2>
+
+<p>The CrossReference instance needs to configured in the <a
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>:</p>
+<pre class="brush: java">
+public class TraderStories extends JUnitStories {
+    
+    private final CrossReference xref = new CrossReference();
+
+    @Override
+    public Configuration configuration() {
+        return new MostUsefulConfiguration()
+            .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withCrossReference(xref)) 
+            .useStepMonitor(xref.getStepMonitor());                               
+    }
+}
+</pre>
+
+<p>If the CrossReference is configured, the JSON and XML
+representations are generated automatically in the JBehave report view
+directory (<b>target/jbehave/view</b> by default) by the JUnit-based
+ConfigurableEmbedder, i.e. JUnitStory and JUnitStory. In other case, you
+may generate them on demand via the Embedder method <b>generateCrossReference()</b>.</p>
+
+<p>Note that in the above code fragment we are only focusing on the
+configuration of the CrossReference. In particular, you may be chaining
+more than one step monitor together in the useStepMonitor(..) line.
+Also, there will be typically other methods to implement in JUnitStories
+for finding stories and other configuration elements to specify.
+<p>
+
+<h2>Examples</h2>
+
+<p>Examples of configuration of CrossReference can be found in <a href="running-examples.html">trader example</a> and the
+ <a href="https://github.com/jbehave/jbehave-tutorial">JBehave Tutorial</a> (<a
+ href="https://github.com/jbehave/jbehave-tutorial/blob/master/etsy-stories/src/main/java/org/jbehave/tutorials/etsy/EtsyDotComStories.java">EtsyDotComStories</a>).</p>
+
 </body>
 </html>
