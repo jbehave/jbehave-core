@@ -25,7 +25,6 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
-import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.examples.trader.service.TradingService;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
@@ -90,6 +89,8 @@ public abstract class TraderStory extends JUnitStory {
                 .withPathResolver(new ResolveToPackagedName())
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML)
+                .withFailureTrace(true)
+                .withFailureTraceCompression(true)
                 .withCrossReference(xref))  
             .useParameterConverters(parameterConverters)
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(

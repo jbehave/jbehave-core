@@ -74,6 +74,8 @@ public class TraderStories extends JUnitStories {
                 .withDefaultFormats()
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML)
+                .withFailureTrace(true)
+                .withFailureTraceCompression(true)                
                 .withCrossReference(xref)) 
             .useParameterConverters(parameterConverters)                     
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
