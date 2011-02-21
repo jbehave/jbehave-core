@@ -90,7 +90,7 @@ public abstract class TraderStory extends JUnitStory {
                 .withPathResolver(new ResolveToPackagedName())
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML)
-                .withCrossReference(xref))  // required for navigator view
+                .withCrossReference(xref))  
             .useParameterConverters(parameterConverters)
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters

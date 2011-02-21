@@ -74,7 +74,7 @@ public class TraderStories extends JUnitStories {
                 .withDefaultFormats()
                 .withViewResources(viewResources)
                 .withFormats(CONSOLE, TXT, HTML, XML)
-                .withCrossReference(xref)) // required for navigator view
+                .withCrossReference(xref)) 
             .useParameterConverters(parameterConverters)                     
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters
