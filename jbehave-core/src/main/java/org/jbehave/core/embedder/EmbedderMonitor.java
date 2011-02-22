@@ -15,6 +15,8 @@ public interface EmbedderMonitor {
 
     void embeddableFailed(String name, Throwable cause);
 
+    void embeddableNotConfigurable(String name);
+
     void embeddablesSkipped(List<String> classNames);
 
     void metaNotAllowed(Meta meta, MetaFilter filter);
@@ -53,5 +55,6 @@ public interface EmbedderMonitor {
     void processingSystemProperties(Properties properties);
 
     void systemPropertySet(String name, String value);
+
 
 }

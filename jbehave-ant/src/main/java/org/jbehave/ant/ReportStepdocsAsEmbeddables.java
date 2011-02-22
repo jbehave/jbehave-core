@@ -8,12 +8,12 @@ import org.jbehave.core.embedder.Embedder;
 /**
  * Ant task to report stepdocs
  */
-public class ReportStepdocs extends AbstractEmbedderTask {
+public class ReportStepdocsAsEmbeddables extends AbstractEmbedderTask {
 
 	public void execute() throws BuildException {
 		Embedder embedder = newEmbedder();
-		log("Reporting stepdocs using embedder " + embedder, MSG_INFO);
-		embedder.reportStepdocs();
+		log("Reporting stepdocs as embeddables using embedder " + embedder, MSG_INFO);
+		embedder.reportStepdocsAsEmbeddables(classNames());
 	}
 
 }

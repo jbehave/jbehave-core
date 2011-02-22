@@ -9,6 +9,7 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -274,8 +275,27 @@ public class Embedder {
     }
 
     public void reportStepdocs() {
-        Configuration configuration = configuration();
-        List<CandidateSteps> candidateSteps = candidateSteps();
+        reportStepdocs(configuration(), candidateSteps());
+    }
+
+    public void reportStepdocsAsEmbeddables(List<String> classNames) {
+        EmbedderControls embedderControls = embedderControls();
+        if (embedderControls.skip()) {
+            embedderMonitor.embeddablesSkipped(classNames);
+            return;
+        }
+
+        for (Embeddable embeddable : embeddables(classNames, classLoader())) {
+            if ( embeddable instanceof ConfigurableEmbedder ){
+                ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder)embeddable;
+                reportStepdocs(configurableEmbedder.configuration(), configurableEmbedder.candidateSteps());
+            } else {
+                embedderMonitor.embeddableNotConfigurable(embeddable.getClass().getName());
+            }
+        }        
+    }
+    
+    public void reportStepdocs(Configuration configuration, List<CandidateSteps> candidateSteps) {
         StepFinder finder = configuration.stepFinder();
         StepdocReporter reporter = configuration.stepdocReporter();
         List<Object> stepsInstances = finder.stepsInstances(candidateSteps);

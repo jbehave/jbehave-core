@@ -29,6 +29,10 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
         delegate.embeddableFailed(name, cause);
     }
 
+    public void embeddableNotConfigurable(String name) {
+        delegate.embeddableNotConfigurable(name);
+    }
+
     public void embeddablesSkipped(List<String> classNames) {
         delegate.embeddablesSkipped(classNames);
     }

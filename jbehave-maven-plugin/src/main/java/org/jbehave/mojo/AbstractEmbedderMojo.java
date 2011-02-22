@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.maven.plugin.AbstractMojo;
+import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
@@ -284,6 +285,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void embeddableFailed(String name, Throwable cause) {
             getLog().warn("Failed to run embeddable " + name, cause);
+        }
+        
+        public void embeddableNotConfigurable(String name) {
+            getLog().warn("Embeddable " + name + " must be an instance of "+ConfigurableEmbedder.class);
         }
 
         public void embeddablesSkipped(List<String> classNames) {

@@ -13,6 +13,7 @@ import java.util.Properties;
 
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.filters.StringInputStream;
+import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
@@ -227,6 +228,10 @@ public abstract class AbstractEmbedderTask extends Task {
 
         public void embeddableFailed(String name, Throwable cause) {
             log("Failed to run embeddable " + name, cause, MSG_WARN);
+        }
+
+        public void embeddableNotConfigurable(String name) {
+            log("Embeddable " + name + " must be an instance of "+ConfigurableEmbedder.class, MSG_WARN);
         }
 
         public void embeddablesSkipped(List<String> classNames) {

@@ -7,6 +7,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.StoryMaps;
@@ -34,6 +35,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     public void embeddableFailed(String name, Throwable cause) {
         print("Failed to run embeddable " + name);
         printStackTrace(cause);
+    }
+
+    public void embeddableNotConfigurable(String name) {
+        print("Embeddable " + name + " must be an instance of "+ConfigurableEmbedder.class);
     }
 
     public void embeddablesSkipped(List<String> classNames) {
