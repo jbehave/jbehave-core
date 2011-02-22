@@ -6,7 +6,7 @@ import org.apache.tools.ant.BuildException;
 import org.jbehave.core.embedder.Embedder;
 
 /**
- * Ant task to report stepdocs
+ * Ant task to report stepdocs given a fully configured {@link Embedder} instance.
  */
 public class ReportStepdocs extends AbstractEmbedderTask {
 

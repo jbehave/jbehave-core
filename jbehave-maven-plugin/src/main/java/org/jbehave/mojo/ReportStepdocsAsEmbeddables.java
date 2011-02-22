@@ -2,10 +2,14 @@ package org.jbehave.mojo;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.jbehave.core.Embeddable;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.steps.CandidateSteps;
 
 /**
- * Mojo to report stepdocs
+ * Mojo to report stepdocs for the {@link Embeddable} instances provided (more specifically instances
+ * of {@link ConfiguredEmbedder} which provides both {@link Configuration} and {@link CandidateSteps}).
  * 
  * @goal report-stepdocs-as-embeddables
  */

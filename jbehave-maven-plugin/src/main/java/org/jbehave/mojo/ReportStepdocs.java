@@ -5,7 +5,7 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.jbehave.core.embedder.Embedder;
 
 /**
- * Mojo to report stepdocs
+ * Mojo to report stepdocs given a fully configured {@link Embedder} instance.
  * 
  * @goal report-stepdocs
  */
