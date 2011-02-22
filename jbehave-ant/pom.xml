@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.2</version>
+    <version>3.3-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-ant</artifactId>
   <name>JBehave Ant</name>
