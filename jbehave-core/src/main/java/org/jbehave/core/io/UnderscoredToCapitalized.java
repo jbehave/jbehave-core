@@ -7,15 +7,28 @@ import static org.apache.commons.lang.WordUtils.capitalize;
 
 public class UnderscoredToCapitalized implements StoryNameResolver {
 
+    private final String extension;
+
+    public UnderscoredToCapitalized() {
+        this(".story");
+    }
+
+    public UnderscoredToCapitalized(String extension) {
+        this.extension = extension;
+    }
+
     public String resolveName(String path) {
         String name = path;
-        if ( contains(name, '/') ){
+        if (contains(name, extension)) {
+            name = substringBefore(name, extension);
+        }
+        if (contains(name, '/')) {
             name = substringAfterLast(name, "/");
-            name = substringBefore(name, ".");
-        } else if ( contains(name, '.') ){
+        }
+        if (contains(name, '.')) {
             name = substringAfterLast(name, ".");
         }
         return capitalize(name.replace("_", " "));
     }
-    
+
 }
