@@ -45,7 +45,7 @@ public class MetaFilter {
     }
 
     public MetaFilter(String filterAsString, EmbedderMonitor monitor) {
-        this.filterAsString = filterAsString;
+        this.filterAsString = filterAsString == null ? "" : filterAsString;
         this.monitor = monitor;
         parse(include, "+");
         parse(exclude, "-");

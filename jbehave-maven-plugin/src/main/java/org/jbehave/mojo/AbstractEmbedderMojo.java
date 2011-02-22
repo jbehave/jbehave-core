@@ -1,11 +1,11 @@
 package org.jbehave.mojo;
 
-import static java.util.Arrays.asList;
-
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.embedder.Embedder;
@@ -152,7 +152,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * 
      * @parameter
      */
-    List<String> metaFilters = asList();
+    String[] metaFilters;
 
     /**
      * The system properties
@@ -189,7 +189,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @return An EmbedderClassLoader
      */
     protected EmbedderClassLoader classLoader() {
-        if ( classLoader == null ){
+        if (classLoader == null) {
             classLoader = new EmbedderClassLoader(classpathElements());
         }
         return classLoader;
@@ -259,8 +259,8 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         embedder.useSystemProperties(systemProperties);
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
-        if ( !metaFilters.isEmpty() ) {
-            embedder.useMetaFilters(metaFilters);
+        if (ArrayUtils.isNotEmpty(metaFilters)) {
+            embedder.useMetaFilters(Arrays.asList(metaFilters));
         }
         embedder.useEmbedderControls(embedderControls());
         return embedder;
@@ -322,17 +322,19 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
                 Throwable cause) {
-            String message = "Failed to generate reports view to '" + outputDirectory + "' using formats '" + formats + "'"
-                            + " and view properties '" + viewProperties + "'";
+            String message = "Failed to generate reports view to '" + outputDirectory + "' using formats '" + formats
+                    + "'" + " and view properties '" + viewProperties + "'";
             getLog().warn(message, cause);
         }
 
         public void reportsViewGenerated(ReportsCount count) {
-            getLog().info("Reports view generated with " + count.getStories() + " stories containing " + count.getScenarios() + " scenarios (of which  "
-                    + count.getScenariosFailed() + " failed)");
+            getLog().info(
+                    "Reports view generated with " + count.getStories() + " stories containing " + count.getScenarios()
+                            + " scenarios (of which  " + count.getScenariosFailed() + " failed)");
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
-                getLog().info("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  " + count.getScenariosNotAllowed()
-                        + " scenarios");
+                getLog().info(
+                        "Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  "
+                                + count.getScenariosNotAllowed() + " scenarios");
             }
         }
 
@@ -341,45 +343,51 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void mappingStory(String storyPath, List<String> metaFilters) {
-            getLog().info("Mapping story "+storyPath+" with meta filters "+metaFilters);
+            getLog().info("Mapping story " + storyPath + " with meta filters " + metaFilters);
         }
-        
+
         public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
-            getLog().info("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
-                    + " and view properties '" + viewProperties + "'");
+            getLog().info(
+                    "Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                            + " and view properties '" + viewProperties + "'");
         }
 
         public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
                 Throwable cause) {
-            getLog().warn("Failed to generate maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
-                    + " and view properties '" + viewProperties + "'", cause);
+            getLog().warn(
+                    "Failed to generate maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
+                            + " and view properties '" + viewProperties + "'", cause);
         }
 
         public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
-            getLog().info("Generating navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'");
+            getLog().info(
+                    "Generating navigator view to '" + outputDirectory + "' using view properties '" + viewProperties
+                            + "'");
         }
 
         public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
-            getLog().warn("Failed to generate navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'", cause);
+            getLog().warn(
+                    "Failed to generate navigator view to '" + outputDirectory + "' using view properties '"
+                            + viewProperties + "'", cause);
         }
 
         public void navigatorViewNotGenerated() {
-            getLog().warn("Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder");
+            getLog().warn(
+                    "Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder");
         }
 
         public void processingSystemProperties(Properties properties) {
             getLog().info("Processing system properties " + properties);
         }
-        
+
         public void systemPropertySet(String name, String value) {
-            getLog().info("System property '" + name + "' set to '"+value+"'");
+            getLog().info("System property '" + name + "' set to '" + value + "'");
         }
 
         @Override
         public String toString() {
             return this.getClass().getSimpleName();
         }
-
 
     }
 }

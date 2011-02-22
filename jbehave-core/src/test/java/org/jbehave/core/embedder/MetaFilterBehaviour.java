@@ -52,6 +52,12 @@ public class MetaFilterBehaviour {
         assertFilterAllowsProperty("+map *API", "map Service API", true);
     }
 
+    @Test
+    public void shouldTreatNullFiltersAsEmptyFilters() {
+        assertFilterAllowsProperty(null, "skip", true);
+        assertFilterAllowsProperty("", "skip", true);
+    }
+
     private void assertFilterAllowsProperty(String filter, String property, boolean allowed) {
         assertThat(new MetaFilter(filter).allow(new Meta(asList(property))), equalTo(allowed));
     }
