@@ -73,15 +73,17 @@ import static java.util.Arrays.asList;
  * <pre>
  * new StoryReporterBuilder().withFailureTrace(true)
  * </pre>
+ * 
  * </p>
  * <p>
- * If failure trace is reported, it is with the full stack trace.  In some cases,
- * it's useful to have it compressed, eliminating unnecessary lines that are not very
- * informative:
+ * If failure trace is reported, it is with the full stack trace. In some cases,
+ * it's useful to have it compressed, eliminating unnecessary lines that are not
+ * very informative:
  * 
  * <pre>
  * new StoryReporterBuilder().withFailureTraceCompression(true)
  * </pre>
+ * 
  * </p>
  * 
  * <p>
@@ -120,12 +122,9 @@ import static java.util.Arrays.asList;
 public class StoryReporterBuilder {
 
     public enum Format {
-        CONSOLE(org.jbehave.core.reporters.Format.CONSOLE),
-        IDE_CONSOLE(org.jbehave.core.reporters.Format.IDE_CONSOLE),
-        TXT(org.jbehave.core.reporters.Format.TXT),
-        HTML(org.jbehave.core.reporters.Format.HTML),
-        XML(org.jbehave.core.reporters.Format.XML),
-        STATS(org.jbehave.core.reporters.Format.STATS);
+        CONSOLE(org.jbehave.core.reporters.Format.CONSOLE), IDE_CONSOLE(org.jbehave.core.reporters.Format.IDE_CONSOLE), TXT(
+                org.jbehave.core.reporters.Format.TXT), HTML(org.jbehave.core.reporters.Format.HTML), XML(
+                org.jbehave.core.reporters.Format.XML), STATS(org.jbehave.core.reporters.Format.STATS);
 
         private org.jbehave.core.reporters.Format realFormat;
 
@@ -144,19 +143,20 @@ public class StoryReporterBuilder {
     private boolean compressFailureTrace = false;
     private Keywords keywords = new LocalizedKeywords();
     private CrossReference crossReference;
+    private boolean multiThreading;
 
     public File outputDirectory() {
         return filePrintStreamFactory("").outputDirectory();
     }
 
-    public String relativeDirectory(){
+    public String relativeDirectory() {
         return relativeDirectory;
     }
-    
-    public FilePathResolver pathResolver(){
+
+    public FilePathResolver pathResolver() {
         return pathResolver;
     }
-    
+
     public URL codeLocation() {
         return codeLocation;
     }
@@ -167,9 +167,9 @@ public class StoryReporterBuilder {
 
     public List<String> formatNames(boolean toLowerCase) {
         Locale locale = Locale.getDefault();
-        if ( keywords instanceof LocalizedKeywords ){
-            locale = ((LocalizedKeywords)keywords).getLocale();
-        }        
+        if (keywords instanceof LocalizedKeywords) {
+            locale = ((LocalizedKeywords) keywords).getLocale();
+        }
         List<String> names = new ArrayList<String>();
         for (org.jbehave.core.reporters.Format format : formats) {
             String name = format.name();
@@ -185,6 +185,10 @@ public class StoryReporterBuilder {
         return keywords;
     }
 
+    public boolean multiThreading(){
+        return multiThreading;
+    }
+    
     public boolean reportFailureTrace() {
         return reportFailureTrace;
     }
@@ -202,7 +206,7 @@ public class StoryReporterBuilder {
         return this;
     }
 
-    public StoryReporterBuilder withPathResolver(FilePathResolver pathResolver){
+    public StoryReporterBuilder withPathResolver(FilePathResolver pathResolver) {
         this.pathResolver = pathResolver;
         return this;
     }
@@ -215,13 +219,12 @@ public class StoryReporterBuilder {
     public CrossReference crossReference() {
         return crossReference;
     }
-    
 
     public boolean hasCrossReference() {
         return crossReference != null;
     }
 
-    public StoryReporterBuilder withCrossReference(CrossReference crossReference){
+    public StoryReporterBuilder withCrossReference(CrossReference crossReference) {
         this.crossReference = crossReference;
         return this;
     }
@@ -232,6 +235,7 @@ public class StoryReporterBuilder {
 
     /**
      * Use the other withFormats() signature
+     * 
      * @param formats
      * @return
      */
@@ -265,6 +269,11 @@ public class StoryReporterBuilder {
         return this;
     }
 
+    public StoryReporterBuilder withMultiThreading(boolean multiThreading) {
+        this.multiThreading = multiThreading;
+        return this;
+    }
+
     public StoryReporterBuilder withViewResources(Properties resources) {
         this.viewResources = resources;
         return this;
@@ -277,24 +286,9 @@ public class StoryReporterBuilder {
         }
 
         DelegatingStoryReporter delegate = new DelegatingStoryReporter(delegates.values());
-        if (multiThreading()) {
-            if (crossReference == null) {
-                return new StoryReporterReplayer(new NullStoryReporter(), delegate);
-            } else {
-                return new StoryReporterReplayer(reporterFor(storyPath, crossReference), delegate);
-            }
-        } else {
-            if (crossReference == null) {
-                return new StoryReporterNonReplayer(new NullStoryReporter(), delegate);
-            } else {
-                return new StoryReporterNonReplayer(reporterFor(storyPath, crossReference), delegate);
-            }
-        }
-    }
-
-    protected boolean multiThreading() {
-        String threads = System.getProperty("THREADS");
-        return threads != null && Integer.parseInt(threads) > 1;
+        StoryReporter crossReferencing = (crossReference == null ? new NullStoryReporter() : reporterFor(storyPath,
+                crossReference));
+        return new ConcurrentStoryReporter(crossReferencing, delegate, multiThreading);
     }
 
     public Map<String, StoryReporter> build(List<String> storyPaths) {

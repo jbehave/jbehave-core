@@ -296,6 +296,7 @@ public class Embedder {
 
     private void buildReporters(Configuration configuration, List<String> storyPaths) {
         StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
+        reporterBuilder.withMultiThreading(embedderControls.threads() > 1);
         configuration.useStoryReporters(reporterBuilder.build(storyPaths));
     }
 

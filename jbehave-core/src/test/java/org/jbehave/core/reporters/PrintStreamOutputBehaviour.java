@@ -1,5 +1,17 @@
 package org.jbehave.core.reporters;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Properties;
+
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -8,23 +20,26 @@ import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
-import org.jbehave.core.model.*;
+import org.jbehave.core.model.Description;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
-import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Properties;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+
 import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.junit.Assert.assertEquals;
@@ -587,7 +602,7 @@ public class PrintStreamOutputBehaviour {
 
         // When
         narrateAnInterestingStory(reporter, false);
-        ((StoryReporterReplayer) reporter).replay();
+        ((ConcurrentStoryReporter) reporter).invokeDelayed();
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         Properties viewProperties = new Properties();
         viewProperties.setProperty("decorateNonHtml", "false");
@@ -617,7 +632,7 @@ public class PrintStreamOutputBehaviour {
 
         // When
         narrateAnInterestingStory(reporter, false);
-        ((StoryReporterReplayer) reporter).replay();
+        ((ConcurrentStoryReporter) reporter).invokeDelayed();
 
 
         // Then

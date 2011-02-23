@@ -50,8 +50,8 @@ public class StoryReporterBuilderBehaviour {
         StoryReporter reporter = builder.withDefaultFormats().build(storyPath);
 
         // Then
-        assertThat(reporter, instanceOf(StoryReporterReplayer.class));
-        StoryReporter delegate = ((StoryReporterReplayer) reporter).delegate;
+        assertThat(reporter, instanceOf(ConcurrentStoryReporter.class));
+        StoryReporter delegate = ((ConcurrentStoryReporter) reporter).getDelegate();
         assertThat(delegate, instanceOf(DelegatingStoryReporter.class));
         Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
         assertThat(delegates.size(), equalTo(1));
@@ -98,8 +98,8 @@ public class StoryReporterBuilderBehaviour {
 
         // Then
         assertThat(builder.reportFailureTrace(), is(true));
-        assertThat(reporter, instanceOf(StoryReporterReplayer.class));
-        StoryReporter delegate = ((StoryReporterReplayer) reporter).delegate;
+        assertThat(reporter, instanceOf(ConcurrentStoryReporter.class));
+        StoryReporter delegate = ((ConcurrentStoryReporter) reporter).getDelegate();
         assertThat(delegate, instanceOf(DelegatingStoryReporter.class));
         Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
         assertThat(delegates.size(), equalTo(1));
@@ -164,7 +164,7 @@ public class StoryReporterBuilderBehaviour {
         StoryReporter reporter = builder.withDefaultFormats().withFormats(TXT).withKeywords(keywords).build(storyPath);
         reporter.failed("Dato un passo che fallisce", new UUIDExceptionWrapper(new RuntimeException("ouch")));
 
-        ((StoryReporterReplayer) reporter).replay();
+        ((ConcurrentStoryReporter) reporter).invokeDelayed();
 
         // Then
         assertThat(builder.keywords(), equalTo(keywords));
@@ -175,12 +175,7 @@ public class StoryReporterBuilderBehaviour {
     @Test
     public void shouldBuildWithReporterOfDifferentFormatsForSingleThreaded() throws IOException {
 
-        StoryReporterBuilder builder = new StoryReporterBuilder() {
-            @Override
-            protected boolean multiThreading() {
-                return false;
-            }
-        };
+        StoryReporterBuilder builder = new StoryReporterBuilder().withMultiThreading(false);
         shouldBuildWithReporterOfDifferentFormats(builder);
 
     }
@@ -188,12 +183,7 @@ public class StoryReporterBuilderBehaviour {
     @Test
     public void shouldBuildWithReporterOfDifferentFormatsForMultiThreaded() throws IOException {
 
-        StoryReporterBuilder builder = new StoryReporterBuilder() {
-            @Override
-            protected boolean multiThreading() {
-                return true;
-            }
-        };
+        StoryReporterBuilder builder = new StoryReporterBuilder().withMultiThreading(true);
         shouldBuildWithReporterOfDifferentFormats(builder);
 
     }
@@ -216,8 +206,8 @@ public class StoryReporterBuilderBehaviour {
             lowerCaseNames[i] = upperCaseNames[i].toLowerCase(locale);
         }
         assertThat(builder.formatNames(true), hasItems(lowerCaseNames));
-        assertThat(reporter, instanceOf(StoryReporterReplayer.class));
-        StoryReporter delegate = ((StoryReporterReplayer) reporter).delegate;
+        assertThat(reporter, instanceOf(ConcurrentStoryReporter.class));
+        StoryReporter delegate = ((ConcurrentStoryReporter) reporter).getDelegate();
         assertThat(delegate, instanceOf(DelegatingStoryReporter.class));
         Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
         assertThat(delegates.size(), equalTo(6));
@@ -248,8 +238,8 @@ public class StoryReporterBuilderBehaviour {
         StoryReporter reporter = builder.withDefaultFormats().withFormats(TXT).build(storyPath);
 
         // Then
-        assertThat(reporter, instanceOf(StoryReporterReplayer.class));
-        StoryReporter delegate = ((StoryReporterReplayer) reporter).delegate;
+        assertThat(reporter, instanceOf(ConcurrentStoryReporter.class));
+        StoryReporter delegate = ((ConcurrentStoryReporter) reporter).getDelegate();
         assertThat(delegate, instanceOf(DelegatingStoryReporter.class));
         Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
         assertThat(delegates.size(), equalTo(2));
