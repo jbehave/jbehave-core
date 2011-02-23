@@ -43,7 +43,6 @@ public class Embedder {
     private StoryMapper storyMapper;
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
-    private ExecutorService executorService;
 
     public Embedder() {
         this(new StoryMapper(), new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -56,12 +55,13 @@ public class Embedder {
     }
 
     public void mapStoriesAsPaths(List<String> storyPaths) {
-        processSystemProperties();
         EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
             embedderMonitor.storiesSkipped(storyPaths);
             return;
         }
+        
+        processSystemProperties();        
 
         for (String storyPath : storyPaths) {
             Story story = storyRunner.storyOfPath(configuration, storyPath);
@@ -184,14 +184,7 @@ public class Embedder {
 
     public void runStoriesAsPaths(List<String> storyPaths) {
 
-        if (executorService == null) {
-            String threads = System.getProperty("THREADS");
-            if (threads != null) {
-                executorService = Executors.newFixedThreadPool(Integer.parseInt(threads));
-            } else {
-                executorService = Executors.newFixedThreadPool(1);
-            }
-        }
+        ExecutorService executorService = createExecutorService();
 
         processSystemProperties();
 
@@ -210,11 +203,11 @@ public class Embedder {
         buildReporters(configuration, storyPaths);
         final MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, " "), embedderMonitor);
 
-        List<Future<?>> futures = new ArrayList<Future<?>>();
+        List<Future<Throwable>> futures = new ArrayList<Future<Throwable>>();
 
         for (final String storyPath : storyPaths) {
-            futures.add(executorService.submit(new Callable() {
-                public Object call() throws Exception {
+            futures.add(executorService.submit(new Callable<Throwable>() {
+                public Throwable call() throws Exception {
                     try {
                         embedderMonitor.runningStory(storyPath);
                         Story story = storyRunner.storyOfPath(configuration, storyPath);
@@ -236,9 +229,9 @@ public class Embedder {
             }));
         }
 
-        waitinCaseNotAllFinished(futures);
+        waitUntilAllDone(futures);
 
-        rethrowRunningStoriesFailedExceptionsIfAny(futures);
+        checkForFailures(futures);
 
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
 
@@ -255,11 +248,21 @@ public class Embedder {
         }
     }
 
-    private void waitinCaseNotAllFinished(List<Future<?>> futures) {
+    /**
+     * Creates a {@link ThreadPoolExecutor} using the number of threads defined
+     * in the {@link EmbedderControls#threds()}
+     * 
+     * @return An ExecutorService
+     */
+    protected ExecutorService createExecutorService() {
+        return Executors.newFixedThreadPool(embedderControls.threads());
+    }
+
+    private void waitUntilAllDone(List<Future<Throwable>> futures) {
         boolean allDone = false;
         while (!allDone) {
             allDone = true;
-            for (Future<?> future : futures) {
+            for (Future<Throwable> future : futures) {
                 if (!future.isDone()) {
                     allDone = false;
                     try {
@@ -272,13 +275,17 @@ public class Embedder {
         }
     }
 
-    private void rethrowRunningStoriesFailedExceptionsIfAny(List<Future<?>> futures) {
+    private void checkForFailures(List<Future<Throwable>> futures) {
         try {
-            for (Future<?> future : futures) {
-                Object ex = future.get();
-                if (ex != null && ex instanceof RunningStoriesFailed) {
-                    throw (RunningStoriesFailed) ex;
+            BatchFailures failures = new BatchFailures();
+            for (Future<Throwable> future : futures) {
+                Throwable failure = future.get();
+                if (failure != null) {
+                    failures.put(future.toString(), failure);
                 }
+            }
+            if (failures.size() > 0) {
+                throw new RunningStoriesFailed(failures);
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -325,7 +332,7 @@ public class Embedder {
     public void generateCrossReference() {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
         CrossReference crossReference = builder.crossReference();
-        if ( crossReference != null ){
+        if (crossReference != null) {
             crossReference.outputToFiles(builder);
         }
     }
@@ -342,15 +349,15 @@ public class Embedder {
         }
 
         for (Embeddable embeddable : embeddables(classNames, classLoader())) {
-            if ( embeddable instanceof ConfigurableEmbedder ){
-                ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder)embeddable;
+            if (embeddable instanceof ConfigurableEmbedder) {
+                ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder) embeddable;
                 reportStepdocs(configurableEmbedder.configuration(), configurableEmbedder.candidateSteps());
             } else {
                 embedderMonitor.embeddableNotConfigurable(embeddable.getClass().getName());
             }
-        }        
+        }
     }
-    
+
     public void reportStepdocs(Configuration configuration, List<CandidateSteps> candidateSteps) {
         StepFinder finder = configuration.stepFinder();
         StepdocReporter reporter = configuration.stepdocReporter();

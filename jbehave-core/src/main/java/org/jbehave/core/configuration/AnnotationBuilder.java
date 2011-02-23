@@ -151,13 +151,14 @@ public class AnnotationBuilder {
         boolean generateViewAfterStories = control(finder, "generateViewAfterStories");
         boolean ignoreFailureInStories = control(finder, "ignoreFailureInStories");
         boolean ignoreFailureInView = control(finder, "ignoreFailureInView");
+        int threads = finder.getAnnotatedValue(UsingEmbedder.class, Integer.class, "threads");
         Configuration configuration = buildConfiguration();
         List<CandidateSteps> candidateSteps = buildCandidateSteps(configuration);
 
         Embedder embedder = instanceOf(Embedder.class, (Class<? extends Embedder>)finder.getAnnotatedValue(UsingEmbedder.class, Class.class,
                 "embedder"));
         embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
-                .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView);
+                .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView).useThreads(threads);
         embedder.useConfiguration(configuration);
         embedder.useCandidateSteps(candidateSteps);
         List<String> metaFilters = finder.getAnnotatedValues(UsingEmbedder.class, String.class, "metaFilters");

@@ -4,67 +4,77 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * Holds flags used by the Embedder to control execution flow.
+ * Holds values used by the Embedder to control execution flow.
  */
 public class EmbedderControls {
-	
-	private boolean batch = false;
-	private boolean skip = false;
-	private boolean generateViewAfterStories = true;
-	private boolean ignoreFailureInStories = false;
-	private boolean ignoreFailureInView = false;
 
-	public EmbedderControls() {
-	}
+    private boolean batch = false;
+    private boolean skip = false;
+    private boolean generateViewAfterStories = true;
+    private boolean ignoreFailureInStories = false;
+    private boolean ignoreFailureInView = false;
+    private int threads = 1;
 
-	public boolean batch() {
-		return batch;
-	}
+    public EmbedderControls() {
+    }
 
-	public boolean skip() {
-		return skip;
-	}
+    public boolean batch() {
+        return batch;
+    }
 
-	public boolean generateViewAfterStories() {
-		return generateViewAfterStories;
-	}
+    public boolean skip() {
+        return skip;
+    }
 
-	public boolean ignoreFailureInStories() {
-		return ignoreFailureInStories;
-	}
+    public boolean generateViewAfterStories() {
+        return generateViewAfterStories;
+    }
 
-	public boolean ignoreFailureInView() {
-		return ignoreFailureInView;
-	}
+    public boolean ignoreFailureInStories() {
+        return ignoreFailureInStories;
+    }
 
-	public EmbedderControls doBatch(boolean batch) {
-		this.batch = batch;
-		return this;
-	}
+    public boolean ignoreFailureInView() {
+        return ignoreFailureInView;
+    }
 
-	public EmbedderControls doSkip(boolean skip) {
-		this.skip = skip;
-		return this;
-	}
+    public int threads() {
+        return threads;
+    }
 
-	public EmbedderControls doGenerateViewAfterStories(boolean generateViewAfterStories) {
-		this.generateViewAfterStories = generateViewAfterStories;
-		return this;
-	}
-	
-	public EmbedderControls doIgnoreFailureInStories(boolean ignoreFailureInStories) {
-		this.ignoreFailureInStories = ignoreFailureInStories;
-		return this;
-	}
+    public EmbedderControls doBatch(boolean batch) {
+        this.batch = batch;
+        return this;
+    }
 
-	public EmbedderControls doIgnoreFailureInView(boolean ignoreFailureInView) {
-		this.ignoreFailureInView = ignoreFailureInView;
-		return this;
-	}
+    public EmbedderControls doSkip(boolean skip) {
+        this.skip = skip;
+        return this;
+    }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-	}
+    public EmbedderControls doGenerateViewAfterStories(boolean generateViewAfterStories) {
+        this.generateViewAfterStories = generateViewAfterStories;
+        return this;
+    }
+
+    public EmbedderControls doIgnoreFailureInStories(boolean ignoreFailureInStories) {
+        this.ignoreFailureInStories = ignoreFailureInStories;
+        return this;
+    }
+
+    public EmbedderControls doIgnoreFailureInView(boolean ignoreFailureInView) {
+        this.ignoreFailureInView = ignoreFailureInView;
+        return this;
+    }
+
+    public EmbedderControls useThreads(int threads) {
+        this.threads = threads;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
 
 }
