@@ -587,6 +587,7 @@ public class PrintStreamOutputBehaviour {
 
         // When
         narrateAnInterestingStory(reporter, false);
+        ((StoryReporterReplayer) reporter).replay();
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         Properties viewProperties = new Properties();
         viewProperties.setProperty("decorateNonHtml", "false");
@@ -616,6 +617,8 @@ public class PrintStreamOutputBehaviour {
 
         // When
         narrateAnInterestingStory(reporter, false);
+        ((StoryReporterReplayer) reporter).replay();
+
 
         // Then
         File outputFile = factory.getOutputFile();

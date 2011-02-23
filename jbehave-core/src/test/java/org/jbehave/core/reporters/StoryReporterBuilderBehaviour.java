@@ -50,8 +50,10 @@ public class StoryReporterBuilderBehaviour {
         StoryReporter reporter = builder.withDefaultFormats().build(storyPath);
 
         // Then
-        assertThat(reporter, instanceOf(DelegatingStoryReporter.class));
-        Collection<StoryReporter> delegates = ((DelegatingStoryReporter) reporter).getDelegates();
+        assertThat(reporter, instanceOf(StoryReporterReplayer.class));
+        StoryReporter delegate = ((StoryReporterReplayer) reporter).delegate;
+        assertThat(delegate, instanceOf(DelegatingStoryReporter.class));
+        Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
         assertThat(delegates.size(), equalTo(1));
         assertThat(delegates.iterator().next(), instanceOf(PostStoryStatisticsCollector.class));
     }
@@ -96,8 +98,10 @@ public class StoryReporterBuilderBehaviour {
 
         // Then
         assertThat(builder.reportFailureTrace(), is(true));
-        assertThat(reporter, instanceOf(DelegatingStoryReporter.class));
-        Collection<StoryReporter> delegates = ((DelegatingStoryReporter) reporter).getDelegates();
+        assertThat(reporter, instanceOf(StoryReporterReplayer.class));
+        StoryReporter delegate = ((StoryReporterReplayer) reporter).delegate;
+        assertThat(delegate, instanceOf(DelegatingStoryReporter.class));
+        Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
         assertThat(delegates.size(), equalTo(1));
         StoryReporter storyReporter = delegates.iterator().next();
         assertThat(storyReporter, instanceOf(TxtOutput.class));
@@ -160,6 +164,8 @@ public class StoryReporterBuilderBehaviour {
         StoryReporter reporter = builder.withDefaultFormats().withFormats(TXT).withKeywords(keywords).build(storyPath);
         reporter.failed("Dato un passo che fallisce", new UUIDExceptionWrapper(new RuntimeException("ouch")));
 
+        ((StoryReporterReplayer) reporter).replay();
+
         // Then
         assertThat(builder.keywords(), equalTo(keywords));
         assertThat(out.toString(),
@@ -167,10 +173,34 @@ public class StoryReporterBuilderBehaviour {
     }
 
     @Test
-    public void shouldBuildWithReporterOfDifferentFormats() throws IOException {
+    public void shouldBuildWithReporterOfDifferentFormatsForSingleThreaded() throws IOException {
+
+        StoryReporterBuilder builder = new StoryReporterBuilder() {
+            @Override
+            protected boolean multiThreading() {
+                return false;
+            }
+        };
+        shouldBuildWithReporterOfDifferentFormats(builder);
+
+    }
+
+    @Test
+    public void shouldBuildWithReporterOfDifferentFormatsForMultiThreaded() throws IOException {
+
+        StoryReporterBuilder builder = new StoryReporterBuilder() {
+            @Override
+            protected boolean multiThreading() {
+                return true;
+            }
+        };
+        shouldBuildWithReporterOfDifferentFormats(builder);
+
+    }
+
+    public void shouldBuildWithReporterOfDifferentFormats(StoryReporterBuilder builder) {
         // Given
         String storyPath = storyPath(MyStory.class);
-        StoryReporterBuilder builder = new StoryReporterBuilder();
         Locale locale = Locale.getDefault();
 
         // When
@@ -186,9 +216,12 @@ public class StoryReporterBuilderBehaviour {
             lowerCaseNames[i] = upperCaseNames[i].toLowerCase(locale);
         }
         assertThat(builder.formatNames(true), hasItems(lowerCaseNames));
-        assertThat(reporter, instanceOf(DelegatingStoryReporter.class));
-        Collection<StoryReporter> delegates = ((DelegatingStoryReporter) reporter).getDelegates();
+        assertThat(reporter, instanceOf(StoryReporterReplayer.class));
+        StoryReporter delegate = ((StoryReporterReplayer) reporter).delegate;
+        assertThat(delegate, instanceOf(DelegatingStoryReporter.class));
+        Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
         assertThat(delegates.size(), equalTo(6));
+
     }
 
     @Test
@@ -215,8 +248,10 @@ public class StoryReporterBuilderBehaviour {
         StoryReporter reporter = builder.withDefaultFormats().withFormats(TXT).build(storyPath);
 
         // Then
-        assertThat(reporter, instanceOf(DelegatingStoryReporter.class));
-        Collection<StoryReporter> delegates = ((DelegatingStoryReporter) reporter).getDelegates();
+        assertThat(reporter, instanceOf(StoryReporterReplayer.class));
+        StoryReporter delegate = ((StoryReporterReplayer) reporter).delegate;
+        assertThat(delegate, instanceOf(DelegatingStoryReporter.class));
+        Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
         assertThat(delegates.size(), equalTo(2));
         assertThat(delegates.contains(txtReporter), is(true));
     }

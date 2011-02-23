@@ -9,6 +9,7 @@ import org.jbehave.core.model.*;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.reporters.StoryReporterReplayer;
 import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.Test;
@@ -69,7 +70,7 @@ public class StoryRunnerBehaviour {
         Step step = mock(Step.class);
         StepResult result = mock(StepResult.class);
         when(step.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(result);
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         UUIDExceptionWrapper anException = new UUIDExceptionWrapper(new IllegalArgumentException());
@@ -125,7 +126,7 @@ public class StoryRunnerBehaviour {
 
         StoryParser storyParser = mock(StoryParser.class);
         StoryLoader storyLoader = mock(StoryLoader.class);
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         Step successfulStep = mockSuccessfulStep("successfulStep");
@@ -160,7 +161,7 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldNotPerformStepsAfterFailedOrPendingSteps() throws Throwable {
         // Given
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         Step firstStepNormal = mockSuccessfulStep("Given I succeed");
         Step secondStepPending = mock(Step.class);
         Step thirdStepNormal = mock(Step.class);
@@ -196,7 +197,7 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldReportAnyFailuresAndHandleThemAfterStory() throws Throwable {
         // Given
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         Step firstStepExceptional = mock(Step.class);
         Step secondStepNotPerformed = mock(Step.class);
         StepResult failure = failed("When I fail", new UUIDExceptionWrapper(new IllegalStateException()));
@@ -234,7 +235,7 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldAllowToSkipScenariosAfterFailedScenario() throws Throwable {
         // Given
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         Step failedStep = mock(Step.class);
         Step neverExecutedStep = mock(Step.class);
         StepResult failed = failed("When I fail", new UUIDExceptionWrapper(new IllegalStateException()));
@@ -279,7 +280,7 @@ public class StoryRunnerBehaviour {
 
         StoryParser storyParser = mock(StoryParser.class);
         StoryLoader storyLoader = mock(StoryLoader.class);
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         Step successfulStep = mockSuccessfulStep("successfulStep");
@@ -320,7 +321,7 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldResetStateForEachSetOfSteps() throws Throwable {
         // Given
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         Step pendingStep = mock(Step.class);
         when(pendingStep.perform(null)).thenReturn(pending("pendingStep"));
         Step secondStep = mockSuccessfulStep("secondStep");
@@ -346,7 +347,7 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldRunBeforeAndAfterStorySteps() throws Throwable {
         // Given
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         Step beforeStep = mockSuccessfulStep("beforeStep");
         Step afterStep = mockSuccessfulStep("secondStep");
         StepCollector collector = mock(StepCollector.class);
@@ -368,7 +369,7 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldHandlePendingStepsAccordingToStrategy() throws Throwable {
         // Given
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         Step pendingStep = mock(Step.class);
         StepResult pendingResult = pending("My step isn't defined!");
         when(pendingStep.perform(null)).thenReturn(pendingResult);
@@ -392,7 +393,7 @@ public class StoryRunnerBehaviour {
     @Test(expected = PendingStepFound.class)
     public void shouldFailWithFailingUpongPendingStepsStrategy() throws Throwable {
         // Given
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         Step pendingStep = mock(Step.class);
         StepResult pendingResult = pending("My step isn't defined!");
         when(pendingStep.perform(null)).thenReturn(pendingResult);
@@ -423,7 +424,7 @@ public class StoryRunnerBehaviour {
         Step step = mock(Step.class);
         StepResult result = mock(StepResult.class);
         when(step.perform(null)).thenReturn(result);
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         StepCollector collector = mock(StepCollector.class);
         FailureStrategy failureStrategy = mock(FailureStrategy.class);
         Configuration configuration = configurationWith(reporter, collector, failureStrategy);
@@ -464,7 +465,7 @@ public class StoryRunnerBehaviour {
         Step step = mock(Step.class);
         StepResult result = mock(StepResult.class, "result");
         when(step.perform(null)).thenReturn(result);
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         StepCollector collector = mock(StepCollector.class);
         FailureStrategy failureStrategy = mock(FailureStrategy.class);
         Configuration configuration = configurationWith(reporter, collector, failureStrategy);
@@ -511,7 +512,7 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldNotRunStoriesNotAllowedByFilter() throws Throwable {
         // Given
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
@@ -538,7 +539,7 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldNotRunScenariosNotAllowedByFilter() throws Throwable {
         // Given
-        StoryReporter reporter = mock(StoryReporter.class);
+        StoryReporter reporter = mock(StoryReporterReplayer.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(

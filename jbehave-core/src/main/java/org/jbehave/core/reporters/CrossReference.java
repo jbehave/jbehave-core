@@ -27,8 +27,8 @@ import org.jbehave.core.steps.StepType;
 
 public class CrossReference extends Format {
 
-    private Story currentStory;
-    private String currentScenarioTitle;
+    private ThreadLocal<Story> currentStory = new ThreadLocal<Story>();
+    private ThreadLocal<String> currentScenarioTitle = new ThreadLocal<String>();
     private List<Story> stories = new ArrayList<Story>();
     private Map<String, StepMatch> stepMatches = new HashMap<String, StepMatch>();
     private StepMonitor stepMonitor = new XRefStepMonitor();
@@ -122,18 +122,18 @@ public class CrossReference extends Format {
             @Override
             public void beforeStory(Story story, boolean givenStory) {
                 stories.add(story);
-                currentStory = story;
+                currentStory.set(story);
             }
 
             @Override
             public void failed(String step, Throwable cause) {
                 super.failed(step, cause);
-                failingStories.add(currentStory.getPath());
+                failingStories.add(currentStory.get().getPath());
             }
 
             @Override
             public void beforeScenario(String title) {
-                currentScenarioTitle = title;
+                currentScenarioTitle.set(title);
             }
         };
     }
@@ -149,7 +149,7 @@ public class CrossReference extends Format {
                     stepMatches.put(key, stepMatch);
                 }
                 // find canonical ref for same stepMatch
-                stepMatch.usages.add(new StepUsage(currentStory.getPath(), currentScenarioTitle, step));
+                stepMatch.usages.add(new StepUsage(currentStory.get().getPath(), currentScenarioTitle.get(), step));
             }
             super.stepMatchesPattern(step, matches, pattern, method, stepsInstance);
         }

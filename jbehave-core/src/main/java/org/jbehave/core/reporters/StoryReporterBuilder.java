@@ -223,7 +223,6 @@ public class StoryReporterBuilder {
 
     public StoryReporterBuilder withCrossReference(CrossReference crossReference){
         this.crossReference = crossReference;
-        this.formats.add(crossReference);
         return this;
     }
 
@@ -276,7 +275,26 @@ public class StoryReporterBuilder {
         for (org.jbehave.core.reporters.Format format : formats) {
             delegates.put(format, reporterFor(storyPath, format));
         }
-        return new DelegatingStoryReporter(delegates.values());
+
+        DelegatingStoryReporter delegate = new DelegatingStoryReporter(delegates.values());
+        if (multiThreading()) {
+            if (crossReference == null) {
+                return new StoryReporterReplayer(new NullStoryReporter(), delegate);
+            } else {
+                return new StoryReporterReplayer(reporterFor(storyPath, crossReference), delegate);
+            }
+        } else {
+            if (crossReference == null) {
+                return new StoryReporterNonReplayer(new NullStoryReporter(), delegate);
+            } else {
+                return new StoryReporterNonReplayer(reporterFor(storyPath, crossReference), delegate);
+            }
+        }
+    }
+
+    protected boolean multiThreading() {
+        String threads = System.getProperty("THREADS");
+        return threads != null && Integer.parseInt(threads) > 1;
     }
 
     public Map<String, StoryReporter> build(List<String> storyPaths) {

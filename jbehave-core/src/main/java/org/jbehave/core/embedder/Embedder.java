@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -42,6 +43,7 @@ public class Embedder {
     private StoryMapper storyMapper;
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
+    private ExecutorService executorService;
 
     public Embedder() {
         this(new StoryMapper(), new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -181,40 +183,62 @@ public class Embedder {
     }
 
     public void runStoriesAsPaths(List<String> storyPaths) {
+
+        if (executorService == null) {
+            String threads = System.getProperty("THREADS");
+            if (threads != null) {
+                executorService = Executors.newFixedThreadPool(Integer.parseInt(threads));
+            } else {
+                executorService = Executors.newFixedThreadPool(1);
+            }
+        }
+
         processSystemProperties();
 
-        EmbedderControls embedderControls = embedderControls();
+        final EmbedderControls embedderControls = embedderControls();
         if (embedderControls.skip()) {
             embedderMonitor.storiesSkipped(storyPaths);
             return;
         }
 
-        Configuration configuration = configuration();
-        List<CandidateSteps> candidateSteps = candidateSteps();
+        final Configuration configuration = configuration();
+        final List<CandidateSteps> candidateSteps = candidateSteps();
 
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
 
-        BatchFailures batchFailures = new BatchFailures();
+        final BatchFailures batchFailures = new BatchFailures();
         buildReporters(configuration, storyPaths);
-        MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, " "), embedderMonitor);
-        for (String storyPath : storyPaths) {
-            try {
-                embedderMonitor.runningStory(storyPath);
-                Story story = storyRunner.storyOfPath(configuration, storyPath);
-                storyRunner.run(configuration, candidateSteps, story, filter);
-            } catch (Throwable e) {
-                if (embedderControls.batch()) {
-                    // collect and postpone decision to throw exception
-                    batchFailures.put(storyPath, e);
-                } else {
-                    if (embedderControls.ignoreFailureInStories()) {
-                        embedderMonitor.storyFailed(storyPath, e);
-                    } else {
-                        throw new RunningStoriesFailed(storyPath, e);
+        final MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, " "), embedderMonitor);
+
+        List<Future<?>> futures = new ArrayList<Future<?>>();
+
+        for (final String storyPath : storyPaths) {
+            futures.add(executorService.submit(new Callable() {
+                public Object call() throws Exception {
+                    try {
+                        embedderMonitor.runningStory(storyPath);
+                        Story story = storyRunner.storyOfPath(configuration, storyPath);
+                        storyRunner.run(configuration, candidateSteps, story, filter);
+                    } catch (Throwable e) {
+                        if (embedderControls.batch()) {
+                            // collect and postpone decision to throw exception
+                            batchFailures.put(storyPath, e);
+                        } else {
+                            if (embedderControls.ignoreFailureInStories()) {
+                                embedderMonitor.storyFailed(storyPath, e);
+                            } else {
+                                return new RunningStoriesFailed(storyPath, e);
+                            }
+                        }
                     }
+                    return null;
                 }
-            }
+            }));
         }
+
+        waitinCaseNotAllFinished(futures);
+
+        rethrowRunningStoriesFailedExceptionsIfAny(futures);
 
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
 
@@ -228,6 +252,38 @@ public class Embedder {
 
         if (embedderControls.generateViewAfterStories()) {
             generateReportsView();
+        }
+    }
+
+    private void waitinCaseNotAllFinished(List<Future<?>> futures) {
+        boolean allDone = false;
+        while (!allDone) {
+            allDone = true;
+            for (Future<?> future : futures) {
+                if (!future.isDone()) {
+                    allDone = false;
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                    }
+                    break;
+                }
+            }
+        }
+    }
+
+    private void rethrowRunningStoriesFailedExceptionsIfAny(List<Future<?>> futures) {
+        try {
+            for (Future<?> future : futures) {
+                Object ex = future.get();
+                if (ex != null && ex instanceof RunningStoriesFailed) {
+                    throw (RunningStoriesFailed) ex;
+                }
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
         }
     }
 
