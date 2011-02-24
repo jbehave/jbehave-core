@@ -51,7 +51,7 @@ public class TraderStories extends JUnitStories {
 
     public TraderStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true);
+                .doIgnoreFailureInView(true).useThreads(2);
     }
 
     @Override
