@@ -16,7 +16,7 @@
     <batch>false</batch>
     <ignore.failure.view>true</ignore.failure.view>
     <skip.embeddables.stories>false</skip.embeddables.stories>
-    <include.embeddables>**/stories/*.java</include.embeddables>
+    <include.embeddables>**/*Stories.java</include.embeddables>
     <include.paths>**/stories/*.story</include.paths>
     <include.annotated.embedders>**/AnnotatedEmbedderUsing*.java</include.annotated.embedders>
     <meta.filter></meta.filter>
@@ -113,6 +113,7 @@
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
+              <threads>2</threads>
               <metaFilters>
                 <metaFilter>${meta.filter}</metaFilter>
               </metaFilters>
