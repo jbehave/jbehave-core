@@ -405,7 +405,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat sun.reflect.NativeMethodAccessorImpl.invoke0\\(Native Method\\)\\n" +
                             "\\tat sun.reflect.NativeMethodAccessorImpl.invoke\\(NativeMethodAccessorImpl.java:\\d+\\)\\n" +
                             "\\tat sun.reflect.DelegatingMethodAccessorImpl.invoke\\(DelegatingMethodAccessorImpl.java:\\d+\\)\\n" +
-                            "\\tat java.lang.reflect.Method.invoke\\(Method.java:\\d+\\)"),
+                            "\\tat java.lang.reflect.Method.invoke\\(Method.java:\\d+\\)"
+                    ),
                     "\t(reflection-invoke)"),
             new Replacement(
                     Pattern.compile(
@@ -415,14 +416,16 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite.call\\(PojoMetaMethodSite.java:\\d+\\)\\n" +
                             "\\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall\\(CallSiteArray.java:\\d+\\)\\n" +
                             "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"),
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"
+                    ),
                     "\t(groovy-closure-invoke)"),
             new Replacement(
                     Pattern.compile(
                             "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
                             "\\tat groovy.lang.MetaMethod.doMethodInvoke\\(MetaMethod.java:\\d+\\)\\n" +
                             "\\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod\\(ClosureMetaClass.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeMethodOnCurrentN\\(ScriptBytecodeAdapter.java:\\d+\\)"),
+                            "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeMethodOnCurrentN\\(ScriptBytecodeAdapter.java:\\d+\\)"
+                    ),
                     "\t(groovy-instance-method-invoke)"),
 
             new Replacement(
@@ -431,7 +434,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaMethod.invoke\\(ClosureMetaMethod.java:\\d+\\)\n" +
                             "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite\\$PojoMetaMethodSiteNoUnwrapNoCoerce.invoke\\(PojoMetaMethodSite.java:\\d+\\)\n" +
                             "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite.call\\(PojoMetaMethodSite.java:\\d+\\)\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"),
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"
+                    ),
                     "\t(groovy-abstract-method-invoke)"),
 
             new Replacement(
@@ -440,8 +444,26 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat groovy.lang.MetaMethod.doMethodInvoke\\(MetaMethod.java:\\d+\\)\\n" +
                             "\\tat groovy.lang.MetaClassImpl.invokeStaticMethod\\(MetaClassImpl.java:\\d+\\)\\n" +
                             "\\tat org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod\\(InvokerHelper.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeStaticMethodN\\(ScriptBytecodeAdapter.java:\\d+\\)"),
+                            "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeStaticMethodN\\(ScriptBytecodeAdapter.java:\\d+\\)"
+                    ),
                     "\t(groovy-static-method-invoke)"),
+
+            new Replacement(
+                    Pattern.compile(
+                            "\\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0\\(Native Method\\)\\n" +
+                            "\\tat sun.reflect.NativeConstructorAccessorImpl.newInstance\\(NativeConstructorAccessorImpl.java:\\d+\\)\\n" +
+                            "\\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance\\(DelegatingConstructorAccessorImpl.java:\\d+\\)\\n" +
+                            "\\tat java.lang.reflect.Constructor.newInstance\\(Constructor.java:\\d+\\)"
+                    ),
+                    "\t(reflection-construct)"),
+            new Replacement(
+                    Pattern.compile(
+                            "\\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent\\(CallSiteArray.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent\\(AbstractCallSite.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent\\(AbstractCallSite.java:\\d+\\)\\n" +
+                            "\\tat EtsyDotComSteps.anItemInTheEtsyCart\\(EtsyDotComSteps.groovy:\\d+\\)"
+                    ),
+                    "\t(groovy-callCurrent)"),
 
             // This one last.
             new Replacement(
