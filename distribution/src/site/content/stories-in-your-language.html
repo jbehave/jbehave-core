@@ -55,9 +55,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
                     .withKeywords(keywords))
                 .useParameterConverters(
                         new ParameterConverters()
-                                .addConverters(new ParameterConverters.ExamplesTableConverter(
-                                        keywords.examplesTableHeaderSeparator(),
-                                        keywords.examplesTableValueSeparator())));
+                                .addConverters(new ParameterConverters.ExamplesTableConverter(keywords)));
         return configuration;
     }
 
