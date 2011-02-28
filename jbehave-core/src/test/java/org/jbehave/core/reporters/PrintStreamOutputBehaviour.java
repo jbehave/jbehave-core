@@ -663,7 +663,14 @@ public class PrintStreamOutputBehaviour {
         String start = "java.lang.AssertionError: cart should have contained 68467780\n" +
                 "Expected: is <true>\n" +
                 "     got: <false>\n" +
-                "\n" +
+                "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:44)\n" +
+                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:141)\n" +
+                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:145)\n" +
+                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
+                "\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n" +
+                "\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)\n" +
+                "\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)\n" +
+                "\tat java.lang.reflect.Constructor.newInstance(Constructor.java:513)\n" +
                 "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
                 "\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
                 "\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n" +
@@ -709,7 +716,8 @@ public class PrintStreamOutputBehaviour {
                 "java.lang.AssertionError: cart should have contained 68467780\n" +
                 "Expected: is <true>\n" +
                 "     got: <false>\n" +
-                "\n" +
+                "\t(groovy-callCurrent)\n" +
+                "\t(reflection-construct)\n" +
                 "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
                 "\t(groovy-static-method-invoke)\n" +
                 "\tat com.github.tanob.groobe.AssertionSupport.assertWithFailureMessage(AssertionSupport.groovy:32)\n" +

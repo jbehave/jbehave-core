@@ -85,6 +85,11 @@ public abstract class AbstractEmbedderTask extends Task {
     private boolean batch = false;
 
     /**
+     * The number of threads
+     */
+    private int threads = 1;
+    
+    /**
      * The embedder to run the stories
      */
     private String embedderClass = Embedder.class.getName();
@@ -155,7 +160,7 @@ public abstract class AbstractEmbedderTask extends Task {
     protected EmbedderControls embedderControls() {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
-                .doIgnoreFailureInView(ignoreFailureInView));
+                .doIgnoreFailureInView(ignoreFailureInView).useThreads(threads));
     }
 
     /**
@@ -369,6 +374,10 @@ public abstract class AbstractEmbedderTask extends Task {
 
     public void setGenerateViewAfterStories(boolean generateViewAfterStories) {
         this.generateViewAfterStories = generateViewAfterStories;
+    }
+    
+    public void setThreads(int threads){
+        this.threads = threads;
     }
 
     public void setEmbedderClass(String embedderClass) {

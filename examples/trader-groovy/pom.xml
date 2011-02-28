@@ -6,7 +6,7 @@
   <parent>
     <artifactId>jbehave-examples</artifactId>
     <groupId>org.jbehave</groupId>
-    <version>3.2-SNAPSHOT</version>
+    <version>3.3-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-trader-groovy-example</artifactId>
   <name>JBehave Trader Groovy Example</name>

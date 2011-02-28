@@ -121,6 +121,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     boolean generateViewAfterStories = true;
 
     /**
+     * The number of threads
+     * 
+     * @parameter default-value="1"
+     */
+    int threads = 1;
+    
+    /**
      * The embedder class
      * 
      * @parameter default-value="org.jbehave.core.embedder.Embedder"
@@ -274,7 +281,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     protected EmbedderControls embedderControls() {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
-                .doIgnoreFailureInView(ignoreFailureInView));
+                .doIgnoreFailureInView(ignoreFailureInView).useThreads(threads));
     }
 
     protected class MavenEmbedderMonitor implements EmbedderMonitor {
