@@ -21,7 +21,7 @@
     <module>jbehave-hudson-plugin</module>
     <module>jbehave-groovy</module>
     <module>jbehave-guice</module>
-    <module>jbehave-cdi</module>    
+    <module>jbehave-weld</module>    
     <module>jbehave-pico</module>
     <module>jbehave-spring</module>
   </modules>
