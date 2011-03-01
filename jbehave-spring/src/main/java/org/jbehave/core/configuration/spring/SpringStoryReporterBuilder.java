@@ -65,7 +65,15 @@ public class SpringStoryReporterBuilder extends StoryReporterBuilder {
     public void setReportFailureTrace(boolean reportFailureTrace) {
         withFailureTrace(reportFailureTrace);
     }
-    
+
+    public boolean isReportFailureTraceCompression() {
+        return compressFailureTrace();
+    }
+
+    public void setReportFailureTraceCompression(boolean reportFailureTraceCompression) {
+        withFailureTraceCompression(reportFailureTraceCompression);
+    }
+
     public Properties getViewResources() {
         return viewResources();
     }
@@ -73,5 +81,13 @@ public class SpringStoryReporterBuilder extends StoryReporterBuilder {
     public void setViewResources(Properties viewResources) {
         withViewResources(viewResources);
     }
-    
+
+    public boolean isMultiThreading() {
+        return multiThreading();
+    }
+
+    public void setMultiThreading(boolean multiThreading) {
+        withMultiThreading(multiThreading);
+    }
+
 }
