@@ -1,0 +1,32 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbehave</groupId>
+    <artifactId>jbehave-examples</artifactId>
+    <version>3.3-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbehave-trader-weld-example</artifactId>
+  <name>JBehave Trader Weld Example</name>
+
+  <!-- Properties used to specify story running configured in jbehave-examples POM -->
+  <properties>
+    <include.embeddables>**/*StoriesUsingWeld.java</include.embeddables>
+    <include.annotated.embedders>**/AnnotatedEmbedderUsingWeld*.java</include.annotated.embedders>
+    <annotated.embedder.runner>org.jbehave.core.junit.weld.WeldAnnotatedEmbedderRunner</annotated.embedder.runner>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-trader-example</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-weld</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>

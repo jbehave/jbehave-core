@@ -22,11 +22,14 @@ public class WeldAnnotatedPathRunner extends AnnotatedPathRunner {
     public WeldAnnotatedPathRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
         
-        container = new WeldBootstrap();
-        container.initialize();
+
     }
 
     public AnnotationBuilder annotationBuilder() {
+        if(container == null) {
+            container = new WeldBootstrap();
+            container.initialize();
+        }
         return container.findAnnotationBuilder(testClass());
     }
 }
