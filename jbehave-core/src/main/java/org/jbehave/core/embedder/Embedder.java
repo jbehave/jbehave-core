@@ -3,6 +3,7 @@ package org.jbehave.core.embedder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.*;
@@ -250,12 +251,18 @@ public class Embedder {
 
     /**
      * Creates a {@link ThreadPoolExecutor} using the number of threads defined
-     * in the {@link EmbedderControls#threds()}
+     * in the {@link EmbedderControls#threads()}
      * 
      * @return An ExecutorService
      */
     protected ExecutorService createExecutorService() {
-        return Executors.newFixedThreadPool(embedderControls.threads());
+        int threads = embedderControls.threads();
+        if (threads == 1) {
+            // this is necessary for situations where people use the PerStoriesWebDriverSteps class.
+            return new NonThreadingExecutorService();
+        } else {
+            return Executors.newFixedThreadPool(threads);
+        }
     }
 
     private void waitUntilAllDone(List<Future<Throwable>> futures) {
@@ -535,4 +542,90 @@ public class Embedder {
             // TODO Auto-generated constructor stub
         }
     }
+
+    /**
+     * Non-threading ExecutorService for situations where thread count = 1
+     */
+    private static class NonThreadingExecutorService implements ExecutorService {
+        public void shutdown() {
+            throw new UnsupportedOperationException();
+        }
+
+        public List<Runnable> shutdownNow() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean isShutdown() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean isTerminated() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+            throw new UnsupportedOperationException();
+        }
+
+        public <T> Future<T> submit(Callable<T> tCallable) {
+            final Object[] rc = new Object[1];
+            try {
+                rc[0] = tCallable.call();
+            } catch (Exception e) {
+                rc[0] = e;
+            }
+            return new Future<T>() {
+
+                public boolean cancel(boolean b) {
+                    throw new UnsupportedOperationException();
+                }
+
+                public boolean isCancelled() {
+                    throw new UnsupportedOperationException();
+                }
+
+                public boolean isDone() {
+                    return true;
+                }
+
+                public T get() throws InterruptedException, ExecutionException {
+                    return (T) rc[0];
+                }
+
+                public T get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+                    return get();
+                }
+            };
+        }
+
+        public <T> Future<T> submit(Runnable runnable, T t) {
+            throw new UnsupportedOperationException();
+        }
+
+        public Future<?> submit(Runnable runnable) {
+            throw new UnsupportedOperationException();
+        }
+
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables) throws InterruptedException {
+            throw new UnsupportedOperationException();
+        }
+
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit) throws InterruptedException {
+            throw new UnsupportedOperationException();
+        }
+
+        public <T> T invokeAny(Collection<? extends Callable<T>> callables) throws InterruptedException, ExecutionException {
+            throw new UnsupportedOperationException();
+        }
+
+        public <T> T invokeAny(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+            throw new UnsupportedOperationException();
+        }
+
+        public void execute(Runnable runnable) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+
 }
