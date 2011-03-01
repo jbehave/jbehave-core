@@ -45,7 +45,7 @@ public class WeldAnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildConfigurationFromAnnotations() {
-        AnnotationBuilder builder = createBuilder(AnnotatedUsingCDI.class);
+        AnnotationBuilder builder = createBuilder(AnnotatedUsingWeld.class);
         Configuration configuration = builder.buildConfiguration();
 
         assertThat(configuration.storyControls().dryRun(), is(true));
@@ -87,41 +87,41 @@ public class WeldAnnotationBuilderBehaviour {
     }
     
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingCDI() {
-        AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingCDI.class);
+    public void shouldBuildCandidateStepsFromAnnotationsUsingWeld() {
+        AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingWeld.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), CDIStepBean.class);
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration), WeldStepBean.class);
     }
     
     @Test
-    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndCDISteps() {
-        AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingCDIWithSteps.class);
+    public void shouldBuildCandidateStepsFromAnnotationsUsingStepsAndWeldSteps() {
+        AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingWeldWithSteps.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         
-        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration),CDIStepBean.class, FooSteps.class);
+        assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(configuration),WeldStepBean.class, FooSteps.class);
     }
     
     @Test
-    public void shouldBuildOnlyCDIStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
+    public void shouldBuildOnlyWeldStepsListIfAnnotationOrAnnotatedValuesNotPresent() {
         AnnotationBuilder builderNotAnnotated = createBuilder(NotAnnotated.class);
         Configuration configuration = builderNotAnnotated.buildConfiguration();
         
-        assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps(configuration),CDIStepBean.class);
+        assertThatStepsInstancesAre(builderNotAnnotated.buildCandidateSteps(configuration),WeldStepBean.class);
     }
     
     @Test
     public void shouldCreateOnlyOneContainerForMultipleBuildInvocations() {
 
-        AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingCDI.class);
+        AnnotationBuilder builderAnnotated = createBuilder(AnnotatedUsingWeld.class);
         Configuration configuration = builderAnnotated.buildConfiguration();
         assertThat(builderAnnotated.buildConfiguration(), sameInstance(configuration));
     }
     
     private AnnotationBuilder createBuilder(Class<?> type) {
-        WeldBootstrap cdi = new WeldBootstrap();
-        cdi.initialize();
-        AnnotationBuilder builder = cdi.findAnnotationBuilder(type);
+        WeldBootstrap bootstrap = new WeldBootstrap();
+        bootstrap.initialize();
+        AnnotationBuilder builder = bootstrap.findAnnotationBuilder(type);
         assertThat(builder, is(AnnotationBuilder.class));
         return builder;
     }
@@ -164,14 +164,14 @@ public class WeldAnnotationBuilderBehaviour {
     
     @Configure
     @UsingWeld
-    public static class AnnotatedUsingCDI {
+    public static class AnnotatedUsingWeld {
 
     }
     
     @Configure
     @UsingWeld
     @UsingSteps(instances={FooSteps.class})
-    public static class AnnotatedUsingCDIWithSteps {
+    public static class AnnotatedUsingWeldWithSteps {
 
     }
     
@@ -186,7 +186,7 @@ public class WeldAnnotationBuilderBehaviour {
     }
     
     @WeldStep
-    private static class CDIStepBean {
+    public static class WeldStepBean {
         
         @Given("this is a step")
         public void simpleStep() {}

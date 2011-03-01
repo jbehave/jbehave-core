@@ -1,6 +1,3 @@
-/**
- * 
- */
 package org.jbehave.core.junit.weld;
 
 import org.jbehave.core.configuration.AnnotationBuilder;
@@ -12,21 +9,19 @@ import org.junit.runners.model.InitializationError;
 /**
  * AnnotatedPathRunner that uses {@link WeldAnnotationBuilder}.
  * 
- * @author aaronwalker
- *
+ * @author Aaron Walker
  */
 public class WeldAnnotatedPathRunner extends AnnotatedPathRunner {
-    
+
     private WeldBootstrap container;
 
     public WeldAnnotatedPathRunner(Class<?> testClass) throws InitializationError {
         super(testClass);
-        
 
     }
 
     public AnnotationBuilder annotationBuilder() {
-        if(container == null) {
+        if (container == null) {
             container = new WeldBootstrap();
             container.initialize();
         }

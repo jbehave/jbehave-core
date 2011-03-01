@@ -20,21 +20,20 @@ import org.jbehave.core.steps.ParameterConverters;
  * @author Aaron Walker
  */
 public class WeldAnnotationBuilder extends AnnotationBuilder {
-    
+
     private Configuration configuration;
     private InjectableStepsFactory stepsFactory;
-    
+
     public WeldAnnotationBuilder(Class<?> annotatedClass) {
         this(annotatedClass, new PrintStreamAnnotationMonitor());
-        
     }
 
     public WeldAnnotationBuilder(Class<?> annotatedClass, AnnotationMonitor annotationMonitor) {
         super(annotatedClass, annotationMonitor);
     }
-    
-    public WeldAnnotationBuilder(Class<?> annotatedClass, Configuration configuration, InjectableStepsFactory stepsFactory)
-    {
+
+    public WeldAnnotationBuilder(Class<?> annotatedClass, Configuration configuration,
+            InjectableStepsFactory stepsFactory) {
         this(annotatedClass);
         this.configuration = configuration;
         this.stepsFactory = stepsFactory;
@@ -42,10 +41,9 @@ public class WeldAnnotationBuilder extends AnnotationBuilder {
 
     @Override
     public Configuration buildConfiguration() throws AnnotationRequired {
-
         AnnotationFinder finder = annotationFinder();
         if (finder.isAnnotationPresent(UsingWeld.class)) {
-            if(configuration == null) {
+            if (configuration == null) {
                 return super.buildConfiguration();
             }
             return configuration;
@@ -54,20 +52,19 @@ public class WeldAnnotationBuilder extends AnnotationBuilder {
         }
         return super.buildConfiguration();
     }
-    
+
     @Override
     public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
         List<CandidateSteps> steps = super.buildCandidateSteps(configuration);
-        if(stepsFactory != null) {
+        if (stepsFactory != null) {
             steps.addAll(0, stepsFactory.createCandidateSteps());
         }
         return steps;
     }
-    
+
     @Override
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
         ParameterConverters converters = super.parameterConverters(annotationFinder);
-
         return converters;
     }
 }

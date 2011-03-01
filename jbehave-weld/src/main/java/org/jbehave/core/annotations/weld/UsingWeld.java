@@ -13,9 +13,8 @@ import java.lang.annotation.Target;
 
 import javax.inject.Qualifier;
 
-
 @Retention(RetentionPolicy.RUNTIME)
-@Target({TYPE, METHOD, PARAMETER, FIELD, CONSTRUCTOR})
+@Target({ TYPE, METHOD, PARAMETER, FIELD, CONSTRUCTOR })
 @Inherited
 @Qualifier
 public @interface UsingWeld {

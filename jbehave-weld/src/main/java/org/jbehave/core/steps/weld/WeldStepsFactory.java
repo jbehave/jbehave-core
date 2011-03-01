@@ -22,13 +22,15 @@ import org.jbehave.core.steps.InjectableStepsFactory;
  * composition and instantiation of all components that contain JBehave
  * annotated methods.
  * 
- * @author aaronwalker
- *
+ * @author Aaron Walker
  */
 @Singleton
 public class WeldStepsFactory extends AbstractStepsFactory {
-    
-    @Inject @WeldStep @Any Instance<Object> instances;
+
+    @Inject
+    @Any
+    @WeldStep
+    private Instance<Object> instances;
 
     @Inject
     public WeldStepsFactory(@WeldConfiguration Configuration configuration) {
@@ -38,7 +40,7 @@ public class WeldStepsFactory extends AbstractStepsFactory {
     @Override
     protected List<Object> stepsInstances() {
         List<Object> steps = new ArrayList<Object>();
-        for(Object o: instances) {
+        for (Object o : instances) {
             steps.add(o);
         }
         return steps;
