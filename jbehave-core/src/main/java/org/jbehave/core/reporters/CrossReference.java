@@ -33,6 +33,7 @@ public class CrossReference extends Format {
     private Map<String, StepMatch> stepMatches = new HashMap<String, StepMatch>();
     private StepMonitor stepMonitor = new XRefStepMonitor();
     private Set<String> failingStories = new HashSet<String>();
+    private boolean excludeStoriesWithNoExecutedScenarios;
 
     public CrossReference() {
         this("XREF");
@@ -60,6 +61,7 @@ public class CrossReference extends Format {
     protected final XRefRoot createXRefRoot(StoryReporterBuilder storyReporterBuilder, List<Story> stories,
             Set<String> failingStories) {
         XRefRoot xrefRoot = newXRefRoot();
+        xrefRoot.setExcludeStoriesWithNoExecutedScenarios(excludeStoriesWithNoExecutedScenarios);
         xrefRoot.processStories(stories, storyReporterBuilder, failingStories);
         return xrefRoot;
     }
@@ -80,6 +82,11 @@ public class CrossReference extends Format {
             throw new XrefOutputFailed(name, e);
         }
 
+    }
+
+    public CrossReference excludeStoriesWithoutExecutedScenarios(boolean exclude) {
+        this.excludeStoriesWithNoExecutedScenarios = exclude;
+        return this;
     }
 
     @SuppressWarnings("serial")
@@ -163,6 +170,12 @@ public class CrossReference extends Format {
         private List<XRefStory> stories = new ArrayList<XRefStory>();
         private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
 
+        private transient boolean excludeStoriesWithNoExecutedScenarios;
+
+        public void setExcludeStoriesWithNoExecutedScenarios(boolean exclude) {
+            this.excludeStoriesWithNoExecutedScenarios = exclude;
+        }
+
         protected long currentTime() {
             return System.currentTimeMillis();
         }
@@ -171,13 +184,16 @@ public class CrossReference extends Format {
             return "JBehave";
         }
 
-        protected void processStories(List<Story> stories, StoryReporterBuilder storyReporterBuilder,
-                Set<String> failures) {
+        protected void processStories(List<Story> stories, StoryReporterBuilder builder, Set<String> failures) {
             for (Story story : stories) {
-                XRefStory xRefStory = createXRefStory(storyReporterBuilder, story, !failures.contains(story.getPath()),
-                        this);
-                this.stories.add(xRefStory);
+                if (someScenarios(story) || !excludeStoriesWithNoExecutedScenarios) {
+                    this.stories.add(createXRefStory(builder, story, !failures.contains(story.getPath()), this));
+                }
             }
+        }
+
+        protected boolean someScenarios(Story story) {
+            return story.getScenarios().size() > 0;
         }
 
         /**

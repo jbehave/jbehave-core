@@ -66,6 +66,7 @@ public class SpringStoryReporterBuilder extends StoryReporterBuilder {
         withFailureTrace(reportFailureTrace);
     }
 
+
     public boolean isReportFailureTraceCompression() {
         return compressFailureTrace();
     }

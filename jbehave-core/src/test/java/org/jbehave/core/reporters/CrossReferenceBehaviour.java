@@ -53,7 +53,9 @@ public class CrossReferenceBehaviour {
             protected XRefRoot newXRefRoot() {
                 return new XRefRootWithoutThemes();
             }
+
         };
+        crossReference.excludeStoriesWithoutExecutedScenarios(false);
 
         StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
         when(builder.outputDirectory()).thenReturn(zebra);
@@ -184,6 +186,7 @@ public class CrossReferenceBehaviour {
                 xstream.alias("xref", XRefRootWithThemes.class);
             }
         };
+        crossReference.excludeStoriesWithoutExecutedScenarios(false);
 
         StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
         when(builder.outputDirectory()).thenReturn(zebra);
