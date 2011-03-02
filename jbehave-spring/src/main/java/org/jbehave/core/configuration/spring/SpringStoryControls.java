@@ -22,6 +22,14 @@ public class SpringStoryControls extends StoryControls {
 
     public void setSkipScenariosAfterFailure(boolean skipScenariosAfterFailure) {
         doSkipScenariosAfterFailure(skipScenariosAfterFailure);
-    }    
+    }
+
+    public boolean isSkipBeforeAndAfterScenarioStepsIfGivenStory() {
+        return skipBeforeAndAfterScenarioStepsIfGivenStory();
+    }
+
+    public void setSkipBeforeAndAfterScenarioStepsIfGivenStory(boolean skipBeforeAndAfterScenarioStepsIfGivenStory) {
+        doSkipBeforeAndAfterScenarioStepsIfGivenStory(skipBeforeAndAfterScenarioStepsIfGivenStory);
+    }
     
 }
