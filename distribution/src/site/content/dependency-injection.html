@@ -24,15 +24,22 @@ injection.</p>
 
 	<li><a href="http://springframework.org">Spring</a> (when the
 	extension module <b>jbehave-spring</b> is added to the classpath):</li>
+<<<<<<< HEAD
 
     <li><a href="http://www.seamframework.org/weld ">Weld</a> (when the
     extension module <b>jbehave-weld</b> is added to the classpath):</li>
 
+=======
+	
+	<li><a href="http://seamframework.org/Weld">Weld</a> the reference
+	implementation of Context and Dependency Injection (when the
+	extension module <b>jbehave-weld</b> is added to the classpath):</li>	
+>>>>>>> 7d2deb3... JBEHAVE-442 - add documentation on using Weld
 </ul>
 </p>
 
 <p><span class="followup">Fully-working examples of running
-stories with dependency-injection support can be found in the <b>trader-[guice|pico|spring]</b>
+stories with dependency-injection support can be found in the <b>trader-[guice|pico|spring|weld]</b>
 <a href="running-examples.html">examples</a>. Note that dependency
 injection examples only concentrate on the composition via the
 respective containers but do not replicate what is in the <b>trader</b>
@@ -178,7 +185,60 @@ public class AnnotatedEmbedderUsingSpring extends InjectableEmbedder {
     }
 
 }
+]]>
 </script>
+
+<h3>Using Weld</h3>
+
+<p>When using Weld you can inject configuration and steps using the standard
+Context and Dependency Injection (CDI) annotations</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+@RunWith(WeldAnnotatedEmbedderRunner.class)
+@Configure()
+@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
+@UsingWeld
+public class AnnotatedEmbedderUsingWeld extends InjectableEmbedder {
+
+    @Test
+    public void run() {
+        injectedEmbedder().runStoriesAsPaths(storyPaths());
+    }
+
+    protected List<String> storyPaths() {
+        return new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "");
+    }
+}
+]]>
+</script>
+
+<p>To override the JBehave configuration you write a producer method
+and annotate the method with an @WeldConfiguration</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+@ApplicationScoped
+public class ConfigurationProducer {
+    
+    public ConfigurationProducer() {}
+
+    @Produces @WeldConfiguration
+    public Configuration getConfiguration() {
+        return new MostUsefulConfiguration()
+            .useStoryControls(new StoryControls()
+                .doDryRun(false)
+                .doSkipScenariosAfterFailure(false))
+            .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"))
+            .useStoryLoader(new LoadFromClasspath(getClass().getClassLoader()))
+            .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withDefaultFormats()
+                .withFormats(CONSOLE, HTML, TXT, XML))
+            .useParameterConverters(new ParameterConverters()
+                .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd"))));
+    }
+}
+]]>
+</script>
+
 
 <h2>Steps class-level injection</h2>
 
@@ -267,6 +327,29 @@ public class GuiceTraderSteps extends TraderSteps {
     private ApplicationContext createContext(){
         return  new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml").createApplicationContext();        
     }
+]]>
+</script>
+
+<h3>Using Weld</h3>
+
+<p>CandidateSteps can be created by annotating a class using the @WeldStep annotation <a
+	href="javadoc/weld/org/jbehave/core/annotations/weld/WeldStep.html">WeldStep</a>:
+</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+@WeldStep
+public class MyTradingSteps {
+
+	@Inject  
+    private TradingService tradingService;
+    
+    @Given("I make trade")
+    public void doNothing() {
+    	tradingService.newStock(....);
+    }
+	......
+}
 ]]>
 </script>
 
