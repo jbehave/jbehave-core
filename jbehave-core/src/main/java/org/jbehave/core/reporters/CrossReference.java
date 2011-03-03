@@ -28,8 +28,10 @@ import org.jbehave.core.steps.StepType;
 public class CrossReference extends Format {
 
     private ThreadLocal<Story> currentStory = new ThreadLocal<Story>();
+    private ThreadLocal<Long> currentStoryStart = new ThreadLocal<Long>();
     private ThreadLocal<String> currentScenarioTitle = new ThreadLocal<String>();
     private List<Story> stories = new ArrayList<Story>();
+    private Map<Story, Long> times = new HashMap<Story, Long>();
     private Map<String, StepMatch> stepMatches = new HashMap<String, StepMatch>();
     private StepMonitor stepMonitor = new XRefStepMonitor();
     private Set<String> failingStories = new HashSet<String>();
@@ -62,7 +64,7 @@ public class CrossReference extends Format {
             Set<String> failingStories) {
         XRefRoot xrefRoot = newXRefRoot();
         xrefRoot.setExcludeStoriesWithNoExecutedScenarios(excludeStoriesWithNoExecutedScenarios);
-        xrefRoot.processStories(stories, storyReporterBuilder, failingStories);
+        xrefRoot.processStories(stories, times, storyReporterBuilder, failingStories);
         return xrefRoot;
     }
 
@@ -130,12 +132,19 @@ public class CrossReference extends Format {
             public void beforeStory(Story story, boolean givenStory) {
                 stories.add(story);
                 currentStory.set(story);
+                currentStoryStart.set(System.currentTimeMillis());
             }
 
             @Override
             public void failed(String step, Throwable cause) {
                 super.failed(step, cause);
                 failingStories.add(currentStory.get().getPath());
+            }
+
+            @Override
+            public void afterStory(boolean givenStory) {
+                super.afterStory(givenStory);
+                times.put(currentStory.get(), System.currentTimeMillis() - currentStoryStart.get());
             }
 
             @Override
@@ -184,12 +193,18 @@ public class CrossReference extends Format {
             return "JBehave";
         }
 
-        protected void processStories(List<Story> stories, StoryReporterBuilder builder, Set<String> failures) {
+        protected void processStories(List<Story> stories, Map<Story, Long> times, StoryReporterBuilder builder, Set<String> failures) {
             for (Story story : stories) {
                 if (someScenarios(story) || !excludeStoriesWithNoExecutedScenarios) {
-                    this.stories.add(createXRefStory(builder, story, !failures.contains(story.getPath()), this));
+                    XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(story.getPath()), this);
+                    xRefStory.duration = getTime(times, story);
+                    this.stories.add(xRefStory);
                 }
             }
+        }
+
+        protected Long getTime(Map<Story, Long> times, Story story) {
+            return times.get(story);
         }
 
         protected boolean someScenarios(Story story) {
@@ -240,6 +255,7 @@ public class CrossReference extends Format {
         private String meta = "";
         private String scenarios = "";
         private boolean passed;
+        public long duration;
 
         public XRefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed) {
             this.story = story;

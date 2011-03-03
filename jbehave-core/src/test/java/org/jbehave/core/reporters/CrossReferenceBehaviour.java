@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jbehave.core.model.StepPattern;
@@ -35,6 +36,8 @@ public class CrossReferenceBehaviour {
         final List<ByteArrayOutputStream> output = new ArrayList<ByteArrayOutputStream>();
         final File zebra = new File("target/zebra");
 
+        final long[] duration = new long[1];
+
         CrossReference crossReference = new CrossReference() {
             @Override
             protected OutputStreamWriter makeWriter(File file) throws IOException {
@@ -51,7 +54,7 @@ public class CrossReferenceBehaviour {
 
             @Override
             protected XRefRoot newXRefRoot() {
-                return new XRefRootWithoutThemes();
+                return new XRefRootWithoutThemes(duration);
             }
 
         };
@@ -95,6 +98,7 @@ public class CrossReferenceBehaviour {
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
+                "      <duration>"+duration[0]+"</duration>\n" +
                 "    </story>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
@@ -132,7 +136,8 @@ public class CrossReferenceBehaviour {
                 "      'html': 'path.to.html',\n" +
                 "      'meta': 'author=Mauro\\u000atheme=testing\\u000a',\n" +
                 "      'scenarios': '',\n" +
-                "      'passed': false\n" +
+                "      'passed': false,\n" +
+                "      'duration': " + duration[0] + "\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  'stepMatches': [\n" +
@@ -162,6 +167,9 @@ public class CrossReferenceBehaviour {
         final List<ByteArrayOutputStream> output = new ArrayList<ByteArrayOutputStream>();
         final File zebra = new File("target/zebra");
 
+        final long[] duration = new long[1];
+
+
         CrossReference crossReference = new CrossReference() {
             @Override
             protected OutputStreamWriter makeWriter(File file) throws IOException {
@@ -171,10 +179,12 @@ public class CrossReferenceBehaviour {
                 return new OutputStreamWriter(baos);
             }
 
+
             @Override
             protected XRefRoot newXRefRoot() {
-                return new XRefRootWithThemes();
+                return new XRefRootWithThemes(duration);
             }
+
 
             @Override
             protected void aliasForXRefStory(XStream xstream) {
@@ -224,6 +234,7 @@ public class CrossReferenceBehaviour {
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
+                "      <duration>"+duration[0]+"</duration>\n" +
                 "      <theme>testing</theme>\n" +
                 "    </story>\n" +
                 "  </stories>\n" +
@@ -264,6 +275,7 @@ public class CrossReferenceBehaviour {
                 "      'meta': 'author=Mauro\\u000a',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
+                "      'duration': " + duration[0] + ",\n" +
                 "      'theme': 'testing'\n" +
                 "    }\n" +
                 "  ],\n" +
@@ -290,13 +302,23 @@ public class CrossReferenceBehaviour {
 
     private static class XRefRootWithThemes extends CrossReference.XRefRoot {
         Set<String> themes = new HashSet<String>();
-        public XRefRootWithThemes() {
-            super();
+
+        private transient long[] duration;
+
+        public XRefRootWithThemes(long[] duration) {
+            this.duration = duration;
         }
 
         @Override
         protected long currentTime() {
             return 1234;
+        }
+
+        @Override
+        protected Long getTime(Map<Story, Long> times, Story story) {
+            long d = super.getTime(times, story);
+            duration[0] = d;
+            return d;
         }
 
         @Override
@@ -307,10 +329,26 @@ public class CrossReferenceBehaviour {
     
 
     private static class XRefRootWithoutThemes extends CrossReference.XRefRoot {
+
+        private transient long[] duration;
+
+        private XRefRootWithoutThemes(long[] duration) {
+            this.duration = duration;
+        }
+
         @Override
         protected long currentTime() {
             return 1234;
         }
+
+        @Override
+        protected Long getTime(Map<Story, Long> times, Story story) {
+            long d = super.getTime(times, story);
+            duration[0] = d;
+            return d;
+        }
+
+
     }
 
     private static class XRefStoryWithTheme extends CrossReference.XRefStory {
