@@ -36,6 +36,7 @@ public class CrossReference extends Format {
     private StepMonitor stepMonitor = new XRefStepMonitor();
     private Set<String> failingStories = new HashSet<String>();
     private boolean excludeStoriesWithNoExecutedScenarios;
+    private Set<String> stepsPerformed = new HashSet<String>();
 
     public CrossReference() {
         this("XREF");
@@ -64,7 +65,7 @@ public class CrossReference extends Format {
             Set<String> failingStories) {
         XRefRoot xrefRoot = newXRefRoot();
         xrefRoot.setExcludeStoriesWithNoExecutedScenarios(excludeStoriesWithNoExecutedScenarios);
-        xrefRoot.processStories(stories, times, storyReporterBuilder, failingStories);
+        xrefRoot.processStories(stories, stepsPerformed,  times, storyReporterBuilder, failingStories);
         return xrefRoot;
     }
 
@@ -155,8 +156,16 @@ public class CrossReference extends Format {
     }
 
     private class XRefStepMonitor extends StepMonitor.NULL {
+        @Override
+        public void performing(String step, boolean dryRun) {
+            super.performing(step, dryRun);
+            stepsPerformed.add(currentStory.get().getPath());
+        }
+
         public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method,
                 Object stepsInstance) {
+            Story story = currentStory.get();
+
             if (matches) {
                 String key = pattern.type() + pattern.annotated();
                 StepMatch stepMatch = stepMatches.get(key);
@@ -165,7 +174,7 @@ public class CrossReference extends Format {
                     stepMatches.put(key, stepMatch);
                 }
                 // find canonical ref for same stepMatch
-                stepMatch.usages.add(new StepUsage(currentStory.get().getPath(), currentScenarioTitle.get(), step));
+                stepMatch.usages.add(new StepUsage(story.getPath(), currentScenarioTitle.get(), step));
             }
             super.stepMatchesPattern(step, matches, pattern, method, stepsInstance);
         }
@@ -193,9 +202,9 @@ public class CrossReference extends Format {
             return "JBehave";
         }
 
-        protected void processStories(List<Story> stories, Map<Story, Long> times, StoryReporterBuilder builder, Set<String> failures) {
+        protected void processStories(List<Story> stories, Set<String> stepsPerformed, Map<Story, Long> times, StoryReporterBuilder builder, Set<String> failures) {
             for (Story story : stories) {
-                if (someScenarios(story) || !excludeStoriesWithNoExecutedScenarios) {
+                if (someScenarios(story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
                     XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(story.getPath()), this);
                     xRefStory.duration = getTime(times, story);
                     this.stories.add(xRefStory);
@@ -207,8 +216,8 @@ public class CrossReference extends Format {
             return times.get(story);
         }
 
-        protected boolean someScenarios(Story story) {
-            return story.getScenarios().size() > 0;
+        protected boolean someScenarios(Story story, Set<String> stepsPerformed) {
+            return stepsPerformed.contains(story.getPath());
         }
 
         /**
