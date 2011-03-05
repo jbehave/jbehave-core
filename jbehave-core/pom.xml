@@ -112,6 +112,7 @@
               <shadedArtifactId>jbehave-core</shadedArtifactId>
               <artifactSet>
                 <excludes>
+                  <exclude>com.thoughtworks.xstream:xstream</exclude>
                   <exclude>commons-collections:commons-collections</exclude>
                   <exclude>commons-io:commons-io</exclude>
                   <exclude>commons-lang:commons-lang</exclude>
@@ -120,6 +121,7 @@
                   <exclude>org.codehaus.plexus:plexus-utils</exclude>
                   <exclude>org.freemarker:freemarker</exclude>
                   <exclude>org.hamcrest:hamcrest-all</exclude>
+                  <exclude>xpp3:xpp3_min</exclude>
                 </excludes>
               </artifactSet>
               <filters>
