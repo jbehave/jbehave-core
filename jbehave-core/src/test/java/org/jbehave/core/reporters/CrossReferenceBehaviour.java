@@ -155,6 +155,193 @@ public class CrossReferenceBehaviour {
                 "    }\n" +
                 "  ]\n" +
                 "}}", output.get(1).toString().replace('\"', '\'')); // json
+        assertEquals(2, output.size());
+
+
+    }
+
+    @Test
+    public void shouldProduceXmlOutputsOfStoriesAndSteps() throws Exception {
+
+        // Given
+        FilePrintStreamFactory factory = mock(FilePrintStreamFactory.class);
+
+        final List<ByteArrayOutputStream> output = new ArrayList<ByteArrayOutputStream>();
+        final File zebra = new File("target/zebra");
+
+        final long[] duration = new long[1];
+
+        CrossReference crossReference = new CrossReference() {
+            @Override
+            protected OutputStreamWriter makeWriter(File file) throws IOException {
+                assertTrue(file.getCanonicalPath().contains("zebra"));
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                output.add(baos);
+                return new OutputStreamWriter(baos);
+            }
+
+            @Override
+            protected void aliasForXRefRoot(XStream xstream) {
+                xstream.alias("xref", XRefRootWithoutThemes.class);
+            }
+
+            @Override
+            protected XRefRoot newXRefRoot() {
+                return new XRefRootWithoutThemes(duration);
+            }
+
+        }.withXmlOnly();
+        crossReference.excludeStoriesWithoutExecutedScenarios(false);
+
+        StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
+        when(builder.outputDirectory()).thenReturn(zebra);
+        FilePathResolver pathResolver = new ResolveToPackagedName();
+        when(builder.pathResolver()).thenReturn(pathResolver);
+
+        // When
+        PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
+        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern(StepType.GIVEN, "(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
+
+        // generate XML and JSON
+        verifyNoMoreInteractions(factory, builder);
+        crossReference.outputToFiles(builder);
+
+        //System.out.println("AAA{" + output.get(0).toString() + "}AAA");
+
+        // Then
+        assertEquals("<xref>\n" +
+                "  <whenMade>1234</whenMade>\n" +
+                "  <createdBy>JBehave</createdBy>\n" +
+                "  <meta>\n" +
+                "    <string>theme=testing</string>\n" +
+                "    <string>author=Mauro</string>\n" +
+                "  </meta>\n" +
+                "  <stories>\n" +
+                "    <story>\n" +
+                "      <description>An interesting story</description>\n" +
+                "      <narrative>In order to renovate my house\n" +
+                "As a customer\n" +
+                "I want to get a loan\n" +
+                "</narrative>\n" +
+                "      <name>/path/to/story</name>\n" +
+                "      <path>/path/to/story</path>\n" +
+                "      <html>path.to.html</html>\n" +
+                "      <meta>author=Mauro\n" +
+                "theme=testing\n" +
+                "</meta>\n" +
+                "      <scenarios></scenarios>\n" +
+                "      <passed>false</passed>\n" +
+                "      <duration>"+duration[0]+"</duration>\n" +
+                "    </story>\n" +
+                "  </stories>\n" +
+                "  <stepMatches>\n" +
+                "    <stepMatch>\n" +
+                "      <type>GIVEN</type>\n" +
+                "      <annotatedPattern>(def)</annotatedPattern>\n" +
+                "      <resolvedPattern>[abc]</resolvedPattern>\n" +
+                "      <usages>\n" +
+                "        <use>\n" +
+                "          <story>/path/to/story</story>\n" +
+                "          <scenario>I ask for a loan</scenario>\n" +
+                "          <step>a</step>\n" +
+                "        </use>\n" +
+                "      </usages>\n" +
+                "    </stepMatch>\n" +
+                "  </stepMatches>\n" +
+                "</xref>", output.get(0).toString()); // xml
+
+        assertEquals(1, output.size());
+
+
+
+    }
+
+
+    @Test
+    public void shouldProduceJsonOutputsOfStoriesAndSteps() throws Exception {
+
+        // Given
+        FilePrintStreamFactory factory = mock(FilePrintStreamFactory.class);
+
+        final List<ByteArrayOutputStream> output = new ArrayList<ByteArrayOutputStream>();
+        final File zebra = new File("target/zebra");
+
+        final long[] duration = new long[1];
+
+        CrossReference crossReference = new CrossReference() {
+            @Override
+            protected OutputStreamWriter makeWriter(File file) throws IOException {
+                assertTrue(file.getCanonicalPath().contains("zebra"));
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                output.add(baos);
+                return new OutputStreamWriter(baos);
+            }
+
+            @Override
+            protected void aliasForXRefRoot(XStream xstream) {
+                xstream.alias("xref", XRefRootWithoutThemes.class);
+            }
+
+            @Override
+            protected XRefRoot newXRefRoot() {
+                return new XRefRootWithoutThemes(duration);
+            }
+
+        }.withJsonOnly();
+        crossReference.excludeStoriesWithoutExecutedScenarios(false);
+
+        StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
+        when(builder.outputDirectory()).thenReturn(zebra);
+        FilePathResolver pathResolver = new ResolveToPackagedName();
+        when(builder.pathResolver()).thenReturn(pathResolver);
+
+        // When
+        PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
+        crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern(StepType.GIVEN, "(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
+
+        // generate XML and JSON
+        verifyNoMoreInteractions(factory, builder);
+        crossReference.outputToFiles(builder);
+
+        // Then
+
+        assertEquals("{'xref': {\n" +
+                "  'whenMade': 1234,\n" +
+                "  'createdBy': 'JBehave',\n" +
+                "  'meta': [\n" +
+                "    'theme=testing',\n" +
+                "    'author=Mauro'\n" +
+                "  ],\n" +
+                "  'stories': [\n" +
+                "    {\n" +
+                "      'description': 'An interesting story',\n" +
+                "      'narrative': 'In order to renovate my house\\u000aAs a customer\\u000aI want to get a loan\\u000a',\n" +
+                "      'name': '/path/to/story',\n" +
+                "      'path': '/path/to/story',\n" +
+                "      'html': 'path.to.html',\n" +
+                "      'meta': 'author=Mauro\\u000atheme=testing\\u000a',\n" +
+                "      'scenarios': '',\n" +
+                "      'passed': false,\n" +
+                "      'duration': " + duration[0] + "\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  'stepMatches': [\n" +
+                "    {\n" +
+                "      'type': 'GIVEN',\n" +
+                "      'annotatedPattern': '(def)',\n" +
+                "      'resolvedPattern': '[abc]',\n" +
+                "      'usages': [\n" +
+                "        {\n" +
+                "          'story': '/path/to/story',\n" +
+                "          'scenario': 'I ask for a loan',\n" +
+                "          'step': 'a'\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ]\n" +
+                "}}", output.get(0).toString().replace('\"', '\'')); // json
+
+        assertEquals(1, output.size());
 
     }
 
