@@ -51,7 +51,6 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
       <version>1.3.1</version>
-      <optional>true</optional>
     </dependency>
   </dependencies>
 
@@ -94,52 +93,6 @@
                   <classifier>resources</classifier>
                 </artifact>
               </artifacts>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>1.2.2</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <shadedArtifactId>jbehave-core</shadedArtifactId>
-              <artifactSet>
-                <excludes>
-                  <exclude>com.thoughtworks.xstream:xstream</exclude>
-                  <exclude>commons-collections:commons-collections</exclude>
-                  <exclude>commons-io:commons-io</exclude>
-                  <exclude>commons-lang:commons-lang</exclude>
-                  <exclude>javax.inject:javax.inject</exclude>
-                  <exclude>junit:junit-dep</exclude>
-                  <exclude>org.codehaus.plexus:plexus-utils</exclude>
-                  <exclude>org.freemarker:freemarker</exclude>
-                  <exclude>org.hamcrest:hamcrest-all</exclude>
-                  <exclude>xpp3:xpp3_min</exclude>
-                </excludes>
-              </artifactSet>
-              <filters>
-                <filter>
-                  <artifact>com.thoughtworks.paranamer:paranamer</artifact>
-                  <excludes>
-                    <exclude>com/thoughtworks/paranamer/Javadoc*</exclude>
-                    <exclude>com/thoughtworks/paranamer/Default*</exclude>
-                    <exclude>com/thoughtworks/paranamer/Adaptive*</exclude>
-                  </excludes>
-                </filter>
-              </filters>
-              <relocations>
-                <relocation>
-                  <pattern>com.thoughtworks.paranamer</pattern>
-                  <shadedPattern>org.jbehave.paranamer</shadedPattern>
-                </relocation>
-              </relocations>
             </configuration>
           </execution>
         </executions>

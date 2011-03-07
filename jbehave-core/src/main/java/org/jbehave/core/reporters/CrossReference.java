@@ -27,6 +27,8 @@ import org.jbehave.core.steps.StepType;
 
 public class CrossReference extends Format {
 
+    private final XStream XSTREAM_FOR_XML = new XStream();
+    private final XStream XSTREAM_FOR_JSON = new XStream(new JsonHierarchicalStreamDriver());
     private ThreadLocal<Story> currentStory = new ThreadLocal<Story>();
     private ThreadLocal<Long> currentStoryStart = new ThreadLocal<Long>();
     private ThreadLocal<String> currentScenarioTitle = new ThreadLocal<String>();
@@ -37,6 +39,9 @@ public class CrossReference extends Format {
     private Set<String> failingStories = new HashSet<String>();
     private boolean excludeStoriesWithNoExecutedScenarios;
     private Set<String> stepsPerformed = new HashSet<String>();
+    private boolean doJson = true;
+    private boolean doXml = true;
+    private boolean outputAfterEachStory = false;
 
     public CrossReference() {
         this("XREF");
@@ -44,7 +49,27 @@ public class CrossReference extends Format {
 
     public CrossReference(String name) {
         super(name);
+        configure(XSTREAM_FOR_XML);
+        configure(XSTREAM_FOR_JSON);
     }
+
+    public CrossReference withJsonOnly() {
+        doJson = true;
+        doXml = false;
+        return this;
+    }
+
+    public CrossReference withXmlOnly() {
+        doJson = false;
+        doXml = true;
+        return this;
+    }
+
+    public CrossReference writeCrossReferenceAfterEachStory() {
+        outputAfterEachStory = true;
+        return this;
+    }
+
 
     public StepMonitor getStepMonitor() {
         return stepMonitor;
@@ -53,8 +78,12 @@ public class CrossReference extends Format {
     public void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
         XRefRoot root = createXRefRoot(storyReporterBuilder, stories, failingStories);
         root.addStepMatches(stepMatches);
-        outputFile(fileName("xml"), new XStream(), root, storyReporterBuilder);
-        outputFile(fileName("json"), new XStream(new JsonHierarchicalStreamDriver()), root, storyReporterBuilder);
+        if (doXml) {
+            outputFile(fileName("xml"), XSTREAM_FOR_XML, root, storyReporterBuilder);
+        }
+        if (doJson) {
+            outputFile(fileName("json"), XSTREAM_FOR_JSON, root, storyReporterBuilder);
+        }
     }
 
     protected String fileName(String extension) {
@@ -74,11 +103,12 @@ public class CrossReference extends Format {
     }
 
     private void outputFile(String name, XStream xstream, XRefRoot root, StoryReporterBuilder storyReporterBuilder) {
+
         File outputDir = new File(storyReporterBuilder.outputDirectory(), "view");
         outputDir.mkdirs();
         try {
             Writer writer = makeWriter(new File(outputDir, name));
-            writer.write(configure(xstream).toXML(root));
+            writer.write(xstream.toXML(root));
             writer.flush();
             writer.close();
         } catch (IOException e) {
@@ -105,7 +135,7 @@ public class CrossReference extends Format {
         return new FileWriter(file);
     }
 
-    private XStream configure(XStream xstream) {
+    private void configure(XStream xstream) {
         xstream.setMode(XStream.NO_REFERENCES);
         aliasForXRefRoot(xstream);
         aliasForXRefStory(xstream);
@@ -114,7 +144,6 @@ public class CrossReference extends Format {
         xstream.alias("use", StepUsage.class);
         xstream.omitField(ExamplesTable.class, "parameterConverters");
         xstream.omitField(ExamplesTable.class, "defaults");
-        return xstream;
     }
 
     protected void aliasForXRefStory(XStream xstream) {
@@ -126,7 +155,7 @@ public class CrossReference extends Format {
     }
 
     @Override
-    public StoryReporter createStoryReporter(FilePrintStreamFactory factory, StoryReporterBuilder storyReporterBuilder) {
+    public StoryReporter createStoryReporter(FilePrintStreamFactory factory, final StoryReporterBuilder storyReporterBuilder) {
         return new NullStoryReporter() {
 
             @Override
@@ -146,6 +175,9 @@ public class CrossReference extends Format {
             public void afterStory(boolean givenStory) {
                 super.afterStory(givenStory);
                 times.put(currentStory.get(), System.currentTimeMillis() - currentStoryStart.get());
+                if (outputAfterEachStory) {
+                    outputToFiles(storyReporterBuilder);
+                }
             }
 
             @Override
