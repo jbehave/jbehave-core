@@ -32,7 +32,7 @@
     <module>trader-i18n</module>
     <module>trader-groovy</module>
     <module>trader-guice</module>
-    <module>trader-weld</module>
+    <!-- module>trader-weld</module not releasable -->
     <module>trader-pico</module>
     <module>trader-spring</module>
   </modules>
