@@ -195,8 +195,8 @@
                 </artifactItem>
               </artifactItems>
             </configuration>
-          </execution>
-          <execution -->
+          </execution -->
+          <execution>
             <id>unpack-javadoc-ant</id>
             <phase>generate-resources</phase>
             <goals>
