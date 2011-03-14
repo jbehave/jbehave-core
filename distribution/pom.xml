@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.3-beta-3</version>
+    <version>3.3-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-distribution</artifactId>
   <packaging>pom</packaging>
