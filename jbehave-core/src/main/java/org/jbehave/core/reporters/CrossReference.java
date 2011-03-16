@@ -42,6 +42,7 @@ public class CrossReference extends Format {
     private boolean doJson = true;
     private boolean doXml = true;
     private boolean outputAfterEachStory = false;
+    private org.jbehave.core.reporters.Format threadSafeDelegateFormat;
 
     public CrossReference() {
         this("XREF");
@@ -56,6 +57,11 @@ public class CrossReference extends Format {
     public CrossReference withJsonOnly() {
         doJson = true;
         doXml = false;
+        return this;
+    }
+
+    public CrossReference withThreadSafeDelegateFormat(org.jbehave.core.reporters.Format format) {
+        this.threadSafeDelegateFormat = format;
         return this;
     }
 
@@ -156,19 +162,27 @@ public class CrossReference extends Format {
 
     @Override
     public StoryReporter createStoryReporter(FilePrintStreamFactory factory, final StoryReporterBuilder storyReporterBuilder) {
-        return new NullStoryReporter() {
+        StoryReporter delegate;
+        if (threadSafeDelegateFormat == null) {
+            delegate = new NullStoryReporter();
+        } else {
+            delegate = threadSafeDelegateFormat.createStoryReporter(factory, storyReporterBuilder);
+        }
+        return new DelegatingStoryReporter(delegate) {
 
             @Override
             public void beforeStory(Story story, boolean givenStory) {
                 stories.add(story);
                 currentStory.set(story);
                 currentStoryStart.set(System.currentTimeMillis());
+                super.beforeStory(story, givenStory);
             }
 
             @Override
             public void failed(String step, Throwable cause) {
                 super.failed(step, cause);
                 failingStories.add(currentStory.get().getPath());
+                super.failed(step, cause);
             }
 
             @Override
@@ -178,11 +192,13 @@ public class CrossReference extends Format {
                 if (outputAfterEachStory) {
                     outputToFiles(storyReporterBuilder);
                 }
+                super.afterStory(givenStory);
             }
 
             @Override
             public void beforeScenario(String title) {
                 currentScenarioTitle.set(title);
+                super.beforeScenario(title);
             }
         };
     }
