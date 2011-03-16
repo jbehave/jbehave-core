@@ -32,7 +32,7 @@ public class CrossReference extends Format {
     private ThreadLocal<Story> currentStory = new ThreadLocal<Story>();
     private ThreadLocal<Long> currentStoryStart = new ThreadLocal<Long>();
     private ThreadLocal<String> currentScenarioTitle = new ThreadLocal<String>();
-    private List<Story> stories = new ArrayList<Story>();
+    private List<StoryHolder> stories = new ArrayList<StoryHolder>();
     private Map<Story, Long> times = new HashMap<Story, Long>();
     private Map<String, StepMatch> stepMatches = new HashMap<String, StepMatch>();
     private StepMonitor stepMonitor = new XRefStepMonitor();
@@ -96,7 +96,7 @@ public class CrossReference extends Format {
         return name().toLowerCase() + "." + extension;
     }
 
-    protected final XRefRoot createXRefRoot(StoryReporterBuilder storyReporterBuilder, List<Story> stories,
+    protected final XRefRoot createXRefRoot(StoryReporterBuilder storyReporterBuilder, List<StoryHolder> stories,
             Set<String> failingStories) {
         XRefRoot xrefRoot = newXRefRoot();
         xrefRoot.setExcludeStoriesWithNoExecutedScenarios(excludeStoriesWithNoExecutedScenarios);
@@ -172,7 +172,7 @@ public class CrossReference extends Format {
 
             @Override
             public void beforeStory(Story story, boolean givenStory) {
-                stories.add(story);
+                stories.add(new StoryHolder(story));
                 currentStory.set(story);
                 currentStoryStart.set(System.currentTimeMillis());
                 super.beforeStory(story, givenStory);
@@ -229,7 +229,7 @@ public class CrossReference extends Format {
     }
 
     public static class XRefRoot {
-        protected long whenMade = currentTime();
+        protected long whenMade = System.currentTimeMillis();
         protected String createdBy = createdBy();
 
         private Set<String> meta = new HashSet<String>();
@@ -242,19 +242,16 @@ public class CrossReference extends Format {
             this.excludeStoriesWithNoExecutedScenarios = exclude;
         }
 
-        protected long currentTime() {
-            return System.currentTimeMillis();
-        }
-
         protected String createdBy() {
             return "JBehave";
         }
 
-        protected void processStories(List<Story> stories, Set<String> stepsPerformed, Map<Story, Long> times, StoryReporterBuilder builder, Set<String> failures) {
-            for (Story story : stories) {
-                if (someScenarios(story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
-                    XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(story.getPath()), this);
-                    xRefStory.duration = getTime(times, story);
+        protected void processStories(List<StoryHolder> stories, Set<String> stepsPerformed, Map<Story, Long> times, StoryReporterBuilder builder, Set<String> failures) {
+            for (StoryHolder story : stories) {
+                if (someScenarios(story.story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
+                    XRefStory xRefStory = createXRefStory(builder, story.story, !failures.contains(story.story.getPath()), this);
+                    xRefStory.started = story.when;
+                    xRefStory.duration = getTime(times, story.story);
                     this.stories.add(xRefStory);
                 }
             }
@@ -312,6 +309,7 @@ public class CrossReference extends Format {
         private String meta = "";
         private String scenarios = "";
         private boolean passed;
+        public long started;
         public long duration;
 
         public XRefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed) {
@@ -413,4 +411,15 @@ public class CrossReference extends Format {
         }
     }
 
+    private class StoryHolder {
+        Story story;
+        long when;
+
+        private StoryHolder(Story story) {
+            this.story = story;
+            this.when = System.currentTimeMillis();
+        }
+
+
+    }
 }

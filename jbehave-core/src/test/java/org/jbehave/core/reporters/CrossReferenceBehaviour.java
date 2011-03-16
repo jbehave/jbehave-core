@@ -75,7 +75,7 @@ public class CrossReferenceBehaviour {
 
         // Then
         assertEquals("<xref>\n" +
-                "  <whenMade>1234</whenMade>\n" +
+                "  <whenMade>NUMBER</whenMade>\n" +
                 "  <createdBy>JBehave</createdBy>\n" +
                 "  <meta>\n" +
                 "    <string>theme=testing</string>\n" +
@@ -96,7 +96,8 @@ public class CrossReferenceBehaviour {
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
-                "      <duration>"+duration[0]+"</duration>\n" +
+                "      <started>NUMBER</started>\n" +
+                "      <duration>1</duration>\n" +
                 "    </story>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
@@ -113,10 +114,10 @@ public class CrossReferenceBehaviour {
                 "      </usages>\n" +
                 "    </stepMatch>\n" +
                 "  </stepMatches>\n" +
-                "</xref>", output.get(0).toString()); // xml
+                "</xref>", output.get(0).toString().replaceAll("[0-9]{8,15}", "NUMBER").replace("<duration>0</duration>", "<duration>1</duration>")); // xml
 
         assertEquals("{'xref': {\n" +
-                "  'whenMade': 1234,\n" +
+                "  'whenMade': NUMBER,\n" +
                 "  'createdBy': 'JBehave',\n" +
                 "  'meta': [\n" +
                 "    'theme=testing',\n" +
@@ -132,7 +133,8 @@ public class CrossReferenceBehaviour {
                 "      'meta': 'author=Mauro\\u000atheme=testing\\u000a',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
-                "      'duration': " + duration[0] + "\n" +
+                "      'started': NUMBER,\n" +
+                "      'duration': 1\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  'stepMatches': [\n" +
@@ -149,7 +151,7 @@ public class CrossReferenceBehaviour {
                 "      ]\n" +
                 "    }\n" +
                 "  ]\n" +
-                "}}", output.get(1).toString().replace('\"', '\'')); // json
+                "}}", output.get(1).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replace("duration': 0", "duration': 1")); // json
         assertEquals(2, output.size());
 
 
@@ -203,7 +205,7 @@ public class CrossReferenceBehaviour {
 
         // Then
         assertEquals("<xref>\n" +
-                "  <whenMade>1234</whenMade>\n" +
+                "  <whenMade>NUMBER</whenMade>\n" +
                 "  <createdBy>JBehave</createdBy>\n" +
                 "  <meta>\n" +
                 "    <string>theme=testing</string>\n" +
@@ -224,7 +226,8 @@ public class CrossReferenceBehaviour {
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
-                "      <duration>"+duration[0]+"</duration>\n" +
+                "      <started>NUMBER</started>\n" +
+                "      <duration>1</duration>\n" +
                 "    </story>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
@@ -241,7 +244,7 @@ public class CrossReferenceBehaviour {
                 "      </usages>\n" +
                 "    </stepMatch>\n" +
                 "  </stepMatches>\n" +
-                "</xref>", output.get(0).toString()); // xml
+                "</xref>", output.get(0).toString().replaceAll("[0-9]{8,15}", "NUMBER").replace("<duration>0</duration>", "<duration>1</duration>")); // xml
 
         assertEquals(1, output.size());
 
@@ -299,7 +302,7 @@ public class CrossReferenceBehaviour {
         // Then
 
         assertEquals("{'xref': {\n" +
-                "  'whenMade': 1234,\n" +
+                "  'whenMade': NUMBER,\n" +
                 "  'createdBy': 'JBehave',\n" +
                 "  'meta': [\n" +
                 "    'theme=testing',\n" +
@@ -315,7 +318,8 @@ public class CrossReferenceBehaviour {
                 "      'meta': 'author=Mauro\\u000atheme=testing\\u000a',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
-                "      'duration': " + duration[0] + "\n" +
+                "      'started': NUMBER,\n" +
+                "      'duration': 1\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  'stepMatches': [\n" +
@@ -332,7 +336,7 @@ public class CrossReferenceBehaviour {
                 "      ]\n" +
                 "    }\n" +
                 "  ]\n" +
-                "}}", output.get(0).toString().replace('\"', '\'')); // json
+                "}}", output.get(0).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replace("duration': 0", "duration': 1")); // json
 
         assertEquals(1, output.size());
 
@@ -393,7 +397,7 @@ public class CrossReferenceBehaviour {
 
         // Then
         assertEquals("<xref>\n" +
-                "  <whenMade>1234</whenMade>\n" +
+                "  <whenMade>NUMBER</whenMade>\n" +
                 "  <createdBy>JBehave</createdBy>\n" +
                 "  <meta>\n" +
                 "    <string>author=Mauro</string>\n" +
@@ -412,7 +416,8 @@ public class CrossReferenceBehaviour {
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
-                "      <duration>"+duration[0]+"</duration>\n" +
+                "      <started>NUMBER</started>\n" +
+                "      <duration>1</duration>\n" +
                 "      <theme>testing</theme>\n" +
                 "    </story>\n" +
                 "  </stories>\n" +
@@ -433,10 +438,10 @@ public class CrossReferenceBehaviour {
                 "  <themes>\n" +
                 "    <string>testing</string>\n" +
                 "  </themes>\n" +
-                "</xref>", output.get(0).toString()); // xml
+                "</xref>", output.get(0).toString().replaceAll("[0-9]{8,15}", "NUMBER").replace("<duration>0</duration>", "<duration>1</duration>")); // xml
 
         assertEquals("{'xref': {\n" +
-                "  'whenMade': 1234,\n" +
+                "  'whenMade': NUMBER,\n" +
                 "  'createdBy': 'JBehave',\n" +
                 "  'meta': [\n" +
                 "    'author=Mauro'\n" +
@@ -451,7 +456,8 @@ public class CrossReferenceBehaviour {
                 "      'meta': 'author=Mauro\\u000a',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
-                "      'duration': " + duration[0] + ",\n" +
+                "      'started': NUMBER,\n" +
+                "      'duration': 1,\n" +
                 "      'theme': 'testing'\n" +
                 "    }\n" +
                 "  ],\n" +
@@ -472,7 +478,7 @@ public class CrossReferenceBehaviour {
                 "  'themes': [\n" +
                 "    'testing'\n" +
                 "  ]\n" +
-                "}}", output.get(1).toString().replace('\"', '\'')); // json
+                "}}", output.get(1).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replace("duration': 0", "duration': 1")); // json
 
     }
 
@@ -483,11 +489,6 @@ public class CrossReferenceBehaviour {
 
         public XRefRootWithThemes(long[] duration) {
             this.duration = duration;
-        }
-
-        @Override
-        protected long currentTime() {
-            return 1234;
         }
 
         @Override
@@ -510,11 +511,6 @@ public class CrossReferenceBehaviour {
 
         private XRefRootWithoutThemes(long[] duration) {
             this.duration = duration;
-        }
-
-        @Override
-        protected long currentTime() {
-            return 1234;
         }
 
         @Override
