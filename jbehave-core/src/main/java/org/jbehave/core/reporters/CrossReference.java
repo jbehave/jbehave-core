@@ -180,14 +180,12 @@ public class CrossReference extends Format {
 
             @Override
             public void failed(String step, Throwable cause) {
-                super.failed(step, cause);
                 failingStories.add(currentStory.get().getPath());
                 super.failed(step, cause);
             }
 
             @Override
             public void afterStory(boolean givenStory) {
-                super.afterStory(givenStory);
                 times.put(currentStory.get(), System.currentTimeMillis() - currentStoryStart.get());
                 if (outputAfterEachStory) {
                     outputToFiles(storyReporterBuilder);
