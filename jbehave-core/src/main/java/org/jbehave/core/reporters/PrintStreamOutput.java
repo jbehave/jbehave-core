@@ -419,6 +419,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"
                     ),
                     "\t(groovy-closure-invoke)"),
+
+
             new Replacement(
                     Pattern.compile(
                             "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
@@ -456,12 +458,13 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat java.lang.reflect.Constructor.newInstance\\(Constructor.java:\\d+\\)"
                     ),
                     "\t(reflection-construct)"),
+
             new Replacement(
                     Pattern.compile(
-                            "\\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent\\(CallSiteArray.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(Current|)\\(CallSiteArray.java:\\d+\\)\\n" +
                             "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent\\(AbstractCallSite.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent\\(AbstractCallSite.java:\\d+\\)\\n" +
-                            "\\tat EtsyDotComSteps.anItemInTheEtsyCart\\(EtsyDotComSteps.groovy:\\d+\\)"
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent\\(AbstractCallSite.java:\\d+\\)"
+
                     ),
                     "\t(groovy-callCurrent)"),
 

@@ -667,6 +667,10 @@ public class PrintStreamOutputBehaviour {
                 "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:141)\n" +
                 "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:145)\n" +
                 "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
+                "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:44)\n" +  // renamed in Groovy 1.8 ?
+                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:141)\n" +
+                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:145)\n" +
+                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
                 "\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n" +
                 "\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)\n" +
                 "\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)\n" +
@@ -717,6 +721,9 @@ public class PrintStreamOutputBehaviour {
                 "Expected: is <true>\n" +
                 "     got: <false>\n" +
                 "\t(groovy-callCurrent)\n" +
+                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
+                "\t(groovy-callCurrent)\n" +
+                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
                 "\t(reflection-construct)\n" +
                 "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
                 "\t(groovy-static-method-invoke)\n" +
