@@ -122,9 +122,12 @@ import static java.util.Arrays.asList;
 public class StoryReporterBuilder {
 
     public enum Format {
-        CONSOLE(org.jbehave.core.reporters.Format.CONSOLE), IDE_CONSOLE(org.jbehave.core.reporters.Format.IDE_CONSOLE), TXT(
-                org.jbehave.core.reporters.Format.TXT), HTML(org.jbehave.core.reporters.Format.HTML), XML(
-                org.jbehave.core.reporters.Format.XML), STATS(org.jbehave.core.reporters.Format.STATS);
+        CONSOLE(org.jbehave.core.reporters.Format.CONSOLE),
+        IDE_CONSOLE(org.jbehave.core.reporters.Format.IDE_CONSOLE),
+        TXT(org.jbehave.core.reporters.Format.TXT),
+        HTML(org.jbehave.core.reporters.Format.HTML),
+        XML(org.jbehave.core.reporters.Format.XML),
+        STATS(org.jbehave.core.reporters.Format.STATS);
 
         private org.jbehave.core.reporters.Format realFormat;
 

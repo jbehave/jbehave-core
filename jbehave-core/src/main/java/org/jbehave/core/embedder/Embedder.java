@@ -207,27 +207,8 @@ public class Embedder {
         List<Future<Throwable>> futures = new ArrayList<Future<Throwable>>();
 
         for (final String storyPath : storyPaths) {
-            futures.add(executorService.submit(new Callable<Throwable>() {
-                public Throwable call() throws Exception {
-                    try {
-                        embedderMonitor.runningStory(storyPath);
-                        Story story = storyRunner.storyOfPath(configuration, storyPath);
-                        storyRunner.run(configuration, candidateSteps, story, filter);
-                    } catch (Throwable e) {
-                        if (embedderControls.batch()) {
-                            // collect and postpone decision to throw exception
-                            batchFailures.put(storyPath, e);
-                        } else {
-                            if (embedderControls.ignoreFailureInStories()) {
-                                embedderMonitor.storyFailed(storyPath, e);
-                            } else {
-                                return new RunningStoriesFailed(storyPath, e);
-                            }
-                        }
-                    }
-                    return null;
-                }
-            }));
+            enqueueStory(executorService, embedderControls, configuration, candidateSteps, batchFailures,
+                    filter, futures, storyPath, storyRunner.storyOfPath(configuration, storyPath));
         }
 
         waitUntilAllDone(futures);
@@ -247,6 +228,13 @@ public class Embedder {
         if (embedderControls.generateViewAfterStories()) {
             generateReportsView();
         }
+    }
+
+    protected void enqueueStory(ExecutorService executorService, EmbedderControls embedderControls, Configuration configuration,
+                              List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter,
+                              List<Future<Throwable>> futures, String storyPath, Story story) {
+        EnqueuedStory enqueuedStory = new EnqueuedStory(storyPath, configuration, candidateSteps, story, filter, embedderControls, batchFailures);
+        futures.add(executorService.submit(enqueuedStory));
     }
 
     /**
@@ -628,4 +616,43 @@ public class Embedder {
     }
 
 
+    private class EnqueuedStory implements Callable<Throwable> {
+        private final String storyPath;
+        private final Configuration configuration;
+        private final List<CandidateSteps> candidateSteps;
+        private final Story story;
+        private final MetaFilter filter;
+        private final EmbedderControls embedderControls;
+        private final BatchFailures batchFailures;
+
+        public EnqueuedStory(String storyPath, Configuration configuration, List<CandidateSteps> candidateSteps,
+                             Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures) {
+            this.storyPath = storyPath;
+            this.configuration = configuration;
+            this.candidateSteps = candidateSteps;
+            this.story = story;
+            this.filter = filter;
+            this.embedderControls = embedderControls;
+            this.batchFailures = batchFailures;
+        }
+
+        public Throwable call() throws Exception {
+            try {
+                embedderMonitor.runningStory(storyPath);
+                storyRunner.run(configuration, candidateSteps, story, filter);
+            } catch (Throwable e) {
+                if (embedderControls.batch()) {
+                    // collect and postpone decision to throw exception
+                    batchFailures.put(storyPath, e);
+                } else {
+                    if (embedderControls.ignoreFailureInStories()) {
+                        embedderMonitor.storyFailed(storyPath, e);
+                    } else {
+                        return new RunningStoriesFailed(storyPath, e);
+                    }
+                }
+            }
+            return null;
+        }
+    }
 }
