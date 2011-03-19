@@ -7,18 +7,21 @@ JBehave is a BDD framework for Java and Groovy, mirrored [at Github](https://git
 ## Building
 
 The first time you run the Maven build (Maven 2.2.1 or above required), do:
-  mvn install -s settings.xml
+
+    mvn install -s settings.xml
 
 After that, it is necessary to only do:
-  mvn install
 
-or the following if you want to build/test examples too.
+    mvn install
 
-  mvn install -Pexamples
+or tshe following if you want to build/test examples too.
+
+    mvn install -Pexamples
 
 ## Using
 
 Canonical information for JBehave:
+
 1. [News](http://jbehave.org).
 2. [Documentation](http://jbehave.org/documentation/).
 3. User [mailing list](http://xircles.codehaus.org/lists/user@jbehave.codehaus.org)
