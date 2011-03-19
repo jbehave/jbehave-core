@@ -14,7 +14,7 @@ After that, it is necessary to only do:
 
     mvn install
 
-or tshe following if you want to build/test examples too.
+Or the following if you want to build/test examples too.
 
     mvn install -Pexamples
 
@@ -24,14 +24,14 @@ Canonical information for JBehave:
 
 1. [News](http://jbehave.org).
 2. [Documentation](http://jbehave.org/documentation/).
-3. User [mailing list](http://xircles.codehaus.org/lists/user@jbehave.codehaus.org)
+3. [User mail-list](http://xircles.codehaus.org/lists/user@jbehave.codehaus.org)
 4. Jars in [Maven Repositories](http://mvnrepository.com/search.html?query=jbehave)
 
 ## Contributing
 
 Please report issues, feature requests on the [Codehaus issue
-tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the dev
-[mailing list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org). 
+tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
+[dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org). 
 
 ## Related
 
