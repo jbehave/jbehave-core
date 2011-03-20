@@ -230,11 +230,30 @@ public class Embedder {
         }
     }
 
-    protected void enqueueStory(ExecutorService executorService, EmbedderControls embedderControls, Configuration configuration,
+    /**
+     * Enqueue a story to run
+     * @param executorService where to run the enqueued story
+     * @param embedderControls the embedder controls to use
+     * @param configuration the configuration to use
+     * @param candidateSteps the candidate steps to use
+     * @param batchFailures where to put batch failures
+     * @param filter meta filter (if appl)
+     * @param futures the list of futures if tracking is needed
+     * @param storyPath the path for the story
+     * @param story the parsed story itself
+     * @return a future<throwable> for the story (null if not failing).
+     */
+    public Future<Throwable> enqueueStory(ExecutorService executorService, EmbedderControls embedderControls, Configuration configuration,
                               List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter,
                               List<Future<Throwable>> futures, String storyPath, Story story) {
-        EnqueuedStory enqueuedStory = new EnqueuedStory(storyPath, configuration, candidateSteps, story, filter, embedderControls, batchFailures);
-        futures.add(executorService.submit(enqueuedStory));
+        EnqueuedStory enqueuedStory = makeEnqueuedStory(embedderControls, configuration, candidateSteps, batchFailures, filter, storyPath, story, embedderMonitor, storyRunner);
+        Future<Throwable> submit = executorService.submit(enqueuedStory);
+        futures.add(submit);
+        return submit;
+    }
+
+    protected EnqueuedStory makeEnqueuedStory(EmbedderControls embedderControls, Configuration configuration, List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter, String storyPath, Story story, EmbedderMonitor embedderMonitor, StoryRunner storyRunner) {
+        return new EnqueuedStory(storyPath, configuration, candidateSteps, story, filter, embedderControls, batchFailures, embedderMonitor, storyRunner);
     }
 
     /**
@@ -534,7 +553,7 @@ public class Embedder {
     /**
      * Non-threading ExecutorService for situations where thread count = 1
      */
-    private static class NonThreadingExecutorService implements ExecutorService {
+    public static class NonThreadingExecutorService implements ExecutorService {
         public void shutdown() {
             throw new UnsupportedOperationException();
         }
@@ -616,7 +635,7 @@ public class Embedder {
     }
 
 
-    private class EnqueuedStory implements Callable<Throwable> {
+    public static class EnqueuedStory implements Callable<Throwable> {
         private final String storyPath;
         private final Configuration configuration;
         private final List<CandidateSteps> candidateSteps;
@@ -624,9 +643,12 @@ public class Embedder {
         private final MetaFilter filter;
         private final EmbedderControls embedderControls;
         private final BatchFailures batchFailures;
+        private final EmbedderMonitor embedderMonitor;
+        private final StoryRunner storyRunner;
 
         public EnqueuedStory(String storyPath, Configuration configuration, List<CandidateSteps> candidateSteps,
-                             Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures) {
+                             Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures,
+                             EmbedderMonitor embedderMonitor, StoryRunner storyRunner) {
             this.storyPath = storyPath;
             this.configuration = configuration;
             this.candidateSteps = candidateSteps;
@@ -634,6 +656,8 @@ public class Embedder {
             this.filter = filter;
             this.embedderControls = embedderControls;
             this.batchFailures = batchFailures;
+            this.embedderMonitor = embedderMonitor;
+            this.storyRunner = storyRunner;
         }
 
         public Throwable call() throws Exception {
