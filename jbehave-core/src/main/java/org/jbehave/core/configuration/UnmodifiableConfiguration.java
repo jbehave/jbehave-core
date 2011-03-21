@@ -176,17 +176,7 @@ public class UnmodifiableConfiguration extends Configuration {
     }
 
     @Override
-    public Configuration useStoryReporter(String storyPath, StoryReporter storyReporter) {
-        throw notAllowed();
-    }
-
-    @Override
     public Configuration useStoryReporterBuilder(StoryReporterBuilder storyReporterBuilder) {
-        throw notAllowed();
-    }
-
-    @Override
-    public Configuration useStoryReporters(Map<String, StoryReporter> storyReporters) {
         throw notAllowed();
     }
 

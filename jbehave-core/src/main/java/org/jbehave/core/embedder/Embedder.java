@@ -200,7 +200,7 @@ public class Embedder {
         storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
 
         final BatchFailures batchFailures = new BatchFailures();
-        buildReporters(configuration, storyPaths);
+        configureReporterBuilder(configuration);
         final MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, " "), embedderMonitor);
 
         List<Future<Throwable>> futures = new ArrayList<Future<Throwable>>();
@@ -308,10 +308,10 @@ public class Embedder {
         }
     }
 
-    private void buildReporters(Configuration configuration, List<String> storyPaths) {
+    private void configureReporterBuilder(Configuration configuration) {
         StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
         reporterBuilder.withMultiThreading(embedderControls.threads() > 1);
-        configuration.useStoryReporters(reporterBuilder.build(storyPaths));
+        configuration.useStoryReporterBuilder(reporterBuilder);
     }
 
     public void generateReportsView() {

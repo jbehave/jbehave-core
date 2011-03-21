@@ -117,11 +117,6 @@ public abstract class Configuration {
     private StoryReporter defaultStoryReporter = new ConsoleOutput();
 
     /**
-     * Collects story reporters by story path
-     */
-    private Map<String, StoryReporter> storyReporters = new HashMap<String, StoryReporter>();
-
-    /**
      * The story reporter builder
      */
     private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
@@ -202,7 +197,7 @@ public abstract class Configuration {
     }
 
     public StoryReporter storyReporter(String storyPath) {
-        StoryReporter storyReporter = storyReporters.get(storyPath);
+        StoryReporter storyReporter = storyReporterBuilder.build(storyPath);
         if (storyReporter != null) {
             return storyReporter;
         }
@@ -292,16 +287,6 @@ public abstract class Configuration {
 
     public Configuration useDefaultStoryReporter(StoryReporter storyReporter) {
         this.defaultStoryReporter = storyReporter;
-        return this;
-    }
-
-    public Configuration useStoryReporter(String storyPath, StoryReporter storyReporter) {
-        this.storyReporters.put(storyPath, storyReporter);
-        return this;
-    }
-
-    public Configuration useStoryReporters(Map<String, StoryReporter> storyReporters) {
-        this.storyReporters.putAll(storyReporters);
         return this;
     }
 

@@ -595,13 +595,16 @@ public class StoryRunnerBehaviour {
     private Configuration configurationWith(final StoryParser parser, final StoryLoader loader, final StoryReporter reporter,
                                                  final StepCollector collector, final FailureStrategy failureStrategy, final PendingStepStrategy pendingStrategy) {
 
-        return new MostUsefulConfiguration()
-            .useStoryParser(parser)
-            .useStoryLoader(loader)
-            .useStepCollector(collector)
-            .useDefaultStoryReporter(reporter)
-            .useFailureStrategy(failureStrategy)
-            .usePendingStepStrategy(pendingStrategy);
+        return new MostUsefulConfiguration() {
+            @Override
+            public StoryReporter storyReporter(String storyPath) {
+                return reporter;
+            }
+        }.useStoryParser(parser)
+                .useStoryLoader(loader)
+                .useStepCollector(collector)
+                .useFailureStrategy(failureStrategy)
+                .usePendingStepStrategy(pendingStrategy);
     }
 
     private Step mockSuccessfulStep(String result) {

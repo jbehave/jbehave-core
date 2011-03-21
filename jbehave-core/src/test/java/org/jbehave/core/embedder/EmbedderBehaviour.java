@@ -410,7 +410,14 @@ public class EmbedderBehaviour {
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherStory.class);
 
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
-        Configuration configuration = embedder.configuration();
+        final StoryReporter storyReporter = mock(StoryReporter.class);
+        MostUsefulConfiguration configuration = new MostUsefulConfiguration() {
+            @Override
+            public StoryReporter storyReporter(String storyPath) {
+                return storyReporter;
+            }
+        };
+        embedder.useConfiguration(configuration);
         List<CandidateSteps> candidateSteps = embedder.candidateSteps();
         StoryPathResolver resolver = configuration.storyPathResolver();
         List<String> storyPaths = new ArrayList<String>();
@@ -421,8 +428,6 @@ public class EmbedderBehaviour {
             Story story = mock(Story.class);
             stories.put(storyPath, story);
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
-            StoryReporter storyReporter = mock(StoryReporter.class);
-            configuration.useStoryReporter(storyPath, storyReporter);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
         
@@ -449,7 +454,15 @@ public class EmbedderBehaviour {
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherStory.class);
 
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
-        Configuration configuration = embedder.configuration();
+        final StoryReporter storyReporter = mock(StoryReporter.class);
+
+        Configuration configuration = new MostUsefulConfiguration() {
+            @Override
+            public StoryReporter storyReporter(String storyPath) {
+                return storyReporter;
+            }
+        };
+        embedder.useConfiguration(configuration);
         List<CandidateSteps> candidateSteps = embedder.candidateSteps();
         StoryPathResolver resolver = configuration.storyPathResolver();
         List<String> storyPaths = new ArrayList<String>();
@@ -462,8 +475,6 @@ public class EmbedderBehaviour {
             when(story.getMeta()).thenReturn(meta);
             stories.put(storyPath, story);
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
-            StoryReporter storyReporter = mock(StoryReporter.class);
-            configuration.useStoryReporter(storyPath, storyReporter);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
         

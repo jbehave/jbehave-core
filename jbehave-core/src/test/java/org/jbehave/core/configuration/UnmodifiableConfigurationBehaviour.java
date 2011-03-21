@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
@@ -39,7 +40,7 @@ public class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.storyParser(), is(delegate.storyParser()));
         assertThat(unmodifiable.storyPathResolver(), is(delegate.storyPathResolver()));
         assertThat(unmodifiable.defaultStoryReporter(), is(delegate.defaultStoryReporter()));
-        assertThat(unmodifiable.storyReporter(storyPath), is(delegate.storyReporter(storyPath)));
+        assertThat(unmodifiable.storyReporter(storyPath), is(CoreMatchers.<Object>notNullValue()));
         assertThat(unmodifiable.storyReporterBuilder(), is(delegate.storyReporterBuilder()));
         assertThat(unmodifiable.failureStrategy(), is(delegate.failureStrategy()));
         assertThat(unmodifiable.pendingStepStrategy(), is(delegate.pendingStepStrategy()));
@@ -64,8 +65,6 @@ public class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useDefaultStoryReporter", StoryReporter.class);
         assertThatNotAllowed(unmodifiable, "useStoryReporterBuilder", StoryReporterBuilder.class);
         assertThatNotAllowed(unmodifiable, "useStoryPathResolver", StoryPathResolver.class);
-        assertThatNotAllowed(unmodifiable, "useStoryReporter", String.class, StoryReporter.class);
-        assertThatNotAllowed(unmodifiable, "useStoryReporters", Map.class);
         assertThatNotAllowed(unmodifiable, "useFailureStrategy", FailureStrategy.class);
         assertThatNotAllowed(unmodifiable, "usePendingStepStrategy", PendingStepStrategy.class);
         assertThatNotAllowed(unmodifiable, "useParanamer", Paranamer.class);
