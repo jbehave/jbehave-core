@@ -44,6 +44,7 @@ public class Embedder {
     private StoryMapper storyMapper;
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
+    private ExecutorService executorService = createExecutorService();
 
     public Embedder() {
         this(new StoryMapper(), new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -185,8 +186,6 @@ public class Embedder {
 
     public void runStoriesAsPaths(List<String> storyPaths) {
 
-        ExecutorService executorService = createExecutorService();
-
         processSystemProperties();
 
         final EmbedderControls embedderControls = embedderControls();
@@ -207,7 +206,7 @@ public class Embedder {
         List<Future<Throwable>> futures = new ArrayList<Future<Throwable>>();
 
         for (final String storyPath : storyPaths) {
-            enqueueStory(executorService, embedderControls, configuration, candidateSteps, batchFailures,
+            enqueueStory(embedderControls, configuration, candidateSteps, batchFailures,
                     filter, futures, storyPath, storyRunner.storyOfPath(configuration, storyPath));
         }
 
@@ -232,7 +231,6 @@ public class Embedder {
 
     /**
      * Enqueue a story to run
-     * @param executorService where to run the enqueued story
      * @param embedderControls the embedder controls to use
      * @param configuration the configuration to use
      * @param candidateSteps the candidate steps to use
@@ -243,16 +241,18 @@ public class Embedder {
      * @param story the parsed story itself
      * @return a future<throwable> for the story (null if not failing).
      */
-    public Future<Throwable> enqueueStory(ExecutorService executorService, EmbedderControls embedderControls, Configuration configuration,
+    public Future<Throwable> enqueueStory(EmbedderControls embedderControls, Configuration configuration,
                               List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter,
                               List<Future<Throwable>> futures, String storyPath, Story story) {
-        EnqueuedStory enqueuedStory = makeEnqueuedStory(embedderControls, configuration, candidateSteps, batchFailures, filter, storyPath, story, embedderMonitor, storyRunner);
+        EnqueuedStory enqueuedStory = makeEnqueuedStory(embedderControls, configuration, candidateSteps, batchFailures, filter, storyPath, story);
         Future<Throwable> submit = executorService.submit(enqueuedStory);
         futures.add(submit);
         return submit;
     }
 
-    protected EnqueuedStory makeEnqueuedStory(EmbedderControls embedderControls, Configuration configuration, List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter, String storyPath, Story story, EmbedderMonitor embedderMonitor, StoryRunner storyRunner) {
+    protected EnqueuedStory makeEnqueuedStory(EmbedderControls embedderControls, Configuration configuration,
+                                              List<CandidateSteps> candidateSteps, BatchFailures batchFailures,
+                                              MetaFilter filter, String storyPath, Story story) {
         return new EnqueuedStory(storyPath, configuration, candidateSteps, story, filter, embedderControls, batchFailures, embedderMonitor, storyRunner);
     }
 

@@ -211,6 +211,9 @@ public class CrossReference extends Format {
         public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method,
                 Object stepsInstance) {
             Story story = currentStory.get();
+            if (story == null) {
+                throw new NullPointerException("story not setup for CrossReference");
+            }
 
             if (matches) {
                 String key = pattern.type() + pattern.annotated();

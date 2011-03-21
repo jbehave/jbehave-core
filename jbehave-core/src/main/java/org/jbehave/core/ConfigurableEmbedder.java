@@ -70,4 +70,14 @@ public abstract class ConfigurableEmbedder implements Embeddable {
         return embedder;
     }
 
+    /**
+     * All setup for the running of stories, next up the running of them
+     * @param embedder the embedder with which to run stories
+     * @param storyPaths the story paths to use
+     */
+    public void runStoriesAsPaths(Embedder embedder, List<String> storyPaths) {
+        embedder.runStoriesAsPaths(storyPaths);
+
+    }
+
 }

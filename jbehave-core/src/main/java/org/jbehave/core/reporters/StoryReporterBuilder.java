@@ -299,6 +299,7 @@ public class StoryReporterBuilder {
         for (String storyPath : storyPaths) {
             reporters.put(storyPath, build(storyPath));
         }
+        reporters.put("*", build("*"));
         return reporters;
     }
 

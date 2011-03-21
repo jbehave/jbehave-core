@@ -17,7 +17,7 @@ public abstract class JUnitStories extends ConfigurableEmbedder {
     public void run() throws Throwable {
         Embedder embedder = configuredEmbedder();
         try {
-            embedder.runStoriesAsPaths(storyPaths());
+            runStoriesAsPaths(embedder, storyPaths());
         } finally {
             embedder.generateCrossReference();
         }
