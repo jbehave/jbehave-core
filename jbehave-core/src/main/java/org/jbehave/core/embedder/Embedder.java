@@ -62,8 +62,8 @@ public class Embedder {
             embedderMonitor.storiesSkipped(storyPaths);
             return;
         }
-        
-        processSystemProperties();        
+
+        processSystemProperties();
 
         for (String storyPath : storyPaths) {
             Story story = storyRunner.storyOfPath(configuration, storyPath);
@@ -206,8 +206,8 @@ public class Embedder {
         List<Future<Throwable>> futures = new ArrayList<Future<Throwable>>();
 
         for (final String storyPath : storyPaths) {
-            enqueueStory(embedderControls, configuration, candidateSteps, batchFailures,
-                    filter, futures, storyPath, storyRunner.storyOfPath(configuration, storyPath));
+            enqueueStory(embedderControls, configuration, candidateSteps, batchFailures, filter, futures, storyPath,
+                    storyRunner.storyOfPath(configuration, storyPath));
         }
 
         waitUntilAllDone(futures);
@@ -231,6 +231,7 @@ public class Embedder {
 
     /**
      * Enqueue a story to run
+     * 
      * @param embedderControls the embedder controls to use
      * @param configuration the configuration to use
      * @param candidateSteps the candidate steps to use
@@ -242,18 +243,31 @@ public class Embedder {
      * @return a future<throwable> for the story (null if not failing).
      */
     public Future<Throwable> enqueueStory(EmbedderControls embedderControls, Configuration configuration,
-                              List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter,
-                              List<Future<Throwable>> futures, String storyPath, Story story) {
-        EnqueuedStory enqueuedStory = makeEnqueuedStory(embedderControls, configuration, candidateSteps, batchFailures, filter, storyPath, story);
+            List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter,
+            List<Future<Throwable>> futures, String storyPath, Story story) {
+        EnqueuedStory enqueuedStory = makeEnqueuedStory(embedderControls, configuration, candidateSteps, batchFailures,
+                filter, storyPath, story);
+        return submit(futures, enqueuedStory);
+    }
+
+    public Future<Throwable> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
+            List<Future<Throwable>> futures, String storyPath, Story story) {
+        EnqueuedStory enqueuedStory = makeEnqueuedStory(embedderControls, configuration, candidateSteps, batchFailures,
+                filter, storyPath, story);
+        return submit(futures, enqueuedStory);
+    }
+
+    private Future<Throwable> submit(List<Future<Throwable>> futures, EnqueuedStory enqueuedStory) {
         Future<Throwable> submit = executorService.submit(enqueuedStory);
         futures.add(submit);
         return submit;
     }
 
     protected EnqueuedStory makeEnqueuedStory(EmbedderControls embedderControls, Configuration configuration,
-                                              List<CandidateSteps> candidateSteps, BatchFailures batchFailures,
-                                              MetaFilter filter, String storyPath, Story story) {
-        return new EnqueuedStory(storyPath, configuration, candidateSteps, story, filter, embedderControls, batchFailures, embedderMonitor, storyRunner);
+            List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter, String storyPath,
+            Story story) {
+        return new EnqueuedStory(storyPath, configuration, candidateSteps, story, filter, embedderControls,
+                batchFailures, embedderMonitor, storyRunner);
     }
 
     /**
@@ -265,7 +279,8 @@ public class Embedder {
     protected ExecutorService createExecutorService() {
         int threads = embedderControls.threads();
         if (threads == 1) {
-            // this is necessary for situations where people use the PerStoriesWebDriverSteps class.
+            // this is necessary for situations where people use the
+            // PerStoriesWebDriverSteps class.
             return new NonThreadingExecutorService();
         } else {
             return Executors.newFixedThreadPool(threads);
@@ -599,7 +614,8 @@ public class Embedder {
                     return (T) rc[0];
                 }
 
-                public T get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+                public T get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException,
+                        TimeoutException {
                     return get();
                 }
             };
@@ -617,15 +633,18 @@ public class Embedder {
             throw new UnsupportedOperationException();
         }
 
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit) throws InterruptedException {
+        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit)
+                throws InterruptedException {
             throw new UnsupportedOperationException();
         }
 
-        public <T> T invokeAny(Collection<? extends Callable<T>> callables) throws InterruptedException, ExecutionException {
+        public <T> T invokeAny(Collection<? extends Callable<T>> callables) throws InterruptedException,
+                ExecutionException {
             throw new UnsupportedOperationException();
         }
 
-        public <T> T invokeAny(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException, TimeoutException {
+        public <T> T invokeAny(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit)
+                throws InterruptedException, ExecutionException, TimeoutException {
             throw new UnsupportedOperationException();
         }
 
@@ -633,7 +652,6 @@ public class Embedder {
             throw new UnsupportedOperationException();
         }
     }
-
 
     public static class EnqueuedStory implements Callable<Throwable> {
         private final String storyPath;
@@ -647,8 +665,8 @@ public class Embedder {
         private final StoryRunner storyRunner;
 
         public EnqueuedStory(String storyPath, Configuration configuration, List<CandidateSteps> candidateSteps,
-                             Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures,
-                             EmbedderMonitor embedderMonitor, StoryRunner storyRunner) {
+                Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures,
+                EmbedderMonitor embedderMonitor, StoryRunner storyRunner) {
             this.storyPath = storyPath;
             this.configuration = configuration;
             this.candidateSteps = candidateSteps;
