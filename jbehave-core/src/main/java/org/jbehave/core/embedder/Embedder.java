@@ -35,6 +35,8 @@ import org.jbehave.core.steps.Stepdoc;
  */
 public class Embedder {
 
+    private static String TIMEOUT_SECS = System.getProperty("STORY_TIMEOUT_SECS");
+
     private Configuration configuration = new MostUsefulConfiguration();
     private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
     private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
@@ -266,12 +268,19 @@ public class Embedder {
     }
 
     private void waitUntilAllDone(List<Future<Throwable>> futures) {
+
+        long start = System.currentTimeMillis();
         boolean allDone = false;
         while (!allDone) {
             allDone = true;
             for (Future<Throwable> future : futures) {
                 if (!future.isDone()) {
                     allDone = false;
+                    long howLong = System.currentTimeMillis() - start;
+                    if (TIMEOUT_SECS != null && howLong/1000 > Integer.parseInt(TIMEOUT_SECS)) {
+                        System.err.println("Cancelling Story as it has taken longer than " + howLong/1000 + " seconds.");
+                        future.cancel(true);
+                    }
                     try {
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
