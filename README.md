@@ -4,20 +4,6 @@ JBehave is a BDD framework for Java and Groovy, mirrored [at Github](https://git
 
 <img src="http://jbehave.org/reference/preview/images/jbehave-logo.png" alt="JBehave logo" align="right" />
 
-## Building
-
-The first time you run the Maven build (Maven 2.2.1 or above required), do:
-
-    mvn install -s settings.xml
-
-After that, it is necessary to only do:
-
-    mvn install
-
-Or the following if you want to build/test examples too.
-
-    mvn install -Pexamples
-
 ## Using
 
 Canonical information for JBehave:
@@ -27,13 +13,13 @@ Canonical information for JBehave:
 3. [User mail-list](http://xircles.codehaus.org/lists/user@jbehave.codehaus.org)
 4. Jars in [Maven Repositories](http://mvnrepository.com/search.html?query=jbehave)
 
-## Contributing
+## Contributing and Developing
 
 Please report issues, feature requests on the [Codehaus issue
 tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
 [dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org). 
 
-###Build system
+###Depended-on Technologies
 
 JDK required: 5.0 (or above)
 [Maven](http://maven.apache.org) required (2.2.1 or above).
@@ -43,35 +29,46 @@ JDK required: 5.0 (or above)
 Configure IDE to use UTF-8 for all files
 Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS 
  
-###IDE integration
+###IDE Integration
 
 Maven is supported in Intellij IDEA out-of-the-box 
 Maven is supported in Eclipse via [m2eclipse plugin](http://m2eclipse.sonatype.org/)
 
-###Maven Build profiles
+### Building
+
+The first time you run the Maven build (Maven 2.2.1 or above required), do:
+
+    mvn install -s settings.xml
+
+After that, it is necessary to only do the following:
+
+    mvn install
+
+###Maven Build Profiles
 
 - default: builds all releasable modules
 - reporting: builds reports
-- distribution: builds distribution
+- distribution: builds distribution (documentation)
 - examples: builds all headless examples
 - gui: builds examples that require gui (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://builds.codehaus.org/browse/JBEHAVE)
 - nt: no-test, builds skipping unit-test behaviors 
 
 Note:  profiles are additive and the default profile is always active.
-E.g.: 
 
-- build core and all examples 
+###Example Profile Usages
 
-mvn install -Pexamples
+####Build Core and all Examples
 
-- build with reporting and distribution:
+    mvn install -Pexamples
 
-mvn install -Preporting,distribution 
+####Build with Reporting and Distribution
 
-Building a release with Maven:
+    mvn install -Preporting,distribution 
 
-- mvn release:prepare -Preporting,distribution
-- mvn release:perform -Preporting,distribution
+####Building a Release with Maven
+
+    mvn release:prepare -Preporting,distribution 
+    mvn release:perform -Preporting,distribution
 
 ## Related
 
