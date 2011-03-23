@@ -65,8 +65,7 @@ public class StoryRunner {
      *             be re-thrown.
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story) throws Throwable {
-        RunContext context = new RunContext(configuration, MetaFilter.EMPTY, candidateSteps, story.getPath());
-        run(context, story, new HashMap<String, String>());
+        run(configuration, candidateSteps, story, MetaFilter.EMPTY);
     }
 
     /**
@@ -84,7 +83,8 @@ public class StoryRunner {
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter)
             throws Throwable {
         RunContext context = new RunContext(configuration, filter, candidateSteps, story.getPath());
-        run(context, story, new HashMap<String, String>());
+        Map<String, String> storyParameters = new HashMap<String, String>();
+        run(context, story, storyParameters);
     }
 
     /**
