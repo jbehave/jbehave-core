@@ -72,8 +72,8 @@ Note:  profiles are additive and the default profile is always active.
 
 ## Related
 
-See also the 'jbehave-web' sister project for web extensions to JBehave, and 'jbehave-tutorial' for a decent example of JBehave testing a web app.
+See also the [jbehave-web](../jbehave-web) sister project for web extensions to JBehave, and [jbehave-tutorial](../jbehave-tutorial) for a decent example of JBehave testing a web application.
 
 ## License
 
-See adjacent LICENSE.txt file (BSD).  
+See LICENSE.txt in the source root (BSD).  
