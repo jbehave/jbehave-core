@@ -15,7 +15,7 @@ Canonical information for JBehave:
 
 ## Contributing and Developing
 
-Please report issues, feature requests on the [Codehaus issue
+Please report issues, feature requests on the Codehaus [issue
 tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
 [dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org). 
 
