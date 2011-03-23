@@ -97,7 +97,7 @@ public class CrossReferenceBehaviour {
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
                 "      <started>NUMBER</started>\n" +
-                "      <duration>1</duration>\n" +
+                "      <duration>TIME</duration>\n" +
                 "    </story>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
@@ -114,7 +114,7 @@ public class CrossReferenceBehaviour {
                 "      </usages>\n" +
                 "    </stepMatch>\n" +
                 "  </stepMatches>\n" +
-                "</xref>", output.get(0).toString().replaceAll("[0-9]{8,15}", "NUMBER").replace("<duration>0</duration>", "<duration>1</duration>")); // xml
+                "</xref>", output.get(0).toString().replaceAll("[0-9]{8,15}", "NUMBER").replaceAll("<duration>[0-9]*</duration>", "<duration>TIME</duration>")); // xml
 
         assertEquals("{'xref': {\n" +
                 "  'whenMade': NUMBER,\n" +
@@ -134,7 +134,7 @@ public class CrossReferenceBehaviour {
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
                 "      'started': NUMBER,\n" +
-                "      'duration': 1\n" +
+                "      'duration': TIME\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  'stepMatches': [\n" +
@@ -151,7 +151,7 @@ public class CrossReferenceBehaviour {
                 "      ]\n" +
                 "    }\n" +
                 "  ]\n" +
-                "}}", output.get(1).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replace("duration': 0", "duration': 1")); // json
+                "}}", output.get(1).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replaceAll("duration': [0-9]*", "duration': TIME")); // json
         assertEquals(2, output.size());
 
 
@@ -227,7 +227,7 @@ public class CrossReferenceBehaviour {
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
                 "      <started>NUMBER</started>\n" +
-                "      <duration>1</duration>\n" +
+                "      <duration>TIME</duration>\n" +
                 "    </story>\n" +
                 "  </stories>\n" +
                 "  <stepMatches>\n" +
@@ -244,7 +244,7 @@ public class CrossReferenceBehaviour {
                 "      </usages>\n" +
                 "    </stepMatch>\n" +
                 "  </stepMatches>\n" +
-                "</xref>", output.get(0).toString().replaceAll("[0-9]{8,15}", "NUMBER").replace("<duration>0</duration>", "<duration>1</duration>")); // xml
+                "</xref>", output.get(0).toString().replaceAll("[0-9]{8,15}", "NUMBER").replaceAll("<duration>[0-9]*</duration>", "<duration>TIME</duration>")); // xml
 
         assertEquals(1, output.size());
 

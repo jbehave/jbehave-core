@@ -206,8 +206,7 @@ public class Embedder {
         List<Future<Throwable>> futures = new ArrayList<Future<Throwable>>();
 
         for (final String storyPath : storyPaths) {
-            enqueueStory(embedderControls, configuration, candidateSteps, batchFailures, filter, futures, storyPath,
-                    storyRunner.storyOfPath(configuration, storyPath));
+            enqueueStory(batchFailures, filter, futures, storyPath, storyRunner.storyOfPath(configuration, storyPath));
         }
 
         waitUntilAllDone(futures);
@@ -229,30 +228,9 @@ public class Embedder {
         }
     }
 
-    /**
-     * Enqueue a story to run
-     * 
-     * @param embedderControls the embedder controls to use
-     * @param configuration the configuration to use
-     * @param candidateSteps the candidate steps to use
-     * @param batchFailures where to put batch failures
-     * @param filter meta filter (if appl)
-     * @param futures the list of futures if tracking is needed
-     * @param storyPath the path for the story
-     * @param story the parsed story itself
-     * @return a future<throwable> for the story (null if not failing).
-     */
-    public Future<Throwable> enqueueStory(EmbedderControls embedderControls, Configuration configuration,
-            List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter,
-            List<Future<Throwable>> futures, String storyPath, Story story) {
-        EnqueuedStory enqueuedStory = makeEnqueuedStory(embedderControls, configuration, candidateSteps, batchFailures,
-                filter, storyPath, story);
-        return submit(futures, enqueuedStory);
-    }
-
     public Future<Throwable> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
             List<Future<Throwable>> futures, String storyPath, Story story) {
-        EnqueuedStory enqueuedStory = makeEnqueuedStory(embedderControls, configuration, candidateSteps, batchFailures,
+        EnqueuedStory enqueuedStory = enqueuedStory(embedderControls, configuration, candidateSteps, batchFailures,
                 filter, storyPath, story);
         return submit(futures, enqueuedStory);
     }
@@ -263,7 +241,7 @@ public class Embedder {
         return submit;
     }
 
-    protected EnqueuedStory makeEnqueuedStory(EmbedderControls embedderControls, Configuration configuration,
+    protected EnqueuedStory enqueuedStory(EmbedderControls embedderControls, Configuration configuration,
             List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter, String storyPath,
             Story story) {
         return new EnqueuedStory(storyPath, configuration, candidateSteps, story, filter, embedderControls,
