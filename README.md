@@ -19,6 +19,8 @@ Please report issues, feature requests on the [Codehaus issue
 tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
 [dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org). 
 
+Keep an eye on the  [Bamboo Continuous Integration](http://builds.codehaus.org/browse/JBEHAVE) server for JBehave builds.
+
 ###Depended-on Technologies
 
 JDK required: 5.0 (or above)
@@ -50,7 +52,7 @@ After that, it is necessary to only do the following:
 - reporting: builds reports
 - distribution: builds distribution (documentation)
 - examples: builds all headless examples
-- gui: builds examples that require gui (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://builds.codehaus.org/browse/JBEHAVE)
+- gui: builds examples that require a GUI (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://builds.codehaus.org/browse/JBEHAVE) )
 - nt: no-test, builds skipping unit-test behaviors 
 
 Note:  profiles are additive and the default profile is always active.
@@ -72,7 +74,7 @@ Note:  profiles are additive and the default profile is always active.
 
 ## Related
 
-See also the [jbehave-web](../jbehave-web) sister project for web extensions to JBehave, and [jbehave-tutorial](../jbehave-tutorial) for a decent example of JBehave testing a web application.
+See also the <jbehave-web> sister project for web extensions to JBehave, and <jbehave-tutorial> for a decent example of JBehave testing a web application.
 
 ## License
 
