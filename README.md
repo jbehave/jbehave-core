@@ -33,6 +33,46 @@ Please report issues, feature requests on the [Codehaus issue
 tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
 [dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org). 
 
+###Build system
+
+JDK required: 5.0 (or above)
+[Maven](http://maven.apache.org) required (2.2.1 or above).
+
+###Encoding
+
+Configure IDE to use UTF-8 for all files
+Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS 
+ 
+###IDE integration
+
+Maven is supported in Intellij IDEA out-of-the-box 
+Maven is supported in Eclipse via [m2eclipse plugin](http://m2eclipse.sonatype.org/)
+
+###Maven Build profiles
+
+- default: builds all releasable modules
+- reporting: builds reports
+- distribution: builds distribution
+- examples: builds all headless examples
+- gui: builds examples that require gui (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://builds.codehaus.org/browse/JBEHAVE)
+- nt: no-test, builds skipping unit-test behaviors 
+
+Note:  profiles are additive and the default profile is always active.
+E.g.: 
+
+- build core and all examples 
+
+mvn install -Pexamples
+
+- build with reporting and distribution:
+
+mvn install -Preporting,distribution 
+
+Building a release with Maven:
+
+- mvn release:prepare -Preporting,distribution
+- mvn release:perform -Preporting,distribution
+
 ## Related
 
 See also the 'jbehave-web' sister project for web extensions to JBehave, and 'jbehave-tutorial' for a decent example of JBehave testing a web app.
