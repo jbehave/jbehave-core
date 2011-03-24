@@ -57,6 +57,7 @@ public class EmbedderMojoBehaviour {
         assertThat(embedderControls.generateViewAfterStories(), is(true));
         assertThat(embedderControls.ignoreFailureInStories(), is(false));
         assertThat(embedderControls.ignoreFailureInView(), is(false));
+        assertThat(embedderControls.threads(), is(1));
         assertThat(embedderControls.skip(), is(false));
     }
 
@@ -72,6 +73,7 @@ public class EmbedderMojoBehaviour {
         mojo.generateViewAfterStories = false;
         mojo.ignoreFailureInStories = true;
         mojo.ignoreFailureInView = true;
+        mojo.threads = 2;
         mojo.skip = true;
         Embedder embedder = mojo.newEmbedder();
         // Then
@@ -80,6 +82,7 @@ public class EmbedderMojoBehaviour {
         assertThat(embedderControls.generateViewAfterStories(), is(false));
         assertThat(embedderControls.ignoreFailureInStories(), is(true));
         assertThat(embedderControls.ignoreFailureInView(), is(true));
+        assertThat(embedderControls.threads(), is(2));
         assertThat(embedderControls.skip(), is(true));
     }
 

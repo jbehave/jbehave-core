@@ -258,6 +258,7 @@ public class Embedder {
      */
     protected ExecutorService createExecutorService() {
         int threads = embedderControls.threads();
+        System.out.println("THREADS IN USE = " + threads);
         if (threads == 1) {
             // this is necessary for situations where people use the
             // PerStoriesWebDriverSteps class.
