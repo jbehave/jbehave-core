@@ -1,8 +1,5 @@
 package org.jbehave.core.configuration;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryControls;
@@ -192,17 +189,15 @@ public abstract class Configuration {
         return pendingStepStrategy;
     }
 
+    /**
+     * @deprecated Use {@link StoryReporterBuilder}
+     */
     public StoryReporter defaultStoryReporter() {
         return defaultStoryReporter;
     }
 
     public StoryReporter storyReporter(String storyPath) {
-        StoryReporter storyReporter = storyReporterBuilder.build(storyPath);
-        if (storyReporter != null) {
-            return storyReporter;
-        }
-        // fall back on default story reporter
-        return defaultStoryReporter();
+        return storyReporterBuilder.build(storyPath);
     }
 
     public StoryReporterBuilder storyReporterBuilder() {

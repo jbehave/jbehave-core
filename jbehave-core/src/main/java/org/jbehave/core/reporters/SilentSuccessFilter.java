@@ -1,10 +1,16 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.model.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 
 /**
  * Filters out the reports from all stories that pass, The delegate receives

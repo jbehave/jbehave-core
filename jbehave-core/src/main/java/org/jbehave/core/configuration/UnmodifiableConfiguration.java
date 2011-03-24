@@ -1,7 +1,5 @@
 package org.jbehave.core.configuration;
 
-import java.util.Map;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.embedder.StoryControls;
@@ -32,6 +30,9 @@ public class UnmodifiableConfiguration extends Configuration {
         this.delegate = delegate;
     }
 
+    /**
+     * @deprecated Use {@link StoryReporterBuilder}
+     */
     public StoryReporter defaultStoryReporter() {
         return delegate.defaultStoryReporter();
     }

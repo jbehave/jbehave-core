@@ -54,7 +54,6 @@ public class MostUsefulConfiguration extends Configuration {
         useStoryParser(new RegexStoryParser(keywords()));
         useFailureStrategy(new RethrowingFailure());
         usePendingStepStrategy(new PassingUponPendingStep());
-        useDefaultStoryReporter(new ConsoleOutput());
         useStepCollector(new MarkUnmatchedStepsAsPending());
         useStepFinder(new StepFinder());
         useStepPatternParser(new RegexPrefixCapturingPatternParser());
