@@ -39,7 +39,7 @@ public class EmbedderControls {
     }
 
     public int threads() {
-        return threads;
+       return threads;
     }
 
     public EmbedderControls doBatch(boolean batch) {

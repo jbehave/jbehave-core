@@ -46,7 +46,7 @@ public class Embedder {
     private StoryMapper storyMapper;
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
-    private ExecutorService executorService = createExecutorService();
+    private ExecutorService executorService;
 
     public Embedder() {
         this(new StoryMapper(), new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -237,7 +237,10 @@ public class Embedder {
         return submit(futures, enqueuedStory);
     }
 
-    private Future<Throwable> submit(List<Future<Throwable>> futures, EnqueuedStory enqueuedStory) {
+    private synchronized Future<Throwable> submit(List<Future<Throwable>> futures, EnqueuedStory enqueuedStory) {
+        if (executorService == null) {
+            executorService = createExecutorService();
+        }
         Future<Throwable> submit = executorService.submit(enqueuedStory);
         futures.add(submit);
         return submit;
