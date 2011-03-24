@@ -57,7 +57,6 @@ public abstract class LocalizedTraderStories extends JUnitStories {
                 .useStoryParser(new RegexStoryParser(keywords))
                 .useStoryLoader(
                         new LoadFromClasspath(classLoader))
-                .useDefaultStoryReporter(new ConsoleOutput(keywords))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
                     .withPathResolver(new ResolveToSimpleName())

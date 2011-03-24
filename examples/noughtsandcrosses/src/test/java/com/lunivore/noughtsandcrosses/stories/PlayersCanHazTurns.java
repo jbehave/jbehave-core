@@ -37,7 +37,6 @@ public class PlayersCanHazTurns extends JUnitStory {
             .useKeywords(keywords)
             .useStoryParser(new RegexStoryParser(keywords))
             .useStoryPathResolver(new UnderscoredCamelCaseResolver(""))
-            .useDefaultStoryReporter(new ConsoleOutput(keywords))
             .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
                     .withDefaultFormats()

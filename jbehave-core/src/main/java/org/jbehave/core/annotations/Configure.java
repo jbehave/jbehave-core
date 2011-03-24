@@ -58,8 +58,6 @@ public @interface Configure {
 
     Class<? extends StoryPathResolver> storyPathResolver() default UnderscoredCamelCaseResolver.class;
 
-    Class<? extends StoryReporter> defaultStoryReporter() default ConsoleOutput.class;
-
     Class<? extends StepdocReporter> stepdocReporter() default PrintStreamStepdocReporter.class;
 
     Class<? extends FailureStrategy> failureStrategy() default RethrowingFailure.class;
@@ -85,4 +83,10 @@ public @interface Configure {
     Class<? extends PathCalculator> pathCalculator() default AbsolutePathCalculator.class;
 
     Class<? extends StoryReporterBuilder> storyReporterBuilder() default StoryReporterBuilder.class;
+
+    /**
+     * @deprecated Use storyReporterBuilder()
+     */
+    Class<? extends StoryReporter> defaultStoryReporter() default ConsoleOutput.class;
+
 }
