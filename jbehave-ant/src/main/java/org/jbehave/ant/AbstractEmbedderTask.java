@@ -85,6 +85,11 @@ public abstract class AbstractEmbedderTask extends Task {
     private boolean batch = false;
 
     /**
+     * The story timeout in secs
+     */
+    long storyTimeoutInSecs = 300;
+    
+    /**
      * The number of threads
      */
     private int threads = 1;
@@ -160,7 +165,7 @@ public abstract class AbstractEmbedderTask extends Task {
     protected EmbedderControls embedderControls() {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
-                .doIgnoreFailureInView(ignoreFailureInView).useThreads(threads));
+                .doIgnoreFailureInView(ignoreFailureInView).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
     }
 
     /**
@@ -382,6 +387,10 @@ public abstract class AbstractEmbedderTask extends Task {
 
     public void setGenerateViewAfterStories(boolean generateViewAfterStories) {
         this.generateViewAfterStories = generateViewAfterStories;
+    }
+    
+    public void setStoryTimeoutInSecs(long storyTimeoutInSecs){
+        this.storyTimeoutInSecs = storyTimeoutInSecs;
     }
     
     public void setThreads(int threads){
