@@ -121,6 +121,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     boolean generateViewAfterStories = true;
 
     /**
+     * The story timeout in secs
+     * 
+     * @parameter default-value="300"
+     */
+    long storyTimeoutInSecs;
+
+    /**
      * The number of threads
      * 
      * @parameter default-value="1"
@@ -281,7 +288,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     protected EmbedderControls embedderControls() {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
-                .doIgnoreFailureInView(ignoreFailureInView).useThreads(threads));
+                .doIgnoreFailureInView(ignoreFailureInView).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
     }
 
     protected class MavenEmbedderMonitor implements EmbedderMonitor {
