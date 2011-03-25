@@ -396,6 +396,14 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("System property '" + name + "' set to '" + value + "'");
         }
 
+        public void storyTimeout(long durationInSecs) {
+            getLog().warn("Story has timed out after " + durationInSecs + " seconds");        
+        }
+
+        public void usingThreads(int threads) {
+            getLog().info("Using " + threads + " threads");
+        }
+
         @Override
         public String toString() {
             return this.getClass().getSimpleName();

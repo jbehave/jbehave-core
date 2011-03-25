@@ -133,6 +133,14 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("System property '" + name + "' set to '"+value+"'");
     }
 
+    public void storyTimeout(long durationInSecs) {
+        print("Story has timed out after " + durationInSecs + " seconds");        
+    }
+
+    public void usingThreads(int threads) {
+        print("Using " + threads + " threads");
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
@@ -145,5 +153,6 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     protected void printStackTrace(Throwable e) {
         e.printStackTrace(output);
     }
+
 
 }

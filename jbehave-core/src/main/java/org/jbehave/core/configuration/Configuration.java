@@ -124,7 +124,7 @@ public abstract class Configuration {
     private StepFinder stepFinder = new StepFinder();
 
     /**
-     * Report candidate steps found to System.out
+     * Report candidate steps found to a PrintStream
      */
     private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter();
 

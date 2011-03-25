@@ -35,8 +35,6 @@ import org.jbehave.core.steps.Stepdoc;
  */
 public class Embedder {
 
-    private static String TIMEOUT_SECS = System.getProperty("STORY_TIMEOUT_SECS");
-
     private Configuration configuration = new MostUsefulConfiguration();
     private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
     private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
@@ -261,7 +259,7 @@ public class Embedder {
      */
     protected ExecutorService createExecutorService() {
         int threads = embedderControls.threads();
-        System.out.println("THREADS IN USE = " + threads);
+        embedderMonitor.usingThreads(threads);
         if (threads == 1) {
             // this is necessary for situations where people use the
             // PerStoriesWebDriverSteps class.
@@ -280,9 +278,9 @@ public class Embedder {
             for (Future<Throwable> future : futures) {
                 if (!future.isDone()) {
                     allDone = false;
-                    long howLong = System.currentTimeMillis() - start;
-                    if (TIMEOUT_SECS != null && howLong/1000 > Integer.parseInt(TIMEOUT_SECS)) {
-                        System.err.println("Cancelling Story as it has taken longer than " + howLong/1000 + " seconds.");
+                    long durationInSecs = (System.currentTimeMillis() - start)/1000;
+                    if ( durationInSecs > embedderControls.storyTimeoutInSecs()) {
+                        embedderMonitor.storyTimeout(durationInSecs);
                         future.cancel(true);
                     }
                     try {

@@ -56,5 +56,8 @@ public interface EmbedderMonitor {
 
     void systemPropertySet(String name, String value);
 
+    void usingThreads(int threads);
+
+    void storyTimeout(long durationInSecs);
 
 }

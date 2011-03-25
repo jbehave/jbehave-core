@@ -327,6 +327,14 @@ public abstract class AbstractEmbedderTask extends Task {
         public void systemPropertySet(String name, String value) {
             log("System property '" + name + "' set to '"+value+"'", MSG_INFO);
         }
+        
+        public void storyTimeout(long durationInSecs) {
+            log("Story has timed out after " + durationInSecs + " seconds", MSG_INFO);      
+        }
+
+        public void usingThreads(int threads) {
+            log("Using " + threads + " threads", MSG_INFO);
+        }
 
         @Override
         public String toString() {

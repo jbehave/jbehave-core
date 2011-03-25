@@ -110,5 +110,13 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
     public void systemPropertySet(String name, String value) {
         delegate.systemPropertySet(name, value);
     }
+    
+    public void storyTimeout(long durationInSecs) {
+        delegate.storyTimeout(durationInSecs);
+    }
+
+    public void usingThreads(int threads) {
+        delegate.usingThreads(threads);
+    }
 
 }

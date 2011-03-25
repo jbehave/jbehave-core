@@ -13,6 +13,7 @@ public class EmbedderControls {
     private boolean generateViewAfterStories = true;
     private boolean ignoreFailureInStories = false;
     private boolean ignoreFailureInView = false;
+    private long storyTimeoutInSecs = 0;
     private int threads = 1;
 
     public EmbedderControls() {
@@ -36,6 +37,10 @@ public class EmbedderControls {
 
     public boolean ignoreFailureInView() {
         return ignoreFailureInView;
+    }
+
+    public long storyTimeoutInSecs() {
+        return storyTimeoutInSecs;
     }
 
     public int threads() {
@@ -67,11 +72,16 @@ public class EmbedderControls {
         return this;
     }
 
+    public EmbedderControls useStoryTimeoutInSecs(long storyTimeoutInSecs) {
+        this.storyTimeoutInSecs = storyTimeoutInSecs;
+        return this;
+    }
+
     public EmbedderControls useThreads(int threads) {
         this.threads = threads;
         return this;
     }
-
+    
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
