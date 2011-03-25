@@ -79,6 +79,7 @@ public class ParameterConverters {
     protected ParameterConverter[] defaultConverters(Locale locale, String listSeparator) {
         String escapedListSeparator = escapeRegexPunctuation(listSeparator);
         ParameterConverter[] defaultConverters = {
+            new BooleanConverter(),
             new NumberConverter(NumberFormat.getInstance(locale)),
             new NumberListConverter(NumberFormat.getInstance(locale), escapedListSeparator), 
             new StringListConverter(escapedListSeparator),
