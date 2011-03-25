@@ -81,7 +81,13 @@ public class CrossReference extends Format {
         return stepMonitor;
     }
 
-    public void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
+    /**
+     * Output to JSON and/or XML files.  Could be at the end of the suite, or per story
+     * In the case of the latter, synchronization is needed as two stories (on two threads) could
+     * be completing concurrently, and we need to guard against ConcurrentModificationException
+     * @param storyReporterBuilder the reporter to use
+     */
+    public synchronized void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
         XRefRoot root = createXRefRoot(storyReporterBuilder, stories, failingStories);
         root.addStepMatches(stepMatches);
         if (doXml) {
