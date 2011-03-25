@@ -33,7 +33,7 @@ public class CrossReference extends Format {
     private ThreadLocal<Long> currentStoryStart = new ThreadLocal<Long>();
     private ThreadLocal<String> currentScenarioTitle = new ThreadLocal<String>();
     private List<StoryHolder> stories = new ArrayList<StoryHolder>();
-    private Map<Story, Long> times = new HashMap<Story, Long>();
+    private Map<String, Long> times = new HashMap<String, Long>();
     private Map<String, StepMatch> stepMatches = new HashMap<String, StepMatch>();
     private StepMonitor stepMonitor = new XRefStepMonitor();
     private Set<String> failingStories = new HashSet<String>();
@@ -186,7 +186,7 @@ public class CrossReference extends Format {
 
             @Override
             public void afterStory(boolean givenStory) {
-                times.put(currentStory.get(), System.currentTimeMillis() - currentStoryStart.get());
+                times.put(currentStory.get().getPath(), System.currentTimeMillis() - currentStoryStart.get());
                 if (outputAfterEachStory) {
                     outputToFiles(storyReporterBuilder);
                 }
@@ -247,19 +247,24 @@ public class CrossReference extends Format {
             return "JBehave";
         }
 
-        protected void processStories(List<StoryHolder> stories, Set<String> stepsPerformed, Map<Story, Long> times, StoryReporterBuilder builder, Set<String> failures) {
-            for (StoryHolder story : stories) {
-                if (someScenarios(story.story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
-                    XRefStory xRefStory = createXRefStory(builder, story.story, !failures.contains(story.story.getPath()), this);
-                    xRefStory.started = story.when;
-                    xRefStory.duration = getTime(times, story.story);
+        protected void processStories(List<StoryHolder> stories, Set<String> stepsPerformed, Map<String, Long> times, StoryReporterBuilder builder, Set<String> failures) {
+            for (StoryHolder storyHolder : stories) {
+                Story story = storyHolder.story;
+                if (someScenarios(story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
+                    XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(story.getPath()), this);
+                    xRefStory.started = storyHolder.when;
+                    xRefStory.duration = getTime(times, story);
                     this.stories.add(xRefStory);
                 }
             }
         }
 
-        protected Long getTime(Map<Story, Long> times, Story story) {
-            return times.get(story);
+        protected Long getTime(Map<String, Long> times, Story story) {
+            Long aLong = times.get(story.getPath());
+            if (aLong == null) {
+                return 0L;
+            }
+            return aLong;
         }
 
         protected boolean someScenarios(Story story, Set<String> stepsPerformed) {
