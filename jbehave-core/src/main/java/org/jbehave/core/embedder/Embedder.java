@@ -297,9 +297,13 @@ public class Embedder {
         try {
             BatchFailures failures = new BatchFailures();
             for (Future<Throwable> future : futures) {
-                Throwable failure = future.get();
-                if (failure != null) {
-                    failures.put(future.toString(), failure);
+                try {
+                    Throwable failure = future.get();
+                    if (failure != null) {
+                        failures.put(future.toString(), failure);
+                    }
+                } catch (CancellationException e) {
+                    failures.put(future.toString(), e);
                 }
             }
             if (failures.size() > 0) {
