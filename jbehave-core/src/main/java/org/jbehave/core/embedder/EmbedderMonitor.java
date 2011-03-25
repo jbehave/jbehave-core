@@ -6,6 +6,7 @@ import java.util.Properties;
 
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
@@ -58,6 +59,6 @@ public interface EmbedderMonitor {
 
     void usingThreads(int threads);
 
-    void storyTimeout(long durationInSecs);
+    void storyTimeout(long durationInSecs, Story story);
 
 }
