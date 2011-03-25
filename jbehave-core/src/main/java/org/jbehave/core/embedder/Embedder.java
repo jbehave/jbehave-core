@@ -688,7 +688,7 @@ public class Embedder {
                     if (embedderControls.ignoreFailureInStories()) {
                         embedderMonitor.storyFailed(storyPath, e);
                     } else {
-                        return new ThrowableStory(new RunningStoriesFailed(storyPath, e), null);
+                        return new ThrowableStory(new RunningStoriesFailed(storyPath, e), story);
                     }
                 }
             }
