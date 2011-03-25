@@ -35,6 +35,11 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
     public boolean skip() {
         return delegate.skip();
     }
+    
+    @Override
+    public long storyTimeoutInSecs() {
+        return delegate.storyTimeoutInSecs();
+    }
 
     @Override
     public int threads() {
@@ -63,6 +68,11 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
 
     @Override
     public EmbedderControls doSkip(boolean skip) {
+        throw notAllowed();
+    }
+
+    @Override
+    public EmbedderControls useStoryTimeoutInSecs(long storyTimeoutInSecs) {
         throw notAllowed();
     }
 

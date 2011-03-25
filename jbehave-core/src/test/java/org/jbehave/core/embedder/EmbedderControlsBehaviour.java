@@ -21,12 +21,14 @@ public class EmbedderControlsBehaviour {
         assertThat(embedderControls.ignoreFailureInStories(), equalTo(delegate.ignoreFailureInStories()));
         assertThat(embedderControls.ignoreFailureInView(), equalTo(delegate.ignoreFailureInView()));
         assertThat(embedderControls.skip(), equalTo(delegate.skip()));
+        assertThat(embedderControls.storyTimeoutInSecs(), equalTo(delegate.storyTimeoutInSecs()));
         assertThat(embedderControls.threads(), equalTo(delegate.threads()));
         assertThatNotAllowed(embedderControls, "doBatch", boolean.class, true);
         assertThatNotAllowed(embedderControls, "doGenerateViewAfterStories", boolean.class, true);
         assertThatNotAllowed(embedderControls, "doIgnoreFailureInStories", boolean.class, true);
         assertThatNotAllowed(embedderControls, "doIgnoreFailureInView", boolean.class, true);
         assertThatNotAllowed(embedderControls, "doSkip", boolean.class, true);
+        assertThatNotAllowed(embedderControls, "useStoryTimeoutInSecs", long.class, 1);
         assertThatNotAllowed(embedderControls, "useThreads", int.class, 1);
     }
 
