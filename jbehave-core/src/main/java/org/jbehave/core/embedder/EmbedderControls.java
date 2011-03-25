@@ -13,7 +13,7 @@ public class EmbedderControls {
     private boolean generateViewAfterStories = true;
     private boolean ignoreFailureInStories = false;
     private boolean ignoreFailureInView = false;
-    private long storyTimeoutInSecs = 0;
+    private long storyTimeoutInSecs = 300; // 5 mins is default.
     private int threads = 1;
 
     public EmbedderControls() {
