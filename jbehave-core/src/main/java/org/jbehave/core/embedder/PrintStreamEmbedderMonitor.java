@@ -10,6 +10,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
@@ -133,8 +134,8 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("System property '" + name + "' set to '"+value+"'");
     }
 
-    public void storyTimeout(long durationInSecs) {
-        print("Story has timed out after " + durationInSecs + " seconds");        
+    public void storyTimeout(long durationInSecs, Story story) {
+        print("Story " + story.getPath() + " has timed out after " + durationInSecs + " seconds");
     }
 
     public void usingThreads(int threads) {

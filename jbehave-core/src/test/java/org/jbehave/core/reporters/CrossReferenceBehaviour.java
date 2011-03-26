@@ -492,7 +492,7 @@ public class CrossReferenceBehaviour {
         }
 
         @Override
-        protected Long getTime(Map<Story, Long> times, Story story) {
+        protected Long getTime(Map<String, Long> times, Story story) {
             long d = super.getTime(times, story);
             duration[0] = d;
             return d;
@@ -514,7 +514,7 @@ public class CrossReferenceBehaviour {
         }
 
         @Override
-        protected Long getTime(Map<Story, Long> times, Story story) {
+        protected Long getTime(Map<String, Long> times, Story story) {
             long d = super.getTime(times, story);
             duration[0] = d;
             return d;
