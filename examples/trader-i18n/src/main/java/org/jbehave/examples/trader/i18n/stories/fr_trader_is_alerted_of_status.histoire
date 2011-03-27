@@ -5,24 +5,24 @@ Je veux contrôler les prix des actions
 
 Scénario:
 
-Etant donné que on a une action avec symbole STK1 et un seuil de 15,0
-Quand l'action est échangé au prix de 5,0
-Alors le position de alerte est OFF
-Quand l'action est échangé au prix de 11,0
-Alors le position de alerte est OFF
-Quand l'action est échangé au prix de 16,0
-Alors le position de alerte est ON
-Quand l'action est échangé au prixxxxxxxxxx de 20,0
-Alors le position de alerte est ON
+Etant donné que l'on a une action avec symbole STK1 et un seuil de 15,0
+Quand l'action est échangée au prix de 5,0
+Alors la position de l'alerte est OFF
+Quand l'action est échangée au prix de 11,0
+Alors la position de l'alerte est OFF
+Quand l'action est échangée au prix de 16,0
+Alors la position de l'alerte est ON
+Quand l'action est échangée au prixxxxxxxxxx de 20,0
+Alors la position de l'alerte est ON
 
 Scénario:
 
-Etant donné que on a une table
+Etant donné que l'on a une table
 |un|deux|
 |11|12|
 |21|22|
 Alors la table a 2 rangs
-Et au rang 1 et colonne un on trouve: 11
-Et au rang 1 et colonne deux on trouve: 12
-Et au rang 2 et colonne un on trouve: 21
-Et au rang 2 et colonne deux on trouve: 22
+Et au rang 1 et en colonne un on trouve: 11
+Et au rang 1 et en colonne deux on trouve: 12
+Et au rang 2 et en colonne un on trouve: 21
+Et au rang 2 et en colonne deux on trouve: 22

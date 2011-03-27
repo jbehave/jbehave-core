@@ -17,22 +17,22 @@ public class FrTraderSteps {
     private Stock stock;
     private ExamplesTable table;
 
-    @Given("on a une action avec symbole $symbol et un seuil de $threshold")
+    @Given("l'on a une action avec symbole $symbol et un seuil de $threshold")
     public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
         stock = new Stock(symbol, threshold);
     }
 
-    @When("l'action est échangé au prix de $price")
+    @When("l'action est échangée au prix de $price")
     public void stockIsTraded(@Named("price") double price) {
         stock.tradeAt(price);
     }
 
-    @Then("le position de alerte est $status")
+    @Then("la position de l'alerte est $status")
     public void alertStatusIs(@Named("status") String status) {
         assertThat(stock.getStatus().name(), equalTo(status));
     }
 
-    @Given("on a une table $table")
+    @Given("l'on a une table $table")
     public void aTAble(ExamplesTable table) {
         this.table = table;
     }
@@ -42,7 +42,7 @@ public class FrTraderSteps {
         assertThat(table.getRowCount(), equalTo(rows));
     }
 
-    @Then("au rang $row et colonne $column on trouve: $value")
+    @Then("au rang $row et en colonne $column on trouve: $value")
     public void theRowValuesAre(int row, String column, String value){
         Map<String,String> rowValues = table.getRow(row-1);      
         assertThat(rowValues.get(column), equalTo(value));
