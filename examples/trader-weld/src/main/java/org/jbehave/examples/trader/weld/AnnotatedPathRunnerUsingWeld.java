@@ -18,7 +18,7 @@ import org.junit.runner.RunWith;
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingWeld
-@UsingPaths(searchIn = "../trader/src/main/java", includes = { "**/*.story" }, excludes = { "**/examples_table*.story" })
+@UsingPaths(searchIn = "../trader/src/main/java", includes = { "**/*.story" }, excludes = { "" })
 public class AnnotatedPathRunnerUsingWeld {
 
 
