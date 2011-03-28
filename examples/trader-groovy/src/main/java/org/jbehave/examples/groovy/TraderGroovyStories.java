@@ -1,7 +1,7 @@
 package org.jbehave.examples.groovy;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
+import static org.jbehave.core.reporters.Format.HTML;
 
 import java.util.List;
 

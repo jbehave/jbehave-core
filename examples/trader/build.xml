@@ -54,13 +54,13 @@
 	<target name="run-stories-as-embeddables" depends="compile, reports-resources">
 		<taskdef name="runStoriesAsEmbeddables" classname="org.jbehave.ant.RunStoriesAsEmbeddables" classpathref="story.classpath" />
 
-		<runStoriesAsEmbeddables includes="**/stories/*.java" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
+		<runStoriesAsEmbeddables includes="**/stories/*.java" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="run-stories-as-paths" depends="compile, reports-resources">
 		<taskdef name="runStoriesAsPaths" classname="org.jbehave.ant.RunStoriesAsPaths" classpathref="story.classpath" />
 
-		<runStoriesAsPaths includes="**/stories/*.story" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
+		<runStoriesAsPaths includes="**/stories/*.story" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="stepdoc" depends="compile">
