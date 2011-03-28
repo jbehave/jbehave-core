@@ -111,12 +111,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         printStackTrace(cause);        
     }
 
-    @Override
     public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
         print("Generating navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'");
     }
 
-    @Override
     public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
         print("Failed to generating navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'");
         printStackTrace(cause);        

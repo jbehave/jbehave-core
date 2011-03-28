@@ -11,7 +11,6 @@ import static java.util.Arrays.asList;
  */
 public class RelativePathCalculator implements PathCalculator {
 
-    @Override
     public String calculate(String root, String path) {
         return join(calculatePath(split(root), split(path)));
     }
