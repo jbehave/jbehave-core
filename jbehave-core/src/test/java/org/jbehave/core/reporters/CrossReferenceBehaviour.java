@@ -58,7 +58,7 @@ public class CrossReferenceBehaviour {
             }
 
         };
-        crossReference.excludeStoriesWithoutExecutedScenarios(false);
+        crossReference.excludingStoriesWithNoExecutedScenarios(false);
 
         StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
         when(builder.outputDirectory()).thenReturn(zebra);
@@ -188,7 +188,7 @@ public class CrossReferenceBehaviour {
             }
 
         }.withXmlOnly();
-        crossReference.excludeStoriesWithoutExecutedScenarios(false);
+        crossReference.excludingStoriesWithNoExecutedScenarios(false);
 
         StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
         when(builder.outputDirectory()).thenReturn(zebra);
@@ -284,7 +284,7 @@ public class CrossReferenceBehaviour {
             }
 
         }.withJsonOnly();
-        crossReference.excludeStoriesWithoutExecutedScenarios(false);
+        crossReference.excludingStoriesWithNoExecutedScenarios(false);
 
         StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
         when(builder.outputDirectory()).thenReturn(zebra);
@@ -380,7 +380,7 @@ public class CrossReferenceBehaviour {
                 xstream.alias("xref", XRefRootWithThemes.class);
             }
         };
-        crossReference.excludeStoriesWithoutExecutedScenarios(false);
+        crossReference.excludingStoriesWithNoExecutedScenarios(false);
 
         StoryReporterBuilder builder = mock(StoryReporterBuilder.class);
         when(builder.outputDirectory()).thenReturn(zebra);

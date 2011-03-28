@@ -37,12 +37,12 @@ public class CrossReference extends Format {
     private Map<String, StepMatch> stepMatches = new HashMap<String, StepMatch>();
     private StepMonitor stepMonitor = new XRefStepMonitor();
     private Set<String> failingStories = new HashSet<String>();
-    private boolean excludeStoriesWithNoExecutedScenarios;
     private Set<String> stepsPerformed = new HashSet<String>();
     private boolean doJson = true;
     private boolean doXml = true;
+    private boolean excludeStoriesWithNoExecutedScenarios = false;
     private boolean outputAfterEachStory = false;
-    private org.jbehave.core.reporters.Format threadSafeDelegateFormat;
+    private Format threadSafeDelegateFormat;
 
     public CrossReference() {
         this("XREF");
@@ -60,22 +60,26 @@ public class CrossReference extends Format {
         return this;
     }
 
-    public CrossReference withThreadSafeDelegateFormat(org.jbehave.core.reporters.Format format) {
-        this.threadSafeDelegateFormat = format;
-        return this;
-    }
-
     public CrossReference withXmlOnly() {
         doJson = false;
         doXml = true;
         return this;
     }
 
-    public CrossReference writeCrossReferenceAfterEachStory() {
-        outputAfterEachStory = true;
+    public CrossReference withOutputAfterEachStory(boolean outputAfterEachStory) {
+        this.outputAfterEachStory = outputAfterEachStory;
         return this;
     }
 
+    public CrossReference withThreadSafeDelegateFormat(Format format) {
+        this.threadSafeDelegateFormat = format;
+        return this;
+    }
+
+    public CrossReference excludingStoriesWithNoExecutedScenarios(boolean exclude) {
+        this.excludeStoriesWithNoExecutedScenarios = exclude;
+        return this;
+    }
 
     public StepMonitor getStepMonitor() {
         return stepMonitor;
@@ -127,11 +131,6 @@ public class CrossReference extends Format {
             throw new XrefOutputFailed(name, e);
         }
 
-    }
-
-    public CrossReference excludeStoriesWithoutExecutedScenarios(boolean exclude) {
-        this.excludeStoriesWithNoExecutedScenarios = exclude;
-        return this;
     }
 
     @SuppressWarnings("serial")
