@@ -20,6 +20,8 @@
     <module>spring-security</module>
     <module>trader</module>
     <module>trader-annotations</module>
+    <module>trader-paths</module>
+    <module>trader-stepdocs</module>
     <module>trader-urls</module>
     <module>trader-maps</module>
     <module>trader-i18n</module>
@@ -68,7 +70,7 @@
       </plugins>
     </pluginManagement>
     <plugins>
-      <!-- Unpack view resources, defined as dependencies -->      
+      <!-- Unpack view resources, defined as dependencies -->
       <plugin>
         <groupId>org.jbehave</groupId>
         <artifactId>jbehave-maven-plugin</artifactId>
@@ -85,70 +87,6 @@
     </plugins>
   </build>
   <profiles>
-    <profile>
-      <id>as-paths</id>
-      <build>
-        <plugins>
-
-          <!-- Here we define the executions of the jbehave-maven-plugin 
-            for running stories as paths -->
-          <!-- This configuration is used by all the examples which need 
-            only specify the ${include.paths} property -->
-
-          <plugin>
-            <groupId>org.jbehave</groupId>
-            <artifactId>jbehave-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>stories-as-paths</id>
-                <phase>integration-test</phase>
-                <configuration>
-                  <embedderClass>org.jbehave.examples.trader.TraderEmbedder</embedderClass>
-                  <includes>
-                    <include>${include.paths}</include>
-                  </includes>
-                  <excludes />
-                  <skip>false</skip>
-                  <batch>${batch}</batch>
-                  <generateViewAfterStories>true</generateViewAfterStories>
-                  <ignoreFailureInStories>true</ignoreFailureInStories>
-                  <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
-                </configuration>
-                <goals>
-                  <goal>run-stories-as-paths</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <skip.embeddables.stories>true</skip.embeddables.stories>
-      </properties>
-    </profile>
-    <profile>
-      <id>stepdocs</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.jbehave</groupId>
-            <artifactId>jbehave-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>stepdocs</id>
-                <phase>integration-test</phase>
-                <configuration>
-                  <embedderClass>org.jbehave.examples.trader.TraderEmbedder</embedderClass>
-                </configuration>
-                <goals>
-                  <goal>report-stepdocs</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
     <profile>
       <id>gui</id>
       <modules>

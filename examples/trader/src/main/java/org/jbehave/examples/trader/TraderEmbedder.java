@@ -34,7 +34,7 @@ public class TraderEmbedder extends Embedder {
 
     @Override
     public EmbedderControls embedderControls() {
-        return super.embedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+        return new EmbedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
     }
 
     @Override

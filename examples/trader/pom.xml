@@ -10,8 +10,17 @@
   <name>JBehave Trader Example</name>
 
   <properties>
+    <skip>false</skip>
     <meta.filter></meta.filter>
   </properties>
+
+ <dependencies>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-ant</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
   
   <build>
     <plugins>
@@ -27,7 +36,7 @@
                 <include>**/TraderStories.java</include>
               </includes>
               <excludes />
-              <skip>false</skip>
+              <skip>${skip}</skip>
               <batch>false</batch>
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>
@@ -49,6 +58,9 @@
   <profiles>
     <profile>
       <id>ant</id>
+      <properties>
+        <skip>true</skip>
+      </properties>
       <build>
         <plugins>
           <plugin>
