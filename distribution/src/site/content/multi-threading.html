@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Multi-Threading</title>
+</head>
+<body>
+<h2>Multi-Threading</h2>
+
+<p>The JBehave <a
+    href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a> allows concurrent execution of stories. 
+    The multi-threading behaviour is controlled by setting the number of concurrent threads (which defaults to 1) via the <a
+    href="javadoc/core/org/jbehave/core/embedder/EmbedderControls.html">EmbedderControls</a>, or equivalently via the 
+    Ant or Maven access points.
+</p>
+
+<p>It is important to note that it's the entire story that is executed in one concurrent execution and that scenarios within
+ the same story cannot be run concurrently.
+</p>
+
+<h2>Examples</h2>
+
+<p>Examples of use of multi-threading can be found in the 
+ <a href="https://github.com/jbehave/jbehave-tutorial">JBehave Tutorial</a> (<a
+ href="https://github.com/jbehave/jbehave-tutorial/blob/master/etsy-stories/src/main/java/org/jbehave/tutorials/etsy/EtsyDotComStories.java">EtsyDotComStories</a>).</p>
+
+</body>
+</html>

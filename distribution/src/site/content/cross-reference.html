@@ -111,6 +111,7 @@ ory",
   ]
 }}
 </pre>
+
 <h2>Configuration</h2>
 
 <p>The CrossReference instance needs to configured in the <a
@@ -118,10 +119,9 @@ ory",
 <pre class="brush: java">
 public class TraderStories extends JUnitStories {
     
-    private final CrossReference xref = new CrossReference();
-
     @Override
     public Configuration configuration() {
+        CrossReference xref = new CrossReference();
         return new MostUsefulConfiguration()
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withCrossReference(xref)) 
@@ -135,6 +135,9 @@ representations are generated automatically in the JBehave report view
 directory (<b>target/jbehave/view</b> by default) by the JUnit-based
 ConfigurableEmbedder, i.e. JUnitStory and JUnitStory. In other case, you
 may generate them on demand via the Embedder method <b>generateCrossReference()</b>.</p>
+
+<p>Optionally, CrossReference can be configured to update file output after each story and to output 
+to JSON or XML only (instead of both).  Moreover, the user can choose to exclude stories when there are no executed scenarios</p>
 
 <p>Note that in the above code fragment we are only focusing on the
 configuration of the CrossReference. In particular, you may be chaining
