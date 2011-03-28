@@ -1,4 +1,4 @@
-package org.jbehave.examples.trader;
+package org.jbehave.examples.trader.urls;
 
 import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromURL;
@@ -12,6 +12,7 @@ import java.util.List;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.examples.trader.TraderStories;
 
 /**
  * <p>

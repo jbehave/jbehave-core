@@ -9,13 +9,6 @@
   <artifactId>jbehave-trader-pico-example</artifactId>
   <name>JBehave Trader Pico Example</name>
 
-  <!-- Properties used to specify story running configured in jbehave-examples POM -->
-  <properties>
-    <include.embeddables>**/*StoriesUsingPico.java</include.embeddables>
-    <include.annotated.embedders>**/AnnotatedEmbedderUsingPico*.java</include.annotated.embedders>
-    <annotated.embedder.runner>org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner</annotated.embedder.runner>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
@@ -28,5 +21,30 @@
       <version>${project.version}</version>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>embeddable-stories</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <includes>
+                <include>**/TraderStoriesUsingPico.java</include>
+              </includes>
+              <ignoreFailureInStories>true</ignoreFailureInStories>
+              <ignoreFailureInView>true</ignoreFailureInView>
+            </configuration>
+            <goals>
+              <goal>run-stories-as-embeddables</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

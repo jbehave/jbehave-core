@@ -1,10 +1,4 @@
-package org.jbehave.examples.trader;
-
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
+package org.jbehave.examples.trader.annotations;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -21,10 +15,10 @@ import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
-import org.jbehave.examples.trader.TraderAnnotatedEmbedderRunner.MyDateConverter;
-import org.jbehave.examples.trader.TraderAnnotatedEmbedderRunner.MyReportBuilder;
-import org.jbehave.examples.trader.TraderAnnotatedEmbedderRunner.MyStoryControls;
-import org.jbehave.examples.trader.TraderAnnotatedEmbedderRunner.MyStoryLoader;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedderRunner.MyDateConverter;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedderRunner.MyReportBuilder;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedderRunner.MyStoryControls;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedderRunner.MyStoryLoader;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
@@ -34,6 +28,12 @@ import org.jbehave.examples.trader.steps.SearchSteps;
 import org.jbehave.examples.trader.steps.TraderSteps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML;
 
 @RunWith(AnnotatedEmbedderRunner.class)
 @Configure(storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
@@ -46,7 +46,7 @@ public class TraderAnnotatedEmbedderRunner extends InjectableEmbedder {
 
     @Test
     public void run() {
-        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
+        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "**/examples_table_loaded*");
         injectedEmbedder().runStoriesAsPaths(storyPaths);
     }
 

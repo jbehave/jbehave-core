@@ -1,13 +1,14 @@
-package org.jbehave.examples.trader;
-
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+package org.jbehave.examples.trader.urls;
 
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.StoryFinder;
+import org.jbehave.examples.trader.TraderStories;
+
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
  * <p>
@@ -33,7 +34,7 @@ public class URLTraderStories extends TraderStories {
     @Override
     protected List<String> storyPaths() {
         // Specify story paths as URLs
-        String codeLocation = codeLocationFromClass(this.getClass()).getFile();
+        String codeLocation = codeLocationFromPath("../trader/src/main/java").getFile();
         return new StoryFinder().findPaths(codeLocation, asList("**/trader_is_alerted_of_status.story",
                 "**/traders_can_be_subset.story"), asList(""), "file:" + codeLocation);
     }

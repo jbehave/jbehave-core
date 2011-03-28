@@ -334,7 +334,7 @@ public class CrossReference extends Format {
             this.name = story.getName();
             this.path = story.getPath();
             this.passed = passed;
-            this.html = storyReporterBuilder.pathResolver().resolveName(new StoryLocation(null, story.getPath()),
+            this.html = storyReporterBuilder.pathResolver().resolveName(new StoryLocation(storyReporterBuilder.codeLocation(), story.getPath()),
                     "html");
         }
 

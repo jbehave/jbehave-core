@@ -6,22 +6,17 @@
     <artifactId>jbehave-examples</artifactId>
     <version>3.3-SNAPSHOT</version>
   </parent>
-  <artifactId>jbehave-trader-weld-example</artifactId>
-  <name>JBehave Trader Weld Example</name>
-
+  <artifactId>jbehave-trader-annotations-example</artifactId>
+  <name>JBehave Trader Annotations Example</name>
+  <packaging>jar</packaging>
+  
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
       <artifactId>jbehave-trader-example</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-weld</artifactId>
-      <version>${project.version}</version>
-    </dependency>
   </dependencies>
-
 
   <build>
     <plugins>
@@ -30,17 +25,16 @@
         <artifactId>jbehave-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>embeddable-stories</id>
+            <id>with-annotated-embedder</id>
             <phase>integration-test</phase>
             <configuration>
+              <annotatedEmbedderRunnerClass>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
               <includes>
-                <include>**/TraderStoriesUsingWeld.java</include>
+                <include>**/TraderAnnotatedEmbedderRunner.java</include>
               </includes>
-              <ignoreFailureInStories>true</ignoreFailureInStories>
-              <ignoreFailureInView>true</ignoreFailureInView>
             </configuration>
             <goals>
-              <goal>run-stories-as-embeddables</goal>
+              <goal>run-with-annotated-embedder</goal>
             </goals>
           </execution>
         </executions>

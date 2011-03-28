@@ -10,17 +10,7 @@
   <packaging>pom</packaging>
   <name>JBehave Examples</name>
 
-  <!-- These properties are the default properties for all executions. POMs 
-    inheriting from this can override these properties -->
   <properties>
-    <batch>false</batch>
-    <ignore.failure.view>true</ignore.failure.view>
-    <skip.embeddables.stories>false</skip.embeddables.stories>
-    <include.embeddables>**/*Stories.java</include.embeddables>
-    <include.paths>**/stories/*.story</include.paths>
-    <include.annotated.embedders>**/AnnotatedEmbedderUsing*.java</include.annotated.embedders>
-    <meta.filter></meta.filter>
-    <annotated.embedder.runner>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotated.embedder.runner>
     <jbehave.version>${project.version}</jbehave.version>
     <jbehave.site.version>3.1.1</jbehave.site.version>
   </properties>
@@ -29,23 +19,21 @@
     <module>gameoflife</module>
     <module>spring-security</module>
     <module>trader</module>
+    <module>trader-annotations</module>
+    <module>trader-urls</module>
+    <module>trader-maps</module>
     <module>trader-i18n</module>
     <module>trader-groovy</module>
     <module>trader-guice</module>
-    <module>trader-weld</module>
     <module>trader-pico</module>
     <module>trader-spring</module>
+    <module>trader-weld</module>
   </modules>
 
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
       <artifactId>jbehave-core</artifactId>
-      <version>${jbehave.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-ant</artifactId>
       <version>${jbehave.version}</version>
     </dependency>
     <dependency>
@@ -60,11 +48,6 @@
       <artifactId>jbehave-site-resources</artifactId>
       <version>${jbehave.site.version}</version>
       <type>zip</type>
-    </dependency>
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <version>1.3.1</version>
     </dependency>
   </dependencies>
 
@@ -85,11 +68,7 @@
       </plugins>
     </pluginManagement>
     <plugins>
-      <!-- Here we define the executions of the jbehave-maven-plugin for 
-        running stories as embeddables -->
-      <!-- This configuration is used by all the examples which need only 
-        specify the ${include.embeddables} property -->
-
+      <!-- Unpack view resources, defined as dependencies -->      
       <plugin>
         <groupId>org.jbehave</groupId>
         <artifactId>jbehave-maven-plugin</artifactId>
@@ -101,45 +80,11 @@
               <goal>unpack-view-resources</goal>
             </goals>
           </execution>
-          <execution>
-            <id>embeddable-stories</id>
-            <phase>integration-test</phase>
-            <configuration>
-              <includes>
-                <include>${include.embeddables}</include>
-              </includes>
-              <excludes />
-              <skip>${skip.embeddables.stories}</skip>
-              <batch>${batch}</batch>
-              <generateViewAfterStories>true</generateViewAfterStories>
-              <ignoreFailureInStories>true</ignoreFailureInStories>
-              <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
-              <threads>2</threads>
-              <metaFilters>
-                <metaFilter>${meta.filter}</metaFilter>
-              </metaFilters>
-            </configuration>
-            <goals>
-              <goal>run-stories-as-embeddables</goal>
-            </goals>
-          </execution>
         </executions>
       </plugin>
     </plugins>
   </build>
   <profiles>
-    <profile>
-      <id>fail-on-view</id>
-      <properties>
-        <ignore.failure.view>false</ignore.failure.view>
-      </properties>
-    </profile>
-    <profile>
-      <id>batch</id>
-      <properties>
-        <batch>true</batch>
-      </properties>
-    </profile>
     <profile>
       <id>as-paths</id>
       <build>
@@ -182,75 +127,6 @@
       </properties>
     </profile>
     <profile>
-      <id>with-annotated-embedder</id>
-      <build>
-        <plugins>
-
-          <!-- Here we define the executions of the jbehave-maven-plugin 
-            for running stories with annotated embedder -->
-          <!-- This configuration is used by all the examples which need 
-            only specify the ${annotated.embedder.runner} and ${include.annotated.embedders} 
-            properties -->
-
-          <plugin>
-            <groupId>org.jbehave</groupId>
-            <artifactId>jbehave-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>with-annotated-embedder</id>
-                <phase>integration-test</phase>
-                <configuration>
-                  <annotatedEmbedderRunnerClass>${annotated.embedder.runner}</annotatedEmbedderRunnerClass>
-                  <includes>
-                    <include>${include.annotated.embedders}</include>
-                  </includes>
-                </configuration>
-                <goals>
-                  <goal>run-with-annotated-embedder</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <skip.embeddables.stories>true</skip.embeddables.stories>
-      </properties>
-    </profile>
-    <profile>
-      <id>as-urls</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.jbehave</groupId>
-            <artifactId>jbehave-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>stories-as-urls</id>
-                <phase>integration-test</phase>
-                <configuration>
-                  <includes>
-                    <include>**/*URLTraderStories.java</include>
-                  </includes>
-                  <excludes />
-                  <skip>false</skip>
-                  <batch>${batch}</batch>
-                  <ignoreFailureInStories>true</ignoreFailureInStories>
-                  <ignoreFailureInView>${ignore.failure.view}</ignoreFailureInView>
-                </configuration>
-                <goals>
-                  <goal>run-stories-as-embeddables</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <skip.embeddables.stories>true</skip.embeddables.stories>
-      </properties>
-    </profile>
-    <profile>
       <id>stepdocs</id>
       <build>
         <plugins>
@@ -272,40 +148,6 @@
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <profile>
-      <id>ant</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>run-via-ant</id>
-                <phase>integration-test</phase>
-                <configuration>
-                  <tasks>
-                    <taskdef name="runStoriesAsEmbeddables"
-                      classname="org.jbehave.ant.RunStoriesAsEmbeddables"
-                      classpathref="maven.runtime.classpath" />
-                    <runStoriesAsEmbeddables
-                      includes="${include.embeddables}" skip="false"
-                      generateViewAfterStories="true"
-                      ignoreFailureInStories="true" ignoreFailureInView="${ignore.failure.view}" />
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-      <properties>
-        <skip.embeddables.stories>true</skip.embeddables.stories>
-      </properties>
     </profile>
     <profile>
       <id>gui</id>

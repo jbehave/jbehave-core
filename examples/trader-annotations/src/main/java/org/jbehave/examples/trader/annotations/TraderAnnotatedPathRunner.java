@@ -1,4 +1,4 @@
-package org.jbehave.examples.trader;
+package org.jbehave.examples.trader.annotations;
 
 import java.text.SimpleDateFormat;
 
@@ -13,10 +13,10 @@ import org.jbehave.core.junit.AnnotatedPathRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
-import org.jbehave.examples.trader.TraderAnnotatedPathRunner.MyDateConverter;
-import org.jbehave.examples.trader.TraderAnnotatedPathRunner.MyReportBuilder;
-import org.jbehave.examples.trader.TraderAnnotatedPathRunner.MyStoryControls;
-import org.jbehave.examples.trader.TraderAnnotatedPathRunner.MyStoryLoader;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedPathRunner.MyDateConverter;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedPathRunner.MyReportBuilder;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedPathRunner.MyStoryControls;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedPathRunner.MyStoryLoader;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;

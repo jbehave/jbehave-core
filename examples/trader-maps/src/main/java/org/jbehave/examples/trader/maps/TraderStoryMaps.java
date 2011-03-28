@@ -1,7 +1,4 @@
-package org.jbehave.examples.trader;
-
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+package org.jbehave.examples.trader.maps;
 
 import java.util.List;
 
@@ -14,6 +11,9 @@ import org.jbehave.core.junit.JUnitStoryMaps;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+
+import static java.util.Arrays.asList;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
  * <p>
@@ -41,7 +41,7 @@ public class TraderStoryMaps extends JUnitStoryMaps {
 
     @Override
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
+        return new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "");
                 
     }
         
