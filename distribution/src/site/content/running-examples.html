@@ -6,36 +6,29 @@
 
 <body>
 
-<h2>JBehave Examples</h2>
+<h2>Examples Philosophy</h2>
 
-<p>JBehave was developed as behaviour and example driven.  As such the examples are 
-an integral part of the build, verifying the correctness of the behaviour.  They 
-are not released as artifacts, but they can be run easily browsed
-or checked out from <a href="source-repository.html">source repository</a> :</p>
+<p>JBehave was developed as behaviour-driven and example-driven.  Read more about the 
+<a href="examples-philosophy.html">examples philosophy</a>. 
+</p>
 
-<ul>
-<li>gameoflife: demonstrates multi-line scenarios</li>
-<li>noughtsandcrosses: demonstrates GUI behaviours</li>
-<li>spring-security: demonstrates Spring-based security behaviours</li>
-<li>trader:  contains stories demonstrating several aspects of JBehave</li>
-<li>trader-annotations:  extends trader example demostrating configuration via annotations</li>
-<li>trader-urls:  extends trader example demostrating configuration via URLs, including remote resources</li>
-<li>trader-maps:  extends trader example demostrating generation of story maps</li>
-<li>trader-stepdocs:  extends trader example demostrating generation of stepdocs</li>
-<li>trader-i18n: extends trader example demonstrating localisation of stories</li>
-<li>trader-groovy: extends trader example demonstrating wrigin steps using Groovy</li>
-<li>trader-guice: extends trader example demonstrating configuration using Guice for dependency injection</li>
-<li>trader-pico: extends trader example demonstrating configuration using PicoContainer for dependency injection</li>
-<li>trader-spring: extends trader example demonstrating configuration using Spring for dependency injection</li>
-<li>trader-weld: extends trader example demonstrating configuration using Weld for dependency injection</li>
-</ul>
+<h2>Getting the source code</h2>
+
+<p>Examples are not released as artifacts so the source code is needed to run them. 
+The source code can be checked out from <a href="source-repository.html">source repository</a> 
+or can be found as one of artifacts of the <b>jbehave-distribution</b> (the "src" zip bundle).
+</p>
 
 <h2>Running Examples with latest snapshot</h2>
 
 <p>To build core modules and run examples with Maven:</p>
 <script type="syntaxhighlighter" class="brush: plain"><![CDATA[
-mvn clean install -Pexamples
+mvn -s settings.xml clean install -Pexamples
 ]]></script>
+
+<span class="followup">The use of <b>settings.xml</b> is only required the first time you build  
+(see <a href="building-source.html">building source</a>).
+</span>
 
 <p>The 'examples' profile instructs Maven to build the releasable modules and to verify their
 behaviour by running the examples afterwards.</p>
@@ -45,40 +38,57 @@ behaviour by running the examples afterwards.</p>
 mvn clean install -Pexamples,gui
 ]]></script>
 
+<span class="followup">If you are running the GUI example, see the note on <a href="building-source.html">building source</a>
+for installing all the required dependendencies.
+</span>
+
 <h2>Running Examples against a fixed version</h2>
 
-<p>In some cases, it may be necessary to run the examples against a known version of JBehave.</p>
+<p>In some cases, you may want to run the examples against a known version of JBehave.</p>
 
 <script type="syntaxhighlighter" class="brush: plain">
 <![CDATA[
 cd examples
-mvn clean install -Djbehave.version=3.0
+mvn clean install -Djbehave.version=3.3
 ]]>
 </script>
 
-<span class="followup">Note that running the examples in 'standalone' mode requires the JBehave parent POM to be present, as it 
-contains the information about the development setup of the project, e.g. the compiler, the layout of the source, etc. </span>
+<span class="followup">Note that running the examples in 'standalone' mode requires the JBehave parent POM to be present, as it
+contains the information about the setup of the project, e.g. the compiler, the layout of the source, etc. </span>
 
-<p>To ensure JBehave parent POM is available, checkout project source as above and install the parent POM:
-</p>
+<p>One option, is to pull the snapshot from the Codehaus repository, activated by the <b>codehaus</b> profile in the <b>settings.xml</b>
+provided next to the top-level POM.</p>
 
 <script type="syntaxhighlighter" class="brush: plain">
 <![CDATA[
-mvn clean install -N <-- only builds and installs locally top-level parent POM
+cd examples 
+mvn -Pcodehaus -s ../settings.xml clean install -Djbehave.version=3.3
+]]>
+</script>
+
+<p>The other option is to install the parent POM from source:</p>
+
+<script type="syntaxhighlighter" class="brush: plain">
+<![CDATA[
+mvn clean install -N <-- installs locally only JBehave parent POM (does not recurse into the child modules)
+cd examples
+mvn clean install -Djbehave.version=3.3
 ]]>
 </script>
 
 <span class="followup">As with any Maven artifact that is not expected to change, 
 the build or retrieval is only required once, as it will be cached in the local repository. 
 So, once you've built the JBehave parent POM from source or retrieved it from the snapshots
-repository, you don't need to do it again, unless you think it needs to be updated.</span>
+repository, you don't need to do it again, unless you think it needs to be updated.  The same goes for the 
+Examples parent POM.</span>
 
 <h2>Running Examples via Ant</h2>
 
 <p>While the basic infrastructure of the build is Maven-based, the examples also show how to run stories via Ant.
 The <b>trader</b> example has an Ant build.xml which shows its use.  Note that it requires the 
 <a href="http://maven.apache.org/ant-tasks">Maven Ant Tasks</a> jar to be present in the <b>$ANT_HOME/lib</b> directory 
-in order to retrieve the dependency information from the Maven POM.
+in order to retrieve the dependency information from the Maven POM.  The trader example also has a Maven <b>ant</b> profile that uses
+shows the use of Ant from Maven.
 </p>
 
 <div class="clear">

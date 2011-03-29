@@ -16,12 +16,24 @@ build systems.</p>
 
 <p><a href="http://maven.apache.org">Maven</a> is a network-based
 build management system. We assume the binary distribution has been
-installed (version 2.2.x or above) and that the executable <b>mvn</b> is
+installed (version 2.2.1 or above) and that the executable <b>mvn</b> is
 in the system path.</p>
 <p>People new to Maven may find useful to download a <a
     href="http://maven.apache.org/apache-maven.pdf">PDF</a> version of
 the website documentation. There is also extensive free documentation
 available from the <a href="http://www.sonatype.com/book">Sonatype Maven Books</a>.</p>
+
+<h3>Maven settings.xml</h3>
+
+<p>To activate the use of the settings.xml provided:</p>
+
+<pre class="brush: plain">
+mvn -s settings.xml clean install 
+</pre>
+
+<span class="followup">The <b>settings.xml</b> defines the repositories for all the required dependencies that are not found in Maven Central.
+Typically, you need to invoke the <b>-s settings.xml</b> only once to cache the dependencies.  Also, if you are running in a corporate environment, 
+you may be using a Maven Repository Manager, such as Nexus, which may proxy the repositories behind a public open-source group.</span>
 
 <h3>Maven build profiles</h3>
 
@@ -32,22 +44,26 @@ available from the <a href="http://www.sonatype.com/book">Sonatype Maven Books</
 
 <ul>
     <li>default: builds all releasable modules</li>
-    <li>examples: builds examples</li>
-    <li>gui: builds examples that require non-headless mode
+    <li>examples: runs examples</li>
+    <li>gui: runs examples that require non-headless mode
     (separated as they do not run on <a
         href="http://builds.codehaus.org/browse/JBEHAVE">CI</a>)</li>
     <li>reporting: builds reports</li>
-    <li>distribution: builds distribution</li>
+    <li>distribution: builds distributions, both "bin" and "src"</li>
 </ul>
 
-<p>Note that profiles are additive and the default profile is always
-active.</p>
+<span class="followup">Currently, the GUI example uses a library that is not available on Maven repositories.
+Instructions on how to install the dependency locally are found in the <b>noughtsandcrosses/README.txt</b>.  
+Again, this install only needs to be done once to cache artifact in local repository.
+</span>
+
+<p>Note that profiles are additive and the default profile is always active.</p>
 
 <p>Some examples:</p>
 
 <pre class="brush: plain">
-mvn clean install -Pexamples (build core and all examples, excluding GUI-based ones)
-mvn clean install -Pexamples,gui (build core and all examples, including GUI-based ones)
+mvn clean install -Pexamples (build core and runs examples, excluding GUI-based ones)
+mvn clean install -Pexamples,gui (build core and runs all examples, including GUI-based ones)
 mvn clean install -Preporting,distribution (build with reporting and distribution)
 </pre>
 

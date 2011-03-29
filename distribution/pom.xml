@@ -37,12 +37,11 @@
       <artifactId>jbehave-spring</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <!-- dependency>
-      release plugin does not like weld repo hosting for some reason
+    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-weld</artifactId>
       <version>${project.version}</version>
-    </dependency -->
+    </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-ant</artifactId>
@@ -175,8 +174,7 @@
               </artifactItems>
             </configuration>
           </execution>
-          <!-- execution>
-            weld not liked by release plugin
+          <execution>
             <id>unpack-javadoc-weld</id>
             <phase>generate-resources</phase>
             <goals>
@@ -195,7 +193,7 @@
                 </artifactItem>
               </artifactItems>
             </configuration>
-          </execution -->
+          </execution>
           <execution>
             <id>unpack-javadoc-ant</id>
             <phase>generate-resources</phase>

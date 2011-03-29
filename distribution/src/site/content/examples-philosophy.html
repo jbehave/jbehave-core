@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Examples Philosophy</title>
+</head>
+
+<body>
+
+<h2>Examples Philosophy</h2>
+
+<p>JBehave was developed as behaviour-driven and example-driven. 
+As such, examples are an integral part of the build, since they act as automated acceptance criteria verifying the correctness of the 
+JBehave's behaviour.  The examples are run as integration tests, complementing the behaviour verified by unit tests.</p>
+
+<span class="followup">Examples could also be called Behaviours, as they represent integration-level behaviours.  
+</span>
+
+<h2>Example Modules</h2>
+
+<p>Examples are split into several modules, of which a few are standalone, while others (the trader examples) have minimal 
+interdependency to avoid duplication and repetitions, which would increase maintainance overhead.</p>
+
+<ul>
+<li>gameoflife: verifies multi-line scenarios behaviours</li>
+<li>noughtsandcrosses: verifies GUI behaviours</li>
+<li>spring-security: verifies Spring-based security behaviours</li>
+<li>trader:  contains stories verifying the behaviour of multiple functionalities of JBehave</li>
+<li>trader-annotations:  extends trader example verifying configuration via annotations</li>
+<li>trader-urls:  extends trader example verifying running stories accessible via URLs, including remote resources</li>
+<li>trader-maps:  extends trader example verifying generation of story maps</li>
+<li>trader-stepdocs:  extends trader example verifying generation of stepdocs</li>
+<li>trader-i18n: extends trader example verifying the writing of stories in different locales</li>
+<li>trader-groovy: extends trader example verifying using Groovy for writing steps</li>
+<li>trader-guice: extends trader example verifying configuration using Guice for dependency injection</li>
+<li>trader-pico: extends trader example verifying configuration using PicoContainer for dependency injection</li>
+<li>trader-spring: extends trader example verifying configuration using Spring for dependency injection</li>
+<li>trader-weld: extends trader example verifying configuration using Weld for dependency injection</li>
+</ul>
+
+<span class="followup">All the trader example modules re-use the same stories and steps classes of the trader example, but focus on different
+complementary aspects, e.g. annotation-based configuration, localisation, scripting steps, or dependency injection. 
+The trader-example module is declared as a normal Maven dependency for all extension trader modules and must be installed in your 
+local repository before these can be run.
+</span>
+
+<h2>src/main or src/test?</h2>
+
+<p>A recurring question that is often asked is where one should place the behaviour code, in <b>src/main</b> or <b>src/test</b>. 
+The answer is largely a matter of convention and depends on the build system you are using.</p>
+
+<p>In Maven, <b>src/test</b> tends to be used for unit testing and anything found in the test directory is not packaged in the artifact 
+being built.  Also, <b>src/test</b> conventionally tests only the code contained in that module.  
+This is why it is recommendable for integration testing to have a separate module 
+and to place the behaviour code in <b>src/main</b>.  This allows the integration testing module to verify the behaviour of multiple 
+production modules and it also allows the modularisation of the integration testing itself.</p>
+
+<p>That said, JBehave allows the running of stories from either <b>src/main</b> or <b>src/test</b> (the behaviour is controlled by
+the <b>scope=[main|test]</b> property of the Ant/Maven configuration). So it's down the the user preference where to place the behaviour code.</p>
+
+<span class="followup">The examples modules contain a mix of stories/steps classes as well as other code used in the running of the examples.  
+This code is functional to the testing and should be thought of as "test code".  It constitutes a test harness that verifies the "production 
+code" that is found in the JBehave core modules.
+</span>
+
+<div class="clear">
+<hr />
+</div>
+
+
+</body>
+</html>
