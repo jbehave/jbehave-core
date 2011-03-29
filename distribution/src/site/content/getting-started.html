@@ -81,13 +81,16 @@ public class GridSteps { // Look, Ma', I'm a POJO!
 ]]>
 </script>
 
-<h3>Map textual story to Java Embeddable class</h3>
+<h3>Configure a Java Embeddable class</h3>
 
 <p>Define your <a
 	href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>
-class (in our case <a
-	href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a>)
-with a name that can be mapped to the textual story filename, e.g. <b>ICanToggleACell.java</b>:</p>
+class which provides the link between the JBehave's executor framework (called <a
+    href="javadoc/core/org/jbehave/core/Embedder.html">Embedder</a>) and the textual stories.
+The simplest configuration is a one-to-one mapping between a Java class and a textual story file.  
+So we'll extend <a
+	href="javadoc/core/org/jbehave/core/junit/JUnitStory.html">JUnitStory</a> and give it 
+a name that can be (conventionally) mapped to the textual story filename, e.g. <b>ICanToggleACell.java</b>:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
@@ -98,7 +101,7 @@ public class ICanToggleACell extends JUnitStory {
     public Configuration configuration() {
         return new MostUsefulConfiguration()
             // where to find the stories
-            .useStoryLoader(new LoadFromClasspath(this.getClass().getClassLoader()))  
+            .useStoryLoader(new LoadFromClasspath(this.getClass()))  
             // CONSOLE and TXT reporting
             .useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats().withFormats(Format.CONSOLE, Format.TXT)); 
     }
@@ -112,8 +115,8 @@ public class ICanToggleACell extends JUnitStory {
 }
 ]]>
 </script>
-<p>The story is now configured to use the <b>GridSteps</b> that hold
-the step mappings.</p>
+<p>The story is now configured to use the <b>GridSteps</b> that defines mappings between the textual steps and the Java methods to 
+be executed.</p>
 
 <h3>Run story</h3>
 
@@ -122,13 +125,19 @@ will allow itself to run as a <a href="http://junit.org">JUnit</a> test.
 Be sure to check that you have all the required <a
 	href="dependencies.html">dependencies</a> in your classpath.</p>
 
+<h3>View generated reports</h3>
+
+<p>Since we've defined two reports, CONSOLE and TXT, you should see during the running of the story
+ the output being written the <b>System.out</b>.  In addition, the same output will also have been written
+ to a file in <b>target/jbehave</b>.</p>
+
 <h2>Next?</h2>
 
 <span class="followup">JBehave development has been
 example-driven and it is very instructive to go through one or more
-working examples in the source repository, which illustrate features. Be
-sure to read about <a href="running-examples.html">running examples</a>.
-The examples also show command-line ways of <a
+working examples in the source repository, which illustrate the features of JBehave.  
+The <b>gameoflife</b> example contains much of the above and is ready to be run. 
+Be sure to read about <a href="running-examples.html">running examples</a> and <a
 	href="running-stories.html">running stories</a>.</span>
 
 </body>

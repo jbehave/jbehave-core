@@ -1,4 +1,4 @@
-import com.lunivore.gameoflife.steps.GridStory;
+import com.lunivore.gameoflife.GridStory;
 
 public class ICanToggleACellFromDefaultPackage extends GridStory {
 

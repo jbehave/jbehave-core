@@ -103,13 +103,7 @@ execution of each step. This can be done by keeping state member
 variables in the Steps class or possibly by using a service API or other
 dependency.</p>
 
-<h2 id="configuring">Configuring Java runnable classes</h2>
-
-<p>In JBehave, textual stories can be configured to run in an automated way via a
-mapping to Java runnable classes.</p>
-
-<span class="followup">JBehave allows many different ways to
-configure runnable Java classes.</span>
+<h2 id="configuring">Configuring Java Embeddable classes</h2>
 
 <p>At the heart of the JBehave running of stories lies the <a
 	href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>,
@@ -118,6 +112,9 @@ embeddable into other launchers, such as IDEs or CLIs. JBehave
 complements the Embedder with an <a
 	href="javadoc/core/org/jbehave/core/Embeddable.html">Embeddable</a>
 which represents a runnable facade to the Embedder.</p>
+
+<span class="followup">JBehave allows many different ways to
+configure Embeddable Java classes that allow the parsing and running of textual stories.</span>
 
 <p>JBehave provides two main Embeddable implementations:</p>
 
