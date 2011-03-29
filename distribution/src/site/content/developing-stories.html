@@ -6,7 +6,7 @@
 
 <body>
 
-<h2>Writing Textual Stories</h2>
+<h2 id="writing">Writing Textual Stories</h2>
 
 <p><a href="concepts.html">Behaviour-Driven Development</a>
 encourages you to start defining the stories via scenarios that express
@@ -43,7 +43,7 @@ functionality of the system.</span>
     Then the alert status should be ON
 </pre>
 
-<h2>Mapping Textual Scenario Steps to Java Methods via annotations</h2>
+<h2 id="mapping">Mapping Textual Scenario Steps to Java Methods via annotations</h2>
 
 <p>JBehave maps textual steps to Java methods via <a
 	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>.
@@ -103,13 +103,13 @@ execution of each step. This can be done by keeping state member
 variables in the Steps class or possibly by using a service API or other
 dependency.</p>
 
-<h2>Mapping textual stories to Java Embeddable classes</h2>
+<h2 id="configuring">Configuring Java runnable classes</h2>
 
-<p>In JBehave, textual stories can be run in an automated way via a
+<p>In JBehave, textual stories can be configured to run in an automated way via a
 mapping to Java runnable classes.</p>
 
 <span class="followup">JBehave allows many different ways to
-provide the mapping of textual stories to runnable Java classes.</span>
+configure runnable Java classes.</span>
 
 <p>At the heart of the JBehave running of stories lies the <a
 	href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a>,
@@ -258,7 +258,7 @@ public class TraderAnnotatedEmbedder implements Embeddable {
 ]]>
 </script>
 
-<h3>Other ways to run stories</h3>
+<h3>Integration with other frameworks</h3>
 
 <p>As remarked above, JBehave does not impose any tie-in with any
 framework to run stories. It only requires access to the Embedder to run
