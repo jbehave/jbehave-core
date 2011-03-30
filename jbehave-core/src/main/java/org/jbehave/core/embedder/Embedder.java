@@ -35,7 +35,7 @@ import org.jbehave.core.steps.Stepdoc;
  */
 public class Embedder {
 
-    private Configuration configuration = new MostUsefulConfiguration();
+    private Configuration configuration;
     private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
     private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
     private EmbedderControls embedderControls = new EmbedderControls();
@@ -79,7 +79,8 @@ public class Embedder {
     }
 
     private void generateMapsView(StoryMaps storyMaps) {
-        StoryReporterBuilder builder = configuration().storyReporterBuilder();
+        lazyCreateConfigurationIfNeeded();
+        StoryReporterBuilder builder = configuration.storyReporterBuilder();
         File outputDirectory = builder.outputDirectory();
         Properties viewResources = builder.viewResources();
         ViewGenerator viewGenerator = configuration().viewGenerator();
@@ -230,6 +231,7 @@ public class Embedder {
 
     public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
             List<Future<ThrowableStory>> futures, String storyPath, Story story) {
+        lazyCreateConfigurationIfNeeded();
         EnqueuedStory enqueuedStory = enqueuedStory(embedderControls, configuration, candidateSteps, batchFailures,
                 filter, storyPath, story);
         return submit(futures, enqueuedStory);
@@ -421,6 +423,7 @@ public class Embedder {
     }
 
     public Configuration configuration() {
+        lazyCreateConfigurationIfNeeded();
         return configuration;
     }
 
@@ -483,6 +486,12 @@ public class Embedder {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    private synchronized void lazyCreateConfigurationIfNeeded() {
+        if (configuration == null) {
+            configuration = new MostUsefulConfiguration();
+        }
     }
 
     @SuppressWarnings("serial")

@@ -116,7 +116,7 @@ public abstract class Configuration {
     /**
      * The story reporter builder
      */
-    private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
+    private StoryReporterBuilder storyReporterBuilder;
 
     /**
      * Finder of matching candidate steps
@@ -197,10 +197,18 @@ public abstract class Configuration {
     }
 
     public StoryReporter storyReporter(String storyPath) {
+        lazyCreateStoryReporterBuilderIfNecessary();
         return storyReporterBuilder.build(storyPath);
     }
 
+    private synchronized void lazyCreateStoryReporterBuilderIfNecessary() {
+        if (storyReporterBuilder == null) {
+            storyReporterBuilder = new StoryReporterBuilder();
+        }
+    }
+
     public StoryReporterBuilder storyReporterBuilder() {
+        lazyCreateStoryReporterBuilderIfNecessary();
         return storyReporterBuilder;
     }
 
