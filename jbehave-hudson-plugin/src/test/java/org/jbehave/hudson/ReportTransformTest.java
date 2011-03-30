@@ -1,10 +1,12 @@
 package org.jbehave.hudson;
 
+import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -190,7 +192,12 @@ public class ReportTransformTest {
 			throws TransformerFactoryConfigurationError,
 			TransformerConfigurationException, TransformerException {
 
-		Source xmlSource = new StreamSource(new File(reportFile));
+        // Might be running inside IDEA or Eclipse. Can't assume current directory.
+        File cd = new File(this.getClass().getProtectionDomain().getCodeSource().toString())
+                .getParentFile().getParentFile().getParentFile();
+
+        File file = new File(cd, reportFile);
+        Source xmlSource = new StreamSource(file);
 		Source xsltSource = new StreamSource(new File(
 				"src/main/resources/org/jbehave/hudson/jbehave-3.2-to-junit-1.0.xsl"));
 
