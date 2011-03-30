@@ -35,6 +35,7 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
+import org.jbehave.core.steps.StepMonitor;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
@@ -64,7 +65,7 @@ public class ReportTransformTest {
 								new StoryReporterBuilder().withDefaultFormats()
 										.withFormats(Format.XML))
 						.useFailureStrategy(new SilentlyAbsorbingFailure())
-						
+
 						.useStepCollector(new MarkUnmatchedStepsAsPending(new StepFinder(new ByLevenshteinDistance())));
 
 				return configuration;
@@ -93,7 +94,7 @@ public class ReportTransformTest {
 		try {
 			embedder.runStoriesAsPaths(storyPaths);
 		} catch (Exception e) {
-
+            e.printStackTrace();
 		}
 	};
 
@@ -193,13 +194,14 @@ public class ReportTransformTest {
 			TransformerConfigurationException, TransformerException {
 
         // Might be running inside IDEA or Eclipse. Can't assume current directory.
-        File cd = new File(this.getClass().getProtectionDomain().getCodeSource().toString())
-                .getParentFile().getParentFile().getParentFile();
+        File cd = new File(this.getClass().getProtectionDomain()
+                .getCodeSource().getLocation().getFile())
+                .getParentFile().getParentFile();
 
         File file = new File(cd, reportFile);
         Source xmlSource = new StreamSource(file);
-		Source xsltSource = new StreamSource(new File(
-				"src/main/resources/org/jbehave/hudson/jbehave-3.2-to-junit-1.0.xsl"));
+        File file1 = new File(cd, "src/main/resources/org/jbehave/hudson/jbehave-3.2-to-junit-1.0.xsl");
+        Source xsltSource = new StreamSource(file1);
 
 		Result resultOutput = new StreamResult(System.out);
 		DOMResult result = new DOMResult();
