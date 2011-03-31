@@ -100,7 +100,9 @@ public class StoryRunner {
     }
 
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
-        reporter.set(reporterFor(context, story));
+        if ( !context.givenStory ){
+            reporter.set(reporterFor(context, story));
+        }
         pendingStepStrategy.set(context.configuration().pendingStepStrategy());
         failureStrategy.set(context.configuration().failureStrategy());
 

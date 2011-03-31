@@ -19,6 +19,7 @@ import org.custommonkey.xmlunit.XpathEngine;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -158,6 +159,7 @@ public class ReportTransformBehaviour {
                 .useStepCollector(new MarkUnmatchedStepsAsPending(new StepFinder(new ByLevenshteinDistance())));
 
         Embedder embedder = new Embedder();
+        embedder.useEmbedderControls(new EmbedderControls().doGenerateViewAfterStories(false));
         embedder.useConfiguration(configuration);
         embedder.useCandidateSteps(new InstanceStepsFactory(configuration, new MySteps()).createCandidateSteps());
         embedder.useMetaFilters(asList("-skip true"));
