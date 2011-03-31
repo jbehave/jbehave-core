@@ -1050,7 +1050,7 @@ public class EmbedderBehaviour {
         String embedderAsString = embedder.toString();
         
         // Then
-        assertThat(embedderAsString, containsString("configuration=<null>")); // no default
+        assertThat(embedderAsString, containsString(MostUsefulConfiguration.class.getSimpleName()));
         assertThat(embedderAsString, containsString(StoryRunner.class.getSimpleName()));
         assertThat(embedderAsString, containsString(PrintStreamEmbedderMonitor.class.getSimpleName()));
     }

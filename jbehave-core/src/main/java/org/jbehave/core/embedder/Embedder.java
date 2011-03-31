@@ -6,7 +6,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -35,7 +43,7 @@ import org.jbehave.core.steps.Stepdoc;
  */
 public class Embedder {
 
-    private Configuration configuration;
+    private Configuration configuration = new MostUsefulConfiguration();
     private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
     private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
     private EmbedderControls embedderControls = new EmbedderControls();
@@ -79,11 +87,11 @@ public class Embedder {
     }
 
     private void generateMapsView(StoryMaps storyMaps) {
-        lazyCreateConfigurationIfNeeded();
+        Configuration configuration = configuration();
         StoryReporterBuilder builder = configuration.storyReporterBuilder();
         File outputDirectory = builder.outputDirectory();
         Properties viewResources = builder.viewResources();
-        ViewGenerator viewGenerator = configuration().viewGenerator();
+        ViewGenerator viewGenerator = configuration.viewGenerator();
         try {
             embedderMonitor.generatingMapsView(outputDirectory, storyMaps, viewResources);
             viewGenerator.generateMapsView(outputDirectory, storyMaps, viewResources);
@@ -231,7 +239,6 @@ public class Embedder {
 
     public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
             List<Future<ThrowableStory>> futures, String storyPath, Story story) {
-        lazyCreateConfigurationIfNeeded();
         EnqueuedStory enqueuedStory = enqueuedStory(embedderControls, configuration, candidateSteps, batchFailures,
                 filter, storyPath, story);
         return submit(futures, enqueuedStory);
@@ -423,7 +430,6 @@ public class Embedder {
     }
 
     public Configuration configuration() {
-        lazyCreateConfigurationIfNeeded();
         return configuration;
     }
 
@@ -486,12 +492,6 @@ public class Embedder {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-    private synchronized void lazyCreateConfigurationIfNeeded() {
-        if (configuration == null) {
-            configuration = new MostUsefulConfiguration();
-        }
     }
 
     @SuppressWarnings("serial")
@@ -566,10 +566,6 @@ public class Embedder {
             super("View generation failed to " + outputDirectory + " for story maps " + storyMaps + " for resources "
                     + viewResources, cause);
         }
-
-        public ViewGenerationFailed(File outputDirectory, Properties viewResources, RuntimeException e) {
-            // TODO Auto-generated constructor stub
-        }
     }
 
     /**
@@ -596,10 +592,10 @@ public class Embedder {
             throw new UnsupportedOperationException();
         }
 
-        public <T> Future<T> submit(Callable<T> tCallable) {
+        public <T> Future<T> submit(Callable<T> callable) {
             final Object[] rc = new Object[1];
             try {
-                rc[0] = tCallable.call();
+                rc[0] = callable.call();
             } catch (Exception e) {
                 rc[0] = e;
             }
@@ -617,6 +613,7 @@ public class Embedder {
                     return true;
                 }
 
+                @SuppressWarnings("unchecked")
                 public T get() throws InterruptedException, ExecutionException {
                     return (T) rc[0];
                 }

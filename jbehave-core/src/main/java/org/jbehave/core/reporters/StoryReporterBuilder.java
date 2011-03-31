@@ -237,10 +237,7 @@ public class StoryReporterBuilder {
     }
 
     /**
-     * Use the other withFormats() signature
-     * 
-     * @param formats
-     * @return
+     * @deprecated Use {@link withFormats(org.jbehave.core.reporters.Format... formats)}
      */
     @Deprecated
     public StoryReporterBuilder withFormats(Format... formats) {
