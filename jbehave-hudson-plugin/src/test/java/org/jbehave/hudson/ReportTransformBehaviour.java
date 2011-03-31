@@ -1,6 +1,5 @@
 package org.jbehave.hudson;
 
-import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -39,7 +38,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
-public class ReportTransformTest {
+public class ReportTransformBehaviour {
 	private static final String REPORT_PATH = "target/jbehave/";
 	
 	private static final String TESTSUITE_TESTCASE_FAILURE = "count(//testcase/failure)";
@@ -57,7 +56,7 @@ public class ReportTransformTest {
 
         StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder()
                 .withDefaultFormats()
-                .withCodeLocation(CodeLocations.codeLocationFromClass(ReportTransformTest.class))
+                .withCodeLocation(CodeLocations.codeLocationFromClass(ReportTransformBehaviour.class))
                 .withFormats(Format.XML);
 
         Configuration conf = new MostUsefulConfiguration()
