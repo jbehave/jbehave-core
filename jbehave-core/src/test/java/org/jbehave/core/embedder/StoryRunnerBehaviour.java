@@ -56,7 +56,35 @@ public class StoryRunnerBehaviour {
         verify(beforeStep).perform(null);
         verify(afterStep).perform(null);
     }
-    
+
+    @Test
+    public void shouldReportFailuresInStepsBeforeAndAfterStories() throws Throwable {
+        // Given
+        Step beforeStep = mock(Step.class);
+        StepResult beforeResult = mock(StepResult.class);
+        when(beforeStep.perform(null)).thenReturn(beforeResult);
+        UUIDExceptionWrapper failure = new UUIDExceptionWrapper("failed");
+        when(beforeResult.getFailure()).thenReturn(failure);
+        Step afterStep = mock(Step.class);
+        StepResult afterResult = mock(StepResult.class);
+        when(afterStep.perform(failure)).thenReturn(afterResult);
+        StepCollector collector = mock(StepCollector.class);
+        CandidateSteps mySteps = new Steps();
+        StoryReporter reporter = mock(StoryReporter.class);
+        FailureStrategy failureStrategy = mock(FailureStrategy.class);
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        when(collector.collectBeforeOrAfterStoriesSteps(asList(mySteps), Stage.BEFORE)).thenReturn(asList(beforeStep));
+        runner.runBeforeOrAfterStories(configurationWith(reporter, collector, failureStrategy), asList(mySteps), Stage.BEFORE);
+        when(collector.collectBeforeOrAfterStoriesSteps(asList(mySteps), Stage.AFTER)).thenReturn(asList(afterStep));
+        runner.runBeforeOrAfterStories(configurationWith(reporter, collector, failureStrategy), asList(mySteps), Stage.AFTER);
+
+        // Then
+        verify(beforeStep).perform(null);
+        verify(afterStep).perform(failure);
+    }
+
     @Test
     public void shouldRunStepsInStoryAndReportResultsToReporter() throws Throwable {
         // Given

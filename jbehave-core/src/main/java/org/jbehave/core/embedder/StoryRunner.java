@@ -46,11 +46,13 @@ public class StoryRunner {
      * <b>once</b> per collection of stories.
      * 
      * @param configuration the Configuration used to find the steps to run
-     * @param candidateSteps List of CandidateSteps containing the candidate
+     * @param candidateSteps the List of CandidateSteps containing the candidate
      *            steps methods
      * @param stage the Stage
      */
-    public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
+    public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps,
+            Stage stage) {
+        reporter.set(configuration.storyReporter(stage.name().toLowerCase()+"Stories"));
         runStepsWhileKeepingState(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
     }
 
