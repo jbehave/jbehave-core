@@ -24,7 +24,7 @@ public class JBehaveInputMetric extends InputMetricXSL {
 
     @Override
     public String getXslName() {
-        return "jbehave-3.2-to-junit-1.0.xsl";
+        return "jbehave-3.x-to-junit-1.0.xsl";
     }
 
     @Override

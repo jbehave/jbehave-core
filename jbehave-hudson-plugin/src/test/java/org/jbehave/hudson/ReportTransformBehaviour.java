@@ -177,7 +177,7 @@ public class ReportTransformBehaviour {
         File report = new File(cd, "/target/jbehave/" + path);
         Source xml = new StreamSource(report);
         Source xslt = new StreamSource(new File(cd,
-                "src/main/resources/org/jbehave/hudson/jbehave-3.2-to-junit-1.0.xsl"));
+                "src/main/resources/org/jbehave/hudson/"+new JBehaveInputMetric().getXslName()));
 
         Result resultOutput = new StreamResult(System.out);
         DOMResult result = new DOMResult();
