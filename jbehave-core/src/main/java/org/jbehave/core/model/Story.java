@@ -21,6 +21,10 @@ public class Story {
         this(Arrays.<Scenario>asList());
     }
 
+    public Story(String path) {
+        this(path, Description.EMPTY, Narrative.EMPTY, Arrays.<Scenario>asList());
+    }
+
     public Story(List<Scenario> scenarios) {
         this(Description.EMPTY, Narrative.EMPTY, scenarios);
     }

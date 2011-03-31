@@ -16,13 +16,15 @@ import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
+import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepResult;
+
+import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
 
 /**
  * Runs a {@link Story}, given a {@link Configuration} and a list of
@@ -52,7 +54,9 @@ public class StoryRunner {
      */
     public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps,
             Stage stage) {
-        reporter.set(configuration.storyReporter(stage.name().toLowerCase()+"Stories"));
+        String storyPath = capitalizeFirstLetter(stage.name().toLowerCase())+"Stories";
+        reporter.set(configuration.storyReporter(storyPath));
+        reporter.get().beforeStory(new Story(storyPath), false);
         runStepsWhileKeepingState(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
     }
 
