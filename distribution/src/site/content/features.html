@@ -22,6 +22,8 @@ Development</a> (BDD).
 	allows "out-in" development.</li>
     <li>User stories can be specified as classpath resources
     or external URL-based resources.</li>
+    <li>User stories can be executed concurrently, specifying 
+    the number of concurrent threads.</li>
     <li>User stories can be documented via generic user-defined 
     meta information that allows easy story filtering and organisation
     into story maps.</li>
@@ -31,12 +33,14 @@ Development</a> (BDD).
 	<li>Annotation-based configuration and Steps class specifications</li>
 	<li>Dependency Injection support allowing both configuration and
 	Steps instances composed via your favourite container (Guice,
-	PicoContainer, Spring).</li>
+	PicoContainer, Spring, Weld).</li>
     <li>Groovy scripting supported for writing configuration and 
     Steps instances</li>  
 	<li>Extensible story reporting: outputs stories executed in
 	different human-readable file-based formats (HTML, TXT, XML). 
 	Fully style-able view.</li>
+    <li>Story cross reference report format in JSON and XML, consumable 
+    by external applications.</li>
 	<li>Auto-generation of pending steps so the build is not broken by
 	a missing step, but has option to configure breaking build for pending
 	steps.</li>
