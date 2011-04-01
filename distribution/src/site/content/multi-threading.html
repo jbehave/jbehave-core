@@ -4,6 +4,7 @@
 <title>Multi-Threading</title>
 </head>
 <body>
+
 <h2>Multi-Threading</h2>
 
 <p>The JBehave <a
@@ -13,13 +14,21 @@
     Ant or Maven access points.
 </p>
 
-<p>It is important to note that it's the entire story that is executed in one concurrent execution and that scenarios within
- the same story cannot be run concurrently.
+<span class="followup">It is important to note that it's the entire story that is executed in one concurrent execution 
+and that scenarios within the same story cannot be run concurrently.
+</span>
+
+<h2>Enqueing a single story</h2>
+
+<p>The Embedder API allow the enqueuing of a single story via the 
+<a href="javadoc/core/org/jbehave/core/embedder/Embedder.html#enqueueStory(org.jbehave.core.failures.BatchFailures, org.jbehave.core.embedder.MetaFilter, java.util.List, java.lang.String, org.jbehave.core.model.Story)">enqueueStory</a> method.
+This is used for example by the WebQueue to provide a simple web facade to running stories in an asynchronous way.
 </p>
 
 <h2>Examples</h2>
 
 <p>Examples of use of multi-threading can be found in the 
+ <a href="https://github.com/jbehave/jbehave-core/blob/master/examples/trader">JBehave Trader Example</a> and the 
  <a href="https://github.com/jbehave/jbehave-tutorial">JBehave Tutorial</a> (<a
  href="https://github.com/jbehave/jbehave-tutorial/blob/master/etsy-stories/src/main/java/org/jbehave/tutorials/etsy/EtsyDotComStories.java">EtsyDotComStories</a>).</p>
 
