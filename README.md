@@ -46,7 +46,7 @@ After that, it is necessary to only do the following:
 
     mvn install
 
-###Maven Build Profiles
+### Maven Build Profiles
 
 - default: builds all releasable modules
 - reporting: builds reports
@@ -57,17 +57,17 @@ After that, it is necessary to only do the following:
 
 Note:  profiles are additive and the default profile is always active.
 
-###Example Profile Usages
+### Example Profile Usages
 
-####Build Core and all Examples
+#### Build Core and all Examples
 
     mvn install -Pexamples
 
-####Build with Reporting and Distribution
+#### Build with Reporting and Distribution
 
     mvn install -Preporting,distribution 
 
-####Building a Release with Maven
+#### Building a Release with Maven
 
     mvn release:prepare -Preporting,distribution 
     mvn release:perform -Preporting,distribution
