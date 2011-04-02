@@ -21,17 +21,17 @@ tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
 
 Keep an eye on the  [Bamboo Continuous Integration](http://builds.codehaus.org/browse/JBEHAVE) server for JBehave builds.
 
-###Depended-on Technologies
+### Depended-on Technologies
 
 JDK required: 5.0 (or above)
 [Maven](http://maven.apache.org) required (2.2.1 or above).
 
-###Encoding
+### Encoding
 
 Configure IDE to use UTF-8 for all files
 Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS 
  
-###IDE Integration
+### IDE Integration
 
 Maven is supported in Intellij IDEA out-of-the-box 
 Maven is supported in Eclipse via [m2eclipse plugin](http://m2eclipse.sonatype.org/)
