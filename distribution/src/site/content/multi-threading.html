@@ -15,7 +15,7 @@
 </p>
 
 <span class="followup">It is important to note that it's the entire story that is executed in one concurrent execution 
-and that scenarios within the same story cannot be run concurrently.
+and that scenarios within the same story cannot be run concurrently. 
 </span>
 
 <h2>Enqueing a single story</h2>
@@ -25,12 +25,16 @@ and that scenarios within the same story cannot be run concurrently.
 This is used for example by the WebQueue to provide a simple web facade to running stories in an asynchronous way.
 </p>
 
+<p>The developer should take care that any static state shared between concurrently run stories should not introduce bugs or unwanted side effects.  Indeed it is the opinion of the JBehave  developer team that static state should be avoided.</p>
+
+<p>It is possible that hundreds of stories could be run concurrently via this mechanism.  There are tradeoffs though.  Some other critical part of a system may fail of multiple threads are using it concurrently beyond its capacity.</p>
+
 <h2>Examples</h2>
 
 <p>Examples of use of multi-threading can be found in the 
  <a href="https://github.com/jbehave/jbehave-core/blob/master/examples/trader">JBehave Trader Example</a> and the 
  <a href="https://github.com/jbehave/jbehave-tutorial">JBehave Tutorial</a> (<a
- href="https://github.com/jbehave/jbehave-tutorial/blob/master/etsy-stories/src/main/java/org/jbehave/tutorials/etsy/EtsyDotComStories.java">EtsyDotComStories</a>).</p>
+ href="https://github.com/jbehave/jbehave-tutorial/blob/master/etsy-stories/src/main/java/org/jbehave/tutorials/etsy/EtsyDotComStories.java">EtsyDotComStories</a>) which will run stories in browsers frames on SauceLabs if so desired.</p>
 
 </body>
 </html>
