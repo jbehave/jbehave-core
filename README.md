@@ -49,11 +49,14 @@ After that, it is necessary to only do the following:
 ### Maven Build Profiles
 
 - default: builds all releasable modules
-- reporting: builds reports
-- distribution: builds distribution (documentation)
 - examples: builds all headless examples
 - gui: builds examples that require a GUI (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://builds.codehaus.org/browse/JBEHAVE) )
 - nt: no-test, builds skipping unit-test behaviors 
+
+#### Maven Build Profiles used during release cycle
+
+- reporting: builds reports
+- distribution: builds distribution (documentation)
 
 Note:  profiles are additive and the default profile is always active.
 
