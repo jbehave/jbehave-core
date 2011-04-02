@@ -11,8 +11,8 @@ import hudson.Extension;
 public class JBehavePluginType extends TestType {
 
     @DataBoundConstructor
-    public JBehavePluginType(String pattern, boolean faildedIfNotNew, boolean deleteOutputFiles) {
-        super(pattern, faildedIfNotNew, deleteOutputFiles);
+    public JBehavePluginType(String pattern, boolean failedIfNotNew, boolean deleteOutputFiles) {
+        super(pattern, failedIfNotNew, deleteOutputFiles);
     }
 
     public TestTypeDescriptor<?> getDescriptor() {

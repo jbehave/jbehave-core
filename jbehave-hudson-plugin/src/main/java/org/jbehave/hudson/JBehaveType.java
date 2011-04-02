@@ -6,8 +6,8 @@ import com.thalesgroup.hudson.plugins.xunit.types.XUnitType;
 @SuppressWarnings("serial")
 public class JBehaveType extends XUnitType {
 
-    public JBehaveType(String pattern, boolean faildedIfNotNew, boolean deleteJUnitFiles) {
-        super(pattern, faildedIfNotNew, deleteJUnitFiles);
+    public JBehaveType(String pattern, boolean failedIfNotNew, boolean deleteJUnitFiles) {
+        super(pattern, failedIfNotNew, deleteJUnitFiles);
     }
 
     @Override
