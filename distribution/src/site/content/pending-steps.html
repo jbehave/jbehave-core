@@ -28,6 +28,38 @@ via the <a
         .usePendingStepStrategy(new FailingPendingStepStrategy());
 </pre>
 
+<h2>@Pending</h2>
+
+<p>The <a
+        href="javadoc/core/org/jbehave/core/annotations/Pending.html">@Pending</a> annotation allows
+steps developers to mark any step method as pending:
+</p>
+ 
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Given("a stock of symbol $symbol and a threshold of $threshold")
+    @Pending
+    public void aStock(String symbol, double threshold) {
+        // not yet implemented
+    }
+ ]]>
+</script>
+
+<p>This would make the following textual step be marked as pending:
+</p>
+
+<pre class="brush: bdd">
+Given a stock of symbol STK and a threshold of 10.0 (PENDING)
+</pre>
+
+<p>The intention of the @Pending annotation is to tell JBehave that the step has yet to be implemented.  
+It is then by conscious choice that the Steps developer should remove the annotation when the step has been implemented.
+</p>
+
+<span class="followup">A method annotated with @Pending will always result in a pending step, 
+overriding the matching that would result from the pattern provided in the @Given/@When/@Then annotations.
+</span>
+
 <h2>Dry Run Mode</h2>
 
 <p>It may be sometimes useful to run in dry-run mode, checking if any steps are pending but without actually
