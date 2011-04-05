@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.parsers.StepMatcher;
@@ -100,6 +101,10 @@ public class StepCandidate {
             return false;
         }
     }
+    
+    public boolean isPending(){
+        return method.isAnnotationPresent(Pending.class);
+    }
 
     public boolean matches(String stepAsString) {
         return matches(stepAsString, null);
@@ -120,8 +125,8 @@ public class StepCandidate {
             stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType, method, stepsInstance);
             boolean matchesPattern = stepMatcher.matches(stripStartingWord(step));
             stepMonitor.stepMatchesPattern(step, matchesPattern, stepMatcher.pattern(), method, stepsInstance);
-            // must match both type and pattern
-            return matchesType && matchesPattern;
+            // must match both type and pattern and not be pending
+            return matchesType && matchesPattern && !isPending();
         } catch (StartingWordNotFound e) {
             return false;
         }

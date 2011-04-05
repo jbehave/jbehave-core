@@ -1,9 +1,16 @@
 package org.jbehave.core.steps;
 
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import com.thoughtworks.paranamer.CachingParanamer;
-import com.thoughtworks.paranamer.Paranamer;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.MethodDescriptor;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -14,26 +21,23 @@ import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
-import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.StepCandidate.StartingWordNotFound;
 import org.junit.Test;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.MethodDescriptor;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.nullValue;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.jbehave.core.steps.StepType.GIVEN;
@@ -312,7 +316,7 @@ public class StepCandidateBehaviour {
         String stepAsString = "When I live on the <ith> floor but some call it the <nth>";
         Step step = candidate.createMatchedStep(stepAsString, namedParameters);
         StepResult perform = step.perform(null);
-        assertThat(perform, instanceOf(Pending.class));
+        assertThat(perform, instanceOf(AbstractStepResult.Pending.class));
         assertThat(perform.parametrisedStep(), equalTo(stepAsString));
         StepResult doNotPerform = step.doNotPerform();
         assertThat(doNotPerform, instanceOf(NotPerformed.class));
@@ -365,6 +369,15 @@ public class StepCandidateBehaviour {
         assertThat(steps.whenName, nullValue());
         assertThat(steps.whenTimes, equalTo(0));
     }
+    
+    @Test
+    public void shouldNotMatchPendingSteps() {
+        PendingSteps steps = new PendingSteps();
+        List<StepCandidate> candidates = steps.listCandidates();
+        assertThat(candidates.size(), equalTo(2));
+        assertThat(candidates.get(0).matches("Given a pending step"), is(false));
+        assertThat(candidates.get(1).matches("Given a non pending step"), is(true));
+    }
 
     @Test(expected = StartingWordNotFound.class)
     public void shouldNotCreateStepOfWrongType() {
@@ -412,6 +425,19 @@ public class StepCandidateBehaviour {
             OutcomesTable outcomes = new OutcomesTable();
             outcomes.addOutcome("failing", name, equalTo(""));
             outcomes.verify();
+        }
+
+    }
+    
+    static class PendingSteps extends Steps {
+
+        @Given("a pending step")
+        @Pending
+        public void aPendingStep() {
+        }
+
+        @Given("a non pending step")
+        public void aNonPendingStep() {
         }
 
     }
