@@ -469,11 +469,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
             new Replacement(
                     Pattern.compile(
                             "\\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(Current|)\\(CallSiteArray.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent\\(AbstractCallSite.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent\\(AbstractCallSite.java:\\d+\\)"
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(Current|)\\(AbstractCallSite.java:\\d+\\)\\n" +
+                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(Current|)\\(AbstractCallSite.java:\\d+\\)"
 
                     ),
-                    "\t(groovy-callCurrent)"),
+                    "\t(groovy-call)"),
 
             // This one last.
             new Replacement(
