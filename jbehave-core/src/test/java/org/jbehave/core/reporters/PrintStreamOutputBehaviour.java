@@ -719,6 +719,9 @@ public class PrintStreamOutputBehaviour {
                 "\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n" +
                 "\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n" +
                 "\tat java.lang.reflect.Method.invoke(Method.java:597)\n" +
+                "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:42)\n" +
+                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:108)\n" +
+                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)\n" +
                 "\tat org.jbehave.core.steps.StepCreator$ParameterizedStep.perform(StepCreator.java:430)\n" +
                 "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)";
 
@@ -728,9 +731,9 @@ public class PrintStreamOutputBehaviour {
                 "java.lang.AssertionError: cart should have contained 68467780\n" +
                 "Expected: is <true>\n" +
                 "     got: <false>\n" +
-                "\t(groovy-callCurrent)\n" +
+                "\t(groovy-call)\n" +
                 "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
-                "\t(groovy-callCurrent)\n" +
+                "\t(groovy-call)\n" +
                 "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
                 "\t(reflection-construct)\n" +
                 "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
@@ -740,7 +743,7 @@ public class PrintStreamOutputBehaviour {
                 "\tat com.github.tanob.groobe.AssertionSupport$_assertTransformedDelegateAndOneParam_closure3.doCall(AssertionSupport.groovy:20)\n" +
                 "\t(groovy-closure-invoke)\n" +
                 "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
-                "\t(reflection-invoke)\n" +
+                "\t(groovy-call)\n" +
                 "\tat org.jbehave.core.steps.StepCreator$ParameterizedStep.perform(StepCreator.java:430)\n" +
                 "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)", reporter.stackTrace(start));
     }
