@@ -114,8 +114,8 @@ public class AnnotationBuilderBehaviour {
 
     @Test
     public void shouldFindStoryPaths() {
-        AnnotationBuilder annotatedWithPaths = new AnnotationBuilder(AnnotatedWithPaths.class);
-        assertThat(annotatedWithPaths.findPaths().size(), greaterThan(0));
+        assertThat(new AnnotationBuilder(AnnotatedWithPaths.class).findPaths().size(), greaterThan(0));
+        assertThat(new AnnotationBuilder(AnnotedConfigurable.class).findPaths().size(), equalTo(0));
     }
 
     @Test(expected = InstantiationFailed.class)

@@ -497,7 +497,7 @@ public class StoryRunnerBehaviour {
         StepCollector collector = mock(StepCollector.class);
         FailureStrategy failureStrategy = mock(FailureStrategy.class);
         Configuration configuration = configurationWith(reporter, collector, failureStrategy);
-        configuration.storyControls().doDryRun(true);
+        configuration.doDryRun(true);
         CandidateSteps mySteps = new Steps(configuration);
         UUIDExceptionWrapper anException = new UUIDExceptionWrapper(new IllegalArgumentException());
         Step pendingStep = mock(Step.class, "pendingStep");

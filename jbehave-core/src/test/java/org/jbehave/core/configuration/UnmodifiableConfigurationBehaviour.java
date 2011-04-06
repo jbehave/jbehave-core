@@ -1,11 +1,7 @@
 package org.jbehave.core.configuration;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Map;
 
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -25,6 +21,10 @@ import org.jbehave.core.steps.StepMonitor;
 import org.junit.Test;
 
 import com.thoughtworks.paranamer.Paranamer;
+
+import static org.hamcrest.CoreMatchers.is;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class UnmodifiableConfigurationBehaviour {
 
