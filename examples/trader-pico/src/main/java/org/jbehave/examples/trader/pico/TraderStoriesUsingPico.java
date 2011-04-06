@@ -1,7 +1,5 @@
 package org.jbehave.examples.trader.pico;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-
 import java.util.List;
 
 import org.jbehave.core.io.StoryFinder;
@@ -12,6 +10,7 @@ import org.jbehave.examples.trader.service.TradingService;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
+import org.jbehave.examples.trader.steps.PendingSteps;
 import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
 import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
@@ -21,6 +20,8 @@ import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.PicoContainer;
 import org.picocontainer.behaviors.Caching;
 import org.picocontainer.injectors.ConstructorInjection;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
  * Run trader stories using PicoStepsFactory. The textual trader stories are
@@ -41,6 +42,7 @@ public class TraderStoriesUsingPico extends TraderStories {
         container.addComponent(BeforeAfterSteps.class);
         container.addComponent(AndSteps.class);
         container.addComponent(CalendarSteps.class);
+        container.addComponent(PendingSteps.class);
         container.addComponent(PriorityMatchingSteps.class);
         container.addComponent(SandpitSteps.class);
         container.addComponent(SearchSteps.class);

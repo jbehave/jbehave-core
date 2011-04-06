@@ -7,19 +7,22 @@ import org.jbehave.core.annotations.When;
 
 public class PendingSteps {
 
-    @Given("a step that has %param")
+    @Given("a step is annotated as pending")
     @Pending
-    public void has(String param){
-    }
-    
-    @When("a step has exactly one %param")
-    @Pending
-    public void hasExactlyOne(String param){
+    public void givenAStepIsAnnotatedAsPending() {
+        // PENDING
     }
 
-    @Then("the parameter value is \"%param\"")
+    @When("a step is annotated as pending")
     @Pending
-    public void theParamValue(String param){
+    public void whenAStepIsAnnotatedAsPending() {
+        // PENDING
+    }
+
+    @Then("a step is annotated as pending")
+    @Pending
+    public void thenAStepIsAnnotatedAsPending() {
+        // PENDING
     }
 
 }

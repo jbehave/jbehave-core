@@ -74,4 +74,7 @@ public class NullStoryReporter implements StoryReporter {
     public void dryRun() {
     }
 
+    public void pendingMethods(List<String> methods) {
+    }
+
 }

@@ -1,7 +1,9 @@
 package org.jbehave.core.steps;
 
+import java.beans.IntrospectionException;
+import java.lang.reflect.Method;
+
 import org.jbehave.core.failures.BeforeOrAfterFailed;
-import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
@@ -10,11 +12,10 @@ import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.junit.Test;
 
-import java.beans.IntrospectionException;
-import java.lang.reflect.Method;
-
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.instanceOf;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -101,7 +102,7 @@ public class StepCreatorBehaviour {
     public void shouldCreatePendingAndIgnorableAsStepResults() throws IntrospectionException {
         // When
         Step ignorableStep = StepCreator.createIgnorableStep("!-- ignore me");
-        Step pendingStep = StepCreator.createPendingStep("When I'm pending");
+        Step pendingStep = StepCreator.createPendingStep("When I'm pending", null);
 
         // Then
         assertThat(ignorableStep.perform(null), instanceOf(Ignorable.class));

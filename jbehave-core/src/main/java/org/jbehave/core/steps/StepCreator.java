@@ -276,7 +276,8 @@ public class StepCreator {
 
         public StepResult run(Method method, UUIDExceptionWrapper failureIfItHappened) {
             if (method == null) {
-                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(new NullPointerException("method"))));
+                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(new NullPointerException(
+                        "method"))));
             }
             try {
                 if (method.getParameterTypes().length == 0) {
@@ -300,8 +301,8 @@ public class StepCreator {
         }
     }
 
-    public static Step createPendingStep(final String stepAsString) {
-        return new PendingStep(stepAsString);
+    public static Step createPendingStep(final String stepAsString, String previousNonAndStep) {
+        return new PendingStep(stepAsString, previousNonAndStep);
     }
 
     public static Step createIgnorableStep(final String stepAsString) {
@@ -332,7 +333,7 @@ public class StepCreator {
         }
     }
 
-    private class BeforeOrAfterStep implements Step {
+    public class BeforeOrAfterStep implements Step {
         private final Method method;
 
         public BeforeOrAfterStep(Method method) {
@@ -349,7 +350,7 @@ public class StepCreator {
 
     }
 
-    private class AnyOrDefaultStep implements Step {
+    public class AnyOrDefaultStep implements Step {
 
         private final Method method;
 
@@ -367,7 +368,7 @@ public class StepCreator {
 
     }
 
-    private class SuccessStep implements Step {
+    public class SuccessStep implements Step {
 
         private final boolean failureOccured;
         private final Method method;
@@ -387,7 +388,7 @@ public class StepCreator {
 
     }
 
-    private class FailureStep implements Step {
+    public class FailureStep implements Step {
 
         private final boolean failureOccured;
         private final Method method;
@@ -407,7 +408,7 @@ public class StepCreator {
 
     }
 
-    private class ParameterizedStep implements Step {
+    public class ParameterizedStep implements Step {
         private Object[] convertedParameters;
         private String parametrisedStep;
         private final String stepAsString;
@@ -415,7 +416,8 @@ public class StepCreator {
         private final String stepWithoutStartingWord;
         private final Map<String, String> namedParameters;
 
-        public ParameterizedStep(String stepAsString, Method method, String stepWithoutStartingWord, Map<String, String> namedParameters) {
+        public ParameterizedStep(String stepAsString, Method method, String stepWithoutStartingWord,
+                Map<String, String> namedParameters) {
             this.stepAsString = stepAsString;
             this.method = method;
             this.stepWithoutStartingWord = stepWithoutStartingWord;
@@ -435,9 +437,11 @@ public class StepCreator {
                 return pending(stepAsString).withParameterValues(parametrisedStep);
             } catch (InvocationTargetException e) {
                 if (e.getCause() instanceof UUIDExceptionWrapper) {
-                    return failed(stepAsString, ((UUIDExceptionWrapper)e.getCause())).withParameterValues(parametrisedStep);
+                    return failed(stepAsString, ((UUIDExceptionWrapper) e.getCause())).withParameterValues(
+                            parametrisedStep);
                 }
-                return failed(stepAsString, new UUIDExceptionWrapper(e.getCause())).withParameterValues(parametrisedStep);
+                return failed(stepAsString, new UUIDExceptionWrapper(e.getCause())).withParameterValues(
+                        parametrisedStep);
             } catch (Throwable t) {
                 return failed(stepAsString, new UUIDExceptionWrapper(t)).withParameterValues(parametrisedStep);
             }
@@ -461,42 +465,62 @@ public class StepCreator {
             Type[] types = method.getGenericParameterTypes();
             String[] parameters = parametersForStep(namedParameters, types, annotationNames, parameterNames);
             convertedParameters = convertParameters(parameters, types);
-            parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, annotationNames,
-                    parameterNames, parameters);
+            parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, annotationNames, parameterNames,
+                    parameters);
         }
 
     }
 
-    private static class PendingStep implements Step {
-         private final String stepAsString;
+    public static class PendingStep implements Step {
+        private final String stepAsString;
+        private final String previousNonAndStep;
+        private Method method;
 
-         public PendingStep(String stepAsString) {
-             this.stepAsString = stepAsString;
-         }
+        public PendingStep(String stepAsString, String previousNonAndStep) {
+            this.stepAsString = stepAsString;
+            this.previousNonAndStep = previousNonAndStep;
+        }
 
-         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-             return pending(stepAsString);
-         }
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return pending(stepAsString);
+        }
 
-         public StepResult doNotPerform() {
-             return pending(stepAsString);
-         }
-     }
+        public StepResult doNotPerform() {
+            return pending(stepAsString);
+        }
 
-     private static class IgnorableStep implements Step {
-         private final String stepAsString;
+        public String stepAsString() {
+            return stepAsString;
+        }
 
-         public IgnorableStep(String stepAsString) {
-             this.stepAsString = stepAsString;
-         }
+        public String previousNonAndStepAsString() {
+            return previousNonAndStep;
+        }
 
-         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-             return ignorable(stepAsString);
-         }
+        public void annotatedOn(Method method) {
+            this.method = method;
+        }
+        
+        public boolean annotated(){
+            return method != null;
+        }
+        
+    }
 
-         public StepResult doNotPerform() {
-             return ignorable(stepAsString);
-         }
-     }
+    public static class IgnorableStep implements Step {
+        private final String stepAsString;
+
+        public IgnorableStep(String stepAsString) {
+            this.stepAsString = stepAsString;
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return ignorable(stepAsString);
+        }
+
+        public StepResult doNotPerform() {
+            return ignorable(stepAsString);
+        }
+    }
 
 }

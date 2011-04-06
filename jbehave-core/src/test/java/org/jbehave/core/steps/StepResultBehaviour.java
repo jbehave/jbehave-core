@@ -1,6 +1,5 @@
 package org.jbehave.core.steps;
 
-import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.OutcomesTable;
@@ -9,9 +8,18 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.containsString;
-import static org.jbehave.core.steps.AbstractStepResult.*;
-import static org.mockito.Mockito.*;
+
+import static org.jbehave.core.steps.AbstractStepResult.failed;
+import static org.jbehave.core.steps.AbstractStepResult.ignorable;
+import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
+import static org.jbehave.core.steps.AbstractStepResult.pending;
+import static org.jbehave.core.steps.AbstractStepResult.skipped;
+import static org.jbehave.core.steps.AbstractStepResult.successful;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 
 public class StepResultBehaviour {

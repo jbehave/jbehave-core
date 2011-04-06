@@ -1,7 +1,5 @@
 package org.jbehave.examples.trader.pico;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-
 import java.util.List;
 
 import org.jbehave.core.InjectableEmbedder;
@@ -16,12 +14,15 @@ import org.jbehave.examples.trader.pico.AnnotatedEmbedderUsingPico.Configuration
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
+import org.jbehave.examples.trader.steps.PendingSteps;
 import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
 import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
 import org.jbehave.examples.trader.steps.TraderSteps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
  * Run stories via annotated embedder configuration and steps using Pico. The
@@ -32,7 +33,7 @@ import org.junit.runner.RunWith;
 @RunWith(PicoAnnotatedEmbedderRunner.class)
 @Configure()
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
-@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
+@UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, PendingSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 @UsingPico(modules = { ConfigurationModule.class })
 public class AnnotatedEmbedderUsingPicoAndSteps extends InjectableEmbedder {

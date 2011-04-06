@@ -100,16 +100,20 @@ public class StepFailureDecorator implements StoryReporter {
         delegate.afterExamples();        
     }
 
-	public void dryRun() {
-		delegate.dryRun();
-	}
-
     public void scenarioNotAllowed(Scenario scenario, String filter) {
         delegate.scenarioNotAllowed(scenario, filter);
     }
 
     public void storyNotAllowed(Story story, String filter) {
         delegate.storyNotAllowed(story, filter);
+    }
+
+    public void dryRun() {
+        delegate.dryRun();
+    }
+
+    public void pendingMethods(List<String> methods) {
+        delegate.pendingMethods(methods);
     }
     
 }

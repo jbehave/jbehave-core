@@ -125,8 +125,8 @@ public class StepCandidate {
             stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType, method, stepsInstance);
             boolean matchesPattern = stepMatcher.matches(stripStartingWord(step));
             stepMonitor.stepMatchesPattern(step, matchesPattern, stepMatcher.pattern(), method, stepsInstance);
-            // must match both type and pattern and not be pending
-            return matchesType && matchesPattern && !isPending();
+            // must match both type and pattern 
+            return matchesType && matchesPattern;
         } catch (StartingWordNotFound e) {
             return false;
         }

@@ -56,6 +56,7 @@ public class XmlOutput extends PrintStreamOutput {
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "<dryRun>{0}</dryRun>\n");        
+        patterns.setProperty("pendingMethod", "<pendingMethod>{0}</pendingMethod>\n");        
         patterns.setProperty("beforeStory", "<story path=\"{1}\" title=\"{0}\">\n");
         patterns.setProperty("afterStory", "</story>\n");
         patterns.setProperty("metaStart", "<meta>\n");

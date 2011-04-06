@@ -1,5 +1,6 @@
 package org.jbehave.core.embedder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,9 +20,11 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
 
 import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
@@ -52,9 +55,8 @@ public class StoryRunner {
      *            steps methods
      * @param stage the Stage
      */
-    public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps,
-            Stage stage) {
-        String storyPath = capitalizeFirstLetter(stage.name().toLowerCase())+"Stories";
+    public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
+        String storyPath = capitalizeFirstLetter(stage.name().toLowerCase()) + "Stories";
         reporter.set(configuration.storyReporter(storyPath));
         reporter.get().beforeStory(new Story(storyPath), false);
         runStepsWhileKeepingState(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
@@ -106,7 +108,7 @@ public class StoryRunner {
     }
 
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
-        if ( !context.givenStory ){
+        if (!context.givenStory) {
             reporter.set(reporterFor(context, story));
         }
         pendingStepStrategy.set(context.configuration().pendingStepStrategy());
@@ -265,7 +267,28 @@ public class StoryRunner {
     }
 
     private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
-        runStepsWhileKeepingState(context.collectScenarioSteps(scenario, scenarioParameters));
+        List<Step> steps = context.collectScenarioSteps(scenario, scenarioParameters);
+        runStepsWhileKeepingState(steps);
+        generatePendingStepMethods(context, steps);
+    }
+
+    private void generatePendingStepMethods(RunContext context, List<Step> steps) {
+        List<PendingStep> pendingSteps = new ArrayList<PendingStep>();
+        for (Step step : steps) {
+            if (step instanceof PendingStep) {
+                pendingSteps.add((PendingStep) step);
+            }
+        }
+        if (!pendingSteps.isEmpty()) {
+            PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration().keywords());
+            List<String> methods = new ArrayList<String>();
+            for (PendingStep pendingStep : pendingSteps) {
+                if ( !pendingStep.annotated() ){
+                    methods.add(generator.generateMethod(pendingStep));
+                }
+            }
+            reporter.get().pendingMethods(methods);
+        }
     }
 
     private void runStepsWhileKeepingState(List<Step> steps) {

@@ -13,6 +13,8 @@
 
   <bean class="org.jbehave.examples.trader.steps.CompositeSteps" />
 
+  <bean class="org.jbehave.examples.trader.steps.PendingSteps" />
+
   <bean class="org.jbehave.examples.trader.steps.PriorityMatchingSteps" />
 
   <bean class="org.jbehave.examples.trader.steps.SandpitSteps" />

@@ -152,6 +152,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     public void dryRun() {
     }
 
+    public void pendingMethods(List<String> methods) {
+    }
+
     private void count(String event) {
         Integer count = data.get(event);
         if (count == null) {

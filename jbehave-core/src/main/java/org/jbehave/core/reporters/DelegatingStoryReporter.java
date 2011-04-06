@@ -140,12 +140,6 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
-	public void dryRun() {
-        for (StoryReporter reporter : delegates) {
-            reporter.dryRun();
-        }
-	}
-	
     public void scenarioNotAllowed(Scenario scenario, String filter) {
         for (StoryReporter reporter : delegates) {
             reporter.scenarioNotAllowed(scenario, filter);
@@ -158,6 +152,18 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 	
+    public void dryRun() {
+        for (StoryReporter reporter : delegates) {
+            reporter.dryRun();
+        }
+    }
+    
+    public void pendingMethods(List<String> methods) {
+        for (StoryReporter reporter : delegates) {
+            reporter.pendingMethods(methods);
+        }
+    }
+
     public Collection<StoryReporter> getDelegates() {
         return delegates;
     }

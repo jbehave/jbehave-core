@@ -1,11 +1,5 @@
 package org.jbehave.examples.trader.pico;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -32,6 +26,7 @@ import org.jbehave.examples.trader.service.TradingService;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
+import org.jbehave.examples.trader.steps.PendingSteps;
 import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
 import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
@@ -39,6 +34,12 @@ import org.jbehave.examples.trader.steps.TraderSteps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.picocontainer.MutablePicoContainer;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 
 /**
  * Run stories via annotated embedder configuration and steps using Pico. The
@@ -82,6 +83,7 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
             container.addComponent(BeforeAfterSteps.class);
             container.addComponent(AndSteps.class);
             container.addComponent(CalendarSteps.class);
+            container.addComponent(PendingSteps.class);
             container.addComponent(PriorityMatchingSteps.class);
             container.addComponent(SandpitSteps.class);
             container.addComponent(SearchSteps.class);

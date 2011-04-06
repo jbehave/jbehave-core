@@ -24,6 +24,7 @@ import org.jbehave.examples.trader.service.TradingService;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
+import org.jbehave.examples.trader.steps.PendingSteps;
 import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
 import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
@@ -70,6 +71,7 @@ public class AnnotatedPathRunnerUsingPico {
             container.addComponent(BeforeAfterSteps.class);
             container.addComponent(AndSteps.class);
             container.addComponent(CalendarSteps.class);
+            container.addComponent(PendingSteps.class);
             container.addComponent(PriorityMatchingSteps.class);
             container.addComponent(SandpitSteps.class);
             container.addComponent(SearchSteps.class);

@@ -23,6 +23,7 @@ import org.jbehave.examples.trader.service.TradingService;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
+import org.jbehave.examples.trader.steps.PendingSteps;
 import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
 import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
@@ -31,10 +32,10 @@ import org.junit.runner.RunWith;
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML;
 
 /**
  * Run stories via annotated embedder configuration and steps using Guice. The
@@ -72,6 +73,7 @@ public class AnnotatedPathRunnerUsingGuice {
             bind(BeforeAfterSteps.class).in(Scopes.SINGLETON);
             bind(AndSteps.class).in(Scopes.SINGLETON);
             bind(CalendarSteps.class).in(Scopes.SINGLETON);
+            bind(PendingSteps.class).in(Scopes.SINGLETON);
             bind(PriorityMatchingSteps.class).in(Scopes.SINGLETON);
             bind(SandpitSteps.class).in(Scopes.SINGLETON);
             bind(SearchSteps.class).in(Scopes.SINGLETON);

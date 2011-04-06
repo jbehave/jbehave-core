@@ -1,11 +1,15 @@
 package org.jbehave.core.steps;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
-import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
@@ -14,13 +18,10 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.Steps.DuplicateCandidateFound;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import static org.hamcrest.CoreMatchers.equalTo;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 

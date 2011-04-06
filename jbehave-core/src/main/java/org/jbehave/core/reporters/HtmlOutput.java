@@ -57,6 +57,7 @@ public class HtmlOutput extends PrintStreamOutput {
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "<div class=\"dryRun\">{0}</div>\n");        
+        patterns.setProperty("pendingMethod", "<div><pre class=\"pending\">{0}</pre></div>\n");        
         patterns.setProperty("beforeStory", "<div class=\"story\">\n<h1>{0}</h1>\n<div class=\"path\">{1}</div>\n");
         patterns.setProperty("afterStory", "</div>\n");
         patterns.setProperty("metaStart", "<div class=\"meta\">\n<div class=\"keyword\">{0}</div>\n");

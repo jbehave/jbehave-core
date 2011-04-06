@@ -371,12 +371,14 @@ public class StepCandidateBehaviour {
     }
     
     @Test
-    public void shouldNotMatchPendingSteps() {
+    public void shouldMatchAndIdentifyPendingAnnotatedSteps() {
         PendingSteps steps = new PendingSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));
-        assertThat(candidates.get(0).matches("Given a pending step"), is(false));
+        assertThat(candidates.get(0).matches("Given a pending step"), is(true));
+        assertThat(candidates.get(0).isPending(), is(true));
         assertThat(candidates.get(1).matches("Given a non pending step"), is(true));
+        assertThat(candidates.get(1).isPending(), is(false));
     }
 
     @Test(expected = StartingWordNotFound.class)

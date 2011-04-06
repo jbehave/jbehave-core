@@ -292,6 +292,13 @@ public abstract class PrintStreamOutput implements StoryReporter {
 	public void dryRun() {
 		print(format("dryRun", "{0}\n", keywords.dryRun()));
 	}
+	
+
+    public void pendingMethods(List<String> methods) {
+        for (String method : methods) {
+            print(format("pendingMethod", "{0}\n", method));
+        }        
+    }
 
     /**
      * Formats event output by key, usually equal to the method name.

@@ -38,6 +38,15 @@ public class SilentSuccessFilter implements StoryReporter {
         };
         runState.report();
     }
+    
+    public void pendingMethods(final List<String> methods) {
+        runState = new State(){
+            public void report(){
+                delegate.pendingMethods(methods);
+            }
+        };
+        runState.report();
+    }
 
     public void beforeStory(final Story story, final boolean givenStory) {
         this.givenStory = givenStory;

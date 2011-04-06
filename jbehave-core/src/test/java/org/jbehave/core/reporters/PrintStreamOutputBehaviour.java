@@ -37,13 +37,13 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 
 import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class PrintStreamOutputBehaviour {
 
@@ -92,7 +92,9 @@ public class PrintStreamOutputBehaviour {
                 + "\nExample: {money=$30, to=Mauro}\n"
                 + "\nExample: {money=$50, to=Paul}\n"
                 + "\n" // end of examples
-                + "\n\n"; // end of scenario and story
+                + "\n\n" // end of scenario and story
+                + "method1\n" // pending methods
+                + "method2\n";
         assertThatOutputIs(out, expected);
     }
 
@@ -182,10 +184,10 @@ public class PrintStreamOutputBehaviour {
                 + "</table>\n" 
                 + "\n<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
                 + "\n<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n" 
-                + "</div>\n" + // end
-                // of
-                // examples
-                "</div>\n</div>\n"; // end of scenario and story
+                + "</div>\n"  // end of examples
+                + "</div>\n</div>\n" // end of scenario and story
+                + "<div><pre class=\"pending\">method1</pre></div>\n" // pending methods
+                + "<div><pre class=\"pending\">method2</pre></div>\n";
         assertThatOutputIs(out, expected);
     }
 
@@ -288,7 +290,9 @@ public class PrintStreamOutputBehaviour {
                 + "\n<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
                 + "\n<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n" 
                 + "</div><!-- after examples -->\n"
-                + "</div><!-- after scenario -->\n" + "</div><!-- after story -->\n";
+                + "</div><!-- after scenario -->\n" + "</div><!-- after story -->\n"
+                + "<div><pre class=\"pending\">method1</pre></div>\n" // pending methods
+                + "<div><pre class=\"pending\">method2</pre></div>\n";
         assertThatOutputIs(out, expected);
     }
 
@@ -347,7 +351,9 @@ public class PrintStreamOutputBehaviour {
                 + "\n<example keyword=\"Example:\">{money=$30, to=Mauro}</example>\n"
                 + "\n<example keyword=\"Example:\">{money=$50, to=Paul}</example>\n" 
                 + "</examples>\n"
-                + "</scenario>\n" + "</story>\n";
+                + "</scenario>\n" + "</story>\n"
+                + "<pendingMethod>method1</pendingMethod>\n" // pending methods
+                + "<pendingMethod>method2</pendingMethod>\n";
         assertThatOutputIs(out, expected);
     }
 
@@ -413,6 +419,7 @@ public class PrintStreamOutputBehaviour {
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.afterStory(givenStory);
+        reporter.pendingMethods(asList("method1", "method2"));
     }
 
     private void narrateAnInterestingStoryNotAllowedByFilter(StoryReporter reporter) {
@@ -467,8 +474,9 @@ public class PrintStreamOutputBehaviour {
                 + "Then I should have a balance of $30 (PENDING)\n"
                 + "Then I should have $20 (NOT PERFORMED)\n" 
                 + "\n";
-        String s = dos2unix(out.toString());
-        assertTrue(s.indexOf("at org.jbehave.core.reporters.PrintStreamOutputBehaviour.shouldReportFailureTraceWhenToldToDoSo(") > -1);
+        String actual = dos2unix(out.toString());
+        assertThat(actual, containsString(expected));
+        assertThat(actual, containsString("at org.jbehave.core.reporters.PrintStreamOutputBehaviour.shouldReportFailureTraceWhenToldToDoSo("));
 
 
         // Given

@@ -1,9 +1,15 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.model.*;
-
 import java.util.List;
 import java.util.Map;
+
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 
 /**
  * Allows the runner to report the state of running stories
@@ -52,5 +58,7 @@ public interface StoryReporter {
 	void failedOutcomes(String step, OutcomesTable table);
 
 	void dryRun();
+
+    void pendingMethods(List<String> methods);
 
 }
