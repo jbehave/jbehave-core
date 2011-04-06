@@ -108,15 +108,15 @@ public class EmbedderBehaviour {
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
-            Story story = mock(Story.class);
+            Story story = new Story(storyPath);
             stories.put(storyPath, story);
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         
         // When
-        StoryMaps storyMaps = mock(StoryMaps.class);
+        List<StoryMap> maps = asList(new StoryMap("filter", new HashSet<Story>(stories.values())));
+        StoryMaps storyMaps = new StoryMaps(maps);
         when(mapper.getStoryMaps()).thenReturn(storyMaps);
-        when(storyMaps.getMaps()).thenReturn(asList(new StoryMap("filter", new HashSet<Story>(stories.values()))));
         embedder.mapStoriesAsPaths(storyPaths);
 
         // Then

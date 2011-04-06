@@ -88,6 +88,7 @@ public class ExamplesTableBehaviour {
         assertThat(table.asString(), equalTo(tableAsString));
         assertThat(table.getHeaders().size(), equalTo(0));
         assertThat(table.getRows().size(), equalTo(0));
+        assertThat(table.getRowsAsParameters().size(), equalTo(0));
     }
 
     @Test
@@ -95,10 +96,11 @@ public class ExamplesTableBehaviour {
         String tableWithEmptyValues = "|one|two|\n |||\n | ||\n || |\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
         assertThat(table.getRowCount(), equalTo(3));
-        for (Map<String, String> row : table.getRows()) {
-            assertThat(row.size(), equalTo(2));
-            for (String column : row.keySet()) {
-                assertThat(isBlank(row.get(column)), is(true));
+        for (Parameters row : table.getRowsAsParameters()) {
+            Map<String, String> values = row.values();
+            assertThat(values.size(), equalTo(2));
+            for (String column : values.keySet()) {
+                assertThat(isBlank(values.get(column)), is(true));
             }
         }
         assertThat(table.asString(), equalTo(tableWithEmptyValues));

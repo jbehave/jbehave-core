@@ -14,7 +14,7 @@ public class Meta {
 
     public static final Meta EMPTY = new Meta();
 
-    private static final String BLANK = "";
+    public static final String BLANK = "";
 
     private final Properties properties;
 
@@ -70,7 +70,7 @@ public class Meta {
         for (String name : names) {
             if (child.hasProperty(name)) {
                 inherited.put(name, child.getProperty(name));
-            } else if (parent.hasProperty(name)) {
+            } else { // if not in child, must be in parent
                 inherited.put(name, parent.getProperty(name));
             }
         }
@@ -78,7 +78,7 @@ public class Meta {
     }
 
     public boolean isEmpty() {
-        return EMPTY == this;
+        return properties.isEmpty();
     }
 
     @Override

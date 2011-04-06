@@ -433,7 +433,7 @@ public class RegexStoryParserBehaviour {
     @Test
     public void shouldParseStoryWithScenarioContainingParametrisedGivenStories() {
         String wholeStory = 
-            "GivenStories: path/to/one#{0},path/to/two#{1},path/to/three#{2},path/to/four" + NL + NL +
+            "GivenStories: path/to/one#{0},path/to/two#{1},path/to/three#{2},path/to/four#{a},path/to/five" + NL + NL +
             "Given a step" + NL+
             "Examples:" + NL +
             "|one|two|" + NL +  
@@ -443,12 +443,14 @@ public class RegexStoryParserBehaviour {
 
         Scenario scenario = story.getScenarios().get(0);
         GivenStories givenStories = scenario.getGivenStories();
-        assertThat(givenStories.asString(), equalTo("path/to/one#{0},path/to/two#{1},path/to/three#{2},path/to/four"));
+        assertThat(givenStories.asString(), equalTo("path/to/one#{0},path/to/two#{1},path/to/three#{2},path/to/four#{a},path/to/five"));
+        assertThat(givenStories.toString(), containsString(givenStories.asString()));
         assertThat(givenStories.getPaths(), equalTo(asList(
                 "path/to/one#{0}", // matches first parameters row
                 "path/to/two#{1}", // matches second parameters row
                 "path/to/three#{2}", // does not match any parameters row
-                "path/to/four"))); // does not require parameters
+                "path/to/four#{a}", // does not use valid anchor (an int)
+                "path/to/five"))); // does not require parameters
         assertThat(givenStories.requireParameters(), equalTo(true));
         GivenStory givenStory1 = givenStories.getStories().get(0);
         assertThat(givenStory1.hasAnchor(), equalTo(true));
@@ -468,12 +470,17 @@ public class RegexStoryParserBehaviour {
         assertThat(givenStory3.getPath(), equalTo("path/to/three"));
         assertThat(givenStory3.getParameters().size(), equalTo(0));
         GivenStory givenStory4 = givenStories.getStories().get(3);
-        assertThat(givenStory4.hasAnchor(), equalTo(false));
-        assertThat(givenStory4.getAnchor(), equalTo(""));
+        assertThat(givenStory4.hasAnchor(), equalTo(true));
+        assertThat(givenStory4.getAnchor(), equalTo("a"));
         assertThat(givenStory4.getPath(), equalTo("path/to/four"));
         assertThat(givenStory4.getParameters().size(), equalTo(0));
+        GivenStory givenStory5 = givenStories.getStories().get(4);
+        assertThat(givenStory5.hasAnchor(), equalTo(false));
+        assertThat(givenStory5.getAnchor(), equalTo(""));
+        assertThat(givenStory5.getPath(), equalTo("path/to/five"));
+        assertThat(givenStory5.getParameters().size(), equalTo(0));
     }
-    
+
     private void parseStoryWithGivenStories(String wholeStory) {
 		Story story = parser.parseStory(wholeStory, storyPath);
 

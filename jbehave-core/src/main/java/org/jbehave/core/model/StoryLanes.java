@@ -22,7 +22,7 @@ public class StoryLanes {
     }
 
     public List<Story> getStories() {
-        List<Story> stories = laneStories(""); // returns all stories
+        List<Story> stories = new ArrayList<Story>(laneStories("")); // returns all stories
         Collections.sort(stories, new Comparator<Story>() {
             public int compare(Story o1, Story o2) {
                 return o1.getName().compareTo(o2.getName());
@@ -49,10 +49,14 @@ public class StoryLanes {
 
     private List<Story> laneStories(String lane) {
         StoryMap storyMap = storyMaps.getMap(lane);
+        List<Story> stories = new ArrayList<Story>();
         if (storyMap == null) {
-            return new ArrayList<Story>();
+            for (StoryMap map : storyMaps.getMaps()) {
+                stories.addAll(map.getStories());
+            }
+        } else {
+            stories.addAll(storyMap.getStories());            
         }
-        List<Story> stories = storyMap.getStories();
         nameStories(stories);
         return stories;
     }
