@@ -27,7 +27,6 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
-import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -368,9 +367,8 @@ public class Embedder {
 
     public void generateCrossReference() {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
-        CrossReference crossReference = builder.crossReference();
-        if (crossReference != null) {
-            crossReference.outputToFiles(builder);
+        if (builder.hasCrossReference()){
+            builder.crossReference().outputToFiles(builder);
         }
     }
 

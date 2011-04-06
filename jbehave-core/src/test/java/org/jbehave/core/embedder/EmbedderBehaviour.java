@@ -48,6 +48,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMap;
 import org.jbehave.core.model.StoryMaps;
+import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StoryReporter;
@@ -88,7 +89,7 @@ public class EmbedderBehaviour {
         }
         assertThat(MyStoryMaps.run, is(true));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
     public void shouldMapStoriesAsPaths() throws Throwable {
@@ -112,7 +113,7 @@ public class EmbedderBehaviour {
             stories.put(storyPath, story);
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
-        
+
         // When
         List<StoryMap> maps = asList(new StoryMap("filter", new HashSet<Story>(stories.values())));
         StoryMaps storyMaps = new StoryMaps(maps);
@@ -430,19 +431,19 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
-        
+
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.isA(MetaFilter.class));
+            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
+                    Matchers.eq(stories.get(storyPath)), Matchers.isA(MetaFilter.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatReportsViewGenerated(out);
     }
 
-    
     @SuppressWarnings("unchecked")
     @Test
     public void shouldRunStoriesApplyingFilter() throws Throwable {
@@ -467,7 +468,7 @@ public class EmbedderBehaviour {
         StoryPathResolver resolver = configuration.storyPathResolver();
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
-        Meta meta = mock(Meta.class);        
+        Meta meta = mock(Meta.class);
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
@@ -477,15 +478,16 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
-        
+
         // When
         MetaFilter filter = mock(MetaFilter.class);
         when(filter.allow(meta)).thenReturn(false);
         embedder.runStoriesAsPaths(storyPaths);
-        
+
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),  Matchers.eq(stories.get(storyPath)),  Matchers.isA(MetaFilter.class));
+            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
+                    Matchers.eq(stories.get(storyPath)), Matchers.isA(MetaFilter.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatReportsViewGenerated(out);
@@ -493,17 +495,17 @@ public class EmbedderBehaviour {
 
     @Test
     public void shouldProcessSystemProperties() throws Throwable {
-        
+
         // Given
         StoryRunner runner = mock(StoryRunner.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
-        
+
         // When
         embedder.processSystemProperties();
-        
+
         // Then
         assertThat(out.toString(), containsString("Processing system properties " + embedder.systemProperties()));
         assertThat(out.toString(), not(containsString("System property")));
@@ -511,10 +513,10 @@ public class EmbedderBehaviour {
         // When
         Properties systemProperties = new Properties();
         systemProperties.setProperty("first", "one");
-        systemProperties.setProperty("second", "");        
+        systemProperties.setProperty("second", "");
         embedder.useSystemProperties(systemProperties);
         embedder.processSystemProperties();
-        
+
         // Then
         assertThat(out.toString(), containsString("Processing system properties " + systemProperties));
         assertThat(out.toString(), containsString("System property 'first' set to 'one'"));
@@ -545,7 +547,7 @@ public class EmbedderBehaviour {
             stories.put(storyPath, story);
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
-        
+
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
@@ -554,7 +556,7 @@ public class EmbedderBehaviour {
             verify(runner, never()).run(configuration, candidateSteps, stories.get(storyPath), MetaFilter.EMPTY);
             assertThat(out.toString(), not(containsString("Running story " + storyPath)));
         }
-        assertThat(out.toString(), containsString("Skipped stories "+storyPaths));
+        assertThat(out.toString(), containsString("Skipped stories " + storyPaths));
     }
 
     @SuppressWarnings("unchecked")
@@ -581,12 +583,12 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
-                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
+            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
+                    Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
         }
         // When
         embedder.runStoriesAsPaths(storyPaths);
-        
+
         // Then fail as expected
 
     }
@@ -615,10 +617,10 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
-                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
+            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
+                    Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
         }
-        
+
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
@@ -656,7 +658,7 @@ public class EmbedderBehaviour {
         for (String storyPath : storyPaths) {
             doNothing().when(runner).run(configuration, candidateSteps, stories.get(storyPath), MetaFilter.EMPTY);
         }
-        
+
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
@@ -691,11 +693,11 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
-                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
+            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
+                    Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
         }
-        
-        // When 
+
+        // When
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then fail as expected
@@ -732,7 +734,7 @@ public class EmbedderBehaviour {
             doThrow(thrown).when(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
                     Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
         }
-        
+
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
@@ -740,7 +742,7 @@ public class EmbedderBehaviour {
         for (String storyPath : storyPaths) {
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
-        assertThat(out.toString(), containsString("Failed to run batch "+failures));
+        assertThat(out.toString(), containsString("Failed to run batch " + failures));
     }
 
     @SuppressWarnings("unchecked")
@@ -766,13 +768,14 @@ public class EmbedderBehaviour {
             stories.put(storyPath, story);
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
-        
+
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
+            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
+                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThat(out.toString(), not(containsString("Generating stories view")));
@@ -816,7 +819,7 @@ public class EmbedderBehaviour {
                 asList(runWithEmbedderRunner));
         // Then fail as expected
     }
-    
+
     @Test(expected = AnnotatedEmbedderRunnerInstantiationFailed.class)
     public void shouldFailWhenRunningInexistingStoriesWithAnnotatedEmbedderRunner() throws Throwable {
         // Given
@@ -890,7 +893,8 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        doThrow(new RuntimeException()).when(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
+        doThrow(new RuntimeException()).when(viewGenerator)
+                .generateReportsView(outputDirectory, formats, viewResources);
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then fail as expected
@@ -964,7 +968,8 @@ public class EmbedderBehaviour {
         return embedder;
     }
 
-    private Embedder embedderWith(StoryMapper mapper, StoryRunner runner, EmbedderControls embedderControls, EmbedderMonitor monitor) {
+    private Embedder embedderWith(StoryMapper mapper, StoryRunner runner, EmbedderControls embedderControls,
+            EmbedderMonitor monitor) {
         Embedder embedder = new Embedder(mapper, runner, monitor);
         embedder.useEmbedderControls(embedderControls);
         return embedder;
@@ -1048,13 +1053,33 @@ public class EmbedderBehaviour {
 
         // When
         String embedderAsString = embedder.toString();
-        
+
         // Then
         assertThat(embedderAsString, containsString(MostUsefulConfiguration.class.getSimpleName()));
         assertThat(embedderAsString, containsString(StoryRunner.class.getSimpleName()));
         assertThat(embedderAsString, containsString(PrintStreamEmbedderMonitor.class.getSimpleName()));
     }
+
+    @Test
+    public void shouldGenerateCrossReferenceWhenAvailable() {
+
+        Embedder embedder = new Embedder();
+        embedder.useConfiguration(new MostUsefulConfiguration().useStoryReporterBuilder(new StoryReporterBuilder()
+                .withCrossReference(new CrossReference())));
+
+        // When
+        embedder.generateCrossReference();
+
+        // Then
+        assertXrefExists(embedder.configuration().storyReporterBuilder(), "json");
+        assertXrefExists(embedder.configuration().storyReporterBuilder(), "xml");
     
+    }
+
+    private void assertXrefExists(StoryReporterBuilder storyReporterBuilder, String ext) {
+        assertThat(new File(storyReporterBuilder.outputDirectory(),"view/xref."+ext).exists(), is(true));
+    }
+
     private String dos2unix(String string) {
         return string.replace("\r\n", "\n");
     }
@@ -1085,15 +1110,14 @@ public class EmbedderBehaviour {
 
     private abstract class MyAbstractStory extends JUnitStory {
     }
-    
+
     private class MyFailingStory extends JUnitStory {
 
         @Override
         public void run() throws Throwable {
             throw new RuntimeException("Failed");
-        }        
+        }
     }
-
 
     private class MyOtherStory extends JUnitStory {
     }
