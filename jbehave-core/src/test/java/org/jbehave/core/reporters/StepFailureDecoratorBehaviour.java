@@ -1,22 +1,27 @@
 package org.jbehave.core.reporters;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Story;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.InOrder;
-
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.MatcherAssert;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Story;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
+
 import static java.util.Arrays.asList;
+
 import static org.hamcrest.Matchers.equalTo;
+
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class StepFailureDecoratorBehaviour {
 
@@ -71,54 +76,35 @@ public class StepFailureDecoratorBehaviour {
         inOrder.verify(delegate).afterStory(givenStory);
     }
 
-//    @Test
-//    public void shouldProvideFailureCauseWithMessageDescribingStep() {
-//        // Given
-//        Throwable t = new IllegalArgumentException("World Peace for everyone");
-//        // When
-//        decorator.failed("When I have a bad idea", t);
-//        OutcomesTable table = new OutcomesTable();
-//        decorator.failedOutcomes("When outcomes fail", table);
-//
-//        // Then
-//        verify(delegate).failed(eq("When I have a bad idea"),
-//                argThat(hasMessage("'" + "When I have a bad idea" + "': " + t.getMessage())));
-//        verify(delegate).failedOutcomes(eq("When outcomes fail"), eq(table));
-//    }
+    @Test
+    public void shouldProvideFailureCauseWithMessageDescribingStep() {
+        // Given
+        Throwable t = new UUIDExceptionWrapper(new IllegalArgumentException("World Peace for everyone"));
+        // When
+        decorator.failed("When I have a bad idea", t);
+        OutcomesTable table = new OutcomesTable();
+        decorator.failedOutcomes("When outcomes fail", table);
 
-//    @Test
-//    public void shouldRethrowFailureCauseAfterStory() {
-//        // Given
-//        Throwable t = new IllegalArgumentException("World Peace for everyone");
-//        String stepAsString = "When I have a bad idea";
-//        decorator.failed(stepAsString, t);
-//        boolean givenStory = false;
-//
-//        // When
-//        try {
-//            decorator.afterStory(givenStory);
-//            fail("Should have rethrown exception");
-//        } catch (Throwable rethrown) {
-//            // Then
-//            assertThat(rethrown, hasMessage("'" + stepAsString + "': " + t.getMessage()));
-//        }
-//    }
-
-    private Matcher<Throwable> hasMessage(final String string) {
-        return new TypeSafeMatcher<Throwable>() {
-
-            private Matcher<String> equalTo;
-
-            @Override
-            public boolean matchesSafely(Throwable t) {
-                equalTo = equalTo(string);
-                return equalTo.matches(t.getMessage());
-            }
-
-            public void describeTo(Description description) {
-                description.appendText("Throwable with message: ").appendDescriptionOf(equalTo);
-            }
-        };
+        // Then
+        verify(delegate).failed(Mockito.eq("When I have a bad idea"), Mockito.eq(t));
+        verify(delegate).failedOutcomes(Mockito.eq("When outcomes fail"), Mockito.eq(table));
     }
 
+    @Test
+    public void shouldRethrowFailureCauseAfterStory() {
+        // Given
+        Throwable t = new UUIDExceptionWrapper(new IllegalArgumentException("World Peace for everyone"));
+        String stepAsString = "When I have a bad idea";
+        decorator.failed(stepAsString, t);
+        boolean givenStory = false;
+
+        // When
+        try {
+            decorator.afterStory(givenStory);
+            Assert.fail("Should have rethrown exception");
+        } catch (Throwable rethrown) {
+            // Then
+            MatcherAssert.assertThat(rethrown, equalTo(t));
+        }
+    }
 }
