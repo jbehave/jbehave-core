@@ -19,11 +19,12 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.StepPattern;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.NullStepMonitor;
 import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.steps.StepType;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import org.jbehave.core.steps.StepType;
 
 public class CrossReference extends Format {
 
@@ -206,7 +207,7 @@ public class CrossReference extends Format {
         };
     }
 
-    private class XRefStepMonitor extends StepMonitor.NULL {
+    private class XRefStepMonitor extends NullStepMonitor {
         @Override
         public void performing(String step, boolean dryRun) {
             super.performing(step, dryRun);
@@ -265,11 +266,11 @@ public class CrossReference extends Format {
         }
 
         protected Long getTime(Map<String, Long> times, Story story) {
-            Long aLong = times.get(story.getPath());
-            if (aLong == null) {
+            Long time = times.get(story.getPath());
+            if (time == null) {
                 return 0L;
             }
-            return aLong;
+            return time;
         }
 
         protected boolean someScenarios(Story story, Set<String> stepsPerformed) {
