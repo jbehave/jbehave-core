@@ -388,6 +388,7 @@ public class CrossReference extends Format {
         private final StepType type; // key
         private final String annotatedPattern; // key
         // these not in hashcode or equals()
+        @SuppressWarnings("unused")
         private final String resolvedPattern;
         private final Set<StepUsage> usages = new HashSet<StepUsage>();
 

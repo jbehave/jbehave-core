@@ -33,7 +33,7 @@ public class CodeLocations {
      */
     public static URL codeLocationFromPath(String filePath) {
         try {
-            return new File(filePath).toURL();
+            return new File(filePath).toURI().toURL();
         } catch (Exception e) {
             throw new InvalidCodeLocation(filePath);
         }
