@@ -10,12 +10,14 @@
 <p>The JBehave <a
     href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a> allows concurrent execution of stories. 
     The multi-threading behaviour is controlled by setting the number of concurrent threads (which defaults to 1) via the <a
-    href="javadoc/core/org/jbehave/core/embedder/EmbedderControls.html">EmbedderControls</a>, or equivalently via the 
-    Ant or Maven access points.
+    href="javadoc/core/org/jbehave/core/embedder/EmbedderControls.html">EmbedderControls</a>, or equivalently via <a
+    href="javadoc/core/org/jbehave/core/annotations/UsingEmbedder.html">@UsingEmbedder</a> or the 
+    <a href="ant-tasks.html">Ant tasks</a> or <a href="maven-goals.html">Maven goals</a>.
 </p>
 
 <span class="followup">It is important to note that it's the entire story that is executed in one concurrent execution 
-and that scenarios within the same story cannot be run concurrently. 
+and that scenarios within the same story cannot be run concurrently.   For each story execution a timeout in seconds can be set 
+via the same configuration mechanism used to set the number of threads.
 </span>
 
 <h2>Enqueing a single story</h2>
