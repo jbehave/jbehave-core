@@ -20,6 +20,7 @@ public @interface UsingEmbedder {
 	boolean ignoreFailureInStories()  default false;
 	boolean ignoreFailureInView()  default false;
 	int threads() default 1;
+	long storyTimeoutInSecs() default 300;
 	String[] metaFilters() default {};
-
+	
 }

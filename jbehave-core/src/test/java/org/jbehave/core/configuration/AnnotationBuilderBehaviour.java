@@ -12,6 +12,7 @@ import org.jbehave.core.annotations.UsingPaths;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.configuration.AnnotationBuilder.InstantiationFailed;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
@@ -42,6 +43,19 @@ public class AnnotationBuilderBehaviour {
     public void shouldBuildDefaultEmbedderIfAnnotationNotPresent() {
         AnnotationBuilder notAnnotated = new AnnotationBuilder(NotAnnotated.class);
         assertThat(notAnnotated.buildEmbedder(), is(notNullValue()));
+    }
+
+    @Test
+    public void shouldBuildEmbedderWithAnnotatedControls() {
+        AnnotationBuilder annotated = new AnnotationBuilder(AnnotedEmbedderControls.class);
+        EmbedderControls embedderControls = annotated.buildEmbedder().embedderControls();
+        assertThat(embedderControls.batch(), is(true));
+        assertThat(embedderControls.generateViewAfterStories(), is(true));
+        assertThat(embedderControls.ignoreFailureInStories(), is(true));
+        assertThat(embedderControls.ignoreFailureInView(), is(true));
+        assertThat(embedderControls.skip(), is(true));        
+        assertThat(embedderControls.storyTimeoutInSecs(), equalTo(100L));
+        assertThat(embedderControls.threads(), equalTo(2));
     }
 
     @Test
@@ -182,6 +196,16 @@ public class AnnotationBuilderBehaviour {
         public MyFailingSteps() {
             throw new RuntimeException();
         }
+    }
+
+    @UsingEmbedder(batch = true, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, skip = true,
+            storyTimeoutInSecs = 100, threads = 2)
+    @UsingSteps(instances = { MySteps.class })
+    static class AnnotedEmbedderControls extends InjectableEmbedder {
+
+        public void run() throws Throwable {
+        }
+
     }
 
     @Configure(keywords = MyKeywords.class)
