@@ -1,5 +1,6 @@
 Scenario:  We want to show that failures in @BeforeScenario methods will not prevent rest of scenario steps to run (marked as NOT PERFORMED).
-Also, the @Before/AfterScenario failure messages should be displayed in the output reports. 
+Also, the @Before/AfterScenario, @Before/AfterStory failure messages should be displayed in the output reports.   
+@BeforeAfterStories failures are displayed in the Before/AfterStories reports.
 
 Given the alert status is OFF
 Given a trader of name Mauro

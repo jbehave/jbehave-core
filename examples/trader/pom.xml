@@ -10,8 +10,9 @@
   <name>JBehave Trader Example</name>
 
   <properties>
+    <embeddables>**/*TraderStories.java</embeddables>
     <skip>false</skip>
-    <meta.filter></meta.filter>
+    <meta.filter></meta.filter>    
   </properties>
 
  <dependencies>
@@ -33,7 +34,7 @@
             <phase>integration-test</phase>
             <configuration>
               <includes>
-                <include>**/*TraderStories.java</include>
+                <include>${embeddables}</include>
               </includes>
               <excludes />
               <skip>${skip}</skip>
