@@ -192,7 +192,7 @@ public class StoryRunner {
                 currentStrategy.get().handleFailure(storyFailure.get());
             }
         } finally {
-            if (reporter.get() instanceof ConcurrentStoryReporter) {
+            if (!context.givenStory() && reporter.get() instanceof ConcurrentStoryReporter) {
                 ((ConcurrentStoryReporter) reporter.get()).invokeDelayed();
             }
         }
@@ -312,9 +312,10 @@ public class StoryRunner {
             StepResult result = step.perform(storyFailureIfItHappened);
             result.describeTo(reporter.get());
             UUIDExceptionWrapper stepFailure = result.getFailure();
-            //JBEHAVE-472:  storyFailure is not sufficient for state management, we need scenarioFailure too.
-            //if (storyFailureIfItHappened == null && stepFailure == null) {
-            if ( stepFailure == null) {
+            // JBEHAVE-472: storyFailure is not sufficient for state management,
+            // we need scenarioFailure too.
+            // if (storyFailureIfItHappened == null && stepFailure == null) {
+            if (stepFailure == null) {
                 return this;
             }
 
