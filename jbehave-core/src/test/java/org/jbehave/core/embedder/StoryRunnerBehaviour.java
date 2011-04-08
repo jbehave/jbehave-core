@@ -1,31 +1,54 @@
 package org.jbehave.core.embedder;
 
-import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.failures.*;
-import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.model.*;
-import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.parsers.StoryParser;
-import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.reporters.ConcurrentStoryReporter;
-import org.jbehave.core.steps.*;
-import org.jbehave.core.steps.StepCollector.Stage;
-import org.junit.Test;
-import org.mockito.InOrder;
-import org.mockito.Matchers;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.failures.FailingUponPendingStep;
+import org.jbehave.core.failures.FailureStrategy;
+import org.jbehave.core.failures.PassingUponPendingStep;
+import org.jbehave.core.failures.PendingStepFound;
+import org.jbehave.core.failures.PendingStepStrategy;
+import org.jbehave.core.failures.RethrowingFailure;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.StoryLoader;
+import org.jbehave.core.model.Description;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.parsers.StoryParser;
+import org.jbehave.core.reporters.ConcurrentStoryReporter;
+import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.Step;
+import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepResult;
+import org.jbehave.core.steps.Steps;
+import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Matchers;
+
 import static java.util.Arrays.asList;
-import static org.jbehave.core.steps.AbstractStepResult.*;
+import static org.jbehave.core.steps.AbstractStepResult.failed;
+import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
+import static org.jbehave.core.steps.AbstractStepResult.pending;
+import static org.jbehave.core.steps.AbstractStepResult.successful;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class StoryRunnerBehaviour {
 
@@ -34,10 +57,10 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldRunStepsBeforeAndAfterStories() throws Throwable {
         // Given
-        Step beforeStep = mock(Step.class);
+        Step beforeStep = mock(Step.class, "beforeStep");
         StepResult beforeResult = mock(StepResult.class);
         when(beforeStep.perform(null)).thenReturn(beforeResult);
-        Step afterStep = mock(Step.class);
+        Step afterStep = mock(Step.class, "afterStep");
         StepResult afterResult = mock(StepResult.class);
         when(afterStep.perform(null)).thenReturn(afterResult);
         StepCollector collector = mock(StepCollector.class);
@@ -60,12 +83,12 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldReportFailuresInStepsBeforeAndAfterStories() throws Throwable {
         // Given
-        Step beforeStep = mock(Step.class);
-        StepResult beforeResult = mock(StepResult.class);
+        Step beforeStep = mock(Step.class, "beforeStep");
+        StepResult beforeResult = mock(StepResult.class, "beforeStep");
         when(beforeStep.perform(null)).thenReturn(beforeResult);
         UUIDExceptionWrapper failure = new UUIDExceptionWrapper("failed");
         when(beforeResult.getFailure()).thenReturn(failure);
-        Step afterStep = mock(Step.class);
+        Step afterStep = mock(Step.class, "afterStep");
         StepResult afterResult = mock(StepResult.class);
         when(afterStep.perform(failure)).thenReturn(afterResult);
         StepCollector collector = mock(StepCollector.class);
@@ -95,18 +118,17 @@ public class StoryRunnerBehaviour {
                 "pendingStep"));
         Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1,
                 scenario2, scenario3));
-        Step step = mock(Step.class);
-        StepResult result = mock(StepResult.class);
-        when(step.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(result);
         StoryReporter reporter = mock(ConcurrentStoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         UUIDExceptionWrapper anException = new UUIDExceptionWrapper(new IllegalArgumentException());
-        Step pendingStep = mock(Step.class);
-        Step successfulStep = mockSuccessfulStep("successfulStep");
-        Step failingStep = mock(Step.class);
-        when(pendingStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(pending("pendingStep"));
+        Step pendingStep = mock(Step.class, "pendingStep");
+        Step successfulStep = mock(Step.class, "successfulStep");
+        Step failingStep = mock(Step.class, "failingStep");
+        when(successfulStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(successful("successfulStep"));
         when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
+        when(pendingStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(pending("pendingStep"));
+        when(pendingStep.doNotPerform()).thenReturn(pending("pendingStep"));
         when(failingStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(failed("failingStep", anException));
         when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(
                 asList(failingStep, successfulStep));
@@ -137,7 +159,7 @@ public class StoryRunnerBehaviour {
         inOrder.verify(reporter).afterStory(false);
         inOrder.verify(failureStrategy).handleFailure(anException);
     }
-
+    
     @Test
     public void shouldRunGivenStoriesBeforeSteps() throws Throwable {
         // Given
@@ -500,11 +522,11 @@ public class StoryRunnerBehaviour {
         configuration.doDryRun(true);
         CandidateSteps mySteps = new Steps(configuration);
         UUIDExceptionWrapper anException = new UUIDExceptionWrapper(new IllegalArgumentException());
-        Step pendingStep = mock(Step.class, "pendingStep");
         Step successfulStep = mockSuccessfulStep("successfulStep");
+        Step pendingStep = mock(Step.class, "pendingStep");
         Step failingStep = mock(Step.class, "failingStep");
         when(pendingStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(pending("pendingStep"));
-        when(successfulStep.doNotPerform()).thenReturn(notPerformed("successfulStep"));
+        when(pendingStep.doNotPerform()).thenReturn(pending("pendingStep"));
         when(failingStep.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(failed("failingStep", anException));
         when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(
                 asList(failingStep, successfulStep));
@@ -636,8 +658,10 @@ public class StoryRunnerBehaviour {
     }
 
     private Step mockSuccessfulStep(String result) {
-        Step step = mock(Step.class, result);
+        Step step = mock(Step.class, result);        
         when(step.perform(Matchers.<UUIDExceptionWrapper>any())).thenReturn(successful(result));
+        when(step.doNotPerform()).thenReturn(notPerformed("successfulStep"));
         return step;
     }
+    
 }

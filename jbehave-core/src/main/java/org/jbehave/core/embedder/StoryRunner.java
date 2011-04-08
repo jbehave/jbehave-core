@@ -283,7 +283,7 @@ public class StoryRunner {
             PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration().keywords());
             List<String> methods = new ArrayList<String>();
             for (PendingStep pendingStep : pendingSteps) {
-                if ( !pendingStep.annotated() ){
+                if (!pendingStep.annotated()) {
                     methods.add(generator.generateMethod(pendingStep));
                 }
             }
@@ -308,14 +308,17 @@ public class StoryRunner {
     private final class FineSoFar implements State {
 
         public State run(Step step) {
-            UUIDExceptionWrapper ifItHappened = storyFailure.get();
-            StepResult result = step.perform(ifItHappened);
+            UUIDExceptionWrapper storyFailureIfItHappened = storyFailure.get();
+            StepResult result = step.perform(storyFailureIfItHappened);
             result.describeTo(reporter.get());
-            UUIDExceptionWrapper scenarioFailure = result.getFailure();
-            if (scenarioFailure == null)
+            UUIDExceptionWrapper stepFailure = result.getFailure();
+            //JBEHAVE-472:  storyFailure is not sufficient for state management, we need scenarioFailure too.
+            //if (storyFailureIfItHappened == null && stepFailure == null) {
+            if ( stepFailure == null) {
                 return this;
+            }
 
-            storyFailure.set(mostImportantOf(storyFailure.get(), scenarioFailure));
+            storyFailure.set(mostImportantOf(storyFailureIfItHappened, stepFailure));
             currentStrategy.set(strategyFor(storyFailure.get()));
             return new SomethingHappened();
         }

@@ -2,6 +2,9 @@ package org.jbehave.core.steps;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
@@ -333,7 +336,16 @@ public class StepCreator {
         }
     }
 
-    public class BeforeOrAfterStep implements Step {
+    public static abstract class AbstractStep implements Step {
+
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
+        }
+
+    }
+
+    public class BeforeOrAfterStep extends AbstractStep {
         private final Method method;
 
         public BeforeOrAfterStep(Method method) {
@@ -350,7 +362,7 @@ public class StepCreator {
 
     }
 
-    public class AnyOrDefaultStep implements Step {
+    public class AnyOrDefaultStep extends AbstractStep {
 
         private final Method method;
 
@@ -368,7 +380,7 @@ public class StepCreator {
 
     }
 
-    public class SuccessStep implements Step {
+    public class SuccessStep extends AbstractStep {
 
         private final boolean failureOccured;
         private final Method method;
@@ -388,7 +400,7 @@ public class StepCreator {
 
     }
 
-    public class FailureStep implements Step {
+    public class FailureStep extends AbstractStep {
 
         private final boolean failureOccured;
         private final Method method;
@@ -408,7 +420,7 @@ public class StepCreator {
 
     }
 
-    public class ParameterizedStep implements Step {
+    public class ParameterizedStep extends AbstractStep {
         private Object[] convertedParameters;
         private String parametrisedStep;
         private final String stepAsString;
@@ -471,7 +483,7 @@ public class StepCreator {
 
     }
 
-    public static class PendingStep implements Step {
+    public static class PendingStep extends AbstractStep {
         private final String stepAsString;
         private final String previousNonAndStep;
         private Method method;
@@ -500,14 +512,14 @@ public class StepCreator {
         public void annotatedOn(Method method) {
             this.method = method;
         }
-        
-        public boolean annotated(){
+
+        public boolean annotated() {
             return method != null;
         }
-        
+
     }
 
-    public static class IgnorableStep implements Step {
+    public static class IgnorableStep extends AbstractStep {
         private final String stepAsString;
 
         public IgnorableStep(String stepAsString) {
