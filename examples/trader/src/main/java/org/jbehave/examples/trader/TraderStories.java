@@ -27,6 +27,10 @@ import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
 import org.jbehave.examples.trader.steps.CompositeSteps;
+import org.jbehave.examples.trader.steps.FailingBeforeAfterScenarioSteps;
+import org.jbehave.examples.trader.steps.FailingBeforeAfterStoriesSteps;
+import org.jbehave.examples.trader.steps.FailingBeforeAfterStorySteps;
+import org.jbehave.examples.trader.steps.PendingSteps;
 import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
 import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
@@ -80,16 +84,18 @@ public class TraderStories extends JUnitStories {
                 .withFailureTraceCompression(true)                
                 .withCrossReference(xref)) 
             .useParameterConverters(parameterConverters)                     
+            // use '%' instead of '$' to identify parameters
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
-                            "%")) // use '%' instead of '$' to identify parameters
+                            "%")) 
             .useStepMonitor(xref.getStepMonitor());                               
     }
 
     @Override
     public List<CandidateSteps> candidateSteps() {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
-                new CalendarSteps(), new PriorityMatchingSteps(), new SandpitSteps(), new SearchSteps(),
-                new BeforeAfterSteps(), new CompositeSteps()).createCandidateSteps();
+                new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new SandpitSteps(),
+                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(), new FailingBeforeAfterScenarioSteps(),
+                new FailingBeforeAfterStoriesSteps(), new FailingBeforeAfterStorySteps()).createCandidateSteps();
     }
 
     @Override
