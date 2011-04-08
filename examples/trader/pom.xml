@@ -33,7 +33,7 @@
             <phase>integration-test</phase>
             <configuration>
               <includes>
-                <include>**/TraderStories.java</include>
+                <include>**/*TraderStories.java</include>
               </includes>
               <excludes />
               <skip>${skip}</skip>

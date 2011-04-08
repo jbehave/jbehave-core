@@ -1,7 +1,7 @@
 package org.jbehave.examples.trader.stories;
 
-import org.jbehave.examples.trader.TraderStory;
+import org.jbehave.examples.trader.FailingBeforeTraderStory;
 
-public class FailingBeforeStory extends TraderStory {
+public class FailingBeforeStory extends FailingBeforeTraderStory {
     
 }
