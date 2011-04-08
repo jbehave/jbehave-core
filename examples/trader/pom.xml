@@ -41,7 +41,7 @@
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInView>true</ignoreFailureInView>
-              <threads>2</threads>
+              <threads>1</threads>
               <metaFilters>
                 <metaFilter>${meta.filter}</metaFilter>
               </metaFilters>

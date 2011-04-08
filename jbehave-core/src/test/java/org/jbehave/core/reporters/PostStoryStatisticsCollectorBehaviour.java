@@ -41,40 +41,53 @@ public class PostStoryStatisticsCollectorBehaviour {
 
     @Test
     public void shouldCollectStoryStatistics() {
+        // When
         narrateAnInterestingStory();
 
-        assertThat(out.toString(), containsString("scenarios=2"));
-        assertThat(out.toString(), containsString("scenariosSuccessful=1"));
-        assertThat(out.toString(), containsString("scenariosFailed=1"));
+        // Then
+        String statistics = out.toString();
+        assertThat(statistics, containsString("scenarios=3"));
+        assertThat(statistics, containsString("scenariosSuccessful=2"));
+        assertThat(statistics, containsString("scenariosPending=1"));
+        assertThat(statistics, containsString("scenariosFailed=1"));
 
-        assertThat(out.toString(), containsString("givenStories=2"));
-        assertThat(out.toString(), containsString("givenStoryScenarios=3"));
-        assertThat(out.toString(), containsString("givenStoryScenariosSuccessful=3"));
-        assertThat(out.toString(), containsString("givenStoryScenariosFailed=0"));
+        assertThat(statistics, containsString("givenStories=2"));
+        assertThat(statistics, containsString("givenStoryScenarios=3"));
+        assertThat(statistics, containsString("givenStoryScenariosSuccessful=3"));
+        assertThat(statistics, containsString("givenStoryScenariosPending=1"));
+        assertThat(statistics, containsString("givenStoryScenariosFailed=0"));
 
-        assertThat(out.toString(), containsString("examples=2"));
-        assertThat(out.toString(), containsString("steps=8"));
-        assertThat(out.toString(), containsString("stepsFailed=1"));
-        assertThat(out.toString(), containsString("stepsPending=1"));
-        assertThat(out.toString(), containsString("stepsIgnorable=1"));
-        assertThat(out.toString(), containsString("stepsNotPerformed=1"));
-        assertThat(out.toString(), containsString("stepsSuccessful=4"));
+        assertThat(statistics, containsString("steps=9"));
+        assertThat(statistics, containsString("stepsFailed=1"));
+        assertThat(statistics, containsString("stepsPending=1"));
+        assertThat(statistics, containsString("stepsIgnorable=1"));
+        assertThat(statistics, containsString("stepsNotPerformed=2"));
+        assertThat(statistics, containsString("stepsSuccessful=4"));
+
+        assertThat(statistics, containsString("storyPending=1"));
+
+        assertThat(statistics, containsString("examples=2"));
+
         assertThat(reporter.toString(), containsString(printStream.toString()));
     }
 
     @Test
     public void shouldCollectStoryStatisticsWhenStoryNotAllowedByFilter() {
+        // When
         narrateAnInterestingStoryNotAllowedByFilter(true);
-        String statistics = out.toString();
 
+        // Then
+        String statistics = out.toString();
         assertThat(statistics, containsString("notAllowed=1"));
     }
 
     @Test
     public void shouldCollectStoryStatisticsWhenScenariosNotAllowedByFilter() {
+        // When
         narrateAnInterestingStoryNotAllowedByFilter(false);
+        
+        // Then
         String statistics = out.toString();
-
         assertThat(statistics, containsString("notAllowed=0"));
         assertThat(statistics, containsString("scenariosNotAllowed=1"));
     }
@@ -97,6 +110,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         Story story = new Story("/path/to/story", new Description("An interesting story"), new Narrative(
                 "renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
         reporter.dryRun();
+        // begin story
         reporter.beforeStory(story, false);
 
         // 1st scenario
@@ -106,7 +120,7 @@ public class PostStoryStatisticsCollectorBehaviour {
 
         // 1st given story
         reporter.beforeStory(story, true);
-        reporter.beforeScenario("my credit rating is good");
+        reporter.beforeScenario("a scenario without steps");
         reporter.afterScenario();
         reporter.afterStory(true);
 
@@ -139,7 +153,6 @@ public class PostStoryStatisticsCollectorBehaviour {
         } catch (UUIDExceptionWrapper e) {
             reporter.failedOutcomes("Then I don't return loan", ((OutcomesFailed)e.getCause()).outcomesTable());
         }
-        reporter.pending("Then I should have a balance of $30");
         reporter.notPerformed("Then I should have $20");
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
@@ -147,6 +160,14 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.example(table.getRow(1));
         reporter.afterExamples();
         reporter.afterScenario();
+
+        // 3rd scenario
+        reporter.beforeScenario("A pending scenario");
+        reporter.pending("When I have some money");
+        reporter.notPerformed("Then I should have $20");
+        reporter.afterScenario();        
+        
+        // end story
         reporter.afterStory(false);
     }
 

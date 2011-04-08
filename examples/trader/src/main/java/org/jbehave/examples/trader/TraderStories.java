@@ -26,7 +26,7 @@ import org.jbehave.examples.trader.service.TradingService;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
-import org.jbehave.examples.trader.steps.PendingSteps;
+import org.jbehave.examples.trader.steps.CompositeSteps;
 import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
 import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
@@ -52,7 +52,7 @@ public class TraderStories extends JUnitStories {
 
     public TraderStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(60);
+                .doIgnoreFailureInView(true).useThreads(1).useStoryTimeoutInSecs(60);
         //configuredEmbedder().useEmbedderControls(new PropertyBasedEmbedderControls());
     }
 
@@ -88,8 +88,8 @@ public class TraderStories extends JUnitStories {
     @Override
     public List<CandidateSteps> candidateSteps() {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
-                new CalendarSteps(), new PendingSteps(), new PriorityMatchingSteps(), new SandpitSteps(), new SearchSteps(),
-                new BeforeAfterSteps()).createCandidateSteps();
+                new CalendarSteps(), new PriorityMatchingSteps(), new SandpitSteps(), new SearchSteps(),
+                new BeforeAfterSteps(), new CompositeSteps()).createCandidateSteps();
     }
 
     @Override

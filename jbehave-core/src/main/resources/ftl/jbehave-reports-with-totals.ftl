@@ -23,14 +23,14 @@
 
 <table>
 <colgroup span="2" class="stories"></colgroup>
-<colgroup span="4" class="scenarios"></colgroup>
-<colgroup span="4" class="scenarios"></colgroup>
+<colgroup span="5" class="scenarios"></colgroup>
+<colgroup span="5" class="scenarios"></colgroup>
 <colgroup span="6" class="steps"></colgroup>
 <colgroup class="view"></colgroup>
 <tr>
     <th colspan="2">Stories</th>
-    <th colspan="4">Scenarios</th>
-    <th colspan="4">GivenStory Scenarios</th>
+    <th colspan="5">Scenarios</th>
+    <th colspan="5">GivenStory Scenarios</th>
     <th colspan="6">Steps</th>
     <th>View</th>
 </tr>
@@ -39,18 +39,20 @@
     <th>Excluded</th>
     <th>Total</th>
     <th>Successful</th>
-    <th>Failed</th>
-    <th>Excluded</th>
-    <th>Total</th>
-    <th>Successful</th>
+    <th>Pending</th>
     <th>Failed</th>
     <th>Excluded</th>
     <th>Total</th>
     <th>Successful</th>
     <th>Pending</th>
-    <th>Not Performed</th>
     <th>Failed</th>
-    <th>Comments</th>
+    <th>Excluded</th>
+    <th>Total</th>
+    <th>Successful</th>
+    <th>Pending</th>
+    <th>Failed</th>
+    <th>Not Performed</th>
+    <th>Ignorable</th>
     <th></th>
 </tr>
 <#assign reportNames = reportsTable.getReportNames()>
@@ -61,9 +63,12 @@
 <tr>
 <#assign stats = report.getStats()>
 <#assign failed = stats.get("scenariosFailed")!0>
+<#assign pending = stats.get("storyPending")!0>
 <#assign storyClass = "story">
 <#if failed != 0>
     <#assign storyClass = storyClass + " failed">
+<#elseif pending != 0>
+    <#assign storyClass = storyClass + " pending">
 <#else>
     <#assign storyClass = storyClass + " successful">
 </#if>
@@ -78,6 +83,9 @@
 <@renderStat stats "scenariosSuccessful" "successful"/> 
 </td>
 <td>
+<@renderStat stats "scenariosPending" "pending"/> 
+</td>
+<td>
 <@renderStat stats "scenariosFailed" "failed"/>
 </td>
 <td>
@@ -88,6 +96,9 @@
 </td>
 <td>
 <@renderStat stats "givenStoryScenariosSuccessful" "successful"/> 
+</td>
+<td>
+<@renderStat stats "givenStoryScenariosPending" "pending"/> 
 </td>
 <td>
 <@renderStat stats "givenStoryScenariosFailed" "failed"/>
@@ -105,10 +116,10 @@
 <@renderStat stats "stepsPending" "pending"/>
 </td>
 <td>
-<@renderStat stats "stepsNotPerformed" "notPerformed" />
+<@renderStat stats "stepsFailed" "failed"/>
 </td>
 <td>
-<@renderStat stats "stepsFailed" "failed"/>
+<@renderStat stats "stepsNotPerformed" "notPerformed" />
 </td>
 <td>
 <@renderStat stats "stepsIgnorable" "ignorable"/>
@@ -133,6 +144,9 @@
 <@renderStat stats "scenariosSuccessful" "successful"/> 
 </td>
 <td>
+<@renderStat stats "scenariosPending" "pending"/> 
+</td>
+<td>
 <@renderStat stats "scenariosFailed" "failed"/>
 </td>
 <td>
@@ -143,6 +157,9 @@
 </td>
 <td>
 <@renderStat stats "givenStoryScenariosSuccessful" "successful"/> 
+</td>
+<td>
+<@renderStat stats "givenStoryScenariosPending" "pending"/> 
 </td>
 <td>
 <@renderStat stats "givenStoryScenariosFailed" "failed"/>
@@ -160,10 +177,10 @@
 <@renderStat stats "stepsPending" "pending"/>
 </td>
 <td>
-<@renderStat stats "stepsNotPerformed" "notPerformed" />
+<@renderStat stats "stepsFailed" "failed"/>
 </td>
 <td>
-<@renderStat stats "stepsFailed" "failed"/>
+<@renderStat stats "stepsNotPerformed" "notPerformed" />
 </td>
 <td>
 <@renderStat stats "stepsIgnorable" "ignorable"/>

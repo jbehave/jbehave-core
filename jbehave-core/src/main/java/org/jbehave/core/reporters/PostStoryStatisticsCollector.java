@@ -25,8 +25,10 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     private final Map<String, Integer> data = new HashMap<String, Integer>();
     private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "givenStoryScenariosNotAllowed",
             "steps", "stepsSuccessful", "stepsIgnorable", "stepsPending", "stepsNotPerformed", "stepsFailed",
-            "scenarios", "scenariosSuccessful", "scenariosFailed", "givenStoryScenarios",
-            "givenStoryScenariosSuccessful", "givenStoryScenariosFailed", "givenStories", "examples");
+            "currentScenarioSteps", "currentScenarioStepsPending", "scenarios", "scenariosSuccessful",
+            "scenariosPending", "scenariosFailed", "givenStories", "givenStoryScenarios",
+            "givenStoryScenariosSuccessful", "givenStoryScenariosPending", "givenStoryScenariosFailed", "examples",
+            "storyPending");
 
     private Throwable cause;
     private OutcomesTable outcomesFailed;
@@ -37,35 +39,42 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void successful(String step) {
-        count("steps");
-        count("stepsSuccessful");
+        add("steps");
+        add("stepsSuccessful");
+        add("currentScenarioSteps");
     }
 
     public void ignorable(String step) {
-        count("steps");
-        count("stepsIgnorable");
+        add("steps");
+        add("stepsIgnorable");
+        add("currentScenarioSteps");
     }
 
     public void pending(String step) {
-        count("steps");
-        count("stepsPending");
+        add("steps");
+        add("stepsPending");
+        add("currentScenarioSteps");
+        add("currentScenarioStepsPending");
     }
 
     public void notPerformed(String step) {
-        count("steps");
-        count("stepsNotPerformed");
+        add("steps");
+        add("stepsNotPerformed");
+        add("currentScenarioSteps");
     }
 
     public void failed(String step, Throwable cause) {
         this.cause = cause;
-        count("steps");
-        count("stepsFailed");
+        add("steps");
+        add("stepsFailed");
+        add("currentScenarioSteps");
     }
 
     public void failedOutcomes(String step, OutcomesTable table) {
         this.outcomesFailed = table;
-        count("steps");
-        count("stepsFailed");
+        add("steps");
+        add("stepsFailed");
+        add("currentScenarioSteps");
     }
 
     public void beforeStory(Story story, boolean givenStory) {
@@ -81,41 +90,43 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     public void narrative(final Narrative narrative) {
     }
 
-
     public void storyNotAllowed(Story story, String filter) {
         resetData();
-        count("notAllowed");
+        add("notAllowed");
         writeData();
     }
 
     public void afterStory(boolean givenStory) {
         if (givenStory) {
             this.givenStories--;
-        }
-
-        if (!givenStory) {
+        } else {
+            if (has("scenariosPending") || has("givenStoryScenariosPending")) {
+                add("storyPending");
+            }
             writeData();
         }
     }
 
     public void givenStories(GivenStories givenStories) {
-        count("givenStories");
+        add("givenStories");
     }
 
     public void givenStories(List<String> storyPaths) {
-        count("givenStories");
+        add("givenStories");
     }
 
     public void beforeScenario(String title) {
         cause = null;
         outcomesFailed = null;
+        reset("currentScenarioSteps");
+        reset("currentScenarioStepsPending");
     }
 
     public void scenarioNotAllowed(Scenario scenario, String filter) {
         if (givenStories > 0) {
-            count("givenStoryScenariosNotAllowed");
+            add("givenStoryScenariosNotAllowed");
         } else {
-            count("scenariosNotAllowed");
+            add("scenariosNotAllowed");
         }
     }
 
@@ -128,14 +139,21 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         } else {
             countScenarios("scenarios");
         }
+        if (has("currentScenarioStepsPending") || !has("currentScenarioSteps")) {
+            if (givenStories > 0) {
+                add("givenStoryScenariosPending");
+            } else {
+                add("scenariosPending");
+            }
+        }
     }
 
     private void countScenarios(String namespace) {
-        count(namespace);
+        add(namespace);
         if (cause != null || outcomesFailed != null) {
-            count(namespace + "Failed");
+            add(namespace + "Failed");
         } else {
-            count(namespace + "Successful");
+            add(namespace + "Successful");
         }
     }
 
@@ -143,7 +161,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void example(Map<String, String> tableRow) {
-        count("examples");
+        add("examples");
     }
 
     public void afterExamples() {
@@ -155,7 +173,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     public void pendingMethods(List<String> methods) {
     }
 
-    private void count(String event) {
+    private void add(String event) {
         Integer count = data.get(event);
         if (count == null) {
             count = 0;
@@ -164,10 +182,20 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         data.put(event, count);
     }
 
+    private boolean has(String event) {
+        Integer count = data.get(event);
+        if (count == null) {
+            count = 0;
+        }
+        return count > 0;
+    }
+
     private void writeData() {
         Properties p = new Properties();
         for (String event : data.keySet()) {
-            p.setProperty(event, data.get(event).toString());
+            if (!event.startsWith("current")) {
+                p.setProperty(event, data.get(event).toString());
+            }
         }
         try {
             p.store(output, this.getClass().getName());
@@ -179,8 +207,12 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     private void resetData() {
         data.clear();
         for (String event : events) {
-            data.put(event, 0);
+            reset(event);
         }
+    }
+
+    private void reset(String event) {
+        data.put(event, 0);
     }
 
     @Override
