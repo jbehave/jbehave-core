@@ -2,6 +2,7 @@ package org.jbehave.core.steps;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jbehave.core.annotations.Pending;
@@ -9,6 +10,7 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 
 import static java.text.MessageFormat.format;
+import static java.util.Arrays.asList;
 
 public class PendingStepMethodGenerator {
 
@@ -33,9 +35,17 @@ public class PendingStepMethodGenerator {
         }
         String stepPattern = stripStartingWord(stepAsString);
         String stepAnnotation = StringUtils.capitalize(stepType.name().toLowerCase());
-        String methodName = stepType.name().toLowerCase() + StringUtils.remove(WordUtils.capitalize(stepPattern), " ");
+        String methodName = methodName(stepType, stepPattern);
         String pendingAnnotation = Pending.class.getSimpleName();
-        return format(METHOD_SOURCE, stepAnnotation, stepPattern, pendingAnnotation, methodName, keywords.pending());
+        return format(METHOD_SOURCE, stepAnnotation, StringEscapeUtils.escapeJava(stepPattern), pendingAnnotation, methodName, keywords.pending());
+    }
+
+    private String methodName(StepType stepType, String stepPattern) {
+        String name = stepType.name().toLowerCase() + WordUtils.capitalize(stepPattern);
+        for (String remove : asList(" ", "\'", "\"", "\\.", "\\,", "\\;", "\\:", "\\!", "\\|", "<", ">", "\\*")) {
+            name = name.replaceAll(remove, "");
+        }
+        return name;
     }
 
     private boolean isAndStep(String stepAsString) {

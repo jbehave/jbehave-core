@@ -6,6 +6,8 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.junit.Test;
 
+import static org.apache.commons.lang.StringEscapeUtils.escapeJava;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -46,4 +48,21 @@ public class PendingStepMethodGeneratorBehaviour {
        assertThat(generator.generateMethod(pendingStep), equalTo(method));
     }
     
+    
+    @Test
+    public void shouldNormaliseStepPatternToJavaCompatibleMethodNameAndString() throws IntrospectionException {
+        // When
+        String pattern = "I'm searching for \".*\", and for others chars such as :;!|, and I look for <this>";
+        PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("When "+pattern, null);
+
+        // Then
+        String method = 
+            "@When(\""+escapeJava(pattern)+"\")\n" +
+            "@Pending\n"+
+            "public void whenImSearchingForAndForOthersCharsSuchAsAndILookForthis(){\n"+
+            "  // PENDING\n"+
+            "}\n";
+       assertThat(generator.generateMethod(pendingStep), equalTo(method));
+    }
+
 }
