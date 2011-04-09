@@ -12,7 +12,7 @@
 manner that is intelligible and transparent to the business users. This
 in particular may mean setting up explicitly via scenario steps all the
 pre-requirements of a particular scenario. For complex scenarios this
-will rapidly lead to maintainance problems due to duplication of entire
+will rapidly lead to maintenance problems due to duplication of entire
 blocks of steps.</p>
 
 <p>To help the user better manager more complex scenarios, JBehave
@@ -38,21 +38,21 @@ proceeding to the execution of the normal scenario steps.</p>
 use the natural ordering of execution of the story classes. Typically,
 this means that the stories will be executed in the alphabetical order
 of their names and a convention can be adopted to have stories start
-with an alpha-numberical prefix, such as 'Snn' where 'nn' is an
+with an alpha-numerical prefix, such as 'Snn' where 'nn' is an
 incremental number. This though has the disadvantage of having to run
 all stories leading up to the desired scenario, which in some cases can
 be unnecessary and time consuming. For example, for debugging purposes
 one may need to one run one scenario, which may have a dependency on
 just one other story. This is where <b>GivenStories</b> is most useful.</p>
 
-<h2>Parametrised GivenStories</h2>
+<h2>Parametrized GivenStories</h2>
 
 <p>In the spirit of avoid unnecessary duplication, it useful at
-times to allow parametrisation of given stories, i.e. executing them
-with different sets of parameters. Parametrised given stories work on
-the same principles of <a href="parametrised-scenarios.html">parametrised
+times to allow parametrization of given stories, i.e. executing them
+with different sets of parameters. Parametrized given stories work on
+the same principles of <a href="parametrised-scenarios.html">parametrized
 scenarios</a>, using <a href="parameter-injection.html">parameter
-injection</a>. The only thing that differs with the case of parametrised
+injection</a>. The only thing that differs with the case of parametrized
 scenarios is the convention by which the parameter sets are provided. It
 still uses the <b>Examples:</b> keyword to collect the sets of
 parameters, but it allows the user to provide via an <b>anchor</b>, an
@@ -66,7 +66,7 @@ the examples table:</p>
 
 <pre class="brush: bdd">
     Scenario:  A scenario in which the user can run other stories as pre-requisites
-               parametrised using the rows of the Examples table
+               parametrized using the rows of the Examples table
     
     GivenStories: path/to/precondition.story#{0},
                   path/to/precondition.story#{1}
@@ -79,11 +79,15 @@ the examples table:</p>
     |un|deux|
 </pre>
 
-<p>Conventionally, if the examples table is used to parametrised the
+<p>Conventionally, if the examples table is used to parametrized the
 GivenStories (i.e. if anchors are present in the story paths), it is
-assumed we are not using it to parameterise the scenario at the same
-time. This behaviour may be made onfigurable in the future, depending on
+assumed we are not using it to parameterize the scenario at the same
+time. This behaviour may be made configurable in the future, depending on
 the need.</p>
+
+<p>Notes: The full path can be omitted if the GivenStories file is in the same 
+	directory as the story referring to it.  The GivenStories file does not have 
+	to follow the naming conventions of the rest of the stories in your suite.</p>
 
 <div class="clear">
 <hr />
