@@ -153,14 +153,16 @@ public class EmbedderMojoBehaviour {
 
         int stories = 2;
         int storiesNotAllowed = 1;
+        int storiesPending = 1;
         int scenarios = 4;
         int scenariosFailed = 1;
         int scenariosNotAllowed = 0;
-        embedderMonitor.reportsViewGenerated(new ReportsCount(stories, storiesNotAllowed, scenarios, scenariosFailed,
-                scenariosNotAllowed));
+        int scenariosPending = 1;
+        embedderMonitor.reportsViewGenerated(new ReportsCount(stories, storiesNotAllowed, storiesPending, scenarios,
+                scenariosFailed, scenariosNotAllowed, scenariosPending));
         verify(log).info(
-                "Reports view generated with " + stories + " stories containing " + scenarios
-                        + " scenarios (of which  " + scenariosFailed + " failed)");
+                "Reports view generated with " + stories + " stories (of which "+storiesPending+" pending) containing " + scenarios
+                + " scenarios (of which  " + scenariosFailed + " failed and " + scenariosPending + " pending)");
         verify(log).info(
                 "Meta filters did not allow " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
                         + " scenarios");

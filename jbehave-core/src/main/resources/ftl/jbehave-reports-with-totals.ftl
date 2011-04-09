@@ -63,7 +63,7 @@
 <tr>
 <#assign stats = report.getStats()>
 <#assign failed = stats.get("scenariosFailed")!0>
-<#assign pending = stats.get("storyPending")!0>
+<#assign pending = stats.get("pending")!0>
 <#assign storyClass = "story">
 <#if failed != 0>
     <#assign storyClass = storyClass + " failed">

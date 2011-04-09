@@ -1,10 +1,5 @@
 package org.jbehave.ant;
 
-import static java.util.Arrays.asList;
-import static org.apache.tools.ant.Project.MSG_DEBUG;
-import static org.apache.tools.ant.Project.MSG_INFO;
-import static org.apache.tools.ant.Project.MSG_WARN;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,6 +23,11 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
+
+import static java.util.Arrays.asList;
+import static org.apache.tools.ant.Project.MSG_DEBUG;
+import static org.apache.tools.ant.Project.MSG_INFO;
+import static org.apache.tools.ant.Project.MSG_WARN;
 
 /**
  * Abstract task that holds all the configuration parameters to specify and load
@@ -285,8 +285,9 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void reportsViewGenerated(ReportsCount count) {
-            log("Reports view generated with " + count.getStories() + " stories containing " + count.getScenarios() + " scenarios (of which  "
-                    + count.getScenariosFailed() + " failed)", MSG_INFO);
+            log("Reports view generated with " + count.getStories() + " stories (of which " + count.getStoriesPending()
+                    + " pending) containing " + "" + count.getScenarios() + " scenarios (of which  "
+                    + count.getScenariosFailed() + " failed and " + count.getScenariosPending() + " pending)", MSG_INFO);
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
                 log("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  " + count.getScenariosNotAllowed()
                         + " scenarios", MSG_INFO);

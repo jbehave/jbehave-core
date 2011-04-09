@@ -64,7 +64,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         assertThat(statistics, containsString("stepsNotPerformed=2"));
         assertThat(statistics, containsString("stepsSuccessful=4"));
 
-        assertThat(statistics, containsString("storyPending=1"));
+        assertThat(statistics, containsString("pending=1"));
 
         assertThat(statistics, containsString("examples=2"));
 

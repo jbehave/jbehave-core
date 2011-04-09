@@ -847,7 +847,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 2, 0, 0));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 1, 2, 0, 0, 1));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then
@@ -914,7 +914,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 2, 1, 1));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 1, 2, 1, 1, 1));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then fail as expected
@@ -934,7 +934,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 2, 1, 0));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 1, 2, 1, 0, 1));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then

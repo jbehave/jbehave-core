@@ -23,12 +23,11 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<String, Integer>();
-    private final List<String> events = asList("notAllowed", "scenariosNotAllowed", "givenStoryScenariosNotAllowed",
-            "steps", "stepsSuccessful", "stepsIgnorable", "stepsPending", "stepsNotPerformed", "stepsFailed",
-            "currentScenarioSteps", "currentScenarioStepsPending", "scenarios", "scenariosSuccessful",
-            "scenariosPending", "scenariosFailed", "givenStories", "givenStoryScenarios",
-            "givenStoryScenariosSuccessful", "givenStoryScenariosPending", "givenStoryScenariosFailed", "examples",
-            "storyPending");
+    private final List<String> events = asList("notAllowed", "pending", "scenariosNotAllowed",
+            "givenStoryScenariosNotAllowed", "steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
+            "stepsNotPerformed", "stepsFailed", "currentScenarioSteps", "currentScenarioStepsPending", "scenarios",
+            "scenariosSuccessful", "scenariosPending", "scenariosFailed", "givenStories", "givenStoryScenarios",
+            "givenStoryScenariosSuccessful", "givenStoryScenariosPending", "givenStoryScenariosFailed", "examples");
 
     private Throwable cause;
     private OutcomesTable outcomesFailed;
@@ -101,7 +100,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
             this.givenStories--;
         } else {
             if (has("scenariosPending") || has("givenStoryScenariosPending")) {
-                add("storyPending");
+                add("pending");
             }
             writeData();
         }

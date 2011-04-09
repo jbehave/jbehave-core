@@ -134,7 +134,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @parameter default-value="1"
      */
     int threads = 1;
-    
+
     /**
      * The embedder class
      * 
@@ -289,7 +289,8 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     protected EmbedderControls embedderControls() {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
-                .doIgnoreFailureInView(ignoreFailureInView).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
+                .doIgnoreFailureInView(ignoreFailureInView).useStoryTimeoutInSecs(storyTimeoutInSecs)
+                .useThreads(threads));
     }
 
     protected class MavenEmbedderMonitor implements EmbedderMonitor {
@@ -301,9 +302,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         public void embeddableFailed(String name, Throwable cause) {
             getLog().warn("Failed to run embeddable " + name, cause);
         }
-        
+
         public void embeddableNotConfigurable(String name) {
-            getLog().warn("Embeddable " + name + " must be an instance of "+ConfigurableEmbedder.class);
+            getLog().warn("Embeddable " + name + " must be an instance of " + ConfigurableEmbedder.class);
         }
 
         public void embeddablesSkipped(List<String> classNames) {
@@ -349,8 +350,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void reportsViewGenerated(ReportsCount count) {
             getLog().info(
-                    "Reports view generated with " + count.getStories() + " stories containing " + count.getScenarios()
-                            + " scenarios (of which  " + count.getScenariosFailed() + " failed)");
+                    "Reports view generated with " + count.getStories() + " stories (of which "
+                            + count.getStoriesPending() + " pending) containing " + "" + count.getScenarios()
+                            + " scenarios (of which  " + count.getScenariosFailed() + " failed and "
+                            + count.getScenariosPending() + " pending)");
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
                 getLog().info(
                         "Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  "

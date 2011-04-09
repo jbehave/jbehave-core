@@ -360,7 +360,7 @@ public class Embedder {
         ReportsCount count = viewGenerator.getReportsCount();
         embedderMonitor.reportsViewGenerated(count);
         if (!embedderControls.ignoreFailureInView() && count.getScenariosFailed() > 0) {
-            throw new RunningStoriesFailed(count.getStories(), count.getScenarios(), count.getScenariosFailed());
+            throw new RunningStoriesFailed(count);
         }
 
     }
@@ -537,9 +537,9 @@ public class Embedder {
     @SuppressWarnings("serial")
     public static class RunningStoriesFailed extends RuntimeException {
 
-        public RunningStoriesFailed(int stories, int scenarios, int failedScenarios) {
-            super("Failures in running " + stories + " stories containing " + scenarios + " scenarios (of which "
-                    + failedScenarios + " failed)");
+        public RunningStoriesFailed(ReportsCount count) {
+            super("Failures in running " + count.getStories() + " stories containing " + count.getScenarios() + " scenarios (of which "
+                    + count.getScenariosFailed() + " failed)");
         }
 
         public RunningStoriesFailed(BatchFailures failures) {
