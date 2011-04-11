@@ -7,8 +7,8 @@
     <groupId>org.jbehave</groupId>
     <version>3.4-SNAPSHOT</version>
   </parent>
-  <artifactId>jbehave-trader-groovy-example</artifactId>
-  <name>JBehave Trader Groovy Example</name>
+  <artifactId>jbehave-groovy-example</artifactId>
+  <name>JBehave Groovy Example</name>
 
   <dependencies>
     <dependency>
