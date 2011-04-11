@@ -15,7 +15,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML;
 
-public class TraderGroovyStories extends JUnitStories {
+public class GroovyStories extends JUnitStories {
 
     @Override
     public Configuration configuration() {
