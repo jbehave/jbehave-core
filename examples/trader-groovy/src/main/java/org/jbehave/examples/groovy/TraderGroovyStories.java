@@ -20,7 +20,7 @@ public class TraderGroovyStories extends JUnitStories {
     @Override
     public Configuration configuration() {
         return new ParanamerConfiguration()
-                .useStoryReporterBuilder(new StoryReporterBuilder().withFormats(CONSOLE, HTML));
+                .useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML));
     }
 
     @Override
