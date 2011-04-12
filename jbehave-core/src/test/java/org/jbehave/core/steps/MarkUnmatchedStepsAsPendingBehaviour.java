@@ -1,6 +1,7 @@
 package org.jbehave.core.steps;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +131,31 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
+    public void shouldCreatePendingStepsWhenCandidatesAreNotFound() {
+        // Given
+        StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
+
+        CandidateSteps steps = mock(Steps.class);
+
+        String givenPendingStep = "Given a pending step";
+        String andGivenPendingStep = "And a given pending step";
+        String whenPendingStep = "When yet another pending step";
+        String andWhenPendingStep = "And a when pending step";
+        when(steps.listCandidates()).thenReturn(Arrays.<StepCandidate> asList());
+
+        // When
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps),
+                new Scenario(asList(givenPendingStep, andGivenPendingStep, whenPendingStep, andWhenPendingStep)),
+                parameters);
+        // Then
+        assertThat(executableSteps.size(), equalTo(4));
+        assertIsPending(executableSteps.get(0), givenPendingStep, null);
+        assertIsPending(executableSteps.get(1), andGivenPendingStep, givenPendingStep);
+        assertIsPending(executableSteps.get(2), whenPendingStep, givenPendingStep);
+        assertIsPending(executableSteps.get(3), andWhenPendingStep, whenPendingStep);
+    }
+
+    @Test
     public void shouldCreatePendingStepsWhenCandidatesAreNotMatched() {
         // Given
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
@@ -137,18 +163,18 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         CandidateSteps steps = mock(Steps.class);
 
         String givenPendingStep = "Given a pending step";
+        String andGivenPendingStep = "And a given pending step";
+        String whenPendingStep = "When yet another pending step";
+        String andWhenPendingStep = "And a when pending step";
         StepCandidate firstCandidate = mock(StepCandidate.class, "firstCandidate");
         when(firstCandidate.matches(givenPendingStep)).thenReturn(false);
         when(firstCandidate.isAndStep(givenPendingStep)).thenReturn(false);
-        String andGivenPendingStep = "And a given pending step";
         StepCandidate secondCandidate = mock(StepCandidate.class, "secondCandidate");
         when(secondCandidate.matches(andGivenPendingStep)).thenReturn(false);
         when(secondCandidate.isAndStep(andGivenPendingStep)).thenReturn(true);
-        String whenPendingStep = "When yet another pending step";
         StepCandidate thirdCandidate = mock(StepCandidate.class, "thirdCandidate");
         when(thirdCandidate.matches(whenPendingStep)).thenReturn(false);
         when(thirdCandidate.isAndStep(whenPendingStep)).thenReturn(false);
-        String andWhenPendingStep = "And a when pending step";
         StepCandidate fourthCandidate = mock(StepCandidate.class, "fourthCandidate");
         when(fourthCandidate.matches(andWhenPendingStep)).thenReturn(false);
         when(fourthCandidate.isAndStep(andWhenPendingStep)).thenReturn(true);
