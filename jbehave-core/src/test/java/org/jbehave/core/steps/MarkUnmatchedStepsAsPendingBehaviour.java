@@ -1,6 +1,10 @@
 package org.jbehave.core.steps;
 
-import com.thoughtworks.xstream.XStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.BeforeScenario;
@@ -9,19 +13,20 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.StepCollector.Stage;
+import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.thoughtworks.xstream.XStream;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
 import static org.hamcrest.CoreMatchers.equalTo;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.is;
+
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -75,14 +80,13 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps.listCandidates()).thenReturn(asList(candidate, andCandidate));
 
         // When
-        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(myStep, myAndStep)),
-                parameters);
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps),
+                new Scenario(asList(myStep, myAndStep)), parameters);
 
         // Then
         assertThat(executableSteps.size(), equalTo(2));
     }
-    
-    
+
     @Test
     public void shouldCreateExecutableStepsWhenACompositeStepIsMatched() {
         // Given
@@ -100,19 +104,23 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps.listCandidates()).thenReturn(allCandidates);
         String compositeStepAsString = "my composite step";
         when(compositeCandidate.matches(compositeStepAsString)).thenReturn(true);
-        when(compositeCandidate.createMatchedStep(compositeStepAsString, parameters)).thenReturn(executableCompositeStep);
+        when(compositeCandidate.createMatchedStep(compositeStepAsString, parameters)).thenReturn(
+                executableCompositeStep);
         when(compositeCandidate.isComposite()).thenReturn(true);
-        when(compositeCandidate.createComposedSteps(compositeStepAsString, parameters, allCandidates)).thenReturn(asList(executableComposedStep1, executableComposedStep2));
+        when(compositeCandidate.createComposedSteps(compositeStepAsString, parameters, allCandidates)).thenReturn(
+                asList(executableComposedStep1, executableComposedStep2));
         String composedStep1AsString = "my composed step 1";
         when(composedCandidate1.matches(composedStep1AsString)).thenReturn(true);
-        when(composedCandidate1.createMatchedStep(composedStep1AsString, parameters)).thenReturn(executableComposedStep1);
+        when(composedCandidate1.createMatchedStep(composedStep1AsString, parameters)).thenReturn(
+                executableComposedStep1);
         String composedStep2AsString = "my composed step 2";
         when(composedCandidate2.matches(composedStep2AsString)).thenReturn(true);
-        when(composedCandidate2.createMatchedStep(composedStep1AsString, parameters)).thenReturn(executableComposedStep2);
+        when(composedCandidate2.createMatchedStep(composedStep1AsString, parameters)).thenReturn(
+                executableComposedStep2);
 
         // When
-        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(compositeStepAsString)),
-                parameters);
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(
+                asList(compositeStepAsString)), parameters);
 
         // Then
         assertThat(executableSteps.size(), equalTo(3));
@@ -121,30 +129,55 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         assertThat(executableSteps.get(2), equalTo(executableComposedStep2));
     }
 
-    
     @Test
     public void shouldCreatePendingStepsWhenCandidatesAreNotMatched() {
         // Given
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
 
-        StepCandidate candidate = mock(StepCandidate.class);
         CandidateSteps steps = mock(Steps.class);
 
-        String stepAsString = "my step";
-        when(candidate.matches(stepAsString)).thenReturn(false);
-        when(steps.listCandidates()).thenReturn(asList(candidate));
+        String givenPendingStep = "Given a pending step";
+        StepCandidate firstCandidate = mock(StepCandidate.class, "firstCandidate");
+        when(firstCandidate.matches(givenPendingStep)).thenReturn(false);
+        when(firstCandidate.isAndStep(givenPendingStep)).thenReturn(false);
+        String andGivenPendingStep = "And a given pending step";
+        StepCandidate secondCandidate = mock(StepCandidate.class, "secondCandidate");
+        when(secondCandidate.matches(andGivenPendingStep)).thenReturn(false);
+        when(secondCandidate.isAndStep(andGivenPendingStep)).thenReturn(true);
+        String whenPendingStep = "When yet another pending step";
+        StepCandidate thirdCandidate = mock(StepCandidate.class, "thirdCandidate");
+        when(thirdCandidate.matches(whenPendingStep)).thenReturn(false);
+        when(thirdCandidate.isAndStep(whenPendingStep)).thenReturn(false);
+        String andWhenPendingStep = "And a when pending step";
+        StepCandidate fourthCandidate = mock(StepCandidate.class, "fourthCandidate");
+        when(fourthCandidate.matches(andWhenPendingStep)).thenReturn(false);
+        when(fourthCandidate.isAndStep(andWhenPendingStep)).thenReturn(true);
+        when(steps.listCandidates()).thenReturn(
+                asList(firstCandidate, secondCandidate, thirdCandidate, fourthCandidate));
 
         // When
-        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(stepAsString)),
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps),
+                new Scenario(asList(givenPendingStep, andGivenPendingStep, whenPendingStep, andWhenPendingStep)),
                 parameters);
         // Then
-        assertThat(executableSteps.size(), equalTo(1));
-        StepResult result = executableSteps.get(0).perform(null);
-        Throwable throwable = result.getFailure();
+        assertThat(executableSteps.size(), equalTo(4));
+        assertIsPending(executableSteps.get(0), givenPendingStep, null);
+        assertIsPending(executableSteps.get(1), andGivenPendingStep, givenPendingStep);
+        assertIsPending(executableSteps.get(2), whenPendingStep, givenPendingStep);
+        assertIsPending(executableSteps.get(3), andWhenPendingStep, whenPendingStep);
+    }
+
+    private void assertIsPending(Step step, String stepAsString, String previousNonAndStep) {
+        assertThat(step, Matchers.instanceOf(PendingStep.class));
+        PendingStep pendingStep = (PendingStep) step;
+        assertThat(pendingStep.stepAsString(), equalTo(stepAsString));
+        assertThat(pendingStep.previousNonAndStepAsString(), equalTo(previousNonAndStep));
+        Throwable throwable = step.perform(null).getFailure();
         assertThat(throwable, is(PendingStepFound.class));
         assertThat(throwable.getMessage(), equalTo(stepAsString));
+
     }
-    
+
     @Test
     public void shouldCreateIgnorableSteps() {
         // Given
@@ -158,14 +191,13 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(steps.listCandidates()).thenReturn(asList(candidate));
 
         // When
-        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(asList(stepAsString)),
-                parameters);
+        List<Step> executableSteps = stepCollector.collectScenarioSteps(asList(steps), new Scenario(
+                asList(stepAsString)), parameters);
         // Then
         assertThat(executableSteps.size(), equalTo(1));
         StepResult result = executableSteps.get(0).perform(null);
         assertThat(result, Matchers.instanceOf(Ignorable.class));
     }
-
 
     @Test
     public void shouldCollectBeforeAndAfterScenarioAnnotatedSteps() {
@@ -195,10 +227,11 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.BEFORE, failureOccured);
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.AFTER, failureOccured);
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.BEFORE,
+                failureOccured);
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.AFTER,
+                failureOccured);
 
-        
         // Then all before and after steps should be added
         assertThat(beforeSteps, equalTo(asList(stepBefore1, stepBefore2)));
         assertThat(afterSteps, equalTo(asList(stepAfter1, stepAfter2)));
@@ -314,8 +347,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
-        List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), new Scenario(asList(stepAsString)),
-                parameters);
+        List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2),
+                new Scenario(asList(stepAsString)), parameters);
 
         // Then the step with highest priority is returned
         assertThat(step4, equalTo(steps.get(0)));
@@ -355,8 +388,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(candidate4.createMatchedStep(stepAsString, parameters)).thenReturn(step4);
 
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending(new StepFinder(new ByLevenshteinDistance()));
-        List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2), new Scenario(asList(stepAsString)),
-                parameters);
+        List<Step> steps = stepCollector.collectScenarioSteps(asList(steps1, steps2),
+                new Scenario(asList(stepAsString)), parameters);
 
         // Then the step with highest priority is returned
         assertThat(step4, equalTo(steps.get(0)));
@@ -368,7 +401,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
         steps.add(new ClassWithMethodsAandB());
         steps.add(new ClassWithMethodsCandD());
-        String stepsAsString = steps.toString(); // includes object ID numbers from JVM
+        String stepsAsString = steps.toString(); // includes object ID numbers
+                                                 // from JVM
 
         XStream xs = new XStream();
 
@@ -380,7 +414,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         assertEquals(subsetAsXML.indexOf("<name>d</name>"), -1); // not there
         assertTrue(subsetAsXML.indexOf("<name>a</name>") < subsetAsXML.indexOf("<name>c</name>")); // there
 
-        assertEquals(stepsAsString, steps.toString()); // steps have not been mutated.
+        assertEquals(stepsAsString, steps.toString()); // steps have not been
+                                                       // mutated.
 
         subset = foo.collectBeforeOrAfterScenarioSteps(steps, Stage.AFTER, false);
         subsetAsXML = xs.toXML(subset);
@@ -388,7 +423,11 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         assertTrue(subsetAsXML.indexOf("<name>b</name>") > -1); // there
         assertEquals(subsetAsXML.indexOf("<name>c</name>"), -1); // not there
         assertTrue(subsetAsXML.indexOf("<name>d</name>") > -1); // there
-        assertTrue(subsetAsXML.indexOf("<name>d</name>") < subsetAsXML.indexOf("<name>b</name>")); // there AND IN REVERSE ORDER
+        assertTrue(subsetAsXML.indexOf("<name>d</name>") < subsetAsXML.indexOf("<name>b</name>")); // there
+                                                                                                   // AND
+                                                                                                   // IN
+                                                                                                   // REVERSE
+                                                                                                   // ORDER
 
     }
 
@@ -396,6 +435,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         @BeforeScenario
         public void a() {
         }
+
         @AfterScenario
         public void b() {
         }
@@ -406,6 +446,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         @BeforeScenario
         public void c() {
         }
+
         @AfterScenario
         public void d() {
         }

@@ -10,6 +10,8 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.parsers.StepPatternParser;
 
@@ -29,21 +31,21 @@ public class StepCandidate {
     private final StepType stepType;
     private final Method method;
     private final Object stepsInstance;
-    private final Map<StepType, String> startingWordsByType;
+    private final Keywords keywords;
     private final StepMatcher stepMatcher;
     private final StepCreator stepCreator;
     private StepMonitor stepMonitor = new SilentStepMonitor();
     private String[] composedSteps;
 
     public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Object stepsInstance,
-            Map<StepType, String> startingWordsByType, StepPatternParser stepPatternParser,
+            Keywords keywords, StepPatternParser stepPatternParser,
             ParameterConverters parameterConverters) {
         this.patternAsString = patternAsString;
         this.priority = priority;
         this.stepType = stepType;
         this.method = method;
         this.stepsInstance = stepsInstance;
-        this.startingWordsByType = startingWordsByType;
+        this.keywords = keywords;
         this.stepMatcher = stepPatternParser.parseStep(stepType, patternAsString);
         this.stepCreator = new StepCreator(stepsInstance, parameterConverters, stepMatcher, stepMonitor);
     }
@@ -69,7 +71,7 @@ public class StepCandidate {
     }
 
     public String getStartingWord() {
-        return startingWordFor(stepType);
+        return keywords.startingWordFor(stepType);
     }
 
     public void useStepMonitor(StepMonitor stepMonitor) {
@@ -95,8 +97,8 @@ public class StepCandidate {
 
     public boolean ignore(String stepAsString) {
         try {
-            String ignoreWord = startingWordFor(StepType.IGNORABLE);
-            return stepStartsWithWord(stepAsString, ignoreWord);
+            String ignoreWord = keywords.startingWordFor(StepType.IGNORABLE);
+            return keywords.stepStartsWithWord(stepAsString, ignoreWord);
         } catch (StartingWordNotFound e) {
             return false;
         }
@@ -119,7 +121,7 @@ public class StepCandidate {
                     matchesType = false;
                 } else {
                     // previous step type should match candidate step type
-                    matchesType = startingWordFor(stepType).equals(findStartingWord(previousNonAndStep));
+                    matchesType = keywords.startingWordFor(stepType).equals(findStartingWord(previousNonAndStep));
                 }
             }
             stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType, method, stepsInstance);
@@ -130,11 +132,6 @@ public class StepCandidate {
         } catch (StartingWordNotFound e) {
             return false;
         }
-    }
-
-    public boolean isAndStep(String stepAsString) {
-        String andWord = startingWordFor(StepType.AND);
-        return stepStartsWithWord(stepAsString, andWord);
     }
 
     public Step createMatchedStep(String stepAsString, Map<String, String> namedParameters) {
@@ -169,56 +166,21 @@ public class StepCandidate {
         return null;
     }
 
-    private String stripStartingWord(final String stepAsString) {
-        String startingWord = findStartingWord(stepAsString);
-        return trimStartingWord(startingWord, stepAsString);
+    public boolean isAndStep(String stepAsString) {
+        return keywords.isAndStep(stepAsString);
     }
 
-    private String findStartingWord(final String stepAsString) throws StartingWordNotFound {
-        String wordForType = startingWordFor(stepType);
-        if (stepStartsWithWord(stepAsString, wordForType)) {
-            return wordForType;
-        }
-        String andWord = startingWordFor(StepType.AND);
-        if (stepStartsWithWord(stepAsString, andWord)) {
-            return andWord;
-        }
-        throw new StartingWordNotFound(stepAsString, stepType, startingWordsByType);
+    private String findStartingWord(String stepAsString) {
+       return keywords.startingWord(stepAsString, stepType);
     }
 
-    private boolean stepStartsWithWord(String step, String word) {
-        return step.startsWith(word + " "); // space after qualifies it as word
-    }
-
-    private String trimStartingWord(String word, String step) {
-        return step.substring(word.length() + 1); // 1 for the space after
-    }
-
-    private String startingWordFor(StepType stepType) {
-        String startingWord = startingWordsByType.get(stepType);
-        if (startingWord == null) {
-            throw new StartingWordNotFound(stepType, startingWordsByType);
-        }
-        return startingWord;
+    private String stripStartingWord(String stepAsString) {
+        return keywords.stepWithoutStartingWord(stepAsString, stepType);
     }
 
     @Override
     public String toString() {
         return stepType + " " + patternAsString;
-    }
-
-    @SuppressWarnings("serial")
-    public static class StartingWordNotFound extends RuntimeException {
-
-        public StartingWordNotFound(String step, StepType stepType, Map<StepType, String> startingWordsByType) {
-            super("No starting word found for step '" + step + "' of type '" + stepType + "' amongst '"
-                    + startingWordsByType + "'");
-        }
-
-        public StartingWordNotFound(StepType stepType, Map<StepType, String> startingWordsByType) {
-            super("No starting word found of type '" + stepType + "' amongst '" + startingWordsByType + "'");
-        }
-
     }
 
 

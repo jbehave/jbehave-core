@@ -1,7 +1,5 @@
 package org.jbehave.core.configuration;
 
-import static java.util.Arrays.asList;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +8,8 @@ import java.util.Map;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.steps.StepType;
+
+import static java.util.Arrays.asList;
 
 /**
  * Provides the keywords which allow parsers to find steps in stories and match
@@ -69,6 +69,7 @@ public class Keywords {
     private final String notPerformed;
     private final String failed;
     private final String dryRun;
+    private final Map<StepType, String> startingWordsByType = new HashMap<StepType, String>();
 
     public static Map<String, String> defaultKeywords() {
         Map<String, String> keywords = new HashMap<String, String>();
@@ -133,6 +134,13 @@ public class Keywords {
         this.notPerformed = keyword(NOT_PERFORMED, keywords);
         this.failed = keyword(FAILED, keywords);
         this.dryRun = keyword(DRY_RUN, keywords);
+        
+        startingWordsByType.put(StepType.GIVEN, given());
+        startingWordsByType.put(StepType.WHEN, when());
+        startingWordsByType.put(StepType.THEN, then());
+        startingWordsByType.put(StepType.AND, and());
+        startingWordsByType.put(StepType.IGNORABLE, ignorable());
+
     }
 
     private String keyword(String name, Map<String, String> keywords) {
@@ -238,13 +246,66 @@ public class Keywords {
     }
 
     public Map<StepType, String> startingWordsByType() {
-        Map<StepType, String> words = new HashMap<StepType, String>();
-        words.put(StepType.GIVEN, given());
-        words.put(StepType.WHEN, when());
-        words.put(StepType.THEN, then());
-        words.put(StepType.AND, and());
-        words.put(StepType.IGNORABLE, ignorable());
-        return words;
+        return startingWordsByType;
+    }
+
+    public boolean isAndStep(String stepAsString) {
+        String andWord = startingWordFor(StepType.AND);
+        return stepStartsWithWord(stepAsString, andWord);
+    }
+    
+    public String stepWithoutStartingWord(String stepAsString, StepType stepType) {
+        String startingWord = startingWord(stepAsString, stepType);
+        return stepAsString.substring(startingWord.length() + 1); // 1 for the space after
+    }
+
+    public String startingWord(String stepAsString, StepType stepType) throws StartingWordNotFound {
+        String wordForType = startingWordFor(stepType);
+        if (stepStartsWithWord(stepAsString, wordForType)) {
+            return wordForType;
+        }
+        String andWord = startingWordFor(StepType.AND);
+        if (stepStartsWithWord(stepAsString, andWord)) {
+            return andWord;
+        }
+        throw new StartingWordNotFound(stepAsString, stepType, startingWordsByType);
+    }
+
+    public String startingWord(String stepAsString) throws StartingWordNotFound {
+        for (StepType stepType : startingWordsByType.keySet()) {
+            String wordForType = startingWordFor(stepType);
+            if (stepStartsWithWord(stepAsString, wordForType)) {
+                return wordForType;
+            }
+        }
+        String andWord = startingWordFor(StepType.AND);
+        if (stepStartsWithWord(stepAsString, andWord)) {
+            return andWord;
+        }
+        throw new StartingWordNotFound(stepAsString, startingWordsByType);
+    }
+
+    public StepType stepTypeFor(String stepAsString) throws StartingWordNotFound {
+        for (StepType stepType : startingWordsByType.keySet()) {
+            String wordForType = startingWordFor(stepType);
+            if (stepStartsWithWord(stepAsString, wordForType)) {
+                return stepType;
+            }
+        }
+        throw new StartingWordNotFound(stepAsString, startingWordsByType);
+    }
+
+
+    public boolean stepStartsWithWord(String step, String word) {
+        return step.startsWith(word + " "); // space after qualifies it as word
+    }
+
+    public String startingWordFor(StepType stepType) {
+        String startingWord = startingWordsByType.get(stepType);
+        if (startingWord == null) {
+            throw new StartingWordNotFound(stepType, startingWordsByType);
+        }
+        return startingWord;
     }
 
     @Override
@@ -260,5 +321,25 @@ public class Keywords {
         }
 
     }
+    
+    @SuppressWarnings("serial")
+    public static class StartingWordNotFound extends RuntimeException {
+
+        public StartingWordNotFound(String step, StepType stepType, Map<StepType, String> startingWordsByType) {
+            super("No starting word found for step '" + step + "' of type '" + stepType + "' amongst '"
+                    + startingWordsByType + "'");
+        }
+
+        public StartingWordNotFound(StepType stepType, Map<StepType, String> startingWordsByType) {
+            super("No starting word found of type '" + stepType + "' amongst '" + startingWordsByType + "'");
+        }
+
+        public StartingWordNotFound(String stepAsString, Map<StepType, String> startingWordsByType) {
+            // TODO Auto-generated constructor stub
+        }
+
+    }
+
+
 
 }

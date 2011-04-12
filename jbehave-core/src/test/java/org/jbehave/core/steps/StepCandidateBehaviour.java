@@ -13,6 +13,8 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -21,7 +23,6 @@ import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
-import org.jbehave.core.steps.StepCandidate.StartingWordNotFound;
 import org.junit.Test;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
@@ -51,10 +52,10 @@ public class StepCandidateBehaviour {
 
     private Map<String, String> namedParameters = new HashMap<String, String>();
     private Paranamer paranamer = new CachingParanamer(new BytecodeReadingParanamer());
-    private Map<StepType, String> startingWords = new LocalizedKeywords().startingWordsByType();
+    private Keywords keywords = new LocalizedKeywords();
 
     private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance) {
-        return new StepCandidate(patternAsString, 0, stepType, method, instance, startingWords,
+        return new StepCandidate(patternAsString, 0, stepType, method, instance, keywords,
                 new RegexPrefixCapturingPatternParser(), new ParameterConverters());
     }
 
@@ -98,8 +99,15 @@ public class StepCandidateBehaviour {
     @Test
     public void shouldNotMatchOrIgnoreStepWhenStartingWordNotFound() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        Map<StepType, String> startingWordsByType = new HashMap<StepType, String>(); // empty list
-        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, startingWordsByType,
+        Keywords keywords = new LocalizedKeywords(){            
+            
+            @Override
+            public String startingWordFor(StepType stepType) {
+                throw new StartingWordNotFound(stepType, new HashMap<StepType, String>());
+            }
+            
+        };
+        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, keywords,
                 new RegexPrefixCapturingPatternParser(), new ParameterConverters());
         assertThat(candidate.matches("When windows on the 1st floor"), is(false));
         assertThat(candidate.ignore("!-- windows on the 1st floor"), is(false));

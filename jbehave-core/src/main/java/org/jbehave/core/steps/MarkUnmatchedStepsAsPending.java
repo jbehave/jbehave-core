@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
@@ -16,16 +18,22 @@ import org.jbehave.core.steps.StepCreator.PendingStep;
 public class MarkUnmatchedStepsAsPending implements StepCollector {
 
     private final StepFinder stepFinder;
+    private final Keywords keywords;
 
     public MarkUnmatchedStepsAsPending() {
         this(new StepFinder());
     }
 
     public MarkUnmatchedStepsAsPending(StepFinder stepFinder) {
-        this.stepFinder = stepFinder;
+        this(stepFinder, new LocalizedKeywords());
     }
 
-    public List<Step> collectBeforeOrAfterStoriesSteps(List<CandidateSteps> candidateSteps, Stage stage) {
+   public MarkUnmatchedStepsAsPending(StepFinder stepFinder, Keywords keywords) {
+        this.stepFinder = stepFinder;
+        this.keywords = keywords;
+    }
+
+     public List<Step> collectBeforeOrAfterStoriesSteps(List<CandidateSteps> candidateSteps, Stage stage) {
         List<Step> steps = new ArrayList<Step>();
         for (CandidateSteps candidates : candidateSteps) {
             steps.addAll(createSteps(candidates.listBeforeOrAfterStories(), stage));
@@ -91,7 +99,8 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
             // pending is default step, overridden below
             Step step = StepCreator.createPendingStep(stepAsString, previousNonAndStep);
             List<Step> composedSteps = new ArrayList<Step>();
-            for (StepCandidate candidate : stepFinder.prioritise(stepAsString, allCandidates)) {
+            List<StepCandidate> prioritisedCandidates = stepFinder.prioritise(stepAsString, allCandidates);
+            for (StepCandidate candidate : prioritisedCandidates) {
                 if (candidate.ignore(stepAsString)) {
                     // ignorable steps are added
                     // so they can be reported
@@ -113,13 +122,10 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
                         previousNonAndStep = stepAsString;
                     }
                     break;
-                } else { 
-                    // step does not match candidate
-                    if (!candidate.isAndStep(stepAsString)) {
-                        // only update previous step if not AND step
-                        previousNonAndStep = stepAsString;
-                    }                    
                 }
+            }
+            if ( !keywords.isAndStep(stepAsString)){
+                previousNonAndStep = stepAsString;
             }
             steps.add(step);
             steps.addAll(composedSteps);

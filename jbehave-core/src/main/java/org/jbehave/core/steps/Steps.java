@@ -197,8 +197,7 @@ public class Steps implements CandidateSteps {
 
     private StepCandidate createCandidate(Method method, StepType stepType, String stepPatternAsString, int priority,
             Configuration configuration) {
-        return new StepCandidate(stepPatternAsString, priority, stepType, method, instance(), configuration.keywords()
-                .startingWordsByType(), configuration.stepPatternParser(), configuration.parameterConverters());
+        return new StepCandidate(stepPatternAsString, priority, stepType, method, instance(), configuration.keywords(), configuration.stepPatternParser(), configuration.parameterConverters());
     }
 
     public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
