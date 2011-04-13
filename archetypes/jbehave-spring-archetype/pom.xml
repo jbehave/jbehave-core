@@ -5,11 +5,11 @@
     <artifactId>jbehave-archetypes</artifactId>
     <version>3.4-SNAPSHOT</version>
   </parent>
-  <artifactId>jbehave-simple-archetype</artifactId>
+  <artifactId>jbehave-spring-archetype</artifactId>
   <packaging>maven-archetype</packaging>
 
-  <name>JBehave Simple Archetype</name>
+  <name>JBehave Spring Archetype</name>
   <description>
-    An archetype to run multiple textual stories configured programmatically.
+    An archetype to run multiple textual stories configured programmatically but with steps classes composed using Spring.
   </description>
 </project>

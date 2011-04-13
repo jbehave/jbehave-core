@@ -14,10 +14,12 @@
   <properties>
     <jbehave.core.version>${project.version}</jbehave.core.version>
     <jbehave.site.version>3.1.1</jbehave.site.version>
+    <local.archetype.catalog>${user.home}/.m2/archetype-catalog.xml</local.archetype.catalog>
   </properties>
 
   <modules>
     <module>jbehave-simple-archetype</module>
+    <module>jbehave-spring-archetype</module>
   </modules>
 
   <build>
@@ -43,5 +45,32 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.gmaven</groupId>
+        <artifactId>gmaven-plugin</artifactId>
+        <version>1.3</version>
+        <executions>
+          <execution>
+            <id>delete-local-archetype-catalog</id>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+            <phase>verify</phase>
+            <configuration>
+              <source>
+                if ( project.packaging == 'pom' ){
+                    def path = "${local.archetype.catalog}"
+                    def catalog = new File(path)
+                    println "Deleting "+catalog;
+                    catalog.delete();
+                }
+            </source>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
+ 
 </project>
