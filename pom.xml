@@ -24,6 +24,7 @@
     <module>jbehave-weld</module>    
     <module>jbehave-pico</module>
     <module>jbehave-spring</module>
+    <module>archetypes</module>
   </modules>
 
   <dependencyManagement>
