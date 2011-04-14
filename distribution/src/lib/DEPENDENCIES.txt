@@ -1,7 +1,7 @@
 JBehave dependencies are defined in the POM.
 
 If you use Maven or Ivy or Grape, you can define dependencies declaratively, 
-using groupId and artifactId detailed in the POM (see also docs/download.html).
+using groupId and artifactId detailed in the POM (see also docs/dependencies.html).
 
 If you use Ant, you can download and copy the dependencies by using the build.xml provided:
 
