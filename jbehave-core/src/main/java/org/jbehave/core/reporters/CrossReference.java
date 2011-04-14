@@ -110,6 +110,7 @@ public class CrossReference extends Format {
     protected final XRefRoot createXRefRoot(StoryReporterBuilder storyReporterBuilder, List<StoryHolder> stories,
             Set<String> failingStories) {
         XRefRoot xrefRoot = newXRefRoot();
+        xrefRoot.metaFilter = getMetaFilter();
         xrefRoot.setExcludeStoriesWithNoExecutedScenarios(excludeStoriesWithNoExecutedScenarios);
         xrefRoot.processStories(stories, stepsPerformed,  times, storyReporterBuilder, failingStories);
         return xrefRoot;
@@ -118,7 +119,6 @@ public class CrossReference extends Format {
     protected XRefRoot newXRefRoot() {
         return new XRefRoot();
     }
-
     private void outputFile(String name, XStream xstream, XRefRoot root, StoryReporterBuilder storyReporterBuilder) {
 
         File outputDir = new File(storyReporterBuilder.outputDirectory(), "view");
@@ -132,6 +132,12 @@ public class CrossReference extends Format {
             throw new XrefOutputFailed(name, e);
         }
 
+    }
+
+    /** Override this if the metaFilter is important to
+     * you in the Story Navigator output */
+    public String getMetaFilter() {
+        return "";
     }
 
     @SuppressWarnings("serial")
@@ -238,12 +244,17 @@ public class CrossReference extends Format {
     public static class XRefRoot {
         protected long whenMade = System.currentTimeMillis();
         protected String createdBy = createdBy();
+        protected String metaFilter = "";
 
         private Set<String> meta = new HashSet<String>();
         private List<XRefStory> stories = new ArrayList<XRefStory>();
         private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
 
         private transient boolean excludeStoriesWithNoExecutedScenarios;
+
+        public XRefRoot() {
+        }
+
 
         public void setExcludeStoriesWithNoExecutedScenarios(boolean exclude) {
             this.excludeStoriesWithNoExecutedScenarios = exclude;

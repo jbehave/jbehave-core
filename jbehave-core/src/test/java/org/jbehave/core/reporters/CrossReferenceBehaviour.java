@@ -57,6 +57,10 @@ public class CrossReferenceBehaviour {
                 return new XRefRootWithoutThemes(duration);
             }
 
+            @Override
+            public String getMetaFilter() {
+                return "+color blue";
+            }
         };
         crossReference.excludingStoriesWithNoExecutedScenarios(false);
 
@@ -77,6 +81,7 @@ public class CrossReferenceBehaviour {
         assertEquals("<xref>\n" +
                 "  <whenMade>NUMBER</whenMade>\n" +
                 "  <createdBy>JBehave</createdBy>\n" +
+                "  <metaFilter>+color blue</metaFilter>\n" +
                 "  <meta>\n" +
                 "    <string>theme=testing</string>\n" +
                 "    <string>author=Mauro</string>\n" +
@@ -119,6 +124,7 @@ public class CrossReferenceBehaviour {
         assertEquals("{'xref': {\n" +
                 "  'whenMade': NUMBER,\n" +
                 "  'createdBy': 'JBehave',\n" +
+                "  'metaFilter': '+color blue',\n" +
                 "  'meta': [\n" +
                 "    'theme=testing',\n" +
                 "    'author=Mauro'\n" +
@@ -187,6 +193,12 @@ public class CrossReferenceBehaviour {
                 return new XRefRootWithoutThemes(duration);
             }
 
+            @Override
+            public String getMetaFilter() {
+                return "+color blue";
+            }
+
+
         }.withXmlOnly();
         crossReference.excludingStoriesWithNoExecutedScenarios(false);
 
@@ -207,6 +219,7 @@ public class CrossReferenceBehaviour {
         assertEquals("<xref>\n" +
                 "  <whenMade>NUMBER</whenMade>\n" +
                 "  <createdBy>JBehave</createdBy>\n" +
+                "  <metaFilter>+color blue</metaFilter>\n" +
                 "  <meta>\n" +
                 "    <string>theme=testing</string>\n" +
                 "    <string>author=Mauro</string>\n" +
@@ -283,6 +296,12 @@ public class CrossReferenceBehaviour {
                 return new XRefRootWithoutThemes(duration);
             }
 
+            @Override
+            public String getMetaFilter() {
+                return "+color blue";
+            }
+
+
         }.withJsonOnly();
         crossReference.excludingStoriesWithNoExecutedScenarios(false);
 
@@ -304,6 +323,7 @@ public class CrossReferenceBehaviour {
         assertEquals("{'xref': {\n" +
                 "  'whenMade': NUMBER,\n" +
                 "  'createdBy': 'JBehave',\n" +
+                "  'metaFilter': '+color blue',\n" +
                 "  'meta': [\n" +
                 "    'theme=testing',\n" +
                 "    'author=Mauro'\n" +
@@ -399,6 +419,7 @@ public class CrossReferenceBehaviour {
         assertEquals("<xref>\n" +
                 "  <whenMade>NUMBER</whenMade>\n" +
                 "  <createdBy>JBehave</createdBy>\n" +
+                "  <metaFilter></metaFilter>\n" +
                 "  <meta>\n" +
                 "    <string>author=Mauro</string>\n" +
                 "  </meta>\n" +
@@ -443,6 +464,7 @@ public class CrossReferenceBehaviour {
         assertEquals("{'xref': {\n" +
                 "  'whenMade': NUMBER,\n" +
                 "  'createdBy': 'JBehave',\n" +
+                "  'metaFilter': '',\n" +
                 "  'meta': [\n" +
                 "    'author=Mauro'\n" +
                 "  ],\n" +
