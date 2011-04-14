@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -184,7 +185,9 @@ public class CrossReference extends Format {
 
             @Override
             public void beforeStory(Story story, boolean givenStory) {
-                stories.add(new StoryHolder(story));
+                synchronized (this) {
+                    stories.add(new StoryHolder(story));
+                }
                 currentStory.set(story);
                 currentStoryStart.set(System.currentTimeMillis());
                 super.beforeStory(story, givenStory);
@@ -265,13 +268,16 @@ public class CrossReference extends Format {
         }
 
         protected void processStories(List<StoryHolder> stories, Set<String> stepsPerformed, Map<String, Long> times, StoryReporterBuilder builder, Set<String> failures) {
-            for (StoryHolder storyHolder : stories) {
-                Story story = storyHolder.story;
-                if (someScenarios(story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
-                    XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(story.getPath()), this);
-                    xRefStory.started = storyHolder.when;
-                    xRefStory.duration = getTime(times, story);
-                    this.stories.add(xRefStory);
+            // Prevent Concurrent Modification Exception.
+            synchronized (this) {
+                for (StoryHolder storyHolder : stories) {
+                    Story story = storyHolder.story;
+                    if (someScenarios(story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
+                        XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(story.getPath()), this);
+                        xRefStory.started = storyHolder.when;
+                        xRefStory.duration = getTime(times, story);
+                        this.stories.add(xRefStory);
+                    }
                 }
             }
         }
