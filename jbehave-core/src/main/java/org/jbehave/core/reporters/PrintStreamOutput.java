@@ -218,6 +218,9 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     private String stackTrace(Throwable cause) {
+        if (cause.getClass().getName().equals(UUIDExceptionWrapper.class.getName())) {
+            cause = cause.getCause();
+        }
         ByteArrayOutputStream out = new ByteArrayOutputStream();        
         cause.printStackTrace(new PrintStream(out));
         return stackTrace(out.toString());
