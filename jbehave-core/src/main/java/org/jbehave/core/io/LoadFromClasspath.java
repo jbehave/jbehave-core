@@ -8,7 +8,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * Loads story resources from classpath.
+ * Loads story resources from classpath
  */
 public class LoadFromClasspath implements ResourceLoader, StoryLoader {
 
@@ -27,10 +27,7 @@ public class LoadFromClasspath implements ResourceLoader, StoryLoader {
     }
 
     public String loadResourceAsText(String resourcePath) {
-        InputStream stream = classLoader.getResourceAsStream(resourcePath);
-        if (stream == null) {
-            throw new StoryResourceNotFound(resourcePath, classLoader);
-        }
+        InputStream stream = resourceAsStream(resourcePath);
         try {
             return IOUtils.toString(stream);
         } catch (IOException e) {
@@ -40,6 +37,14 @@ public class LoadFromClasspath implements ResourceLoader, StoryLoader {
 
     public String loadStoryAsText(String storyPath) {
         return loadResourceAsText(storyPath);
+    }
+
+    protected InputStream resourceAsStream(String resourcePath) {
+        InputStream stream = classLoader.getResourceAsStream(resourcePath);
+        if (stream == null) {
+            throw new StoryResourceNotFound(resourcePath, classLoader);
+        }
+        return stream;
     }
 
     @Override
