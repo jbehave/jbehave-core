@@ -14,7 +14,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-core</artifactId>
+      <artifactId>jbehave-spring</artifactId>
       <version>${jbehave.core.version}</version>
     </dependency>
     <dependency>
