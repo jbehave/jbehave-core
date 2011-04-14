@@ -19,6 +19,7 @@
 
   <modules>
     <module>jbehave-simple-archetype</module>
+    <module>jbehave-groovy-archetype</module>
     <module>jbehave-spring-archetype</module>
   </modules>
 
