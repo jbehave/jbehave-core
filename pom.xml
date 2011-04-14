@@ -16,6 +16,7 @@
 
   <modules>
     <module>jbehave-core</module>
+    <module>jbehave-odf</module>
     <module>jbehave-ant</module>
     <module>jbehave-maven-plugin</module>
     <module>jbehave-hudson-plugin</module>
