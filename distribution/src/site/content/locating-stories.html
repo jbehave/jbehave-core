@@ -21,12 +21,35 @@
     </li>
         <li>
         <a href="javadoc/core/org/jbehave/core/io/LoadFromURL.html">LoadFromURL</a> for
-        stories located via URLs.
+        stories located via URL.
     </li>
 </ul>
 
+<span>By default, JBehave expects stories to be written in plain text, but also supports other formats as long as these
+can be converted to a textual which is then parsed by the  <a
+            href="javadoc/core/org/jbehave/core/parsers/StoryParser.html">StoryParser</a>.</span>
+
 <p>More details and examples can be found in <a href="configuration.html">Configuration</a> page.
 </p>
+
+<h2>Stories in ODT Format</h2>
+
+<p>JBehave supports <a
+            href="http://en.wikipedia.org/wiki/OpenDocument">OpenDocument Text</a> format via the <a href="http://odftoolkit.org/">ODF Toolkit</a>:
+</p>
+
+<ul>
+    <li>
+        <a href="javadoc/odf/org/jbehave/core/io/odf/LoadOdtFromClasspath.html">LoadOdtFromClasspath</a> for
+        stories located in classpath.
+    </li>
+        <li>
+        <a href="javadoc/odf/org/jbehave/core/io/odf/LoadOdtFromURL.html">LoadOdtFromURL</a> for
+        stories located via URL.
+    </li>
+</ul>
+
+
 <div class="clear">
     <hr/>
 </div>

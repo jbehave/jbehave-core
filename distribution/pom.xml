@@ -44,6 +44,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>jbehave-odf</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-ant</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -188,6 +193,26 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-weld</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>javadoc</classifier>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-javadoc-odf</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site/javadoc/odf</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>jbehave-odf</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
