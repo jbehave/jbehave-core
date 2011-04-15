@@ -238,6 +238,11 @@ public class Embedder {
     }
 
     public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
+            List<Future<ThrowableStory>> futures, String storyPath, Story story) {
+        return enqueueStory(batchFailures, filter, futures, storyPath, story, null);
+    }
+
+    private Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
             List<Future<ThrowableStory>> futures, String storyPath, Story story, State beforeStories) {
         EnqueuedStory enqueuedStory = enqueuedStory(embedderControls, configuration, candidateSteps, batchFailures,
                 filter, storyPath, story, beforeStories);

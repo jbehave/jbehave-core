@@ -93,7 +93,7 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter)
             throws Throwable {
-        run(configuration, candidateSteps, story, filter, new FineSoFar());
+        run(configuration, candidateSteps, story, filter, null);
     }
 
     /**
@@ -105,14 +105,17 @@ public class StoryRunner {
      *            steps methods
      * @param story the Story to run
      * @param filter the Filter to apply to the story Meta
-     * @param beforeStories the State before running any of the stories
+     * @param beforeStories the State before running any of the stories, if not
+     *            <code>null</code>
      * @throws Throwable if failures occurred and FailureStrategy dictates it to
      *             be re-thrown.
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter,
             State beforeStories) throws Throwable {
         RunContext context = new RunContext(configuration, candidateSteps, story.getPath(), filter);
-        context.stateIs(beforeStories);
+        if (beforeStories != null) {
+            context.stateIs(beforeStories);
+        }
         Map<String, String> storyParameters = new HashMap<String, String>();
         run(context, story, storyParameters);
     }
@@ -326,7 +329,7 @@ public class StoryRunner {
         context.stateIs(state);
     }
 
-    protected interface State {
+    interface State {
         State run(Step step);
     }
 
@@ -361,7 +364,7 @@ public class StoryRunner {
         }
     }
 
-    private class SomethingHappened implements State {
+    private final class SomethingHappened implements State {
         public State run(Step step) {
             StepResult result = step.doNotPerform();
             result.describeTo(reporter.get());
