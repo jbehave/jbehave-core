@@ -13,7 +13,7 @@ import static java.util.Arrays.asList;
 public class BeforeOrAfterFailed extends RuntimeException {
 
     public BeforeOrAfterFailed(Method method, Throwable cause) {
-        super(format("Method {0}, annotated with {1}, failed", method, asList(method.getAnnotations())), cause);
+        super(format("Method {0}, annotated with {1}, failed: {2}", method, asList(method.getAnnotations()), cause), cause);
     }
 
     public BeforeOrAfterFailed(Throwable cause) {
