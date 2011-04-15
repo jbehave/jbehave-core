@@ -369,7 +369,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldResetStateForEachSetOfSteps() throws Throwable {
+    public void shouldResetStateBeforeScenario() throws Throwable {
         // Given
         StoryReporter reporter = mock(ConcurrentStoryReporter.class);
         Step pendingStep = mock(Step.class);
@@ -386,12 +386,42 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, collector), asList(mySteps), story);
+        Configuration configuration = configurationWith(reporter, collector);
+        configuration.storyControls().doResetStateBeforeScenario(true);
+        runner.run(configuration, asList(mySteps), story);
 
         // Then
         verify(pendingStep).perform(Matchers.<UUIDExceptionWrapper>any());
         verify(secondStep).perform(Matchers.<UUIDExceptionWrapper>any());
         verify(secondStep, never()).doNotPerform();
+    }
+
+    @Test
+    public void shouldAllowToNotResetStateBeforeScenario() throws Throwable {
+        // Given
+        StoryReporter reporter = mock(ConcurrentStoryReporter.class);
+        Step pendingStep = mock(Step.class);
+        when(pendingStep.perform(null)).thenReturn(pending("pendingStep"));
+        Step secondStep = mockSuccessfulStep("secondStep");
+        StepCollector collector = mock(StepCollector.class);
+        CandidateSteps mySteps = new Steps();
+        Scenario scenario1 = new Scenario();
+        Scenario scenario2 = new Scenario();
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, parameters)).thenReturn(asList(pendingStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario2, parameters)).thenReturn(asList(secondStep));
+        Story story = new Story(asList(scenario1, scenario2));
+        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        Configuration configuration = configurationWith(reporter, collector);
+        configuration.storyControls().doResetStateBeforeScenario(false);
+        runner.run(configuration, asList(mySteps), story);
+
+        // Then
+        verify(pendingStep).perform(Matchers.<UUIDExceptionWrapper>any());
+        verify(secondStep).doNotPerform();
+        verify(secondStep, never()).perform(Matchers.<UUIDExceptionWrapper>any());
     }
 
     @Test

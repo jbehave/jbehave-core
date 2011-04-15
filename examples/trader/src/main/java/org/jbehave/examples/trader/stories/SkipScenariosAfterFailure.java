@@ -8,7 +8,7 @@ public class SkipScenariosAfterFailure extends TraderStory {
 
     @Override
     public Configuration configuration() {
-        return super.configuration().useStoryControls(new StoryControls().doSkipBeforeAndAfterScenarioStepsIfGivenStory(true));
+        return super.configuration().useStoryControls(new StoryControls().doSkipScenariosAfterFailure(true).doSkipBeforeAndAfterScenarioStepsIfGivenStory(true));
     }
 
 }

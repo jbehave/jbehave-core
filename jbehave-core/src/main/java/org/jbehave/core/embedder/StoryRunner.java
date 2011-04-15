@@ -22,7 +22,6 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.Step;
-import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
@@ -59,7 +58,9 @@ public class StoryRunner {
         String storyPath = capitalizeFirstLetter(stage.name().toLowerCase()) + "Stories";
         reporter.set(configuration.storyReporter(storyPath));
         reporter.get().beforeStory(new Story(storyPath), false);
-        runStepsWhileKeepingState(configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
+        RunContext context = new RunContext(configuration, MetaFilter.EMPTY, candidateSteps, storyPath);
+        runStepsWhileKeepingState(context,
+                configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
     }
 
     /**
@@ -115,7 +116,7 @@ public class StoryRunner {
         failureStrategy.set(context.configuration().failureStrategy());
 
         try {
-            resetFailureState(context.givenStory());
+            resetStoryFailure(context.givenStory());
 
             if (context.dryRun()) {
                 reporter.get().dryRun();
@@ -143,7 +144,7 @@ public class StoryRunner {
                 for (Scenario scenario : story.getScenarios()) {
                     // scenario also inherits meta from story
                     boolean scenarioAllowed = true;
-                    if (failureOccurred() && context.configuration().storyControls().skipScenariosAfterFailure()) {
+                    if (failureOccurred(context) && context.configuration().storyControls().skipScenariosAfterFailure()) {
                         continue;
                     }
                     reporter.get().beforeScenario(scenario.getTitle());
@@ -155,7 +156,9 @@ public class StoryRunner {
                     }
 
                     if (scenarioAllowed) {
-
+                        if (context.configuration().storyControls().resetStateBeforeScenario()) {
+                            context.resetState();
+                        }
                         // run before scenario steps, if allowed
                         if (runBeforeAndAfterScenarioSteps) {
                             runBeforeOrAfterScenarioSteps(context, scenario, Stage.BEFORE);
@@ -207,8 +210,8 @@ public class StoryRunner {
         return !context.givenStory();
     }
 
-    private boolean failureOccurred() {
-        return storyFailure.get() != null;
+    private boolean failureOccurred(RunContext context) {
+        return context.failureOccurred();
     }
 
     private StoryReporter reporterFor(RunContext context, Story story) {
@@ -222,9 +225,9 @@ public class StoryRunner {
         }
     }
 
-    private void resetFailureState(boolean givenStory) {
+    private void resetStoryFailure(boolean givenStory) {
         if (givenStory) {
-            // do not reset failure state for given stories
+            // do not reset failure for given stories
             return;
         }
         currentStrategy.set(new SilentlyAbsorbingFailure());
@@ -259,16 +262,16 @@ public class StoryRunner {
     }
 
     private void runBeforeOrAfterStorySteps(RunContext context, Story story, Stage stage) {
-        runStepsWhileKeepingState(context.collectBeforeOrAfterStorySteps(story, stage));
+        runStepsWhileKeepingState(context, context.collectBeforeOrAfterStorySteps(story, stage));
     }
 
     private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Stage stage) {
-        runStepsWhileKeepingState(context.collectBeforeOrAfterScenarioSteps(stage));
+        runStepsWhileKeepingState(context, context.collectBeforeOrAfterScenarioSteps(stage));
     }
 
     private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
         List<Step> steps = context.collectScenarioSteps(scenario, scenarioParameters);
-        runStepsWhileKeepingState(steps);
+        runStepsWhileKeepingState(context, steps);
         generatePendingStepMethods(context, steps);
     }
 
@@ -291,14 +294,15 @@ public class StoryRunner {
         }
     }
 
-    private void runStepsWhileKeepingState(List<Step> steps) {
+    private void runStepsWhileKeepingState(RunContext context, List<Step> steps) {
         if (steps == null || steps.size() == 0) {
             return;
         }
-        State state = new FineSoFar();
+        State state = context.state();
         for (Step step : steps) {
             state = state.run(step);
         }
+        context.stateIs(state);
     }
 
     private interface State {
@@ -361,8 +365,7 @@ public class StoryRunner {
         private final Configuration configuration;
         private final String path;
         private final boolean givenStory;
-
-        private final StepCollector stepCollector;
+        private State state;
 
         public RunContext(Configuration configuration, MetaFilter filter, List<CandidateSteps> steps, String path) {
             this(configuration, filter, steps, path, false);
@@ -375,8 +378,7 @@ public class StoryRunner {
             this.candidateSteps = steps;
             this.path = path;
             this.givenStory = givenStory;
-
-            this.stepCollector = configuration.stepCollector();
+            resetState();
         }
 
         public boolean dryRun() {
@@ -404,20 +406,39 @@ public class StoryRunner {
         }
 
         public List<Step> collectBeforeOrAfterStorySteps(Story story, Stage stage) {
-            return stepCollector.collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory);
+            return configuration.stepCollector().collectBeforeOrAfterStorySteps(candidateSteps, story, stage,
+                    givenStory);
         }
 
         public List<Step> collectBeforeOrAfterScenarioSteps(Stage stage) {
-            return stepCollector.collectBeforeOrAfterScenarioSteps(candidateSteps, stage, storyFailure.get() != null);
+            return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps, stage,
+                    storyFailure.get() != null);
         }
 
         public List<Step> collectScenarioSteps(Scenario scenario, Map<String, String> parameters) {
-            return stepCollector.collectScenarioSteps(candidateSteps, scenario, parameters);
+            return configuration.stepCollector().collectScenarioSteps(candidateSteps, scenario, parameters);
         }
 
         public RunContext childContextFor(GivenStory givenStory) {
             String actualPath = configuration.pathCalculator().calculate(path, givenStory.getPath());
             return new RunContext(configuration, filter, candidateSteps, actualPath, true);
         }
+
+        public State state() {
+            return state;
+        }
+
+        public void stateIs(State state) {
+            this.state = state;
+        }
+
+        public boolean failureOccurred() {
+            return !state.getClass().equals(FineSoFar.class);
+        }
+
+        public void resetState() {
+            this.state = new FineSoFar();
+        }
+
     }
 }

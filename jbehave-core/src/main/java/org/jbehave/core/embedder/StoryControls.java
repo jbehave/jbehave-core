@@ -10,7 +10,8 @@ public class StoryControls {
 
     private boolean dryRun = false;
     private boolean skipScenariosAfterFailure = false;
-    private boolean skipBeforeAndAfterScenarioStepsIfGivenStory;
+    private boolean skipBeforeAndAfterScenarioStepsIfGivenStory = false;
+    private boolean resetStateBeforeScenario = true;
 
     public StoryControls() {
     }
@@ -21,6 +22,10 @@ public class StoryControls {
 
     public boolean skipScenariosAfterFailure() {
         return skipScenariosAfterFailure;
+    }
+
+    public boolean resetStateBeforeScenario() {
+        return resetStateBeforeScenario;
     }
 
     public boolean skipBeforeAndAfterScenarioStepsIfGivenStory() {
@@ -42,9 +47,14 @@ public class StoryControls {
         return this;
     }
 
+    public StoryControls doResetStateBeforeScenario(boolean resetStateBeforeScenario) {
+        this.resetStateBeforeScenario = resetStateBeforeScenario;
+        return this;
+    }
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 
 }

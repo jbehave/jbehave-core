@@ -82,11 +82,11 @@ public class ReportTransformBehaviour {
         Document document = tranformReport("examples_table_with_failure.xml");
 
         assertEquals("6", engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document));
-        assertEquals("3", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
-        assertEquals("1", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
+        assertEquals("2", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
+        assertEquals("2", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
         assertEquals("6", engine.evaluate(TESTCASE_COUNT, document));
-        assertEquals("3", engine.evaluate(TESTCASE_FAILURE, document));
-        assertEquals("1", engine.evaluate(TESTCASE_IGNORED, document));
+        assertEquals("2", engine.evaluate(TESTCASE_FAILURE, document));
+        assertEquals("2", engine.evaluate(TESTCASE_IGNORED, document));
     }
 
     @Test

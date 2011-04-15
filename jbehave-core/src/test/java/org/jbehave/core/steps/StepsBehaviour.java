@@ -183,8 +183,7 @@ public class StepsBehaviour {
         assertThat(steps.afterFailedScenario, is(false));
 
     }
-    
-    
+        
     @Test
     public void shouldProvideStepsToBeNotPerformedAfterScenarioUponOutcome() {
     	MultipleAliasesSteps steps = new MultipleAliasesSteps();
@@ -192,7 +191,7 @@ public class StepsBehaviour {
 		assertThat(beforeAfterScenario.size(), equalTo(4));
 		
     	beforeAfterScenario.get(0).createStep().doNotPerform();
-    	assertThat(steps.beforeScenario, is(true));
+    	assertThat(steps.beforeScenario, is(false));
 
         boolean failureOccured = true;
     	// uponOutcome=ANY
