@@ -23,6 +23,7 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Story;
@@ -205,7 +206,7 @@ public class Embedder {
         final Configuration configuration = configuration();
         final List<CandidateSteps> candidateSteps = candidateSteps();
 
-        storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
+        State beforeStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
 
         final BatchFailures batchFailures = new BatchFailures();
         configureReporterBuilder(configuration);
@@ -214,7 +215,7 @@ public class Embedder {
         List<Future<ThrowableStory>> futures = new ArrayList<Future<ThrowableStory>>();
 
         for (final String storyPath : storyPaths) {
-            enqueueStory(batchFailures, filter, futures, storyPath, storyRunner.storyOfPath(configuration, storyPath));
+            enqueueStory(batchFailures, filter, futures, storyPath, storyRunner.storyOfPath(configuration, storyPath), beforeStories);
         }
 
         waitUntilAllDone(futures);
@@ -237,9 +238,9 @@ public class Embedder {
     }
 
     public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
-            List<Future<ThrowableStory>> futures, String storyPath, Story story) {
+            List<Future<ThrowableStory>> futures, String storyPath, Story story, State beforeStories) {
         EnqueuedStory enqueuedStory = enqueuedStory(embedderControls, configuration, candidateSteps, batchFailures,
-                filter, storyPath, story);
+                filter, storyPath, story, beforeStories);
         return submit(futures, enqueuedStory);
     }
 
@@ -254,9 +255,9 @@ public class Embedder {
 
     protected EnqueuedStory enqueuedStory(EmbedderControls embedderControls, Configuration configuration,
             List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter, String storyPath,
-            Story story) {
+            Story story, State beforeStories) {
         return new EnqueuedStory(storyPath, configuration, candidateSteps, story, filter, embedderControls,
-                batchFailures, embedderMonitor, storyRunner);
+                batchFailures, embedderMonitor, storyRunner, beforeStories);
     }
 
     /**
@@ -665,10 +666,11 @@ public class Embedder {
         private final BatchFailures batchFailures;
         private final EmbedderMonitor embedderMonitor;
         private final StoryRunner storyRunner;
+        private final State beforeStories;
 
         public EnqueuedStory(String storyPath, Configuration configuration, List<CandidateSteps> candidateSteps,
                 Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures,
-                EmbedderMonitor embedderMonitor, StoryRunner storyRunner) {
+                EmbedderMonitor embedderMonitor, StoryRunner storyRunner, State beforeStories) {
             this.storyPath = storyPath;
             this.configuration = configuration;
             this.candidateSteps = candidateSteps;
@@ -678,12 +680,13 @@ public class Embedder {
             this.batchFailures = batchFailures;
             this.embedderMonitor = embedderMonitor;
             this.storyRunner = storyRunner;
+            this.beforeStories = beforeStories;
         }
 
         public ThrowableStory call() throws Exception {
             try {
                 embedderMonitor.runningStory(storyPath);
-                storyRunner.run(configuration, candidateSteps, story, filter);
+                storyRunner.run(configuration, candidateSteps, story, filter, beforeStories);
             } catch (Throwable e) {
                 if (embedderControls.batch()) {
                     // collect and postpone decision to throw exception

@@ -53,14 +53,16 @@ public class StoryRunner {
      * @param candidateSteps the List of CandidateSteps containing the candidate
      *            steps methods
      * @param stage the Stage
+     * @return The State after running the steps
      */
-    public void runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
+    public State runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
         String storyPath = capitalizeFirstLetter(stage.name().toLowerCase()) + "Stories";
         reporter.set(configuration.storyReporter(storyPath));
         reporter.get().beforeStory(new Story(storyPath), false);
-        RunContext context = new RunContext(configuration, MetaFilter.EMPTY, candidateSteps, storyPath);
+        RunContext context = new RunContext(configuration, candidateSteps, storyPath, MetaFilter.EMPTY);
         runStepsWhileKeepingState(context,
                 configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
+        return context.state();
     }
 
     /**
@@ -91,7 +93,26 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter)
             throws Throwable {
-        RunContext context = new RunContext(configuration, filter, candidateSteps, story.getPath());
+        run(configuration, candidateSteps, story, filter, new FineSoFar());
+    }
+
+    /**
+     * Runs a Story with the given configuration and steps, applying the given
+     * meta filter, and staring from given state.
+     * 
+     * @param configuration the Configuration used to run story
+     * @param candidateSteps the List of CandidateSteps containing the candidate
+     *            steps methods
+     * @param story the Story to run
+     * @param filter the Filter to apply to the story Meta
+     * @param beforeStories the State before running any of the stories
+     * @throws Throwable if failures occurred and FailureStrategy dictates it to
+     *             be re-thrown.
+     */
+    public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter,
+            State beforeStories) throws Throwable {
+        RunContext context = new RunContext(configuration, candidateSteps, story.getPath(), filter);
+        context.stateIs(beforeStories);
         Map<String, String> storyParameters = new HashMap<String, String>();
         run(context, story, storyParameters);
     }
@@ -305,7 +326,7 @@ public class StoryRunner {
         context.stateIs(state);
     }
 
-    private interface State {
+    protected interface State {
         State run(Step step);
     }
 
@@ -316,9 +337,6 @@ public class StoryRunner {
             StepResult result = step.perform(storyFailureIfItHappened);
             result.describeTo(reporter.get());
             UUIDExceptionWrapper stepFailure = result.getFailure();
-            // JBEHAVE-472: storyFailure is not sufficient for state management,
-            // we need scenarioFailure too.
-            // if (storyFailureIfItHappened == null && stepFailure == null) {
             if (stepFailure == null) {
                 return this;
             }
@@ -361,22 +379,22 @@ public class StoryRunner {
      */
     private class RunContext {
         private final List<CandidateSteps> candidateSteps;
-        private final MetaFilter filter;
         private final Configuration configuration;
         private final String path;
+        private final MetaFilter filter;
         private final boolean givenStory;
         private State state;
 
-        public RunContext(Configuration configuration, MetaFilter filter, List<CandidateSteps> steps, String path) {
-            this(configuration, filter, steps, path, false);
+        public RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter) {
+            this(configuration, steps, path, filter, false);
         }
 
-        private RunContext(Configuration configuration, MetaFilter filter, List<CandidateSteps> steps, String path,
+        private RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter,
                 boolean givenStory) {
             this.configuration = configuration;
-            this.filter = filter;
             this.candidateSteps = steps;
             this.path = path;
+            this.filter = filter;
             this.givenStory = givenStory;
             resetState();
         }
@@ -421,7 +439,7 @@ public class StoryRunner {
 
         public RunContext childContextFor(GivenStory givenStory) {
             String actualPath = configuration.pathCalculator().calculate(path, givenStory.getPath());
-            return new RunContext(configuration, filter, candidateSteps, actualPath, true);
+            return new RunContext(configuration, candidateSteps, actualPath, filter, true);
         }
 
         public State state() {
