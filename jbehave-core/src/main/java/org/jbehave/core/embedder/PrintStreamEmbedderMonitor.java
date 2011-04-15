@@ -32,6 +32,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     public void batchFailed(BatchFailures failures) {
         print("Failed to run batch " + failures);
     }
+    
+    public void beforeOrAfterStoriesFailed() {
+        print("Failed to run before or after stories steps");
+    }
 
     public void embeddableFailed(String name, Throwable cause) {
         print("Failed to run embeddable " + name);

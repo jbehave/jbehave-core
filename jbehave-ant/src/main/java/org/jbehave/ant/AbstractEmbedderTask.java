@@ -237,6 +237,10 @@ public abstract class AbstractEmbedderTask extends Task {
             log("Failed to run batch " + failures, MSG_WARN);
         }
 
+        public void beforeOrAfterStoriesFailed() {
+            log("Failed to run before or after stories steps", MSG_WARN);
+        }
+
         public void embeddableFailed(String name, Throwable cause) {
             log("Failed to run embeddable " + name, cause, MSG_WARN);
         }
@@ -347,6 +351,7 @@ public abstract class AbstractEmbedderTask extends Task {
         public String toString() {
             return this.getClass().getSimpleName();
         }
+
     }
 
     // Setters used by Task to inject dependencies

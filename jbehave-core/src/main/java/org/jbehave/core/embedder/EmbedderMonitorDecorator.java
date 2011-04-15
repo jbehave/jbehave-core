@@ -57,6 +57,10 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
     public void batchFailed(BatchFailures failures) {
         delegate.batchFailed(failures);
     }
+    
+    public void beforeOrAfterStoriesFailed() {
+        delegate.beforeOrAfterStoriesFailed();
+    }
 
     public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
         delegate.generatingReportsView(outputDirectory, formats, viewProperties);

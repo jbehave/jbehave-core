@@ -90,7 +90,7 @@ public class StoryRunnerBehaviour {
         when(beforeResult.getFailure()).thenReturn(failure);
         Step afterStep = mock(Step.class, "afterStep");
         StepResult afterResult = mock(StepResult.class);
-        when(afterStep.perform(failure)).thenReturn(afterResult);
+        when(afterStep.doNotPerform()).thenReturn(afterResult);
         StepCollector collector = mock(StepCollector.class);
         CandidateSteps mySteps = new Steps();
         StoryReporter reporter = mock(StoryReporter.class);
@@ -105,7 +105,7 @@ public class StoryRunnerBehaviour {
 
         // Then
         verify(beforeStep).perform(null);
-        verify(afterStep).perform(failure);
+        verify(afterStep).doNotPerform();
     }
 
     @Test

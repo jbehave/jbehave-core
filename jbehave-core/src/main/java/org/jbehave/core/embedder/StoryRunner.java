@@ -44,6 +44,7 @@ public class StoryRunner {
     private ThreadLocal<UUIDExceptionWrapper> storyFailure = new ThreadLocal<UUIDExceptionWrapper>();
     private ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
     private ThreadLocal<String> reporterStoryPath = new ThreadLocal<String>();
+    private ThreadLocal<State> storiesState = new ThreadLocal<State>();
 
     /**
      * Run steps before or after a collection of stories. Steps are execute only
@@ -60,8 +61,12 @@ public class StoryRunner {
         reporter.set(configuration.storyReporter(storyPath));
         reporter.get().beforeStory(new Story(storyPath), false);
         RunContext context = new RunContext(configuration, candidateSteps, storyPath, MetaFilter.EMPTY);
+        if (stage == Stage.AFTER && storiesState.get() != null) {
+            context.stateIs(storiesState.get());
+        }
         runStepsWhileKeepingState(context,
                 configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
+        storiesState.set(context.state());
         return context.state();
     }
 
@@ -454,12 +459,16 @@ public class StoryRunner {
         }
 
         public boolean failureOccurred() {
-            return !state.getClass().equals(FineSoFar.class);
+            return failed(state);
         }
 
         public void resetState() {
             this.state = new FineSoFar();
         }
 
+    }
+
+    public boolean failed(State state) {
+        return !state.getClass().equals(FineSoFar.class);
     }
 }

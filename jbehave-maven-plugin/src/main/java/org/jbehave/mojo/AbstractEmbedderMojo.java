@@ -298,6 +298,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         public void batchFailed(BatchFailures failures) {
             getLog().warn("Failed to run batch " + failures);
         }
+        
+        public void beforeOrAfterStoriesFailed() {
+            getLog().warn("Failed to run before or after stories steps");
+        }
 
         public void embeddableFailed(String name, Throwable cause) {
             getLog().warn("Failed to run embeddable " + name, cause);

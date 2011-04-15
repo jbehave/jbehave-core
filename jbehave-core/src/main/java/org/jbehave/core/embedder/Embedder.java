@@ -222,7 +222,15 @@ public class Embedder {
 
         checkForFailures(futures);
 
-        storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
+        State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
+
+        if ( storyRunner.failed(afterStories) ){
+            if (embedderControls.ignoreFailureInStories()){
+                embedderMonitor.beforeOrAfterStoriesFailed();
+            } else {
+                throw new RunningStoriesFailed();
+            }
+        }
 
         if (embedderControls.batch() && batchFailures.size() > 0) {
             if (embedderControls.ignoreFailureInStories()) {
@@ -235,6 +243,7 @@ public class Embedder {
         if (embedderControls.generateViewAfterStories()) {
             generateReportsView();
         }
+        
     }
 
     public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
@@ -554,6 +563,10 @@ public class Embedder {
 
         public RunningStoriesFailed(String name, Throwable cause) {
             super("Failures in running stories " + name, cause);
+        }
+
+        public RunningStoriesFailed() {
+            super("Failures in running before or after stories steps");
         }
     }
 

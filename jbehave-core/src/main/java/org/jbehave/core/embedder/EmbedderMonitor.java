@@ -30,6 +30,8 @@ public interface EmbedderMonitor {
 
     void batchFailed(BatchFailures failures);
 
+    void beforeOrAfterStoriesFailed();
+
     void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties);
 
     void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
