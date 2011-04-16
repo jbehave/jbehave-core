@@ -5,7 +5,6 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class ReportsCount {
 
-
     private final int stories;
     private final int storiesNotAllowed;
     private final int storiesPending;
@@ -53,6 +52,12 @@ public class ReportsCount {
         return scenariosPending;
     }
 
+    public boolean failed(){
+        if ( scenariosFailed > 0 ) return true;
+        if ( stories > 0 && scenarios == 0 ) return true;
+        return false;
+    }
+    
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

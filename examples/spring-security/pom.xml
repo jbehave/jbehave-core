@@ -12,6 +12,7 @@
   </organization>
   <properties>
     <jbehave.version>${project.version}</jbehave.version>
+    <jbehave.site.version>3.1.1</jbehave.site.version>
     <jbehave.view.directory>${project.build.directory}/jbehave/view</jbehave.view.directory>
   </properties>
   <build>
@@ -35,10 +36,8 @@
         </configuration>
       </plugin>
       <!-- unit and integration tests run via JUnit/Surefire -->
-      <!--
-        this is because we are using Spring-Test as the JUnit Runner
-        rather than JBehave annotations
-      -->
+      <!-- this is because we are using Spring-Test as the JUnit Runner rather 
+        than JBehave annotations -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -96,6 +95,20 @@
             </configuration>
             <goals>
               <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <version>${jbehave.version}</version>
+        <executions>
+          <execution>
+            <id>unpack-view-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack-view-resources</goal>
             </goals>
           </execution>
         </executions>
@@ -222,6 +235,19 @@
       <version>2.4.7</version>
       <type>jar</type>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-core</artifactId>
+      <version>${jbehave.version}</version>
+      <classifier>resources</classifier>
+      <type>zip</type>
+    </dependency>
+    <dependency>
+      <groupId>org.jbehave.site</groupId>
+      <artifactId>jbehave-site-resources</artifactId>
+      <version>${jbehave.site.version}</version>
+      <type>zip</type>
     </dependency>
   </dependencies>
 </project>

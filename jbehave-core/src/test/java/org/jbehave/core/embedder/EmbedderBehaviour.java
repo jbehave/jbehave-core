@@ -936,6 +936,26 @@ public class EmbedderBehaviour {
         // Then fail as expected
     }
 
+    @Test(expected = RunningStoriesFailed.class)
+    public void shouldThrowExceptionIfNoScenariosRunForStoriesAndIgnoreFlagIsNotSet() throws Throwable {
+        // Given
+        StoryRunner runner = mock(StoryRunner.class);
+        EmbedderControls embedderControls = new EmbedderControls();
+        OutputStream out = new ByteArrayOutputStream();
+        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
+        ViewGenerator viewGenerator = mock(ViewGenerator.class);
+
+        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        embedder.configuration().useViewGenerator(viewGenerator);
+        File outputDirectory = new File("target/output");
+        List<String> formats = asList("html");
+        Properties viewResources = new Properties();
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 0, 0, 0, 0, 0));
+        embedder.generateReportsView(outputDirectory, formats, viewResources);
+
+        // Then fail as expected
+    }
+
     @Test
     public void shouldNotThrowExceptionIfScenariosFailedAndIgnoreFlagIsSet() throws Throwable {
         // Given
