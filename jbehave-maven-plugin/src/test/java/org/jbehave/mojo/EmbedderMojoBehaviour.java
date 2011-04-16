@@ -59,8 +59,8 @@ public class EmbedderMojoBehaviour {
         assertThat(embedderControls.ignoreFailureInView(), is(false));
         assertThat(embedderControls.threads(), is(1));
         assertThat(embedderControls.skip(), is(false));
-        assertThat(embedderControls.storyTimeoutInSecs(), equalTo(60L));
-        assertThat(embedderControls.threads(), equalTo(2));  
+        assertThat(embedderControls.storyTimeoutInSecs(), equalTo(300L));
+        assertThat(embedderControls.threads(), equalTo(1));  
     }
 
     @Test

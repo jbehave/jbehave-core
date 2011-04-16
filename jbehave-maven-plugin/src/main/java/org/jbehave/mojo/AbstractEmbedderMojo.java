@@ -126,7 +126,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * 
      * @parameter default-value="300"
      */
-    long storyTimeoutInSecs;
+    long storyTimeoutInSecs = 300;
 
     /**
      * The number of threads
