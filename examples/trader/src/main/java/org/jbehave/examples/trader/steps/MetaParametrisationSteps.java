@@ -12,7 +12,7 @@ public class MetaParametrisationSteps {
     private String variant;
 
     @Given("I have specified the <theme>")
-    public void givenIHaveSpecifiedTheTheme(@Named("theme") String theme){
+    public void givenIHaveSpecifiedTheTheme(@Named("theme") String theme) {
         this.theme = theme;
     }
 
@@ -21,8 +21,14 @@ public class MetaParametrisationSteps {
         this.variant = variant;
     }
 
-    @Then("the theme is %theme with variant %variant")
-    public void thenTheThemeAndVariantAre(String theme, String variant){
+    @Given("I have some step, that not node explicity mention meta tags")
+    public void givenAThemeAndVariant(@Named("variant") String variant, @Named("theme") String theme) {
+        this.theme = theme;
+        this.variant = variant;
+    }
+
+    @Then("the theme is '%theme' with variant '%variant'")
+    public void thenTheThemeAndVariantAre(String theme, String variant) {
         Assert.assertEquals(theme, this.theme);
         Assert.assertEquals(variant, this.variant);        
     }
