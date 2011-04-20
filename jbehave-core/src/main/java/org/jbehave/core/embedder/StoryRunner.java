@@ -198,7 +198,8 @@ public class StoryRunner {
                         if (isParameterisedByExamples(scenario)) {
                             // run parametrised scenarios by examples
                             runParametrisedScenariosByExamples(context, scenario);
-                        } else { // run as plain old scenario
+                        } else { // run as plain old scenario                            
+                            addMetaParameters(storyParameters, scenario.getMeta().inheritFrom(story.getMeta()));
                             runScenarioSteps(context, scenario, storyParameters);
                         }
 
@@ -227,6 +228,12 @@ public class StoryRunner {
             if (!context.givenStory() && reporter.get() instanceof ConcurrentStoryReporter) {
                 ((ConcurrentStoryReporter) reporter.get()).invokeDelayed();
             }
+        }
+    }
+
+    private void addMetaParameters(Map<String, String> storyParameters, Meta meta) {
+        for (String name : meta.getPropertyNames()) {
+            storyParameters.put(name, meta.getProperty(name));
         }
     }
 

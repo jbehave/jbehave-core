@@ -30,6 +30,7 @@ import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
 import org.jbehave.examples.trader.steps.CompositeSteps;
+import org.jbehave.examples.trader.steps.MetaParametrisationSteps;
 import org.jbehave.examples.trader.steps.PendingSteps;
 import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
 import org.jbehave.examples.trader.steps.SandpitSteps;
@@ -100,7 +101,7 @@ public abstract class TraderStory extends JUnitStory {
 
     @Override
     public List<CandidateSteps> candidateSteps() {
-        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
                 new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new SandpitSteps(),
                 new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps()).createCandidateSteps();
     }
