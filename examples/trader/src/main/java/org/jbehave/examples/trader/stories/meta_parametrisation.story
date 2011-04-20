@@ -19,5 +19,5 @@ Meta:
 
 @variant foo
 
-Given I have some step, that not node explicity mention meta tags
+Given I have some step that implicitly requires meta params
 Then the theme is 'parameters' with variant 'foo'

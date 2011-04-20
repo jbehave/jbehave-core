@@ -1,12 +1,9 @@
 package org.jbehave.examples.trader.steps;
 
-import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.junit.Assert;
-
-import static junit.framework.Assert.assertEquals;
 
 
 public class MetaParametrisationSteps {
@@ -24,7 +21,7 @@ public class MetaParametrisationSteps {
         this.variant = variant;
     }
 
-    @Given("I have some step, that not node explicity mention meta tags")
+    @Given("I have some step that implicitly requires meta params")
     public void givenAThemeAndVariant(@Named("variant") String variant, @Named("theme") String theme) {
         this.theme = theme;
         this.variant = variant;
