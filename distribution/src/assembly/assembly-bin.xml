@@ -33,6 +33,10 @@
       </includes>
     </fileSet>
     <fileSet>
+      <directory>target/archetypes</directory>
+      <outputDirectory>/archetypes</outputDirectory>
+    </fileSet>
+    <fileSet>
       <directory>target/plugins</directory>
       <outputDirectory>/plugins</outputDirectory>
     </fileSet>
