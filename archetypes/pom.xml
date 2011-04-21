@@ -58,10 +58,8 @@
             <configuration>
               <source>
                 if ( project.packaging == 'pom' ){
-                    def path = "${local.archetype.catalog}"
-                    def catalog = new File(path)
-                    println "Deleting "+catalog;
-                    catalog.delete();
+                    def localArchetypeCatalog = new File(System.getProperty('user.home'), '.m2/archetype-catalog.xml').absolutePath
+                    ant.delete(file: "${localArchetypeCatalog}", verbose: true)
                 }
             </source>
             </configuration>

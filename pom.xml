@@ -20,7 +20,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <resource.encoding>UTF-8</resource.encoding>
     <jdk.version>1.5</jdk.version>
-    <local.archetype.catalog>${user.home}/.m2/archetype-catalog.xml</local.archetype.catalog>
   </properties>
 
   <modules>
