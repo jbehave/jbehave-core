@@ -106,9 +106,9 @@ public class StepCreatorBehaviour {
 
         // Then
         assertThat(ignorableStep.perform(null), instanceOf(Ignorable.class));
-        assertThat(ignorableStep.doNotPerform(), instanceOf(Ignorable.class));
+        assertThat(ignorableStep.doNotPerform(null), instanceOf(Ignorable.class));
         assertThat(pendingStep.perform(null), instanceOf(Pending.class));
-        assertThat(pendingStep.doNotPerform(), instanceOf(Pending.class));
+        assertThat(pendingStep.doNotPerform(null), instanceOf(Pending.class));
     }
 
 }

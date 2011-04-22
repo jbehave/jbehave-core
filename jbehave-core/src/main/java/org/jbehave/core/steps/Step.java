@@ -9,6 +9,6 @@ public interface Step {
 
     StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened);
 
-    StepResult doNotPerform();
+    StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened);
 
 }

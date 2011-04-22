@@ -326,7 +326,7 @@ public class StepCandidateBehaviour {
         StepResult perform = step.perform(null);
         assertThat(perform, instanceOf(AbstractStepResult.Pending.class));
         assertThat(perform.parametrisedStep(), equalTo(stepAsString));
-        StepResult doNotPerform = step.doNotPerform();
+        StepResult doNotPerform = step.doNotPerform(null);
         assertThat(doNotPerform, instanceOf(NotPerformed.class));
         assertThat(doNotPerform.parametrisedStep(), equalTo(stepAsString));
     }

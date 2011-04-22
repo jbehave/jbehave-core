@@ -352,7 +352,7 @@ public class StepCreator {
             this.method = method;
         }
 
-        public StepResult doNotPerform() {
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return skip.run(method, NO_FAILURE);
         }
 
@@ -370,7 +370,7 @@ public class StepCreator {
             this.method = method;
         }
 
-        public StepResult doNotPerform() {
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return beforeOrAfter.run(method, NO_FAILURE);
         }
 
@@ -390,7 +390,7 @@ public class StepCreator {
             this.method = method;
         }
 
-        public StepResult doNotPerform() {
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfter.run(method, NO_FAILURE));
         }
 
@@ -410,8 +410,8 @@ public class StepCreator {
             this.method = method;
         }
 
-        public StepResult doNotPerform() {
-            return (failureOccured ? beforeOrAfter.run(method, NO_FAILURE) : skip.run(method, NO_FAILURE));
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return (failureOccured ? beforeOrAfter.run(method, storyFailureIfItHappened) : skip.run(method, NO_FAILURE));
         }
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
@@ -459,7 +459,7 @@ public class StepCreator {
             }
         }
 
-        public StepResult doNotPerform() {
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             try {
                 parametriseStep();
                 // } catch (ParameterNotFound e) {
@@ -497,7 +497,7 @@ public class StepCreator {
             return pending(stepAsString);
         }
 
-        public StepResult doNotPerform() {
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return pending(stepAsString);
         }
 
@@ -530,7 +530,7 @@ public class StepCreator {
             return ignorable(stepAsString);
         }
 
-        public StepResult doNotPerform() {
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return ignorable(stepAsString);
         }
     }

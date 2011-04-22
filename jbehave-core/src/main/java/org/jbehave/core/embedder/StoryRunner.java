@@ -151,6 +151,10 @@ public class StoryRunner {
                 reporter.get().dryRun();
             }
 
+            if (context.configuration().storyControls().resetStateBeforeStory()) {
+                context.resetState();
+            }
+
             // run before story steps, if any
             reporter.get().beforeStory(story, context.givenStory());
 
@@ -378,7 +382,8 @@ public class StoryRunner {
 
     private final class SomethingHappened implements State {
         public State run(Step step) {
-            StepResult result = step.doNotPerform();
+            UUIDExceptionWrapper storyFailureIfItHappened = storyFailure.get();
+            StepResult result = step.doNotPerform(storyFailureIfItHappened);
             result.describeTo(reporter.get());
             return this;
         }
@@ -445,7 +450,7 @@ public class StoryRunner {
 
         public List<Step> collectBeforeOrAfterScenarioSteps(Stage stage) {
             return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps, stage,
-                    storyFailure.get() != null);
+                    failureOccurred());
         }
 
         public List<Step> collectScenarioSteps(Scenario scenario, Map<String, String> parameters) {

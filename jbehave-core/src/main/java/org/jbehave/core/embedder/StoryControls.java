@@ -56,5 +56,10 @@ public class StoryControls {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
+    public boolean resetStateBeforeStory() {
+        // TODO Auto-generated method stub
+        return true;
+    }
+
 
 }

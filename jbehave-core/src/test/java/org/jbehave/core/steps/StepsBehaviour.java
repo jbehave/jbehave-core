@@ -190,20 +190,21 @@ public class StepsBehaviour {
     	List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario();
 		assertThat(beforeAfterScenario.size(), equalTo(4));
 		
-    	beforeAfterScenario.get(0).createStep().doNotPerform();
+    	beforeAfterScenario.get(0).createStep().doNotPerform(null);
     	assertThat(steps.beforeScenario, is(false));
 
         boolean failureOccured = true;
-    	// uponOutcome=ANY
-    	beforeAfterScenario.get(1).createStepUponOutcome(failureOccured).doNotPerform();
+    	UUIDExceptionWrapper failure = new UUIDExceptionWrapper();
+        // uponOutcome=ANY
+    	beforeAfterScenario.get(1).createStepUponOutcome(failureOccured).doNotPerform(failure);
     	assertThat(steps.afterAnyScenario, is(true));
     	
     	// uponOutcome=SUCCESS
-    	beforeAfterScenario.get(2).createStepUponOutcome(failureOccured).doNotPerform();
+    	beforeAfterScenario.get(2).createStepUponOutcome(failureOccured).doNotPerform(failure);
     	assertThat(steps.afterSuccessfulScenario, is(false));
     	
 		// uponOutcome=FAILURE    	
-    	beforeAfterScenario.get(3).createStepUponOutcome(failureOccured).doNotPerform();
+    	beforeAfterScenario.get(3).createStepUponOutcome(failureOccured).doNotPerform(failure);
     	assertThat(steps.afterFailedScenario, is(true));
     }
     
