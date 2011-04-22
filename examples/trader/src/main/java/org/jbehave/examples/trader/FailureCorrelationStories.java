@@ -1,0 +1,52 @@
+package org.jbehave.examples.trader;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.annotations.When;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.embedder.StoryControls;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.io.StoryFinder;
+import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InstanceStepsFactory;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+
+public class FailureCorrelationStories extends TraderStories {
+
+    @Override
+    public Configuration configuration() {
+        return super.configuration().useStoryControls(new StoryControls().doResetStateBeforeScenario(true));
+    }
+
+    @Override
+    public List<CandidateSteps> candidateSteps() {
+        List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+        candidateSteps.addAll(new InstanceStepsFactory(configuration(), this).createCandidateSteps());
+        return candidateSteps;
+    }
+
+    @Override
+    protected List<String> storyPaths() {
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/failure_correlation*.story", "");                
+    }
+
+    @When("a failure occurs in story %count")
+    public void whenSomethingHappens(int count){
+        throw new RuntimeException("BUM! in story "+count);
+    }
+    
+    @AfterScenario(uponOutcome = Outcome.FAILURE)
+    public void afterScenarioFailure(UUIDExceptionWrapper failure) throws Exception {
+        System.out.println("After Failed Scenario ...");
+        File path = new File("target/failures/"+failure.getUUID().toString());
+        path.getParentFile().mkdirs();
+        path.createNewFile();
+        System.out.println("Failure: "+path);
+    }
+
+}
