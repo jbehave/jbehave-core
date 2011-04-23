@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Meta Parametrisation</title>
+</head>
+
+<body>
+
+<h2>Meta Parametrisation</h2>
+
+<p>Another use of <a
+	href="meta-info.html">meta info</a> in our stories is to allow the definition
+of <b>implicit</b> scenario parameters used in our steps.</p>
+
+<p>For example, we may define the meta properties, both at story and scenario level (with usual inheritance pattern), and have
+these parameters injected in the step method, as if they had been specified in the step itself:</p>
+
+<pre class="brush: plain">
+Meta: 
+
+@theme parameters
+
+Scenario: scenario with hidden meta params
+
+Meta:
+
+@variant foo
+
+Given I have some step that implicitly requires meta params
+Then the theme is 'parameters' with variant 'foo'
+</pre>
+
+<p>where the corresponding Java method is</p> 
+
+<pre class="brush: java">
+    @Given("I have some step that implicitly requires meta params")
+    public void givenAThemeAndVariant(@Named("variant") String variant, @Named("theme") String theme) {
+        this.theme = theme;
+        this.variant = variant;
+    }
+</pre>
+
+<p>Note that we use <a href="parameter-injection.html">Named parameters</a>, in the same way that we'd use for
+<a href="parametrised-scenarios.html">parametrised scenarios</a>.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>
