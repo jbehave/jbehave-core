@@ -353,7 +353,7 @@ public class StepCreator {
         }
 
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return skip.run(method, NO_FAILURE);
+            return beforeOrAfter.run(method, NO_FAILURE);
         }
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {

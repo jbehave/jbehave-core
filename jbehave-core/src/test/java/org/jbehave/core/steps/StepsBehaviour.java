@@ -191,7 +191,7 @@ public class StepsBehaviour {
 		assertThat(beforeAfterScenario.size(), equalTo(4));
 		
     	beforeAfterScenario.get(0).createStep().doNotPerform(null);
-    	assertThat(steps.beforeScenario, is(false));
+    	assertThat(steps.beforeScenario, is(true));
 
         boolean failureOccured = true;
     	UUIDExceptionWrapper failure = new UUIDExceptionWrapper();
