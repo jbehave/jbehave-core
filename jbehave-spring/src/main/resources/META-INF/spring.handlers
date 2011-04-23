@@ -1,1 +1,1 @@
-http\://jbehave.org/schema/embedder=org.jbehave.core.configuration.spring.JBehaveNamespaceHandler
+http\://jbehave.org/schemas/spring=org.jbehave.core.configuration.spring.NamespaceHandler
