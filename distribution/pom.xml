@@ -1,10 +1,9 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.4-SNAPSHOT</version>
+    <version>3.4-beta-2</version>
   </parent>
   <artifactId>jbehave-distribution</artifactId>
   <packaging>pom</packaging>
@@ -334,17 +333,15 @@
             </goals>
             <configuration>
               <tasks>
-                <property name="code-coverage.directory" value="${project.build.directory}/site/code-coverage"/>
+                <property name="code-coverage.directory" value="${project.build.directory}/site/code-coverage" />
                 <mkdir dir="${code-coverage.directory}" />
-                <copy todir="${code-coverage.directory}"
-                  overwrite="true" failonerror="false">
+                <copy todir="${code-coverage.directory}" overwrite="true" failonerror="false">
                   <fileset dir="${basedir}/../">
                     <include name="jbehave-*/target/site/cobertura/**" />
                   </fileset>
                   <filtermapper>
                     <replacestring from="jbehave-" to="" />
-                    <replacestring from="target/site/cobertura"
-                      to="/" />
+                    <replacestring from="target/site/cobertura" to="/" />
                   </filtermapper>
                 </copy>
               </tasks>
@@ -358,11 +355,10 @@
             </goals>
             <configuration>
               <tasks>
-                <property name="archetypes.directory" value="${project.build.directory}/archetypes"/>
-                <property name="local.archetype.catalog" value="${user.home}/.m2/archetype-catalog.xml"/>
+                <property name="archetypes.directory" value="${project.build.directory}/archetypes" />
+                <property name="local.archetype.catalog" value="${user.home}/.m2/archetype-catalog.xml" />
                 <mkdir dir="${archetypes.directory}" />
-                <copy todir="${archetypes.directory}" file="${user.home}/.m2/archetype-catalog.xml"
-                  overwrite="true" failonerror="false" verbose="true">
+                <copy todir="${archetypes.directory}" file="${user.home}/.m2/archetype-catalog.xml" overwrite="true" failonerror="false" verbose="true">
                 </copy>
               </tasks>
             </configuration>
