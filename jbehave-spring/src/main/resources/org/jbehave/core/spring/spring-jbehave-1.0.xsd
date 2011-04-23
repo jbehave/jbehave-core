@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<xsd:schema xmlns="http://jbehave.org/schema/embedder"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+         targetNamespace="http://jbehave.org/schema/embedder"
+         elementFormDefault="qualified"
+         attributeFormDefault="unqualified">
+
+	<xsd:element name="embedder">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="classpathLoader" type="xsd:string" minOccurs="1" maxOccurs="unbounded">
+				</xsd:element>
+				<xsd:element name="output" type="outputType" minOccurs="1" maxOccurs="unbounded">
+				</xsd:element>
+			</xsd:sequence>
+			<xsd:attribute name="prefix" type="xsd:string" use="optional" default="$"></xsd:attribute>
+			<xsd:attribute name="id" type="xsd:ID" use="required"></xsd:attribute>
+		</xsd:complexType>
+	</xsd:element>
+	
+	<xsd:simpleType name="outputType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="TXT"></xsd:enumeration>
+			<xsd:enumeration value="CONSOLE"></xsd:enumeration>
+			<xsd:enumeration value="HTML"></xsd:enumeration>
+			<xsd:enumeration value="XML"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+</xsd:schema>
