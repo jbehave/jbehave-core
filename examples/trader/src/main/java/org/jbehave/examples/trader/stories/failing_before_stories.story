@@ -1,4 +1,4 @@
-We want to show that failures in @BeforeStories methods will mark rest of steps as NOT PERFORMED.
+We want to show that failures in @BeforeStories methods will mark rest of steps as NOT PERFORMED, if story and scenario state is not reset via the StoryControls
 
 Scenario:  
 

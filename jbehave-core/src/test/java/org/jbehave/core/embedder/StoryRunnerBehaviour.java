@@ -422,6 +422,35 @@ public class StoryRunnerBehaviour {
         verify(pendingStep).perform(Matchers.<UUIDExceptionWrapper>any());
         verify(secondStep).doNotPerform(Matchers.<UUIDExceptionWrapper>any());
         verify(secondStep, never()).perform(Matchers.<UUIDExceptionWrapper>any());
+    }    
+    
+    @Test
+    public void shouldAllowToNotResetStateBeforeStory() throws Throwable {
+        // Given
+        StoryReporter reporter = mock(ConcurrentStoryReporter.class);
+        Step failedStep = mock(Step.class, "failedStep");
+        when(failedStep.perform(null)).thenReturn(failed("before stories", new UUIDExceptionWrapper(new RuntimeException("BeforeStories fail"))));
+        Step pendingStep = mock(Step.class, "pendingStep");
+        when(pendingStep.perform(null)).thenReturn(pending("pendingStep"));
+        StepCollector collector = mock(StepCollector.class);
+        CandidateSteps mySteps = new Steps();        
+        Scenario scenario1 = new Scenario();
+        List<CandidateSteps> candidateSteps = asList(mySteps);
+        when(collector.collectBeforeOrAfterStoriesSteps(candidateSteps, Stage.BEFORE)).thenReturn(asList(failedStep));
+        when(collector.collectScenarioSteps(candidateSteps, scenario1, parameters)).thenReturn(asList(pendingStep));
+        Story story = new Story(asList(scenario1));
+        givenStoryWithNoBeforeOrAfterSteps(story, false, collector, mySteps);
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        Configuration configuration = configurationWith(reporter, collector);
+        configuration.storyControls().doResetStateBeforeStory(false).doResetStateBeforeScenario(false);
+        runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
+        runner.run(configuration, candidateSteps, story);
+
+        // Then
+        verify(failedStep).perform(Matchers.<UUIDExceptionWrapper>any());
+        verify(pendingStep).perform(Matchers.<UUIDExceptionWrapper>any());
     }
 
     @Test

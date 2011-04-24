@@ -9,9 +9,10 @@ import org.apache.commons.lang.builder.ToStringStyle;
 public class StoryControls {
 
     private boolean dryRun = false;
+    private boolean resetStateBeforeStory = true;
+    private boolean resetStateBeforeScenario = true;
     private boolean skipScenariosAfterFailure = false;
     private boolean skipBeforeAndAfterScenarioStepsIfGivenStory = false;
-    private boolean resetStateBeforeScenario = true;
 
     public StoryControls() {
     }
@@ -20,12 +21,16 @@ public class StoryControls {
         return dryRun;
     }
 
-    public boolean skipScenariosAfterFailure() {
-        return skipScenariosAfterFailure;
+    public boolean resetStateBeforeStory() {
+        return resetStateBeforeStory;
     }
 
     public boolean resetStateBeforeScenario() {
         return resetStateBeforeScenario;
+    }
+
+    public boolean skipScenariosAfterFailure() {
+        return skipScenariosAfterFailure;
     }
 
     public boolean skipBeforeAndAfterScenarioStepsIfGivenStory() {
@@ -37,6 +42,16 @@ public class StoryControls {
         return this;
     }
 
+    public StoryControls doResetStateBeforeScenario(boolean resetStateBeforeScenario) {
+        this.resetStateBeforeScenario = resetStateBeforeScenario;
+        return this;
+    }
+    
+    public StoryControls doResetStateBeforeStory(boolean resetStateBeforeStory) {
+        this.resetStateBeforeStory = resetStateBeforeStory;
+        return this;
+    }
+    
     public StoryControls doSkipScenariosAfterFailure(boolean skipScenariosAfterFailure) {
         this.skipScenariosAfterFailure = skipScenariosAfterFailure;
         return this;
@@ -47,19 +62,9 @@ public class StoryControls {
         return this;
     }
 
-    public StoryControls doResetStateBeforeScenario(boolean resetStateBeforeScenario) {
-        this.resetStateBeforeScenario = resetStateBeforeScenario;
-        return this;
-    }
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-
-    public boolean resetStateBeforeStory() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
 
 }

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -120,6 +119,7 @@ public class CrossReference extends Format {
     protected XRefRoot newXRefRoot() {
         return new XRefRoot();
     }
+    
     private void outputFile(String name, XStream xstream, XRefRoot root, StoryReporterBuilder storyReporterBuilder) {
 
         File outputDir = new File(storyReporterBuilder.outputDirectory(), "view");

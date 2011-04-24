@@ -13,7 +13,7 @@ public class FailingBeforeStories extends TraderStory {
 
     @Override
     public Configuration configuration() {
-        return super.configuration().useStoryControls(new StoryControls().doResetStateBeforeScenario(false));
+        return super.configuration().useStoryControls(new StoryControls().doResetStateBeforeStory(false).doResetStateBeforeScenario(false));
     }
 
     @Override
