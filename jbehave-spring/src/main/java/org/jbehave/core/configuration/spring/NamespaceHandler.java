@@ -4,8 +4,10 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 public class NamespaceHandler extends NamespaceHandlerSupport {
 
+	private static final String EMBEDDER_TAG = "embedder";
+
 	public void init() {
-		registerBeanDefinitionParser("embedder", new EmbedderBeanDefinitionParser());
+		registerBeanDefinitionParser(EMBEDDER_TAG, new EmbedderBeanDefinitionParser());
 	}
 
 }
