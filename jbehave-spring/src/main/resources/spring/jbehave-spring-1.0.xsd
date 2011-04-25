@@ -9,15 +9,31 @@
 	<xsd:element name="embedder">
 		<xsd:complexType>
 			<xsd:sequence>
-				<xsd:element name="classpathLoader" type="xsd:string" minOccurs="1" maxOccurs="unbounded">
-				</xsd:element>
+				<xsd:choice>
+					<xsd:element name="classpathLoader" type="xsd:string" minOccurs="1" maxOccurs="unbounded">
+					</xsd:element>
+					<xsd:element name="urlLoader">
+					</xsd:element>
+					<xsd:element name="relativePathLoader" type="xsd:anyURI">
+					</xsd:element>			
+				</xsd:choice>
 				<xsd:element name="output" type="outputType" minOccurs="1" maxOccurs="unbounded">
 				</xsd:element>
 			</xsd:sequence>
-			<xsd:attribute name="prefix" type="xsd:string" use="optional" default="$"></xsd:attribute>
 			<xsd:attribute name="id" type="xsd:ID" use="required"></xsd:attribute>
+			<xsd:attribute name="prefix" type="xsd:string" use="optional" default="$"></xsd:attribute>
+			<xsd:attribute name="onfailure" type="failureStrategyType" use="optional"></xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
+	
+	<xsd:simpleType name="failureStrategyType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="FAILINGUPON"></xsd:enumeration>
+			<xsd:enumeration value="PASSINGUPON"></xsd:enumeration>
+			<xsd:enumeration value="RETHROWING"></xsd:enumeration>
+			<xsd:enumeration value="SILENTLYABSORBING"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
 	
 	<xsd:simpleType name="outputType">
 		<xsd:restriction base="xsd:string">

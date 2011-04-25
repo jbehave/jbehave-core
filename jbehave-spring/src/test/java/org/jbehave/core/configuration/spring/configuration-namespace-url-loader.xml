@@ -5,8 +5,8 @@
            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
            http://jbehave.org/schemas/spring http://jbehave.org/schemas/spring/jbehave-spring-1.0.xsd">
 
-  <jbehave:embedder id="embedder" prefix="MyPrefix">
-    <jbehave:classpathLoader>target/classes</jbehave:classpathLoader>
+  <jbehave:embedder id="embedder">
+    <jbehave:urlLoader></jbehave:urlLoader>
     <jbehave:output>TXT</jbehave:output>
     <jbehave:output>HTML</jbehave:output>
     <jbehave:output>CONSOLE</jbehave:output>
