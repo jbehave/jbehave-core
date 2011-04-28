@@ -54,7 +54,8 @@ public class ReportsCount {
 
     public boolean failed(){
         if ( scenariosFailed > 0 ) return true;
-        if ( stories > 0 && scenarios == 0 ) return true;
+// JBEHAVE-472:  find a better way to express failures before scenarios        
+//        if ( stories > 0 && scenarios == 0 ) return true;
         return false;
     }
     

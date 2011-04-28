@@ -42,9 +42,10 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Steps;
-import org.jbehave.core.steps.StepCollector.Stage;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -937,6 +938,7 @@ public class EmbedderBehaviour {
     }
 
     @Test(expected = RunningStoriesFailed.class)
+    @Ignore("JBEHAVE-472: find a better way to express failures before scenarios")
     public void shouldThrowExceptionIfNoScenariosRunForStoriesAndIgnoreFlagIsNotSet() throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
