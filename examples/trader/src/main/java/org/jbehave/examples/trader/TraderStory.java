@@ -21,6 +21,7 @@ import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
@@ -101,9 +102,15 @@ public abstract class TraderStory extends JUnitStory {
 
     @Override
     public List<CandidateSteps> candidateSteps() {
+        return stepsFactory().createCandidateSteps();
+    }
+    
+    @Override
+    public InjectableStepsFactory stepsFactory() {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
                 new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new SandpitSteps(),
-                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps()).createCandidateSteps();
+                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps());
     }
+
 
 }

@@ -42,6 +42,7 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Steps;
@@ -426,12 +427,13 @@ public class EmbedderBehaviour {
         };
         embedder.useConfiguration(configuration);
         List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        
+
         State beforeStories = mock(State.class);
         when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
         List<String> storyPaths = new ArrayList<String>();
-        Map<String, Story> stories = new HashMap<String, Story>();        
+        Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
@@ -446,8 +448,8 @@ public class EmbedderBehaviour {
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
-                    Matchers.eq(stories.get(storyPath)), Matchers.isA(MetaFilter.class), Matchers.isA(State.class));
+            verify(runner).run(Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)),
+                    Matchers.isA(MetaFilter.class), Matchers.any(State.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatReportsViewGenerated(out);
@@ -474,6 +476,7 @@ public class EmbedderBehaviour {
         };
         embedder.useConfiguration(configuration);
         List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         StoryPathResolver resolver = configuration.storyPathResolver();
         State beforeStories = mock(State.class);
         when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
@@ -497,8 +500,8 @@ public class EmbedderBehaviour {
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
-                    Matchers.eq(stories.get(storyPath)), Matchers.isA(MetaFilter.class), Matchers.isA(State.class));
+            verify(runner).run(Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)),
+                    Matchers.isA(MetaFilter.class), Matchers.any(State.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatReportsViewGenerated(out);
@@ -583,6 +586,7 @@ public class EmbedderBehaviour {
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
         List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         StoryPathResolver resolver = configuration.storyPathResolver();
         State beforeStories = mock(State.class);
         when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
@@ -596,8 +600,8 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
-                    Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(stepsFactory),
+                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
         }
         // When
         embedder.runStoriesAsPaths(storyPaths);
@@ -619,6 +623,7 @@ public class EmbedderBehaviour {
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
         List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         StoryPathResolver resolver = configuration.storyPathResolver();
         State beforeStories = mock(State.class);
         when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
@@ -632,8 +637,8 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
-                    Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(stepsFactory),
+                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
         }
 
         // When
@@ -697,6 +702,8 @@ public class EmbedderBehaviour {
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
         List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+
         StoryPathResolver resolver = configuration.storyPathResolver();
         State beforeStories = mock(State.class);
         when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
@@ -710,8 +717,8 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
-                    Matchers.eq(candidateSteps), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(stepsFactory),
+                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
         }
 
         // When
@@ -733,7 +740,8 @@ public class EmbedderBehaviour {
 
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
-        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+
         StoryPathResolver resolver = configuration.storyPathResolver();
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
@@ -748,8 +756,8 @@ public class EmbedderBehaviour {
         for (String storyPath : storyPaths) {
             RuntimeException thrown = new RuntimeException(storyPath + " failed");
             failures.put(storyPath, thrown);
-            doThrow(thrown).when(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
-                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+            doThrow(thrown).when(runner).run(Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)),
+                    Matchers.any(MetaFilter.class), Matchers.any(State.class));
         }
 
         // When
@@ -774,7 +782,8 @@ public class EmbedderBehaviour {
 
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
-        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+
         StoryPathResolver resolver = configuration.storyPathResolver();
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
@@ -791,8 +800,8 @@ public class EmbedderBehaviour {
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(Matchers.eq(configuration), Matchers.eq(candidateSteps),
-                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+            verify(runner).run(Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)),
+                    Matchers.any(MetaFilter.class), Matchers.any(State.class));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThat(out.toString(), not(containsString("Generating stories view")));
@@ -1111,11 +1120,11 @@ public class EmbedderBehaviour {
         // Then
         assertXrefExists(embedder.configuration().storyReporterBuilder(), "json");
         assertXrefExists(embedder.configuration().storyReporterBuilder(), "xml");
-    
+
     }
 
     private void assertXrefExists(StoryReporterBuilder storyReporterBuilder, String ext) {
-        assertThat(new File(storyReporterBuilder.outputDirectory(),"view/xref."+ext).exists(), is(true));
+        assertThat(new File(storyReporterBuilder.outputDirectory(), "view/xref." + ext).exists(), is(true));
     }
 
     private String dos2unix(String string) {

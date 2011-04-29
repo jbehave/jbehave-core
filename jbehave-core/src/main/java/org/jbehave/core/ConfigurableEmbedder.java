@@ -11,6 +11,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 
 /**
  * <p>
@@ -39,6 +40,7 @@ public abstract class ConfigurableEmbedder implements Embeddable {
     private Embedder embedder = new Embedder();
     private Configuration configuration = new MostUsefulConfiguration();
     private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+    private InjectableStepsFactory stepsFactory;
 
     public void useEmbedder(Embedder embedder) {
         this.embedder = embedder;
@@ -56,6 +58,10 @@ public abstract class ConfigurableEmbedder implements Embeddable {
         this.candidateSteps.addAll(steps);
     }
 
+    public void useStepsFactory(InjectableStepsFactory stepsFactory){
+        this.stepsFactory = stepsFactory;        
+    }
+    
     public Configuration configuration() {
         return configuration;
     }
@@ -63,10 +69,15 @@ public abstract class ConfigurableEmbedder implements Embeddable {
     public List<CandidateSteps> candidateSteps() {
         return candidateSteps;
     }
+    
+    public InjectableStepsFactory stepsFactory(){
+        return stepsFactory;
+    }
 
     public Embedder configuredEmbedder() {
         embedder.useConfiguration(configuration());
         embedder.useCandidateSteps(candidateSteps());
+        embedder.useStepsFactory(stepsFactory());
         return embedder;
     }
 

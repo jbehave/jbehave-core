@@ -20,7 +20,9 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
+import org.jbehave.core.steps.ProvidedStepsFactory;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
@@ -57,15 +59,27 @@ public class StoryRunner {
      * @return The State after running the steps
      */
     public State runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
+        return runBeforeOrAfterStories(new ProvidedStepsFactory(configuration, candidateSteps), stage);
+    }
+
+    /**
+     * Run steps before or after a collection of stories. Steps are execute only
+     * <b>once</b> per collection of stories.
+     * 
+     * @param stepsFactory the given {@link InjectableStepsFactory}
+     * @param stage the Stage
+     * @return The State after running the steps
+     */
+    public State runBeforeOrAfterStories(InjectableStepsFactory stepsFactory, Stage stage) {
         String storyPath = capitalizeFirstLetter(stage.name().toLowerCase()) + "Stories";
-        reporter.set(configuration.storyReporter(storyPath));
+        reporter.set(stepsFactory.getConfiguration().storyReporter(storyPath));
         reporter.get().beforeStory(new Story(storyPath), false);
-        RunContext context = new RunContext(configuration, candidateSteps, storyPath, MetaFilter.EMPTY);
+        RunContext context = new RunContext(stepsFactory, storyPath, MetaFilter.EMPTY);
         if (stage == Stage.AFTER && storiesState.get() != null) {
             context.stateIs(storiesState.get());
         }
         runStepsWhileKeepingState(context,
-                configuration.stepCollector().collectBeforeOrAfterStoriesSteps(candidateSteps, stage));
+                stepsFactory.getConfiguration().stepCollector().collectBeforeOrAfterStoriesSteps(context.candidateSteps(), stage));
         storiesState.set(context.state());
         return context.state();
     }
@@ -117,7 +131,24 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter,
             State beforeStories) throws Throwable {
-        RunContext context = new RunContext(configuration, candidateSteps, story.getPath(), filter);
+        run(new ProvidedStepsFactory(configuration, candidateSteps), story, filter, beforeStories);
+    }
+
+    /**
+     * Runs a Story with the given steps factory, applying the given
+     * meta filter, and staring from given state.
+     * 
+     * @param stepsFactory the {@link InjectableStepsFactory}
+     * @param story the Story to run
+     * @param filter the Filter to apply to the story Meta
+     * @param beforeStories the State before running any of the stories, if not
+     *            <code>null</code>
+     * @throws Throwable if failures occurred and FailureStrategy dictates it to
+     *             be re-thrown.
+     */
+    public void run(InjectableStepsFactory stepsFactory, Story story, MetaFilter filter,
+            State beforeStories) throws Throwable {
+        RunContext context = new RunContext(stepsFactory, story.getPath(), filter);
         if (beforeStories != null) {
             context.stateIs(beforeStories);
         }
@@ -398,19 +429,22 @@ public class StoryRunner {
      * The context for running a story.
      */
     private class RunContext {
-        private final List<CandidateSteps> candidateSteps;
         private final Configuration configuration;
+        private final List<CandidateSteps> candidateSteps;
         private final String path;
         private final MetaFilter filter;
         private final boolean givenStory;
         private State state;
 
+        public RunContext(InjectableStepsFactory stepsFactory, String path, MetaFilter filter) {
+            this(stepsFactory.getConfiguration(), stepsFactory.createCandidateSteps(), path, filter);
+        }
+
         public RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter) {
             this(configuration, steps, path, filter, false);
         }
 
-        private RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter,
-                boolean givenStory) {
+        private RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter, boolean givenStory) {
             this.configuration = configuration;
             this.candidateSteps = steps;
             this.path = path;
@@ -425,6 +459,10 @@ public class StoryRunner {
 
         public Configuration configuration() {
             return configuration;
+        }
+        
+        public List<CandidateSteps> candidateSteps(){
+            return candidateSteps;
         }
 
         public boolean givenStory() {

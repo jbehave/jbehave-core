@@ -24,11 +24,15 @@ import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
  */
 public abstract class AbstractStepsFactory implements InjectableStepsFactory {
 
-	private final Configuration configuration;
+    private final Configuration configuration;
 
 	public AbstractStepsFactory(Configuration configuration) {
 		this.configuration = configuration;
 	}
+	
+    public Configuration getConfiguration() {
+        return configuration;
+    }	
 
 	public List<CandidateSteps> createCandidateSteps() {
 		List<Object> stepsInstances = stepsInstances();
