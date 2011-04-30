@@ -18,7 +18,7 @@
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>1.8.0-rc-3</version>
+      <version>1.8.0</version>
     </dependency>
   </dependencies>
 
