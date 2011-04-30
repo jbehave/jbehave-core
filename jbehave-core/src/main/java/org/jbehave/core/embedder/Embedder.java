@@ -207,9 +207,10 @@ public class Embedder {
         }
 
         InjectableStepsFactory stepsFactory = stepsFactory();
-        Configuration configuration = stepsFactory.getConfiguration();
+        Configuration configuration = stepsFactory.getConfiguration();        
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         
-        State beforeStories = storyRunner.runBeforeOrAfterStories(stepsFactory, Stage.BEFORE);
+        State beforeStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
 
         BatchFailures batchFailures = new BatchFailures();
         configureReporterBuilder(configuration);
@@ -225,7 +226,7 @@ public class Embedder {
 
         checkForFailures(futures);
 
-        State afterStories = storyRunner.runBeforeOrAfterStories(stepsFactory, Stage.AFTER);
+        State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
 
         if ( storyRunner.failed(afterStories) ){
             if (embedderControls.ignoreFailureInStories()){
