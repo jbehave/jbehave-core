@@ -1,7 +1,5 @@
 package org.jbehave.core.configuration.weld;
 
-import java.util.List;
-
 import org.jbehave.core.annotations.weld.UsingWeld;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.AnnotationFinder;
@@ -9,7 +7,7 @@ import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.AnnotationRequired;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.PrintStreamAnnotationMonitor;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.CompositeStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 
@@ -54,14 +52,14 @@ public class WeldAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
-        List<CandidateSteps> steps = super.buildCandidateSteps(configuration);
+    public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
+        InjectableStepsFactory factoryUsingSteps = super.buildStepsFactory(configuration);
         if (stepsFactory != null) {
-            steps.addAll(0, stepsFactory.createCandidateSteps());
+            return new CompositeStepsFactory(configuration, stepsFactory, factoryUsingSteps);
         }
-        return steps;
+        return factoryUsingSteps;
     }
-
+    
     @Override
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
         ParameterConverters converters = super.parameterConverters(annotationFinder);

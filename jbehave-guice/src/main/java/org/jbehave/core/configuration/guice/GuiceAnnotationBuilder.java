@@ -7,10 +7,10 @@ import org.jbehave.core.annotations.guice.UsingGuice;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.AnnotationFinder;
 import org.jbehave.core.configuration.AnnotationMonitor;
-import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.AnnotationRequired;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.PrintStreamAnnotationMonitor;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.CompositeStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
@@ -69,13 +69,12 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
-        List<CandidateSteps> steps = super.buildCandidateSteps(configuration);
+    public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
+        InjectableStepsFactory factoryUsingSteps = super.buildStepsFactory(configuration);
         if (injector != null) {
-            InjectableStepsFactory factory = new GuiceStepsFactory(configuration, injector);
-            steps.addAll(0, factory.createCandidateSteps());
+            return new CompositeStepsFactory(configuration, new GuiceStepsFactory(configuration, injector), factoryUsingSteps);
         }
-        return steps;
+        return factoryUsingSteps;
     }
 
     @Override

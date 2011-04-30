@@ -122,6 +122,18 @@ public class AnnotationBuilder {
      * @return A List of CandidateSteps instances
      */
     public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
+        return buildStepsFactory(configuration).createCandidateSteps();
+    }
+
+    /**
+     * Builds the {@link InjectableStepsFactory} using annotation {@link UsingSteps} found in the
+     * annotated object instance and the configuration provided
+     * 
+     * @param configuration
+     *            the Configuration
+     * @return A {@link InjectableStepsFactory}
+     */
+    public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
         List<Object> stepsInstances = new ArrayList<Object>();
         InjectableStepsFactory factory = null;
         if (finder.isAnnotationPresent(UsingSteps.class)) {
@@ -137,7 +149,7 @@ public class AnnotationBuilder {
         if (factory == null) {
             factory = new InstanceStepsFactory(configuration);
         }
-        return factory.createCandidateSteps();
+        return factory;
     }
 
     @SuppressWarnings("unchecked")
@@ -153,16 +165,19 @@ public class AnnotationBuilder {
         boolean ignoreFailureInView = control(finder, "ignoreFailureInView");
         long storyTimeoutInSecs = finder.getAnnotatedValue(UsingEmbedder.class, Long.class, "storyTimeoutInSecs");
         int threads = finder.getAnnotatedValue(UsingEmbedder.class, Integer.class, "threads");
-        Configuration configuration = buildConfiguration();
-        List<CandidateSteps> candidateSteps = buildCandidateSteps(configuration);
-
         Embedder embedder = instanceOf(Embedder.class, (Class<? extends Embedder>)finder.getAnnotatedValue(UsingEmbedder.class, Class.class,
                 "embedder"));
         embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView)
                 .useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads);
+        Configuration configuration = buildConfiguration();
         embedder.useConfiguration(configuration);
-        embedder.useCandidateSteps(candidateSteps);
+        boolean useStepsFactory = finder.getAnnotatedValue(UsingEmbedder.class, Boolean.class, "stepsFactory");
+        if ( useStepsFactory ){
+            embedder.useStepsFactory(buildStepsFactory(configuration));
+        } else {
+            embedder.useCandidateSteps(buildCandidateSteps(configuration));
+        }
         List<String> metaFilters = finder.getAnnotatedValues(UsingEmbedder.class, String.class, "metaFilters");
         if ( !metaFilters.isEmpty() ){
             embedder.useMetaFilters(metaFilters);
@@ -236,6 +251,7 @@ public class AnnotationBuilder {
                 ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder) instance;
                 configurableEmbedder.useConfiguration(embedder.configuration());
                 configurableEmbedder.addSteps(embedder.candidateSteps());
+                configurableEmbedder.useStepsFactory(embedder.stepsFactory());
             }
             return instance;
         } catch (Exception e) {

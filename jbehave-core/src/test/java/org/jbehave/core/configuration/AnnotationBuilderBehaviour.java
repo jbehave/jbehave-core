@@ -112,12 +112,34 @@ public class AnnotationBuilderBehaviour {
         Embedder embedder = ((InjectableEmbedder) instance).injectedEmbedder();
         assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
         assertThat(embedder.metaFilters(), equalTo(asList("+embedder injectable")));
+        assertThatStepsInstancesAre(embedder.stepsFactory().createCandidateSteps(), MySteps.class);
+    }
+
+    @Test
+    public void shouldCreateEmbeddableInstanceFromInjectableEmbedderWithoutStepsFactory() {
+        AnnotationBuilder annotatedInjectable = new AnnotationBuilder(AnnotedInjectableWithoutStepsFactory.class);
+        Object instance = annotatedInjectable.embeddableInstance();
+        assertThat(instance, Matchers.instanceOf(InjectableEmbedder.class));
+        Embedder embedder = ((InjectableEmbedder) instance).injectedEmbedder();
+        assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
+        assertThat(embedder.metaFilters(), equalTo(asList("+embedder injectable")));
         assertThatStepsInstancesAre(embedder.candidateSteps(), MySteps.class);
     }
 
     @Test
     public void shouldCreateEmbeddableInstanceFromConfigurableEmbedder() {
         AnnotationBuilder annotatedConfigurable = new AnnotationBuilder(AnnotedConfigurable.class);
+        Object instance = annotatedConfigurable.embeddableInstance();
+        assertThat(instance, Matchers.instanceOf(ConfigurableEmbedder.class));
+        Embedder embedder = ((ConfigurableEmbedder) instance).configuredEmbedder();
+        assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
+        assertThat(embedder.metaFilters(), equalTo(asList("+embedder configurable")));
+        assertThatStepsInstancesAre(embedder.stepsFactory().createCandidateSteps(), MySteps.class);
+    }
+
+    @Test
+    public void shouldCreateEmbeddableInstanceFromConfigurableEmbedderWithoutStepsFactory() {
+        AnnotationBuilder annotatedConfigurable = new AnnotationBuilder(AnnotedConfigurableWithoutStepsFactory.class);
         Object instance = annotatedConfigurable.embeddableInstance();
         assertThat(instance, Matchers.instanceOf(ConfigurableEmbedder.class));
         Embedder embedder = ((ConfigurableEmbedder) instance).configuredEmbedder();
@@ -219,6 +241,16 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Configure(keywords = MyKeywords.class)
+    @UsingEmbedder(metaFilters = "+embedder injectable", stepsFactory = false)
+    @UsingSteps(instances = { MySteps.class })
+    static class AnnotedInjectableWithoutStepsFactory extends InjectableEmbedder {
+
+        public void run() throws Throwable {
+        }
+
+    }
+
+    @Configure(keywords = MyKeywords.class)
     @UsingEmbedder(metaFilters = "+embedder configurable")
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedConfigurable extends ConfigurableEmbedder {
@@ -228,6 +260,17 @@ public class AnnotationBuilderBehaviour {
 
     }
 
+    @Configure(keywords = MyKeywords.class)
+    @UsingEmbedder(metaFilters = "+embedder configurable", stepsFactory = false)
+    @UsingSteps(instances = { MySteps.class })
+    static class AnnotedConfigurableWithoutStepsFactory extends ConfigurableEmbedder {
+
+        public void run() throws Throwable {
+        }
+
+    }
+
+    
     static class MyKeywords extends LocalizedKeywords {
 
     }

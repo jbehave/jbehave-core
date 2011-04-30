@@ -2,14 +2,12 @@ package org.jbehave.core.configuration.groovy;
 
 import groovy.lang.GroovyClassLoader;
 
-import java.util.List;
-
 import org.jbehave.core.annotations.groovy.UsingGroovy;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.AnnotationRequired;
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.CompositeStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory;
 
@@ -53,15 +51,14 @@ public class GroovyAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
-        List<CandidateSteps> steps = super.buildCandidateSteps(configuration);
+    public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
+        InjectableStepsFactory factoryUsingSteps = super.buildStepsFactory(configuration);
         if (context != null) {
-            InjectableStepsFactory factory = new GroovyStepsFactory(configuration, context);
-            steps.addAll(0, factory.createCandidateSteps());
+            return new CompositeStepsFactory(configuration, new GroovyStepsFactory(configuration, context), factoryUsingSteps);
         }
-        return steps;
+        return factoryUsingSteps;
     }
-
+    
     @Override
     protected <T, V extends T> T instanceOf(Class<T> type, Class<V> ofClass) {
         if (context != null) {

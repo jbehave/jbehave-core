@@ -19,8 +19,9 @@ public @interface UsingEmbedder {
 	boolean generateViewAfterStories()  default true;
 	boolean ignoreFailureInStories()  default false;
 	boolean ignoreFailureInView()  default false;
+    long storyTimeoutInSecs() default 300;
 	int threads() default 1;
-	long storyTimeoutInSecs() default 300;
-	String[] metaFilters() default {};
-	
+	boolean stepsFactory() default true;
+    String[] metaFilters() default {};
+
 }
