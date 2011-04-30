@@ -91,6 +91,34 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
+    public void shouldCreateNewEmbedderWithMetaFilters() {
+        // Given
+        AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            public void execute() throws MojoExecutionException, MojoFailureException {
+            }
+        };
+        // When
+        mojo.metaFilters = new String[]{"filter1", "filter2"};
+        Embedder embedder = mojo.newEmbedder();
+        // Then
+        assertThat(embedder.metaFilters(), equalTo(asList("filter1", "filter2")));
+    }
+
+    @Test
+    public void shouldCreateNewEmbedderIgnoringNullMetaFilters() {
+        // Given
+        AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            public void execute() throws MojoExecutionException, MojoFailureException {
+            }
+        };
+        // When
+        mojo.metaFilters = new String[]{"filter1", null};
+        Embedder embedder = mojo.newEmbedder();
+        // Then
+        assertThat(embedder.metaFilters(), equalTo(asList("filter1")));
+    }
+
+    @Test
     public void shouldCreateNewEmbedderWithMavenMonitor() {
         // Given
         Log log = mock(Log.class);

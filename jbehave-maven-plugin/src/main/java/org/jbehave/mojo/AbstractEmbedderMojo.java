@@ -1,7 +1,7 @@
 package org.jbehave.mojo;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -276,7 +276,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         EmbedderMonitor embedderMonitor = embedderMonitor();
         embedder.useEmbedderMonitor(embedderMonitor);
         if (ArrayUtils.isNotEmpty(metaFilters)) {
-            embedder.useMetaFilters(Arrays.asList(metaFilters));
+            List<String> filters = new ArrayList<String>();
+            for ( String filter : metaFilters ){                
+                if ( filter != null ){
+                    filters.add(filter);
+                }
+            }
+            embedder.useMetaFilters(filters);
         }
         embedder.useEmbedderControls(embedderControls());
         return embedder;
