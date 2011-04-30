@@ -1,21 +1,21 @@
 COULOMMIERS<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-<title>JBehave Archetypes</title>
+<title>Archetypes</title>
 </head>
 
 <body>
 
-<h2>JBehave Archetypes</h2>
+<h2>Archetypes</h2>
 
 <p><a href="http://maven.apache.org/guides/introduction/introduction-to-archetypes.html">Archetypes</a> are Maven project templates that can allow a quick and easy setup of new JBehave modules.</p>
 
 <p>JBehave offers archetypes for several usecases:</p>
 
 <ul>
-<li>jbehave-simple-archetype: the simplest form of using JBehave to run stories</li>
+<li>jbehave-simple-archetype: the simplest form to run stories</li>
 <li>jbehave-groovy-archetype: use steps written in Groovy</li>
-<li>jbehave-spring-archetype: use JBehave Spring support</li>
+<li>jbehave-spring-archetype: use Spring support</li>
 </ul>
 
 <p>To use an archetype to generate a new project you can need to specify the path the <b>archetype-catalog.xml</b> which can be found in the binary distribution, in the <b>archetypes</b> directory:</p>
@@ -29,7 +29,9 @@ COULOMMIERS<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http:
 <p>When generating a new project, after you've selected the archetype, you need to specify the usual Maven project GAV coordinates, i.e. groupId, artifactId and version. These will be used to concretise the template.</p>
 
 <span class="followup">If you are using Nexus 1.9 or above you don't need to specify the archetype catalog as it will automatically generate it for you.  Then all you
-need is to search for archetypes with group <b>org.jbehave</b>.</span>
+need is to search for archetypes with group <b>org.jbehave</b>.  
+The <a href="http://search.maven.org/remotecontent?filepath=archetype-catalog.xml">Maven Central archetype catalog</a> is also periodically updated, 
+although perhaps not with the same frequency that you may require.</span>
 
 </body>
 </html>
