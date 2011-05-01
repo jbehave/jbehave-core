@@ -59,27 +59,15 @@ public class StoryRunner {
      * @return The State after running the steps
      */
     public State runBeforeOrAfterStories(Configuration configuration, List<CandidateSteps> candidateSteps, Stage stage) {
-        return runBeforeOrAfterStories(new ProvidedStepsFactory(configuration, candidateSteps), stage);
-    }
-
-    /**
-     * Run steps before or after a collection of stories. Steps are execute only
-     * <b>once</b> per collection of stories.
-     * 
-     * @param stepsFactory the given {@link InjectableStepsFactory}
-     * @param stage the Stage
-     * @return The State after running the steps
-     */
-    public State runBeforeOrAfterStories(InjectableStepsFactory stepsFactory, Stage stage) {
         String storyPath = capitalizeFirstLetter(stage.name().toLowerCase()) + "Stories";
-        reporter.set(stepsFactory.getConfiguration().storyReporter(storyPath));
+        reporter.set(configuration.storyReporter(storyPath));
         reporter.get().beforeStory(new Story(storyPath), false);
-        RunContext context = new RunContext(stepsFactory, storyPath, MetaFilter.EMPTY);
+        RunContext context = new RunContext(configuration, candidateSteps, storyPath, MetaFilter.EMPTY);
         if (stage == Stage.AFTER && storiesState.get() != null) {
             context.stateIs(storiesState.get());
         }
         runStepsWhileKeepingState(context,
-                stepsFactory.getConfiguration().stepCollector().collectBeforeOrAfterStoriesSteps(context.candidateSteps(), stage));
+                configuration.stepCollector().collectBeforeOrAfterStoriesSteps(context.candidateSteps(), stage));
         storiesState.set(context.state());
         return context.state();
     }
@@ -131,24 +119,27 @@ public class StoryRunner {
      */
     public void run(Configuration configuration, List<CandidateSteps> candidateSteps, Story story, MetaFilter filter,
             State beforeStories) throws Throwable {
-        run(new ProvidedStepsFactory(configuration, candidateSteps), story, filter, beforeStories);
+        run(configuration, new ProvidedStepsFactory(candidateSteps), story, filter, beforeStories);
     }
 
     /**
-     * Runs a Story with the given steps factory, applying the given
-     * meta filter, and staring from given state.
+     * Runs a Story with the given steps factory, applying the given meta
+     * filter, and staring from given state.
      * 
-     * @param stepsFactory the {@link InjectableStepsFactory}
+     * @param configuration the Configuration used to run story
+     * @param stepsFactory the InjectableStepsFactory used to created the
+     *            candidate steps methods
      * @param story the Story to run
      * @param filter the Filter to apply to the story Meta
      * @param beforeStories the State before running any of the stories, if not
      *            <code>null</code>
+     * 
      * @throws Throwable if failures occurred and FailureStrategy dictates it to
      *             be re-thrown.
      */
-    public void run(InjectableStepsFactory stepsFactory, Story story, MetaFilter filter,
+    public void run(Configuration configuration, InjectableStepsFactory stepsFactory, Story story, MetaFilter filter,
             State beforeStories) throws Throwable {
-        RunContext context = new RunContext(stepsFactory, story.getPath(), filter);
+        RunContext context = new RunContext(configuration, stepsFactory, story.getPath(), filter);
         if (beforeStories != null) {
             context.stateIs(beforeStories);
         }
@@ -233,7 +224,7 @@ public class StoryRunner {
                         if (isParameterisedByExamples(scenario)) {
                             // run parametrised scenarios by examples
                             runParametrisedScenariosByExamples(context, scenario);
-                        } else { // run as plain old scenario                            
+                        } else { // run as plain old scenario
                             addMetaParameters(storyParameters, scenario.getMeta().inheritFrom(story.getMeta()));
                             runScenarioSteps(context, scenario, storyParameters);
                         }
@@ -436,15 +427,17 @@ public class StoryRunner {
         private final boolean givenStory;
         private State state;
 
-        public RunContext(InjectableStepsFactory stepsFactory, String path, MetaFilter filter) {
-            this(stepsFactory.getConfiguration(), stepsFactory.createCandidateSteps(), path, filter);
+        public RunContext(Configuration configuration, InjectableStepsFactory stepsFactory, String path,
+                MetaFilter filter) {
+            this(configuration, stepsFactory.createCandidateSteps(), path, filter);
         }
 
         public RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter) {
             this(configuration, steps, path, filter, false);
         }
 
-        private RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter, boolean givenStory) {
+        private RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter,
+                boolean givenStory) {
             this.configuration = configuration;
             this.candidateSteps = steps;
             this.path = path;
@@ -460,8 +453,8 @@ public class StoryRunner {
         public Configuration configuration() {
             return configuration;
         }
-        
-        public List<CandidateSteps> candidateSteps(){
+
+        public List<CandidateSteps> candidateSteps() {
             return candidateSteps;
         }
 

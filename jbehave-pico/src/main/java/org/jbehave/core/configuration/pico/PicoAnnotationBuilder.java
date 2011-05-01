@@ -63,7 +63,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
     public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
         InjectableStepsFactory factoryUsingSteps = super.buildStepsFactory(configuration);
         if (container != null) {
-            return new CompositeStepsFactory(configuration, new PicoStepsFactory(configuration, container), factoryUsingSteps);
+            return new CompositeStepsFactory(new PicoStepsFactory(configuration, container), factoryUsingSteps);
         }
         return factoryUsingSteps;
     }

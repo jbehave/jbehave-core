@@ -55,7 +55,7 @@ public class WeldAnnotationBuilder extends AnnotationBuilder {
     public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
         InjectableStepsFactory factoryUsingSteps = super.buildStepsFactory(configuration);
         if (stepsFactory != null) {
-            return new CompositeStepsFactory(configuration, stepsFactory, factoryUsingSteps);
+            return new CompositeStepsFactory(stepsFactory, factoryUsingSteps);
         }
         return factoryUsingSteps;
     }

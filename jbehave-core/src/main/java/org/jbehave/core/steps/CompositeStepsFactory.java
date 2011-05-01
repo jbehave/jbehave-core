@@ -3,24 +3,16 @@ package org.jbehave.core.steps;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.configuration.Configuration;
-
 /**
- * An {@link InjectableStepsFactory} that is composes {@link CandidateSteps} from several other factories,
- * all using the same {@link Configuration}.
+ * An {@link InjectableStepsFactory} that composes {@link CandidateSteps}
+ * created from other factories.
  */
 public class CompositeStepsFactory implements InjectableStepsFactory {
 
-    private final Configuration configuration;
     private final InjectableStepsFactory[] stepsFactories;
 
-    public CompositeStepsFactory(Configuration configuration, InjectableStepsFactory... stepsFactories) {
-        this.configuration = configuration;
+    public CompositeStepsFactory(InjectableStepsFactory... stepsFactories) {
         this.stepsFactories = stepsFactories;
-    }
-
-    public Configuration getConfiguration() {
-        return configuration;
     }
 
     public List<CandidateSteps> createCandidateSteps() {

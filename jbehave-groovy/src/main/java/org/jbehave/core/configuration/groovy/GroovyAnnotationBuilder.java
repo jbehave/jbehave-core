@@ -54,7 +54,7 @@ public class GroovyAnnotationBuilder extends AnnotationBuilder {
     public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
         InjectableStepsFactory factoryUsingSteps = super.buildStepsFactory(configuration);
         if (context != null) {
-            return new CompositeStepsFactory(configuration, new GroovyStepsFactory(configuration, context), factoryUsingSteps);
+            return new CompositeStepsFactory(new GroovyStepsFactory(configuration, context), factoryUsingSteps);
         }
         return factoryUsingSteps;
     }

@@ -72,7 +72,7 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
     public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
         InjectableStepsFactory factoryUsingSteps = super.buildStepsFactory(configuration);
         if (injector != null) {
-            return new CompositeStepsFactory(configuration, new GuiceStepsFactory(configuration, injector), factoryUsingSteps);
+            return new CompositeStepsFactory(new GuiceStepsFactory(configuration, injector), factoryUsingSteps);
         }
         return factoryUsingSteps;
     }

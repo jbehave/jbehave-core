@@ -59,7 +59,7 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
     public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
         InjectableStepsFactory factoryUsingSteps = super.buildStepsFactory(configuration);
         if (context != null) {
-            return new CompositeStepsFactory(configuration, new SpringStepsFactory(configuration, context), factoryUsingSteps);
+            return new CompositeStepsFactory(new SpringStepsFactory(configuration, context), factoryUsingSteps);
         }
         return factoryUsingSteps;
     }

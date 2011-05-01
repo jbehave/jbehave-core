@@ -206,8 +206,8 @@ public class Embedder {
             return;
         }
 
+        Configuration configuration = configuration();        
         InjectableStepsFactory stepsFactory = stepsFactory();
-        Configuration configuration = stepsFactory.getConfiguration();        
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         
         State beforeStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
@@ -257,7 +257,7 @@ public class Embedder {
 
     private Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
             List<Future<ThrowableStory>> futures, String storyPath, Story story, State beforeStories) {
-        EnqueuedStory enqueuedStory = enqueuedStory(embedderControls, stepsFactory, batchFailures,
+        EnqueuedStory enqueuedStory = enqueuedStory(embedderControls, configuration, stepsFactory, batchFailures,
                 filter, storyPath, story, beforeStories);
         return submit(futures, enqueuedStory);
     }
@@ -272,15 +272,9 @@ public class Embedder {
     }
 
     protected EnqueuedStory enqueuedStory(EmbedderControls embedderControls, Configuration configuration,
-            List<CandidateSteps> candidateSteps, BatchFailures batchFailures, MetaFilter filter, String storyPath,
+            InjectableStepsFactory stepsFactory, BatchFailures batchFailures, MetaFilter filter, String storyPath,
             Story story, State beforeStories) {
-        return new EnqueuedStory(storyPath, configuration, candidateSteps, story, filter, embedderControls,
-                batchFailures, embedderMonitor, storyRunner, beforeStories);
-    }
-
-    protected EnqueuedStory enqueuedStory(EmbedderControls embedderControls, InjectableStepsFactory stepsFactory, BatchFailures batchFailures, MetaFilter filter, String storyPath,
-            Story story, State beforeStories) {
-        return new EnqueuedStory(storyPath, stepsFactory, story, filter, embedderControls,
+        return new EnqueuedStory(storyPath, configuration, stepsFactory, story, filter, embedderControls,
                 batchFailures, embedderMonitor, storyRunner, beforeStories);
     }
 
@@ -462,7 +456,7 @@ public class Embedder {
 
     public InjectableStepsFactory stepsFactory() {
         if ( stepsFactory == null ){
-            stepsFactory = new ProvidedStepsFactory(configuration, candidateSteps);            
+            stepsFactory = new ProvidedStepsFactory(candidateSteps);            
         }
         return stepsFactory;
     }
@@ -696,6 +690,7 @@ public class Embedder {
 
     public static class EnqueuedStory implements Callable<ThrowableStory> {
         private final String storyPath;
+        private final Configuration configuration;
         private final InjectableStepsFactory stepsFactory;
         private final Story story;
         private final MetaFilter filter;
@@ -708,13 +703,14 @@ public class Embedder {
         public EnqueuedStory(String storyPath, Configuration configuration, List<CandidateSteps> candidateSteps,
                 Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures,
                 EmbedderMonitor embedderMonitor, StoryRunner storyRunner, State beforeStories) {
-            this(storyPath, new ProvidedStepsFactory(configuration, candidateSteps), story, filter, embedderControls, batchFailures, embedderMonitor, storyRunner, beforeStories);
+            this(storyPath, configuration, new ProvidedStepsFactory(candidateSteps), story, filter, embedderControls, batchFailures, embedderMonitor, storyRunner, beforeStories);
         }
 
-        public EnqueuedStory(String storyPath, InjectableStepsFactory stepsFactory,
+        public EnqueuedStory(String storyPath, Configuration configuration, InjectableStepsFactory stepsFactory,
                 Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures,
                 EmbedderMonitor embedderMonitor, StoryRunner storyRunner, State beforeStories) {
             this.storyPath = storyPath;
+            this.configuration = configuration;
             this.stepsFactory = stepsFactory;
             this.story = story;
             this.filter = filter;
@@ -728,7 +724,7 @@ public class Embedder {
         public ThrowableStory call() throws Exception {
             try {
                 embedderMonitor.runningStory(storyPath);
-                storyRunner.run(stepsFactory, story, filter, beforeStories);
+                storyRunner.run(configuration, stepsFactory, story, filter, beforeStories);
             } catch (Throwable e) {
                 if (embedderControls.batch()) {
                     // collect and postpone decision to throw exception

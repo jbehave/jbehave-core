@@ -30,10 +30,6 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
 		this.configuration = configuration;
 	}
 	
-    public Configuration getConfiguration() {
-        return configuration;
-    }	
-
 	public List<CandidateSteps> createCandidateSteps() {
 		List<Object> stepsInstances = stepsInstances();
 		List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
