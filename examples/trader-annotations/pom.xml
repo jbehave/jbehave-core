@@ -28,7 +28,6 @@
             <id>with-annotated-embedder</id>
             <phase>integration-test</phase>
             <configuration>
-              <annotatedEmbedderRunnerClass>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
               <includes>
                 <include>**/TraderAnnotatedEmbedder.java</include>
               </includes>

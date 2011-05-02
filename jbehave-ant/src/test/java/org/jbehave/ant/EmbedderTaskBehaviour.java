@@ -1,14 +1,5 @@
 package org.jbehave.ant;
 
-import static java.util.Arrays.asList;
-import static org.apache.tools.ant.Project.MSG_INFO;
-import static org.apache.tools.ant.Project.MSG_WARN;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -24,10 +15,21 @@ import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.ReportsCount;
 import org.junit.Test;
+
+import static java.util.Arrays.asList;
+import static org.apache.tools.ant.Project.MSG_INFO;
+import static org.apache.tools.ant.Project.MSG_WARN;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class EmbedderTaskBehaviour {
 
@@ -418,8 +420,6 @@ public class EmbedderTaskBehaviour {
             }
 
         };
-        String runnerClass = AnnotatedEmbedderRunner.class.getName();
-        task.setAnnotatedEmbedderRunnerClass(runnerClass);
         String searchInDirectory = "src/test/java/";
         task.setSourceDirectory(searchInDirectory);
         List<String> includes = asList("**/stories/*.java");
@@ -432,7 +432,7 @@ public class EmbedderTaskBehaviour {
         task.execute();
 
         // Then
-        verify(embedder).runStoriesWithAnnotatedEmbedderRunner(runnerClass, classNames);
+        verify(embedder).runStoriesWithAnnotatedEmbedderRunner(classNames);
     }
 
 }

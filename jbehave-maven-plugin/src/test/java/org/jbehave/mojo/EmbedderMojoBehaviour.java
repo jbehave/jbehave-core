@@ -1,14 +1,5 @@
 package org.jbehave.mojo;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.io.File;
 import java.util.HashSet;
 import java.util.List;
@@ -32,11 +23,22 @@ import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.ReportsCount;
 import org.junit.Test;
 import org.mockito.Mockito;
+
+import static java.util.Arrays.asList;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class EmbedderMojoBehaviour {
 
@@ -480,8 +482,6 @@ public class EmbedderMojoBehaviour {
             }
 
         };
-        String runnerClass = AnnotatedEmbedderRunner.class.getName();
-        mojo.annotatedEmbedderRunnerClass = runnerClass;
         String searchInDirectory = "src/test/java/";
         mojo.sourceDirectory = searchInDirectory;
         List<String> includes = asList("**/stories/*.java");
@@ -494,7 +494,7 @@ public class EmbedderMojoBehaviour {
         mojo.execute();
 
         // Then
-        verify(embedder).runStoriesWithAnnotatedEmbedderRunner(runnerClass, classNames);
+        verify(embedder).runStoriesWithAnnotatedEmbedderRunner(classNames);
     }
 
     @Test

@@ -107,8 +107,9 @@ public abstract class AbstractEmbedderTask extends Task {
 
     /**
      * The annotated embedder runner class to run the stories
+     * @deprecated Obsolete
      */
-    protected String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
+    String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
 
     /**
      * Used to find story paths and class names

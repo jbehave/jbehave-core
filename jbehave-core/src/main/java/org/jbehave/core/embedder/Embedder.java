@@ -26,6 +26,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.junit.AnnotatedEmbedderUtils;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
@@ -152,9 +153,10 @@ public class Embedder {
         return embeddables;
     }
 
-    public void runStoriesWithAnnotatedEmbedderRunner(String runnerClass, List<String> classNames) {
-        List<AnnotatedEmbedderRunner> runners = annotatedEmbedderRunners(runnerClass, classNames, classLoader());
-        for (AnnotatedEmbedderRunner runner : runners) {
+    public void runStoriesWithAnnotatedEmbedderRunner(List<String> classNames) {
+        EmbedderClassLoader classLoader = classLoader();
+        for (String className :  classNames) {
+            AnnotatedEmbedderRunner runner = AnnotatedEmbedderUtils.annotatedEmbedderRunner(className, classLoader);
             try {
                 Object annotatedInstance = runner.createTest();
                 if (annotatedInstance instanceof Embeddable) {
@@ -167,35 +169,7 @@ public class Embedder {
             }
         }
     }
-
-    private List<AnnotatedEmbedderRunner> annotatedEmbedderRunners(String runnerClassName, List<String> classNames,
-            EmbedderClassLoader classLoader) {
-        Class<?> runnerClass = loadClass(runnerClassName, classLoader);
-        List<AnnotatedEmbedderRunner> runners = new ArrayList<AnnotatedEmbedderRunner>();
-        for (String annotatedClassName : classNames) {
-            runners.add(newAnnotatedEmbedderRunner(runnerClass, annotatedClassName, classLoader));
-        }
-        return runners;
-    }
-
-    private AnnotatedEmbedderRunner newAnnotatedEmbedderRunner(Class<?> runnerClass, String annotatedClassName,
-            EmbedderClassLoader classLoader) {
-        try {
-            Class<?> annotatedClass = loadClass(annotatedClassName, classLoader);
-            return (AnnotatedEmbedderRunner) runnerClass.getConstructor(Class.class).newInstance(annotatedClass);
-        } catch (Exception e) {
-            throw new AnnotatedEmbedderRunnerInstantiationFailed(runnerClass, annotatedClassName, classLoader, e);
-        }
-    }
-
-    private Class<?> loadClass(String className, EmbedderClassLoader classLoader) {
-        try {
-            return classLoader.loadClass(className);
-        } catch (ClassNotFoundException e) {
-            throw new ClassLoadingFailed(className, classLoader, e);
-        }
-    }
-
+    
     public void runStoriesAsPaths(List<String> storyPaths) {
 
         processSystemProperties();
@@ -520,26 +494,6 @@ public class Embedder {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-    }
-
-    @SuppressWarnings("serial")
-    public static class ClassLoadingFailed extends RuntimeException {
-
-        public ClassLoadingFailed(String className, EmbedderClassLoader classLoader, Throwable cause) {
-            super("Failed to load class " + className + " with classLoader " + classLoader, cause);
-        }
-
-    }
-
-    @SuppressWarnings("serial")
-    public static class AnnotatedEmbedderRunnerInstantiationFailed extends RuntimeException {
-
-        public AnnotatedEmbedderRunnerInstantiationFailed(Class<?> runnerClass, String annotatedClassName,
-                EmbedderClassLoader classLoader, Throwable cause) {
-            super("Failed to instantiate annotated embedder runner " + runnerClass + " with annotatedClassName "
-                    + annotatedClassName + " and classLoader " + classLoader, cause);
-        }
-
     }
 
     @SuppressWarnings("serial")

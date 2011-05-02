@@ -20,7 +20,6 @@ import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.embedder.Embedder.AnnotatedEmbedderRunnerInstantiationFailed;
 import org.jbehave.core.embedder.Embedder.RunningEmbeddablesFailed;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
@@ -29,6 +28,7 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
+import org.jbehave.core.junit.AnnotatedEmbedderUtils.ClassLoadingFailed;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.junit.JUnitStoryMaps;
 import org.jbehave.core.model.Meta;
@@ -815,8 +815,7 @@ public class EmbedderBehaviour {
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = RunningWithAnnotatedEmbedderRunner.class.getName();
         // When
-        embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(),
-                asList(runWithEmbedderRunner));
+        embedder.runStoriesWithAnnotatedEmbedderRunner(asList(runWithEmbedderRunner));
         // Then
         assertThat(RunningWithAnnotatedEmbedderRunner.hasRun, is(true));
     }
@@ -828,8 +827,7 @@ public class EmbedderBehaviour {
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = NotEmbeddableWithAnnotatedEmbedderRunner.class.getName();
         // When
-        embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(),
-                asList(runWithEmbedderRunner));
+        embedder.runStoriesWithAnnotatedEmbedderRunner(asList(runWithEmbedderRunner));
         // Then
         assertThat(NotEmbeddableWithAnnotatedEmbedderRunner.hasRun, is(false));
     }
@@ -841,20 +839,18 @@ public class EmbedderBehaviour {
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = FailingWithAnnotatedEmbedderRunner.class.getName();
         // When
-        embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(),
-                asList(runWithEmbedderRunner));
+        embedder.runStoriesWithAnnotatedEmbedderRunner(asList(runWithEmbedderRunner));
         // Then fail as expected
     }
 
-    @Test(expected = AnnotatedEmbedderRunnerInstantiationFailed.class)
+    @Test(expected = ClassLoadingFailed.class)
     public void shouldFailWhenRunningInexistingStoriesWithAnnotatedEmbedderRunner() throws Throwable {
         // Given
         Embedder embedder = new Embedder();
         embedder.useClassLoader(new EmbedderClassLoader(this.getClass().getClassLoader()));
         String runWithEmbedderRunner = "InexistingRunner";
         // When
-        embedder.runStoriesWithAnnotatedEmbedderRunner(AnnotatedEmbedderRunner.class.getName(),
-                asList(runWithEmbedderRunner));
+        embedder.runStoriesWithAnnotatedEmbedderRunner(asList(runWithEmbedderRunner));
         // Then fail as expected
     }
 

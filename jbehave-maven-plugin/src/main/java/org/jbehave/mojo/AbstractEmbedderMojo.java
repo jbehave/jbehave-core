@@ -153,8 +153,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * The annotated embedder runner class
      * 
      * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
+     * @deprecated Obsolete
      */
-    protected String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
+    String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
 
     /**
      * Used to find story paths and class names
