@@ -7,10 +7,10 @@ import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.junit.runner.RunWith;
 
 /**
- * Mojo that runs with {@link AnnotatedEmbedderRunner}, equivalent to
+ * Mojo that runs stories with {@link AnnotatedEmbedderRunner}, equivalent to
  * execution via JUnit's {@link RunWith}.
  * 
- * @goal run-with-annotated-embedder
+ * @goal run-stories-with-annotated-embedder
  */
 public class RunStoriesWithAnnotatedEmbedderRunner extends AbstractEmbedderMojo {
 

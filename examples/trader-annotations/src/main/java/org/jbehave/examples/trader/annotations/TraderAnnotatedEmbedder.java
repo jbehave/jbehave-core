@@ -15,10 +15,11 @@ import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
-import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedderRunner.MyDateConverter;
-import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedderRunner.MyReportBuilder;
-import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedderRunner.MyStoryControls;
-import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedderRunner.MyStoryLoader;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyDateConverter;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyRegexPrefixCapturingPatternParser;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyReportBuilder;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyStoryControls;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyStoryLoader;
 import org.jbehave.examples.trader.steps.AndSteps;
 import org.jbehave.examples.trader.steps.BeforeAfterSteps;
 import org.jbehave.examples.trader.steps.CalendarSteps;
@@ -36,13 +37,13 @@ import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
 @RunWith(AnnotatedEmbedderRunner.class)
-@Configure(storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
+@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
-                storyTimeoutInSecs = 100, threads = 2, metaFilters = "-skip")
+                storyTimeoutInSecs = 100, threads = 1, metaFilters = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
-public class TraderAnnotatedEmbedderRunner extends InjectableEmbedder {
+public class TraderAnnotatedEmbedder extends InjectableEmbedder {
 
     @Test
     public void run() {
@@ -59,7 +60,7 @@ public class TraderAnnotatedEmbedderRunner extends InjectableEmbedder {
 
     public static class MyStoryLoader extends LoadFromClasspath {
         public MyStoryLoader() {
-            super(TraderAnnotatedEmbedderRunner.class.getClassLoader());
+            super(TraderAnnotatedEmbedder.class.getClassLoader());
         }
     }
 

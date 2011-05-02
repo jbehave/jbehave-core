@@ -13,6 +13,7 @@ import org.jbehave.core.junit.AnnotatedPathRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyRegexPrefixCapturingPatternParser;
 import org.jbehave.examples.trader.annotations.TraderAnnotatedPathRunner.MyDateConverter;
 import org.jbehave.examples.trader.annotations.TraderAnnotatedPathRunner.MyReportBuilder;
 import org.jbehave.examples.trader.annotations.TraderAnnotatedPathRunner.MyStoryControls;
@@ -32,10 +33,10 @@ import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
 @RunWith(AnnotatedPathRunner.class)
-@Configure(storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
+@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
-                storyTimeoutInSecs = 100, threads = 2, metaFilters = "-skip")
+                storyTimeoutInSecs = 100, threads = 1, metaFilters = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 @UsingPaths(searchIn = "../trader/src/main/java", includes = { "**/*.story" }, excludes = { "**/examples_table*.story" })

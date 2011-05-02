@@ -30,11 +30,11 @@
             <configuration>
               <annotatedEmbedderRunnerClass>org.jbehave.core.junit.AnnotatedEmbedderRunner</annotatedEmbedderRunnerClass>
               <includes>
-                <include>**/TraderAnnotatedEmbedderRunner.java</include>
+                <include>**/TraderAnnotatedEmbedder.java</include>
               </includes>
             </configuration>
             <goals>
-              <goal>run-with-annotated-embedder</goal>
+              <goal>run-stories-with-annotated-embedder</goal>
             </goals>
           </execution>
         </executions>
