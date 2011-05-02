@@ -14,7 +14,7 @@ import org.uispec4j.Panel;
 import org.uispec4j.UIComponent;
 import org.uispec4j.finder.ComponentMatchers;
 
-import com.lunivore.noughtsandcrosses.util.WindowControl;
+import com.lunivore.noughtsandcrosses.ui.WindowControl;
 import com.lunivore.noughtsandcrosses.view.ComponentNames;
 
 import static org.hamcrest.CoreMatchers.equalTo;

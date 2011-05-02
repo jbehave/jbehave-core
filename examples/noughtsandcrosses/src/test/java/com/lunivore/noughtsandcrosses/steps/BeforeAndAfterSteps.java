@@ -4,7 +4,7 @@ import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.steps.Steps;
 
-import com.lunivore.noughtsandcrosses.util.WindowControl;
+import com.lunivore.noughtsandcrosses.ui.WindowControl;
 
 public class BeforeAndAfterSteps extends Steps {
 

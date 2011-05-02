@@ -1,4 +1,4 @@
-package com.lunivore.noughtsandcrosses.util;
+package com.lunivore.noughtsandcrosses;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -10,6 +10,7 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 
 import com.lunivore.noughtsandcrosses.steps.BeforeAndAfterSteps;
 import com.lunivore.noughtsandcrosses.steps.GridSteps;
+import com.lunivore.noughtsandcrosses.ui.WindowControl;
 
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.TXT;

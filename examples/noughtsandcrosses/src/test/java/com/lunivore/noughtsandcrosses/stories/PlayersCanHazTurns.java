@@ -13,10 +13,10 @@ import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InstanceStepsFactory;
 
+import com.lunivore.noughtsandcrosses.NoughtsAndCrossesStory;
 import com.lunivore.noughtsandcrosses.steps.BeforeAndAfterSteps;
 import com.lunivore.noughtsandcrosses.steps.LolCatzSteps;
-import com.lunivore.noughtsandcrosses.util.NoughtsAndCrossesStory;
-import com.lunivore.noughtsandcrosses.util.WindowControl;
+import com.lunivore.noughtsandcrosses.ui.WindowControl;
 
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.TXT;
@@ -31,7 +31,7 @@ public class PlayersCanHazTurns extends NoughtsAndCrossesStory {
         ClassLoader classLoader = this.getClass().getClassLoader();
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         Keywords keywords = new LocalizedKeywords(new Locale("lc"),
-                "com/lunivore/noughtsandcrosses/util/keywords", classLoader);
+                "i18n/keywords", classLoader);
         Configuration configuration = new MostUsefulConfiguration()
             .useKeywords(keywords)
             .useStoryParser(new RegexStoryParser(keywords))

@@ -1,4 +1,4 @@
-package com.lunivore.noughtsandcrosses.util;
+package com.lunivore.noughtsandcrosses.ui;
 
 import org.uispec4j.Trigger;
 import org.uispec4j.UISpec4J;
