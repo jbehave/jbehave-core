@@ -4,17 +4,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.swing.JLabel;
-
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-import org.uispec4j.Panel;
-import org.uispec4j.UIComponent;
-import org.uispec4j.finder.ComponentMatchers;
 
 import com.lunivore.noughtsandcrosses.ui.WindowControl;
 import com.lunivore.noughtsandcrosses.view.ComponentNames;
+import com.lunivore.noughtsandcrosses.view.GridPanel;
+import com.lunivore.noughtsandcrosses.view.MessageLabel;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 
@@ -51,16 +48,14 @@ public class LolCatzSteps  {
     
     @Then("message sez \"$message\"")
     public void thenTheMessageShouldRead(String message) throws Exception {
-        UIComponent messageLabel = windowControl.getWindow().findUIComponent(ComponentMatchers.innerNameIdentity(ComponentNames.MESSAGE));
-        assertThat(((JLabel)messageLabel.getAwtComponent()).getText(), equalTo(message));
+        assertThat(windowControl.findComponent(MessageLabel.class, ComponentNames.MESSAGE).getText(), equalTo(message));
     }
 
     @Then("I haz grid $grid")
     public void thenTheGridShouldLookLike(String grid) throws Exception {
-        Panel gridPanel = windowControl.getWindow().getPanel(ComponentNames.GRID);
-        assertThat(gridPanel.getAwtComponent().toString(), equalTo(grid));
+        assertThat(windowControl.findComponent(GridPanel.class, ComponentNames.GRID).toString(), equalTo(grid));
     }
-
+    
     @When("I clicks $space")
     public void whenPlayerClicksInSpace(String space) throws Exception {
         windowControl.getWindow().getButton(space).click();
