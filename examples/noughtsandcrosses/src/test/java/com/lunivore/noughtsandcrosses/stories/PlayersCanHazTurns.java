@@ -1,8 +1,5 @@
 package com.lunivore.noughtsandcrosses.stories;
 
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-
 import java.net.URL;
 import java.util.Locale;
 
@@ -12,23 +9,25 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
-import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InstanceStepsFactory;
 
 import com.lunivore.noughtsandcrosses.steps.BeforeAndAfterSteps;
 import com.lunivore.noughtsandcrosses.steps.LolCatzSteps;
-import com.lunivore.noughtsandcrosses.util.OAndXUniverse;
+import com.lunivore.noughtsandcrosses.util.NoughtsAndCrossesStory;
+import com.lunivore.noughtsandcrosses.util.WindowControl;
+
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.TXT;
 
 /**
  * Checks that we can support scenarios written in other languages,
  * eg: lolcatz
  */
-public class PlayersCanHazTurns extends JUnitStory {
+public class PlayersCanHazTurns extends NoughtsAndCrossesStory {
  
-    public PlayersCanHazTurns() {
+    public PlayersCanHazTurns() {        
         ClassLoader classLoader = this.getClass().getClassLoader();
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         Keywords keywords = new LocalizedKeywords(new Locale("lc"),
@@ -44,8 +43,8 @@ public class PlayersCanHazTurns extends JUnitStory {
                     .withFailureTrace(true)
                     .withKeywords(keywords));
         useConfiguration(configuration);
-        OAndXUniverse universe = new OAndXUniverse();
-        addSteps(new InstanceStepsFactory(configuration, new LolCatzSteps(universe), new BeforeAndAfterSteps(universe)).createCandidateSteps());
+        WindowControl windowControl = new WindowControl();        
+        addSteps(new InstanceStepsFactory(configuration, new LolCatzSteps(windowControl), new BeforeAndAfterSteps(windowControl)).createCandidateSteps());
      }
 
 

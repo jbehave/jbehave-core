@@ -1,9 +1,5 @@
 package com.lunivore.noughtsandcrosses.steps;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,28 +9,34 @@ import javax.swing.JLabel;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.uispec4j.Panel;
+import org.uispec4j.UIComponent;
+import org.uispec4j.finder.ComponentMatchers;
 
-import com.lunivore.noughtsandcrosses.NoughtsAndCrosses;
-import com.lunivore.noughtsandcrosses.util.OAndXUniverse;
+import com.lunivore.noughtsandcrosses.util.WindowControl;
 import com.lunivore.noughtsandcrosses.view.ComponentNames;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class LolCatzSteps  {
     public static String ROWS = "abc";
     public static String COLUMNS = "123";
     protected static final String NL = System.getProperty("line.separator");
-	private final OAndXUniverse universe;
+	private final WindowControl windowControl;
 
     public LolCatzSteps() {
-    	this(new OAndXUniverse());
+    	this(new WindowControl());
     }
     
-    public LolCatzSteps(OAndXUniverse universe) {
-		this.universe = universe;
+    public LolCatzSteps(WindowControl windowControl) {
+		this.windowControl = windowControl;
 	}
     
 	@Given("game")
     public void givenTheGameIsRunning() {
-        new NoughtsAndCrosses();
+	    this.windowControl.reset();
     }
     
     @Given("game like $grid")
@@ -49,19 +51,19 @@ public class LolCatzSteps  {
     
     @Then("message sez \"$message\"")
     public void thenTheMessageShouldRead(String message) throws Exception {
-        JLabel messageLabel = (JLabel) universe.getControl().findComponent(ComponentNames.MESSAGE);
-        assertThat(messageLabel.getText(), equalTo(message));
+        UIComponent messageLabel = windowControl.getWindow().findUIComponent(ComponentMatchers.innerNameIdentity(ComponentNames.MESSAGE));
+        assertThat(((JLabel)messageLabel.getAwtComponent()).getText(), equalTo(message));
     }
 
     @Then("I haz grid $grid")
     public void thenTheGridShouldLookLike(String grid) throws Exception {
-        Component gridPanel = universe.getControl().findComponent(ComponentNames.GRID);
-        assertThat(gridPanel.toString(), equalTo(grid));
+        Panel gridPanel = windowControl.getWindow().getPanel(ComponentNames.GRID);
+        assertThat(gridPanel.getAwtComponent().toString(), equalTo(grid));
     }
 
     @When("I clicks $space")
     public void whenPlayerClicksInSpace(String space) throws Exception {
-    	universe.getControl().clickButton(space);
+        windowControl.getWindow().getButton(space).click();
     }
     
     private void performMoves(List<String> oTurns, List<String> xTurns) throws Exception {

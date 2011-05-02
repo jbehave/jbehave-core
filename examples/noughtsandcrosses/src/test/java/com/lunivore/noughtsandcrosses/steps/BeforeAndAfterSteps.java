@@ -4,23 +4,23 @@ import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.steps.Steps;
 
-import com.lunivore.noughtsandcrosses.util.OAndXUniverse;
+import com.lunivore.noughtsandcrosses.util.WindowControl;
 
 public class BeforeAndAfterSteps extends Steps {
 
-    private final OAndXUniverse universe;
+    private final WindowControl windowControl;
 
-    public BeforeAndAfterSteps(OAndXUniverse universe) {
-        this.universe = universe;
+    public BeforeAndAfterSteps(WindowControl windowControl) {
+        this.windowControl = windowControl;
     }
 
     @BeforeScenario
-    public void runThisBeforeScenarios() throws Exception {
-    	universe.reset();
+    public void beforeScenarios() throws Exception {
+    	windowControl.reset();
     }
     
     @AfterScenario
-    public void runThisAfterScenarios() throws Exception {
-    	universe.destroy();
+    public void afterScenarios() throws Exception {
+    	windowControl.destroy();
     }
 }
