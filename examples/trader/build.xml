@@ -47,19 +47,17 @@
 	</target>
 
 	<target name="reports-resources" depends="setup">
-		<unzip src="${org.jbehave:jbehave-core:zip:resources}" dest="${basedir}/target/jbehave-reports/view/" />
-		<unzip src="${org.jbehave.site:jbehave-site-resources:zip}" dest="${basedir}/target/jbehave-reports/view/" />
+		<unzip src="${org.jbehave:jbehave-core:zip:resources}" dest="${basedir}/target/jbehave/view/" />
+		<unzip src="${org.jbehave.site:jbehave-site-resources:zip}" dest="${basedir}/target/jbehave/view/" />
 	</target>
 
 	<target name="run-stories-as-embeddables" depends="compile, reports-resources">
 		<taskdef name="runStoriesAsEmbeddables" classname="org.jbehave.ant.RunStoriesAsEmbeddables" classpathref="story.classpath" />
-
 		<runStoriesAsEmbeddables includes="**/stories/*.java" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="run-stories-as-paths" depends="compile, reports-resources">
 		<taskdef name="runStoriesAsPaths" classname="org.jbehave.ant.RunStoriesAsPaths" classpathref="story.classpath" />
-
 		<runStoriesAsPaths includes="**/stories/*.story" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
