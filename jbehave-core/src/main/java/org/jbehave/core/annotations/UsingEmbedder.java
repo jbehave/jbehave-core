@@ -23,5 +23,6 @@ public @interface UsingEmbedder {
 	int threads() default 1;
 	boolean stepsFactory() default true;
     String[] metaFilters() default {};
+    String systemProperties() default "";
 
 }

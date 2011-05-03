@@ -1,7 +1,10 @@
 package org.jbehave.core.configuration;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
@@ -182,6 +185,8 @@ public class AnnotationBuilder {
         if ( !metaFilters.isEmpty() ){
             embedder.useMetaFilters(metaFilters);
         }
+        Properties systemProperties = loadProperties(finder.getAnnotatedValue(UsingEmbedder.class, String.class, "systemProperties"));
+        embedder.useSystemProperties(systemProperties);
         return embedder;
     }
 
@@ -210,6 +215,16 @@ public class AnnotationBuilder {
         return finder.getAnnotatedValue(Configure.class, Class.class, name);
     }
 
+    private Properties loadProperties(String systemPropertiesCSV) {
+        Properties properties = new Properties();
+        try {
+            properties.load(new ByteArrayInputStream(systemPropertiesCSV.replace(",", "\n").getBytes()));
+        } catch (IOException e) {
+            // return empty map
+        }
+        return properties;
+    }
+    
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
         for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(Configure.class,

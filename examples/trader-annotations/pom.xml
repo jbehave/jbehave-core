@@ -9,7 +9,7 @@
   <artifactId>jbehave-trader-annotations-example</artifactId>
   <name>JBehave Trader Annotations Example</name>
   <packaging>jar</packaging>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>

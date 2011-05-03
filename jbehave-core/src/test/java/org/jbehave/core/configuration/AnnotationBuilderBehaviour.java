@@ -112,6 +112,8 @@ public class AnnotationBuilderBehaviour {
         Embedder embedder = ((InjectableEmbedder) instance).injectedEmbedder();
         assertThat(embedder.configuration().keywords(), instanceOf(MyKeywords.class));
         assertThat(embedder.metaFilters(), equalTo(asList("+embedder injectable")));
+        assertThat(embedder.systemProperties().getProperty("one"), equalTo("One"));
+        assertThat(embedder.systemProperties().getProperty("two"), equalTo("Two"));
         assertThatStepsInstancesAre(embedder.stepsFactory().createCandidateSteps(), MySteps.class);
     }
 
@@ -231,7 +233,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Configure(keywords = MyKeywords.class)
-    @UsingEmbedder(metaFilters = "+embedder injectable")
+    @UsingEmbedder(metaFilters = "+embedder injectable", systemProperties="one=One,two=Two")
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedInjectable extends InjectableEmbedder {
 

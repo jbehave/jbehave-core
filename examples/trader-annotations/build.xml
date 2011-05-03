@@ -51,22 +51,11 @@
 		<unzip src="${org.jbehave.site:jbehave-site-resources:zip}" dest="${basedir}/target/jbehave/view/" />
 	</target>
 
-	<target name="run-stories-as-embeddables" depends="compile, reports-resources">
-		<taskdef name="runStoriesAsEmbeddables" classname="org.jbehave.ant.RunStoriesAsEmbeddables" classpathref="story.classpath" />
-		<runStoriesAsEmbeddables includes="**/stories/*.java" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" 
-			systemproperties="java.awt.headless=true,project.dir=${basedir}" />
+	<target name="run-stories-with-annotated-embedder" depends="compile, reports-resources">
+		<taskdef name="runStoriesWithAnnotatedEmbedderRunner" classname="org.jbehave.ant.RunStoriesWithAnnotatedEmbedderRunner" classpathref="story.classpath" />
+		<runStoriesWithAnnotatedEmbedderRunner includes="**/TraderAnnotated*.java"/>
 	</target>
 
-	<target name="run-stories-as-paths" depends="compile, reports-resources">
-		<taskdef name="runStoriesAsPaths" classname="org.jbehave.ant.RunStoriesAsPaths" classpathref="story.classpath" />
-		<runStoriesAsPaths includes="**/stories/*.story" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
-	</target>
-
-	<target name="stepdoc" depends="compile">
-		<taskdef name="reportStepdocs" classname="org.jbehave.ant.ReportStepdocs" classpathref="story.classpath" />
-		<reportStepdocs embedderClass="org.jbehave.examples.trader.TraderEmbedder" />
-	</target>
-
-	<target name="build" depends="run-stories-as-embeddables,run-stories-as-paths,stepdoc" />
+	<target name="build" depends="run-stories-with-annotated-embedder" />
 
 </project>
