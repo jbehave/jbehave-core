@@ -1,0 +1,61 @@
+
+<!--
+    Note: Use of <artifact:dependencies/> requires maven-ant-tasks-2.1.1.jar in $ANT_HOME/lib
+          Download it from http://maven.apache.org/ant-tasks/download.html
+  -->
+<project name="trader-maps" default="build" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+
+	<artifact:pom id="pom" file="pom.xml" />
+	<artifact:dependencies filesetId="dependency.fileset" pomRefId="pom" useScope="test" />
+
+	<target name="clean">
+		<delete dir="target" />
+	</target>
+
+	<target name="setup">
+		<mkdir dir="target" />
+		<mkdir dir="target/classes" />
+		<mkdir dir="target/lib" />
+		<copy todir="target/lib">
+			<fileset refid="dependency.fileset" />
+			<mapper type="flatten" />
+		</copy>
+		<copy todir="target/classes">
+			<fileset dir="src/main/java">
+				<include name="**/*.story" />
+				<include name="**/*.properties" />
+				<include name="**/*.xml" />
+			</fileset>
+		</copy>
+
+		<path id="story.classpath">
+			<fileset dir="target/lib" includes="**/*.jar" />
+			<pathelement location="target/classes" />
+		</path>
+		<classloader classpathref="story.classpath" />
+
+		<pathconvert targetos="unix" property="story.classpath.unix" refid="story.classpath">
+		</pathconvert>
+		<echo>Using classpath: ${story.classpath.unix}</echo>
+
+	</target>
+
+	<target name="compile" depends="setup">
+		<javac srcdir="src/main/java" destdir="target/classes" debug="on" debuglevel="lines,source" includes="**/*.java,**/*.xml">
+			<classpath refid="story.classpath" />
+		</javac>
+	</target>
+
+	<target name="reports-resources" depends="setup">
+		<unzip src="${org.jbehave:jbehave-core:zip:resources}" dest="${basedir}/target/jbehave/view/" />
+		<unzip src="${org.jbehave.site:jbehave-site-resources:zip}" dest="${basedir}/target/jbehave/view/" />
+	</target>
+
+	<target name="map-stories-as-embeddables" depends="compile, reports-resources">
+		<taskdef name="mapStoriesAsEmbeddables" classname="org.jbehave.ant.MapStoriesAsEmbeddables" classpathref="story.classpath" />
+		<mapStoriesAsEmbeddables includes="**/*StoryMaps.java" excludes="" metaFilters="+author *,+theme *,-skip" />
+	</target>
+
+	<target name="build" depends="map-stories-as-embeddables" />
+
+</project>
