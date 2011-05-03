@@ -22,6 +22,7 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
  * 
  * @goal unpack-view-resources
  * @phase process-resources
+ * @requiresDependencyResolution test
  */
 public class UnpackViewResources extends AbstractEmbedderMojo {
 

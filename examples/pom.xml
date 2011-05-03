@@ -43,12 +43,14 @@
       <version>${jbehave.version}</version>
       <classifier>resources</classifier>
       <type>zip</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jbehave.site</groupId>
       <artifactId>jbehave-site-resources</artifactId>
       <version>${jbehave.site.version}</version>
       <type>zip</type>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
