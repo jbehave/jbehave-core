@@ -29,7 +29,7 @@
             <phase>integration-test</phase>
             <configuration>
               <includes>
-                <include>**/TraderAnnotated*.java</include>
+                <include>**/TraderAnnotatedEmbedder.java</include>
               </includes>
             </configuration>
             <goals>

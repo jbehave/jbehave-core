@@ -186,7 +186,9 @@ public class AnnotationBuilder {
             embedder.useMetaFilters(metaFilters);
         }
         Properties systemProperties = loadProperties(finder.getAnnotatedValue(UsingEmbedder.class, String.class, "systemProperties"));
-        embedder.useSystemProperties(systemProperties);
+        if ( !systemProperties.isEmpty() ){
+            embedder.useSystemProperties(systemProperties);
+        }
         return embedder;
     }
 

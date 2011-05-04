@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.InjectableEmbedder;
@@ -22,6 +21,8 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
+
+import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -273,10 +274,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
         embedder.useClassLoader(classLoader);
-        embedder.useSystemProperties(systemProperties);
-        EmbedderMonitor embedderMonitor = embedderMonitor();
-        embedder.useEmbedderMonitor(embedderMonitor);
-        if (ArrayUtils.isNotEmpty(metaFilters)) {
+        embedder.useEmbedderControls(embedderControls());
+        embedder.useEmbedderMonitor(embedderMonitor());
+        if (isNotEmpty(metaFilters)) {
             List<String> filters = new ArrayList<String>();
             for ( String filter : metaFilters ){                
                 if ( filter != null ){
@@ -285,7 +285,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             }
             embedder.useMetaFilters(filters);
         }
-        embedder.useEmbedderControls(embedderControls());
+        if ( !systemProperties.isEmpty() ){
+            embedder.useSystemProperties(systemProperties);
+        }
         return embedder;
     }
 

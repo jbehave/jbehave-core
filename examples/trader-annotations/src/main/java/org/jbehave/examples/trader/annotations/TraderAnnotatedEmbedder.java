@@ -2,6 +2,7 @@ package org.jbehave.examples.trader.annotations;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Properties;
 
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
@@ -16,6 +17,7 @@ import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyDateConverter;
+import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyEmbedder;
 import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyRegexPrefixCapturingPatternParser;
 import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyReportBuilder;
 import org.jbehave.examples.trader.annotations.TraderAnnotatedEmbedder.MyStoryControls;
@@ -39,8 +41,8 @@ import static org.jbehave.core.reporters.Format.XML;
 @RunWith(AnnotatedEmbedderRunner.class)
 @Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
         parameterConverters = { MyDateConverter.class })
-@UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
-                storyTimeoutInSecs = 100, threads = 1, metaFilters = "-skip", systemProperties="java.awt.headless=true")
+@UsingEmbedder(embedder = MyEmbedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
+                storyTimeoutInSecs = 100, threads = 1, metaFilters = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class TraderAnnotatedEmbedder extends InjectableEmbedder {
@@ -49,6 +51,14 @@ public class TraderAnnotatedEmbedder extends InjectableEmbedder {
     public void run() {
         List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "**/examples_table_loaded*");
         injectedEmbedder().runStoriesAsPaths(storyPaths);
+    }
+
+    public static class MyEmbedder extends Embedder {
+        public MyEmbedder() {
+            Properties properties = new Properties();
+            properties.setProperty("project.dir", System.getProperty("project.dir", "N/A"));
+            useSystemProperties(properties);
+        }
     }
 
     public static class MyStoryControls extends StoryControls {

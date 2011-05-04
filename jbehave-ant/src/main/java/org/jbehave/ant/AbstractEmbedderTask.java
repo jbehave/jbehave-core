@@ -223,13 +223,14 @@ public abstract class AbstractEmbedderTask extends Task {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
         embedder.useClassLoader(classLoader);
-        embedder.useSystemProperties(systemProperties);
-        EmbedderMonitor embedderMonitor = embedderMonitor();
-        embedder.useEmbedderMonitor(embedderMonitor);
+        embedder.useEmbedderControls(embedderControls());
+        embedder.useEmbedderMonitor(embedderMonitor());
         if ( !metaFilters.isEmpty() ) {
             embedder.useMetaFilters(metaFilters);
+        } 
+        if ( !systemProperties.isEmpty() ){
+            embedder.useSystemProperties(systemProperties);
         }
-        embedder.useEmbedderControls(embedderControls());
         return embedder;
     }
 
