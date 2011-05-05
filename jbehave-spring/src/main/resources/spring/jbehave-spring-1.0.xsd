@@ -1,41 +1,169 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 <xsd:schema xmlns="http://jbehave.org/schemas/spring"
-         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-         targetNamespace="http://jbehave.org/schemas/spring"
-         elementFormDefault="qualified"
-         attributeFormDefault="unqualified">
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://jbehave.org/schemas/spring"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
 
-	<xsd:element name="embedder">
-		<xsd:complexType>
-			<xsd:sequence>
-				<xsd:choice>
-					<xsd:element name="classpathLoader" type="xsd:string" minOccurs="1" maxOccurs="unbounded">
-					</xsd:element>
-					<xsd:element name="urlLoader">
-					</xsd:element>
-					<xsd:element name="relativePathLoader" type="xsd:anyURI">
-					</xsd:element>			
-				</xsd:choice>
-				<xsd:element name="output" type="outputType" minOccurs="1" maxOccurs="unbounded">
-				</xsd:element>
-			</xsd:sequence>
-			<xsd:attribute name="id" type="xsd:ID" use="required"></xsd:attribute>
-			<xsd:attribute name="prefix" type="xsd:string" use="optional" default="$"></xsd:attribute>
-			<xsd:attribute name="onfailure" type="failureStrategyType" use="optional"></xsd:attribute>
-		</xsd:complexType>
+
+	<xsd:element name="regexPrefixCapturingPatternParser" type="stepPatternParserType"></xsd:element>
+
+	<xsd:element name="storyPathResolver" type="storyPathResolverType"></xsd:element>
+
+	<xsd:element name="storyControls" type="storyControlsType"></xsd:element>
+
+	<xsd:element name="storyReporterBuilder" type="storyReporterBuilderType"></xsd:element>
+
+	<xsd:element name="storyLoader" type="storyLoaderType"></xsd:element>
+
+	<xsd:element name="pathCalculator" type="pathCalculatorType"></xsd:element>
+
+	<xsd:element name="pendingStep" type="pendingStepType"></xsd:element>
+
+	<xsd:element name="failureStrategy" type="failureStrategyType"></xsd:element>
+
+	<xsd:element name="regexStoryParser">
+		<xsd:annotation>
+			<xsd:documentation>
+				Creates a RegexStoryParser using a Keywords object
+				defined previously into
+				application context.
+		</xsd:documentation>
+		</xsd:annotation>
 	</xsd:element>
-	
-	<xsd:simpleType name="failureStrategyType">
+
+	<xsd:element name="printStreamStepdocReporter">
+		<xsd:annotation>
+			<xsd:documentation>
+				Creates a PrintStreamStepdocReporter using a
+				PrintStream object defined previously into application context.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="markUnmatchedStepsAsPending">
+		<xsd:annotation>
+			<xsd:documentation>
+				Creates a MarkUnmatchedStepsAsPending using a
+				StepFinder object defined previously into application context.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:element name="stepFinder" type="stepFinderType"></xsd:element>
+
+	<xsd:element name="stepMonitor" type="stepMonitorType"></xsd:element>
+
+	<xsd:element name="localisedKeywords" type="keywordsType"></xsd:element>
+
+	<xsd:complexType name="stepFinderType">
+		<xsd:attribute name="prioritisingStrategy">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="BY_LEVENSHTEIN_DISTANCE"></xsd:enumeration>
+					<xsd:enumeration value="BY_PRIORITY_FIELD "></xsd:enumeration>
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+	</xsd:complexType>
+
+
+	<xsd:simpleType name="stepMonitorType">
 		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="FAILINGUPON"></xsd:enumeration>
-			<xsd:enumeration value="PASSINGUPON"></xsd:enumeration>
-			<xsd:enumeration value="RETHROWING"></xsd:enumeration>
-			<xsd:enumeration value="SILENTLYABSORBING"></xsd:enumeration>
+			<xsd:annotation>
+				<xsd:documentation>Delegating step monitor will find into
+					application context an step monitor implementation.
+				</xsd:documentation>
+			</xsd:annotation>
+			<xsd:enumeration value="DELEGATING"></xsd:enumeration>
+			<xsd:enumeration value="NULL"></xsd:enumeration>
+			<xsd:enumeration value="PRINT_STREAM"></xsd:enumeration>
+			<xsd:enumeration value="SILENT"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
-	<xsd:simpleType name="outputType">
+
+
+	<xsd:complexType name="keywordsType">
+		<xsd:attribute name="locale" type="xsd:language" use="optional"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="stepPatternParserType">
+		<xsd:attribute name="prefix" type="xsd:string" use="optional"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="storyPathResolverType">
+		<xsd:choice>
+			<xsd:element name="casePreservingResolver">
+				<xsd:complexType>
+					<xsd:attribute name="extension" type="xsd:string"
+						use="optional"></xsd:attribute>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="underscoredCamelCaseResolver">
+				<xsd:complexType>
+					<xsd:attribute name="extension" type="xsd:string"
+						use="optional"></xsd:attribute>
+					<xsd:attribute name="resolutionPattern" type="xsd:string"
+						use="optional"></xsd:attribute>
+					<xsd:attribute name="locale" type="xsd:language" use="optional"></xsd:attribute>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:choice>
+	</xsd:complexType>
+
+	<xsd:complexType name="storyControlsType">
+		<xsd:attribute name="doDryRun" type="xsd:boolean" use="optional"></xsd:attribute>
+		<xsd:attribute name="doSkipScenariosAfterFailure" type="xsd:boolean"
+			use="optional"></xsd:attribute>
+		<xsd:attribute name="doSkipBeforeAndAfterScenarioStepsIfGivenStor"
+			type="xsd:boolean" use="optional"></xsd:attribute>
+	</xsd:complexType>
+
+	<xsd:complexType name="storyReporterBuilderType">
+		<xsd:sequence>
+			<xsd:element name="format" type="formatType" minOccurs="1"
+				maxOccurs="unbounded"></xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="storyLoaderType">
+		<xsd:choice>
+			<xsd:element name="loadFromClasspath">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="embedderClassLoader" type="xsd:string"
+							minOccurs="1" maxOccurs="unbounded"></xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="loadFromURL"></xsd:element>
+			<xsd:element name="loadFromRelativePath" type="xsd:anyURI"></xsd:element>
+		</xsd:choice>
+	</xsd:complexType>
+
+
+	<xsd:simpleType name="pathCalculatorType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ABSOLUTE"></xsd:enumeration>
+			<xsd:enumeration value="RELATIVE"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="pendingStepType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="FAILING_UPON"></xsd:enumeration>
+			<xsd:enumeration value="PASSING_UPON"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<!-- Can pendingStep be a part of failure strategy or have no sense -->
+	<xsd:simpleType name="failureStrategyType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="RETHROWING"></xsd:enumeration>
+			<xsd:enumeration value="SILENTLY_ABSORBING"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="formatType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="TXT"></xsd:enumeration>
 			<xsd:enumeration value="CONSOLE"></xsd:enumeration>
@@ -43,5 +171,4 @@
 			<xsd:enumeration value="XML"></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
 </xsd:schema>
