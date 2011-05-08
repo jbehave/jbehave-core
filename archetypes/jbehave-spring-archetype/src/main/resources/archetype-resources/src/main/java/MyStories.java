@@ -20,7 +20,7 @@ import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
@@ -73,10 +73,10 @@ public class MyStories extends JUnitStories {
     }
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
+    public InjectableStepsFactory stepsFactory() {
         String path = "${package}".replaceAll("\\.", "/");
         ApplicationContext context = new SpringApplicationContextFactory(path+"/my_steps.xml").createApplicationContext();
-        return new SpringStepsFactory(configuration(), context).createCandidateSteps();
+        return new SpringStepsFactory(configuration(), context);
     }
 
 

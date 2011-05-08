@@ -11,7 +11,7 @@ import org.jbehave.core.configuration.groovy.GroovyContext;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
@@ -32,8 +32,8 @@ public class GroovyStories extends JUnitStories {
     }
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        return new GroovyStepsFactory(configuration(), new GroovyContext()).createCandidateSteps();
+    public InjectableStepsFactory stepsFactory() {
+        return new GroovyStepsFactory(configuration(), new GroovyContext());
     }
 
     @Override
