@@ -3,7 +3,7 @@ package org.jbehave.examples.trader.pico;
 import java.util.List;
 
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.pico.PicoStepsFactory;
 import org.jbehave.examples.trader.TraderStories;
 import org.jbehave.examples.trader.service.TradingService;
@@ -31,8 +31,8 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 public class TraderStoriesUsingPico extends TraderStories {
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        return new PicoStepsFactory(configuration(), createPicoContainer()).createCandidateSteps();
+    public InjectableStepsFactory stepsFactory() {
+        return new PicoStepsFactory(configuration(), createPicoContainer());
     }
 
     private PicoContainer createPicoContainer() {

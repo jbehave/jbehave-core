@@ -1,15 +1,15 @@
 package org.jbehave.examples.trader.weld;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-
 import java.util.List;
 
 import org.jbehave.core.configuration.weld.WeldBootstrap;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.weld.WeldStepsFactory;
 import org.jbehave.examples.trader.TraderStories;
 import org.jboss.weld.environment.se.WeldContainer;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 
 /**
@@ -26,9 +26,8 @@ public class TraderStoriesUsingWeld extends TraderStories {
     }
     
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        WeldStepsFactory stepFactory = container.instance().select(WeldStepsFactory.class).get();
-        return stepFactory.createCandidateSteps();
+    public InjectableStepsFactory stepsFactory() {
+        return container.instance().select(WeldStepsFactory.class).get();
     }
 
     @Override

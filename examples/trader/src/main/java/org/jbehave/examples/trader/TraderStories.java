@@ -90,11 +90,6 @@ public class TraderStories extends JUnitStories {
     }
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        return stepsFactory().createCandidateSteps();
-    }
-
-    @Override
     public InjectableStepsFactory stepsFactory() {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
                 new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new SandpitSteps(),

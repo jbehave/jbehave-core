@@ -1,15 +1,15 @@
 package org.jbehave.examples.trader.spring;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-
 import java.util.List;
 
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.spring.SpringApplicationContextFactory;
 import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.jbehave.examples.trader.TraderStories;
 import org.springframework.context.ApplicationContext;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
  * Run trader stories using SpringStepsFactory. The textual trader stories are
@@ -19,8 +19,8 @@ import org.springframework.context.ApplicationContext;
 public class TraderStoriesUsingSpring extends TraderStories {
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        return new SpringStepsFactory(configuration(), createContext()).createCandidateSteps();
+    public InjectableStepsFactory stepsFactory() {
+        return new SpringStepsFactory(configuration(), createContext());
     }
 
     private ApplicationContext createContext() {
