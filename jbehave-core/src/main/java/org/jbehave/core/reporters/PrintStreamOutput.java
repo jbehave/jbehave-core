@@ -87,7 +87,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     private final Keywords keywords;
     private boolean reportFailureTrace;
     private boolean compressFailureTrace;
-    private Throwable cause;
+    private ThreadLocal<Throwable> cause = new ThreadLocal<Throwable>();
     
     protected PrintStreamOutput(Format format, PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace, boolean compressFailureTrace) {
@@ -118,7 +118,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     public void failed(String step, Throwable storyFailure) {
         // storyFailure be used if a subclass has rewritten the "failed" pattern to have a {3} as WebDriverHtmlOutput (jbehave-web) does.
         if (storyFailure instanceof UUIDExceptionWrapper) {
-            this.cause = storyFailure.getCause();
+            this.cause.set(storyFailure.getCause());
             print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), storyFailure.getCause(), ((UUIDExceptionWrapper) storyFailure).getUUID()));
         } else {
             throw new ClassCastException(storyFailure +" should be an instance of UUIDExceptionWrapper");
@@ -200,7 +200,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void beforeScenario(String title) {
-        cause = null;
+        cause.set(null);
         print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), title));
     }
 
@@ -211,8 +211,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void afterScenario() {
-        if (cause != null && reportFailureTrace && !(cause instanceof KnownFailure) ) {
-            print(format("afterScenarioWithFailure", "\n{0}\n", stackTrace(cause)));
+        if (cause.get() != null && reportFailureTrace && !(cause.get() instanceof KnownFailure) ) {
+            print(format("afterScenarioWithFailure", "\n{0}\n", stackTrace(cause.get())));
         } else {
             print(format("afterScenario", "\n"));
         }
