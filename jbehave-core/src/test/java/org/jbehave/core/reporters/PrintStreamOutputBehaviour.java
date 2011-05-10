@@ -1,18 +1,7 @@
 package org.jbehave.core.reporters;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Properties;
-
 import org.apache.commons.io.IOUtils;
+import org.jbehave.core.KnownException;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
@@ -32,18 +21,28 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Properties;
+
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.equalTo;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
-
 import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class PrintStreamOutputBehaviour {
 
@@ -358,6 +357,54 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
+    public void knownExceptionShouldNotBeSurpressedForNullPointException() {
+
+        // Given
+        final OutputStream out = new ByteArrayOutputStream();
+        PrintStreamFactory factory = new PrintStreamFactory() {
+
+            public PrintStream createPrintStream() {
+                return new PrintStream(out);
+            }
+        };
+        TxtOutput reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
+
+
+        reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new NullPointerException()));
+        reporter.afterScenario();
+
+        assertThatOutputStartsWith(out, "Then I should have a balance of $30 (FAILED)\n" +
+                "(java.lang.NullPointerException)\n" +
+                "\n" +
+                "java.lang.NullPointerException\n" +
+                "\tat "); // there is a whole stack trace but we're skipping that for the sake of an assertion
+
+    }
+
+    @Test
+    public void knownExceptionShouldBeSurpressedKnownExceptionDerivative() {
+
+        // Given
+        final OutputStream out = new ByteArrayOutputStream();
+        PrintStreamFactory factory = new PrintStreamFactory() {
+
+            public PrintStream createPrintStream() {
+                return new PrintStream(out);
+            }
+        };
+        TxtOutput reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
+
+
+        reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new MyKnownException()));
+        reporter.afterScenario();
+
+        assertThatOutputIs(out, "Then I should have a balance of $30 (FAILED)\n" +
+                "(org.jbehave.core.reporters.PrintStreamOutputBehaviour$MyKnownException)\n\n" +
+                "");
+
+    }
+
+    @Test
     public void shouldReportEventsToXmlOutputWhenNotAllowedByFilter() {
         // Given
         OutputStream out = new ByteArrayOutputStream();
@@ -440,6 +487,10 @@ public class PrintStreamOutputBehaviour {
 
     private void assertThatOutputIs(OutputStream out, String expected) {
         assertEquals(expected, dos2unix(out.toString()));
+    }
+
+    private void assertThatOutputStartsWith(OutputStream out, String expected) {
+        assertTrue(dos2unix(out.toString()).startsWith(expected));
     }
 
     private String dos2unix(String string) {
@@ -729,28 +780,31 @@ public class PrintStreamOutputBehaviour {
 
         assertEquals(
                 "java.lang.AssertionError: cart should have contained 68467780\n" +
-                "Expected: is <true>\n" +
-                "     got: <false>\n" +
-                "\t(groovy-call)\n" +
-                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
-                "\t(groovy-call)\n" +
-                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
-                "\t(reflection-construct)\n" +
-                "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
-                "\t(groovy-static-method-invoke)\n" +
-                "\tat com.github.tanob.groobe.AssertionSupport.assertWithFailureMessage(AssertionSupport.groovy:32)\n" +
-                "\t(groovy-instance-method-invoke)\n" +
-                "\tat com.github.tanob.groobe.AssertionSupport$_assertTransformedDelegateAndOneParam_closure3.doCall(AssertionSupport.groovy:20)\n" +
-                "\t(groovy-closure-invoke)\n" +
-                "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
-                "\t(groovy-call)\n" +
-                "\tat org.jbehave.core.steps.StepCreator$ParameterizedStep.perform(StepCreator.java:430)\n" +
-                "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)", reporter.stackTrace(start));
+                        "Expected: is <true>\n" +
+                        "     got: <false>\n" +
+                        "\t(groovy-call)\n" +
+                        "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
+                        "\t(groovy-call)\n" +
+                        "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
+                        "\t(reflection-construct)\n" +
+                        "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
+                        "\t(groovy-static-method-invoke)\n" +
+                        "\tat com.github.tanob.groobe.AssertionSupport.assertWithFailureMessage(AssertionSupport.groovy:32)\n" +
+                        "\t(groovy-instance-method-invoke)\n" +
+                        "\tat com.github.tanob.groobe.AssertionSupport$_assertTransformedDelegateAndOneParam_closure3.doCall(AssertionSupport.groovy:20)\n" +
+                        "\t(groovy-closure-invoke)\n" +
+                        "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
+                        "\t(groovy-call)\n" +
+                        "\tat org.jbehave.core.steps.StepCreator$ParameterizedStep.perform(StepCreator.java:430)\n" +
+                        "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)", reporter.stackTrace(start));
     }
 
     private String storyPath(Class<MyStory> storyClass) {
         StoryPathResolver resolver = new UnderscoredCamelCaseResolver(".story");
         return resolver.resolve(storyClass);
+    }
+
+    private static class MyKnownException extends KnownException {
     }
 
     private abstract class MyStory extends JUnitStory {

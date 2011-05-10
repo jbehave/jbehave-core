@@ -6,6 +6,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.KnownException;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
@@ -210,7 +211,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void afterScenario() {
-        if (cause != null && reportFailureTrace) {
+        if (cause != null && reportFailureTrace && !(cause instanceof KnownException) ) {
             print(format("afterScenarioWithFailure", "\n{0}\n", stackTrace(cause)));
         } else {
             print(format("afterScenario", "\n"));

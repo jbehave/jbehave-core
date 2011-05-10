@@ -1,10 +1,10 @@
 package org.jbehave.core.failures;
 
+import org.junit.Test;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
 
 public class StepFailureBehaviour {
 	

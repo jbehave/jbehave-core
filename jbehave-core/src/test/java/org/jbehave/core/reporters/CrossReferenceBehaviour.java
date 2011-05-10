@@ -1,5 +1,13 @@
 package org.jbehave.core.reporters;
 
+import com.thoughtworks.xstream.XStream;
+import org.jbehave.core.model.StepPattern;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.jbehave.core.steps.StepType;
+import org.junit.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -9,15 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.jbehave.core.model.StepPattern;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
-import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
-import org.jbehave.core.steps.StepType;
-import org.junit.Test;
-
-import com.thoughtworks.xstream.XStream;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
