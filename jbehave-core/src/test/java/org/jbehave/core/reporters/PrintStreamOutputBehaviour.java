@@ -1,7 +1,7 @@
 package org.jbehave.core.reporters;
 
 import org.apache.commons.io.IOUtils;
-import org.jbehave.core.KnownException;
+import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
@@ -357,7 +357,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
-    public void knownExceptionShouldNotBeSurpressedForNullPointException() {
+    public void shouldNotSuppressStackTraceForNullPointException() {
 
         // Given
         final OutputStream out = new ByteArrayOutputStream();
@@ -382,7 +382,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
-    public void knownExceptionShouldBeSurpressedKnownExceptionDerivative() {
+    public void shouldSuppresseStackTraceForKnownFailure() {
 
         // Given
         final OutputStream out = new ByteArrayOutputStream();
@@ -395,11 +395,11 @@ public class PrintStreamOutputBehaviour {
         TxtOutput reporter = new TxtOutput(factory.createPrintStream(), new Properties(), new LocalizedKeywords(), true);
 
 
-        reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new MyKnownException()));
+        reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new MyKnownFailure()));
         reporter.afterScenario();
 
         assertThatOutputIs(out, "Then I should have a balance of $30 (FAILED)\n" +
-                "(org.jbehave.core.reporters.PrintStreamOutputBehaviour$MyKnownException)\n\n" +
+                "(org.jbehave.core.reporters.PrintStreamOutputBehaviour$MyKnownFailure)\n\n" +
                 "");
 
     }
@@ -804,7 +804,8 @@ public class PrintStreamOutputBehaviour {
         return resolver.resolve(storyClass);
     }
 
-    private static class MyKnownException extends KnownException {
+    @SuppressWarnings("serial")
+    private static class MyKnownFailure extends KnownFailure {
     }
 
     private abstract class MyStory extends JUnitStory {
