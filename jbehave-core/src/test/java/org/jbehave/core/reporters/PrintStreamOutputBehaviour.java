@@ -357,7 +357,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
-    public void shouldNotSuppressStackTraceForNullPointException() {
+    public void shouldNotSuppressStackTraceForNotKnownFailure() {
 
         // Given
         final OutputStream out = new ByteArrayOutputStream();
@@ -382,7 +382,7 @@ public class PrintStreamOutputBehaviour {
     }
 
     @Test
-    public void shouldSuppresseStackTraceForKnownFailure() {
+    public void shouldSuppressStackTraceForKnownFailure() {
 
         // Given
         final OutputStream out = new ByteArrayOutputStream();
