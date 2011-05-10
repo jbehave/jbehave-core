@@ -25,7 +25,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.instanceOf;
@@ -105,7 +104,8 @@ public class StoryReporterBuilderBehaviour {
         assertThat(delegates.size(), equalTo(1));
         StoryReporter storyReporter = delegates.iterator().next();
         assertThat(storyReporter, instanceOf(TxtOutput.class));
-        assertThat(storyReporter.toString(), containsString("reportFailureTrace=true"));
+        assertThat(((TxtOutput)storyReporter).reportFailureTrace(), is(true));
+        assertThat(((TxtOutput)storyReporter).compressFailureTrace(), is(false));
     }
 
     @Test

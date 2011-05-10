@@ -85,8 +85,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
     private final PrintStream output;
     private final Properties outputPatterns;
     private final Keywords keywords;
-    private boolean reportFailureTrace;
-    private boolean compressFailureTrace;
+    private ThreadLocal<Boolean> reportFailureTrace = new ThreadLocal<Boolean>();
+    private ThreadLocal<Boolean> compressFailureTrace = new ThreadLocal<Boolean>();
     private ThreadLocal<Throwable> cause = new ThreadLocal<Throwable>();
     
     protected PrintStreamOutput(Format format, PrintStream output, Properties outputPatterns,
@@ -95,8 +95,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
         this.output = output;
         this.outputPatterns = outputPatterns;
         this.keywords = keywords;
-        this.reportFailureTrace = reportFailureTrace;
-        this.compressFailureTrace = compressFailureTrace;   
+        doReportFailureTrace(reportFailureTrace);
+        doCompressFailureTrace(compressFailureTrace);   
     }
 
     public void successful(String step) {
@@ -211,7 +211,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void afterScenario() {
-        if (cause.get() != null && reportFailureTrace && !(cause.get() instanceof KnownFailure) ) {
+        if (cause.get() != null && reportFailureTrace.get() && !(cause.get() instanceof KnownFailure) ) {
             print(format("afterScenarioWithFailure", "\n{0}\n", stackTrace(cause.get())));
         } else {
             print(format("afterScenario", "\n"));
@@ -228,7 +228,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     protected String stackTrace(String stackTrace) {
-        if ( !compressFailureTrace ){
+        if ( !compressFailureTrace.get() ){
             return stackTrace;
         }
         // don't print past certain parts of the stack.  Try them even though they may be redundant.
@@ -371,13 +371,21 @@ public abstract class PrintStreamOutput implements StoryReporter {
         return defaultPattern;
     }
 
+    public boolean reportFailureTrace(){
+        return reportFailureTrace.get();
+    }
+    
     public PrintStreamOutput doReportFailureTrace(boolean reportFailureTrace){
-    	this.reportFailureTrace = reportFailureTrace;
+    	this.reportFailureTrace.set(reportFailureTrace);
     	return this;
     }
 
+    public boolean compressFailureTrace(){
+        return compressFailureTrace.get();
+    }
+    
     public PrintStreamOutput doCompressFailureTrace(boolean compressFailureTrace){
-        this.compressFailureTrace = compressFailureTrace;
+        this.compressFailureTrace.set(compressFailureTrace);
         return this;
     }
 
