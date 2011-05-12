@@ -275,6 +275,10 @@ public abstract class AbstractEmbedderTask extends Task {
             log("Running story " + path, MSG_INFO);
         }
 
+        public void runningWithAnnotatedEmbedderRunner(String className) {
+            log("Running with AnnotatedEmbedderRunner '" + className + "'", MSG_INFO);
+        }
+
         public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
             log("Annotated instance " + annotatedInstance + " not of type " + type, MSG_WARN);
         }

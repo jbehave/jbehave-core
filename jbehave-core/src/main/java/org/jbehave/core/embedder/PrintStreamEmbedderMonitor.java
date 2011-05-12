@@ -71,6 +71,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("Skipped stories " + storyPaths);
     }
 
+    public void runningWithAnnotatedEmbedderRunner(String className) {
+        print("Running with AnnotatedEmbedderRunner '" + className + "'");
+    }
+
     public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
         print("Annotated instance " + annotatedInstance + " if not of type " + type);
     }

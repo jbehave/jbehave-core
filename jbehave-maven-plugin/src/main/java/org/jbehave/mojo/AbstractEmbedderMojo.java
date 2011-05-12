@@ -344,6 +344,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().warn("Failed to run story " + path, cause);
         }
 
+        public void runningWithAnnotatedEmbedderRunner(String className) {
+            getLog().info("Running with AnnotatedEmbedderRunner '" + className + "'");
+        }
+
         public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
             getLog().warn("Annotated instance " + annotatedInstance + " not of type " + type);
         }

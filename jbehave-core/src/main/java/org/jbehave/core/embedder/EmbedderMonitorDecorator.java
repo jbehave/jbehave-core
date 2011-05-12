@@ -78,6 +78,10 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
     public void reportsViewNotGenerated() {
         delegate.reportsViewNotGenerated();
     }
+    
+    public void runningWithAnnotatedEmbedderRunner(String className) {
+        delegate.runningWithAnnotatedEmbedderRunner(className);
+    }
 
     public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
         delegate.annotatedInstanceNotOfType(annotatedInstance, type);

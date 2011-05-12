@@ -156,6 +156,7 @@ public class Embedder {
     public void runStoriesWithAnnotatedEmbedderRunner(List<String> classNames) {
         EmbedderClassLoader classLoader = classLoader();
         for (String className :  classNames) {
+            embedderMonitor.runningWithAnnotatedEmbedderRunner(className);
             AnnotatedEmbedderRunner runner = AnnotatedEmbedderUtils.annotatedEmbedderRunner(className, classLoader);
             try {
                 Object annotatedInstance = runner.createTest();
