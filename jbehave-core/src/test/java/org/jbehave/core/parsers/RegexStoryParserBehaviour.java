@@ -433,7 +433,7 @@ public class RegexStoryParserBehaviour {
     @Test
     public void shouldParseStoryWithScenarioContainingParametrisedGivenStories() {
         String wholeStory = 
-            "GivenStories: path/to/one#{0},path/to/two#{1},path/to/three#{2},path/to/four#{a},path/to/five" + NL + NL +
+            "GivenStories: path/to/one#{0}, path/to/two#{1}, path/to/three#{2}, path/to/four#{a}, path/to/five" + NL + NL +
             "Given a step" + NL+
             "Examples:" + NL +
             "|one|two|" + NL +  
@@ -443,7 +443,7 @@ public class RegexStoryParserBehaviour {
 
         Scenario scenario = story.getScenarios().get(0);
         GivenStories givenStories = scenario.getGivenStories();
-        assertThat(givenStories.asString(), equalTo("path/to/one#{0},path/to/two#{1},path/to/three#{2},path/to/four#{a},path/to/five"));
+        assertThat(givenStories.asString(), equalTo("path/to/one#{0}, path/to/two#{1}, path/to/three#{2}, path/to/four#{a}, path/to/five"));
         assertThat(givenStories.toString(), containsString(givenStories.asString()));
         assertThat(givenStories.getPaths(), equalTo(asList(
                 "path/to/one#{0}", // matches first parameters row

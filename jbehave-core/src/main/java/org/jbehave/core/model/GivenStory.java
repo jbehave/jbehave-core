@@ -20,11 +20,11 @@ public class GivenStory {
     private String anchor;
 
     public GivenStory(String givenStoryAsString) {
-        this.givenStoryAsString = givenStoryAsString;
-        parse(givenStoryAsString);
+        this.givenStoryAsString = givenStoryAsString.trim();
+        parse();
     }
 
-    private void parse(String givenStoryAsString) {
+    private void parse() {
         Pattern pattern = compile("(.*)\\#\\{(.*?)\\}", DOTALL);
         Matcher matcher = pattern.matcher(givenStoryAsString.trim());
         if (matcher.matches()) {
