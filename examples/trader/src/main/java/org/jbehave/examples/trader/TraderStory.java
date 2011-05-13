@@ -1,7 +1,6 @@
 package org.jbehave.examples.trader;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Properties;
 
 import org.jbehave.core.Embeddable;
@@ -20,7 +19,6 @@ import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
@@ -100,11 +98,6 @@ public abstract class TraderStory extends JUnitStory {
                 .useStepMonitor(xref.getStepMonitor());
     }
 
-    @Override
-    public List<CandidateSteps> candidateSteps() {
-        return stepsFactory().createCandidateSteps();
-    }
-    
     @Override
     public InjectableStepsFactory stepsFactory() {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
