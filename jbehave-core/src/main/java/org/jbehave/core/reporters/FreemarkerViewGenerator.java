@@ -136,7 +136,8 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         int scenariosFailed = count("scenariosFailed", reports);
         int scenariosNotAllowed = count("scenariosNotAllowed", reports);
         int scenariosPending = count("scenariosPending", reports);
-        return new ReportsCount(stories, storiesNotAllowed, storiesPending, scenarios, scenariosFailed, scenariosNotAllowed, scenariosPending);
+        int stepsFailed = count("stepsFailed", reports);
+        return new ReportsCount(stories, storiesNotAllowed, storiesPending, scenarios, scenariosFailed, scenariosNotAllowed, scenariosPending, stepsFailed);
     }
 
     int count(String event, Collection<Report> reports) {

@@ -46,7 +46,6 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Steps;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
@@ -869,7 +868,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 1, 2, 0, 0, 1));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 1, 2, 0, 0, 1, 0));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then
@@ -936,14 +935,13 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 1, 2, 1, 1, 1));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 1, 2, 1, 1, 1, 1));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then fail as expected
     }
 
     @Test(expected = RunningStoriesFailed.class)
-    @Ignore("JBEHAVE-472: find a better way to express failures before scenarios")
     public void shouldThrowExceptionIfNoScenariosRunForStoriesAndIgnoreFlagIsNotSet() throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
@@ -957,7 +955,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 0, 0, 0, 0, 0));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 0, 0, 0, 0, 0, 1));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then fail as expected
@@ -977,7 +975,7 @@ public class EmbedderBehaviour {
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 1, 2, 1, 0, 1));
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(1, 0, 1, 2, 1, 0, 1, 1));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then

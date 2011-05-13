@@ -188,8 +188,9 @@ public class EmbedderMojoBehaviour {
         int scenariosFailed = 1;
         int scenariosNotAllowed = 0;
         int scenariosPending = 1;
+        int stepsFailed = 1;
         embedderMonitor.reportsViewGenerated(new ReportsCount(stories, storiesNotAllowed, storiesPending, scenarios,
-                scenariosFailed, scenariosNotAllowed, scenariosPending));
+                scenariosFailed, scenariosNotAllowed, scenariosPending, stepsFailed));
         verify(log).info(
                 "Reports view generated with " + stories + " stories (of which "+storiesPending+" pending) containing " + scenarios
                 + " scenarios (of which  " + scenariosFailed + " failed and " + scenariosPending + " pending)");
