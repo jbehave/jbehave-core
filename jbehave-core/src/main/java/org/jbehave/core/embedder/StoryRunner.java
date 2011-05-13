@@ -70,6 +70,18 @@ public class StoryRunner {
                 configuration.stepCollector().collectBeforeOrAfterStoriesSteps(context.candidateSteps(), stage));
         reporter.get().afterStory(false);
         storiesState.set(context.state());
+        // handle any after stories failure according to strategy
+        if (stage == Stage.AFTER) {
+            try {
+                currentStrategy.get().handleFailure(storyFailure.get());
+            } catch (Throwable e) {
+                return new SomethingHappened();
+            } finally {
+                if (reporter.get() instanceof ConcurrentStoryReporter) {
+                    ((ConcurrentStoryReporter) reporter.get()).invokeDelayed();
+                }
+            }
+        }
         return context.state();
     }
 
