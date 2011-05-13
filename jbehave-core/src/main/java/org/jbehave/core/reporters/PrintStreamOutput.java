@@ -406,7 +406,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(format).append(output).toString();
 	}
 
     private static class Replacement {

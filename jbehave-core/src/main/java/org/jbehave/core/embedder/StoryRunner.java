@@ -68,6 +68,7 @@ public class StoryRunner {
         }
         runStepsWhileKeepingState(context,
                 configuration.stepCollector().collectBeforeOrAfterStoriesSteps(context.candidateSteps(), stage));
+        reporter.get().afterStory(false);
         storiesState.set(context.state());
         return context.state();
     }
