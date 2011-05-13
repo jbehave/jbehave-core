@@ -272,12 +272,16 @@ public class CrossReference extends Format {
             synchronized (this) {
                 for (StoryHolder storyHolder : stories) {
                     Story story = storyHolder.story;
-                    if (someScenarios(story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
-                        XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(story.getPath()), this);
-                        xRefStory.started = storyHolder.when;
-                        xRefStory.duration = getTime(times, story);
-                        this.stories.add(xRefStory);
+                    String path = story.getPath();
+                    if (!path.equals("BeforeStories") && !path.equals("AfterStories")) {
+                        if (someScenarios(story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
+                            XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(path), this);
+                            xRefStory.started = storyHolder.when;
+                            xRefStory.duration = getTime(times, story);
+                            this.stories.add(xRefStory);
+                        }
                     }
+
                 }
             }
         }
