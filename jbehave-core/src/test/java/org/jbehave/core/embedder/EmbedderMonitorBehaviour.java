@@ -35,7 +35,7 @@ public class EmbedderMonitorBehaviour {
         monitor.runningEmbeddable("embeddable");
         monitor.runningStory("/path");
         monitor.generatingReportsView(new File("target"), Arrays.asList(Format.HTML.name()), new Properties());
-        monitor.reportsViewGenerated(new ReportsCount(1, 0, 1, 2, 1, 0, 1));
+        monitor.reportsViewGenerated(new ReportsCount(1, 0, 1, 2, 1, 0, 1, 1));
         assertThat(out.toString(), is(""));
         monitor.batchFailed(new BatchFailures());
         monitor.storyFailed("/path", new RuntimeException());

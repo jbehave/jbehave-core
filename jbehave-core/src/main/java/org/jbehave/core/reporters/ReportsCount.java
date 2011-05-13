@@ -12,9 +12,10 @@ public class ReportsCount {
     private final int scenariosFailed;
     private final int scenariosNotAllowed;
     private final int scenariosPending;
+    private final int stepsFailed;
 
     public ReportsCount(int stories, int storiesNotAllowed, int storiesPending, int scenarios, int scenariosFailed,
-            int scenariosNotAllowed, int scenariosPending) {
+            int scenariosNotAllowed, int scenariosPending, int stepsFailed) {
         this.stories = stories;
         this.storiesNotAllowed = storiesNotAllowed;
         this.storiesPending = storiesPending;
@@ -22,6 +23,7 @@ public class ReportsCount {
         this.scenariosFailed = scenariosFailed;
         this.scenariosNotAllowed = scenariosNotAllowed;
         this.scenariosPending = scenariosPending;
+        this.stepsFailed = stepsFailed;
     }
 
     public int getStories() {
@@ -51,9 +53,13 @@ public class ReportsCount {
     public int getScenariosPending() {
         return scenariosPending;
     }
+    
+    public int getStepFailed(){
+        return stepsFailed;
+    }
 
     public boolean failed(){
-        if ( scenariosFailed > 0 ) return true;
+        if ( scenariosFailed > 0 || stepsFailed > 0 ) return true;
 // JBEHAVE-472:  find a better way to express failures before scenarios        
 //        if ( stories > 0 && scenarios == 0 ) return true;
         return false;
