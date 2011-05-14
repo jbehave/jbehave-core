@@ -20,6 +20,7 @@
     <module>groovy</module>
     <module>spring-security</module>
     <module>trader</module>
+    <module>trader-ant</module>
     <module>trader-annotations</module>
     <module>trader-urls</module>
     <module>trader-maps</module>

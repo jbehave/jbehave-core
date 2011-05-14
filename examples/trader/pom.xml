@@ -11,17 +11,8 @@
 
   <properties>
     <embeddables>**/*TraderStories.java</embeddables>
-    <skip>false</skip>
     <meta.filter></meta.filter>    
   </properties>
-
- <dependencies>
-    <dependency>
-      <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-ant</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
   
   <build>
     <plugins>
@@ -55,42 +46,5 @@
       </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>ant</id>
-      <properties>
-        <skip>true</skip>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>run-via-ant</id>
-                <phase>integration-test</phase>
-                <configuration>
-                  <tasks>
-                    <taskdef name="runStoriesAsEmbeddables"
-                      classname="org.jbehave.ant.RunStoriesAsEmbeddables"
-                      classpathref="maven.runtime.classpath" />
-                    <runStoriesAsEmbeddables
-                      includes="**/stories/*.java" skip="false"
-                      generateViewAfterStories="true"
-                      ignoreFailureInStories="true" ignoreFailureInView="true" />
-                  </tasks>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
 </project>

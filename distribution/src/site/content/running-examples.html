@@ -84,12 +84,27 @@ Examples parent POM.</span>
 
 <h2>Running Examples via Ant</h2>
 
-<p>While the basic infrastructure of the build is Maven-based, the examples also show how to run stories via Ant.
-The <b>trader</b> example has an Ant build.xml which shows its use.  Note that it requires the 
-<a href="http://maven.apache.org/ant-tasks">Maven Ant Tasks</a> jar to be present in the <b>$ANT_HOME/lib</b> directory 
-in order to retrieve the dependency information from the Maven POM.  The trader example also has a Maven <b>ant</b> profile that uses
-shows the use of Ant from Maven.
-</p>
+<p>The <b>trader-ant</b> example shows how to use JBehave Ant tasks to run stories.</p>
+
+<p>Ant does not natively support any dependency management.  Ant users can either use 
+<a href="http://maven.apache.org/ant-tasks">Maven Ant Tasks</a> or Apache Ivy or copy all the dependencies to a lib directory. 
+In the trader-ant example we use the Maven Ant Tasks, which needs to be installed in the <b>$ANT_HOME/lib</b> directory 
+in order to retrieve the dependency information from the Maven POM.</p>
+
+<p>A copy of the Maven Ant Tasks jar is provided in the JBehave binary distribution.  To setup, simply <a href="download.html">download</a> and unzip it:</p>
+<script type="syntaxhighlighter" class="brush: plain">
+<![CDATA[
+unzip jbehave-distribution-[version]-bin.zip
+cd jbehave-[version]/lib
+ant
+]]>
+</script>
+<p>The Ant target copy-dependencies reads the dependencies declared in the <b>pom.xml</b> (including all the transitive dependencies) and copies them to the 
+<b>lib</b> directory.  Ant users can then define their classpath as they prefer.</p>
+
+<p>Once the Maven Ant Tasks jar is installed in the <b>$ANT_HOME/lib</b> directory you can run the trader-ant <b>build.xml</b>.</p>
+
+<p>The trader-ant example also shows how to run the JBehave Ant tasks from the Maven <b>pom.xml</b>.</p>
 
 <div class="clear">
 <hr />
