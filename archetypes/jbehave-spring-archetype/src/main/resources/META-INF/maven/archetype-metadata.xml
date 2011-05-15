@@ -5,10 +5,10 @@
   name="simple" partial="false">
 
   <requiredProperties>
-    <requiredProperty key="jbehave.core.version">
+    <requiredProperty key="jbehaveCoreVersion">
       <defaultValue>${jbehave.core.version}</defaultValue>
     </requiredProperty>
-    <requiredProperty key="jbehave.site.version">
+    <requiredProperty key="jbehaveSiteVersion">
       <defaultValue>${jbehave.site.version}</defaultValue>
     </requiredProperty>
   </requiredProperties>

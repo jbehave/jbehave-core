@@ -8,6 +8,8 @@
   <name>JBehave Stories</name>
 
   <properties>
+    <jbehave.core.version>$jbehaveCoreVersion</jbehave.core.version>
+    <jbehave.site.version>$jbehaveSiteVersion</jbehave.site.version>
     <embeddables>**/*Stories.java</embeddables>
   </properties>
 
