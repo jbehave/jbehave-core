@@ -366,6 +366,24 @@ span.inOrderTo,span.asA,span.iWantTo {
 	padding-bottom: 20px;
 }
 
+.parameter table {
+    border: 1px solid;
+    margin-top: 12px;
+    margin-left: 12px;
+    margin-bottom: 10px;
+}
+
+.parameter table th, td {
+    text-align: center;
+    padding-left: 5px;
+    padding-right: 5px;
+    border-left: 1px solid; 
+}
+
+.parameter table th {
+    font-weight: bold;
+}
+
 pre.failure {
 	padding-left: 10px;
 	color: red;

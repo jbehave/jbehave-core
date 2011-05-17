@@ -87,7 +87,7 @@ public class PrintStreamOutputBehaviour {
                 + "Then I give it to <to>\n"
                 + "\n"
                 + "|money|to|\n" + "|$30|Mauro|\n"
-                + "|$50|Paul|\n" + "\n\n" // Examples table
+                + "|$50|Paul|\n" // Examples table
                 + "\nExample: {money=$30, to=Mauro}\n"
                 + "\nExample: {money=$50, to=Paul}\n"
                 + "\n" // end of examples

@@ -9,6 +9,7 @@ import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.parsers.StepMatcher;
 
 import java.lang.annotation.Annotation;
@@ -25,6 +26,8 @@ public class StepCreator {
 
     public static final String PARAMETER_NAME_START = "<";
     public static final String PARAMETER_NAME_END = ">";
+    public static final String PARAMETER_TABLE_START = "\uff3b";
+    public static final String PARAMETER_TABLE_END = "\uff3d";
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
     public static final String PARAMETER_VALUE_NEWLINE = "\u2424";
@@ -134,13 +137,13 @@ public class StepCreator {
             String[] annotationNames, String[] parameterNames, String[] parameters) {
         String parametrisedStep = stepAsString;
         for (int position = 0; position < types.length; position++) {
-            parametrisedStep = replaceParameterValuesInStep(parametrisedStep, position, annotationNames,
+            parametrisedStep = replaceParameterValuesInStep(parametrisedStep, position, types, annotationNames,
                     parameterNames, parameters, namedParameters);
         }
         return parametrisedStep;
     }
 
-    private String replaceParameterValuesInStep(String stepText, int position, String[] annotationNames,
+    private String replaceParameterValuesInStep(String stepText, int position, Type[] types, String[] annotationNames,
             String[] parameterNames, String[] parameters, Map<String, String> namedParameters) {
         int annotatedNamePosition = parameterPosition(annotationNames, position);
         int parameterNamePosition = parameterPosition(parameterNames, position);
@@ -149,17 +152,26 @@ public class StepCreator {
         } else if (parameterNamePosition != -1) {
             stepText = replaceParameterValue(stepText, namedParameters, parameterNames[position]);
         }
-        stepText = replaceParameterValue(stepText, position, parameters);
+        stepText = replaceParameterValue(stepText, position, types, parameters);
         return stepText;
     }
 
-    private String replaceParameterValue(String stepText, int position, String[] parameters) {
+    private String replaceParameterValue(String stepText, int position, Type[] types, String[] parameters) {
+        Type type = types[position];
         String value = parameters[position];
         if (value != null) {
-            stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
-            stepText = stepText.replace("\n", PARAMETER_VALUE_NEWLINE);
+            if ( isTable(type)){
+                stepText = stepText.replace(value, PARAMETER_TABLE_START + value + PARAMETER_TABLE_END);                
+            } else {
+                stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END)
+                                   .replace("\n", PARAMETER_VALUE_NEWLINE);
+            }
         }
         return stepText;
+    }
+
+    private boolean isTable(Type type) {
+        return type instanceof Class && ((Class<?>)type).isAssignableFrom(ExamplesTable.class);
     }
 
     private String replaceParameterValue(String stepText, Map<String, String> namedParameters, String name) {

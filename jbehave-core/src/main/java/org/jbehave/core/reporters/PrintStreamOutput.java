@@ -1,5 +1,16 @@
 package org.jbehave.core.reporters;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.regex.Pattern;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.ArrayUtils;
@@ -19,18 +30,11 @@ import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Pattern;
-
 import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
+import static org.apache.commons.lang.StringUtils.substringBetween;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_NEWLINE;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
@@ -261,29 +265,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
         for (String step : steps) {
             print(format("examplesStep", "{0}\n", step));
         }
-        print(table);
+        print(formatTable(table));
     }
-
-	private void print(ExamplesTable table) {
-		print(format("examplesTableStart", "\n"));
-        List<Map<String, String>> rows = table.getRows();
-        List<String> headers = table.getHeaders();
-        print(format("examplesTableHeadStart", "|"));
-        for (String header : headers) {
-            print(format("examplesTableHeadCell", "{0}|", header));
-        }
-        print(format("examplesTableHeadEnd", "\n"));
-        print(format("examplesTableBodyStart", EMPTY));
-        for (Map<String, String> row : rows) {
-            print(format("examplesTableRowStart", "|"));
-            for (String header : headers) {
-                print(format("examplesTableCell", "{0}|", row.get(header)));
-            }
-            print(format("examplesTableRowEnd", "\n"));
-        }
-        print(format("examplesTableBodyEnd", "\n"));
-        print(format("examplesTableEnd", "\n"));
-	}
 
     public void example(Map<String, String> tableRow) {
         print(format("example", "\n{0} {1}\n", keywords.examplesTableRow(), tableRow));
@@ -315,6 +298,30 @@ public abstract class PrintStreamOutput implements StoryReporter {
      */
     protected String format(String key, String defaultPattern, Object... args) {
         return MessageFormat.format(lookupPattern(key, escape(defaultPattern)), escapeAll(args));
+    }
+    
+    protected String formatTable(ExamplesTable table) {
+        OutputStream formatted = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(formatted);
+        out.print(format("examplesTableStart", "\n"));
+        List<Map<String, String>> rows = table.getRows();
+        List<String> headers = table.getHeaders();
+        out.print(format("examplesTableHeadStart", "|"));
+        for (String header : headers) {
+            out.print(format("examplesTableHeadCell", "{0}|", header));
+        }
+        out.print(format("examplesTableHeadEnd", "\n"));
+        out.print(format("examplesTableBodyStart", EMPTY));
+        for (Map<String, String> row : rows) {
+            out.print(format("examplesTableRowStart", "|"));
+            for (String header : headers) {
+                out.print(format("examplesTableCell", "{0}|", row.get(header)));
+            }
+            out.print(format("examplesTableRowEnd", "\n"));
+        }
+        out.print(format("examplesTableBodyEnd", ""));
+        out.print(format("examplesTableEnd", ""));
+        return formatted.toString();
     }
 
     private String escape(String defaultPattern) {
@@ -399,12 +406,32 @@ public abstract class PrintStreamOutput implements StoryReporter {
      * @param text the String to print
      */
     protected void print(String text) {
-        output.print(text.replace(format(PARAMETER_VALUE_START, PARAMETER_VALUE_START), format("parameterValueStart", EMPTY))
-                         .replace(format(PARAMETER_VALUE_END, PARAMETER_VALUE_END), format("parameterValueEnd", EMPTY))
-                         .replace(format(PARAMETER_VALUE_NEWLINE, PARAMETER_VALUE_NEWLINE), format("parameterValueNewline", "\n")));
+        if ( containsTable(text) ){
+            String tableStart = format(PARAMETER_TABLE_START, PARAMETER_TABLE_START);
+            String tableEnd = format(PARAMETER_TABLE_END, PARAMETER_TABLE_END);
+            String tableAsString = substringBetween(text, tableStart, tableEnd);
+            output.print(text
+                    .replace(tableAsString, formatTable(new ExamplesTable(tableAsString)))
+                    .replace(tableStart, format("parameterValueStart", EMPTY))
+                    .replace(tableEnd, format("parameterValueEnd", EMPTY))
+                    .replace(format(PARAMETER_VALUE_NEWLINE, PARAMETER_VALUE_NEWLINE),
+                            format("parameterValueNewline", "\n")));
+        } else {
+            output.print(text
+                    .replace(format(PARAMETER_VALUE_START, PARAMETER_VALUE_START), format("parameterValueStart", EMPTY))
+                    .replace(format(PARAMETER_VALUE_END, PARAMETER_VALUE_END), format("parameterValueEnd", EMPTY))
+                    .replace(format(PARAMETER_VALUE_NEWLINE, PARAMETER_VALUE_NEWLINE),
+                            format("parameterValueNewline", "\n")));
+        }
     }
-    
-	@Override
+
+    private boolean containsTable(String text) {
+        String tableStart = format(PARAMETER_TABLE_START, PARAMETER_TABLE_START);
+        String tableEnd = format(PARAMETER_TABLE_END, PARAMETER_TABLE_END);
+        return text.contains(tableStart) && text.contains(tableEnd);
+    }
+
+    @Override
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(format).append(output).toString();
 	}
@@ -438,8 +465,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"
                     ),
                     "\t(groovy-closure-invoke)"),
-
-
             new Replacement(
                     Pattern.compile(
                             "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
@@ -448,7 +473,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeMethodOnCurrentN\\(ScriptBytecodeAdapter.java:\\d+\\)"
                     ),
                     "\t(groovy-instance-method-invoke)"),
-
             new Replacement(
                     Pattern.compile(
                             "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\n" +
@@ -458,7 +482,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"
                     ),
                     "\t(groovy-abstract-method-invoke)"),
-
             new Replacement(
                     Pattern.compile(
                             "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
@@ -468,7 +491,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeStaticMethodN\\(ScriptBytecodeAdapter.java:\\d+\\)"
                     ),
                     "\t(groovy-static-method-invoke)"),
-
             new Replacement(
                     Pattern.compile(
                             "\\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0\\(Native Method\\)\\n" +
@@ -477,7 +499,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
                             "\\tat java.lang.reflect.Constructor.newInstance\\(Constructor.java:\\d+\\)"
                     ),
                     "\t(reflection-construct)"),
-
             new Replacement(
                     Pattern.compile(
                             "\\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(Current|)\\(CallSiteArray.java:\\d+\\)\\n" +
@@ -486,14 +507,12 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
                     ),
                     "\t(groovy-call)"),
-
             // This one last.
             new Replacement(
                     Pattern.compile(
                             "\\t\\(reflection\\-invoke\\)\\n" +
                                     "\\t\\(groovy\\-"),
                     "\t(groovy-")
-
     };
 
 

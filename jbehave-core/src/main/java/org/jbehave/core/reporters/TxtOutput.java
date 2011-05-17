@@ -96,8 +96,8 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("examplesTableRowStart", "|");
         patterns.setProperty("examplesTableCell", "{0}|");
         patterns.setProperty("examplesTableRowEnd", "\n");
-        patterns.setProperty("examplesTableBodyEnd", "\n");
-        patterns.setProperty("examplesTableEnd", "\n");
+        patterns.setProperty("examplesTableBodyEnd", "");
+        patterns.setProperty("examplesTableEnd", "");
         patterns.setProperty("example", "\n{0} {1}\n");
         patterns.setProperty("parameterValueStart", "");
         patterns.setProperty("parameterValueEnd", "");
