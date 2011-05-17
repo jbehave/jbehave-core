@@ -269,7 +269,7 @@ span.inOrderTo,span.asA,span.iWantTo {
 
 .step {
 	color: black;
-	padding-left: 10px;
+	padding: 2px 2px 2px 20px;
 }
 
 .successful {
@@ -370,7 +370,6 @@ span.inOrderTo,span.asA,span.iWantTo {
     border: 1px solid;
     margin-top: 12px;
     margin-left: 12px;
-    margin-bottom: 10px;
 }
 
 .parameter table th, td {
