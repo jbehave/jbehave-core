@@ -63,6 +63,9 @@ public class StoryRunner {
         reporter.set(configuration.storyReporter(storyPath));
         reporter.get().beforeStory(new Story(storyPath), false);
         RunContext context = new RunContext(configuration, candidateSteps, storyPath, MetaFilter.EMPTY);
+        if (stage == Stage.BEFORE ){
+            resetStoryFailure(false);
+        }
         if (stage == Stage.AFTER && storiesState.get() != null) {
             context.stateIs(storiesState.get());
         }
