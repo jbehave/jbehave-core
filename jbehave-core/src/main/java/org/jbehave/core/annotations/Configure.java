@@ -6,7 +6,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
@@ -45,6 +47,8 @@ import com.thoughtworks.paranamer.Paranamer;
 @Target({ ElementType.TYPE })
 @Inherited
 public @interface Configure {
+
+    Class<? extends Configuration> implementation() default MostUsefulConfiguration.class;
 
     Class<? extends Keywords> keywords() default LocalizedKeywords.class;
 

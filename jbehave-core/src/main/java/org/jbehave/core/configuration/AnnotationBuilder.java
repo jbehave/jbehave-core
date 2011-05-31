@@ -73,14 +73,14 @@ public class AnnotationBuilder {
      */
     public Configuration buildConfiguration() throws AnnotationRequired {
 
-        Configuration configuration = new MostUsefulConfiguration();
 
         if (!finder.isAnnotationPresent(Configure.class)) {
             // not using annotation configuration, default to most useful
             // configuration
-            return configuration;
+            return new MostUsefulConfiguration();
         }
-
+        
+        Configuration configuration = configurationElement(finder, "implementation", Configuration.class);
         configuration.useKeywords(configurationElement(finder, "keywords", Keywords.class));
         configuration.useFailureStrategy(configurationElement(finder, "failureStrategy", FailureStrategy.class));
         configuration.usePendingStepStrategy(configurationElement(finder, "pendingStepStrategy",
