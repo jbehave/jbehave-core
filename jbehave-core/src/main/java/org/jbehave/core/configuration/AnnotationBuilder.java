@@ -80,7 +80,7 @@ public class AnnotationBuilder {
             return new MostUsefulConfiguration();
         }
         
-        Configuration configuration = configurationElement(finder, "implementation", Configuration.class);
+        Configuration configuration = configurationElement(finder, "using", Configuration.class);
         configuration.useKeywords(configurationElement(finder, "keywords", Keywords.class));
         configuration.useFailureStrategy(configurationElement(finder, "failureStrategy", FailureStrategy.class));
         configuration.usePendingStepStrategy(configurationElement(finder, "pendingStepStrategy",

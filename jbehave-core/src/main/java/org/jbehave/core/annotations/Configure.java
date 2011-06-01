@@ -48,7 +48,7 @@ import com.thoughtworks.paranamer.Paranamer;
 @Inherited
 public @interface Configure {
 
-    Class<? extends Configuration> implementation() default MostUsefulConfiguration.class;
+    Class<? extends Configuration> using() default MostUsefulConfiguration.class;
 
     Class<? extends Keywords> keywords() default LocalizedKeywords.class;
 

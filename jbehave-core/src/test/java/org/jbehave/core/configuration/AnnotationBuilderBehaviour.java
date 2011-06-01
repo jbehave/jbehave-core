@@ -59,6 +59,12 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Test
+    public void shouldBuildWithCustomConfiguration() {
+        AnnotationBuilder annotated = new AnnotationBuilder(AnnotatedCustomConfiguration.class);
+        assertThat(annotated.buildConfiguration(), instanceOf(MyConfiguration.class));
+    }
+
+    @Test
     public void shouldBuildCandidateSteps() {
         AnnotationBuilder annotated = new AnnotationBuilder(Annotated.class);
         assertThatStepsInstancesAre(annotated.buildCandidateSteps(), MySteps.class, MyOtherSteps.class);
@@ -222,6 +228,18 @@ public class AnnotationBuilderBehaviour {
         }
     }
 
+    @Configure(using = MyConfiguration.class)
+    static class AnnotatedCustomConfiguration extends InjectableEmbedder {
+
+        public void run() throws Throwable {
+        }
+
+    }
+
+    static class MyConfiguration extends Configuration {
+        
+    }
+    
     @UsingEmbedder(batch = true, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, skip = true,
             storyTimeoutInSecs = 100, threads = 2)
     @UsingSteps(instances = { MySteps.class })
