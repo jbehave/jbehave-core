@@ -5,14 +5,20 @@
   -->
 <project name="trader" default="build" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
-	<artifact:pom id="pom" file="pom.xml" />
-	<artifact:dependencies filesetId="dependency.fileset" pomRefId="pom" useScope="test" />
-
+	<property name="src.dir" value="../trader/src/main/java"/>
+    <property name="jbehave.version"  value="3.5-SNAPSHOT"/>
+	
 	<target name="clean">
 		<delete dir="target" />
 	</target>
 
 	<target name="setup">
+	    <artifact:dependencies filesetId="dependency.fileset" useScope="test">
+	        <dependency groupId="org.jbehave" artifactId="jbehave-ant" version="${jbehave.version}"/>	    	
+	        <dependency groupId="org.jbehave" artifactId="jbehave-core" version="${jbehave.version}" classifier="resources" type="zip"/>           
+            <dependency groupId="org.jbehave.site" artifactId="jbehave-site-resources" version="3.1.1" type="zip"/>           
+	    </artifact:dependencies>
+
 		<mkdir dir="target" />
 		<mkdir dir="target/classes" />
 		<mkdir dir="target/lib" />
@@ -21,7 +27,7 @@
 			<mapper type="flatten" />
 		</copy>
 		<copy todir="target/classes">
-			<fileset dir="src/main/java">
+			<fileset dir="${src.dir}">
 				<include name="**/*.story" />
 				<include name="**/*.properties" />
 				<include name="**/*.xml" />
@@ -41,7 +47,7 @@
 	</target>
 
 	<target name="compile" depends="setup">
-		<javac srcdir="src/main/java" destdir="target/classes" debug="on" debuglevel="lines,source" includes="**/*.java,**/*.xml">
+		<javac srcdir="${src.dir}" destdir="target/classes" debug="on" debuglevel="lines,source" includes="**/*.java,**/*.xml">
 			<classpath refid="story.classpath" />
 		</javac>
 	</target>

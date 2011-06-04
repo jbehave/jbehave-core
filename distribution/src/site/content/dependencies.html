@@ -32,7 +32,7 @@ If you are running in a corporate environment, you may be using a Maven Reposito
 
 <p>A POM artifact can be declared as dependency using different build systems:</p>
 
-<h3>Apache Maven</h3>
+<h3 id="maven">Apache Maven</h3>
 
 <p>Using <a href="http://maven.apache.org">Apache Maven</a>, the dependencies are declared in the Maven pom.xml:</p>
 
@@ -53,28 +53,32 @@ If you are running in a corporate environment, you may be using a Maven Reposito
 ]]>
 </script>
 
-<h3>Apache Ant</h3>
+<h3 id="ant">Apache Ant</h3>
 
 <p>Using no dependency management tool, the build.xml in the <b>lib</b> directory of the binary distribution provides a target to 
-copy to the lib directory all dependencies declared in the Maven pom.xml:</p>
+copy to the lib directory all dependencies declared in the Maven pom.xm for a given version:</p>
 <script type="syntaxhighlighter" class="brush: plain">
 <![CDATA[
-    ant copy-dependencies 
+    ant copy-dependencies -Djbehave.version=[version]
 ]]>
 </script>
 
 <span class="followup">The Ant build.xml script uses the pom.xml to download and copy the dependencies (using the Maven Ant Tasks) as a one-off
 operation.  Thereafter, Ant users can declare their dependencies from the lib directory and no further use of the pom.xml is required.</span> 
 
-<p>Using <a href="http://maven.apache.org/ant-tasks/">Maven Ant Tasks</a>, the Ant dependency fileset is created from the Maven pom.xml, 
-specifying the custom Maven settings.xml: </p>
+<p>Using <a href="http://maven.apache.org/ant-tasks/">Maven Ant Tasks</a>, the Ant dependency fileset can be created, with the Maven settings.xml provided
+specifying the remote repositories: </p>
 
 <script type="syntaxhighlighter" class="brush: xml">
 <![CDATA[
 <project name="my_project" default="build" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
-    <artifact:pom id="pom" file="pom.xml" />
-    <artifact:dependencies filesetId="dependency.fileset" pomRefId="pom" settingsFile="settings.xml" useScope="test" />
+    <artifact:dependencies filesetId="dependency.fileset" settingsFile="settings.xml" useScope="test" />
+        <dependency groupId="org.jbehave" artifactId="jbehave-ant" version="[version]"/>           
+        <dependency groupId="org.jbehave" artifactId="jbehave-core" version="[version]" classifier="resources" type="zip"/>           
+        <dependency groupId="org.jbehave.site" artifactId="jbehave-site-resources" version="3.1.1" type="zip"/>           
+        ...
+    </artifact:dependencies>
 
 </project>
 ]]>
@@ -93,7 +97,7 @@ to be present in the <b>$ANT_HOME/lib</b>.  A copy of the jar is provided in the
 
 <span class="followup">The repositories in the Maven settings.xml need to be configured as resolvers in the <a href="http://ant.apache.org/ivy/history/latest-milestone/settings.html">Ivy settings</a>.</span>
 
-<h3>Groovy Grape</h3>
+<h3 id="grape">Groovy Grape</h3>
 
 <p>Using <a href="http://groovy.codehaus.org/grape">Groovy Grape</a>:</p>
 
