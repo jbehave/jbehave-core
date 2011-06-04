@@ -9,6 +9,9 @@
   <artifactId>jbehave-distribution</artifactId>
   <packaging>pom</packaging>
   <name>JBehave Distribution</name>
+  <properties>
+    <jbehave.site.version>3.1.1</jbehave.site.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
@@ -60,7 +63,7 @@
     <dependency>
       <groupId>org.jbehave.site</groupId>
       <artifactId>jbehave-site-resources</artifactId>
-      <version>3.1.1</version>
+      <version>${jbehave.site.version}</version>
       <type>zip</type>
     </dependency>
   </dependencies>
