@@ -5,7 +5,7 @@
   -->
 <project name="trader" default="build" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
-	<property name="src.dir" value="../trader/src/main/java"/>
+	<property name="src.dir" value="target/src"/>
     <property name="jbehave.version"  value="3.5-SNAPSHOT"/>
 	
 	<target name="clean">
@@ -25,6 +25,10 @@
 		<copy todir="target/lib">
 			<fileset refid="dependency.fileset" />
 			<mapper type="flatten" />
+		</copy>
+		<copy todir="${src.dir}">
+			<fileset dir="../trader/src/main/java">		
+		    </fileset>
 		</copy>
 		<copy todir="target/classes">
 			<fileset dir="${src.dir}">
@@ -59,13 +63,13 @@
 
 	<target name="run-stories-as-embeddables" depends="compile, reports-resources">
 		<taskdef name="runStoriesAsEmbeddables" classname="org.jbehave.ant.RunStoriesAsEmbeddables" classpathref="story.classpath" />
-		<runStoriesAsEmbeddables includes="**/stories/*.java" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" 
+		<runStoriesAsEmbeddables sourceDirectory="${src.dir}" includes="**/stories/*.java" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" 
 			systemproperties="java.awt.headless=true,project.dir=${basedir}" />
 	</target>
 
 	<target name="run-stories-as-paths" depends="compile, reports-resources">
 		<taskdef name="runStoriesAsPaths" classname="org.jbehave.ant.RunStoriesAsPaths" classpathref="story.classpath" />
-		<runStoriesAsPaths includes="**/stories/*.story" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
+		<runStoriesAsPaths sourceDirectory="${src.dir}" includes="**/stories/*.story" excludes="**/examples*" batch="false" ignoreFailureInStories="true" ignoreFailureInView="true" generateViewAfterStories="true" />
 	</target>
 
 	<target name="stepdoc" depends="compile">
