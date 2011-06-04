@@ -9,62 +9,58 @@
   <artifactId>jbehave-distribution</artifactId>
   <packaging>pom</packaging>
   <name>JBehave Distribution</name>
-  <properties>
-    <jbehave.version>${project.version}</jbehave.version>
-    <jbehave.site.version>3.1.1</jbehave.site.version>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-core</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-groovy</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-guice</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-pico</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-spring</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-weld</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-odf</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-ant</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-core</artifactId>
-      <version>${jbehave.version}</version>
+      <version>${project.version}</version>
       <classifier>resources</classifier>
       <type>zip</type>
     </dependency>
     <dependency>
       <groupId>org.jbehave.site</groupId>
       <artifactId>jbehave-site-resources</artifactId>
-      <version>${jbehave.site.version}</version>
+      <version>3.1.1</version>
       <type>zip</type>
     </dependency>
   </dependencies>
@@ -88,7 +84,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-hudson-plugin</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <type>hpi</type>
                 </artifactItem>
               </artifactItems>
@@ -108,7 +104,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-core</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -128,7 +124,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-groovy</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -148,7 +144,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-guice</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -168,7 +164,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-pico</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -188,7 +184,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-spring</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -208,7 +204,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-weld</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -228,7 +224,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-odf</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -248,7 +244,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-ant</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -268,7 +264,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-hudson-plugin</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -288,7 +284,7 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-maven-plugin</artifactId>
-                  <version>${jbehave.version}</version>
+                  <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
               </artifactItems>
@@ -399,7 +395,7 @@
           <skinPath>xsite-skin.ftl</skinPath>
           <resourcePaths>resources</resourcePaths>
           <outputDirectoryPath>${project.build.directory}/site</outputDirectoryPath>
-          <publishedVersion>${jbehave.version}</publishedVersion>
+          <publishedVersion>${project.version}</publishedVersion>
         </configuration>
         <executions>
           <execution>
@@ -424,7 +420,7 @@
               <descriptors>
                 <descriptor>${basedir}/src/assembly/assembly-bin.xml</descriptor>
               </descriptors>
-              <finalName>jbehave-${jbehave.version}</finalName>
+              <finalName>jbehave-${project.version}</finalName>
               <workDirectory>${project.build.directory}/assembly/bin</workDirectory>
             </configuration>
           </execution>
@@ -438,7 +434,7 @@
               <descriptors>
                 <descriptor>${basedir}/src/assembly/assembly-src.xml</descriptor>
               </descriptors>
-              <finalName>jbehave-${jbehave.version}</finalName>
+              <finalName>jbehave-${project.version}</finalName>
               <workDirectory>${project.build.directory}/assembly/src</workDirectory>
             </configuration>
           </execution>
