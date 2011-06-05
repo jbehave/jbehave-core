@@ -18,19 +18,22 @@
   </dependencies>
 
   <build>
+    <sourceDirectory>../trader/src/main/java</sourceDirectory>
     <plugins>
       <plugin>
         <groupId>org.jbehave</groupId>
         <artifactId>jbehave-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>stepdocs</id>
+            <id>stepdocs-as-embeddables</id>
             <phase>integration-test</phase>
             <configuration>
-              <embedderClass>org.jbehave.examples.trader.TraderEmbedder</embedderClass>
+              <includes>
+                <include>**/*Stories.java</include>
+              </includes>
             </configuration>
             <goals>
-              <goal>report-stepdocs</goal>
+              <goal>report-stepdocs-as-embeddables</goal>
             </goals>
           </execution>
         </executions>

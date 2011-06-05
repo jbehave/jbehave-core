@@ -380,7 +380,11 @@ public class Embedder {
         for (Embeddable embeddable : embeddables(classNames, classLoader())) {
             if (embeddable instanceof ConfigurableEmbedder) {
                 ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder) embeddable;
-                reportStepdocs(configurableEmbedder.configuration(), configurableEmbedder.candidateSteps());
+                List<CandidateSteps> steps = configurableEmbedder.candidateSteps();
+                if ( steps.isEmpty() ){
+                    steps = configurableEmbedder.stepsFactory().createCandidateSteps();
+                }
+                reportStepdocs(configurableEmbedder.configuration(), steps);
             } else {
                 embedderMonitor.embeddableNotConfigurable(embeddable.getClass().getName());
             }

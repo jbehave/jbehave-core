@@ -73,21 +73,25 @@ to output to any print stream:</p>
    embedder.configuration().useStepdocReporter(new PrintStreamStepReporter(...)); // defaults to System.out
 </pre>
 
-<h2>Finding Steps via Ant task</h2>
+<h2>Reporting Stepdocs As Embeddables</h2>
+
+<p>A recurrent use case is to report the steps that are configured in the Embeddables used to run the stories.</p>
+
+<h3>Using Ant Task</h3>
 
 <script type="syntaxhighlighter" class="brush: xml">
 <![CDATA[
 
-    <taskdef name="reportStepdocs" classname="org.jbehave.ant.ReportStepdocsTask"
+    <taskdef name="reportStepdocsAsEmbeddables" classname="org.jbehave.ant.ReportStepdocsAsEmbeddables"
       classpathref="story.classpath" />
-    <reportStepdocs includes="**/stories/*.java"/>
+    <reportStepdocsAsEmbeddables includes="**/stories/*.java"/>
       
 ]]>
 </script>
 
 <p>Remember to include <b>jbehave-ant</b> to your runtime classpath.</p>
 
-<h2>Finding Steps via Maven Plugin</h2>
+<h3>Using Maven Goal</h3>
 
 <script type="syntaxhighlighter" class="brush: xml">
 <![CDATA[
@@ -105,7 +109,7 @@ to output to any print stream:</p>
               </includes>
             </configuration>
             <goals>
-              <goal>report-stepdocs</goal>
+              <goal>report-stepdocs-as-embeddables</goal>
             </goals>
           </execution>
         </executions>
