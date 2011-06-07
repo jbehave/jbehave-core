@@ -7,11 +7,11 @@ public class AnnotatedEmbedderUtils {
 
     public static AnnotatedEmbedderRunner annotatedEmbedderRunner(String annotatedClassName,
             EmbedderClassLoader classLoader) {
-        Class<?> runnerClass = runnerCass(annotatedClassName, classLoader);
+        Class<?> runnerClass = runnerClass(annotatedClassName, classLoader);
         return newAnnotatedEmbedderRunner(runnerClass, annotatedClassName, classLoader);
     }
 
-    private static Class<?> runnerCass(String annotatedClassName, EmbedderClassLoader classLoader) {
+    private static Class<?> runnerClass(String annotatedClassName, EmbedderClassLoader classLoader) {
         Class<?> annotatedClass = loadClass(annotatedClassName, classLoader);
         RunWith annotation = annotatedClass.getAnnotation(RunWith.class);
         if (annotation != null) {
