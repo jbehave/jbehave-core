@@ -1,5 +1,6 @@
 <#ftl strip_whitespace=true>
 <#macro renderStat stats name class=""><#assign value = stats.get(name)!0><#if (value != 0)><span class="${class}">${value}</span><#else>${value}</#if></#macro>
+<#macro renderMillis stats name class=""><#assign millis = stats.get(name)!0><span class="${class}"><#assign time = timeFormatter.formatMillis(millis)>${time}</span></#macro>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -54,7 +55,7 @@
     <th>Failed</th>
     <th>Not Performed</th>
     <th>Ignorable</th>
-    <th>Duration (ms)</th>
+    <th>Duration (hh:mm:ss.SSS)</th>
     <th>View</th>
 </tr>
 <#assign reportNames = reportsTable.getReportNames()>
@@ -128,7 +129,7 @@
 <@renderStat stats "stepsIgnorable" "ignorable"/>
 </td>
 <td>
-<@renderStat stats "duration"/>
+<@renderMillis stats "duration"/>
 </td>
 <td>
 <#assign filesByFormat = report.filesByFormat>
@@ -192,7 +193,7 @@
 <@renderStat stats "stepsIgnorable" "ignorable"/>
 </td>
 <td>
-<@renderStat stats "duration"/>
+<@renderMillis stats "duration"/>
 </td>
 <td>
 Totals

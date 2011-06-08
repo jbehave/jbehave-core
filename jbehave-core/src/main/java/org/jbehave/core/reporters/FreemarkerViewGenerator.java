@@ -1,7 +1,5 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -14,6 +12,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,13 +34,14 @@ import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import static java.util.Arrays.asList;
 
 /**
  * <p>
  * Freemarker-based {@link ViewGenerator}, which uses the configured FTL
- * templates for the views. The default view properties are overridable via the 
- * method {@link Properties} parameter.  To override, specify the path to the 
- * new template under the appropriate key:
+ * templates for the views. The default view properties are overridable via the
+ * method {@link Properties} parameter. To override, specify the path to the new
+ * template under the appropriate key:
  * <p>
  * The view generator provides the following resources:
  * 
@@ -56,6 +56,7 @@ import freemarker.template.TemplateException;
  * resources.setProperty(&quot;defaultFormats&quot;, &quot;stats&quot;);
  * resources.setProperty(&quot;viewDirectory&quot;, &quot;view&quot;);
  * </pre>
+ * 
  * </p>
  * 
  * @author Mauro Talevi
@@ -98,10 +99,10 @@ public class FreemarkerViewGenerator implements ViewGenerator {
 
     private void generateViewsIndex(File outputDirectory) {
         String outputName = templateResource("viewDirectory") + "/index.html";
-        String viewsTemplate = templateResource("views");        
+        String viewsTemplate = templateResource("views");
         Map<String, Object> dataModel = newDataModel();
         dataModel.put("date", new Date());
-        write(outputDirectory, outputName, viewsTemplate, dataModel);        
+        write(outputDirectory, outputName, viewsTemplate, dataModel);
     }
 
     public void generateMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
@@ -124,6 +125,7 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         Map<String, Object> dataModel = newDataModel();
         dataModel.put("reportsTable", new ReportsTable(reports, nameResolver));
         dataModel.put("date", new Date());
+        dataModel.put("timeFormatter", new TimeFormatter());
         write(outputDirectory, outputName, reportsTemplate, dataModel);
         generateViewsIndex(outputDirectory);
     }
@@ -137,7 +139,8 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         int scenariosNotAllowed = count("scenariosNotAllowed", reports);
         int scenariosPending = count("scenariosPending", reports);
         int stepsFailed = count("stepsFailed", reports);
-        return new ReportsCount(stories, storiesNotAllowed, storiesPending, scenarios, scenariosFailed, scenariosNotAllowed, scenariosPending, stepsFailed);
+        return new ReportsCount(stories, storiesNotAllowed, storiesPending, scenarios, scenariosFailed,
+                scenariosNotAllowed, scenariosPending, stepsFailed);
     }
 
     int count(String event, Collection<Report> reports) {
@@ -408,4 +411,18 @@ public class FreemarkerViewGenerator implements ViewGenerator {
         }
     }
 
+    public static class TimeFormatter {
+
+        public String formatMillis(long millis) {
+            int hour = 1000 * 60 * 60;
+            int minute = 1000 * 60;
+            int second = 1000;
+            long hours = millis / hour;
+            long minutes = (millis % hour) / minute;
+            long seconds = ((millis % hour) % minute) / second;
+            long milliseconds = ((millis % hour) % minute % second);
+            return new Formatter().format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds).toString();
+        }
+
+    }
 }

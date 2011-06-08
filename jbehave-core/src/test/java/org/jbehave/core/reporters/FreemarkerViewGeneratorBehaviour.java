@@ -1,11 +1,5 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +9,17 @@ import java.util.SortedMap;
 
 import org.jbehave.core.reporters.FreemarkerViewGenerator.Report;
 import org.jbehave.core.reporters.FreemarkerViewGenerator.ReportCreationFailed;
+import org.jbehave.core.reporters.FreemarkerViewGenerator.TimeFormatter;
 import org.junit.Test;
+
+import static java.util.Arrays.asList;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.equalTo;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FreemarkerViewGeneratorBehaviour {
 
@@ -90,6 +94,15 @@ public class FreemarkerViewGeneratorBehaviour {
 
         // Then .. fail as expected
         
+    }
+    
+    @Test
+    public void formatTime(){
+        TimeFormatter timeFormatter = new TimeFormatter();
+        assertThat(timeFormatter.formatMillis(100L), equalTo("00:00:00.100"));
+        assertThat(timeFormatter.formatMillis(2001L), equalTo("00:00:02.001"));
+        assertThat(timeFormatter.formatMillis(200001L), equalTo("00:03:20.001"));
+        assertThat(timeFormatter.formatMillis(200000001L), equalTo("55:33:20.001"));
     }
     
 }
