@@ -32,7 +32,8 @@
     <th colspan="5">Scenarios</th>
     <th colspan="5">GivenStory Scenarios</th>
     <th colspan="6">Steps</th>
-    <th>View</th>
+    <th></th>
+    <th></th>
 </tr>
 <tr>
     <th>Name</th>
@@ -53,7 +54,8 @@
     <th>Failed</th>
     <th>Not Performed</th>
     <th>Ignorable</th>
-    <th></th>
+    <th>Duration (ms)</th>
+    <th>View</th>
 </tr>
 <#assign reportNames = reportsTable.getReportNames()>
 <#assign totalReports = reportNames.size() - 1>
@@ -126,6 +128,9 @@
 <@renderStat stats "stepsIgnorable" "ignorable"/>
 </td>
 <td>
+<@renderStat stats "duration"/>
+</td>
+<td>
 <#assign filesByFormat = report.filesByFormat>
 <#list filesByFormat.keySet() as format><#assign file = filesByFormat.get(format)><a href="${file.name}">${format}</a><#if format_has_next> |</#if></#list>
 </td>
@@ -185,6 +190,9 @@
 </td>
 <td>
 <@renderStat stats "stepsIgnorable" "ignorable"/>
+</td>
+<td>
+<@renderStat stats "duration"/>
 </td>
 <td>
 Totals
