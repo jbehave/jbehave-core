@@ -1,10 +1,5 @@
 package org.jbehave.core.configuration;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.jbehave.core.configuration.PropertyBasedConfiguration.FAIL_ON_PENDING;
-import static org.jbehave.core.configuration.PropertyBasedConfiguration.SILENT_SUCCESS;
-
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.reporters.ConsoleOutput;
@@ -12,6 +7,13 @@ import org.jbehave.core.reporters.SilentSuccessFilter;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.instanceOf;
+
+import static org.jbehave.core.configuration.PropertyBasedConfiguration.FAIL_ON_PENDING;
+import static org.jbehave.core.configuration.PropertyBasedConfiguration.SILENT_SUCCESS;
 
 public class PropertyBasedConfigurationBehaviour {
 
@@ -41,25 +43,25 @@ public class PropertyBasedConfigurationBehaviour {
     @Test
     public void shouldUsePassingPendingStepStrategyByDefault() {
         System.clearProperty(FAIL_ON_PENDING);
-        assertThat(new PropertyBasedConfiguration().pendingStepStrategy(), is(PassingUponPendingStep.class));
+        assertThat(new PropertyBasedConfiguration().pendingStepStrategy(), instanceOf(PassingUponPendingStep.class));
     }
     
     @Test
     public void shouldUseFailingPendingStepStrategyWhenConfiguredToDoSo() {
         System.setProperty(FAIL_ON_PENDING, "true");
-        assertThat(new PropertyBasedConfiguration().pendingStepStrategy(), is(FailingUponPendingStep.class));
+        assertThat(new PropertyBasedConfiguration().pendingStepStrategy(), instanceOf(FailingUponPendingStep.class));
     }
     
     @Test
     public void shouldOuputToConsoleByDefault() {
         System.clearProperty(SILENT_SUCCESS);
-        assertThat(new PropertyBasedConfiguration().defaultStoryReporter(), is(ConsoleOutput.class));
+        assertThat(new PropertyBasedConfiguration().defaultStoryReporter(), instanceOf(ConsoleOutput.class));
     }
     
     @Test
     public void shouldUseSilentSuccessFilterConfiguredToDoSo() {
         System.setProperty(SILENT_SUCCESS, "true");
-        assertThat(new PropertyBasedConfiguration().defaultStoryReporter(), is(SilentSuccessFilter.class));
+        assertThat(new PropertyBasedConfiguration().defaultStoryReporter(), instanceOf(SilentSuccessFilter.class));
     }
     
 }

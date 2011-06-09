@@ -13,7 +13,7 @@ import com.lunivore.noughtsandcrosses.view.ComponentNames;
 import com.lunivore.noughtsandcrosses.view.GridPanel;
 import com.lunivore.noughtsandcrosses.view.MessageLabel;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 

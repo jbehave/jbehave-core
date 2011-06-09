@@ -3,7 +3,6 @@ package org.jbehave.core.configuration;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
@@ -22,7 +21,7 @@ import org.junit.Test;
 
 import com.thoughtworks.paranamer.Paranamer;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.is;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -40,7 +39,7 @@ public class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.storyParser(), is(delegate.storyParser()));
         assertThat(unmodifiable.storyPathResolver(), is(delegate.storyPathResolver()));
         assertThat(unmodifiable.defaultStoryReporter(), is(delegate.defaultStoryReporter()));
-        assertThat(unmodifiable.storyReporter(storyPath), is(CoreMatchers.<Object>notNullValue()));
+        assertThat(unmodifiable.storyReporter(storyPath), is(Matchers.<Object>notNullValue(Object.class)));
         assertThat(unmodifiable.storyReporterBuilder(), is(delegate.storyReporterBuilder()));
         assertThat(unmodifiable.failureStrategy(), is(delegate.failureStrategy()));
         assertThat(unmodifiable.pendingStepStrategy(), is(delegate.pendingStepStrategy()));

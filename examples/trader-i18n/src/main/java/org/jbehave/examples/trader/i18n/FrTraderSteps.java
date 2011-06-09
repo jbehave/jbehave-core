@@ -1,6 +1,6 @@
 package org.jbehave.examples.trader.i18n;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.Map;

@@ -16,7 +16,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class NullStoryReporterBehaviour {

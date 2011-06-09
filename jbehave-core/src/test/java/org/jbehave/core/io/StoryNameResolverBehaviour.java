@@ -1,6 +1,6 @@
 package org.jbehave.core.io;
 
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Test;

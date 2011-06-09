@@ -22,10 +22,11 @@ import com.thoughtworks.xstream.XStream;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.equalTo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 import static org.junit.Assert.assertTrue;
@@ -194,12 +195,12 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     private void assertIsPending(Step step, String stepAsString, String previousNonAndStep) {
-        assertThat(step, Matchers.instanceOf(PendingStep.class));
+        assertThat(step, instanceOf(PendingStep.class));
         PendingStep pendingStep = (PendingStep) step;
         assertThat(pendingStep.stepAsString(), equalTo(stepAsString));
         assertThat(pendingStep.previousNonAndStepAsString(), equalTo(previousNonAndStep));
         Throwable throwable = step.perform(null).getFailure();
-        assertThat(throwable, is(PendingStepFound.class));
+        assertThat(throwable, instanceOf(PendingStepFound.class));
         assertThat(throwable.getMessage(), equalTo(stepAsString));
 
     }
