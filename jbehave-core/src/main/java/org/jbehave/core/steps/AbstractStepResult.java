@@ -37,8 +37,8 @@ public abstract class AbstractStepResult implements StepResult {
         }
 
         public void describeTo(StoryReporter reporter) {
-            if (throwable instanceof OutcomesFailed) {
-                reporter.failedOutcomes(parametrisedStep(), ((OutcomesFailed) throwable).outcomesTable());
+            if (throwable.getCause() instanceof OutcomesFailed) {
+                reporter.failedOutcomes(parametrisedStep(), ((OutcomesFailed) throwable.getCause()).outcomesTable());
             } else {
                 reporter.failed(parametrisedStep(), throwable);
             }

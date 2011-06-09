@@ -45,7 +45,7 @@ public class StepResultBehaviour {
         failed(failed, cause).describeTo(reporter);
         String failedOutcomes = "And outcomes failed";
         OutcomesTable outcomesTable = new OutcomesTable();
-        failed(failedOutcomes, new OutcomesFailed(outcomesTable)).describeTo(reporter);
+        failed(failedOutcomes, new UUIDExceptionWrapper(new OutcomesFailed(outcomesTable))).describeTo(reporter);
         skipped().describeTo(reporter);
 
         // Then
