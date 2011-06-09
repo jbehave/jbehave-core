@@ -414,9 +414,9 @@ public class FreemarkerViewGenerator implements ViewGenerator {
     public static class TimeFormatter {
 
         public String formatMillis(long millis) {
-            int hour = 1000 * 60 * 60;
-            int minute = 1000 * 60;
             int second = 1000;
+            int minute = 60 * second;
+            int hour = 60 * minute;
             long hours = millis / hour;
             long minutes = (millis % hour) / minute;
             long seconds = ((millis % hour) % minute) / second;
