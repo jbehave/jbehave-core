@@ -23,7 +23,7 @@ public class StoryFinderBehaviour {
     
     @Test
     public void shouldFindPaths() {
-        List<String> storyPaths = finder.findPaths("src/test/java", asList("**/stories/*_story"), asList(""));
+        List<Object> storyPaths = new ArrayList<Object>(finder.findPaths("src/test/java", asList("**/stories/*_story"), asList("")));
         assertThat(storyPaths.size(), equalTo(4));
         assertThat(storyPaths, hasItem(containsString("/")));
         assertThat(storyPaths, hasItem(not(startsWith("/"))));
@@ -33,7 +33,7 @@ public class StoryFinderBehaviour {
 
     @Test
     public void shouldFindPathsAndPrefixThem() {
-        List<String> storyPaths = finder.findPaths("src/test/java", asList("**/stories/*_story"), asList(""), "file:");
+        List<Object> storyPaths = new ArrayList<Object>(finder.findPaths("src/test/java", asList("**/stories/*_story"), asList(""), "file:"));
         assertThat(storyPaths.size(), equalTo(4));
         assertThat(storyPaths, hasItem(containsString("/")));
         assertThat(storyPaths, hasItem(not(startsWith("/"))));
@@ -43,7 +43,7 @@ public class StoryFinderBehaviour {
 
     @Test
     public void shouldFindPathsAndIgnorePrefixIfBlank() {
-        List<String> storyPaths = finder.findPaths("src/test/java", asList("**/stories/*_story"), asList(""), "");
+        List<Object> storyPaths = new ArrayList<Object>(finder.findPaths("src/test/java", asList("**/stories/*_story"), asList(""), ""));
         assertThat(storyPaths.size(), equalTo(4));
         assertThat(storyPaths, hasItem(containsString("/")));
         assertThat(storyPaths, hasItem(not(startsWith("/"))));
@@ -53,7 +53,7 @@ public class StoryFinderBehaviour {
 
     @Test
     public void shouldFindClassNamesAndTrasformThemIfMatchingExtension() {
-        List<String> classNames = finder.findClassNames("src/test/java", asList("**/stories/*.java"), asList(""));
+        List<Object> classNames = new ArrayList<Object>(finder.findClassNames("src/test/java", asList("**/stories/*.java"), asList("")));
         assertThat(classNames.size(), equalTo(3));
         assertThat(classNames, hasItem(not(containsString("/"))));
         assertThat(classNames, hasItem(not(endsWith(".java"))));
@@ -62,7 +62,7 @@ public class StoryFinderBehaviour {
 
     @Test
     public void shouldFindClassNamesButNotTransformThemIfNotMatchingExtension() {
-        List<String> classNames = finder.findClassNames("src/test/java", asList("**/stories/*.groovy"), asList(""));
+        List<Object> classNames = new ArrayList<Object>(finder.findClassNames("src/test/java", asList("**/stories/*.groovy"), asList("")));
         assertThat(classNames.size(), equalTo(1));
         assertThat(classNames, hasItem(containsString("/")));
         assertThat(classNames, hasItem(endsWith(".groovy")));
@@ -87,7 +87,7 @@ public class StoryFinderBehaviour {
     @Test
     public void shouldFindClassNamesAndTrasformThemIfMatchingCustomExtension() {
         finder = new StoryFinder(".groovy");
-        List<String> classNames = finder.findClassNames("src/test/java", asList("**/stories/*.groovy"), asList(""));
+        List<Object> classNames = new ArrayList<Object>(finder.findClassNames("src/test/java", asList("**/stories/*.groovy"), asList("")));
         assertThat(classNames.size(), equalTo(1));
         assertThat(classNames, hasItem(not(containsString("/"))));
         assertThat(classNames, hasItem(not(endsWith(".groovy"))));

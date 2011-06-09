@@ -21,7 +21,7 @@
     <resource.encoding>UTF-8</resource.encoding>
     <jdk.version>1.5</jdk.version>
     <junit.version>4.8.2</junit.version>
-    <hamcrest.version>1.1</hamcrest.version>
+    <hamcrest.version>1.2.1</hamcrest.version>
   </properties>
 
   <modules>
