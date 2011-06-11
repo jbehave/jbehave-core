@@ -8,25 +8,50 @@
 
 <h2>Outcomes Table</h2>
 
-<p>Scenario writers may want to collect multiple outcomes and verify them all at once:</p>
+<p>A typical use case when outcomes are collected in a tabular format is to verify them all at once.  To this end, JBehave
+provides the <a href="javadoc/core/org/jbehave/core/model/OutcomesTable.html">OutcomesTable</a>:</p>
 
-<pre class="brush: java">
-	OutcomesTable outcomes = new OutcomesTable();
-    outcomes.addOutcome("a failure", "A value", equalTo("A different value"));
-    outcomes.addOutcome("a success", "A value", equalTo("A value"));
-    outcomes.verify();
-</pre>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Then("the values returned are: $table")
+    public void theValuesReturnedAre(ExamplesTable table) {
+        Map<String,String> actual = actualValues(); // obtained from another step invocation
+        OutcomesTable outcomes = new OutcomesTable();
+        Map<String,String> expected = table.getRow(0); // assuming all values are contained in a single row
+        for ( String key : expected.keySet() ){
+            outcomes.addOutcome(key, actual.get(key), Matchers.equalTo(expected.get(key)));            
+        }
+        outcomes.verify();
+    }
+]]>
+</script>
+
+<p>The user adds each outcome using a <a href="http://code.google.com/p/hamcrest/">Hamcrest</a> Matcher:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    public <T> void addOutcome(String description, T value, Matcher<T> matcher);
+]]>
+</script>
+
+<span class="followup">The Matcher interface is contained in the <b>hamcrest-core</b> module.  A collection of Matchers
+is contained in the <b>hamcrest-library</b>.  You may choose to upgrade just the library module or provide your own custom implementations
+of Matcher. 
+</span>
 
 <p>Upon verification, the outcome matching is done and if any
-outcome verification fails an <b>OutcomesFailed</b> exception is thrown
-and the step execution fails and the entire outcomes table (including all verified outcomes)
-is reported.</p>
+outcome verification fails an exception is thrown and the step execution fails and 
+the entire outcomes table (including all verified outcomes) is reported to the 
+<a href="javadoc/core/org/jbehave/core/reporters/StoryReporter.html">StoryReporter</a>.
+The TXT format would look like:</p>
 
 <pre class="brush: text">
 |Description|Value|Matcher|Verified|
-|a failure|A value|"A different value"|false|
-|a success|A value|"A value"|true|
+|Value1|Value1|"Value1"|true|
+|Value2|Value2|"ValueX"|false|
 </pre>
+
+<p>The HTML format would use colour-coding for failures.</p>
+
 <div class="clear">
 <hr />
 </div>
