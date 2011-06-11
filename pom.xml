@@ -20,8 +20,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <resource.encoding>UTF-8</resource.encoding>
     <jdk.version>1.5</jdk.version>
-    <junit.version>4.8.2</junit.version>
-    <hamcrest.version>1.2.1</hamcrest.version>
   </properties>
 
   <modules>
@@ -38,54 +36,12 @@
     <module>archetypes</module>
   </modules>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit-dep</artifactId>
-        <version>${junit.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-library</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.hamcrest</groupId>
-        <artifactId>hamcrest-integration</artifactId>
-        <version>${hamcrest.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.mockito</groupId>
-        <artifactId>mockito-all</artifactId>
-        <version>1.8.5</version>
-        <scope>test</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit-dep</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-library</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-integration</artifactId>
-    </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
+      <version>1.8.5</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <!-- hack to overcome http://jira.codehaus.org/browse/MSITE-228 -->
