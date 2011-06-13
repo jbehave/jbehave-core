@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.parsers.StepMatcher;
@@ -26,7 +27,8 @@ public class StepCreatorBehaviour {
     public void shouldHandleTargetInvocationFailureInBeforeOrAfterStep() throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = new StepCreator(stepsInstance, new SilentStepMonitor());
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
@@ -43,7 +45,8 @@ public class StepCreatorBehaviour {
     public void shouldHandleFailureInBeforeOrAfterStep() throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = new StepCreator(stepsInstance, new SilentStepMonitor());
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new SilentStepMonitor());
 
         // When
         Method method = null;
@@ -60,7 +63,8 @@ public class StepCreatorBehaviour {
     public void shouldHandleTargetInvocationFailureInParametrisedStep() throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = new StepCreator(stepsInstance, new SilentStepMonitor());
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
@@ -74,7 +78,8 @@ public class StepCreatorBehaviour {
     public void shouldHandleFailureInParametrisedStep() throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = new StepCreator(stepsInstance, new SilentStepMonitor());
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new SilentStepMonitor());
 
         // When
         Method method = null;
@@ -89,7 +94,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);        
-        StepCreator stepCreator = new StepCreator(stepsInstance, new ParameterConverters(), stepMatcher, new SilentStepMonitor());
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new ParameterConverters(), stepMatcher, new SilentStepMonitor());
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(new String[]{});

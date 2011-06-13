@@ -31,27 +31,27 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
 	}
 	
 	public List<CandidateSteps> createCandidateSteps() {
-		List<Object> stepsInstances = stepsInstances();
+		List<Class<?>> types = stepsTypes();
 		List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
-		for (Object instance : stepsInstances) {
+		for (Class<?> type : types) {
 			configuration.parameterConverters().addConverters(
-					methodReturningConverters(instance));
-			steps.add(new Steps(configuration, instance));
+					methodReturningConverters(type));
+			steps.add(new Steps(configuration, type, this));
 		}
 		return steps;
 	}
 
-	protected abstract List<Object> stepsInstances();
+	protected abstract List<Class<?>> stepsTypes();
 
 	/**
 	 * Create parameter converters from methods annotated with @AsParameterConverter
 	 */
-	private List<ParameterConverter> methodReturningConverters(Object instance) {
+	private List<ParameterConverter> methodReturningConverters(Class<?> type) {
 		List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
 
-		for (Method method : instance.getClass().getMethods()) {
+		for (Method method : type.getMethods()) {
 			if (method.isAnnotationPresent(AsParameterConverter.class)) {
-				converters.add(new MethodReturningConverter(method, instance));
+				converters.add(new MethodReturningConverter(method, type, this));
 			}
 		}
 
@@ -79,4 +79,12 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
 		return false;
 	}
 
+    @SuppressWarnings("serial")
+    public static class StepsInstanceNotFound extends RuntimeException {
+
+        public StepsInstanceNotFound(Class<?> type, InjectableStepsFactory stepsFactory) {
+            super("Steps instance not found for type "+type+" in factory "+stepsFactory);
+        }
+        
+    }
 }

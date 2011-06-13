@@ -26,15 +26,15 @@ public class BeforeOrAfterStep {
     private final Outcome outcome;
     private StepMonitor stepMonitor = new SilentStepMonitor();
 
-    public BeforeOrAfterStep(Stage stage, Method method, Object instance) {
-        this(stage, method, instance, Outcome.ANY);
+    public BeforeOrAfterStep(Stage stage, Method method, Class<?> type, InjectableStepsFactory stepsFactory) {
+        this(stage, method, type, stepsFactory, Outcome.ANY);
     }
 
-    public BeforeOrAfterStep(Stage stage, Method method, Object instance, Outcome outcome) {
+    public BeforeOrAfterStep(Stage stage, Method method, Class<?> type, InjectableStepsFactory stepsFactory, Outcome outcome) {
         this.stage = stage;
         this.method = method;
         this.outcome = outcome;
-        this.stepCreator = new StepCreator(instance, stepMonitor);
+        this.stepCreator = new StepCreator(type, stepsFactory, stepMonitor);
     }
 
     public Stage getStage() {

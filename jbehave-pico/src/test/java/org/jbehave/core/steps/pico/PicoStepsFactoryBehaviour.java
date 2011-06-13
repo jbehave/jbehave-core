@@ -1,16 +1,11 @@
 package org.jbehave.core.steps.pico;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.lang.reflect.Field;
 import java.util.List;
 
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
-import org.junit.Before;
 import org.junit.Test;
 import org.picocontainer.Characteristics;
 import org.picocontainer.DefaultPicoContainer;
@@ -19,15 +14,10 @@ import org.picocontainer.behaviors.Caching;
 import org.picocontainer.injectors.AbstractInjector;
 import org.picocontainer.injectors.ConstructorInjection;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class PicoStepsFactoryBehaviour {
-
-    private static Field stepsInstance;
-
-    @Before
-    public void setUp() throws NoSuchFieldException {
-        stepsInstance = Steps.class.getDeclaredField("instance");
-        stepsInstance.setAccessible(true);
-    }
 
     private MutablePicoContainer createPicoContainer() {
         return new DefaultPicoContainer(new Caching().wrap(new ConstructorInjection()));
@@ -56,16 +46,19 @@ public class PicoStepsFactoryBehaviour {
         List<CandidateSteps> steps = factory.createCandidateSteps();
         // Then
         assertFooStepsFound(steps);
-        assertEquals(42, (int) ((FooStepsWithDependency) stepsInstance.get(steps.get(0))).integer);
+        assertEquals(42, (int) ((FooStepsWithDependency) stepsInstance(steps.get(0))).integer);
     }
 
     private void assertFooStepsFound(List<CandidateSteps> steps) throws NoSuchFieldException, IllegalAccessException {
         assertEquals(1, steps.size());
         assertTrue(steps.get(0) instanceof CandidateSteps);
-        Object instance = stepsInstance.get(steps.get(0));
+        Object instance = stepsInstance(steps.get(0));
         assertTrue(instance instanceof FooSteps);
     }
 
+    private Object stepsInstance(CandidateSteps candidateSteps) {
+        return ((Steps)candidateSteps).instance();
+    }
 
     @Test(expected=AbstractInjector.UnsatisfiableDependenciesException.class)
     public void assertThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
@@ -73,7 +66,7 @@ public class PicoStepsFactoryBehaviour {
         parent.as(Characteristics.USE_NAMES).addComponent(FooStepsWithDependency.class);
         PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulConfiguration(), parent);
         // When
-        factory.createCandidateSteps();
+        factory.createInstanceOfType(FooStepsWithDependency.class);
         // Then ... expected exception is thrown        
     }
 

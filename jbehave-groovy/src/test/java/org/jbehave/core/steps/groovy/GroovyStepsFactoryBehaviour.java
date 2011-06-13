@@ -22,15 +22,15 @@ public class GroovyStepsFactoryBehaviour {
         GroovyResourceFinder resourceFinder = new GroovyResourceFinder(codeLocationFromClass(this.getClass()),
                 "**/steps/groovy/*.groovy", "**/invalidSteps.groovy");
         GroovyStepsFactory factory = new GroovyStepsFactory(new MostUsefulConfiguration(), new GroovyContext(resourceFinder));
-        List<Object> instances = factory.stepsInstances();
-        MatcherAssert.assertThat(instances.size(), Matchers.equalTo(1));
-        assertThat(instances.get(0).getClass().getSimpleName(), equalTo("AnnotatedSteps"));
+        List<Class<?>> types = factory.stepsTypes();
+        MatcherAssert.assertThat(types.size(), Matchers.equalTo(1));
+        assertThat(types.get(0).getSimpleName(), equalTo("AnnotatedSteps"));
     }
 
     @Test(expected = GroovyClassInstantiationFailed.class)
     public void shouldNotCreateStepsInstancesFromGroovyWhenResourceInvalid() {
         GroovyStepsFactory factory = new GroovyStepsFactory(new MostUsefulConfiguration(),
                 new GroovyContext(asList("/org/jbehave/core/steps/groovy/invalidSteps.groovy")));
-        factory.stepsInstances();
+        factory.stepsTypes();
     }
 }

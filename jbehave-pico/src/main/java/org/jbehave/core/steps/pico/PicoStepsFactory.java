@@ -27,14 +27,22 @@ public class PicoStepsFactory extends AbstractStepsFactory {
 	}
 
 	@Override
-	protected List<Object> stepsInstances() {
-		List<Object> steps = new ArrayList<Object>();
+	protected List<Class<?>> stepsTypes() {
+		List<Class<?>> types = new ArrayList<Class<?>>();
 		for (ComponentAdapter<?> adapter : parent.getComponentAdapters()) {
 			if (hasAnnotatedMethods(adapter.getComponentImplementation())) {
-				steps.add(parent.getComponent(adapter
-						.getComponentKey()));
+				types.add(adapter.getComponentImplementation());
 			}
 		}
-		return steps;
+		return types;
 	}
+
+    public Object createInstanceOfType(Class<?> type) {
+        Object instance = parent.getComponent(type);
+        if ( instance == null ){
+            throw new StepsInstanceNotFound(type, this);
+        }
+        return instance;
+    }
+
 }

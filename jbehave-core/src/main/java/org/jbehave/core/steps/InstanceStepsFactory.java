@@ -1,17 +1,20 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
-
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.jbehave.core.configuration.Configuration;
+
+import static java.util.Arrays.asList;
 
 /**
  * An {@link InjectableStepsFactory} that is provided Object instances.
  */
 public class InstanceStepsFactory extends AbstractStepsFactory {
 
-    private final List<Object> stepsInstances;
+    private final Map<Class<?>,Object> stepsInstances = new HashMap<Class<?>, Object>();
 
     public InstanceStepsFactory(Configuration configuration, Object... stepsInstances) {
         this(configuration, asList(stepsInstances));
@@ -19,12 +22,22 @@ public class InstanceStepsFactory extends AbstractStepsFactory {
 
     public InstanceStepsFactory(Configuration configuration, List<Object> stepsInstances) {
         super(configuration);
-        this.stepsInstances = stepsInstances;
+        for (Object instance : stepsInstances) {
+            this.stepsInstances.put(instance.getClass(), instance);
+        }
     }
 
     @Override
-    protected List<Object> stepsInstances() {
-        return stepsInstances;
+    protected List<Class<?>> stepsTypes() {
+        return new ArrayList<Class<?>>(stepsInstances.keySet());
+    }
+
+    public Object createInstanceOfType(Class<?> type) {
+        Object instance = stepsInstances.get(type);
+        if ( instance == null ){
+            throw new StepsInstanceNotFound(type, this);
+        }
+        return instance;
     }
 
 }

@@ -4,11 +4,13 @@ import java.util.List;
 
 /**
  * Interface abstracting the creation of {@link CandidateSteps}.
- * Concrete implementations should be injected with the mechanism
- * to instantiate the CandidateSteps instances.
+ * Concrete implementations will provide different mechanisms
+ * to create the steps instances.
  */
 public interface InjectableStepsFactory {
 
 	List<CandidateSteps> createCandidateSteps();
+
+    Object createInstanceOfType(Class<?> type);
 
 }

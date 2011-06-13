@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 
@@ -546,12 +547,20 @@ public class ParameterConverters {
      * Invokes method on instance to return value.
      */
     public static class MethodReturningConverter implements ParameterConverter {
-        private Object instance;
         private Method method;
+        private Class<?> stepsType;
+        private InjectableStepsFactory stepsFactory;
 
         public MethodReturningConverter(Method method, Object instance) {
             this.method = method;
-            this.instance = instance;
+            this.stepsType = instance.getClass();
+            this.stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), instance);
+        }
+
+        public MethodReturningConverter(Method method, Class<?> stepsType, InjectableStepsFactory stepsFactory) {
+            this.method = method;
+            this.stepsType = stepsType;
+            this.stepsFactory = stepsFactory;
         }
 
         public boolean accept(Type type) {
@@ -563,11 +572,16 @@ public class ParameterConverters {
 
         public Object convertValue(String value, Type type) {
             try {
+                Object instance = instance();
                 return method.invoke(instance, value);
             } catch (Exception e) {
                 throw new ParameterConvertionFailed("Failed to invoke method " + method + " with value " + value
-                        + " in " + instance, e);
+                        + " in " + type, e);
             }
+        }
+
+        private Object instance() {
+            return stepsFactory.createInstanceOfType(stepsType);
         }
 
     }

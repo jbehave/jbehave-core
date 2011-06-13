@@ -32,7 +32,8 @@ public class StepCreator {
     public static final String PARAMETER_VALUE_END = "\uFF60";
     public static final String PARAMETER_VALUE_NEWLINE = "\u2424";
     public static final UUIDExceptionWrapper NO_FAILURE = new UUIDExceptionWrapper("no failure");
-    private final Object stepsInstance;
+    private final Class<?> stepsType;
+    private final InjectableStepsFactory stepsFactory;
     private final ParameterConverters parameterConverters;
     private final StepMatcher stepMatcher;
     private final StepRunner beforeOrAfter;
@@ -41,13 +42,14 @@ public class StepCreator {
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
 
-    public StepCreator(Object stepsInstance, StepMonitor stepMonitor) {
-        this(stepsInstance, null, null, stepMonitor);
+    public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory, StepMonitor stepMonitor) {
+        this(stepsType, stepsFactory, null, null, stepMonitor);
     }
 
-    public StepCreator(Object stepsInstance, ParameterConverters parameterConverters, StepMatcher stepMatcher,
+    public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory, ParameterConverters parameterConverters, StepMatcher stepMatcher,
             StepMonitor stepMonitor) {
-        this.stepsInstance = stepsInstance;
+        this.stepsType = stepsType;
+        this.stepsFactory = stepsFactory;
         this.parameterConverters = parameterConverters;
         this.stepMatcher = stepMatcher;
         this.stepMonitor = stepMonitor;
@@ -65,6 +67,10 @@ public class StepCreator {
 
     public void doDryRun(boolean dryRun) {
         this.dryRun = dryRun;
+    }
+
+    public Object stepsInstance() {
+        return stepsFactory.createInstanceOfType(stepsType);
     }
 
     public Step createBeforeOrAfterStep(final Method method) {
@@ -295,6 +301,7 @@ public class StepCreator {
                         "method"))));
             }
             try {
+                Object stepsInstance = stepsInstance();
                 if (method.getParameterTypes().length == 0) {
                     method.invoke(stepsInstance);
                 } else {
@@ -453,7 +460,7 @@ public class StepCreator {
                 parametriseStep();
                 stepMonitor.performing(stepAsString, dryRun);
                 if (!dryRun) {
-                    method.invoke(stepsInstance, convertedParameters);
+                    method.invoke(stepsInstance(), convertedParameters);
                 }
                 return successful(stepAsString).withParameterValues(parametrisedStep);
             } catch (ParameterNotFound e) {

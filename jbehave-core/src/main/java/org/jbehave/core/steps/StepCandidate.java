@@ -30,24 +30,26 @@ public class StepCandidate {
     private final Integer priority;
     private final StepType stepType;
     private final Method method;
-    private final Object stepsInstance;
+    private final Class<?> stepsType;
+    private final InjectableStepsFactory stepsFactory;
     private final Keywords keywords;
     private final StepMatcher stepMatcher;
     private final StepCreator stepCreator;
-    private StepMonitor stepMonitor = new SilentStepMonitor();
     private String[] composedSteps;
+    private StepMonitor stepMonitor = new SilentStepMonitor();
 
-    public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Object stepsInstance,
+    public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Class<?> stepsType, InjectableStepsFactory stepsFactory, 
             Keywords keywords, StepPatternParser stepPatternParser,
             ParameterConverters parameterConverters) {
         this.patternAsString = patternAsString;
         this.priority = priority;
         this.stepType = stepType;
         this.method = method;
-        this.stepsInstance = stepsInstance;
+        this.stepsType = stepsType;
+        this.stepsFactory = stepsFactory;
         this.keywords = keywords;
         this.stepMatcher = stepPatternParser.parseStep(stepType, patternAsString);
-        this.stepCreator = new StepCreator(stepsInstance, parameterConverters, stepMatcher, stepMonitor);
+        this.stepCreator = new StepCreator(stepsType, stepsFactory, parameterConverters, stepMatcher, stepMonitor);
     }
 
     public Method getMethod() {
@@ -63,7 +65,7 @@ public class StepCandidate {
     }
 
     public Object getStepsInstance() {
-        return stepsInstance;
+        return stepsFactory.createInstanceOfType(stepsType);
     }
 
     public StepType getStepType() {
@@ -124,9 +126,9 @@ public class StepCandidate {
                     matchesType = keywords.startingWordFor(stepType).equals(findStartingWord(previousNonAndStep));
                 }
             }
-            stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType, method, stepsInstance);
+            stepMonitor.stepMatchesType(step, previousNonAndStep, matchesType, stepType, method, stepsType);
             boolean matchesPattern = stepMatcher.matches(stripStartingWord(step));
-            stepMonitor.stepMatchesPattern(step, matchesPattern, stepMatcher.pattern(), method, stepsInstance);
+            stepMonitor.stepMatchesPattern(step, matchesPattern, stepMatcher.pattern(), method, stepsType);
             // must match both type and pattern 
             return matchesType && matchesPattern;
         } catch (StartingWordNotFound e) {

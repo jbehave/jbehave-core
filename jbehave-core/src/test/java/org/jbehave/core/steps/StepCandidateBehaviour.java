@@ -55,21 +55,23 @@ public class StepCandidateBehaviour {
     private Keywords keywords = new LocalizedKeywords();
 
     private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance) {
-        return new StepCandidate(patternAsString, 0, stepType, method, instance, keywords,
+        Class<?> stepsType = instance.getClass();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), instance);
+        return new StepCandidate(patternAsString, 0, stepType, method, stepsType, stepsFactory, keywords,
                 new RegexPrefixCapturingPatternParser(), new ParameterConverters());
     }
 
     @Test
     public void shouldMatchStepWithoutParameters() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate candidate = candidateWith("I laugh", GIVEN, method, null);
+        StepCandidate candidate = candidateWith("I laugh", GIVEN, method, new SomeSteps());
         assertThat(candidate.matches("Given I laugh"), is(true));
     }
 
     @Test
     public void shouldMatchStepWithParameters() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, null);
+        StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, new SomeSteps());
         assertThat(candidate.matches("When windows on the 1st floor"), is(true));
         assertThat(candidate.matches("When windows on the 1st floor are open"), is(not(true)));
     }
@@ -77,7 +79,7 @@ public class StepCandidateBehaviour {
     @Test
     public void shouldMatchAndStepOnlyWithPreviousStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, null);
+        StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, new SomeSteps());
         assertThat(candidate.matches("And windows on the 1st floor"), is(not(true)));
         assertThat(candidate.matches("And windows on the 1st floor", "When windows on the 1st floor"), is(true));
     }
@@ -85,14 +87,14 @@ public class StepCandidateBehaviour {
     @Test
     public void shouldMatchMultilineStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate candidate = candidateWith("the grid should look like $grid", THEN, method, null);
+        StepCandidate candidate = candidateWith("the grid should look like $grid", THEN, method, new SomeSteps());
         assertThat(candidate.matches("Then the grid should look like \n....\n....\n"), is(true));
     }
 
     @Test
     public void shouldIgnoreStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate candidate = candidateWith("", IGNORABLE, method, null);
+        StepCandidate candidate = candidateWith("", IGNORABLE, method, new SomeSteps());
         assertThat(candidate.ignore("!-- ignore me"), is(true));
     }
 
@@ -107,7 +109,7 @@ public class StepCandidateBehaviour {
             }
             
         };
-        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, keywords,
+        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, null, keywords,
                 new RegexPrefixCapturingPatternParser(), new ParameterConverters());
         assertThat(candidate.matches("When windows on the 1st floor"), is(false));
         assertThat(candidate.ignore("!-- windows on the 1st floor"), is(false));
@@ -116,7 +118,7 @@ public class StepCandidateBehaviour {
     @Test
     public void shouldProvideStepPriority() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
-        StepCandidate candidate = candidateWith("I laugh", GIVEN, method, null);
+        StepCandidate candidate = candidateWith("I laugh", GIVEN, method, new SomeSteps());
         assertThat(candidate.getPriority(), equalTo(0));
     }
 

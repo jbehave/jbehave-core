@@ -1,5 +1,6 @@
 package org.jbehave.core.steps.guice;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,27 +31,49 @@ public class GuiceStepsFactory extends AbstractStepsFactory {
     }
 
     @Override
-    protected List<Object> stepsInstances() {
-        List<Object> steps = new ArrayList<Object>();
-        addInstances(injector, steps);
-        return steps;
+    protected List<Class<?>> stepsTypes() {
+        List<Class<?>> types = new ArrayList<Class<?>>();
+        addTypes(injector, types);
+        return types;
     }
 
     /**
-     * Adds steps instances from given injector and recursively its parent
+     * Adds steps types from given injector and recursively its parent
      * 
      * @param injector the current Inject
-     * @param steps the List of steps instances
+     * @param types the List of steps types
      */
-    private void addInstances(Injector injector, List<Object> steps) {
+    private void addTypes(Injector injector, List<Class<?>> types) {
         for (Binding<?> binding : injector.getBindings().values()) {
             Key<?> key = binding.getKey();
-            if (hasAnnotatedMethods(key.getTypeLiteral().getType())) {
-                steps.add(injector.getInstance(key));
+            Type type = key.getTypeLiteral().getType();
+            if (hasAnnotatedMethods(type)) {
+                types.add(((Class<?>)type));
             }
         }
         if (injector.getParent() != null) {
-            addInstances(injector.getParent(), steps);
+            addTypes(injector.getParent(), types);
+        }
+    }
+
+    public Object createInstanceOfType(Class<?> type) {
+        List<Object> instances = new ArrayList<Object>();
+        addInstances(injector, type, instances);
+        if ( !instances.isEmpty() ){
+            return instances.iterator().next();
+        }
+        return new StepsInstanceNotFound(type, this);
+    }
+
+    private void addInstances(Injector injector, Class<?> type, List<Object> instances) {
+        for (Binding<?> binding : injector.getBindings().values()) {
+            Key<?> key = binding.getKey();
+            if (type.equals(key.getTypeLiteral().getType())) {
+                instances.add(injector.getInstance(key));
+            }
+        }
+        if (injector.getParent() != null) {
+            addInstances(injector.getParent(), type, instances);
         }
     }
 }
