@@ -1,5 +1,7 @@
 package org.jbehave.core.reporters;
 
+import org.jbehave.core.reporters.TemplateableOutput.FreemarkerProcessor;
+
 public abstract class Format {
 
     public static final Format CONSOLE = new Format("CONSOLE") {
@@ -7,9 +9,9 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return new ConsoleOutput(storyReporterBuilder.keywords())
-                .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
-                .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
+            return new ConsoleOutput(storyReporterBuilder.keywords()).doReportFailureTrace(
+                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
+                    storyReporterBuilder.compressFailureTrace());
         }
     };
 
@@ -17,9 +19,9 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return new IdeOnlyConsoleOutput(storyReporterBuilder.keywords())
-                    .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
-                    .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
+            return new IdeOnlyConsoleOutput(storyReporterBuilder.keywords()).doReportFailureTrace(
+                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
+                    storyReporterBuilder.compressFailureTrace());
         }
     };
 
@@ -28,9 +30,9 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("txt"));
-            return new TxtOutput(factory.createPrintStream(), storyReporterBuilder.keywords())
-                    .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
-                    .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
+            return new TxtOutput(factory.createPrintStream(), storyReporterBuilder.keywords()).doReportFailureTrace(
+                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
+                    storyReporterBuilder.compressFailureTrace());
         }
     };
 
@@ -40,9 +42,18 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("html"));
-            return new HtmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords())
-                    .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
-                    .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
+            return new HtmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()).doReportFailureTrace(
+                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
+                    storyReporterBuilder.compressFailureTrace());
+        }
+    };
+
+    public static final Format HTML_TEMPLATE = new Format("HTML") {
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+                StoryReporterBuilder storyReporterBuilder) {
+            factory.useConfiguration(storyReporterBuilder.fileConfiguration("html"));
+            return new HtmlTemplateOuput(factory.getOutputFile(), storyReporterBuilder.keywords(), new FreemarkerProcessor());
         }
     };
 
@@ -51,9 +62,9 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("xml"));
-            return new XmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords())
-                    .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
-                    .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
+            return new XmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()).doReportFailureTrace(
+                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
+                    storyReporterBuilder.compressFailureTrace());
         }
     };
 
