@@ -472,6 +472,14 @@ public class TemplateableOutput implements StoryReporter {
         public OutcomesTable getOutcomes() {
             return outcomes;
         }
+        
+        public Throwable getOutcomesFailureCause(){
+            // TODO PrintStackTrace
+            if ( outcomes.failureCause() != null ){
+                return outcomes.failureCause().getCause();
+            }
+            return null;
+        }
 
         public String getFormattedStep(String parameterPattern) {
             return MessageFormat.format(stepPattern, formatParameters(parameterPattern));
@@ -489,7 +497,7 @@ public class TemplateableOutput implements StoryReporter {
             // first, look for parametrised scenarios
             parameters = findParameters(PARAMETER_VALUE_START + PARAMETER_VALUE_START, PARAMETER_VALUE_END
                     + PARAMETER_VALUE_END);
-            // first, look for normal scenarios
+            // second, look for normal scenarios
             if (parameters.isEmpty()) {
                 parameters = findParameters(PARAMETER_VALUE_START, PARAMETER_VALUE_END);
             }
@@ -497,7 +505,7 @@ public class TemplateableOutput implements StoryReporter {
 
         private List<OutputParameter> findParameters(String start, String end) {
             List<OutputParameter> parameters = new ArrayList<OutputParameter>();
-            Matcher matcher = Pattern.compile("(" + start + "[\\w\\.\\s\\-]*" + end + ")(\\W|\\Z)", Pattern.DOTALL)
+            Matcher matcher = Pattern.compile("(" + start + "[\\w\\s\\.\\-\\_\\*]*" + end + ")(\\W|\\Z)", Pattern.DOTALL)
                     .matcher(step);
             while (matcher.find()) {
                 parameters.add(new OutputParameter(step, matcher.start(), matcher.end()));
@@ -517,14 +525,10 @@ public class TemplateableOutput implements StoryReporter {
         }
 
         private void parseTable() {
-            if (containsTable()) {
+            if (step.contains(PARAMETER_TABLE_START) && step.contains(PARAMETER_TABLE_END)) {
                 String tableAsString = StringUtils.substringBetween(step, PARAMETER_TABLE_START, PARAMETER_TABLE_END);
                 table = new ExamplesTable(tableAsString);
             }
-        }
-
-        private boolean containsTable() {
-            return step.contains(PARAMETER_TABLE_START) && step.contains(PARAMETER_TABLE_END);
         }
 
     }
