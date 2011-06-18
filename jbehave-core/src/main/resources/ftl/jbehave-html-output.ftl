@@ -68,7 +68,7 @@
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep("<span class=\"step parameter\">{0}</span>")>
 <div class="step ${step.outcome}">${formattedStep} <#if step.getTable()??><span class="step parameter"><@renderTable step.getTable()/></span></#if> <@renderStepOutcome step.getOutcome()/></div>
-<#if step.getFailure()??><pre class="failure">${step.failure.cause}</pre></#if>
+<#if step.getFailure()??><pre class="failure">${step.failureCause}</pre></#if>
 <#if step.getOutcomes()??>
 <div class="outcomes"><@renderOutcomes step.getOutcomes()/>
 <#if step.getOutcomesFailureCause()??><pre class="failure">${step.outcomesFailureCause}</pre></#if>

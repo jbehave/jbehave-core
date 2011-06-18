@@ -465,6 +465,13 @@ public class TemplateableOutput implements StoryReporter {
             return failure;
         }
 
+        public String getFailureCause(){
+            if ( failure != null ){
+                return new StackTraceFormatter(true).stackTrace(failure);
+            }
+            return "";
+        }
+        
         public ExamplesTable getTable() {
             return table;
         }
@@ -473,12 +480,11 @@ public class TemplateableOutput implements StoryReporter {
             return outcomes;
         }
         
-        public Throwable getOutcomesFailureCause(){
-            // TODO PrintStackTrace
+        public String getOutcomesFailureCause(){
             if ( outcomes.failureCause() != null ){
-                return outcomes.failureCause().getCause();
+                return new StackTraceFormatter(true).stackTrace(outcomes.failureCause());
             }
-            return null;
+            return "";
         }
 
         public String getFormattedStep(String parameterPattern) {
