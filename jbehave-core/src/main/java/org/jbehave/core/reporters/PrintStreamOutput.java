@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
@@ -64,14 +63,17 @@ import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
  * </pre>
  * 
  * The pattern is by default processed and formatted by the
- * {@link MessageFormat}. Both the {@link #format(String key, String defaultPattern, Object... args)} and
- * {@link #lookupPattern(String key, String defaultPattern)} methods are override-able and a different formatter
- * or pattern lookup can be used by subclasses.
+ * {@link MessageFormat}. Both the
+ * {@link #format(String key, String defaultPattern, Object... args)} and
+ * {@link #lookupPattern(String key, String defaultPattern)} methods are
+ * override-able and a different formatter or pattern lookup can be used by
+ * subclasses.
  * </p>
  * <p>
  * If the keyword "FAILED" (or any other keyword used by the reporter) needs to
  * be expressed in a different language, all we need to do is to provide an
- * instance of {@link org.jbehave.core.i18n.LocalizedKeywords} using the appropriate {@link Locale}, e.g.
+ * instance of {@link org.jbehave.core.i18n.LocalizedKeywords} using the
+ * appropriate {@link Locale}, e.g.
  * 
  * <pre>
  * Keywords keywords = new LocalizedKeywords(new Locale(&quot;it&quot;));
@@ -83,24 +85,26 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     private static final String EMPTY = "";
 
-    public enum Format { TXT, HTML, XML }
-    
-    private final Format format;    
+    public enum Format {
+        TXT, HTML, XML
+    }
+
+    private final Format format;
     private final PrintStream output;
     private final Properties outputPatterns;
     private final Keywords keywords;
     private ThreadLocal<Boolean> reportFailureTrace = new ThreadLocal<Boolean>();
     private ThreadLocal<Boolean> compressFailureTrace = new ThreadLocal<Boolean>();
     private ThreadLocal<Throwable> cause = new ThreadLocal<Throwable>();
-    
-    protected PrintStreamOutput(Format format, PrintStream output, Properties outputPatterns,
-            Keywords keywords, boolean reportFailureTrace, boolean compressFailureTrace) {
+
+    protected PrintStreamOutput(Format format, PrintStream output, Properties outputPatterns, Keywords keywords,
+            boolean reportFailureTrace, boolean compressFailureTrace) {
         this.format = format;
         this.output = output;
         this.outputPatterns = outputPatterns;
         this.keywords = keywords;
         doReportFailureTrace(reportFailureTrace);
-        doCompressFailureTrace(compressFailureTrace);   
+        doCompressFailureTrace(compressFailureTrace);
     }
 
     public void successful(String step) {
@@ -120,32 +124,34 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void failed(String step, Throwable storyFailure) {
-        // storyFailure be used if a subclass has rewritten the "failed" pattern to have a {3} as WebDriverHtmlOutput (jbehave-web) does.
+        // storyFailure be used if a subclass has rewritten the "failed" pattern
+        // to have a {3} as WebDriverHtmlOutput (jbehave-web) does.
         if (storyFailure instanceof UUIDExceptionWrapper) {
             this.cause.set(storyFailure.getCause());
-            print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), storyFailure.getCause(), ((UUIDExceptionWrapper) storyFailure).getUUID()));
+            print(format("failed", "{0} ({1})\n({2})\n", step, keywords.failed(), storyFailure.getCause(),
+                    ((UUIDExceptionWrapper) storyFailure).getUUID()));
         } else {
-            throw new ClassCastException(storyFailure +" should be an instance of UUIDExceptionWrapper");
+            throw new ClassCastException(storyFailure + " should be an instance of UUIDExceptionWrapper");
         }
     }
 
     public void failedOutcomes(String step, OutcomesTable table) {
-    	failed(step, table.failureCause());
+        failed(step, table.failureCause());
         print(table);
     }
-    
-	private void print(OutcomesTable table) {
-		print(format("outcomesTableStart", "\n"));
+
+    private void print(OutcomesTable table) {
+        print(format("outcomesTableStart", "\n"));
         List<Outcome<?>> rows = table.getOutcomes();
         print(format("outcomesTableHeadStart", "|"));
-        //TODO i18n outcome fields
+        // TODO i18n outcome fields
         for (String field : table.getOutcomeFields()) {
             print(format("outcomesTableHeadCell", "{0}|", field));
         }
         print(format("outcomesTableHeadEnd", "\n"));
         print(format("outcomesTableBodyStart", EMPTY));
         for (Outcome<?> outcome : rows) {
-            print(format("outcomesTableRowStart", "|", outcome.isVerified()?"verified":"notVerified"));
+            print(format("outcomesTableRowStart", "|", outcome.isVerified() ? "verified" : "notVerified"));
             print(format("outcomesTableCell", "{0}|", outcome.getDescription()));
             print(format("outcomesTableCell", "{0}|", outcome.getValue()));
             print(format("outcomesTableCell", "{0}|", outcome.getMatcher()));
@@ -154,7 +160,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
         print(format("outcomesTableBodyEnd", "\n"));
         print(format("outcomesTableEnd", "\n"));
-	}
+    }
 
     public void storyNotAllowed(Story story, String filter) {
         print(format("filter", "{0}\n", filter));
@@ -177,8 +183,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     private void print(Meta meta) {
         print(format("metaStart", "{0}\n", keywords.meta()));
-        for (String name : meta.getPropertyNames() ){
-            print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));                
+        for (String name : meta.getPropertyNames()) {
+            print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));
         }
         print(format("metaEnd", "\n"));
     }
@@ -190,7 +196,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
     public void givenStories(GivenStories givenStories) {
         print(format("givenStoriesStart", "{0}\n", keywords.givenStories()));
         for (GivenStory givenStory : givenStories.getStories()) {
-            print(format("givenStory", "{0} {1}\n", givenStory.asString(), (givenStory.hasAnchor() ? givenStory.getParameters() : "")));
+            print(format("givenStory", "{0} {1}\n", givenStory.asString(),
+                    (givenStory.hasAnchor() ? givenStory.getParameters() : "")));
         }
         print(format("givenStoriesEnd", "\n"));
     }
@@ -215,49 +222,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void afterScenario() {
-        if (cause.get() != null && reportFailureTrace.get() && !(cause.get() instanceof KnownFailure) ) {
-            print(format("afterScenarioWithFailure", "\n{0}\n", stackTrace(cause.get())));
+        if (cause.get() != null && reportFailureTrace.get() && !(cause.get() instanceof KnownFailure)) {
+            print(format("afterScenarioWithFailure", "\n{0}\n", new StackTraceFormatter(compressFailureTrace()).stackTrace(cause.get())));
         } else {
             print(format("afterScenario", "\n"));
         }
-    }
-
-    private String stackTrace(Throwable cause) {
-        if (cause.getClass().getName().equals(UUIDExceptionWrapper.class.getName())) {
-            cause = cause.getCause();
-        }
-        ByteArrayOutputStream out = new ByteArrayOutputStream();        
-        cause.printStackTrace(new PrintStream(out));
-        return stackTrace(out.toString());
-    }
-
-    protected String stackTrace(String stackTrace) {
-        if ( !compressFailureTrace.get() ){
-            return stackTrace;
-        }
-        // don't print past certain parts of the stack.  Try them even though they may be redundant.
-        stackTrace = cutOff(stackTrace, "org.jbehave.core.embedder.");
-        stackTrace = cutOff(stackTrace, "org.junit.runners.");
-        stackTrace = cutOff(stackTrace, "org.apache.maven.surefire.");
-
-        //System.out.println("=====before>" + stackTrace + "<==========");
-
-        // replace whole series of lines with '\t(summary)'  The end-user will thank us.
-        for (Replacement replacement : REPLACEMENTS) {
-            stackTrace = replacement.from.matcher(stackTrace).replaceAll(replacement.to);
-        }
-        return stackTrace;
-    }
-
-    private String cutOff(String stackTrace, String at) {
-        if (stackTrace.indexOf(at) > -1) {
-            int ix = stackTrace.indexOf(at);
-            ix = stackTrace.indexOf("\n", ix);
-            if (ix != -1) {
-                stackTrace = stackTrace.substring(0,ix);
-            }
-        }
-        return stackTrace;
     }
 
     public void beforeExamples(List<String> steps, ExamplesTable table) {
@@ -276,15 +245,14 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("afterExamples", "\n"));
     }
 
-	public void dryRun() {
-		print(format("dryRun", "{0}\n", keywords.dryRun()));
-	}
-	
+    public void dryRun() {
+        print(format("dryRun", "{0}\n", keywords.dryRun()));
+    }
 
     public void pendingMethods(List<String> methods) {
         for (String method : methods) {
             print(format("pendingMethod", "{0}\n", method));
-        }        
+        }
     }
 
     /**
@@ -299,7 +267,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     protected String format(String key, String defaultPattern, Object... args) {
         return MessageFormat.format(lookupPattern(key, escape(defaultPattern)), escapeAll(args));
     }
-    
+
     protected String formatTable(ExamplesTable table) {
         OutputStream formatted = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(formatted);
@@ -341,21 +309,24 @@ public abstract class PrintStreamOutput implements StoryReporter {
      */
     protected Object[] escape(final Format format, Object... args) {
         // Transformer that escapes HTML and XML strings
-        Transformer escapingTransformer = new Transformer( ) {
+        Transformer escapingTransformer = new Transformer() {
             public Object transform(Object object) {
-                switch ( format ){
-                    case HTML: return escapeHtml(asString(object));
-                    case XML: return escapeXml(asString(object));
-                    default: return object;
+                switch (format) {
+                case HTML:
+                    return escapeHtml(asString(object));
+                case XML:
+                    return escapeXml(asString(object));
+                default:
+                    return object;
                 }
             }
 
             private String asString(Object object) {
-                return  ( object != null ? object.toString() : EMPTY );
+                return (object != null ? object.toString() : EMPTY);
             }
         };
-        List<?> list = Arrays.asList( ArrayUtils.clone( args ) );
-        CollectionUtils.transform( list, escapingTransformer );
+        List<?> list = Arrays.asList(ArrayUtils.clone(args));
+        CollectionUtils.transform(list, escapingTransformer);
         return list.toArray();
     }
 
@@ -363,9 +334,9 @@ public abstract class PrintStreamOutput implements StoryReporter {
      * Looks up the format pattern for the event output by key, conventionally
      * equal to the method name. The pattern is used by the
      * {#format(String,String,Object...)} method and by default is formatted
-     * using the {@link MessageFormat#format(String, Object...)} method. If no pattern is found
-     * for key or needs to be overridden, the default pattern should be
-     * returned.
+     * using the {@link MessageFormat#format(String, Object...)} method. If no
+     * pattern is found for key or needs to be overridden, the default pattern
+     * should be returned.
      * 
      * @param key the format pattern key
      * @param defaultPattern the default pattern if no pattern is
@@ -378,20 +349,20 @@ public abstract class PrintStreamOutput implements StoryReporter {
         return defaultPattern;
     }
 
-    public boolean reportFailureTrace(){
+    public boolean reportFailureTrace() {
         return reportFailureTrace.get();
     }
-    
-    public PrintStreamOutput doReportFailureTrace(boolean reportFailureTrace){
-    	this.reportFailureTrace.set(reportFailureTrace);
-    	return this;
+
+    public PrintStreamOutput doReportFailureTrace(boolean reportFailureTrace) {
+        this.reportFailureTrace.set(reportFailureTrace);
+        return this;
     }
 
-    public boolean compressFailureTrace(){
+    public boolean compressFailureTrace() {
         return compressFailureTrace.get();
     }
-    
-    public PrintStreamOutput doCompressFailureTrace(boolean compressFailureTrace){
+
+    public PrintStreamOutput doCompressFailureTrace(boolean compressFailureTrace) {
         this.compressFailureTrace.set(compressFailureTrace);
         return this;
     }
@@ -401,12 +372,13 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     /**
-     * Prints text to output stream, replacing parameter start and end placeholders
+     * Prints text to output stream, replacing parameter start and end
+     * placeholders
      * 
      * @param text the String to print
      */
     protected void print(String text) {
-        if ( containsTable(text) ){
+        if (containsTable(text)) {
             String tableStart = format(PARAMETER_TABLE_START, PARAMETER_TABLE_START);
             String tableEnd = format(PARAMETER_TABLE_END, PARAMETER_TABLE_END);
             String tableAsString = substringBetween(text, tableStart, tableEnd);
@@ -432,89 +404,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     @Override
-	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(format).append(output).toString();
-	}
-
-    private static class Replacement {
-        private final Pattern from;
-        private final String to;
-        private Replacement(Pattern from, String to) {
-            this.from = from;
-            this.to = to;
-        }
+    public String toString() {
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(format).append(output).toString();
     }
-
-    private static Replacement[] REPLACEMENTS = new Replacement[]{
-            new Replacement(
-                    Pattern.compile(
-                            "\\tat sun.reflect.NativeMethodAccessorImpl.invoke0\\(Native Method\\)\\n" +
-                            "\\tat sun.reflect.NativeMethodAccessorImpl.invoke\\(NativeMethodAccessorImpl.java:\\d+\\)\\n" +
-                            "\\tat sun.reflect.DelegatingMethodAccessorImpl.invoke\\(DelegatingMethodAccessorImpl.java:\\d+\\)\\n" +
-                            "\\tat java.lang.reflect.Method.invoke\\(Method.java:\\d+\\)"
-                    ),
-                    "\t(reflection-invoke)"),
-            new Replacement(
-                    Pattern.compile(
-                            "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaMethod.invoke\\(ClosureMetaMethod.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite\\$PojoMetaMethodSiteNoUnwrapNoCoerce.invoke\\(PojoMetaMethodSite.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite.call\\(PojoMetaMethodSite.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall\\(CallSiteArray.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"
-                    ),
-                    "\t(groovy-closure-invoke)"),
-            new Replacement(
-                    Pattern.compile(
-                            "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
-                            "\\tat groovy.lang.MetaMethod.doMethodInvoke\\(MetaMethod.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod\\(ClosureMetaClass.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeMethodOnCurrentN\\(ScriptBytecodeAdapter.java:\\d+\\)"
-                    ),
-                    "\t(groovy-instance-method-invoke)"),
-            new Replacement(
-                    Pattern.compile(
-                            "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\n" +
-                            "\\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaMethod.invoke\\(ClosureMetaMethod.java:\\d+\\)\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite\\$PojoMetaMethodSiteNoUnwrapNoCoerce.invoke\\(PojoMetaMethodSite.java:\\d+\\)\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite.call\\(PojoMetaMethodSite.java:\\d+\\)\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call\\(AbstractCallSite.java:\\d+\\)"
-                    ),
-                    "\t(groovy-abstract-method-invoke)"),
-            new Replacement(
-                    Pattern.compile(
-                            "\\tat org.codehaus.groovy.reflection.CachedMethod.invoke\\(CachedMethod.java:\\d+\\)\\n" +
-                            "\\tat groovy.lang.MetaMethod.doMethodInvoke\\(MetaMethod.java:\\d+\\)\\n" +
-                            "\\tat groovy.lang.MetaClassImpl.invokeStaticMethod\\(MetaClassImpl.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod\\(InvokerHelper.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeStaticMethodN\\(ScriptBytecodeAdapter.java:\\d+\\)"
-                    ),
-                    "\t(groovy-static-method-invoke)"),
-            new Replacement(
-                    Pattern.compile(
-                            "\\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0\\(Native Method\\)\\n" +
-                            "\\tat sun.reflect.NativeConstructorAccessorImpl.newInstance\\(NativeConstructorAccessorImpl.java:\\d+\\)\\n" +
-                            "\\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance\\(DelegatingConstructorAccessorImpl.java:\\d+\\)\\n" +
-                            "\\tat java.lang.reflect.Constructor.newInstance\\(Constructor.java:\\d+\\)"
-                    ),
-                    "\t(reflection-construct)"),
-            new Replacement(
-                    Pattern.compile(
-                            "\\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(Current|)\\(CallSiteArray.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(Current|)\\(AbstractCallSite.java:\\d+\\)\\n" +
-                            "\\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(Current|)\\(AbstractCallSite.java:\\d+\\)"
-
-                    ),
-                    "\t(groovy-call)"),
-            // This one last.
-            new Replacement(
-                    Pattern.compile(
-                            "\\t\\(reflection\\-invoke\\)\\n" +
-                                    "\\t\\(groovy\\-"),
-                    "\t(groovy-")
-    };
-
-
 
 }
