@@ -21,8 +21,6 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
-import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
@@ -163,28 +161,6 @@ public class TemplateableOutput implements StoryReporter {
         } catch (Exception e) {
             throw new RuntimeException(resource, e);
         }
-    }
-
-    public static interface TemplateProcessor {
-        void process(String resource, Map<String, Object> dataModel, Writer writer);
-    }
-
-    public static class FreemarkerProcessor implements TemplateProcessor {
-        public void process(String resource, Map<String, Object> dataModel, Writer writer) {
-            try {
-                configuration().getTemplate(resource).process(dataModel, writer);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private Configuration configuration() {
-            Configuration configuration = new Configuration();
-            configuration.setClassForTemplateLoading(FreemarkerViewGenerator.class, "/");
-            configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
-            return configuration;
-        }
-
     }
 
     private Map<String, Object> newDataModel() {
