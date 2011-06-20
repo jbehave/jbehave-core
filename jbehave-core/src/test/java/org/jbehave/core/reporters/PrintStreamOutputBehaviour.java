@@ -1,5 +1,17 @@
 package org.jbehave.core.reporters;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Properties;
+
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -18,27 +30,18 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.reporters.FreemarkerViewGenerator.ViewGenerationFailedForTemplate;
+import org.jbehave.core.reporters.TemplateableViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Properties;
-
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.equalTo;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+
 import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.junit.Assert.assertEquals;
@@ -714,89 +717,6 @@ public class PrintStreamOutputBehaviour {
         File outputDirectory = new File("target");
         viewGenerator.generateReportsView(outputDirectory, asList("html"), templates);
         // Then ... fail as expected
-    }
-
-    @Test
-    public void stackTracesShouldBeCompressible() throws IOException {
-
-        String start = "java.lang.AssertionError: cart should have contained 68467780\n" +
-                "Expected: is <true>\n" +
-                "     got: <false>\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCallCurrent(CallSiteArray.java:44)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:141)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:145)\n" +
-                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:44)\n" +  // renamed in Groovy 1.8 ?
-                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:141)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.callCurrent(AbstractCallSite.java:145)\n" +
-                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
-                "\tat sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)\n" +
-                "\tat sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:39)\n" +
-                "\tat sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:27)\n" +
-                "\tat java.lang.reflect.Constructor.newInstance(Constructor.java:513)\n" +
-                "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
-                "\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
-                "\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n" +
-                "\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n" +
-                "\tat java.lang.reflect.Method.invoke(Method.java:597)\n" +
-                "\tat org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:88)\n" +
-                "\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:233)\n" +
-                "\tat groovy.lang.MetaClassImpl.invokeStaticMethod(MetaClassImpl.java:1302)\n" +
-                "\tat org.codehaus.groovy.runtime.InvokerHelper.invokeStaticMethod(InvokerHelper.java:819)\n" +
-                "\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeStaticMethodN(ScriptBytecodeAdapter.java:205)\n" +
-                "\tat com.github.tanob.groobe.AssertionSupport.assertWithFailureMessage(AssertionSupport.groovy:32)\n" +
-                "\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
-                "\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n" +
-                "\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n" +
-                "\tat java.lang.reflect.Method.invoke(Method.java:597)\n" +
-                "\tat org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:88)\n" +
-                "\tat groovy.lang.MetaMethod.doMethodInvoke(MetaMethod.java:233)\n" +
-                "\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaClass.invokeMethod(ClosureMetaClass.java:362)\n" +
-                "\tat org.codehaus.groovy.runtime.ScriptBytecodeAdapter.invokeMethodOnCurrentN(ScriptBytecodeAdapter.java:77)\n" +
-                "\tat com.github.tanob.groobe.AssertionSupport$_assertTransformedDelegateAndOneParam_closure3.doCall(AssertionSupport.groovy:20)\n" +
-                "\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
-                "\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n" +
-                "\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n" +
-                "\tat java.lang.reflect.Method.invoke(Method.java:597)\n" +
-                "\tat org.codehaus.groovy.reflection.CachedMethod.invoke(CachedMethod.java:88)\n" +
-                "\tat org.codehaus.groovy.runtime.metaclass.ClosureMetaMethod.invoke(ClosureMetaMethod.java:80)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite$PojoMetaMethodSiteNoUnwrapNoCoerce.invoke(PojoMetaMethodSite.java:270)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.PojoMetaMethodSite.call(PojoMetaMethodSite.java:52)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:40)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:128)\n" +
-                "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
-                "\tat sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n" +
-                "\tat sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)\n" +
-                "\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)\n" +
-                "\tat java.lang.reflect.Method.invoke(Method.java:597)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:42)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:108)\n" +
-                "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)\n" +
-                "\tat org.jbehave.core.steps.StepCreator$ParameterizedStep.perform(StepCreator.java:430)\n" +
-                "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)";
-
-        TxtOutput reporter = new TxtOutput(new PrintStream(new ByteArrayOutputStream()), new Properties(), new LocalizedKeywords(), true, true);
-
-        assertEquals(
-                "java.lang.AssertionError: cart should have contained 68467780\n" +
-                        "Expected: is <true>\n" +
-                        "     got: <false>\n" +
-                        "\t(groovy-call)\n" +
-                        "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
-                        "\t(groovy-call)\n" +
-                        "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
-                        "\t(reflection-construct)\n" +
-                        "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
-                        "\t(groovy-static-method-invoke)\n" +
-                        "\tat com.github.tanob.groobe.AssertionSupport.assertWithFailureMessage(AssertionSupport.groovy:32)\n" +
-                        "\t(groovy-instance-method-invoke)\n" +
-                        "\tat com.github.tanob.groobe.AssertionSupport$_assertTransformedDelegateAndOneParam_closure3.doCall(AssertionSupport.groovy:20)\n" +
-                        "\t(groovy-closure-invoke)\n" +
-                        "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
-                        "\t(groovy-call)\n" +
-                        "\tat org.jbehave.core.steps.StepCreator$ParameterizedStep.perform(StepCreator.java:430)\n" +
-                        "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)", reporter.stackTrace(start));
     }
 
     private String storyPath(Class<MyStory> storyClass) {

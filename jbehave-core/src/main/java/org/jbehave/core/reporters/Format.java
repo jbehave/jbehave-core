@@ -1,6 +1,5 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.reporters.TemplateableOutput.FreemarkerProcessor;
 
 public abstract class Format {
 

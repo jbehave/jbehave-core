@@ -21,8 +21,6 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
-import freemarker.template.Configuration;
-import freemarker.template.ObjectWrapper;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
@@ -163,28 +161,6 @@ public class TemplateableOutput implements StoryReporter {
         } catch (Exception e) {
             throw new RuntimeException(resource, e);
         }
-    }
-
-    public static interface TemplateProcessor {
-        void process(String resource, Map<String, Object> dataModel, Writer writer);
-    }
-
-    public static class FreemarkerProcessor implements TemplateProcessor {
-        public void process(String resource, Map<String, Object> dataModel, Writer writer) {
-            try {
-                configuration().getTemplate(resource).process(dataModel, writer);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        private Configuration configuration() {
-            Configuration configuration = new Configuration();
-            configuration.setClassForTemplateLoading(FreemarkerViewGenerator.class, "/");
-            configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
-            return configuration;
-        }
-
     }
 
     private Map<String, Object> newDataModel() {
@@ -465,12 +441,26 @@ public class TemplateableOutput implements StoryReporter {
             return failure;
         }
 
+        public String getFailureCause(){
+            if ( failure != null ){
+                return new StackTraceFormatter(true).stackTrace(failure);
+            }
+            return "";
+        }
+        
         public ExamplesTable getTable() {
             return table;
         }
 
         public OutcomesTable getOutcomes() {
             return outcomes;
+        }
+        
+        public String getOutcomesFailureCause(){
+            if ( outcomes.failureCause() != null ){
+                return new StackTraceFormatter(true).stackTrace(outcomes.failureCause());
+            }
+            return "";
         }
 
         public String getFormattedStep(String parameterPattern) {
@@ -489,7 +479,7 @@ public class TemplateableOutput implements StoryReporter {
             // first, look for parametrised scenarios
             parameters = findParameters(PARAMETER_VALUE_START + PARAMETER_VALUE_START, PARAMETER_VALUE_END
                     + PARAMETER_VALUE_END);
-            // first, look for normal scenarios
+            // second, look for normal scenarios
             if (parameters.isEmpty()) {
                 parameters = findParameters(PARAMETER_VALUE_START, PARAMETER_VALUE_END);
             }
@@ -497,7 +487,7 @@ public class TemplateableOutput implements StoryReporter {
 
         private List<OutputParameter> findParameters(String start, String end) {
             List<OutputParameter> parameters = new ArrayList<OutputParameter>();
-            Matcher matcher = Pattern.compile("(" + start + "[\\w\\.\\s\\-]*" + end + ")(\\W|\\Z)", Pattern.DOTALL)
+            Matcher matcher = Pattern.compile("(" + start + "[\\w\\s\\.\\-\\_\\*]*" + end + ")(\\W|\\Z)", Pattern.DOTALL)
                     .matcher(step);
             while (matcher.find()) {
                 parameters.add(new OutputParameter(step, matcher.start(), matcher.end()));
@@ -517,14 +507,10 @@ public class TemplateableOutput implements StoryReporter {
         }
 
         private void parseTable() {
-            if (containsTable()) {
+            if (step.contains(PARAMETER_TABLE_START) && step.contains(PARAMETER_TABLE_END)) {
                 String tableAsString = StringUtils.substringBetween(step, PARAMETER_TABLE_START, PARAMETER_TABLE_END);
                 table = new ExamplesTable(tableAsString);
             }
-        }
-
-        private boolean containsTable() {
-            return step.contains(PARAMETER_TABLE_START) && step.contains(PARAMETER_TABLE_END);
         }
 
     }

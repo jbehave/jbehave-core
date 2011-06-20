@@ -7,9 +7,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.SortedMap;
 
-import org.jbehave.core.reporters.FreemarkerViewGenerator.Report;
-import org.jbehave.core.reporters.FreemarkerViewGenerator.ReportCreationFailed;
-import org.jbehave.core.reporters.FreemarkerViewGenerator.TimeFormatter;
+import org.jbehave.core.reporters.TemplateableViewGenerator.Report;
+import org.jbehave.core.reporters.TemplateableViewGenerator.ReportCreationFailed;
+import org.jbehave.core.reporters.TemplateableViewGenerator.TimeFormatter;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;

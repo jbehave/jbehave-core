@@ -25,7 +25,6 @@
 </div>
 </#macro>
 <#macro renderTable table>
-<#assign tableAsString=table.asString()>
 <#assign rows=table.getRows()>
 <#assign headers=table.getHeaders()>
 <table>
@@ -46,9 +45,35 @@
 </tbody>
 </table>
 </#macro>
+<#macro renderOutcomes table>
+<#assign outcomes=table.getOutcomes()>
+<#assign fields=table.getOutcomeFields()>
+<table>
+<thead><tr>
+<#list fields as field>
+<th>${field}</th>
+</#list>
+</tr></thead>
+<tbody>
+<#list outcomes as outcome>
+<#assign isVerified=outcome.isVerified()?string>
+<#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
+<tr class="${verified}">
+<td>${outcome.description}</td><td>${outcome.value}</td><td>${outcome.matcher}</td><td>${isVerified}</td>
+</tr>
+</#list>
+</tbody>
+</table>
+</#macro>
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep("<span class=\"step parameter\">{0}</span>")>
 <div class="step ${step.outcome}">${formattedStep} <#if step.getTable()??><span class="step parameter"><@renderTable step.getTable()/></span></#if> <@renderStepOutcome step.getOutcome()/></div>
+<#if step.getFailure()??><pre class="failure">${step.failureCause}</pre></#if>
+<#if step.getOutcomes()??>
+<div class="outcomes"><@renderOutcomes step.getOutcomes()/>
+<#if step.getOutcomesFailureCause()??><pre class="failure">${step.outcomesFailureCause}</pre></#if>
+</div>
+</#if>
 </#macro>
 <#macro renderStepOutcome outcome><#if outcome=="pending"><span class=\"keyword ${outcome}\">(${keywords.pending})</span></#if><#if outcome=="failed"><span class=\"keyword ${outcome}\">(${keywords.failed})</span></#if><#if outcome=="notPerformed"><span class=\"keyword ${outcome}\">(${keywords.notPerformed})</span></#if></#macro>
 

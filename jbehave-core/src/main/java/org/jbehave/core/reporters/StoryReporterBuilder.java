@@ -141,7 +141,7 @@ public class StoryReporterBuilder {
     private String relativeDirectory = new FileConfiguration().getRelativeDirectory();
     private FilePathResolver pathResolver = new FileConfiguration().getPathResolver();
     private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
-    private Properties viewResources = FreemarkerViewGenerator.defaultViewProperties();
+    private Properties viewResources = new FreemarkerViewGenerator().defaultViewProperties();
     private boolean reportFailureTrace = false;
     private boolean compressFailureTrace = false;
     private Keywords keywords = new LocalizedKeywords();
