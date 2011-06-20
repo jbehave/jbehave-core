@@ -185,7 +185,7 @@ public class CrossReference extends Format {
 
             @Override
             public void beforeStory(Story story, boolean givenStory) {
-                synchronized (this) {
+                synchronized (stories) {
                     stories.add(new StoryHolder(story));
                 }
                 currentStory.set(story);
@@ -269,7 +269,7 @@ public class CrossReference extends Format {
 
         protected void processStories(List<StoryHolder> stories, Set<String> stepsPerformed, Map<String, Long> times, StoryReporterBuilder builder, Set<String> failures) {
             // Prevent Concurrent Modification Exception.
-            synchronized (this) {
+            synchronized (stories) {
                 for (StoryHolder storyHolder : stories) {
                     Story story = storyHolder.story;
                     String path = story.getPath();
