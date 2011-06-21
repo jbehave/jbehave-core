@@ -13,11 +13,11 @@ public abstract class Format {
         }
     };
 
-    public static final Format COLORED_CONSOLE = new Format("COLORED_CONSOLE") {
+    public static final Format ANSI_CONSOLE = new Format("ANSI_CONSOLE") {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                                                  StoryReporterBuilder storyReporterBuilder) {
-            return new ColoredConsoleOutput(storyReporterBuilder.keywords())
+            return new ANSIConsoleOutput(storyReporterBuilder.keywords())
                     .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
                     .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
         }
