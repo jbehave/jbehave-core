@@ -1,8 +1,5 @@
 package org.jbehave.core.configuration;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
 import org.hamcrest.Matchers;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.InjectableEmbedder;
@@ -19,10 +16,14 @@ import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.Steps;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.lang.reflect.Type;
+import java.util.List;
+
 import static java.util.Arrays.asList;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
@@ -72,10 +73,12 @@ public class AnnotationBuilderBehaviour {
 
     @Test
     public void shouldBuildCandidateStepsAsEmptyListIfAnnotationOrAnnotatedValuesNotPresent() {
-        AnnotationBuilder notAnnotated = new AnnotationBuilder(NotAnnotated.class);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        AnnotationBuilder notAnnotated = new AnnotationBuilder(NotAnnotated.class, new PrintStreamAnnotationMonitor(new PrintStream(baos)));
         assertThatStepsInstancesAre(notAnnotated.buildCandidateSteps());
         AnnotationBuilder annotatedWithoutSteps = new AnnotationBuilder(AnnotatedWithoutSteps.class);
         assertThatStepsInstancesAre(annotatedWithoutSteps.buildCandidateSteps());
+        assertThat(baos.toString(), is(equalTo("Annotation " + UsingSteps.class + " not found in " + NotAnnotated.class + "\n")));
     }
 
     @Test
@@ -91,10 +94,16 @@ public class AnnotationBuilderBehaviour {
         assertThatStepsInstancesAre(builderAnnotated.buildCandidateSteps(), MyOtherOtherSteps.class);
     }
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void shouldNotIgnoreFailingStepsInstances() {
-        AnnotationBuilder annotatedFailing = new AnnotationBuilder(AnnotatedFailing.class);
-        assertThatStepsInstancesAre(annotatedFailing.buildCandidateSteps(), MySteps.class);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        AnnotationBuilder annotatedFailing = new AnnotationBuilder(AnnotatedFailing.class, new PrintStreamAnnotationMonitor(new PrintStream(baos)));
+        try {
+            assertThatStepsInstancesAre(annotatedFailing.buildCandidateSteps(), MySteps.class);
+        } catch (RuntimeException e) {
+            assertThat(baos.toString(), containsString("Element creation failed"));
+            assertThat(baos.toString(), containsString("RuntimeException"));
+        }
     }
 
     private void assertThatStepsInstancesAre(List<CandidateSteps> candidateSteps, Class<?>... stepsClasses) {
@@ -162,10 +171,17 @@ public class AnnotationBuilderBehaviour {
         assertThat(new AnnotationBuilder(AnnotedConfigurable.class).findPaths().size(), equalTo(0));
     }
 
-    @Test(expected = InstantiationFailed.class)
+    @Test
     public void shouldNotCreateEmbeddableInstanceForAnnotatedClassThatIsNotInstantiable() {
-        AnnotationBuilder annotatedPrivate = new AnnotationBuilder(AnnotatedPrivate.class);
-        annotatedPrivate.embeddableInstance();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        AnnotationBuilder annotatedPrivate = new AnnotationBuilder(AnnotatedPrivate.class, new PrintStreamAnnotationMonitor(new PrintStream(baos)));
+        try {
+            annotatedPrivate.embeddableInstance();
+        } catch (InstantiationFailed e) {
+            assertThat(baos.toString(), containsString("Element creation failed"));
+            assertThat(baos.toString(), containsString("IllegalAccessException"));
+        }
+
     }
 
     @Configure(parameterConverters = { MyParameterConverter.class })
