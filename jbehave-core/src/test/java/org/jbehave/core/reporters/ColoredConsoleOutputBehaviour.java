@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.jbehave.core.reporters.coloredConsole.ANSIColor.MAGENTA;
+import static org.jbehave.core.reporters.ANSIColor.MAGENTA;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.junit.Assert.assertThat;
@@ -68,7 +68,7 @@ public class ColoredConsoleOutputBehaviour {
 
     @Test
     public void shouldBoldifyParamsThatAreDemarcatedWithStartEndValues() throws Exception {
-        output.assignColorToOutputType("params", MAGENTA);
+        output.assignColorToEvent("params", MAGENTA);
         output.overwritePattern("params", "{0} and {1}");
 
         final String outputWithValuesDemarcated = output.format("params", "", value("one"), value("two"));

@@ -1,13 +1,12 @@
 package org.jbehave.core.reporters;
 
 import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.reporters.coloredConsole.ANSIColor;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.jbehave.core.reporters.coloredConsole.ANSIColor.*;
+import static org.jbehave.core.reporters.ANSIColor.*;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 
@@ -18,7 +17,8 @@ import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
  */
 public class ColoredConsoleOutput extends ConsoleOutput {
 
-    private Map<String, ANSIColor> outputTypeColor = new HashMap<String, ANSIColor>() {
+    @SuppressWarnings("serial")
+    private Map<String, ANSIColor> colors = new HashMap<String, ANSIColor>() {
         {
             put("successful", GREEN);
             put("pending", YELLOW);
@@ -42,11 +42,11 @@ public class ColoredConsoleOutput extends ConsoleOutput {
     }
 
     @Override
-    protected String format(String outputType, String defaultPattern, Object... args) {
-        final String formatted = super.format(outputType, defaultPattern, args);
+    protected String format(String eventKey, String defaultPattern, Object... args) {
+        final String formatted = super.format(eventKey, defaultPattern, args);
 
-        if (outputTypeColor.containsKey(outputType)) {
-            ANSIColor color = outputTypeColor.get(outputType);
+        if (colors.containsKey(eventKey)) {
+            ANSIColor color = colors.get(eventKey);
             return escapeCodeFor(color) + boldifyParams(formatted, color) + escapeCodeFor(RESET);
         }
 
@@ -73,7 +73,8 @@ public class ColoredConsoleOutput extends ConsoleOutput {
         return (char) 27 + "[" + code;
     }
 
-    public void assignColorToOutputType(String outputType, ANSIColor color) {
-        outputTypeColor.put(outputType, color);
+    public void assignColorToEvent(String eventKey, ANSIColor color) {
+        colors.put(eventKey, color);
     }
+    
 }

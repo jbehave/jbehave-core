@@ -1,4 +1,4 @@
-package org.jbehave.core.reporters.coloredConsole;
+package org.jbehave.core.reporters;
 
 /**
  * ANSI color codes for colored console output.
