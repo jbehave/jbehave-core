@@ -441,13 +441,13 @@ public class TemplateableOutput implements StoryReporter {
             return failure;
         }
 
-        public String getFailureCause(){
-            if ( failure != null ){
+        public String getFailureCause() {
+            if (failure != null) {
                 return new StackTraceFormatter(true).stackTrace(failure);
             }
             return "";
         }
-        
+
         public ExamplesTable getTable() {
             return table;
         }
@@ -455,16 +455,23 @@ public class TemplateableOutput implements StoryReporter {
         public OutcomesTable getOutcomes() {
             return outcomes;
         }
-        
-        public String getOutcomesFailureCause(){
-            if ( outcomes.failureCause() != null ){
+
+        public String getOutcomesFailureCause() {
+            if (outcomes.failureCause() != null) {
                 return new StackTraceFormatter(true).stackTrace(outcomes.failureCause());
             }
             return "";
         }
 
         public String getFormattedStep(String parameterPattern) {
-            return MessageFormat.format(stepPattern, formatParameters(parameterPattern));
+            if (!parameters.isEmpty()) {
+                try {
+                    return MessageFormat.format(stepPattern, formatParameters(parameterPattern));
+                } catch (RuntimeException e) {
+                    throw new StepFormattingFailed(stepPattern, parameterPattern, parameters, e);
+                }
+            }
+            return stepPattern;
         }
 
         private Object[] formatParameters(String parameterPattern) {
@@ -487,8 +494,8 @@ public class TemplateableOutput implements StoryReporter {
 
         private List<OutputParameter> findParameters(String start, String end) {
             List<OutputParameter> parameters = new ArrayList<OutputParameter>();
-            Matcher matcher = Pattern.compile("(" + start + "[\\w\\s\\.\\-\\_\\*]*" + end + ")(\\W|\\Z)", Pattern.DOTALL)
-                    .matcher(step);
+            Matcher matcher = Pattern.compile("(" + start + "[\\w\\s\\.\\-\\_\\*]*" + end + ")(\\W|\\Z)",
+                    Pattern.DOTALL).matcher(step);
             while (matcher.find()) {
                 parameters.add(new OutputParameter(step, matcher.start(), matcher.end()));
             }
@@ -497,8 +504,9 @@ public class TemplateableOutput implements StoryReporter {
 
         private void createStepPattern() {
             this.stepPattern = step;
-            if ( table != null ){
-                this.stepPattern = StringUtils.replaceOnce(stepPattern, PARAMETER_TABLE_START+table.asString()+PARAMETER_TABLE_END, "");                
+            if (table != null) {
+                this.stepPattern = StringUtils.replaceOnce(stepPattern, PARAMETER_TABLE_START + table.asString()
+                        + PARAMETER_TABLE_END, "");
             }
             for (int count = 0; count < parameters.size(); count++) {
                 String value = parameters.get(count).toString();
@@ -511,6 +519,17 @@ public class TemplateableOutput implements StoryReporter {
                 String tableAsString = StringUtils.substringBetween(step, PARAMETER_TABLE_START, PARAMETER_TABLE_END);
                 table = new ExamplesTable(tableAsString);
             }
+        }
+
+        @SuppressWarnings("serial")
+        public static class StepFormattingFailed extends RuntimeException {
+
+            public StepFormattingFailed(String stepPattern, String parameterPattern, List<OutputParameter> parameters,
+                    RuntimeException cause) {
+                super("Failed to format step '" + stepPattern + "' with parameter pattern '" + parameterPattern
+                        + "' and parameters: " + parameters, cause);
+            }
+
         }
 
     }
