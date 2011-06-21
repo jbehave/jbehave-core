@@ -4,13 +4,22 @@ package org.jbehave.core.reporters;
 public abstract class Format {
 
     public static final Format CONSOLE = new Format("CONSOLE") {
-
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             return new ConsoleOutput(storyReporterBuilder.keywords()).doReportFailureTrace(
                     storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
                     storyReporterBuilder.compressFailureTrace());
+        }
+    };
+
+    public static final Format COLORED_CONSOLE = new Format("COLORED_CONSOLE") {
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+                                                 StoryReporterBuilder storyReporterBuilder) {
+            return new ColoredConsoleOutput(storyReporterBuilder.keywords())
+                    .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
+                    .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
         }
     };
 

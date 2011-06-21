@@ -1,26 +1,25 @@
 package org.jbehave.examples.groovy;
 
-import java.util.List;
-
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.ParanamerConfiguration;
 import org.jbehave.core.configuration.groovy.GroovyContext;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
-import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.*;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.groovy.GroovyStepsFactory;
 
+import java.util.List;
+
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.COLORED_CONSOLE;
 
 public class GroovyStories extends JUnitStories {
 
     @Override
     public Configuration configuration() {
         return new ParanamerConfiguration()
-                .useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML));
+                .useStoryReporterBuilder(new StoryReporterBuilder().withFormats(COLORED_CONSOLE));
     }
 
     @Override
