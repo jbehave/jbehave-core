@@ -6,13 +6,13 @@ import java.util.Properties;
 
 import org.jbehave.core.configuration.Keywords;
 
-import static org.jbehave.core.reporters.ANSIConsoleOutput.ANSICode.BLUE;
-import static org.jbehave.core.reporters.ANSIConsoleOutput.ANSICode.BOLD;
-import static org.jbehave.core.reporters.ANSIConsoleOutput.ANSICode.GREEN;
-import static org.jbehave.core.reporters.ANSIConsoleOutput.ANSICode.MAGENTA;
-import static org.jbehave.core.reporters.ANSIConsoleOutput.ANSICode.RED;
-import static org.jbehave.core.reporters.ANSIConsoleOutput.ANSICode.RESET;
-import static org.jbehave.core.reporters.ANSIConsoleOutput.ANSICode.YELLOW;
+import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.BLUE;
+import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.BOLD;
+import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.GREEN;
+import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.MAGENTA;
+import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.RED;
+import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.RESET;
+import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.YELLOW;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 
@@ -23,8 +23,12 @@ import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
  */
 public class ANSIConsoleOutput extends ConsoleOutput {
 
+    private static final char ESCAPE_CHARACTER = (char) 27;
+    private static final String SGR_CONTROL = "m";
+    private static final String CODE_SEPARATOR = ";";
+
     @SuppressWarnings("serial")
-    private Map<String, ANSICode> codes = new HashMap<String, ANSICode>() {
+    private Map<String, SGRCode> codes = new HashMap<String, SGRCode>() {
         {
             put("successful", GREEN);
             put("pending", YELLOW);
@@ -52,14 +56,14 @@ public class ANSIConsoleOutput extends ConsoleOutput {
         final String formatted = super.format(eventKey, defaultPattern, args);
 
         if (codes.containsKey(eventKey)) {
-            ANSICode code = codes.get(eventKey);
+            SGRCode code = codes.get(eventKey);
             return escapeCodeFor(code) + boldifyParams(formatted, code) + escapeCodeFor(RESET);
         }
 
         return formatted;
     }
 
-    private String boldifyParams(String formatted, ANSICode currentColor) {
+    private String boldifyParams(String formatted, SGRCode currentColor) {
         final String valueStart = lookupPattern(PARAMETER_VALUE_START, PARAMETER_VALUE_START);
         final String valueEnd = lookupPattern(PARAMETER_VALUE_END, PARAMETER_VALUE_END);
         return formatted
@@ -67,23 +71,23 @@ public class ANSIConsoleOutput extends ConsoleOutput {
                 .replaceAll(valueEnd, escapeCodeFor(RESET, currentColor));
     }
 
-    private String escapeCodeFor(ANSICode code) {
-        return escape(code + "m");
+    private String escapeCodeFor(SGRCode code) {
+        return controlSequenceInitiator(code + SGR_CONTROL);
     }
 
-    private String escapeCodeFor(ANSICode first, ANSICode second) {
-        return escape(first + ";" + second + "m");
+    private String escapeCodeFor(SGRCode first, SGRCode second) {
+        return controlSequenceInitiator(first + CODE_SEPARATOR + second + SGR_CONTROL);
     }
 
-    private String escape(String code) {
-        return (char) 27 + "[" + code;
+    private String controlSequenceInitiator(String code) {
+        return ESCAPE_CHARACTER + "[" + code;
     }
 
-    public void assignCodeToEvent(String eventKey, ANSICode code) {
+    public void assignCodeToEvent(String eventKey, SGRCode code) {
         codes.put(eventKey, code);
     }
     
-    public static enum ANSICode {
+    public static enum SGRCode {
         RESET(0),
         BOLD(1),
         DARK(2),
@@ -113,7 +117,7 @@ public class ANSIConsoleOutput extends ConsoleOutput {
 
         private final int code;
 
-        ANSICode(int code) {
+        SGRCode(int code) {
             this.code = code;
         }
 

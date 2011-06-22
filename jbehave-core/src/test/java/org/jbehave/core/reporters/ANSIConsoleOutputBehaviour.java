@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.core.Is.is;
-import static org.jbehave.core.reporters.ANSIConsoleOutput.ANSICode.MAGENTA;
+import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.MAGENTA;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.junit.Assert.assertThat;
