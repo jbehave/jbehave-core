@@ -14,7 +14,7 @@ import org.jbehave.core.steps.StepCollector.Stage;
 /**
  * A BeforeOrAfterStep is associated to a Java method annotated with
  * {@link BeforeStory}, {@link AfterStory}, {@link BeforeScenario} or
- * {@link AfterScenario} in a {@link CandidatesSteps} instance class. The
+ * {@link AfterScenario} in a {@link CandidateSteps} instance class. The
  * BeforeOrAfterStep is responsible for the creation of the executable step via
  * the {@link StepCreator}.
  */
