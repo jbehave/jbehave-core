@@ -251,7 +251,7 @@ public class Steps implements CandidateSteps {
     private List<BeforeOrAfterStep> stepsHaving(Stage stage, Class<? extends Annotation> annotationClass,
             boolean givenStory) {
         List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
-        for (final Method method : annotatatedMethods(annotationClass)) {
+        for (final Method method : methodsAnnotatedWith(annotationClass)) {
             if (runnableStoryStep(method.getAnnotation(annotationClass), givenStory)) {
                 steps.add(createBeforeOrAfterStep(stage, method));
             }
@@ -275,7 +275,7 @@ public class Steps implements CandidateSteps {
 
     private List<BeforeOrAfterStep> stepsHaving(Stage stage, Class<? extends Annotation> annotationClass) {
         List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
-        for (Method method : annotatatedMethods(annotationClass)) {
+        for (Method method : methodsAnnotatedWith(annotationClass)) {
             steps.add(createBeforeOrAfterStep(stage, method));
         }
         return steps;
@@ -284,7 +284,7 @@ public class Steps implements CandidateSteps {
     private List<BeforeOrAfterStep> stepsHaving(Stage stage, Class<? extends AfterScenario> annotationClass,
             Outcome... outcomes) {
         List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
-        for (Method method : annotatatedMethods(annotationClass)) {
+        for (Method method : methodsAnnotatedWith(annotationClass)) {
             AfterScenario annotation = method.getAnnotation(annotationClass);
             for (Outcome outcome : outcomes) {
                 if (outcome.equals(annotation.uponOutcome())) {
@@ -307,7 +307,7 @@ public class Steps implements CandidateSteps {
         return asList(type.getMethods());
     }
 
-    private List<Method> annotatatedMethods(Class<? extends Annotation> annotationClass) {
+    private List<Method> methodsAnnotatedWith(Class<? extends Annotation> annotationClass) {
         List<Method> annotated = new ArrayList<Method>();
         for (Method method : allMethods()) {
             if (method.isAnnotationPresent(annotationClass)) {
