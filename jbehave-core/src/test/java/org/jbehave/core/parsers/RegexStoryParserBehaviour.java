@@ -83,7 +83,24 @@ public class RegexStoryParserBehaviour {
         assertThat(storyMeta.getProperty("skip"), equalTo(""));
         assertThat(story.getScenarios().get(0).getMeta().getProperty("authors"), equalTo("Mauro Paul"));
     }
-    
+
+    @Test
+    public void shouldIgnoreCommentsInMetaProperties() {
+        String wholeStory = "Meta: !-- this is the theme @theme parsing !-- skip me @skip" + NL +
+                "Scenario: " + NL +
+                "Meta: !-- these are the authors @authors Mauro Paul" + NL +
+                "Given a scenario " + NL +
+                "When I parse it" + NL +
+                "Then I should get steps";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+        assertThat(story.getPath(), equalTo(storyPath));
+        Meta storyMeta = story.getMeta();
+        assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
+        assertThat(storyMeta.getProperty("skip"), equalTo(""));
+        assertThat(story.getScenarios().get(0).getMeta().getProperty("authors"), equalTo("Mauro Paul"));
+    }
+
     @Test
     public void shouldParseStoryWithSimpleSteps() {
         String wholeStory = "Given a scenario" + NL +

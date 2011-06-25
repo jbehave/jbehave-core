@@ -89,8 +89,11 @@ public class RegexStoryParser implements StoryParser {
     private Meta createMeta(String meta) {
         List<String> properties = new ArrayList<String>();
         for (String property : meta.split(keywords.metaProperty())) {
-            if (!StringUtils.isBlank(property)) {
-                properties.add(property);
+            if (StringUtils.isNotBlank(property)) {
+                String beforeIgnorable = StringUtils.substringBefore(property,keywords.ignorable());
+                if ( StringUtils.isNotBlank(beforeIgnorable)){
+                    properties.add(beforeIgnorable);
+                }
             }
         }
         return new Meta(properties);
