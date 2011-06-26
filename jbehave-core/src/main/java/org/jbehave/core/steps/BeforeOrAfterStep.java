@@ -9,6 +9,7 @@ import org.jbehave.core.annotations.AfterStory;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStory;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
@@ -37,6 +38,17 @@ public class BeforeOrAfterStep {
         this.stepCreator = new StepCreator(type, stepsFactory, stepMonitor);
     }
 
+    public BeforeOrAfterStep(Stage stage, Method method, Class<?> type, InjectableStepsFactory stepsFactory, StepCreator stepCreator) {
+        this(stage, method, type, stepsFactory, Outcome.ANY, stepCreator);
+    }
+
+    public BeforeOrAfterStep(Stage stage, Method method, Class<?> type, InjectableStepsFactory stepsFactory, Outcome outcome, StepCreator stepCreator) {
+        this.stage = stage;
+        this.method = method;
+        this.outcome = outcome;
+        this.stepCreator = stepCreator;
+    }
+
     public Stage getStage() {
         return stage;
     }
@@ -47,6 +59,10 @@ public class BeforeOrAfterStep {
 
     public Step createStep() {
         return stepCreator.createBeforeOrAfterStep(method);
+    }
+
+    public Step createStepWith(Meta meta) {
+        return stepCreator.createBeforeOrAfterStepWithMeta(method, meta);
     }
 
     public Step createStepUponOutcome(boolean failureOccured) {
@@ -63,5 +79,4 @@ public class BeforeOrAfterStep {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(stage).append(method).append(outcome)
                 .append(stepMonitor).toString();
     }
-
 }

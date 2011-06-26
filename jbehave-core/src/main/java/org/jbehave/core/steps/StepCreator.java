@@ -10,6 +10,7 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.parsers.StepMatcher;
 
 import java.lang.annotation.Annotation;
@@ -75,6 +76,10 @@ public class StepCreator {
 
     public Step createBeforeOrAfterStep(final Method method) {
         return new BeforeOrAfterStep(method);
+    }
+
+    public Step createBeforeOrAfterStepWithMeta(Method method, Meta meta) {
+        return new BeforeOrAfterStepWithMeta(method, meta);
     }
 
     public Step createAfterStepUponOutcome(final Method method, final Outcome outcome, final boolean failureOccured) {
@@ -381,6 +386,56 @@ public class StepCreator {
 
     }
 
+    private class BeforeOrAfterStepWithMeta extends AbstractStep {
+        private final Method method;
+        private final Meta meta;
+
+        public BeforeOrAfterStepWithMeta(Method method, Meta meta) {
+            this.method = method;
+            this.meta = meta;
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            String[] annotationNames = annotatedParameterNames(method);
+            Object[] parameters = assignParametersFollowingNamedAnnotations(annotationNames);
+
+            // TODO support paranamer
+            // TODO support conversion of parameters
+            // TODO handle dryrun
+            // TODO how to report the execution of Before/After with parameters?
+
+            try {
+                method.invoke(stepsInstance(), parameters);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            }
+
+            // TODO handle failures in a similar way to BeforeOrAfterStep without Meta
+//            } catch (InvocationTargetException e) {
+//                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())));
+//            } catch (Throwable t) {
+//                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, t)));
+//            }
+
+            return skipped();
+        }
+
+        private Object[] assignParametersFollowingNamedAnnotations(String[] namedParameters) {
+            String parameters[] = new String[namedParameters.length];
+            int paramPosition = 0;
+            for (String namedParameter : namedParameters) {
+                parameters[paramPosition++] = meta.getProperty(namedParameter);
+            }
+            return parameters;
+        }
+
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return null;
+        }
+    }
+
     public class AnyOrDefaultStep extends AbstractStep {
 
         private final Method method;
@@ -553,5 +608,4 @@ public class StepCreator {
             return ignorable(stepAsString);
         }
     }
-
 }

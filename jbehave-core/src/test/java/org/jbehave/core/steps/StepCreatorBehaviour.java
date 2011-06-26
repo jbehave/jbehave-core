@@ -2,11 +2,16 @@ package org.jbehave.core.steps;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.parsers.StepMatcher;
+import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
@@ -17,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.instanceOf;
 
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +44,6 @@ public class StepCreatorBehaviour {
         assertThat(stepResult, instanceOf(Failed.class));
         assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
         assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
-
     }
 
     @Test
@@ -56,7 +61,6 @@ public class StepCreatorBehaviour {
         assertThat(stepResult, instanceOf(Failed.class));
         assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
         assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
-
     }
 
     @Test
@@ -117,4 +121,26 @@ public class StepCreatorBehaviour {
         assertThat(pendingStep.doNotPerform(null), instanceOf(Pending.class));
     }
 
+    @Test
+    public void shouldInvokeBeforeOrAfterStepMethodWithExpectedParametersFromMeta() throws Exception {
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new SilentStepMonitor());
+        Properties properties = new Properties();
+        properties.put("theme", "shopping cart");
+        properties.put("variant", "book");
+
+        // When
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStepWithMeta(SomeSteps.methodFor("aMethodWithANamedParameter"), new Meta(properties));
+        StepResult stepResult = stepWithMeta.perform(null);
+
+        // Then
+        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat(stepsInstance.args, instanceOf(Map.class));
+
+        Map<String, String> methodArgs = (Map<String, String>) stepsInstance.args;
+        assertThat(methodArgs.get("variant"), is("book"));
+        assertThat(methodArgs.get("theme"), is("shopping cart"));
+    }
 }
