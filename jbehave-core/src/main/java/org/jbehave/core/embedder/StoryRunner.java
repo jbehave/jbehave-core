@@ -334,6 +334,9 @@ public class StoryRunner {
         reporter.get().beforeExamples(scenario.getSteps(), table);
         for (Map<String, String> scenarioParameters : table.getRows()) {
             reporter.get().example(scenarioParameters);
+            if (context.configuration().storyControls().resetStateBeforeScenario()) {
+                context.resetState();
+            }
             runScenarioSteps(context, scenario, scenarioParameters);
         }
         reporter.get().afterExamples();
