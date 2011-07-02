@@ -396,10 +396,10 @@ public class StepCreator {
         }
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            String[] annotationNames = annotatedParameterNames(method);
-            Object[] parameters = assignParametersFollowingNamedAnnotations(annotationNames);
+            String[] annotationNamedParameters = annotatedParameterNames(method);
+            String[] parameterNames = paranamer.lookupParameterNames(method, false);
+            Object[] parameters = assignParametersFollowingAnnotationsAndParameterNames(annotationNamedParameters, parameterNames);
 
-            // TODO support paranamer
             // TODO support conversion of parameters
             // TODO handle dryrun
             // TODO how to report the execution of Before/After with parameters?
@@ -422,12 +422,20 @@ public class StepCreator {
             return skipped();
         }
 
-        private Object[] assignParametersFollowingNamedAnnotations(String[] namedParameters) {
-            String parameters[] = new String[namedParameters.length];
-            int paramPosition = 0;
-            for (String namedParameter : namedParameters) {
-                parameters[paramPosition++] = meta.getProperty(namedParameter);
+        private Object[] assignParametersFollowingAnnotationsAndParameterNames(String[] annotationNamedParameters, String[] parameterNames) {
+            int numParams = method.getParameterTypes().length;
+            String[] parameters = new String[numParams];
+
+            for (int paramPosition = 0; paramPosition < numParams; paramPosition++) {
+                if (annotationNamedParameters[paramPosition] != null) {
+                    String namedParameter = annotationNamedParameters[paramPosition];
+                    parameters[paramPosition] = meta.getProperty(namedParameter);
+                } else if (parameterNames[paramPosition] != null) {
+                    String parameterName = parameterNames[paramPosition];
+                    parameters[paramPosition] = meta.getProperty(parameterName);
+                }
             }
+
             return parameters;
         }
 

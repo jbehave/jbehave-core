@@ -2,10 +2,11 @@ package org.jbehave.core.steps;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -142,5 +143,24 @@ public class StepCreatorBehaviour {
         Map<String, String> methodArgs = (Map<String, String>) stepsInstance.args;
         assertThat(methodArgs.get("variant"), is("book"));
         assertThat(methodArgs.get("theme"), is("shopping cart"));
+    }
+
+    @Test
+    public void shouldInvokeBeforeOrAfterStepMethodWithMetaUsingParanamer() throws Exception {
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new SilentStepMonitor());
+        stepCreator.useParanamer(new CachingParanamer(new BytecodeReadingParanamer()));
+        Properties properties = new Properties();
+        properties.put("theme", "shopping cart");
+
+        // When
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStepWithMeta(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"), new Meta(properties));
+        StepResult stepResult = stepWithMeta.perform(null);
+
+        // Then
+        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat((String) stepsInstance.args, is("shopping cart"));
     }
 }

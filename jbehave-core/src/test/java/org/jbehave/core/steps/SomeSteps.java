@@ -123,6 +123,10 @@ public class SomeSteps extends Steps {
         this.args = namedArgs;
     }
 
+    public void aMethodWithoutNamedAnnotation(String theme) {
+        this.args = theme;
+    }
+
     public static Method methodFor(String methodName) throws IntrospectionException {
         BeanInfo beanInfo = Introspector.getBeanInfo(SomeSteps.class);
         for (MethodDescriptor md : beanInfo.getMethodDescriptors()) {
