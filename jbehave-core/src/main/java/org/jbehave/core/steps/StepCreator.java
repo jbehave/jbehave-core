@@ -403,18 +403,11 @@ public class StepCreator {
 
             try {
                 methodInvoker.invoke();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
             } catch (InvocationTargetException e) {
-                e.printStackTrace();
+                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())));
+            } catch (Throwable t) {
+                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, t)));
             }
-
-            // TODO handle failures in a similar way to BeforeOrAfterStep without Meta
-//            } catch (InvocationTargetException e) {
-//                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())));
-//            } catch (Throwable t) {
-//                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, t)));
-//            }
 
             return skipped();
         }

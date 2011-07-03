@@ -163,4 +163,21 @@ public class StepCreatorBehaviour {
         assertThat(stepResult, instanceOf(Skipped.class));
         assertThat((String) stepsInstance.args, is("shopping cart"));
     }
+
+    @Test
+    public void shouldHandleFailureInBeforeOrAfterStepWithMeta() throws Exception {
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new SilentStepMonitor());
+
+        // When
+        Method method = SomeSteps.methodFor("aFailingMethod");
+        StepResult stepResult = stepCreator.createBeforeOrAfterStepWithMeta(method, Meta.EMPTY).perform(null);
+
+        // Then
+        assertThat(stepResult, instanceOf(Failed.class));
+        assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
+        assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
+    }
 }
