@@ -396,16 +396,13 @@ public class StepCreator {
         }
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            String[] annotationNamedParameters = annotatedParameterNames(method);
-            String[] parameterNames = paranamer.lookupParameterNames(method, false);
-            Object[] parameters = assignParametersFollowingAnnotationsAndParameterNames(annotationNamedParameters, parameterNames);
-
             // TODO support conversion of parameters
-            // TODO handle dryrun
             // TODO how to report the execution of Before/After with parameters?
 
+            MethodInvoker methodInvoker = new MethodInvoker(method, paranamer, meta);
+
             try {
-                method.invoke(stepsInstance(), parameters);
+                methodInvoker.invoke();
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             } catch (InvocationTargetException e) {
@@ -420,23 +417,6 @@ public class StepCreator {
 //            }
 
             return skipped();
-        }
-
-        private Object[] assignParametersFollowingAnnotationsAndParameterNames(String[] annotationNamedParameters, String[] parameterNames) {
-            int numParams = method.getParameterTypes().length;
-            String[] parameters = new String[numParams];
-
-            for (int paramPosition = 0; paramPosition < numParams; paramPosition++) {
-                if (annotationNamedParameters[paramPosition] != null) {
-                    String namedParameter = annotationNamedParameters[paramPosition];
-                    parameters[paramPosition] = meta.getProperty(namedParameter);
-                } else if (parameterNames[paramPosition] != null) {
-                    String parameterName = parameterNames[paramPosition];
-                    parameters[paramPosition] = meta.getProperty(parameterName);
-                }
-            }
-
-            return parameters;
         }
 
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
@@ -614,6 +594,63 @@ public class StepCreator {
 
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return ignorable(stepAsString);
+        }
+    }
+
+    private class MethodInvoker {
+        private final Method method;
+        private final Paranamer paranamer;
+        private final Meta meta;
+        private int methodArity;
+
+        public MethodInvoker(Method method, Paranamer paranamer, Meta meta) {
+            this.method = method;
+            this.paranamer = paranamer;
+            this.meta = meta;
+            this.methodArity = method.getParameterTypes().length;
+        }
+
+        public void invoke() throws InvocationTargetException, IllegalAccessException {
+            method.invoke(stepsInstance(), parameterValuesFrom(meta));
+        }
+
+        private Parameter[] methodParameters() {
+            Parameter[] parameters = new Parameter[methodArity];
+            String[] annotationNamedParameters = annotatedParameterNames(method);
+            String[] parameterNames = paranamer.lookupParameterNames(method, false);
+
+            for (int paramPosition = 0; paramPosition < methodArity; paramPosition++) {
+                parameters[paramPosition] = new Parameter(paramPosition, parameterNameFor(paramPosition, annotationNamedParameters, parameterNames));
+            }
+
+            return parameters;
+        }
+
+        private String parameterNameFor(int paramPosition, String[] annotationNamedParameters, String[] parameterNames) {
+            if (annotationNamedParameters[paramPosition] != null) {
+                return annotationNamedParameters[paramPosition];
+            } else if (parameterNames[paramPosition] != null) {
+                return parameterNames[paramPosition];
+            }
+            return null;
+        }
+
+        private Object[] parameterValuesFrom(Meta meta) {
+            Object[] values = new Object[methodArity];
+            for (Parameter parameter : methodParameters()) {
+                values[parameter.position] = meta.getProperty(parameter.name);
+            }
+            return values;
+        }
+
+        private class Parameter {
+            private final int position;
+            private final String name;
+
+            public Parameter(int position, String name) {
+                this.position = position;
+                this.name = name;
+            }
         }
     }
 }
