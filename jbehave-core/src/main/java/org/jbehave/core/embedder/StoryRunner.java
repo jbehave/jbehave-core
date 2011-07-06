@@ -1,10 +1,6 @@
 package org.jbehave.core.embedder;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.jbehave.core.RestartScenario;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
@@ -27,6 +23,11 @@ import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
 
@@ -351,9 +352,18 @@ public class StoryRunner {
     }
 
     private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
-        List<Step> steps = context.collectScenarioSteps(scenario, scenarioParameters);
-        runStepsWhileKeepingState(context, steps);
-        generatePendingStepMethods(context, steps);
+        boolean again = true;
+        while (again) {
+            again = false;
+            List<Step> steps = context.collectScenarioSteps(scenario, scenarioParameters);
+            try {
+                runStepsWhileKeepingState(context, steps);
+            } catch (RestartScenario re) {
+                again = true;
+                continue;
+            }
+            generatePendingStepMethods(context, steps);
+        }
     }
 
     private void generatePendingStepMethods(RunContext context, List<Step> steps) {
@@ -381,7 +391,12 @@ public class StoryRunner {
         }
         State state = context.state();
         for (Step step : steps) {
-            state = state.run(step);
+            try {
+                state = state.run(step);
+            } catch (RestartScenario rs) {
+                reporter.get().failed(step.toString(), rs);
+                throw rs;
+            }
         }
         context.stateIs(state);
     }

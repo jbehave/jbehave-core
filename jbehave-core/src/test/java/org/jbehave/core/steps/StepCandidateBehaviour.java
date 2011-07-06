@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.jbehave.core.RestartScenario;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.When;
@@ -30,15 +30,13 @@ import com.thoughtworks.paranamer.CachingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.nullValue;
-
+import static junit.framework.Assert.fail;
 import static org.hamcrest.MatcherAssert.assertThat;
-
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
-
+import static org.hamcrest.Matchers.nullValue;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.jbehave.core.steps.StepType.GIVEN;
@@ -364,6 +362,19 @@ public class StepCandidateBehaviour {
     }
 
     @Test
+    public void shouldRestart() {
+        RestartingSteps steps = new RestartingSteps();
+        List<StepCandidate> candidates = steps.listCandidates();
+        assertThat(candidates.size(), equalTo(1));
+        try {
+            candidates.get(0).createMatchedStep("When blah Bar blah", namedParameters).perform(null);
+            fail("should have barfed");
+        } catch (RestartScenario e) {
+            assertThat(e.getMessage(), is(equalTo("Bar restarting")));
+        }
+    }
+
+    @Test
     public void shouldPerformStepsInDryRunMode() {
         Configuration configuration = new MostUsefulConfiguration();
         configuration.storyControls().doDryRun(true);
@@ -440,7 +451,16 @@ public class StepCandidateBehaviour {
         }
 
     }
-    
+
+    static class RestartingSteps extends Steps {
+
+        @When("blah $name blah")
+        public void whenOutcomeFails(String name) {
+            throw new RestartScenario(name + " restarting");
+        }
+
+    }
+
     static class PendingSteps extends Steps {
 
         @Given("a pending step")
