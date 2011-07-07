@@ -231,6 +231,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     public void shouldCollectBeforeAndAfterScenarioAnnotatedSteps() {
         // Given some candidate steps classes with before and after scenario
         // methods
+        Meta storyAndScenarioMeta = mock(Meta.class);
         CandidateSteps steps1 = mock(Steps.class);
         CandidateSteps steps2 = mock(Steps.class);
         BeforeOrAfterStep bafStep11 = mock(BeforeOrAfterStep.class);
@@ -242,22 +243,22 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step stepAfter1 = mock(Step.class);
         Step stepAfter2 = mock(Step.class);
         when(bafStep11.getStage()).thenReturn(Stage.BEFORE);
-        when(bafStep11.createStep()).thenReturn(stepBefore1);
+        when(bafStep11.createStepWith(storyAndScenarioMeta)).thenReturn(stepBefore1);
         when(bafStep12.getStage()).thenReturn(Stage.BEFORE);
-        when(bafStep12.createStep()).thenReturn(stepBefore2);
+        when(bafStep12.createStepWith(storyAndScenarioMeta)).thenReturn(stepBefore2);
         when(bafStep21.getStage()).thenReturn(Stage.AFTER);
         boolean failureOccured = true;
-        when(bafStep21.createStepUponOutcome(failureOccured)).thenReturn(stepAfter1);
+        when(bafStep21.createStepUponOutcome(failureOccured, storyAndScenarioMeta)).thenReturn(stepAfter1);
         when(bafStep22.getStage()).thenReturn(Stage.AFTER);
-        when(bafStep22.createStepUponOutcome(failureOccured)).thenReturn(stepAfter2);
+        when(bafStep22.createStepUponOutcome(failureOccured, storyAndScenarioMeta)).thenReturn(stepAfter2);
         when(steps1.listBeforeOrAfterScenario()).thenReturn(asList(bafStep11, bafStep12));
         when(steps2.listBeforeOrAfterScenario()).thenReturn(asList(bafStep21, bafStep22));
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.BEFORE,
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), storyAndScenarioMeta, Stage.BEFORE,
                 failureOccured);
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), Stage.AFTER,
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), storyAndScenarioMeta, Stage.AFTER,
                 failureOccured);
 
         // Then all before and after steps should be added
@@ -438,7 +439,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         XStream xs = new XStream();
 
-        List<Step> subset = foo.collectBeforeOrAfterScenarioSteps(steps, Stage.BEFORE, false);
+        List<Step> subset = foo.collectBeforeOrAfterScenarioSteps(steps, null, Stage.BEFORE, false);
         String subsetAsXML = xs.toXML(subset);
         assertTrue(subsetAsXML.indexOf("<name>a</name>") > -1); // there
         assertEquals(subsetAsXML.indexOf("<name>b</name>"), -1); // not there
@@ -449,7 +450,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         assertEquals(stepsAsString, steps.toString()); // steps have not been
                                                        // mutated.
 
-        subset = foo.collectBeforeOrAfterScenarioSteps(steps, Stage.AFTER, false);
+        subset = foo.collectBeforeOrAfterScenarioSteps(steps, null, Stage.AFTER, false);
         subsetAsXML = xs.toXML(subset);
         assertEquals(subsetAsXML.indexOf("<name>a</name>"), -1); // not there
         assertTrue(subsetAsXML.indexOf("<name>b</name>") > -1); // there

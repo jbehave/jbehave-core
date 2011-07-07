@@ -222,7 +222,8 @@ public class StoryRunner {
                     reporter.get().beforeScenario(scenario.getTitle());
                     reporter.get().scenarioMeta(scenario.getMeta());
 
-                    if (context.metaNotAllowed(scenario.getMeta().inheritFrom(story.getMeta()))) {
+                    Meta storyAndScenarioMeta = scenario.getMeta().inheritFrom(story.getMeta());
+                    if (context.metaNotAllowed(storyAndScenarioMeta)) {
                         reporter.get().scenarioNotAllowed(scenario, context.metaFilterAsString());
                         scenarioAllowed = false;
                     }
@@ -233,7 +234,7 @@ public class StoryRunner {
                         }
                         // run before scenario steps, if allowed
                         if (runBeforeAndAfterScenarioSteps) {
-                            runBeforeOrAfterScenarioSteps(context, scenario, Stage.BEFORE);
+                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE);
                         }
 
                         // run given stories, if any
@@ -242,13 +243,13 @@ public class StoryRunner {
                             // run parametrised scenarios by examples
                             runParametrisedScenariosByExamples(context, scenario);
                         } else { // run as plain old scenario
-                            addMetaParameters(storyParameters, scenario.getMeta().inheritFrom(story.getMeta()));
+                            addMetaParameters(storyParameters, storyAndScenarioMeta);
                             runScenarioSteps(context, scenario, storyParameters);
                         }
 
                         // run after scenario steps, if allowed
                         if (runBeforeAndAfterScenarioSteps) {
-                            runBeforeOrAfterScenarioSteps(context, scenario, Stage.AFTER);
+                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER);
                         }
 
                     }
@@ -347,8 +348,8 @@ public class StoryRunner {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterStorySteps(story, stage));
     }
 
-    private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Stage stage) {
-        runStepsWhileKeepingState(context, context.collectBeforeOrAfterScenarioSteps(stage));
+    private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Meta storyAndScenarioMeta, Stage stage) {
+        runStepsWhileKeepingState(context, context.collectBeforeOrAfterScenarioSteps(storyAndScenarioMeta, stage));
     }
 
     private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
@@ -513,8 +514,8 @@ public class StoryRunner {
                     givenStory);
         }
 
-        public List<Step> collectBeforeOrAfterScenarioSteps(Stage stage) {
-            return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps, stage,
+        public List<Step> collectBeforeOrAfterScenarioSteps(Meta storyAndScenarioMeta, Stage stage) {
+            return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps, storyAndScenarioMeta, stage,
                     failureOccurred());
         }
 

@@ -13,6 +13,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.Steps.DuplicateCandidateFound;
@@ -145,17 +146,18 @@ public class StepsBehaviour {
     	beforeAfterScenario.get(0).createStep().perform(null);
     	assertThat(steps.beforeScenario, is(true));
 
-    	boolean failureOccured = true;
+        Meta storyAndScenarioMeta = null;
+        boolean failureOccured = true;
         // uponOutcome=ANY
-    	beforeAfterScenario.get(1).createStepUponOutcome(failureOccured).perform(null);
+        beforeAfterScenario.get(1).createStepUponOutcome(failureOccured, storyAndScenarioMeta).perform(null);
     	assertThat(steps.afterAnyScenario, is(true));
     	
     	// uponOutcome=SUCCESS
-    	beforeAfterScenario.get(2).createStepUponOutcome(failureOccured).perform(null);
+        beforeAfterScenario.get(2).createStepUponOutcome(failureOccured, storyAndScenarioMeta).perform(null);
     	assertThat(steps.afterSuccessfulScenario, is(false));
     	
 		// uponOutcome=FAILURE    	
-    	beforeAfterScenario.get(3).createStepUponOutcome(failureOccured).perform(null);
+        beforeAfterScenario.get(3).createStepUponOutcome(failureOccured, storyAndScenarioMeta).perform(null);
     	assertThat(steps.afterFailedScenario, is(true));
 
     }
@@ -169,17 +171,18 @@ public class StepsBehaviour {
         beforeAfterScenario.get(0).createStep().perform(null);
         assertThat(steps.beforeScenario, is(true));
 
+        Meta storyAndScenarioMeta = null;
         boolean failureOccured = false;
         // uponOutcome=ANY
-        beforeAfterScenario.get(1).createStepUponOutcome(failureOccured).perform(null);
+        beforeAfterScenario.get(1).createStepUponOutcome(failureOccured, storyAndScenarioMeta).perform(null);
         assertThat(steps.afterAnyScenario, is(true));
         
         // uponOutcome=SUCCESS
-        beforeAfterScenario.get(2).createStepUponOutcome(failureOccured).perform(null);
+        beforeAfterScenario.get(2).createStepUponOutcome(failureOccured, storyAndScenarioMeta).perform(null);
         assertThat(steps.afterSuccessfulScenario, is(true));
         
         // uponOutcome=FAILURE      
-        beforeAfterScenario.get(3).createStepUponOutcome(failureOccured).perform(null);
+        beforeAfterScenario.get(3).createStepUponOutcome(failureOccured, storyAndScenarioMeta).perform(null);
         assertThat(steps.afterFailedScenario, is(false));
 
     }
@@ -193,18 +196,19 @@ public class StepsBehaviour {
     	beforeAfterScenario.get(0).createStep().doNotPerform(null);
     	assertThat(steps.beforeScenario, is(true));
 
+        Meta storyAndScenarioMeta = null;
         boolean failureOccured = true;
     	UUIDExceptionWrapper failure = new UUIDExceptionWrapper();
         // uponOutcome=ANY
-    	beforeAfterScenario.get(1).createStepUponOutcome(failureOccured).doNotPerform(failure);
+        beforeAfterScenario.get(1).createStepUponOutcome(failureOccured, storyAndScenarioMeta).doNotPerform(failure);
     	assertThat(steps.afterAnyScenario, is(true));
     	
     	// uponOutcome=SUCCESS
-    	beforeAfterScenario.get(2).createStepUponOutcome(failureOccured).doNotPerform(failure);
+        beforeAfterScenario.get(2).createStepUponOutcome(failureOccured, storyAndScenarioMeta).doNotPerform(failure);
     	assertThat(steps.afterSuccessfulScenario, is(false));
     	
 		// uponOutcome=FAILURE    	
-    	beforeAfterScenario.get(3).createStepUponOutcome(failureOccured).doNotPerform(failure);
+        beforeAfterScenario.get(3).createStepUponOutcome(failureOccured, storyAndScenarioMeta).doNotPerform(failure);
     	assertThat(steps.afterFailedScenario, is(true));
     }
     

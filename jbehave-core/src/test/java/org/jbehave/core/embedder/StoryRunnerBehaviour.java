@@ -395,8 +395,8 @@ public class StoryRunnerBehaviour {
         Step beforeStep = mockSuccessfulStep("SuccessfulBeforeScenarioStep");
         Step afterStep = mockSuccessfulStep("SuccessfulAfterScenarioStep");
         boolean failureOccured = false;
-        when(collector.collectBeforeOrAfterScenarioSteps(asList(mySteps), Stage.BEFORE, failureOccured)).thenReturn(asList(beforeStep));
-        when(collector.collectBeforeOrAfterScenarioSteps(asList(mySteps), Stage.AFTER, failureOccured)).thenReturn(asList(afterStep));
+        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.BEFORE), eq(failureOccured))).thenReturn(asList(beforeStep));
+        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.AFTER), eq(failureOccured))).thenReturn(asList(afterStep));
 
         // When
         StoryRunner runner = new StoryRunner();

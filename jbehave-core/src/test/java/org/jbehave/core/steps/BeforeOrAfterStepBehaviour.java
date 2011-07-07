@@ -1,5 +1,6 @@
 package org.jbehave.core.steps;
 
+import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.model.Meta;
 import org.junit.Test;
 
@@ -22,5 +23,19 @@ public class BeforeOrAfterStepBehaviour {
         beforeOrAfterStep.createStepWith(meta);
 
         verify(stepCreator).createBeforeOrAfterStepWithMeta(method, meta);
+    }
+
+    @Test
+    public void shouldPassMetaToStepCreatorWhenCreatingStepUponOutcomeWithMeta() throws Exception {
+        StepCreator stepCreator = mock(StepCreator.class);
+
+        Method method = methodFor("aMethodWith");
+        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(Stage.AFTER, method, String.class, mock(InjectableStepsFactory.class), stepCreator);
+
+        Meta meta = mock(Meta.class);
+        boolean failureOccured = false;
+        beforeOrAfterStep.createStepUponOutcome(failureOccured, meta);
+
+        verify(stepCreator).createAfterStepUponOutcome(method, AfterScenario.Outcome.ANY, failureOccured, meta);
     }
 }
