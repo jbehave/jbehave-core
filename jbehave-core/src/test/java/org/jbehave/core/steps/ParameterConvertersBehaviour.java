@@ -34,6 +34,7 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 
@@ -354,5 +355,30 @@ public class ParameterConvertersBehaviour {
         assertThat(list.get(0), is(true));
         assertThat(list.get(1), is(false));
         assertThat(list.get(2), is(true));
+    }
+
+    @Test(expected = ParameterConvertionFailed.class)
+    public void shouldNotModifyListOfConvertersFromOriginalParameterConvertersWhenCreatingNewInstance() throws Exception {
+        ParameterConverters original = new ParameterConverters();
+        original.newInstanceAdding(new FooToBarParameterConverter());
+
+        ensureItStillDoesNotKnowHowToConvertFooToBar(original);
+    }
+
+    private void ensureItStillDoesNotKnowHowToConvertFooToBar(ParameterConverters original) {
+        original.convert("foo", Bar.class);
+    }
+
+    private class Bar {
+    }
+
+    private class FooToBarParameterConverter implements ParameterConverter {
+        public boolean accept(Type type) {
+            return type == Bar.class;
+        }
+
+        public Object convertValue(String value, Type type) {
+            return new Bar();
+        }
     }
 }

@@ -48,7 +48,7 @@ public class ParameterConverters {
     private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
     
     private final StepMonitor monitor;
-    private final List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
+    private final List<ParameterConverter> converters;
 
     /** 
      * Default Parameters use a SilentStepMonitor, has English as Locale and use "," as list separator. 
@@ -73,10 +73,15 @@ public class ParameterConverters {
      * @param listSeparator The list separator 
      */
     public ParameterConverters(StepMonitor monitor, Locale locale, String listSeparator) {
-        this.monitor = monitor;
+        this(monitor, new ArrayList<ParameterConverter>());
         this.addConverters(defaultConverters(locale, listSeparator));    	
     }
-    
+
+    private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters) {
+        this.monitor = monitor;
+        this.converters = converters;
+    }
+
     protected ParameterConverter[] defaultConverters(Locale locale, String listSeparator) {
         String escapedListSeparator = escapeRegexPunctuation(listSeparator);
         ParameterConverter[] defaultConverters = {
@@ -125,6 +130,12 @@ public class ParameterConverters {
 
     private Object replaceNewlinesWithSystemNewlines(String value) {
         return value.replaceAll(NEWLINES_PATTERN, SYSTEM_NEWLINE);
+    }
+
+    public ParameterConverters newInstanceAdding(ParameterConverter converter) {
+        List<ParameterConverter> convertersForNewInstance = new ArrayList<ParameterConverter>(converters);
+        convertersForNewInstance.add(converter);
+        return new ParameterConverters(monitor, convertersForNewInstance);
     }
 
     public static interface ParameterConverter {

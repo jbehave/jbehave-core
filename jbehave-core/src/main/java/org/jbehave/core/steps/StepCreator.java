@@ -399,7 +399,8 @@ public class StepCreator {
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
             // TODO how to report the execution of Before/After with parameters?
 
-            MethodInvoker methodInvoker = new MethodInvoker(method, parameterConverters, paranamer, meta);
+            ParameterConverters paramConvertersWithExceptionInjector = paramConvertersWithExceptionInjector(storyFailureIfItHappened);
+            MethodInvoker methodInvoker = new MethodInvoker(method, paramConvertersWithExceptionInjector, paranamer, meta);
 
             try {
                 methodInvoker.invoke();
@@ -412,8 +413,32 @@ public class StepCreator {
             return skipped();
         }
 
+        private ParameterConverters paramConvertersWithExceptionInjector(UUIDExceptionWrapper storyFailureIfItHappened) {
+            if (parameterConverters != null) {
+                return parameterConverters.newInstanceAdding(new UUIDExceptionWrapperInjector(storyFailureIfItHappened));
+            }
+            // TODO we should always have a parameter converter available
+            return null;
+        }
+
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return perform(storyFailureIfItHappened);
+        }
+
+        private class UUIDExceptionWrapperInjector implements ParameterConverters.ParameterConverter {
+            private final UUIDExceptionWrapper storyFailureIfItHappened;
+
+            public UUIDExceptionWrapperInjector(UUIDExceptionWrapper storyFailureIfItHappened) {
+                this.storyFailureIfItHappened = storyFailureIfItHappened;
+            }
+
+            public boolean accept(Type type) {
+                return UUIDExceptionWrapper.class == type;
+            }
+
+            public Object convertValue(String value, Type type) {
+                return storyFailureIfItHappened;
+            }
         }
     }
 
@@ -613,12 +638,18 @@ public class StepCreator {
         }
 
         private String parameterNameFor(int paramPosition, String[] annotationNamedParameters, String[] parameterNames) {
-            if (annotationNamedParameters[paramPosition] != null) {
-                return annotationNamedParameters[paramPosition];
-            } else if (parameterNames[paramPosition] != null) {
-                return parameterNames[paramPosition];
+            String nameFromAnnotation = nameIfValidPositionInArray(annotationNamedParameters, paramPosition);
+            String parameterName = nameIfValidPositionInArray(parameterNames, paramPosition);
+            if (nameFromAnnotation != null) {
+                return nameFromAnnotation;
+            } else if (parameterName != null) {
+                return parameterName;
             }
             return null;
+        }
+
+        private String nameIfValidPositionInArray(String[] paramNames, int paramPosition) {
+            return paramPosition < paramNames.length ? paramNames[paramPosition] : null;
         }
 
         private Object[] parameterValuesFrom(Meta meta) {

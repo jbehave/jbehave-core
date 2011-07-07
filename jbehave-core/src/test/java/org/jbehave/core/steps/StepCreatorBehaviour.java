@@ -21,9 +21,11 @@ import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Matchers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.instanceOf;
 
 import static org.hamcrest.Matchers.is;
@@ -41,6 +43,7 @@ public class StepCreatorBehaviour {
     public void setUp() throws Exception {
         when(parameterConverters.convert("shopping cart", String.class)).thenReturn("shopping cart");
         when(parameterConverters.convert("book", String.class)).thenReturn("book");
+        when(parameterConverters.newInstanceAdding(Matchers.<ParameterConverters.ParameterConverter>anyObject())).thenReturn(parameterConverters);
     }
 
     @Test
@@ -301,6 +304,40 @@ public class StepCreatorBehaviour {
         // Then
         assertThat(stepResult, instanceOf(Skipped.class));
         assertThat((Date) stepsInstance.args, is(aDate));
+    }
+
+    @Test
+    public void shouldInjectExceptionThatHappenedIfTargetMethodExpectsIt() throws Exception {
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        parameterConverters = new ParameterConverters();
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+
+        // When
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStepWithMeta(SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
+        UUIDExceptionWrapper occurredFailure = new UUIDExceptionWrapper();
+        StepResult stepResult = stepWithMeta.perform(occurredFailure);
+
+        // Then
+        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat((UUIDExceptionWrapper) stepsInstance.args, is(occurredFailure));
+    }
+
+    @Test
+    public void shouldInjectNoFailureIfNoExceptionHappenedAndTargetMethodExpectsIt() throws Exception {
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        parameterConverters = new ParameterConverters();
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+
+        // When
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStepWithMeta(SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
+        UUIDExceptionWrapper occurredFailure = new UUIDExceptionWrapper();
+        StepResult stepResult = stepWithMeta.perform(occurredFailure);
+
+        // Then
+        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat((UUIDExceptionWrapper) stepsInstance.args, is(occurredFailure));
     }
 
     private StepCreator stepCreatorUsing(final SomeSteps stepsInstance) {

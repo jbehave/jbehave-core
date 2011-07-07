@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.PendingStepFound;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 
 public class SomeSteps extends Steps {
@@ -125,6 +126,10 @@ public class SomeSteps extends Steps {
 
     public void aMethodWithoutNamedAnnotation(String theme) {
         this.args = theme;
+    }
+
+    public void aMethodThatExpectsUUIDExceptionWrapper(UUIDExceptionWrapper exception) {
+        this.args = exception;
     }
 
     public static Method methodFor(String methodName) throws IntrospectionException {
