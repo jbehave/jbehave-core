@@ -397,10 +397,9 @@ public class StepCreator {
         }
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            // TODO support conversion of parameters
             // TODO how to report the execution of Before/After with parameters?
 
-            MethodInvoker methodInvoker = new MethodInvoker(method, paranamer, meta);
+            MethodInvoker methodInvoker = new MethodInvoker(method, parameterConverters, paranamer, meta);
 
             try {
                 methodInvoker.invoke();
@@ -582,12 +581,14 @@ public class StepCreator {
 
     private class MethodInvoker {
         private final Method method;
+        private final ParameterConverters parameterConverters;
         private final Paranamer paranamer;
         private final Meta meta;
         private int methodArity;
 
-        public MethodInvoker(Method method, Paranamer paranamer, Meta meta) {
+        public MethodInvoker(Method method, ParameterConverters parameterConverters, Paranamer paranamer, Meta meta) {
             this.method = method;
+            this.parameterConverters = parameterConverters;
             this.paranamer = paranamer;
             this.meta = meta;
             this.methodArity = method.getParameterTypes().length;
@@ -601,9 +602,11 @@ public class StepCreator {
             Parameter[] parameters = new Parameter[methodArity];
             String[] annotationNamedParameters = annotatedParameterNames(method);
             String[] parameterNames = paranamer.lookupParameterNames(method, false);
+            Class<?>[] parameterTypes = method.getParameterTypes();
 
             for (int paramPosition = 0; paramPosition < methodArity; paramPosition++) {
-                parameters[paramPosition] = new Parameter(paramPosition, parameterNameFor(paramPosition, annotationNamedParameters, parameterNames));
+                String paramName = parameterNameFor(paramPosition, annotationNamedParameters, parameterNames);
+                parameters[paramPosition] = new Parameter(paramPosition, parameterTypes[paramPosition], paramName);
             }
 
             return parameters;
@@ -621,17 +624,19 @@ public class StepCreator {
         private Object[] parameterValuesFrom(Meta meta) {
             Object[] values = new Object[methodArity];
             for (Parameter parameter : methodParameters()) {
-                values[parameter.position] = meta.getProperty(parameter.name);
+                values[parameter.position] = parameterConverters.convert(meta.getProperty(parameter.name), parameter.type);
             }
             return values;
         }
 
         private class Parameter {
             private final int position;
+            private final Class<?> type;
             private final String name;
 
-            public Parameter(int position, String name) {
+            public Parameter(int position, Class<?> type, String name) {
                 this.position = position;
+                this.type = type;
                 this.name = name;
             }
         }
