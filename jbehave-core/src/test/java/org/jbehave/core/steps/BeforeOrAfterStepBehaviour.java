@@ -17,7 +17,7 @@ public class BeforeOrAfterStepBehaviour {
         StepCreator stepCreator = mock(StepCreator.class);
 
         Method method = methodFor("aMethodWith");
-        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(Stage.BEFORE, method, String.class, mock(InjectableStepsFactory.class), stepCreator);
+        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(Stage.BEFORE, method, stepCreator);
 
         Meta meta = mock(Meta.class);
         beforeOrAfterStep.createStepWith(meta);
@@ -30,7 +30,7 @@ public class BeforeOrAfterStepBehaviour {
         StepCreator stepCreator = mock(StepCreator.class);
 
         Method method = methodFor("aMethodWith");
-        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(Stage.AFTER, method, String.class, mock(InjectableStepsFactory.class), stepCreator);
+        BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(Stage.AFTER, method, stepCreator);
 
         Meta meta = mock(Meta.class);
         boolean failureOccured = false;

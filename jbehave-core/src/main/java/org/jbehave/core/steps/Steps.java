@@ -296,11 +296,11 @@ public class Steps implements CandidateSteps {
     }
 
     private BeforeOrAfterStep createBeforeOrAfterStep(Stage stage, Method method) {
-        return new BeforeOrAfterStep(stage, method, type, stepsFactory);
+        return createBeforeOrAfterStep(stage, method, Outcome.ANY);
     }
 
     private BeforeOrAfterStep createBeforeOrAfterStep(Stage stage, Method method, Outcome outcome) {
-        return new BeforeOrAfterStep(stage, method, type, stepsFactory, outcome);
+        return new BeforeOrAfterStep(stage, method, outcome, new StepCreator(type, stepsFactory, configuration.stepMonitor()));
     }
 
     private List<Method> allMethods() {
