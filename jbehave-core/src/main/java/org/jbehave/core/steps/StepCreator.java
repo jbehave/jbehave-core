@@ -655,7 +655,7 @@ public class StepCreator {
         private Object[] parameterValuesFrom(Meta meta) {
             Object[] values = new Object[methodArity];
             for (Parameter parameter : methodParameters()) {
-                values[parameter.position] = parameterConverters.convert(meta.getProperty(parameter.name), parameter.type);
+                values[parameter.position] = parameterConverters.convert(parameter.valueFrom(meta), parameter.type);
             }
             return values;
         }
@@ -669,6 +669,13 @@ public class StepCreator {
                 this.position = position;
                 this.type = type;
                 this.name = name;
+            }
+
+            public String valueFrom(Meta meta) {
+                if (name == null) {
+                    return null;
+                }
+                return meta.getProperty(name);
             }
         }
     }

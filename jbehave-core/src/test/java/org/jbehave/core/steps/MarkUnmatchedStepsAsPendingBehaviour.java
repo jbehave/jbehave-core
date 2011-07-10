@@ -1,15 +1,13 @@
 package org.jbehave.core.steps;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.PendingStepFound;
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -464,6 +462,49 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
     }
 
+    @Test
+    public void shouldInvokeBeforeOrAfterScenarioWithParameter() throws Exception {
+        BeforeOrAfterScenarioWithParameterSteps steps = new BeforeOrAfterScenarioWithParameterSteps();
+        Meta meta = beforeAndAfterMeta();
+
+        MarkUnmatchedStepsAsPending collector = new MarkUnmatchedStepsAsPending();
+
+        List<Step> beforeSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta, Stage.BEFORE, false);
+        beforeSteps.get(0).perform(null);
+        assertThat(steps.value, is("before"));
+
+        List<Step> afterSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta, Stage.AFTER, false);
+        afterSteps.get(0).perform(null);
+        assertThat(steps.value, is("after"));
+    }
+
+    @Test
+    public void shouldInvokeBeforeOrAfterScenarioWithParameterAndException() throws Exception {
+        BeforeOrAfterScenarioWithParameterAndExceptionSteps steps = new BeforeOrAfterScenarioWithParameterAndExceptionSteps();
+        Meta meta = beforeAndAfterMeta();
+
+        MarkUnmatchedStepsAsPending collector = new MarkUnmatchedStepsAsPending();
+        UUIDExceptionWrapper failureOccurred = new UUIDExceptionWrapper();
+
+        List<Step> beforeSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta, Stage.BEFORE, true);
+        beforeSteps.get(0).doNotPerform(failureOccurred);
+        assertThat(steps.value, is("before"));
+        assertThat(steps.exception, is(failureOccurred));
+
+        List<Step> afterSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta, Stage.AFTER, true);
+        failureOccurred = new UUIDExceptionWrapper();
+        afterSteps.get(0).doNotPerform(failureOccurred);
+        assertThat(steps.value, is("after"));
+        assertThat(steps.exception, is(failureOccurred));
+    }
+
+    private Meta beforeAndAfterMeta() {
+        Properties properties = new Properties();
+        properties.put("before", "before");
+        properties.put("after", "after");
+        return new Meta(properties);
+    }
+
     public static class ClassWithMethodsAandB extends Steps {
         @BeforeScenario
         public void a() {
@@ -485,4 +526,34 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         }
     }
 
+    private class BeforeOrAfterScenarioWithParameterSteps extends Steps {
+        private String value;
+
+        @BeforeScenario
+        public void beforeScenario(@Named("before") String before) {
+            this.value = before;
+        }
+
+        @AfterScenario
+        public void afterScenario(@Named("after") String after) {
+            this.value = after;
+        }
+    }
+
+    private class BeforeOrAfterScenarioWithParameterAndExceptionSteps extends Steps {
+        private String value;
+        private UUIDExceptionWrapper exception;
+
+        @BeforeScenario
+        public void beforeScenario(@Named("before") String before, UUIDExceptionWrapper exception) {
+            this.value = before;
+            this.exception = exception;
+        }
+
+        @AfterScenario
+        public void afterScenario(@Named("after") String after, UUIDExceptionWrapper exception) {
+            this.value = after;
+            this.exception = exception;
+        }
+    }
 }
