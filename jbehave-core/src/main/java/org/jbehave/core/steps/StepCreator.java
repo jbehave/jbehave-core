@@ -44,10 +44,6 @@ public class StepCreator {
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
 
-    public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory, StepMonitor stepMonitor) {
-        this(stepsType, stepsFactory, null, null, stepMonitor);
-    }
-
     public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory, ParameterConverters parameterConverters, StepMatcher stepMatcher,
             StepMonitor stepMonitor) {
         this.stepsType = stepsType;
@@ -414,11 +410,7 @@ public class StepCreator {
         }
 
         private ParameterConverters paramConvertersWithExceptionInjector(UUIDExceptionWrapper storyFailureIfItHappened) {
-            if (parameterConverters != null) {
-                return parameterConverters.newInstanceAdding(new UUIDExceptionWrapperInjector(storyFailureIfItHappened));
-            }
-            // TODO we should always have a parameter converter available
-            return null;
+            return parameterConverters.newInstanceAdding(new UUIDExceptionWrapperInjector(storyFailureIfItHappened));
         }
 
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
