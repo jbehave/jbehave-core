@@ -38,7 +38,6 @@ public class StepCreator {
     private final InjectableStepsFactory stepsFactory;
     private final ParameterConverters parameterConverters;
     private final StepMatcher stepMatcher;
-    private final StepRunner beforeOrAfter;
     private final StepRunner skip;
     private StepMonitor stepMonitor;
     private Paranamer paranamer = new NullParanamer();
@@ -51,7 +50,6 @@ public class StepCreator {
         this.parameterConverters = parameterConverters;
         this.stepMatcher = stepMatcher;
         this.stepMonitor = stepMonitor;
-        this.beforeOrAfter = new BeforeOrAfter();
         this.skip = new Skip();
     }
 
@@ -71,19 +69,15 @@ public class StepCreator {
         return stepsFactory.createInstanceOfType(stepsType);
     }
 
-    public Step createBeforeOrAfterStep(final Method method) {
-        return new BeforeOrAfterStep(method);
-    }
-
-    public Step createBeforeOrAfterStepWithMeta(Method method, Meta meta) {
-        return new BeforeOrAfterStepWithMeta(method, meta);
+    public Step createBeforeOrAfterStep(Method method, Meta meta) {
+        return new BeforeOrAfterStep(method, meta);
     }
 
     public Step createAfterStepUponOutcome(final Method method, final Outcome outcome, final boolean failureOccured, Meta storyAndScenarioMeta) {
         switch (outcome) {
         case ANY:
         default:
-            return new BeforeOrAfterStepWithMeta(method, storyAndScenarioMeta);
+            return new BeforeOrAfterStep(method, storyAndScenarioMeta);
         case SUCCESS:
             return new SuccessStep(failureOccured, method, storyAndScenarioMeta);
         case FAILURE:
@@ -295,29 +289,6 @@ public class StepCreator {
 
     }
 
-    private class BeforeOrAfter implements StepRunner {
-
-        public StepResult run(Method method, UUIDExceptionWrapper failureIfItHappened) {
-            if (method == null) {
-                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(new NullPointerException(
-                        "method"))));
-            }
-            try {
-                Object stepsInstance = stepsInstance();
-                if (method.getParameterTypes().length == 0) {
-                    method.invoke(stepsInstance);
-                } else {
-                    method.invoke(stepsInstance, failureIfItHappened);
-                }
-            } catch (InvocationTargetException e) {
-                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())));
-            } catch (Throwable t) {
-                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, t)));
-            }
-            return skipped();
-        }
-    }
-
     private class Skip implements StepRunner {
 
         public StepResult run(Method method, UUIDExceptionWrapper failureIfItHappened) {
@@ -366,28 +337,11 @@ public class StepCreator {
 
     }
 
-    public class BeforeOrAfterStep extends AbstractStep {
-        private final Method method;
-
-        public BeforeOrAfterStep(Method method) {
-            this.method = method;
-        }
-
-        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return beforeOrAfter.run(method, NO_FAILURE);
-        }
-
-        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return beforeOrAfter.run(method, NO_FAILURE);
-        }
-
-    }
-
-    private class BeforeOrAfterStepWithMeta extends AbstractStep {
+    private class BeforeOrAfterStep extends AbstractStep {
         private final Method method;
         private final Meta meta;
 
-        public BeforeOrAfterStepWithMeta(Method method, Meta meta) {
+        public BeforeOrAfterStep(Method method, Meta meta) {
             this.method = method;
             this.meta = meta;
         }
@@ -438,20 +392,20 @@ public class StepCreator {
 
         private final boolean failureOccured;
         private final Method method;
-        private BeforeOrAfterStepWithMeta beforeOrAfterStepWithMeta;
+        private BeforeOrAfterStep beforeOrAfterStep;
 
         public SuccessStep(boolean failureOccured, Method method, Meta storyAndScenarioMeta) {
             this.failureOccured = failureOccured;
             this.method = method;
-            this.beforeOrAfterStepWithMeta = new BeforeOrAfterStepWithMeta(method, storyAndScenarioMeta);
+            this.beforeOrAfterStep = new BeforeOrAfterStep(method, storyAndScenarioMeta);
         }
 
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfter.run(method, NO_FAILURE));
+            return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfterStep.perform(NO_FAILURE));
         }
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfterStepWithMeta.perform(storyFailureIfItHappened));
+            return (failureOccured ? skip.run(method, NO_FAILURE) : beforeOrAfterStep.perform(storyFailureIfItHappened));
         }
 
     }
@@ -460,20 +414,20 @@ public class StepCreator {
 
         private final boolean failureOccured;
         private final Method method;
-        private final BeforeOrAfterStepWithMeta beforeOrAfterStepWithMeta;
+        private final BeforeOrAfterStep beforeOrAfterStep;
 
         public FailureStep(boolean failureOccured, Method method, Meta storyAndScenarioMeta) {
             this.failureOccured = failureOccured;
             this.method = method;
-            this.beforeOrAfterStepWithMeta = new BeforeOrAfterStepWithMeta(method, storyAndScenarioMeta);
+            this.beforeOrAfterStep = new BeforeOrAfterStep(method, storyAndScenarioMeta);
         }
 
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return (failureOccured ? beforeOrAfter.run(method, storyFailureIfItHappened) : skip.run(method, NO_FAILURE));
+            return (failureOccured ? beforeOrAfterStep.perform(storyFailureIfItHappened) : skip.run(method, NO_FAILURE));
         }
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return (failureOccured ? beforeOrAfterStepWithMeta.perform(storyFailureIfItHappened) : skip.run(method, NO_FAILURE));
+            return (failureOccured ? beforeOrAfterStep.perform(storyFailureIfItHappened) : skip.run(method, NO_FAILURE));
         }
 
     }

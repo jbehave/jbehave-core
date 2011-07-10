@@ -47,11 +47,11 @@ public class BeforeOrAfterStep {
     }
 
     public Step createStep() {
-        return stepCreator.createBeforeOrAfterStep(method);
+        return createStepWith(Meta.EMPTY);
     }
 
     public Step createStepWith(Meta meta) {
-        return stepCreator.createBeforeOrAfterStepWithMeta(method, meta);
+        return stepCreator.createBeforeOrAfterStep(method, meta);
     }
 
     public Step createStepUponOutcome(boolean failureOccured, Meta storyAndScenarioMeta) {

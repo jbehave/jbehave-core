@@ -22,7 +22,7 @@ public class BeforeOrAfterStepBehaviour {
         Meta meta = mock(Meta.class);
         beforeOrAfterStep.createStepWith(meta);
 
-        verify(stepCreator).createBeforeOrAfterStepWithMeta(method, meta);
+        verify(stepCreator).createBeforeOrAfterStep(method, meta);
     }
 
     @Test

@@ -25,7 +25,6 @@ import org.mockito.Matchers;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import static org.hamcrest.Matchers.any;
 import static org.hamcrest.Matchers.instanceOf;
 
 import static org.hamcrest.Matchers.is;
@@ -56,24 +55,7 @@ public class StepCreatorBehaviour {
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
-        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method).perform(null);
-
-        // Then
-        assertThat(stepResult, instanceOf(Failed.class));
-        assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
-        assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
-    }
-
-    @Test
-    public void shouldHandleFailureInBeforeOrAfterStep() throws IntrospectionException {
-        // Given
-        SomeSteps stepsInstance = new SomeSteps();
-        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new SilentStepMonitor());
-
-        // When
-        Method method = null;
-        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method).perform(null);
+        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method, Meta.EMPTY).perform(null);
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
@@ -149,7 +131,7 @@ public class StepCreatorBehaviour {
         properties.put("variant", "book");
 
         // When
-        Step stepWithMeta = stepCreator.createBeforeOrAfterStepWithMeta(SomeSteps.methodFor("aMethodWithANamedParameter"), new Meta(properties));
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodWithANamedParameter"), new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -171,7 +153,7 @@ public class StepCreatorBehaviour {
         properties.put("theme", "shopping cart");
 
         // When
-        Step stepWithMeta = stepCreator.createBeforeOrAfterStepWithMeta(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"), new Meta(properties));
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"), new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -187,7 +169,7 @@ public class StepCreatorBehaviour {
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
-        StepResult stepResult = stepCreator.createBeforeOrAfterStepWithMeta(method, Meta.EMPTY).perform(null);
+        StepResult stepResult = stepCreator.createBeforeOrAfterStep(method, Meta.EMPTY).perform(null);
 
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
@@ -299,7 +281,7 @@ public class StepCreatorBehaviour {
         // When
         Date aDate = new Date();
         when(parameterConverters.convert(anyString(), eq(Date.class))).thenReturn(aDate);
-        Step stepWithMeta = stepCreator.createBeforeOrAfterStepWithMeta(SomeSteps.methodFor("aMethodWithDate"), new Meta());
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodWithDate"), new Meta());
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -315,7 +297,7 @@ public class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing(stepsInstance);
 
         // When
-        Step stepWithMeta = stepCreator.createBeforeOrAfterStepWithMeta(SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
         UUIDExceptionWrapper occurredFailure = new UUIDExceptionWrapper();
         StepResult stepResult = stepWithMeta.perform(occurredFailure);
 
@@ -332,7 +314,7 @@ public class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing(stepsInstance);
 
         // When
-        Step stepWithMeta = stepCreator.createBeforeOrAfterStepWithMeta(SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
         UUIDExceptionWrapper occurredFailure = new UUIDExceptionWrapper();
         StepResult stepResult = stepWithMeta.perform(occurredFailure);
 
