@@ -1,6 +1,8 @@
 package org.jbehave.core.reporters;
 
 
+import java.io.PrintStream;
+
 public abstract class Format {
 
     public static final Format CONSOLE = new Format("CONSOLE") {
@@ -100,6 +102,10 @@ public abstract class Format {
 
     public String name() {
         return name;
+    }
+
+    public static void println(PrintStream writer, Object what) {
+        writer.println(what);
     }
 
 }
