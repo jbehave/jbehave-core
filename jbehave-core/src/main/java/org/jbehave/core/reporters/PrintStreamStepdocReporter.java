@@ -1,11 +1,10 @@
 package org.jbehave.core.reporters;
 
-import static java.text.MessageFormat.format;
-
 import java.io.PrintStream;
 import java.util.List;
-
 import org.jbehave.core.steps.Stepdoc;
+
+import static java.text.MessageFormat.format;
 
 public class PrintStreamStepdocReporter implements StepdocReporter {
 
@@ -58,7 +57,7 @@ public class PrintStreamStepdocReporter implements StepdocReporter {
 	}
 	
 	private void output(Object object) {
-		output.println(object);
+        Format.println(output, object);
 	}
 
 }

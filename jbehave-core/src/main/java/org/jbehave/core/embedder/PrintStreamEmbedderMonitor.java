@@ -12,6 +12,7 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
+import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.ReportsCount;
 
 /**
@@ -155,7 +156,7 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     }
 
     protected void print(String message) {
-        output.println(message);
+        Format.println(output, message);
     }
 
     protected void printStackTrace(Throwable e) {

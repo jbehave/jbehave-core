@@ -10,6 +10,7 @@ import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.failures.PendingStepFound;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
@@ -268,6 +269,9 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     public void shouldCollectBeforeAndAfterStoryAnnotatedSteps() {
         // Given some candidate steps classes with before and after story
         // methods
+        Story story = new Story();
+        Meta storyMeta = story.getMeta();
+
         CandidateSteps steps1 = mock(Steps.class);
         CandidateSteps steps2 = mock(Steps.class);
         BeforeOrAfterStep bafStep11 = mock(BeforeOrAfterStep.class);
@@ -281,21 +285,22 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         boolean givenStory = false;
         when(bafStep11.getStage()).thenReturn(Stage.BEFORE);
-        when(bafStep11.createStep()).thenReturn(stepBefore1);
+        when(bafStep11.createStepWith(storyMeta)).thenReturn(stepBefore1);
         when(bafStep21.getStage()).thenReturn(Stage.BEFORE);
-        when(bafStep21.createStep()).thenReturn(stepBefore2);
+        when(bafStep21.createStepWith(storyMeta)).thenReturn(stepBefore2);
         when(bafStep12.getStage()).thenReturn(Stage.AFTER);
-        when(bafStep12.createStep()).thenReturn(stepAfter1);
+        when(bafStep12.createStepWith(storyMeta)).thenReturn(stepAfter1);
         when(bafStep22.getStage()).thenReturn(Stage.AFTER);
-        when(bafStep22.createStep()).thenReturn(stepAfter2);
+        when(bafStep22.createStepWith(storyMeta)).thenReturn(stepAfter2);
         when(steps1.listBeforeOrAfterStory(givenStory)).thenReturn(asList(bafStep11, bafStep12));
         when(steps2.listBeforeOrAfterStory(givenStory)).thenReturn(asList(bafStep21, bafStep22));
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps1, steps2), new Story(),
+
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps1, steps2), story,
                 Stage.BEFORE, givenStory);
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps1, steps2), new Story(),
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterStorySteps(asList(steps1, steps2), story,
                 Stage.AFTER, givenStory);
 
         // Then all before and after steps should be added

@@ -11,6 +11,7 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.parsers.StepMatcher;
 
 import java.lang.annotation.Annotation;
@@ -76,6 +77,10 @@ public class StepCreator {
 
     public Step createBeforeOrAfterStep(final Method method) {
         return new BeforeOrAfterStep(method);
+    }
+
+    public Step createBeforeOrAfterStepWithMeta(Method method, Meta meta) {
+        return new BeforeOrAfterStepWithMeta(method, meta);
     }
 
     public Step createAfterStepUponOutcome(final Method method, final Outcome outcome, final boolean failureOccured) {
@@ -382,6 +387,37 @@ public class StepCreator {
 
     }
 
+    private class BeforeOrAfterStepWithMeta extends AbstractStep {
+        private final Method method;
+        private final Meta meta;
+
+        public BeforeOrAfterStepWithMeta(Method method, Meta meta) {
+            this.method = method;
+            this.meta = meta;
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            // TODO support conversion of parameters
+            // TODO how to report the execution of Before/After with parameters?
+
+            MethodInvoker methodInvoker = new MethodInvoker(method, paranamer, meta);
+
+            try {
+                methodInvoker.invoke();
+            } catch (InvocationTargetException e) {
+                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())));
+            } catch (Throwable t) {
+                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, t)));
+            }
+
+            return skipped();
+        }
+
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return null;
+        }
+    }
+
     public class AnyOrDefaultStep extends AbstractStep {
 
         private final Method method;
@@ -558,4 +594,60 @@ public class StepCreator {
         }
     }
 
+    private class MethodInvoker {
+        private final Method method;
+        private final Paranamer paranamer;
+        private final Meta meta;
+        private int methodArity;
+
+        public MethodInvoker(Method method, Paranamer paranamer, Meta meta) {
+            this.method = method;
+            this.paranamer = paranamer;
+            this.meta = meta;
+            this.methodArity = method.getParameterTypes().length;
+        }
+
+        public void invoke() throws InvocationTargetException, IllegalAccessException {
+            method.invoke(stepsInstance(), parameterValuesFrom(meta));
+        }
+
+        private Parameter[] methodParameters() {
+            Parameter[] parameters = new Parameter[methodArity];
+            String[] annotationNamedParameters = annotatedParameterNames(method);
+            String[] parameterNames = paranamer.lookupParameterNames(method, false);
+
+            for (int paramPosition = 0; paramPosition < methodArity; paramPosition++) {
+                parameters[paramPosition] = new Parameter(paramPosition, parameterNameFor(paramPosition, annotationNamedParameters, parameterNames));
+            }
+
+            return parameters;
+        }
+
+        private String parameterNameFor(int paramPosition, String[] annotationNamedParameters, String[] parameterNames) {
+            if (annotationNamedParameters[paramPosition] != null) {
+                return annotationNamedParameters[paramPosition];
+            } else if (parameterNames[paramPosition] != null) {
+                return parameterNames[paramPosition];
+            }
+            return null;
+        }
+
+        private Object[] parameterValuesFrom(Meta meta) {
+            Object[] values = new Object[methodArity];
+            for (Parameter parameter : methodParameters()) {
+                values[parameter.position] = meta.getProperty(parameter.name);
+            }
+            return values;
+        }
+
+        private class Parameter {
+            private final int position;
+            private final String name;
+
+            public Parameter(int position, String name) {
+                this.position = position;
+                this.name = name;
+            }
+        }
+    }
 }

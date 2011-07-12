@@ -3,8 +3,8 @@ package org.jbehave.core.steps;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-
 import org.jbehave.core.model.StepPattern;
+import org.jbehave.core.reporters.Format;
 
 import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
@@ -93,7 +93,7 @@ public class PrintStreamStepMonitor implements StepMonitor {
 	}
 
 	protected void print(PrintStream output, String message) {
-		output.println(message);
+        Format.println(output, message);
 	}
 
 }

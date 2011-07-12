@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
@@ -45,7 +46,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
             boolean givenStory) {
         List<Step> steps = new ArrayList<Step>();
         for (CandidateSteps candidates : candidateSteps) {
-            steps.addAll(createSteps(candidates.listBeforeOrAfterStory(givenStory), stage));
+            steps.addAll(createSteps(candidates.listBeforeOrAfterStory(givenStory), story.getMeta(), stage));
         }
         return steps;
     }
@@ -65,10 +66,14 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
     }
 
     private List<Step> createSteps(List<BeforeOrAfterStep> beforeOrAfter, Stage stage) {
+        return createSteps(beforeOrAfter, null, stage);
+    }
+
+    private List<Step> createSteps(List<BeforeOrAfterStep> beforeOrAfter, Meta meta, Stage stage) {
         List<Step> steps = new ArrayList<Step>();
         for (BeforeOrAfterStep step : beforeOrAfter) {
             if (stage == step.getStage()) {
-                steps.add(step.createStep());
+                steps.add(meta == null ? step.createStep() : step.createStepWith(meta));
             }
         }
         return steps;
