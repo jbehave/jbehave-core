@@ -1,5 +1,9 @@
 package org.jbehave.core.embedder;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.jbehave.core.RestartScenario;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -34,11 +38,6 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static java.util.Arrays.asList;
 import static org.jbehave.core.steps.AbstractStepResult.failed;
 import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
@@ -46,12 +45,12 @@ import static org.jbehave.core.steps.AbstractStepResult.pending;
 import static org.jbehave.core.steps.AbstractStepResult.successful;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class StoryRunnerBehaviour {
@@ -288,7 +287,7 @@ public class StoryRunnerBehaviour {
         runner.run(configurationWith(reporter, collector), asList(mySteps), story);
 
         verify(reporter, times(2)).successful("Given I succeed");
-        verify(reporter).failed("<fooStep>", hi);
+        verify(reporter).restarted(eq("<fooStep>"), isA(RestartScenario.class));
         verify(reporter).successful("When happened on second attempt");
         verify(reporter).successful("Then I succeeded");
     }

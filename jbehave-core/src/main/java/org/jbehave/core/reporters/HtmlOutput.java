@@ -77,6 +77,7 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");
         patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
         patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");
+        patterns.setProperty("restarted", "<div class=\"step restarted\">{0} <span class=\"message restarted\">{1}</span></div>\n");
         patterns.setProperty("outcomesTableStart", "<div class=\"outcomes\"><table>\n");
         patterns.setProperty("outcomesTableHeadStart", "<thead>\n<tr>\n");
         patterns.setProperty("outcomesTableHeadCell", "<th>{0}</th>");

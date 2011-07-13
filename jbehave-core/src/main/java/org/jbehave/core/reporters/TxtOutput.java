@@ -1,12 +1,11 @@
 package org.jbehave.core.reporters;
 
-import static org.jbehave.core.reporters.PrintStreamOutput.Format.TXT;
-
 import java.io.PrintStream;
 import java.util.Properties;
-
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
+
+import static org.jbehave.core.reporters.PrintStreamOutput.Format.TXT;
 
 /**
  * <p>
@@ -75,6 +74,7 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("pending", "{0} ({1})\n");
         patterns.setProperty("notPerformed", "{0} ({1})\n");
         patterns.setProperty("failed", "{0} ({1})\n({2})\n");
+        patterns.setProperty("restarted", "{0} ({1})\n");
         patterns.setProperty("outcomesTableStart", "");
         patterns.setProperty("outcomesTableHeadStart", "|");
         patterns.setProperty("outcomesTableHeadCell", "{0}|");

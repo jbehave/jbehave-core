@@ -77,6 +77,7 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("pending", "<step outcome=\"pending\" keyword=\"{1}\">{0}</step>\n");
         patterns.setProperty("notPerformed", "<step outcome=\"notPerformed\" keyword=\"{1}\">{0}</step>\n");
         patterns.setProperty("failed", "<step outcome=\"failed\" keyword=\"{1}\">{0}<failure>{2}</failure></step>\n");
+        patterns.setProperty("restarted", "<step outcome=\"restarted\">{0}<reason>{1}</reason></step>\n");
         patterns.setProperty("outcomesTableStart", "<outcomes>\n");
         patterns.setProperty("outcomesTableHeadStart", "<fields>");
         patterns.setProperty("outcomesTableHeadCell", "<field>{0}</field>");

@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import org.jbehave.core.RestartScenario;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
@@ -42,6 +42,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method failedOutcomes;
     private static Method dryRun;
     private static Method pendingMethods;
+    private static Method restarted;
 
     static {
         try {
@@ -66,6 +67,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
             failedOutcomes = StoryReporter.class.getMethod("failedOutcomes", String.class, OutcomesTable.class);
             dryRun = StoryReporter.class.getMethod("dryRun");
             pendingMethods = StoryReporter.class.getMethod("pendingMethods", List.class);
+            restarted = StoryReporter.class.getMethod("restarted", String.class, RestartScenario.class);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -271,6 +273,15 @@ public class ConcurrentStoryReporter implements StoryReporter {
             delegate.pendingMethods(methods);
         }
         
+    }
+
+    public void restarted(String step, RestartScenario restartScenario) {
+        crossReferencing.restarted(step, restartScenario);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(restarted, step, restartScenario));
+        } else {
+            delegate.restarted(step, restartScenario);
+        }
     }
 
 

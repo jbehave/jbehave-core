@@ -1,5 +1,7 @@
 package org.jbehave.core.reporters;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,7 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Meta;
@@ -22,9 +23,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.NullStepMonitor;
 import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.StepType;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 public class CrossReference extends Format {
 

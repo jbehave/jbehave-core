@@ -1,5 +1,8 @@
 package org.jbehave.core.reporters;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.ArrayList;
 import org.hamcrest.Matchers;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Description;
@@ -11,13 +14,9 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.junit.Test;
 
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.util.ArrayList;
-
 import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public class NullStoryReporterBehaviour {
 
@@ -38,7 +37,7 @@ public class NullStoryReporterBehaviour {
             public void afterStory(boolean givenStory) {
                 printStream.println("afterStory");
             }
-            
+
         };
         narrateAnInterestingStory(reporter);
         assertThat(out.toString(), Matchers.equalTo("beforeStory" + NL + "afterStory" + NL));

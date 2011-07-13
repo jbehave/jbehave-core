@@ -1,13 +1,6 @@
 package org.jbehave.core.reporters;
 
 import com.thoughtworks.xstream.XStream;
-import org.jbehave.core.model.StepPattern;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
-import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
-import org.jbehave.core.steps.StepType;
-import org.junit.Test;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +10,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jbehave.core.model.StepPattern;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
+import org.jbehave.core.steps.StepType;
+import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -159,7 +158,6 @@ public class CrossReferenceBehaviour {
                 "}}", output.get(1).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replaceAll("duration': [0-9]*", "duration': TIME")); // json
         assertEquals(2, output.size());
 
-
     }
 
     @Test
@@ -263,7 +261,6 @@ public class CrossReferenceBehaviour {
 
 
     }
-
 
     @Test
     public void shouldProduceJsonOutputsOfStoriesAndSteps() throws Exception {
@@ -524,7 +521,6 @@ public class CrossReferenceBehaviour {
             return new XRefStoryWithTheme(story, storyReporterBuilder, passed, themes);
         }
     }
-    
 
     private static class XRefRootWithoutThemes extends CrossReference.XRefRoot {
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.RestartScenario;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
@@ -46,6 +47,9 @@ public class SilentSuccessFilter implements StoryReporter {
             }
         };
         runState.report();
+    }
+
+    public void restarted(String step, RestartScenario restartScenario) {
     }
 
     public void beforeStory(final Story story, final boolean givenStory) {

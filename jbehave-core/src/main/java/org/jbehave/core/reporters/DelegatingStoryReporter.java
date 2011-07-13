@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.RestartScenario;
 import org.jbehave.core.model.*;
 
 import java.util.Collection;
@@ -161,6 +162,12 @@ public class DelegatingStoryReporter implements StoryReporter {
     public void pendingMethods(List<String> methods) {
         for (StoryReporter reporter : delegates) {
             reporter.pendingMethods(methods);
+        }
+    }
+
+    public void restarted(String step, RestartScenario restartScenario) {
+        for (StoryReporter reporter : delegates) {
+            reporter.restarted(step, restartScenario);
         }
     }
 

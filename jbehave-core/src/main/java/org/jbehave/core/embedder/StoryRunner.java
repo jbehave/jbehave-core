@@ -394,7 +394,7 @@ public class StoryRunner {
             try {
                 state = state.run(step);
             } catch (RestartScenario rs) {
-                reporter.get().failed(step.toString(), rs);
+                reporter.get().restarted(step.toString(), rs);
                 throw rs;
             }
         }

@@ -3,7 +3,6 @@ package org.jbehave.core.reporters;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import org.jbehave.core.configuration.Keywords;
 
 import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.BLUE;
@@ -36,6 +35,7 @@ public class ANSIConsoleOutput extends ConsoleOutput {
             put("notPerformed", MAGENTA);
             put("ignorable", BLUE);
             put("failed", RED);
+            put("restarted", MAGENTA);
         }
     };
 

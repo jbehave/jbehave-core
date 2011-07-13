@@ -16,6 +16,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.RestartScenario;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -253,6 +254,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
         for (String method : methods) {
             print(format("pendingMethod", "{0}\n", method));
         }
+    }
+
+    public void restarted(String step, RestartScenario restartScenario) {
+        print(format("restarted", "{0} {1}\n", step, restartScenario.getMessage()));
     }
 
     /**

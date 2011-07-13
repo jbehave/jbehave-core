@@ -1,5 +1,6 @@
 package org.jbehave.core.reporters;
 
+import org.jbehave.core.RestartScenario;
 import org.jbehave.core.model.*;
 
 import java.util.List;
@@ -75,6 +76,9 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     public void pendingMethods(List<String> methods) {
+    }
+
+    public void restarted(String step, RestartScenario restartScenario) {
     }
 
 }

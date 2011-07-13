@@ -2,6 +2,7 @@ package org.jbehave.core.reporters;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.RestartScenario;
 import org.jbehave.core.model.*;
 
 import java.io.IOException;
@@ -174,6 +175,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void pendingMethods(List<String> methods) {
+    }
+
+    public void restarted(String step, RestartScenario restartScenario) {
     }
 
     private void add(String event) {
