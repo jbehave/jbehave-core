@@ -33,7 +33,21 @@ public abstract class AbstractStepResult implements StepResult {
         }
 
         private static String asString(Method method) {
-            return method != null ? method.toGenericString(): "";
+            if (method == null) {
+                return "";
+            }
+            StringBuilder sb = new StringBuilder()
+                    .append(method.getDeclaringClass().getName()).append(".")
+                    .append(method.getName()).append("(");
+            Class<?>[] types = method.getParameterTypes();
+            for (int i = 0; i < types.length; i++) {
+                Class<?> type = types[i];
+                sb.append(type.getName());
+                if (i+1 < types.length) {
+                    sb.append(",");
+                }
+            }
+            return sb.append(")").toString();
         }
 
         public void describeTo(StoryReporter reporter) {
