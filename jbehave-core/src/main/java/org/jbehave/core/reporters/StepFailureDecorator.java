@@ -1,6 +1,5 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.RestartScenario;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.failures.StepFailed;
 import org.jbehave.core.model.*;
@@ -117,8 +116,8 @@ public class StepFailureDecorator implements StoryReporter {
         delegate.pendingMethods(methods);
     }
 
-    public void restarted(String step, RestartScenario restartScenario) {
-        delegate.restarted(step, restartScenario);
+    public void restarted(String step, Throwable cause) {
+        delegate.restarted(step, cause);
     }
 
 }

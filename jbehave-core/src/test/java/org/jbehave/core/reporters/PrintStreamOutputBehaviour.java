@@ -13,8 +13,8 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
-import org.jbehave.core.RestartScenario;
 import org.jbehave.core.failures.KnownFailure;
+import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
@@ -454,7 +454,7 @@ public class PrintStreamOutputBehaviour {
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
-        reporter.restarted("Then I should... - try again", new RestartScenario("hi"));
+        reporter.restarted("Then I should... - try again", new RestartingScenarioFailure("hi"));
         if (withFailure) {
             reporter.failed("Then I should have a balance of $30", new NullPointerException());
         } else {

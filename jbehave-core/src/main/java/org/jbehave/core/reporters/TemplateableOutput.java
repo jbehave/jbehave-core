@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
-import org.jbehave.core.RestartScenario;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -143,8 +142,8 @@ public class TemplateableOutput implements StoryReporter {
         this.outputStory.pendingMethods = methods;
     }
 
-    public void restarted(String step, RestartScenario restartScenario) {
-        this.outputScenario.addStep(new OutputRestart(step, restartScenario.getMessage()));
+    public void restarted(String step, Throwable cause) {
+        this.outputScenario.addStep(new OutputRestart(step, cause.getMessage()));
     }
 
     public void afterStory(boolean givenStory) {

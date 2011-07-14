@@ -1,16 +1,21 @@
 package org.jbehave.core.reporters;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.RestartScenario;
-import org.jbehave.core.model.*;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 
 import static java.util.Arrays.asList;
 
@@ -177,7 +182,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     public void pendingMethods(List<String> methods) {
     }
 
-    public void restarted(String step, RestartScenario restartScenario) {
+    public void restarted(String step, Throwable cause) {
     }
 
     private void add(String event) {

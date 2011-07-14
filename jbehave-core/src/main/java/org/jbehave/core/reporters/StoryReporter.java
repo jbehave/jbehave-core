@@ -3,7 +3,6 @@ package org.jbehave.core.reporters;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.RestartScenario;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
@@ -58,9 +57,10 @@ public interface StoryReporter {
 
 	void failedOutcomes(String step, OutcomesTable table);
 
-	void dryRun();
+    void restarted(String step, Throwable cause);
+
+    void dryRun();
 
     void pendingMethods(List<String> methods);
 
-    void restarted(String step, RestartScenario restartScenario);
 }

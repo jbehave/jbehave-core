@@ -1,10 +1,10 @@
 package org.jbehave.core.embedder;
 
-import org.jbehave.core.RestartScenario;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepStrategy;
+import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
@@ -352,14 +352,14 @@ public class StoryRunner {
     }
 
     private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
-        boolean again = true;
-        while (again) {
-            again = false;
+        boolean restart = true;
+        while (restart) {
+            restart = false;
             List<Step> steps = context.collectScenarioSteps(scenario, scenarioParameters);
             try {
                 runStepsWhileKeepingState(context, steps);
-            } catch (RestartScenario re) {
-                again = true;
+            } catch (RestartingScenarioFailure e) {
+                restart = true;
                 continue;
             }
             generatePendingStepMethods(context, steps);
@@ -393,9 +393,9 @@ public class StoryRunner {
         for (Step step : steps) {
             try {
                 state = state.run(step);
-            } catch (RestartScenario rs) {
-                reporter.get().restarted(step.toString(), rs);
-                throw rs;
+            } catch (RestartingScenarioFailure e) {
+                reporter.get().restarted(step.toString(), e);
+                throw e;
             }
         }
         context.stateIs(state);

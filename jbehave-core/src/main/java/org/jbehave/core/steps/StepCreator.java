@@ -5,10 +5,10 @@ import com.thoughtworks.paranamer.Paranamer;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jbehave.core.RestartScenario;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
+import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Meta;
@@ -504,8 +504,8 @@ public class StepCreator {
                 // step parametrisation failed, return pending StepResult
                 return pending(stepAsString).withParameterValues(parametrisedStep);
             } catch (InvocationTargetException e) {
-                if (e.getCause() instanceof RestartScenario) {
-                    throw (RestartScenario) e.getCause();
+                if (e.getCause() instanceof RestartingScenarioFailure) {
+                    throw (RestartingScenarioFailure) e.getCause();
                 }
                 if (e.getCause() instanceof UUIDExceptionWrapper) {
                     return failed(stepAsString, ((UUIDExceptionWrapper) e.getCause())).withParameterValues(
