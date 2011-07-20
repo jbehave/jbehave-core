@@ -411,7 +411,7 @@ public class StoryRunner {
         context.stateIs(state);
     }
 
-    interface State {
+    public interface State {
         State run(Step step);
     }
 
