@@ -177,6 +177,15 @@ public class StoryRunner {
     }
 
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
+        try {
+            runIt(context, story, storyParameters);
+        } catch (InterruptedException interruptedException) {
+            reporter.get().cancelled();
+            throw interruptedException;
+        }
+    }
+
+    private void runIt(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
         if (!context.givenStory) {
             reporter.set(reporterFor(context, story));
         }

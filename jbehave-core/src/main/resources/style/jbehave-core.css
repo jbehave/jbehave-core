@@ -292,6 +292,10 @@ span.inOrderTo,span.asA,span.iWantTo {
 	color: red;
 }
 
+.cancelled {
+	color: red;
+}
+
 .restarted {
 	color: orange;
 }

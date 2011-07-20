@@ -81,6 +81,7 @@ public class PrintStreamOutputBehaviour {
                 + "When I request $20\n"
                 + "When I ask Liz for a loan of $100\n"
                 + "Then I should... - try again (hi)\n"
+                + "Cancelled!\n"
                 + "Then I should have a balance of $30 (PENDING)\n"
                 + "Then I should have $20 (NOT PERFORMED)\n"
                 + "Then I don't return loan (FAILED)\n"
@@ -164,6 +165,7 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step successful\">When I request $20</div>\n"
                 + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
                 + "<div class=\"step restarted\">Then I should... - try again <span class=\"message restarted\">hi</span></div>\n"
+                + "<div class=\"cancelled\"/>\n"
                 + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
                 + "<div class=\"step notPerformed\">Then I should have $20 <span class=\"keyword notPerformed\">(NOT PERFORMED)</span></div>\n"
                 + "<div class=\"step failed\">Then I don't return loan <span class=\"keyword failed\">(FAILED)</span><br/><span class=\"message failed\">org.jbehave.core.model.OutcomesTable$OutcomesFailed</span></div>\n"
@@ -270,6 +272,7 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step successful\">When I request $20</div>\n"
                 + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
                 + "<div class=\"step restarted\">Then I should... - try again <span class=\"message restarted\">hi</span></div>\n"
+                + "<div class=\"cancelled\"/>\n"
                 + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
                 + "<div class=\"step notPerformed\">Then I should have $20 <span class=\"keyword notPerformed\">(NOT PERFORMED)</span></div>\n"
                 + "<div class=\"step failed\">Then I don't return loan <span class=\"keyword failed\">(FAILED)</span><br/><span class=\"message failed\">org.jbehave.core.model.OutcomesTable$OutcomesFailed</span></div>\n"
@@ -340,6 +343,7 @@ public class PrintStreamOutputBehaviour {
                 + "<step outcome=\"successful\">When I request $20</step>\n"
                 + "<step outcome=\"successful\">When I ask Liz for a loan of $100</step>\n"
                 + "<step outcome=\"restarted\">Then I should... - try again<reason>hi</reason></step>\n"
+                + "<cancelled/>\n"
                 + "<step outcome=\"pending\" keyword=\"PENDING\">Then I should have a balance of $30</step>\n"
                 + "<step outcome=\"notPerformed\" keyword=\"NOT PERFORMED\">Then I should have $20</step>\n"
                 + "<step outcome=\"failed\" keyword=\"FAILED\">Then I don&apos;t return loan<failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed</failure></step>\n"
@@ -455,6 +459,7 @@ public class PrintStreamOutputBehaviour {
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
         reporter.restarted("Then I should... - try again", new RestartingScenarioFailure("hi"));
+        reporter.cancelled();
         if (withFailure) {
             reporter.failed("Then I should have a balance of $30", new NullPointerException());
         } else {

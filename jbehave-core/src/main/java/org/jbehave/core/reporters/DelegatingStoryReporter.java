@@ -170,6 +170,12 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
+    public void cancelled() {
+        for (StoryReporter reporter : delegates) {
+            reporter.cancelled();
+        }
+    }
+
     public Collection<StoryReporter> getDelegates() {
         return delegates;
     }

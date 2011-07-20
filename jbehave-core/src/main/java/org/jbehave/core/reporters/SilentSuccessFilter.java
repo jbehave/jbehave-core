@@ -51,6 +51,9 @@ public class SilentSuccessFilter implements StoryReporter {
     public void restarted(String step, Throwable cause) {
     }
 
+    public void cancelled() {
+    }
+
     public void beforeStory(final Story story, final boolean givenStory) {
         this.givenStory = givenStory;
         beforeStoryState = new State() {

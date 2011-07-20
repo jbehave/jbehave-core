@@ -63,4 +63,5 @@ public interface StoryReporter {
 
     void pendingMethods(List<String> methods);
 
+    void cancelled();
 }

@@ -259,6 +259,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("restarted", "{0} {1}\n", step, cause.getMessage()));
     }
 
+    public void cancelled() {
+        String cancelled = format("cancelled", "\n");
+        print(cancelled);
+    }
+
     /**
      * Formats event output by key, usually equal to the method name.
      * 
@@ -269,7 +274,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
      * @return A formatted event output
      */
     protected String format(String key, String defaultPattern, Object... args) {
-        return MessageFormat.format(lookupPattern(key, escape(defaultPattern)), escapeAll(args));
+        String escape = escape(defaultPattern);
+        String s = lookupPattern(key, escape);
+        Object[] objects = escapeAll(args);
+        return MessageFormat.format(s, objects);
     }
 
     protected String formatTable(ExamplesTable table) {

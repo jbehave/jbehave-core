@@ -35,6 +35,7 @@ public class ANSIConsoleOutput extends ConsoleOutput {
             put("notPerformed", MAGENTA);
             put("ignorable", BLUE);
             put("failed", RED);
+            put("cancelled", RED);
             put("restarted", MAGENTA);
         }
     };

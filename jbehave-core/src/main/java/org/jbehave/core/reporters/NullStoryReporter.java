@@ -80,4 +80,6 @@ public class NullStoryReporter implements StoryReporter {
     public void restarted(String step, Throwable cause) {
     }
 
+    public void cancelled() {
+    }
 }
