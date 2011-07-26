@@ -39,6 +39,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     private OutcomesTable outcomesFailed;
     private int givenStories;
     private long storyStartTime;
+    private boolean currentScenarioNotAllowed;
 
     public PostStoryStatisticsCollector(OutputStream output) {
         this.output = output;
@@ -127,6 +128,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     public void beforeScenario(String title) {
         cause = null;
         outcomesFailed = null;
+        currentScenarioNotAllowed = false;
         reset("currentScenarioSteps");
         reset("currentScenarioStepsPending");
     }
@@ -136,6 +138,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
             add("givenStoryScenariosNotAllowed");
         } else {
             add("scenariosNotAllowed");
+            currentScenarioNotAllowed = true;
         }
     }
 
@@ -148,7 +151,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         } else {
             countScenarios("scenarios");
         }
-        if (has("currentScenarioStepsPending") || !has("currentScenarioSteps")) {
+        if (has("currentScenarioStepsPending") || (!has("currentScenarioSteps") && !currentScenarioNotAllowed)) {
             if (givenStories > 0) {
                 add("givenStoryScenariosPending");
             } else {

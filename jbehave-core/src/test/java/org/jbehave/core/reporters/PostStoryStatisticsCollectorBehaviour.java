@@ -90,6 +90,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         String statistics = out.toString();
         assertThat(statistics, containsString("notAllowed=0"));
         assertThat(statistics, containsString("scenariosNotAllowed=1"));
+        assertThat(statistics, containsString("pending=0"));
     }
 
     @Test
@@ -182,7 +183,9 @@ public class PostStoryStatisticsCollectorBehaviour {
             reporter.storyNotAllowed(story, "-theme testing");
         } else {
             reporter.beforeStory(story, false);
+            reporter.beforeScenario(story.getScenarios().get(0).getTitle());
             reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
+            reporter.afterScenario();
             reporter.afterStory(false);
         }
     }
