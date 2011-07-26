@@ -162,10 +162,12 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     private void countScenarios(String namespace) {
         add(namespace);
-        if (cause != null || outcomesFailed != null) {
-            add(namespace + "Failed");
-        } else {
-            add(namespace + "Successful");
+        if (!currentScenarioNotAllowed){
+	        if (cause != null || outcomesFailed != null) {
+	            add(namespace + "Failed");
+	        } else {
+	            add(namespace + "Successful");
+	        }
         }
     }
 
