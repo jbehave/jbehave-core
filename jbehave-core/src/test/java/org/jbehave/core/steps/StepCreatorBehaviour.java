@@ -61,7 +61,9 @@ public class StepCreatorBehaviour {
         // Then
         assertThat(stepResult, instanceOf(Failed.class));
         assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
-        assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
+        Throwable cause = stepResult.getFailure().getCause();
+        assertThat(cause, instanceOf(BeforeOrAfterFailed.class));
+        assertThat(cause.getMessage(), org.hamcrest.Matchers.equalTo("Method aFailingBeforeScenarioMethod (annotated with @BeforeScenario in class org.jbehave.core.steps.SomeSteps) failed: java.lang.RuntimeException"));
     }
 
     @Test
