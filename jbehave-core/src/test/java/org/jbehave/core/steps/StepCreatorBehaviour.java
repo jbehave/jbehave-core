@@ -6,28 +6,29 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
 
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import com.thoughtworks.paranamer.CachingParanamer;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.parsers.StepMatcher;
-import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
+import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
 
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.instanceOf;
-
 import static org.hamcrest.Matchers.is;
+
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -54,7 +55,7 @@ public class StepCreatorBehaviour {
         StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, configuration.parameterConverters(), null, new SilentStepMonitor());
 
         // When
-        Method method = SomeSteps.methodFor("aFailingMethod");
+        Method method = SomeSteps.methodFor("aFailingBeforeScenarioMethod");
         StepResult stepResult = stepCreator.createBeforeOrAfterStep(method, Meta.EMPTY).perform(null);
 
         // Then

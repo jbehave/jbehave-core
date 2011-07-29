@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -26,6 +27,11 @@ public class SomeSteps extends Steps {
     }
 
     public void aFailingMethod() {
+        throw new RuntimeException();
+    }
+
+    @BeforeScenario
+    public void aFailingBeforeScenarioMethod() {
         throw new RuntimeException();
     }
 
