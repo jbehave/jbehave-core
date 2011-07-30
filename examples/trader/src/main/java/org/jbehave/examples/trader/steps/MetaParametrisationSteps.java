@@ -3,11 +3,11 @@ package org.jbehave.examples.trader.steps;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
-import org.junit.Assert;
 
+import static org.junit.Assert.assertEquals;
 
 public class MetaParametrisationSteps {
-    
+
     private String theme;
     private String variant;
 
@@ -17,7 +17,7 @@ public class MetaParametrisationSteps {
     }
 
     @Given("a <variant>")
-    public void givenAVariant(@Named("variant") String variant){
+    public void givenAVariant(@Named("variant") String variant) {
         this.variant = variant;
     }
 
@@ -29,15 +29,7 @@ public class MetaParametrisationSteps {
 
     @Then("the theme is '%theme' with variant '%variant'")
     public void thenTheThemeAndVariantAre(String theme, String variant) {
-        Assert.assertEquals(theme, this.theme);
-        Assert.assertEquals(variant, this.variant);        
+        assertEquals(theme, this.theme);
+        assertEquals(variant, this.variant);
     }
-
-    // Is ignored by JBehave presently.  Perhaps because of parameter alone.
-    // @BeforeScenario
-    // public void beforeScenario(@Named("theme") String theme) {
-    //     assertEquals("parameters", theme);
-    // }
-
-
 }
