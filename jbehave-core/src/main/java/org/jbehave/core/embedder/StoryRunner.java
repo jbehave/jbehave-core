@@ -524,13 +524,11 @@ public class StoryRunner {
         }
 
         public List<Step> collectBeforeOrAfterStorySteps(Story story, Stage stage) {
-            return configuration.stepCollector().collectBeforeOrAfterStorySteps(candidateSteps, story, stage,
-                    givenStory);
+            return configuration.stepCollector().collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory);
         }
 
         public List<Step> collectBeforeOrAfterScenarioSteps(Meta storyAndScenarioMeta, Stage stage) {
-            return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps, storyAndScenarioMeta, stage,
-                    failureOccurred());
+            return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps, storyAndScenarioMeta, stage);
         }
 
         public List<Step> collectScenarioSteps(Scenario scenario, Map<String, String> parameters) {

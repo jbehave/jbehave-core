@@ -190,7 +190,7 @@ public class StepCreatorBehaviour {
         properties.put("variant", "book");
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"), AfterScenario.Outcome.ANY, false, new Meta(properties));
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"), AfterScenario.Outcome.ANY, new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -209,8 +209,8 @@ public class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing(stepsInstance);
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"), AfterScenario.Outcome.SUCCESS, true, mock(Meta.class));
-        StepResult stepResult = stepWithMeta.perform(null);
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"), AfterScenario.Outcome.SUCCESS, mock(Meta.class));
+        StepResult stepResult = stepWithMeta.doNotPerform(null);
 
         // Then
         assertThat(stepResult, instanceOf(Skipped.class));
@@ -226,7 +226,7 @@ public class StepCreatorBehaviour {
         properties.put("variant", "book");
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"), AfterScenario.Outcome.SUCCESS, false, new Meta(properties));
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"), AfterScenario.Outcome.SUCCESS, new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -245,7 +245,7 @@ public class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing(stepsInstance);
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"), AfterScenario.Outcome.FAILURE, false, mock(Meta.class));
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"), AfterScenario.Outcome.FAILURE, mock(Meta.class));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -262,8 +262,8 @@ public class StepCreatorBehaviour {
         properties.put("variant", "book");
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"), AfterScenario.Outcome.FAILURE, true, new Meta(properties));
-        StepResult stepResult = stepWithMeta.perform(null);
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"), AfterScenario.Outcome.FAILURE, new Meta(properties));
+        StepResult stepResult = stepWithMeta.doNotPerform(null);
 
         // Then
         assertThat(stepResult, instanceOf(Skipped.class));

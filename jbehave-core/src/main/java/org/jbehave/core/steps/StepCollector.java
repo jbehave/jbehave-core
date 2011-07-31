@@ -47,11 +47,10 @@ public interface StepCollector {
      * Collects all of the {@link BeforeScenario} or {@link AfterScenario} steps to execute.
      * 
      *
-     * @param candidateSteps the {@link org.jbehave.core.steps.CandidateSteps}.
-     * @param storyAndScenarioMeta the story and scenario {@link Meta} parameters
-     * @param failureOccured whether a failure occured in the scenario execution  @return A List of executable {@link Step}s
+     * @param candidateSteps the {@link CandidateSteps}.
+     * @param storyAndScenarioMeta the story and scenario {@link org.jbehave.core.model.Meta} parameters
      */
-    List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage, boolean failureOccured);
+    List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage);
 
     /**
      * Collects all of the {@link Step}s to execute for a scenario.

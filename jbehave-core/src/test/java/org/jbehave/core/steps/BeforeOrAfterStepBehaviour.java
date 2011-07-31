@@ -33,9 +33,8 @@ public class BeforeOrAfterStepBehaviour {
         BeforeOrAfterStep beforeOrAfterStep = new BeforeOrAfterStep(Stage.AFTER, method, stepCreator);
 
         Meta meta = mock(Meta.class);
-        boolean failureOccured = false;
-        beforeOrAfterStep.createStepUponOutcome(failureOccured, meta);
+        beforeOrAfterStep.createStepUponOutcome(meta);
 
-        verify(stepCreator).createAfterStepUponOutcome(method, AfterScenario.Outcome.ANY, failureOccured, meta);
+        verify(stepCreator).createAfterStepUponOutcome(method, AfterScenario.Outcome.ANY, meta);
     }
 }

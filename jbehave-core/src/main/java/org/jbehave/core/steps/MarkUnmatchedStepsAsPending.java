@@ -55,15 +55,14 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         return steps;
     }
 
-    public List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage,
-                                                        boolean failureOccured) {
+    public List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage) {
         List<Step> steps = new ArrayList<Step>();
         for (CandidateSteps candidates : candidateSteps) {
             List<BeforeOrAfterStep> beforeOrAfterScenarioSteps = candidates.listBeforeOrAfterScenario();
             if (stage == Stage.BEFORE) {
                 steps.addAll(createSteps(beforeOrAfterScenarioSteps, storyAndScenarioMeta, stage));
             } else {
-                steps.addAll(0, createStepsUponOutcome(beforeOrAfterScenarioSteps, storyAndScenarioMeta, stage, failureOccured));
+                steps.addAll(0, createStepsUponOutcome(beforeOrAfterScenarioSteps, storyAndScenarioMeta, stage));
             }
         }
         return steps;
@@ -90,11 +89,11 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         return steps;
     }
 
-    private List<Step> createStepsUponOutcome(List<BeforeOrAfterStep> beforeOrAfter, Meta storyAndScenarioMeta, Stage stage, boolean failureOccured) {
+    private List<Step> createStepsUponOutcome(List<BeforeOrAfterStep> beforeOrAfter, Meta storyAndScenarioMeta, Stage stage) {
         List<Step> steps = new ArrayList<Step>();
         for (BeforeOrAfterStep step : beforeOrAfter) {
             if (stage == step.getStage()) {
-                steps.add(step.createStepUponOutcome(failureOccured, storyAndScenarioMeta));
+                steps.add(step.createStepUponOutcome(storyAndScenarioMeta));
             }
         }
         return steps;
