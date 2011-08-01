@@ -79,7 +79,7 @@ public class StoryRunner {
             try {
                 currentStrategy.get().handleFailure(storyFailure.get());
             } catch (Throwable e) {
-                return new SomethingHappened();
+                return new SomethingHappened(storyFailure.get());
             } finally {
                 if (reporter.get() instanceof ConcurrentStoryReporter) {
                     ((ConcurrentStoryReporter) reporter.get()).invokeDelayed();
@@ -428,7 +428,7 @@ public class StoryRunner {
 
             storyFailure.set(mostImportantOf(storyFailureIfItHappened, stepFailure));
             currentStrategy.set(strategyFor(storyFailure.get()));
-            return new SomethingHappened();
+            return new SomethingHappened(stepFailure);
         }
 
         private UUIDExceptionWrapper mostImportantOf(UUIDExceptionWrapper failure1, UUIDExceptionWrapper failure2) {
@@ -446,10 +446,15 @@ public class StoryRunner {
         }
     }
 
-    private final class SomethingHappened implements State {
+    private final class SomethingHappened implements State { 
+        UUIDExceptionWrapper scenarioFailure;
+        
+        public SomethingHappened(UUIDExceptionWrapper scenarioFailure) {
+            this.scenarioFailure = scenarioFailure;
+        }
+
         public State run(Step step) {
-            UUIDExceptionWrapper storyFailureIfItHappened = storyFailure.get();
-            StepResult result = step.doNotPerform(storyFailureIfItHappened);
+            StepResult result = step.doNotPerform(scenarioFailure);
             result.describeTo(reporter.get());
             return this;
         }
