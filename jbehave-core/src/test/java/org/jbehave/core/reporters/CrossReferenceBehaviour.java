@@ -335,7 +335,7 @@ public class CrossReferenceBehaviour {
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
                 "      'started': NUMBER,\n" +
-                "      'duration': 1\n" +
+                "      'duration': TIME\n" +
                 "    }\n" +
                 "  ],\n" +
                 "  'stepMatches': [\n" +
@@ -352,7 +352,7 @@ public class CrossReferenceBehaviour {
                 "      ]\n" +
                 "    }\n" +
                 "  ]\n" +
-                "}}", output.get(0).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replace("duration': 0", "duration': 1")); // json
+                "}}", output.get(0).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replaceAll("duration': [0-9]*", "duration': TIME")); // json
 
         assertEquals(1, output.size());
 
@@ -434,7 +434,7 @@ public class CrossReferenceBehaviour {
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
                 "      <started>NUMBER</started>\n" +
-                "      <duration>1</duration>\n" +
+                "      <duration>TIME</duration>\n" +
                 "      <theme>testing</theme>\n" +
                 "    </story>\n" +
                 "  </stories>\n" +
@@ -455,7 +455,7 @@ public class CrossReferenceBehaviour {
                 "  <themes>\n" +
                 "    <string>testing</string>\n" +
                 "  </themes>\n" +
-                "</xref>", output.get(0).toString().replaceAll("[0-9]{8,15}", "NUMBER").replace("<duration>0</duration>", "<duration>1</duration>")); // xml
+                "</xref>", output.get(0).toString().replaceAll("[0-9]{8,15}", "NUMBER").replaceAll("<duration>[0-9]*</duration>", "<duration>TIME</duration>")); // xml
 
         assertEquals("{'xref': {\n" +
                 "  'whenMade': NUMBER,\n" +
@@ -475,7 +475,7 @@ public class CrossReferenceBehaviour {
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
                 "      'started': NUMBER,\n" +
-                "      'duration': 1,\n" +
+                "      'duration': TIME,\n" +
                 "      'theme': 'testing'\n" +
                 "    }\n" +
                 "  ],\n" +
@@ -496,7 +496,7 @@ public class CrossReferenceBehaviour {
                 "  'themes': [\n" +
                 "    'testing'\n" +
                 "  ]\n" +
-                "}}", output.get(1).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replace("duration': 0", "duration': 1")); // json
+                "}}", output.get(1).toString().replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replaceAll("duration': [0-9]*", "duration': TIME")); // json
 
     }
 
