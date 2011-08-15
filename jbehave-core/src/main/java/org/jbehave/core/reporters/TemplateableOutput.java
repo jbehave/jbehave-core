@@ -36,8 +36,8 @@ public class TemplateableOutput implements StoryReporter {
     private final Keywords keywords;
     private final TemplateProcessor processor;
     private final String templatePath;
-    private OutputStory outputStory;
-    private OutputScenario outputScenario;
+    private OutputStory outputStory = new OutputStory();
+    private OutputScenario outputScenario = new OutputScenario();
     private OutputStep failedStep;
 
     public TemplateableOutput(File file, Keywords keywords, TemplateProcessor processor, String templatePath) {
