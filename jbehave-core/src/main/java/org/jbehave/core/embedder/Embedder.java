@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -184,38 +183,36 @@ public class Embedder {
         Configuration configuration = configuration();        
         InjectableStepsFactory stepsFactory = stepsFactory();
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        
-        State beforeStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
-
-        BatchFailures batchFailures = new BatchFailures();
         configureReporterBuilder(configuration);
         MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, " "), embedderMonitor);
+        
+        BatchFailures failures = new BatchFailures();
+
+        State beforeStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
+
+        if ( storyRunner.failed(beforeStories) ){
+            failures.put(beforeStories.toString(), storyRunner.failure(beforeStories));
+        }
 
         List<Future<ThrowableStory>> futures = new ArrayList<Future<ThrowableStory>>();
 
         for (String storyPath : storyPaths) {
-            enqueueStory(batchFailures, filter, futures, storyPath, storyRunner.storyOfPath(configuration, storyPath), beforeStories);
+            enqueueStory(failures, filter, futures, storyPath, storyRunner.storyOfPath(configuration, storyPath), beforeStories);
         }
 
-        waitUntilAllDone(futures);
-
-        checkForFailures(futures);
+        waitUntilAllDoneOrFailed(futures, embedderControls, failures);
 
         State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
 
         if ( storyRunner.failed(afterStories) ){
-            if (embedderControls.ignoreFailureInStories()){
-                embedderMonitor.beforeOrAfterStoriesFailed();
-            } else {
-                throw new RunningStoriesFailed();
-            }
+            failures.put(afterStories.toString(), storyRunner.failure(afterStories));
         }
 
-        if (embedderControls.batch() && batchFailures.size() > 0) {
+        if ( failures.size() > 0) {
             if (embedderControls.ignoreFailureInStories()) {
-                embedderMonitor.batchFailed(batchFailures);
+                embedderMonitor.batchFailed(failures);
             } else {
-                throw new RunningStoriesFailed(batchFailures);
+                throw new RunningStoriesFailed(failures);
             }
         }
 
@@ -271,8 +268,7 @@ public class Embedder {
         }
     }
 
-    private void waitUntilAllDone(List<Future<ThrowableStory>> futures) {
-
+    private void waitUntilAllDoneOrFailed(List<Future<ThrowableStory>> futures, EmbedderControls embedderControls, BatchFailures failures) {
         long start = System.currentTimeMillis();
         boolean allDone = false;
         while (!allDone) {
@@ -280,12 +276,16 @@ public class Embedder {
             for (Future<ThrowableStory> future : futures) {
                 if (!future.isDone()) {
                     allDone = false;
-                    long durationInSecs = (System.currentTimeMillis() - start)/1000;
-                    if ( durationInSecs > embedderControls.storyTimeoutInSecs()) {
+                    long durationInSecs = storyDurationInSecs(start);
+                    if (durationInSecs > embedderControls.storyTimeoutInSecs()) {
                         Story story = null;
                         try {
                             story = future.get().getStory();
                         } catch (Throwable e) {
+                            failures.put(future.toString(), e);
+                            if (!embedderControls.ignoreFailureInStories()) {
+                                break;
+                            }
                         }
                         embedderMonitor.storyTimeout(durationInSecs, story);
                         future.cancel(true);
@@ -295,32 +295,34 @@ public class Embedder {
                     } catch (InterruptedException e) {
                     }
                     break;
+                } else {
+                    try {
+                        ThrowableStory throwableStory = future.get();
+                        if (throwableStory.throwable != null) {
+                            failures.put(future.toString(), throwableStory.throwable);
+                            if (!embedderControls.ignoreFailureInStories()) {
+                                break;
+                            }
+                        }
+                    } catch (Throwable e) {
+                        failures.put(future.toString(), e);
+                        if (!embedderControls.ignoreFailureInStories()) {
+                            break;
+                        }
+                    }
                 }
+            }
+        }
+        // cancel any outstanding execution which is not done before returning
+        for (Future<ThrowableStory> future : futures) {
+            if ( !future.isDone() ){
+                future.cancel(true);
             }
         }
     }
 
-    private void checkForFailures(List<Future<ThrowableStory>> futures) {
-        try {
-            BatchFailures failures = new BatchFailures();
-            for (Future<ThrowableStory> future : futures) {
-                try {
-                    ThrowableStory throwableStory = future.get();
-                    if (throwableStory.throwable != null) {
-                        failures.put(future.toString(), throwableStory.throwable);
-                    }
-                } catch (CancellationException e) {
-                    failures.put(future.toString(), e);
-                }
-            }
-            if (failures.size() > 0) {
-                throw new RunningStoriesFailed(failures);
-            }
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+    private long storyDurationInSecs(long start) {
+        return (System.currentTimeMillis() - start) / 1000;
     }
 
     private void configureReporterBuilder(Configuration configuration) {

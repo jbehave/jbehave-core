@@ -563,4 +563,11 @@ public class StoryRunner {
     public boolean failed(State state) {
         return !state.getClass().equals(FineSoFar.class);
     }
+    
+    public Throwable failure(State state){
+        if ( failed(state ) ){
+            return ((SomethingHappened)state).scenarioFailure.getCause();
+        }
+        return null;
+    }
 }
