@@ -13,7 +13,7 @@ public class BatchFailures extends HashMap<String,Throwable> {
             sb.append("\n");
             sb.append(name);
             sb.append(": ");
-            sb.append(cause.getMessage() != null ? cause.getMessage() : "N/A");
+            sb.append((cause != null && cause.getMessage() != null) ? cause.getMessage() : "N/A");
         }
         return sb.toString();
     }
