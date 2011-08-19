@@ -1,5 +1,9 @@
 package org.jbehave.core.model;
 
+import java.util.Arrays;
+
+import org.jbehave.core.embedder.MetaFilter;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
@@ -42,6 +46,21 @@ public class MetaBehaviour {
         assertThat(meta.isEmpty(), is(false));
         assertThat(meta.getProperty("one"), equalTo("One"));
         assertThat(meta.getProperty("two"), equalTo("Two"));
+    }
+    
+    @Test
+    public void shouldAllowSingleExclusion() {
+      Meta meta = new Meta(Arrays.asList("environment all", "skip"));
+      MetaFilter filter = new MetaFilter("-skip");
+      assertThat("should not be allowed", filter.allow(meta), is(false));
+    }
+
+    @Test
+    @Ignore("FIXME JBEHAVE-583")
+    public void shouldAllowMultipleExclusions() {
+      Meta meta = new Meta(Arrays.asList("environment all", "skip"));
+      MetaFilter filter = new MetaFilter("-environment preview -skip");
+      assertThat("should not be allowed", filter.allow(meta), is(false));
     }
 
 }
