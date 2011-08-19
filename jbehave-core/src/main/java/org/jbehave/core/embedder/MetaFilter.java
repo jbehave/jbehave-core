@@ -104,21 +104,26 @@ public class MetaFilter {
     }
 
     private boolean match(Properties properties, Meta meta) {
+        boolean matches = false;
         for (Object key : properties.keySet()) {
             String property = (String) properties.get(key);
             for (String metaName : meta.getPropertyNames()) {
                 if (key.equals(metaName)) {
                     String value = meta.getProperty(metaName);
                     if (StringUtils.isBlank(value)) {
-                        return true;
+                        matches = true;
                     } else if (property.contains("*")) {
-                        return value.matches(property.replace("*", ".*"));
-                    }
-                    return properties.get(key).equals(value);
+                        matches = value.matches(property.replace("*", ".*"));
+                    } else {
+                        matches = properties.get(key).equals(value);
+                    }                    
+                }
+                if ( matches ){
+                    break;
                 }
             }
         }
-        return false;
+        return matches;
     }
 
     public Properties include() {
