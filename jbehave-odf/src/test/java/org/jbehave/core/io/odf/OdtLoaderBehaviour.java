@@ -15,14 +15,11 @@ public class OdtLoaderBehaviour {
 
     @Test
     public void shouldLoadOdtResourceFromClasspath() {
-        String resourceFromOdt = new LoadOdtFromClasspath(this.getClass())
-                .loadResourceAsText("org/jbehave/core/io/odf/stories/a_story.odt");
         String resourceFromOdtWithTable = new LoadOdtFromClasspath(this.getClass())
-                .loadResourceAsText("org/jbehave/core/io/odf/stories/a_story_with_table.odt");
+                .loadResourceAsText("org/jbehave/core/io/odf/stories/a_story.odt");
         String resourceFromTxt = new LoadFromClasspath(this.getClass())
                 .loadResourceAsText("org/jbehave/core/io/odf/stories/a_story.txt");
-        assertEquals(resourceFromOdt, resourceFromTxt);
-        assertEquals(resourceFromOdtWithTable.trim(), resourceFromTxt.trim());
+        assertEquals(resourceFromTxt.trim(), resourceFromOdtWithTable.trim());
     }
 
     @Test(expected = InvalidStoryResource.class)
@@ -34,14 +31,11 @@ public class OdtLoaderBehaviour {
     @Test
     public void shouldLoadOdtResourceFromURL() {
         String location = CodeLocations.codeLocationFromClass(this.getClass()).toString();
-        String resourceFromOdt = new LoadOdtFromURL().loadResourceAsText(location
-                + "org/jbehave/core/io/odf/stories/a_story.odt");
         String resourceFromOdtWithTable = new LoadOdtFromURL().loadResourceAsText(location
-                + "org/jbehave/core/io/odf/stories/a_story_with_table.odt");
+                + "org/jbehave/core/io/odf/stories/a_story.odt");
         String resourceFromTxt = new LoadFromURL().loadResourceAsText(location
                 + "org/jbehave/core/io/odf/stories/a_story.txt");
-        assertEquals(resourceFromOdt, resourceFromTxt);
-        assertEquals(resourceFromOdtWithTable.trim(), resourceFromTxt.trim());
+        assertEquals(resourceFromTxt.trim(), resourceFromOdtWithTable.trim());
     }
 
     @Test(expected = InvalidStoryResource.class)

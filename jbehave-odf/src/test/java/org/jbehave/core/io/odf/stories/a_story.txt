@@ -1,7 +1,8 @@
-Narrative: 
+Narrative:
 In order to communicate better
 As a story writer
 I want to be able to use ODT format
+
 Scenario: a plain scenario
 Given a step
 When a step has failed
@@ -11,13 +12,13 @@ Scenario: a scenario with a given story
 
 GivenStories: stories/a_successful_story.odt
 
-Given a step 
+Given a step
 And the step is successful
 Then the scenario is visualized as succeeded
 
 Scenario: a scenario with examples
 
-Given a <step> 
+Given a <step>
 When the <step> is executed
 Then the result is <result>
 

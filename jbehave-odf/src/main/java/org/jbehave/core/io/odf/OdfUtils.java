@@ -1,6 +1,7 @@
 package org.jbehave.core.io.odf;
 
 import static org.apache.commons.lang.StringUtils.join;
+import static org.odftoolkit.odfdom.incubator.doc.text.OdfTextExtractor.newOdfTextExtractor;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class OdfUtils {
 
     private static String parseTextNode(Node item) {
         TextParagraphElementBase textItem = (TextParagraphElementBase) item;
-        return textItem.getTextContent();
+        return newOdfTextExtractor(textItem).getText();
     }
 
     private static boolean isTextNode(Node item) {
