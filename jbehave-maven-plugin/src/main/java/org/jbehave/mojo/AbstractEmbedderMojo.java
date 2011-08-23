@@ -1,10 +1,5 @@
 package org.jbehave.mojo;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.InjectableEmbedder;
@@ -21,6 +16,13 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
 
@@ -45,6 +47,18 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @required
      */
     String testSourceDirectory;
+
+    /**
+     * @parameter expression="${project.build.outputDirectory}"
+     * @required
+     */
+    String outputDirectory;
+
+    /**
+     * @parameter expression="${project.build.testOutputDirectory}"
+     * @required
+     */
+    String testOutputDirectory;
 
     /**
      * The scope of the mojo classpath, either "compile" or "test"
@@ -200,6 +214,22 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         return sourceDirectory;
     }
 
+    String outputDirectory() {
+      if (isTestScope()) {
+          return testOutputDirectory;
+      }
+      return outputDirectory;
+    }
+
+    URL codeLocation() {
+      try {
+        String outputDirectory = outputDirectory();
+        return outputDirectory != null ? new File(outputDirectory).toURI().toURL() : null;
+      } catch (MalformedURLException e) {
+        throw new IllegalArgumentException("Failed to set output directory", e);
+      }
+    }
+
     /**
      * Returns the EmbedderClassLoader with the classpath element of the
      * selected scope.
@@ -273,6 +303,12 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
+
+        URL codeLocation = codeLocation();
+        if (codeLocation != null) {
+          embedder.configuration().storyReporterBuilder().withCodeLocation(codeLocation);
+        }
+
         embedder.useClassLoader(classLoader);
         embedder.useEmbedderControls(embedderControls());
         embedder.useEmbedderMonitor(embedderMonitor());
