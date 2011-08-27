@@ -149,6 +149,8 @@ public class StepCandidate {
             StepCandidate candidate = findComposedCandidate(composedStep, allCandidates);
             if ( candidate != null ){
                 steps.add(candidate.createMatchedStep(composedStep, matchedParameters));
+            } else {
+                steps.add(StepCreator.createPendingStep(composedStep, null));
             }
         }
         return steps;
