@@ -17,8 +17,9 @@ import com.google.gdata.util.ServiceException;
 
 public class LoadOdtFromGoogle extends LoadOdtFromURL {
 
+    private static final DocsService DEFAULT_DOCS_SERVICE = new DocsService("jbehave");
     private static final String DEFAULT_FEED_URI = "https://docs.google.com/feeds/default/private/full/";
-    private final DocsService client;
+    private final DocsService service;
     private final String feedURI;
 
     public LoadOdtFromGoogle(String username, String password) {
@@ -26,13 +27,17 @@ public class LoadOdtFromGoogle extends LoadOdtFromURL {
     }
 
     public LoadOdtFromGoogle(String username, String password, String feedURI) {
+        this(username, password, feedURI, DEFAULT_DOCS_SERVICE);
+    }
+
+    public LoadOdtFromGoogle(String username, String password, String feedURI, DocsService service) {
+        this.service = service;
+        this.feedURI = feedURI;
         try {
-            client = new DocsService("jbehave");
-            client.setUserCredentials(username, password);
+            service.setUserCredentials(username, password);
         } catch (AuthenticationException e) {
             throw new GoogleAccessFailed(username, e);
         }
-        this.feedURI = feedURI;
     }
 
     protected InputStream resourceAsStream(String title) throws IOException, MalformedURLException {
@@ -44,27 +49,35 @@ public class LoadOdtFromGoogle extends LoadOdtFromURL {
     }
 
     private String exportURL(String title) throws IOException, ServiceException, MalformedURLException {
-        DocumentQuery query = new DocumentQuery(new URL(feedURI));
-        query.setTitleQuery(title);
-        query.setTitleExact(true);
-        query.setMaxResults(1);
-        List<DocumentListEntry> entries = client.getFeed(query, DocumentListFeed.class).getEntries();
+        DocumentQuery query = documentQuery(title);
+        List<DocumentListEntry> entries = service.getFeed(query, DocumentListFeed.class).getEntries();
         if (entries.isEmpty()) {
             throw new GoogleDocumentNotFound(title);
         }
         return ((MediaContent) entries.get(0).getContent()).getUri() + "&exportFormat=odt";
     }
 
+    DocumentQuery documentQuery(String title) throws MalformedURLException {
+        DocumentQuery query = new DocumentQuery(new URL(feedURI));
+        query.setTitleQuery(title);
+        query.setTitleExact(true);
+        query.setMaxResults(1);
+        return query;
+    }
+
     private InputStream documentAsStream(String url) throws IOException, MalformedURLException {
         try {
-            MediaContent mc = new MediaContent();
-            mc.setUri(url);
-            MediaSource ms;
-            ms = client.getMedia(mc);
+            MediaSource ms = service.getMedia(mediaContent(url));
             return ms.getInputStream();
         } catch (ServiceException e) {
             throw new GoogleMediaExportFailed(url, e);
         }
+    }
+
+    MediaContent mediaContent(String url) {
+        MediaContent mc = new MediaContent();
+        mc.setUri(url);
+        return mc;
     }
 
     @SuppressWarnings("serial")
