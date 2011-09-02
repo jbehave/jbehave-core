@@ -14,6 +14,8 @@ Scenario: And steps should match the previous step type
 Given the wind blows
 !-- This And is equivalent to another Given
 And the wind blows
+!-- This And shows that we can chain multiple And steps
+And the wind blows
 When the wind blows
 !-- This And is equivalent to another When
 And the wind blows
