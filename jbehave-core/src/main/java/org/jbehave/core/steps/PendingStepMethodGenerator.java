@@ -24,7 +24,7 @@ public class PendingStepMethodGenerator {
         String stepAsString = step.stepAsString();
         String previousNonAndStepAsString = step.previousNonAndStepAsString();
         StepType stepType = null;
-        if ( keywords.isAndStep(stepAsString)) {
+        if ( keywords.isAndStep(stepAsString) && previousNonAndStepAsString != null) {
             stepType = keywords.stepTypeFor(previousNonAndStepAsString);
         } else {
             stepType = keywords.stepTypeFor(stepAsString);

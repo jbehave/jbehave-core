@@ -122,14 +122,14 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
                             composedSteps = candidate.createComposedSteps(stepAsString, namedParameters, allCandidates);
                         }
                     }
-                    if (!candidate.isAndStep(stepAsString)) {
+                    if (!candidate.isAndStep(stepAsString) && !candidate.isIgnorableStep(stepAsString)) {
                         // only update previous step if not AND step
                         previousNonAndStep = stepAsString;
                     }
                     break;
                 }
             }
-            if ( !keywords.isAndStep(stepAsString)){
+            if ( !keywords.isAndStep(stepAsString) && !keywords.isIgnorableStep(stepAsString) ){
                 previousNonAndStep = stepAsString;
             }
             steps.add(step);

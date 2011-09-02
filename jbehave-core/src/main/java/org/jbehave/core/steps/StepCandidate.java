@@ -170,6 +170,10 @@ public class StepCandidate {
         return keywords.isAndStep(stepAsString);
     }
 
+    public boolean isIgnorableStep(String stepAsString) {
+        return keywords.isIgnorableStep(stepAsString);
+    }
+
     private String findStartingWord(String stepAsString) {
        return keywords.startingWord(stepAsString, stepType);
     }

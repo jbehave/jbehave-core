@@ -253,7 +253,12 @@ public class Keywords {
         String andWord = startingWordFor(StepType.AND);
         return stepStartsWithWord(stepAsString, andWord);
     }
-    
+
+    public boolean isIgnorableStep(String stepAsString) {
+        String ignorableWord = startingWordFor(StepType.IGNORABLE);
+        return stepStartsWithWord(stepAsString, ignorableWord);
+    }
+
     public String stepWithoutStartingWord(String stepAsString, StepType stepType) {
         String startingWord = startingWord(stepAsString, stepType);
         return stepAsString.substring(startingWord.length() + 1); // 1 for the space after
