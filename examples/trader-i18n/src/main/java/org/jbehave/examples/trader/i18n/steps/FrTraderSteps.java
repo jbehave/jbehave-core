@@ -1,4 +1,4 @@
-package org.jbehave.examples.trader.i18n;
+package org.jbehave.examples.trader.i18n.steps;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -12,37 +12,37 @@ import org.jbehave.core.annotations.When;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.examples.trader.model.Stock;
 
-public class ItTraderSteps {
+public class FrTraderSteps {
 
     private Stock stock;
     private ExamplesTable table;
 
-    @Given("ho un'azione con simbolo $symbol e una soglia di $threshold")
+    @Given("l'on a une action avec symbole $symbol et un seuil de $threshold")
     public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
         stock = new Stock(symbol, threshold);
     }
 
-    @When("l'azione è scambiata al prezzo di $price")
+    @When("l'action est échangée au prix de $price")
     public void stockIsTraded(@Named("price") double price) {
         stock.tradeAt(price);
     }
 
-    @Then("lo status di allerta è $status")
+    @Then("la position de l'alerte est $status")
     public void alertStatusIs(@Named("status") String status) {
         assertThat(stock.getStatus().name(), equalTo(status));
     }
 
-    @Given("ho una tabella $table")
+    @Given("l'on a une table $table")
     public void aTAble(ExamplesTable table) {
         this.table = table;
     }
 
-    @Then("la tabella ha $rows righe")
+    @Then("la table a $rows rangs")
     public void hasRows(int rows){
         assertThat(table.getRowCount(), equalTo(rows));
     }
 
-    @Then("alla riga $row e colonna $column troviamo: $value")
+    @Then("au rang $row et en colonne $column on trouve: $value")
     public void theRowValuesAre(int row, String column, String value){
         Map<String,String> rowValues = table.getRow(row-1);      
         assertThat(rowValues.get(column), equalTo(value));
