@@ -21,6 +21,7 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
@@ -53,6 +54,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
         properties.setProperty("reports", "ftl/jbehave-reports.ftl");
         Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
+                .useStepCollector(new MarkUnmatchedStepsAsPending(keywords))
                 .useStoryParser(new RegexStoryParser(keywords))
                 .useStoryLoader(
                         new LoadFromClasspath(classLoader))
