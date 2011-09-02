@@ -29,6 +29,10 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         this(stepFinder, new LocalizedKeywords());
     }
 
+    public MarkUnmatchedStepsAsPending(Keywords keywords) {
+        this(new StepFinder(), keywords);
+    }
+
    public MarkUnmatchedStepsAsPending(StepFinder stepFinder, Keywords keywords) {
         this.stepFinder = stepFinder;
         this.keywords = keywords;
@@ -122,14 +126,14 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
                             composedSteps = candidate.createComposedSteps(stepAsString, namedParameters, allCandidates);
                         }
                     }
-                    if (!candidate.isAndStep(stepAsString) && !candidate.isIgnorableStep(stepAsString)) {
-                        // only update previous step if not AND step
+                    if (!(candidate.isAndStep(stepAsString) || candidate.isIgnorableStep(stepAsString))) {
+                        // only update previous step if not AND or IGNORABLE step
                         previousNonAndStep = stepAsString;
                     }
                     break;
                 }
             }
-            if ( !keywords.isAndStep(stepAsString) && !keywords.isIgnorableStep(stepAsString) ){
+            if ( !(keywords.isAndStep(stepAsString) || keywords.isIgnorableStep(stepAsString)) ){
                 previousNonAndStep = stepAsString;
             }
             steps.add(step);
