@@ -19,6 +19,7 @@
     <module>gameoflife</module>
     <module>groovy</module>
     <module>spring-security</module>
+    <module>threads</module>
     <module>trader</module>
     <module>trader-ant</module>
     <module>trader-annotations</module>
