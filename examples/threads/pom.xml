@@ -19,9 +19,10 @@
 
   <properties>
     <embeddables>**/ThreadsStories.java</embeddables>
-    <meta.filter></meta.filter>    
+    <ignore.failre.in.stories>true</ignore.failre.in.stories>
+    <meta.filter></meta.filter>
   </properties>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -40,7 +41,7 @@
               <batch>false</batch>
               <threads>2</threads>
               <generateViewAfterStories>true</generateViewAfterStories>
-              <ignoreFailureInStories>true</ignoreFailureInStories>
+              <ignoreFailureInStories>${ignore.failre.in.stories}</ignoreFailureInStories>
               <ignoreFailureInView>true</ignoreFailureInView>
               <metaFilters>
                 <metaFilter>${meta.filter}</metaFilter>
@@ -55,4 +56,12 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>fail-fast</id>
+      <properties>
+        <ignore.failre.in.stories>false</ignore.failre.in.stories>
+      </properties>
+    </profile>
+  </profiles>
 </project>
