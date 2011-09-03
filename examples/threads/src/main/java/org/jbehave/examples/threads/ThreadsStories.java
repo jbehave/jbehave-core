@@ -21,8 +21,8 @@ import static org.jbehave.core.reporters.Format.HTML;
 public class ThreadsStories extends JUnitStories {
 
     public ThreadsStories(){
-        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-        .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(60);
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
+        .doIgnoreFailureInView(true).useThreads(3).useStoryTimeoutInSecs(10);
     }
     
     @Override
