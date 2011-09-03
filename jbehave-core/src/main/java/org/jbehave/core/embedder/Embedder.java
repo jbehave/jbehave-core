@@ -259,13 +259,7 @@ public class Embedder {
     protected ExecutorService createExecutorService() {
         int threads = embedderControls.threads();
         embedderMonitor.usingThreads(threads);
-        if (threads == 1) {
-            // this is necessary for situations where people use the
-            // PerStoriesWebDriverSteps class.
-            return new NonThreadingExecutorService();
-        } else {
-            return Executors.newFixedThreadPool(threads);
-        }
+        return Executors.newFixedThreadPool(threads);
     }
 
     private void waitUntilAllDoneOrFailed(List<Future<ThrowableStory>> futures, EmbedderControls embedderControls, BatchFailures failures) {
@@ -486,6 +480,10 @@ public class Embedder {
         this.embedderMonitor = embedderMonitor;
     }
 
+    public void useExecutorService(ExecutorService executorService){
+        this.executorService = executorService;
+    }
+    
     public void useMetaFilters(List<String> metaFilters) {
         this.metaFilters = metaFilters;
     }

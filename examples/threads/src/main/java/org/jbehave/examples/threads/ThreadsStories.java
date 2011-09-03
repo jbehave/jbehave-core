@@ -22,7 +22,7 @@ public class ThreadsStories extends JUnitStories {
 
     public ThreadsStories(){
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
-        .doIgnoreFailureInView(true).useThreads(3).useStoryTimeoutInSecs(10);
+        .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(10);
     }
     
     @Override
