@@ -21,6 +21,7 @@
     <embeddables>**/ThreadsStories.java</embeddables>
     <ignore.failre.in.stories>true</ignore.failre.in.stories>
     <meta.filter></meta.filter>
+    <threads>2</threads>
   </properties>
 
   <build>
@@ -39,7 +40,7 @@
               <excludes />
               <skip>${skip}</skip>
               <batch>false</batch>
-              <threads>2</threads>
+              <threads>${threads}</threads>
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>${ignore.failre.in.stories}</ignoreFailureInStories>
               <ignoreFailureInView>true</ignoreFailureInView>
