@@ -359,10 +359,12 @@ public class StepCandidateBehaviour {
         FailingSteps steps = new FailingSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(1));
-        StepResult stepResult = candidates.get(0).createMatchedStep("When outcome fails for Bar upon verification",
+        String stepAsString = "When outcome fails for Bar upon verification";
+        StepResult stepResult = candidates.get(0).createMatchedStep(stepAsString,
                 namedParameters).perform(null);
-        assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
-        assertThat(stepResult.getFailure().getCause(), instanceOf(OutcomesFailed.class));
+        UUIDExceptionWrapper failure = stepResult.getFailure();
+        assertThat(failure.getCause(), instanceOf(OutcomesFailed.class));        
+        assertThat(failure.getMessage(), equalTo(stepAsString));        
     }
 
     @Test

@@ -442,14 +442,14 @@ public class StepCreator {
                 if (e.getCause() instanceof RestartingScenarioFailure) {
                     throw (RestartingScenarioFailure) e.getCause();
                 }
-                if (e.getCause() instanceof UUIDExceptionWrapper) {
-                    return failed(stepAsString, ((UUIDExceptionWrapper) e.getCause())).withParameterValues(
-                            parametrisedStep);
+                Throwable failureCause = e.getCause();
+                if (failureCause instanceof UUIDExceptionWrapper) {
+                    failureCause = failureCause.getCause();
                 }
-                return failed(stepAsString, new UUIDExceptionWrapper(e.getCause())).withParameterValues(
+                return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, failureCause)).withParameterValues(
                         parametrisedStep);
             } catch (Throwable t) {
-                return failed(stepAsString, new UUIDExceptionWrapper(t)).withParameterValues(parametrisedStep);
+                return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, t)).withParameterValues(parametrisedStep);
             }
         }
 
