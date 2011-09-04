@@ -49,6 +49,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>jbehave-google</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-ant</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -226,6 +231,26 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-odf</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>javadoc</classifier>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-javadoc-google</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site/javadoc/google</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>jbehave-google</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
