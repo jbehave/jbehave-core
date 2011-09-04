@@ -9,7 +9,7 @@ import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.io.odf.LoadOdtFromGoogle;
+import org.jbehave.core.io.google.LoadOdtFromGoogle;
 
 public class GoogleSteps {
 

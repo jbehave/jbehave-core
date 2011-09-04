@@ -1,10 +1,12 @@
-package org.jbehave.core.io.odf;
+package org.jbehave.core.io.google;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+
+import org.jbehave.core.io.odf.LoadOdtFromURL;
 
 import com.google.gdata.client.DocumentQuery;
 import com.google.gdata.client.docs.DocsService;

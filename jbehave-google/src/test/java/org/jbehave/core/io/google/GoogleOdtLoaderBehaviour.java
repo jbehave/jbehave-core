@@ -1,4 +1,4 @@
-package org.jbehave.core.io.odf;
+package org.jbehave.core.io.google;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +7,8 @@ import java.net.MalformedURLException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jbehave.core.io.InvalidStoryResource;
-import org.jbehave.core.io.odf.LoadOdtFromGoogle.GoogleAccessFailed;
+import org.jbehave.core.io.google.LoadOdtFromGoogle;
+import org.jbehave.core.io.google.LoadOdtFromGoogle.GoogleAccessFailed;
 import org.junit.Test;
 
 import com.google.gdata.client.DocumentQuery;
