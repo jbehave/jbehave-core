@@ -6,20 +6,25 @@
     <artifactId>jbehave</artifactId>
     <version>3.5-SNAPSHOT</version>
   </parent>
-  <artifactId>jbehave-odf</artifactId>
-  <name>JBehave ODF</name>
-  <description>Extension of JBehave Core that supports ODF for stories</description>
+  <artifactId>jbehave-google</artifactId>
+  <name>JBehave Google</name>
+  <description>Extension of JBehave Core that supports Google Docs for stories</description>
 
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-core</artifactId>
+      <artifactId>jbehave-odf</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.odftoolkit</groupId>
-      <artifactId>odfdom-java</artifactId>
-      <version>0.8.7</version>
+      <groupId>com.google.gdata</groupId>
+      <artifactId>gdata-java-client</artifactId>
+      <version>1.40.0.atlassian-2</version>
+    </dependency>
+    <dependency>
+      <groupId>javax.mail</groupId>
+      <artifactId>mail</artifactId>
+      <version>1.4.1</version>
     </dependency>
   </dependencies>
 

@@ -12,7 +12,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-odf</artifactId>
+      <artifactId>jbehave-google</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
