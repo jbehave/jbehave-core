@@ -29,6 +29,10 @@ to which events are reported as they occur.</p>
 	<li><a
 		href="javadoc/core/org/jbehave/core/reporters/HtmlOutput.html">HtmlOutput</a>:
 	an HTML file output</li>
+    <li><a
+        href="javadoc/core/org/jbehave/core/reporters/HtmlTemplateOutput.html">HtmlTemplateOutput</a>:
+    an HTML template-based file output.  By default, a Freemarker-based template processor is used but a different 
+    implementation based on a different templating system can be provided.</li>
 	<li><a
 		href="javadoc/core/org/jbehave/core/reporters/XmlOutput.html">XmlOutput</a>:
 	an XML file output</li>
@@ -44,7 +48,7 @@ to which events are reported as they occur.</p>
 <p>The <a
 	href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>
 allows to configure multiple story reporters with pre-configured
-formats: CONSOLE, TXT, HTML and XML.</p>
+formats: CONSOLE, TXT, HTML, HTML_TEMPLATE and XML.</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
 public abstract class TraderStory extends JUnitStory {

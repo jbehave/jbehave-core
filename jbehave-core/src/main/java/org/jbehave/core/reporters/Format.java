@@ -63,7 +63,7 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("html"));
-            return new HtmlTemplateOuput(factory.getOutputFile(), storyReporterBuilder.keywords(), new FreemarkerProcessor());
+            return new HtmlTemplateOuput(factory.getOutputFile(), storyReporterBuilder.keywords());
         }
     };
 
