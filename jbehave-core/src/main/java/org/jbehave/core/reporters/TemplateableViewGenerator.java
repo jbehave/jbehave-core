@@ -25,6 +25,7 @@ import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.io.StoryNameResolver;
+import org.jbehave.core.io.UnderscoredToCapitalized;
 import org.jbehave.core.model.StoryLanes;
 import org.jbehave.core.model.StoryMaps;
 
@@ -32,10 +33,11 @@ import static java.util.Arrays.asList;
 
 /**
  * <p>
- * {@link ViewGenerator}, which uses the configured {@link TemplateProcessor} to
- * generate the views from templates. The default view properties are
- * overridable via the method {@link Properties} parameter. To override, specify
- * the path to the new template under the appropriate key:
+ * {@link ViewGenerator}, which uses the configured {@link TemplateProcessor}
+ * (defaulting to {@link FreemarkerProcessor}) to generate the views from
+ * templates. The default view properties are overridable via the method
+ * {@link Properties} parameter. To override, specify the path to the new
+ * template under the appropriate key:
  * 
  * <pre>
  * &quot;views&quot;: the path to global view template, including reports and maps views
@@ -63,6 +65,14 @@ public class TemplateableViewGenerator implements ViewGenerator {
     private final TemplateProcessor processor;
     private Properties viewProperties;
     private List<Report> reports = new ArrayList<Report>();
+
+    public TemplateableViewGenerator() {
+        this(new UnderscoredToCapitalized());
+    }
+
+    public TemplateableViewGenerator(StoryNameResolver nameResolver) {
+        this(nameResolver, new FreemarkerProcessor());
+    }
 
     public TemplateableViewGenerator(StoryNameResolver nameResolver, TemplateProcessor processor) {
         this.nameResolver = nameResolver;
