@@ -3,17 +3,13 @@ package org.jbehave.core.embedder;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -555,95 +551,6 @@ public class Embedder {
                 RuntimeException cause) {
             super("View generation failed to " + outputDirectory + " for story maps " + storyMaps + " for resources "
                     + viewResources, cause);
-        }
-    }
-
-    /**
-     * Non-threading ExecutorService for situations where thread count = 1
-     */
-    public static class NonThreadingExecutorService implements ExecutorService {
-        public void shutdown() {
-            throw new UnsupportedOperationException();
-        }
-
-        public List<Runnable> shutdownNow() {
-            throw new UnsupportedOperationException();
-        }
-
-        public boolean isShutdown() {
-            throw new UnsupportedOperationException();
-        }
-
-        public boolean isTerminated() {
-            throw new UnsupportedOperationException();
-        }
-
-        public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <T> Future<T> submit(Callable<T> callable) {
-            final Object[] rc = new Object[1];
-            try {
-                rc[0] = callable.call();
-            } catch (Exception e) {
-                rc[0] = e;
-            }
-            return new Future<T>() {
-
-                public boolean cancel(boolean b) {
-                    throw new UnsupportedOperationException();
-                }
-
-                public boolean isCancelled() {
-                    throw new UnsupportedOperationException();
-                }
-
-                public boolean isDone() {
-                    return true;
-                }
-
-                @SuppressWarnings("unchecked")
-                public T get() throws InterruptedException, ExecutionException {
-                    return (T) rc[0];
-                }
-
-                public T get(long l, TimeUnit timeUnit) throws InterruptedException, ExecutionException,
-                        TimeoutException {
-                    return get();
-                }
-            };
-        }
-
-        public <T> Future<T> submit(Runnable runnable, T t) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Future<?> submit(Runnable runnable) {
-            throw new UnsupportedOperationException();
-        }
-
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables) throws InterruptedException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit)
-                throws InterruptedException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <T> T invokeAny(Collection<? extends Callable<T>> callables) throws InterruptedException,
-                ExecutionException {
-            throw new UnsupportedOperationException();
-        }
-
-        public <T> T invokeAny(Collection<? extends Callable<T>> callables, long l, TimeUnit timeUnit)
-                throws InterruptedException, ExecutionException, TimeoutException {
-            throw new UnsupportedOperationException();
-        }
-
-        public void execute(Runnable runnable) {
-            throw new UnsupportedOperationException();
         }
     }
 

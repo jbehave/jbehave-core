@@ -20,6 +20,13 @@ and that scenarios within the same story cannot be run concurrently.   For each 
 via the same configuration mechanism used to set the number of threads.
 </span>
 
+<h2>Configuring the ExecutorService</h2>
+
+<p>By default, the Embedder uses a fixed thread pool executor service, using the configured number of threads.  Users can
+override the executor service using the Embedder's <a
+    href="javadoc/core/org/jbehave/core/embedder/Embedder.html#useExecutorService(java.util.concurrent.ExecutorService)">useExecutorService(ExecutorService)</a> method.
+ </p>
+
 <h2>Enqueing a single story</h2>
 
 <p>The Embedder API allow the enqueuing of a single story via the 
