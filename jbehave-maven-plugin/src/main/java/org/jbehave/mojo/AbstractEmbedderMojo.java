@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 
 import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
 
@@ -466,6 +467,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void usingThreads(int threads) {
             getLog().info("Using " + threads + " threads");
+        }
+
+        public void usingExecutorService(ExecutorService executorService) {
+            getLog().info("Using executor service " + executorService);
         }
 
         @Override

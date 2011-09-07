@@ -3,6 +3,7 @@ package org.jbehave.core.embedder;
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
@@ -126,6 +127,10 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
 
     public void usingThreads(int threads) {
         delegate.usingThreads(threads);
+    }
+
+    public void usingExecutorService(ExecutorService executorService) {
+        delegate.usingExecutorService(executorService);
     }
 
 }

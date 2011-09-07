@@ -3,6 +3,7 @@ package org.jbehave.core.embedder;
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
@@ -61,8 +62,10 @@ public interface EmbedderMonitor {
 
     void systemPropertySet(String name, String value);
 
+    void storyTimeout(long durationInSecs, Story story);
+
     void usingThreads(int threads);
 
-    void storyTimeout(long durationInSecs, Story story);
+    void usingExecutorService(ExecutorService executorService);
 
 }

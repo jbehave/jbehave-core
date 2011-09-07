@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -148,6 +149,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
 
     public void usingThreads(int threads) {
         print("Using " + threads + " threads");
+    }
+    
+    public void usingExecutorService(ExecutorService executorService) {
+        print("Using executor service " + executorService);
     }
 
     @Override

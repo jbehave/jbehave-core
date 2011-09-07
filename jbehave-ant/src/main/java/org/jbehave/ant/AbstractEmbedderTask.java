@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.filters.StringInputStream;
@@ -351,6 +352,10 @@ public abstract class AbstractEmbedderTask extends Task {
 
         public void usingThreads(int threads) {
             log("Using " + threads + " threads", MSG_INFO);
+        }
+
+        public void usingExecutorService(ExecutorService executorService) {
+            log("Using executor service " + executorService, MSG_INFO);            
         }
 
         @Override

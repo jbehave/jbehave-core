@@ -232,7 +232,7 @@ public class Embedder {
 
     private synchronized Future<ThrowableStory> submit(List<Future<ThrowableStory>> futures, EnqueuedStory enqueuedStory) {
         if (executorService == null) {
-            executorService = createExecutorService();
+            useExecutorService(createExecutorService());
         }
         Future<ThrowableStory> submit = executorService.submit(enqueuedStory);
         futures.add(submit);
@@ -477,7 +477,8 @@ public class Embedder {
     }
 
     public void useExecutorService(ExecutorService executorService){
-        this.executorService = executorService;
+        this.executorService = executorService;        
+        embedderMonitor.usingExecutorService(executorService);
     }
     
     public void useMetaFilters(List<String> metaFilters) {
