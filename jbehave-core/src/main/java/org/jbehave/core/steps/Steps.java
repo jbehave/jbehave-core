@@ -18,6 +18,7 @@ import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.annotations.BeforeStory;
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
+import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
@@ -37,21 +38,21 @@ import static org.jbehave.core.steps.StepType.WHEN;
 /**
  * <p>
  * Default implementation of {@link CandidateSteps} which provides the step
- * candidates that match the steps being run. 
+ * candidates that match the steps being run.
  * </p>
  * <p>
  * To provide your step candidate methods, you can:
  * <ul>
- * <li>pass in the steps instance type and the steps factory used to instantiate the instance
- * if any candidate steps are matched (lazy "has-a" relationship)</li>
- * <li>pass in the steps instance, instantiated regardless of whether the candidate steps are matched 
- * (eager "has-a" relationship)</li>
+ * <li>pass in the steps instance type and the steps factory used to instantiate
+ * the instance if any candidate steps are matched (lazy "has-a" relationship)</li>
+ * <li>pass in the steps instance, instantiated regardless of whether the
+ * candidate steps are matched (eager "has-a" relationship)</li>
  * <li>extend the {@link Steps} class, in which case the instance is the
  * extended {@link Steps} class itself ("is-a" relationship)</li>
  * </ul>
- * <b>The "has-a" design model, in which the steps instance is passed in, is strongly
- * recommended over the "is-a" model as it does not have tie-ins in the {@link Steps} class
- * implementation</b>.
+ * <b>The "has-a" design model, in which the steps instance is passed in, is
+ * strongly recommended over the "is-a" model as it does not have tie-ins in the
+ * {@link Steps} class implementation</b>.
  * </p>
  * <p>
  * You can define the methods that should be run by annotating them with
@@ -108,21 +109,19 @@ public class Steps implements CandidateSteps {
      * Creates Steps with given custom configuration for a class extending this
      * instance and containing the candidate step methods
      * 
-     * @param configuration
-     *            the Configuration
+     * @param configuration the Configuration
      */
     public Steps(Configuration configuration) {
         this.configuration = configuration;
         this.type = this.getClass();
         this.stepsFactory = new InstanceStepsFactory(configuration, this);
     }
-    
+
     /**
      * Creates Steps with given custom configuration and a steps instance
      * containing the candidate step methods
      * 
-     * @param configuration
-     *            the Configuration
+     * @param configuration the Configuration
      * @param instance the steps instance
      */
     public Steps(Configuration configuration, Object instance) {
@@ -133,13 +132,11 @@ public class Steps implements CandidateSteps {
 
     /**
      * Creates Steps with given custom configuration and a steps instance type
-     * containing the candidate step methods.  The steps instance is created using the 
-     * steps instance factory provided.
+     * containing the candidate step methods. The steps instance is created
+     * using the steps instance factory provided.
      * 
-     * @param configuration
-     *            the Configuration
-     * @param type
-     *            the steps instance type
+     * @param configuration the Configuration
+     * @param type the steps instance type
      * @param stepsFactory the {@link InjectableStepsFactory}
      */
     public Steps(Configuration configuration, Class<?> type, InjectableStepsFactory stepsFactory) {
@@ -195,7 +192,7 @@ public class Steps implements CandidateSteps {
         candidate.useStepMonitor(configuration.stepMonitor());
         candidate.useParanamer(configuration.paranamer());
         candidate.doDryRun(configuration.storyControls().dryRun());
-        if ( method.isAnnotationPresent(Composite.class)){
+        if (method.isAnnotationPresent(Composite.class)) {
             candidate.composedOf(method.getAnnotation(Composite.class).steps());
         }
         candidates.add(candidate);
@@ -224,7 +221,8 @@ public class Steps implements CandidateSteps {
 
     private StepCandidate createCandidate(Method method, StepType stepType, String stepPatternAsString, int priority,
             Configuration configuration) {
-        return new StepCandidate(stepPatternAsString, priority, stepType, method, type, stepsFactory, configuration.keywords(), configuration.stepPatternParser(), configuration.parameterConverters());
+        return new StepCandidate(stepPatternAsString, priority, stepType, method, type, stepsFactory,
+                configuration.keywords(), configuration.stepPatternParser(), configuration.parameterConverters());
     }
 
     public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
@@ -241,21 +239,10 @@ public class Steps implements CandidateSteps {
         return steps;
     }
 
-    public List<BeforeOrAfterStep> listBeforeOrAfterScenario() {
+    public List<BeforeOrAfterStep> listBeforeOrAfterScenario(ScenarioType type) {
         List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
-        steps.addAll(stepsHaving(Stage.BEFORE, BeforeScenario.class));
-        steps.addAll(stepsHaving(Stage.AFTER, AfterScenario.class, ANY, SUCCESS, FAILURE));
-        return steps;
-    }
-
-    private List<BeforeOrAfterStep> stepsHaving(Stage stage, Class<? extends Annotation> annotationClass,
-            boolean givenStory) {
-        List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
-        for (final Method method : methodsAnnotatedWith(annotationClass)) {
-            if (runnableStoryStep(method.getAnnotation(annotationClass), givenStory)) {
-                steps.add(createBeforeOrAfterStep(stage, method));
-            }
-        }
+        steps.addAll(scenarioStepsHaving(type, Stage.BEFORE, BeforeScenario.class));
+        steps.addAll(scenarioStepsHaving(type, Stage.AFTER, AfterScenario.class, ANY, SUCCESS, FAILURE));
         return steps;
     }
 
@@ -281,18 +268,54 @@ public class Steps implements CandidateSteps {
         return steps;
     }
 
-    private List<BeforeOrAfterStep> stepsHaving(Stage stage, Class<? extends AfterScenario> annotationClass,
-            Outcome... outcomes) {
+    private List<BeforeOrAfterStep> stepsHaving(Stage stage, Class<? extends Annotation> annotationClass,
+            boolean givenStory) {
+        List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+        for (final Method method : methodsAnnotatedWith(annotationClass)) {
+            if (runnableStoryStep(method.getAnnotation(annotationClass), givenStory)) {
+                steps.add(createBeforeOrAfterStep(stage, method));
+            }
+        }
+        return steps;
+    }
+
+    private List<BeforeOrAfterStep> scenarioStepsHaving(ScenarioType type, Stage stage,
+            Class<? extends Annotation> annotationClass, Outcome... outcomes) {
         List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
         for (Method method : methodsAnnotatedWith(annotationClass)) {
-            AfterScenario annotation = method.getAnnotation(annotationClass);
-            for (Outcome outcome : outcomes) {
-                if (outcome.equals(annotation.uponOutcome())) {
-                    steps.add(createBeforeOrAfterStep(stage, method, outcome));
+            ScenarioType scenarioType = scenarioType(method, annotationClass);
+            if (type == scenarioType) {
+                if (stage == Stage.BEFORE) {
+                    steps.add(createBeforeOrAfterStep(stage, method));
+                }
+                if (stage == Stage.AFTER) {
+                    Outcome scenarioOutcome = scenarioOutcome(method, annotationClass);
+                    for (Outcome outcome : outcomes) {
+                        if (outcome.equals(scenarioOutcome)) {
+                            steps.add(createBeforeOrAfterStep(stage, method, outcome));
+                        }
+                    }
                 }
             }
         }
         return steps;
+    }
+
+    private ScenarioType scenarioType(Method method, Class<? extends Annotation> annotationClass) {
+        if (annotationClass.isAssignableFrom(BeforeScenario.class)) {
+            return ((BeforeScenario) method.getAnnotation(annotationClass)).uponType();
+        }
+        if (annotationClass.isAssignableFrom(AfterScenario.class)) {
+            return ((AfterScenario) method.getAnnotation(annotationClass)).uponType();
+        }
+        return ScenarioType.NORMAL;
+    }
+
+    private Outcome scenarioOutcome(Method method, Class<? extends Annotation> annotationClass) {
+        if (annotationClass.isAssignableFrom(AfterScenario.class)) {
+            return ((AfterScenario) method.getAnnotation(annotationClass)).uponOutcome();
+        }
+        return Outcome.ANY;
     }
 
     private BeforeOrAfterStep createBeforeOrAfterStep(Stage stage, Method method) {
@@ -300,7 +323,8 @@ public class Steps implements CandidateSteps {
     }
 
     private BeforeOrAfterStep createBeforeOrAfterStep(Stage stage, Method method, Outcome outcome) {
-        return new BeforeOrAfterStep(stage, method, outcome, new StepCreator(type, stepsFactory, configuration.parameterConverters(), null, configuration.stepMonitor()));
+        return new BeforeOrAfterStep(stage, method, outcome, new StepCreator(type, stepsFactory,
+                configuration.parameterConverters(), null, configuration.stepMonitor()));
     }
 
     private List<Method> allMethods() {

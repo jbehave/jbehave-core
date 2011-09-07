@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -140,7 +141,8 @@ public class StepsBehaviour {
     @Test
     public void shouldProvideStepsToBePerformedBeforeAndAfterScenariosWithFailureOccuring() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
-        List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario();
+        ScenarioType scenarioType = ScenarioType.NORMAL;
+        List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
         assertThat(beforeAfterScenario.size(), equalTo(4));
 
         beforeAfterScenario.get(0).createStep().perform(null);
@@ -163,7 +165,8 @@ public class StepsBehaviour {
     @Test
     public void shouldProvideStepsToBePerformedBeforeAndAfterScenariosWithNoFailureOccuring() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
-        List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario();
+        ScenarioType scenarioType = ScenarioType.NORMAL;
+        List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
         assertThat(beforeAfterScenario.size(), equalTo(4));
         
         beforeAfterScenario.get(0).createStep().perform(null);
@@ -187,7 +190,8 @@ public class StepsBehaviour {
     @Test
     public void shouldProvideStepsToBeNotPerformedAfterScenarioUponOutcome() {
     	MultipleAliasesSteps steps = new MultipleAliasesSteps();
-    	List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario();
+        ScenarioType scenarioType = ScenarioType.NORMAL;
+        List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
 		assertThat(beforeAfterScenario.size(), equalTo(4));
 		
     	beforeAfterScenario.get(0).createStep().doNotPerform(null);
@@ -207,7 +211,22 @@ public class StepsBehaviour {
         beforeAfterScenario.get(3).createStepUponOutcome(storyAndScenarioMeta).doNotPerform(failure);
     	assertThat(steps.afterFailedScenario, is(true));
     }
-    
+
+    @Test
+    public void shouldProvideStepsToBePerformedBeforeAndAfterScenariosParametrisedByExample() {
+        MultipleAliasesSteps steps = new MultipleAliasesSteps();
+        ScenarioType scenarioType = ScenarioType.EXAMPLE;
+        List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
+        assertThat(beforeAfterScenario.size(), equalTo(2));
+        
+        beforeAfterScenario.get(0).createStep().perform(null);
+        assertThat(steps.beforeExampleScenario, is(true));
+
+        beforeAfterScenario.get(1).createStep().perform(null);
+        assertThat(steps.afterExampleScenario, is(true));
+        
+    }
+
     @Test
     public void shouldAllowBeforeOrAfterStepsToUseSpecifiedStepMonitor() {
         MultipleAliasesSteps steps = new MultipleAliasesSteps();
@@ -238,7 +257,8 @@ public class StepsBehaviour {
     @Test
     public void shouldReportFailuresInBeforeAndAfterMethods() {
     	BeforeAndAfterSteps steps = new BeforeAndAfterSteps();
-    	List<BeforeOrAfterStep> beforeScenario = steps.listBeforeOrAfterScenario();
+        ScenarioType scenarioType = ScenarioType.NORMAL;
+    	List<BeforeOrAfterStep> beforeScenario = steps.listBeforeOrAfterScenario(scenarioType);
     	beforeScenario.get(0).createStep().perform(null);
     	StepResult stepResult = beforeScenario.get(1).createStep().perform(null);
     	assertThat(stepResult, instanceOf(Failed.class));
@@ -278,6 +298,8 @@ public class StepsBehaviour {
         private boolean afterAnyScenario;
         private boolean afterSuccessfulScenario;
         private boolean afterFailedScenario;
+        private boolean beforeExampleScenario;
+        private boolean afterExampleScenario;
         private boolean beforeStory;
         private boolean afterStory;
         private boolean beforeGivenStory;
@@ -334,13 +356,23 @@ public class StepsBehaviour {
         }        
         
         @org.jbehave.core.annotations.BeforeScenario
-        public void beforeScenarios() {
+        public void beforeAnyScenarios() {
         	beforeScenario = true;
         }
-        
+
+        @org.jbehave.core.annotations.BeforeScenario(uponType=ScenarioType.EXAMPLE)
+        public void beforeExampleScenarios() {
+            beforeExampleScenario = true;
+        }
+
         @org.jbehave.core.annotations.AfterScenario
         public void afterAnyScenarios() {
         	afterAnyScenario = true;
+        }
+
+        @org.jbehave.core.annotations.AfterScenario(uponType=ScenarioType.EXAMPLE)
+        public void afterExampleScenarios() {
+            afterExampleScenario = true;
         }
         
         @org.jbehave.core.annotations.AfterScenario(uponOutcome=AfterScenario.Outcome.SUCCESS)

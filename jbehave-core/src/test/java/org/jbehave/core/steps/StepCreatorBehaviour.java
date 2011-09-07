@@ -141,6 +141,7 @@ public class StepCreatorBehaviour {
         assertThat(stepResult, instanceOf(Skipped.class));
         assertThat(stepsInstance.args, instanceOf(Map.class));
 
+        @SuppressWarnings("unchecked")
         Map<String, String> methodArgs = (Map<String, String>) stepsInstance.args;
         assertThat(methodArgs.get("variant"), is("book"));
         assertThat(methodArgs.get("theme"), is("shopping cart"));
@@ -197,6 +198,7 @@ public class StepCreatorBehaviour {
         assertThat(stepResult, instanceOf(Skipped.class));
         assertThat(stepsInstance.args, instanceOf(Map.class));
 
+        @SuppressWarnings("unchecked")
         Map<String, String> methodArgs = (Map<String, String>) stepsInstance.args;
         assertThat(methodArgs.get("variant"), is("book"));
         assertThat(methodArgs.get("theme"), is("shopping cart"));
@@ -233,6 +235,7 @@ public class StepCreatorBehaviour {
         assertThat(stepResult, instanceOf(Skipped.class));
         assertThat(stepsInstance.args, instanceOf(Map.class));
 
+        @SuppressWarnings("unchecked")
         Map<String, String> methodArgs = (Map<String, String>) stepsInstance.args;
         assertThat(methodArgs.get("variant"), is("book"));
         assertThat(methodArgs.get("theme"), is("shopping cart"));
@@ -269,6 +272,7 @@ public class StepCreatorBehaviour {
         assertThat(stepResult, instanceOf(Skipped.class));
         assertThat(stepsInstance.args, instanceOf(Map.class));
 
+        @SuppressWarnings("unchecked")
         Map<String, String> methodArgs = (Map<String, String>) stepsInstance.args;
         assertThat(methodArgs.get("variant"), is("book"));
         assertThat(methodArgs.get("theme"), is("shopping cart"));

@@ -9,4 +9,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface BeforeScenario {
 
+    /**
+     * Signals that the annoated method should be invoked only upon given type
+     * 
+     * @return A ScenarioType upon which the method should be invoked
+     */
+    ScenarioType uponType() default ScenarioType.NORMAL;
+
 }

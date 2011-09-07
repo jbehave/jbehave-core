@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.FailingUponPendingStep;
@@ -394,8 +396,8 @@ public class StoryRunnerBehaviour {
 
         Step beforeStep = mockSuccessfulStep("SuccessfulBeforeScenarioStep");
         Step afterStep = mockSuccessfulStep("SuccessfulAfterScenarioStep");
-        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.BEFORE))).thenReturn(asList(beforeStep));
-        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.AFTER))).thenReturn(asList(afterStep));
+        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.BEFORE), eq(ScenarioType.NORMAL))).thenReturn(asList(beforeStep));
+        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.AFTER), eq(ScenarioType.NORMAL))).thenReturn(asList(afterStep));
 
         // When
         StoryRunner runner = new StoryRunner();

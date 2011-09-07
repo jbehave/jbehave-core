@@ -2,6 +2,7 @@ package org.jbehave.core.steps;
 
 import java.util.List;
 
+import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 
 /**
@@ -40,10 +41,11 @@ public interface CandidateSteps {
 
     /**
      * Returns the before or after scenario steps
+     * @param type TODO
      * 
      * @return The list of before or after steps
      */
-    List<BeforeOrAfterStep> listBeforeOrAfterScenario();
+    List<BeforeOrAfterStep> listBeforeOrAfterScenario(ScenarioType type);
 
     /**
      * Returns the configuration

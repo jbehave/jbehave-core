@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Meta;
@@ -55,10 +56,10 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         return steps;
     }
 
-    public List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage) {
+    public List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage, ScenarioType type) {
         List<Step> steps = new ArrayList<Step>();
         for (CandidateSteps candidates : candidateSteps) {
-            List<BeforeOrAfterStep> beforeOrAfterScenarioSteps = candidates.listBeforeOrAfterScenario();
+            List<BeforeOrAfterStep> beforeOrAfterScenarioSteps = candidates.listBeforeOrAfterScenario(type);
             if (stage == Stage.BEFORE) {
                 steps.addAll(createSteps(beforeOrAfterScenarioSteps, storyAndScenarioMeta, stage));
             } else {

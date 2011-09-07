@@ -1,9 +1,19 @@
 package org.jbehave.core.steps;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.hamcrest.Matchers;
-import org.jbehave.core.annotations.*;
+import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.AfterStory;
+import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.BeforeStory;
+import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Meta;
@@ -19,10 +29,10 @@ import com.thoughtworks.xstream.XStream;
 
 import static java.util.Arrays.asList;
 import static junit.framework.Assert.assertEquals;
-import static org.hamcrest.Matchers.equalTo;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
@@ -225,6 +235,11 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
     @Test
     public void shouldCollectBeforeAndAfterScenarioAnnotatedSteps() {
+        assertThatBeforeAndAfterScenarioAnnotatedStepsCanBeCollectedForGivenType(ScenarioType.NORMAL);
+        assertThatBeforeAndAfterScenarioAnnotatedStepsCanBeCollectedForGivenType(ScenarioType.EXAMPLE);
+    }
+
+    private void assertThatBeforeAndAfterScenarioAnnotatedStepsCanBeCollectedForGivenType(ScenarioType scenarioType) {
         // Given some candidate steps classes with before and after scenario
         // methods
         Meta storyAndScenarioMeta = mock(Meta.class);
@@ -246,21 +261,22 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         when(bafStep21.createStepUponOutcome(storyAndScenarioMeta)).thenReturn(stepAfter1);
         when(bafStep22.getStage()).thenReturn(Stage.AFTER);
         when(bafStep22.createStepUponOutcome(storyAndScenarioMeta)).thenReturn(stepAfter2);
-        when(steps1.listBeforeOrAfterScenario()).thenReturn(asList(bafStep11, bafStep12));
-        when(steps2.listBeforeOrAfterScenario()).thenReturn(asList(bafStep21, bafStep22));
+        when(steps1.listBeforeOrAfterScenario(scenarioType)).thenReturn(asList(bafStep11, bafStep12));
+        when(steps2.listBeforeOrAfterScenario(scenarioType)).thenReturn(asList(bafStep21, bafStep22));
 
         // When we collect the list of steps
         StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
-        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), storyAndScenarioMeta, Stage.BEFORE
-        );
-        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2), storyAndScenarioMeta, Stage.AFTER
-        );
+        List<Step> beforeSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2),
+                storyAndScenarioMeta, Stage.BEFORE, scenarioType);
+        List<Step> afterSteps = stepCollector.collectBeforeOrAfterScenarioSteps(asList(steps1, steps2),
+                storyAndScenarioMeta, Stage.AFTER, scenarioType);
 
         // Then all before and after steps should be added
         assertThat(beforeSteps, equalTo(asList(stepBefore1, stepBefore2)));
         assertThat(afterSteps, equalTo(asList(stepAfter1, stepAfter2)));
     }
 
+    
     @Test
     public void shouldCollectBeforeAndAfterStoryAnnotatedSteps() {
         // Given some candidate steps classes with before and after story
@@ -434,7 +450,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         XStream xs = new XStream();
 
-        List<Step> subset = foo.collectBeforeOrAfterScenarioSteps(steps, null, Stage.BEFORE);
+        ScenarioType scenarioType = ScenarioType.NORMAL;
+        List<Step> subset = foo.collectBeforeOrAfterScenarioSteps(steps, null, Stage.BEFORE, scenarioType);
         String subsetAsXML = xs.toXML(subset);
         assertTrue(subsetAsXML.indexOf("<name>a</name>") > -1); // there
         assertEquals(subsetAsXML.indexOf("<name>b</name>"), -1); // not there
@@ -445,17 +462,13 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         assertEquals(stepsAsString, steps.toString()); // steps have not been
                                                        // mutated.
 
-        subset = foo.collectBeforeOrAfterScenarioSteps(steps, null, Stage.AFTER);
+        subset = foo.collectBeforeOrAfterScenarioSteps(steps, null, Stage.AFTER, scenarioType);
         subsetAsXML = xs.toXML(subset);
         assertEquals(subsetAsXML.indexOf("<name>a</name>"), -1); // not there
         assertTrue(subsetAsXML.indexOf("<name>b</name>") > -1); // there
         assertEquals(subsetAsXML.indexOf("<name>c</name>"), -1); // not there
         assertTrue(subsetAsXML.indexOf("<name>d</name>") > -1); // there
-        assertTrue(subsetAsXML.indexOf("<name>d</name>") < subsetAsXML.indexOf("<name>b</name>")); // there
-                                                                                                   // AND
-                                                                                                   // IN
-                                                                                                   // REVERSE
-                                                                                                   // ORDER
+        assertTrue(subsetAsXML.indexOf("<name>d</name>") < subsetAsXML.indexOf("<name>b</name>")); // reverse order
 
     }
 
@@ -466,11 +479,14 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         MarkUnmatchedStepsAsPending collector = new MarkUnmatchedStepsAsPending();
 
-        List<Step> beforeSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta, Stage.BEFORE);
+        ScenarioType scenarioType = ScenarioType.NORMAL;
+        List<Step> beforeSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
+                Stage.BEFORE, scenarioType);
         beforeSteps.get(0).perform(null);
         assertThat(steps.value, is("before"));
 
-        List<Step> afterSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta, Stage.AFTER);
+        List<Step> afterSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
+                Stage.AFTER, scenarioType);
         afterSteps.get(0).perform(null);
         assertThat(steps.value, is("after"));
     }
@@ -483,12 +499,15 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         MarkUnmatchedStepsAsPending collector = new MarkUnmatchedStepsAsPending();
         UUIDExceptionWrapper failureOccurred = new UUIDExceptionWrapper();
 
-        List<Step> beforeSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta, Stage.BEFORE);
+        ScenarioType scenarioType = ScenarioType.NORMAL;
+        List<Step> beforeSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
+                Stage.BEFORE, scenarioType);
         beforeSteps.get(0).doNotPerform(failureOccurred);
         assertThat(steps.value, is("before"));
         assertThat(steps.exception, is(failureOccurred));
 
-        List<Step> afterSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta, Stage.AFTER);
+        List<Step> afterSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
+                Stage.AFTER, scenarioType);
         failureOccurred = new UUIDExceptionWrapper();
         afterSteps.get(0).doNotPerform(failureOccurred);
         assertThat(steps.value, is("after"));
@@ -503,11 +522,13 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         MarkUnmatchedStepsAsPending collector = new MarkUnmatchedStepsAsPending();
 
-        List<Step> beforeSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story, Stage.BEFORE, false);
+        List<Step> beforeSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
+                Stage.BEFORE, false);
         beforeSteps.get(0).perform(null);
         assertThat(steps.value, is("before"));
 
-        List<Step> afterSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story, Stage.AFTER, false);
+        List<Step> afterSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
+                Stage.AFTER, false);
         afterSteps.get(0).perform(null);
         assertThat(steps.value, is("after"));
     }
@@ -520,13 +541,15 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         MarkUnmatchedStepsAsPending collector = new MarkUnmatchedStepsAsPending();
 
-        List<Step> beforeSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story, Stage.BEFORE, false);
+        List<Step> beforeSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
+                Stage.BEFORE, false);
         UUIDExceptionWrapper failureOccurred = new UUIDExceptionWrapper();
         beforeSteps.get(0).doNotPerform(failureOccurred);
         assertThat(steps.value, is("before"));
         assertThat(steps.exception, is(failureOccurred));
 
-        List<Step> afterSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story, Stage.AFTER, false);
+        List<Step> afterSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
+                Stage.AFTER, false);
         failureOccurred = new UUIDExceptionWrapper();
         afterSteps.get(0).doNotPerform(failureOccurred);
         assertThat(steps.value, is("after"));
@@ -561,7 +584,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         }
     }
 
-    private class BeforeOrAfterScenarioWithParameterSteps extends Steps {
+    public static class BeforeOrAfterScenarioWithParameterSteps extends Steps {
         private String value;
 
         @BeforeScenario
@@ -575,7 +598,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         }
     }
 
-    private class BeforeOrAfterScenarioWithParameterAndExceptionSteps extends Steps {
+    public static class BeforeOrAfterScenarioWithParameterAndExceptionSteps extends Steps {
         private String value;
         private UUIDExceptionWrapper exception;
 
@@ -592,7 +615,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         }
     }
 
-    private class BeforeOrAfterStoryWithParameter extends Steps {
+    public static class BeforeOrAfterStoryWithParameter extends Steps {
         private String value;
 
         @BeforeStory
@@ -606,7 +629,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         }
     }
 
-    private class BeforeOrAfterStoryWithParameterAndExceptionSteps extends Steps {
+    public static class BeforeOrAfterStoryWithParameterAndExceptionSteps extends Steps {
         private String value;
         private UUIDExceptionWrapper exception;
 

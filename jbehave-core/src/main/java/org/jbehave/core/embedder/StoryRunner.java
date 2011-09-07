@@ -1,5 +1,6 @@
 package org.jbehave.core.embedder;
 
+import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
@@ -243,14 +244,14 @@ public class StoryRunner {
                         }
                         // run before scenario steps, if allowed
                         if (runBeforeAndAfterScenarioSteps) {
-                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE);
+                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE, ScenarioType.NORMAL);
                         }
 
                         // run given stories, if any
                         runGivenStories(scenario, context);
                         if (isParameterisedByExamples(scenario)) {
                             // run parametrised scenarios by examples
-                            runParametrisedScenariosByExamples(context, scenario);
+                            runParametrisedScenariosByExamples(context, scenario, storyAndScenarioMeta);
                         } else { // run as plain old scenario
                             addMetaParameters(storyParameters, storyAndScenarioMeta);
                             runScenarioSteps(context, scenario, storyParameters);
@@ -258,7 +259,7 @@ public class StoryRunner {
 
                         // run after scenario steps, if allowed
                         if (runBeforeAndAfterScenarioSteps) {
-                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER);
+                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER, ScenarioType.NORMAL);
                         }
 
                     }
@@ -340,7 +341,7 @@ public class StoryRunner {
         return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireParameters();
     }
 
-    private void runParametrisedScenariosByExamples(RunContext context, Scenario scenario) {
+    private void runParametrisedScenariosByExamples(RunContext context, Scenario scenario, Meta storyAndScenarioMeta) {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.get().beforeExamples(scenario.getSteps(), table);
         for (Map<String, String> scenarioParameters : table.getRows()) {
@@ -348,7 +349,9 @@ public class StoryRunner {
             if (context.configuration().storyControls().resetStateBeforeScenario()) {
                 context.resetState();
             }
+            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE, ScenarioType.EXAMPLE);
             runScenarioSteps(context, scenario, scenarioParameters);
+            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER, ScenarioType.EXAMPLE);
         }
         reporter.get().afterExamples();
     }
@@ -357,8 +360,8 @@ public class StoryRunner {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterStorySteps(story, stage));
     }
 
-    private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Meta storyAndScenarioMeta, Stage stage) {
-        runStepsWhileKeepingState(context, context.collectBeforeOrAfterScenarioSteps(storyAndScenarioMeta, stage));
+    private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Meta storyAndScenarioMeta, Stage stage, ScenarioType type) {
+        runStepsWhileKeepingState(context, context.collectBeforeOrAfterScenarioSteps(storyAndScenarioMeta, stage, type));
     }
 
     private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
@@ -527,8 +530,8 @@ public class StoryRunner {
             return configuration.stepCollector().collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory);
         }
 
-        public List<Step> collectBeforeOrAfterScenarioSteps(Meta storyAndScenarioMeta, Stage stage) {
-            return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps, storyAndScenarioMeta, stage);
+        public List<Step> collectBeforeOrAfterScenarioSteps(Meta storyAndScenarioMeta, Stage stage, ScenarioType type) {
+            return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps, storyAndScenarioMeta, stage, type);
         }
 
         public List<Step> collectScenarioSteps(Scenario scenario, Map<String, String> parameters) {
