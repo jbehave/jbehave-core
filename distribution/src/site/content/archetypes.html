@@ -20,7 +20,65 @@ COULOMMIERS<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http:
 <li>jbehave-spring-archetype: use Spring support</li>
 </ul>
 
-<p>To use an archetype to generate a new project you can need to specify the path the <b>archetype-catalog.xml</b> which can be found in the binary distribution, in the <b>archetypes</b> directory:</p>
+<p>To generate a project from an archetype, first you need to select the archetype, then provide the information to create the concrete project from the archetype.  This information includes:</p>
+
+<ul>
+<li>your project groupId: e.g. com.example.app</li>
+<li>your project artifactId: e.g. app-core</li>
+<li>your project version: e.g. 1.0-SNAPSHOT</li>
+<li>your project package:  by default, a proposed one will be derived from the groupId</li>
+</ul>
+
+<h2>Generating a project from command-line</h2>
+
+<p>To select a project from command-line, you can invoke:</p>
+
+<script type="syntaxhighlighter" class="brush: plain">
+<![CDATA[
+mvn archetype:generate -Dfilter=org.jbehave:jbehave
+]]>
+</script>
+
+<p>Choose an archetype from the list:</p>
+
+<script type="syntaxhighlighter" class="brush: plain">
+<![CDATA[
+[INFO] [archetype:generate {execution: default-cli}]
+[INFO] Generating project in Interactive mode
+Choose archetype:
+1: remote -> org.jbehave:jbehave-groovy-archetype (-)
+2: remote -> org.jbehave:jbehave-guice-archetype (-)
+3: remote -> org.jbehave:jbehave-pico-archetype (-)
+4: remote -> org.jbehave:jbehave-simple-archetype (-)
+5: remote -> org.jbehave:jbehave-spring-archetype (-)
+Choose a number or apply filter (format: [groupId:]artifactId, case sensitive contains): :  
+]]>
+</script>
+
+<p>Provide the project information:</p>
+
+<script type="syntaxhighlighter" class="brush: plain">
+<![CDATA[
+Define value for property 'groupId': : com.example.app
+Define value for property 'artifactId': : app-core
+[INFO] Using property: version = 1.0-SNAPSHOT
+Define value for property 'package': com.example.app: 
+[INFO] Using property: jbehaveCoreVersion = 3.5
+[INFO] Using property: jbehaveSiteVersion = 3.1.1
+Confirm properties configuration:
+groupId: com.example.app
+artifactId: app-core
+version: 1.0-SNAPSHOT
+package: com.example.app
+jbehaveCoreVersion: 3.5
+jbehaveSiteVersion: 3.1.1
+Y: 
+]]>
+</script>
+
+<h2>Using a specific Archetype Catalog</h2>
+
+<p>You can also specify the path the <b>archetype-catalog.xml</b> which can be found in the binary distribution, in the <b>archetypes</b> directory:</p>
 
 <script type="syntaxhighlighter" class="brush: plain">
 <![CDATA[
@@ -28,12 +86,14 @@ COULOMMIERS<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http:
 ]]>
 </script>
 
-<p>When generating a new project, after you've selected the archetype, you need to specify the usual Maven project GAV coordinates, i.e. groupId, artifactId and version. These will be used to concretise the template.</p>
-
 <span class="followup">If you are using Nexus 1.9 or above you don't need to specify the archetype catalog as it will automatically generate it for you.  Then all you
 need is to search for archetypes with group <b>org.jbehave</b>.  
 The <a href="http://search.maven.org/remotecontent?filepath=archetype-catalog.xml">Maven Central archetype catalog</a> is also periodically updated, 
 although perhaps not with the same frequency that you may require.</span>
+
+<h2>Generating a project from Eclipse</h2>
+
+<p>Eclipse with <a href="http://eclipse.org/m2e">m2e plugin</a> allows the creation of Maven project from archetypes, easily filtering the archetype you are interested in.</p>
 
 </body>
 </html>
