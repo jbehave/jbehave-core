@@ -68,9 +68,11 @@ textual step:</p>
         href="javadoc/core/org/jbehave/core/annotations/AfterScenario.html">@AfterScenario</a>
     </li>
 </ul>
-<p>The <b>@BeforeScenario</b> annotation holds no value and it allows
-the corresponding method to be executed before each scenario, while the
-<b>@AfterScenario</b> holds an optional <a
+<p>The <b>@BeforeScenario</b> and <b>@AfterScenario</b> annotations allow
+the corresponding methods to be executed before and after each scenario.  Optionally, the <a
+    href="javadoc/core/org/jbehave/core/annotations/ScenarioType.html">ScenarioType</a> can be specified 
+    to execute only upon that type, e.g. for <a href="parametrised-scenarios.html">scenarios parametrised by examples</a>.
+In addition, <b>@AfterScenario</b> allows the setting of an optional <a
     href="javadoc/core/org/jbehave/core/annotations/AfterScenario.Outcome.html">Outcome</a>
 value, which specifies whether the method should be executed depending
 on the outcome of the scenario:</p>
@@ -81,9 +83,19 @@ on the outcome of the scenario:</p>
     public void beforeEachScenario() {
         // ...
     }
+
+    @BeforeScenario(uponType=ScenarioType.EXAMPLE)
+    public void beforeEachExampleScenario() {
+        // ...
+    }
         
     @AfterScenario // equivalent to  @AfterScenario(uponOutcome=AfterScenario.Outcome.ANY)
     public void afterAnyScenario() {
+        // ...
+    }
+
+    @AfterScenario(uponType=ScenarioType.EXAMPLE)
+    public void afterEachExampleScenario() {
         // ...
     }
         
