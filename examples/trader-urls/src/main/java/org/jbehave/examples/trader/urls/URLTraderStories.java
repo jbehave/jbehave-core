@@ -5,6 +5,8 @@ import java.util.List;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.StoryFinder;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
+import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.examples.trader.TraderStories;
 
 import static java.util.Arrays.asList;
@@ -28,7 +30,10 @@ public class URLTraderStories extends TraderStories {
 
     @Override
     public Configuration configuration() {
-        return super.configuration().useStoryLoader(new LoadFromURL());
+        Configuration configuration = super.configuration();        
+        StoryReporterBuilder builder = configuration.storyReporterBuilder();
+        builder.withPathResolver(new ResolveToSimpleName());
+        return configuration.useStoryLoader(new LoadFromURL());
     }
 
     @Override

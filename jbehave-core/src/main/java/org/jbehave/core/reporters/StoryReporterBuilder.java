@@ -301,8 +301,7 @@ public class StoryReporterBuilder {
     }
 
     public StoryReporter reporterFor(String storyPath, Format format) {
-        FilePrintStreamFactory factory = filePrintStreamFactory(storyPath);
-        return format.realFormat.createStoryReporter(factory, this);
+        return reporterFor(storyPath, format.realFormat);
     }
 
     public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {

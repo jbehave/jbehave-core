@@ -107,5 +107,10 @@ public abstract class Format {
     public static void println(PrintStream writer, Object what) {
         writer.println(what);
     }
+    
+    @Override
+    public String toString() {
+        return name;
+    }
 
 }
