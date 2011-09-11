@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Examples Modules</title>
+</head>
+
+<body>
+
+<h2>Example Modules</h2>
+
+<p>Examples are split into several modules, of which a few are standalone, while others (the trader examples) have minimal 
+interdependency to avoid duplication and repetitions, which would increase maintainance overhead.  The JBehave Core currently 
+has the following examples (see <a href="running-examples.html">running examples</a> for instructions on how to run them):</p>
+
+<ul>
+<li>gameoflife: verifies multi-line scenarios behaviours</li>
+<li>groovy: verifies Groovy-based behaviour for configuration writing steps</li>
+<li>google: verifies how stories can be retrived from Google Docs</li>
+<li>noughtsandcrosses: verifies GUI behaviours</li>
+<li>spring-security: verifies Spring-based security behaviours</li>
+<li>threads: verifies multi-threading behaviour</li>
+<li>trader:  contains stories verifying the behaviour of multiple functionalities of JBehave</li>
+<li>trader-ant:  runs trader example stories using Ant</li>
+<li>trader-annotations:  extends trader example verifying configuration via annotations</li>
+<li>trader-urls:  extends trader example verifying running stories accessible via URLs, including remote resources</li>
+<li>trader-maps:  extends trader example verifying generation of story maps</li>
+<li>trader-stepdocs:  extends trader example verifying generation of stepdocs</li>
+<li>trader-i18n: extends trader example verifying the writing of stories in different locales</li>
+<li>trader-guice: extends trader example verifying configuration using Guice for dependency injection</li>
+<li>trader-pico: extends trader example verifying configuration using PicoContainer for dependency injection</li>
+<li>trader-spring: extends trader example verifying configuration using Spring for dependency injection</li>
+<li>trader-weld: extends trader example verifying configuration using Weld for dependency injection</li>
+</ul>
+
+<span class="followup">All the trader example modules re-use the same stories and steps classes of the trader example, but focus on different
+complementary aspects, e.g. annotation-based configuration, localisation, scripting steps, or dependency injection. 
+The trader-example module is declared as a normal Maven dependency for all extension trader modules and must be installed in your 
+local repository before these can be run.
+</span>
+
+
+<div class="clear">
+<hr />
+</div>
+
+
+</body>
+</html>
