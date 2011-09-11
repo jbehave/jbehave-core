@@ -25,6 +25,7 @@ import static org.apache.tools.ant.Project.MSG_WARN;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
@@ -187,6 +188,7 @@ public class EmbedderTaskBehaviour {
         };
         // When
         task.setTestSourceDirectory("src/test");
+        task.setTestOutputDirectory("target/test-classes");
         task.setScope("test");
         // Then
         assertThat(task.searchDirectory(), equalTo("src/test"));
@@ -265,6 +267,7 @@ public class EmbedderTaskBehaviour {
         };
         String searchInDirectory = "src/test/java/";
         task.setSourceDirectory(searchInDirectory);
+        task.setOutputDirectory("target/test-classes");
         List<String> includes = asList("**/*StoryMaps.java");
         task.setIncludes(StringUtils.join(includes, "'"));
         List<String> excludes = asList();
@@ -392,6 +395,8 @@ public class EmbedderTaskBehaviour {
         };
         String searchInDirectory = "src/test/java/";
         task.setSourceDirectory(searchInDirectory);
+        String outputDirectory = "target/test-classes";
+        task.setOutputDirectory(outputDirectory);
         List<String> includes = asList("**/stories/*.story");
         task.setIncludes(StringUtils.join(includes, "'"));
         List<String> excludes = asList();
@@ -403,6 +408,7 @@ public class EmbedderTaskBehaviour {
 
         // Then
         verify(embedder).runStoriesAsPaths(storyPaths);
+        assertThat(task.codeLocation().toString(), containsString(outputDirectory));
     }
 
     @Test

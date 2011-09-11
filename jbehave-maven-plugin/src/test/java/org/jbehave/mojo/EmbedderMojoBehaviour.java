@@ -358,6 +358,7 @@ public class EmbedderMojoBehaviour {
         };
         String searchInDirectory = "src/test/java/";
         mojo.sourceDirectory = searchInDirectory;
+        mojo.outputDirectory = "target/test-classes";
         List<String> includes = asList("**/stories/*.story");
         mojo.includes = includes;
         List<String> excludes = asList();
@@ -369,6 +370,7 @@ public class EmbedderMojoBehaviour {
 
         // Then
         verify(embedder).mapStoriesAsPaths(storyPaths);
+        assertThat(mojo.codeLocation().toString(), containsString(mojo.outputDirectory));
     }
 
     @Test

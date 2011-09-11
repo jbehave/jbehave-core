@@ -2,6 +2,8 @@ package org.jbehave.ant;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -43,6 +45,10 @@ public abstract class AbstractEmbedderTask extends Task {
     private String sourceDirectory = "src/main/java";
 
     private String testSourceDirectory = "src/test/java";
+
+    private String outputDirectory = "target/classes";
+
+    private String testOutputDirectory = "target/test-classes";
 
     /**
      * The scope of the source, either "compile" or "test"
@@ -90,12 +96,12 @@ public abstract class AbstractEmbedderTask extends Task {
      * The story timeout in secs
      */
     long storyTimeoutInSecs = 300;
-    
+
     /**
      * The number of threads
      */
     private int threads = 1;
-    
+
     /**
      * The embedder to run the stories
      */
@@ -108,6 +114,7 @@ public abstract class AbstractEmbedderTask extends Task {
 
     /**
      * The annotated embedder runner class to run the stories
+     * 
      * @deprecated Obsolete
      */
     String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
@@ -137,15 +144,31 @@ public abstract class AbstractEmbedderTask extends Task {
      * 
      * @return A boolean <code>true</code> if test scoped
      */
-    private boolean isSourceTestScope() {
+    boolean isTestScope() {
         return TEST_SCOPE.equals(scope);
     }
 
     String searchDirectory() {
-        if (isSourceTestScope()) {
+        if (isTestScope()) {
             return testSourceDirectory;
         }
         return sourceDirectory;
+    }
+
+    String outputDirectory() {
+        if (isTestScope()) {
+            return testOutputDirectory;
+        }
+        return outputDirectory;
+    }
+
+    URL codeLocation() {
+        String outputDirectory = outputDirectory();
+        try {
+            return outputDirectory != null ? new File(outputDirectory).toURI().toURL() : null;
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Failed to create code location from "+outputDirectory, e);
+        }
     }
 
     /**
@@ -155,7 +178,7 @@ public abstract class AbstractEmbedderTask extends Task {
      * @return A EmbedderClassLoader
      */
     protected EmbedderClassLoader classLoader() {
-        if ( classLoader == null ){
+        if (classLoader == null) {
             classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         }
         return classLoader;
@@ -168,7 +191,8 @@ public abstract class AbstractEmbedderTask extends Task {
     protected EmbedderControls embedderControls() {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
-                .doIgnoreFailureInView(ignoreFailureInView).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
+                .doIgnoreFailureInView(ignoreFailureInView).useStoryTimeoutInSecs(storyTimeoutInSecs)
+                .useThreads(threads));
     }
 
     /**
@@ -223,13 +247,19 @@ public abstract class AbstractEmbedderTask extends Task {
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
+
+        URL codeLocation = codeLocation();
+        if (codeLocation != null) {
+            embedder.configuration().storyReporterBuilder().withCodeLocation(codeLocation);
+        }
+
         embedder.useClassLoader(classLoader);
         embedder.useEmbedderControls(embedderControls());
         embedder.useEmbedderMonitor(embedderMonitor());
-        if ( !metaFilters.isEmpty() ) {
+        if (!metaFilters.isEmpty()) {
             embedder.useMetaFilters(metaFilters);
-        } 
-        if ( !systemProperties.isEmpty() ){
+        }
+        if (!systemProperties.isEmpty()) {
             embedder.useSystemProperties(systemProperties);
         }
         return embedder;
@@ -249,7 +279,7 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void embeddableNotConfigurable(String name) {
-            log("Embeddable " + name + " must be an instance of "+ConfigurableEmbedder.class, MSG_WARN);
+            log("Embeddable " + name + " must be an instance of " + ConfigurableEmbedder.class, MSG_WARN);
         }
 
         public void embeddablesSkipped(List<String> classNames) {
@@ -300,8 +330,8 @@ public abstract class AbstractEmbedderTask extends Task {
                     + " pending) containing " + "" + count.getScenarios() + " scenarios (of which  "
                     + count.getScenariosFailed() + " failed and " + count.getScenariosPending() + " pending)", MSG_INFO);
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
-                log("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  " + count.getScenariosNotAllowed()
-                        + " scenarios", MSG_INFO);
+                log("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  "
+                        + count.getScenariosNotAllowed() + " scenarios", MSG_INFO);
             }
         }
 
@@ -310,9 +340,8 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void mappingStory(String storyPath, List<String> metaFilters) {
-            log("Mapping story "+storyPath+" with meta filters "+metaFilters, MSG_INFO);
+            log("Mapping story " + storyPath + " with meta filters " + metaFilters, MSG_INFO);
         }
-
 
         public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
             log("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
@@ -325,27 +354,29 @@ public abstract class AbstractEmbedderTask extends Task {
                     + " and view properties '" + viewProperties + "'", cause, MSG_WARN);
         }
 
-
         public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
-            log("Generating navigator view to '" + outputDirectory + "' using  properties '" + viewProperties + "'", MSG_INFO);
+            log("Generating navigator view to '" + outputDirectory + "' using  properties '" + viewProperties + "'",
+                    MSG_INFO);
         }
 
         public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
-            log("Failed to generating navigator view to '" + outputDirectory + "' using  properties '" + viewProperties + "'", cause, MSG_WARN);            
+            log("Failed to generating navigator view to '" + outputDirectory + "' using  properties '" + viewProperties
+                    + "'", cause, MSG_WARN);
         }
-        
+
         public void navigatorViewNotGenerated() {
-            log("Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder", MSG_WARN);
+            log("Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder",
+                    MSG_WARN);
         }
 
         public void processingSystemProperties(Properties properties) {
             log("Processing system properties " + properties, MSG_INFO);
         }
-        
+
         public void systemPropertySet(String name, String value) {
-            log("System property '" + name + "' set to '"+value+"'", MSG_INFO);
+            log("System property '" + name + "' set to '" + value + "'", MSG_INFO);
         }
-        
+
         public void storyTimeout(long durationInSecs, Story story) {
             log("Story " + story.getPath() + " has timed out after " + durationInSecs + " seconds", MSG_INFO);
         }
@@ -355,7 +386,7 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void usingExecutorService(ExecutorService executorService) {
-            log("Using executor service " + executorService, MSG_INFO);            
+            log("Using executor service " + executorService, MSG_INFO);
         }
 
         @Override
@@ -375,6 +406,15 @@ public abstract class AbstractEmbedderTask extends Task {
         this.testSourceDirectory = testSourceDirectory;
     }
 
+
+    public void setOutputDirectory(String outputDirectory) {
+        this.outputDirectory = outputDirectory;
+    }
+
+    public void setTestOutputDirectory(String testOutputDirectory) {
+        this.testOutputDirectory = testOutputDirectory;
+    }
+    
     public void setScope(String scope) {
         this.scope = scope;
     }
@@ -406,12 +446,12 @@ public abstract class AbstractEmbedderTask extends Task {
     public void setGenerateViewAfterStories(boolean generateViewAfterStories) {
         this.generateViewAfterStories = generateViewAfterStories;
     }
-    
-    public void setStoryTimeoutInSecs(long storyTimeoutInSecs){
+
+    public void setStoryTimeoutInSecs(long storyTimeoutInSecs) {
         this.storyTimeoutInSecs = storyTimeoutInSecs;
     }
-    
-    public void setThreads(int threads){
+
+    public void setThreads(int threads) {
         this.threads = threads;
     }
 
@@ -434,8 +474,8 @@ public abstract class AbstractEmbedderTask extends Task {
     public void setMetaFilters(String metaFiltersCSV) {
         this.metaFilters = asList(metaFiltersCSV.split(","));
     }
-    
-    public void setSystemProperties(String systemPropertiesCSV){
+
+    public void setSystemProperties(String systemPropertiesCSV) {
         this.systemProperties = loadProperties(systemPropertiesCSV);
     }
 

@@ -223,12 +223,12 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     URL codeLocation() {
-      try {
         String outputDirectory = outputDirectory();
-        return outputDirectory != null ? new File(outputDirectory).toURI().toURL() : null;
-      } catch (MalformedURLException e) {
-        throw new IllegalArgumentException("Failed to set output directory", e);
-      }
+        try {
+            return outputDirectory != null ? new File(outputDirectory).toURI().toURL() : null;
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("Failed to create code location from "+outputDirectory, e);
+        }
     }
 
     /**
