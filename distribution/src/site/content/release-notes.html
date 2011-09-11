@@ -5,6 +5,108 @@
 </head>
 <body>
 
+<h1>JBehave Core - Version 3.5 (Sep 11, 2011)</h1>        
+            
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-514'>JBEHAVE-514</a>] -         jbehave-maven-plugin ignoring execution
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-520'>JBEHAVE-520</a>] -         StoryRunner failure strategy is not set when running before or after stories steps in multiple threads
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-521'>JBEHAVE-521</a>] -         Typo in jbehave-spring-archetype causes malformed pom.xml
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-527'>JBEHAVE-527</a>] -         Composed steps not being matched when using non-named parameter matching for the composite step
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-531'>JBEHAVE-531</a>] -         OutcomesTable not being reported
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-539'>JBEHAVE-539</a>] -         ConcurrentModificationException in xref when run multithreaded.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-546'>JBEHAVE-546</a>] -         Reports are not showing properly, all are showing as Zero
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-547'>JBEHAVE-547</a>] -         StoryRunner.runParametrisedScenariosByExamples does not execute the examples after the first failure
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-557'>JBEHAVE-557</a>] -         When story has multiple failed scenarios, only one screenshot is created
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-567'>JBEHAVE-567</a>] -         Excluded (filtered-out) scenarios are reported as pending as well
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-570'>JBEHAVE-570</a>] -         Excluded scenarios should not be included into ScenarioSuccessful count
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-578'>JBEHAVE-578</a>] -         Story execution not failing-fast when ignoreFailuresInStories=false
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-580'>JBEHAVE-580</a>] -         NPE in BatchFailures.toString() if no &#39;cause&#39;
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-583'>JBEHAVE-583</a>] -         Of multiple exclusion meta filters only one is evaluated
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-588'>JBEHAVE-588</a>] -         FailingUponPendingSteps only works for normal steps, it does not do as it suggests for composite steps
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-589'>JBEHAVE-589</a>] -         Ignorable steps before And steps should not be marked as pending
+</li>
+</ul>
+        
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-523'>JBEHAVE-523</a>] -         Allow specification of Configuration implementation class via @Configure annotation
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-530'>JBEHAVE-530</a>] -         Add time duration to story statistics and reports view
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-537'>JBEHAVE-537</a>] -          Pluggable template processor for view generator
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-544'>JBEHAVE-544</a>] -         Ignore !-- comments in story meta
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-553'>JBEHAVE-553</a>] -         Upgrade to Weld 1.1.1
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-571'>JBEHAVE-571</a>] -         Compactify method and annotation information in BeforeOrAfterFailed message
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-586'>JBEHAVE-586</a>] -         StoryReporterBuilder code location should be settable from the output directory by Ant tasks and Maven goals
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-590'>JBEHAVE-590</a>] -         Add failed step as UUIDExceptionWrapper message
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-595'>JBEHAVE-595</a>] -         Use name as String representation of Format
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-534'>JBEHAVE-534</a>] -         Lazy instantiation of steps classes, only if candidate steps are matched
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-535'>JBEHAVE-535</a>] -         Template-based reporters
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-540'>JBEHAVE-540</a>] -         ANSI-coded console output
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-543'>JBEHAVE-543</a>] -         Before/After Story/Scenario methods could accept parameters that have meaning at that moment
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-548'>JBEHAVE-548</a>] -         Add support for annotated steps before and after example scenarios
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-584'>JBEHAVE-584</a>] -         Support loading stories from Google Docs
+</li>
+</ul>
+        
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-414'>JBEHAVE-414</a>] -         Document generating StepDocs from a Embeddable instance  
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-522'>JBEHAVE-522</a>] -         Add documentation page on tutorials
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-529'>JBEHAVE-529</a>] -         Simplify trader-ant example to not depend on the Maven pom.xml
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-532'>JBEHAVE-532</a>] -         Split hamcrest-all dependency
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-558'>JBEHAVE-558</a>] -         Maven build should be updated to play well with Eclipse m2e 1.0
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-564'>JBEHAVE-564</a>] -         Update Ant and Maven configuration documentation 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-565'>JBEHAVE-565</a>] -         Make public StoryRunner.State interface 
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-574'>JBEHAVE-574</a>] -         Improve documentation on using archetypes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-587'>JBEHAVE-587</a>] -         Website Documentation -  &quot;Pending Steps page&quot; refers to incorrect strategy class FailingPendingStepStrategy
+</li>
+</ul>
+        
 <h1>JBehave Core - Version 3.4.5 (Jun 12, 2011)</h1>        
         
 <h2>        Bug
