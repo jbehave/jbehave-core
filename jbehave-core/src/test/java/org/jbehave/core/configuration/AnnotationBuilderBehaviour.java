@@ -78,7 +78,7 @@ public class AnnotationBuilderBehaviour {
         assertThatStepsInstancesAre(notAnnotated.buildCandidateSteps());
         AnnotationBuilder annotatedWithoutSteps = new AnnotationBuilder(AnnotatedWithoutSteps.class);
         assertThatStepsInstancesAre(annotatedWithoutSteps.buildCandidateSteps());
-        assertThat(baos.toString(), is(equalTo("Annotation " + UsingSteps.class + " not found in " + NotAnnotated.class + "\n")));
+        assertThat(baos.toString().trim(), is(equalTo("Annotation " + UsingSteps.class + " not found in " + NotAnnotated.class)));
     }
 
     @Test
