@@ -262,11 +262,11 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldNotThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureInStoriesFlagIsSet()
+    public void shouldNotThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureFlagsAreSet()
             throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
-        EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInStories(true);
+        EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         String myStoryName = MyFailingStory.class.getName();
@@ -350,7 +350,7 @@ public class EmbedderBehaviour {
     public void shouldRunFailingStoriesAsEmbeddablesInBatchIfBatchFlagIsSet() throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
-        EmbedderControls embedderControls = new EmbedderControls().doBatch(true).doIgnoreFailureInStories(true);
+        EmbedderControls embedderControls = new EmbedderControls().doBatch(true).doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         String myStoryName = MyFailingStory.class.getName();

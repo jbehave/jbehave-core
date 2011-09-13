@@ -119,7 +119,7 @@ public class Embedder {
                     // collect and postpone decision to throw exception
                     batchFailures.put(name, e);
                 } else {
-                    if (embedderControls.ignoreFailureInStories()) {
+                    if (ignoreFailure(embedderControls)) {
                         embedderMonitor.embeddableFailed(name, e);
                     } else {
                         throw new RunningEmbeddablesFailed(name, e);
@@ -129,13 +129,21 @@ public class Embedder {
         }
 
         if (embedderControls.batch() && batchFailures.size() > 0) {
-            if (embedderControls.ignoreFailureInStories()) {
+            if (ignoreFailure(embedderControls)) {
                 embedderMonitor.batchFailed(batchFailures);
             } else {
                 throw new RunningEmbeddablesFailed(batchFailures);
             }
         }
 
+    }
+
+    private boolean ignoreFailure(EmbedderControls embedderControls) {
+        boolean ignore = embedderControls.ignoreFailureInStories();
+        if ( embedderControls.generateViewAfterStories() ){
+            ignore = ignore && embedderControls.ignoreFailureInView();
+        }
+        return ignore;
     }
 
     private List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {

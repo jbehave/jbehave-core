@@ -12,6 +12,8 @@
   <properties>
     <embeddables>**/*TraderStories.java</embeddables>
     <meta.filter></meta.filter>    
+    <ignore.failure.in.stories>true</ignore.failure.in.stories>
+    <ignore.failure.in.view>true</ignore.failure.in.view>
   </properties>
   
   <build>
@@ -31,8 +33,8 @@
               <skip>${skip}</skip>
               <batch>false</batch>
               <generateViewAfterStories>true</generateViewAfterStories>
-              <ignoreFailureInStories>true</ignoreFailureInStories>
-              <ignoreFailureInView>true</ignoreFailureInView>
+              <ignoreFailureInStories>${ignore.failure.in.stories}</ignoreFailureInStories>
+              <ignoreFailureInView>${ignore.failure.in.view}</ignoreFailureInView>
               <threads>2</threads>
               <metaFilters>
                 <metaFilter>${meta.filter}</metaFilter>
