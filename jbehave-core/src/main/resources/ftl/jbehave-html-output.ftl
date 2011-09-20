@@ -1,4 +1,5 @@
 <#ftl strip_whitespace=true>
+<#macro renderMultiline text>${text?replace("\n", "<br/>")}</#macro>
 <#macro renderMeta meta>
 <div class="meta">
 <div class="keyword">${keywords.meta}</div>
@@ -79,13 +80,13 @@
 
 <html>
 <body>
-<div class="story"><h1>${story.description}</h1>
+<div class="story"><h1><@renderMultiline story.getDescription()/></h1>
 <div class="path">${story.path}</div>
 <#if story.getMeta()??><@renderMeta story.getMeta()/></#if>
 <#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
 <#assign scenarios = story.getScenarios()>
 <#list scenarios as scenario>
-<div class="scenario"><h2>${keywords.scenario} ${scenario.title}</h2>   
+<div class="scenario"><h2>${keywords.scenario} <@renderMultiline scenario.getTitle()/></h2>   
 <#if scenario.getMeta()??><@renderMeta scenario.getMeta()/></#if>
 <#if scenario.getGivenStories()??><@renderGivenStories scenario.getGivenStories()/></#if>
 <#if scenario.getExamplesTable()??>

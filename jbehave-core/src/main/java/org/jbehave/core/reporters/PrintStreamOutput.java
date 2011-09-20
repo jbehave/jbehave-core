@@ -325,7 +325,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
             public Object transform(Object object) {
                 switch (format) {
                 case HTML:
-                    return escapeHtml(asString(object));
+                    return escapeHtml(asString(object)).replace("\n", "<br/>");
                 case XML:
                     return escapeXml(asString(object));
                 default:

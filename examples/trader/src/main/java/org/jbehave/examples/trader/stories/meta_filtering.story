@@ -1,3 +1,5 @@
+A story description
+over multiple lines
 
 Meta: 
 
@@ -7,6 +9,7 @@ Meta:
 @author Mauro
 
 Scenario: A scenario to be skipped
+and not executed
 
 Meta:  
 
