@@ -24,6 +24,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>jbehave-scala</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-guice</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -131,6 +136,26 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-groovy</artifactId>
+                  <version>${project.version}</version>
+                  <classifier>javadoc</classifier>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+          <execution>
+            <id>unpack-javadoc-scala</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/site/javadoc/scala</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>jbehave-scala</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>

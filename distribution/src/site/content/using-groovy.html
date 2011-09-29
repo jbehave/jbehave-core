@@ -12,12 +12,12 @@
 that compiles directly to the JVM.</p>
 
 <p>JBehave supports writing Steps classes directly in Groovy, using the <a
-    href="javadoc/guice/org/jbehave/core/steps/groovy/GroovyStepsFactory.html">GroovyStepsFactory</a>
+    href="javadoc/groovy/org/jbehave/core/steps/groovy/GroovyStepsFactory.html">GroovyStepsFactory</a>
     and providing the list of Groovy scripts as classpath resources:
 </p>
 <script type="syntaxhighlighter" class="brush: groovy">
 <![CDATA[
-public class TraderGroovyStories extends JUnitStories {
+public class GroovyStories extends JUnitStories {
 
     @Override
     public Configuration configuration() {

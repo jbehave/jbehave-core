@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Using Scala</title>
+</head>
+
+<body>
+
+<h2>Writing Steps in Scala</h2>
+
+<p><a href="http://scala-lang.org">Scala</a> is the new kid on the block
+that compiles directly to the JVM.</p>
+
+<p>JBehave supports writing Steps classes directly in Scala, using the <a
+    href="javadoc/scala/org/jbehave/core/steps/scala/ScalaStepsFactory.html">ScalaStepsFactory</a>
+    and providing the list of Scala classes found in the classpath:
+</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+public class ScalaStories extends JUnitStories {
+
+    @Override
+    public Configuration configuration() {
+        return new MostUsefulConfiguration()
+                .useStoryReporterBuilder(new StoryReporterBuilder().withFormats(ANSI_CONSOLE));
+    }
+
+    @Override
+    protected List<String> storyPaths() {
+        return new StoryFinder()
+                .findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
+    }
+
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return new ScalaStepsFactory(configuration(), new ScalaContext("Ladder"));
+    }
+
+}
+]]>
+</script>
+
+<span class="followup">The Scala classes must be compiled directly into Java bytecode.</span>
+
+<p>The Scala classes needs to include annotated methods, just as you would in Java:</p>
+<script type="syntaxhighlighter" class="brush: scala">
+class Ladder {
+
+    @org.jbehave.core.annotations.Given("a ladder")
+    def givenALadder() {
+        println("I am a ladder")
+    }
+
+    @org.jbehave.core.annotations.When("I climb it")
+    def whenIClimbIt() {
+        println("I'm climbing ... ")
+    }
+
+    @org.jbehave.core.annotations.Then("I get to the top")
+    def thenIGetToTheTop() {
+        println("... at top!")
+    }
+    
+    override def toString(): String = "Ladder";
+
+}
+]]>
+</script>
+
+<div class="clear">
+<hr />
+</div>
+</body>
+</html>
