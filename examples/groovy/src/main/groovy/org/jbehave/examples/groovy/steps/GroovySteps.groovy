@@ -5,7 +5,7 @@ import org.jbehave.core.annotations.When
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
 
-class ExampleGroovySteps {
+class GroovySteps {
 
   @Given("a date of \$date")
   def aDate(Date date) {

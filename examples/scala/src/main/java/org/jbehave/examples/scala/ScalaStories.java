@@ -30,7 +30,7 @@ public class ScalaStories extends JUnitStories {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new ScalaStepsFactory(configuration(), new ScalaContext("Ladder"));
+        return new ScalaStepsFactory(configuration(), new ScalaContext("ScalaSteps"));
     }
 
 }

@@ -33,7 +33,7 @@ public class ScalaStories extends JUnitStories {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new ScalaStepsFactory(configuration(), new ScalaContext("Ladder"));
+        return new ScalaStepsFactory(configuration(), new ScalaContext("ScalaSteps"));
     }
 
 }
@@ -42,26 +42,26 @@ public class ScalaStories extends JUnitStories {
 
 <span class="followup">The Scala classes must be compiled directly into Java bytecode.</span>
 
-<p>The Scala classes needs to include annotated methods, just as you would in Java:</p>
+<p>The Scala steps classes contain annotated methods, just as you would in Java:</p>
 <script type="syntaxhighlighter" class="brush: scala">
-class Ladder {
-
-    @org.jbehave.core.annotations.Given("a ladder")
-    def givenALadder() {
-        println("I am a ladder")
-    }
-
-    @org.jbehave.core.annotations.When("I climb it")
-    def whenIClimbIt() {
-        println("I'm climbing ... ")
-    }
-
-    @org.jbehave.core.annotations.Then("I get to the top")
-    def thenIGetToTheTop() {
-        println("... at top!")
-    }
+class ScalaSteps {
     
-    override def toString(): String = "Ladder";
+  @org.jbehave.core.annotations.Given("a date of $date")
+  def aDate(date: java.util.Date) {
+     org.junit.Assert.assertNotNull(date)
+  }
+
+  @org.jbehave.core.annotations.When("$days days pass")
+  def daysPass(days: Int) {
+     org.junit.Assert.assertNotNull(days)
+  }
+
+  @org.jbehave.core.annotations.Then("the date is $date")
+  def theDate(date: java.util.Date) {
+     org.junit.Assert.assertNotNull(date)
+  }
+
+  override def toString(): String = "ScalaSteps";
 
 }
 ]]>
