@@ -2,13 +2,14 @@ package com.lunivore.noughtsandcrosses.ui;
 
 import org.uispec4j.Trigger;
 import org.uispec4j.UISpec4J;
+import org.uispec4j.UISpecAdapter;
 import org.uispec4j.Window;
 import org.uispec4j.finder.ComponentMatchers;
 import org.uispec4j.interception.WindowInterceptor;
 
 import com.lunivore.noughtsandcrosses.NoughtsAndCrosses;
 
-public class WindowControl {
+public class WindowControl implements UISpecAdapter {
 
     private Window window;
 
@@ -17,7 +18,7 @@ public class WindowControl {
         reset();
     }
 
-    public Window getWindow() {
+    public Window getMainWindow() {
         return window;
     }
 

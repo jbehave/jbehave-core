@@ -60,7 +60,7 @@ public class GridSteps extends Steps {
 
     @When("the player clicks $space")
     public void whenPlayerClicksInSpace(String space) throws Exception {
-        windowControl.getWindow().getButton(space).click();
+        windowControl.getMainWindow().getButton(space).click();
     }
     
     private void performMoves(List<String> oTurns, List<String> xTurns) throws Exception {
