@@ -37,7 +37,7 @@ public class ScalaContext {
     /**
      * Creates an object instance from the Scala class name
      * 
-     * @param className the Scala className
+     * @param className the Scala class name
      * @return An Object instance
      */
     public Object newInstance(String className) {
@@ -50,8 +50,8 @@ public class ScalaContext {
 
     private List<Object> createInstances() {
         List<Object> instances = new ArrayList<Object>();
-        for (String resource : classNames) {
-            instances.add(newInstance(resource));
+        for (String className : classNames) {
+            instances.add(newInstance(className));
         }
         return instances;
     }

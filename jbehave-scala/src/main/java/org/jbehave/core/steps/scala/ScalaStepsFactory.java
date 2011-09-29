@@ -9,7 +9,7 @@ import org.jbehave.core.steps.AbstractStepsFactory;
 
 public class ScalaStepsFactory extends AbstractStepsFactory {
 
-    private ScalaContext context;
+    private final ScalaContext context;
 
     public ScalaStepsFactory(Configuration configuration, ScalaContext context){
         super(configuration);
