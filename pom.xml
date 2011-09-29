@@ -28,6 +28,7 @@
     <module>jbehave-hudson-plugin</module>
     <module>jbehave-google</module>
     <module>jbehave-groovy</module>
+    <module>jbehave-scala</module>
     <module>jbehave-guice</module>
     <module>jbehave-odf</module>
     <module>jbehave-pico</module>

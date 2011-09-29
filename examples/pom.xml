@@ -18,6 +18,7 @@
   <modules>
     <module>gameoflife</module>
     <module>groovy</module>
+    <module>scala</module>
     <module>spring-security</module>
     <module>threads</module>
     <module>trader</module>
