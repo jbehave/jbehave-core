@@ -42,8 +42,8 @@ public class StepCreator {
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
 
-    public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory, ParameterConverters parameterConverters, StepMatcher stepMatcher,
-            StepMonitor stepMonitor) {
+    public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory,
+            ParameterConverters parameterConverters, StepMatcher stepMatcher, StepMonitor stepMonitor) {
         this.stepsType = stepsType;
         this.stepsFactory = stepsFactory;
         this.parameterConverters = parameterConverters;
@@ -160,18 +160,18 @@ public class StepCreator {
         Type type = types[position];
         String value = parameters[position];
         if (value != null) {
-            if ( isTable(type)){
-                stepText = stepText.replace(value, PARAMETER_TABLE_START + value + PARAMETER_TABLE_END);                
+            if (isTable(type)) {
+                stepText = stepText.replace(value, PARAMETER_TABLE_START + value + PARAMETER_TABLE_END);
             } else {
-                stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END)
-                                   .replace("\n", PARAMETER_VALUE_NEWLINE);
+                stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END).replace("\n",
+                        PARAMETER_VALUE_NEWLINE);
             }
         }
         return stepText;
     }
 
     private boolean isTable(Type type) {
-        return type instanceof Class && ((Class<?>)type).isAssignableFrom(ExamplesTable.class);
+        return type instanceof Class && ((Class<?>) type).isAssignableFrom(ExamplesTable.class);
     }
 
     private String replaceParameterValue(String stepText, Map<String, String> namedParameters, String name) {
@@ -333,7 +333,8 @@ public class StepCreator {
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
             ParameterConverters paramConvertersWithExceptionInjector = paramConvertersWithExceptionInjector(storyFailureIfItHappened);
-            MethodInvoker methodInvoker = new MethodInvoker(method, paramConvertersWithExceptionInjector, paranamer, meta);
+            MethodInvoker methodInvoker = new MethodInvoker(method, paramConvertersWithExceptionInjector, paranamer,
+                    meta);
 
             try {
                 methodInvoker.invoke();
@@ -441,7 +442,8 @@ public class StepCreator {
                 return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, failureCause)).withParameterValues(
                         parametrisedStep);
             } catch (Throwable t) {
-                return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, t)).withParameterValues(parametrisedStep);
+                return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, t)).withParameterValues(
+                        parametrisedStep);
             }
         }
 
@@ -463,8 +465,17 @@ public class StepCreator {
             Type[] types = method.getGenericParameterTypes();
             String[] parameters = parametersForStep(namedParameters, types, annotationNames, parameterNames);
             convertedParameters = convertParameters(parameters, types);
+            addNamedParametersToExamplesTables();
             parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, annotationNames, parameterNames,
                     parameters);
+        }
+
+        private void addNamedParametersToExamplesTables() {
+            for (Object object : convertedParameters) {
+                if (object instanceof ExamplesTable) {
+                    ((ExamplesTable) object).withNamedParameters(namedParameters);
+                }
+            }
         }
 
     }

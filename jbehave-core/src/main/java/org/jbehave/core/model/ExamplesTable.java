@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,6 +97,7 @@ public class ExamplesTable {
     private final ParameterConverters parameterConverters;
     private final List<String> headers = new ArrayList<String>();
     private final Properties properties = new Properties();
+    private Map<String, String> namedParameters = new HashMap<String, String>();
     private boolean trim = true;
 
     private final Row defaults;
@@ -216,6 +218,11 @@ public class ExamplesTable {
         return new ExamplesTable(this, new ChainedRow(defaults, this.defaults));
     }
 
+    public ExamplesTable withNamedParameters(Map<String, String> namedParameters) {
+        this.namedParameters = namedParameters;
+        return this;
+    }
+
     public Properties getProperties() {
         return properties;
     }
@@ -229,7 +236,25 @@ public class ExamplesTable {
     }
 
     public Parameters getRowAsParameters(int row) {
-        return createParameters(getRow(row));
+        return getRowAsParameters(row, false);
+    }
+
+    public Parameters getRowAsParameters(int row, boolean replaceNamedParameters) {
+        Map<String, String> rowValues = getRow(row);
+        return createParameters((replaceNamedParameters ? replaceNamedParameters(rowValues) : rowValues));
+    }
+
+    private Map<String, String> replaceNamedParameters(Map<String, String> row) {
+        Map<String, String> replaced = new HashMap<String, String>();
+        for (String key : row.keySet()) {
+            String replacedValue = row.get(key);
+            for (String namedKey : namedParameters.keySet()) {
+                String namedValue = namedParameters.get(namedKey);
+                replacedValue = replacedValue.replaceAll(namedKey, namedValue);
+            }
+            replaced.put(key, replacedValue);
+        }
+        return replaced;
     }
 
     public int getRowCount() {
@@ -240,19 +265,24 @@ public class ExamplesTable {
         return data;
     }
 
-    public List<Parameters> getRowsAsParameters() {
-        List<Parameters> rows = new ArrayList<Parameters>();
 
-        for (Map<String, String> row : getRows()) {
-            rows.add(createParameters(row));
+    public List<Parameters> getRowsAsParameters() {
+        return getRowsAsParameters(false);
+    }
+
+    public List<Parameters> getRowsAsParameters(boolean replaceNamedParameters) {
+        List<Parameters> rows = new ArrayList<Parameters>();
+        
+        for ( int row = 0; row < getRowCount(); row++ ){
+            rows.add(getRowAsParameters(row, replaceNamedParameters));
         }
 
         return rows;
     }
 
     private Parameters createParameters(Map<String, String> values) {
-        return new ConvertedParameters(new ChainedRow(new ConvertedParameters(values, parameterConverters),
-                defaults), parameterConverters);
+        return new ConvertedParameters(new ChainedRow(new ConvertedParameters(values, parameterConverters), defaults),
+                parameterConverters);
     }
 
     public String getHeaderSeparator() {
@@ -271,4 +301,5 @@ public class ExamplesTable {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 }

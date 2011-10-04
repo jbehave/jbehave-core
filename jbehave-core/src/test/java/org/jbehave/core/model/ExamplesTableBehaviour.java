@@ -14,6 +14,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -232,6 +233,25 @@ public class ExamplesTableBehaviour {
         assertThat(secondRow.valueAs("three", Integer.class), is(99));
         assertThat(secondRowValues.containsKey("XX"), is(false));
         assertThat(secondRow.valueAs("XX", Integer.class, 13), is(13));
+        
+    }
+
+    @Test
+    public void shouldReplaceNamedParameterValues() throws Exception {
+        // Given
+        ExamplesTableFactory factory = new ExamplesTableFactory();
+
+        // When
+        String tableAsString = "|Name|Value|\n|name1|<value>|";
+        Map<String, String> namedParameters = new HashMap<String, String>();
+        namedParameters.put("<value>", "value1");
+        ExamplesTable table = factory.createExamplesTable(tableAsString).withNamedParameters(namedParameters);
+
+        // Then
+        Parameters firstRow = table.getRowsAsParameters(true).get(0);
+        Map<String, String> firstRowValues = firstRow.values();
+        assertThat(firstRowValues.containsKey("Value"), is(true));
+        assertThat(firstRow.valueAs("Value", String.class), is("value1"));
         
     }
 
