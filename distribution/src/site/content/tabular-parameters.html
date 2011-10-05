@@ -49,6 +49,42 @@ for it to be automatically parsed as a tabular structure:</p>
 ]]>
 </script>
 
+<h2>Parametrised tables</h2>
+
+<p>Sometimes, you may want to parametrise the table row values and replace them with named parameters, 
+e.g. as specified in the Examples table and changing for each parametrised scenario:
+</p>
+<script type="syntaxhighlighter" class="brush: bdd">
+<![CDATA[
+Given that Larry has done <trades> trades
+Then the traders activity is: 
+|name|trades|
+|Larry|<trades>|
+|Moe|1000|
+|Curly|2000|
+
+Examples:
+|<trades>|
+|3000|
+|5000|
+]]>
+</script>
+
+<p>The <a
+    href="javadoc/core/org/jbehave/core/model/ExamplesTable.html">ExamplesTable</a> provide an option to specify whether the
+named parameters should be replaced in the values when retrieving the rows as parameters:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Then("the traders activity is: $table")
+    public void theTraderActivityIs(ExamplesTable table) {
+        boolean replaceNamedParameters = true;
+        int trades = table.getRowAsParameters(0, replaceNamedParameters).valueAs("trades", int.class);
+        // expect 3000 
+    }
+]]>
+</script>
+
 <h2>Row values as converted parameters</h2>
 
 <p>Besides retrieveing the row values as String name-value pairs,
@@ -60,7 +96,7 @@ same <a
 defined in the stories configuration:</p>
 
 <pre class="brush: bdd">
-The the traders activity is: 
+Then the traders activity is: 
 |name|trades|
 |Larry|3000|
 |Moe|1000|
