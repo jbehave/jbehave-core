@@ -26,6 +26,7 @@
     <module>jbehave-ant</module>
     <module>jbehave-maven-plugin</module>
     <module>jbehave-hudson-plugin</module>
+    <module>jbehave-jenkins-plugin</module>
     <module>jbehave-google</module>
     <module>jbehave-groovy</module>
     <module>jbehave-scala</module>
