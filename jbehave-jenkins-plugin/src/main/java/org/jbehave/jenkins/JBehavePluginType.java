@@ -1,4 +1,4 @@
-package org.jbehave.hudson;
+package org.jbehave.jenkins;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 

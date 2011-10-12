@@ -1,4 +1,4 @@
-package org.jbehave.hudson;
+package org.jbehave.jenkins;
 
 import com.thalesgroup.dtkit.metrics.hudson.api.descriptor.TestTypeDescriptor;
 import com.thalesgroup.hudson.plugins.xunit.types.XUnitType;

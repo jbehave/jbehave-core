@@ -1,4 +1,4 @@
-package org.jbehave.hudson;
+package org.jbehave.jenkins;
 
 import com.thalesgroup.dtkit.metrics.model.InputMetricXSL;
 import com.thalesgroup.dtkit.metrics.model.InputType;
