@@ -277,6 +277,7 @@ public class StoryRunnerBehaviour {
         Step lastStepNormal = mockSuccessfulStep("Then I succeeded");
 
         StepCollector collector = mock(StepCollector.class);
+        FailureStrategy strategy = mock(FailureStrategy.class);
         CandidateSteps mySteps = new Steps();
         Scenario scenario = new Scenario();
         when(collector.collectScenarioSteps(eq(asList(mySteps)), eq(scenario), eq(parameters))).thenReturn(
@@ -286,7 +287,7 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, collector), asList(mySteps), story);
+        runner.run(configurationWith(reporter, collector, strategy), asList(mySteps), story);
 
         verify(reporter, times(2)).successful("Given I succeed");
         verify(reporter).restarted(eq("<fooStep>"), isA(RestartingScenarioFailure.class));
@@ -509,6 +510,7 @@ public class StoryRunnerBehaviour {
         Step beforeStep = mockSuccessfulStep("beforeStep");
         Step afterStep = mockSuccessfulStep("secondStep");
         StepCollector collector = mock(StepCollector.class);
+        FailureStrategy strategy = mock(FailureStrategy.class);
         CandidateSteps mySteps = new Steps();
         Story story = new Story();
         boolean givenStory = false;
@@ -517,7 +519,7 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWith(reporter, collector),asList(mySteps), story);
+        runner.run(configurationWith(reporter, collector, strategy),asList(mySteps), story);
 
         // Then
         verify(beforeStep).perform(null);
@@ -672,6 +674,7 @@ public class StoryRunnerBehaviour {
         // Given
         StoryReporter reporter = mock(ConcurrentStoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
+        FailureStrategy strategy = mock(FailureStrategy.class);
         CandidateSteps mySteps = new Steps();
         when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
                 Arrays.<Step>asList());
@@ -686,7 +689,7 @@ public class StoryRunnerBehaviour {
         StoryRunner runner = new StoryRunner();
         when(filter.allow(meta)).thenReturn(false);
         when(filter.asString()).thenReturn(filterAsString);
-        runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
+        runner.run(configurationWith(reporter, collector, strategy), asList(mySteps), story, filter);
 
         // Then
         verify(reporter).beforeStory(story, givenStory);
@@ -699,6 +702,7 @@ public class StoryRunnerBehaviour {
         // Given
         StoryReporter reporter = mock(ConcurrentStoryReporter.class);
         StepCollector collector = mock(StepCollector.class);
+        FailureStrategy strategy = mock(FailureStrategy.class);
         CandidateSteps mySteps = new Steps();
         when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
                 Arrays.<Step>asList());
@@ -716,7 +720,7 @@ public class StoryRunnerBehaviour {
         when(meta.inheritFrom(storyMeta)).thenReturn(meta);
         when(filter.allow(meta)).thenReturn(false);
         when(filter.asString()).thenReturn(filterAsString);
-        runner.run(configurationWith(reporter, collector), asList(mySteps), story, filter);
+        runner.run(configurationWith(reporter, collector, strategy), asList(mySteps), story, filter);
 
         // Then
         verify(reporter).beforeStory(story, givenStory);

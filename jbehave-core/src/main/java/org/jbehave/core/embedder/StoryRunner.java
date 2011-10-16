@@ -1,12 +1,16 @@
 package org.jbehave.core.embedder;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.RestartingScenarioFailure;
-import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -24,11 +28,6 @@ import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
 
@@ -66,7 +65,7 @@ public class StoryRunner {
         reporter.get().beforeStory(new Story(storyPath), false);
         RunContext context = new RunContext(configuration, candidateSteps, storyPath, MetaFilter.EMPTY);
         if (stage == Stage.BEFORE ){
-            resetStoryFailure(false);
+            resetStoryFailure(context);
         }
         if (stage == Stage.AFTER && storiesState.get() != null) {
             context.stateIs(storiesState.get());
@@ -78,7 +77,7 @@ public class StoryRunner {
         // handle any after stories failure according to strategy
         if (stage == Stage.AFTER) {
             try {
-                currentStrategy.get().handleFailure(storyFailure.get());
+                handleStoryFailureByStrategy();
             } catch (Throwable e) {
                 return new SomethingHappened(storyFailure.get());
             } finally {
@@ -194,7 +193,7 @@ public class StoryRunner {
         failureStrategy.set(context.configuration().failureStrategy());
 
         try {
-            resetStoryFailure(context.givenStory());
+            resetStoryFailure(context);
 
             if (context.dryRun()) {
                 reporter.get().dryRun();
@@ -276,7 +275,7 @@ public class StoryRunner {
 
             // handle any failure according to strategy
             if (!context.givenStory()) {
-                currentStrategy.get().handleFailure(storyFailure.get());
+                handleStoryFailureByStrategy();
             }
         } finally {
             if (!context.givenStory() && reporter.get() instanceof ConcurrentStoryReporter) {
@@ -315,12 +314,19 @@ public class StoryRunner {
         }
     }
 
-    private void resetStoryFailure(boolean givenStory) {
-        if (givenStory) {
+    private void handleStoryFailureByStrategy() throws Throwable {
+        Throwable throwable = storyFailure.get();
+        if ( throwable != null ){
+            currentStrategy.get().handleFailure(throwable);
+        }
+    }
+
+    private void resetStoryFailure(RunContext context) {
+        if (context.givenStory()) {
             // do not reset failure for given stories
             return;
         }
-        currentStrategy.set(new SilentlyAbsorbingFailure());
+        currentStrategy.set(context.configuration().failureStrategy());
         storyFailure.set(null);
     }
 
