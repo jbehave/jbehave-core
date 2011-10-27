@@ -1,4 +1,4 @@
 
-Scenario: A very long scenario
+Scenario: Huck counts
 
-When Huck counts to 10 Mississippi
+When Huck counts to 5 Mississippi
