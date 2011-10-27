@@ -15,14 +15,14 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.examples.threads.steps.ThreadsSteps;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.ANSI_CONSOLE;
+import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML;
 
 public class ThreadsStories extends JUnitStories {
 
     public ThreadsStories(){
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
-        .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(10);
+        .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(7);
     }
     
     @Override
@@ -33,7 +33,7 @@ public class ThreadsStories extends JUnitStories {
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                 .withDefaultFormats()
-                .withFormats(ANSI_CONSOLE, HTML)
+                .withFormats(CONSOLE, HTML)
                 .withFailureTrace(true)
                 .withFailureTraceCompression(true));
     }
@@ -45,7 +45,7 @@ public class ThreadsStories extends JUnitStories {
 
     @Override
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*long.story", "");
     }
 
 }

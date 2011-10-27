@@ -22,6 +22,7 @@
     <ignore.failre.in.stories>true</ignore.failre.in.stories>
     <meta.filter></meta.filter>
     <threads>2</threads>
+    <story.timeout.in.secs>3</story.timeout.in.secs>
   </properties>
 
   <build>
@@ -41,6 +42,7 @@
               <skip>${skip}</skip>
               <batch>false</batch>
               <threads>${threads}</threads>
+              <storyTimeoutInSecs>${story.timeout.in.secs}</storyTimeoutInSecs>
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>${ignore.failre.in.stories}</ignoreFailureInStories>
               <ignoreFailureInView>true</ignoreFailureInView>
