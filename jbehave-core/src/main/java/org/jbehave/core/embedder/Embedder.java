@@ -20,6 +20,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.junit.AnnotatedEmbedderUtils;
 import org.jbehave.core.model.Story;
@@ -353,10 +354,20 @@ public class Embedder {
         }
         ReportsCount count = viewGenerator.getReportsCount();
         embedderMonitor.reportsViewGenerated(count);
-        if (!embedderControls.ignoreFailureInView() && count.failed() ) {
-            throw new RunningStoriesFailed(count);
-        }
+        handleFailure(embedderControls, count);
+       
+    }
 
+    private void handleFailure(EmbedderControls embedderControls, ReportsCount count) {
+        if (!embedderControls.ignoreFailureInView()){
+            boolean failed = count.failed();
+            if ( configuration().pendingStepStrategy() instanceof FailingUponPendingStep ){
+                failed = failed || count.pending();
+            }
+            if ( failed ){
+                throw new RunningStoriesFailed(count);
+            }
+        }
     }
 
     public void generateCrossReference() {

@@ -64,7 +64,12 @@ public class ReportsCount {
 //        if ( stories > 0 && scenarios == 0 ) return true;
         return false;
     }
-    
+
+    public boolean pending(){
+        if ( scenariosPending > 0 || storiesPending > 0 ) return true;
+        return false;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

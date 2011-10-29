@@ -25,6 +25,7 @@ import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
 import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
+import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
@@ -864,6 +865,52 @@ public class EmbedderBehaviour {
 
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
+
+        File outputDirectory = new File("target/output");
+        List<String> formats = asList("html");
+        Properties viewResources = new Properties();
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 1, 2, 0, 0, 1, 0));
+        embedder.generateReportsView(outputDirectory, formats, viewResources);
+
+        // Then
+        verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
+        assertThatReportsViewGenerated(out);
+    }
+
+    @Test(expected=RunningStoriesFailed.class)
+    public void shouldFailWhenGeneratingReportsViewWithFailedSteps() throws Throwable {
+        // Given
+        StoryRunner runner = mock(StoryRunner.class);
+        EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
+        OutputStream out = new ByteArrayOutputStream();
+        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
+        ViewGenerator viewGenerator = mock(ViewGenerator.class);
+
+        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        embedder.configuration().useViewGenerator(viewGenerator);
+        
+        File outputDirectory = new File("target/output");
+        List<String> formats = asList("html");
+        Properties viewResources = new Properties();
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 0, 2, 1, 0, 0, 1)); 
+        embedder.generateReportsView(outputDirectory, formats, viewResources);
+
+        // Then
+        verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
+        assertThatReportsViewGenerated(out);
+    }
+
+    @Test(expected=RunningStoriesFailed.class)
+    public void shouldFailWhenGeneratingReportsViewWithPendingSteps() throws Throwable {
+        // Given
+        StoryRunner runner = mock(StoryRunner.class);
+        EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
+        OutputStream out = new ByteArrayOutputStream();
+        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
+        ViewGenerator viewGenerator = mock(ViewGenerator.class);
+
+        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        embedder.configuration().useViewGenerator(viewGenerator).usePendingStepStrategy(new FailingUponPendingStep());
 
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
