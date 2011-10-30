@@ -94,7 +94,7 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
 
     public void reportsViewGenerated(ReportsCount count) {
         print("Reports view generated with " + count.getStories() + " stories (of which " + count.getStoriesPending()
-                + " pending)  containing " + count.getScenarios() + " scenarios (of which "
+                + " pending) containing " + count.getScenarios() + " scenarios (of which "
                 + count.getScenariosFailed() + " failed and " + count.getScenariosPending() + " pending)");
         if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
             print("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  " + count.getScenariosNotAllowed()

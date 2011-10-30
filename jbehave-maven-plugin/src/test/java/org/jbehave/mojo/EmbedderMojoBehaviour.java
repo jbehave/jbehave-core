@@ -193,7 +193,7 @@ public class EmbedderMojoBehaviour {
                 scenariosFailed, scenariosNotAllowed, scenariosPending, stepsFailed));
         verify(log).info(
                 "Reports view generated with " + stories + " stories (of which "+storiesPending+" pending) containing " + scenarios
-                + " scenarios (of which  " + scenariosFailed + " failed and " + scenariosPending + " pending)");
+                + " scenarios (of which " + scenariosFailed + " failed and " + scenariosPending + " pending)");
         verify(log).info(
                 "Meta filters did not allow " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
                         + " scenarios");
