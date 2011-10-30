@@ -6,10 +6,13 @@ import org.jbehave.core.annotations.When;
 
 public class ThreadsSteps {
 
+    /**
+     * TODO  Investigate why if n is expressed as int, random values are passed to method in multi-threading  
+     */
     @When("$name counts to $n Mississippi")
-    public void whenSomeoneCountsMississippis(String name, int n) {
+    public void whenSomeoneCountsMississippis(String name, String n) {
         System.out.println(name +" starts counting to "+n);
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < Integer.parseInt(n); i++) {
             System.out.println(name + " says " + i + " Mississippi");
             sleepFor(1, TimeUnit.SECONDS);
         }
