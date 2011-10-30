@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -25,10 +26,12 @@ import static java.util.Arrays.asList;
 
 /**
  * <p>
- * Facade responsible for converting parameter values to Java objects.
+ * Facade responsible for converting parameter values to Java objects.  It allows
+ *  the registration of several {@link ParameterConverter} instances, and the first 
+ *  one that is found to matches the appropriate parameter type is used.
  * </p>
  * <p>
- * Several converters are provided out-of-the-box:
+ * Converters for several Java types are provided out-of-the-box:
  * <ul>
  * <li>{@link ParameterConverters.NumberConverter NumberConverter}</li>
  * <li>{@link ParameterConverters.NumberListConverter NumberListConverter}</li>
@@ -41,47 +44,65 @@ import static java.util.Arrays.asList;
  */
 public class ParameterConverters {
 
-    static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
-    static final String DEFAULT_COMMA = ",";
-    static final String DEFAULT_TRUE_VALUE = "true";
-    static final String DEFAULT_FALSE_VALUE = "false";
+    public static final StepMonitor DEFAULT_STEP_MONITOR = new SilentStepMonitor();
+    public static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
+    public static final String DEFAULT_LIST_SEPARATOR = ",";
+    public static final boolean DEFAULT_THREAD_SAFETY = false;
 	
     private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
     private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
+    private static final String DEFAULT_TRUE_VALUE = "true";
+    private static final String DEFAULT_FALSE_VALUE = "false";
     
     private final StepMonitor monitor;
     private final List<ParameterConverter> converters;
+    private final boolean threadSafe;
 
     /** 
-     * Default Parameters use a SilentStepMonitor, has English as Locale and use "," as list separator. 
+     * Creates a non-thread-safe instance of ParameterConverters using default dependencies, 
+     * a SilentStepMonitor, English as Locale and "," as list separator. 
      */
     public ParameterConverters() {
-        this(new SilentStepMonitor());
+        this(DEFAULT_STEP_MONITOR);
     }
 
     /** 
-     * Default ParameterConverters have English as Locale and use "," as list separator. 
+     * Creates a ParameterConverters using given StepMonitor
+     * 
+     * @param monitor the StepMonitor to use
      */
     public ParameterConverters(StepMonitor monitor) {
-    	this(monitor , DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_COMMA);
+    	this(monitor, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, DEFAULT_THREAD_SAFETY);
     }
 
     /** 
-     * Creates an ParameterConvertors for a given Locale.  When selecting
-     * a listSeparator, please make sure that this character doesn't have a special
-     * meaning in your Locale (for instance "," is used as decimal separator in some Locale)
-     * @param monitor Monitor reporting the conversions
-     * @param locale The Locale to use when reading numbers
-     * @param listSeparator The list separator 
+     * Create a ParameterConverters with given thread-safety
+     * 
+     * @param threadSafe the boolean flag to determine if access to {@link ParameterConverter} should be thread-safe
      */
-    public ParameterConverters(StepMonitor monitor, Locale locale, String listSeparator) {
-        this(monitor, new ArrayList<ParameterConverter>());
+    public ParameterConverters(boolean threadSafe) {
+        this(DEFAULT_STEP_MONITOR, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, threadSafe);
+    }
+
+    /** 
+     * Creates a ParameterConverters for the given StepMonitor, Locale, list separator and thread-safety.  
+     * When selecting a listSeparator, please make sure that this character doesn't have a special
+     * meaning in your Locale (for instance "," is used as decimal separator in some Locale)
+     * 
+     * @param monitor the StepMonitor reporting the conversions
+     * @param locale the Locale to use when reading numbers
+     * @param listSeparator the String to use as list separator 
+     * @param threadSafe the boolean flag to determine if modification of {@link ParameterConverter} should be thread-safe
+     */
+    public ParameterConverters(StepMonitor monitor, Locale locale, String listSeparator, boolean threadSafe) {
+        this(monitor, new ArrayList<ParameterConverter>(), threadSafe);
         this.addConverters(defaultConverters(locale, listSeparator));    	
     }
 
-    private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters) {
+    private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters, boolean threadSafe) {
         this.monitor = monitor;
-        this.converters = converters;
+        this.threadSafe = threadSafe;
+        this.converters = ( threadSafe ? new CopyOnWriteArrayList<ParameterConverter>(converters) : new ArrayList<ParameterConverter>(converters));
     }
 
     protected ParameterConverter[] defaultConverters(Locale locale, String listSeparator) {
@@ -137,7 +158,7 @@ public class ParameterConverters {
     public ParameterConverters newInstanceAdding(ParameterConverter converter) {
         List<ParameterConverter> convertersForNewInstance = new ArrayList<ParameterConverter>(converters);
         convertersForNewInstance.add(converter);
-        return new ParameterConverters(monitor, convertersForNewInstance);
+        return new ParameterConverters(monitor, convertersForNewInstance, threadSafe);
     }
 
     public static interface ParameterConverter {
@@ -262,7 +283,7 @@ public class ParameterConverters {
         private final String valueSeparator;
 
         public NumberListConverter() {
-            this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL), DEFAULT_COMMA);
+            this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL), DEFAULT_LIST_SEPARATOR);
         }
 
         /**
@@ -315,7 +336,7 @@ public class ParameterConverters {
         private String valueSeparator;
 
         public StringListConverter() {
-            this(DEFAULT_COMMA);
+            this(DEFAULT_LIST_SEPARATOR);
         }
 
         /**
@@ -419,7 +440,7 @@ public class ParameterConverters {
         private String valueSeparator;
 
         public BooleanListConverter() {
-            this(DEFAULT_COMMA, DEFAULT_TRUE_VALUE, DEFAULT_FALSE_VALUE);
+            this(DEFAULT_LIST_SEPARATOR, DEFAULT_TRUE_VALUE, DEFAULT_FALSE_VALUE);
         }
 
         public BooleanListConverter(String valueSeparator) {
@@ -495,7 +516,7 @@ public class ParameterConverters {
         private String valueSeparator;
 
         public EnumListConverter() {
-            this(DEFAULT_COMMA);
+            this(DEFAULT_LIST_SEPARATOR);
         }
         
         public EnumListConverter(String valueSeparator) {
