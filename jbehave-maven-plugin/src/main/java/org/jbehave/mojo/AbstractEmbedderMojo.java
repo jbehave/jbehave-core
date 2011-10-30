@@ -405,8 +405,8 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         public void reportsViewGenerated(ReportsCount count) {
             getLog().info(
                     "Reports view generated with " + count.getStories() + " stories (of which "
-                            + count.getStoriesPending() + " pending) containing " + "" + count.getScenarios()
-                            + " scenarios (of which  " + count.getScenariosFailed() + " failed and "
+                            + count.getStoriesPending() + " pending) containing " + count.getScenarios()
+                            + " scenarios (of which " + count.getScenariosFailed() + " failed and "
                             + count.getScenariosPending() + " pending)");
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
                 getLog().info(
