@@ -1,18 +1,16 @@
 package org.jbehave.examples.threads.steps;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.jbehave.core.annotations.When;
 
 public class ThreadsSteps {
 
-    /**
-     * TODO  Investigate why if n is expressed as int, random values are passed to method in multi-threading  
-     */
     @When("$name counts to $n Mississippi")
-    public void whenSomeoneCountsMississippis(String name, String n) {
+    public void whenSomeoneCountsMississippis(String name, AtomicInteger n) {
         System.out.println(name +" starts counting to "+n);
-        for (int i = 0; i < Integer.parseInt(n); i++) {
+        for (int i = 0; i < n.intValue(); i++) {
             System.out.println(name + " says " + i + " Mississippi");
             sleepFor(1, TimeUnit.SECONDS);
         }

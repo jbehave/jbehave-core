@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -222,6 +224,10 @@ public class ParameterConverters {
                     return BigInteger.valueOf(n.longValue());
                 } else if (type == BigDecimal.class) {
                     return new BigDecimal(canonicalize(value));
+                } else if (type == AtomicInteger.class) {
+                    return new AtomicInteger(Integer.parseInt(value));
+                } else if (type == AtomicLong.class) {
+                    return new AtomicLong(Long.parseLong(value));
                 } else {
                     return n;
                 }

@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.steps.ParameterConverters.BooleanConverter;
@@ -83,6 +85,8 @@ public class ParameterConvertersBehaviour {
         assertThat(converter.accept(double.class), equalTo(true));
         assertThat(converter.accept(BigInteger.class), equalTo(true));
         assertThat(converter.accept(BigDecimal.class), equalTo(true));
+        assertThat(converter.accept(AtomicInteger.class), equalTo(true));
+        assertThat(converter.accept(AtomicLong.class), equalTo(true));
         assertThat(converter.accept(Number.class), equalTo(true));
         assertThat(converter.accept(WrongType.class), equalTo(false));        
     }
@@ -108,6 +112,8 @@ public class ParameterConvertersBehaviour {
         assertThat((BigDecimal) converter.convertValue("3" + dot + "00", BigDecimal.class), equalTo(new BigDecimal("3.00"))); // currency
         assertThat((BigDecimal) converter.convertValue("30000000", BigDecimal.class), equalTo(new BigDecimal(30000000))); // 7 or more digits
         assertThat((BigDecimal) converter.convertValue("3" + dot + "000", BigDecimal.class), equalTo(new BigDecimal("3.000"))); // something else!
+        assertThat(((AtomicInteger)converter.convertValue("3", AtomicInteger.class)).get(), equalTo(3));
+        assertThat(((AtomicLong)converter.convertValue("3", AtomicLong.class)).get(), equalTo(3L));
         assertThat((Number) converter.convertValue("3", Number.class), equalTo((Number)3L));
     }
 
