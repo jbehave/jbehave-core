@@ -377,8 +377,8 @@ public abstract class AbstractEmbedderTask extends Task {
             log("System property '" + name + "' set to '" + value + "'", MSG_INFO);
         }
 
-        public void storyTimeout(long durationInSecs, Story story) {
-            log("Story " + story.getPath() + " has timed out after " + durationInSecs + " seconds", MSG_INFO);
+        public void storyTimeout(Story story, long durationInSecs, long timeoutInSecs) {
+            log("Story " + story.getPath() + " duration of " + durationInSecs + " seconds has exceeded timeout of "+timeoutInSecs+" seconds", MSG_INFO);
         }
 
         public void usingThreads(int threads) {
@@ -387,6 +387,10 @@ public abstract class AbstractEmbedderTask extends Task {
 
         public void usingExecutorService(ExecutorService executorService) {
             log("Using executor service " + executorService, MSG_INFO);
+        }
+
+        public void usingControls(EmbedderControls embedderControls) {
+            log("Using controls " + embedderControls, MSG_INFO);
         }
 
         @Override

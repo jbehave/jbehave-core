@@ -121,8 +121,8 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
         delegate.systemPropertySet(name, value);
     }
     
-    public void storyTimeout(long durationInSecs, Story story) {
-        delegate.storyTimeout(durationInSecs, story);
+    public void storyTimeout(Story story, long durationInSecs, long timeoutInSecs) {
+        delegate.storyTimeout(story, durationInSecs, timeoutInSecs);
     }
 
     public void usingThreads(int threads) {
@@ -131,6 +131,10 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
 
     public void usingExecutorService(ExecutorService executorService) {
         delegate.usingExecutorService(executorService);
+    }
+
+    public void usingControls(EmbedderControls embedderControls) {
+        delegate.usingControls(embedderControls);        
     }
 
 }

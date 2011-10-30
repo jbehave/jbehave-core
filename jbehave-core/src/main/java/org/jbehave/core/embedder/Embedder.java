@@ -66,6 +66,8 @@ public class Embedder {
 
     public void mapStoriesAsPaths(List<String> storyPaths) {
         EmbedderControls embedderControls = embedderControls();
+        embedderMonitor.usingControls(embedderControls);
+
         if (embedderControls.skip()) {
             embedderMonitor.storiesSkipped(storyPaths);
             return;
@@ -103,6 +105,8 @@ public class Embedder {
 
     public void runAsEmbeddables(List<String> classNames) {
         EmbedderControls embedderControls = embedderControls();
+        embedderMonitor.usingControls(embedderControls);
+
         if (embedderControls.skip()) {
             embedderMonitor.embeddablesSkipped(classNames);
             return;
@@ -178,8 +182,10 @@ public class Embedder {
     public void runStoriesAsPaths(List<String> storyPaths) {
 
         processSystemProperties();
-
-        final EmbedderControls embedderControls = embedderControls();
+        EmbedderControls embedderControls = embedderControls();
+        
+        embedderMonitor.usingControls(embedderControls);
+        
         if (embedderControls.skip()) {
             embedderMonitor.storiesSkipped(storyPaths);
             return;
@@ -276,7 +282,8 @@ public class Embedder {
                 if (!future.isDone()) {
                     allDone = false;
                     long durationInSecs = storyDurationInSecs(start);
-                    if (durationInSecs > embedderControls.storyTimeoutInSecs()) {
+                    long timeoutInSecs = embedderControls.storyTimeoutInSecs();
+                    if (durationInSecs > timeoutInSecs) {
                         Story story = null;
                         try {
                             story = future.get().getStory();
@@ -286,7 +293,7 @@ public class Embedder {
                                 break;
                             }
                         }
-                        embedderMonitor.storyTimeout(durationInSecs, story);
+                        embedderMonitor.storyTimeout(story, durationInSecs, timeoutInSecs);
                         future.cancel(true);
                     }
                     try {

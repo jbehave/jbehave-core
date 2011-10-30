@@ -108,7 +108,8 @@ public class EmbedderMonitorBehaviour {
         monitor.storyFailed(storyPath, cause);
         long durationInSecs = 1L;
         Story story = mock(Story.class);
-        monitor.storyTimeout(durationInSecs, story);
+        long timeoutInSecs = 2L;
+        monitor.storyTimeout(story, durationInSecs, timeoutInSecs);
         String value = "value";
         monitor.systemPropertySet(name, value);
         int threads = 2;
@@ -135,7 +136,7 @@ public class EmbedderMonitorBehaviour {
         verify(delegate).reportsViewNotGenerated();
         verify(delegate).storiesSkipped(storyPaths);
         verify(delegate).storyFailed(storyPath, cause);
-        verify(delegate).storyTimeout(durationInSecs, story);
+        verify(delegate).storyTimeout(story, durationInSecs, timeoutInSecs);
         verify(delegate).systemPropertySet(name, value);
         verify(delegate).usingThreads(threads);
    }

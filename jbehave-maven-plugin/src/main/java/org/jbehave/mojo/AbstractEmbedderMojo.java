@@ -461,8 +461,8 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("System property '" + name + "' set to '" + value + "'");
         }
 
-        public void storyTimeout(long durationInSecs, Story story) {
-            getLog().warn("Story " + story.getPath() + " has timed out after " + durationInSecs + " seconds");
+        public void storyTimeout(Story story, long durationInSecs, long timeoutInSecs) {
+            getLog().warn("Story " + story.getPath() + " duration of " + durationInSecs + " seconds has exceeded timeout of "+timeoutInSecs+" seconds");
         }
 
         public void usingThreads(int threads) {
@@ -471,6 +471,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void usingExecutorService(ExecutorService executorService) {
             getLog().info("Using executor service " + executorService);
+        }
+
+        public void usingControls(EmbedderControls embedderControls) {
+            getLog().info("Using controls "+embedderControls);
         }
 
         @Override

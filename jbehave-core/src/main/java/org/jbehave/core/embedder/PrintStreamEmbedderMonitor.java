@@ -143,8 +143,8 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("System property '" + name + "' set to '"+value+"'");
     }
 
-    public void storyTimeout(long durationInSecs, Story story) {
-        print("Story " + story.getPath() + " has timed out after " + durationInSecs + " seconds");
+    public void storyTimeout(Story story, long durationInSecs, long timeoutInSecs) {
+        print("Story " + story.getPath() + " duration of " + durationInSecs + " seconds has exceeded timeout of "+timeoutInSecs+" seconds");
     }
 
     public void usingThreads(int threads) {
@@ -153,6 +153,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     
     public void usingExecutorService(ExecutorService executorService) {
         print("Using executor service " + executorService);
+    }
+
+    public void usingControls(EmbedderControls embedderControls) {
+        print("Using controls "+embedderControls);
     }
 
     @Override

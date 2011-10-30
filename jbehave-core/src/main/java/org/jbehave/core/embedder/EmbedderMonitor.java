@@ -62,10 +62,12 @@ public interface EmbedderMonitor {
 
     void systemPropertySet(String name, String value);
 
-    void storyTimeout(long durationInSecs, Story story);
+    void storyTimeout(Story story, long durationInSecs, long timeoutInSecs);
 
     void usingThreads(int threads);
 
     void usingExecutorService(ExecutorService executorService);
+
+    void usingControls(EmbedderControls embedderControls);
 
 }
