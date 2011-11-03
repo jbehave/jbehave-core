@@ -4,10 +4,12 @@ import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
+import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +27,8 @@ public class CompositeStepCandidateBehaviour {
         StepCandidate candidate = candidates.get(0);
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<String, String>();
-        List<Step> composedSteps = candidate.createComposedSteps("Given Mr Jones has previously bought a ticket", noNamedParameters, candidates);
+        List<Step> composedSteps = new ArrayList<Step>();
+        candidate.addComposedSteps(composedSteps, "Given Mr Jones has previously bought a ticket", noNamedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(null);
@@ -67,7 +70,8 @@ public class CompositeStepCandidateBehaviour {
         Map<String, String> namedParameters = new HashMap<String, String>();
         namedParameters.put("customer", "Mr Jones");
         namedParameters.put("product", "ticket");
-        List<Step> composedSteps = candidate.createComposedSteps("Given <customer> has previously bought a <product>", namedParameters, candidates);
+        List<Step> composedSteps = new ArrayList<Step>();
+        candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(null);
@@ -110,7 +114,8 @@ public class CompositeStepCandidateBehaviour {
         Map<String, String> namedParameters = new HashMap<String, String>();
         namedParameters.put("customer", "Mr Jones");
         namedParameters.put("product", "ticket");
-        List<Step> composedSteps = candidate.createComposedSteps("Given <customer> has previously bought a <product>", namedParameters, candidates);
+        List<Step> composedSteps = new ArrayList<Step>();
+        candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(null);
@@ -141,6 +146,74 @@ public class CompositeStepCandidateBehaviour {
         }
 
     }
+    
+    @Test
+    public void shouldMatchCompositeStepsAndCreateComposedNestedSteps() {
+        CompositeNestedSteps steps = new CompositeNestedSteps();
+        List<StepCandidate> candidates = steps.listCandidates();
+        StepCandidate candidate = candidates.get(0);
+        assertThat(candidate.isComposite(), is(true));
+        Map<String, String> noNamedParameters = new HashMap<String, String>();
+        List<Step> composedSteps = new ArrayList<Step>();
+        candidate.addComposedSteps(composedSteps, "Then all buttons are enabled", noNamedParameters, candidates);
+        assertThat(composedSteps.size(), equalTo(6));
+        for (Step step : composedSteps) {
+            step.perform(null);
+        }
+        assertThat(steps.trail.toString(), equalTo("l>l1>l2>t>t1>t2>"));
+    }
 
+    static class CompositeNestedSteps extends Steps {
+
+        private StringBuffer trail = new StringBuffer();
+        
+        @Then("all buttons are enabled")
+        @Composite(steps = {
+            "Then all left buttons are enabled",
+            "Then all top buttons are enabled" }
+        )
+        public void all() {
+            trail.append("a>");
+        }
+
+        @Then("all left buttons are enabled")
+        @Composite(steps = {
+            "Then first left button is enabled",
+            "Then second left button is enabled" }
+        )
+        public void leftAll() {
+            trail.append("l>");
+        }
+
+        @Then("first left button is enabled")
+        public void leftOne(){
+            trail.append("l1>");
+        }
+
+        @Then("second left button is enabled")
+        public void leftTwo(){
+            trail.append("l2>");
+        }
+
+        @Then("all top buttons are enabled")
+        @Composite(steps = {
+            "Then first top button is enabled",
+            "Then second top button is enabled" }
+        )
+        public void topAll() {
+            trail.append("t>");
+        }
+
+        @Then("first top button is enabled")
+        public void topOne() {
+            trail.append("t1>");
+        }
+
+        @Then("second top button is enabled")
+        public void topTwo() {
+            trail.append("t2>");
+        }
+
+    }
 
 }
