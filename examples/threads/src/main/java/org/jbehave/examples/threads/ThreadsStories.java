@@ -22,7 +22,7 @@ public class ThreadsStories extends JUnitStories {
 
     public ThreadsStories(){
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
-        .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(7);
+        .doIgnoreFailureInView(true).useThreads(1).useStoryTimeoutInSecs(7);
     }
     
     @Override
@@ -45,7 +45,7 @@ public class ThreadsStories extends JUnitStories {
 
     @Override
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*long.story", "");
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
     }
 
 }
