@@ -36,6 +36,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -62,7 +63,7 @@ public class EmbedderMojoBehaviour {
         assertThat(embedderControls.threads(), is(1));
         assertThat(embedderControls.skip(), is(false));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(300L));
-        assertThat(embedderControls.threads(), equalTo(1));  
+        assertThat(embedderControls.threads(), equalTo(1));
     }
 
     @Test
@@ -100,7 +101,7 @@ public class EmbedderMojoBehaviour {
             }
         };
         // When
-        mojo.metaFilters = new String[]{"filter1", "filter2"};
+        mojo.metaFilters = new String[] { "filter1", "filter2" };
         Embedder embedder = mojo.newEmbedder();
         // Then
         assertThat(embedder.metaFilters(), equalTo(asList("filter1", "filter2")));
@@ -114,7 +115,7 @@ public class EmbedderMojoBehaviour {
             }
         };
         // When
-        mojo.metaFilters = new String[]{"filter1", null};
+        mojo.metaFilters = new String[] { "filter1", null };
         Embedder embedder = mojo.newEmbedder();
         // Then
         assertThat(embedder.metaFilters(), equalTo(asList("filter1")));
@@ -192,8 +193,9 @@ public class EmbedderMojoBehaviour {
         embedderMonitor.reportsViewGenerated(new ReportsCount(stories, storiesNotAllowed, storiesPending, scenarios,
                 scenariosFailed, scenariosNotAllowed, scenariosPending, stepsFailed));
         verify(log).info(
-                "Reports view generated with " + stories + " stories (of which "+storiesPending+" pending) containing " + scenarios
-                + " scenarios (of which " + scenariosFailed + " failed and " + scenariosPending + " pending)");
+                "Reports view generated with " + stories + " stories (of which " + storiesPending
+                        + " pending) containing " + scenarios + " scenarios (of which " + scenariosFailed
+                        + " failed and " + scenariosPending + " pending)");
         verify(log).info(
                 "Meta filters did not allow " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
                         + " scenarios");
@@ -212,7 +214,7 @@ public class EmbedderMojoBehaviour {
         // When
         Properties systemProperties = new Properties();
         systemProperties.setProperty("one", "1");
-        systemProperties.setProperty("two", "2");        
+        systemProperties.setProperty("two", "2");
         mojo.systemProperties = systemProperties;
         Embedder embedder = mojo.newEmbedder();
         // Then
@@ -340,6 +342,37 @@ public class EmbedderMojoBehaviour {
         verify(embedder).runAsEmbeddables(classNames);
     }
 
+    @Test(expected = MojoFailureException.class)
+    public void shouldReportFailuresInMappingStoriesAsEmbeddables() throws MojoExecutionException, MojoFailureException {
+        // Given
+        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        MapStoriesAsEmbeddables mojo = new MapStoriesAsEmbeddables() {
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+
+            @Override
+            protected EmbedderClassLoader classLoader() {
+                return classLoader;
+            }
+
+        };
+        String searchInDirectory = "src/test/java/";
+        mojo.sourceDirectory = searchInDirectory;
+        List<String> includes = asList("**/*StoryMaps.java");
+        mojo.includes = includes;
+        List<String> excludes = asList();
+        mojo.excludes = excludes;
+        List<String> classNames = new StoryFinder().findClassNames(searchInDirectory, includes, excludes);
+
+        // When
+        doThrow(new RuntimeException()).when(embedder).runAsEmbeddables(classNames);
+        mojo.execute();
+
+        // Then fail as expected
+    }
+
     @Test
     public void shouldMapStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
         // Given
@@ -371,6 +404,38 @@ public class EmbedderMojoBehaviour {
         // Then
         verify(embedder).mapStoriesAsPaths(storyPaths);
         assertThat(mojo.codeLocation().toString(), containsString(mojo.outputDirectory));
+    }
+
+    @Test(expected=MojoFailureException.class)
+    public void shouldReportFailuresInMappingStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
+        // Given
+        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        MapStoriesAsPaths mojo = new MapStoriesAsPaths() {
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+
+            @Override
+            protected EmbedderClassLoader classLoader() {
+                return classLoader;
+            }
+
+        };
+        String searchInDirectory = "src/test/java/";
+        mojo.sourceDirectory = searchInDirectory;
+        mojo.outputDirectory = "target/test-classes";
+        List<String> includes = asList("**/stories/*.story");
+        mojo.includes = includes;
+        List<String> excludes = asList();
+        mojo.excludes = excludes;
+        List<String> storyPaths = new StoryFinder().findPaths(searchInDirectory, includes, excludes);
+
+        // When
+        doThrow(new RuntimeException()).when(embedder).mapStoriesAsPaths(storyPaths);
+        mojo.execute();
+
+        // Then fail as expected
     }
 
     @Test
@@ -407,6 +472,24 @@ public class EmbedderMojoBehaviour {
         verify(embedder).reportStepdocs();
     }
 
+    @Test(expected = MojoFailureException.class)
+    public void shouldReportFailuresWhenReportingStepdocs() throws MojoExecutionException, MojoFailureException {
+        // Given
+        ReportStepdocs mojo = new ReportStepdocs() {
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+
+        };
+
+        // When
+        doThrow(new RuntimeException()).when(embedder).reportStepdocs();
+        mojo.execute();
+
+        // Then fail as expected
+    }
+
     @Test
     public void shouldRunStoriesAsEmbeddables() throws MojoExecutionException, MojoFailureException {
         // Given
@@ -438,6 +521,38 @@ public class EmbedderMojoBehaviour {
         verify(embedder).runAsEmbeddables(classNames);
     }
 
+    @Test(expected = MojoFailureException.class)
+    public void shouldReportFailuresInRunningStoriesAsEmbeddables() throws MojoExecutionException, MojoFailureException {
+        // Given
+        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        RunStoriesAsEmbeddables mojo = new RunStoriesAsEmbeddables() {
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+
+            @Override
+            protected EmbedderClassLoader classLoader() {
+                return classLoader;
+            }
+
+        };
+        String searchInDirectory = "src/test/java/";
+        mojo.sourceDirectory = searchInDirectory;
+        List<String> includes = asList("**/stories/*.java");
+        mojo.includes = includes;
+        List<String> excludes = asList();
+        mojo.excludes = excludes;
+        List<String> classNames = new StoryFinder().findClassNames(searchInDirectory, includes, excludes);
+
+        // When
+        doThrow(new RuntimeException()).when(embedder).runAsEmbeddables(classNames);
+        mojo.execute();
+
+        // Then fail as expected
+
+    }
+
     @Test
     public void shouldRunStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
         // Given
@@ -461,12 +576,44 @@ public class EmbedderMojoBehaviour {
         List<String> excludes = asList();
         mojo.excludes = excludes;
         List<String> storyPaths = new StoryFinder().findPaths(searchInDirectory, includes, excludes);
-        
+
         // When
         mojo.execute();
 
         // Then
         verify(embedder).runStoriesAsPaths(storyPaths);
+    }
+
+    @Test(expected = MojoFailureException.class)
+    public void shouldReportFailuresInRunningStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
+        // Given
+        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        RunStoriesAsPaths mojo = new RunStoriesAsPaths() {
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+
+            @Override
+            protected EmbedderClassLoader classLoader() {
+                return classLoader;
+            }
+
+        };
+        String searchInDirectory = "src/test/java/";
+        mojo.sourceDirectory = searchInDirectory;
+        List<String> includes = asList("**/stories/*.story");
+        mojo.includes = includes;
+        List<String> excludes = asList();
+        mojo.excludes = excludes;
+        List<String> storyPaths = new StoryFinder().findPaths(searchInDirectory, includes, excludes);
+
+        // When
+        doThrow(new RuntimeException()).when(embedder).runStoriesAsPaths(storyPaths);
+        mojo.execute();
+
+        // Then fail as expected
+
     }
 
     @Test
@@ -500,8 +647,43 @@ public class EmbedderMojoBehaviour {
         verify(embedder).runStoriesWithAnnotatedEmbedderRunner(classNames);
     }
 
+    @Test(expected = MojoFailureException.class)
+    public void shouldReportFailuresInRunningStoriesWithAnnotatedEmbedderRunner() throws MojoExecutionException,
+            MojoFailureException {
+        // Given
+        final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        RunStoriesWithAnnotatedEmbedderRunner mojo = new RunStoriesWithAnnotatedEmbedderRunner() {
+            @Override
+            protected Embedder newEmbedder() {
+                return embedder;
+            }
+
+            @Override
+            protected EmbedderClassLoader classLoader() {
+                return classLoader;
+            }
+
+        };
+        String searchInDirectory = "src/test/java/";
+        mojo.sourceDirectory = searchInDirectory;
+        List<String> includes = asList("**/stories/*.java");
+        mojo.includes = includes;
+        List<String> excludes = asList();
+        mojo.excludes = excludes;
+        List<String> classNames = new StoryFinder().findClassNames(searchInDirectory, includes, excludes);
+
+        // When
+        doThrow(new RuntimeException()).when(embedder).runStoriesWithAnnotatedEmbedderRunner(classNames);
+        mojo.execute();
+
+        // Then fail as expected
+        mojo.execute();
+
+    }
+
     @Test
-    public void shouldUnpackViewResources() throws MojoExecutionException, MojoFailureException, NoSuchArchiverException, ArchiverException {
+    public void shouldUnpackViewResources() throws MojoExecutionException, MojoFailureException,
+            NoSuchArchiverException, ArchiverException {
         // Given
         UnpackViewResources mojo = new UnpackViewResources() {
             @Override
@@ -510,31 +692,31 @@ public class EmbedderMojoBehaviour {
             }
 
         };
-        ArchiverManager archiveManager = mock(ArchiverManager.class);        
-        MavenProject project = mock(MavenProject.class);              
-        
+        ArchiverManager archiveManager = mock(ArchiverManager.class);
+        MavenProject project = mock(MavenProject.class);
+
         File coreFile = new File("core");
         Artifact coreResources = mock(Artifact.class);
         when(coreResources.getArtifactId()).thenReturn("jbehave-core");
-        when(coreResources.getType()).thenReturn("zip");        
-        when(coreResources.getFile()).thenReturn(coreFile);        
+        when(coreResources.getType()).thenReturn("zip");
+        when(coreResources.getFile()).thenReturn(coreFile);
         File siteFile = new File("site");
         Artifact siteResources = mock(Artifact.class);
         when(siteResources.getArtifactId()).thenReturn("jbehave-site-resources");
-        when(siteResources.getType()).thenReturn("zip");        
-        when(siteResources.getFile()).thenReturn(siteFile);        
+        when(siteResources.getType()).thenReturn("zip");
+        when(siteResources.getFile()).thenReturn(siteFile);
 
         Set<Artifact> allArtifacts = new HashSet<Artifact>();
         allArtifacts.add(coreResources);
         allArtifacts.add(siteResources);
-        
+
         String buildDirectory = "target";
         Build build = new Build();
         build.setDirectory(buildDirectory);
-        
+
         UnArchiver coreArchiver = mock(UnArchiver.class);
         UnArchiver siteArchiver = mock(UnArchiver.class);
-        
+
         // When
         mojo.project = project;
         mojo.archiverManager = archiveManager;
@@ -553,7 +735,8 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldNotUnpackViewResourcesThatDoNotMatchTheFilters() throws MojoExecutionException, MojoFailureException, NoSuchArchiverException, ArchiverException {
+    public void shouldNotUnpackViewResourcesThatDoNotMatchTheFilters() throws MojoExecutionException,
+            MojoFailureException, NoSuchArchiverException, ArchiverException {
         // Given
         UnpackViewResources mojo = new UnpackViewResources() {
             @Override
@@ -562,22 +745,22 @@ public class EmbedderMojoBehaviour {
             }
 
         };
-        ArchiverManager archiveManager = mock(ArchiverManager.class);        
-        MavenProject project = mock(MavenProject.class);              
-        
+        ArchiverManager archiveManager = mock(ArchiverManager.class);
+        MavenProject project = mock(MavenProject.class);
+
         File resourcesFile = new File("some");
         Artifact someResources = mock(Artifact.class);
         when(someResources.getArtifactId()).thenReturn("some-resources");
-        when(someResources.getType()).thenReturn("jar");        
-        when(someResources.getFile()).thenReturn(resourcesFile);        
+        when(someResources.getType()).thenReturn("jar");
+        when(someResources.getFile()).thenReturn(resourcesFile);
 
         Set<Artifact> allArtifacts = new HashSet<Artifact>();
         allArtifacts.add(someResources);
-        
+
         String buildDirectory = "target";
         Build build = new Build();
         build.setDirectory(buildDirectory);
-        
+
         // When
         mojo.project = project;
         mojo.archiverManager = archiveManager;
@@ -592,9 +775,9 @@ public class EmbedderMojoBehaviour {
         verify(archiveManager, Mockito.never()).getUnArchiver(resourcesFile);
     }
 
-    
-    @Test(expected=MojoExecutionException.class)
-    public void shouldNotIgnoreFailureInUnpackingViewResources() throws MojoExecutionException, MojoFailureException, NoSuchArchiverException, ArchiverException {
+    @Test(expected = MojoExecutionException.class)
+    public void shouldNotIgnoreFailureInUnpackingViewResources() throws MojoExecutionException, MojoFailureException,
+            NoSuchArchiverException, ArchiverException {
         // Given
         UnpackViewResources mojo = new UnpackViewResources() {
             @Override
@@ -603,31 +786,31 @@ public class EmbedderMojoBehaviour {
             }
 
         };
-        ArchiverManager archiveManager = mock(ArchiverManager.class);        
-        MavenProject project = mock(MavenProject.class);              
-        
+        ArchiverManager archiveManager = mock(ArchiverManager.class);
+        MavenProject project = mock(MavenProject.class);
+
         File coreFile = new File("core");
         Artifact coreResources = mock(Artifact.class);
         when(coreResources.getArtifactId()).thenReturn("jbehave-core");
-        when(coreResources.getType()).thenReturn("zip");        
-        when(coreResources.getFile()).thenReturn(coreFile);        
+        when(coreResources.getType()).thenReturn("zip");
+        when(coreResources.getFile()).thenReturn(coreFile);
         File siteFile = new File("site");
         Artifact siteResources = mock(Artifact.class);
         when(siteResources.getArtifactId()).thenReturn("jbehave-site-resources");
-        when(siteResources.getType()).thenReturn("zip");        
-        when(siteResources.getFile()).thenReturn(siteFile);        
+        when(siteResources.getType()).thenReturn("zip");
+        when(siteResources.getFile()).thenReturn(siteFile);
 
         Set<Artifact> allArtifacts = new HashSet<Artifact>();
         allArtifacts.add(coreResources);
         allArtifacts.add(siteResources);
-        
+
         String buildDirectory = "target";
         Build build = new Build();
         build.setDirectory(buildDirectory);
-        
+
         UnArchiver coreArchiver = mock(UnArchiver.class);
         UnArchiver siteArchiver = mock(UnArchiver.class);
-        
+
         // When
         mojo.project = project;
         mojo.archiverManager = archiveManager;
@@ -636,12 +819,12 @@ public class EmbedderMojoBehaviour {
         when(archiveManager.getUnArchiver(coreFile)).thenReturn(coreArchiver);
         when(archiveManager.getUnArchiver(siteFile)).thenReturn(siteArchiver);
         Mockito.doThrow(new ArchiverException("bum")).when(siteArchiver).extract();
-        
+
         mojo.execute();
 
         // Then
         verify(coreArchiver).extract();
-        // and fail as expected ... 
+        // and fail as expected ...
     }
 
 }

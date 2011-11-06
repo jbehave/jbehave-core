@@ -6,21 +6,19 @@ import org.jbehave.core.embedder.Embedder;
 
 /**
  * Mojo to run stories as Embeddables
- *
+ * 
  * @goal run-stories-as-embeddables
  */
 public class RunStoriesAsEmbeddables extends AbstractEmbedderMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
-        getLog().info("Running stories using embedder "+embedder);
+        getLog().info("Running stories as embeddables using embedder " + embedder);
         try {
             embedder.runAsEmbeddables(classNames());
-        } catch( Embedder.RunningEmbeddablesFailed e) {
-            throw new MojoFailureException("JBehave Story Failures",e);
+        } catch (RuntimeException e) {
+            throw new MojoFailureException("Failed to run stories as embeddables", e);
         }
     }
 
 }
-
-
