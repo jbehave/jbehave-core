@@ -1,21 +1,29 @@
 package org.jbehave.core.embedder;
 
+import org.hamcrest.Matchers;
+import org.jbehave.core.embedder.MetaFilter.DefaultMetaMatcher;
+import org.jbehave.core.embedder.MetaFilter.MetaMatcher;
 import org.jbehave.core.model.Meta;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.equalTo;
 
 public class MetaFilterBehaviour {
 
     @Test
-    public void shouldParseIncludesAndExcludes() {
+    public void shouldParseIncludesAndExcludesUsingDefaultMetaMatcher() {
         String filterAsString = "+author Mauro -theme smoke testing +map *API -skip";
         MetaFilter filter = new MetaFilter(filterAsString);
         assertThat(filter.asString(), equalTo(filterAsString));
-        assertThat(filter.include().toString(), equalTo("{author=Mauro, map=*API}"));
-        assertThat(filter.exclude().toString(), equalTo("{skip=, theme=smoke testing}"));
+        MetaMatcher metaMatcher = filter.metaMatcher();
+        assertThat(metaMatcher, Matchers.instanceOf(DefaultMetaMatcher.class));
+        DefaultMetaMatcher defaultMetaMatcher = (DefaultMetaMatcher)metaMatcher;
+        assertThat(defaultMetaMatcher.include().toString(), equalTo("{author=Mauro, map=*API}"));
+        assertThat(defaultMetaMatcher.exclude().toString(), equalTo("{skip=, theme=smoke testing}"));
     }
 
     @Test
