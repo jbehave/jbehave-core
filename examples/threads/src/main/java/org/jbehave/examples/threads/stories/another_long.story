@@ -1,3 +1,7 @@
+Meta: 
+
+@theme Twain
+@actor Tom
 
 Scenario: Tom counts
 
