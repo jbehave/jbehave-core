@@ -1,19 +1,8 @@
 <project name="jbehave-dependencies" default="copy-dependencies" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
+	<taskdef uri="antlib:org.apache.maven.artifact.ant"
+            classpath="maven-ant-tasks-2.1.0.jar"/>
 
-	<target name="setup">
-		<delete>
-            <fileset dir="${ant.home}/lib">
-                <include name="maven-ant-tasks-*.jar"/>
-            </fileset>
-		</delete>
-		<copy todir="${ant.home}/lib">
-			<fileset dir=".">
-			    <include name="maven-ant-tasks-2.1.0.jar"/>
-			</fileset>
-		</copy>
-	</target>
-
-	<target name="copy-dependencies" depends="setup">
+	<target name="copy-dependencies">
 		<artifact:pom id="pom" file="pom.xml" />
 		<artifact:dependencies filesetId="test.dependencies" pomRefId="pom" settingsFile="settings.xml" useScope="test" />
 		<copy todir=".">
