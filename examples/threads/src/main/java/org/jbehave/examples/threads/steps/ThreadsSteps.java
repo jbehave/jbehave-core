@@ -9,9 +9,10 @@ public class ThreadsSteps {
 
     @When("$name counts to $n Mississippi")
     public void whenSomeoneCountsMississippis(String name, AtomicInteger n) {
+        long start = System.currentTimeMillis();
         System.out.println(name +" starts counting to "+n);
         for (int i = 0; i < n.intValue(); i++) {
-            System.out.println(name + " says " + i + " Mississippi");
+            System.out.println(name + " says " + i + " Mississippi (" + (System.currentTimeMillis() - start) + " millis)");
             sleepFor(1, TimeUnit.SECONDS);
         }
     }
