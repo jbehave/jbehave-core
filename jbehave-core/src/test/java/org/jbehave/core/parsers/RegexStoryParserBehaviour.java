@@ -527,4 +527,22 @@ public class RegexStoryParserBehaviour {
         )));
 
     }
+    
+    @Test
+    public void shouldParseStoryWithVeryLongTitle() {
+        String scenario = aScenarioWithAVeryLongTitle();
+        ensureThatScenarioCanBeParsed(scenario);
+    }
+
+    private String aScenarioWithAVeryLongTitle() {
+        StringBuilder builder = new StringBuilder()
+                .append("Scenario: First line of long title." + NL)
+                .append("After that follows a long textual description. " + NL);
+        int numberOfLines = 200; 
+        for (int i = 0; i < numberOfLines; i++) {
+            builder.append("A line from the long description with about 60 characters." + NL);
+        }
+        builder.append("Given the first step that marks end of title" + NL);
+        return builder.toString();
+    }
 }
