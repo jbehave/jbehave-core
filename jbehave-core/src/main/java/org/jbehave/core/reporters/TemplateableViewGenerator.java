@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -347,7 +348,9 @@ public class TemplateableViewGenerator implements ViewGenerator {
             Properties p = new Properties();
             File stats = filesByFormat.get(format);
             try {
-                p.load(new FileInputStream(stats));
+                InputStream inputStream = new FileInputStream(stats);
+                p.load(inputStream);
+                inputStream.close();
             } catch (Exception e) {
                 // return empty map
             }
