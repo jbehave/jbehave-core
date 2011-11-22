@@ -20,6 +20,7 @@ import org.jbehave.core.model.Story;
 
 import static java.util.regex.Pattern.DOTALL;
 import static java.util.regex.Pattern.compile;
+import static org.apache.commons.lang.StringUtils.removeStart;
 
 /**
  * Pattern-based story parser, which uses the keywords provided to parse the
@@ -147,13 +148,14 @@ public class RegexStoryParser implements StoryParser {
 
     private Scenario parseScenario(String scenarioAsText) {
         String title = findScenarioTitle(scenarioAsText);
-        Meta meta = findScenarioMeta(scenarioAsText);
-        ExamplesTable examplesTable = findExamplesTable(scenarioAsText);
-        GivenStories givenStories = findGivenStories(scenarioAsText);
+        String scenarioWithoutTitle = removeStart(scenarioAsText, title);
+        Meta meta = findScenarioMeta(scenarioWithoutTitle);
+        ExamplesTable examplesTable = findExamplesTable(scenarioWithoutTitle);
+        GivenStories givenStories = findGivenStories(scenarioWithoutTitle);
         if (givenStories.requireParameters()) {
             givenStories.useExamplesTable(examplesTable);
         }
-        List<String> steps = findSteps(scenarioAsText);
+        List<String> steps = findSteps(scenarioWithoutTitle);
         return new Scenario(title, meta, givenStories, examplesTable, steps);
     }
 
@@ -216,7 +218,7 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullScenarioTitleIntoGroupOne() {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(keywords.scenario() + "((.|\\n)*?)\\s*(" + keywords.meta() + "|" + startingWords + ").*", DOTALL);
+        return compile(keywords.scenario() + "((.)*?)\\s*(" + keywords.meta() + "|" + startingWords + ").*", DOTALL);
     }
 
     private Pattern patternToPullScenarioMetaIntoGroupOne() {
