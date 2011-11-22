@@ -1,5 +1,7 @@
 package org.jbehave.core.embedder;
 
+import java.util.Properties;
+
 import org.hamcrest.Matchers;
 import org.jbehave.core.embedder.MetaFilter.DefaultMetaMatcher;
 import org.jbehave.core.embedder.MetaFilter.MetaMatcher;
@@ -11,6 +13,9 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.equalTo;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MetaFilterBehaviour {
 
@@ -69,5 +74,65 @@ public class MetaFilterBehaviour {
     private void assertFilterAllowsProperty(String filter, String property, boolean allowed) {
         assertThat(new MetaFilter(filter).allow(new Meta(asList(property))), equalTo(allowed));
     }
+    
+    @Test
+    public void shouldEvaluateAdditiveBooleanExpressionsUsingGroovy() {
+        MetaFilter filter = new MetaFilter("groovy: (a == '11' | a == '22') && b == '33'");
+        MetaBuilder metaBuilder = new MetaBuilder();
+        assertTrue(filter.allow(metaBuilder.clear().a(11).b(33).build()));
+        assertTrue(filter.allow(metaBuilder.clear().a(22).b(33).build()));
+        assertFalse(filter.allow(metaBuilder.clear().a(44).b(33).build()));
+        assertFalse(filter.allow(metaBuilder.clear().a(11).b(44).build()));
+        assertFalse(filter.allow(metaBuilder.clear().a(11).build()));
+        assertFalse(filter.allow(metaBuilder.clear().b(33).build()));
+        assertFalse(filter.allow(metaBuilder.clear().c(99).build()));
+    }
 
+    @Test
+    public void shouldEvaluateInEqualBooleanExpressionsUsingGroovy() {
+        MetaFilter filter = new MetaFilter("groovy: a != '11' && b != '22'");
+        MetaBuilder metaBuilder = new MetaBuilder();
+        assertFalse(filter.allow(metaBuilder.clear().a(11).b(33).build()));
+        assertTrue(filter.allow(metaBuilder.clear().a(33).b(33).build()));
+    }
+
+    @Test
+    public void shouldBeFastUsingGroovy() {
+        long start = System.currentTimeMillis();
+        MetaFilter filter = new MetaFilter("groovy: a != '11' && b != '22'");
+        MetaBuilder metaBuilder = new MetaBuilder();
+        for (int i = 0; i < 1000; i++) {
+            assertFalse(filter.allow(metaBuilder.clear().a(11).b(33).build()));
+        }
+        assertTrue("should be less than half a second for 1000 matches on a simple case", System.currentTimeMillis() - start < 500);
+    }
+
+    public static class MetaBuilder {
+
+        Properties meta = new Properties();
+
+        public MetaBuilder a(int i) {
+            meta.setProperty("a", "" + i);
+            return this;
+        }
+        public MetaBuilder b(int i) {
+            meta.setProperty("b", "" + i);
+            return this;
+        }
+        public MetaBuilder c(int i) {
+            meta.setProperty("c", "" + i);
+            return this;
+        }
+
+        public Meta build() {
+            return new Meta(meta);
+        }
+
+        public MetaBuilder clear() {
+            meta.remove("a");
+            meta.remove("b");
+            meta.remove("c");
+            return this;
+        }
+    }
 }
