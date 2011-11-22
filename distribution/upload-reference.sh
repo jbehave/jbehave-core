@@ -13,4 +13,4 @@ REFERENCE="/var/www/jbehave.org/reference"
 VERSIONED="$REFERENCE/$VERSION"
 
 scp target/$ARTIFACT-bin.zip jbehave.org:
-ssh jbehave.org "rm -r $ARTIFACT; unzip $ARTIFACT-bin.zip; rm -r $VERSIONED; mv $ARTIFACT/docs/ $VERSIONED; cd $REFERENCE; rm $QUALIFIER; ln -s $VERSION $QUALIFIER"
+ssh jbehave.org "rm -r $ARTIFACT; unzip -q $ARTIFACT-bin.zip; rm -r $VERSIONED; mv $ARTIFACT/docs/ $VERSIONED; cd $REFERENCE; rm $QUALIFIER; ln -s $VERSION $QUALIFIER"
