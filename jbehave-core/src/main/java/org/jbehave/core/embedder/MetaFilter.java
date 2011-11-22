@@ -67,6 +67,9 @@ public class MetaFilter {
      * @return A MetaMatcher
      */
     protected MetaMatcher createMetaMatcher(String filterAsString) {
+        if (filterAsString.startsWith("groovy: ")) {
+            return new GroovyMetaMatcher();
+        }
         return new DefaultMetaMatcher();
     }
 
