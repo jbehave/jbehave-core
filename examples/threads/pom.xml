@@ -12,7 +12,7 @@
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
-      <artifactId>jbehave-odf</artifactId>
+      <artifactId>jbehave-core</artifactId>
       <version>${project.version}</version>
     </dependency>
   </dependencies>
@@ -55,6 +55,14 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <!-- Only needed if groovy-based MetaFilters are used -->
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.8.4</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
