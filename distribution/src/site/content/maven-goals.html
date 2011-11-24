@@ -139,6 +139,35 @@ that it's not able to load its classes, e.g.:</p>
 ]]>
 </script>
 
+<h2>ClassLoading Groovy Meta Matcher</h2>
+
+<p>When using the JBehave Maven Plugin with a Groovy Meta Matcher you need to
+configure Groovy as Plugin Dependency (as opposed to the Project Dependency):</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+    <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <version>[version]</version>
+        <executions>
+            <!-- define executions as normal -->
+            <metaFilters>
+                <metaFilter>"groovy: lang != 'java'"</metaFilter>
+            </metaFilters>
+        </executions>
+        <dependencies>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>1.8.4</version>
+            </dependency>
+        </dependencies>
+    </plugin>
+]]>
+</script>
+
+
 <div class="clear">
 <hr />
 </div>

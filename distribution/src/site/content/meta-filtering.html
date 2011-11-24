@@ -6,23 +6,32 @@
 
 <body>
 
-<h2>Meta Filters</h2>
+<h2>Meta Matchers</h2>
 
 <p>One of the principal use cases for defining <a
 	href="meta-info.html">meta info</a> in our stories is to be able to
 filter the stories based on the meta info provided.</p>
 
-<p>A meta filter has a structure that mirrors that of the meta
-properties, i.e. it's expressed as a sequence of name-value patterns:</p>
+<p>A meta filter is represented as a string and supports multiple meta matcher languages based on the prefix used:</p>
+
+<ul>
+<li>default meta matcher:  activated if no known prefix is found</li>
+<li>groovy meta matcher: needs to prefixed by <b>groovy:</b></li>
+</ul>
+
+<h3>Default Meta Matcher</h3>
+
+<p>The default meta matcher has a very simple language structure that mirrors that of the meta
+properties, expressed as a sequence of name-value patterns:</p>
 <pre class="brush: plain">
-   meta filter :== ([+|-] [name] [value pattern])+
+   default meta matcher :== ([+|-] [name] [value pattern])+
 </pre>
 <p>where <b>[+|-]</b> indicates if the filter should include or
 exclude the meta property and the <b>[value pattern]</b> can be either
 an exact match of the property value (including empty value) or use the
 <b>*</b> matching notation.</p>
 
-<p>The following are all valid meta filters:</p>
+<p>The following are all valid meta matchers:</p>
 <pre class="brush: plain">
    +author Mauro
    +theme filtering
@@ -31,22 +40,9 @@ an exact match of the property value (including empty value) or use the
    -skip
 </pre>
 
-<p>Let's now look at how the filtering is done. JBehave provides a <a
-	href="javadoc/core/org/jbehave/core/embedder/MetaFilter.html">MetaFilter</a>
-component that interprets the parses the textual meta filter and
-provides a method to determine if a <a
-	href="javadoc/core/org/jbehave/core/model/Meta.html">Meta</a> instance is allowed or not:
-</p>
-
-<pre class="brush: java">
-MetaFilter metaFilter = new MetaFilter("+author * -skip");
-Meta meta = ... // contains meta info as parsed from the textual story
-boolean allowed = metaFilter.allow(meta);    
-</pre>
-
-<p>A few examples of meta filters and properties that allowed or not allowed:
+<p>A few examples of meta matchers and properties that matched or not:
 <table class="bodyTable">
-<thead><th>Meta Filter</th><th>Meta Property</th><th>Allowed</th></thead>
+<thead><th>Meta Matcher</th><th>Meta Property</th><th>Matched</th></thead>
 <tbody>
 <tr class="a"><td>+theme smoke testing -skip</td><td>@theme smoke testing</td><td>true</td></tr>
 <tr class="b"><td>+theme smoke testing -skip</td><td>@skip</td><td>false</td></tr>
@@ -58,8 +54,21 @@ boolean allowed = metaFilter.allow(meta);
 <tr class="b"><td>+theme smoke testing -theme UI</td><td>@theme UI</td><td>false</td></tr>
 </tbody>
 </table>
-
 </p>
+
+<h3>Groovy Meta Matcher</h3>
+
+<p>The Groovy meta matcher allows the logic of the matching to be expressed in Groovy using the values of the meta property names and values:</p>
+
+<p>The following are all valid meta matchers (excluding the "groovy:" prefix):</p>
+<pre class="brush: plain">
+   author == 'Mauro'
+   theme == 'filtering' || author != 'Mauro' 
+</pre>
+
+<span class="followup">As Groovy is an optional dependency, users wanting to use the Groovy Meta Matcher need to 
+add it to the runtime classpath.  If using Maven, you need to define Groovy as a Plugin dependency, c.f. <a href="maven-goals.html">Maven goals</a>.
+</span>
 
 <h2>Configuring Meta Filters</h2>
 
@@ -82,14 +91,14 @@ public class AnnotatedTraderEmbedder extends InjectableEmbedder {
 }
 </pre>
 
+<p>The meta filters can also be specified via <a
+    href="ant-tasks.html">Ant tasks</a> or <a href="maven-goals.html">Maven
+goals</a>, using the "metaFilters" attribute or configuration element.</p>
+
 <span class="followup">Note that because of its additive
 sequential nature, the meta filters will all be joined together when
 running the stories. Have different meta filters comes into play when
 doing <a href="story-mapping.html">story mapping</a>.</span>
-
-<p>The meta filter can also be specified via <a
-	href="ant-tasks.html">Ant tasks</a> or <a href="maven-goals.html">Maven
-goals</a>, using the "metaFilters" attribute or configuration element.</p>
 
 <div class="clear">
 <hr />
