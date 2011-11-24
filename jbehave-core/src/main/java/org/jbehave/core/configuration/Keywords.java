@@ -42,13 +42,13 @@ public class Keywords {
     public static final String FAILED = "Failed";
     public static final String DRY_RUN = "DryRun";
 
-    public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SCENARIO,
-            GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
+    public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO,
+            SCENARIO, GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE,
             PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
 
     private final String meta;
-    private final String metaProperty;    
+    private final String metaProperty;
     private final String narrative;
     private final String inOrderTo;
     private final String asA;
@@ -108,8 +108,7 @@ public class Keywords {
     /**
      * Creates Keywords with provided keywords Map and Encoding
      * 
-     * @param keywords
-     *            the Map of keywords indexed by their name
+     * @param keywords the Map of keywords indexed by their name
      */
     public Keywords(Map<String, String> keywords) {
         this.meta = keyword(META, keywords);
@@ -134,7 +133,7 @@ public class Keywords {
         this.notPerformed = keyword(NOT_PERFORMED, keywords);
         this.failed = keyword(FAILED, keywords);
         this.dryRun = keyword(DRY_RUN, keywords);
-        
+
         startingWordsByType.put(StepType.GIVEN, given());
         startingWordsByType.put(StepType.WHEN, when());
         startingWordsByType.put(StepType.THEN, then());
@@ -150,7 +149,6 @@ public class Keywords {
         }
         return keyword;
     }
-    
 
     public String meta() {
         return meta;
@@ -261,7 +259,8 @@ public class Keywords {
 
     public String stepWithoutStartingWord(String stepAsString, StepType stepType) {
         String startingWord = startingWord(stepAsString, stepType);
-        return stepAsString.substring(startingWord.length() + 1); // 1 for the space after
+        return stepAsString.substring(startingWord.length() + 1); // 1 for the
+                                                                  // space after
     }
 
     public String startingWord(String stepAsString, StepType stepType) throws StartingWordNotFound {
@@ -300,7 +299,6 @@ public class Keywords {
         throw new StartingWordNotFound(stepAsString, startingWordsByType);
     }
 
-
     public boolean stepStartsWithWord(String step, String word) {
         return step.startsWith(word + " "); // space after qualifies it as word
     }
@@ -326,7 +324,7 @@ public class Keywords {
         }
 
     }
-    
+
     @SuppressWarnings("serial")
     public static class StartingWordNotFound extends RuntimeException {
 
@@ -335,16 +333,14 @@ public class Keywords {
                     + startingWordsByType + "'");
         }
 
+        public StartingWordNotFound(String step, Map<StepType, String> startingWordsByType) {
+            super("No starting word found for step '" + step + "' amongst '" + startingWordsByType + "'");
+        }
+
         public StartingWordNotFound(StepType stepType, Map<StepType, String> startingWordsByType) {
             super("No starting word found of type '" + stepType + "' amongst '" + startingWordsByType + "'");
         }
 
-        public StartingWordNotFound(String stepAsString, Map<StepType, String> startingWordsByType) {
-            // TODO Auto-generated constructor stub
-        }
-
     }
-
-
 
 }

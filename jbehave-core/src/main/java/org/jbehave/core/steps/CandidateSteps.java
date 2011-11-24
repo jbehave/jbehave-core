@@ -41,7 +41,7 @@ public interface CandidateSteps {
 
     /**
      * Returns the before or after scenario steps
-     * @param type TODO
+     * @param type the ScenarioType
      * 
      * @return The list of before or after steps
      */
