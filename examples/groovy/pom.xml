@@ -10,6 +10,9 @@
   <artifactId>jbehave-groovy-example</artifactId>
   <name>JBehave Groovy Example</name>
 
+  <properties>
+    <meta.filter></meta.filter>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
@@ -45,6 +48,9 @@
                 <include>**/stories/*.java</include>
               </includes>
               <excludes />
+              <metaFilters>
+                <metaFilter>${meta.filter}</metaFilter>
+              </metaFilters>
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInView>true</ignoreFailureInView>
