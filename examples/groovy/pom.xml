@@ -60,6 +60,14 @@
             </goals>
           </execution>
         </executions>
+        <dependencies>
+          <!-- Only needed if groovy-based MetaFilters are used -->
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.8.4</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>
