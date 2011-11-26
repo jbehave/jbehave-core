@@ -15,6 +15,11 @@
       <artifactId>jbehave-core</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.groovy</groupId>
+      <artifactId>groovy-all</artifactId>
+      <version>1.8.4</version>
+    </dependency>
   </dependencies>
 
   <properties>

@@ -64,7 +64,7 @@ public class StoryRunner {
         reporter.set(configuration.storyReporter(storyPath));
         reporter.get().beforeStory(new Story(storyPath), false);
         RunContext context = new RunContext(configuration, candidateSteps, storyPath, MetaFilter.EMPTY);
-        if (stage == Stage.BEFORE ){
+        if (stage == Stage.BEFORE) {
             resetStoryFailure(context);
         }
         if (stage == Stage.AFTER && storiesState.get() != null) {
@@ -208,7 +208,9 @@ public class StoryRunner {
 
             boolean storyAllowed = true;
 
-            if (context.metaNotAllowed(story.getMeta())) {
+            FilterContext filterContext = context.filter(story);
+            Meta storyMeta = story.getMeta();
+            if (!filterContext.allowed()) {
                 reporter.get().storyNotAllowed(story, context.metaFilterAsString());
                 storyAllowed = false;
             }
@@ -231,8 +233,7 @@ public class StoryRunner {
                     reporter.get().beforeScenario(scenario.getTitle());
                     reporter.get().scenarioMeta(scenario.getMeta());
 
-                    Meta storyAndScenarioMeta = scenario.getMeta().inheritFrom(story.getMeta());
-                    if (context.metaNotAllowed(storyAndScenarioMeta)) {
+                    if ( !filterContext.allowed(scenario) ) {
                         reporter.get().scenarioNotAllowed(scenario, context.metaFilterAsString());
                         scenarioAllowed = false;
                     }
@@ -241,9 +242,11 @@ public class StoryRunner {
                         if (context.configuration().storyControls().resetStateBeforeScenario()) {
                             context.resetState();
                         }
+                        Meta storyAndScenarioMeta = scenario.getMeta().inheritFrom(storyMeta);
                         // run before scenario steps, if allowed
                         if (runBeforeAndAfterScenarioSteps) {
-                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE, ScenarioType.NORMAL);
+                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE,
+                                    ScenarioType.NORMAL);
                         }
 
                         // run given stories, if any
@@ -258,7 +261,8 @@ public class StoryRunner {
 
                         // run after scenario steps, if allowed
                         if (runBeforeAndAfterScenarioSteps) {
-                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER, ScenarioType.NORMAL);
+                            runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER,
+                                    ScenarioType.NORMAL);
                         }
 
                     }
@@ -316,7 +320,7 @@ public class StoryRunner {
 
     private void handleStoryFailureByStrategy() throws Throwable {
         Throwable throwable = storyFailure.get();
-        if ( throwable != null ){
+        if (throwable != null) {
             currentStrategy.get().handleFailure(throwable);
         }
     }
@@ -366,7 +370,8 @@ public class StoryRunner {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterStorySteps(story, stage));
     }
 
-    private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Meta storyAndScenarioMeta, Stage stage, ScenarioType type) {
+    private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Meta storyAndScenarioMeta,
+            Stage stage, ScenarioType type) {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterScenarioSteps(storyAndScenarioMeta, stage, type));
     }
 
@@ -455,9 +460,9 @@ public class StoryRunner {
         }
     }
 
-    private final class SomethingHappened implements State { 
+    private final class SomethingHappened implements State {
         UUIDExceptionWrapper scenarioFailure;
-        
+
         public SomethingHappened(UUIDExceptionWrapper scenarioFailure) {
             this.scenarioFailure = scenarioFailure;
         }
@@ -524,8 +529,8 @@ public class StoryRunner {
             return path;
         }
 
-        public boolean metaNotAllowed(Meta meta) {
-            return !filter.allow(meta);
+        public FilterContext filter(Story story) {
+            return new FilterContext(filter, story, configuration.storyControls());
         }
 
         public String metaFilterAsString() {
@@ -533,11 +538,13 @@ public class StoryRunner {
         }
 
         public List<Step> collectBeforeOrAfterStorySteps(Story story, Stage stage) {
-            return configuration.stepCollector().collectBeforeOrAfterStorySteps(candidateSteps, story, stage, givenStory);
+            return configuration.stepCollector().collectBeforeOrAfterStorySteps(candidateSteps, story, stage,
+                    givenStory);
         }
 
         public List<Step> collectBeforeOrAfterScenarioSteps(Meta storyAndScenarioMeta, Stage stage, ScenarioType type) {
-            return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps, storyAndScenarioMeta, stage, type);
+            return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps,
+                    storyAndScenarioMeta, stage, type);
         }
 
         public List<Step> collectScenarioSteps(Scenario scenario, Map<String, String> parameters) {
@@ -567,13 +574,41 @@ public class StoryRunner {
 
     }
 
+    public class FilterContext {
+
+        private boolean storyAllowed;
+        private Map<Scenario, Boolean> scenariosAllowed;
+
+        public FilterContext(MetaFilter filter, Story story, StoryControls storyControls) {
+            // TODO get prefixes from story controls
+            String metaPrefix = "";
+            String scenarioMetaPrefix = "";
+            Meta storyMeta = story.getMeta().inheritFrom(story.asMeta(metaPrefix));
+            storyAllowed = filter.allow(storyMeta);
+            scenariosAllowed = new HashMap<Scenario, Boolean>();
+            for (Scenario scenario : story.getScenarios()) {
+                Meta scenarioMeta = scenario.getMeta().inheritFrom(scenario.asMeta(scenarioMetaPrefix).inheritFrom(storyMeta));
+                scenariosAllowed.put(scenario, filter.allow(scenarioMeta));
+            }
+
+        }
+
+        public boolean allowed() {
+            return storyAllowed;
+        }
+
+        public boolean allowed(Scenario scenario){
+            return scenariosAllowed.get(scenario);
+        }
+    }
+
     public boolean failed(State state) {
         return !state.getClass().equals(FineSoFar.class);
     }
-    
-    public Throwable failure(State state){
-        if ( failed(state ) ){
-            return ((SomethingHappened)state).scenarioFailure.getCause();
+
+    public Throwable failure(State state) {
+        if (failed(state)) {
+            return ((SomethingHappened) state).scenarioFailure.getCause();
         }
         return null;
     }

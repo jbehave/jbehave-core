@@ -678,17 +678,15 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = new Steps();
         when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
                 Arrays.<Step>asList());
-        Meta meta = mock(Meta.class);
+        Meta meta = new Meta(asList("some property"));
         Story story = new Story("", Description.EMPTY, meta, Narrative.EMPTY, asList(new Scenario()));
         boolean givenStory = false;
         givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
-        MetaFilter filter = mock(MetaFilter.class);
         String filterAsString = "-some property";
+        MetaFilter filter = new MetaFilter(filterAsString);
         
         // When
         StoryRunner runner = new StoryRunner();
-        when(filter.allow(meta)).thenReturn(false);
-        when(filter.asString()).thenReturn(filterAsString);
         runner.run(configurationWith(reporter, collector, strategy), asList(mySteps), story, filter);
 
         // Then
@@ -706,20 +704,15 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = new Steps();
         when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
                 Arrays.<Step>asList());
-        Meta meta = mock(Meta.class);
-        Meta storyMeta = mock(Meta.class);
-        Story story = new Story("", Description.EMPTY, storyMeta, Narrative.EMPTY, asList(new Scenario("", meta, GivenStories.EMPTY, ExamplesTable.EMPTY, asList(""))));
+        Meta meta = new Meta(asList("some property"));
+        Story story = new Story("", Description.EMPTY, Meta.EMPTY, Narrative.EMPTY, asList(new Scenario("", meta, GivenStories.EMPTY, ExamplesTable.EMPTY, asList(""))));
         boolean givenStory = false;
         givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
-        MetaFilter filter = mock(MetaFilter.class);
         String filterAsString = "-some property";
+        MetaFilter filter = new MetaFilter(filterAsString);
 
         // When
         StoryRunner runner = new StoryRunner();
-        when(filter.allow(storyMeta)).thenReturn(true);
-        when(meta.inheritFrom(storyMeta)).thenReturn(meta);
-        when(filter.allow(meta)).thenReturn(false);
-        when(filter.asString()).thenReturn(filterAsString);
         runner.run(configurationWith(reporter, collector, strategy), asList(mySteps), story, filter);
 
         // Then
