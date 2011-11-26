@@ -63,7 +63,9 @@ an exact match of the property value (including empty value) or use the
 <p>The following are all valid meta matchers (excluding the "groovy:" prefix):</p>
 <pre class="brush: plain">
    author == 'Mauro'
-   theme == 'filtering' || author != 'Mauro' 
+   !skip
+   theme == 'filtering' && theme != 'smoke testing' 
+   theme ==~ /.*[testing|regression].*/
 </pre>
 
 <span class="followup">As Groovy is an optional dependency, users wanting to use the Groovy Meta Matcher need to 

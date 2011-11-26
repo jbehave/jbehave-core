@@ -19,12 +19,12 @@ import static org.junit.Assert.assertTrue;
 
 public class MetaFilterBehaviour {
 
-    private static final SilentEmbedderMonitor SILENT_EMBEDDER_MONITOR = new SilentEmbedderMonitor(System.out);
+    MetaBuilder metaBuilder = new MetaBuilder();
 
     @Test
     public void shouldParseIncludesAndExcludesUsingDefaultMetaMatcher() {
         String filterAsString = "+author Mauro -theme smoke testing +map *API -skip";
-        MetaFilter filter = new MetaFilter(filterAsString, SILENT_EMBEDDER_MONITOR);
+        MetaFilter filter = filter(filterAsString);
         assertThat(filter.asString(), equalTo(filterAsString));
         MetaMatcher metaMatcher = filter.metaMatcher();
         assertThat(metaMatcher, Matchers.instanceOf(DefaultMetaMatcher.class));
@@ -74,13 +74,12 @@ public class MetaFilterBehaviour {
     }
 
     private void assertFilterAllowsProperty(String filter, String property, boolean allowed) {
-        assertThat(new MetaFilter(filter, SILENT_EMBEDDER_MONITOR).allow(new Meta(asList(property))), equalTo(allowed));
+        assertThat(filter(filter).allow(new Meta(asList(property))), equalTo(allowed));
     }
     
     @Test
-    public void shouldEvaluateAdditiveBooleanExpressionsUsingGroovy() {
-        MetaFilter filter = new MetaFilter("groovy: (a == '11' | a == '22') && b == '33'", SILENT_EMBEDDER_MONITOR);
-        MetaBuilder metaBuilder = new MetaBuilder();
+    public void shouldFilterByAdditiveBooleanExpressionsUsingGroovy() {
+        MetaFilter filter = filter("groovy: (a == '11' | a == '22') && b == '33'");
         assertTrue(filter.allow(metaBuilder.clear().a(11).b(33).build()));
         assertTrue(filter.allow(metaBuilder.clear().a(22).b(33).build()));
         assertFalse(filter.allow(metaBuilder.clear().a(44).b(33).build()));
@@ -91,46 +90,45 @@ public class MetaFilterBehaviour {
     }
 
     @Test
-    public void shouldEvaluateInEqualBooleanExpressionsUsingGroovy() {
-        MetaFilter filter = new MetaFilter("groovy: a != '11' && b != '22'", SILENT_EMBEDDER_MONITOR);
-        MetaBuilder metaBuilder = new MetaBuilder();
+    public void shouldFilterByNegativeBooleanExpressionsUsingGroovy() {
+        MetaFilter filter = filter("groovy: a != '11' && b != '22'");
         assertFalse(filter.allow(metaBuilder.clear().a(11).b(33).build()));
         assertTrue(filter.allow(metaBuilder.clear().a(33).b(33).build()));
     }
 
     @Test
-    public void shouldEvaluatePresenceOfTagUsingGroovy() {
-        MetaFilter filter = new MetaFilter("groovy: d", SILENT_EMBEDDER_MONITOR);
-        MetaBuilder metaBuilder = new MetaBuilder();
+    public void shouldFilterByPresenceOfPropertyUsingGroovy() {
+        MetaFilter filter = filter("groovy: d");
         assertFalse(filter.allow(metaBuilder.clear().a(11).build()));
         assertTrue(filter.allow(metaBuilder.clear().a(11).d("").build()));
     }
 
     @Test
-    public void shouldEvaluateNonPresenceOfTagUsingGroovy() {
-        MetaFilter filter = new MetaFilter("groovy: !d", SILENT_EMBEDDER_MONITOR);
-        MetaBuilder metaBuilder = new MetaBuilder();
+    public void shouldFilterByNonPresenceOfPropertyUsingGroovy() {
+        MetaFilter filter = filter("groovy: !d");
         assertTrue(filter.allow(metaBuilder.clear().a(11).build()));
         assertFalse(filter.allow(metaBuilder.clear().a(11).d("").build()));
     }
 
     @Test
+    public void shouldFilterByRegexUsingGroovy() {
+        MetaFilter filter = filter("groovy: d ==~ /.*\\d+.*/");
+        assertTrue(filter.allow(metaBuilder.clear().d("fr3ddie").build()));
+        assertFalse(filter.allow(metaBuilder.clear().d("mercury").build()));
+    }
+
+    @Test
     public void shouldBeFastUsingGroovy() {
         long start = System.currentTimeMillis();
-        MetaFilter filter = new MetaFilter("groovy: a != '11' && b != '22'", SILENT_EMBEDDER_MONITOR);
-        MetaBuilder metaBuilder = new MetaBuilder();
+        MetaFilter filter = filter("groovy: a != '11' && b != '22'");
         for (int i = 0; i < 1000; i++) {
             assertFalse(filter.allow(metaBuilder.clear().a(11).b(33).build()));
         }
         assertTrue("should be less than half a second for 1000 matches on a simple case", System.currentTimeMillis() - start < 500);
     }
 
-    @Test
-    public void shouldEvaluateRegexUsingGroovy() {
-        MetaFilter filter = new MetaFilter("groovy: d ==~ /.*\\d+.*/", SILENT_EMBEDDER_MONITOR);
-        MetaBuilder metaBuilder = new MetaBuilder();
-        assertTrue(filter.allow(metaBuilder.clear().d("fr3ddie").build()));
-        assertFalse(filter.allow(metaBuilder.clear().d("mercury").build()));
+    private MetaFilter filter(String filterAsString) {
+        return new MetaFilter(filterAsString, new SilentEmbedderMonitor(System.out));
     }
 
     public static class MetaBuilder {
@@ -150,6 +148,11 @@ public class MetaFilterBehaviour {
             return this;
         }
 
+        public MetaBuilder d(String val) {
+            meta.setProperty("d", val);
+            return this;
+        }
+
         public Meta build() {
             return new Meta(meta);
         }
@@ -159,9 +162,5 @@ public class MetaFilterBehaviour {
             return this;
         }
 
-        public MetaBuilder d(String val) {
-            meta.setProperty("d", val);
-            return this;
-        }
     }
 }
