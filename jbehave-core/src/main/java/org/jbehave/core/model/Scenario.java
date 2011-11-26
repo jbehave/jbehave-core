@@ -4,6 +4,7 @@ import static java.util.Collections.unmodifiableList;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -12,9 +13,9 @@ public class Scenario {
 
     private final String title;
     private final Meta meta;
-    private final List<String> steps;
-    private final ExamplesTable examplesTable;
     private final GivenStories givenStories;
+    private final ExamplesTable examplesTable;
+    private final List<String> steps;
 
     public Scenario() {
         this(Arrays.<String>asList());
@@ -36,28 +37,36 @@ public class Scenario {
         this.title = title;
         this.meta = meta;
         this.givenStories = givenStories;
-        this.steps = steps;
         this.examplesTable = examplesTable;
+        this.steps = steps;
     }
     
-    public Meta getMeta(){
-        return meta;
+    public String getTitle() {
+        return title;
     }
 
     public GivenStories getGivenStories() {
         return givenStories;
     }
 
-    public List<String> getSteps() {
-        return unmodifiableList(steps);
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
     public ExamplesTable getExamplesTable() {
         return examplesTable;
+    }
+
+    public Meta asMeta(String prefix){
+        Properties p = new Properties();
+        p.setProperty(prefix+"title", title);
+        p.setProperty(prefix+"givenStories", givenStories.asString());
+        p.setProperty(prefix+"examplesTable", examplesTable.asString());
+        return new Meta(p);
+    }
+
+    public Meta getMeta(){
+        return meta;
+    }
+
+    public List<String> getSteps() {
+        return unmodifiableList(steps);
     }
 
     @Override

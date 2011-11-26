@@ -316,29 +316,42 @@ public class RegexStoryParserBehaviour {
         assertThat(story.getNarrative().asA(), equalTo("developer"));
         assertThat(story.getNarrative().iWantTo(), equalTo("see the narrative for my story when a scenario in that story breaks"));
 
+        Meta storyAsMeta = story.asMeta("story_");
+        assertThat(storyAsMeta.getProperty("story_path"), equalTo(story.getPath()));
+        assertThat(storyAsMeta.getProperty("story_description"), equalTo(story.getDescription().asString()));
+        assertThat(storyAsMeta.getProperty("story_narrative"), equalTo(story.getNarrative().toString()));
+        
         assertThat(story.toString(), containsString("A pending scenario"));
-        assertThat(story.getScenarios().get(0).getTitle(), equalTo("A pending scenario"));
-        assertThat(story.getScenarios().get(0).getGivenStories().getPaths().size(), equalTo(0));
-        assertThat(story.getScenarios().get(0).getSteps(), equalTo(asList(
+        Scenario firstScenario = story.getScenarios().get(0);
+        assertThat(firstScenario.getTitle(), equalTo("A pending scenario"));
+        assertThat(firstScenario.getGivenStories().getPaths().size(), equalTo(0));
+        assertThat(firstScenario.getSteps(), equalTo(asList(
                 "Given a step that's pending",
                 "When I run the scenario",
                 "!-- A comment between steps",
                 "Then I should see this in the output"
         )));
 
+        Meta scenarioAsMeta = firstScenario.asMeta("scenario_");
+        assertThat(scenarioAsMeta.getProperty("scenario_title"), equalTo(firstScenario.getTitle()));
+        assertThat(scenarioAsMeta.getProperty("scenario_givenStories"), equalTo(firstScenario.getGivenStories().asString()));
+        assertThat(scenarioAsMeta.getProperty("scenario_examplesTable"), equalTo(firstScenario.getExamplesTable().asString()));
+
         assertThat(story.toString(), containsString("A passing scenario"));
-        assertThat(story.getScenarios().get(1).getTitle(), equalTo("A passing scenario"));
-        assertThat(story.getScenarios().get(1).getGivenStories().getPaths().size(), equalTo(0));
-        assertThat(story.getScenarios().get(1).getSteps(), equalTo(asList(
+        Scenario secondScenario = story.getScenarios().get(1);
+        assertThat(secondScenario.getTitle(), equalTo("A passing scenario"));
+        assertThat(secondScenario.getGivenStories().getPaths().size(), equalTo(0));
+        assertThat(secondScenario.getSteps(), equalTo(asList(
                 "Given I'm not reporting passing stories",
                 "When I run the scenario",
                 "Then this should not be in the output"
         )));
 
         assertThat(story.toString(), containsString("A failing scenario"));
-        assertThat(story.getScenarios().get(2).getTitle(), equalTo("A failing scenario"));
-        assertThat(story.getScenarios().get(2).getGivenStories().getPaths().size(), equalTo(0));
-        assertThat(story.getScenarios().get(2).getSteps(), equalTo(asList(
+        Scenario thirdScenario = story.getScenarios().get(2);
+        assertThat(thirdScenario.getTitle(), equalTo("A failing scenario"));
+        assertThat(thirdScenario.getGivenStories().getPaths().size(), equalTo(0));
+        assertThat(thirdScenario.getSteps(), equalTo(asList(
                 "Given a step that fails",
                 "When I run the scenario",
                 "Then I should see this in the output",

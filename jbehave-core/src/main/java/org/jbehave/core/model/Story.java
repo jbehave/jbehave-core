@@ -2,6 +2,8 @@ package org.jbehave.core.model;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -11,8 +13,8 @@ public class Story {
 
     private final String path;
     private final Description description;
-    private final Meta meta;
     private final Narrative narrative;
+    private final Meta meta;
     private final List<Scenario> scenarios;
     private String name;
 
@@ -37,23 +39,35 @@ public class Story {
     }
 
     public Story(String path, Description description, Meta meta, Narrative narrative, List<Scenario> scenarios) {
-        this.path = path;
+        this.path = (path != null ? path : "");
         this.description = description;
-        this.meta = meta;
         this.narrative = narrative;
+        this.meta = meta;
         this.scenarios = scenarios;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public Description getDescription() {
         return description;
     }
 
-    public Meta getMeta() {
-        return meta;
-    }
-
     public Narrative getNarrative() {
         return narrative;
+    }
+
+    public Meta asMeta(String prefix){
+        Properties p = new Properties();
+        p.setProperty(prefix+"path", path);
+        p.setProperty(prefix+"description", description.asString());
+        p.setProperty(prefix+"narrative", narrative.toString());
+        return new Meta(p);
+    }
+
+    public Meta getMeta() {
+        return meta;
     }
 
     public List<Scenario> getScenarios() {
@@ -61,15 +75,11 @@ public class Story {
     }
 
     public String getName() {
-        return (name != null ? name : getPath());
+        return (name != null ? name : path);
     }
 
     public void namedAs(String name) {
         this.name = name;
-    }
-
-    public String getPath() {
-        return (path != null ? path : "");
     }
 
     @Override
