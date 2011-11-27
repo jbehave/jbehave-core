@@ -13,6 +13,8 @@ public class StoryControls {
     private boolean resetStateBeforeScenario = true;
     private boolean skipScenariosAfterFailure = false;
     private boolean skipBeforeAndAfterScenarioStepsIfGivenStory = false;
+    private String storyMetaPrefix = "";
+    private String scenarioMetaPrefix = "";
 
     public StoryControls() {
     }
@@ -35,6 +37,14 @@ public class StoryControls {
 
     public boolean skipBeforeAndAfterScenarioStepsIfGivenStory() {
         return skipBeforeAndAfterScenarioStepsIfGivenStory;
+    }
+
+    public String storyMetaPrefix() {
+        return storyMetaPrefix;
+    }
+
+    public String scenarioMetaPrefix() {
+        return scenarioMetaPrefix;
     }
 
     public StoryControls doDryRun(boolean dryRun) {
@@ -62,6 +72,16 @@ public class StoryControls {
         return this;
     }
 
+    public StoryControls useStoryMetaPrefix(String storyMetaPrefix){
+        this.storyMetaPrefix = storyMetaPrefix;
+        return this;        
+    }
+
+    public StoryControls useScenarioMetaPrefix(String scenarioMetaPrefix){
+        this.scenarioMetaPrefix = scenarioMetaPrefix;
+        return this;        
+    }
+    
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

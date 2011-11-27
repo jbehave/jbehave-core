@@ -7,6 +7,7 @@ import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
@@ -26,13 +27,14 @@ public class ThreadsStories extends JUnitStories {
         Embedder embedder = configuredEmbedder();
         embedder.embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
                 .doIgnoreFailureInView(true).useThreads(1).useStoryTimeoutInSecs(7);
-        embedder.useMetaFilters(Arrays.asList("groovy: path ==~ /.*a_long.story/"));
+        embedder.useMetaFilters(Arrays.asList("groovy: scenario_title ==~ /.*failing.*/"));
     }
 
     @Override
     public Configuration configuration() {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         return new MostUsefulConfiguration().useStoryLoader(new LoadFromClasspath(embeddableClass))
+                .useStoryControls(new StoryControls().useStoryMetaPrefix("story_").useScenarioMetaPrefix("scenario_"))
                 .useStoryReporterBuilder(
                         new StoryReporterBuilder()
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))

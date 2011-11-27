@@ -34,15 +34,14 @@ import org.jbehave.core.model.Meta.Property;
  * and "-" for exclusion. E.g.:
  * 
  * <pre>
- * String filterAsString = &quot;+author Mauro -theme smoke testing +map *API -skip&quot;
- * MetaFilter filter = new MetaFilter(filterAsString);
+ * MetaFilter filter = new MetaFilter("+author Mauro -theme smoke testing +map *API -skip");
  * filter.allow(new Meta(asList("map someAPI")));
  * </pre>
  * 
  * </p>
  * <p>
  * The use of the {@link GroovyMetaMatcher} is triggered by the prefix "groovy:" and 
- * allows the filter to be interpreted by as a Groovy expression.
+ * allows the filter to be interpreted as a Groovy expression.
  * </p>
  * <pre>
  * MetaFilter filter = new MetaFilter("groovy: (a == '11' | a == '22') && b == '33'");
