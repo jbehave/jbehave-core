@@ -250,7 +250,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldNotPerformStepsAfterFailedOrPendingSteps2() throws Throwable {
+    public void shouldNotPerformStepsAfterRestaringScenarioFailure() throws Throwable {
         // Given
         StoryReporter reporter = mock(ConcurrentStoryReporter.class);
         Step firstStepNormal = mockSuccessfulStep("Given I succeed");
@@ -696,6 +696,33 @@ public class StoryRunnerBehaviour {
     }
     
     @Test
+    public void shouldNotRunStoriesNotAllowedByFilterOnStoryElement() throws Throwable {
+        // Given
+        StoryReporter reporter = mock(ConcurrentStoryReporter.class);
+        StepCollector collector = mock(StepCollector.class);
+        FailureStrategy strategy = mock(FailureStrategy.class);
+        CandidateSteps mySteps = new Steps();
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
+                Arrays.<Step>asList());
+        Story story = new Story("excluded_path", Description.EMPTY, Meta.EMPTY, Narrative.EMPTY, asList(new Scenario()));
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
+        String filterAsString = "-story_path excluded_path";
+        MetaFilter filter = new MetaFilter(filterAsString);
+        
+        // When
+        StoryRunner runner = new StoryRunner();
+        Configuration configuration = configurationWith(reporter, collector, strategy);
+        configuration.storyControls().useStoryMetaPrefix("story_");
+        runner.run(configuration, asList(mySteps), story, filter);
+
+        // Then
+        verify(reporter).beforeStory(story, givenStory);
+        verify(reporter).storyNotAllowed(story, filterAsString);
+        verify(reporter).afterStory(givenStory);
+    }
+    
+    @Test
     public void shouldNotRunScenariosNotAllowedByFilter() throws Throwable {
         // Given
         StoryReporter reporter = mock(ConcurrentStoryReporter.class);
@@ -721,7 +748,35 @@ public class StoryRunnerBehaviour {
         verify(reporter).scenarioNotAllowed(story.getScenarios().get(0), filterAsString);
         verify(reporter).afterScenario();
     }
-    
+
+    @Test
+    public void shouldNotRunScenariosNotAllowedByFilterOnScenarioElement() throws Throwable {
+        // Given
+        StoryReporter reporter = mock(ConcurrentStoryReporter.class);
+        StepCollector collector = mock(StepCollector.class);
+        FailureStrategy strategy = mock(FailureStrategy.class);
+        CandidateSteps mySteps = new Steps();
+        when(collector.collectScenarioSteps(eq(asList(mySteps)), (Scenario) anyObject(), eq(parameters))).thenReturn(
+                Arrays.<Step>asList());
+        Story story = new Story("", Description.EMPTY, Meta.EMPTY, Narrative.EMPTY, asList(new Scenario("excluded_title", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY, asList(""))));
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
+        String filterAsString = "-scenario_title excluded_title";
+        MetaFilter filter = new MetaFilter(filterAsString);
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        Configuration configuration = configurationWith(reporter, collector, strategy);
+        configuration.storyControls().useScenarioMetaPrefix("scenario_");
+        runner.run(configuration, asList(mySteps), story, filter);
+
+        // Then
+        verify(reporter).beforeStory(story, givenStory);
+        verify(reporter).beforeScenario("excluded_title");
+        verify(reporter).scenarioNotAllowed(story.getScenarios().get(0), filterAsString);
+        verify(reporter).afterScenario();
+    }
+
     private void givenStoryWithNoBeforeOrAfterSteps(Story story, boolean givenStory, StepCollector collector, CandidateSteps mySteps) {
         List<Step> steps = asList();
         when(collector.collectBeforeOrAfterStorySteps(asList(mySteps), story, Stage.BEFORE, givenStory)).thenReturn(steps);

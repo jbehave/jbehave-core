@@ -72,6 +72,21 @@ an exact match of the property value (including empty value) or use the
 add it to the runtime classpath.  If using Maven, you need to define Groovy as a Plugin dependency, c.f. <a href="maven-goals.html">Maven goals</a>.
 </span>
 
+<h2>Filtering on Story and Scenario Elements</h2>
+
+<p>In addition to the <a href="meta-info.html">meta info</a> that is defined by the user, both at story and scenario level, JBehave also 
+exposes the top-level elements of stories and scenarios, which can be filtered on.  These include: 
+<ul>
+<li>story: path, description and narrative</li>
+<li>scenario: title, givenStories and examplesTable</li>
+</ul>
+The meta properties are exposed by default with no prefix, but can be configured to have one via the configuration 
+<a href="javadoc/core/org/jbehave/core/embedder/StoryControls.html">StoryControls</a>:
+</p>
+<pre class="brush: java">
+configuration.storyControls().useStoryMetaPrefix("story_").useScenarioMetaPrefix("scenario_");
+</pre>
+
 <h2>Configuring Meta Filters</h2>
 
 <p>As usual, JBehave allow multiple equivalent ways of
@@ -79,14 +94,11 @@ configuration. One can specify the meta filters directly via the
 Embedder, either programmatically or via the annotation:</p>
 
 <pre class="brush: java">
-
 Embedder embedder = ... // define as required
 embedder.useMetaFilters(asList("+author Mauro", "+theme filtering", "-skip"));
-    
 </pre>
 
 <pre class="brush: java">
-
 @RunWith(AnnotatedEmbedderRunner.class)
 @UsingEmbedder(metaFilters = {"+author Mauro", "+theme filtering", "-skip"})
 public class AnnotatedTraderEmbedder extends InjectableEmbedder {

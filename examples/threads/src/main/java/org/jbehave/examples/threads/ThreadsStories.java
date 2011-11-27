@@ -34,7 +34,7 @@ public class ThreadsStories extends JUnitStories {
     public Configuration configuration() {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         return new MostUsefulConfiguration().useStoryLoader(new LoadFromClasspath(embeddableClass))
-                .useStoryControls(new StoryControls().useStoryMetaPrefix("story_").useScenarioMetaPrefix("scenario_"))
+                .useStoryControls(new StoryControls().useStoryMetaPrefix("story_").useScenarioMetaPrefix("scenario_")) // optional prefixes
                 .useStoryReporterBuilder(
                         new StoryReporterBuilder()
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
