@@ -538,24 +538,48 @@ public class RegexStoryParserBehaviour {
                 "When I run it",
                 "Then I should an output"
         )));
-
     }
     
     @Test
     public void shouldParseStoryWithVeryLongTitle() {
-        String scenario = aScenarioWithAVeryLongTitle();
-        ensureThatScenarioCanBeParsed(scenario);
+        ensureThatScenarioCanBeParsed(aScenarioWithAVeryLongTitle(2000));
     }
 
-    private String aScenarioWithAVeryLongTitle() {
-        StringBuilder builder = new StringBuilder()
-                .append("Scenario: First line of long title." + NL)
-                .append("After that follows a long textual description. " + NL);
-        int numberOfLines = 200; 
+    private String aScenarioWithAVeryLongTitle(int numberOfLines) {
+        StringBuilder builder = new StringBuilder();        
+        builder.append("Scenario: First line of long title." + NL)
+               .append("After that follows a long textual description. " + NL);
+        
         for (int i = 0; i < numberOfLines; i++) {
             builder.append("A line from the long description with about 60 characters." + NL);
         }
         builder.append("Given the first step that marks end of title" + NL);
         return builder.toString();
     }
+
+    @Test
+    public void shouldParseStoryWithVeryLongTables() {
+        ensureThatScenarioCanBeParsed(aScenarioWithVeryLongTables(2000));
+    }
+
+    private String aScenarioWithVeryLongTables(int numberOfLines) {
+        StringBuilder builder = new StringBuilder();        
+        builder.append("Scenario: A scenario with long tables" + NL)
+               .append("GivenStories: path1,path2,path3" + NL);
+        builder.append("Given a step with a long tabular argument: " + NL)  
+               .append(aTableWith(numberOfLines));        
+        builder.append("Examples:" + NL)       
+               .append(aTableWith(numberOfLines));
+        return builder.toString();
+    }
+
+    private String aTableWith(int numberOfLines) {
+        StringBuilder builder = new StringBuilder();        
+        builder.append("|h0|h1|h2|h3|h4|h5|h6|h7|h8|h9|" + NL);
+        for (int i = 0; i < numberOfLines; i++) {
+            builder.append("|c"+i+"0|c"+i+"1|c"+i+"2|c"+i+"3|c"+i+"4|c"+i+"5|c"+i+"6|c"+i+"7|c"+i+"8|c"+i+"9|" + NL);
+        }
+        return builder.toString();
+    }
+
 }

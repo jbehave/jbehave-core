@@ -229,7 +229,7 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullGivenStoriesIntoGroupOne() {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(".*\\n" + keywords.givenStories() + "((.|\\n)*?)\\s*(" + startingWords + ").*", DOTALL);
+        return compile("\\n" + keywords.givenStories() + "((.|\\n)*?)\\s*(" + startingWords + ").*", DOTALL);
     }
 
     private Pattern patternToPullStepsIntoGroupOne() {
@@ -241,7 +241,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern patternToPullExamplesTableIntoGroupOne() {
-        return compile(".*\\n" + keywords.examplesTable() + "\\s*(.*)", DOTALL);
+        return compile("\\n" + keywords.examplesTable() + "\\s*(.*)", DOTALL);
     }
 
     private String concatenateWithOr(String... keywords) {
