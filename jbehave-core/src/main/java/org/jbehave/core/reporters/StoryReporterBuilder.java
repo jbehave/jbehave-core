@@ -254,6 +254,13 @@ public class StoryReporterBuilder {
         return this;
     }
 
+    public StoryReporterBuilder withReporters(StoryReporter... reporters) {
+        for (StoryReporter reporter : reporters) {
+            this.formats.add(new ProvidedFormat(reporter));
+        }
+        return this;
+    }
+
     public StoryReporterBuilder withFailureTrace(boolean reportFailureTrace) {
         this.reportFailureTrace = reportFailureTrace;
         return this;
@@ -317,4 +324,23 @@ public class StoryReporterBuilder {
         return new FileConfiguration(relativeDirectory, extension, pathResolver);
     }
 
+    /**
+     * A Format that wraps a StoryReporter instance provided.
+     */
+    public static class ProvidedFormat extends org.jbehave.core.reporters.Format {
+
+        private final StoryReporter reporter;
+
+        public ProvidedFormat(StoryReporter reporter) {
+            super(reporter.getClass().getSimpleName());
+            this.reporter = reporter;
+        }
+
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+                StoryReporterBuilder storyReporterBuilder) {
+            return reporter;
+        }
+        
+    }
 }

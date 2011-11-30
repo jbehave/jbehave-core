@@ -104,8 +104,8 @@ public class StoryReporterBuilderBehaviour {
         assertThat(delegates.size(), equalTo(1));
         StoryReporter storyReporter = delegates.iterator().next();
         assertThat(storyReporter, instanceOf(TxtOutput.class));
-        assertThat(((TxtOutput)storyReporter).reportFailureTrace(), is(true));
-        assertThat(((TxtOutput)storyReporter).compressFailureTrace(), is(false));
+        assertThat(((TxtOutput) storyReporter).reportFailureTrace(), is(true));
+        assertThat(((TxtOutput) storyReporter).compressFailureTrace(), is(false));
     }
 
     @Test
@@ -120,8 +120,8 @@ public class StoryReporterBuilderBehaviour {
         // Then
         assertThat(builder.codeLocation(), equalTo(codeLocation));
         FilePrintStreamFactory factory = builder.filePrintStreamFactory(storyPath);
-        assertThat(factory.outputDirectory().getPath().replace('\\', '/'),
-                endsWith("custom/"+factory.configuration().getRelativeDirectory()));
+        assertThat(factory.outputDirectory().getPath().replace('\\', '/'), endsWith("custom/"
+                + factory.configuration().getRelativeDirectory()));
 
     }
 
@@ -194,15 +194,15 @@ public class StoryReporterBuilderBehaviour {
         Locale locale = Locale.getDefault();
 
         // When
-        StoryReporter reporter = builder.withDefaultFormats().withFormats(CONSOLE, IDE_CONSOLE, HTML, STATS, TXT, XML).withKeywords(new LocalizedKeywords(locale))
-                .build(storyPath);
+        StoryReporter reporter = builder.withDefaultFormats().withFormats(CONSOLE, IDE_CONSOLE, HTML, STATS, TXT, XML)
+                .withKeywords(new LocalizedKeywords(locale)).build(storyPath);
 
         // Then
         assertThat(builder.formats(), hasItems(CONSOLE, IDE_CONSOLE, HTML, STATS, TXT, XML));
-        String[] upperCaseNames = new String[]{"CONSOLE", "IDE_CONSOLE", "HTML", "STATS", "TXT", "XML"};
+        String[] upperCaseNames = new String[] { "CONSOLE", "IDE_CONSOLE", "HTML", "STATS", "TXT", "XML" };
         assertThat(builder.formatNames(false), hasItems(upperCaseNames));
         String[] lowerCaseNames = new String[6];
-        for ( int i = 0; i < upperCaseNames.length; i++ ) {
+        for (int i = 0; i < upperCaseNames.length; i++) {
             lowerCaseNames[i] = upperCaseNames[i].toLowerCase(locale);
         }
         assertThat(builder.formatNames(true), hasItems(lowerCaseNames));
@@ -218,8 +218,8 @@ public class StoryReporterBuilderBehaviour {
     public void shouldBuildWithCustomReporterForAGivenFormat() throws IOException {
         // Given
         String storyPath = storyPath(MyStory.class);
-        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(CodeLocations
-                .codeLocationFromClass(MyStory.class), storyPath));
+        final FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(
+                CodeLocations.codeLocationFromClass(MyStory.class), storyPath));
         final StoryReporter txtReporter = new TxtOutput(factory.createPrintStream(), new Properties(),
                 new LocalizedKeywords(), true);
         StoryReporterBuilder builder = new StoryReporterBuilder() {
@@ -244,6 +244,31 @@ public class StoryReporterBuilderBehaviour {
         Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
         assertThat(delegates.size(), equalTo(2));
         assertThat(delegates.contains(txtReporter), is(true));
+    }
+
+    @Test
+    public void shouldBuildWithCustomReportersAsProvidedFormat() throws IOException {
+        // Given
+        String storyPath = storyPath(MyStory.class);
+        FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(
+                CodeLocations.codeLocationFromClass(MyStory.class), storyPath));
+        StoryReporter txtReporter = new TxtOutput(factory.createPrintStream(), new Properties(),
+                new LocalizedKeywords(), true);
+        StoryReporter htmlReporter = new TxtOutput(factory.createPrintStream(), new Properties(),
+                new LocalizedKeywords(), true);
+        StoryReporterBuilder builder = new StoryReporterBuilder();
+
+        // When
+        StoryReporter reporter = builder.withReporters(txtReporter, htmlReporter).build(storyPath);
+
+        // Then
+        assertThat(reporter, instanceOf(ConcurrentStoryReporter.class));
+        StoryReporter delegate = ((ConcurrentStoryReporter) reporter).getDelegate();
+        assertThat(delegate, instanceOf(DelegatingStoryReporter.class));
+        Collection<StoryReporter> delegates = ((DelegatingStoryReporter) delegate).getDelegates();
+        assertThat(delegates.size(), equalTo(2));
+        assertThat(delegates.contains(txtReporter), is(true));
+        assertThat(delegates.contains(htmlReporter), is(true));
     }
 
     private String storyPath(Class<MyStory> storyClass) {

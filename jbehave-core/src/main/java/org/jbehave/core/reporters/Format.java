@@ -1,8 +1,17 @@
 package org.jbehave.core.reporters;
 
-
 import java.io.PrintStream;
 
+import org.jbehave.core.reporters.StoryReporterBuilder.ProvidedFormat;
+
+/**
+ * A Format is a {@link StoryReporter} factory, allowing named-based pre-defined
+ * story reporters to be configured via the
+ * {@link StoryReporterBuilder#withFormats(Format...)} method. Users wanting to
+ * configure their custom defined story reporters, can do so via the
+ * {@link StoryReporterBuilder#withReporters(StoryReporter...)} method, or use
+ * the {@link ProvidedFormat} wrapper.
+ */
 public abstract class Format {
 
     public static final Format CONSOLE = new Format("CONSOLE") {
@@ -18,10 +27,10 @@ public abstract class Format {
     public static final Format ANSI_CONSOLE = new Format("ANSI_CONSOLE") {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
-                                                 StoryReporterBuilder storyReporterBuilder) {
-            return new ANSIConsoleOutput(storyReporterBuilder.keywords())
-                    .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
-                    .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
+                StoryReporterBuilder storyReporterBuilder) {
+            return new ANSIConsoleOutput(storyReporterBuilder.keywords()).doReportFailureTrace(
+                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
+                    storyReporterBuilder.compressFailureTrace());
         }
     };
 
@@ -97,17 +106,17 @@ public abstract class Format {
         this.name = name;
     }
 
-    public abstract StoryReporter createStoryReporter(FilePrintStreamFactory factory,
-            StoryReporterBuilder storyReporterBuilder);
-
     public String name() {
         return name;
     }
 
+    public abstract StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+            StoryReporterBuilder storyReporterBuilder);
+
     public static void println(PrintStream writer, Object what) {
         writer.println(what);
     }
-    
+
     @Override
     public String toString() {
         return name;
