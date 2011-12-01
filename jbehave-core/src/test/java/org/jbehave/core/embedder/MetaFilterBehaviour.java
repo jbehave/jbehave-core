@@ -101,6 +101,7 @@ public class MetaFilterBehaviour {
         MetaFilter filter = filter("groovy: d");
         assertFalse(filter.allow(metaBuilder.clear().a(11).build()));
         assertTrue(filter.allow(metaBuilder.clear().a(11).d("").build()));
+        assertTrue(filter.allow(metaBuilder.clear().a(11).d("4nyth1ng").build()));
     }
 
     @Test
