@@ -1,5 +1,5 @@
 <project name="jbehave-dependencies" default="copy-dependencies" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
-	<taskdef uri="antlib:org.apache.maven.artifact.ant" classpath="maven-ant-tasks-2.1.0.jar" />
+	<taskdef uri="antlib:org.apache.maven.artifact.ant" classpath="antlib/maven-ant-tasks-2.1.3.jar" />
 
 	<target name="copy-dependencies">
 		<artifact:pom id="pom" file="pom.xml" settingsFile="settings.xml" />
