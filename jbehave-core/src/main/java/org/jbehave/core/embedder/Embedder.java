@@ -205,13 +205,13 @@ public class Embedder {
             failures.put(beforeStories.toString(), storyRunner.failure(beforeStories));
         }
 
-        List<Future<ThrowableStory>> futures = new ArrayList<Future<ThrowableStory>>();
+        List<RunningStory> runningStories = new ArrayList<RunningStory>();
 
         for (String storyPath : storyPaths) {
-            enqueueStory(failures, filter, futures, storyPath, storyRunner.storyOfPath(configuration, storyPath), beforeStories);
+            enqueueStory(failures, filter, runningStories, storyPath, storyRunner.storyOfPath(configuration, storyPath), beforeStories);
         }
 
-        waitUntilAllDoneOrFailed(futures, embedderControls, failures);
+        waitUntilAllDoneOrFailed(runningStories, embedderControls, failures);
 
         State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
 
@@ -234,23 +234,23 @@ public class Embedder {
     }
 
     public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
-            List<Future<ThrowableStory>> futures, String storyPath, Story story) {
-        return enqueueStory(batchFailures, filter, futures, storyPath, story, null);
+            List<RunningStory> runningStories, String storyPath, Story story) {
+        return enqueueStory(batchFailures, filter, runningStories, storyPath, story, null);
     }
 
     private Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
-            List<Future<ThrowableStory>> futures, String storyPath, Story story, State beforeStories) {
+            List<RunningStory> runningStories, String storyPath, Story story, State beforeStories) {
         EnqueuedStory enqueuedStory = enqueuedStory(embedderControls, configuration, stepsFactory, batchFailures,
                 filter, storyPath, story, beforeStories);
-        return submit(futures, enqueuedStory);
+        return submit(runningStories, enqueuedStory);
     }
 
-    private synchronized Future<ThrowableStory> submit(List<Future<ThrowableStory>> futures, EnqueuedStory enqueuedStory) {
+    private synchronized Future<ThrowableStory> submit(List<RunningStory> runningStories, EnqueuedStory enqueuedStory) {
         if (executorService == null) {
             useExecutorService(createExecutorService());
         }
         Future<ThrowableStory> submit = executorService.submit(enqueuedStory);
-        futures.add(submit);
+        runningStories.add(new RunningStory(submit, enqueuedStory.getStory()));
         return submit;
     }
 
@@ -273,32 +273,21 @@ public class Embedder {
         return Executors.newFixedThreadPool(threads);
     }
 
-    private void waitUntilAllDoneOrFailed(List<Future<ThrowableStory>> futures, EmbedderControls embedderControls, BatchFailures failures) {
+    private void waitUntilAllDoneOrFailed(List<RunningStory> runningStories, EmbedderControls embedderControls, BatchFailures failures) {
         long start = System.currentTimeMillis();
         boolean allDone = false;
         while (!allDone) {
             allDone = true;
-            for (Future<ThrowableStory> future : futures) {
+            for (RunningStory runningStory : runningStories) {
+                Future<ThrowableStory> future = runningStory.getFuture();
                 if (!future.isDone()) {
                     allDone = false;
                     long durationInSecs = storyDurationInSecs(start);
                     long timeoutInSecs = embedderControls.storyTimeoutInSecs();
                     if (durationInSecs > timeoutInSecs) {
-                        Story story = null;
-                        try {
-                            story = future.get().getStory();
-                        } catch (Throwable e) {
-                            failures.put(future.toString(), e);
-                            if (!embedderControls.ignoreFailureInStories()) {
-                                break;
-                            }
-                        }
-                        embedderMonitor.storyTimeout(story, durationInSecs, timeoutInSecs);
+                        embedderMonitor.storyTimeout(runningStory.getStory(), durationInSecs, timeoutInSecs);
+                        storyRunner.addCancelledStory(runningStory.getStory().getPath());
                         future.cancel(true);
-                    }
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
                     }
                     break;
                 } else {
@@ -318,9 +307,14 @@ public class Embedder {
                     }
                 }
             }
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+            }
         }
         // cancel any outstanding execution which is not done before returning
-        for (Future<ThrowableStory> future : futures) {
+        for (RunningStory runningStory : runningStories) {
+            Future<ThrowableStory> future = runningStory.getFuture();
             if ( !future.isDone() ){
                 future.cancel(true);
             }
@@ -632,6 +626,11 @@ public class Embedder {
             }
             return new ThrowableStory(null, story);
         }
+
+        public Story getStory() {
+            return story;
+        }
+        
     }
     
     public static class ThrowableStory {
@@ -648,4 +647,21 @@ public class Embedder {
         }
     }
 
+    public static class RunningStory {
+        Future<ThrowableStory> future;
+        Story story;
+        
+        public RunningStory(Future<ThrowableStory> future, Story story) {
+            this.future = future;
+            this.story = story;
+        }
+
+        public Future<ThrowableStory> getFuture() {
+            return future;
+        }
+
+        public Story getStory() {
+            return story;
+        }
+    }
 }

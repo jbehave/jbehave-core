@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.InjectableEmbedder;
@@ -50,6 +51,9 @@ import org.jbehave.core.steps.Steps;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import static java.util.Arrays.asList;
 
@@ -572,7 +576,72 @@ public class EmbedderBehaviour {
         }
         assertThat(out.toString(), containsString("Skipped stories " + storyPaths));
     }
+    
+    @Test()
+    public void shouldCancelStoryIfTimeoutIsSetAndStoryIsBusy() throws Throwable {
+        testStoryIfTimeoutIsSet(new Answer<StoryRunner>() {
+            
+            public StoryRunner answer(InvocationOnMock invocation) throws Throwable {
+                for (long i = 0; i < Long.MAX_VALUE; i++) {
+                    //keep it busy
+                }
+                return null;
+            }
+            
+        });
+    }
 
+    @Test()
+    public void shouldCancelStoryIfTimeoutIsSetAndStoryIsSleeping() throws Throwable {
+        testStoryIfTimeoutIsSet(new Answer<StoryRunner>() {
+
+            public StoryRunner answer(InvocationOnMock invocation) throws Throwable {
+                TimeUnit.SECONDS.sleep(3);
+                return null;
+            }
+            
+        });
+    }
+
+    private void testStoryIfTimeoutIsSet(Answer<StoryRunner> answer) throws Throwable {
+        // Given
+        final long TIME_OUT = 1;
+        StoryRunner runner = mock(StoryRunner.class);
+        EmbedderMonitor monitor = mock(EmbedderMonitor.class);
+        
+        EmbedderControls embedderControls = new EmbedderControls().useStoryTimeoutInSecs(TIME_OUT);
+
+        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Configuration configuration = embedder.configuration();
+        StoryPathResolver resolver = configuration.storyPathResolver();
+        
+        List<String> storyPaths = new ArrayList<String>();        
+        String storyPath = resolver.resolve(MyStory.class);
+        storyPaths.add(storyPath);
+        Story story = mock(Story.class);
+        when(story.getPath()).thenReturn(storyPath);
+        when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+        
+        Mockito.doAnswer(answer).when(runner).run(Matchers.any(Configuration.class),
+                        Matchers.any(InjectableStepsFactory.class),
+                        Matchers.eq(story),
+                        Matchers.any(MetaFilter.class),
+                        Matchers.any(State.class));
+
+        // When
+        boolean exceptionWasThrown = false;
+        try {
+            embedder.runStoriesAsPaths(storyPaths);
+        } catch (Exception exception) {
+            exceptionWasThrown = true;
+        }
+
+        // Then
+        assertThat(exceptionWasThrown, is(true));
+        verify(runner).addCancelledStory(Matchers.eq(storyPath));
+        verify(monitor).storyTimeout(Matchers.eq(story), Matchers.anyInt(), Matchers.eq(TIME_OUT));
+    }
+    
     @SuppressWarnings("unchecked")
     @Test(expected = RunningStoriesFailed.class)
     public void shouldThrowExceptionUponFailingStoriesAsPathsIfIgnoreFailureInStoriesFlagIsNotSet() throws Throwable {

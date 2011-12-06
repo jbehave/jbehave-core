@@ -2,8 +2,10 @@ package org.jbehave.core.embedder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
@@ -48,6 +50,8 @@ public class StoryRunner {
     private ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
     private ThreadLocal<String> reporterStoryPath = new ThreadLocal<String>();
     private ThreadLocal<State> storiesState = new ThreadLocal<State>();
+    //should this be volatile?
+    private Set<String> cancelled = new HashSet<String>();
 
     /**
      * Run steps before or after a collection of stories. Steps are execute only
@@ -176,12 +180,23 @@ public class StoryRunner {
         return configuration.storyParser().parseStory(storyAsText, storyPath);
     }
 
+    /**
+     * Add the story to the cancelled story list
+     * 
+     * @param story the Story that was cancelled due a timeout 
+     */
+    public void addCancelledStory(String story){
+        cancelled.add(story);
+    }
+
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
         try {
             runIt(context, story, storyParameters);
-        } catch (InterruptedException interruptedException) {
-            reporter.get().cancelled();
-            throw interruptedException;
+        } catch (Exception exception) {
+            if(cancelled.contains(story.getPath())){
+                reporter.get().cancelled();
+            }
+            throw exception;
         }
     }
 
