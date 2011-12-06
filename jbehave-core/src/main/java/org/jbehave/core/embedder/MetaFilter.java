@@ -212,7 +212,7 @@ public class MetaFilter {
         private Method match;
 
         public void parse(String filterAsString) {
-            String groovyString = "public class GroovyMatcher {" +
+            String groovyString = "public class GroovyMatcher {\n" +
                     "public org.jbehave.core.model.Meta meta\n" +
                     "  public boolean match() {\n" +
                     "    return (" + filterAsString.substring("groovy: ".length()) + ")\n" +
