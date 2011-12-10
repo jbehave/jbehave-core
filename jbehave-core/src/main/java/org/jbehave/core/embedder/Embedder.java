@@ -146,7 +146,7 @@ public class Embedder {
 
     private boolean ignoreFailure(EmbedderControls embedderControls) {
         boolean ignore = embedderControls.ignoreFailureInStories();
-        if ( embedderControls.generateViewAfterStories() ){
+        if (embedderControls.generateViewAfterStories()) {
             ignore = ignore && embedderControls.ignoreFailureInView();
         }
         return ignore;
@@ -164,7 +164,7 @@ public class Embedder {
 
     public void runStoriesWithAnnotatedEmbedderRunner(List<String> classNames) {
         EmbedderClassLoader classLoader = classLoader();
-        for (String className :  classNames) {
+        for (String className : classNames) {
             embedderMonitor.runningWithAnnotatedEmbedderRunner(className);
             AnnotatedEmbedderRunner runner = AnnotatedEmbedderUtils.annotatedEmbedderRunner(className, classLoader);
             try {
@@ -179,48 +179,50 @@ public class Embedder {
             }
         }
     }
-    
+
     public void runStoriesAsPaths(List<String> storyPaths) {
 
         processSystemProperties();
         EmbedderControls embedderControls = embedderControls();
-        
+
         embedderMonitor.usingControls(embedderControls);
-        
+
         if (embedderControls.skip()) {
             embedderMonitor.storiesSkipped(storyPaths);
             return;
         }
 
-        Configuration configuration = configuration();        
+        Configuration configuration = configuration();
         InjectableStepsFactory stepsFactory = stepsFactory();
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         configureReporterBuilder(configuration);
         MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, " "), embedderMonitor);
-        
+
         BatchFailures failures = new BatchFailures();
 
         State beforeStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
 
-        if ( storyRunner.failed(beforeStories) ){
+        if (storyRunner.failed(beforeStories)) {
             failures.put(beforeStories.toString(), storyRunner.failure(beforeStories));
         }
 
         List<RunningStory> runningStories = new ArrayList<RunningStory>();
 
         for (String storyPath : storyPaths) {
-            enqueueStory(failures, filter, runningStories, storyPath, storyRunner.storyOfPath(configuration, storyPath), beforeStories);
+            Story story = storyRunner.storyOfPath(configuration, storyPath);
+            RunningStory runningStory = enqueueStory(failures, filter, storyPath, story, beforeStories);
+            runningStories.add(runningStory);
         }
 
         waitUntilAllDoneOrFailed(runningStories, embedderControls, failures);
 
         State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
 
-        if ( storyRunner.failed(afterStories) ){
+        if (storyRunner.failed(afterStories)) {
             failures.put(afterStories.toString(), storyRunner.failure(afterStories));
         }
 
-        if ( failures.size() > 0) {
+        if (failures.size() > 0) {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.batchFailed(failures);
             } else {
@@ -231,39 +233,42 @@ public class Embedder {
         if (embedderControls.generateViewAfterStories()) {
             generateReportsView();
         }
-        
+
     }
 
+    /**
+     * @deprecated From 3.6 use {@link enqueueStoryAsText(String, String)
+     */
     public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
             List<Future<ThrowableStory>> futures, String storyPath, Story story) {
-        List<RunningStory> runningStories = new ArrayList<Embedder.RunningStory>();
-        for (Future<ThrowableStory> future : futures) {
-            runningStories.add(new RunningStory(future, story));
-        }
-        return enqueueStory(batchFailures, filter, runningStories, storyPath, story, null);
+        return enqueueStory(batchFailures, filter, storyPath, story, null).getFuture();
     }
 
-    private Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
-            List<RunningStory> runningStories, String storyPath, Story story, State beforeStories) {
+    public Future<ThrowableStory> enqueueStoryAsText(String storyAsText, String storyId) {
+        MetaFilter filter = new MetaFilter(StringUtils.join(metaFilters, " "), embedderMonitor);
+        Story story = storyRunner.storyOfText(configuration, storyAsText, storyId);
+        return enqueueStory(new BatchFailures(), filter, story.getPath(), story, null).getFuture();
+    }
+
+    private RunningStory enqueueStory(BatchFailures batchFailures, MetaFilter filter, String storyPath, Story story,
+            State beforeStories) {
         EnqueuedStory enqueuedStory = enqueuedStory(embedderControls, configuration, stepsFactory, batchFailures,
                 filter, storyPath, story, beforeStories);
-        return submit(runningStories, enqueuedStory);
+        return submit(enqueuedStory);
     }
 
-    private synchronized Future<ThrowableStory> submit(List<RunningStory> runningStories, EnqueuedStory enqueuedStory) {
-        if (executorService == null) {
-            useExecutorService(createExecutorService());
-        }
-        Future<ThrowableStory> submit = executorService.submit(enqueuedStory);
-        runningStories.add(new RunningStory(submit, enqueuedStory.getStory()));
-        return submit;
-    }
-
-    protected EnqueuedStory enqueuedStory(EmbedderControls embedderControls, Configuration configuration,
+    private EnqueuedStory enqueuedStory(EmbedderControls embedderControls, Configuration configuration,
             InjectableStepsFactory stepsFactory, BatchFailures batchFailures, MetaFilter filter, String storyPath,
             Story story, State beforeStories) {
         return new EnqueuedStory(storyPath, configuration, stepsFactory, story, filter, embedderControls,
                 batchFailures, embedderMonitor, storyRunner, beforeStories);
+    }
+
+    private synchronized RunningStory submit(EnqueuedStory enqueuedStory) {
+        if (executorService == null) {
+            useExecutorService(createExecutorService());
+        }
+        return new RunningStory(enqueuedStory.getStory(), executorService.submit(enqueuedStory));
     }
 
     /**
@@ -272,13 +277,14 @@ public class Embedder {
      * 
      * @return An ExecutorService
      */
-    protected ExecutorService createExecutorService() {
+    private ExecutorService createExecutorService() {
         int threads = embedderControls.threads();
         embedderMonitor.usingThreads(threads);
         return Executors.newFixedThreadPool(threads);
     }
 
-    private void waitUntilAllDoneOrFailed(List<RunningStory> runningStories, EmbedderControls embedderControls, BatchFailures failures) {
+    private void waitUntilAllDoneOrFailed(List<RunningStory> runningStories, EmbedderControls embedderControls,
+            BatchFailures failures) {
         long start = System.currentTimeMillis();
         boolean allDone = false;
         while (!allDone) {
@@ -301,8 +307,9 @@ public class Embedder {
                     Story story = runningStory.getStory();
                     try {
                         ThrowableStory throwableStory = future.get();
-                        if (throwableStory.throwable != null) {
-                            failures.put(story.getPath(), throwableStory.throwable);
+                        Throwable throwable = throwableStory.getThrowable();
+                        if (throwable != null) {
+                            failures.put(story.getPath(), throwable);
                             if (!embedderControls.ignoreFailureInStories()) {
                                 break;
                             }
@@ -320,11 +327,11 @@ public class Embedder {
         // cancel any outstanding execution which is not done before returning
         for (RunningStory runningStory : runningStories) {
             Future<ThrowableStory> future = runningStory.getFuture();
-            if ( !future.isDone() ){
+            if (!future.isDone()) {
                 future.cancel(true);
             }
         }
-        
+
     }
 
     private void tickTock() {
@@ -369,16 +376,16 @@ public class Embedder {
         ReportsCount count = viewGenerator.getReportsCount();
         embedderMonitor.reportsViewGenerated(count);
         handleFailure(embedderControls, count);
-       
+
     }
 
     private void handleFailure(EmbedderControls embedderControls, ReportsCount count) {
-        if (!embedderControls.ignoreFailureInView()){
+        if (!embedderControls.ignoreFailureInView()) {
             boolean failed = count.failed();
-            if ( configuration().pendingStepStrategy() instanceof FailingUponPendingStep ){
+            if (configuration().pendingStepStrategy() instanceof FailingUponPendingStep) {
                 failed = failed || count.pending();
             }
-            if ( failed ){
+            if (failed) {
                 throw new RunningStoriesFailed(count);
             }
         }
@@ -386,7 +393,7 @@ public class Embedder {
 
     public void generateCrossReference() {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
-        if (builder.hasCrossReference()){
+        if (builder.hasCrossReference()) {
             builder.crossReference().outputToFiles(builder);
         }
     }
@@ -406,7 +413,7 @@ public class Embedder {
             if (embeddable instanceof ConfigurableEmbedder) {
                 ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder) embeddable;
                 List<CandidateSteps> steps = configurableEmbedder.candidateSteps();
-                if ( steps.isEmpty() ){
+                if (steps.isEmpty()) {
                     steps = configurableEmbedder.stepsFactory().createCandidateSteps();
                 }
                 reportStepdocs(configurableEmbedder.configuration(), steps);
@@ -459,8 +466,8 @@ public class Embedder {
     }
 
     public InjectableStepsFactory stepsFactory() {
-        if ( stepsFactory == null ){
-            stepsFactory = new ProvidedStepsFactory(candidateSteps);            
+        if (stepsFactory == null) {
+            stepsFactory = new ProvidedStepsFactory(candidateSteps);
         }
         return stepsFactory;
     }
@@ -498,7 +505,7 @@ public class Embedder {
     }
 
     public void useStepsFactory(InjectableStepsFactory stepsFactory) {
-        this.stepsFactory = stepsFactory;        
+        this.stepsFactory = stepsFactory;
     }
 
     public void useEmbedderControls(EmbedderControls embedderControls) {
@@ -509,11 +516,11 @@ public class Embedder {
         this.embedderMonitor = embedderMonitor;
     }
 
-    public void useExecutorService(ExecutorService executorService){
-        this.executorService = executorService;        
+    public void useExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
         embedderMonitor.usingExecutorService(executorService);
     }
-    
+
     public void useMetaFilters(List<String> metaFilters) {
         this.metaFilters = metaFilters;
     }
@@ -588,7 +595,7 @@ public class Embedder {
         }
     }
 
-    public static class EnqueuedStory implements Callable<ThrowableStory> {
+    private static class EnqueuedStory implements Callable<ThrowableStory> {
         private final String storyPath;
         private final Configuration configuration;
         private final InjectableStepsFactory stepsFactory;
@@ -599,12 +606,6 @@ public class Embedder {
         private final EmbedderMonitor embedderMonitor;
         private final StoryRunner storyRunner;
         private final State beforeStories;
-
-        public EnqueuedStory(String storyPath, Configuration configuration, List<CandidateSteps> candidateSteps,
-                Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures,
-                EmbedderMonitor embedderMonitor, StoryRunner storyRunner, State beforeStories) {
-            this(storyPath, configuration, new ProvidedStepsFactory(candidateSteps), story, filter, embedderControls, batchFailures, embedderMonitor, storyRunner, beforeStories);
-        }
 
         public EnqueuedStory(String storyPath, Configuration configuration, InjectableStepsFactory stepsFactory,
                 Story story, MetaFilter filter, EmbedderControls embedderControls, BatchFailures batchFailures,
@@ -633,40 +634,44 @@ public class Embedder {
                     if (embedderControls.ignoreFailureInStories()) {
                         embedderMonitor.storyFailed(storyPath, e);
                     } else {
-                        return new ThrowableStory(new RunningStoriesFailed(storyPath, e), story);
+                        return new ThrowableStory(story, new RunningStoriesFailed(storyPath, e));
                     }
                 }
             }
-            return new ThrowableStory(null, story);
+            return new ThrowableStory(story, null);
         }
 
         public Story getStory() {
             return story;
         }
-        
+
     }
-    
-    public static class ThrowableStory {
-        private Throwable throwable;
-        private Story story;
 
-        public ThrowableStory(Throwable throwable, Story story) {
-            this.throwable = throwable;
+    public static class ThrowableStory {
+        private Story story;
+        private Throwable throwable;
+
+        public ThrowableStory(Story story, Throwable throwable) {
             this.story = story;
+            this.throwable = throwable;
         }
 
         public Story getStory() {
             return story;
+        }
+
+        public Throwable getThrowable() {
+            return throwable;
         }
     }
 
     public static class RunningStory {
-        Future<ThrowableStory> future;
-        Story story;
-        
-        public RunningStory(Future<ThrowableStory> future, Story story) {
-            this.future = future;
+        private Story story;
+        private Future<ThrowableStory> future;
+
+        public RunningStory(Story story, Future<ThrowableStory> future) {
             this.story = story;
+            this.future = future;
         }
 
         public Future<ThrowableStory> getFuture() {
@@ -677,4 +682,5 @@ public class Embedder {
             return story;
         }
     }
+
 }

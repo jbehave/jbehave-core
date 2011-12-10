@@ -180,6 +180,18 @@ public class StoryRunner {
     }
 
     /**
+     * Returns the parsed story from the given text
+     * 
+     * @param configuration the Configuration used to run story
+     * @param storyAsText the story text
+     * @param storyId the story Id, which will be returned as story path
+     * @return The parsed Story
+     */
+    public Story storyOfText(Configuration configuration, String storyAsText, String storyId) {
+        return configuration.storyParser().parseStory(storyAsText, storyId);
+    }
+
+    /**
      * Cancels story execution following a timeout
      * 
      * @param story the Story that was timed out
