@@ -146,7 +146,7 @@ public class TemplateableOutput implements StoryReporter {
         this.outputScenario.addStep(new OutputRestart(step, cause.getMessage()));
     }
 
-    public void cancelled() {
+    public void storyCancelled(Story story) {
     }
 
     public void afterStory(boolean givenStory) {

@@ -38,17 +38,22 @@ import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepResult;
 import org.jbehave.core.steps.Steps;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.is;
+
 import static org.jbehave.core.steps.AbstractStepResult.failed;
 import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
 import static org.jbehave.core.steps.AbstractStepResult.successful;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -58,11 +63,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-import static org.junit.Assert.*;
 
 public class StoryRunnerBehaviour {
 
@@ -313,8 +313,8 @@ public class StoryRunnerBehaviour {
         when(configuration.storyReporter(Matchers.anyString())).thenReturn(reporter);
         
         Story story = mock(Story.class);
-        final String STORY_PATH = "story/path";
-        when(story.getPath()).thenReturn(STORY_PATH);
+        String storyPath = "story/path";
+        when(story.getPath()).thenReturn(storyPath);
         RuntimeException expected = new RuntimeException();
         when(story.getMeta()).thenThrow(expected);
         
@@ -325,14 +325,14 @@ public class StoryRunnerBehaviour {
         //When
         try {
             StoryRunner runner = new StoryRunner();
-            runner.addCancelledStory(STORY_PATH);
+            runner.cancelStory(story);
             runner.run(configuration, stepsFactory, story, metaFilter, state);
             fail("A exception should be thrown");
         } catch (Throwable e) {
         //Then
             assertThat(e.equals(expected), is(true));
         }        
-        verify(reporter).cancelled();
+        verify(reporter).storyCancelled(story);
     }
 
     @Test

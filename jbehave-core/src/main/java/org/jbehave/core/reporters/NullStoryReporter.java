@@ -32,16 +32,19 @@ public class NullStoryReporter implements StoryReporter {
     public void failedOutcomes(String step, OutcomesTable table) {
     }
 
-    public void beforeStory(Story story, boolean givenStory) {
-    }
-
-    public void narrative(final Narrative narrative) {
-    }
-
     public void storyNotAllowed(Story story, String filter) {
     }
 
+    public void beforeStory(Story story, boolean givenStory) {
+    }
+
+    public void storyCancelled(Story story) {
+    }
+
     public void afterStory(boolean givenStory) {
+    }
+
+    public void narrative(final Narrative narrative) {
     }
 
     public void givenStories(GivenStories givenStories) {
@@ -80,6 +83,4 @@ public class NullStoryReporter implements StoryReporter {
     public void restarted(String step, Throwable cause) {
     }
 
-    public void cancelled() {
-    }
 }

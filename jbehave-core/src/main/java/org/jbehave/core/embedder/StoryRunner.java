@@ -50,8 +50,8 @@ public class StoryRunner {
     private ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
     private ThreadLocal<String> reporterStoryPath = new ThreadLocal<String>();
     private ThreadLocal<State> storiesState = new ThreadLocal<State>();
-    //should this be volatile?
-    private Set<String> cancelled = new HashSet<String>();
+    // should this be volatile?
+    private Set<Story> cancelledStories = new HashSet<Story>();
 
     /**
      * Run steps before or after a collection of stories. Steps are execute only
@@ -181,26 +181,27 @@ public class StoryRunner {
     }
 
     /**
-     * Add the story to the cancelled story list
+     * Cancels story execution
      * 
-     * @param story the Story that was cancelled due a timeout 
+     * @param story the Story that was cancelled
      */
-    public void addCancelledStory(String story){
-        cancelled.add(story);
+    public void cancelStory(Story story) {
+        cancelledStories.add(story);
     }
 
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
         try {
-            runIt(context, story, storyParameters);
-        } catch (Exception exception) {
-            if(cancelled.contains(story.getPath())){
-                reporter.get().cancelled();
+            runCancellable(context, story, storyParameters);
+        } catch (Exception e) {
+            if (cancelledStories.contains(story)) {
+                reporter.get().storyCancelled(story);
+                reporter.get().afterStory(context.givenStory);
             }
-            throw exception;
+            throw e;
         }
     }
 
-    private void runIt(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
+    private void runCancellable(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
         if (!context.givenStory) {
             reporter.set(reporterFor(context, story));
         }
@@ -248,7 +249,7 @@ public class StoryRunner {
                     reporter.get().beforeScenario(scenario.getTitle());
                     reporter.get().scenarioMeta(scenario.getMeta());
 
-                    if ( !filterContext.allowed(scenario) ) {
+                    if (!filterContext.allowed(scenario)) {
                         reporter.get().scenarioNotAllowed(scenario, context.metaFilterAsString());
                         scenarioAllowed = false;
                     }
@@ -601,7 +602,8 @@ public class StoryRunner {
             storyAllowed = filter.allow(storyMeta);
             scenariosAllowed = new HashMap<Scenario, Boolean>();
             for (Scenario scenario : story.getScenarios()) {
-                Meta scenarioMeta = scenario.getMeta().inheritFrom(scenario.asMeta(scenarioMetaPrefix).inheritFrom(storyMeta));
+                Meta scenarioMeta = scenario.getMeta().inheritFrom(
+                        scenario.asMeta(scenarioMetaPrefix).inheritFrom(storyMeta));
                 boolean scenarioAllowed = filter.allow(scenarioMeta);
                 scenariosAllowed.put(scenario, scenarioAllowed);
             }
@@ -611,7 +613,7 @@ public class StoryRunner {
             return storyAllowed || scenariosAllowed.values().contains(true);
         }
 
-        public boolean allowed(Scenario scenario){
+        public boolean allowed(Scenario scenario) {
             return scenariosAllowed.get(scenario);
         }
     }

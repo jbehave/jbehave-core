@@ -21,11 +21,13 @@ public interface StoryReporter {
 
     void storyNotAllowed(Story story, String filter);
 
+    void storyCancelled(Story story);
+
     void beforeStory(Story story, boolean givenStory);
 
-    void narrative(Narrative narrative);
-
     void afterStory(boolean givenStory);
+
+    void narrative(Narrative narrative);
 
     void scenarioNotAllowed(Scenario scenario, String filter);
 
@@ -63,5 +65,4 @@ public interface StoryReporter {
 
     void pendingMethods(List<String> methods);
 
-    void cancelled();
 }

@@ -104,6 +104,10 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         writeData();
     }
 
+    public void storyCancelled(Story story) {
+        add("cancelled");
+    }
+
     public void afterStory(boolean givenStory) {
         if (givenStory) {
             this.givenStories--;
@@ -188,9 +192,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void restarted(String step, Throwable cause) {
-    }
-
-    public void cancelled() {
     }
 
     private void add(String event) {

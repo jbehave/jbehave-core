@@ -285,8 +285,9 @@ public class Embedder {
                     long durationInSecs = storyDurationInSecs(start);
                     long timeoutInSecs = embedderControls.storyTimeoutInSecs();
                     if (durationInSecs > timeoutInSecs) {
-                        embedderMonitor.storyTimeout(runningStory.getStory(), durationInSecs, timeoutInSecs);
-                        storyRunner.addCancelledStory(runningStory.getStory().getPath());
+                        Story story = runningStory.getStory();
+                        embedderMonitor.storyTimeout(story, durationInSecs, timeoutInSecs);
+                        storyRunner.cancelStory(story);
                         future.cancel(true);
                     }
                     break;

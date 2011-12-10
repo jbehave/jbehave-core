@@ -166,6 +166,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("filter", "{0}\n", filter));
     }
 
+    public void storyCancelled(Story story) {
+        print(format("storyCancelled", "{0}\n", story.getPath()));
+    }
+
     public void beforeStory(Story story, boolean givenStory) {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
         if (!story.getMeta().isEmpty()) {
@@ -257,11 +261,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void restarted(String step, Throwable cause) {
         print(format("restarted", "{0} {1}\n", step, cause.getMessage()));
-    }
-
-    public void cancelled() {
-        String cancelled = format("cancelled", "\n");
-        print(cancelled);
     }
 
     /**

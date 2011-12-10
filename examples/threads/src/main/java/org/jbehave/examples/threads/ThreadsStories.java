@@ -25,9 +25,9 @@ public class ThreadsStories extends JUnitStories {
 
     public ThreadsStories() {
         Embedder embedder = configuredEmbedder();
-        embedder.embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
+        embedder.embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
                 .doIgnoreFailureInView(true).useThreads(1).useStoryTimeoutInSecs(2);
-        embedder.useMetaFilters(Arrays.asList("groovy: scenario_title ==~ /.*failing.*/"));
+        embedder.useMetaFilters(Arrays.asList("groovy: scenario_title ==~ /.*long.*/"));
     }
 
     @Override

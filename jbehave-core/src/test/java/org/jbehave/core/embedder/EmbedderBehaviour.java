@@ -638,7 +638,7 @@ public class EmbedderBehaviour {
 
         // Then
         assertThat(exceptionWasThrown, is(true));
-        verify(runner).addCancelledStory(Matchers.eq(storyPath));
+        verify(runner).cancelStory(story);
         verify(monitor).storyTimeout(Matchers.eq(story), Matchers.anyInt(), Matchers.eq(TIME_OUT));
     }
     
