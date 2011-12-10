@@ -235,7 +235,11 @@ public class Embedder {
     }
 
     public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
-            List<RunningStory> runningStories, String storyPath, Story story) {
+            List<Future<ThrowableStory>> futures, String storyPath, Story story) {
+        List<RunningStory> runningStories = new ArrayList<Embedder.RunningStory>();
+        for (Future<ThrowableStory> future : futures) {
+            runningStories.add(new RunningStory(future, story));
+        }
         return enqueueStory(batchFailures, filter, runningStories, storyPath, story, null);
     }
 
