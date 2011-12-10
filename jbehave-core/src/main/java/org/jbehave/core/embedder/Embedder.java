@@ -294,26 +294,24 @@ public class Embedder {
                     }
                     break;
                 } else {
+                    Story story = runningStory.getStory();
                     try {
                         ThrowableStory throwableStory = future.get();
                         if (throwableStory.throwable != null) {
-                            failures.put(future.toString(), throwableStory.throwable);
+                            failures.put(story.getPath(), throwableStory.throwable);
                             if (!embedderControls.ignoreFailureInStories()) {
                                 break;
                             }
                         }
                     } catch (Throwable e) {
-                        failures.put(future.toString(), e);
+                        failures.put(story.getPath(), e);
                         if (!embedderControls.ignoreFailureInStories()) {
                             break;
                         }
                     }
                 }
             }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-            }
+            tickTock();
         }
         // cancel any outstanding execution which is not done before returning
         for (RunningStory runningStory : runningStories) {
@@ -321,6 +319,14 @@ public class Embedder {
             if ( !future.isDone() ){
                 future.cancel(true);
             }
+        }
+        
+    }
+
+    private void tickTock() {
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
         }
     }
 

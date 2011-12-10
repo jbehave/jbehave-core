@@ -3,7 +3,7 @@ package org.jbehave.core.failures;
 import java.util.HashMap;
 
 @SuppressWarnings("serial")
-public class BatchFailures extends HashMap<String,Throwable> {
+public class BatchFailures extends HashMap<String, Throwable> {
 
     @Override
     public String toString() {
@@ -13,7 +13,13 @@ public class BatchFailures extends HashMap<String,Throwable> {
             sb.append("\n");
             sb.append(name);
             sb.append(": ");
-            sb.append((cause != null && cause.getMessage() != null) ? cause.getMessage() : "N/A");
+            if (cause != null && cause.getMessage() != null) {
+                sb.append(cause.getMessage());
+            } else if (cause != null) {
+                sb.append(cause);
+            } else {
+                sb.append("N/A");
+            }
         }
         return sb.toString();
     }
