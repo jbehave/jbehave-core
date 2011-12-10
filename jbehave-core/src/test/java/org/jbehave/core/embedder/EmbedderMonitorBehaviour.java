@@ -11,6 +11,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.PrintStreamOutput.Format;
 import org.jbehave.core.reporters.ReportsCount;
@@ -106,10 +107,11 @@ public class EmbedderMonitorBehaviour {
         List<String> storyPaths = asList("path1");
         monitor.storiesSkipped(storyPaths);
         monitor.storyFailed(storyPath, cause);
-        long durationInSecs = 1L;
         Story story = mock(Story.class);
+        long durationInSecs = 1L;
         long timeoutInSecs = 2L;
-        monitor.storyTimeout(story, durationInSecs, timeoutInSecs);
+        StoryDuration storyDuration = new StoryDuration(durationInSecs, timeoutInSecs);
+        monitor.storyTimeout(story, storyDuration);
         String value = "value";
         monitor.systemPropertySet(name, value);
         int threads = 2;
@@ -136,7 +138,7 @@ public class EmbedderMonitorBehaviour {
         verify(delegate).reportsViewNotGenerated();
         verify(delegate).storiesSkipped(storyPaths);
         verify(delegate).storyFailed(storyPath, cause);
-        verify(delegate).storyTimeout(story, durationInSecs, timeoutInSecs);
+        verify(delegate).storyTimeout(story, storyDuration);
         verify(delegate).systemPropertySet(name, value);
         verify(delegate).usingThreads(threads);
    }

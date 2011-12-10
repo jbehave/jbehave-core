@@ -2,10 +2,8 @@ package org.jbehave.core.embedder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
@@ -20,6 +18,7 @@ import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
@@ -51,7 +50,7 @@ public class StoryRunner {
     private ThreadLocal<String> reporterStoryPath = new ThreadLocal<String>();
     private ThreadLocal<State> storiesState = new ThreadLocal<State>();
     // should this be volatile?
-    private Set<Story> cancelledStories = new HashSet<Story>();
+    private Map<Story, StoryDuration> cancelledStories = new HashMap<Story, StoryDuration>();
 
     /**
      * Run steps before or after a collection of stories. Steps are execute only
@@ -181,20 +180,21 @@ public class StoryRunner {
     }
 
     /**
-     * Cancels story execution
+     * Cancels story execution following a timeout
      * 
-     * @param story the Story that was cancelled
+     * @param story the Story that was timed out
+     * @param storyDuration the StoryDuration
      */
-    public void cancelStory(Story story) {
-        cancelledStories.add(story);
+    public void cancelStory(Story story, StoryDuration storyDuration) {
+        cancelledStories.put(story, storyDuration);
     }
 
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
         try {
             runCancellable(context, story, storyParameters);
         } catch (Exception e) {
-            if (cancelledStories.contains(story)) {
-                reporter.get().storyCancelled(story);
+            if (cancelledStories.containsKey(story)) {
+                reporter.get().storyCancelled(story, cancelledStories.get(story));                
                 reporter.get().afterStory(context.givenStory);
             }
             throw e;

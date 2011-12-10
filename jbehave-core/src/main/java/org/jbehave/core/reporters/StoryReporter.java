@@ -10,6 +10,7 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 
 /**
  * Allows the runner to report the state of running stories
@@ -21,7 +22,7 @@ public interface StoryReporter {
 
     void storyNotAllowed(Story story, String filter);
 
-    void storyCancelled(Story story);
+    void storyCancelled(Story story, StoryDuration storyDuration);
 
     void beforeStory(Story story, boolean givenStory);
 

@@ -19,6 +19,7 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
@@ -146,7 +147,7 @@ public class TemplateableOutput implements StoryReporter {
         this.outputScenario.addStep(new OutputRestart(step, cause.getMessage()));
     }
 
-    public void storyCancelled(Story story) {
+    public void storyCancelled(Story story, StoryDuration storyDuration) {
     }
 
     public void afterStory(boolean givenStory) {

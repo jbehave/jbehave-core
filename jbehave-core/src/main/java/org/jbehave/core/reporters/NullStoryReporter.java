@@ -1,14 +1,21 @@
 package org.jbehave.core.reporters;
 
-import org.jbehave.core.model.*;
-
 import java.util.List;
 import java.util.Map;
+
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 
 /**
  * <p>
  * <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">Null-object</a> implementation of 
- * {@link StoryReporter}.   Users can subclass it and can override only the method that they
+ * {@link StoryReporter}. Users can subclass it and can override only the method that they
  * are interested in.
  * </p>
  */
@@ -38,7 +45,7 @@ public class NullStoryReporter implements StoryReporter {
     public void beforeStory(Story story, boolean givenStory) {
     }
 
-    public void storyCancelled(Story story) {
+    public void storyCancelled(Story story, StoryDuration storyDuration) {
     }
 
     public void afterStory(boolean givenStory) {

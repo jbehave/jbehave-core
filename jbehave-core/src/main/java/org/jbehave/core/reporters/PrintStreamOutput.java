@@ -28,6 +28,7 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 
 import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
@@ -166,8 +167,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("filter", "{0}\n", filter));
     }
 
-    public void storyCancelled(Story story) {
-        print(format("storyCancelled", "{0}\n", story.getPath()));
+    public void storyCancelled(Story story, StoryDuration storyDuration) {
+        print(format("storyCancelled", "{0}: {1} s > {2} s\n", story.getPath(), storyDuration.getDurationInSecs(), storyDuration.getTimeoutInSecs()));
     }
 
     public void beforeStory(Story story, boolean givenStory) {

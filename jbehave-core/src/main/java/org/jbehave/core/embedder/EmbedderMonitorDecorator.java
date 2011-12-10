@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
@@ -121,8 +122,8 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
         delegate.systemPropertySet(name, value);
     }
     
-    public void storyTimeout(Story story, long durationInSecs, long timeoutInSecs) {
-        delegate.storyTimeout(story, durationInSecs, timeoutInSecs);
+    public void storyTimeout(Story story, StoryDuration storyDuration) {
+        delegate.storyTimeout(story, storyDuration);
     }
 
     public void usingThreads(int threads) {

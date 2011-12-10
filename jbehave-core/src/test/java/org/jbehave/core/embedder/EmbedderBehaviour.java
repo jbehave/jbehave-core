@@ -35,6 +35,7 @@ import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.junit.JUnitStoryMaps;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMap;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.CrossReference;
@@ -605,11 +606,12 @@ public class EmbedderBehaviour {
 
     private void testStoryIfTimeoutIsSet(Answer<StoryRunner> answer) throws Throwable {
         // Given
-        final long TIME_OUT = 1;
+        long timeoutInSecs = 1;        
+
         StoryRunner runner = mock(StoryRunner.class);
         EmbedderMonitor monitor = mock(EmbedderMonitor.class);
         
-        EmbedderControls embedderControls = new EmbedderControls().useStoryTimeoutInSecs(TIME_OUT);
+        EmbedderControls embedderControls = new EmbedderControls().useStoryTimeoutInSecs(timeoutInSecs);
 
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
@@ -638,8 +640,8 @@ public class EmbedderBehaviour {
 
         // Then
         assertThat(exceptionWasThrown, is(true));
-        verify(runner).cancelStory(story);
-        verify(monitor).storyTimeout(Matchers.eq(story), Matchers.anyInt(), Matchers.eq(TIME_OUT));
+        verify(runner).cancelStory(Matchers.eq(story), Matchers.any(StoryDuration.class));
+        verify(monitor).storyTimeout(Matchers.eq(story), Matchers.any(StoryDuration.class));
     }
     
     @SuppressWarnings("unchecked")

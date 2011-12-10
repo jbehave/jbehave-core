@@ -26,6 +26,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
@@ -323,16 +324,19 @@ public class StoryRunnerBehaviour {
         State state = mock(State.class);
     
         //When
+        long durationInSecs = 2;
+        long timeoutInSecs = 1;
+        StoryDuration storyDuration = new StoryDuration(durationInSecs, timeoutInSecs);
         try {
             StoryRunner runner = new StoryRunner();
-            runner.cancelStory(story);
+            runner.cancelStory(story, storyDuration);
             runner.run(configuration, stepsFactory, story, metaFilter, state);
             fail("A exception should be thrown");
         } catch (Throwable e) {
         //Then
             assertThat(e.equals(expected), is(true));
         }        
-        verify(reporter).storyCancelled(story);
+        verify(reporter).storyCancelled(story, storyDuration);
     }
 
     @Test

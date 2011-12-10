@@ -16,6 +16,7 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 
 import static java.util.Arrays.asList;
 
@@ -104,7 +105,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         writeData();
     }
 
-    public void storyCancelled(Story story) {
+    public void storyCancelled(Story story, StoryDuration storyDuration) {
         add("cancelled");
     }
 

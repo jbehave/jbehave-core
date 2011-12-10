@@ -14,6 +14,7 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
@@ -461,8 +462,8 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("System property '" + name + "' set to '" + value + "'");
         }
 
-        public void storyTimeout(Story story, long durationInSecs, long timeoutInSecs) {
-            getLog().warn("Story " + story.getPath() + " duration of " + durationInSecs + " seconds has exceeded timeout of "+timeoutInSecs+" seconds");
+        public void storyTimeout(Story story, StoryDuration storyDuration) {
+            getLog().warn("Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs() + " seconds has exceeded timeout of " + storyDuration.getTimeoutInSecs() + " seconds");
         }
 
         public void usingThreads(int threads) {

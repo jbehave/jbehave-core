@@ -24,6 +24,7 @@ import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.junit.AnnotatedEmbedderUtils;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StepdocReporter;
@@ -286,8 +287,9 @@ public class Embedder {
                     long timeoutInSecs = embedderControls.storyTimeoutInSecs();
                     if (durationInSecs > timeoutInSecs) {
                         Story story = runningStory.getStory();
-                        embedderMonitor.storyTimeout(story, durationInSecs, timeoutInSecs);
-                        storyRunner.cancelStory(story);
+                        StoryDuration storyDuration = new StoryDuration(durationInSecs, timeoutInSecs);
+                        embedderMonitor.storyTimeout(story, storyDuration);
+                        storyRunner.cancelStory(story, storyDuration);
                         future.cancel(true);
                     }
                     break;

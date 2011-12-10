@@ -24,6 +24,7 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
@@ -377,8 +378,8 @@ public abstract class AbstractEmbedderTask extends Task {
             log("System property '" + name + "' set to '" + value + "'", MSG_INFO);
         }
 
-        public void storyTimeout(Story story, long durationInSecs, long timeoutInSecs) {
-            log("Story " + story.getPath() + " duration of " + durationInSecs + " seconds has exceeded timeout of "+timeoutInSecs+" seconds", MSG_INFO);
+        public void storyTimeout(Story story, StoryDuration storyDuration) {
+            log("Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs() + " seconds has exceeded timeout of "+storyDuration.getTimeoutInSecs()+" seconds", MSG_INFO);
         }
 
         public void usingThreads(int threads) {
