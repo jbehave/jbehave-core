@@ -73,13 +73,12 @@ public class AnnotationBuilder {
      */
     public Configuration buildConfiguration() throws AnnotationRequired {
 
-
         if (!finder.isAnnotationPresent(Configure.class)) {
             // not using annotation configuration, default to most useful
             // configuration
             return new MostUsefulConfiguration();
         }
-        
+
         Configuration configuration = configurationElement(finder, "using", Configuration.class);
         configuration.useKeywords(configurationElement(finder, "keywords", Keywords.class));
         configuration.useFailureStrategy(configurationElement(finder, "failureStrategy", FailureStrategy.class));
@@ -120,8 +119,7 @@ public class AnnotationBuilder {
      * Builds CandidateSteps using annotation {@link UsingSteps} found in the
      * annotated object instance and the configuration provided
      * 
-     * @param configuration
-     *            the Configuration
+     * @param configuration the Configuration
      * @return A List of CandidateSteps instances
      */
     public List<CandidateSteps> buildCandidateSteps(Configuration configuration) {
@@ -129,11 +127,11 @@ public class AnnotationBuilder {
     }
 
     /**
-     * Builds the {@link InjectableStepsFactory} using annotation {@link UsingSteps} found in the
-     * annotated object instance and the configuration provided
+     * Builds the {@link InjectableStepsFactory} using annotation
+     * {@link UsingSteps} found in the annotated object instance and the
+     * configuration provided
      * 
-     * @param configuration
-     *            the Configuration
+     * @param configuration the Configuration
      * @return A {@link InjectableStepsFactory}
      */
     public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
@@ -166,27 +164,29 @@ public class AnnotationBuilder {
         boolean generateViewAfterStories = control(finder, "generateViewAfterStories");
         boolean ignoreFailureInStories = control(finder, "ignoreFailureInStories");
         boolean ignoreFailureInView = control(finder, "ignoreFailureInView");
+        boolean verboseFailures = control(finder, "verboseFailures");
         long storyTimeoutInSecs = finder.getAnnotatedValue(UsingEmbedder.class, Long.class, "storyTimeoutInSecs");
         int threads = finder.getAnnotatedValue(UsingEmbedder.class, Integer.class, "threads");
-        Embedder embedder = instanceOf(Embedder.class, (Class<? extends Embedder>)finder.getAnnotatedValue(UsingEmbedder.class, Class.class,
-                "embedder"));
+        Embedder embedder = instanceOf(Embedder.class,
+                (Class<? extends Embedder>) finder.getAnnotatedValue(UsingEmbedder.class, Class.class, "embedder"));
         embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView)
-                .useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads);
+                .doVerboseFailures(verboseFailures).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads);
         Configuration configuration = buildConfiguration();
         embedder.useConfiguration(configuration);
         boolean useStepsFactory = finder.getAnnotatedValue(UsingEmbedder.class, Boolean.class, "stepsFactory");
-        if ( useStepsFactory ){
+        if (useStepsFactory) {
             embedder.useStepsFactory(buildStepsFactory(configuration));
         } else {
             embedder.useCandidateSteps(buildCandidateSteps(configuration));
         }
         List<String> metaFilters = finder.getAnnotatedValues(UsingEmbedder.class, String.class, "metaFilters");
-        if ( !metaFilters.isEmpty() ){
+        if (!metaFilters.isEmpty()) {
             embedder.useMetaFilters(metaFilters);
         }
-        Properties systemProperties = loadProperties(finder.getAnnotatedValue(UsingEmbedder.class, String.class, "systemProperties"));
-        if ( !systemProperties.isEmpty() ){
+        Properties systemProperties = loadProperties(finder.getAnnotatedValue(UsingEmbedder.class, String.class,
+                "systemProperties"));
+        if (!systemProperties.isEmpty()) {
             embedder.useSystemProperties(systemProperties);
         }
         return embedder;
@@ -226,7 +226,7 @@ public class AnnotationBuilder {
         }
         return properties;
     }
-    
+
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
         for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(Configure.class,

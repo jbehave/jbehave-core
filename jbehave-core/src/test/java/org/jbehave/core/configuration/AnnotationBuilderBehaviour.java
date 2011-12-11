@@ -54,9 +54,10 @@ public class AnnotationBuilderBehaviour {
         assertThat(embedderControls.generateViewAfterStories(), is(true));
         assertThat(embedderControls.ignoreFailureInStories(), is(true));
         assertThat(embedderControls.ignoreFailureInView(), is(true));
-        assertThat(embedderControls.skip(), is(true));        
+        assertThat(embedderControls.skip(), is(true));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(100L));
         assertThat(embedderControls.threads(), equalTo(2));
+        assertThat(embedderControls.verboseFailures(), is(true));
     }
 
     @Test
@@ -74,11 +75,13 @@ public class AnnotationBuilderBehaviour {
     @Test
     public void shouldBuildCandidateStepsAsEmptyListIfAnnotationOrAnnotatedValuesNotPresent() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        AnnotationBuilder notAnnotated = new AnnotationBuilder(NotAnnotated.class, new PrintStreamAnnotationMonitor(new PrintStream(baos)));
+        AnnotationBuilder notAnnotated = new AnnotationBuilder(NotAnnotated.class, new PrintStreamAnnotationMonitor(
+                new PrintStream(baos)));
         assertThatStepsInstancesAre(notAnnotated.buildCandidateSteps());
         AnnotationBuilder annotatedWithoutSteps = new AnnotationBuilder(AnnotatedWithoutSteps.class);
         assertThatStepsInstancesAre(annotatedWithoutSteps.buildCandidateSteps());
-        assertThat(baos.toString().trim(), is(equalTo("Annotation " + UsingSteps.class + " not found in " + NotAnnotated.class)));
+        assertThat(baos.toString().trim(), is(equalTo("Annotation " + UsingSteps.class + " not found in "
+                + NotAnnotated.class)));
     }
 
     @Test
@@ -97,7 +100,8 @@ public class AnnotationBuilderBehaviour {
     @Test
     public void shouldNotIgnoreFailingStepsInstances() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        AnnotationBuilder annotatedFailing = new AnnotationBuilder(AnnotatedFailing.class, new PrintStreamAnnotationMonitor(new PrintStream(baos)));
+        AnnotationBuilder annotatedFailing = new AnnotationBuilder(AnnotatedFailing.class,
+                new PrintStreamAnnotationMonitor(new PrintStream(baos)));
         try {
             assertThatStepsInstancesAre(annotatedFailing.buildCandidateSteps(), MySteps.class);
         } catch (RuntimeException e) {
@@ -174,7 +178,8 @@ public class AnnotationBuilderBehaviour {
     @Test
     public void shouldNotCreateEmbeddableInstanceForAnnotatedClassThatIsNotInstantiable() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        AnnotationBuilder annotatedPrivate = new AnnotationBuilder(AnnotatedPrivate.class, new PrintStreamAnnotationMonitor(new PrintStream(baos)));
+        AnnotationBuilder annotatedPrivate = new AnnotationBuilder(AnnotatedPrivate.class,
+                new PrintStreamAnnotationMonitor(new PrintStream(baos)));
         try {
             annotatedPrivate.embeddableInstance();
         } catch (InstantiationFailed e) {
@@ -253,11 +258,10 @@ public class AnnotationBuilderBehaviour {
     }
 
     static class MyConfiguration extends Configuration {
-        
+
     }
-    
-    @UsingEmbedder(batch = true, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, skip = true,
-            storyTimeoutInSecs = 100, threads = 2)
+
+    @UsingEmbedder(batch = true, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, skip = true, verboseFailures = true, storyTimeoutInSecs = 100, threads = 2)
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedEmbedderControls extends InjectableEmbedder {
 
@@ -267,7 +271,7 @@ public class AnnotationBuilderBehaviour {
     }
 
     @Configure(keywords = MyKeywords.class)
-    @UsingEmbedder(metaFilters = "+embedder injectable", systemProperties="one=One,two=Two")
+    @UsingEmbedder(metaFilters = "+embedder injectable", systemProperties = "one=One,two=Two")
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedInjectable extends InjectableEmbedder {
 
@@ -306,7 +310,6 @@ public class AnnotationBuilderBehaviour {
 
     }
 
-    
     static class MyKeywords extends LocalizedKeywords {
 
     }
@@ -321,9 +324,9 @@ public class AnnotationBuilderBehaviour {
 
     }
 
-    @UsingPaths(searchIn="src/test/java", includes={"**/stories/*story"})
+    @UsingPaths(searchIn = "src/test/java", includes = { "**/stories/*story" })
     private static class AnnotatedWithPaths {
 
     }
-    
+
 }

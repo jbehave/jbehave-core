@@ -12,6 +12,7 @@ import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.steps.InjectableStepsFactory;
 
 /**
@@ -169,7 +170,7 @@ public class StoryManager {
                     if (embedderControls.ignoreFailureInStories()) {
                         embedderMonitor.storyFailed(storyPath, e);
                     } else {
-                        return new ThrowableStory(story, new RunningStoriesFailed(storyPath, e));
+                        return new ThrowableStory(story, new StoryExecutionFailed(storyPath, e));
                     }
                 }
             }
@@ -178,6 +179,15 @@ public class StoryManager {
 
         public Story getStory() {
             return story;
+        }
+
+    }
+
+    @SuppressWarnings("serial")
+    public static class StoryExecutionFailed extends RuntimeException {
+
+        public StoryExecutionFailed(String storyPath, Throwable failure) {
+            super(storyPath, failure);
         }
 
     }

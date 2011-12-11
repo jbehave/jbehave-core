@@ -13,6 +13,7 @@ public class EmbedderControls {
     private boolean generateViewAfterStories = true;
     private boolean ignoreFailureInStories = false;
     private boolean ignoreFailureInView = false;
+    private boolean verboseFailures = false;
     private long storyTimeoutInSecs = 300; // 5 mins is default.
     private int threads = 1;
 
@@ -39,6 +40,10 @@ public class EmbedderControls {
         return ignoreFailureInView;
     }
 
+    public boolean verboseFailures(){
+        return verboseFailures;
+    }
+    
     public long storyTimeoutInSecs() {
         return storyTimeoutInSecs;
     }
@@ -72,6 +77,11 @@ public class EmbedderControls {
         return this;
     }
 
+    public EmbedderControls doVerboseFailures(boolean verboseFailures){
+        this.verboseFailures = verboseFailures;
+        return this;        
+    }
+    
     public EmbedderControls useStoryTimeoutInSecs(long storyTimeoutInSecs) {
         this.storyTimeoutInSecs = storyTimeoutInSecs;
         return this;

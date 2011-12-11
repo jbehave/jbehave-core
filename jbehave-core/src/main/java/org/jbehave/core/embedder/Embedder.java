@@ -114,7 +114,7 @@ public class Embedder {
             return;
         }
 
-        BatchFailures failures = new BatchFailures();
+        BatchFailures failures = new BatchFailures(embedderControls.verboseFailures());
         for (Embeddable embeddable : embeddables(classNames, classLoader())) {
             String name = embeddable.getClass().getName();
             try {
@@ -204,7 +204,7 @@ public class Embedder {
             StoryManager storyManager = new StoryManager(configuration, embedderControls, embedderMonitor,
                     executorService(), stepsFactory, storyRunner);
             MetaFilter filter = metaFilter();
-            BatchFailures failures = new BatchFailures();
+            BatchFailures failures = new BatchFailures(embedderControls.verboseFailures());
 
             // run before stories
             List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
@@ -493,12 +493,12 @@ public class Embedder {
     @SuppressWarnings("serial")
     public static class RunningEmbeddablesFailed extends RuntimeException {
 
-        public RunningEmbeddablesFailed(String name, Throwable cause) {
-            super("Failures in running embeddable " + name, cause);
+        public RunningEmbeddablesFailed(String name, Throwable failure) {
+            super("Failure in running embeddable: " + name, failure);
         }
 
-        public RunningEmbeddablesFailed(BatchFailures batchFailures) {
-            super("Failures in running embeddables in batch: " + batchFailures);
+        public RunningEmbeddablesFailed(BatchFailures failures) {
+            super("Failures in running embeddables: " + failures);
         }
 
     }
@@ -506,21 +506,14 @@ public class Embedder {
     @SuppressWarnings("serial")
     public static class RunningStoriesFailed extends RuntimeException {
 
-        public RunningStoriesFailed(ReportsCount count) {
-            super("Failures in running stories: " + count);
+        public RunningStoriesFailed(ReportsCount reportsCount) {
+            super("Failures in running stories: " + reportsCount);
         }
 
         public RunningStoriesFailed(BatchFailures failures) {
-            super("Failures in running stories in batch: " + failures);
+            super("Failures in running stories: " + failures);
         }
 
-        public RunningStoriesFailed(String name, Throwable cause) {
-            super("Failures in running stories " + name, cause);
-        }
-
-        public RunningStoriesFailed() {
-            super("Failures in running before or after stories steps");
-        }
     }
 
     @SuppressWarnings("serial")
