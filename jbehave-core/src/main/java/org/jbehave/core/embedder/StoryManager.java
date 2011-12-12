@@ -1,18 +1,17 @@
 package org.jbehave.core.embedder;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.steps.InjectableStepsFactory;
 
 /**
@@ -28,6 +27,7 @@ public class StoryManager {
     private final ExecutorService executorService;
     private final InjectableStepsFactory stepsFactory;
     private final StoryRunner storyRunner;
+    private final Map<String, RunningStory> runningStories = new HashMap<String, RunningStory>();
 
     public StoryManager(Configuration configuration, EmbedderControls embedderControls,
             EmbedderMonitor embedderMonitor, ExecutorService executorService, InjectableStepsFactory stepsFactory,
@@ -48,29 +48,32 @@ public class StoryManager {
         return storyRunner.storyOfText(configuration, storyAsText, storyId);
     }
 
-    public List<RunningStory> runningStories(List<String> storyPaths, MetaFilter filter, BatchFailures failures,
+    public void clear() {
+        runningStories.clear();
+    }
+
+    public Map<String, RunningStory> runningStories(List<String> storyPaths, MetaFilter filter, BatchFailures failures,
             State beforeStories) {
-        List<RunningStory> runningStories = new ArrayList<RunningStory>();
         for (String storyPath : storyPaths) {
             Story story = storyOfPath(storyPath);
-            runningStories.add(runningStory(storyPath, story, filter, failures, beforeStories));
+            runningStories.put(storyPath, runningStory(storyPath, story, filter, failures, beforeStories));
         }
         return runningStories;
     }
 
-    public RunningStory runningStory(String storyPath, Story story, MetaFilter filter, BatchFailures batchFailures,
+    public RunningStory runningStory(String storyPath, Story story, MetaFilter filter, BatchFailures failures,
             State beforeStories) {
         EnqueuedStory enqueuedStory = new EnqueuedStory(storyPath, story, configuration, stepsFactory, filter,
-                embedderControls, batchFailures, embedderMonitor, storyRunner, beforeStories);
+                embedderControls, failures, embedderMonitor, storyRunner, beforeStories);
         return submit(enqueuedStory);
     }
 
-    public void waitUntilAllDoneOrFailed(List<RunningStory> runningStories, BatchFailures failures) {
+    public void waitUntilAllDoneOrFailed(BatchFailures failures) {
         long start = System.currentTimeMillis();
         boolean allDone = false;
         while (!allDone) {
             allDone = true;
-            for (RunningStory runningStory : runningStories) {
+            for (RunningStory runningStory : runningStories.values()) {
                 Future<ThrowableStory> future = runningStory.getFuture();
                 if (!future.isDone()) {
                     allDone = false;
@@ -106,7 +109,7 @@ public class StoryManager {
             tickTock();
         }
         // cancel any outstanding execution which is not done before returning
-        for (RunningStory runningStory : runningStories) {
+        for (RunningStory runningStory : runningStories.values()) {
             Future<ThrowableStory> future = runningStory.getFuture();
             if (!future.isDone()) {
                 future.cancel(true);

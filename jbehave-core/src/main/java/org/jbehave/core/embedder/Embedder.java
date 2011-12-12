@@ -17,7 +17,6 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.embedder.StoryManager.RunningStory;
 import org.jbehave.core.embedder.StoryManager.ThrowableStory;
 import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
@@ -214,9 +213,8 @@ public class Embedder {
             }
 
             // run stories
-            List<RunningStory> runningStories = storyManager
-                    .runningStories(storyPaths, filter, failures, beforeStories);
-            storyManager.waitUntilAllDoneOrFailed(runningStories, failures);
+            storyManager.runningStories(storyPaths, filter, failures, beforeStories);
+            storyManager.waitUntilAllDoneOrFailed(failures);
 
             // run after stories
             State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
