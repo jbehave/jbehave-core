@@ -80,15 +80,28 @@ import static java.util.regex.Pattern.compile;
  * {@link Parameters#valueAs(String, Class)} specifying the header and the class
  * type of the parameter.
  * </p>
+ * 
+ * <p>
+ * Once created, the table row can be modified, via the
+ * {@link #withRowValues(int, Map)} method, by specifying the map of row values
+ * to be changed.
+ * </p>
+ * 
+ * <p>
+ * A table can also be created by providing the entire data content, via the
+ * {@link #withRows(List<Map<String,String>>)} method.
  */
 public class ExamplesTable {
     private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
+    private static final String EMPTY_VALUE = "";
 
     public static final ExamplesTable EMPTY = new ExamplesTable("");
 
+    private static final String ROW_SEPARATOR = "\n";
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
     private static final String IGNORABLE_SEPARATOR = "|--";
+
     private final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     private final String tableAsString;
     private final String headerSeparator;
@@ -118,7 +131,7 @@ public class ExamplesTable {
         this.ignorableSeparator = ignorableSeparator;
         this.parameterConverters = parameterConverters;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
-        parse();
+        parse(tableAsString);
     }
 
     private ExamplesTable(ExamplesTable other, Row defaults) {
@@ -133,7 +146,7 @@ public class ExamplesTable {
         this.defaults = defaults;
     }
 
-    private void parse() {
+    private void parse(String tableAsString) {
         data.clear();
         headers.clear();
         String[] rows = splitInRows(stripProperties(tableAsString.trim()));
@@ -169,7 +182,7 @@ public class ExamplesTable {
     private void parseProperties(String propertiesAsString) {
         properties.clear();
         try {
-            properties.load(new ByteArrayInputStream(propertiesAsString.replace(",", "\n").getBytes()));
+            properties.load(new ByteArrayInputStream(propertiesAsString.replace(",", ROW_SEPARATOR).getBytes()));
         } catch (IOException e) {
             // carry on
         }
@@ -177,7 +190,7 @@ public class ExamplesTable {
     }
 
     private String[] splitInRows(String table) {
-        return table.split("\n");
+        return table.split(ROW_SEPARATOR);
     }
 
     private List<String> columnsFor(String row, String separator) {
@@ -223,6 +236,24 @@ public class ExamplesTable {
         return this;
     }
 
+    public ExamplesTable withRowValues(int row, Map<String, String> values) {
+        getRow(row).putAll(values);
+        for (String header : values.keySet()) {
+            if (!headers.contains(header)) {
+                headers.add(header);
+            }
+        }
+        return this;
+    }
+
+    public ExamplesTable withRows(List<Map<String, String>> values) {
+        this.data.clear();
+        this.data.addAll(values);
+        this.headers.clear();
+        this.headers.addAll(values.get(0).keySet());
+        return this;
+    }
+
     public Properties getProperties() {
         return properties;
     }
@@ -232,7 +263,18 @@ public class ExamplesTable {
     }
 
     public Map<String, String> getRow(int row) {
-        return data.get(row);
+        if (row > data.size() - 1) {
+            throw new RowNotFound(row);
+        }
+        Map<String, String> values = data.get(row);
+        if (headers.size() != values.keySet().size()) {
+            for (String header : headers) {
+                if (!values.containsKey(header)) {
+                    values.put(header, EMPTY_VALUE);
+                }
+            }
+        }
+        return values;
     }
 
     public Parameters getRowAsParameters(int row) {
@@ -262,9 +304,12 @@ public class ExamplesTable {
     }
 
     public List<Map<String, String>> getRows() {
-        return data;
+        List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
+        for (int row = 0; row < getRowCount(); row++) {
+            rows.add(getRow(row));
+        }
+        return rows;
     }
-
 
     public List<Parameters> getRowsAsParameters() {
         return getRowsAsParameters(false);
@@ -272,8 +317,8 @@ public class ExamplesTable {
 
     public List<Parameters> getRowsAsParameters(boolean replaceNamedParameters) {
         List<Parameters> rows = new ArrayList<Parameters>();
-        
-        for ( int row = 0; row < getRowCount(); row++ ){
+
+        for (int row = 0; row < getRowCount(); row++) {
             rows.add(getRowAsParameters(row, replaceNamedParameters));
         }
 
@@ -294,7 +339,26 @@ public class ExamplesTable {
     }
 
     public String asString() {
-        return tableAsString;
+        if (data.isEmpty()) {
+            return EMPTY_VALUE;
+        }
+        return format();
+    }
+
+    private String format() {
+        StringBuffer sb = new StringBuffer();
+        for (String header : headers) {
+            sb.append(headerSeparator).append(header);
+        }
+        sb.append(headerSeparator).append(ROW_SEPARATOR);
+        for (Map<String, String> row : getRows()) {
+            for (String header : headers) {
+                sb.append(valueSeparator);
+                sb.append(row.get(header));
+            }
+            sb.append(valueSeparator).append(ROW_SEPARATOR);
+        }
+        return sb.toString();
     }
 
     @Override
@@ -302,4 +366,12 @@ public class ExamplesTable {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
+    @SuppressWarnings("serial")
+    public static class RowNotFound extends RuntimeException {
+
+        public RowNotFound(int row) {
+            super(Integer.toString(row));
+        }
+
+    }
 }

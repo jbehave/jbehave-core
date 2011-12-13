@@ -168,7 +168,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void storyCancelled(Story story, StoryDuration storyDuration) {
-        print(format("storyCancelled", "{0}: {1} s > {2} s\n", story.getPath(), storyDuration.getDurationInSecs(), storyDuration.getTimeoutInSecs()));
+        print(format("storyCancelled", "{0}: {1} s > {2} s\n", story.getPath(), storyDuration.getDurationInSecs(),
+                storyDuration.getTimeoutInSecs()));
     }
 
     public void beforeStory(Story story, boolean givenStory) {
@@ -228,7 +229,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void afterScenario() {
         if (cause.get() != null && reportFailureTrace.get() && !(cause.get() instanceof KnownFailure)) {
-            print(format("afterScenarioWithFailure", "\n{0}\n", new StackTraceFormatter(compressFailureTrace()).stackTrace(cause.get())));
+            print(format("afterScenarioWithFailure", "\n{0}\n",
+                    new StackTraceFormatter(compressFailureTrace()).stackTrace(cause.get())));
         } else {
             print(format("afterScenario", "\n"));
         }
@@ -325,7 +327,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
             public Object transform(Object object) {
                 switch (format) {
                 case HTML:
-                    return escapeHtml(asString(object)).replace("\n", "<br/>");
+                    return escapeHtml(asString(object));
                 case XML:
                     return escapeXml(asString(object));
                 default:

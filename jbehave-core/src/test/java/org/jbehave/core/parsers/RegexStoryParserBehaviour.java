@@ -147,7 +147,7 @@ public class RegexStoryParserBehaviour {
                 "Examples:" + NL +
                 "|Given|When|Then|And|" + NL +
                 "|Dato che|Quando|Allora|E|" + NL +
-                "|Dado que|Quando|Então|E|";
+                "|Dado que|Quando|Então|E|" + NL;
         Story story = parser.parseStory(
                 wholeStory, storyPath);
 
@@ -163,7 +163,7 @@ public class RegexStoryParserBehaviour {
         assertThat(story.getScenarios().get(0).getExamplesTable().asString(), 
                     equalTo("|Given|When|Then|And|" + NL +
                             "|Dato che|Quando|Allora|E|" + NL +
-                            "|Dado que|Quando|Então|E|"));
+                            "|Dado que|Quando|Então|E|" + NL));
     }
 
     @Test
@@ -420,7 +420,7 @@ public class RegexStoryParserBehaviour {
                 "Examples:" + NL +
                 "|one|two|three|" + NL +
                 "|11|12|13|" + NL +
-                "|21|22|23|";
+                "|21|22|23|" + NL;
 
         Story story = parser.parseStory(wholeStory, storyPath);
 
@@ -436,7 +436,7 @@ public class RegexStoryParserBehaviour {
         assertThat(table.asString(), equalTo(
                 "|one|two|three|" + NL +
                         "|11|12|13|" + NL +
-                        "|21|22|23|"));
+                        "|21|22|23|" + NL));
         assertThat(table.getRowCount(), equalTo(2));
         assertThat(table.getRow(0), not(nullValue()));
         assertThat(table.getRow(0).get("one"), equalTo("11"));
