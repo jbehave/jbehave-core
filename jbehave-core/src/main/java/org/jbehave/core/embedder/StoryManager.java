@@ -1,5 +1,6 @@
 package org.jbehave.core.embedder;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class StoryManager {
     private final InjectableStepsFactory stepsFactory;
     private final StoryRunner storyRunner;
     private final Map<String, RunningStory> runningStories = new HashMap<String, RunningStory>();
+    private final Map<MetaFilter, List<Story>> excludedStories = new HashMap<MetaFilter, List<Story>>();
 
     public StoryManager(Configuration configuration, EmbedderControls embedderControls,
             EmbedderMonitor embedderMonitor, ExecutorService executorService, InjectableStepsFactory stepsFactory,
@@ -56,9 +58,23 @@ public class StoryManager {
             State beforeStories) {
         for (String storyPath : storyPaths) {
             Story story = storyOfPath(storyPath);
-            runningStories.put(storyPath, runningStory(storyPath, story, filter, failures, beforeStories));
+            FilteredStory filteredStory = new FilteredStory(filter, story, configuration.storyControls());
+            if ( filteredStory.allowed() ){
+                runningStories.put(storyPath, runningStory(storyPath, story, filter, failures, beforeStories));
+            } else {
+                notAllowedBy(filter).add(story);
+            }
         }
         return runningStories;
+    }
+
+    public List<Story> notAllowedBy(MetaFilter filter) {
+        List<Story> stories = excludedStories.get(filter);
+        if ( stories == null ){
+            stories = new ArrayList<Story>();
+            excludedStories.put(filter, stories);
+        }
+        return stories;
     }
 
     public RunningStory runningStory(String storyPath, Story story, MetaFilter filter, BatchFailures failures,

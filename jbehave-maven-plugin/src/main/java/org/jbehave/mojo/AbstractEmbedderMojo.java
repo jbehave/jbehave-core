@@ -1,5 +1,13 @@
 package org.jbehave.mojo;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.InjectableEmbedder;
@@ -17,14 +25,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
 
 import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
 
@@ -363,7 +363,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void metaNotAllowed(Meta meta, MetaFilter filter) {
-            getLog().info(meta + " excluded by filter '" + filter.asString() + "'");
+            getLog().debug(meta + " excluded by filter '" + filter.asString() + "'");
         }
 
         public void runningEmbeddable(String name) {
@@ -374,12 +374,21 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("Running story " + path);
         }
 
+        public void storyFailed(String path, Throwable cause) {
+            getLog().warn("Failed to run story " + path, cause);
+        }
+
         public void storiesSkipped(List<String> storyPaths) {
             getLog().info("Skipped stories " + storyPaths);
         }
 
-        public void storyFailed(String path, Throwable cause) {
-            getLog().warn("Failed to run story " + path, cause);
+        public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("Stories not allowed by filter: " + filter.asString() + "\n");
+            for (Story story : stories) {
+                sb.append(story.getPath()).append("\n");
+            }
+            getLog().info(sb.toString());
         }
 
         public void runningWithAnnotatedEmbedderRunner(String className) {

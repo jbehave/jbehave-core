@@ -55,6 +55,10 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
     public void storiesSkipped(List<String> storyPaths) {
         delegate.storiesSkipped(storyPaths);
     }
+    
+    public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+        delegate.storiesNotAllowed(stories, filter);
+     }
 
     public void batchFailed(BatchFailures failures) {
         delegate.batchFailed(failures);

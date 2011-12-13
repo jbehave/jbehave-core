@@ -215,7 +215,11 @@ public class Embedder {
             // run stories
             storyManager.runningStories(storyPaths, filter, failures, beforeStories);
             storyManager.waitUntilAllDoneOrFailed(failures);
-
+            List<Story> notAllowed = storyManager.notAllowedBy(filter);
+            if ( !notAllowed.isEmpty() ){
+                embedderMonitor.storiesNotAllowed(notAllowed, filter);                
+            }
+            
             // run after stories
             State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
             if (storyRunner.failed(afterStories)) {

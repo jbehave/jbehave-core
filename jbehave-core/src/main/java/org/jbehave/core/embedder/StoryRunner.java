@@ -236,7 +236,7 @@ public class StoryRunner {
 
             boolean storyAllowed = true;
 
-            FilterContext filterContext = context.filter(story);
+            FilteredStory filterContext = context.filter(story);
             Meta storyMeta = story.getMeta();
             if (!filterContext.allowed()) {
                 reporter.get().storyNotAllowed(story, context.metaFilterAsString());
@@ -557,8 +557,8 @@ public class StoryRunner {
             return path;
         }
 
-        public FilterContext filter(Story story) {
-            return new FilterContext(filter, story, configuration.storyControls());
+        public FilteredStory filter(Story story) {
+            return new FilteredStory(filter, story, configuration.storyControls());
         }
 
         public String metaFilterAsString() {
@@ -600,34 +600,6 @@ public class StoryRunner {
             this.state = new FineSoFar();
         }
 
-    }
-
-    public class FilterContext {
-
-        private boolean storyAllowed;
-        private Map<Scenario, Boolean> scenariosAllowed;
-
-        public FilterContext(MetaFilter filter, Story story, StoryControls storyControls) {
-            String storyMetaPrefix = storyControls.storyMetaPrefix();
-            String scenarioMetaPrefix = storyControls.scenarioMetaPrefix();
-            Meta storyMeta = story.getMeta().inheritFrom(story.asMeta(storyMetaPrefix));
-            storyAllowed = filter.allow(storyMeta);
-            scenariosAllowed = new HashMap<Scenario, Boolean>();
-            for (Scenario scenario : story.getScenarios()) {
-                Meta scenarioMeta = scenario.getMeta().inheritFrom(
-                        scenario.asMeta(scenarioMetaPrefix).inheritFrom(storyMeta));
-                boolean scenarioAllowed = filter.allow(scenarioMeta);
-                scenariosAllowed.put(scenario, scenarioAllowed);
-            }
-        }
-
-        public boolean allowed() {
-            return storyAllowed || scenariosAllowed.values().contains(true);
-        }
-
-        public boolean allowed(Scenario scenario) {
-            return scenariosAllowed.get(scenario);
-        }
     }
 
     public boolean failed(State state) {

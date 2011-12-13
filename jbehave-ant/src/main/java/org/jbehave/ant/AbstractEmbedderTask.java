@@ -168,7 +168,7 @@ public abstract class AbstractEmbedderTask extends Task {
         try {
             return outputDirectory != null ? new File(outputDirectory).toURI().toURL() : null;
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Failed to create code location from "+outputDirectory, e);
+            throw new IllegalArgumentException("Failed to create code location from " + outputDirectory, e);
         }
     }
 
@@ -288,19 +288,28 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void metaNotAllowed(Meta meta, MetaFilter filter) {
-            log(meta + " excluded by filter '" + filter.asString() + "'", MSG_INFO);
+            log(meta + " excluded by filter '" + filter.asString() + "'", MSG_DEBUG);
         }
 
         public void runningEmbeddable(String name) {
             log("Running embeddable " + name, MSG_INFO);
         }
 
+        public void storyFailed(String path, Throwable cause) {
+            log("Failed to run story " + path, cause, MSG_WARN);
+        }
+
         public void storiesSkipped(List<String> storyPaths) {
             log("Skipped stories " + storyPaths, MSG_INFO);
         }
 
-        public void storyFailed(String path, Throwable cause) {
-            log("Failed to run story " + path, cause, MSG_WARN);
+        public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("Stories not allowed by filter: " + filter.asString() + "\n");
+            for (Story story : stories) {
+                sb.append(story.getPath()).append("\n");
+            }
+            log(sb.toString(), MSG_INFO);
         }
 
         public void runningStory(String path) {
@@ -379,7 +388,8 @@ public abstract class AbstractEmbedderTask extends Task {
         }
 
         public void storyTimeout(Story story, StoryDuration storyDuration) {
-            log("Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs() + " seconds has exceeded timeout of "+storyDuration.getTimeoutInSecs()+" seconds", MSG_INFO);
+            log("Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs()
+                    + " seconds has exceeded timeout of " + storyDuration.getTimeoutInSecs() + " seconds", MSG_INFO);
         }
 
         public void usingThreads(int threads) {
@@ -411,7 +421,6 @@ public abstract class AbstractEmbedderTask extends Task {
         this.testSourceDirectory = testSourceDirectory;
     }
 
-
     public void setOutputDirectory(String outputDirectory) {
         this.outputDirectory = outputDirectory;
     }
@@ -419,7 +428,7 @@ public abstract class AbstractEmbedderTask extends Task {
     public void setTestOutputDirectory(String testOutputDirectory) {
         this.testOutputDirectory = testOutputDirectory;
     }
-    
+
     public void setScope(String scope) {
         this.scope = scope;
     }

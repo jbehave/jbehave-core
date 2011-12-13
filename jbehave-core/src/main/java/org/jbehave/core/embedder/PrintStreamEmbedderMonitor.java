@@ -35,7 +35,7 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     public void batchFailed(BatchFailures failures) {
         print("Failed to run batch " + failures);
     }
-    
+
     public void beforeOrAfterStoriesFailed() {
         print("Failed to run before or after stories steps");
     }
@@ -46,7 +46,7 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     }
 
     public void embeddableNotConfigurable(String name) {
-        print("Embeddable " + name + " must be an instance of "+ConfigurableEmbedder.class);
+        print("Embeddable " + name + " must be an instance of " + ConfigurableEmbedder.class);
     }
 
     public void embeddablesSkipped(List<String> classNames) {
@@ -74,6 +74,15 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("Skipped stories " + storyPaths);
     }
 
+    public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Stories not allowed by filter: " + filter.asString() + "\n");
+        for (Story story : stories) {
+            sb.append(story.getPath()).append("\n");
+        }
+        print(sb.toString());
+    }
+
     public void runningWithAnnotatedEmbedderRunner(String className) {
         print("Running with AnnotatedEmbedderRunner '" + className + "'");
     }
@@ -95,11 +104,11 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
 
     public void reportsViewGenerated(ReportsCount count) {
         print("Reports view generated with " + count.getStories() + " stories (of which " + count.getStoriesPending()
-                + " pending) containing " + count.getScenarios() + " scenarios (of which "
-                + count.getScenariosFailed() + " failed and " + count.getScenariosPending() + " pending)");
+                + " pending) containing " + count.getScenarios() + " scenarios (of which " + count.getScenariosFailed()
+                + " failed and " + count.getScenariosPending() + " pending)");
         if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
-            print("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  " + count.getScenariosNotAllowed()
-                    + " scenarios");
+            print("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  "
+                    + count.getScenariosNotAllowed() + " scenarios");
         }
     }
 
@@ -120,7 +129,7 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
             Throwable cause) {
         print("Failed to generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
                 + " and view properties '" + viewProperties + "'");
-        printStackTrace(cause);        
+        printStackTrace(cause);
     }
 
     public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
@@ -128,8 +137,9 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     }
 
     public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
-        print("Failed to generating navigator view to '" + outputDirectory + "' using view properties '" + viewProperties + "'");
-        printStackTrace(cause);        
+        print("Failed to generating navigator view to '" + outputDirectory + "' using view properties '"
+                + viewProperties + "'");
+        printStackTrace(cause);
     }
 
     public void navigatorViewNotGenerated() {
@@ -141,23 +151,24 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     }
 
     public void systemPropertySet(String name, String value) {
-        print("System property '" + name + "' set to '"+value+"'");
+        print("System property '" + name + "' set to '" + value + "'");
     }
 
     public void storyTimeout(Story story, StoryDuration storyDuration) {
-        print("Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs() + " seconds has exceeded timeout of " + storyDuration.getTimeoutInSecs() + " seconds");
+        print("Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs()
+                + " seconds has exceeded timeout of " + storyDuration.getTimeoutInSecs() + " seconds");
     }
 
     public void usingThreads(int threads) {
         print("Using " + threads + " threads");
     }
-    
+
     public void usingExecutorService(ExecutorService executorService) {
         print("Using executor service " + executorService);
     }
 
     public void usingControls(EmbedderControls embedderControls) {
-        print("Using controls "+embedderControls);
+        print("Using controls " + embedderControls);
     }
 
     @Override
@@ -172,6 +183,5 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
     protected void printStackTrace(Throwable e) {
         e.printStackTrace(output);
     }
-
 
 }
