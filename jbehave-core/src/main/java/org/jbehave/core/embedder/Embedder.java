@@ -54,6 +54,7 @@ public class Embedder {
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
     private ExecutorService executorService;
+    private boolean executorServiceCreated;
 
     public Embedder() {
         this(new StoryMapper(), new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -242,8 +243,19 @@ public class Embedder {
             if (embedderControls.generateViewAfterStories()) {
                 generateReportsView();
             }
-
+            if (executorServiceCreated) {
+                shutdownExecutorService();
+            }
         }
+    }
+
+    /**
+     * Visble for testing.
+     */
+    protected void shutdownExecutorService() {
+        executorService.shutdownNow();
+        executorService = null;
+        executorServiceCreated = false;
     }
 
     /**
@@ -404,6 +416,7 @@ public class Embedder {
 
     public ExecutorService executorService() {
         if (executorService == null) {
+            executorServiceCreated = true;
             executorService = createExecutorService();
         }
         return executorService;
@@ -418,6 +431,16 @@ public class Embedder {
     private ExecutorService createExecutorService() {
         int threads = embedderControls.threads();
         embedderMonitor.usingThreads(threads);
+        return createNewFixedThreadPool(threads);
+    }
+
+    /**
+     * Create default threadpool.
+     * Visible for testing
+     * @param threads num threads
+     * @return the threadpool
+     */
+    protected ExecutorService createNewFixedThreadPool(int threads) {
         return Executors.newFixedThreadPool(threads);
     }
 
