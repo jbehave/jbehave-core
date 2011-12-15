@@ -305,7 +305,7 @@ public abstract class AbstractEmbedderTask extends Task {
 
         public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
             StringBuffer sb = new StringBuffer();
-            sb.append("Stories not allowed by filter: " + filter.asString() + "\n");
+            sb.append("Stories excluded by filter: " + filter.asString() + "\n");
             for (Story story : stories) {
                 sb.append(story.getPath()).append("\n");
             }
@@ -340,7 +340,7 @@ public abstract class AbstractEmbedderTask extends Task {
                     + " pending) containing " + count.getScenarios() + " scenarios (of which "
                     + count.getScenariosFailed() + " failed and " + count.getScenariosPending() + " pending)", MSG_INFO);
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
-                log("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  "
+                log("Meta filters excluded " + count.getStoriesNotAllowed() + " stories and  "
                         + count.getScenariosNotAllowed() + " scenarios", MSG_INFO);
             }
         }

@@ -156,7 +156,7 @@ public class EmbedderTaskBehaviour {
                         + " scenarios (of which " + scenariosFailed + " failed and " + scenariosPending + " pending)", MSG_INFO);
         verify(project).log(
                 task,
-                "Meta filters did not allow " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
+                "Meta filters excluded " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
                         + " scenarios", MSG_INFO);
 
         embedderMonitor.reportsViewNotGenerated();
