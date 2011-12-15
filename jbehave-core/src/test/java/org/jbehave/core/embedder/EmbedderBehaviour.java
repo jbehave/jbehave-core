@@ -1158,10 +1158,6 @@ public class EmbedderBehaviour {
             super.shutdownExecutorService();
 
         }
-
-        public Boolean isShutDown() {
-            return executorService().isShutdown();
-        }
     }
 
     private Embedder embedderWith(StoryMapper mapper, StoryRunner runner, EmbedderControls embedderControls,

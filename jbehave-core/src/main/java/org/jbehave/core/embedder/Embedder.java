@@ -217,10 +217,10 @@ public class Embedder {
             storyManager.runningStories(storyPaths, filter, failures, beforeStories);
             storyManager.waitUntilAllDoneOrFailed(failures);
             List<Story> notAllowed = storyManager.notAllowedBy(filter);
-            if ( !notAllowed.isEmpty() ){
-                embedderMonitor.storiesNotAllowed(notAllowed, filter);                
+            if (!notAllowed.isEmpty()) {
+                embedderMonitor.storiesNotAllowed(notAllowed, filter);
             }
-            
+
             // run after stories
             State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
             if (storyRunner.failed(afterStories)) {
@@ -243,19 +243,8 @@ public class Embedder {
             if (embedderControls.generateViewAfterStories()) {
                 generateReportsView();
             }
-            if (executorServiceCreated) {
-                shutdownExecutorService();
-            }
+            shutdownExecutorService();
         }
-    }
-
-    /**
-     * Visble for testing.
-     */
-    protected void shutdownExecutorService() {
-        executorService.shutdownNow();
-        executorService = null;
-        executorServiceCreated = false;
     }
 
     /**
@@ -435,8 +424,22 @@ public class Embedder {
     }
 
     /**
-     * Create default threadpool.
-     * Visible for testing
+     * Shuts down executor service, if it was created by Embedder.
+     * ExecutorServices provided by the
+     * {@link #useExecutorService(ExecutorService)} need to be managed by the
+     * provider.
+     */
+    protected void shutdownExecutorService() {
+        if (executorServiceCreated) {
+            executorService.shutdownNow();
+            executorService = null;
+            executorServiceCreated = false;
+        }
+    }
+
+    /**
+     * Create default threadpool. Visible for testing
+     * 
      * @param threads num threads
      * @return the threadpool
      */
