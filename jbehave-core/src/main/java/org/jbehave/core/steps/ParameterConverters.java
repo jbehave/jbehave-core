@@ -252,6 +252,8 @@ public class ParameterConverters {
                 } else {
                     return n;
                 }
+            } catch (NumberFormatException e) {
+                throw new ParameterConvertionFailed(value, e);
             } catch (ParseException e) {
                 throw new ParameterConvertionFailed(value, e);
             }
