@@ -10,11 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import org.hamcrest.core.IsNull;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
@@ -268,11 +265,11 @@ public class EmbedderBehaviour {
     }
 
     @Test
-    public void shouldNotThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureFlagsAreSet()
-            throws Throwable {
+    public void shouldNotThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureFlagsAreSet() throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
-        EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+        EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInStories(true)
+                .doIgnoreFailureInView(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         String myEmbeddableName = MyFailingEmbeddable.class.getName();
@@ -356,7 +353,8 @@ public class EmbedderBehaviour {
     public void shouldRunFailingStoriesAsEmbeddablesInBatchIfBatchFlagIsSet() throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
-        EmbedderControls embedderControls = new EmbedderControls().doBatch(true).doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+        EmbedderControls embedderControls = new EmbedderControls().doBatch(true).doIgnoreFailureInStories(true)
+                .doIgnoreFailureInView(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         String myStoryName = MyFailingEmbeddable.class.getName();
@@ -497,7 +495,7 @@ public class EmbedderBehaviour {
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
-        
+
         // When
         MetaFilter filter = mock(MetaFilter.class);
         when(filter.allow(meta)).thenReturn(false);
@@ -580,18 +578,18 @@ public class EmbedderBehaviour {
         }
         assertThat(out.toString(), containsString("Skipped stories " + storyPaths));
     }
-    
+
     @Test()
     public void shouldCancelStoryIfTimeoutIsSetAndStoryIsBusy() throws Throwable {
         testStoryIfTimeoutIsSet(new Answer<StoryRunner>() {
-            
+
             public StoryRunner answer(InvocationOnMock invocation) throws Throwable {
                 for (long i = 0; i < Long.MAX_VALUE; i++) {
-                    //keep it busy
+                    // keep it busy
                 }
                 return null;
             }
-            
+
         });
     }
 
@@ -603,35 +601,34 @@ public class EmbedderBehaviour {
                 TimeUnit.SECONDS.sleep(3);
                 return null;
             }
-            
+
         });
     }
 
     private void testStoryIfTimeoutIsSet(Answer<StoryRunner> answer) throws Throwable {
         // Given
-        long timeoutInSecs = 1;        
+        long timeoutInSecs = 1;
 
         StoryRunner runner = mock(StoryRunner.class);
         EmbedderMonitor monitor = mock(EmbedderMonitor.class);
-        
+
         EmbedderControls embedderControls = new EmbedderControls().useStoryTimeoutInSecs(timeoutInSecs);
 
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        
-        List<String> storyPaths = new ArrayList<String>();        
+
+        List<String> storyPaths = new ArrayList<String>();
         String storyPath = resolver.resolve(MyStory.class);
         storyPaths.add(storyPath);
         Story story = mockStory(Meta.EMPTY);
         when(story.getPath()).thenReturn(storyPath);
         when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
-        
-        Mockito.doAnswer(answer).when(runner).run(Matchers.any(Configuration.class),
-                        Matchers.any(InjectableStepsFactory.class),
-                        Matchers.eq(story),
-                        Matchers.any(MetaFilter.class),
-                        Matchers.any(State.class));
+
+        Mockito.doAnswer(answer)
+                .when(runner)
+                .run(Matchers.any(Configuration.class), Matchers.any(InjectableStepsFactory.class), Matchers.eq(story),
+                        Matchers.any(MetaFilter.class), Matchers.any(State.class));
 
         // When
         boolean exceptionWasThrown = false;
@@ -646,7 +643,7 @@ public class EmbedderBehaviour {
         verify(runner).cancelStory(Matchers.eq(story), Matchers.any(StoryDuration.class));
         verify(monitor).storyTimeout(Matchers.eq(story), Matchers.any(StoryDuration.class));
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test(expected = RunningStoriesFailed.class)
     public void shouldThrowExceptionUponFailingStoriesAsPathsIfIgnoreFailureInStoriesFlagIsNotSet() throws Throwable {
@@ -670,12 +667,13 @@ public class EmbedderBehaviour {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
             Story story = mockStory(Meta.EMPTY);
-            stories.put(storyPath, story);            
+            stories.put(storyPath, story);
             when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
         for (String storyPath : storyPaths) {
             doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
-                    Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+                    Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class),
+                    Matchers.any(State.class));
         }
         // When
         embedder.runStoriesAsPaths(storyPaths);
@@ -712,7 +710,8 @@ public class EmbedderBehaviour {
         }
         for (String storyPath : storyPaths) {
             doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
-                    Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+                    Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class),
+                    Matchers.any(State.class));
         }
 
         // When
@@ -792,7 +791,8 @@ public class EmbedderBehaviour {
         }
         for (String storyPath : storyPaths) {
             doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
-                    Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+                    Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class),
+                    Matchers.any(State.class));
         }
 
         // When
@@ -951,7 +951,7 @@ public class EmbedderBehaviour {
         assertThatReportsViewGenerated(out);
     }
 
-    @Test(expected=RunningStoriesFailed.class)
+    @Test(expected = RunningStoriesFailed.class)
     public void shouldFailWhenGeneratingReportsViewWithFailedSteps() throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
@@ -962,11 +962,11 @@ public class EmbedderBehaviour {
 
         Embedder embedder = embedderWith(runner, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
-        
+
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 0, 2, 1, 0, 0, 1)); 
+        when(viewGenerator.getReportsCount()).thenReturn(new ReportsCount(2, 0, 0, 2, 1, 0, 0, 1));
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
         // Then
@@ -974,7 +974,7 @@ public class EmbedderBehaviour {
         assertThatReportsViewGenerated(out);
     }
 
-    @Test(expected=RunningStoriesFailed.class)
+    @Test(expected = RunningStoriesFailed.class)
     public void shouldFailWhenGeneratingReportsViewWithPendingSteps() throws Throwable {
         // Given
         StoryRunner runner = mock(StoryRunner.class);
@@ -1129,7 +1129,6 @@ public class EmbedderBehaviour {
         embedder.useEmbedderControls(embedderControls);
         return embedder;
     }
-    
 
     private Embedder embedderWith(StoryMapper mapper, StoryRunner runner, EmbedderControls embedderControls,
             EmbedderMonitor monitor) {
