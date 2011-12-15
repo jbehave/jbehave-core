@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.hamcrest.core.IsNull;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
@@ -468,7 +470,7 @@ public class EmbedderBehaviour {
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        ExtendedEmbedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(runner, embedderControls, monitor);
         final StoryReporter storyReporter = mock(StoryReporter.class);
 
         Configuration configuration = new MostUsefulConfiguration() {
@@ -496,15 +498,12 @@ public class EmbedderBehaviour {
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
         
-        assertThat(embedder.executorServiceCreated, is(false));
-
         // When
         MetaFilter filter = mock(MetaFilter.class);
         when(filter.allow(meta)).thenReturn(false);
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
-        assertThat(embedder.executorServiceCreated, is(true));
 
         for (String storyPath : storyPaths) {
             verify(runner).run(Matchers.eq(configuration), Matchers.eq(stepsFactory),
@@ -512,13 +511,7 @@ public class EmbedderBehaviour {
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatReportsViewGenerated(out);
-        assertThat(embedder.initiallyShuttingDown, is(true));
-//        for (int i = 0; i < 300; i++) {
-//            if(embedder.isShutDown() == false) {
-//                Thread.sleep(10);
-//            }
-//        }
-//        assertThat(embedder.isShutDown(), is(true));
+        assertThat(embedder.hasExecutorService(), is(false));
 
     }
 
@@ -1131,34 +1124,12 @@ public class EmbedderBehaviour {
         assertThat(embedder.embedderMonitor(), is(not(sameInstance(monitor))));
     }
 
-    private ExtendedEmbedder embedderWith(StoryRunner runner, EmbedderControls embedderControls, EmbedderMonitor monitor) {
-        ExtendedEmbedder embedder = new ExtendedEmbedder(new StoryMapper(), runner, monitor);
+    private Embedder embedderWith(StoryRunner runner, EmbedderControls embedderControls, EmbedderMonitor monitor) {
+        Embedder embedder = new Embedder(new StoryMapper(), runner, monitor);
         embedder.useEmbedderControls(embedderControls);
         return embedder;
     }
     
-    private static class ExtendedEmbedder extends Embedder {
-
-        public boolean executorServiceCreated;
-        public boolean initiallyShuttingDown;
-
-        private ExtendedEmbedder(StoryMapper storyMapper, StoryRunner storyRunner, EmbedderMonitor embedderMonitor) {
-            super(storyMapper, storyRunner, embedderMonitor);
-        }
-
-        @Override
-        protected ExecutorService createNewFixedThreadPool(int threads) {
-            executorServiceCreated = true;
-            return super.createNewFixedThreadPool(threads);
-        }
-
-        @Override
-        protected void shutdownExecutorService() {
-            initiallyShuttingDown = !executorService().isShutdown();
-            super.shutdownExecutorService();
-
-        }
-    }
 
     private Embedder embedderWith(StoryMapper mapper, StoryRunner runner, EmbedderControls embedderControls,
             EmbedderMonitor monitor) {

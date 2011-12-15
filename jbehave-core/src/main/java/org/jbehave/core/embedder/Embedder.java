@@ -403,6 +403,10 @@ public class Embedder {
         return embedderMonitor;
     }
 
+    public boolean hasExecutorService(){
+        return executorService != null;
+    }
+    
     public ExecutorService executorService() {
         if (executorService == null) {
             executorServiceCreated = true;
