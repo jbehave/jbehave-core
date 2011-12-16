@@ -43,8 +43,10 @@ public interface EmbedderMonitor {
 
     void reportsViewGenerated(ReportsCount count);
 
+    void reportsViewFailures(ReportsCount count);
+
     void reportsViewNotGenerated();
-    
+
     void runningWithAnnotatedEmbedderRunner(String className);
 
     void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type);

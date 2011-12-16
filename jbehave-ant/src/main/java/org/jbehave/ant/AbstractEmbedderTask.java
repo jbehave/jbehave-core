@@ -338,11 +338,15 @@ public abstract class AbstractEmbedderTask extends Task {
         public void reportsViewGenerated(ReportsCount count) {
             log("Reports view generated with " + count.getStories() + " stories (of which " + count.getStoriesPending()
                     + " pending) containing " + count.getScenarios() + " scenarios (of which "
-                    + count.getScenariosFailed() + " failed and " + count.getScenariosPending() + " pending)", MSG_INFO);
+                    + count.getScenariosPending() + " pending)", MSG_INFO);
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
                 log("Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  "
                         + count.getScenariosNotAllowed() + " scenarios", MSG_INFO);
             }
+        }
+
+        public void reportsViewFailures(ReportsCount count) {
+            log("Failures in reports view: " + count.getScenariosFailed() + " scenarios failed", MSG_WARN);
         }
 
         public void reportsViewNotGenerated() {

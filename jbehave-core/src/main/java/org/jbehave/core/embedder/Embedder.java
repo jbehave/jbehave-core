@@ -228,13 +228,7 @@ public class Embedder {
             }
 
             // check for failures
-            if (failures.size() > 0) {
-                if (embedderControls.ignoreFailureInStories()) {
-                    embedderMonitor.batchFailed(failures);
-                } else {
-                    throw new RunningStoriesFailed(failures);
-                }
-            }
+            handleFailures(embedderMonitor, embedderControls, failures);
 
         } finally {
 
@@ -244,6 +238,17 @@ public class Embedder {
                 generateReportsView();
             }
             shutdownExecutorService();
+        }
+    }
+
+    private void handleFailures(EmbedderMonitor embedderMonitor, EmbedderControls embedderControls,
+            BatchFailures failures) {
+        if (failures.size() > 0) {
+            if (embedderControls.ignoreFailureInStories()) {
+                embedderMonitor.batchFailed(failures);
+            } else {
+                throw new RunningStoriesFailed(failures);
+            }
         }
     }
 
@@ -283,6 +288,7 @@ public class Embedder {
 
     public void generateReportsView(File outputDirectory, List<String> formats, Properties viewResources) {
         EmbedderControls embedderControls = embedderControls();
+        EmbedderMonitor embedderMonitor = embedderMonitor();
 
         if (embedderControls.skip()) {
             embedderMonitor.reportsViewNotGenerated();
@@ -298,17 +304,19 @@ public class Embedder {
         }
         ReportsCount count = viewGenerator.getReportsCount();
         embedderMonitor.reportsViewGenerated(count);
-        handleFailure(embedderControls, count);
+        handleFailures(embedderMonitor, embedderControls, count);
 
     }
 
-    private void handleFailure(EmbedderControls embedderControls, ReportsCount count) {
-        if (!embedderControls.ignoreFailureInView()) {
-            boolean failed = count.failed();
-            if (configuration().pendingStepStrategy() instanceof FailingUponPendingStep) {
-                failed = failed || count.pending();
-            }
-            if (failed) {
+    private void handleFailures(EmbedderMonitor embedderMonitor, EmbedderControls embedderControls, ReportsCount count) {
+        boolean failed = count.failed();
+        if (configuration().pendingStepStrategy() instanceof FailingUponPendingStep) {
+            failed = failed || count.pending();
+        }
+        if (failed) {
+            if (embedderControls.ignoreFailureInView()) {
+                embedderMonitor.reportsViewFailures(count);
+            } else {
                 throw new RunningStoriesFailed(count);
             }
         }
@@ -403,10 +411,10 @@ public class Embedder {
         return embedderMonitor;
     }
 
-    public boolean hasExecutorService(){
+    public boolean hasExecutorService() {
         return executorService != null;
     }
-    
+
     public ExecutorService executorService() {
         if (executorService == null) {
             executorServiceCreated = true;

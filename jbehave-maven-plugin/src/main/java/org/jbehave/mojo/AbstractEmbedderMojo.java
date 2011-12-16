@@ -217,10 +217,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     String outputDirectory() {
-      if (isTestScope()) {
-          return testOutputDirectory;
-      }
-      return outputDirectory;
+        if (isTestScope()) {
+            return testOutputDirectory;
+        }
+        return outputDirectory;
     }
 
     URL codeLocation() {
@@ -228,7 +228,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         try {
             return outputDirectory != null ? new File(outputDirectory).toURI().toURL() : null;
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Failed to create code location from "+outputDirectory, e);
+            throw new IllegalArgumentException("Failed to create code location from " + outputDirectory, e);
         }
     }
 
@@ -308,7 +308,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         URL codeLocation = codeLocation();
         if (codeLocation != null) {
-          embedder.configuration().storyReporterBuilder().withCodeLocation(codeLocation);
+            embedder.configuration().storyReporterBuilder().withCodeLocation(codeLocation);
         }
 
         embedder.useClassLoader(classLoader);
@@ -316,14 +316,14 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         embedder.useEmbedderMonitor(embedderMonitor());
         if (isNotEmpty(metaFilters)) {
             List<String> filters = new ArrayList<String>();
-            for ( String filter : metaFilters ){                
-                if ( filter != null ){
+            for (String filter : metaFilters) {
+                if (filter != null) {
                     filters.add(filter);
                 }
             }
             embedder.useMetaFilters(filters);
         }
-        if ( !systemProperties.isEmpty() ){
+        if (!systemProperties.isEmpty()) {
             embedder.useSystemProperties(systemProperties);
         }
         return embedder;
@@ -345,7 +345,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         public void batchFailed(BatchFailures failures) {
             getLog().warn("Failed to run batch " + failures);
         }
-        
+
         public void beforeOrAfterStoriesFailed() {
             getLog().warn("Failed to run before or after stories steps");
         }
@@ -416,13 +416,16 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info(
                     "Reports view generated with " + count.getStories() + " stories (of which "
                             + count.getStoriesPending() + " pending) containing " + count.getScenarios()
-                            + " scenarios (of which " + count.getScenariosFailed() + " failed and "
-                            + count.getScenariosPending() + " pending)");
+                            + " scenarios (of which " + count.getScenariosPending() + " pending)");
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
                 getLog().info(
                         "Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  "
                                 + count.getScenariosNotAllowed() + " scenarios");
             }
+        }
+
+        public void reportsViewFailures(ReportsCount count) {
+            getLog().warn("Failures in reports view: " + count.getScenariosFailed() + " scenarios failed");
         }
 
         public void reportsViewNotGenerated() {
@@ -472,7 +475,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void storyTimeout(Story story, StoryDuration storyDuration) {
-            getLog().warn("Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs() + " seconds has exceeded timeout of " + storyDuration.getTimeoutInSecs() + " seconds");
+            getLog().warn(
+                    "Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs()
+                            + " seconds has exceeded timeout of " + storyDuration.getTimeoutInSecs() + " seconds");
         }
 
         public void usingThreads(int threads) {
@@ -484,7 +489,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void usingControls(EmbedderControls embedderControls) {
-            getLog().info("Using controls "+embedderControls);
+            getLog().info("Using controls " + embedderControls);
         }
 
         @Override

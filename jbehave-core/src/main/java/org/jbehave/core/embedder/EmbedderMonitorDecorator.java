@@ -81,6 +81,10 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
         delegate.reportsViewGenerated(count);
     }
 
+    public void reportsViewFailures(ReportsCount count) {
+        delegate.reportsViewFailures(count);
+    }
+
     public void reportsViewNotGenerated() {
         delegate.reportsViewNotGenerated();
     }
