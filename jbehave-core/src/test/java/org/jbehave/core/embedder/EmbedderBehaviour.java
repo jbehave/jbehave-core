@@ -839,10 +839,11 @@ public class EmbedderBehaviour {
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
+        String output = out.toString();
         for (String storyPath : storyPaths) {
-            assertThat(out.toString(), containsString("Running story " + storyPath));
+            assertThat(output, containsString("Running story " + storyPath));
+            assertThat(output, containsString("Failed to run story " + storyPath));
         }
-        assertThat(out.toString(), containsString("Failed to run batch " + failures));
     }
 
     @SuppressWarnings("unchecked")

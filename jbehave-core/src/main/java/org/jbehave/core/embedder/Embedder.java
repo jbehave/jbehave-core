@@ -186,9 +186,6 @@ public class Embedder {
 
         processSystemProperties();
 
-        EmbedderMonitor embedderMonitor = embedderMonitor();
-
-        EmbedderControls embedderControls = embedderControls();
         embedderMonitor.usingControls(embedderControls);
 
         if (embedderControls.skip()) {
@@ -215,7 +212,7 @@ public class Embedder {
             }
 
             // run stories
-            storyManager.runningStories(storyPaths, filter, failures, beforeStories);
+            storyManager.runningStories(storyPaths, filter, beforeStories);
             storyManager.waitUntilAllDoneOrFailed(failures);
             List<Story> notAllowed = storyManager.notAllowedBy(filter);
             if (!notAllowed.isEmpty()) {
@@ -228,8 +225,8 @@ public class Embedder {
                 failures.put(afterStories.toString(), storyRunner.failure(afterStories));
             }
 
-            // check for failures
-            handleFailures(embedderMonitor, embedderControls, failures);
+            // handle any failures
+            handleFailures(failures);
 
         } finally {
 
@@ -242,8 +239,7 @@ public class Embedder {
         }
     }
 
-    private void handleFailures(EmbedderMonitor embedderMonitor, EmbedderControls embedderControls,
-            BatchFailures failures) {
+    private void handleFailures(BatchFailures failures) {
         if (failures.size() > 0) {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.batchFailed(failures);
@@ -251,33 +247,6 @@ public class Embedder {
                 embedderFailureStrategy.handleFailures(failures);
             }
         }
-    }
-
-    /**
-     * @deprecated From 3.6 use {@link enqueueStoryAsText(String, String)
-     */
-    public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
-            List<Future<ThrowableStory>> futures, String storyPath, Story story) {
-        StoryManager storyManager = storyManager();
-        return storyManager.runningStory(storyPath, story, filter, batchFailures, null).getFuture();
-    }
-
-    public Future<ThrowableStory> enqueueStoryAsText(String storyAsText, String storyId) {
-        StoryManager storyManager = storyManager();
-        Story story = storyManager.storyOfText(storyAsText, storyId);
-        MetaFilter filter = metaFilter();
-        return storyManager.runningStory(storyId, story, filter, new BatchFailures(), null).getFuture();
-    }
-
-    private StoryManager storyManager() {
-        return new StoryManager(configuration(), embedderControls(), embedderMonitor(), executorService(),
-                stepsFactory(), storyRunner());
-    }
-
-    private void configureThreads(Configuration configuration, int threads) {
-        StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
-        reporterBuilder.withMultiThreading(threads > 1);
-        configuration.useStoryReporterBuilder(reporterBuilder);
     }
 
     public void generateReportsView() {
@@ -288,8 +257,6 @@ public class Embedder {
     }
 
     public void generateReportsView(File outputDirectory, List<String> formats, Properties viewResources) {
-        EmbedderControls embedderControls = embedderControls();
-        EmbedderMonitor embedderMonitor = embedderMonitor();
 
         if (embedderControls.skip()) {
             embedderMonitor.reportsViewNotGenerated();
@@ -305,11 +272,11 @@ public class Embedder {
         }
         ReportsCount count = viewGenerator.getReportsCount();
         embedderMonitor.reportsViewGenerated(count);
-        handleFailures(embedderMonitor, embedderControls, count);
+        handleFailures(count);
 
     }
 
-    private void handleFailures(EmbedderMonitor embedderMonitor, EmbedderControls embedderControls, ReportsCount count) {
+    private void handleFailures(ReportsCount count) {
         boolean failed = count.failed();
         if (configuration().pendingStepStrategy() instanceof FailingUponPendingStep) {
             failed = failed || count.pending();
@@ -328,6 +295,22 @@ public class Embedder {
         if (builder.hasCrossReference()) {
             builder.crossReference().outputToFiles(builder);
         }
+    }
+
+    /**
+     * @deprecated From 3.6 use {@link enqueueStoryAsText(String, String)
+     */
+    public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
+            List<Future<ThrowableStory>> futures, String storyPath, Story story) {
+        StoryManager storyManager = storyManager();
+        return storyManager.runningStory(storyPath, story, filter, null).getFuture();
+    }
+
+    public Future<ThrowableStory> enqueueStoryAsText(String storyAsText, String storyId) {
+        StoryManager storyManager = storyManager();
+        Story story = storyManager.storyOfText(storyAsText, storyId);
+        MetaFilter filter = metaFilter();
+        return storyManager.runningStory(storyId, story, filter, null).getFuture();
     }
 
     public void reportStepdocs() {
@@ -427,6 +410,18 @@ public class Embedder {
         }
         return executorService;
     }
+
+    private StoryManager storyManager() {
+        return new StoryManager(configuration(), embedderControls(), embedderMonitor(), executorService(),
+                stepsFactory(), storyRunner());
+    }
+
+    private void configureThreads(Configuration configuration, int threads) {
+        StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
+        reporterBuilder.withMultiThreading(threads > 1);
+        configuration.useStoryReporterBuilder(reporterBuilder);
+    }
+
 
     /**
      * Creates a {@link ThreadPoolExecutor} using the number of threads defined

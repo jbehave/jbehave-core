@@ -54,13 +54,12 @@ public class StoryManager {
         runningStories.clear();
     }
 
-    public Map<String, RunningStory> runningStories(List<String> storyPaths, MetaFilter filter, BatchFailures failures,
-            State beforeStories) {
+    public Map<String, RunningStory> runningStories(List<String> storyPaths, MetaFilter filter, State beforeStories) {
         for (String storyPath : storyPaths) {
             Story story = storyOfPath(storyPath);
             FilteredStory filteredStory = new FilteredStory(filter, story, configuration.storyControls());
-            if ( filteredStory.allowed() ){
-                runningStories.put(storyPath, runningStory(storyPath, story, filter, failures, beforeStories));
+            if (filteredStory.allowed()) {
+                runningStories.put(storyPath, runningStory(storyPath, story, filter, beforeStories));
             } else {
                 notAllowedBy(filter).add(story);
             }
@@ -70,18 +69,16 @@ public class StoryManager {
 
     public List<Story> notAllowedBy(MetaFilter filter) {
         List<Story> stories = excludedStories.get(filter);
-        if ( stories == null ){
+        if (stories == null) {
             stories = new ArrayList<Story>();
             excludedStories.put(filter, stories);
         }
         return stories;
     }
 
-    public RunningStory runningStory(String storyPath, Story story, MetaFilter filter, BatchFailures failures,
-            State beforeStories) {
-        EnqueuedStory enqueuedStory = new EnqueuedStory(storyPath, story, configuration, stepsFactory, filter,
-                embedderControls, failures, embedderMonitor, storyRunner, beforeStories);
-        return submit(enqueuedStory);
+    public RunningStory runningStory(String storyPath, Story story, MetaFilter filter, State beforeStories) {
+        return submit(new EnqueuedStory(storyRunner, configuration, stepsFactory, embedderControls, embedderMonitor,
+                storyPath, story, filter, beforeStories));
     }
 
     public void waitUntilAllDoneOrFailed(BatchFailures failures) {
@@ -150,30 +147,27 @@ public class StoryManager {
     }
 
     private static class EnqueuedStory implements Callable<ThrowableStory> {
-        private final String storyPath;
+        private final StoryRunner storyRunner;
         private final Configuration configuration;
         private final InjectableStepsFactory stepsFactory;
+        private final EmbedderControls embedderControls;
+        private final EmbedderMonitor embedderMonitor;
+        private final String storyPath;
         private final Story story;
         private final MetaFilter filter;
-        private final EmbedderControls embedderControls;
-        private final BatchFailures batchFailures;
-        private final EmbedderMonitor embedderMonitor;
-        private final StoryRunner storyRunner;
         private final State beforeStories;
 
-        public EnqueuedStory(String storyPath, Story story, Configuration configuration,
-                InjectableStepsFactory stepsFactory, MetaFilter filter, EmbedderControls embedderControls,
-                BatchFailures batchFailures, EmbedderMonitor embedderMonitor, StoryRunner storyRunner,
-                State beforeStories) {
-            this.storyPath = storyPath;
+        private EnqueuedStory(StoryRunner storyRunner, Configuration configuration,
+                InjectableStepsFactory stepsFactory, EmbedderControls embedderControls,
+                EmbedderMonitor embedderMonitor, String storyPath, Story story, MetaFilter filter, State beforeStories) {
+            this.storyRunner = storyRunner;
             this.configuration = configuration;
             this.stepsFactory = stepsFactory;
+            this.embedderControls = embedderControls;
+            this.embedderMonitor = embedderMonitor;
+            this.storyPath = storyPath;
             this.story = story;
             this.filter = filter;
-            this.embedderControls = embedderControls;
-            this.batchFailures = batchFailures;
-            this.embedderMonitor = embedderMonitor;
-            this.storyRunner = storyRunner;
             this.beforeStories = beforeStories;
         }
 
@@ -182,15 +176,10 @@ public class StoryManager {
                 embedderMonitor.runningStory(storyPath);
                 storyRunner.run(configuration, stepsFactory, story, filter, beforeStories);
             } catch (Throwable e) {
-                if (embedderControls.batch()) {
-                    // collect and postpone decision to throw exception
-                    batchFailures.put(storyPath, e);
+                if (embedderControls.ignoreFailureInStories()) {
+                    embedderMonitor.storyFailed(storyPath, e);
                 } else {
-                    if (embedderControls.ignoreFailureInStories()) {
-                        embedderMonitor.storyFailed(storyPath, e);
-                    } else {
-                        return new ThrowableStory(story, new StoryExecutionFailed(storyPath, e));
-                    }
+                    return new ThrowableStory(story, new StoryExecutionFailed(storyPath, e));
                 }
             }
             return new ThrowableStory(story, null);
