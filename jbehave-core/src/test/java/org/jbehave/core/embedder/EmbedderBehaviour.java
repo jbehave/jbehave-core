@@ -21,6 +21,7 @@ import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.Embedder.EmbedderFailureStrategy;
 import org.jbehave.core.embedder.Embedder.RunningEmbeddablesFailed;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
@@ -1103,6 +1104,33 @@ public class EmbedderBehaviour {
         verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
         assertThatReportsViewGenerated(out);
     }
+    
+    @Test
+    public void shouldHandleFailuresAccordingToStrategy() throws Throwable {
+        // Given
+        StoryRunner runner = mock(StoryRunner.class);
+        EmbedderControls embedderControls = new EmbedderControls();
+        OutputStream out = new ByteArrayOutputStream();
+        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
+        ViewGenerator viewGenerator = mock(ViewGenerator.class);
+
+        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        EmbedderFailureStrategy failureStategy = mock(EmbedderFailureStrategy.class);
+        embedder.useEmbedderFailureStrategy(failureStategy);
+        embedder.configuration().useViewGenerator(viewGenerator);
+        File outputDirectory = new File("target/output");
+        List<String> formats = asList("html");
+        Properties viewResources = new Properties();
+        
+        // When 
+        ReportsCount count = new ReportsCount(1, 0, 1, 2, 1, 1, 1, 1);
+        when(viewGenerator.getReportsCount()).thenReturn(count);
+        embedder.generateReportsView(outputDirectory, formats, viewResources);
+
+        // Then 
+        verify(failureStategy).handleFailures(count);
+    }
+
 
     @Test
     public void shouldAllowOverrideOfDefaultDependencies() throws Throwable {
