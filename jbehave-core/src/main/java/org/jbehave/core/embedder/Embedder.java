@@ -43,16 +43,17 @@ import org.jbehave.core.steps.Stepdoc;
  */
 public class Embedder {
 
-    private Configuration configuration = new MostUsefulConfiguration();
-    private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
-    private InjectableStepsFactory stepsFactory;
-    private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
-    private EmbedderControls embedderControls = new EmbedderControls();
-    private List<String> metaFilters = Arrays.asList();
-    private Properties systemProperties = new Properties();
     private StoryMapper storyMapper;
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
+    private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+    private EmbedderControls embedderControls = new EmbedderControls();
+    private EmbedderFailureStrategy embedderFailureStrategy = new ThrowingRunningStoriesFailed();
+    private Configuration configuration = new MostUsefulConfiguration();
+    private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+    private InjectableStepsFactory stepsFactory;
+    private List<String> metaFilters = Arrays.asList();
+    private Properties systemProperties = new Properties();
     private ExecutorService executorService;
     private boolean executorServiceCreated;
 
@@ -247,7 +248,7 @@ public class Embedder {
             if (embedderControls.ignoreFailureInStories()) {
                 embedderMonitor.batchFailed(failures);
             } else {
-                throw new RunningStoriesFailed(failures);
+                embedderFailureStrategy.handleFailures(failures);
             }
         }
     }
@@ -317,7 +318,7 @@ public class Embedder {
             if (embedderControls.ignoreFailureInView()) {
                 embedderMonitor.reportsViewFailures(count);
             } else {
-                throw new RunningStoriesFailed(count);
+                embedderFailureStrategy.handleFailures(count);
             }
         }
     }
@@ -411,14 +412,18 @@ public class Embedder {
         return embedderMonitor;
     }
 
+    public EmbedderFailureStrategy embedderFailureStrategy() {
+        return embedderFailureStrategy;
+    }
+
     public boolean hasExecutorService() {
         return executorService != null;
     }
 
     public ExecutorService executorService() {
         if (executorService == null) {
-            executorServiceCreated = true;
             executorService = createExecutorService();
+            executorServiceCreated = true;
         }
         return executorService;
     }
@@ -495,6 +500,10 @@ public class Embedder {
         this.embedderControls = embedderControls;
     }
 
+    public void useEmbedderFailureStrategy(EmbedderFailureStrategy failureStategy) {
+        this.embedderFailureStrategy = failureStategy;
+    }
+
     public void useEmbedderMonitor(EmbedderMonitor embedderMonitor) {
         this.embedderMonitor = embedderMonitor;
     }
@@ -519,6 +528,26 @@ public class Embedder {
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+    }
+
+    public static interface EmbedderFailureStrategy {
+
+        void handleFailures(BatchFailures failures);
+
+        void handleFailures(ReportsCount count);
+
+    }
+
+    public static class ThrowingRunningStoriesFailed implements EmbedderFailureStrategy {
+
+        public void handleFailures(BatchFailures failures) {
+            throw new RunningStoriesFailed(failures);
+        }
+
+        public void handleFailures(ReportsCount count) {
+            throw new RunningStoriesFailed(count);
+        }
+
     }
 
     @SuppressWarnings("serial")
