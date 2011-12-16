@@ -384,7 +384,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
             StringBuffer sb = new StringBuffer();
-            sb.append("Stories not allowed by filter: " + filter.asString() + "\n");
+            sb.append("Stories excluded by filter: " + filter.asString() + "\n");
             for (Story story : stories) {
                 sb.append(story.getPath()).append("\n");
             }
@@ -419,7 +419,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
                             + " scenarios (of which " + count.getScenariosPending() + " pending)");
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
                 getLog().info(
-                        "Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  "
+                        "Meta filters excluded " + count.getStoriesNotAllowed() + " stories and  "
                                 + count.getScenariosNotAllowed() + " scenarios");
             }
         }
