@@ -2,6 +2,7 @@ package org.jbehave.core.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -345,6 +346,10 @@ public class ExamplesTable {
         return format();
     }
 
+    public void outputTo(PrintStream output){
+        output.print(asString());
+    }
+    
     private String format() {
         StringBuffer sb = new StringBuffer();
         for (String header : headers) {

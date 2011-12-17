@@ -41,7 +41,7 @@
       </pluginRepositories>
     </profile>
     <profile>
-      <!-- Required for dependencies of JBehave Hudson Plugin -->
+      <!-- Required for dependencies of JBehave Jenkins Plugin -->
       <id>glassfish</id>
       <activation>
         <activeByDefault>true</activeByDefault>
@@ -56,44 +56,6 @@
         <pluginRepository>
           <id>glassfish</id>
           <url>http://maven.glassfish.org/content/groups/public/</url>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-    <profile>
-      <!-- Required by JBehave Weld Plugin -->
-      <id>jboss</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <repositories>
-        <repository>
-          <id>jboss-public-repository-group</id>
-          <name>JBoss Public Repository Group</name>
-          <url>http://repository.jboss.org/nexus/content/groups/public/
-          </url>
-          <layout>default</layout>
-          <releases>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
-          </snapshots>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>jboss-public-repository-group</id>
-          <name>JBoss Public Repository Group</name>
-          <url>http://repository.jboss.org/nexus/content/groups/public/
-          </url>
-          <releases>
-            <enabled>true</enabled>
-          </releases>
-          <snapshots>
-            <enabled>true</enabled>
-          </snapshots>
         </pluginRepository>
       </pluginRepositories>
     </profile>
