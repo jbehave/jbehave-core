@@ -34,7 +34,7 @@ import static java.util.Arrays.asList;
  * Class&lt;MyStory&gt; storyClass = MyStory.class;
  * StoryPathResolver resolver = new UnderscoredCamelCaseResolver();
  * String storyPath = resolver.resolve(storyClass);
- * StoryReporter reporter = new StoryReporterBuilder().withCodeLocation(StoryLocation.codeLocationFromClass(storyClass))
+ * StoryReporter reporter = new StoryReporterBuilder().withCodeLocation(CodeLocations.codeLocationFromClass(storyClass))
  *         .withDefaultFormats().withFormats(TXT, HTML, XML).build(storyPath);
  * </pre>
  * 
@@ -60,7 +60,7 @@ import static java.util.Arrays.asList;
  * file:
  * 
  * <pre>
- * new StoryReporterBuilder().withCodeLocation(StoryLocation.codeLocationFromFile(new File(&quot;target/classes&quot;)))
+ * new StoryReporterBuilder().withCodeLocation(CodeLocations.codeLocationFromFile(new File(&quot;target/classes&quot;)))
  *         .withDefaultFormats().withFormats(TXT, HTML, XML).build(storyPath);
  * </pre>
  * 
