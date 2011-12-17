@@ -4,6 +4,8 @@ import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.MethodDescriptor;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jbehave.core.model.ExamplesTable.RowNotFound;
 import org.jbehave.core.steps.ConvertedParameters.ValueNotFound;
 import org.jbehave.core.steps.ParameterConverters;
@@ -330,6 +333,23 @@ public class ExamplesTableBehaviour {
         
         // Then
         assertThat(updatedTable.asString(), equalTo("|one|two|three|\n|11|12|13|\n|21|22|23|\n"));        
+    }
+
+    @Test
+    public void shouldAllowOutputToPrintStream() throws Exception {
+        // Given
+        ParameterConverters parameterConverters = new ParameterConverters();
+        ExamplesTableFactory factory = new ExamplesTableFactory(parameterConverters);
+
+        // When
+        String tableAsString = "|one|two|\n|11|12|\n|21|22|\n";
+        ExamplesTable table = factory.createExamplesTable(tableAsString);               
+        OutputStream out = new ByteArrayOutputStream();
+        PrintStream output = new PrintStream(out);
+        table.outputTo(output);
+        
+        // Then
+        assertThat(out.toString(), equalTo(tableAsString));        
     }
 
     public Date convertDate(String value) throws ParseException {
