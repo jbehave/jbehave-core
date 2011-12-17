@@ -1,5 +1,13 @@
 package org.jbehave.mojo;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.InjectableEmbedder;
@@ -14,16 +22,9 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
-
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.ExecutorService;
 
 import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
 
@@ -216,10 +217,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     String outputDirectory() {
-      if (isTestScope()) {
-          return testOutputDirectory;
-      }
-      return outputDirectory;
+        if (isTestScope()) {
+            return testOutputDirectory;
+        }
+        return outputDirectory;
     }
 
     URL codeLocation() {
@@ -227,7 +228,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         try {
             return outputDirectory != null ? new File(outputDirectory).toURI().toURL() : null;
         } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Failed to create code location from "+outputDirectory, e);
+            throw new IllegalArgumentException("Failed to create code location from " + outputDirectory, e);
         }
     }
 
@@ -307,7 +308,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         URL codeLocation = codeLocation();
         if (codeLocation != null) {
-          embedder.configuration().storyReporterBuilder().withCodeLocation(codeLocation);
+            embedder.configuration().storyReporterBuilder().withCodeLocation(codeLocation);
         }
 
         embedder.useClassLoader(classLoader);
@@ -315,14 +316,14 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         embedder.useEmbedderMonitor(embedderMonitor());
         if (isNotEmpty(metaFilters)) {
             List<String> filters = new ArrayList<String>();
-            for ( String filter : metaFilters ){                
-                if ( filter != null ){
+            for (String filter : metaFilters) {
+                if (filter != null) {
                     filters.add(filter);
                 }
             }
             embedder.useMetaFilters(filters);
         }
-        if ( !systemProperties.isEmpty() ){
+        if (!systemProperties.isEmpty()) {
             embedder.useSystemProperties(systemProperties);
         }
         return embedder;
@@ -344,7 +345,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         public void batchFailed(BatchFailures failures) {
             getLog().warn("Failed to run batch " + failures);
         }
-        
+
         public void beforeOrAfterStoriesFailed() {
             getLog().warn("Failed to run before or after stories steps");
         }
@@ -362,7 +363,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void metaNotAllowed(Meta meta, MetaFilter filter) {
-            getLog().info(meta + " excluded by filter '" + filter.asString() + "'");
+            getLog().debug(meta + " excluded by filter '" + filter.asString() + "'");
         }
 
         public void runningEmbeddable(String name) {
@@ -373,12 +374,21 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("Running story " + path);
         }
 
+        public void storyFailed(String path, Throwable cause) {
+            getLog().warn("Failed to run story " + path, cause);
+        }
+
         public void storiesSkipped(List<String> storyPaths) {
             getLog().info("Skipped stories " + storyPaths);
         }
 
-        public void storyFailed(String path, Throwable cause) {
-            getLog().warn("Failed to run story " + path, cause);
+        public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("Stories excluded by filter: " + filter.asString() + "\n");
+            for (Story story : stories) {
+                sb.append(story.getPath()).append("\n");
+            }
+            getLog().info(sb.toString());
         }
 
         public void runningWithAnnotatedEmbedderRunner(String className) {
@@ -406,13 +416,16 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info(
                     "Reports view generated with " + count.getStories() + " stories (of which "
                             + count.getStoriesPending() + " pending) containing " + count.getScenarios()
-                            + " scenarios (of which " + count.getScenariosFailed() + " failed and "
-                            + count.getScenariosPending() + " pending)");
+                            + " scenarios (of which " + count.getScenariosPending() + " pending)");
             if (count.getStoriesNotAllowed() > 0 || count.getScenariosNotAllowed() > 0) {
                 getLog().info(
-                        "Meta filters did not allow " + count.getStoriesNotAllowed() + " stories and  "
+                        "Meta filters excluded " + count.getStoriesNotAllowed() + " stories and  "
                                 + count.getScenariosNotAllowed() + " scenarios");
             }
+        }
+
+        public void reportsViewFailures(ReportsCount count) {
+            getLog().warn("Failures in reports view: " + count.getScenariosFailed() + " scenarios failed");
         }
 
         public void reportsViewNotGenerated() {
@@ -461,8 +474,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("System property '" + name + "' set to '" + value + "'");
         }
 
-        public void storyTimeout(Story story, long durationInSecs, long timeoutInSecs) {
-            getLog().warn("Story " + story.getPath() + " duration of " + durationInSecs + " seconds has exceeded timeout of "+timeoutInSecs+" seconds");
+        public void storyTimeout(Story story, StoryDuration storyDuration) {
+            getLog().warn(
+                    "Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs()
+                            + " seconds has exceeded timeout of " + storyDuration.getTimeoutInSecs() + " seconds");
         }
 
         public void usingThreads(int threads) {
@@ -474,7 +489,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
 
         public void usingControls(EmbedderControls embedderControls) {
-            getLog().info("Using controls "+embedderControls);
+            getLog().info("Using controls " + embedderControls);
         }
 
         @Override

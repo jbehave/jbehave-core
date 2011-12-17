@@ -76,7 +76,8 @@ specifying the remote repositories: </p>
 <![CDATA[
 <project name="my_project" default="build" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
-    <artifact:dependencies filesetId="dependency.fileset" settingsFile="settings.xml" useScope="test" />
+    <artifact:pom id="pom" file="pom.xml" settingsFile="settings.xml" />
+    <artifact:dependencies filesetId="dependency.fileset" pomRefId="pom" useScope="test" />
         <dependency groupId="org.jbehave" artifactId="jbehave-ant" version="[version]"/>           
         <dependency groupId="org.jbehave" artifactId="jbehave-core" version="[version]" classifier="resources" type="zip"/>           
         <dependency groupId="org.jbehave.site" artifactId="jbehave-site-resources" version="3.1.1" type="zip"/>           

@@ -34,7 +34,7 @@ public class ConvertedParameters implements Parameters {
     }
 
     public <T> T valueAs(String name, Class<T> type) {
-        return convert(values.get(name), type);
+        return convert(valueFor(name), type);
     }
 
     public <T> T valueAs(String name, Class<T> type, T defaultValue) {
@@ -48,8 +48,24 @@ public class ConvertedParameters implements Parameters {
         return type.cast(parameterConverters.convert(value, type));
     }
 
+    private String valueFor(String name) {
+        if ( !values.containsKey(name) ){
+            throw new ValueNotFound(name);
+        }
+        return values.get(name);
+    }
+
     public Map<String, String> values() {
         return values;
+    }
+    
+    @SuppressWarnings("serial")
+    public static class ValueNotFound extends RuntimeException {
+
+        public ValueNotFound(String name) {
+            super(name);
+        }
+        
     }
 
 }

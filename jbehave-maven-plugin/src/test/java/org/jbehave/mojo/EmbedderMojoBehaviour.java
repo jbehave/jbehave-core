@@ -194,10 +194,10 @@ public class EmbedderMojoBehaviour {
                 scenariosFailed, scenariosNotAllowed, scenariosPending, stepsFailed));
         verify(log).info(
                 "Reports view generated with " + stories + " stories (of which " + storiesPending
-                        + " pending) containing " + scenarios + " scenarios (of which " + scenariosFailed
-                        + " failed and " + scenariosPending + " pending)");
+                        + " pending) containing " + scenarios + " scenarios (of which " + scenariosPending
+                        + " pending)");
         verify(log).info(
-                "Meta filters did not allow " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
+                "Meta filters excluded " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
                         + " scenarios");
         embedderMonitor.reportsViewNotGenerated();
         verify(log).info("Reports view not generated");
@@ -406,7 +406,7 @@ public class EmbedderMojoBehaviour {
         assertThat(mojo.codeLocation().toString(), containsString(mojo.outputDirectory));
     }
 
-    @Test(expected=MojoFailureException.class)
+    @Test(expected = MojoFailureException.class)
     public void shouldReportFailuresInMappingStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());

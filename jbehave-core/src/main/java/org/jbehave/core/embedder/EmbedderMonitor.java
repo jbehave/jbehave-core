@@ -8,6 +8,7 @@ import java.util.concurrent.ExecutorService;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
 
@@ -29,6 +30,8 @@ public interface EmbedderMonitor {
 
     void storiesSkipped(List<String> storyPaths);
 
+    void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter);
+
     void batchFailed(BatchFailures failures);
 
     void beforeOrAfterStoriesFailed();
@@ -40,8 +43,10 @@ public interface EmbedderMonitor {
 
     void reportsViewGenerated(ReportsCount count);
 
+    void reportsViewFailures(ReportsCount count);
+
     void reportsViewNotGenerated();
-    
+
     void runningWithAnnotatedEmbedderRunner(String className);
 
     void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type);
@@ -62,7 +67,7 @@ public interface EmbedderMonitor {
 
     void systemPropertySet(String name, String value);
 
-    void storyTimeout(Story story, long durationInSecs, long timeoutInSecs);
+    void storyTimeout(Story story, StoryDuration storyDuration);
 
     void usingThreads(int threads);
 

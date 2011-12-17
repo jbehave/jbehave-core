@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 
 public class ExamplesTableFactoryBehaviour {
 
-    private String tableAsString = "|one|two|\n|11|22|";
+    private String tableAsString = "|one|two|\n|11|22|\n";
 
     @Test
     public void shouldCreateExamplesTableFromTableInput() {

@@ -56,9 +56,10 @@ public class XmlOutput extends PrintStreamOutput {
     private static Properties defaultHtmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "<dryRun>{0}</dryRun>\n");        
-        patterns.setProperty("pendingMethod", "<pendingMethod>{0}</pendingMethod>\n");        
         patterns.setProperty("beforeStory", "<story path=\"{1}\" title=\"{0}\">\n");
+        patterns.setProperty("storyCancelled", "<cancelled path=\"{0}\" durationInSecs=\"{1}\" timeoutInSecs=\"{2}\"/>\n");
         patterns.setProperty("afterStory", "</story>\n");
+        patterns.setProperty("pendingMethod", "<pendingMethod>{0}</pendingMethod>\n");        
         patterns.setProperty("metaStart", "<meta>\n");
         patterns.setProperty("metaProperty", "<property keyword=\"{0}\" name=\"{1}\" value=\"{2}\"/>\n");        
         patterns.setProperty("metaEnd", "</meta>\n");
@@ -78,7 +79,6 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("notPerformed", "<step outcome=\"notPerformed\" keyword=\"{1}\">{0}</step>\n");
         patterns.setProperty("failed", "<step outcome=\"failed\" keyword=\"{1}\">{0}<failure>{2}</failure></step>\n");
         patterns.setProperty("restarted", "<step outcome=\"restarted\">{0}<reason>{1}</reason></step>\n");
-        patterns.setProperty("cancelled", "<cancelled/>\n");
         patterns.setProperty("outcomesTableStart", "<outcomes>\n");
         patterns.setProperty("outcomesTableHeadStart", "<fields>");
         patterns.setProperty("outcomesTableHeadCell", "<field>{0}</field>");

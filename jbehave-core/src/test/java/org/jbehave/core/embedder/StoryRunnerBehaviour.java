@@ -8,6 +8,7 @@ import java.util.Map;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PassingUponPendingStep;
@@ -25,12 +26,14 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
@@ -39,12 +42,19 @@ import org.jbehave.core.steps.Steps;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
+import org.mockito.Mockito;
 
 import static java.util.Arrays.asList;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.is;
+
 import static org.jbehave.core.steps.AbstractStepResult.failed;
 import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
 import static org.jbehave.core.steps.AbstractStepResult.successful;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -293,6 +303,40 @@ public class StoryRunnerBehaviour {
         verify(reporter).restarted(eq("<fooStep>"), isA(RestartingScenarioFailure.class));
         verify(reporter).successful("When happened on second attempt");
         verify(reporter).successful("Then I succeeded");
+    }
+
+    @Test
+    public void shouldReportStoryCancellation(){
+        // Given
+        Configuration configuration = mock(Configuration.class,Mockito.RETURNS_DEEP_STUBS);
+        when(configuration.storyControls().dryRun()).thenReturn(false);
+        StoryReporter reporter = mock(ConcurrentStoryReporter.class);
+        when(configuration.storyReporter(Matchers.anyString())).thenReturn(reporter);
+        
+        Story story = mock(Story.class);
+        String storyPath = "story/path";
+        when(story.getPath()).thenReturn(storyPath);
+        RuntimeException expected = new RuntimeException();
+        when(story.getMeta()).thenThrow(expected);
+        
+        InjectableStepsFactory stepsFactory = mock(InjectableStepsFactory.class);
+        MetaFilter metaFilter = mock(MetaFilter.class);
+        State state = mock(State.class);
+    
+        //When
+        long durationInSecs = 2;
+        long timeoutInSecs = 1;
+        StoryDuration storyDuration = new StoryDuration(durationInSecs, timeoutInSecs);
+        try {
+            StoryRunner runner = new StoryRunner();
+            runner.cancelStory(story, storyDuration);
+            runner.run(configuration, stepsFactory, story, metaFilter, state);
+            fail("A exception should be thrown");
+        } catch (Throwable e) {
+        //Then
+            assertThat(e.equals(expected), is(true));
+        }        
+        verify(reporter).storyCancelled(story, storyDuration);
     }
 
     @Test

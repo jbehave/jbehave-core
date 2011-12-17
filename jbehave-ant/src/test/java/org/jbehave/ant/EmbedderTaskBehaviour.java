@@ -153,10 +153,10 @@ public class EmbedderTaskBehaviour {
         verify(project).log(
                 task,
                 "Reports view generated with " + stories + " stories (of which "+storiesPending+" pending) containing " + scenarios
-                        + " scenarios (of which " + scenariosFailed + " failed and " + scenariosPending + " pending)", MSG_INFO);
+                        + " scenarios (of which " + scenariosPending + " pending)", MSG_INFO);
         verify(project).log(
                 task,
-                "Meta filters did not allow " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
+                "Meta filters excluded " + storiesNotAllowed + " stories and  " + scenariosNotAllowed
                         + " scenarios", MSG_INFO);
 
         embedderMonitor.reportsViewNotGenerated();

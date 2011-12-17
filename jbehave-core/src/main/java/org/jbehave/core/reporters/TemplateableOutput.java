@@ -19,6 +19,7 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
@@ -146,7 +147,7 @@ public class TemplateableOutput implements StoryReporter {
         this.outputScenario.addStep(new OutputRestart(step, cause.getMessage()));
     }
 
-    public void cancelled() {
+    public void storyCancelled(Story story, StoryDuration storyDuration) {
     }
 
     public void afterStory(boolean givenStory) {
@@ -423,14 +424,15 @@ public class TemplateableOutput implements StoryReporter {
         private final String outcome;
         private Throwable failure;
         private OutcomesTable outcomes;
-        private ExamplesTable table;
         private List<OutputParameter> parameters;
         private String stepPattern;
+        private String tableAsString;
+        private ExamplesTable table;
 
         public OutputStep(String step, String outcome) {
             this.step = step;
             this.outcome = outcome;
-            parseTable();
+            parseTableAsString();
             parseParameters();
             createStepPattern();
         }
@@ -516,22 +518,22 @@ public class TemplateableOutput implements StoryReporter {
             return parameters;
         }
 
+        private void parseTableAsString() {
+            if (step.contains(PARAMETER_TABLE_START) && step.contains(PARAMETER_TABLE_END)) {
+                tableAsString = StringUtils.substringBetween(step, PARAMETER_TABLE_START, PARAMETER_TABLE_END);
+                table = new ExamplesTable(tableAsString);
+            }
+        }
+
         private void createStepPattern() {
             this.stepPattern = step;
-            if (table != null) {
-                this.stepPattern = StringUtils.replaceOnce(stepPattern, PARAMETER_TABLE_START + table.asString()
+            if (tableAsString != null) {
+                this.stepPattern = StringUtils.replaceOnce(stepPattern, PARAMETER_TABLE_START + tableAsString
                         + PARAMETER_TABLE_END, "");
             }
             for (int count = 0; count < parameters.size(); count++) {
                 String value = parameters.get(count).toString();
                 this.stepPattern = stepPattern.replace(value, "{" + count + "}");
-            }
-        }
-
-        private void parseTable() {
-            if (step.contains(PARAMETER_TABLE_START) && step.contains(PARAMETER_TABLE_END)) {
-                String tableAsString = StringUtils.substringBetween(step, PARAMETER_TABLE_START, PARAMETER_TABLE_END);
-                table = new ExamplesTable(tableAsString);
             }
         }
 

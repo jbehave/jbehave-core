@@ -28,6 +28,7 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.Outcome;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 
 import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
 import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
@@ -166,6 +167,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("filter", "{0}\n", filter));
     }
 
+    public void storyCancelled(Story story, StoryDuration storyDuration) {
+        print(format("storyCancelled", "{0}: {1} s > {2} s\n", story.getPath(), storyDuration.getDurationInSecs(),
+                storyDuration.getTimeoutInSecs()));
+    }
+
     public void beforeStory(Story story, boolean givenStory) {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
         if (!story.getMeta().isEmpty()) {
@@ -223,7 +229,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void afterScenario() {
         if (cause.get() != null && reportFailureTrace.get() && !(cause.get() instanceof KnownFailure)) {
-            print(format("afterScenarioWithFailure", "\n{0}\n", new StackTraceFormatter(compressFailureTrace()).stackTrace(cause.get())));
+            print(format("afterScenarioWithFailure", "\n{0}\n",
+                    new StackTraceFormatter(compressFailureTrace()).stackTrace(cause.get())));
         } else {
             print(format("afterScenario", "\n"));
         }
@@ -257,11 +264,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void restarted(String step, Throwable cause) {
         print(format("restarted", "{0} {1}\n", step, cause.getMessage()));
-    }
-
-    public void cancelled() {
-        String cancelled = format("cancelled", "\n");
-        print(cancelled);
     }
 
     /**
@@ -325,7 +327,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
             public Object transform(Object object) {
                 switch (format) {
                 case HTML:
-                    return escapeHtml(asString(object)).replace("\n", "<br/>");
+                    return escapeHtml(asString(object));
                 case XML:
                     return escapeXml(asString(object));
                 default:

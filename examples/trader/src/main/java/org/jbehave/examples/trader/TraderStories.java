@@ -54,8 +54,8 @@ public class TraderStories extends JUnitStories {
     private final CrossReference xref = new CrossReference();
 
     public TraderStories() {
-        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(60);
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
+                .doIgnoreFailureInView(true).doVerboseFailures(true).useThreads(2).useStoryTimeoutInSecs(60);
         //configuredEmbedder().useEmbedderControls(new PropertyBasedEmbedderControls());
     }
 

@@ -1,12 +1,12 @@
 
 <!--
-    Note: Use of <artifact:dependencies/> requires maven-ant-tasks-2.1.1.jar in $ANT_HOME/lib
-          Download it from http://maven.apache.org/ant-tasks/download.html
+    Note: Use of <artifact:dependencies/> requires maven-ant-tasks-2.1.3.jar in $ANT_HOME/lib
+          Download it from http://maven.apache.org/ant-tasks/download.html or copy it from the JBehave bin distribution
   -->
 <project name="trader" default="build" xmlns:artifact="antlib:org.apache.maven.artifact.ant">
 
 	<property name="src.dir" value="target/src"/>
-    <property name="jbehave.version"  value="3.5-SNAPSHOT"/>
+    <property name="jbehave.version"  value="3.6-SNAPSHOT"/>
 	
 	<target name="clean">
 		<delete dir="target" />

@@ -29,6 +29,7 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 
@@ -137,6 +138,7 @@ public class ReportTransformBehaviour {
     }
 
     @Test
+    @Ignore("Filtered stories not run anymore")
     public void transformFilterStoryReport() throws FileNotFoundException, Throwable {
         runStories("filter_story.story");
         Document document = tranformReport("filter_story.xml");

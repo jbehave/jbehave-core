@@ -1,10 +1,5 @@
 package org.jbehave.core.model;
 
-import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.Parameters;
-import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
-import org.junit.Test;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -19,9 +14,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jbehave.core.model.ExamplesTable.RowNotFound;
+import org.jbehave.core.steps.ConvertedParameters.ValueNotFound;
+import org.jbehave.core.steps.ParameterConverters;
+import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
+import org.jbehave.core.steps.Parameters;
+import org.junit.Test;
+
 import static java.util.Arrays.asList;
 import static org.codehaus.plexus.util.StringUtils.isBlank;
+
 import static org.hamcrest.MatcherAssert.assertThat;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
@@ -44,7 +48,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithDifferentHeaderAndValueSeparator() {
+    public void shouldParseTableWithDifferentSeparators() {
         String headerSeparator = "||";
         String valueSeparator = "|";
         String tableWithCustomSeparator = wikiTableAsString;
@@ -56,7 +60,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithDifferentCustomHeaderAndValueSeparator() {
+    public void shouldParseTableWithDifferentCustomSeparators() {
         String headerSeparator = "!!";
         String valueSeparator = "!";
         String tableWithCustomSeparator = wikiTableAsString.replace("|", "!");
@@ -64,7 +68,7 @@ public class ExamplesTableBehaviour {
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
         ensureColumnOrderIsPreserved(table);
-        assertThat(table.asString(), equalTo(tableWithCustomSeparator));
+        assertThat(table.asString(), equalTo("!!one!!two!!\n!11!12!\n!21!22!\n"));
     }
 
     @Test
@@ -72,24 +76,24 @@ public class ExamplesTableBehaviour {
         String untrimmedTableAsString = "\n    \n" + tableAsString + "\n    \n";
         ExamplesTable table = new ExamplesTable(untrimmedTableAsString);
         ensureColumnOrderIsPreserved(table);
-        assertThat(table.asString(), equalTo(untrimmedTableAsString));
+        assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
     }
 
     @Test
     public void shouldParseTableWithCommentLines() {
         ExamplesTable table = new ExamplesTable(tableWithCommentsAsString);
-        assertThat(table.asString(), equalTo(tableWithCommentsAsString));
         ensureColumnOrderIsPreserved(table);
+        assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
     }
 
     @Test
     public void shouldParseEmptyTable() {
         String tableAsString = "";
         ExamplesTable table = new ExamplesTable(tableAsString);
-        assertThat(table.asString(), equalTo(tableAsString));
         assertThat(table.getHeaders().size(), equalTo(0));
         assertThat(table.getRows().size(), equalTo(0));
         assertThat(table.getRowsAsParameters().size(), equalTo(0));
+        assertThat(table.asString(), equalTo(tableAsString));
     }
 
     @Test
@@ -104,7 +108,7 @@ public class ExamplesTableBehaviour {
                 assertThat(isBlank(values.get(column)), is(true));
             }
         }
-        assertThat(table.asString(), equalTo(tableWithEmptyValues));
+        assertThat(table.asString(), equalTo("|one|two|\n|||\n|||\n|||\n"));
     }
 
     @Test
@@ -112,7 +116,7 @@ public class ExamplesTableBehaviour {
         String tableAsString = "one|two|\n 11|12|\n 21|22|\n";
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
-        assertThat(table.asString(), equalTo(tableAsString));
+        assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
     }
 
     @Test
@@ -120,7 +124,7 @@ public class ExamplesTableBehaviour {
         String tableAsString = "|one|two\n |11|12\n |21|22\n";
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
-        assertThat(table.asString(), equalTo(tableAsString));
+        assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
     }
 
     @Test
@@ -128,7 +132,7 @@ public class ExamplesTableBehaviour {
         String tableAsString = "one|two\n 11|12\n 21|22\n";
         ExamplesTable table = new ExamplesTable(tableAsString);
         ensureColumnOrderIsPreserved(table);
-        assertThat(table.asString(), equalTo(tableAsString));
+        assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
     }
 
     @Test
@@ -139,7 +143,7 @@ public class ExamplesTableBehaviour {
         assertThat(properties.size(), equalTo(1));
         assertThat(properties.getProperty("trim"), equalTo("false"));
         ensureWhitespaceIsPreserved(table);
-        assertThat(table.asString(), equalTo(tableWithProperties));
+        assertThat(table.asString(), equalTo("|one |two | |\n|11 |12 | |\n| 21| 22| |\n"));
     }
 
     private void ensureColumnOrderIsPreserved(ExamplesTable table) {
@@ -222,7 +226,7 @@ public class ExamplesTableBehaviour {
         assertThat(firstRow.valueAs("three", Integer.class), is(99));
         assertThat(firstRowValues.containsKey("XX"), is(false));
         assertThat(firstRow.valueAs("XX", Integer.class, 13), is(13));
-        
+
         Parameters secondRow = examplesTable.getRowAsParameters(1);
         Map<String, String> secondRowValues = secondRow.values();
         assertThat(secondRowValues.containsKey("one"), is(true));
@@ -233,7 +237,7 @@ public class ExamplesTableBehaviour {
         assertThat(secondRow.valueAs("three", Integer.class), is(99));
         assertThat(secondRowValues.containsKey("XX"), is(false));
         assertThat(secondRow.valueAs("XX", Integer.class, 13), is(13));
-        
+
     }
 
     @Test
@@ -252,7 +256,80 @@ public class ExamplesTableBehaviour {
         Map<String, String> firstRowValues = firstRow.values();
         assertThat(firstRowValues.containsKey("Value"), is(true));
         assertThat(firstRow.valueAs("Value", String.class), is("value1"));
+
+    }
+
+    @Test
+    public void shouldThrowExceptionIfValuesOrRowsAreNotFound() throws Exception {
+        // Given
+        ParameterConverters parameterConverters = new ParameterConverters();
+        ExamplesTableFactory factory = new ExamplesTableFactory(parameterConverters);
+
+        // When
+        String tableAsString = "|one|two|\n|11|22|\n";
+        ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
+
+        // Then
+        Parameters integers = examplesTable.getRowAsParameters(0);
+        assertThat(integers.valueAs("one", Integer.class), equalTo(11));
+        try {
+            integers.valueAs("unknown", Integer.class);
+        } catch (ValueNotFound e) {
+            assertThat(e.getMessage(), equalTo("unknown"));
+        }
+        try {
+            examplesTable.getRowAsParameters(1);
+        } catch (RowNotFound e) {
+            assertThat(e.getMessage(), equalTo("1"));
+        }
+
+    }
+
+    @Test
+    public void shouldAllowAdditionAndModificationOfRowValues() throws Exception {
+        // Given
+        ParameterConverters parameterConverters = new ParameterConverters();
+        ExamplesTableFactory factory = new ExamplesTableFactory(parameterConverters);
+
+        // When
+        String tableAsString = "|one|two|\n|11|12|\n|21|22|";
+        ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
+        Map<String, String> values = new HashMap<String, String>();
+        values.put("one", "111");
+        values.put("three", "333");
+        examplesTable.withRowValues(0, values);
+        Map<String, String> otherValues = new HashMap<String, String>();
+        otherValues.put("two", "222");
+        examplesTable.withRowValues(1, otherValues);
+
+        // Then
+        Parameters firstRow = examplesTable.getRowAsParameters(0);
+        assertThat(firstRow.valueAs("one", Integer.class), equalTo(111));
+        assertThat(firstRow.valueAs("two", Integer.class), equalTo(12));
+        assertThat(firstRow.valueAs("three", Integer.class), equalTo(333));
+        Parameters secondRow = examplesTable.getRowAsParameters(1);
+        assertThat(secondRow.valueAs("one", Integer.class), equalTo(21));
+        assertThat(secondRow.valueAs("two", Integer.class), equalTo(222));
+        assertThat(secondRow.valueAs("three", String.class), equalTo(""));
+        assertThat(examplesTable.asString(), equalTo("|one|two|three|\n|111|12|333|\n|21|222||\n"));
+    }
+    
+    @Test
+    public void shouldAllowBuildingOfTableFromContent() throws Exception {
+        // Given
+        ParameterConverters parameterConverters = new ParameterConverters();
+        ExamplesTableFactory factory = new ExamplesTableFactory(parameterConverters);
+
+        // When
+        String tableAsString = "|one|two|\n|11|12|\n|21|22|";
+        ExamplesTable originalTable = factory.createExamplesTable(tableAsString);               
+        List<Map<String,String>> content = originalTable.getRows();
+        content.get(0).put("three", "13");
+        content.get(1).put("three", "23");
+        ExamplesTable updatedTable = originalTable.withRows(content);
         
+        // Then
+        assertThat(updatedTable.asString(), equalTo("|one|two|three|\n|11|12|13|\n|21|22|23|\n"));        
     }
 
     public Date convertDate(String value) throws ParseException {

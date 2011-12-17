@@ -11,6 +11,7 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 
 /**
  * Filters out the reports from all stories that pass, The delegate receives
@@ -51,7 +52,7 @@ public class SilentSuccessFilter implements StoryReporter {
     public void restarted(String step, Throwable cause) {
     }
 
-    public void cancelled() {
+    public void storyCancelled(Story story, StoryDuration storyDuration) {
     }
 
     public void beforeStory(final Story story, final boolean givenStory) {

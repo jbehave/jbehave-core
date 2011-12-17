@@ -170,9 +170,9 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
-    public void cancelled() {
+    public void storyCancelled(Story story, StoryDuration storyDuration) {
         for (StoryReporter reporter : delegates) {
-            reporter.cancelled();
+            reporter.storyCancelled(story, storyDuration);
         }
     }
 

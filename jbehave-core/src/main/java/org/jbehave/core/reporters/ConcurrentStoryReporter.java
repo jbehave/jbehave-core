@@ -13,6 +13,7 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 
 /**
  * When running a multithreading mode, reports cannot be written concurrently but should 
@@ -21,6 +22,7 @@ import org.jbehave.core.model.Story;
  */
 public class ConcurrentStoryReporter implements StoryReporter {
 
+    private static Method storyCancelled;
     private static Method storyNotAllowed;
     private static Method beforeStory;
     private static Method narrative;
@@ -43,10 +45,10 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method dryRun;
     private static Method pendingMethods;
     private static Method restarted;
-    private static Method cancelled;
 
     static {
         try {
+            storyCancelled = StoryReporter.class.getMethod("storyCancelled", Story.class, StoryDuration.class);
             storyNotAllowed = StoryReporter.class.getMethod("storyNotAllowed", Story.class, String.class);
             beforeStory = StoryReporter.class.getMethod("beforeStory", Story.class, Boolean.TYPE);
             narrative = StoryReporter.class.getMethod("narrative", Narrative.class);
@@ -69,7 +71,6 @@ public class ConcurrentStoryReporter implements StoryReporter {
             dryRun = StoryReporter.class.getMethod("dryRun");
             pendingMethods = StoryReporter.class.getMethod("pendingMethods", List.class);
             restarted = StoryReporter.class.getMethod("restarted", String.class, Throwable.class);
-            cancelled = StoryReporter.class.getMethod("cancelled");
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -286,12 +287,12 @@ public class ConcurrentStoryReporter implements StoryReporter {
         }
     }
 
-    public void cancelled() {
-        crossReferencing.cancelled();
+    public void storyCancelled(Story story, StoryDuration storyDuration) {
+        crossReferencing.storyCancelled(story, storyDuration);
         if (multiThreading) {
-            delayedMethods.add(new DelayedMethod(cancelled));
+            delayedMethods.add(new DelayedMethod(storyCancelled));
         } else {
-            delegate.cancelled();
+            delegate.storyCancelled(story, storyDuration);
         }
     }
 

@@ -18,6 +18,7 @@ import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
@@ -48,6 +49,8 @@ public class StoryRunner {
     private ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
     private ThreadLocal<String> reporterStoryPath = new ThreadLocal<String>();
     private ThreadLocal<State> storiesState = new ThreadLocal<State>();
+    // should this be volatile?
+    private Map<Story, StoryDuration> cancelledStories = new HashMap<Story, StoryDuration>();
 
     /**
      * Run steps before or after a collection of stories. Steps are execute only
@@ -176,16 +179,41 @@ public class StoryRunner {
         return configuration.storyParser().parseStory(storyAsText, storyPath);
     }
 
+    /**
+     * Returns the parsed story from the given text
+     * 
+     * @param configuration the Configuration used to run story
+     * @param storyAsText the story text
+     * @param storyId the story Id, which will be returned as story path
+     * @return The parsed Story
+     */
+    public Story storyOfText(Configuration configuration, String storyAsText, String storyId) {
+        return configuration.storyParser().parseStory(storyAsText, storyId);
+    }
+
+    /**
+     * Cancels story execution following a timeout
+     * 
+     * @param story the Story that was timed out
+     * @param storyDuration the StoryDuration
+     */
+    public void cancelStory(Story story, StoryDuration storyDuration) {
+        cancelledStories.put(story, storyDuration);
+    }
+
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
         try {
-            runIt(context, story, storyParameters);
-        } catch (InterruptedException interruptedException) {
-            reporter.get().cancelled();
-            throw interruptedException;
+            runCancellable(context, story, storyParameters);
+        } catch (Exception e) {
+            if (cancelledStories.containsKey(story)) {
+                reporter.get().storyCancelled(story, cancelledStories.get(story));                
+                reporter.get().afterStory(context.givenStory);
+            }
+            throw e;
         }
     }
 
-    private void runIt(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
+    private void runCancellable(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
         if (!context.givenStory) {
             reporter.set(reporterFor(context, story));
         }
@@ -208,7 +236,7 @@ public class StoryRunner {
 
             boolean storyAllowed = true;
 
-            FilterContext filterContext = context.filter(story);
+            FilteredStory filterContext = context.filter(story);
             Meta storyMeta = story.getMeta();
             if (!filterContext.allowed()) {
                 reporter.get().storyNotAllowed(story, context.metaFilterAsString());
@@ -233,7 +261,7 @@ public class StoryRunner {
                     reporter.get().beforeScenario(scenario.getTitle());
                     reporter.get().scenarioMeta(scenario.getMeta());
 
-                    if ( !filterContext.allowed(scenario) ) {
+                    if (!filterContext.allowed(scenario)) {
                         reporter.get().scenarioNotAllowed(scenario, context.metaFilterAsString());
                         scenarioAllowed = false;
                     }
@@ -529,8 +557,8 @@ public class StoryRunner {
             return path;
         }
 
-        public FilterContext filter(Story story) {
-            return new FilterContext(filter, story, configuration.storyControls());
+        public FilteredStory filter(Story story) {
+            return new FilteredStory(filter, story, configuration.storyControls());
         }
 
         public String metaFilterAsString() {
@@ -572,33 +600,6 @@ public class StoryRunner {
             this.state = new FineSoFar();
         }
 
-    }
-
-    public class FilterContext {
-
-        private boolean storyAllowed;
-        private Map<Scenario, Boolean> scenariosAllowed;
-
-        public FilterContext(MetaFilter filter, Story story, StoryControls storyControls) {
-            String storyMetaPrefix = storyControls.storyMetaPrefix();
-            String scenarioMetaPrefix = storyControls.scenarioMetaPrefix();
-            Meta storyMeta = story.getMeta().inheritFrom(story.asMeta(storyMetaPrefix));
-            storyAllowed = filter.allow(storyMeta);
-            scenariosAllowed = new HashMap<Scenario, Boolean>();
-            for (Scenario scenario : story.getScenarios()) {
-                Meta scenarioMeta = scenario.getMeta().inheritFrom(scenario.asMeta(scenarioMetaPrefix).inheritFrom(storyMeta));
-                boolean scenarioAllowed = filter.allow(scenarioMeta);
-                scenariosAllowed.put(scenario, scenarioAllowed);
-            }
-        }
-
-        public boolean allowed() {
-            return storyAllowed || scenariosAllowed.values().contains(true);
-        }
-
-        public boolean allowed(Scenario scenario){
-            return scenariosAllowed.get(scenario);
-        }
     }
 
     public boolean failed(State state) {

@@ -39,6 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 
 public class ParameterConvertersBehaviour {
@@ -117,10 +118,24 @@ public class ParameterConvertersBehaviour {
         assertThat((Number) converter.convertValue("3", Number.class), equalTo((Number)3L));
     }
 
-    @Test(expected = ParameterConvertionFailed.class)
-    public void shouldFailToConvertInvalidNumbersWithNumberFormat() throws ParseException, IntrospectionException {
-        ParameterConverter converter = new NumberConverter();
-        converter.convertValue("abc", Long.class);
+    @Test
+    public void shouldFailToConvertInvalidNumbersWithNumberFormat() {
+        NumberConverter converter = new NumberConverter();
+        try {
+            converter.convertValue("abc", Long.class);
+        } catch (ParameterConvertionFailed e) {
+            assertThat(e.getCause(), is(ParseException.class));
+        }
+    }
+
+    @Test
+    public void shouldFailToConvertInvalidNumbersWithNumberFormat2()  {
+        NumberConverter converter = new NumberConverter();
+        try {
+            converter.convertValue("12.34.56", BigDecimal.class);
+        } catch (ParameterConvertionFailed e) {
+            assertThat(e.getCause(), is(NumberFormatException.class));
+        }
     }
 
     @Test
