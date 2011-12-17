@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.When;
@@ -91,6 +92,20 @@ public class StepCandidateBehaviour {
         Method method = SomeSteps.class.getMethod("aMethod");
         StepCandidate candidate = candidateWith("the grid should look like $grid", THEN, method, new SomeSteps());
         assertThat(candidate.matches("Then the grid should look like \n....\n....\n"), is(true));
+    }
+
+    @Test
+    public void shouldMatchStepWithEmptyParameters() throws Exception {
+        Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
+        SomeSteps someSteps = new SomeSteps();
+        StepCandidate candidate = candidateWith("windows on the $nth floor", WHEN, method, someSteps);
+        String stepAsString = "When windows on the  floor";
+        assertThat(candidate.matches(stepAsString), is(true));
+        Step step = candidate.createMatchedStep(stepAsString, new HashMap<String, String>());
+        step.perform(null);
+        Object args = someSteps.args;
+        assertThat(args, instanceOf(String.class));
+        assertThat(((String)args), Matchers.equalTo(""));
     }
 
     @Test
