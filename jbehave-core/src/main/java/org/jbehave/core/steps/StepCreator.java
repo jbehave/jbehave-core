@@ -163,8 +163,14 @@ public class StepCreator {
             if (isTable(type)) {
                 stepText = stepText.replace(value, PARAMETER_TABLE_START + value + PARAMETER_TABLE_END);
             } else {
-                stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END).replace("\n",
-                        PARAMETER_VALUE_NEWLINE);
+                // do not mark empty string as parameter (doesn't make sense since replace will put a marker
+                // between every char (JBEHAVE-656) 
+                if(value.equals("")) {
+                  stepText = stepText.replace("\n", PARAMETER_VALUE_NEWLINE);
+                } else {
+                    stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END).replace("\n",
+                            PARAMETER_VALUE_NEWLINE);
+                }
             }
         }
         return stepText;
