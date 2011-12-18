@@ -80,7 +80,7 @@ public abstract class TraderStory extends JUnitStory {
         // resources (used by StoryParser too)
         ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(),
                 new LoadFromClasspath(embeddableClass), parameterConverters);
-        // add custom coverters
+        // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
 
