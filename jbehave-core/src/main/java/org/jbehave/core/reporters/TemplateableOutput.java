@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
@@ -383,7 +384,11 @@ public class TemplateableOutput implements StoryReporter {
         }
 
         public List<OutputStep> getStepsByExample(Map<String, String> example) {
-            return stepsByExample.get(example);
+             List<OutputStep> steps = stepsByExample.get(example);
+             if ( steps == null ){
+                 return new ArrayList<OutputStep>();
+             }
+             return steps;
         }
 
         public OutputMeta getMeta() {

@@ -1,0 +1,48 @@
+
+<html>
+<body>
+<div class="story"><h1>An interesting story</h1>
+<div class="path">/path/to/story</div>
+<div class="meta">
+<div class="keyword">Meta:</div>
+<div class="property">@author Mauro</div>
+<div class="property">@theme testing</div>
+</div>
+<div class="narrative"><h2>Narrative:</h2>
+<div class="element inOrderTo"><span class="keyword inOrderTo">In order to</span> renovate my house</div>
+<div class="element asA"><span class="keyword asA">As a</span> customer</div>
+<div class="element iWantTo"><span class="keyword iWantTo">I want to</span> get a loan</div>
+</div>
+<div class="scenario"><h2>Scenario: I ask for a loan</h2>   
+<div class="givenStories">
+<div class="keyword">GivenStories:</div>
+<div class="givenStory">/given/story1</div>
+<div class="givenStory">/given/story2</div>
+</div>
+<div class="examples"><h3>Examples:</h3>
+<div class="step">Given money &lt;money&gt;</div>   
+<div class="step">Then I give it to &lt;to&gt;</div>   
+<table>
+<thead><tr>
+<th>money</th>
+<th>to</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>$30</td>
+<td>Mauro</td>
+</tr>
+<tr>
+<td>$50</td>
+<td>Paul</td>
+</tr>
+</tbody>
+</table>
+</div>  <!-- end examples -->
+<h3 class="example">Example: {money=$30, to=Mauro}</h3>
+<h3 class="example">Example: {money=$50, to=Paul}</h3>
+</div> <!-- end scenario -->
+</div> <!-- end story -->
+</body>
+</html>
+
