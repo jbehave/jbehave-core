@@ -1,0 +1,39 @@
+
+<story path="/path/to/story" title="An interesting story">
+<meta>
+<property keyword="@" name="author" value="Mauro"/>
+<property keyword="@" name="theme" value="testing"/>
+</meta>
+<narrative keyword="Narrative:">
+<inOrderTo keyword="In order to">renovate my house</inOrderTo>
+<asA keyword="As a">customer</asA>
+<iWantTo keyword="I want to">get a loan</iWantTo>
+</narrative>
+<scenario keyword="Scenario:" title="I ask for a loan">   
+<givenStories keyword"GivenStories:">
+<givenStory >/given/story1/>
+<givenStory >/given/story2/>
+</givenStories>
+<examples keyword="Examples:">
+<step>Given money &lt;money&gt;</step>   
+<step>Then I give it to &lt;to&gt;</step>   
+<table>
+<headers>
+<header>money</header>
+<header>to</header>
+</headers>
+<row>
+<value>$30</value>
+<value>Mauro</value>
+</row>
+<row>
+<value>$50</value>
+<value>Paul</value>
+</row>
+</table>
+</examples>
+<example keyword="Example:">{money=$30, to=Mauro}</example>
+<example keyword="Example:">{money=$50, to=Paul}</example>
+</scenario> 
+</story>
+

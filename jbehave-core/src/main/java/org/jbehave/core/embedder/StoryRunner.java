@@ -73,8 +73,12 @@ public class StoryRunner {
         if (stage == Stage.AFTER && storiesState.get() != null) {
             context.stateIs(storiesState.get());
         }
-        runStepsWhileKeepingState(context,
-                configuration.stepCollector().collectBeforeOrAfterStoriesSteps(context.candidateSteps(), stage));
+        try {
+            runStepsWhileKeepingState(context,
+                    configuration.stepCollector().collectBeforeOrAfterStoriesSteps(context.candidateSteps(), stage));
+        } catch (InterruptedException e) {
+            throw new UUIDExceptionWrapper(e);
+        }
         reporter.get().afterStory(false);
         storiesState.set(context.state());
         // handle any after stories failure according to strategy
@@ -204,9 +208,9 @@ public class StoryRunner {
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
         try {
             runCancellable(context, story, storyParameters);
-        } catch (Exception e) {
+        } catch (Throwable e) {
             if (cancelledStories.containsKey(story)) {
-                reporter.get().storyCancelled(story, cancelledStories.get(story));                
+                reporter.get().storyCancelled(story, cancelledStories.get(story));
                 reporter.get().afterStory(context.givenStory);
             }
             throw e;
@@ -379,7 +383,8 @@ public class StoryRunner {
         return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireParameters();
     }
 
-    private void runParametrisedScenariosByExamples(RunContext context, Scenario scenario, Meta storyAndScenarioMeta) {
+    private void runParametrisedScenariosByExamples(RunContext context, Scenario scenario, Meta storyAndScenarioMeta)
+            throws InterruptedException {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.get().beforeExamples(scenario.getSteps(), table);
         for (Map<String, String> scenarioParameters : table.getRows()) {
@@ -394,16 +399,17 @@ public class StoryRunner {
         reporter.get().afterExamples();
     }
 
-    private void runBeforeOrAfterStorySteps(RunContext context, Story story, Stage stage) {
+    private void runBeforeOrAfterStorySteps(RunContext context, Story story, Stage stage) throws InterruptedException {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterStorySteps(story, stage));
     }
 
     private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Meta storyAndScenarioMeta,
-            Stage stage, ScenarioType type) {
+            Stage stage, ScenarioType type) throws InterruptedException {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterScenarioSteps(storyAndScenarioMeta, stage, type));
     }
 
-    private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters) {
+    private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters)
+            throws InterruptedException {
         boolean restart = true;
         while (restart) {
             restart = false;
@@ -437,13 +443,14 @@ public class StoryRunner {
         }
     }
 
-    private void runStepsWhileKeepingState(RunContext context, List<Step> steps) {
+    private void runStepsWhileKeepingState(RunContext context, List<Step> steps) throws InterruptedException {
         if (steps == null || steps.size() == 0) {
             return;
         }
         State state = context.state();
         for (Step step : steps) {
             try {
+                context.interruptIfCancelled();
                 state = state.run(step);
             } catch (RestartingScenarioFailure e) {
                 reporter.get().restarted(step.toString(), e);
@@ -535,6 +542,14 @@ public class StoryRunner {
             this.filter = filter;
             this.givenStory = givenStory;
             resetState();
+        }
+
+        public void interruptIfCancelled() throws InterruptedException {
+            for (Story story : cancelledStories.keySet()) {
+                if (path.equals(story.getPath())) {
+                    throw new InterruptedException(path);
+                }
+            }
         }
 
         public boolean dryRun() {

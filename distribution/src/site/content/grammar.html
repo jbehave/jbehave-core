@@ -12,14 +12,15 @@
 <pre class="brush: bdd">
 ; JBehave Grammar expressed in EBNF (http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form)
 
-; The story describes a feature via a narrative (optional) and a collection of scenarios
-Story := Narrative? Scenario+ ;
+; The story describes a feature via description, narrative and a set of scenarios
+Story := Description? Narrative? Scenario+ ;
+
+; The Description is expressed by any sequence of words that must not contain any keywords at start of lines.
+Description := (Word Space?)* ;
 
 ; The narrative is identified by keyword "Narrative:" (or equivalent in I18n-ed locale),
-; It can optionally be followed by a description, which is expressed by any sequence of words
-; that must not contain any keywords.
 ; It is followed by the narrative elements
-Narrative:= "Narrative:" Description? InOrderTo AsA IWantTo ;
+Narrative:= "Narrative:" InOrderTo AsA IWantTo ;
 
 ; The narrative elements
 InOrderTo:= "In order to" NarrativeElementContent ;
@@ -37,14 +38,14 @@ NarrativeStartingWord :== ("In order to" | "As a" | "I want to" ) ;
 
 ; The scenario is identified by keyword "Scenario:" (or equivalent in I18n-ed locale),
 ; which is optional in the case of a single scenario.  
-; It can optionally be followed by a description, which is expressed by any sequence of words
-; that must not contain any keywords.
+; It can optionally be followed by a title, which is expressed by any sequence of words
+; that must not contain any keywords at start of lines.
 ; It is followed by one or more Steps. 
 ; Finally the optional Examples table, which if present will execute the scenario for as many table rows present
-Scenario := "Scenario:"? Description? GivenStories? Step+ Examples? ;
+Scenario := "Scenario:"? Title? GivenStories? Step+ Examples? ;
 
 ; The free-text description 
-Description := (Word Space?)* ;
+Title := (Word Space?)* ;
 
 ; The word is any sequence of non-space characters that does not match a KeyWord
 Word := ? Any sequence of NonSpaceCharacter that does not match KeyWord ? ;

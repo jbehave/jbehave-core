@@ -312,7 +312,7 @@ public class Embedder {
         MetaFilter filter = metaFilter();
         return storyManager.runningStory(storyId, story, filter, null).getFuture();
     }
-
+    
     public void reportStepdocs() {
         reportStepdocs(configuration(), candidateSteps());
     }
@@ -411,7 +411,7 @@ public class Embedder {
         return executorService;
     }
 
-    private StoryManager storyManager() {
+    public StoryManager storyManager() {
         return new StoryManager(configuration(), embedderControls(), embedderMonitor(), executorService(),
                 stepsFactory(), storyRunner());
     }

@@ -181,7 +181,38 @@ the resource with the appropriate resource loader configured via the <a
 ]]>
 </script>
 
-<p><b>Note</b>: Under the hood, JBehave users the same table parsing
+<h2>Modifying content of tabular parameter</h2>
+
+<p>When using ExamplesTable to process tabular parameter data, it may be useful to allow additions of columns to the table for a given row, e.g. to express a result value for given row.  
+The non-affected rows would then be given default blank values for the new column.</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+ExamplesTable table = ... // provided as parameter
+int row = 0;
+Map<String,String> rowValues = ... // a map holding the new or updated values
+table.withRowValues(row, rowValues);
+]]>
+</script>
+<p>Equally, we may want to start from the content data (list of maps) and create a new table with modified content.</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+ExamplesTable table = ... // provided as parameter
+List<Map<String,String>> content = table.getRows();
+// modify content as necessary
+ExamplesTable updatedTable = table.withRows(content);
+]]>
+</script>
+<p>Once modified, the table can be written to an output:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+ExamplesTable table = ... // provided or modified
+table.outputTo(new PrintStream(new FileOutputStream(new File("output.table))));
+]]>
+</script>
+
+<p>In other words, ExamplesTable can be used for both the string->content and the content->string transformations when implementing a step with tabular parameters.</p>
+
+<span class="followup">Under the hood, JBehave users the same table parsing
 functionality of the <a href="parametrised-scenarios.html">parametrised
 scenarios</a>, but there is a fundamental difference between these two use
 cases: with parametrised scenarios, the scenario is run for each line of
@@ -189,7 +220,8 @@ the table (using in each execution the parameter values of the given
 row), while in using tabular parameters we are simply using the tabular
 structure as a parameter, and how this structure is interpreted is up to
 the scenario writer. The difference is in the <b>Examples:</b> keyword,
-which is only present for parametrised scenarios.</p>
+which is only present for parametrised scenarios.</span>
+
 <div class="clear">
 <hr />
 </div>

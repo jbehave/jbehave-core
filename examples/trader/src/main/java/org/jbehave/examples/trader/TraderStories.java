@@ -39,7 +39,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
 import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
+import static org.jbehave.core.reporters.Format.XML_TEMPLATE;
 
 /**
  * <p>
@@ -78,7 +78,7 @@ public class TraderStories extends JUnitStories {
                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                 .withDefaultFormats()
                 .withViewResources(viewResources)
-                .withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML)
+                .withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE)
                 .withFailureTrace(true)
                 .withFailureTraceCompression(true)                
                 .withCrossReference(xref)) 
