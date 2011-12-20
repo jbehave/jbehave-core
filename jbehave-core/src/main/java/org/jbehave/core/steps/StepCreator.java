@@ -90,17 +90,17 @@ public class StepCreator {
         String[] parameterNames = paranamer.lookupParameterNames(method, false);
         Type[] types = method.getGenericParameterTypes();
         String[] names = (annotationNames.length > 0 ? annotationNames : parameterNames);
-        String[] parameters = parametersForStep(namedParameters, types, annotationNames, parameterNames);
+        String[] values = parameterValuesForStep(namedParameters, types, annotationNames, parameterNames);
         Map<String, String> matchedParameters = new HashMap<String, String>();
         for (int i = 0; i < names.length; i++) {
-            matchedParameters.put(names[i], parameters[i]);
+            matchedParameters.put(names[i], values[i]);
         }
         return matchedParameters;
     }
 
     public Step createParametrisedStep(final Method method, final String stepAsString,
             final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
-        return new ParameterizedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+        return new ParameterisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
     }
 
     /**
@@ -134,31 +134,38 @@ public class StepCreator {
     }
 
     private String parametrisedStep(String stepAsString, Map<String, String> namedParameters, Type[] types,
-            String[] annotationNames, String[] parameterNames, String[] parameters) {
+            String[] annotationNames, String[] parameterNames, String[] parameterValues) {
         String parametrisedStep = stepAsString;
         for (int position = 0; position < types.length; position++) {
             parametrisedStep = replaceParameterValuesInStep(parametrisedStep, position, types, annotationNames,
-                    parameterNames, parameters, namedParameters);
+                    parameterNames, parameterValues, namedParameters);
         }
         return parametrisedStep;
     }
 
     private String replaceParameterValuesInStep(String stepText, int position, Type[] types, String[] annotationNames,
-            String[] parameterNames, String[] parameters, Map<String, String> namedParameters) {
+            String[] parameterNames, String[] parameterValues, Map<String, String> namedParameters) {
         int annotatedNamePosition = parameterPosition(annotationNames, position);
         int parameterNamePosition = parameterPosition(parameterNames, position);
+        stepText = replaceParameterValue(stepText, types[position], parameterValues[position]);
         if (annotatedNamePosition != -1) {
-            stepText = replaceParameterValue(stepText, namedParameters, annotationNames[position]);
+            stepText = replaceParameterName(stepText, namedParameters, annotationNames[position]);
         } else if (parameterNamePosition != -1) {
-            stepText = replaceParameterValue(stepText, namedParameters, parameterNames[position]);
+            stepText = replaceParameterName(stepText, namedParameters, parameterNames[position]);
         }
-        stepText = replaceParameterValue(stepText, position, types, parameters);
         return stepText;
     }
 
-    private String replaceParameterValue(String stepText, int position, Type[] types, String[] parameters) {
-        Type type = types[position];
-        String value = parameters[position];
+    private String replaceParameterName(String stepText, Map<String, String> namedParameters, String name) {
+        String value = namedParameter(namedParameters, name);
+        if (value != null) {
+            stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value
+                    + PARAMETER_VALUE_END);
+        }
+        return stepText;
+    }
+
+    private String replaceParameterValue(String stepText, Type type, String value) {
         if (value != null) {
             if (isTable(type)) {
                 stepText = stepText.replace(value, PARAMETER_TABLE_START + value + PARAMETER_TABLE_END);
@@ -177,17 +184,8 @@ public class StepCreator {
         return type instanceof Class && ((Class<?>) type).isAssignableFrom(ExamplesTable.class);
     }
 
-    private String replaceParameterValue(String stepText, Map<String, String> namedParameters, String name) {
-        String value = tableParameter(namedParameters, name);
-        if (value != null) {
-            stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value
-                    + PARAMETER_VALUE_END);
-        }
-        return stepText;
-    }
-
-    private String[] parametersForStep(Map<String, String> namedParameters, Type[] types, String[] annotationNames,
-            String[] parameterNames) {
+    private String[] parameterValuesForStep(Map<String, String> namedParameters, Type[] types,
+            String[] annotationNames, String[] parameterNames) {
         final String[] parameters = new String[types.length];
         for (int position = 0; position < types.length; position++) {
             parameters[position] = parameterForPosition(position, annotationNames, parameterNames, namedParameters);
@@ -195,10 +193,10 @@ public class StepCreator {
         return parameters;
     }
 
-    private Object[] convertParameters(String[] parametersAsString, Type[] types) {
-        final Object[] parameters = new Object[parametersAsString.length];
-        for (int position = 0; position < parametersAsString.length; position++) {
-            parameters[position] = parameterConverters.convert(parametersAsString[position], types[position]);
+    private Object[] convertParameterValues(String[] valuesAsString, Type[] types) {
+        final Object[] parameters = new Object[valuesAsString.length];
+        for (int position = 0; position < valuesAsString.length; position++) {
+            parameters[position] = parameterConverters.convert(valuesAsString[position], types[position]);
         }
         return parameters;
     }
@@ -219,11 +217,11 @@ public class StepCreator {
         } else if (annotatedNamePosition != -1 && isTableName(namedParameters, annotationNames[position])) {
             String name = annotationNames[position];
             stepMonitor.usingTableAnnotatedNameForParameter(name, position);
-            parameter = tableParameter(namedParameters, name);
+            parameter = namedParameter(namedParameters, name);
         } else if (parameterNamePosition != -1 && isTableName(namedParameters, parameterNames[position])) {
             String name = parameterNames[position];
             stepMonitor.usingTableParameterNameForParameter(name, position);
-            parameter = tableParameter(namedParameters, name);
+            parameter = namedParameter(namedParameters, name);
         } else {
             stepMonitor.usingNaturalOrderForParameter(position);
             parameter = matchedParameter(position);
@@ -276,12 +274,12 @@ public class StepCreator {
         return false;
     }
 
-    private String tableParameter(Map<String, String> namedParameters, String name) {
+    private String namedParameter(Map<String, String> namedParameters, String name) {
         return namedParameters.get(name);
     }
 
     private boolean isTableName(Map<String, String> namedParameters, String name) {
-        return tableParameter(namedParameters, name) != null;
+        return namedParameter(namedParameters, name) != null;
     }
 
     public static Step createPendingStep(final String stepAsString, String previousNonAndStep) {
@@ -407,7 +405,7 @@ public class StepCreator {
         }
     }
 
-    public class ParameterizedStep extends AbstractStep {
+    public class ParameterisedStep extends AbstractStep {
         private Object[] convertedParameters;
         private String parametrisedStep;
         private final String stepAsString;
@@ -415,7 +413,7 @@ public class StepCreator {
         private final String stepWithoutStartingWord;
         private final Map<String, String> namedParameters;
 
-        public ParameterizedStep(String stepAsString, Method method, String stepWithoutStartingWord,
+        public ParameterisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
                 Map<String, String> namedParameters) {
             this.stepAsString = stepAsString;
             this.method = method;
@@ -466,11 +464,11 @@ public class StepCreator {
             String[] annotationNames = annotatedParameterNames(method);
             String[] parameterNames = paranamer.lookupParameterNames(method, false);
             Type[] types = method.getGenericParameterTypes();
-            String[] parameters = parametersForStep(namedParameters, types, annotationNames, parameterNames);
-            convertedParameters = convertParameters(parameters, types);
+            String[] parameterValues = parameterValuesForStep(namedParameters, types, annotationNames, parameterNames);
+            convertedParameters = convertParameterValues(parameterValues, types);
             addNamedParametersToExamplesTables();
             parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, annotationNames, parameterNames,
-                    parameters);
+                    parameterValues);
         }
 
         private void addNamedParametersToExamplesTables() {

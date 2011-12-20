@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -16,6 +17,7 @@ import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.AbstractStepResult.Skipped;
+import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,14 +28,16 @@ import com.thoughtworks.paranamer.CachingParanamer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 
 public class StepCreatorBehaviour {
 
@@ -43,7 +47,8 @@ public class StepCreatorBehaviour {
     public void setUp() throws Exception {
         when(parameterConverters.convert("shopping cart", String.class)).thenReturn("shopping cart");
         when(parameterConverters.convert("book", String.class)).thenReturn("book");
-        when(parameterConverters.newInstanceAdding(Matchers.<ParameterConverters.ParameterConverter>anyObject())).thenReturn(parameterConverters);
+        when(parameterConverters.newInstanceAdding(Matchers.<ParameterConverters.ParameterConverter> anyObject()))
+                .thenReturn(parameterConverters);
     }
 
     @Test
@@ -52,7 +57,8 @@ public class StepCreatorBehaviour {
         SomeSteps stepsInstance = new SomeSteps();
         MostUsefulConfiguration configuration = new MostUsefulConfiguration();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(configuration, stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, configuration.parameterConverters(), null, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory,
+                configuration.parameterConverters(), null, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingBeforeScenarioMethod");
@@ -63,7 +69,10 @@ public class StepCreatorBehaviour {
         assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
         Throwable cause = stepResult.getFailure().getCause();
         assertThat(cause, instanceOf(BeforeOrAfterFailed.class));
-        assertThat(cause.getMessage(), org.hamcrest.Matchers.equalTo("Method aFailingBeforeScenarioMethod (annotated with @BeforeScenario in class org.jbehave.core.steps.SomeSteps) failed: java.lang.RuntimeException"));
+        assertThat(
+                cause.getMessage(),
+                org.hamcrest.Matchers
+                        .equalTo("Method aFailingBeforeScenarioMethod (annotated with @BeforeScenario in class org.jbehave.core.steps.SomeSteps) failed: java.lang.RuntimeException"));
     }
 
     @Test
@@ -71,7 +80,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, null, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, null,
+                new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
@@ -86,7 +96,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, null, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, null,
+                new SilentStepMonitor());
 
         // When
         Method method = null;
@@ -96,21 +107,22 @@ public class StepCreatorBehaviour {
         assertThat(stepResult, instanceOf(Failed.class));
     }
 
-    @Test(expected = ParameterNotFound.class )
-    public void shouldFailIfMatchedParametersAreNotFound() throws IntrospectionException{
+    @Test(expected = ParameterNotFound.class)
+    public void shouldFailIfMatchedParametersAreNotFound() throws IntrospectionException {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepMatcher stepMatcher = mock(StepMatcher.class);        
+        StepMatcher stepMatcher = mock(StepMatcher.class);
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new ParameterConverters(), stepMatcher, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new ParameterConverters(),
+                stepMatcher, new SilentStepMonitor());
 
         // When
-        when(stepMatcher.parameterNames()).thenReturn(new String[]{});
+        when(stepMatcher.parameterNames()).thenReturn(new String[] {});
         stepCreator.matchedParameter("unknown");
 
         // Then .. fail as expected
     }
-    
+
     @Test
     public void shouldCreatePendingAndIgnorableAsStepResults() throws IntrospectionException {
         // When
@@ -125,16 +137,42 @@ public class StepCreatorBehaviour {
     }
 
     @Test
+    public void shouldCreateParametrisedStepWithReplacedValues() throws Exception {
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        StepMatcher stepMatcher = mock(StepMatcher.class);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher);
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("theme", "shopping cart");
+        parameters.put("variant", "book");
+
+        // When
+        when(stepMatcher.parameterNames()).thenReturn(parameters.keySet().toArray(new String[parameters.size()]));
+        when(stepMatcher.parameter(1)).thenReturn(parameters.get("theme"));
+        when(stepMatcher.parameter(2)).thenReturn(parameters.get("variant"));
+        StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
+                "When I use parameters <theme> and <variant>", "I use parameters <theme> and <variant>", parameters)
+                .perform(null);
+
+        // Then
+        assertThat(stepResult, instanceOf(Successful.class));
+        String expected = "When I use parameters " + PARAMETER_VALUE_START + "shopping cart" + PARAMETER_VALUE_END
+                + " and " + PARAMETER_VALUE_START + "book" + PARAMETER_VALUE_END;
+        assertThat(stepResult.parametrisedStep(), equalTo(expected));
+    }
+
+    @Test
     public void shouldInvokeBeforeOrAfterStepMethodWithExpectedParametersFromMeta() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
         Properties properties = new Properties();
         properties.put("theme", "shopping cart");
         properties.put("variant", "book");
 
         // When
-        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodWithANamedParameter"), new Meta(properties));
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
+                new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -151,13 +189,14 @@ public class StepCreatorBehaviour {
     public void shouldInvokeBeforeOrAfterStepMethodWithMetaUsingParanamer() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
         stepCreator.useParanamer(new CachingParanamer(new BytecodeReadingParanamer()));
         Properties properties = new Properties();
         properties.put("theme", "shopping cart");
 
         // When
-        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"), new Meta(properties));
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"),
+                new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -169,7 +208,7 @@ public class StepCreatorBehaviour {
     public void shouldHandleFailureInBeforeOrAfterStepWithMeta() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
@@ -185,13 +224,14 @@ public class StepCreatorBehaviour {
     public void shouldInvokeAfterStepUponAnyOutcomeMethodWithExpectedParametersFromMeta() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
         Properties properties = new Properties();
         properties.put("theme", "shopping cart");
         properties.put("variant", "book");
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"), AfterScenario.Outcome.ANY, new Meta(properties));
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"),
+                AfterScenario.Outcome.ANY, new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -208,10 +248,11 @@ public class StepCreatorBehaviour {
     public void shouldNotInvokeAfterStepUponSuccessOutcomeMethodIfFailureOccurred() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"), AfterScenario.Outcome.SUCCESS, mock(Meta.class));
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"),
+                AfterScenario.Outcome.SUCCESS, mock(Meta.class));
         StepResult stepResult = stepWithMeta.doNotPerform(null);
 
         // Then
@@ -222,13 +263,14 @@ public class StepCreatorBehaviour {
     public void shouldInvokeAfterStepUponSuccessOutcomeMethodIfNoFailureOccurred() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
         Properties properties = new Properties();
         properties.put("theme", "shopping cart");
         properties.put("variant", "book");
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"), AfterScenario.Outcome.SUCCESS, new Meta(properties));
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"),
+                AfterScenario.Outcome.SUCCESS, new Meta(properties));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -245,10 +287,11 @@ public class StepCreatorBehaviour {
     public void shouldNotInvokeAfterStepUponFailureOutcomeMethodIfNoFailureOccurred() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"), AfterScenario.Outcome.FAILURE, mock(Meta.class));
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aFailingMethod"),
+                AfterScenario.Outcome.FAILURE, mock(Meta.class));
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
@@ -259,13 +302,14 @@ public class StepCreatorBehaviour {
     public void shouldInvokeAfterStepUponFailureOutcomeMethodIfFailureOccurred() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
         Properties properties = new Properties();
         properties.put("theme", "shopping cart");
         properties.put("variant", "book");
 
         // When
-        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"), AfterScenario.Outcome.FAILURE, new Meta(properties));
+        Step stepWithMeta = stepCreator.createAfterStepUponOutcome(SomeSteps.methodFor("aMethodWithANamedParameter"),
+                AfterScenario.Outcome.FAILURE, new Meta(properties));
         StepResult stepResult = stepWithMeta.doNotPerform(null);
 
         // Then
@@ -282,7 +326,7 @@ public class StepCreatorBehaviour {
     public void shouldInvokeBeforeOrAfterStepMethodWithExpectedConvertedParametersFromMeta() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
         stepCreator.useParanamer(new CachingParanamer(new BytecodeReadingParanamer()));
 
         // When
@@ -301,10 +345,11 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         parameterConverters = new ParameterConverters();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
 
         // When
-        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(
+                SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
         UUIDExceptionWrapper occurredFailure = new UUIDExceptionWrapper();
         StepResult stepResult = stepWithMeta.perform(occurredFailure);
 
@@ -318,10 +363,11 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         parameterConverters = new ParameterConverters();
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class));
 
         // When
-        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
+        Step stepWithMeta = stepCreator.createBeforeOrAfterStep(
+                SomeSteps.methodFor("aMethodThatExpectsUUIDExceptionWrapper"), mock(Meta.class));
         UUIDExceptionWrapper occurredFailure = new UUIDExceptionWrapper();
         StepResult stepResult = stepWithMeta.perform(occurredFailure);
 
@@ -330,8 +376,9 @@ public class StepCreatorBehaviour {
         assertThat((UUIDExceptionWrapper) stepsInstance.args, is(occurredFailure));
     }
 
-    private StepCreator stepCreatorUsing(final SomeSteps stepsInstance) {
+    private StepCreator stepCreatorUsing(SomeSteps stepsInstance, StepMatcher stepMatcher) {
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        return new StepCreator(stepsInstance.getClass(), stepsFactory, parameterConverters, mock(StepMatcher.class), new SilentStepMonitor());
+        return new StepCreator(stepsInstance.getClass(), stepsFactory, parameterConverters, stepMatcher,
+                new SilentStepMonitor());
     }
 }
