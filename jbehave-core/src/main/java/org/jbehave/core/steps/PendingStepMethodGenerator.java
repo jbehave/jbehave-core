@@ -12,7 +12,7 @@ import static java.util.Arrays.asList;
 
 public class PendingStepMethodGenerator {
 
-    private static final String METHOD_SOURCE = "@{0}(\"{1}\")\n@{2}\npublic void {3}()'{'\n  // {4}\n'}'\n";
+    private static final String METHOD_SOURCE = "@{0}(\"{1}\")\n@{2}\npublic void {3}() '{'\n  // {4}\n'}'\n";
 
     private final Keywords keywords;
 
