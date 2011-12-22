@@ -65,7 +65,7 @@ public class StackTraceFormatterBehaviour {
                 "\tat org.codehaus.groovy.runtime.callsite.CallSiteArray.defaultCall(CallSiteArray.java:42)\n" +
                 "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:108)\n" +
                 "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)\n" +
-                "\tat org.jbehave.core.steps.StepCreator$ParameterizedStep.perform(StepCreator.java:430)\n" +
+                "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n" +
                 "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)";
 
         StackTraceFormatter formatter = new StackTraceFormatter(true);
@@ -87,7 +87,7 @@ public class StackTraceFormatterBehaviour {
                         "\t(groovy-closure-invoke)\n" +
                         "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
                         "\t(groovy-call)\n" +
-                        "\tat org.jbehave.core.steps.StepCreator$ParameterizedStep.perform(StepCreator.java:430)\n" +
+                        "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n" +
                         "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)", formatter.stackTrace(start));
     }
 

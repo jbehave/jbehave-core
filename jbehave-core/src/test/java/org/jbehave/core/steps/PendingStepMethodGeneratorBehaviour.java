@@ -47,12 +47,11 @@ public class PendingStepMethodGeneratorBehaviour {
             "}\n";
        assertThat(generator.generateMethod(pendingStep), equalTo(method));
     }
-    
-    
+        
     @Test
     public void shouldNormaliseStepPatternToJavaCompatibleMethodNameAndString() throws IntrospectionException {
         // When
-        String pattern = "I'm searching for \".*\", and for others chars such as :;!|, and I look for <this>";
+        String pattern = "I'm searching for \".*\", and for others chars such as :;!|, and I look for <this>: $ \\ / () {} [] ";
         PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("When "+pattern, null);
 
         // Then
