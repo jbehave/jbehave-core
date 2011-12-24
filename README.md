@@ -24,7 +24,7 @@ Keep an eye on the  [Bamboo Continuous Integration](http://builds.codehaus.org/b
 ### Depended-on Technologies
 
 JDK required: 5.0 (or above)
-[Maven](http://maven.apache.org) required (2.2.1 or above).
+[Maven](http://maven.apache.org) required (2.2.1 or above, 3.0 or above for reporting).
 
 ### Encoding
 
