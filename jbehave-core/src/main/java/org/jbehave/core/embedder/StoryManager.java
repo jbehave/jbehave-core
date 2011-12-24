@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -54,17 +55,36 @@ public class StoryManager {
         runningStories.clear();
     }
 
-    public Map<String, RunningStory> runningStories(List<String> storyPaths, MetaFilter filter, State beforeStories) {
+    public List<StoryStatus> list() {
+        List<StoryStatus> statuses = new ArrayList<StoryStatus>();
+        for (RunningStory story : runningStories.values()) {
+            statuses.add(new StoryStatus(story));
+        }
+        return statuses;
+    }
+
+    public Map<String, RunningStory> runningStoriesAsPaths(List<String> storyPaths, MetaFilter filter,
+            State beforeStories) {
         for (String storyPath : storyPaths) {
-            Story story = storyOfPath(storyPath);
-            FilteredStory filteredStory = new FilteredStory(filter, story, configuration.storyControls());
-            if (filteredStory.allowed()) {
-                runningStories.put(storyPath, runningStory(storyPath, story, filter, beforeStories));
-            } else {
-                notAllowedBy(filter).add(story);
-            }
+            filterRunning(filter, beforeStories, storyPath, storyOfPath(storyPath));
         }
         return runningStories;
+    }
+
+    public Map<String, RunningStory> runningStories(List<Story> stories, MetaFilter filter, State beforeStories) {
+        for (Story story : stories) {
+            filterRunning(filter, beforeStories, story.getPath(), story);
+        }
+        return runningStories;
+    }
+
+    private void filterRunning(MetaFilter filter, State beforeStories, String storyPath, Story story) {
+        FilteredStory filteredStory = new FilteredStory(filter, story, configuration.storyControls());
+        if (filteredStory.allowed()) {
+            runningStories.put(storyPath, runningStory(storyPath, story, filter, beforeStories));
+        } else {
+            notAllowedBy(filter).add(story);
+        }
     }
 
     public List<Story> notAllowedBy(MetaFilter filter) {
@@ -234,6 +254,46 @@ public class StoryManager {
         public Story getStory() {
             return story;
         }
+
+        public boolean isDone() {
+            return future.isDone();
+        }
+
+        public boolean isFailed() {
+            if (isDone()) {
+                try {
+                    return future.get().getThrowable() != null;
+                } catch (InterruptedException e) {
+                } catch (ExecutionException e) {
+                }
+            }
+            return false;
+        }
+    }
+
+    public static class StoryStatus {
+        private String path;
+        private Boolean done;
+        private Boolean failed;
+
+        public StoryStatus(RunningStory story) {
+            this.path = story.getStory().getPath();
+            this.done = story.isDone();
+            this.failed = story.isFailed();
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public Boolean isDone() {
+            return done;
+        }
+
+        public Boolean isFailed() {
+            return failed;
+        }
+
     }
 
 }
