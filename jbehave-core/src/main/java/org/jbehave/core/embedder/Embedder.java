@@ -56,6 +56,7 @@ public class Embedder {
     private Properties systemProperties = new Properties();
     private ExecutorService executorService;
     private boolean executorServiceCreated;
+    private StoryManager storyManager;
 
     public Embedder() {
         this(new StoryMapper(), new StoryRunner(), new PrintStreamEmbedderMonitor());
@@ -196,11 +197,9 @@ public class Embedder {
         try {
             // set up run context
             Configuration configuration = configuration();
-            configureThreads(configuration, embedderControls.threads());
             InjectableStepsFactory stepsFactory = stepsFactory();
             StoryRunner storyRunner = storyRunner();
-            StoryManager storyManager = new StoryManager(configuration, embedderControls, embedderMonitor,
-                    executorService(), stepsFactory, storyRunner);
+            StoryManager storyManager = createStoryManager();
             MetaFilter filter = metaFilter();
             BatchFailures failures = new BatchFailures(embedderControls.verboseFailures());
 
@@ -212,7 +211,7 @@ public class Embedder {
             }
 
             // run stories
-            storyManager.runningStories(storyPaths, filter, beforeStories);
+            storyManager.runningStoriesAsPaths(storyPaths, filter, beforeStories);
             storyManager.waitUntilAllDoneOrFailed(failures);
             List<Story> notAllowed = storyManager.notAllowedBy(filter);
             if (!notAllowed.isEmpty()) {
@@ -297,22 +296,6 @@ public class Embedder {
         }
     }
 
-    /**
-     * @deprecated From 3.6 use {@link enqueueStoryAsText(String, String)
-     */
-    public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
-            List<Future<ThrowableStory>> futures, String storyPath, Story story) {
-        StoryManager storyManager = storyManager();
-        return storyManager.runningStory(storyPath, story, filter, null).getFuture();
-    }
-
-    public Future<ThrowableStory> enqueueStoryAsText(String storyAsText, String storyId) {
-        StoryManager storyManager = storyManager();
-        Story story = storyManager.storyOfText(storyAsText, storyId);
-        MetaFilter filter = metaFilter();
-        return storyManager.runningStory(storyId, story, filter, null).getFuture();
-    }
-    
     public void reportStepdocs() {
         reportStepdocs(configuration(), candidateSteps());
     }
@@ -373,6 +356,7 @@ public class Embedder {
     }
 
     public Configuration configuration() {
+        configureThreads(configuration, embedderControls.threads());
         return configuration;
     }
 
@@ -411,18 +395,6 @@ public class Embedder {
         return executorService;
     }
 
-    public StoryManager storyManager() {
-        return new StoryManager(configuration(), embedderControls(), embedderMonitor(), executorService(),
-                stepsFactory(), storyRunner());
-    }
-
-    private void configureThreads(Configuration configuration, int threads) {
-        StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
-        reporterBuilder.withMultiThreading(threads > 1);
-        configuration.useStoryReporterBuilder(reporterBuilder);
-    }
-
-
     /**
      * Creates a {@link ThreadPoolExecutor} using the number of threads defined
      * in the {@link EmbedderControls#threads()}
@@ -452,11 +424,29 @@ public class Embedder {
     /**
      * Create default threadpool. Visible for testing
      * 
-     * @param threads num threads
-     * @return the threadpool
+     * @param threads the number of threads
+     * @return The ThreadPoolExecutor
      */
     protected ExecutorService createNewFixedThreadPool(int threads) {
         return Executors.newFixedThreadPool(threads);
+    }
+
+    public StoryManager storyManager() {
+        if ( storyManager == null ){
+            storyManager = createStoryManager();
+        }
+        return storyManager;
+    }
+
+    private StoryManager createStoryManager() {
+        return new StoryManager(configuration(), embedderControls(), embedderMonitor(), executorService(),
+                stepsFactory(), storyRunner());
+    }
+
+    private void configureThreads(Configuration configuration, int threads) {
+        StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
+        reporterBuilder.withMultiThreading(threads > 1);
+        configuration.useStoryReporterBuilder(reporterBuilder);
     }
 
     public List<String> metaFilters() {
