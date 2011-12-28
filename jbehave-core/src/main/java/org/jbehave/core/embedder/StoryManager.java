@@ -55,12 +55,12 @@ public class StoryManager {
         runningStories.clear();
     }
 
-    public List<StoryStatus> list() {
-        List<StoryStatus> statuses = new ArrayList<StoryStatus>();
+    public List<StoryOutcome> outcomes() {
+        List<StoryOutcome> outcomes = new ArrayList<StoryOutcome>();
         for (RunningStory story : runningStories.values()) {
-            statuses.add(new StoryStatus(story));
+            outcomes.add(new StoryOutcome(story));
         }
-        return statuses;
+        return outcomes;
     }
 
     public Map<String, RunningStory> runningStoriesAsPaths(List<String> storyPaths, MetaFilter filter,
@@ -271,12 +271,12 @@ public class StoryManager {
         }
     }
 
-    public static class StoryStatus {
+    public static class StoryOutcome {
         private String path;
         private Boolean done;
         private Boolean failed;
 
-        public StoryStatus(RunningStory story) {
+        public StoryOutcome(RunningStory story) {
             this.path = story.getStory().getPath();
             this.done = story.isDone();
             this.failed = story.isFailed();
