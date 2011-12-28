@@ -296,22 +296,6 @@ public class Embedder {
         }
     }
 
-    /**
-     * @deprecated From 3.6 use {@link enqueueStoryAsText(String, String)
-     */
-    public Future<ThrowableStory> enqueueStory(BatchFailures batchFailures, MetaFilter filter,
-            List<Future<ThrowableStory>> futures, String storyPath, Story story) {
-        StoryManager storyManager = storyManager();
-        return storyManager.runningStory(storyPath, story, filter, null).getFuture();
-    }
-
-    public Future<ThrowableStory> enqueueStoryAsText(String storyAsText, String storyId) {
-        StoryManager storyManager = storyManager();
-        Story story = storyManager.storyOfText(storyAsText, storyId);
-        MetaFilter filter = metaFilter();
-        return storyManager.runningStory(storyId, story, filter, null).getFuture();
-    }
-
     public void reportStepdocs() {
         reportStepdocs(configuration(), candidateSteps());
     }
