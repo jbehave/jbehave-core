@@ -58,6 +58,11 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
      */
     String resourcesExcludes;
 
+    /**
+     * @parameter
+     */
+    File viewDirectory;
+
     public void execute() throws MojoExecutionException {
         File destination = viewDirectory();
         for (Artifact artifact : resourceArtifacts()) {
@@ -66,6 +71,9 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
     }
 
     private File viewDirectory() {
+        if ( viewDirectory != null ){
+            return viewDirectory;
+        }
         StoryReporterBuilder storyReporterBuilder = newEmbedder().configuration().storyReporterBuilder();
         String build = project.getBuild().getDirectory();
         String output = storyReporterBuilder.outputDirectory().getName();

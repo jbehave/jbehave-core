@@ -38,6 +38,7 @@ import static org.hamcrest.Matchers.is;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -727,11 +728,17 @@ public class EmbedderMojoBehaviour {
         when(archiveManager.getUnArchiver(coreFile)).thenReturn(coreArchiver);
         when(archiveManager.getUnArchiver(siteFile)).thenReturn(siteArchiver);
 
-        mojo.execute();
+        unpackTo(mojo, null); // default view directory
+        unpackTo(mojo, new File(System.getProperty("java.io.tmpdir")+"/jbehave/view"));
 
         // Then
-        verify(coreArchiver).extract();
-        verify(siteArchiver).extract();
+        verify(coreArchiver, times(2)).extract();
+        verify(siteArchiver, times(2)).extract();
+    }
+
+    private void unpackTo(UnpackViewResources mojo, File file) throws MojoExecutionException {
+        mojo.viewDirectory = file;
+        mojo.execute();
     }
 
     @Test
