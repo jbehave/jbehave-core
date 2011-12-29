@@ -35,7 +35,17 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
     public boolean skip() {
         return delegate.skip();
     }
-    
+
+    @Override
+    public boolean verboseFailures() {
+        return delegate.verboseFailures();
+    }
+
+    @Override
+    public boolean verboseFiltering() {
+        return delegate.verboseFiltering();
+    }
+
     @Override
     public long storyTimeoutInSecs() {
         return delegate.storyTimeoutInSecs();
@@ -68,6 +78,16 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
 
     @Override
     public EmbedderControls doSkip(boolean skip) {
+        throw notAllowed();
+    }
+
+    @Override
+    public EmbedderControls doVerboseFailures(boolean verboseFailures) {
+        throw notAllowed();
+    }
+
+    @Override
+    public EmbedderControls doVerboseFiltering(boolean verboseFiltering) {
         throw notAllowed();
     }
 

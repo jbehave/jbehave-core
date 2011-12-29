@@ -74,10 +74,10 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("Skipped stories " + storyPaths);
     }
 
-    public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+    public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
         StringBuffer sb = new StringBuffer();
         sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
-        if (System.getProperty("skipExcludes") == null) {
+        if (verbose) {
             for (Story story : stories) {
                 sb.append(story.getPath()).append("\n");
             }

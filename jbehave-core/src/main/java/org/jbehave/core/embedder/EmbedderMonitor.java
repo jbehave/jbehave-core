@@ -30,7 +30,7 @@ public interface EmbedderMonitor {
 
     void storiesSkipped(List<String> storyPaths);
 
-    void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter);
+    void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter, boolean verbose);
 
     void batchFailed(BatchFailures failures);
 

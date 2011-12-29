@@ -94,6 +94,16 @@ public abstract class AbstractEmbedderTask extends Task {
     private boolean batch = false;
 
     /**
+     * The boolean flag to output failures in verbose mode
+     */
+    private boolean verboseFailures = false;
+
+    /**
+     * The boolean flag to output filtering in verbose mode
+     */
+    private boolean verboseFiltering = false;
+
+    /**
      * The story timeout in secs
      */
     long storyTimeoutInSecs = 300;
@@ -192,8 +202,8 @@ public abstract class AbstractEmbedderTask extends Task {
     protected EmbedderControls embedderControls() {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
-                .doIgnoreFailureInView(ignoreFailureInView).useStoryTimeoutInSecs(storyTimeoutInSecs)
-                .useThreads(threads));
+                .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
+                .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
     }
 
     /**
@@ -303,10 +313,10 @@ public abstract class AbstractEmbedderTask extends Task {
             log("Skipped stories " + storyPaths, MSG_INFO);
         }
 
-        public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+        public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
             StringBuffer sb = new StringBuffer();
             sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
-            if (System.getProperty("skipExcludes") == null) {
+            if (verbose) {
                 for (Story story : stories) {
                     sb.append(story.getPath()).append("\n");
                 }
@@ -465,6 +475,14 @@ public abstract class AbstractEmbedderTask extends Task {
 
     public void setGenerateViewAfterStories(boolean generateViewAfterStories) {
         this.generateViewAfterStories = generateViewAfterStories;
+    }
+
+    public void setVerboseFailures(boolean verboseFailures) {
+        this.verboseFailures = verboseFailures;
+    }
+
+    public void setVerboseFiltering(boolean verboseFiltering) {
+        this.verboseFiltering = verboseFiltering;
     }
 
     public void setStoryTimeoutInSecs(long storyTimeoutInSecs) {

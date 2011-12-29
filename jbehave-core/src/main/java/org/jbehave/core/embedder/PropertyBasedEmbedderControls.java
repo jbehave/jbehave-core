@@ -11,6 +11,8 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
     public static final String IGNORE_FAILURE_IN_STORIES = "IGNORE_FAILURE_IN_STORIES";
     public static final String GENERATE_VIEW_AFTER_STORIES = "GENERATE_VIEW_AFTER_STORIES";
     public static final String SKIP = "SKIP";
+    public static final String VERBOSE_FAILURES = "VERBOSE_FAILURES";
+    public static final String VERBOSE_FILTERING = "VERBOSE_FILTERING";
     public static final String STORY_TIMEOUT_IN_SECS = "STORY_TIMEOUT_IN_SECS";
     public static final String THREADS = "THREADS";
 
@@ -39,6 +41,16 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
     @Override
     public boolean skip() {
         return propertyAs(SKIP, Boolean.class, super.skip()); 
+    }
+    
+    @Override
+    public boolean verboseFailures() {
+        return propertyAs(VERBOSE_FAILURES, Boolean.class, super.verboseFailures()); 
+    }
+
+    @Override
+    public boolean verboseFiltering() {
+        return propertyAs(VERBOSE_FILTERING, Boolean.class, super.verboseFiltering()); 
     }
     
     @Override
