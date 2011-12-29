@@ -33,7 +33,7 @@ public class TemplateableOutputBehaviour {
     public void shouldReportEventsToHtmlOutput() throws IOException {
         // Given
         File file = new File("target/story.html");
-        StoryReporter reporter = new HtmlTemplateOuput(file, new LocalizedKeywords());
+        StoryReporter reporter = new HtmlTemplateOutput(file, new LocalizedKeywords());
 
         // When
         narrateAnInterestingStory(reporter, false);
