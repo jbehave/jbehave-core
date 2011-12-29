@@ -76,9 +76,11 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
 
     public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
         StringBuffer sb = new StringBuffer();
-        sb.append("Stories excluded by filter: " + filter.asString() + "\n");
-        for (Story story : stories) {
-            sb.append(story.getPath()).append("\n");
+        sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
+        if (System.getProperty("skipExcludes") == null) {
+            for (Story story : stories) {
+                sb.append(story.getPath()).append("\n");
+            }
         }
         print(sb.toString());
     }
