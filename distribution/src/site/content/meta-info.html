@@ -25,13 +25,13 @@ information is provided as a list of name-value properties</b>, e.g.:</p>
 
     Scenario:  A scenario in which the user can view all relevant information via UI    
     Meta:
-    @skip false    
+    @ignored false    
     Given ... // normal scenario steps
 
     Scenario:  A scenario which we cannot run every time due to some technical contraint
     Meta:
-    @skip true    
-    @ignored    
+    @skip    
+    @ignored true  
     Given ... // normal scenario steps
 </pre>
 
@@ -42,7 +42,7 @@ Both keywords are configurable and localizable.</p>
 <p>For each given property, the first space separates the name from
 the value, e.g. in the property "themes UI Usability", the name is
 "themes" and the value is "UI Usability". The value can also be empty,
-as in the case of the "ignored" property.</p>
+as in the case of the "skip" property.</p>
 
 <p>Note that spaces are also allowed after the property keyword <b>@</b>,
 but these will be ignored in the parsing. E.g. if we wrote:</p>
