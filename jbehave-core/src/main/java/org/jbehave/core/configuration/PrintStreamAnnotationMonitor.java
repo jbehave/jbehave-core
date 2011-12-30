@@ -2,9 +2,10 @@ package org.jbehave.core.configuration;
 
 import java.io.PrintStream;
 import java.lang.annotation.Annotation;
+
 import org.jbehave.core.reporters.Format;
 
-public class PrintStreamAnnotationMonitor implements AnnotationMonitor {
+public class PrintStreamAnnotationMonitor extends NullAnnotationMonitor {
 
     private final PrintStream output;
 
@@ -17,7 +18,6 @@ public class PrintStreamAnnotationMonitor implements AnnotationMonitor {
     }
 
     public void elementCreationFailed(Class<?> elementClass, Exception cause) {
-
         Format.println(output, "Element creation failed: " + elementClass);
         cause.printStackTrace(output);
     }

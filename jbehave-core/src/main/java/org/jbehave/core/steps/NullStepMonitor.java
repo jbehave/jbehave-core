@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import org.jbehave.core.model.StepPattern;
 
 /**
- * <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">Null Object Pattern> implementation of {@link StepMonitor}.
+ * <a href="http://en.wikipedia.org/wiki/Null_Object_pattern">Null Object Pattern</a> implementation of {@link StepMonitor}.
  * Can be extended to override only the methods of interest.
  */
 public class NullStepMonitor implements StepMonitor {

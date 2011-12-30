@@ -16,6 +16,7 @@ import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.MetaFilter;
+import org.jbehave.core.embedder.NullEmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
@@ -354,7 +355,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
                 .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
     }
 
-    protected class MavenEmbedderMonitor implements EmbedderMonitor {
+    protected class MavenEmbedderMonitor extends NullEmbedderMonitor {
 
         public void batchFailed(BatchFailures failures) {
             getLog().warn("Failed to run batch " + failures);

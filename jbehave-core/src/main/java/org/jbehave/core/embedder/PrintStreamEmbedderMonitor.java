@@ -21,7 +21,7 @@ import org.jbehave.core.reporters.ReportsCount;
  * Monitor that reports to a {@link PrintStream}, defaulting to
  * {@link System.out}
  */
-public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
+public class PrintStreamEmbedderMonitor extends NullEmbedderMonitor {
     private PrintStream output;
 
     public PrintStreamEmbedderMonitor() {

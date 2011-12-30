@@ -18,6 +18,7 @@ import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.MetaFilter;
+import org.jbehave.core.embedder.NullEmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
@@ -276,7 +277,7 @@ public abstract class AbstractEmbedderTask extends Task {
         return embedder;
     }
 
-    protected class AntEmbedderMonitor implements EmbedderMonitor {
+    protected class AntEmbedderMonitor extends NullEmbedderMonitor {
         public void batchFailed(BatchFailures failures) {
             log("Failed to run batch " + failures, MSG_WARN);
         }
