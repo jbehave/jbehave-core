@@ -113,6 +113,9 @@
 </#if>
 </div> <!-- end scenario -->
 </#list>
+<#if story.isCancelled()?string == 'true'>
+<div class="cancelled">${keywords.cancelled} (${keywords.storyDuration} ${story.storyDuration.durationInSecs} s)</div>
+</#if>
 </div> <!-- end story -->
 <#if story.getPendingMethods()??>
 <#list story.getPendingMethods() as method>

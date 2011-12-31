@@ -43,17 +43,13 @@ public class LocalizedKeywords extends Keywords {
         ResourceBundle bundle = lookupBunde(bundleName.trim(), locale, classLoader);
         Map<String, String> keywords = new HashMap<String, String>();
         for (String key : KEYWORDS) {
-            keywords.put(key, keyword(key, bundle));
+            try {
+                keywords.put(key, bundle.getString(key));
+            } catch (MissingResourceException e) {
+                throw new LocalizedKeywordNotFound(key, bundleName, locale);
+            }
         }
         return keywords;
-    }
-
-    private static String keyword(String name, ResourceBundle bundle) {
-        try {
-            return bundle.getString(name);
-        } catch (MissingResourceException e) {
-            throw new LocalizedKeywordNotFound(name, bundle);
-        }
     }
 
     private static ResourceBundle lookupBunde(String bundleName, Locale locale, ClassLoader classLoader) {
@@ -81,8 +77,8 @@ public class LocalizedKeywords extends Keywords {
     @SuppressWarnings("serial")
     public static class LocalizedKeywordNotFound extends RuntimeException {
 
-        public LocalizedKeywordNotFound(String name, ResourceBundle bundle) {
-            super("Keyword" + name + " not found in resource bundle " + bundle);
+        public LocalizedKeywordNotFound(String key, String bundleName, Locale locale) {
+            super("Keyword " + key + " not found for locale " + locale + " in bundle "+bundleName);
         }
 
     }

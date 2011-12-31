@@ -149,6 +149,8 @@ public class TemplateableOutput implements StoryReporter {
     }
 
     public void storyCancelled(Story story, StoryDuration storyDuration) {
+        this.outputStory.cancelled = true;
+        this.outputStory.storyDuration = storyDuration;
     }
 
     public void afterStory(boolean givenStory) {
@@ -271,6 +273,13 @@ public class TemplateableOutput implements StoryReporter {
             return keywords.dryRun();
         }
 
+        public String getCancelled(){
+            return keywords.cancelled();
+        }
+        
+        public String getStoryDuration(){
+            return keywords.storyDuration();
+        }
     }
 
     public static class OutputStory {
@@ -281,6 +290,8 @@ public class TemplateableOutput implements StoryReporter {
         private String notAllowedBy;
         private List<String> pendingMethods;
         private List<OutputScenario> scenarios = new ArrayList<OutputScenario>();
+        private boolean cancelled;
+        private StoryDuration storyDuration;
 
         public String getDescription() {
             return description;
@@ -308,6 +319,14 @@ public class TemplateableOutput implements StoryReporter {
 
         public List<OutputScenario> getScenarios() {
             return scenarios;
+        }
+        
+        public boolean isCancelled(){
+            return cancelled;
+        }
+        
+        public StoryDuration getStoryDuration(){
+            return storyDuration;
         }
     }
 

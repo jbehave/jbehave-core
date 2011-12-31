@@ -41,11 +41,13 @@ public class Keywords {
     public static final String NOT_PERFORMED = "NotPerformed";
     public static final String FAILED = "Failed";
     public static final String DRY_RUN = "DryRun";
+    public static final String CANCELLED = "Cancelled";
+    public static final String STORY_DURATION = "StoryDuration";
 
     public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO,
             SCENARIO, GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE,
-            PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
+            PENDING, NOT_PERFORMED, FAILED, DRY_RUN, CANCELLED, STORY_DURATION);
 
     private final String meta;
     private final String metaProperty;
@@ -69,6 +71,8 @@ public class Keywords {
     private final String notPerformed;
     private final String failed;
     private final String dryRun;
+    private final String cancelled;
+    private final String storyDuration;
     private final Map<StepType, String> startingWordsByType = new HashMap<StepType, String>();
 
     public static Map<String, String> defaultKeywords() {
@@ -95,6 +99,8 @@ public class Keywords {
         keywords.put(NOT_PERFORMED, "NOT PERFORMED");
         keywords.put(FAILED, "FAILED");
         keywords.put(DRY_RUN, "DRY RUN");
+        keywords.put(CANCELLED, "CANCELLED");
+        keywords.put(STORY_DURATION, "STORY DURATION");
         return keywords;
     }
 
@@ -133,6 +139,8 @@ public class Keywords {
         this.notPerformed = keyword(NOT_PERFORMED, keywords);
         this.failed = keyword(FAILED, keywords);
         this.dryRun = keyword(DRY_RUN, keywords);
+        this.cancelled = keyword(CANCELLED, keywords);
+        this.storyDuration = keyword(STORY_DURATION, keywords);
 
         startingWordsByType.put(StepType.GIVEN, given());
         startingWordsByType.put(StepType.WHEN, when());
@@ -236,6 +244,14 @@ public class Keywords {
 
     public String dryRun() {
         return dryRun;
+    }
+
+    public String cancelled() {
+        return cancelled;
+    }
+
+    public String storyDuration() {
+        return storyDuration;
     }
 
     public String[] startingWords() {
