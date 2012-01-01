@@ -273,12 +273,12 @@ public class TemplateableOutput implements StoryReporter {
             return keywords.dryRun();
         }
 
-        public String getCancelled(){
-            return keywords.cancelled();
+        public String getStoryCancelled(){
+            return keywords.storyCancelled();
         }
         
-        public String getStoryDuration(){
-            return keywords.storyDuration();
+        public String getDuration(){
+            return keywords.duration();
         }
     }
 

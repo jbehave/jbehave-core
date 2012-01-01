@@ -100,7 +100,7 @@ ${formattedStep} <#if step.getTable()??><parameter><@renderTable step.getTable()
 </scenario> 
 </#list>
 <#if story.isCancelled()?string == 'true'>
-<cancelled keyword="${keywords.cancelled}" durationKeyword="${keywords.storyDuration}" durationInSecs="${story.storyDuration.durationInSecs}"/>
+<cancelled keyword="${keywords.storyCancelled}" durationKeyword="${keywords.duration}" durationInSecs="${story.storyDuration.durationInSecs}"/>
 </#if>
 </story>
 <#if story.getPendingMethods()??>

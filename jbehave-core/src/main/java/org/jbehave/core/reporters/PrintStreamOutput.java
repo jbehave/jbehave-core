@@ -168,7 +168,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void storyCancelled(Story story, StoryDuration storyDuration) {
-        print(format("storyCancelled", "{0}: {1} ({2} s)\n", keywords.cancelled(), keywords.storyDuration(), storyDuration.getTimeoutInSecs()));
+        print(format("storyCancelled", "{0}: {1} ({2} s)\n", keywords.storyCancelled(), keywords.duration(), storyDuration.getTimeoutInSecs()));
     }
 
     public void beforeStory(Story story, boolean givenStory) {

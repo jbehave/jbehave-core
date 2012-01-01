@@ -47,10 +47,14 @@ public class LocalizedKeywordsBehaviour {
     }
 
     @Test
-    public void shouldAllowKeywordsInADifferentLocales() throws IOException {
-        ensureKeywordsAreLocalisedFor(new Locale("it"));
+    public void shouldAllowKeywordsInDifferentLocales() throws IOException {
         ensureKeywordsAreLocalisedFor(new Locale("de"));
+        ensureKeywordsAreLocalisedFor(new Locale("en"));
         ensureKeywordsAreLocalisedFor(new Locale("fr"));
+        ensureKeywordsAreLocalisedFor(new Locale("it"));
+        ensureKeywordsAreLocalisedFor(new Locale("pt"));
+        ensureKeywordsAreLocalisedFor(new Locale("tr"));
+        ensureKeywordsAreLocalisedFor(new Locale("zh_TW"));
     }
 
     @Test
