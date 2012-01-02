@@ -26,7 +26,7 @@ public class ThreadsStories extends JUnitStories {
     public ThreadsStories() {
         Embedder embedder = configuredEmbedder();
         embedder.embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).doVerboseFiltering(true).useThreads(1).useStoryTimeoutInSecs(2);
+                .doIgnoreFailureInView(true).doVerboseFiltering(true).useThreads(2).useStoryTimeoutInSecs(2);
         embedder.useMetaFilters(Arrays.asList("groovy: story_path ==~ /.*long.*/"));
     }
 
