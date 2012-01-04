@@ -64,6 +64,7 @@ public class TraderStories extends JUnitStories {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
+        viewResources.put("reports", "ftl/jbehave-reports-with-totals.ftl");
         // Start from default ParameterConverters instance
         ParameterConverters parameterConverters = new ParameterConverters();
         // factory to allow parameter conversion and loading from external resources (used by StoryParser too)
