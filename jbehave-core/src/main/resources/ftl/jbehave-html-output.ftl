@@ -60,7 +60,7 @@
 <#assign isVerified=outcome.isVerified()?string>
 <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
 <tr class="${verified}">
-<td>${outcome.description}</td><td>${outcome.value}</td><td>${outcome.matcher}</td><td>${isVerified}</td>
+<td>${outcome.description}</td><td>${outcome.value}</td><td>${outcome.matcher}</td><td><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></td>
 </tr>
 </#list>
 </tbody>

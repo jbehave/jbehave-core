@@ -26,3 +26,8 @@ Et au rang 1 et en colonne un on trouve: 11
 Et au rang 1 et en colonne deux on trouve: 12
 Et au rang 2 et en colonne un on trouve: 21
 Et au rang 2 et en colonne deux on trouve: 22
+Et les valeurs multipliées par 10 sont:
+|un|deux|
+|110|120|
+|210|220|
+

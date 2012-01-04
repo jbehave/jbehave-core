@@ -280,6 +280,14 @@ public class TemplateableOutput implements StoryReporter {
         public String getDuration(){
             return keywords.duration();
         }
+        
+        public String getYes(){
+            return keywords.yes();
+        }
+        
+        public String getNo(){
+            return keywords.no();
+        }
     }
 
     public static class OutputStory {

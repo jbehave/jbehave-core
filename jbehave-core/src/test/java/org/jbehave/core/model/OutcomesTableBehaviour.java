@@ -54,7 +54,7 @@ public class OutcomesTableBehaviour {
         table.addOutcome("a success", one, equalTo(one));
         // add a non-failed outcome
         table.addOutcome("a failure", two, is(false));
-        assertThat(table.toString(), equalTo("|Description|Value|Matcher|Verified|\n"
+        assertThat(table.asString(), equalTo("|Description|Value|Matcher|Verified|\n"
                 + "|a success|one|\"one\"|true|\n" + "|a failure|true|is <false>|false|\n"));
         List<Outcome<?>> outcomes = table.getOutcomes();
         assertThat(outcomes.get(0).toString(), equalTo("OutcomesTable.Outcome[description=a success,value=one,matcher=\"one\",verified=true]"));
