@@ -31,9 +31,9 @@ public class GroovyStories extends JUnitStories {
     }
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
+    public InjectableStepsFactory stepsFactory() {
         GroovyResourceFinder resourceFinder = new GroovyResourceFinder(codeLocationFromPath("src/main/groovy"), "**/*.story", "");
-        return new GroovyStepsFactory(configuration(), new GroovyContext(resourceFinder)).createCandidateSteps();
+        return new GroovyStepsFactory(configuration(), new GroovyContext(resourceFinder));
     }
 
 }

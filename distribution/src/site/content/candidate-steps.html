@@ -91,13 +91,13 @@ running the scenario:</p>
 </script>
 
 <p>Note that in the example above <b>TraderSteps</b> is a POJO, i.e.
-it does not need to extend any JBehave class. JBehave provides a way
-(via the <a
-	href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>)
-to create from these POJO steps instances the <a
+it does not need to extend any JBehave class. JBehave provides the 
+<a
+	href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
+as a factory to create from these POJO steps instances the <a
 	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
 it needs to extract the step candidates. The <a
-	href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
+	href="javadoc/core/org/jbehave/core/steps/InstanceStepsFactory.html">InstanceStepsFactory</a>
 takes each steps instance provided by the user and wraps it in a <a
 	href="javadoc/core/org/jbehave/core/steps/Steps.html">Steps</a>
 instance, which is the default implementation of <b>CandidateSteps</b>:
@@ -108,10 +108,10 @@ instance, which is the default implementation of <b>CandidateSteps</b>:
 public class TraderStory extends JUnitStory {
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
+    public InjectableStepsFactory stepsFactory() {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
                 new CalendarSteps(), new PriorityMatchingSteps(), new SandpitSteps(), new SearchSteps(),
-                new BeforeAfterSteps()).createCandidateSteps();
+                new BeforeAfterSteps());
     }
 }
 ]]>

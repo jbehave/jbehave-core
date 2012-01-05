@@ -247,26 +247,39 @@ system whose behaviour is being verified.</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-    protected List<CandidateSteps> createSteps(Configuration configuration) {
-        Injector injector = createInjector();
-        return new GuiceStepsFactory(configuration, injector).createCandidateSteps();
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return new GuiceStepsFactory(configuration(), createInjector());
     }
 
     private Injector createInjector() {
-        return Guice.createInjector(new AbstractModule() {
-            @Override
-            protected void configure() {
-              bind(TradingService.class).in(Scopes.SINGLETON);
-              bind(GuiceTraderSteps.class).in(Scopes.SINGLETON);
-              bind(BeforeAfterSteps.class).in(Scopes.SINGLETON);
-            }
-          });
+        return Guice.createInjector(new StepsModule());
     }
     
 ]]>
 </script>
 
-<p>where the <b>GuiceTraderSteps</b> is appropriately
+<p>where the <b>StepsModule</b> defines the steps classes and their scope:</p>
+<pre class="brush: java">
+
+    public static class StepsModule extends AbstractModule {
+
+        @Override
+        protected void configure() {
+            bind(TradingService.class).in(Scopes.SINGLETON);
+            bind(GuiceTraderSteps.class).in(Scopes.SINGLETON);
+            bind(BeforeAfterSteps.class).in(Scopes.SINGLETON);
+            bind(AndSteps.class).in(Scopes.SINGLETON);
+            bind(CalendarSteps.class).in(Scopes.SINGLETON);
+            bind(PendingSteps.class).in(Scopes.SINGLETON);
+            bind(PriorityMatchingSteps.class).in(Scopes.SINGLETON);
+            bind(SandpitSteps.class).in(Scopes.SINGLETON);
+            bind(SearchSteps.class).in(Scopes.SINGLETON);
+        }
+
+    }
+</pre>
+<p>and the steps classes requiring injection are appropriately
 Guice-annotated:</p>
 <pre class="brush: java">
 public class GuiceTraderSteps extends TraderSteps {
@@ -287,20 +300,24 @@ public class GuiceTraderSteps extends TraderSteps {
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-    protected List<CandidateSteps> createSteps(Configuration configuration) {
-        PicoContainer container = createPicoContainer();
-        return new PicoStepsFactory(configuration, container).createCandidateSteps();
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return new PicoStepsFactory(configuration(), createPicoContainer());
     }
 
-    private PicoContainer createPicoContainer() { 
-        // users can also use any other way to create a PicoContainer, e.g. via a script language        
+    private PicoContainer createPicoContainer() {
         MutablePicoContainer container = new DefaultPicoContainer(new Caching().wrap(new ConstructorInjection()));
-        container.as(Characteristics.USE_NAMES).addComponent(TradingService.class);
-        container.as(Characteristics.USE_NAMES).addComponent(TraderSteps.class);
-        container.as(Characteristics.USE_NAMES).addComponent(BeforeAfterSteps.class);
+        container.addComponent(TradingService.class);
+        container.addComponent(TraderSteps.class);
+        container.addComponent(BeforeAfterSteps.class);
+        container.addComponent(AndSteps.class);
+        container.addComponent(CalendarSteps.class);
+        container.addComponent(PendingSteps.class);
+        container.addComponent(PriorityMatchingSteps.class);
+        container.addComponent(SandpitSteps.class);
+        container.addComponent(SearchSteps.class);
         return container;
     }
-    
 ]]>
 </script>
 
@@ -312,13 +329,14 @@ public class GuiceTraderSteps extends TraderSteps {
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-    protected List<CandidateSteps> createSteps(Configuration configuration) {
-        ApplicationContext context = createContext();
-        return new SpringStepsFactory(configuration, context).createCandidateSteps();
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return new SpringStepsFactory(configuration(), createContext());
     }
-    
-    private ApplicationContext createContext(){
-        return  new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml").createApplicationContext();        
+
+    private ApplicationContext createContext() {
+        return new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml")
+                .createApplicationContext();
     }
 ]]>
 </script>
@@ -328,6 +346,25 @@ public class GuiceTraderSteps extends TraderSteps {
 <p>CandidateSteps can be created by annotating a class using the @WeldStep annotation <a
 	href="javadoc/weld/org/jbehave/core/annotations/weld/WeldStep.html">WeldStep</a>:
 </p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+
+    private static WeldContainer container;
+
+    static {
+        container = new WeldBootstrap().initialize();
+    }
+    
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return container.instance().select(WeldStepsFactory.class).get();
+    }
+
+]]>
+</script>
+
+<p>where the steps class is appropriately Weld-annotated:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[

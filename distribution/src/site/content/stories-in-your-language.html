@@ -60,9 +60,8 @@ public abstract class LocalizedTraderStories extends JUnitStories {
     }
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        return new InstanceStepsFactory(configuration(), traderSteps(), new BeforeAfterSteps())
-                .createCandidateSteps();
+    public InjectableStepsFactory stepsFactory() {
+        return new InstanceStepsFactory(configuration(), traderSteps(), new BeforeAfterSteps());
     }
 
     @Override

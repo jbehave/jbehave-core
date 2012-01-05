@@ -108,9 +108,9 @@ public class ICanToggleACell extends JUnitStory {
 
     // Here we specify the steps classes
     @Override
-    public List<CandidateSteps> candidateSteps() {        
+    public InjectableStepsFactory stepsFactory() {        
         // varargs, can have more that one steps classes
-        return new InstanceStepsFactory(configuration(), new GridSteps()).createCandidateSteps();
+        return new InstanceStepsFactory(configuration(), new GridSteps());
     }
 }
 ]]>

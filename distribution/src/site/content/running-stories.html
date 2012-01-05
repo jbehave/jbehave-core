@@ -93,29 +93,32 @@ respectively. E.g.:</p>
 <![CDATA[
 public class TraderEmbedder extends Embedder {
 
-	@Override
-	public Configuration configuration() {
-		Class<?> embedderClass = this.getClass();
-        URL codeLocation = CodeLocations.codeLocationFromClass(embedderClass);
-        Configuration configuration = new MostUsefulConfiguration()
-             .useStoryLoader(new LoadFromClasspath(embedderClass))
-             .useStoryReporterBuilder(new StoryReporterBuilder()
-                .withCodeLocation(codeLocation)
-        		.withDefaultFormats()
-				.withFormats(CONSOLE, TXT, HTML, XML))
-			.useEmbedderControls(new EmbedderControls()
-					.doIgnoreFailureInStories(true).doIgnoreFailureInReports(true))
-			.useStepPatternParser(new RegexPrefixCapturingPatternParser(
-							"%")) // use '%' instead of '$' to identify parameters
-			.useStepMonitor(new SilentStepMonitor());
-					
-	}
+    @Override
+    public EmbedderControls embedderControls() {
+        return new EmbedderControls().doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+    }
 
-	@Override
-	public List<CandidateSteps> candidateSteps() {
-		return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()),
-                        new BeforeAfterSteps()).createCandidateSteps();
-	}
+    @Override
+    public Configuration configuration() {
+        Class<? extends TraderEmbedder> embedderClass = this.getClass();
+        return new MostUsefulConfiguration()
+            .useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
+            .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withCodeLocation(CodeLocations.codeLocationFromClass(embedderClass))
+                .withDefaultFormats()
+                .withFormats(CONSOLE, TXT, HTML, XML)
+                .withCrossReference(new CrossReference()))
+            .useParameterConverters(new ParameterConverters()
+                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
+            .useStepPatternParser(new RegexPrefixCapturingPatternParser(
+                            "%")) // use '%' instead of '$' to identify parameters
+            .useStepMonitor(new SilentStepMonitor());                               
+    }
+
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new BeforeAfterSteps());
+    }
 
 }
 ]]>

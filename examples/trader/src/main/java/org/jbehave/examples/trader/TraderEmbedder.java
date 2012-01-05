@@ -1,7 +1,6 @@
 package org.jbehave.examples.trader;
 
 import java.text.SimpleDateFormat;
-import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -12,7 +11,7 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
@@ -55,9 +54,8 @@ public class TraderEmbedder extends Embedder {
 	}
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new BeforeAfterSteps())
-                .createCandidateSteps();
+    public InjectableStepsFactory stepsFactory() {
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new BeforeAfterSteps());
     }
 
 }
