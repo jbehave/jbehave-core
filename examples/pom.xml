@@ -28,6 +28,7 @@
     <module>trader-urls</module>
     <module>trader-maps</module>
     <module>trader-stepdocs</module>
+    <module>trader-testng</module>
     <module>trader-i18n</module>
     <module>trader-guice</module>
     <module>trader-pico</module>

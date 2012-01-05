@@ -15,12 +15,6 @@
       <artifactId>jbehave-trader-example</artifactId>
       <version>${project.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>6.3.1</version>
-      <optional>true</optional>
-    </dependency>
   </dependencies>
 
   <build>

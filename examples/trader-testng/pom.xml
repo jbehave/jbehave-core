@@ -6,15 +6,22 @@
     <artifactId>jbehave-examples</artifactId>
     <version>3.6-SNAPSHOT</version>
   </parent>
-  <artifactId>jbehave-trader-example</artifactId>
-  <name>JBehave Trader Example</name>
+  <artifactId>jbehave-trader-testng-example</artifactId>
+  <name>JBehave Trader TestNG Example</name>
 
-  <properties>
-    <embeddables>**/*TraderStories.java</embeddables>
-    <meta.filter></meta.filter>
-    <ignore.failure.in.stories>true</ignore.failure.in.stories>
-    <ignore.failure.in.view>true</ignore.failure.in.view>
-  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-trader-example</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.3.1</version>
+      <optional>true</optional>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -27,18 +34,10 @@
             <phase>integration-test</phase>
             <configuration>
               <includes>
-                <include>${embeddables}</include>
+                <include>**/TestNGTraderStories.java</include>
               </includes>
-              <excludes />
-              <skip>${skip}</skip>
-              <batch>false</batch>
-              <generateViewAfterStories>true</generateViewAfterStories>
-              <ignoreFailureInStories>${ignore.failure.in.stories}</ignoreFailureInStories>
-              <ignoreFailureInView>${ignore.failure.in.view}</ignoreFailureInView>
-              <threads>2</threads>
-              <metaFilters>
-                <metaFilter>${meta.filter}</metaFilter>
-              </metaFilters>
+              <ignoreFailureInStories>true</ignoreFailureInStories>
+              <ignoreFailureInView>true</ignoreFailureInView>
             </configuration>
             <goals>
               <goal>run-stories-as-embeddables</goal>
