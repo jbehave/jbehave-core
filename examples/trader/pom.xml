@@ -11,10 +11,19 @@
 
   <properties>
     <embeddables>**/*TraderStories.java</embeddables>
-    <meta.filter></meta.filter>    
+    <meta.filter></meta.filter>
     <ignore.failure.in.stories>true</ignore.failure.in.stories>
     <ignore.failure.in.view>true</ignore.failure.in.view>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.3.1</version>
+      <optional>true</optional>
+    </dependency>    
+  </dependencies>
   
   <build>
     <plugins>
