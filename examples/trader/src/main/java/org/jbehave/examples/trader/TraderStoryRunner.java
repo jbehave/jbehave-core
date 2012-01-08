@@ -27,7 +27,7 @@ public class TraderStoryRunner {
 
     @Test
     public void runClasspathLoadedStoriesAsJUnit() {
-        // Embedder defines the configuration and candidate steps
+        // TraderEmbedder defines the configuration and steps factory
         Embedder embedder = new TraderEmbedder();
         embedder.embedderControls().doIgnoreFailureInStories(true);
         List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");

@@ -21,7 +21,7 @@ import org.jbehave.core.reporters.ReportsCount;
  * Monitor that reports to a {@link PrintStream}, defaulting to
  * {@link System.out}
  */
-public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
+public class PrintStreamEmbedderMonitor extends NullEmbedderMonitor {
     private PrintStream output;
 
     public PrintStreamEmbedderMonitor() {
@@ -74,11 +74,13 @@ public class PrintStreamEmbedderMonitor implements EmbedderMonitor {
         print("Skipped stories " + storyPaths);
     }
 
-    public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+    public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
         StringBuffer sb = new StringBuffer();
-        sb.append("Stories excluded by filter: " + filter.asString() + "\n");
-        for (Story story : stories) {
-            sb.append(story.getPath()).append("\n");
+        sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
+        if (verbose) {
+            for (Story story : stories) {
+                sb.append(story.getPath()).append("\n");
+            }
         }
         print(sb.toString());
     }

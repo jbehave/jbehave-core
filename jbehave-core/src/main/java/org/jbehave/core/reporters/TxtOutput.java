@@ -55,7 +55,7 @@ public class TxtOutput extends PrintStreamOutput {
     private static Properties defaultPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "{0}\n");
-        patterns.setProperty("storyCancelled", "{0}: {1} s > {2} s\n");
+        patterns.setProperty("storyCancelled", "{0} ({1} {2} s)\n");
         patterns.setProperty("beforeStory", "{0}\n({1})\n");
         patterns.setProperty("afterStory", "\n");
         patterns.setProperty("metaStart", "{0}\n");

@@ -43,12 +43,18 @@ public class LocalizedKeywordsBehaviour {
 
     @Test
     public void shouldAllowKeywordsInEnglishAsDefault() throws IOException {
-        ensureKeywordsAreLocalisedFor(null, null);
+        ensureKeywordsAreLocalisedFor(null);
     }
 
     @Test
-    public void shouldAllowKeywordsInADifferentLocale() throws IOException {
-        ensureKeywordsAreLocalisedFor(new Locale("it"), null);
+    public void shouldAllowKeywordsInDifferentLocales() throws IOException {
+        ensureKeywordsAreLocalisedFor(new Locale("de"));
+        ensureKeywordsAreLocalisedFor(new Locale("en"));
+        ensureKeywordsAreLocalisedFor(new Locale("fr"));
+        ensureKeywordsAreLocalisedFor(new Locale("it"));
+        ensureKeywordsAreLocalisedFor(new Locale("pt"));
+        ensureKeywordsAreLocalisedFor(new Locale("tr"));
+        ensureKeywordsAreLocalisedFor(new Locale("zh_TW"));
     }
 
     @Test
@@ -87,6 +93,10 @@ public class LocalizedKeywordsBehaviour {
         assertThat(startingWordsByType.get(StepType.IGNORABLE), equalTo(keywords.ignorable()));
     }
 
+    private void ensureKeywordsAreLocalisedFor(Locale locale) throws IOException {
+        ensureKeywordsAreLocalisedFor(locale, null);
+    }
+    
     private void ensureKeywordsAreLocalisedFor(Locale locale, String bundleName) throws IOException {
         Keywords keywords = keywordsFor(locale, bundleName, null);
         Properties properties = bundleFor(locale);

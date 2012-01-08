@@ -46,11 +46,30 @@ The TXT format would look like:</p>
 
 <pre class="brush: text">
 |Description|Value|Matcher|Verified|
-|Value1|Value1|"Value1"|true|
-|Value2|Value2|"ValueX"|false|
+|Value1|Value1|"Value1"|Yes|
+|Value2|Value2|"ValueX"|No|
 </pre>
 
 <p>The HTML format would use colour-coding for failures.</p>
+
+<h2>Using different Locales</h2>
+
+<p>The OutcomesTable is localisable, via the injection of the appropriate <a
+    href="javadoc/core/org/jbehave/core/i18n/LocalizedKeywords.html">LocalizedKeywords</a>.</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+     new OutcomesTable(new LocalizedKeywords(new Locale(...)));
+]]>
+</script>
+
+<p>The TXT format would look like, in FR locale:</p>
+
+<pre class="brush: text">
+|Déscription|Valeur|Matcher|Vérifié|
+|Value1|Value1|"Value1"|Oui|
+|Value2|Value2|"ValueX"|Non|
+</pre>
 
 <div class="clear">
 <hr />

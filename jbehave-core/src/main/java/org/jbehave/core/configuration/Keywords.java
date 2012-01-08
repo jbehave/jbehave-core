@@ -41,11 +41,20 @@ public class Keywords {
     public static final String NOT_PERFORMED = "NotPerformed";
     public static final String FAILED = "Failed";
     public static final String DRY_RUN = "DryRun";
+    public static final String STORY_CANCELLED = "StoryCancelled";
+    public static final String DURATION = "Duration";
+    public static final String OUTCOME_DESCRIPTION = "OutcomeDescription";
+    public static final String OUTCOME_VALUE = "OutcomeValue";
+    public static final String OUTCOME_MATCHER = "OutcomeMatcher";
+    public static final String OUTCOME_VERIFIED = "OutcomeVerified";
+    public static final String YES = "Yes";
+    public static final String NO = "No";
 
     public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO,
             SCENARIO, GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE,
-            PENDING, NOT_PERFORMED, FAILED, DRY_RUN);
+            PENDING, NOT_PERFORMED, FAILED, DRY_RUN, STORY_CANCELLED, DURATION, OUTCOME_DESCRIPTION, OUTCOME_VALUE,
+            OUTCOME_MATCHER, OUTCOME_VERIFIED, YES, NO);
 
     private final String meta;
     private final String metaProperty;
@@ -69,6 +78,14 @@ public class Keywords {
     private final String notPerformed;
     private final String failed;
     private final String dryRun;
+    private final String storyCancelled;
+    private final String duration;
+    private final String outcomeDescription;
+    private final String outcomeValue;
+    private final String outcomeMatcher;
+    private final String outcomeVerified;
+    private final String yes;
+    private final String no;
     private final Map<StepType, String> startingWordsByType = new HashMap<StepType, String>();
 
     public static Map<String, String> defaultKeywords() {
@@ -95,6 +112,14 @@ public class Keywords {
         keywords.put(NOT_PERFORMED, "NOT PERFORMED");
         keywords.put(FAILED, "FAILED");
         keywords.put(DRY_RUN, "DRY RUN");
+        keywords.put(STORY_CANCELLED, "STORY CANCELLED");
+        keywords.put(DURATION, "DURATION");
+        keywords.put(OUTCOME_DESCRIPTION, "DESCRIPTION");
+        keywords.put(OUTCOME_MATCHER, "MATCHER");
+        keywords.put(OUTCOME_VALUE, "VALUE");
+        keywords.put(OUTCOME_VERIFIED, "VERIFIED");
+        keywords.put(YES, "Yes");
+        keywords.put(NO, "No");
         return keywords;
     }
 
@@ -133,7 +158,15 @@ public class Keywords {
         this.notPerformed = keyword(NOT_PERFORMED, keywords);
         this.failed = keyword(FAILED, keywords);
         this.dryRun = keyword(DRY_RUN, keywords);
-
+        this.storyCancelled = keyword(STORY_CANCELLED, keywords);
+        this.duration = keyword(DURATION, keywords);
+        this.outcomeDescription = keyword(OUTCOME_DESCRIPTION, keywords);
+        this.outcomeMatcher = keyword(OUTCOME_MATCHER, keywords);
+        this.outcomeValue = keyword(OUTCOME_VALUE, keywords);
+        this.outcomeVerified = keyword(OUTCOME_VERIFIED, keywords);
+        this.yes = keyword(YES, keywords);
+        this.no = keyword(NO, keywords);
+        
         startingWordsByType.put(StepType.GIVEN, given());
         startingWordsByType.put(StepType.WHEN, when());
         startingWordsByType.put(StepType.THEN, then());
@@ -236,6 +269,26 @@ public class Keywords {
 
     public String dryRun() {
         return dryRun;
+    }
+
+    public String storyCancelled() {
+        return storyCancelled;
+    }
+
+    public String duration() {
+        return duration;
+    }
+
+    public List<String> outcomeFields() {
+        return asList(outcomeDescription, outcomeValue, outcomeMatcher, outcomeVerified);
+    }
+    
+    public String yes(){
+        return yes;
+    }
+    
+    public String no(){
+        return no;
     }
 
     public String[] startingWords() {

@@ -55,7 +55,7 @@
 <#assign isVerified=outcome.isVerified()?string>
 <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
 <outcome>
-<value>${outcome.description}</value><value>${outcome.value}</value><value>${outcome.matcher}</value><value>${isVerified}</value>
+<value>${outcome.description}</value><value>${outcome.value}</value><value>${outcome.matcher}</value><value><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></value>
 </outcome>
 </#list>
 </outcomes>
@@ -99,6 +99,9 @@ ${formattedStep} <#if step.getTable()??><parameter><@renderTable step.getTable()
 </#if>
 </scenario> 
 </#list>
+<#if story.isCancelled()?string == 'true'>
+<cancelled keyword="${keywords.storyCancelled}" durationKeyword="${keywords.duration}" durationInSecs="${story.storyDuration.durationInSecs}"/>
+</#if>
 </story>
 <#if story.getPendingMethods()??>
 <#list story.getPendingMethods() as method>

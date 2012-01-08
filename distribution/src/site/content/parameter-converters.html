@@ -174,8 +174,11 @@ so you can use any implementation of <a
     href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
 that extends the abstract implementation, e.g.:</p>
 <pre class="brush: java">
-    public MyStory() {
-        addSteps(new InstanceStepsFactory(configuration(), new MySteps()).createCandidateSteps());
+    public MyStory extends JUnitStory {
+        @Override
+        public InjectableStepsFactory stepsFactory() {
+            return new InstanceStepsFactory(configuration(), new MySteps(), new BeforeAfterSteps());
+        }
     }
 </pre>
 

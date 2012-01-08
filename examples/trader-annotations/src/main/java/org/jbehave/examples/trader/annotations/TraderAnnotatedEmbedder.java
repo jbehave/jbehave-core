@@ -39,17 +39,16 @@ import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
 @RunWith(AnnotatedEmbedderRunner.class)
-@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
-        parameterConverters = { MyDateConverter.class })
-@UsingEmbedder(embedder = MyEmbedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
-                storyTimeoutInSecs = 100, threads = 1, metaFilters = "-skip")
+@Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, parameterConverters = { MyDateConverter.class })
+@UsingEmbedder(embedder = MyEmbedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, verboseFailures = true, verboseFiltering = true, storyTimeoutInSecs = 100, threads = 1, metaFilters = "-skip")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class TraderAnnotatedEmbedder extends InjectableEmbedder {
 
     @Test
     public void run() {
-        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"), "**/*.story", "**/examples_table_loaded*");
+        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromPath("../trader/src/main/java"),
+                "**/*.story", "**/examples_table_loaded*");
         injectedEmbedder().runStoriesAsPaths(storyPaths);
     }
 

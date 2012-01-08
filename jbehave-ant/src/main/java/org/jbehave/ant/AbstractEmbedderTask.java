@@ -18,6 +18,7 @@ import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.MetaFilter;
+import org.jbehave.core.embedder.NullEmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
@@ -92,6 +93,16 @@ public abstract class AbstractEmbedderTask extends Task {
      * The boolean flag to run in batch mode
      */
     private boolean batch = false;
+
+    /**
+     * The boolean flag to output failures in verbose mode
+     */
+    private boolean verboseFailures = false;
+
+    /**
+     * The boolean flag to output filtering in verbose mode
+     */
+    private boolean verboseFiltering = false;
 
     /**
      * The story timeout in secs
@@ -192,8 +203,8 @@ public abstract class AbstractEmbedderTask extends Task {
     protected EmbedderControls embedderControls() {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
-                .doIgnoreFailureInView(ignoreFailureInView).useStoryTimeoutInSecs(storyTimeoutInSecs)
-                .useThreads(threads));
+                .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
+                .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
     }
 
     /**
@@ -266,7 +277,7 @@ public abstract class AbstractEmbedderTask extends Task {
         return embedder;
     }
 
-    protected class AntEmbedderMonitor implements EmbedderMonitor {
+    protected class AntEmbedderMonitor extends NullEmbedderMonitor {
         public void batchFailed(BatchFailures failures) {
             log("Failed to run batch " + failures, MSG_WARN);
         }
@@ -303,11 +314,13 @@ public abstract class AbstractEmbedderTask extends Task {
             log("Skipped stories " + storyPaths, MSG_INFO);
         }
 
-        public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+        public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
             StringBuffer sb = new StringBuffer();
-            sb.append("Stories excluded by filter: " + filter.asString() + "\n");
-            for (Story story : stories) {
-                sb.append(story.getPath()).append("\n");
+            sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
+            if (verbose) {
+                for (Story story : stories) {
+                    sb.append(story.getPath()).append("\n");
+                }
             }
             log(sb.toString(), MSG_INFO);
         }
@@ -463,6 +476,14 @@ public abstract class AbstractEmbedderTask extends Task {
 
     public void setGenerateViewAfterStories(boolean generateViewAfterStories) {
         this.generateViewAfterStories = generateViewAfterStories;
+    }
+
+    public void setVerboseFailures(boolean verboseFailures) {
+        this.verboseFailures = verboseFailures;
+    }
+
+    public void setVerboseFiltering(boolean verboseFiltering) {
+        this.verboseFiltering = verboseFiltering;
     }
 
     public void setStoryTimeoutInSecs(long storyTimeoutInSecs) {

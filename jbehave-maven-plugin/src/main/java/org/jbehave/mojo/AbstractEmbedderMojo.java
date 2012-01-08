@@ -16,6 +16,7 @@ import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.MetaFilter;
+import org.jbehave.core.embedder.NullEmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
@@ -137,6 +138,20 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @parameter default-value="true"
      */
     boolean generateViewAfterStories = true;
+
+    /**
+     * The boolean flag to output failures in verbose mode
+     * 
+     * @parameter default-value="false"
+     */
+    boolean verboseFailures = false;
+
+    /**
+     * The boolean flag to output filtering in verbose mode
+     * 
+     * @parameter default-value="false"
+     */
+    boolean verboseFiltering = false;
 
     /**
      * The story timeout in secs
@@ -336,11 +351,11 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     protected EmbedderControls embedderControls() {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
-                .doIgnoreFailureInView(ignoreFailureInView).useStoryTimeoutInSecs(storyTimeoutInSecs)
-                .useThreads(threads));
+                .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
+                .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
     }
 
-    protected class MavenEmbedderMonitor implements EmbedderMonitor {
+    protected class MavenEmbedderMonitor extends NullEmbedderMonitor {
 
         public void batchFailed(BatchFailures failures) {
             getLog().warn("Failed to run batch " + failures);
@@ -382,11 +397,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("Skipped stories " + storyPaths);
         }
 
-        public void storiesNotAllowed(List<Story> stories, MetaFilter filter) {
+        public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
             StringBuffer sb = new StringBuffer();
-            sb.append("Stories excluded by filter: " + filter.asString() + "\n");
-            for (Story story : stories) {
-                sb.append(story.getPath()).append("\n");
+            sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
+            if (verbose) {
+                for (Story story : stories) {
+                    sb.append(story.getPath()).append("\n");
+                }
             }
             getLog().info(sb.toString());
         }

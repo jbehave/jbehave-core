@@ -165,13 +165,14 @@ public class AnnotationBuilder {
         boolean ignoreFailureInStories = control(finder, "ignoreFailureInStories");
         boolean ignoreFailureInView = control(finder, "ignoreFailureInView");
         boolean verboseFailures = control(finder, "verboseFailures");
+        boolean verboseFiltering = control(finder, "verboseFiltering");
         long storyTimeoutInSecs = finder.getAnnotatedValue(UsingEmbedder.class, Long.class, "storyTimeoutInSecs");
         int threads = finder.getAnnotatedValue(UsingEmbedder.class, Integer.class, "threads");
         Embedder embedder = instanceOf(Embedder.class,
                 (Class<? extends Embedder>) finder.getAnnotatedValue(UsingEmbedder.class, Class.class, "embedder"));
         embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView)
-                .doVerboseFailures(verboseFailures).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads);
+                .doVerboseFailures(verboseFailures).doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads);
         Configuration configuration = buildConfiguration();
         embedder.useConfiguration(configuration);
         boolean useStepsFactory = finder.getAnnotatedValue(UsingEmbedder.class, Boolean.class, "stepsFactory");

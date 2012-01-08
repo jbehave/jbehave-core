@@ -57,7 +57,7 @@ public class XmlOutput extends PrintStreamOutput {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "<dryRun>{0}</dryRun>\n");        
         patterns.setProperty("beforeStory", "<story path=\"{1}\" title=\"{0}\">\n");
-        patterns.setProperty("storyCancelled", "<cancelled path=\"{0}\" durationInSecs=\"{1}\" timeoutInSecs=\"{2}\"/>\n");
+        patterns.setProperty("storyCancelled", "<cancelled keyword=\"{0}\" durationKeyword=\"{1}\" durationInSecs=\"{2}\"/>\n");
         patterns.setProperty("afterStory", "</story>\n");
         patterns.setProperty("pendingMethod", "<pendingMethod>{0}</pendingMethod>\n");        
         patterns.setProperty("metaStart", "<meta>\n");

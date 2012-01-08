@@ -145,7 +145,6 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("outcomesTableStart", "\n"));
         List<Outcome<?>> rows = table.getOutcomes();
         print(format("outcomesTableHeadStart", "|"));
-        // TODO i18n outcome fields
         for (String field : table.getOutcomeFields()) {
             print(format("outcomesTableHeadCell", "{0}|", field));
         }
@@ -156,7 +155,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
             print(format("outcomesTableCell", "{0}|", outcome.getDescription()));
             print(format("outcomesTableCell", "{0}|", outcome.getValue()));
             print(format("outcomesTableCell", "{0}|", outcome.getMatcher()));
-            print(format("outcomesTableCell", "{0}|", outcome.isVerified()));
+            print(format("outcomesTableCell", "{0}|", (outcome.isVerified() ? keywords.yes() : keywords.no())));
             print(format("outcomesTableRowEnd", "\n"));
         }
         print(format("outcomesTableBodyEnd", "\n"));
@@ -168,8 +167,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void storyCancelled(Story story, StoryDuration storyDuration) {
-        print(format("storyCancelled", "{0}: {1} s > {2} s\n", story.getPath(), storyDuration.getDurationInSecs(),
-                storyDuration.getTimeoutInSecs()));
+        print(format("storyCancelled", "{0}: {1} ({2} s)\n", keywords.storyCancelled(), keywords.duration(),
+                storyDuration.getDurationInSecs()));
     }
 
     public void beforeStory(Story story, boolean givenStory) {

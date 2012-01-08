@@ -81,13 +81,12 @@ application under test. </span>
 
 <p>To create instances of <a
 	href="javadoc/core/org/jbehave/core/steps/CandidateSteps.html">CandidateSteps</a>
-we use the <a
+we use an instance of <a
 	href="javadoc/core/org/jbehave/core/steps/InjectableStepsFactory.html">InjectableStepsFactory</a>
 </p>
 <pre class="brush: java">
     Configuration configuration = ... // optional configuration
     InjectableStepsFactory factory = new InstanceStepsFactory(configuration, new TraderSteps(), new BeforeAndAfterSteps());
-    factor.createCandidateSteps();    
 </pre>
 <p>Each step is annotated with one of the <a href="annotations.html">step
 annotations</a>, each holding a regex pattern as value. The pattern is used
@@ -149,33 +148,54 @@ would look like:</p>
 <![CDATA[
 public abstract class TraderStory extends JUnitStory {
 
-    public TraderStory() {
-        // start with default story configuration, overriding story loader and reporter
-        StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver(".story");
-        Class<? extends Embeddable> embeddableClass = this.getClass();
-        Properties rendering = new Properties();
-        rendering.put("decorateNonHtml", "true");
-        URL codeLocation = CodeLocations.codeLocationFromClass(embeddableClass);
-        Configuration configuration = new MostUsefulConfiguration()
-                .useStoryLoader(new LoadFromClasspath(embeddableClass.getClassLoader()))
-                .useStoryReporterBuilder(new StoryReporterBuilder()
-                    .withCodeLocation(codeLocation)
-                    .withDefaultFormats()
-                    .withViewResources(rendering)
-                    .withFormats(CONSOLE, TXT, HTML, XML)
-                    .withFailureTrace(false))
-                .useParameterConverters(new ParameterConverters()
-                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
-                .useStoryPathResolver(storyPathResolver)
-                .useStepMonitor(new SilentStepMonitor())
-                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
-                
-        useConfiguration(configuration);
-        addSteps(new InstanceStepsFactory(new TraderSteps(), new BeforeAndAfterSteps()).createCandidateSteps()); 
-        
-        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true).doIgnoreFailureInView(true);
+    private final CrossReference xref = new CrossReference();
 
+    public TraderStory() {
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
+                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(60);
+        // Uncomment to set meta filter, which can also be set via Ant or Maven
+        // configuredEmbedder().useMetaFilters(Arrays.asList("+theme parametrisation"));
     }
+
+    @Override
+    public Configuration configuration() {
+        Class<? extends Embeddable> embeddableClass = this.getClass();
+        Properties viewResources = new Properties();
+        viewResources.put("decorateNonHtml", "true");
+        // Start from default ParameterConverters instance
+        ParameterConverters parameterConverters = new ParameterConverters();
+        // factory to allow parameter conversion and loading from external
+        // resources (used by StoryParser too)
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(),
+                new LoadFromClasspath(embeddableClass), parameterConverters);
+        // add custom converters
+        parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
+                new ExamplesTableConverter(examplesTableFactory));
+
+        return new MostUsefulConfiguration()
+                .useStoryControls(new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false))
+                .useStoryLoader(new LoadFromClasspath(embeddableClass))
+                .useStoryParser(new RegexStoryParser(examplesTableFactory))
+                .useStoryPathResolver(new UnderscoredCamelCaseResolver())
+                .useStoryReporterBuilder(
+                        new StoryReporterBuilder()
+                                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
+                                .withDefaultFormats().withPathResolver(new ResolveToPackagedName())
+                                .withViewResources(viewResources).withFormats(CONSOLE, TXT, HTML, XML)
+                                .withFailureTrace(true).withFailureTraceCompression(true).withCrossReference(xref))
+                .useParameterConverters(parameterConverters)
+                // use '%' instead of '$' to identify parameters
+                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%")) 
+                .useStepMonitor(xref.getStepMonitor());
+    }
+
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
+                new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new ParametrisedSteps(), new SandpitSteps(),
+                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(), new CompositeNestedSteps(), new NamedParametersSteps());
+    }
+
 }
 ]]>
 </script>
@@ -190,27 +210,50 @@ story in same package.</p>
 <![CDATA[
 public class TraderStories extends JUnitStories {
 
-    @Override
-    public Configuration configuration() {
-        Class<? extends Embeddable> embeddableClass = this.getClass();
-        return new MostUsefulConfiguration()
-            .useStoryLoader(new LoadFromURL())
-            .useStoryReporterBuilder(new StoryReporterBuilder()
-                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
-                .withDefaultFormats()
-                .withFormats(CONSOLE, TXT, HTML, XML))
-            .useParameterConverters(new ParameterConverters()
-                    .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
-            .useStepPatternParser(new RegexPrefixCapturingPatternParser(
-                            "%")) // use '%' instead of '$' to identify parameters
-            .useStepMonitor(new SilentStepMonitor());                               
+    private final CrossReference xref = new CrossReference();
+
+    public TraderStories() {
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
+                .doIgnoreFailureInView(true).doVerboseFailures(true).useThreads(2).useStoryTimeoutInSecs(60);
+        //configuredEmbedder().useEmbedderControls(new PropertyBasedEmbedderControls());
     }
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        return new InstanceStepsFactory(configuration(), new TraderSteps(
-                new TradingService()), new BeforeAfterSteps())
-                .createCandidateSteps();
+    public Configuration configuration() {
+        Class<? extends Embeddable> embeddableClass = this.getClass();
+        Properties viewResources = new Properties();
+        viewResources.put("decorateNonHtml", "true");
+        viewResources.put("reports", "ftl/jbehave-reports-with-totals.ftl");
+        // Start from default ParameterConverters instance
+        ParameterConverters parameterConverters = new ParameterConverters();
+        // factory to allow parameter conversion and loading from external resources (used by StoryParser too)
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), new LoadFromClasspath(embeddableClass), parameterConverters);
+        // add custom converters
+        parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
+                new ExamplesTableConverter(examplesTableFactory));
+        return new MostUsefulConfiguration()
+            .useStoryLoader(new LoadFromClasspath(embeddableClass))
+            .useStoryParser(new RegexStoryParser(examplesTableFactory)) 
+            .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
+                .withDefaultFormats()
+                .withViewResources(viewResources)
+                .withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE)
+                .withFailureTrace(true)
+                .withFailureTraceCompression(true)                
+                .withCrossReference(xref)) 
+            .useParameterConverters(parameterConverters)                     
+            // use '%' instead of '$' to identify parameters
+            .useStepPatternParser(new RegexPrefixCapturingPatternParser(
+                            "%")) 
+            .useStepMonitor(xref.getStepMonitor());                               
+    }
+
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
+                new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new SandpitSteps(),
+                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(), new NamedParametersSteps());
     }
     
     @Override
@@ -288,8 +331,7 @@ public class AnnotatedEmbedderWithSpringJUnit4ClassRunner {
 
     private Embedder embedder() {
         Embedder embedder = new ClasspathTraderEmbedder();
-        embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), traderSteps, beforeAndAfterSteps)
-                .createCandidateSteps());
+        embedder.useStepsFactory(new InstanceStepsFactory(embedder.configuration(), traderSteps, beforeAndAfterSteps));
         return embedder;
     }
 

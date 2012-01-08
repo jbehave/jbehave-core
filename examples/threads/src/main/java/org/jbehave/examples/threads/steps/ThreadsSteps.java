@@ -12,10 +12,13 @@ public class ThreadsSteps {
         long start = System.currentTimeMillis();
         System.out.println(name + " starts counting to " + n);
         for (int i = 0; i < n.intValue(); i++) {
-            long elapsed = System.currentTimeMillis() - start;
-            System.out.println(name + " says " + i + " Mississippi (after " + elapsed + " millis)");
+            System.out.println(name + " says " + i + " Mississippi (after " + elapsedSeconds(start) + " s)");
             sleepFor(1, TimeUnit.SECONDS);
         }
+    }
+
+    private long elapsedSeconds(long start) {
+        return (System.currentTimeMillis() - start)/1000L;
     }
 
     private void sleepFor(int i, TimeUnit unit) {

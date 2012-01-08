@@ -7,20 +7,28 @@ import java.util.List;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.hamcrest.Matcher;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
-
-import static java.util.Arrays.asList;
+import org.jbehave.core.i18n.LocalizedKeywords;
 
 public class OutcomesTable {
 
-    private static final List<String> FIELDS = asList("Description", "Value", "Matcher", "Verified");
     private static final String NEWLINE = "\n";
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
 
-    private List<Outcome<?>> outcomes = new ArrayList<Outcome<?>>();
-    private List<Outcome<?>> failedOutcomes = new ArrayList<Outcome<?>>();
+    private final Keywords keywords;
+    private final List<Outcome<?>> outcomes = new ArrayList<Outcome<?>>();
+    private final List<Outcome<?>> failedOutcomes = new ArrayList<Outcome<?>>();
     private UUIDExceptionWrapper failureCause;
+    
+    public OutcomesTable() {
+        this(new LocalizedKeywords());
+    }
+    
+    public OutcomesTable(Keywords keywords) {
+        this.keywords = keywords;
+    }
 
     public <T> void addOutcome(String description, T value, Matcher<T> matcher) {
         outcomes.add(new Outcome<T>(description, value, matcher));
@@ -55,13 +63,12 @@ public class OutcomesTable {
     }
 
     public List<String> getOutcomeFields() {
-        return FIELDS;
+        return keywords.outcomeFields();
     }
 
-    @Override
-    public String toString() {
+    public String asString() {
         StringBuilder sb = new StringBuilder();
-        for (Iterator<String> iterator = FIELDS.iterator(); iterator.hasNext();) {
+        for (Iterator<String> iterator = getOutcomeFields().iterator(); iterator.hasNext();) {
             sb.append(HEADER_SEPARATOR).append(iterator.next());
             if (!iterator.hasNext()) {
                 sb.append(HEADER_SEPARATOR).append(NEWLINE);
@@ -73,6 +80,11 @@ public class OutcomesTable {
                     .append(outcome.isVerified()).append(VALUE_SEPARATOR).append(NEWLINE);
         }
         return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
     public static class Outcome<T> {

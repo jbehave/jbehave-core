@@ -290,7 +290,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     public void storyCancelled(Story story, StoryDuration storyDuration) {
         crossReferencing.storyCancelled(story, storyDuration);
         if (multiThreading) {
-            delayedMethods.add(new DelayedMethod(storyCancelled));
+            delayedMethods.add(new DelayedMethod(storyCancelled, story, storyDuration));
         } else {
             delegate.storyCancelled(story, storyDuration);
         }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,7 +16,6 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.embedder.StoryManager.ThrowableStory;
 import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.FailingUponPendingStep;
@@ -215,7 +213,7 @@ public class Embedder {
             storyManager.waitUntilAllDoneOrFailed(failures);
             List<Story> notAllowed = storyManager.notAllowedBy(filter);
             if (!notAllowed.isEmpty()) {
-                embedderMonitor.storiesNotAllowed(notAllowed, filter);
+                embedderMonitor.storiesNotAllowed(notAllowed, filter, embedderControls.verboseFiltering());
             }
 
             // run after stories

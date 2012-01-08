@@ -35,5 +35,6 @@
 <example keyword="Example:">{money=$30, to=Mauro}</example>
 <example keyword="Example:">{money=$50, to=Paul}</example>
 </scenario> 
+<cancelled keyword="STORY CANCELLED" durationKeyword="DURATION" durationInSecs="2"/>
 </story>
 

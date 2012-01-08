@@ -25,6 +25,8 @@ public class EmbedderControlsBehaviour {
         assertThat(embedderControls.ignoreFailureInStories(), is(defaultControls.ignoreFailureInStories()));
         assertThat(embedderControls.ignoreFailureInView(), is(defaultControls.ignoreFailureInView()));
         assertThat(embedderControls.skip(), is(defaultControls.skip()));
+        assertThat(embedderControls.verboseFailures(), is(defaultControls.verboseFailures()));
+        assertThat(embedderControls.verboseFiltering(), is(defaultControls.verboseFiltering()));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(defaultControls.storyTimeoutInSecs()));
         assertThat(embedderControls.threads(), equalTo(defaultControls.threads()));
 
@@ -33,6 +35,8 @@ public class EmbedderControlsBehaviour {
         System.setProperty(PropertyBasedEmbedderControls.IGNORE_FAILURE_IN_STORIES, "true");
         System.setProperty(PropertyBasedEmbedderControls.IGNORE_FAILURE_IN_VIEW, "true");
         System.setProperty(PropertyBasedEmbedderControls.SKIP, "true");
+        System.setProperty(PropertyBasedEmbedderControls.VERBOSE_FAILURES, "true");
+        System.setProperty(PropertyBasedEmbedderControls.VERBOSE_FILTERING, "true");
         System.setProperty(PropertyBasedEmbedderControls.STORY_TIMEOUT_IN_SECS, "500");
         System.setProperty(PropertyBasedEmbedderControls.THREADS, "5");
 
@@ -41,6 +45,8 @@ public class EmbedderControlsBehaviour {
         assertThat(embedderControls.ignoreFailureInStories(), is(true));
         assertThat(embedderControls.ignoreFailureInView(), is(true));
         assertThat(embedderControls.skip(), is(true));
+        assertThat(embedderControls.verboseFailures(), is(true));
+        assertThat(embedderControls.verboseFiltering(), is(true));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(500L));
         assertThat(embedderControls.threads(), equalTo(5));
     }
@@ -54,6 +60,8 @@ public class EmbedderControlsBehaviour {
         assertThat(embedderControls.generateViewAfterStories(), equalTo(delegate.generateViewAfterStories()));
         assertThat(embedderControls.ignoreFailureInStories(), equalTo(delegate.ignoreFailureInStories()));
         assertThat(embedderControls.ignoreFailureInView(), equalTo(delegate.ignoreFailureInView()));
+        assertThat(embedderControls.verboseFailures(), is(delegate.verboseFailures()));
+        assertThat(embedderControls.verboseFiltering(), is(delegate.verboseFiltering()));
         assertThat(embedderControls.skip(), equalTo(delegate.skip()));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(delegate.storyTimeoutInSecs()));
         assertThat(embedderControls.threads(), equalTo(delegate.threads()));
@@ -62,6 +70,8 @@ public class EmbedderControlsBehaviour {
         assertThatNotAllowed(embedderControls, "doIgnoreFailureInStories", boolean.class, true);
         assertThatNotAllowed(embedderControls, "doIgnoreFailureInView", boolean.class, true);
         assertThatNotAllowed(embedderControls, "doSkip", boolean.class, true);
+        assertThatNotAllowed(embedderControls, "doVerboseFailures", boolean.class, true);
+        assertThatNotAllowed(embedderControls, "doVerboseFiltering", boolean.class, true);
         assertThatNotAllowed(embedderControls, "useStoryTimeoutInSecs", long.class, 1);
         assertThatNotAllowed(embedderControls, "useThreads", int.class, 1);
     }

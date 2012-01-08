@@ -60,9 +60,8 @@ public abstract class LocalizedTraderStories extends JUnitStories {
     }
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        return new InstanceStepsFactory(configuration(), traderSteps(), new BeforeAfterSteps())
-                .createCandidateSteps();
+    public InjectableStepsFactory stepsFactory() {
+        return new InstanceStepsFactory(configuration(), traderSteps(), new BeforeAfterSteps());
     }
 
     @Override
@@ -153,44 +152,55 @@ number), using ISO-8859-1 encoding. There are a number of tools that
 enable easy conversion between your non-English language characters and
 Unicode escaped characters. </span>
 
-<h2>How do I add my own keywords bundle?</h2>
+<h2>How do I provide my own keywords bundle?</h2>
 
 <p>Write a properties bundle containing the following keywords and
-save it as <b>i18n/keywords_xx.properties</b>. E.g. for Lolcatz we'll
-add <b>i18n/keywords_lc.properties</b>:</p>
+save it as <b>i18n/keywords_xx.properties</b>. E.g. for Italian 
+<b>i18n/keywords_it.properties</b>:</p>
 
 <pre class="brush: java">
-Narrative=Narratif:
-InOrderTo=In Oder to
-AsA=As a
-IWantTo=I Wan
-Scenario=I can haz:
-GivenStories=Gief I can haz:
-ExamplesTable=Exemples:
-ExamplesTableRow=Exemple:
-ExamplesTableHeaderSeparator=!!
-ExamplesTableValueSeparator=!
-Given=Gief
-When=Wen
-Then=Den
-And=And
+Meta=Meta:
+MetaProperty=@
+Narrative=Narrativa:
+InOrderTo=Per ottenere
+AsA=In qualit\u00E0 di
+IWantTo=Voglio
+Scenario=Scenario:
+GivenStories=Date le Storie\:
+ExamplesTable=Esempi:
+ExamplesTableRow=Esempio:
+ExamplesTableHeaderSeparator=|
+ExamplesTableValueSeparator=|
+ExamplesTableIgnorableSeparator=|--
+Given=Dato che
+When=Quando
+Then=Allora
+And=E
 Ignorable=!--
-Pending=PENDING
-NotPerformed=NOT PERFORMED
-Failed=FAILED
-DryRun=Dry Run
+Pending=IN SOSPESO
+NotPerformed=NON ESEGUITO
+Failed=FALLITO
+DryRun=ESECUZIONE SIMULATA
+StoryCancelled=STORIA SOPPRESSA
+Duration=DURATA
+OutcomeDescription=Descrizione
+OutcomeValue=Valore
+OutcomeMatcher=Matcher
+OutcomeVerified=Verificato
+Yes=S\u00EC
+No=No
 </pre>
 
-<p>Make sure the bundle is in the your classpath and invoke it as
+<p>Make sure the bundle is in the your classpath and identify it by locale
 (if using default bundle name):</p>
 <pre class="brush: java">
- Keywords keywords = new LocalizedKeywords(new Locale("lc"));
+ Keywords keywords = new LocalizedKeywords(new Locale("it"));
 </pre>
 
 <p>If using a non-standard bundle name, e.g. <b>mykeywords/keys</b>:</p>
 <pre class="brush: java">
  ClassLoader classLoader = ... // the classloader where to find the bundle from
- Keywords keywords = new LocalizedKeywords(new Locale("lc"), "mykeywords/keys", classLoader);
+ Keywords keywords = new LocalizedKeywords(new Locale("it"), "mykeywords/keys", classLoader);
 </pre>
 
 <div class="clear">
