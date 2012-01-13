@@ -11,9 +11,11 @@
 ${body}
 <#else>
 <#assign brushFormat = format> <#if format == "stats"><#assign brushFormat = "plain"> </#if>
-<script type="syntaxhighlighter" class="brush: ${brushFormat}"><![CDATA[
+<script type="syntaxhighlighter" class="brush: ${brushFormat}"><#if format != "txt" || !body.contains("</script>")><![CDATA[
 ${body}
-]]></script>
+]]><#else>
+${body?html}
+</#if></script>
 </#if>
 </body>
 <#include "./sh.ftl">
