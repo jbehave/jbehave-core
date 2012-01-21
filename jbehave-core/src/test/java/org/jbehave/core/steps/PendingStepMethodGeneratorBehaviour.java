@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 
 public class PendingStepMethodGeneratorBehaviour {
-        
+
     private PendingStepMethodGenerator generator = new PendingStepMethodGenerator(new LocalizedKeywords());
 
     @Test
@@ -26,7 +26,7 @@ public class PendingStepMethodGeneratorBehaviour {
         String method = 
             "@When(\"I am pending\")\n" +
             "@Pending\n"+
-            "public void whenIAmPending(){\n"+
+            "public void whenIAmPending() {\n"+
             "  // PENDING\n"+
             "}\n";
        assertThat(generator.generateMethod(pendingStep), equalTo(method));
@@ -42,12 +42,12 @@ public class PendingStepMethodGeneratorBehaviour {
         String method = 
             "@Given(\"I am pending\")\n" +
             "@Pending\n"+
-            "public void givenIAmPending(){\n"+
+            "public void givenIAmPending() {\n"+
             "  // PENDING\n"+
             "}\n";
        assertThat(generator.generateMethod(pendingStep), equalTo(method));
     }
-        
+
     @Test
     public void shouldNormaliseStepPatternToJavaCompatibleMethodNameAndString() throws IntrospectionException {
         // When
@@ -58,9 +58,42 @@ public class PendingStepMethodGeneratorBehaviour {
         String method = 
             "@When(\""+escapeJava(pattern)+"\")\n" +
             "@Pending\n"+
-            "public void whenImSearchingForAndForOthersCharsSuchAsAndILookForthis(){\n"+
+            "public void whenImSearchingForAndForOthersCharsSuchAsAndILookForthis() {\n"+
             "  // PENDING\n"+
             "}\n";
+       assertThat(generator.generateMethod(pendingStep), equalTo(method));
+
+       // test basically all characters (issue JBEHAVE-710)
+       // When
+       pattern = "I'm searching for ";
+       for(int i=32;i<128;i++) {
+           pattern+=(char)i;
+       }
+       pendingStep = (PendingStep) StepCreator.createPendingStep("When "+pattern, null);
+
+       // Then
+       method = 
+           "@When(\""+escapeJava(pattern)+"\")\n" +
+           "@Pending\n"+
+           "public void whenImSearchingFor0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz() {\n"+
+           "  // PENDING\n"+
+           "}\n";
+       assertThat(generator.generateMethod(pendingStep), equalTo(method));
+
+       // When
+       pattern = "I'm searching for ";
+       for(int i=160;i<256;i++) {
+           pattern+=(char)i;
+       }
+       pendingStep = (PendingStep) StepCreator.createPendingStep("When "+pattern, null);
+
+       // Then
+       method = 
+           "@When(\""+escapeJava(pattern)+"\")\n" +
+           "@Pending\n"+
+           "public void whenImSearchingFor¢£¤¥ª­µºÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ() {\n"+
+           "  // PENDING\n"+
+           "}\n";
        assertThat(generator.generateMethod(pendingStep), equalTo(method));
     }
 

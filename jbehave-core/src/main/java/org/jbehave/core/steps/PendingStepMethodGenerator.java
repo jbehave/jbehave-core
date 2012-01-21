@@ -11,9 +11,7 @@ import static java.text.MessageFormat.format;
 
 public class PendingStepMethodGenerator {
 
-    private static final String[] REMOVABLES = new String[] { " ", "\'", "\"", "\\.", "\\,", "\\;", "\\:", "\\!",
-            "\\|", "<", ">", "\\*", "\\$", "\\\\", "\\/", "\\(", "\\)", "\\{", "\\}", "\\[", "\\]" };
-    private static final String METHOD_SOURCE = "@{0}(\"{1}\")\n@{2}\npublic void {3}()'{'\n  // {4}\n'}'\n";
+    private static final String METHOD_SOURCE = "@{0}(\"{1}\")\n@{2}\npublic void {3}() '{'\n  // {4}\n'}'\n";
 
     private final Keywords keywords;
 
@@ -40,10 +38,15 @@ public class PendingStepMethodGenerator {
 
     private String methodName(StepType stepType, String stepPattern) {
         String name = stepType.name().toLowerCase() + WordUtils.capitalize(stepPattern);
-        for (String remove : REMOVABLES) {
-            name = name.replaceAll(remove, "");
+        char filteredName[]=new char[name.length()];
+        int index=0;
+        for(int i=0;i<name.length();i++) {
+            char ch=name.charAt(i);
+            if(Character.isJavaIdentifierPart(ch) && ch!='$' && ch!=127) {
+                filteredName[index++]=ch;
+            }
         }
-        return name;
+        return new String(filteredName,0,index);
     }
 
 }
