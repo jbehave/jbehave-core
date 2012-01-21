@@ -26,7 +26,7 @@ public class PendingStepMethodGeneratorBehaviour {
         String method = 
             "@When(\"I am pending\")\n" +
             "@Pending\n"+
-            "public void whenIAmPending() {\n"+
+            "public void whenIAmPending(){\n"+
             "  // PENDING\n"+
             "}\n";
        assertThat(generator.generateMethod(pendingStep), equalTo(method));
@@ -42,7 +42,7 @@ public class PendingStepMethodGeneratorBehaviour {
         String method = 
             "@Given(\"I am pending\")\n" +
             "@Pending\n"+
-            "public void givenIAmPending() {\n"+
+            "public void givenIAmPending(){\n"+
             "  // PENDING\n"+
             "}\n";
        assertThat(generator.generateMethod(pendingStep), equalTo(method));
@@ -58,7 +58,7 @@ public class PendingStepMethodGeneratorBehaviour {
         String method = 
             "@When(\""+escapeJava(pattern)+"\")\n" +
             "@Pending\n"+
-            "public void whenImSearchingForAndForOthersCharsSuchAsAndILookForthis() {\n"+
+            "public void whenImSearchingForAndForOthersCharsSuchAsAndILookForthis(){\n"+
             "  // PENDING\n"+
             "}\n";
        assertThat(generator.generateMethod(pendingStep), equalTo(method));
