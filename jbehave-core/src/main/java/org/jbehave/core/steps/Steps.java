@@ -164,25 +164,45 @@ public class Steps implements CandidateSteps {
                 Given annotation = method.getAnnotation(Given.class);
                 String value = annotation.value();
                 int priority = annotation.priority();
-                addCandidate(candidates, method, GIVEN, value, priority);
+                addCandidatesFromVariants(candidates, method, GIVEN, value, priority);
                 addCandidatesFromAliases(candidates, method, GIVEN, priority);
             }
             if (method.isAnnotationPresent(When.class)) {
                 When annotation = method.getAnnotation(When.class);
                 String value = annotation.value();
                 int priority = annotation.priority();
-                addCandidate(candidates, method, WHEN, value, priority);
+                addCandidatesFromVariants(candidates, method, WHEN, value, priority);
                 addCandidatesFromAliases(candidates, method, WHEN, priority);
             }
             if (method.isAnnotationPresent(Then.class)) {
                 Then annotation = method.getAnnotation(Then.class);
                 String value = annotation.value();
                 int priority = annotation.priority();
-                addCandidate(candidates, method, THEN, value, priority);
+                addCandidatesFromVariants(candidates, method, THEN, value, priority);
                 addCandidatesFromAliases(candidates, method, THEN, priority);
             }
         }
         return candidates;
+    }
+
+    private void addCandidatesFromVariants(List<StepCandidate> candidates, Method method, StepType stepType, String value, int priority) {
+        PatternVariantBuilder b = new PatternVariantBuilder(value);
+        for (String variant : b.allVariants()) {
+            addCandidate(candidates, method, stepType, variant, priority);
+        }
+    }
+    
+    private void addCandidatesFromAliases(List<StepCandidate> candidates, Method method, StepType stepType, int priority) {
+        if (method.isAnnotationPresent(Aliases.class)) {
+            String[] aliases = method.getAnnotation(Aliases.class).values();
+            for (String alias : aliases) {
+                addCandidatesFromVariants(candidates, method, stepType, alias, priority);
+            }
+        }
+        if (method.isAnnotationPresent(Alias.class)) {
+            String alias = method.getAnnotation(Alias.class).value();
+            addCandidatesFromVariants(candidates, method, stepType, alias, priority);
+        }
     }
 
     private void addCandidate(List<StepCandidate> candidates, Method method, StepType stepType,
@@ -203,19 +223,6 @@ public class Steps implements CandidateSteps {
             if (candidate.getStepType() == stepType && candidate.getPatternAsString().equals(patternAsString)) {
                 throw new DuplicateCandidateFound(stepType, patternAsString);
             }
-        }
-    }
-
-    private void addCandidatesFromAliases(List<StepCandidate> candidates, Method method, StepType stepType, int priority) {
-        if (method.isAnnotationPresent(Aliases.class)) {
-            String[] aliases = method.getAnnotation(Aliases.class).values();
-            for (String alias : aliases) {
-                addCandidate(candidates, method, stepType, alias, priority);
-            }
-        }
-        if (method.isAnnotationPresent(Alias.class)) {
-            String alias = method.getAnnotation(Alias.class).value();
-            addCandidate(candidates, method, stepType, alias, priority);
         }
     }
 
