@@ -325,14 +325,14 @@ public class ExamplesTableBehaviour {
 
         // When
         String tableAsString = "|one|two|\n|11|12|\n|21|22|";
-        ExamplesTable originalTable = factory.createExamplesTable(tableAsString);               
+        ExamplesTable originalTable = factory.createExamplesTable(tableAsString);
         List<Map<String,String>> content = originalTable.getRows();
         content.get(0).put("three", "13");
         content.get(1).put("three", "23");
         ExamplesTable updatedTable = originalTable.withRows(content);
         
         // Then
-        assertThat(updatedTable.asString(), equalTo("|one|two|three|\n|11|12|13|\n|21|22|23|\n"));        
+        assertThat(updatedTable.asString(), equalTo("|one|two|three|\n|11|12|13|\n|21|22|23|\n"));
     }
 
     @Test
@@ -343,13 +343,22 @@ public class ExamplesTableBehaviour {
 
         // When
         String tableAsString = "|one|two|\n|11|12|\n|21|22|\n";
-        ExamplesTable table = factory.createExamplesTable(tableAsString);               
+        ExamplesTable table = factory.createExamplesTable(tableAsString);
         OutputStream out = new ByteArrayOutputStream();
         PrintStream output = new PrintStream(out);
         table.outputTo(output);
         
         // Then
-        assertThat(out.toString(), equalTo(tableAsString));        
+        assertThat(out.toString(), equalTo(tableAsString));
+    }
+
+    @Test
+    public void shouldIgnoreEmptyLines() throws Exception {
+      // ignore blank line
+      String tableWithEmptyLine = "|one|two|\n|a|b|\n\n|c|d|\n";
+      ExamplesTable table = new ExamplesTable(tableWithEmptyLine);
+      assertThat(table.getRowCount(), equalTo(2));
+      assertThat(table.asString(), equalTo("|one|two|\n|a|b|\n|c|d|\n"));
     }
 
     public Date convertDate(String value) throws ParseException {
