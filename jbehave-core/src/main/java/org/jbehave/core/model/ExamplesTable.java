@@ -153,8 +153,8 @@ public class ExamplesTable {
         String[] rows = splitInRows(stripProperties(tableAsString.trim()));
         for (int row = 0; row < rows.length; row++) {
             String rowAsString = rows[row];
-            if (rowAsString.startsWith(ignorableSeparator)) {
-                // skip rows that start with ignorable separator
+            if (rowAsString.startsWith(ignorableSeparator) || rowAsString.length()==0) {
+                // skip empty lines and rows that start with ignorable separator
                 continue;
             } else if (row == 0) {
                 List<String> columns = columnsFor(rowAsString, headerSeparator);
@@ -196,7 +196,7 @@ public class ExamplesTable {
 
     private List<String> columnsFor(String row, String separator) {
         List<String> columns = new ArrayList<String>();
-        // use split limit -1 to ensure that empty strings will not be discarted
+        // use split limit -1 to ensure that empty strings will not be discarded
         for (String column : row.split(buildRegex(separator), -1)) {
             columns.add(valueOf(column));
         }
