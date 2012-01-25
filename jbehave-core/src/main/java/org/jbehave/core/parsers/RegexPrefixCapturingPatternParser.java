@@ -108,7 +108,7 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 			this.start = start;
 			this.end = end;
 			this.whitespaceIfAny = whitespaceIfAny;
-			this.name = pattern.substring(start + prefix.length(), end).trim();
+			this.name = pattern.substring(start + prefix.length(), end - whitespaceIfAny.length()).trim();
 		}
 
 	}
