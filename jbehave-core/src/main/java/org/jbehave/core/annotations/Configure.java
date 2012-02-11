@@ -35,6 +35,7 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
@@ -77,6 +78,8 @@ public @interface Configure {
     Class<? extends ParameterConverter>[] parameterConverters() default {};
 
     boolean inheritParameterConverters() default true;
+
+    Class<? extends ParameterControls> parameterControls() default ParameterControls.class;
 
     Class<? extends Paranamer> paranamer() default NullParanamer.class;
 

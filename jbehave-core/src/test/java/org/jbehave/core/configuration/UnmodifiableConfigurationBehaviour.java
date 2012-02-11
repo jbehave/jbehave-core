@@ -14,6 +14,7 @@ import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
+import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
@@ -45,6 +46,7 @@ public class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.pendingStepStrategy(), is(delegate.pendingStepStrategy()));
         assertThat(unmodifiable.paranamer(), is(delegate.paranamer()));
         assertThat(unmodifiable.parameterConverters(), is(delegate.parameterConverters()));
+        assertThat(unmodifiable.parameterControls(), is(delegate.parameterControls()));
         assertThat(unmodifiable.stepCollector(), is(delegate.stepCollector()));
         assertThat(unmodifiable.stepMonitor(), is(delegate.stepMonitor()));
         assertThat(unmodifiable.stepPatternParser(), is(delegate.stepPatternParser()));
@@ -68,6 +70,7 @@ public class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "usePendingStepStrategy", PendingStepStrategy.class);
         assertThatNotAllowed(unmodifiable, "useParanamer", Paranamer.class);
         assertThatNotAllowed(unmodifiable, "useParameterConverters", ParameterConverters.class);
+        assertThatNotAllowed(unmodifiable, "useParameterControls", ParameterControls.class);
         assertThatNotAllowed(unmodifiable, "useStepCollector", StepCollector.class);
         assertThatNotAllowed(unmodifiable, "useStepMonitor", StepMonitor.class);
         assertThatNotAllowed(unmodifiable, "useStepPatternParser", StepPatternParser.class);

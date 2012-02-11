@@ -29,6 +29,7 @@ import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.StepCollector;
@@ -100,6 +101,7 @@ public class AnnotationBuilder {
                 StoryReporterBuilder.class));
         configuration.useViewGenerator(configurationElement(finder, "viewGenerator", ViewGenerator.class));
         configuration.useParameterConverters(parameterConverters(finder));
+        configuration.useParameterControls(configurationElement(finder, "parameterControls", ParameterControls.class));
         configuration.usePathCalculator(configurationElement(finder, "pathCalculator", PathCalculator.class));
         return configuration;
     }

@@ -12,6 +12,7 @@ import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
+import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
@@ -61,6 +62,10 @@ public class UnmodifiableConfiguration extends Configuration {
         return delegate.parameterConverters();
     }
 
+    public ParameterControls parameterControls(){
+        return delegate.parameterControls();
+    }
+    
     public Paranamer paranamer() {
         return delegate.paranamer();
     }
@@ -145,6 +150,11 @@ public class UnmodifiableConfiguration extends Configuration {
     public Configuration useParameterConverters(ParameterConverters parameterConverters) {
         throw notAllowed();
     }
+    
+    @Override
+    public Configuration useParameterControls(ParameterControls parameterControls) {
+        throw notAllowed();
+    }    
 
     @Override
     public Configuration useParanamer(Paranamer paranamer) {

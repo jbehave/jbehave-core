@@ -21,6 +21,11 @@
     </constructor-arg>
   </bean>
 
+  <bean class="org.jbehave.core.configuration.spring.SpringParameterControls">
+    <property name="nameDelimiterLeft" value="[" />
+    <property name="nameDelimiterRight" value="]" />
+  </bean>
+
   <bean class="org.jbehave.core.configuration.spring.SpringStoryControls">
     <property name="dryRun" value="true" />
     <property name="skipScenariosAfterFailure" value="true" />
