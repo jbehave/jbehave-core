@@ -58,10 +58,14 @@ public class StepCandidateBehaviour {
     private Keywords keywords = new LocalizedKeywords();
 
     private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance) {
+        return candidateWith(patternAsString, stepType, method, instance, new ParameterControls());
+    }
+
+    private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance, ParameterControls parameterControls) {
         Class<?> stepsType = instance.getClass();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), instance);
         return new StepCandidate(patternAsString, 0, stepType, method, stepsType, stepsFactory, keywords,
-                new RegexPrefixCapturingPatternParser(), new ParameterConverters());
+                new RegexPrefixCapturingPatternParser(), new ParameterConverters(), parameterControls);
     }
 
     @Test
@@ -127,7 +131,7 @@ public class StepCandidateBehaviour {
             
         };
         StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, null, keywords,
-                new RegexPrefixCapturingPatternParser(), new ParameterConverters());
+                new RegexPrefixCapturingPatternParser(), new ParameterConverters(), new ParameterControls());
         assertThat(candidate.matches("When windows on the 1st floor"), is(false));
         assertThat(candidate.ignore("!-- windows on the 1st floor"), is(false));
     }

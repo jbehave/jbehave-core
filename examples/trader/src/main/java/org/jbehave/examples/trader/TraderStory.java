@@ -32,6 +32,7 @@ import org.jbehave.examples.trader.steps.CompositeNestedSteps;
 import org.jbehave.examples.trader.steps.CompositeSteps;
 import org.jbehave.examples.trader.steps.MetaParametrisationSteps;
 import org.jbehave.examples.trader.steps.NamedParametersSteps;
+import org.jbehave.examples.trader.steps.ParameterDelimitersSteps;
 import org.jbehave.examples.trader.steps.ParametrisedSteps;
 import org.jbehave.examples.trader.steps.PendingSteps;
 import org.jbehave.examples.trader.steps.PriorityMatchingSteps;
@@ -105,7 +106,7 @@ public abstract class TraderStory extends JUnitStory {
     public InjectableStepsFactory stepsFactory() {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
                 new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new ParametrisedSteps(), new SandpitSteps(),
-                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(), new CompositeNestedSteps(), new NamedParametersSteps());
+                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(), new CompositeNestedSteps(), new NamedParametersSteps(), new ParameterDelimitersSteps());
     }
 
 

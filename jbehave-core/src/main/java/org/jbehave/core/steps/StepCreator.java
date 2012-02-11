@@ -26,8 +26,6 @@ import static org.jbehave.core.steps.AbstractStepResult.*;
 
 public class StepCreator {
 
-    public static final String PARAMETER_NAME_START = "<";
-    public static final String PARAMETER_NAME_END = ">";
     public static final String PARAMETER_TABLE_START = "\uff3b";
     public static final String PARAMETER_TABLE_END = "\uff3d";
     public static final String PARAMETER_VALUE_START = "\uFF5F";
@@ -37,16 +35,18 @@ public class StepCreator {
     private final Class<?> stepsType;
     private final InjectableStepsFactory stepsFactory;
     private final ParameterConverters parameterConverters;
+    private final ParameterControls parameterControls;
     private final StepMatcher stepMatcher;
     private StepMonitor stepMonitor;
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
 
     public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory,
-            ParameterConverters parameterConverters, StepMatcher stepMatcher, StepMonitor stepMonitor) {
+            ParameterConverters parameterConverters, ParameterControls parameterControls, StepMatcher stepMatcher, StepMonitor stepMonitor) {
         this.stepsType = stepsType;
         this.stepsFactory = stepsFactory;
         this.parameterConverters = parameterConverters;
+        this.parameterControls = parameterControls;
         this.stepMatcher = stepMatcher;
         this.stepMonitor = stepMonitor;
     }
@@ -159,7 +159,7 @@ public class StepCreator {
     private String replaceParameterName(String stepText, Map<String, String> namedParameters, String name) {
         String value = namedParameter(namedParameters, name);
         if (value != null) {
-            stepText = stepText.replace(PARAMETER_NAME_START + name + PARAMETER_NAME_END, PARAMETER_VALUE_START + value
+            stepText = stepText.replace(parameterControls.nameDelimiterLeft() + name + parameterControls.nameDelimiterRight(), PARAMETER_VALUE_START + value
                     + PARAMETER_VALUE_END);
         }
         return stepText;

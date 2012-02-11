@@ -58,7 +58,7 @@ public class StepCreatorBehaviour {
         MostUsefulConfiguration configuration = new MostUsefulConfiguration();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(configuration, stepsInstance);
         StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory,
-                configuration.parameterConverters(), null, new SilentStepMonitor());
+                configuration.parameterConverters(), new ParameterControls(), null, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingBeforeScenarioMethod");
@@ -80,8 +80,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, null,
-                new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
+                null, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
@@ -96,8 +96,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, null,
-                new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
+                null, new SilentStepMonitor());
 
         // When
         Method method = null;
@@ -114,7 +114,7 @@ public class StepCreatorBehaviour {
         StepMatcher stepMatcher = mock(StepMatcher.class);
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
         StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new ParameterConverters(),
-                stepMatcher, new SilentStepMonitor());
+                new ParameterControls(), stepMatcher, new SilentStepMonitor());
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(new String[] {});
@@ -378,7 +378,7 @@ public class StepCreatorBehaviour {
 
     private StepCreator stepCreatorUsing(SomeSteps stepsInstance, StepMatcher stepMatcher) {
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        return new StepCreator(stepsInstance.getClass(), stepsFactory, parameterConverters, stepMatcher,
-                new SilentStepMonitor());
+        return new StepCreator(stepsInstance.getClass(), stepsFactory, parameterConverters, new ParameterControls(),
+                stepMatcher, new SilentStepMonitor());
     }
 }

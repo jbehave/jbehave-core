@@ -229,7 +229,7 @@ public class Steps implements CandidateSteps {
     private StepCandidate createCandidate(Method method, StepType stepType, String stepPatternAsString, int priority,
             Configuration configuration) {
         return new StepCandidate(stepPatternAsString, priority, stepType, method, type, stepsFactory,
-                configuration.keywords(), configuration.stepPatternParser(), configuration.parameterConverters());
+                configuration.keywords(), configuration.stepPatternParser(), configuration.parameterConverters(), configuration.parameterControls());
     }
 
     public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
@@ -331,7 +331,7 @@ public class Steps implements CandidateSteps {
 
     private BeforeOrAfterStep createBeforeOrAfterStep(Stage stage, Method method, Outcome outcome) {
         return new BeforeOrAfterStep(stage, method, outcome, new StepCreator(type, stepsFactory,
-                configuration.parameterConverters(), null, configuration.stepMonitor()));
+                configuration.parameterConverters(), configuration.parameterControls(), null, configuration.stepMonitor()));
     }
 
     private List<Method> allMethods() {

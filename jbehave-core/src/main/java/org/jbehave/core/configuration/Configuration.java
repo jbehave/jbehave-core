@@ -28,6 +28,7 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
+import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.PrintStreamStepMonitor;
 import org.jbehave.core.steps.SilentStepMonitor;
@@ -132,6 +133,11 @@ public abstract class Configuration {
     private StepPatternParser stepPatternParser = new RegexPrefixCapturingPatternParser();
 
     /**
+     * Controls of step parmetrisation
+     */
+    private ParameterControls parameterControls = new ParameterControls();
+
+    /**
      * Silent monitoring that does not produce any noise of the step matching.
      * </p> If needed, users can switch on verbose monitoring using
      * {@link PrintStreamStepMonitor}
@@ -153,7 +159,11 @@ public abstract class Configuration {
      */
     private ViewGenerator viewGenerator = new FreemarkerViewGenerator();
 
+    /**
+     * Use an absolute path calculator
+     */
     private PathCalculator pathCalculator = new AbsolutePathCalculator();
+
 
     public Keywords keywords() {
         return keywords;
@@ -216,6 +226,10 @@ public abstract class Configuration {
 
     public StepPatternParser stepPatternParser() {
         return stepPatternParser;
+    }
+
+    public ParameterControls parameterControls() {
+        return parameterControls;
     }
 
     public StepMonitor stepMonitor() {
@@ -292,7 +306,7 @@ public abstract class Configuration {
         this.stepCollector = stepCollector;
         return this;
     }
-
+    
     public Configuration useStepFinder(StepFinder stepFinder) {
         this.stepFinder = stepFinder;
         return this;
@@ -305,6 +319,11 @@ public abstract class Configuration {
 
     public Configuration useStepPatternParser(StepPatternParser stepPatternParser) {
         this.stepPatternParser = stepPatternParser;
+        return this;
+    }
+
+    public Configuration useParameterControls(ParameterControls parameterControls) {
+        this.parameterControls = parameterControls;
         return this;
     }
 
@@ -332,4 +351,5 @@ public abstract class Configuration {
         this.pathCalculator = pathCalculator;
         return this;
     }
+
 }
