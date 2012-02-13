@@ -1,12 +1,13 @@
 package org.jbehave.core.steps;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.util.Arrays.asList;
 
 /**
  * <p>
@@ -131,7 +132,6 @@ public class PatternVariantBuilder {
      * Generated variants are stored in a {@link Set}, so there will never be
      * any duplicates, even if the input's patterns were to result in such.
      * </p>
-     * 
      */
     private Set<String> variantsFor(String input) {
         // Store current invocation's results
@@ -159,21 +159,20 @@ public class PatternVariantBuilder {
 
         // split the pattern into its options and add an empty
         // string if it ends with a separator
-        String[] tmp = patternGroup.split("\\|");
-        List<String> split = new ArrayList<String>();
-        split.addAll(Arrays.asList(tmp));
+        List<String> patternParts = new ArrayList<String>();
+        patternParts.addAll(asList(patternGroup.split("\\|")));
         if (patternGroup.endsWith("|")) {
-            split.add("");
+            patternParts.add("");
         }
 
         // Iterate over the current pattern's
         // variants and construct the result.
-        for (String s : split) {
-            StringBuilder b = new StringBuilder();
+        for (String part : patternParts) {
+            StringBuilder builder = new StringBuilder();
             if (head != null) {
-                b.append(head);
+                builder.append(head);
             }
-            b.append(s);
+            builder.append(part);
 
             // recurse on the tail of the input
             // to handle the next pattern
@@ -183,9 +182,9 @@ public class PatternVariantBuilder {
             // and add each of them to the part we have
             // built up so far.
             for (String tailVariant : tails) {
-                StringBuilder b2 = new StringBuilder(b.toString());
-                b2.append(tailVariant);
-                variants.add(b2.toString());
+                StringBuilder tailBuilder = new StringBuilder(builder.toString());
+                tailBuilder.append(tailVariant);
+                variants.add(tailBuilder.toString());
             }
         }
         return variants;
