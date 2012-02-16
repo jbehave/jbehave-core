@@ -5,6 +5,162 @@
 </head>
 <body>
 
+<h1>JBehave Core - Version 3.6 (Feb xx, 2012)</h1>     
+          
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-430'>JBEHAVE-430</a>] -         build.xml may not work due to user rights and can change users {ant.home}/lib
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-599'>JBEHAVE-599</a>] -         Failures in view do not cause build to fail
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-600'>JBEHAVE-600</a>] -         Scenario title parsed to empty on Windows
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-619'>JBEHAVE-619</a>] -         ParameterConverters throwing ConcurrentModificationException
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-621'>JBEHAVE-621</a>] -         Pending step failures not detected in stories view generation
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-634'>JBEHAVE-634</a>] -         Ant copy-dependencies task (for the bin distribution) doesn&#39;t work in Windows
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-642'>JBEHAVE-642</a>] -         StackOverflowError in RegexStoryParser with long scenario titles
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-650'>JBEHAVE-650</a>] -         Ant copy-dependencies (binary distribution) doesn&#39;t find all required artifacts when the local maven cache is empty
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-656'>JBEHAVE-656</a>] -         HTML decoration for parameter empty string puts a span between each char in the line
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-666'>JBEHAVE-666</a>] -         ExecutorService instance not shutdown() at the end of stories.
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-667'>JBEHAVE-667</a>] -         ParameterConverters - NumberFormatException exception
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-674'>JBEHAVE-674</a>] -         HTML decoration marks parameters twice
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-681'>JBEHAVE-681</a>] -         Pending steps methods leave invalid chars in the method name
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-688'>JBEHAVE-688</a>] -         metaFilters &quot;-skip&quot; doesn&#39;t work while &quot;-skip true&quot; works
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-690'>JBEHAVE-690</a>] -         Misprint in class name(HtmlTemplateOu[t]put), resulting in a broken link at JBehave site
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-699'>JBEHAVE-699</a>] -         Duplicate step error message not reported
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-705'>JBEHAVE-705</a>] -         decorated txt reports get broken if the text contains &lt;script&gt;&lt;/script&gt; tags
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-709'>JBEHAVE-709</a>] -         Named parameters sorrounded by quotes are not handled properly
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-710'>JBEHAVE-710</a>] -         Pending steps methods should remove even more characters
+</li>
+</ul>
+        
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-563'>JBEHAVE-563</a>] -         Improve story running logic such that events such as timeouts can be monitored by story reporters
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-602'>JBEHAVE-602</a>] -         Multiline scenario title appears on one line in HTML report
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-609'>JBEHAVE-609</a>] -         Allow named parameters to be replaced in table row parameters values
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-611'>JBEHAVE-611</a>] -         The StoryRunner should use the configured FailureStrategy when resetting the story failure state
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-615'>JBEHAVE-615</a>] -         Ignore full-stop/period|punctation at end of step
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-617'>JBEHAVE-617</a>] -         Speed up RegexStoryParser by removing leading .*
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-622'>JBEHAVE-622</a>] -         Improve embedder monitoring 
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-623'>JBEHAVE-623</a>] -         Support AtomicInteger and AtomicLong parameters
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-624'>JBEHAVE-624</a>] -         Support nested composite steps
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-625'>JBEHAVE-625</a>] -         MetaFilter should support meta matching logic written in a Groovy
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-626'>JBEHAVE-626</a>] -         Wrap runtime exceptions as MojoFailureException to avoid FATAL outcome
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-627'>JBEHAVE-627</a>] -         Upgrade PicoContainer to 2.14, and Paranamer to 2.4
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-628'>JBEHAVE-628</a>] -         PicoContainer 2.14.1 upgrade
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-641'>JBEHAVE-641</a>] -         Close down stats file input stream after loading them
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-648'>JBEHAVE-648</a>] -         Expose story and scenario elements as Meta 
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-649'>JBEHAVE-649</a>] -         Allow filtering on story and scenario elements
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-651'>JBEHAVE-651</a>] -         ant copy-depedencies improvements
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-660'>JBEHAVE-660</a>] -         Allow reports to be generated in fail-fast mode
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-661'>JBEHAVE-661</a>] -         Allow stack traces of failures to be printed in verbose mode
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-662'>JBEHAVE-662</a>] -         Total exclusion of excluded stories from reports
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-664'>JBEHAVE-664</a>] -         Allow mutability of ExamplesTable
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-675'>JBEHAVE-675</a>] -         Fix typos in archetypes and removed unused file my_step.xml for non-Spring archetype
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-680'>JBEHAVE-680</a>] -         PendingStepMethodGenerator doesn&#39;t put a space between ) and {
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-686'>JBEHAVE-686</a>] -         Allow configuration of view directory in Maven goal unpack-view-resources
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-689'>JBEHAVE-689</a>] -         More control of verbosity of excluded stories by filter
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-691'>JBEHAVE-691</a>] -         Provide Null-Object implementation of monitors
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-694'>JBEHAVE-694</a>] -         Add i18n keywords for story cancellation and duration
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-711'>JBEHAVE-711</a>] -         empty lines in example tables should be ignored
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-716'>JBEHAVE-716</a>] -         Add an optional StoryFinder class element to @UsingPaths annotation
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-717'>JBEHAVE-717</a>] -         Make parametrised name delimiters configurable
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-719'>JBEHAVE-719</a>] -         Upgrade Groovy dependency to 1.8.6, and Selenium to 2.19
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-607'>JBEHAVE-607</a>] -         Add Scala support
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-610'>JBEHAVE-610</a>] -         Add Jenkins support
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-657'>JBEHAVE-657</a>] -         Allow StoryManager to submit a single textual story not retrievable by path
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-659'>JBEHAVE-659</a>] -         Provide StoryManager to manage execution and outcomes of running stories
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-668'>JBEHAVE-668</a>] -         Allow pluggable Embedder failure handling strategies
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-671'>JBEHAVE-671</a>] -         Add XML templateable output
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-687'>JBEHAVE-687</a>] -         Add standalone cross-reference navigator
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-695'>JBEHAVE-695</a>] -         Add i18n support to OutcomesTable
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-702'>JBEHAVE-702</a>] -         Allow directives to support multiple step pattern variant
+</li>
+</ul>
+        
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-598'>JBEHAVE-598</a>] -         Failing build on Windows
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-647'>JBEHAVE-647</a>] -         Add documentation page on external articles and blog entries on users&#39; experiences
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-665'>JBEHAVE-665</a>] -         Document the Out-In configuration philosophy of the Embedder controls
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-673'>JBEHAVE-673</a>] -         Upgrade to Weld 1.1.4
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-679'>JBEHAVE-679</a>] -         Update EBNF grammar
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-684'>JBEHAVE-684</a>] -         Upgrade to Maven 3 for reporting and distribution
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-697'>JBEHAVE-697</a>] -         Update docs to use InjectableStepsFactory
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-698'>JBEHAVE-698</a>] -         Add example showing the use of TestNG
+</li>
+</ul>
+        
 <h1>JBehave Core - Version 3.5.4 (Nov 27, 2011)</h1>     
    
 <h2>        Bug
