@@ -329,9 +329,17 @@ come with a default behaviour, configured in the <a
 		href="javadoc/core/org/jbehave/core/reporters/FreemarkerViewGenerator.html">FreemarkerViewGenerator</a>.</li>
 	<li><a
 		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.html">ParameterConverters</a>:
-	facade for collecting user-defined <a
-		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverters</a>.</li>
+	facade for collecting user-defined implementations of <a
+		href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverter</a>.</li>
 </ul>
+
+<h3>Controlling the Embedder using Maven or Ant</h3>
+
+<p>All the elements of <a
+    href="javadoc/core/org/jbehave/core/embedder/EmbedderControls.html">EmbedderControls</a> are also configurable via <a href="maven-goals.html">Maven goals</a> or <a href="ant-tasks.html">Ant tasks</a>.</p>
+
+<span class="followup">It is important to note that JBehave adopts an <b>out-in approach</b> to configuration.  Any inner-layer configuration, such as specified in the code,
+ will be overridden by the outer-layer configuration, such as specified by the command-line tools like Maven or Ant.</span>
 
 <div class="clear">
 <hr />
