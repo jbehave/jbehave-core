@@ -2,6 +2,7 @@ package org.jbehave.core.steps;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,8 +81,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
-                null, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null,
+                new ParameterControls(), null, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
@@ -96,8 +97,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
-                null, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null,
+                new ParameterControls(), null, new SilentStepMonitor());
 
         // When
         Method method = null;
@@ -374,6 +375,56 @@ public class StepCreatorBehaviour {
         // Then
         assertThat(stepResult, instanceOf(Skipped.class));
         assertThat((UUIDExceptionWrapper) stepsInstance.args, is(occurredFailure));
+    }
+
+    @Test
+    public void shouldMatchParametersByDelimitedNameWithNoNamedAnnotations() throws Exception {
+
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        parameterConverters = new ParameterConverters();
+        StepMatcher stepMatcher = mock(StepMatcher.class);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher);
+        Map<String, String> params = Collections.singletonMap("param", "value");
+        when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
+        when(stepMatcher.parameter(1)).thenReturn("<param>");
+
+        // When
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"),
+                "When a parameter <param> is set", "a parameter <param> is set", params);
+        step.perform(null);
+
+        // Then
+        assertThat((String) stepsInstance.args, equalTo("value"));
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldMatchParametersByDelimitedNameWithDistinctNamedAnnotations() throws Exception {
+
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        parameterConverters = new ParameterConverters();
+        StepMatcher stepMatcher = mock(StepMatcher.class);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("t", "distinct theme");
+        params.put("v", "distinct variant");
+        when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
+        when(stepMatcher.parameter(1)).thenReturn("<t>");
+        when(stepMatcher.parameter(2)).thenReturn("<v>");
+
+        // When
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
+                "When I use parameters <t> and <v>", "I use parameters <t> and <v>", params);
+        step.perform(null);
+
+        // Then
+        Map<String, String> results = (Map<String, String>) stepsInstance.args;
+        assertThat(results.get("theme"), equalTo("distinct theme"));
+        assertThat(results.get("variant"), equalTo("distinct variant"));
+
     }
 
     private StepCreator stepCreatorUsing(SomeSteps stepsInstance, StepMatcher stepMatcher) {
