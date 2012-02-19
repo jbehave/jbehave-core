@@ -97,13 +97,13 @@ public class StepCreator {
     public Map<String, String> matchedParameters(final Method method, final String stepAsString,
             final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
         stepMatcher.find(stepWithoutStartingWord);
-        ParameterName[] names = parameterNames(method);
+        ParameterName[] parameterNames = parameterNames(method);
         Type[] types = method.getGenericParameterTypes();
-        String[] values = parameterValuesForStep(namedParameters, types, names);
+        String[] values = parameterValuesForStep(namedParameters, types, parameterNames);
 
         Map<String, String> matchedParameters = new HashMap<String, String>();
-        for (int i = 0; i < names.length; i++) {
-            String name = names[i].name;
+        for (int i = 0; i < parameterNames.length; i++) {
+            String name = parameterNames[i].name;
             if (name == null) {
                 name = stepMatcher.parameterNames()[i];
             }
@@ -112,31 +112,61 @@ public class StepCreator {
         return matchedParameters;
     }
 
-    public Step createParametrisedStep(final Method method, final String stepAsString,
-            final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
-        return new ParameterisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+    /**
+     * Returns the {@link ParameterName} representations for the method,
+     * providing an abstraction that supports both annotated and non-annotated
+     * parameters.
+     * 
+     * @param method the Method
+     * @return The array of {@link ParameterName}s
+     */
+    private ParameterName[] parameterNames(Method method) {
+        String[] annotatedNames = annotatedParameterNames(method);
+        String[] paranamerNames = paranamerParameterNames(method);
+
+        ParameterName[] parameterNames = new ParameterName[annotatedNames.length];
+        for (int i = 0; i < annotatedNames.length; i++) {
+            parameterNames[i] = parameterName(annotatedNames, paranamerNames, i);
+        }
+        return parameterNames;
+    }
+
+    private ParameterName parameterName(String[] annotatedNames, String[] paranamerNames, int i) {
+        String name = annotatedNames[i];
+        boolean annotated = true;
+        if (name == null) {
+            name = (paranamerNames.length > i ? paranamerNames[i] : null);
+            annotated = false;
+        }
+        return new ParameterName(name, annotated);
     }
 
     /**
-     * Extract annotated parameter names from the @Named parameter annotations
-     * of the method
+     * Extract parameter names using {@link Named}-annotated parameters
      * 
-     * @param method the Method containing the annotations
+     * @param method the Method with {@link Named}-annotated parameters
      * @return An array of annotated parameter names, which <b>may</b> include
      *         <code>null</code> values for parameters that are not annotated
      */
     private String[] annotatedParameterNames(Method method) {
         Annotation[][] parameterAnnotations = method.getParameterAnnotations();
         String[] names = new String[parameterAnnotations.length];
-        for (int x = 0; x < parameterAnnotations.length; x++) {
-            Annotation[] annotations = parameterAnnotations[x];
-            for (Annotation annotation : annotations) {
-                names[x] = annotationName(annotation);
+        for (int i = 0; i < parameterAnnotations.length; i++) {
+            for (Annotation annotation : parameterAnnotations[i]) {
+                names[i] = annotationName(annotation);
             }
         }
         return names;
     }
 
+    /**
+     * Returns either the value of the annotation, either {@link Named} or
+     * "javax.inject.Named".
+     * 
+     * @param annotation the Annotation
+     * @return The annotated value or <code>null</code> if no annotation is
+     *         found
+     */
     private String annotationName(Annotation annotation) {
         if (annotation.annotationType().isAssignableFrom(Named.class)) {
             return ((Named) annotation).value();
@@ -145,6 +175,22 @@ public class StepCreator {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Extract parameter names using
+     * {@link Paranamer#lookupParameterNames(java.lang.reflect.AccessibleObject, boolean)}
+     * 
+     * @param method the Method inspected by Paranamer
+     * @return An array of parameter names looked up by Paranamer
+     */
+    private String[] paranamerParameterNames(Method method) {
+        return paranamer.lookupParameterNames(method, false);
+    }
+
+    public Step createParametrisedStep(final Method method, final String stepAsString,
+            final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
+        return new ParameterisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
     }
 
     private String parametrisedStep(String stepAsString, Map<String, String> namedParameters, Type[] types,
@@ -276,6 +322,9 @@ public class StepCreator {
     }
 
     private String delimitedNameFor(String parameter) {
+        if ( !parameterControls.delimiterNamedParameters() ){
+            return null;
+        }
         Matcher matcher = delimitedNamePattern.matcher(parameter);
         return matcher.matches() ? matcher.group(1) : null;
     }
@@ -453,27 +502,6 @@ public class StepCreator {
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return skipped();
         }
-    }
-
-    private ParameterName[] parameterNames(Method method) {
-        String[] annotatedNames = annotatedParameterNames(method);
-        String[] paranamerNames = paranamer.lookupParameterNames(method, false);
-        
-        ParameterName[] parameterNames = new ParameterName[annotatedNames.length];
-        for (int i = 0; i < annotatedNames.length; i++) {
-            parameterNames[i] = parameterName(annotatedNames, paranamerNames, i);
-        }
-        return parameterNames;
-    }
-
-    private ParameterName parameterName(String[] annotatedNames, String[] paranamerNames, int i) {
-        String name = annotatedNames[i];
-        boolean annotated = true;
-        if (name == null) {
-            name = (paranamerNames.length > i ? paranamerNames[i] : null);
-            annotated = false;
-        }
-        return new ParameterName(name, annotated);
     }
 
     public class ParameterisedStep extends AbstractStep {
@@ -677,14 +705,14 @@ public class StepCreator {
             }
         }
     }
-    
+
     private static class ParameterName {
         private String name;
         private boolean annotated;
-        
-        private ParameterName(String name, boolean annotated){
+
+        private ParameterName(String name, boolean annotated) {
             this.name = name;
-            this.annotated = annotated;            
+            this.annotated = annotated;
         }
     }
 
