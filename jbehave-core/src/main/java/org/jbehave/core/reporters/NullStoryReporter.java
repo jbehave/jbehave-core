@@ -21,6 +21,9 @@ import org.jbehave.core.model.StoryDuration;
  */
 public class NullStoryReporter implements StoryReporter {
 
+    public void beforeStep(String step) {
+    }
+
     public void successful(String step) {
     }
 
@@ -89,5 +92,6 @@ public class NullStoryReporter implements StoryReporter {
 
     public void restarted(String step, Throwable cause) {
     }
+
 
 }

@@ -19,6 +19,7 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.parsers.StepMatcher;
+import org.jbehave.core.reporters.StoryReporter;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -518,6 +519,10 @@ public class StepCreator {
             this.method = method;
             this.stepWithoutStartingWord = stepWithoutStartingWord;
             this.namedParameters = namedParameters;
+        }
+
+        public void describeTo(StoryReporter storyReporter) {
+            storyReporter.beforeStep(stepAsString);
         }
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {

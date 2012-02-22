@@ -64,6 +64,10 @@ public class StepFailureDecorator implements StoryReporter {
     	delegate.failedOutcomes(step, table);
     }
     
+    public void beforeStep(String step) {
+        delegate.beforeStep(step);
+    }
+
     public void ignorable(String step) {
         delegate.ignorable(step);
     }

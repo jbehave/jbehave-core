@@ -36,6 +36,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method beforeExamples;
     private static Method example;
     private static Method afterExamples;
+    private static Method beforeStep;
     private static Method successful;
     private static Method ignorable;
     private static Method pending;
@@ -62,6 +63,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
             beforeExamples = StoryReporter.class.getMethod("beforeExamples", List.class, ExamplesTable.class);
             example = StoryReporter.class.getMethod("example", Map.class);
             afterExamples = StoryReporter.class.getMethod("afterExamples");
+            beforeStep = StoryReporter.class.getMethod("beforeStep", String.class);
             successful = StoryReporter.class.getMethod("successful", String.class);
             ignorable = StoryReporter.class.getMethod("ignorable", String.class);
             pending = StoryReporter.class.getMethod("pending", String.class);
@@ -202,6 +204,15 @@ public class ConcurrentStoryReporter implements StoryReporter {
             delayedMethods.add(new DelayedMethod(afterExamples));
         } else {
             delegate.afterExamples();
+        }
+    }
+
+    public void beforeStep(String step) {
+        crossReferencing.beforeStep(step);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(beforeStep, step));
+        } else {
+            delegate.beforeStep(step);
         }
     }
 

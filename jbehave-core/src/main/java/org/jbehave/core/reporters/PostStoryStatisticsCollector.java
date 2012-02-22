@@ -46,6 +46,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         this.output = output;
     }
 
+    public void beforeStep(String step) {
+    }
+
     public void successful(String step) {
         add("steps");
         add("stepsSuccessful");
@@ -241,5 +244,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(output).append(data).toString();
     }
+
 
 }

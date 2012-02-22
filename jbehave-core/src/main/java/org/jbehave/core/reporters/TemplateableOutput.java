@@ -76,6 +76,9 @@ public class TemplateableOutput implements StoryReporter {
         this.outputScenario = new OutputScenario();
         this.outputScenario.title = title;
     }
+    
+    public void beforeStep(String step) {
+    }
 
     public void successful(String step) {
         this.outputScenario.addStep(new OutputStep(step, "successful"));

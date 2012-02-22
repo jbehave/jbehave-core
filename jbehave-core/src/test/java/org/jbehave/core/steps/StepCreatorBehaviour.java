@@ -14,12 +14,14 @@ import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.parsers.StepMatcher;
+import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
+import org.jbehave.core.steps.StepCreator.ParameterisedStep;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -38,6 +40,7 @@ import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class StepCreatorBehaviour {
@@ -74,6 +77,23 @@ public class StepCreatorBehaviour {
                 cause.getMessage(),
                 org.hamcrest.Matchers
                         .equalTo("Method aFailingBeforeScenarioMethod (annotated with @BeforeScenario in class org.jbehave.core.steps.SomeSteps) failed: java.lang.RuntimeException"));
+    }
+
+    @Test
+    public void shouldDescribeStepToReporterBeforeExecutingParametrisedStep() throws IntrospectionException {
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null,
+                new ParameterControls(), null, new SilentStepMonitor());
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
+        // When
+        Method method = SomeSteps.methodFor("aMethod");
+        ((ParameterisedStep) stepCreator.createParametrisedStep(method, "When I run", "I run", null)).describeTo(storyReporter);
+
+        // Then
+        verify(storyReporter).beforeStep("When I run");
     }
 
     @Test

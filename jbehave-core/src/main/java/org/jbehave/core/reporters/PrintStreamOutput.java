@@ -108,6 +108,9 @@ public abstract class PrintStreamOutput implements StoryReporter {
         doCompressFailureTrace(compressFailureTrace);
     }
 
+    public void beforeStep(String step) {
+    }
+
     public void successful(String step) {
         print(format("successful", "{0}\n", step));
     }
