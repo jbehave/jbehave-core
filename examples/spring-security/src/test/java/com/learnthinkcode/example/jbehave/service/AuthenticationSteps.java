@@ -6,10 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.apache.commons.lang.ClassUtils;
-import org.jbehave.core.annotations.BeforeScenario;
-import org.jbehave.core.annotations.Named;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.When;
+import org.jbehave.core.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
@@ -32,7 +29,8 @@ public class AuthenticationSteps {
     authException = null;
   }
 
-  @When("user $username authenticates with password $password")
+  @When("user <username> authenticates with password <password>")
+  @Alias("user $username authenticates with password $password")
   public void userAuthenticates(@Named(value="username") String username, @Named(value="password") String password) {
     try {
       auth = manager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
@@ -56,10 +54,12 @@ public class AuthenticationSteps {
     assertNotNull(authException);
   }
 
-  @Then("authentication failure is $exceptionClass")
-  public void assertAuthenticationClassIs(String className) {
+  @Then("authentication failure is <failure>")
+  @Alias("authentication failure is $failure")
+  public void assertAuthenticationClassIs(@Named("failure") String failure) {
     assertNotNull(authException);
-    String expectedClassName = ClassUtils.getShortClassName(authException.getClass());
-    assertEquals(expectedClassName, className+"Exception");
+    String expectedClassName = failure + "Exception";
+    String actualClassName = ClassUtils.getShortClassName(authException.getClass());
+    assertEquals(expectedClassName, actualClassName);
   }
 }

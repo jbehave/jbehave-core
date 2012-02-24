@@ -47,28 +47,17 @@ Scenario: Do the same with UserBuilder
 
 Given the users for Microsoft:
 |username|passwordCleartext|enabled|expired|forcePasswordChange|
-|testDisabled|dpassword|false|false|false|
-|testExpired|epassword|true|true|false|
-|testDisabledAndExpired|depassword|false|true|false|
-|testFPCDisabled|fdpassword|false|false|true|
-|testFPCExpired|fepassword|true|true|true|
-|testFPCDisabledAndExpired|fdepassword|false|true|true|
+|<user>|<pwd>|<enabled>|<expired>|<forcePasswordChange>|
 When current organization is Microsoft
-And user testDisabled authenticates with password dpassword
+And user <username> authenticates with password <password>
 Then user should not be authenticated
-And authentication failure is Disabled
-When user testExpired authenticates with password epassword
-Then user should not be authenticated
-And authentication failure is AccountExpired
-When user testDisabledAndExpired authenticates with password depassword
-Then user should not be authenticated
-And authentication failure is Disabled
-When user testFPCDisabled authenticates with password fdpassword
-Then user should not be authenticated
-And authentication failure is Disabled
-When user testFPCExpired authenticates with password fepassword
-Then user should not be authenticated
-And authentication failure is AccountExpired
-When user testFPCDisabledAndExpired authenticates with password fdepassword
-Then user should not be authenticated
-And authentication failure is Disabled
+And authentication failure is <failure>
+
+Examples:
+|username|password|<user>|<pwd>|<enabled>|<expired>|<forcePasswordChange>|failure|
+|testDisabled|dpassword|testDisabled|dpassword|false|false|false|Disabled|
+|testExpired|epassword|testExpired|epassword|true|true|false|AccountExpired|
+|testDisabledAndExpired|depassword|testDisabledAndExpired|depassword|false|true|false|Disabled|
+|testFPCDisabled|fdpassword|testFPCDisabled|fdpassword|false|false|true|Disabled|
+|testFPCExpired|fepassword|testFPCExpired|fepassword|true|true|true|AccountExpired|
+|testFPCDisabledAndExpired|fdepassword|testFPCDisabledAndExpired|fdepassword|false|true|true|Disabled|
