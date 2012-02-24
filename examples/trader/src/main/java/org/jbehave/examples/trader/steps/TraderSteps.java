@@ -73,7 +73,7 @@ public class TraderSteps {
 		assertThat(date, equalTo(this.date));
     }
 
-    @Given("a trader of name %trader")
+    @Given("a trader of {name|id} %trader")
     public void aTrader(Trader trader) {
         this.trader = trader;
     }

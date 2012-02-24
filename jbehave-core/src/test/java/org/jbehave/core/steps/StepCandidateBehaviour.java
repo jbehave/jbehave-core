@@ -58,10 +58,14 @@ public class StepCandidateBehaviour {
     private Keywords keywords = new LocalizedKeywords();
 
     private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance) {
+        return candidateWith(patternAsString, stepType, method, instance, new ParameterControls());
+    }
+
+    private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance, ParameterControls parameterControls) {
         Class<?> stepsType = instance.getClass();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), instance);
         return new StepCandidate(patternAsString, 0, stepType, method, stepsType, stepsFactory, keywords,
-                new RegexPrefixCapturingPatternParser(), new ParameterConverters());
+                new RegexPrefixCapturingPatternParser(), new ParameterConverters(), parameterControls);
     }
 
     @Test
@@ -127,7 +131,7 @@ public class StepCandidateBehaviour {
             
         };
         StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, null, keywords,
-                new RegexPrefixCapturingPatternParser(), new ParameterConverters());
+                new RegexPrefixCapturingPatternParser(), new ParameterConverters(), new ParameterControls());
         assertThat(candidate.matches("When windows on the 1st floor"), is(false));
         assertThat(candidate.ignore("!-- windows on the 1st floor"), is(false));
     }
@@ -159,7 +163,7 @@ public class StepCandidateBehaviour {
         verify(reporter).successful(
                 "Then I live on the " + PARAMETER_VALUE_START + "1st" + PARAMETER_VALUE_END + " floor");
     }
-
+    
     @Test
     public void shouldConvertStringParameterValueToUseSystemNewline() throws Exception {
         String windowsNewline = "\r\n";
@@ -241,17 +245,40 @@ public class StepCandidateBehaviour {
 
     @Test
     public void shouldCreateStepFromTableValuesViaAnnotations() throws Exception {
+        StoryReporter reporter = mock(StoryReporter.class);
         AnnotationNamedParameterSteps steps = new AnnotationNamedParameterSteps();
         namedParameters.put("ith", "first");
         namedParameters.put("nth", "ground");
         String patternAsString = "I live on the ith floor but some call it the nth";
         Method method = stepMethodFor("methodWithNamedParametersInNaturalOrder", AnnotationNamedParameterSteps.class);
         StepCandidate candidate = candidateWith(patternAsString, WHEN, method, steps);
-        candidate.createMatchedStep("When I live on the <ith> floor but some call it the <nth>", namedParameters)
+        StepResult result =candidate.createMatchedStep("When I live on the <ith> floor but some call it the <nth>", namedParameters)
                 .perform(null);
         assertThat(steps.ith, equalTo("first"));
         assertThat(steps.nth, equalTo("ground"));
+        result.describeTo(reporter);
+        verify(reporter).successful(
+                "When I live on the " + PARAMETER_VALUE_START + "first" + PARAMETER_VALUE_END + " floor but some call it the " + PARAMETER_VALUE_START + "ground" + PARAMETER_VALUE_END );
     }
+
+    @Test
+    public void shouldCreateStepFromTableValuesViaAnnotationsWithCustomParameterDelimiters() throws Exception {
+        StoryReporter reporter = mock(StoryReporter.class);
+        AnnotationNamedParameterSteps steps = new AnnotationNamedParameterSteps();
+        namedParameters.put("ith", "first");
+        namedParameters.put("nth", "ground");
+        String patternAsString = "I live on the ith floor but some call it the nth";
+        Method method = stepMethodFor("methodWithNamedParametersInNaturalOrder", AnnotationNamedParameterSteps.class);
+        StepCandidate candidate = candidateWith(patternAsString, WHEN, method, steps, new ParameterControls().useNameDelimiterLeft("[").useNameDelimiterRight("]"));
+        StepResult result = candidate.createMatchedStep("When I live on the [ith] floor but some call it the [nth]", namedParameters)
+                .perform(null);
+        assertThat(steps.ith, equalTo("first"));
+        assertThat(steps.nth, equalTo("ground"));
+        result.describeTo(reporter);
+        verify(reporter).successful(
+                "When I live on the " + PARAMETER_VALUE_START + "first" + PARAMETER_VALUE_END + " floor but some call it the " + PARAMETER_VALUE_START + "ground" + PARAMETER_VALUE_END );
+    }
+
 
     @Test
     public void shouldMatchMethodParametersByAnnotatedNamesInNaturalOrderForJsr330Named() throws Exception {

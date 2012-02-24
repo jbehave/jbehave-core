@@ -154,13 +154,29 @@ and trailing whitespace is removed. This is the most useful and common
 usecase. If, for some reason, you need to preserve the whitespace, you
 can specify an optional parsing property:</p>
 
-<pre class="brush: bdd">
+<pre class="brush: plain">
 {trim=false}
 |name |rank    |
 |Larry|Stooge 3|
 |Moe  |Stooge 1|
 |Curly|Stooge 2|
 </pre>
+
+<h2>Specifying inlined separators</h2>
+
+<p>
+ The separators are also configurable via inlined properties: 
+<pre class="brush: plain">
+{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}
+!header 1!header 2! .... !header n!
+!-- A commented row --!
+!value 11!value 12! .... !value 1n!
+...
+!-- Another commented row --!
+!value m1!value m2! .... !value mn!
+</pre>
+
+</p>
 
 <h2>Loading tabular parameter from an external resource</h2>
 

@@ -87,6 +87,9 @@ public class SilentSuccessFilter implements StoryReporter {
     public void afterStory(boolean givenStory) {
         afterStoryState.report();
     }
+    
+    public void beforeStep(String step) {
+    }
 
     public void ignorable(final String step) {
         scenarioTodos.add(new Todo() {

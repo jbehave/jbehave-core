@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Pattern Variants</title>
+</head>
+
+<body>
+
+<h2>Pattern Variants</h2>
+
+<p>While <a href="aliases.html">aliases</a> allow to explicitly define alternative patterns that match the same executable method,
+it can be cumbersome to list all the different alternatives when the variations between the patterns are small or localised in word alternatives.
+To this end, JBehave supports pattern variant directives. For example, let's consider the following step:</p>
+
+<pre class="brush: bdd">
+When the item price is 10.0
+</pre>
+
+<p>If we also want to support the following equivalent expressions:</p>
+<pre class="brush: bdd">
+When the item cost is 10.0
+When the price is 10.0
+When the cost is 10.0
+</pre>
+
+<p>then we could define two aliases, but it's simpler and more compact to write a pattern with variants:</p>
+<pre class="brush: java">
+    @When("the {item|} {price|cost} is $price")
+    public void theItemPriceIs(double price) {
+        // ...
+    }
+</pre>
+
+<p>The pattern variants are built by the <a
+    href="javadoc/core/org/jbehave/core/steps/PatternVariantBuilder.html">PatternVariantBuilder</a>, which interprets the directives of the form:</p>
+<pre class="brush: plain">
+    A {x|y|z} B => A x B, A y B, A z B
+</pre>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>

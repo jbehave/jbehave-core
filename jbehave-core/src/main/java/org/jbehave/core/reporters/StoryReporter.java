@@ -48,6 +48,8 @@ public interface StoryReporter {
 
     void afterExamples();
 
+    void beforeStep(String step);
+    
     void successful(String step);
 
     void ignorable(String step);

@@ -57,6 +57,8 @@ public class SpringAnnotationBuilderBehaviour {
         assertThat(((RegexPrefixCapturingPatternParser) configuration.stepPatternParser()).getPrefix(),
                 equalTo("MyPrefix"));
         assertThatDateIsConvertedWithFormat(configuration.parameterConverters(), new SimpleDateFormat("yyyy-MM-dd"));
+        assertThat(configuration.parameterControls().nameDelimiterLeft(), equalTo("["));
+        assertThat(configuration.parameterControls().nameDelimiterRight(), equalTo("]"));
         assertThat(configuration.storyReporterBuilder().formats(), hasItems(CONSOLE, HTML, TXT, XML, STATS));
         Keywords keywords = configuration.storyReporterBuilder().keywords();
         assertThat(keywords, instanceOf(LocalizedKeywords.class));

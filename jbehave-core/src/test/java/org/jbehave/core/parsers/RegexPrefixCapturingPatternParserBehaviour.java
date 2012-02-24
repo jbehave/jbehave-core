@@ -81,5 +81,13 @@ public class RegexPrefixCapturingPatternParserBehaviour {
         assertThat(names[0], equalTo("name"));
         assertThat(names[1], equalTo("grid"));
     }
+    
+    @Test
+    public void shouldExtractParameterNamesWithoutQuotes() {
+        String[] names = parser.parseStep(StepType.GIVEN, "The grid \"$name\" looks like \"$grid\"").parameterNames();
+        assertThat(names.length, equalTo(2));
+        assertThat(names[0], equalTo("name"));
+        assertThat(names[1], equalTo("grid"));
+    }
 
 }

@@ -29,6 +29,7 @@ import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.StepCollector;
@@ -100,6 +101,7 @@ public class AnnotationBuilder {
                 StoryReporterBuilder.class));
         configuration.useViewGenerator(configurationElement(finder, "viewGenerator", ViewGenerator.class));
         configuration.useParameterConverters(parameterConverters(finder));
+        configuration.useParameterControls(configurationElement(finder, "parameterControls", ParameterControls.class));
         configuration.usePathCalculator(configurationElement(finder, "pathCalculator", PathCalculator.class));
         return configuration;
     }
@@ -153,7 +155,6 @@ public class AnnotationBuilder {
         return factory;
     }
 
-    @SuppressWarnings("unchecked")
     public Embedder buildEmbedder() {
         if (!finder.isAnnotationPresent(UsingEmbedder.class)) {
             return new Embedder();
@@ -168,8 +169,7 @@ public class AnnotationBuilder {
         boolean verboseFiltering = control(finder, "verboseFiltering");
         long storyTimeoutInSecs = finder.getAnnotatedValue(UsingEmbedder.class, Long.class, "storyTimeoutInSecs");
         int threads = finder.getAnnotatedValue(UsingEmbedder.class, Integer.class, "threads");
-        Embedder embedder = instanceOf(Embedder.class,
-                (Class<? extends Embedder>) finder.getAnnotatedValue(UsingEmbedder.class, Class.class, "embedder"));
+        Embedder embedder = embedder();
         embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView)
                 .doVerboseFailures(verboseFailures).doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads);
@@ -193,6 +193,12 @@ public class AnnotationBuilder {
         return embedder;
     }
 
+    @SuppressWarnings("unchecked")
+    private Embedder embedder() {
+        return instanceOf(Embedder.class,
+                (Class<? extends Embedder>) finder.getAnnotatedValue(UsingEmbedder.class, Class.class, "embedder"));
+    }
+
     public List<String> findPaths() {
         if (!finder.isAnnotationPresent(UsingPaths.class)) {
             return new ArrayList<String>();
@@ -201,7 +207,12 @@ public class AnnotationBuilder {
         String searchIn = finder.getAnnotatedValue(UsingPaths.class, String.class, "searchIn");
         List<String> includes = finder.getAnnotatedValues(UsingPaths.class, String.class, "includes");
         List<String> excludes = finder.getAnnotatedValues(UsingPaths.class, String.class, "excludes");
-        return new StoryFinder().findPaths(searchIn, includes, excludes);
+        return storyFinder().findPaths(searchIn, includes, excludes);
+    }
+
+    @SuppressWarnings("unchecked")
+    private StoryFinder storyFinder() {
+        return instanceOf(StoryFinder.class, (Class<? extends StoryFinder>)finder.getAnnotatedValue(UsingPaths.class, Class.class, "storyFinder"));
     }
 
     private boolean control(AnnotationFinder finder, String name) {

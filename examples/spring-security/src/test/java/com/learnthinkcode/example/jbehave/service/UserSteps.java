@@ -1,9 +1,11 @@
 package com.learnthinkcode.example.jbehave.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.steps.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -34,10 +36,11 @@ public class UserSteps {
 
   @Given("the users for $orgName: $userTable")
   public void createUsersFromTable(String orgName, ExamplesTable table) {
-    Organization org = organizationDao.findByName(orgName);
-    for (Map<String, String> row : table.getRows()) {
-      userDao.persist(new UserBuilder(org, row).build());
-    }
+      Organization org = organizationDao.findByName(orgName);
+      List<Parameters> parametersList = table.getRowsAsParameters(true);
+      for (Parameters parameters : parametersList) {
+          userDao.persist(new UserBuilder(org, parameters, table.getHeaders()).build());
+      }
   }
 
   @Given("user for $orgName $username is disabled")

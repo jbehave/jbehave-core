@@ -149,6 +149,18 @@ public class ExamplesTableBehaviour {
         assertThat(table.asString(), equalTo("|one |two | |\n|11 |12 | |\n| 21| 22| |\n"));
     }
 
+    @Test
+    public void shouldParseTableWithSeparatorsSpecifiedViaProperties() {
+        String tableWithProperties = "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}\n" + tableWithCommentsAsString.replace("|", "!");
+        ExamplesTable table = new ExamplesTable(tableWithProperties);
+        Properties properties = table.getProperties();
+        assertThat(properties.size(), equalTo(3));
+        assertThat(properties.getProperty("ignorableSeparator"), equalTo("!--"));
+        assertThat(properties.getProperty("headerSeparator"), equalTo("!"));
+        assertThat(properties.getProperty("valueSeparator"), equalTo("!"));
+        ensureColumnOrderIsPreserved(table);
+    }
+
     private void ensureColumnOrderIsPreserved(ExamplesTable table) {
         assertThat(table.getHeaders(), equalTo(asList("one", "two")));
         List<Map<String, String>> rows = table.getRows();

@@ -1,9 +1,11 @@
 package com.learnthinkcode.example.jbehave.domain;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.jbehave.core.steps.Parameters;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 
@@ -17,11 +19,11 @@ public class UserBuilder {
     user = new BeanWrapperImpl(target);
   }
 
-  public UserBuilder(Organization org, Map<String, String> row) {
+  public UserBuilder(Organization org, Parameters values, List<String> properties) {
     this(org);
-    for (String propertyName : row.keySet()) {
+    for (String propertyName : properties) {
       if (!StringUtils.isBlank(propertyName)) {
-        String propertyValue = row.get(propertyName);
+        String propertyValue = values.valueAs(propertyName,String.class);
         if (propertyName.equals("lastPasswordResetDate") && propertyValue.startsWith("t-")) {
           // convert t-N into a proper date
           long daysBefore = new Long(propertyValue.substring(2));

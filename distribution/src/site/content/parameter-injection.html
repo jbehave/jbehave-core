@@ -47,11 +47,10 @@ although it is good practice to keep them matching.</p>
         // ...
     }
 </pre>
-<p>Another use case of named parameters is when wanting to use <a href="parametrised-scenarios.html">parametrised scenarios</a></p>.
 
 <h3>Paranamer Named Parameters</h3>
 
-<p>JBehave also supports an equivalent way to use named parameters, without using annotations, but leveraging 
+<p>An equivalent way to use named parameters, without using annotations, is to leverage
 <a href="http://paranamer.codehaus.org">Paranamer</a>, configured via the <a
     href="javadoc/core/org/jbehave/core/steps/Configuration.html">Configuration</a>:</p>
 
@@ -60,6 +59,9 @@ although it is good practice to keep them matching.</p>
     StepConfiguration configuration = new Configuration();
     configuration.useParanamer(paranamer);
 </pre>
+
+<span class="followup">A very common use case of named parameters is for <a href="parametrised-scenarios.html">parametrised scenarios</a>.</span>
+
 <div class="clear">
 <hr />
 </div>

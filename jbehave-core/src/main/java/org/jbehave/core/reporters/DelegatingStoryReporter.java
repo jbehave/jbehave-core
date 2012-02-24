@@ -116,6 +116,12 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
+    public void beforeStep(String step) {
+        for (StoryReporter reporter : delegates) {
+            reporter.beforeStep(step);
+        }
+    }
+
     public void ignorable(String step) {
         for (StoryReporter reporter : delegates) {
             reporter.ignorable(step);

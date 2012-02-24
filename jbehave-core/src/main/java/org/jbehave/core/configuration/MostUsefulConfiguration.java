@@ -18,6 +18,7 @@ import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.StepdocReporter;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
+import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
@@ -33,6 +34,7 @@ import com.thoughtworks.paranamer.Paranamer;
  * <li>{@link Keywords}: {@link LocalizedKeywords}</li>
  * <li>{@link StoryParser}: {@link RegexStoryParser}</li>
  * <li>{@link StoryLoader}: {@link LoadFromClasspath}</li>
+ * <li>{@link StoryControls}: {@link StoryControls}</li>
  * <li>{@link FailureStrategy}: {@link RethrowingFailure}</li>
  * <li>{@link PendingStepStrategy}: {@link PassingUponPendingStep}</li>
  * <li>{@link DefaultStoryReporter}: {@link ConsoleOutput}</li>
@@ -42,6 +44,7 @@ import com.thoughtworks.paranamer.Paranamer;
  * <li>{@link StepdocReporter}: {@link PrintStreamStepdocReporter}</li>
  * <li>{@link StepMonitor}: {@link SilentStepMonitor}
  * <li>{@link Paranamer}: {@link NullParanamer}</li>
+ * <li>{@link ParameterControls}: {@link ParameterControls}</li>
  * <li>{@link ViewGenerator}: {@link FreemarkerViewGenerator}</li>
  * </ul>
  */
@@ -60,6 +63,7 @@ public class MostUsefulConfiguration extends Configuration {
         useStepMonitor(new SilentStepMonitor());
         useStepdocReporter(new PrintStreamStepdocReporter());
         useParanamer(new NullParanamer());
+        useParameterControls(new ParameterControls());
         useViewGenerator(new FreemarkerViewGenerator());
     }
 
