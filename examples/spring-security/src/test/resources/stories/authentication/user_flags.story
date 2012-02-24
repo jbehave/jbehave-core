@@ -43,7 +43,7 @@ And user testFPC authenticates with password fpcpassword
 Then user should not be authenticated
 And authentication failure is CredentialsExpired
 
-Scenario: Do the same with UserBuilder
+Scenario: Do the same with UserBuilder (working but hacked)
 
 Given the users for Microsoft:
 |username|passwordCleartext|enabled|expired|forcePasswordChange|
@@ -61,3 +61,22 @@ Examples:
 |testFPCDisabled|fdpassword|testFPCDisabled|fdpassword|false|false|true|Disabled|
 |testFPCExpired|fepassword|testFPCExpired|fepassword|true|true|true|AccountExpired|
 |testFPCDisabledAndExpired|fdepassword|testFPCDisabledAndExpired|fdepassword|false|true|true|Disabled|
+
+Scenario: Do the same with UserBuilder (not working but desired)
+
+Given the users for Microsoft:
+|username|passwordCleartext|enabled|expired|forcePasswordChange|
+|<username>|<password>|<enabled>|<expired>|<forcePasswordChange>|
+When current organization is Microsoft
+And user <username> authenticates with password <password>
+Then user should not be authenticated
+And authentication failure is <failure>
+
+Examples:
+|username|password|enabled|expired|forcePasswordChange|failure|
+|testDisabled|dpassword|false|false|false|Disabled|
+|testExpired|epassword|true|true|false|AccountExpired|
+|testDisabledAndExpired|depassword|false|true|false|Disabled|
+|testFPCDisabled|fdpassword|false|false|true|Disabled|
+|testFPCExpired|fepassword|true|true|true|AccountExpired|
+|testFPCDisabledAndExpired|fdepassword|false|true|true|Disabled|
