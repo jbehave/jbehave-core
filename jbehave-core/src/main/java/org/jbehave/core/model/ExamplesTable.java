@@ -65,6 +65,19 @@ import static java.util.regex.Pattern.compile;
  * Ignorable separator is configurable and defaults to "|--".
  * </p>
  * <p>
+ * The separators are also configurable via inlined properties: 
+ * <pre>
+ * {ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}
+ * !header 1!header 2! .... !header n!
+ * !-- A commented row --!
+ * !value 11!value 12! .... !value 1n!
+ * ...
+ * !-- Another commented row --!
+ * !value m1!value m2! .... !value mn!
+ * </pre>
+ * 
+ * </p>
+ * <p>
  * By default all column values are trimmed. To avoid trimming the values:
  * 
  * <pre>
@@ -153,14 +166,14 @@ public class ExamplesTable {
         String[] rows = splitInRows(stripProperties(tableAsString.trim()));
         for (int row = 0; row < rows.length; row++) {
             String rowAsString = rows[row];
-            if (rowAsString.startsWith(ignorableSeparator) || rowAsString.length()==0) {
+            if (rowAsString.startsWith(properties.getProperty("ignorableSeparator", ignorableSeparator)) || rowAsString.length()==0) {
                 // skip empty lines and rows that start with ignorable separator
                 continue;
             } else if (row == 0) {
-                List<String> columns = columnsFor(rowAsString, headerSeparator);
+                List<String> columns = columnsFor(rowAsString, properties.getProperty("headerSeparator", headerSeparator));
                 headers.addAll(columns);
             } else {
-                List<String> columns = columnsFor(rowAsString, valueSeparator);
+                List<String> columns = columnsFor(rowAsString, properties.getProperty("valueSeparator", valueSeparator));
                 Map<String, String> map = createRowMap();
                 for (int column = 0; column < columns.size(); column++) {
                     map.put(headers.get(column), columns.get(column));
