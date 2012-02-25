@@ -104,6 +104,12 @@ import static java.util.regex.Pattern.compile;
  * <p>
  * A table can also be created by providing the entire data content, via the
  * {@link #withRows(List<Map<String,String>>)} method.
+ * 
+ * </p>
+ * The parsing code assumes that the number of columns for data rows is the same
+ * as in the header, if a row has less fields, the remaining are filled with
+ * empty values, if it has more, the fields are ignored.
+ * <p>
  */
 public class ExamplesTable {
     private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
@@ -176,7 +182,9 @@ public class ExamplesTable {
                 List<String> columns = columnsFor(rowAsString, properties.getProperty("valueSeparator", valueSeparator));
                 Map<String, String> map = createRowMap();
                 for (int column = 0; column < columns.size(); column++) {
-                    map.put(headers.get(column), columns.get(column));
+                    if(column<headers.size()) {
+                        map.put(headers.get(column), columns.get(column));
+                    }
                 }
                 data.add(map);
             }

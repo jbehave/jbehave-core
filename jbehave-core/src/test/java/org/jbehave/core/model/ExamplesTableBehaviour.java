@@ -373,6 +373,21 @@ public class ExamplesTableBehaviour {
       assertThat(table.asString(), equalTo("|one|two|\n|a|b|\n|c|d|\n"));
     }
 
+    @Test
+    public void shouldHandleWrongNumberOfColumns() {
+        // When
+        String tableTooFewColumns = "|a|b|\n|a|\n";
+        ExamplesTable shortTable = new ExamplesTable(tableTooFewColumns);
+        // Then
+        assertThat(shortTable.asString(), equalTo("|a|b|\n|a||\n"));
+
+        // When
+        String tableTooManyColumns = "|a|b|\n|a|b|c|\n";
+        ExamplesTable longTable = new ExamplesTable(tableTooManyColumns);
+        // Then
+        assertThat(longTable.asString(), equalTo("|a|b|\n|a|b|\n"));
+    }
+
     public Date convertDate(String value) throws ParseException {
         return new SimpleDateFormat("dd/MM/yyyy").parse(value);
     }
