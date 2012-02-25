@@ -4,14 +4,7 @@
 	<xsl:output method="xml" indent="yes" />
 	
 	<xsl:variable name="storyTitle">
-	    	<xsl:choose>
-	    		<xsl:when test="string(//story/@title)">
-	    			<xsl:value-of select="//story/@title" />
-	    		</xsl:when>
-	    		<xsl:otherwise>
-	    			<xsl:value-of select="//story/@path" />
-	    		</xsl:otherwise>
-	    	</xsl:choose>
+	    <xsl:value-of select="//story/@path" />
 	 </xsl:variable>
 	
 	<xsl:template match="/">

@@ -150,6 +150,13 @@ public class ReportTransformBehaviour {
         assertEquals("0", engine.evaluate(TESTCASE_FAILURE, document));
     }
 
+    @Test
+    public void testsuiteNameTitle() throws FileNotFoundException, Throwable {
+        runStories("title.story");
+        Document document = tranformReport("title.xml");
+        assertEquals("title.story", engine.evaluate(TESTSUITE_NAME_ATTRIBUTE, document));
+    }
+
     private void runStories(String... storyPaths) {
         StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder().withDefaultFormats()
                 .withCodeLocation(CodeLocations.codeLocationFromClass(ReportTransformBehaviour.class))
