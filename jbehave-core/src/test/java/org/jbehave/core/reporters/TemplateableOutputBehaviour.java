@@ -101,7 +101,7 @@ public class TemplateableOutputBehaviour {
     }
 
     private void assertThatOutputIs(String out, String expected) {
-        assertEquals(expected, dos2unix(out));
+        assertEquals(dos2unix(expected), dos2unix(out));
     }
 
     private String dos2unix(String string) {
