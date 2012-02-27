@@ -38,6 +38,7 @@ abstract public class AbstractSpringJBehaveIntegrationTest extends JUnitStory {
 
     protected EmbedderControls embedderControls() {
         EmbedderControls controls = new EmbedderControls();
+        controls.doIgnoreFailureInView(true);
         controls.doGenerateViewAfterStories(true);
         return controls;
     }
