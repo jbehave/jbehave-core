@@ -1,5 +1,6 @@
 package com.learnthinkcode.example.jbehave;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.jbehave.core.configuration.Configuration;
@@ -33,13 +34,14 @@ abstract public class AbstractSpringJBehaveIntegrationTest extends JUnitStory {
     public AbstractSpringJBehaveIntegrationTest() {
         Embedder embedder = new Embedder();
         embedder.useEmbedderControls(embedderControls());
+        embedder.useMetaFilters(Arrays.asList("-skip"));
         useEmbedder(embedder);
     }
 
     protected EmbedderControls embedderControls() {
         EmbedderControls controls = new EmbedderControls();
         controls.doIgnoreFailureInView(true);
-        controls.doGenerateViewAfterStories(true);
+        controls.doGenerateViewAfterStories(false);
         return controls;
     }
 

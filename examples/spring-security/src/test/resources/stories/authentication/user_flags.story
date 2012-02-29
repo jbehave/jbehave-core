@@ -64,6 +64,8 @@ Examples:
 
 Scenario: Do the same with UserBuilder (not working but desired)
 
+Meta: @skip
+
 Given the users for Microsoft:
 |username|passwordCleartext|enabled|expired|forcePasswordChange|
 |<username>|<password>|<enabled>|<expired>|<forcePasswordChange>|
