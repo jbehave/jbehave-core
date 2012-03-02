@@ -5,11 +5,14 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 
 import java.net.URL;
 
 import org.jbehave.core.io.CodeLocations.InvalidCodeLocation;
 import org.junit.Test;
+import org.junit.runner.JUnitCore;
 
 public class CodeLocationsBehaviour {
 
@@ -41,6 +44,15 @@ public class CodeLocationsBehaviour {
     @Test
     public void shouldAllowInstantiation() {
         assertThat(new CodeLocations(), is(notNullValue()));
+    }
+
+//  wrong output looks like this:
+//  "C:/Projects/jbehave/file:/C:/Users/Name/.m2/repository/junit/junit-dep/4.8.2/junit-dep-4.8.2.jar!"
+
+    @Test
+    public void shouldCreateValidPathFromJarClass() {
+        assertThat(CodeLocations.codeLocationFromClass(this.getClass()).getFile(), not(containsString("/file:")));
+        assertThat(CodeLocations.codeLocationFromClass(JUnitCore.class).getFile(), not(containsString("/file:")));
     }
 
 }

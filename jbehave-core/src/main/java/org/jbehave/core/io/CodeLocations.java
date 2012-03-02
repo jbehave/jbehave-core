@@ -1,6 +1,7 @@
 package org.jbehave.core.io;
 
 import static org.apache.commons.lang.StringUtils.removeEnd;
+import static org.apache.commons.lang.StringUtils.removeStart;
 
 import java.io.File;
 import java.net.URL;
@@ -20,7 +21,7 @@ public class CodeLocations {
     public static URL codeLocationFromClass(Class<?> codeLocationClass) {
         String pathOfClass = codeLocationClass.getName().replace(".", "/") + ".class";
         URL classResource = codeLocationClass.getClassLoader().getResource(pathOfClass);
-        String codeLocationPath = removeEnd(classResource.getFile(), pathOfClass);
+        String codeLocationPath = removeStart(removeEnd(classResource.getFile(), pathOfClass),"file:");
         return codeLocationFromPath(codeLocationPath);
     }
 
