@@ -41,21 +41,21 @@
       </pluginRepositories>
     </profile>
     <profile>
-      <!-- Required for dependencies of JBehave Jenkins Plugin -->
-      <id>glassfish</id>
+      <!-- Required for dependencies of Google module -->
+      <id>atlassian</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
       <repositories>
         <repository>
-          <id>glassfish</id>
-          <url>http://maven.glassfish.org/content/groups/public/</url>
+          <id>atlassian</id>
+          <url>http://maven.atlassian.com/public</url>
         </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
-          <id>glassfish</id>
-          <url>http://maven.glassfish.org/content/groups/public/</url>
+          <id>atlassian</id>
+          <url>http://maven.atlassian.com/public</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>

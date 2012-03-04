@@ -17,42 +17,41 @@ import org.junit.runner.JUnitCore;
 public class CodeLocationsBehaviour {
 
     @Test
-    public void shouldCreateURLFromPath() {
+    public void shouldCreateCodeLocationFromPath() {
         String path = "target/classes/";
         URL codeLocation = CodeLocations.codeLocationFromPath(path);
         assertThat(codeLocation.getFile(), endsWith(path));
     }
 
-    @Test(expected = InvalidCodeLocation.class)
-    public void shouldNotCreateURLFromPathIfInvalid() {
-        CodeLocations.codeLocationFromPath(null);
-    }
-
     @Test
-    public void shouldCreateURLFromURL() {
+    public void shouldCreateCodeLocationFromURL() {
         String url = "http://company.com/stories/";
         URL codeLocation = CodeLocations.codeLocationFromURL(url);
         assertThat(codeLocation.toString(), equalTo(url));
         assertThat(codeLocation.toExternalForm(), equalTo(url));
     }
 
+    @Test
+    public void shouldCreateCodeLocationFromJarClass() {
+        //  wrong output looks like this:
+        //  "C:/Projects/jbehave/file:/C:/Users/Name/.m2/repository/junit/junit-dep/4.8.2/junit-dep-4.8.2.jar!"
+        assertThat(CodeLocations.codeLocationFromClass(this.getClass()).getFile(), not(containsString("/file:")));
+        assertThat(CodeLocations.codeLocationFromClass(JUnitCore.class).getFile(), not(containsString("/file:")));
+    }
+
     @Test(expected = InvalidCodeLocation.class)
-    public void shouldNotCreateURLFromURLIfInvalid() {
+    public void shouldNotCreateCodeLocationFromPathIfInvalid() {
+        CodeLocations.codeLocationFromPath(null);
+    }
+
+    @Test(expected = InvalidCodeLocation.class)
+    public void shouldNotCreateCodeLocationFromURLIfInvalid() {
         CodeLocations.codeLocationFromURL("htp://company.com/stories/");
     }
 
     @Test
     public void shouldAllowInstantiation() {
         assertThat(new CodeLocations(), is(notNullValue()));
-    }
-
-//  wrong output looks like this:
-//  "C:/Projects/jbehave/file:/C:/Users/Name/.m2/repository/junit/junit-dep/4.8.2/junit-dep-4.8.2.jar!"
-
-    @Test
-    public void shouldCreateValidPathFromJarClass() {
-        assertThat(CodeLocations.codeLocationFromClass(this.getClass()).getFile(), not(containsString("/file:")));
-        assertThat(CodeLocations.codeLocationFromClass(JUnitCore.class).getFile(), not(containsString("/file:")));
     }
 
 }
