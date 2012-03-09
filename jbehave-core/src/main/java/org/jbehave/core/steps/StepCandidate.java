@@ -48,7 +48,8 @@ public class StepCandidate {
         this.stepsFactory = stepsFactory;
         this.keywords = keywords;
         this.stepMatcher = stepPatternParser.parseStep(stepType, patternAsString);
-        this.stepCreator = new StepCreator(stepsType, stepsFactory, parameterConverters, parameterControls, stepMatcher, stepMonitor);
+        this.stepCreator = new StepCreator(stepsType, stepsFactory, parameterConverters, parameterControls,
+                stepMatcher, stepMonitor);
     }
 
     public Method getMethod() {
@@ -177,7 +178,8 @@ public class StepCandidate {
     private StepCandidate findComposedCandidate(String composedStep, List<StepCandidate> allCandidates) {
         for (StepCandidate candidate : allCandidates) {
             if (StringUtils.startsWith(composedStep, candidate.getStartingWord())
-                    && StringUtils.endsWith(composedStep, candidate.getPatternAsString())) {
+                    && (StringUtils.endsWith(composedStep, candidate.getPatternAsString()) || candidate
+                            .matches(composedStep))) {
                 return candidate;
             }
         }
