@@ -4,6 +4,8 @@ import static org.apache.commons.lang.StringUtils.removeEnd;
 import static org.apache.commons.lang.StringUtils.removeStart;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 /**
@@ -21,7 +23,7 @@ public class CodeLocations {
     public static URL codeLocationFromClass(Class<?> codeLocationClass) {
         String pathOfClass = codeLocationClass.getName().replace(".", "/") + ".class";
         URL classResource = codeLocationClass.getClassLoader().getResource(pathOfClass);
-        String codeLocationPath = removeStart(removeEnd(classResource.getFile(), pathOfClass),"file:");
+        String codeLocationPath = removeEnd(getPathFromURL(classResource), pathOfClass);
         return codeLocationFromPath(codeLocationPath);
     }
 
@@ -62,6 +64,36 @@ public class CodeLocations {
             super(path);
         }
 
+    }
+
+    /**
+     * Get absolute path from URL objects starting with file:
+     * This method takes care of decoding %-encoded chars, e.g. %20 -> space etc
+     * Since we do not use a File object, the system specific path encoding
+     * is not used (e.g. C:\ on Windows). This is necessary to facilitate
+     * the removal of a class file with path in codeLocationFromClass 
+     * 
+     * @param url the file-URL
+     * @return String absolute decoded path
+     * @throws InvalidCodeLocation if URL contains format errors
+     */
+    public static String getPathFromURL(URL url) {
+        URI uri;
+        try {
+            uri = url.toURI();
+        } catch (URISyntaxException e) {
+            // this will probably not happen since the url was created
+            // from a filename beforehand
+            throw new InvalidCodeLocation(e.toString());
+        }
+
+        if(uri.toString().startsWith("file:") || uri.toString().startsWith("jar:")) {
+            return removeStart(uri.getSchemeSpecificPart(),"file:");
+        } else {
+            // this is wrong, but should at least give a
+            // helpful error when trying to open the file later
+            return uri.toString();
+        }
     }
 
 }
