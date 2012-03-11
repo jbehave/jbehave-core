@@ -70,7 +70,7 @@ public class StoryFinder {
      * @return A List of paths found
      */
     public List<String> findPaths(URL searchInURL, String include, String exclude) {
-        return findPaths(searchInURL.getFile(), asList(include), asList(exclude));
+        return findPaths(CodeLocations.getPathFromURL(searchInURL), asList(include), asList(exclude));
     }
 
     /**
