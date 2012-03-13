@@ -15,6 +15,24 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit-dep</artifactId>
+      <version>4.8.2</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.hamcrest</groupId>
+          <artifactId>hamcrest-core</artifactId>
+        </exclusion>
+      </exclusions>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <version>1.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.ant</groupId>
       <artifactId>ant</artifactId>
       <version>1.7.1</version>
