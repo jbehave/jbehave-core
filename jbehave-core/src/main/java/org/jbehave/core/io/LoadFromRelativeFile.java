@@ -2,9 +2,7 @@ package org.jbehave.core.io;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +49,7 @@ public class LoadFromRelativeFile implements ResourceLoader, StoryLoader {
     
     public String loadResourceAsText(String resourcePath) {
         List<String> traversalPaths = new ArrayList<String>();
-        String locationPath = new File(location.getFile()).getAbsolutePath();
+        String locationPath = new File(CodeLocations.getPathFromURL(location)).getAbsolutePath();
         for (StoryFilePath traversal : traversals) {
             String filePath = locationPath.replace(traversal.toRemove, traversal.relativePath) + "/" + resourcePath;
             File file = new File(filePath);
@@ -66,12 +64,7 @@ public class LoadFromRelativeFile implements ResourceLoader, StoryLoader {
 
     public String loadStoryAsText(String storyPath) {
         List<String> traversalPaths = new ArrayList<String>();
-        String locationPath;
-        try {
-            locationPath = new File(URLDecoder.decode(location.getFile(), "UTF-8")).getAbsolutePath();
-        } catch (UnsupportedEncodingException e) {
-            throw new InvalidStoryResource(storyPath, e);
-        }
+        String locationPath = new File(CodeLocations.getPathFromURL(location)).getAbsolutePath();
         for (StoryFilePath traversal : traversals) {
             String filePath = locationPath.replace(traversal.toRemove, traversal.relativePath) + "/" + storyPath;
             File file = new File(filePath);

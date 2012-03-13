@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 
 /**
@@ -92,7 +93,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
     public static abstract class AbstractPathResolver implements FilePathResolver {
 
         public String resolveDirectory(StoryLocation storyLocation, String relativeDirectory) {
-            File parent = new File(storyLocation.getCodeLocation().getFile()).getParentFile();
+            File parent = new File(CodeLocations.getPathFromURL(storyLocation.getCodeLocation())).getParentFile();
             return parent.getPath().replace('\\', '/') + "/" + relativeDirectory;
         }
 
