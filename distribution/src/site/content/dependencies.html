@@ -56,6 +56,26 @@ If you are running in a corporate environment, you may be using a Maven Reposito
 ]]>
 </script>
 
+<span class="followup">Maven dependencies are by default <b>transitive</b>, i.e. a top-level dependency will pull in all the dependencies it needs.</span>
+
+<p>To override a version of a specific dependency in the dependency tree, the most effective way is to use the dependency management of the POM, e.g.:</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+ <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-library</artifactId>
+        <version>1.2.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+]]>
+</script>
+
+<p>Learn more about Maven dependency management from the <a href="http://www.sonatype.com/books/mvnref-book/reference/pom-relationships-sect-project-dependencies.html">Maven: The Complete Reference</a>.</p>
+
 <h3 id="ant">Apache Ant</h3>
 
 <p>Using no dependency management tool, the build.xml in the <b>lib</b> directory of the binary distribution provides a target to 
