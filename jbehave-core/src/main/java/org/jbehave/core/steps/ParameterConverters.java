@@ -6,6 +6,8 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,9 +28,9 @@ import static java.util.Arrays.asList;
 
 /**
  * <p>
- * Facade responsible for converting parameter values to Java objects.  It allows
- *  the registration of several {@link ParameterConverter} instances, and the first 
- *  one that is found to matches the appropriate parameter type is used.
+ * Facade responsible for converting parameter values to Java objects. It allows
+ * the registration of several {@link ParameterConverter} instances, and the
+ * first one that is found to matches the appropriate parameter type is used.
  * </p>
  * <p>
  * Converters for several Java types are provided out-of-the-box:
@@ -37,8 +39,10 @@ import static java.util.Arrays.asList;
  * <li>{@link ParameterConverters.NumberListConverter NumberListConverter}</li>
  * <li>{@link ParameterConverters.StringListConverter StringListConverter}</li>
  * <li>{@link ParameterConverters.DateConverter DateConverter}</li>
- * <li>{@link ParameterConverters.ExamplesTableConverter ExamplesTableConverter}</li>
- * <li>{@link ParameterConverters.MethodReturningConverter MethodReturningConverter}</li>
+ * <li>{@link ParameterConverters.ExamplesTableConverter ExamplesTableConverter}
+ * </li>
+ * <li>{@link ParameterConverters.MethodReturningConverter
+ * MethodReturningConverter}</li>
  * </ul>
  * </p>
  */
@@ -48,82 +52,83 @@ public class ParameterConverters {
     public static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
     public static final String DEFAULT_LIST_SEPARATOR = ",";
     public static final boolean DEFAULT_THREAD_SAFETY = false;
-	
+
     private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
     private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
     private static final String DEFAULT_TRUE_VALUE = "true";
     private static final String DEFAULT_FALSE_VALUE = "false";
-    
+
     private final StepMonitor monitor;
     private final List<ParameterConverter> converters;
     private final boolean threadSafe;
 
-    /** 
-     * Creates a non-thread-safe instance of ParameterConverters using default dependencies, 
-     * a SilentStepMonitor, English as Locale and "," as list separator. 
+    /**
+     * Creates a non-thread-safe instance of ParameterConverters using default
+     * dependencies, a SilentStepMonitor, English as Locale and "," as list
+     * separator.
      */
     public ParameterConverters() {
         this(DEFAULT_STEP_MONITOR);
     }
 
-    /** 
+    /**
      * Creates a ParameterConverters using given StepMonitor
      * 
      * @param monitor the StepMonitor to use
      */
     public ParameterConverters(StepMonitor monitor) {
-    	this(monitor, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, DEFAULT_THREAD_SAFETY);
+        this(monitor, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, DEFAULT_THREAD_SAFETY);
     }
 
-    /** 
+    /**
      * Create a ParameterConverters with given thread-safety
      * 
-     * @param threadSafe the boolean flag to determine if access to {@link ParameterConverter} should be thread-safe
+     * @param threadSafe the boolean flag to determine if access to
+     *            {@link ParameterConverter} should be thread-safe
      */
     public ParameterConverters(boolean threadSafe) {
         this(DEFAULT_STEP_MONITOR, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, threadSafe);
     }
 
-    /** 
-     * Creates a ParameterConverters for the given StepMonitor, Locale, list separator and thread-safety.  
-     * When selecting a listSeparator, please make sure that this character doesn't have a special
-     * meaning in your Locale (for instance "," is used as decimal separator in some Locale)
+    /**
+     * Creates a ParameterConverters for the given StepMonitor, Locale, list
+     * separator and thread-safety. When selecting a listSeparator, please make
+     * sure that this character doesn't have a special meaning in your Locale
+     * (for instance "," is used as decimal separator in some Locale)
      * 
      * @param monitor the StepMonitor reporting the conversions
      * @param locale the Locale to use when reading numbers
-     * @param listSeparator the String to use as list separator 
-     * @param threadSafe the boolean flag to determine if modification of {@link ParameterConverter} should be thread-safe
+     * @param listSeparator the String to use as list separator
+     * @param threadSafe the boolean flag to determine if modification of
+     *            {@link ParameterConverter} should be thread-safe
      */
     public ParameterConverters(StepMonitor monitor, Locale locale, String listSeparator, boolean threadSafe) {
         this(monitor, new ArrayList<ParameterConverter>(), threadSafe);
-        this.addConverters(defaultConverters(locale, listSeparator));    	
+        this.addConverters(defaultConverters(locale, listSeparator));
     }
 
     private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters, boolean threadSafe) {
         this.monitor = monitor;
         this.threadSafe = threadSafe;
-        this.converters = ( threadSafe ? new CopyOnWriteArrayList<ParameterConverter>(converters) : new ArrayList<ParameterConverter>(converters));
+        this.converters = (threadSafe ? new CopyOnWriteArrayList<ParameterConverter>(converters)
+                : new ArrayList<ParameterConverter>(converters));
     }
 
     protected ParameterConverter[] defaultConverters(Locale locale, String listSeparator) {
         String escapedListSeparator = escapeRegexPunctuation(listSeparator);
-        ParameterConverter[] defaultConverters = {
-            new BooleanConverter(),
-            new NumberConverter(NumberFormat.getInstance(locale)),
-            new NumberListConverter(NumberFormat.getInstance(locale), escapedListSeparator), 
-            new StringListConverter(escapedListSeparator),
-            new DateConverter(), 
-            new ExamplesTableConverter(new ExamplesTableFactory(this))
-        };
+        ParameterConverter[] defaultConverters = { new BooleanConverter(),
+                new NumberConverter(NumberFormat.getInstance(locale)),
+                new NumberListConverter(NumberFormat.getInstance(locale), escapedListSeparator),
+                new StringListConverter(escapedListSeparator), new DateConverter(),
+                new ExamplesTableConverter(new ExamplesTableFactory(this)) };
         return defaultConverters;
     }
 
-    //TODO : This is a duplicate from RegExpPrefixCapturing
+    // TODO : This is a duplicate from RegExpPrefixCapturing
     private String escapeRegexPunctuation(String matchThis) {
         return matchThis.replaceAll("([\\[\\]\\{\\}\\?\\^\\.\\*\\(\\)\\+\\\\])", "\\\\$1");
     }
 
-    
     public ParameterConverters addConverters(ParameterConverter... converters) {
         return addConverters(asList(converters));
     }
@@ -259,25 +264,57 @@ public class ParameterConverters {
             }
         }
 
+        /**
+         * Canonicalize a number representation to a format suitable for the
+         * {@link BigDecimal(String)} constructor, taking into account the
+         * settings of the currently configured DecimalFormat.
+         * 
+         * @param value a localized number value
+         * @return A canonicalized string value suitable for consumption by
+         *         BigDecimal
+         */
         private String canonicalize(String value) {
-            char decimalPointSeparator = numberFormat.format(1.01).charAt(1);
-            int decimalPointPosition = value.lastIndexOf(decimalPointSeparator);
-            value = value.trim();
-            if (decimalPointPosition != -1) {
-                String sf = value.substring(0, decimalPointPosition).replace("[^0-9]", "");
-                String dp = value.substring(decimalPointPosition+1);
-                return sf + "." + dp;
-            }
-            return value.replace(' ', ',');
-        }
+            char decimalPointSeparator = '.'; // default
+            char minusSign = '-'; // default
+            String rxNotDigits = "[^0-9]";
+            StringBuilder builder = new StringBuilder(value.length());
 
+            // override defaults according to numberFormat's settings
+            if (numberFormat instanceof DecimalFormat) {
+                DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
+                minusSign = decimalFormatSymbols.getMinusSign();
+                decimalPointSeparator = decimalFormatSymbols.getDecimalSeparator();
+            }
+
+            value = value.trim();
+            int decimalPointPosition = value.lastIndexOf(decimalPointSeparator);
+            boolean isNegative = value.charAt(0) == minusSign;
+
+            if (isNegative) {
+                builder.append('-'); // fixed "-" for BigDecimal constructur
+            }
+
+            if (decimalPointPosition != -1) {
+                String sf = value.substring(0, decimalPointPosition).replaceAll(rxNotDigits, "");
+                String dp = value.substring(decimalPointPosition + 1).replaceAll(rxNotDigits, "");
+
+                builder.append(sf);
+                builder.append('.'); // fixed "." for BigDecimal constructor
+                builder.append(dp);
+
+            } else {
+                builder.append(value.replaceAll(rxNotDigits, ""));
+            }
+            return builder.toString();
+        }
     }
 
     /**
      * Converts value to list of numbers. Splits value to a list, using an
      * injectable value separator (defaulting to ",") and converts each element
      * of list via the {@link NumberConverter}, using the {@link NumberFormat}
-     * provided (defaulting to {@link NumberFormat#getInstance(Locale.ENGLISH)}).
+     * provided (defaulting to {@link NumberFormat#getInstance(Locale.ENGLISH)}
+     * ).
      */
     public static class NumberListConverter implements ParameterConverter {
 
@@ -405,8 +442,11 @@ public class ParameterConverters {
             try {
                 return dateFormat.parse(value);
             } catch (ParseException e) {
-                throw new ParameterConvertionFailed("Failed to convert value " + value + " with date format "
-                        + (dateFormat instanceof SimpleDateFormat ? ((SimpleDateFormat) dateFormat).toPattern() : dateFormat), e);
+                throw new ParameterConvertionFailed("Failed to convert value "
+                        + value
+                        + " with date format "
+                        + (dateFormat instanceof SimpleDateFormat ? ((SimpleDateFormat) dateFormat).toPattern()
+                                : dateFormat), e);
             }
         }
 
@@ -507,11 +547,10 @@ public class ParameterConverters {
             }
         }
     }
- 
+
     /**
-     * Parses value to list of the same {@link Enum}, using an injectable
-     * value separator (defaults to ",") and trimming each element of the
-     * list.
+     * Parses value to list of the same {@link Enum}, using an injectable value
+     * separator (defaults to ",") and trimming each element of the list.
      */
     public static class EnumListConverter implements ParameterConverter {
         private final EnumConverter enumConverter;
@@ -520,7 +559,7 @@ public class ParameterConverters {
         public EnumListConverter() {
             this(DEFAULT_LIST_SEPARATOR);
         }
-        
+
         public EnumListConverter(String valueSeparator) {
             this.enumConverter = new EnumConverter();
             this.valueSeparator = valueSeparator;
@@ -530,8 +569,7 @@ public class ParameterConverters {
             if (type instanceof ParameterizedType) {
                 Type rawType = rawType(type);
                 Type argumentType = argumentType(type);
-                return List.class.isAssignableFrom((Class<?>) rawType)
-                        && enumConverter.accept(argumentType);
+                return List.class.isAssignableFrom((Class<?>) rawType) && enumConverter.accept(argumentType);
             }
             return false;
         }
@@ -554,20 +592,21 @@ public class ParameterConverters {
             return ((ParameterizedType) type).getActualTypeArguments()[0];
         }
     }
-    
+
     /**
-     * Converts value to {@link ExamplesTable} using a {@link ExamplesTableFactory}.
+     * Converts value to {@link ExamplesTable} using a
+     * {@link ExamplesTableFactory}.
      */
     public static class ExamplesTableConverter implements ParameterConverter {
 
         private final ExamplesTableFactory factory;
-        
-        public ExamplesTableConverter(){
-            this(new ExamplesTableFactory());           
+
+        public ExamplesTableConverter() {
+            this(new ExamplesTableFactory());
         }
 
-        public ExamplesTableConverter(ExamplesTableFactory factory){
-            this.factory = factory;            
+        public ExamplesTableConverter(ExamplesTableFactory factory) {
+            this.factory = factory;
         }
 
         public boolean accept(Type type) {
