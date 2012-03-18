@@ -50,7 +50,7 @@ After that, it is necessary to only do the following:
 
 - default: builds all releasable modules
 - examples: builds all headless examples
-- gui: builds examples that require a GUI (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://builds.codehaus.org/browse/JBEHAVE) )
+- gui: builds examples that require a GUI (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://bamboo.ci.codehaus.org/browse/JBEHAVE) )
 - nt: no-test, builds skipping unit-test behaviors 
 
 #### Maven Build Profiles used during release cycle
