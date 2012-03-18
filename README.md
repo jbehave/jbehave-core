@@ -19,7 +19,7 @@ Please report issues, feature requests on the Codehaus [issue
 tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
 [dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org). 
 
-Keep an eye on the  [Bamboo Continuous Integration](http://builds.codehaus.org/browse/JBEHAVE) server for JBehave builds.
+Keep an eye on the  [Bamboo Continuous Integration](http://bamboo.ci.codehaus.org/browse/JBEHAVE) server for JBehave builds.
 
 ### Depended-on Technologies
 
