@@ -392,6 +392,7 @@ public class StoryRunner {
                 context.resetState();
             }
             runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE, ScenarioType.EXAMPLE);
+            addMetaParameters(scenarioParameters, storyAndScenarioMeta);
             runScenarioSteps(context, scenario, scenarioParameters);
             runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER, ScenarioType.EXAMPLE);
         }
