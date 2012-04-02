@@ -14,7 +14,6 @@ public class AnnotationStepsConfiguration {
     @Bean
     public SpringStepsFactoryBehaviour.AbstractSteps abstractSteps () {
         return new SpringStepsFactoryBehaviour.AbstractSteps() {
-
         };
     }
 }

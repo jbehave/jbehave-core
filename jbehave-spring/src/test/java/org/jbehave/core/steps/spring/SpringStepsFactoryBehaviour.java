@@ -20,11 +20,6 @@ import static org.mockito.Mockito.*;
 
 public class SpringStepsFactoryBehaviour {
 
-    private ApplicationContext createApplicationContext(String... resourceLocations) {
-
-        return new SpringApplicationContextFactory(resourceLocations).createApplicationContext();
-    }
-
     @Test
     public void stepsCanBeCreated() {
         // Given
@@ -38,7 +33,6 @@ public class SpringStepsFactoryBehaviour {
 
     @Test
     public void annotationStepsCanBeCreated() throws Exception {
-
         // Given
         ApplicationContext context = createApplicationContext(AnnotationStepsConfiguration.class.getName());
         SpringStepsFactory factory = new SpringStepsFactory(new MostUsefulConfiguration(), context);
@@ -74,13 +68,11 @@ public class SpringStepsFactoryBehaviour {
     }
 
     private void assertFooStepsFound(List<CandidateSteps> steps) {
-
         assertEquals(1, steps.size());
         assertThat(firstStepsInstance(steps), instanceOf(FooSteps.class));
     }
 
     private Object firstStepsInstance(List<CandidateSteps> steps) {
-
         return ((Steps) steps.get(0)).instance();
     }
 
@@ -124,6 +116,10 @@ public class SpringStepsFactoryBehaviour {
         assertThat(candidateSteps.size(), equalTo(1));
         assertThat(firstStepsInstance(candidateSteps), instanceOf(FooSteps.class));
         verify(context, never()).getBean("undefined");
+    }
+
+    private ApplicationContext createApplicationContext(String... resources) {
+        return new SpringApplicationContextFactory(resources).createApplicationContext();
     }
 
     public static class FooSteps {
