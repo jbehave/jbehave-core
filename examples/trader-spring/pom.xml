@@ -9,24 +9,6 @@
   <artifactId>jbehave-trader-spring-example</artifactId>
   <name>JBehave Trader Spring Example</name>
 
-  <properties>
-    <spring.version>2.5.6</spring.version>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
