@@ -23,7 +23,7 @@ public class TraderStoriesUsingSpring extends TraderStories {
         return new SpringStepsFactory(configuration(), createContext());
     }
 
-    private ApplicationContext createContext() {
+    protected ApplicationContext createContext() {
         return new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml")
                 .createApplicationContext();
     }

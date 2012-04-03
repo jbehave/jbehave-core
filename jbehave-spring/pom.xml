@@ -35,12 +35,13 @@
                     <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>  
+        <!-- CGLib is required when using Spring's Annotation Configuration -->      
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>2.2.2</version>
-            <scope>test</scope>
+            <scope>optional</scope>
         </dependency>
     </dependencies>
 
