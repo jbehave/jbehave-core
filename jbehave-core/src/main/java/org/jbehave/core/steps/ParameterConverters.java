@@ -210,20 +210,32 @@ public class ParameterConverters {
      * </p>
      */
     public static class NumberConverter implements ParameterConverter {
-
+        private ThreadLocal<NumberFormat> numberFormat = new ThreadLocal<NumberFormat>();
         private static List<Class<?>> primitiveTypes = asList(new Class<?>[] { byte.class, short.class, int.class,
                 float.class, long.class, double.class });
 
-        private final NumberFormat numberFormat;
+        private final NumberFormat preferredNumberFormat;
 
         public NumberConverter() {
             this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL));
         }
 
         public NumberConverter(NumberFormat numberFormat) {
-            this.numberFormat = numberFormat;
-        }
+            synchronized (this) {
+             this.preferredNumberFormat = numberFormat;
+             this.numberFormat.set((NumberFormat)this.preferredNumberFormat.clone());
+            }
 
+        }
+        /**
+         * keep number format instance with preferred locale threadsafe
+         * @return threadlocal version of original NumberFormat instance
+         */
+        private NumberFormat numberFormatGet(){
+            if(this.numberFormat.get() == null)
+                synchronized (this) {this.numberFormat.set((NumberFormat)this.preferredNumberFormat.clone());}
+            return this.numberFormat.get();
+        }
         public boolean accept(Type type) {
             if (type instanceof Class<?>) {
                 return Number.class.isAssignableFrom((Class<?>) type) || primitiveTypes.contains(type);
@@ -233,7 +245,7 @@ public class ParameterConverters {
 
         public Object convertValue(String value, Type type) {
             try {
-                Number n = numberFormat.parse(value);
+                Number n = this.numberFormatGet().parse(value);
                 if (type == Byte.class || type == byte.class) {
                     return n.byteValue();
                 } else if (type == Short.class || type == short.class) {
@@ -280,8 +292,8 @@ public class ParameterConverters {
             StringBuilder builder = new StringBuilder(value.length());
 
             // override defaults according to numberFormat's settings
-            if (numberFormat instanceof DecimalFormat) {
-                DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
+            if (this.numberFormatGet() instanceof DecimalFormat) {
+                DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) this.numberFormatGet()).getDecimalFormatSymbols();
                 minusSign = decimalFormatSymbols.getMinusSign();
                 decimalPointSeparator = decimalFormatSymbols.getDecimalSeparator();
             }
