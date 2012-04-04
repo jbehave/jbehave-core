@@ -18,6 +18,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.steps.ParameterConverters.BooleanConverter;
@@ -65,7 +67,65 @@ public class ParameterConvertersBehaviour {
         assertThat((Double) converter.convertValue("100,000.01", Double.class), equalTo(100000.01d));        
         assertThat((Double) converter.convertValue("1,00,000.01", Double.class), equalTo(100000.01d)); //Hindi style       
     }
+    @Test
+    public void shouldMultiThreadConvertValuesToNumbersWithEnglishNumberFormat() {
+        final Locale locale = Locale.ENGLISH;
+        final int THREAD_CT = 3;
+        final ParameterConverter parameterConverter = new NumberConverter(NumberFormat.getInstance(locale));
+        final BlockingQueue<String> blockingQueue = new ArrayBlockingQueue<String>(THREAD_CT);
+        Thread t1 = new Thread(){
+            @Override
+            public void run(){
+                assertThatAllNumberTypesAreAccepted(parameterConverter);
+                assertThatAllNumbersAreConverted(parameterConverter, locale);
+                assertThat((Integer) parameterConverter.convertValue("100,000", Integer.class), equalTo(100000));
+                assertThat((Long) parameterConverter.convertValue("100,000", Long.class), equalTo(100000L));
+                assertThat((Float) parameterConverter.convertValue("100,000.01", Float.class), equalTo(100000.01f));
+                assertThat((Double) parameterConverter.convertValue("100,000.01", Double.class), equalTo(100000.01d));
+                assertThat((Double) parameterConverter.convertValue("1,00,000.01", Double.class), equalTo(100000.01d)); //Hindi style
+                blockingQueue.add(Thread.currentThread().getName());
+            }
+        };
+        Thread t2 = new Thread(){
+            @Override
+            public void run(){
+                assertThatAllNumberTypesAreAccepted(parameterConverter);
+                assertThatAllNumbersAreConverted(parameterConverter, locale);
+                assertThat((Integer) parameterConverter.convertValue("100,000", Integer.class), equalTo(100000));
+                assertThat((Long) parameterConverter.convertValue("100,000", Long.class), equalTo(100000L));
+                assertThat((Float) parameterConverter.convertValue("100,000.01", Float.class), equalTo(100000.01f));
+                assertThat((Double) parameterConverter.convertValue("100,000.01", Double.class), equalTo(100000.01d));
+                assertThat((Double) parameterConverter.convertValue("1,00,000.01", Double.class), equalTo(100000.01d)); //Hindi style
+                blockingQueue.add(Thread.currentThread().getName());
+            }
+        };
+        Thread t3 = new Thread(){
+            @Override
+            public void run(){
+                assertThatAllNumberTypesAreAccepted(parameterConverter);
+                assertThatAllNumbersAreConverted(parameterConverter, locale);
+                assertThat((Integer) parameterConverter.convertValue("100,000", Integer.class), equalTo(100000));
+                assertThat((Long) parameterConverter.convertValue("100,000", Long.class), equalTo(100000L));
+                assertThat((Float) parameterConverter.convertValue("100,000.01", Float.class), equalTo(100000.01f));
+                assertThat((Double) parameterConverter.convertValue("100,000.01", Double.class), equalTo(100000.01d));
+                assertThat((Double) parameterConverter.convertValue("1,00,000.01", Double.class), equalTo(100000.01d)); //Hindi style
+                blockingQueue.add(Thread.currentThread().getName());
+            }
+        };
 
+        t1.start();
+        t2.start();
+        t3.start();
+        
+        for (int i = 0;i < THREAD_CT;i++){
+            try {
+                System.out.println(blockingQueue.take() + " complete!");
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+
+    }
     @Test
     public void shouldConvertValuesToNumbersWithFrenchNumberFormat() {
         Locale locale = Locale.FRENCH;
