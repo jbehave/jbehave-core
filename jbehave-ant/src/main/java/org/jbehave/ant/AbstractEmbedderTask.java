@@ -20,6 +20,7 @@ import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.embedder.NullEmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
+import org.jbehave.core.embedder.executors.ExecutorServiceFactory;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
@@ -118,6 +119,11 @@ public abstract class AbstractEmbedderTask extends Task {
      * The embedder to run the stories
      */
     private String embedderClass = Embedder.class.getName();
+
+    /**
+     * The implementation class of the {@link ExecutorServiceFactory}
+     */
+    private String executorsClass;
 
     /**
      * The class that is injected to provide embedder to run the stories.
@@ -267,6 +273,11 @@ public abstract class AbstractEmbedderTask extends Task {
 
         embedder.useClassLoader(classLoader);
         embedder.useEmbedderControls(embedderControls());
+        if (executorsClass != null) {
+            ExecutorServiceFactory executorServiceFactory = classLoader.newInstance(ExecutorServiceFactory.class,
+                    executorsClass);
+            embedder.useExecutorService(executorServiceFactory.create(embedder.embedderControls()));
+        }
         embedder.useEmbedderMonitor(embedderMonitor());
         if (!metaFilters.isEmpty()) {
             embedder.useMetaFilters(metaFilters);
@@ -496,6 +507,10 @@ public abstract class AbstractEmbedderTask extends Task {
 
     public void setEmbedderClass(String embedderClass) {
         this.embedderClass = embedderClass;
+    }
+
+    public void setExecutorsClass(String executorsClass) {
+        this.executorsClass = executorsClass;
     }
 
     public void setInjectableEmbedderClass(String injectableEmbedderClass) {

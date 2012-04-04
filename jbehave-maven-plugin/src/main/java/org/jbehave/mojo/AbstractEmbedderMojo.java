@@ -18,6 +18,7 @@ import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.embedder.NullEmbedderMonitor;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
+import org.jbehave.core.embedder.executors.ExecutorServiceFactory;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
@@ -175,6 +176,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     String embedderClass = Embedder.class.getName();
 
     /**
+     * The implementation class of the {@link ExecutorServiceFactory}
+     * 
+     * @parameter
+     */
+    String executorsClass;
+
+    /**
      * The class that is injected with the embedder
      * 
      * @parameter
@@ -320,7 +328,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         } else {
             embedder = classLoader.newInstance(Embedder.class, embedderClass);
         }
-
+        
         URL codeLocation = codeLocation();
         if (codeLocation != null) {
             embedder.configuration().storyReporterBuilder().withCodeLocation(codeLocation);
@@ -328,6 +336,10 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         embedder.useClassLoader(classLoader);
         embedder.useEmbedderControls(embedderControls());
+        if ( executorsClass != null ){
+            ExecutorServiceFactory executorServiceFactory = classLoader.newInstance(ExecutorServiceFactory.class, executorsClass);
+            embedder.useExecutorService(executorServiceFactory.create(embedder.embedderControls()));
+        }
         embedder.useEmbedderMonitor(embedderMonitor());
         if (isNotEmpty(metaFilters)) {
             List<String> filters = new ArrayList<String>();

@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +16,7 @@ import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.StoryRunner.State;
+import org.jbehave.core.embedder.executors.FixedThreadExecutors;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
@@ -400,9 +400,7 @@ public class Embedder {
      * @return An ExecutorService
      */
     private ExecutorService createExecutorService() {
-        int threads = embedderControls.threads();
-        embedderMonitor.usingThreads(threads);
-        return createNewFixedThreadPool(threads);
+        return new FixedThreadExecutors().create(embedderControls);
     }
 
     /**
@@ -417,16 +415,6 @@ public class Embedder {
             executorService = null;
             executorServiceCreated = false;
         }
-    }
-
-    /**
-     * Create default threadpool. Visible for testing
-     * 
-     * @param threads the number of threads
-     * @return The ThreadPoolExecutor
-     */
-    protected ExecutorService createNewFixedThreadPool(int threads) {
-        return Executors.newFixedThreadPool(threads);
     }
 
     public StoryManager storyManager() {
