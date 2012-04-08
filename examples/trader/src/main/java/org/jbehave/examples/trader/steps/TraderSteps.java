@@ -128,12 +128,14 @@ public class TraderSteps {
     }
     
     @Given("the stock exchange %stockExchange")
-    public void theStockExchange(String stockExchange) {
+    @Alias("the stock exchange <stockExchange>")    
+    public void theStockExchange(@Named("stockExchange") String stockExchange) {
         this.stockExchange = stockExchange;        
     }
 
     @Given("the asset class %assetClass")
-    public void theAssetClass(String assetClass) {
+    @Alias("the asset class <assetClass>")    
+    public void theAssetClass(@Named("assetClass") String assetClass) {
         this.assetClass = assetClass;
     }
 
