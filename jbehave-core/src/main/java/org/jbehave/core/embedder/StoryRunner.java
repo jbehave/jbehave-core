@@ -286,10 +286,6 @@ public class StoryRunner {
                     }
 
                     if (isParameterisedByExamples(scenario)) { // run parametrised scenarios by examples
-                        // run any given stories, if not parametrised by examples
-                        if ( !context.configuration.storyControls().parametriseGivenStoriesByExamples() ){
-                            runGivenStories(scenario, new HashMap<String, String>(), context);
-                        }
                         runScenariosParametrisedByExamples(context, scenario, storyAndScenarioMeta);
                     } else { // run as plain old scenario
                         addMetaParameters(storyParameters, storyAndScenarioMeta);
@@ -396,9 +392,7 @@ public class StoryRunner {
             }
             runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE, ScenarioType.EXAMPLE);
             addMetaParameters(scenarioParameters, storyAndScenarioMeta);
-            if ( context.configuration().storyControls().parametriseGivenStoriesByExamples() ){
-                runGivenStories(scenario, scenarioParameters, context);
-            }
+            runGivenStories(scenario, scenarioParameters, context);
             runScenarioSteps(context, scenario, scenarioParameters);
             runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER, ScenarioType.EXAMPLE);
         }

@@ -9,7 +9,6 @@ import org.apache.commons.lang.builder.ToStringStyle;
 public class StoryControls {
 
     private boolean dryRun = false;
-    private boolean parametriseGivenStoriesByExamples = false;
     private boolean resetStateBeforeStory = true;
     private boolean resetStateBeforeScenario = true;
     private boolean skipScenariosAfterFailure = false;
@@ -22,10 +21,6 @@ public class StoryControls {
 
     public boolean dryRun() {
         return dryRun;
-    }
-
-    public boolean parametriseGivenStoriesByExamples() {
-        return parametriseGivenStoriesByExamples;
     }
 
     public boolean resetStateBeforeStory() {
@@ -57,11 +52,6 @@ public class StoryControls {
         return this;
     }
 
-    public StoryControls doParametriseGivenStoriesByExamples(boolean parametriseGivenStoriesByExamples) {
-        this.parametriseGivenStoriesByExamples = parametriseGivenStoriesByExamples;
-        return this;
-    }
-    
     public StoryControls doResetStateBeforeScenario(boolean resetStateBeforeScenario) {
         this.resetStateBeforeScenario = resetStateBeforeScenario;
         return this;
