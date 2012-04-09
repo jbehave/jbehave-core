@@ -33,7 +33,19 @@
 </table>
 </examples>
 <example keyword="Example:">{money=$30, to=Mauro}</example>
+<step outcome="successful">
+Given money $30 
+</step>
+<step outcome="successful">
+Then I give it to Mauro 
+</step>
 <example keyword="Example:">{money=$50, to=Paul}</example>
+<step outcome="successful">
+Given money $50 
+</step>
+<step outcome="successful">
+Then I give it to Paul 
+</step>
 </scenario> 
 <cancelled keyword="STORY CANCELLED" durationKeyword="DURATION" durationInSecs="2"/>
 </story>

@@ -51,7 +51,7 @@ public class ParameterConverters {
     public static final StepMonitor DEFAULT_STEP_MONITOR = new SilentStepMonitor();
     public static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
     public static final String DEFAULT_LIST_SEPARATOR = ",";
-    public static final boolean DEFAULT_THREAD_SAFETY = false;
+    public static final boolean DEFAULT_THREAD_SAFETY = true;
 
     private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
     private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
