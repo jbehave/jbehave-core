@@ -23,13 +23,16 @@ When the price is 10.0
 When the cost is 10.0
 </pre>
 
-<p>then we could define two aliases, but it's simpler and more compact to write a pattern with variants:</p>
+<p>then we could define two aliases, but it's simpler and more compact to write a pattern with variants.  E.g.:</p>
 <pre class="brush: java">
-    @When("the {item|} {price|cost} is $price")
+    @When("the {item |}{price|cost} is $price")
     public void theItemPriceIs(double price) {
         // ...
     }
 </pre>
+
+<p>In this example, we want the word "item" to be optional.  Please note that we include a trailing space in the variant "{item |}" 
+and not between this and the following variant ("{price|cost}") to prevent the resulting step from containing multiple consecutive spaces.</p>
 
 <p>The pattern variants are built by the <a
     href="javadoc/core/org/jbehave/core/steps/PatternVariantBuilder.html">PatternVariantBuilder</a>, which interprets the directives of the form:</p>
