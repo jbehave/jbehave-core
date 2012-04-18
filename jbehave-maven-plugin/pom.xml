@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.6.3</version>
+    <version>3.7-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
