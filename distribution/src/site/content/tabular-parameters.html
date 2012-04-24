@@ -175,8 +175,48 @@ can specify an optional parsing property:</p>
 !-- Another commented row --!
 !value m1!value m2! .... !value mn!
 </pre>
-
 </p>
+
+<h2>Using table transformers</h2>
+
+<p>
+Table transformers allow the table to be transformed via an inlined property.  E.g. to transform from a landscape table form we can to use the pre-registered transformer:
+<pre class="brush: plain">
+{transformer=FROM_LANDSCAPE}
+|header 1|value 11| ... | value m1|
+...
+|header n|value 1n| .... !value mn!
+</pre>
+Or one can define our own custom transformer
+<pre class="brush: plain">
+{transformer=FROM_MY_FORMAT}
+...
+</pre>
+In this case the custom transformer needs to be registered by name with the <a
+    href="javadoc/core/org/jbehave/core/model/TableTransformers.html">TableTransformers</a> via the <a
+    href="javadoc/core/org/jbehave/core/model/ExamplesTableFactory.html">ExamplesTableFactory</a>:
+</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+        TableTransformers tableTransformers = new TableTransformers();
+        tableTransformers.useTransformer("FROM_MY_FORMAT", new TableTransformer(){
+
+            public String transform(String tableAsString, Properties properties) {
+                return ...; // transform as required
+            }
+            
+        });
+        ExamplesTableFactory tableFactory = new ExamplesTableFactory(tableTransformers);
+]]>
+</script>
+<p>The custom table factory then needs to be configured to used by the parameter converters and the story parser:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+        new MostUsefulConfiguration()
+                .useParameterConverters(new ParameterConverters().addConverters(new ExamplesTableConverter(tableFactory)))
+                .useStoryParser(new RegexStoryParser(tableFactory))
+]]>
+</script>
 
 <h2>Loading tabular parameter from an external resource</h2>
 

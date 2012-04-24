@@ -111,6 +111,7 @@ import static java.util.regex.Pattern.compile;
  * 
  * The transformer needs to be registered by name via the
  * {@link TableTransformers#useTransformer(String, TableTransformer)}.
+ * A few transformers are already registered by default in {@link TableTransformers}.
  * </p>
  * 
  * <p>
