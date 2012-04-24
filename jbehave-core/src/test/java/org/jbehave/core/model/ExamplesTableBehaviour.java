@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.jbehave.core.model.ExamplesTable.RowNotFound;
+import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.jbehave.core.steps.ConvertedParameters.ValueNotFound;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
@@ -159,6 +160,23 @@ public class ExamplesTableBehaviour {
         assertThat(properties.getProperty("headerSeparator"), equalTo("!"));
         assertThat(properties.getProperty("valueSeparator"), equalTo("!"));
         ensureColumnOrderIsPreserved(table);
+    }
+
+    @Test
+    public void shouldParseTableWithTransformerSpecifiedViaProperties() {
+        String tableWithProperties = "{transformer=myTransformer, trim=false}\n" + tableWithCommentsAsString;
+        TableTransformers tableTransformers = new TableTransformers();
+        tableTransformers.useTransformer("myTransformer", new TableTransformer(){
+
+            public String transform(String tableAsString, Properties properties) {
+                return tableWithSpacesAsString;
+            }
+            
+        });
+        ExamplesTable table = new ExamplesTableFactory(tableTransformers).createExamplesTable(tableWithProperties);
+        Properties properties = table.getProperties();
+        assertThat(properties.getProperty("transformer"), equalTo("myTransformer"));
+        ensureWhitespaceIsPreserved(table);
     }
 
     private void ensureColumnOrderIsPreserved(ExamplesTable table) {

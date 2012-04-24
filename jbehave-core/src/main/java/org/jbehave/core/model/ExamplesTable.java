@@ -65,7 +65,8 @@ import static java.util.regex.Pattern.compile;
  * Ignorable separator is configurable and defaults to "|--".
  * </p>
  * <p>
- * The separators are also configurable via inlined properties: 
+ * The separators are also configurable via inlined properties:
+ * 
  * <pre>
  * {ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}
  * !header 1!header 2! .... !header n!
@@ -78,7 +79,7 @@ import static java.util.regex.Pattern.compile;
  * 
  * </p>
  * <p>
- * By default all column values are trimmed. To avoid trimming the values:
+ * By default all column values are trimmed. To avoid trimming the values, use the "trim" inlined property:
  * 
  * <pre>
  * {trim=false}
@@ -89,10 +90,25 @@ import static java.util.regex.Pattern.compile;
  * </p>
  * 
  * <p>
- * The table also allows the retrieval of row values as converted parameters.
- * Use {@link #getRowAsParameters(int)} and invoke
+ * The table allows the retrieval of row values as converted parameters. Use
+ * {@link #getRowAsParameters(int)} and invoke
  * {@link Parameters#valueAs(String, Class)} specifying the header and the class
  * type of the parameter.
+ * </p>
+ * 
+ * <p>
+ * The table allows the transformation of its string representation via the "transformer" inlined property:
+ * 
+ * <pre>
+ * {transformer=myTransformerName}
+ * |header 1|header 2| .... |header n|
+ * |value 11|value 12| .... |value 1n|
+ * ...
+ * |value m1|value m2| .... |value mn|
+ * </pre>
+ * 
+ * The transformer needs to be registered by name via the
+ * {@link TableTransformers#useTransformer(String, TableTransformer)}.
  * </p>
  * 
  * <p>
@@ -128,6 +144,7 @@ public class ExamplesTable {
     private final String valueSeparator;
     private final String ignorableSeparator;
     private final ParameterConverters parameterConverters;
+    private final TableTransformers tableTransformers;
     private final List<String> headers = new ArrayList<String>();
     private final Properties properties = new Properties();
     private Map<String, String> namedParameters = new HashMap<String, String>();
@@ -140,18 +157,22 @@ public class ExamplesTable {
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator) {
-        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR, new ParameterConverters());
+        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR, new ParameterConverters(),
+                new TableTransformers());
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-            String ignorableSeparator, ParameterConverters parameterConverters) {
+            String ignorableSeparator, ParameterConverters parameterConverters, TableTransformers tableTransformers) {
         this.tableAsString = tableAsString;
         this.headerSeparator = headerSeparator;
         this.valueSeparator = valueSeparator;
         this.ignorableSeparator = ignorableSeparator;
         this.parameterConverters = parameterConverters;
+        this.tableTransformers = tableTransformers;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
-        parse(tableAsString);
+        String tableWithoutProperties = stripAndParseProperties(tableAsString.trim());
+        trim = parseBoolean(properties.getProperty("trim", "true"));
+        parseTable(tableWithoutProperties);
     }
 
     private ExamplesTable(ExamplesTable other, Row defaults) {
@@ -161,37 +182,13 @@ public class ExamplesTable {
         this.valueSeparator = other.valueSeparator;
         this.ignorableSeparator = other.ignorableSeparator;
         this.parameterConverters = other.parameterConverters;
+        this.tableTransformers = other.tableTransformers;
         this.headers.addAll(other.headers);
         this.properties.putAll(other.properties);
         this.defaults = defaults;
     }
 
-    private void parse(String tableAsString) {
-        data.clear();
-        headers.clear();
-        String[] rows = splitInRows(stripProperties(tableAsString.trim()));
-        for (int row = 0; row < rows.length; row++) {
-            String rowAsString = rows[row];
-            if (rowAsString.startsWith(properties.getProperty("ignorableSeparator", ignorableSeparator)) || rowAsString.length()==0) {
-                // skip empty lines and rows that start with ignorable separator
-                continue;
-            } else if (row == 0) {
-                List<String> columns = columnsFor(rowAsString, properties.getProperty("headerSeparator", headerSeparator));
-                headers.addAll(columns);
-            } else {
-                List<String> columns = columnsFor(rowAsString, properties.getProperty("valueSeparator", valueSeparator));
-                Map<String, String> map = createRowMap();
-                for (int column = 0; column < columns.size(); column++) {
-                    if(column<headers.size()) {
-                        map.put(headers.get(column), columns.get(column));
-                    }
-                }
-                data.add(map);
-            }
-        }
-    }
-
-    private String stripProperties(String tableAsString) {
+    private String stripAndParseProperties(String tableAsString) {
         Pattern pattern = compile("\\{(.*?)\\}\\s*(.*)", DOTALL);
         Matcher matcher = pattern.matcher(tableAsString);
         if (matcher.matches()) {
@@ -208,7 +205,41 @@ public class ExamplesTable {
         } catch (IOException e) {
             // carry on
         }
-        trim = parseBoolean(properties.getProperty("trim", "true"));
+    }
+
+    private void parseTable(String tableAsString) {
+        headers.clear();
+        data.clear();
+        String transformer = properties.getProperty("transformer");
+        if (transformer != null) {
+            tableAsString = tableTransformers.transform(transformer, tableAsString, properties);
+        }
+        parseByRows(headers, data, tableAsString);
+    }
+
+    private void parseByRows(List<String> headers, List<Map<String, String>> data, String tableAsString) {
+        String[] rows = splitInRows(tableAsString);
+        for (int row = 0; row < rows.length; row++) {
+            String rowAsString = rows[row];
+            if (rowAsString.startsWith(properties.getProperty("ignorableSeparator", ignorableSeparator))
+                    || rowAsString.length() == 0) {
+                // skip empty lines and rows that start with ignorable separator
+                continue;
+            } else if (row == 0) {
+                List<String> columns = columnsFor(rowAsString,
+                        properties.getProperty("headerSeparator", headerSeparator));
+                headers.addAll(columns);
+            } else {
+                List<String> columns = columnsFor(rowAsString, properties.getProperty("valueSeparator", valueSeparator));
+                Map<String, String> map = createRowMap();
+                for (int column = 0; column < columns.size(); column++) {
+                    if (column < headers.size()) {
+                        map.put(headers.get(column), columns.get(column));
+                    }
+                }
+                data.add(map);
+            }
+        }
     }
 
     private String[] splitInRows(String table) {
@@ -367,10 +398,10 @@ public class ExamplesTable {
         return format();
     }
 
-    public void outputTo(PrintStream output){
+    public void outputTo(PrintStream output) {
         output.print(asString());
     }
-    
+
     private String format() {
         StringBuffer sb = new StringBuffer();
         for (String header : headers) {
