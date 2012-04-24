@@ -13,9 +13,9 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.jbehave.core.steps.ChainedRow;
 import org.jbehave.core.steps.ConvertedParameters;
 import org.jbehave.core.steps.ParameterConverters;
@@ -79,7 +79,8 @@ import static java.util.regex.Pattern.compile;
  * 
  * </p>
  * <p>
- * By default all column values are trimmed. To avoid trimming the values, use the "trim" inlined property:
+ * By default all column values are trimmed. To avoid trimming the values, use
+ * the "trim" inlined property:
  * 
  * <pre>
  * {trim=false}
@@ -97,7 +98,8 @@ import static java.util.regex.Pattern.compile;
  * </p>
  * 
  * <p>
- * The table allows the transformation of its string representation via the "transformer" inlined property:
+ * The table allows the transformation of its string representation via the
+ * "transformer" inlined property:
  * 
  * <pre>
  * {transformer=myTransformerName}
@@ -138,7 +140,6 @@ public class ExamplesTable {
     private static final String VALUE_SEPARATOR = "|";
     private static final String IGNORABLE_SEPARATOR = "|--";
 
-    private final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     private final String tableAsString;
     private final String headerSeparator;
     private final String valueSeparator;
@@ -146,7 +147,9 @@ public class ExamplesTable {
     private final ParameterConverters parameterConverters;
     private final TableTransformers tableTransformers;
     private final List<String> headers = new ArrayList<String>();
+    private final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     private final Properties properties = new Properties();
+    private String propertiesAsString = "";
     private Map<String, String> namedParameters = new HashMap<String, String>();
     private boolean trim = true;
 
@@ -170,7 +173,12 @@ public class ExamplesTable {
         this.parameterConverters = parameterConverters;
         this.tableTransformers = tableTransformers;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
-        String tableWithoutProperties = stripAndParseProperties(tableAsString.trim());
+        parse();
+    }
+
+    private void parse() {
+        String tableWithoutProperties = stripProperties(tableAsString.trim());
+        parseProperties(propertiesAsString);
         trim = parseBoolean(properties.getProperty("trim", "true"));
         parseTable(tableWithoutProperties);
     }
@@ -188,11 +196,11 @@ public class ExamplesTable {
         this.defaults = defaults;
     }
 
-    private String stripAndParseProperties(String tableAsString) {
+    private String stripProperties(String tableAsString) {
         Pattern pattern = compile("\\{(.*?)\\}\\s*(.*)", DOTALL);
         Matcher matcher = pattern.matcher(tableAsString);
         if (matcher.matches()) {
-            parseProperties(matcher.group(1));
+            propertiesAsString = matcher.group(1);
             return matcher.group(2);
         }
         return tableAsString;
@@ -200,6 +208,9 @@ public class ExamplesTable {
 
     private void parseProperties(String propertiesAsString) {
         properties.clear();
+        properties.setProperty("ignorableSeparator", ignorableSeparator);
+        properties.setProperty("headerSeparator", headerSeparator);
+        properties.setProperty("valueSeparator", valueSeparator);
         try {
             properties.load(new ByteArrayInputStream(propertiesAsString.replace(",", ROW_SEPARATOR).getBytes()));
         } catch (IOException e) {
@@ -218,20 +229,17 @@ public class ExamplesTable {
     }
 
     private void parseByRows(List<String> headers, List<Map<String, String>> data, String tableAsString) {
-        String[] rows = splitInRows(tableAsString);
+        String[] rows = tableAsString.split(ROW_SEPARATOR);
         for (int row = 0; row < rows.length; row++) {
             String rowAsString = rows[row];
-            if (rowAsString.startsWith(properties.getProperty("ignorableSeparator", ignorableSeparator))
-                    || rowAsString.length() == 0) {
-                // skip empty lines and rows that start with ignorable separator
+            if (rowAsString.startsWith(properties.getProperty("ignorableSeparator")) || rowAsString.length() == 0) {
+                // skip ignorable or empty lines
                 continue;
             } else if (row == 0) {
-                List<String> columns = columnsFor(rowAsString,
-                        properties.getProperty("headerSeparator", headerSeparator));
-                headers.addAll(columns);
+                headers.addAll(TableUtils.parseRow(rowAsString, properties.getProperty("headerSeparator"), trim));
             } else {
-                List<String> columns = columnsFor(rowAsString, properties.getProperty("valueSeparator", valueSeparator));
-                Map<String, String> map = createRowMap();
+                List<String> columns = TableUtils.parseRow(rowAsString, properties.getProperty("valueSeparator"), trim);
+                Map<String, String> map = new LinkedHashMap<String, String>();
                 for (int column = 0; column < columns.size(); column++) {
                     if (column < headers.size()) {
                         map.put(headers.get(column), columns.get(column));
@@ -240,44 +248,6 @@ public class ExamplesTable {
                 data.add(map);
             }
         }
-    }
-
-    private String[] splitInRows(String table) {
-        return table.split(ROW_SEPARATOR);
-    }
-
-    private List<String> columnsFor(String row, String separator) {
-        List<String> columns = new ArrayList<String>();
-        // use split limit -1 to ensure that empty strings will not be discarded
-        for (String column : row.split(buildRegex(separator), -1)) {
-            columns.add(valueOf(column));
-        }
-        // there may be a leading and a trailing empty column which we ignore
-        if (StringUtils.isBlank(columns.get(0))) {
-            columns.remove(0);
-        }
-        int lastIndex = columns.size() - 1;
-        if (lastIndex != -1 && StringUtils.isBlank(columns.get(lastIndex))) {
-            columns.remove(lastIndex);
-        }
-        return columns;
-    }
-
-    private String valueOf(String column) {
-        return trim ? column.trim() : column;
-    }
-
-    private String buildRegex(String separator) {
-        char[] chars = separator.toCharArray();
-        StringBuffer sb = new StringBuffer();
-        for (char c : chars) {
-            sb.append("\\").append(c);
-        }
-        return sb.toString();
-    }
-
-    protected Map<String, String> createRowMap() {
-        return new LinkedHashMap<String, String>();
     }
 
     public ExamplesTable withDefaults(Parameters defaults) {

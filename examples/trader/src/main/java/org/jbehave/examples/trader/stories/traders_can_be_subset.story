@@ -19,6 +19,22 @@ Then the traders returned are:
 |Larry|Stooge 3|
 |Curly|Stooge 2|
 
+Scenario: Traders can be searched by name in landscape format
+
+Given the trader ranks: 
+{transformer=FROM_LANDSCAPE}
+|name |Larry   |Moe     |Curly   |
+|rank |Stooge 1|Stooge 2|Stooge 3|
+Then the current trader activity is: 
+|name |trades|
+|Larry|30000 |
+|Moe  |10000 |
+|Curly|20000 |
+Then the traders returned are:
+|name |rank    |
+|Larry|Stooge 3|
+|Curly|Stooge 2|
+
 Scenario: Traders search fails
 
 Given the trader ranks: 

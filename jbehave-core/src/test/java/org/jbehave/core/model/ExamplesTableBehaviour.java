@@ -39,6 +39,8 @@ public class ExamplesTableBehaviour {
 
     private String tableWithSpacesAsString = "|one |two | |\n" + "|11 |12 | |\n" + "| 21| 22| |\n";
 
+    private String landscapeTableAsString = "|one|11|21|\n" + "|two|12|22|\n";
+
     private String wikiTableAsString = "||one||two||\n" + "|11|12|\n" + "|21|22|\n";
 
     private String tableWithCommentsAsString = "|one|two|\n" + "|-- A comment --|\n" + "|11|12|\n"
@@ -144,7 +146,6 @@ public class ExamplesTableBehaviour {
         String tableWithProperties = "{trim=false}\n" + tableWithSpacesAsString;
         ExamplesTable table = new ExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
-        assertThat(properties.size(), equalTo(1));
         assertThat(properties.getProperty("trim"), equalTo("false"));
         ensureWhitespaceIsPreserved(table);
         assertThat(table.asString(), equalTo("|one |two | |\n|11 |12 | |\n| 21| 22| |\n"));
@@ -163,7 +164,17 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldParseTableWithTransformerSpecifiedViaProperties() {
+    public void shouldParseTableAsLandscape() {
+        String tableWithProperties = "{transformer=FROM_LANDSCAPE}\n" + landscapeTableAsString;
+        TableTransformers tableTransformers = new TableTransformers();
+        ExamplesTable table = new ExamplesTableFactory(tableTransformers).createExamplesTable(tableWithProperties);
+        Properties properties = table.getProperties();
+        assertThat(properties.getProperty("transformer"), equalTo("FROM_LANDSCAPE"));
+        ensureColumnOrderIsPreserved(table);
+    }
+
+    @Test
+    public void shouldParseTableWithCustomTransformerSpecifiedViaProperties() {
         String tableWithProperties = "{transformer=myTransformer, trim=false}\n" + tableWithCommentsAsString;
         TableTransformers tableTransformers = new TableTransformers();
         tableTransformers.useTransformer("myTransformer", new TableTransformer(){
