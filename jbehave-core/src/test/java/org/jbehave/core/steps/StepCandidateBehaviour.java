@@ -39,6 +39,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
@@ -67,7 +68,7 @@ public class StepCandidateBehaviour {
         return new StepCandidate(patternAsString, 0, stepType, method, stepsType, stepsFactory, keywords,
                 new RegexPrefixCapturingPatternParser(), new ParameterConverters(), parameterControls);
     }
-
+    
     @Test
     public void shouldMatchStepWithoutParameters() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
@@ -382,10 +383,12 @@ public class StepCandidateBehaviour {
         NamedTypeSteps steps = new NamedTypeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));
-        performStep(candidates.get(0), "Given foo named xyz");
-        performStep(candidates.get(0), "And foo named xyz");
-        performStep(candidates.get(1), "When foo named Bar");
-        performStep(candidates.get(1), "And foo named Bar");
+        StepCandidate step0 = candidateMatchingStep(candidates, "Given foo named $name");
+        performStep(step0, "Given foo named xyz");
+        performStep(step0, "And foo named xyz");
+        StepCandidate step1 = candidateMatchingStep(candidates, "When foo named $name");
+        performStep(step1, "When foo named Bar");
+        performStep(step1, "And foo named Bar");
         assertThat(steps.givenName, equalTo("xyz"));
         assertThat(steps.givenTimes, equalTo(2));
         assertThat(steps.whenName, equalTo("Bar"));
@@ -429,10 +432,12 @@ public class StepCandidateBehaviour {
         NamedTypeSteps steps = new NamedTypeSteps(configuration);
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));
-        candidates.get(0).createMatchedStep("Given foo named xyz", namedParameters).perform(null);
-        candidates.get(0).createMatchedStep("And foo named xyz", namedParameters).perform(null);
-        candidates.get(1).createMatchedStep("When foo named Bar", namedParameters).perform(null);
-        candidates.get(1).createMatchedStep("And foo named Bar", namedParameters).perform(null);
+        StepCandidate step0 = candidateMatchingStep(candidates, "Given foo named $name");
+        step0.createMatchedStep("Given foo named xyz", namedParameters).perform(null);
+        step0.createMatchedStep("And foo named xyz", namedParameters).perform(null);
+        StepCandidate step1 = candidateMatchingStep(candidates, "When foo named $name");
+        step1.createMatchedStep("When foo named Bar", namedParameters).perform(null);
+        step1.createMatchedStep("And foo named Bar", namedParameters).perform(null);
         assertThat(steps.givenName, nullValue());
         assertThat(steps.givenTimes, equalTo(0));
         assertThat(steps.whenName, nullValue());
@@ -444,21 +449,24 @@ public class StepCandidateBehaviour {
         PendingSteps steps = new PendingSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));
-        assertThat(candidates.get(0).matches("Given a pending step"), is(true));
-        assertThat(candidates.get(0).isPending(), is(true));
-        assertThat(candidates.get(1).matches("Given a non pending step"), is(true));
-        assertThat(candidates.get(1).isPending(), is(false));
+        StepCandidate pending = candidateMatchingStep(candidates, "Given a pending step");
+        assertThat(pending, notNullValue());
+        assertThat(pending.isPending(), is(true));
+        StepCandidate nonPending = candidateMatchingStep(candidates, "Given a non pending step");
+        assertThat(nonPending, notNullValue());
+        assertThat(nonPending.isPending(), is(false));
     }
 
-    @Test(expected = StartingWordNotFound.class)
+	@Test(expected = StartingWordNotFound.class)
     public void shouldNotCreateStepOfWrongType() {
         NamedTypeSteps steps = new NamedTypeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));
-        candidates.get(0).createMatchedStep("Given foo named xyz", namedParameters).perform(null);
+        StepCandidate step = candidateMatchingStep(candidates, "Given foo named $name");
+        step.createMatchedStep("Given foo named xyz", namedParameters).perform(null);
         assertThat(steps.givenName, equalTo("xyz"));
         assertThat(steps.whenName, nullValue());
-        candidates.get(0).createMatchedStep("Then foo named xyz", namedParameters).perform(null);
+        step.createMatchedStep("Then foo named xyz", namedParameters).perform(null);
     }
 
     static class NamedTypeSteps extends Steps {
@@ -521,6 +529,16 @@ public class StepCandidateBehaviour {
         }
 
     }
+
+    static StepCandidate candidateMatchingStep(List<StepCandidate> candidates, String stepAsString) {
+        for (StepCandidate candidate : candidates) {
+            if (candidate.matches(stepAsString)){
+                return candidate ;
+            }
+        }
+        return null;
+    }    
+
 
     static Method stepMethodFor(String methodName, Class<? extends Steps> stepsClass) throws IntrospectionException {
         BeanInfo beanInfo = Introspector.getBeanInfo(stepsClass);

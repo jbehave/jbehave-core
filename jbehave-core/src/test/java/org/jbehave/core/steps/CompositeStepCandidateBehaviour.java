@@ -17,6 +17,8 @@ import java.util.Map;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+
+import static org.jbehave.core.steps.StepCandidateBehaviour.candidateMatchingStep;
 import static org.junit.Assert.assertNotNull;
 
 public class CompositeStepCandidateBehaviour {
@@ -25,7 +27,7 @@ public class CompositeStepCandidateBehaviour {
     public void shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters() {
         CompositeSteps steps = new CompositeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
-        StepCandidate candidate = candidates.get(0);
+        StepCandidate candidate = candidateMatchingStep(candidates, "Given $customer has previously bought a $product");
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<String, String>();
         List<Step> composedSteps = new ArrayList<Step>();
@@ -66,7 +68,7 @@ public class CompositeStepCandidateBehaviour {
     public void shouldMatchCompositeStepsAndCreateComposedStepsUsingNamedParameters() {
         CompositeStepsUsingNamedParameters steps = new CompositeStepsUsingNamedParameters();
         List<StepCandidate> candidates = steps.listCandidates();
-        StepCandidate candidate = candidates.get(0);
+        StepCandidate candidate = candidateMatchingStep(candidates, "Given <customer> has previously bough a <product>");
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> namedParameters = new HashMap<String, String>();
         namedParameters.put("customer", "Mr Jones");
@@ -229,7 +231,7 @@ public class CompositeStepCandidateBehaviour {
     public void shouldMatchCompositeStepsWhenStepParameterIsProvided(){
         CompositeStepsParameterMatching steps = new CompositeStepsParameterMatching();
         List<StepCandidate> candidates = steps.listCandidates();
-        StepCandidate candidate = candidates.get(0);
+        StepCandidate candidate = candidateMatchingStep(candidates, "When I login");
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<String, String>();
         List<Step> composedSteps = new ArrayList<Step>();
