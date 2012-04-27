@@ -43,7 +43,7 @@ public class ExamplesTableBehaviour {
 
     private String wikiTableAsString = "||one||two||\n" + "|11|12|\n" + "|21|22|\n";
 
-    private String tableWithCommentsAsString = "|one|two|\n" + "|-- A comment --|\n" + "|11|12|\n"
+    private String tableWithCommentsAsString = "|---------|\n" + "|one|two|\n" + "|-- A comment --|\n" + "|11|12|\n"
             + "|-- Another comment --|\n" + "|21|22|\n";
 
     @Test
@@ -81,13 +81,6 @@ public class ExamplesTableBehaviour {
     public void shouldTrimTableBeforeParsing() {
         String untrimmedTableAsString = "\n    \n" + tableAsString + "\n    \n";
         ExamplesTable table = new ExamplesTable(untrimmedTableAsString);
-        ensureColumnOrderIsPreserved(table);
-        assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
-    }
-
-    @Test
-    public void shouldParseTableWithCommentLines() {
-        ExamplesTable table = new ExamplesTable(tableWithCommentsAsString);
         ensureColumnOrderIsPreserved(table);
         assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
     }
@@ -153,7 +146,8 @@ public class ExamplesTableBehaviour {
 
     @Test
     public void shouldParseTableWithSeparatorsSpecifiedViaProperties() {
-        String tableWithProperties = "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}\n" + tableWithCommentsAsString.replace("|", "!");
+        String tableWithProperties = "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}\n"
+                + tableWithCommentsAsString.replace("|", "!");
         ExamplesTable table = new ExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
         assertThat(properties.size(), equalTo(3));
@@ -177,12 +171,12 @@ public class ExamplesTableBehaviour {
     public void shouldParseTableWithCustomTransformerSpecifiedViaProperties() {
         String tableWithProperties = "{transformer=myTransformer, trim=false}\n" + tableWithCommentsAsString;
         TableTransformers tableTransformers = new TableTransformers();
-        tableTransformers.useTransformer("myTransformer", new TableTransformer(){
+        tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 
             public String transform(String tableAsString, Properties properties) {
                 return tableWithSpacesAsString;
             }
-            
+
         });
         ExamplesTable table = new ExamplesTableFactory(tableTransformers).createExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
@@ -357,7 +351,7 @@ public class ExamplesTableBehaviour {
         assertThat(secondRow.valueAs("three", String.class), equalTo(""));
         assertThat(examplesTable.asString(), equalTo("|one|two|three|\n|111|12|333|\n|21|222||\n"));
     }
-    
+
     @Test
     public void shouldAllowBuildingOfTableFromContent() throws Exception {
         // Given
@@ -367,11 +361,11 @@ public class ExamplesTableBehaviour {
         // When
         String tableAsString = "|one|two|\n|11|12|\n|21|22|";
         ExamplesTable originalTable = factory.createExamplesTable(tableAsString);
-        List<Map<String,String>> content = originalTable.getRows();
+        List<Map<String, String>> content = originalTable.getRows();
         content.get(0).put("three", "13");
         content.get(1).put("three", "23");
         ExamplesTable updatedTable = originalTable.withRows(content);
-        
+
         // Then
         assertThat(updatedTable.asString(), equalTo("|one|two|three|\n|11|12|13|\n|21|22|23|\n"));
     }
@@ -388,18 +382,26 @@ public class ExamplesTableBehaviour {
         OutputStream out = new ByteArrayOutputStream();
         PrintStream output = new PrintStream(out);
         table.outputTo(output);
-        
+
         // Then
         assertThat(out.toString(), equalTo(tableAsString));
     }
 
     @Test
     public void shouldIgnoreEmptyLines() throws Exception {
-      // ignore blank line
-      String tableWithEmptyLine = "|one|two|\n|a|b|\n\n|c|d|\n";
-      ExamplesTable table = new ExamplesTable(tableWithEmptyLine);
-      assertThat(table.getRowCount(), equalTo(2));
-      assertThat(table.asString(), equalTo("|one|two|\n|a|b|\n|c|d|\n"));
+        // ignore blank line
+        String tableWithEmptyLine = "|one|two|\n|a|b|\n\n|c|d|\n";
+        ExamplesTable table = new ExamplesTable(tableWithEmptyLine);
+        assertThat(table.getRowCount(), equalTo(2));
+        assertThat(table.asString(), equalTo("|one|two|\n|a|b|\n|c|d|\n"));
+    }
+
+    @Test
+    public void shouldIgnoreAllCommentLines() {
+        // ignore comment lines
+        ExamplesTable table = new ExamplesTable(tableWithCommentsAsString);
+        ensureColumnOrderIsPreserved(table);
+        assertThat(table.asString(), equalTo(tableAsString));
     }
 
     @Test

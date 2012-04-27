@@ -110,8 +110,8 @@ import static java.util.regex.Pattern.compile;
  * </pre>
  * 
  * The transformer needs to be registered by name via the
- * {@link TableTransformers#useTransformer(String, TableTransformer)}.
- * A few transformers are already registered by default in {@link TableTransformers}.
+ * {@link TableTransformers#useTransformer(String, TableTransformer)}. A few
+ * transformers are already registered by default in {@link TableTransformers}.
  * </p>
  * 
  * <p>
@@ -236,7 +236,7 @@ public class ExamplesTable {
             if (rowAsString.startsWith(properties.getProperty("ignorableSeparator")) || rowAsString.length() == 0) {
                 // skip ignorable or empty lines
                 continue;
-            } else if (row == 0) {
+            } else if (headers.isEmpty()) {
                 headers.addAll(TableUtils.parseRow(rowAsString, properties.getProperty("headerSeparator"), trim));
             } else {
                 List<String> columns = TableUtils.parseRow(rowAsString, properties.getProperty("valueSeparator"), trim);
