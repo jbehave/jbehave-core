@@ -72,7 +72,7 @@ public class CrossReference extends Format {
         return this;
     }
 
-    public CrossReference withMetaFilter(String metaFilter){
+    public CrossReference withMetaFilter(String metaFilter) {
         this.metaFilter = metaFilter;
         return this;
     }
@@ -155,7 +155,7 @@ public class CrossReference extends Format {
         }
 
     }
-    
+
     @SuppressWarnings("serial")
     public static class XrefOutputFailed extends RuntimeException {
 
@@ -201,6 +201,8 @@ public class CrossReference extends Format {
 
             @Override
             public void beforeStory(Story story, boolean givenStory) {
+                if (givenStory)
+                    return;
                 synchronized (stories) {
                     stories.add(new StoryHolder(story));
                 }
@@ -225,6 +227,8 @@ public class CrossReference extends Format {
 
             @Override
             public void afterStory(boolean givenStory) {
+                if (givenStory)
+                    return;
                 times.put(currentStory.get().getPath(), System.currentTimeMillis() - currentStoryStart.get());
                 if (outputAfterEachStory) {
                     outputToFiles(storyReporterBuilder);
