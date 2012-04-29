@@ -15,7 +15,6 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.embedder.executors.FixedThreadExecutors;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.FailingUponPendingStep;
@@ -30,7 +29,6 @@ import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.ProvidedStepsFactory;
-import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Stepdoc;
 
@@ -194,28 +192,14 @@ public class Embedder {
         }
 
         try {
+
             // set up run context
-            Configuration configuration = configuration();
             StoryManager storyManager = createStoryManager();
             MetaFilter filter = metaFilter();
-            if ( configuration.storyReporterBuilder().hasCrossReference() ){
-                configuration.storyReporterBuilder().crossReference().withMetaFilter(filter.asString());
-            }
             BatchFailures failures = new BatchFailures(embedderControls.verboseFailures());
 
-            // run before stories
-            State beforeStories = storyManager.runningBeforeOrAfterStories(failures, Stage.BEFORE);
-
-            // run stories as paths
-            storyManager.runningStoriesAsPaths(storyPaths, filter, beforeStories);
-            storyManager.waitUntilAllDoneOrFailed(failures);
-            List<Story> notAllowed = storyManager.notAllowedBy(filter);
-            if (!notAllowed.isEmpty()) {
-                embedderMonitor.storiesNotAllowed(notAllowed, filter, embedderControls.verboseFiltering());
-            }
-
-            // run after stories
-            storyManager.runningBeforeOrAfterStories(failures, Stage.AFTER);
+            // run stories
+            storyManager.runStories(storyPaths, filter, failures);
 
             // handle any failures
             handleFailures(failures);
@@ -228,6 +212,7 @@ public class Embedder {
                 generateReportsView();
             }
             shutdownExecutorService();
+
         }
     }
 
@@ -413,7 +398,7 @@ public class Embedder {
     }
 
     public StoryManager storyManager() {
-        if ( storyManager == null ){
+        if (storyManager == null) {
             storyManager = createStoryManager();
         }
         return storyManager;

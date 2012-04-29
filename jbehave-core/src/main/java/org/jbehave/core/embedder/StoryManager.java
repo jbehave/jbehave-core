@@ -64,8 +64,29 @@ public class StoryManager {
         }
         return outcomes;
     }
+    
+    public void runStories(List<String> storyPaths, MetaFilter filter, BatchFailures failures) {
+        // configure cross reference with meta filter
+        if ( configuration.storyReporterBuilder().hasCrossReference() ){
+            configuration.storyReporterBuilder().crossReference().withMetaFilter(filter.asString());
+        }
+        
+        // run before stories
+        State beforeStories = runBeforeOrAfterStories(failures, Stage.BEFORE);
 
-    public State runningBeforeOrAfterStories(BatchFailures failures, Stage stage) {
+        // run stories as paths
+        runningStoriesAsPaths(storyPaths, filter, beforeStories);
+        waitUntilAllDoneOrFailed(failures);
+        List<Story> notAllowed = notAllowedBy(filter);
+        if (!notAllowed.isEmpty()) {
+            embedderMonitor.storiesNotAllowed(notAllowed, filter, embedderControls.verboseFiltering());
+        }
+
+        // run after stories
+       runBeforeOrAfterStories(failures, Stage.AFTER);
+    }
+
+    public State runBeforeOrAfterStories(BatchFailures failures, Stage stage) {
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         State state = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, stage);
         if (storyRunner.failed(state)) {
