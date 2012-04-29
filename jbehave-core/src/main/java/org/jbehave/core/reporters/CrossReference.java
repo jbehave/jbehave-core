@@ -2,6 +2,17 @@ package org.jbehave.core.reporters;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.StepPattern;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.NullStepMonitor;
+import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.steps.StepType;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,16 +24,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.StepPattern;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.NullStepMonitor;
-import org.jbehave.core.steps.StepMonitor;
-import org.jbehave.core.steps.StepType;
 
 public class CrossReference extends Format {
 
@@ -42,6 +43,7 @@ public class CrossReference extends Format {
     private boolean excludeStoriesWithNoExecutedScenarios = false;
     private boolean outputAfterEachStory = false;
     private Format threadSafeDelegateFormat;
+    private boolean pendingAsFailedStories;
 
     public CrossReference() {
         this("XREF");
@@ -62,6 +64,11 @@ public class CrossReference extends Format {
     public CrossReference withXmlOnly() {
         doJson = false;
         doXml = true;
+        return this;
+    }
+
+    public CrossReference markPendingStepsAsFailedStories() {
+        pendingAsFailedStories = true;
         return this;
     }
 
@@ -189,6 +196,14 @@ public class CrossReference extends Format {
                 currentStory.set(story);
                 currentStoryStart.set(System.currentTimeMillis());
                 super.beforeStory(story, givenStory);
+            }
+
+            @Override
+            public void pending(String step) {
+                if (pendingAsFailedStories) {
+                    failingStories.add(currentStory.get().getPath());
+                }
+                super.pending(step);
             }
 
             @Override
