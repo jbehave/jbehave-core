@@ -199,6 +199,9 @@ public class Embedder {
             StoryRunner storyRunner = storyRunner();
             StoryManager storyManager = createStoryManager();
             MetaFilter filter = metaFilter();
+            if ( configuration.storyReporterBuilder().hasCrossReference() ){
+                configuration.storyReporterBuilder().crossReference().withMetaFilter(filter.asString());
+            }
             BatchFailures failures = new BatchFailures(embedderControls.verboseFailures());
 
             // run before stories

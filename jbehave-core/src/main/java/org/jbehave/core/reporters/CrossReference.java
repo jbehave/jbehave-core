@@ -43,6 +43,7 @@ public class CrossReference extends Format {
     private Set<String> failingStories = new HashSet<String>();
     private Set<String> stepsPerformed = new HashSet<String>();
     private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
+    private String metaFilter = "";
     private boolean doJson = true;
     private boolean doXml = true;
     private boolean excludeStoriesWithNoExecutedScenarios = false;
@@ -71,6 +72,11 @@ public class CrossReference extends Format {
         return this;
     }
 
+    public CrossReference withMetaFilter(String metaFilter){
+        this.metaFilter = metaFilter;
+        return this;
+    }
+
     public CrossReference withPendingStepStrategy(PendingStepStrategy pendingStepStrategy) {
         this.pendingStepStrategy = pendingStepStrategy;
         return this;
@@ -89,6 +95,10 @@ public class CrossReference extends Format {
     public CrossReference excludingStoriesWithNoExecutedScenarios(boolean exclude) {
         this.excludeStoriesWithNoExecutedScenarios = exclude;
         return this;
+    }
+
+    public String getMetaFilter() {
+        return metaFilter;
     }
 
     public StepMonitor getStepMonitor() {
@@ -145,15 +155,7 @@ public class CrossReference extends Format {
         }
 
     }
-
-    /**
-     * Override this if the metaFilter is important to you in the Story
-     * Navigator output
-     */
-    public String getMetaFilter() {
-        return "";
-    }
-
+    
     @SuppressWarnings("serial")
     public static class XrefOutputFailed extends RuntimeException {
 
