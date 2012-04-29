@@ -14,7 +14,9 @@ import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
+import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * Manages the execution and outcomes of running stories. While each story is
@@ -61,6 +63,15 @@ public class StoryManager {
             outcomes.add(new StoryOutcome(story));
         }
         return outcomes;
+    }
+
+    public State runningBeforeOrAfterStories(BatchFailures failures, Stage stage) {
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        State state = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, stage);
+        if (storyRunner.failed(state)) {
+            failures.put(state.toString(), storyRunner.failure(state));
+        }
+        return state;
     }
 
     public Map<String, RunningStory> runningStoriesAsPaths(List<String> storyPaths, MetaFilter filter,

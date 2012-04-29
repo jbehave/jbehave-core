@@ -77,8 +77,9 @@ public class Embedder {
 
         processSystemProperties();
 
+        StoryManager storyManager = storyManager();
         for (String storyPath : storyPaths) {
-            Story story = storyRunner.storyOfPath(configuration, storyPath);
+            Story story = storyManager.storyOfPath(storyPath);
             embedderMonitor.mappingStory(storyPath, metaFilters);
             storyMapper.map(story, new MetaFilter(""));
             for (String filter : metaFilters) {
@@ -195,8 +196,6 @@ public class Embedder {
         try {
             // set up run context
             Configuration configuration = configuration();
-            InjectableStepsFactory stepsFactory = stepsFactory();
-            StoryRunner storyRunner = storyRunner();
             StoryManager storyManager = createStoryManager();
             MetaFilter filter = metaFilter();
             if ( configuration.storyReporterBuilder().hasCrossReference() ){
@@ -205,13 +204,9 @@ public class Embedder {
             BatchFailures failures = new BatchFailures(embedderControls.verboseFailures());
 
             // run before stories
-            List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-            State beforeStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
-            if (storyRunner.failed(beforeStories)) {
-                failures.put(beforeStories.toString(), storyRunner.failure(beforeStories));
-            }
+            State beforeStories = storyManager.runningBeforeOrAfterStories(failures, Stage.BEFORE);
 
-            // run stories
+            // run stories as paths
             storyManager.runningStoriesAsPaths(storyPaths, filter, beforeStories);
             storyManager.waitUntilAllDoneOrFailed(failures);
             List<Story> notAllowed = storyManager.notAllowedBy(filter);
@@ -220,10 +215,7 @@ public class Embedder {
             }
 
             // run after stories
-            State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
-            if (storyRunner.failed(afterStories)) {
-                failures.put(afterStories.toString(), storyRunner.failure(afterStories));
-            }
+            storyManager.runningBeforeOrAfterStories(failures, Stage.AFTER);
 
             // handle any failures
             handleFailures(failures);
