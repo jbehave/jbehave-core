@@ -1,5 +1,9 @@
 package org.jbehave.core.embedder;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +35,9 @@ import org.jbehave.core.steps.StepCreator.ParameterisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+
 /**
  * Creates a tree of {@link Performable} objects.
  */
@@ -40,6 +47,26 @@ public class PerformableTree {
 
     public PerformableRoot getRoot() {
         return root;
+    }
+
+    public synchronized void serialiseRoot(File outputDirectory) {
+        serialiseRoot("xml", outputDirectory);
+        serialiseRoot("json",  outputDirectory);
+    }
+
+    private void serialiseRoot(String ext, File outputDirectory) {
+        XStream xstream = (ext.equals("json") ? new XStream(new JsonHierarchicalStreamDriver()) : new XStream());
+        File outputDir = new File(outputDirectory, "view");
+        outputDir.mkdirs();
+        String name = "tree."+ext;
+        try {
+            Writer writer = new FileWriter(new File(outputDir, name));
+            writer.write(xstream.toXML(root));
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(ext, e);
+        }
     }
 
     public void addStories(RunContext context, List<String> storyPaths) {
@@ -701,7 +728,8 @@ public class PerformableTree {
                 }
             }
             if (!pendingSteps.isEmpty()) {
-                PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration().keywords());
+                PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration()
+                        .keywords());
                 List<String> methods = new ArrayList<String>();
                 for (PendingStep pendingStep : pendingSteps) {
                     if (!pendingStep.annotated()) {
@@ -711,7 +739,7 @@ public class PerformableTree {
                 context.reporter().pendingMethods(methods);
             }
         }
-        
+
         @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

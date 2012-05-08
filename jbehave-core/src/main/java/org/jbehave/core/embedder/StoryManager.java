@@ -92,6 +92,7 @@ public class StoryManager {
         // collect failures
         failures.putAll(context.getFailures());
 
+        performableTree.serialiseRoot(configuration.storyReporterBuilder().outputDirectory());
     }
 
     public Map<String, RunningStory> runningStoriesAsPaths(RunContext context, List<String> storyPaths) {
