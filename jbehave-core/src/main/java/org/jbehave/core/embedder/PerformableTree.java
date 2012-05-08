@@ -690,8 +690,28 @@ public class PerformableTree {
                 state = state.run(step, reporter, null);
             }
             context.stateIs(state);
+            generatePendingStepMethods(context, steps);
         }
 
+        private void generatePendingStepMethods(RunContext context, List<Step> steps) {
+            List<PendingStep> pendingSteps = new ArrayList<PendingStep>();
+            for (Step step : steps) {
+                if (step instanceof PendingStep) {
+                    pendingSteps.add((PendingStep) step);
+                }
+            }
+            if (!pendingSteps.isEmpty()) {
+                PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration().keywords());
+                List<String> methods = new ArrayList<String>();
+                for (PendingStep pendingStep : pendingSteps) {
+                    if (!pendingStep.annotated()) {
+                        methods.add(generator.generateMethod(pendingStep));
+                    }
+                }
+                context.reporter().pendingMethods(methods);
+            }
+        }
+        
         @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
