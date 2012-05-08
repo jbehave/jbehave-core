@@ -5,7 +5,7 @@
   <parent>
     <artifactId>jbehave-examples</artifactId>
     <groupId>org.jbehave</groupId>
-    <version>3.7-SNAPSHOT</version>
+    <version>4.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-scala-example</artifactId>
   <name>JBehave Scala Example</name>
