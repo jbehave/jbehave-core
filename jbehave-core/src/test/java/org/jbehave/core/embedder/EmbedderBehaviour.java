@@ -25,7 +25,7 @@ import org.jbehave.core.embedder.Embedder.EmbedderFailureStrategy;
 import org.jbehave.core.embedder.Embedder.RunningEmbeddablesFailed;
 import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.embedder.Embedder.ViewGenerationFailed;
-import org.jbehave.core.embedder.StoryRunner.State;
+import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.io.StoryPathResolver;
@@ -47,7 +47,6 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Steps;
 import org.junit.Test;
@@ -67,6 +66,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
 
+import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -79,7 +79,7 @@ public class EmbedderBehaviour {
     @Test
     public void shouldMapStoriesAsEmbeddables() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         String myEmbeddableName = MyStoryMaps.class.getName();
@@ -91,7 +91,7 @@ public class EmbedderBehaviour {
 
         // When
         Configuration configuration = new MostUsefulConfiguration();
-        Embedder embedder = embedderWith(runner, new EmbedderControls(), monitor);
+        Embedder embedder = embedderWith(performableTree, new EmbedderControls(), monitor);
         embedder.useClassLoader(classLoader);
         embedder.useConfiguration(configuration);
         embedder.runAsEmbeddables(classNames);
@@ -108,12 +108,12 @@ public class EmbedderBehaviour {
     public void shouldMapStoriesAsPaths() throws Throwable {
         // Given
         StoryMapper mapper = mock(StoryMapper.class);
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
 
-        Embedder embedder = embedderWith(mapper, runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(mapper, performableTree, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
         StoryPathResolver resolver = configuration.storyPathResolver();
@@ -124,7 +124,7 @@ public class EmbedderBehaviour {
             storyPaths.add(storyPath);
             Story story = new Story(storyPath);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
         }
 
         // When
@@ -148,7 +148,7 @@ public class EmbedderBehaviour {
     @Test
     public void shouldRunStoriesAsEmbeddables() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
@@ -165,7 +165,7 @@ public class EmbedderBehaviour {
         // When
         Configuration configuration = new MostUsefulConfiguration();
         CandidateSteps steps = mock(CandidateSteps.class);
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.useConfiguration(configuration);
         embedder.useCandidateSteps(asList(steps));
@@ -185,7 +185,7 @@ public class EmbedderBehaviour {
     @Test
     public void shouldNotRunStoriesAsEmbeddablesIfAbstract() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
@@ -201,7 +201,7 @@ public class EmbedderBehaviour {
         when(classLoader.newInstance(Embeddable.class, myOtherEmbeddableName)).thenReturn(myOtherEmbeddable);
 
         // When
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
         embedder.runAsEmbeddables(classNames);
@@ -214,7 +214,7 @@ public class EmbedderBehaviour {
     @Test
     public void shouldNotRunStoriesAsEmbeddablesIfSkipFlagIsSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doSkip(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
@@ -229,7 +229,7 @@ public class EmbedderBehaviour {
         when(classLoader.newInstance(Embeddable.class, myOtherEmbeddableName)).thenReturn(myOtherEmbeddable);
 
         // When
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.configuration().useStoryPathResolver(new UnderscoredCamelCaseResolver());
         embedder.runAsEmbeddables(classNames);
@@ -244,7 +244,7 @@ public class EmbedderBehaviour {
     public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureInStoriesFlagIsNotSet()
             throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
@@ -258,7 +258,7 @@ public class EmbedderBehaviour {
         when(classLoader.newInstance(Embeddable.class, myOtherEmbeddableName)).thenReturn(myOtherEmbeddable);
 
         // When
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.runAsEmbeddables(classNames);
 
@@ -268,7 +268,7 @@ public class EmbedderBehaviour {
     @Test
     public void shouldNotThrowExceptionUponFailingStoriesAsEmbeddablesIfIgnoreFailureFlagsAreSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInStories(true)
                 .doIgnoreFailureInView(true);
         OutputStream out = new ByteArrayOutputStream();
@@ -283,7 +283,7 @@ public class EmbedderBehaviour {
         when(classLoader.newInstance(Embeddable.class, myOtherEmbeddableName)).thenReturn(myOtherEmbeddable);
 
         // When
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.runAsEmbeddables(classNames);
 
@@ -298,7 +298,7 @@ public class EmbedderBehaviour {
     @Test
     public void shouldRunStoriesAsEmbeddablesInBatchIfBatchFlagIsSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
@@ -313,7 +313,7 @@ public class EmbedderBehaviour {
         when(classLoader.newInstance(Embeddable.class, myOtherEmbeddableName)).thenReturn(myOtherEmbeddable);
 
         // When
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.runAsEmbeddables(classNames);
 
@@ -328,7 +328,7 @@ public class EmbedderBehaviour {
     public void shouldThrowExceptionUponFailingStoriesAsEmbeddablesInBatchIfIgnoreFailureInStoriesFlagIsNotSet()
             throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
@@ -342,7 +342,7 @@ public class EmbedderBehaviour {
         when(classLoader.newInstance(Embeddable.class, myOtherStoryName)).thenReturn(myOtherStory);
 
         // When
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.runAsEmbeddables(classNames);
 
@@ -353,7 +353,7 @@ public class EmbedderBehaviour {
     @Test
     public void shouldRunFailingStoriesAsEmbeddablesInBatchIfBatchFlagIsSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true).doIgnoreFailureInStories(true)
                 .doIgnoreFailureInView(true);
         OutputStream out = new ByteArrayOutputStream();
@@ -369,7 +369,7 @@ public class EmbedderBehaviour {
         when(classLoader.newInstance(Embeddable.class, myOtherStoryName)).thenReturn(myOtherStory);
 
         // When
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.runAsEmbeddables(classNames);
 
@@ -385,7 +385,7 @@ public class EmbedderBehaviour {
     public void shouldNotGenerateViewWhenRunningStoriesAsEmbeddablesIfGenerateViewAfterStoriesFlagIsNotSet()
             throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
@@ -400,7 +400,7 @@ public class EmbedderBehaviour {
         when(classLoader.newInstance(Embeddable.class, myOtherEmbeddableName)).thenReturn(myOtherEmbeddable);
 
         // When
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.useClassLoader(classLoader);
         embedder.runAsEmbeddables(classNames);
 
@@ -415,13 +415,15 @@ public class EmbedderBehaviour {
     @Test
     public void shouldRunStoriesAsPaths() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+        MetaFilter filter = embedder.metaFilter();
         final StoryReporter storyReporter = mock(StoryReporter.class);
         MostUsefulConfiguration configuration = new MostUsefulConfiguration() {
             @Override
@@ -430,12 +432,8 @@ public class EmbedderBehaviour {
             }
         };
         embedder.useConfiguration(configuration);
-        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
-        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         StoryPathResolver resolver = configuration.storyPathResolver();
 
-        State beforeStories = mock(State.class);
-        when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
@@ -443,17 +441,21 @@ public class EmbedderBehaviour {
             storyPaths.add(storyPath);
             Story story = mockStory(Meta.EMPTY);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(story.getPath()).thenReturn(storyPath);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class),
+                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
 
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(Matchers.eq(configuration), Matchers.eq(stepsFactory),
-                    Matchers.eq(stories.get(storyPath)), Matchers.isA(MetaFilter.class), Matchers.any(State.class));
+            verify(performableTree).perform(Matchers.isA(RunContext.class), Matchers.eq(stories.get(storyPath)));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatReportsViewGenerated(out);
@@ -463,13 +465,13 @@ public class EmbedderBehaviour {
     @Test
     public void shouldRunStoriesApplyingFilter() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         final StoryReporter storyReporter = mock(StoryReporter.class);
 
         Configuration configuration = new MostUsefulConfiguration() {
@@ -479,11 +481,8 @@ public class EmbedderBehaviour {
             }
         };
         embedder.useConfiguration(configuration);
-        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        State beforeStories = mock(State.class);
-        when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
         Meta meta = mock(Meta.class);
@@ -493,21 +492,24 @@ public class EmbedderBehaviour {
             Story story = mockStory(Meta.EMPTY);
             when(story.getMeta()).thenReturn(meta);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(story.getPath()).thenReturn(storyPath);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
 
         // When
         MetaFilter filter = mock(MetaFilter.class);
         when(filter.allow(meta)).thenReturn(false);
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class),
+                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
+                runContext);
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
-
         for (String storyPath : storyPaths) {
-            verify(runner).run(Matchers.eq(configuration), Matchers.eq(stepsFactory),
-                    Matchers.eq(stories.get(storyPath)), Matchers.isA(MetaFilter.class), Matchers.any(State.class));
-            assertThat(out.toString(), containsString("Running story " + storyPath));
+            verify(performableTree, never()).perform(runContext, stories.get(storyPath));
         }
         assertThatReportsViewGenerated(out);
         assertThat(embedder.hasExecutorService(), is(false));
@@ -518,11 +520,11 @@ public class EmbedderBehaviour {
     public void shouldProcessSystemProperties() throws Throwable {
 
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
 
         // When
         embedder.processSystemProperties();
@@ -549,15 +551,16 @@ public class EmbedderBehaviour {
     @Test
     public void shouldNotRunStoriesIfSkipFlagIsSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doSkip(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
-        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+        MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
@@ -566,15 +569,21 @@ public class EmbedderBehaviour {
             storyPaths.add(storyPath);
             Story story = mockStory(Meta.EMPTY);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(story.getPath()).thenReturn(storyPath);
         }
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class),
+                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
+                runContext);
 
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner, never()).run(configuration, candidateSteps, stories.get(storyPath), MetaFilter.EMPTY);
+            verify(performableTree, never()).perform(runContext, stories.get(storyPath));
             assertThat(out.toString(), not(containsString("Running story " + storyPath)));
         }
         assertThat(out.toString(), containsString("Skipped stories " + storyPaths));
@@ -582,9 +591,9 @@ public class EmbedderBehaviour {
 
     @Test()
     public void shouldCancelStoryIfTimeoutIsSetAndStoryIsBusy() throws Throwable {
-        testStoryIfTimeoutIsSet(new Answer<StoryRunner>() {
+        testStoryIfTimeoutIsSet(new Answer<PerformableTree>() {
 
-            public StoryRunner answer(InvocationOnMock invocation) throws Throwable {
+            public PerformableTree answer(InvocationOnMock invocation) throws Throwable {
                 for (long i = 0; i < Long.MAX_VALUE; i++) {
                     // keep it busy
                 }
@@ -596,9 +605,9 @@ public class EmbedderBehaviour {
 
     @Test()
     public void shouldCancelStoryIfTimeoutIsSetAndStoryIsSleeping() throws Throwable {
-        testStoryIfTimeoutIsSet(new Answer<StoryRunner>() {
+        testStoryIfTimeoutIsSet(new Answer<PerformableTree>() {
 
-            public StoryRunner answer(InvocationOnMock invocation) throws Throwable {
+            public PerformableTree answer(InvocationOnMock invocation) throws Throwable {
                 TimeUnit.SECONDS.sleep(3);
                 return null;
             }
@@ -606,17 +615,19 @@ public class EmbedderBehaviour {
         });
     }
 
-    private void testStoryIfTimeoutIsSet(Answer<StoryRunner> answer) throws Throwable {
+    private void testStoryIfTimeoutIsSet(Answer<PerformableTree> answer) throws Throwable {
         // Given
         long timeoutInSecs = 1;
 
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderMonitor monitor = mock(EmbedderMonitor.class);
 
         EmbedderControls embedderControls = new EmbedderControls().useStoryTimeoutInSecs(timeoutInSecs);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+        MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
 
         List<String> storyPaths = new ArrayList<String>();
@@ -624,12 +635,14 @@ public class EmbedderBehaviour {
         storyPaths.add(storyPath);
         Story story = mockStory(Meta.EMPTY);
         when(story.getPath()).thenReturn(storyPath);
-        when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+        when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+        when(story.getPath()).thenReturn(storyPath);
 
-        Mockito.doAnswer(answer)
-                .when(runner)
-                .run(Matchers.any(Configuration.class), Matchers.any(InjectableStepsFactory.class), Matchers.eq(story),
-                        Matchers.any(MetaFilter.class), Matchers.any(State.class));
+        Mockito.doAnswer(answer).when(performableTree).perform(Matchers.isA(RunContext.class), Matchers.eq(story));
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(MetaFilter.class),
+                        isA(BatchFailures.class))).thenReturn(runContext);
 
         // When
         boolean exceptionWasThrown = false;
@@ -641,7 +654,7 @@ public class EmbedderBehaviour {
 
         // Then
         assertThat(exceptionWasThrown, is(true));
-        verify(runner).cancelStory(Matchers.eq(story), Matchers.any(StoryDuration.class));
+        assertThat(runContext.isCancelled(story), org.hamcrest.Matchers.is(true));
         verify(monitor).storyTimeout(Matchers.eq(story), Matchers.any(StoryDuration.class));
     }
 
@@ -649,19 +662,17 @@ public class EmbedderBehaviour {
     @Test(expected = RunningStoriesFailed.class)
     public void shouldThrowExceptionUponFailingStoriesAsPathsIfIgnoreFailureInStoriesFlagIsNotSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
-        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+        MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        State beforeStories = mock(State.class);
-        when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
@@ -669,12 +680,17 @@ public class EmbedderBehaviour {
             storyPaths.add(storyPath);
             Story story = mockStory(Meta.EMPTY);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(story.getPath()).thenReturn(storyPath);
         }
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class),
+                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
+                runContext);
+
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
-                    Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class),
-                    Matchers.any(State.class));
+            doThrow(new RuntimeException(storyPath + " failed")).when(performableTree).perform(runContext, stories.get(storyPath));
         }
         // When
         embedder.runStoriesAsPaths(storyPaths);
@@ -687,19 +703,17 @@ public class EmbedderBehaviour {
     @Test
     public void shouldNotThrowExceptionUponFailingStoriesAsPathsIfIgnoreFailureInStoriesFlagIsSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInStories(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
-        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+        MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        State beforeStories = mock(State.class);
-        when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
@@ -707,12 +721,17 @@ public class EmbedderBehaviour {
             storyPaths.add(storyPath);
             Story story = mockStory(Meta.EMPTY);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(story.getPath()).thenReturn(storyPath);
         }
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class),
+                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
+                runContext);
+
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
-                    Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class),
-                    Matchers.any(State.class));
+            doThrow(new RuntimeException(storyPath + " failed")).when(performableTree).perform(runContext, stories.get(storyPath));
         }
 
         // When
@@ -730,15 +749,16 @@ public class EmbedderBehaviour {
     @Test
     public void shouldRunStoriesAsPathsInBatchIfBatchFlagIsSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
-        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
+        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+        MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
@@ -747,12 +767,19 @@ public class EmbedderBehaviour {
             storyPaths.add(storyPath);
             Story story = mockStory(Meta.EMPTY);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(story.getPath()).thenReturn(storyPath);
         }
-        for (String storyPath : storyPaths) {
-            doNothing().when(runner).run(configuration, candidateSteps, stories.get(storyPath), MetaFilter.EMPTY);
-        }
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class),
+                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
+                runContext);
 
+        for (String storyPath : storyPaths) {
+            doNothing().when(performableTree).perform(runContext, stories.get(storyPath));
+        }
+        
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
@@ -767,20 +794,17 @@ public class EmbedderBehaviour {
     public void shouldThrowExceptionUponFailingStoriesAsPathsInBatchIfIgnoreFailureInStoriesFlagIsNotSet()
             throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
-        List<CandidateSteps> candidateSteps = embedder.candidateSteps();
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
-
+        MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        State beforeStories = mock(State.class);
-        when(runner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE)).thenReturn(beforeStories);
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
@@ -788,12 +812,17 @@ public class EmbedderBehaviour {
             storyPaths.add(storyPath);
             Story story = mockStory(Meta.EMPTY);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(story.getPath()).thenReturn(storyPath);
         }
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class),
+                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
+                runContext);
+
         for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(runner).run(Matchers.eq(configuration),
-                    Matchers.eq(stepsFactory), Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class),
-                    Matchers.any(State.class));
+            doThrow(new RuntimeException(storyPath + " failed")).when(performableTree).perform(runContext, stories.get(storyPath));
         }
 
         // When
@@ -807,16 +836,16 @@ public class EmbedderBehaviour {
     @Test
     public void shouldRunFailingStoriesAsPathsInBatchIfBatchFlagIsSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doBatch(true).doIgnoreFailureInStories(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
-
+        MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
         List<String> storyPaths = new ArrayList<String>();
         Map<String, Story> stories = new HashMap<String, Story>();
@@ -825,14 +854,20 @@ public class EmbedderBehaviour {
             storyPaths.add(storyPath);
             Story story = mockStory(Meta.EMPTY);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(story.getPath()).thenReturn(storyPath);
         }
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class),
+                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
+                runContext);
+
         BatchFailures failures = new BatchFailures();
         for (String storyPath : storyPaths) {
             RuntimeException thrown = new RuntimeException(storyPath + " failed");
             failures.put(storyPath, thrown);
-            doThrow(thrown).when(runner).run(Matchers.eq(configuration), Matchers.eq(stepsFactory),
-                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+            doThrow(thrown).when(performableTree).perform(runContext, stories.get(storyPath));
         }
 
         // When
@@ -850,15 +885,16 @@ public class EmbedderBehaviour {
     @Test
     public void shouldNotGenerateViewWhenRunningStoriesAsPathsIfGenerateViewAfterStoriesFlagIsNotSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         Configuration configuration = embedder.configuration();
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
+        MetaFilter filter = embedder.metaFilter();
 
         StoryPathResolver resolver = configuration.storyPathResolver();
         List<String> storyPaths = new ArrayList<String>();
@@ -868,16 +904,21 @@ public class EmbedderBehaviour {
             storyPaths.add(storyPath);
             Story story = mockStory(Meta.EMPTY);
             stories.put(storyPath, story);
-            when(runner.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
+            when(story.getPath()).thenReturn(storyPath);
         }
+        RunContext runContext = new RunContext(configuration, stepsFactory, filter, new BatchFailures());
+        when(
+                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class),
+                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
+                runContext);
 
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(runner).run(Matchers.eq(configuration), Matchers.eq(stepsFactory),
-                    Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class), Matchers.any(State.class));
+            verify(performableTree).perform(runContext, stories.get(storyPath));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThat(out.toString(), not(containsString("Generating stories view")));
@@ -933,13 +974,13 @@ public class EmbedderBehaviour {
     @Test
     public void shouldGenerateReportsViewFromExistingReports() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
 
         File outputDirectory = new File("target/output");
@@ -956,13 +997,13 @@ public class EmbedderBehaviour {
     @Test(expected = RunningStoriesFailed.class)
     public void shouldFailWhenGeneratingReportsViewWithFailedSteps() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
 
         File outputDirectory = new File("target/output");
@@ -979,13 +1020,13 @@ public class EmbedderBehaviour {
     @Test(expected = RunningStoriesFailed.class)
     public void shouldFailWhenGeneratingReportsViewWithPendingSteps() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doGenerateViewAfterStories(false);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator).usePendingStepStrategy(new FailingUponPendingStep());
 
         File outputDirectory = new File("target/output");
@@ -1002,13 +1043,13 @@ public class EmbedderBehaviour {
     @Test
     public void shouldNotGenerateViewIfSkipFlagIsSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doSkip(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useStoryReporterBuilder(new StoryReporterBuilder().withDefaultFormats());
         embedder.configuration().useViewGenerator(viewGenerator);
 
@@ -1026,13 +1067,13 @@ public class EmbedderBehaviour {
     @Test(expected = ViewGenerationFailed.class)
     public void shouldThrowExceptionIfViewGenerationFails() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
@@ -1047,13 +1088,13 @@ public class EmbedderBehaviour {
     @Test(expected = RunningStoriesFailed.class)
     public void shouldThrowExceptionIfScenariosFailedAndIgnoreFlagIsNotSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
@@ -1067,13 +1108,13 @@ public class EmbedderBehaviour {
     @Test(expected = RunningStoriesFailed.class)
     public void shouldThrowExceptionIfNoScenariosRunForStoriesAndIgnoreFlagIsNotSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
@@ -1087,13 +1128,13 @@ public class EmbedderBehaviour {
     @Test
     public void shouldNotThrowExceptionIfScenariosFailedAndIgnoreFlagIsSet() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls().doIgnoreFailureInView(true);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
@@ -1105,63 +1146,63 @@ public class EmbedderBehaviour {
         verify(viewGenerator).generateReportsView(outputDirectory, formats, viewResources);
         assertThatReportsViewGenerated(out);
     }
-    
+
     @Test
     public void shouldHandleFailuresAccordingToStrategy() throws Throwable {
         // Given
-        StoryRunner runner = mock(StoryRunner.class);
+        PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         ViewGenerator viewGenerator = mock(ViewGenerator.class);
 
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         EmbedderFailureStrategy failureStategy = mock(EmbedderFailureStrategy.class);
         embedder.useEmbedderFailureStrategy(failureStategy);
         embedder.configuration().useViewGenerator(viewGenerator);
         File outputDirectory = new File("target/output");
         List<String> formats = asList("html");
         Properties viewResources = new Properties();
-        
-        // When 
+
+        // When
         ReportsCount count = new ReportsCount(1, 0, 1, 2, 1, 1, 1, 1);
         when(viewGenerator.getReportsCount()).thenReturn(count);
         embedder.generateReportsView(outputDirectory, formats, viewResources);
 
-        // Then 
+        // Then
         verify(failureStategy).handleFailures(count);
     }
-
 
     @Test
     public void shouldAllowOverrideOfDefaultDependencies() throws Throwable {
         // Given
-        StoryRunner runner = new StoryRunner();
+        PerformableTree performableTree = new PerformableTree();
         EmbedderControls embedderControls = new EmbedderControls();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor();
 
         // When
-        Embedder embedder = embedderWith(runner, embedderControls, monitor);
+        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
         assertThat(embedder.embedderControls(), is(sameInstance(embedderControls)));
-        assertThat(embedder.storyRunner(), is(sameInstance(runner)));
+        assertThat(embedder.performableTree(), is(sameInstance(performableTree)));
         assertThat(embedder.embedderMonitor(), is(sameInstance(monitor)));
-        embedder.useStoryRunner(new StoryRunner());
+        embedder.usePerformableTree(new PerformableTree());
         embedder.useEmbedderMonitor(new PrintStreamEmbedderMonitor());
 
         // Then
-        assertThat(embedder.storyRunner(), is(not(sameInstance(runner))));
+        assertThat(embedder.performableTree(), is(not(sameInstance(performableTree))));
         assertThat(embedder.embedderMonitor(), is(not(sameInstance(monitor))));
     }
 
-    private Embedder embedderWith(StoryRunner runner, EmbedderControls embedderControls, EmbedderMonitor monitor) {
-        Embedder embedder = new Embedder(new StoryMapper(), runner, monitor);
+    private Embedder embedderWith(PerformableTree performableTree, EmbedderControls embedderControls,
+            EmbedderMonitor monitor) {
+        Embedder embedder = new Embedder(new StoryMapper(), performableTree, monitor);
         embedder.useEmbedderControls(embedderControls);
         return embedder;
     }
 
-    private Embedder embedderWith(StoryMapper mapper, StoryRunner runner, EmbedderControls embedderControls,
-            EmbedderMonitor monitor) {
-        Embedder embedder = new Embedder(mapper, runner, monitor);
+    private Embedder embedderWith(StoryMapper mapper, PerformableTree performableTree,
+            EmbedderControls embedderControls, EmbedderMonitor monitor) {
+        Embedder embedder = new Embedder(mapper, performableTree, monitor);
         embedder.useEmbedderControls(embedderControls);
         return embedder;
     }
@@ -1247,7 +1288,7 @@ public class EmbedderBehaviour {
 
         // Then
         assertThat(embedderAsString, containsString(MostUsefulConfiguration.class.getSimpleName()));
-        assertThat(embedderAsString, containsString(StoryRunner.class.getSimpleName()));
+        assertThat(embedderAsString, containsString(PerformableTree.class.getSimpleName()));
         assertThat(embedderAsString, containsString(PrintStreamEmbedderMonitor.class.getSimpleName()));
     }
 

@@ -10,11 +10,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.embedder.StoryRunner.State;
+import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.StepCollector.Stage;
 
@@ -30,27 +29,28 @@ public class StoryManager {
     private final EmbedderMonitor embedderMonitor;
     private final ExecutorService executorService;
     private final InjectableStepsFactory stepsFactory;
-    private final StoryRunner storyRunner;
+    private final PerformableTree performableTree;
     private final Map<String, RunningStory> runningStories = new HashMap<String, RunningStory>();
     private final Map<MetaFilter, List<Story>> excludedStories = new HashMap<MetaFilter, List<Story>>();
+    private RunContext context;
 
-    public StoryManager(Configuration configuration, EmbedderControls embedderControls,
-            EmbedderMonitor embedderMonitor, ExecutorService executorService, InjectableStepsFactory stepsFactory,
-            StoryRunner storyRunner) {
+    public StoryManager(Configuration configuration, InjectableStepsFactory stepsFactory,
+            EmbedderControls embedderControls, EmbedderMonitor embedderMonitor, ExecutorService executorService,
+            PerformableTree performableTree) {
         this.configuration = configuration;
         this.embedderControls = embedderControls;
         this.embedderMonitor = embedderMonitor;
         this.executorService = executorService;
         this.stepsFactory = stepsFactory;
-        this.storyRunner = storyRunner;
+        this.performableTree = performableTree;
     }
 
     public Story storyOfPath(String storyPath) {
-        return storyRunner.storyOfPath(configuration, storyPath);
+        return performableTree.storyOfPath(configuration, storyPath);
     }
 
     public Story storyOfText(String storyAsText, String storyId) {
-        return storyRunner.storyOfText(configuration, storyAsText, storyId);
+        return performableTree.storyOfText(configuration, storyAsText, storyId);
     }
 
     public void clear() {
@@ -64,58 +64,56 @@ public class StoryManager {
         }
         return outcomes;
     }
-    
+
     public void runStories(List<String> storyPaths, MetaFilter filter, BatchFailures failures) {
         // configure cross reference with meta filter
-        if ( configuration.storyReporterBuilder().hasCrossReference() ){
+        if (configuration.storyReporterBuilder().hasCrossReference()) {
             configuration.storyReporterBuilder().crossReference().withMetaFilter(filter.asString());
         }
-        
-        // run before stories
-        State beforeStories = runBeforeOrAfterStories(failures, Stage.BEFORE);
 
-        // run stories as paths
-        runningStoriesAsPaths(storyPaths, filter, beforeStories);
-        waitUntilAllDoneOrFailed(failures);
+        // create new run context
+        context = performableTree.newRunContext(configuration, stepsFactory, filter, failures);
+        performableTree.addStories(context, storyPaths);
+        
+        // before stories
+        performableTree.performBeforeOrAfterStories(context, Stage.BEFORE);
+        
+        // stories as paths
+        runningStoriesAsPaths(context, storyPaths);        
+        waitUntilAllDoneOrFailed(context);
         List<Story> notAllowed = notAllowedBy(filter);
         if (!notAllowed.isEmpty()) {
             embedderMonitor.storiesNotAllowed(notAllowed, filter, embedderControls.verboseFiltering());
         }
 
-        // run after stories
-       runBeforeOrAfterStories(failures, Stage.AFTER);
+        // after stories
+        performableTree.performBeforeOrAfterStories(context, Stage.AFTER);     
+        
+        // collect failures
+        failures.putAll(context.getFailures());
+
     }
 
-    public State runBeforeOrAfterStories(BatchFailures failures, Stage stage) {
-        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-        State state = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, stage);
-        if (storyRunner.failed(state)) {
-            failures.put(state.toString(), storyRunner.failure(state));
-        }
-        return state;
-    }
-
-    public Map<String, RunningStory> runningStoriesAsPaths(List<String> storyPaths, MetaFilter filter,
-            State beforeStories) {
+    public Map<String, RunningStory> runningStoriesAsPaths(RunContext context, List<String> storyPaths) {
         for (String storyPath : storyPaths) {
-            filterRunning(filter, beforeStories, storyPath, storyOfPath(storyPath));
+            filterRunning(context, storyOfPath(storyPath));
         }
         return runningStories;
     }
 
-    public Map<String, RunningStory> runningStories(List<Story> stories, MetaFilter filter, State beforeStories) {
+    public Map<String, RunningStory> runningStories(RunContext context, List<Story> stories) {
         for (Story story : stories) {
-            filterRunning(filter, beforeStories, story.getPath(), story);
+            filterRunning(context, story);
         }
         return runningStories;
     }
 
-    private void filterRunning(MetaFilter filter, State beforeStories, String storyPath, Story story) {
-        FilteredStory filteredStory = new FilteredStory(filter, story, configuration.storyControls());
+    private void filterRunning(RunContext context, Story story) {
+        FilteredStory filteredStory = context.filter(story);
         if (filteredStory.allowed()) {
-            runningStories.put(storyPath, runningStory(storyPath, story, filter, beforeStories));
+            runningStories.put(story.getPath(), runningStory(story));
         } else {
-            notAllowedBy(filter).add(story);
+            notAllowedBy(context.getFilter()).add(story);
         }
     }
 
@@ -128,12 +126,11 @@ public class StoryManager {
         return stories;
     }
 
-    public RunningStory runningStory(String storyPath, Story story, MetaFilter filter, State beforeStories) {
-        return submit(new EnqueuedStory(storyRunner, configuration, stepsFactory, embedderControls, embedderMonitor,
-                storyPath, story, filter, beforeStories));
+    public RunningStory runningStory(Story story) {
+        return submit(new EnqueuedStory(performableTree, context, embedderControls, embedderMonitor, story));
     }
 
-    public void waitUntilAllDoneOrFailed(BatchFailures failures) {
+    public void waitUntilAllDoneOrFailed(RunContext context) {
         long start = System.currentTimeMillis();
         boolean allDone = false;
         while (!allDone) {
@@ -148,7 +145,7 @@ public class StoryManager {
                         Story story = runningStory.getStory();
                         StoryDuration storyDuration = new StoryDuration(durationInSecs, timeoutInSecs);
                         embedderMonitor.storyTimeout(story, storyDuration);
-                        storyRunner.cancelStory(story, storyDuration);
+                        context.cancelStory(story, storyDuration);
                         future.cancel(true);
                     }
                     break;
@@ -158,13 +155,13 @@ public class StoryManager {
                         ThrowableStory throwableStory = future.get();
                         Throwable throwable = throwableStory.getThrowable();
                         if (throwable != null) {
-                            failures.put(story.getPath(), throwable);
+                            context.addFailure(story.getPath(), throwable);
                             if (!embedderControls.ignoreFailureInStories()) {
                                 break;
                             }
                         }
                     } catch (Throwable e) {
-                        failures.put(story.getPath(), e);
+                        context.addFailure(story.getPath(), e);
                         if (!embedderControls.ignoreFailureInStories()) {
                             break;
                         }
@@ -199,34 +196,27 @@ public class StoryManager {
     }
 
     private static class EnqueuedStory implements Callable<ThrowableStory> {
-        private final StoryRunner storyRunner;
-        private final Configuration configuration;
-        private final InjectableStepsFactory stepsFactory;
+
+        private final PerformableTree performableTree;
+        private final RunContext context;
         private final EmbedderControls embedderControls;
         private final EmbedderMonitor embedderMonitor;
-        private final String storyPath;
         private final Story story;
-        private final MetaFilter filter;
-        private final State beforeStories;
 
-        private EnqueuedStory(StoryRunner storyRunner, Configuration configuration,
-                InjectableStepsFactory stepsFactory, EmbedderControls embedderControls,
-                EmbedderMonitor embedderMonitor, String storyPath, Story story, MetaFilter filter, State beforeStories) {
-            this.storyRunner = storyRunner;
-            this.configuration = configuration;
-            this.stepsFactory = stepsFactory;
+        public EnqueuedStory(PerformableTree performableTree, RunContext context, EmbedderControls embedderControls,
+                EmbedderMonitor embedderMonitor, Story story) {
+            this.performableTree = performableTree;
+            this.context = context;
             this.embedderControls = embedderControls;
             this.embedderMonitor = embedderMonitor;
-            this.storyPath = storyPath;
             this.story = story;
-            this.filter = filter;
-            this.beforeStories = beforeStories;
         }
 
         public ThrowableStory call() throws Exception {
+            String storyPath = story.getPath();
             try {
                 embedderMonitor.runningStory(storyPath);
-                storyRunner.run(configuration, stepsFactory, story, filter, beforeStories);
+                performableTree.perform(context, story);
             } catch (Throwable e) {
                 if (embedderControls.ignoreFailureInStories()) {
                     embedderMonitor.storyFailed(storyPath, e);

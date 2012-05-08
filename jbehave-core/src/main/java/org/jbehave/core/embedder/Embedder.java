@@ -52,15 +52,16 @@ public class Embedder {
     private Properties systemProperties = new Properties();
     private ExecutorService executorService;
     private boolean executorServiceCreated;
+    private PerformableTree performableTree = new PerformableTree();
     private StoryManager storyManager;
 
     public Embedder() {
-        this(new StoryMapper(), new StoryRunner(), new PrintStreamEmbedderMonitor());
+        this(new StoryMapper(), new PerformableTree(), new PrintStreamEmbedderMonitor());
     }
 
-    public Embedder(StoryMapper storyMapper, StoryRunner storyRunner, EmbedderMonitor embedderMonitor) {
+    public Embedder(StoryMapper storyMapper, PerformableTree performableTree, EmbedderMonitor embedderMonitor) {
         this.storyMapper = storyMapper;
-        this.storyRunner = storyRunner;
+        this.performableTree = performableTree;
         this.embedderMonitor = embedderMonitor;
     }
 
@@ -405,8 +406,8 @@ public class Embedder {
     }
 
     private StoryManager createStoryManager() {
-        return new StoryManager(configuration(), embedderControls(), embedderMonitor(), executorService(),
-                stepsFactory(), storyRunner());
+        return new StoryManager(configuration(), stepsFactory(), embedderControls(), embedderMonitor(),
+                executorService(), performableTree());
     }
 
     private void configureThreads(Configuration configuration, int threads) {
@@ -425,6 +426,10 @@ public class Embedder {
 
     public StoryRunner storyRunner() {
         return storyRunner;
+    }
+
+    public PerformableTree performableTree() {
+        return performableTree;
     }
 
     public Properties systemProperties() {
@@ -466,6 +471,10 @@ public class Embedder {
 
     public void useMetaFilters(List<String> metaFilters) {
         this.metaFilters = metaFilters;
+    }
+
+    public void usePerformableTree(PerformableTree performableTree) {
+        this.performableTree = performableTree;
     }
 
     public void useStoryRunner(StoryRunner storyRunner) {

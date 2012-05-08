@@ -3,6 +3,7 @@ package org.jbehave.core.reporters;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -319,7 +320,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
             throw new RuntimeException("Delayed methods already invoked");
         }
         synchronized (delegate) {
-            for (DelayedMethod delayed : delayedMethods) {
+            for (DelayedMethod delayed : Collections.unmodifiableList(delayedMethods)) {
                 delayed.invoke(delegate);
             }
         }

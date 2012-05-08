@@ -42,7 +42,7 @@ import org.jbehave.examples.trader.steps.SearchSteps;
 import org.jbehave.examples.trader.steps.TraderSteps;
 
 import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
@@ -65,8 +65,8 @@ public abstract class TraderStory extends JUnitStory {
     private final CrossReference xref = new CrossReference();
 
     public TraderStory() {
-        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(60);
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
+                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(60).doVerboseFailures(true);
         // Uncomment to set meta filter, which can also be set via Ant or Maven
         // configuredEmbedder().useMetaFilters(Arrays.asList("+theme parametrisation"));
     }
@@ -95,11 +95,12 @@ public abstract class TraderStory extends JUnitStory {
                         new StoryReporterBuilder()
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withPathResolver(new ResolveToPackagedName())
-                                .withViewResources(viewResources).withFormats(CONSOLE, TXT, HTML, XML)
-                                .withFailureTrace(true).withFailureTraceCompression(true).withCrossReference(xref))
+                                .withViewResources(viewResources).withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML)
+                                //.withCrossReference(xref)
+                                .withFailureTrace(true).withFailureTraceCompression(true))
                 .useParameterConverters(parameterConverters)
                 // use '%' instead of '$' to identify parameters
-                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%")).useStepMonitor(xref.getStepMonitor());
+                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));//.useStepMonitor(xref.getStepMonitor());
     }
 
     @Override
