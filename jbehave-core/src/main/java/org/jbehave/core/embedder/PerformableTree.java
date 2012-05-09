@@ -24,8 +24,15 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.model.TableTransformers.FromLandscape;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.AbstractStepResult.Failed;
+import org.jbehave.core.steps.AbstractStepResult.Ignorable;
+import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
+import org.jbehave.core.steps.AbstractStepResult.Pending;
+import org.jbehave.core.steps.AbstractStepResult.Skipped;
+import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
@@ -50,23 +57,46 @@ public class PerformableTree {
     }
 
     public synchronized void serialiseRoot(File outputDirectory) {
-        serialiseRoot("xml", outputDirectory);
-        serialiseRoot("json",  outputDirectory);
+        serialise(root, "xml", outputDirectory);
+        serialise(root, "json", outputDirectory);
     }
 
-    private void serialiseRoot(String ext, File outputDirectory) {
-        XStream xstream = (ext.equals("json") ? new XStream(new JsonHierarchicalStreamDriver()) : new XStream());
-        File outputDir = new File(outputDirectory, "view");
-        outputDir.mkdirs();
-        String name = "tree."+ext;
+    private void serialise(Object object, String format, File outputDirectory) {
+        XStream xstream = (format.equals("json") ? new XStream(new JsonHierarchicalStreamDriver()) : new XStream());
+        configure(xstream);
+        String name = "tree." + format;
         try {
-            Writer writer = new FileWriter(new File(outputDir, name));
-            writer.write(xstream.toXML(root));
+            File outputDir = new File(outputDirectory, "view");
+            outputDir.mkdirs();
+            File file = new File(outputDir, name);
+            Writer writer = new FileWriter(file);
+            writer.write(xstream.toXML(object));
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            throw new RuntimeException(ext, e);
+            throw new RuntimeException(name, e);
         }
+    }
+
+    private void configure(XStream xstream) {
+        xstream.setMode(XStream.NO_REFERENCES);
+        xstream.alias("tree", PerformableRoot.class);
+        xstream.alias("performableStory", PerformableStory.class);
+        xstream.alias("performableScenario", PerformableScenario.class);
+        xstream.alias("performableExample", PerformableExampleScenario.class);
+        xstream.alias("story", Story.class);
+        xstream.alias("scenario", Scenario.class);
+        xstream.alias("givenStory", GivenStory.class);
+        xstream.alias("failed", Failed.class);
+        xstream.alias("pending", Pending.class);
+        xstream.alias("notPerformed", NotPerformed.class);
+        xstream.alias("successful", Successful.class);
+        xstream.alias("ignorable", Ignorable.class);
+        xstream.alias("skipped", Skipped.class);
+        xstream.alias("fromLandscape", FromLandscape.class);
+        xstream.omitField(ExamplesTable.class, "parameterConverters");
+        xstream.omitField(ExamplesTable.class, "tableTrasformers");
+        xstream.omitField(ExamplesTable.class, "defaults");
     }
 
     public void addStories(RunContext context, List<String> storyPaths) {
@@ -251,12 +281,14 @@ public class PerformableTree {
     }
 
     public interface State {
-        State run(Step step, List<StepResult> results, StoryReporter reporter, UUIDExceptionWrapper storyFailureIfItHappened);
+        State run(Step step, List<StepResult> results, StoryReporter reporter,
+                UUIDExceptionWrapper storyFailureIfItHappened);
     }
 
     private final static class FineSoFar implements State {
 
-        public State run(Step step, List<StepResult> results, StoryReporter reporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+        public State run(Step step, List<StepResult> results, StoryReporter reporter,
+                UUIDExceptionWrapper storyFailureIfItHappened) {
             if (step instanceof ParameterisedStep) {
                 ((ParameterisedStep) step).describeTo(reporter);
             }
@@ -700,7 +732,7 @@ public class PerformableTree {
 
         private transient final List<Step> steps;
         private final List<StepResult> results = new ArrayList<StepResult>();
-        
+
         public PerformableSteps() {
             this(null);
         }
