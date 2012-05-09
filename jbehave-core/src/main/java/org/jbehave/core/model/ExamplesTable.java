@@ -145,16 +145,15 @@ public class ExamplesTable {
     private final String headerSeparator;
     private final String valueSeparator;
     private final String ignorableSeparator;
-    private final ParameterConverters parameterConverters;
-    private final TableTransformers tableTransformers;
+    private final transient ParameterConverters parameterConverters;
+    private final transient TableTransformers tableTransformers;
+    private final transient Row defaults;
     private final List<String> headers = new ArrayList<String>();
     private final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     private final Properties properties = new Properties();
     private String propertiesAsString = "";
     private Map<String, String> namedParameters = new HashMap<String, String>();
     private boolean trim = true;
-
-    private final Row defaults;
 
     public ExamplesTable(String tableAsString) {
         this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR);

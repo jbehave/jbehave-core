@@ -251,16 +251,17 @@ public class PerformableTree {
     }
 
     public interface State {
-        State run(Step step, StoryReporter reporter, UUIDExceptionWrapper storyFailureIfItHappened);
+        State run(Step step, List<StepResult> results, StoryReporter reporter, UUIDExceptionWrapper storyFailureIfItHappened);
     }
 
     private final static class FineSoFar implements State {
 
-        public State run(Step step, StoryReporter reporter, UUIDExceptionWrapper storyFailureIfItHappened) {
+        public State run(Step step, List<StepResult> results, StoryReporter reporter, UUIDExceptionWrapper storyFailureIfItHappened) {
             if (step instanceof ParameterisedStep) {
                 ((ParameterisedStep) step).describeTo(reporter);
             }
             StepResult result = step.perform(storyFailureIfItHappened);
+            results.add(result);
             result.describeTo(reporter);
             UUIDExceptionWrapper stepFailure = result.getFailure();
             if (stepFailure == null) {
@@ -286,8 +287,9 @@ public class PerformableTree {
             this.scenarioFailure = scenarioFailure;
         }
 
-        public State run(Step step, StoryReporter reporter, UUIDExceptionWrapper storyFailure) {
+        public State run(Step step, List<StepResult> results, StoryReporter reporter, UUIDExceptionWrapper storyFailure) {
             StepResult result = step.doNotPerform(storyFailure);
+            results.add(result);
             result.describeTo(reporter);
             return this;
         }
@@ -696,8 +698,9 @@ public class PerformableTree {
 
     public static class PerformableSteps implements Performable {
 
-        private final List<Step> steps;
-
+        private transient final List<Step> steps;
+        private final List<StepResult> results = new ArrayList<StepResult>();
+        
         public PerformableSteps() {
             this(null);
         }
@@ -714,7 +717,7 @@ public class PerformableTree {
             StoryReporter reporter = context.reporter();
             for (Step step : steps) {
                 context.interruptIfCancelled();
-                state = state.run(step, reporter, null);
+                state = state.run(step, results, reporter, null);
             }
             context.stateIs(state);
             generatePendingStepMethods(context, steps);
