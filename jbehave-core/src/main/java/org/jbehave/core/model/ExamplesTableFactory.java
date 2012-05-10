@@ -19,12 +19,13 @@ import static org.apache.commons.lang.StringUtils.isBlank;
  * {@link ResourceLoader} (defaulting to {@link LoadFromClasspath}).</li>
  * </ul>
  * Factory also supports optional specification of {@link ParameterConverters}
- * to allow the ExamplesTable to convert row values. 
+ * to allow the ExamplesTable to convert row values.
  * <p>
- * <b>NOTE</b>: Users needing parameter conversion
- * in the ExamplesTable, i.e. invoking {@link ExamplesTable#getRowAsParameters(int)}, will need
- * to use a factory constructor providing explicitly the ParameterConverters instance
- * configured in the {@link Configuration#useParameterConverters(ParameterConverters)}.  
+ * <b>NOTE</b>: Users needing parameter conversion in the ExamplesTable, i.e.
+ * invoking {@link ExamplesTable#getRowAsParameters(int)}, will need to use a
+ * factory constructor providing explicitly the ParameterConverters instance
+ * configured in the
+ * {@link Configuration#useParameterConverters(ParameterConverters)}.
  * </p>
  */
 public class ExamplesTableFactory {
@@ -55,6 +56,11 @@ public class ExamplesTableFactory {
     }
 
     public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
+            ParameterConverters parameterConverters) {
+        this(keywords, resourceLoader, parameterConverters, new TableTransformers());
+    }
+
+    public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
             ParameterConverters parameterConverters, TableTransformers tableTranformers) {
         this.keywords = keywords;
         this.resourceLoader = resourceLoader;
@@ -70,7 +76,8 @@ public class ExamplesTableFactory {
             tableAsString = resourceLoader.loadResourceAsText(input);
         }
         return new ExamplesTable(tableAsString, keywords.examplesTableHeaderSeparator(),
-                keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(), parameterConverters, tableTransformers);
+                keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(),
+                parameterConverters, tableTransformers);
     }
 
     protected boolean isTable(String input) {
