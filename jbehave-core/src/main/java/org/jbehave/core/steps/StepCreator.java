@@ -29,6 +29,7 @@ import static org.jbehave.core.steps.AbstractStepResult.failed;
 import static org.jbehave.core.steps.AbstractStepResult.ignorable;
 import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
+import static org.jbehave.core.steps.AbstractStepResult.silent;
 import static org.jbehave.core.steps.AbstractStepResult.skipped;
 import static org.jbehave.core.steps.AbstractStepResult.successful;
 
@@ -323,7 +324,7 @@ public class StepCreator {
     }
 
     private String delimitedNameFor(String parameter) {
-        if ( !parameterControls.delimiterNamedParameters() ){
+        if (!parameterControls.delimiterNamedParameters()) {
             return null;
         }
         Matcher matcher = delimitedNamePattern.matcher(parameter);
@@ -436,16 +437,17 @@ public class StepCreator {
             ParameterConverters paramConvertersWithExceptionInjector = paramConvertersWithExceptionInjector(storyFailureIfItHappened);
             MethodInvoker methodInvoker = new MethodInvoker(method, paramConvertersWithExceptionInjector, paranamer,
                     meta);
-
+            Timer timer = new Timer().start();
             try {
                 methodInvoker.invoke();
+                return silent(method).withDurationInMillis(timer.stop());
             } catch (InvocationTargetException e) {
-                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())));
+                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())))
+                        .withDurationInMillis(timer.stop());
             } catch (Throwable t) {
-                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, t)));
+                return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, t)))
+                        .withDurationInMillis(timer.stop());
             }
-
-            return skipped();
         }
 
         private ParameterConverters paramConvertersWithExceptionInjector(UUIDExceptionWrapper storyFailureIfItHappened) {
@@ -526,13 +528,15 @@ public class StepCreator {
         }
 
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            Timer timer = new Timer().start();
             try {
                 parametriseStep();
                 stepMonitor.performing(stepAsString, dryRun);
                 if (!dryRun) {
                     method.invoke(stepsInstance(), convertedParameters);
                 }
-                return successful(stepAsString).withParameterValues(parametrisedStep);
+                return successful(stepAsString).withParameterValues(parametrisedStep)
+                        .withDurationInMillis(timer.stop());
             } catch (ParameterNotFound e) {
                 // step parametrisation failed, return pending StepResult
                 return pending(stepAsString).withParameterValues(parametrisedStep);
@@ -545,17 +549,16 @@ public class StepCreator {
                     failureCause = failureCause.getCause();
                 }
                 return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, failureCause)).withParameterValues(
-                        parametrisedStep);
+                        parametrisedStep).withDurationInMillis(timer.stop());
             } catch (Throwable t) {
                 return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, t)).withParameterValues(
-                        parametrisedStep);
+                        parametrisedStep).withDurationInMillis(timer.stop());
             }
         }
 
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             try {
                 parametriseStep();
-                // } catch (ParameterNotFound e) {
             } catch (Throwable t) {
                 // step parametrisation failed, but still return
                 // notPerformed StepResult
@@ -719,6 +722,22 @@ public class StepCreator {
             this.name = name;
             this.annotated = annotated;
         }
+    }
+
+    private static class Timer {
+        private long start;
+
+        public Timer start() {
+            start = System.currentTimeMillis();
+            return this;
+        }
+
+        public long stop() {
+            if (start == 0)
+                return 0;
+            return System.currentTimeMillis() - start;
+        }
+
     }
 
 }

@@ -9,6 +9,8 @@ public interface StepResult {
 
 	StepResult withParameterValues(String parametrisedStep);
 
+    StepResult withDurationInMillis(long duration);
+
 	void describeTo(StoryReporter reporter);
 
 	UUIDExceptionWrapper getFailure();

@@ -18,6 +18,7 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
+import org.jbehave.core.steps.AbstractStepResult.Silent;
 import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
@@ -197,7 +198,7 @@ public class StepCreatorBehaviour {
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
-        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat(stepResult, instanceOf(Silent.class));
         assertThat(stepsInstance.args, instanceOf(Map.class));
 
         @SuppressWarnings("unchecked")
@@ -221,7 +222,7 @@ public class StepCreatorBehaviour {
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
-        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat(stepResult, instanceOf(Silent.class));
         assertThat((String) stepsInstance.args, is("shopping cart"));
     }
 
@@ -256,7 +257,7 @@ public class StepCreatorBehaviour {
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
-        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat(stepResult, instanceOf(Silent.class));
         assertThat(stepsInstance.args, instanceOf(Map.class));
 
         @SuppressWarnings("unchecked")
@@ -295,7 +296,7 @@ public class StepCreatorBehaviour {
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
-        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat(stepResult, instanceOf(Silent.class));
         assertThat(stepsInstance.args, instanceOf(Map.class));
 
         @SuppressWarnings("unchecked")
@@ -334,7 +335,7 @@ public class StepCreatorBehaviour {
         StepResult stepResult = stepWithMeta.doNotPerform(null);
 
         // Then
-        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat(stepResult, instanceOf(Silent.class));
         assertThat(stepsInstance.args, instanceOf(Map.class));
 
         @SuppressWarnings("unchecked")
@@ -357,7 +358,7 @@ public class StepCreatorBehaviour {
         StepResult stepResult = stepWithMeta.perform(null);
 
         // Then
-        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat(stepResult, instanceOf(Silent.class));
         assertThat((Date) stepsInstance.args, is(aDate));
     }
 
@@ -375,7 +376,7 @@ public class StepCreatorBehaviour {
         StepResult stepResult = stepWithMeta.perform(occurredFailure);
 
         // Then
-        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat(stepResult, instanceOf(Silent.class));
         assertThat((UUIDExceptionWrapper) stepsInstance.args, is(occurredFailure));
     }
 
@@ -393,7 +394,7 @@ public class StepCreatorBehaviour {
         StepResult stepResult = stepWithMeta.perform(occurredFailure);
 
         // Then
-        assertThat(stepResult, instanceOf(Skipped.class));
+        assertThat(stepResult, instanceOf(Silent.class));
         assertThat((UUIDExceptionWrapper) stepsInstance.args, is(occurredFailure));
     }
 

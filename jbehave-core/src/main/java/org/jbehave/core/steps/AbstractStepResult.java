@@ -1,13 +1,13 @@
 package org.jbehave.core.steps;
 
+import java.lang.reflect.Method;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.StoryReporter;
-
-import java.lang.reflect.Method;
 
 /**
  * Represents the possible step results:
@@ -16,6 +16,7 @@ import java.lang.reflect.Method;
  * <li>NotPerformed</li>
  * <li>Pending</li>
  * <li>Successful</li>
+ * <li>Silent</li>
  * <li>Ignorable</li>
  * <li>Skipped</li>
  * </ul>
@@ -30,24 +31,6 @@ public abstract class AbstractStepResult implements StepResult {
 
         public Failed(Method method, UUIDExceptionWrapper throwable) {
             super(asString(method), throwable);
-        }
-
-        private static String asString(Method method) {
-            if (method == null) {
-                return "";
-            }
-            StringBuilder sb = new StringBuilder()
-                    .append(method.getDeclaringClass().getName()).append(".")
-                    .append(method.getName()).append("(");
-            Class<?>[] types = method.getParameterTypes();
-            for (int i = 0; i < types.length; i++) {
-                Class<?> type = types[i];
-                sb.append(type.getName());
-                if (i+1 < types.length) {
-                    sb.append(",");
-                }
-            }
-            return sb.append(")").toString();
         }
 
         public void describeTo(StoryReporter reporter) {
@@ -86,14 +69,29 @@ public abstract class AbstractStepResult implements StepResult {
 
     public static class Successful extends AbstractStepResult {
 
-        public Successful(String string) {
-            super(string);
+        public Successful(String step) {
+            super(step);
+        }
+
+        public Successful(Method method) {
+            super(asString(method));
         }
 
         public void describeTo(StoryReporter reporter) {
             reporter.successful(parametrisedStep());
         }
 
+    }
+
+    public static class Silent extends Successful {
+
+        public Silent(Method method) {
+            super(method);
+        }
+
+        public void describeTo(StoryReporter reporter) {
+            // do not report
+        }
     }
 
     public static class Ignorable extends AbstractStepResult {
@@ -113,12 +111,14 @@ public abstract class AbstractStepResult implements StepResult {
         }
 
         public void describeTo(StoryReporter reporter) {
+            // do not report
         }
     }
 
     protected final String step;
-    private String parametrisedStep;
     protected final UUIDExceptionWrapper throwable;
+    private String parametrisedStep;
+    private long durationInMillis;
 
     public AbstractStepResult(String step) {
         this(step, null);
@@ -138,17 +138,30 @@ public abstract class AbstractStepResult implements StepResult {
         return this;
     }
 
+    public long durationInMillis(){
+        return durationInMillis;
+    }
+    
+    public StepResult withDurationInMillis(long millis) {
+        this.durationInMillis = millis;
+        return this;
+    }
+    
     public UUIDExceptionWrapper getFailure() {
         return throwable;
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(parametrisedStep()).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(parametrisedStep()).append(durationInMillis()).toString();
     }
 
     public static StepResult successful(String step) {
         return new Successful(step);
+    }
+
+    public static StepResult successful(Method method) {
+        return new Successful(method);
     }
 
     public static StepResult ignorable(String step) {
@@ -175,8 +188,32 @@ public abstract class AbstractStepResult implements StepResult {
         return new Failed(method, e);
     }
 
+    public static StepResult silent(Method method) {
+        return new Silent(method);
+    }
+
     public static StepResult skipped() {
         return new Skipped();
     }
+    
+    private static String asString(Method method) {
+        if (method == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder()
+                .append(method.getDeclaringClass().getName()).append(".")
+                .append(method.getName()).append("(");
+        Class<?>[] types = method.getParameterTypes();
+        for (int i = 0; i < types.length; i++) {
+            Class<?> type = types[i];
+            sb.append(type.getName());
+            if (i+1 < types.length) {
+                sb.append(",");
+            }
+        }
+        return sb.append(")").toString();
+    }
+
+
 
 }

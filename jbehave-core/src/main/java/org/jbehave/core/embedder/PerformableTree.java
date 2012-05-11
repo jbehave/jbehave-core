@@ -31,6 +31,7 @@ import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
+import org.jbehave.core.steps.AbstractStepResult.Silent;
 import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.CandidateSteps;
@@ -92,6 +93,7 @@ public class PerformableTree {
         xstream.alias("notPerformed", NotPerformed.class);
         xstream.alias("successful", Successful.class);
         xstream.alias("ignorable", Ignorable.class);
+        xstream.alias("silent", Silent.class);
         xstream.alias("skipped", Skipped.class);
         xstream.alias("fromLandscape", FromLandscape.class);
         xstream.omitField(ExamplesTable.class, "parameterConverters");
