@@ -1,0 +1,110 @@
+<xref>
+  <beforeSteps/>
+  <stories>
+    <performableStory>
+      <story>
+        <path>/path/to/story</path>
+        <description>
+          <descriptionAsString>An interesting story</descriptionAsString>
+        </description>
+        <narrative>
+          <inOrderTo>renovate my house</inOrderTo>
+          <asA>customer</asA>
+          <iWantTo>get a loan</iWantTo>
+        </narrative>
+        <meta>
+          <properties>
+            <property name="+author" value="Mauro"/>
+            <property name="+theme" value="testing"/>
+          </properties>
+        </meta>
+        <scenarios/>
+      </story>
+      <allowed>false</allowed>
+      <scenarios>
+        <performableScenario>
+          <scenario>
+            <title></title>
+            <meta>
+              <properties/>
+            </meta>
+            <givenStories>
+              <givenStories/>
+              <givenStoriesAsString></givenStoriesAsString>
+              <examplesTable>
+                <tableAsString></tableAsString>
+                <headerSeparator>|</headerSeparator>
+                <valueSeparator>|</valueSeparator>
+                <ignorableSeparator>|--</ignorableSeparator>
+                <tableTransformers>
+                  <transformers>
+                    <entry>
+                      <string>FROM_LANDSCAPE</string>
+                      <fromLandscape/>
+                    </entry>
+                  </transformers>
+                </tableTransformers>
+                <headers/>
+                <data/>
+                <properties>
+                  <property name="headerSeparator" value="|"/>
+                  <property name="valueSeparator" value="|"/>
+                  <property name="ignorableSeparator" value="|--"/>
+                </properties>
+                <propertiesAsString></propertiesAsString>
+                <namedParameters/>
+                <trim>true</trim>
+              </examplesTable>
+            </givenStories>
+            <examplesTable>
+              <tableAsString></tableAsString>
+              <headerSeparator>|</headerSeparator>
+              <valueSeparator>|</valueSeparator>
+              <ignorableSeparator>|--</ignorableSeparator>
+              <tableTransformers>
+                <transformers>
+                  <entry>
+                    <string>FROM_LANDSCAPE</string>
+                    <fromLandscape/>
+                  </entry>
+                </transformers>
+              </tableTransformers>
+              <headers/>
+              <data/>
+              <properties>
+                <property name="headerSeparator" value="|"/>
+                <property name="valueSeparator" value="|"/>
+                <property name="ignorableSeparator" value="|--"/>
+              </properties>
+              <propertiesAsString></propertiesAsString>
+              <namedParameters/>
+              <trim>true</trim>
+            </examplesTable>
+            <steps class="java.util.Arrays$ArrayList">
+              <a class="string-array">
+                <string></string>
+              </a>
+            </steps>
+          </scenario>
+          <allowed>false</allowed>
+          <exampleScenarios/>
+          <performableGivenStories/>
+          <beforeSteps/>
+          <steps>
+            <matches>
+              <stepMatch>
+                <type>GIVEN</type>
+                <annotatedPattern>(def)</annotatedPattern>
+                <resolvedPattern>[abc]</resolvedPattern>
+              </stepMatch>
+            </matches>
+          </steps>
+          <afterSteps/>
+        </performableScenario>
+      </scenarios>
+      <beforeSteps/>
+      <afterSteps/>
+    </performableStory>
+  </stories>
+  <afterSteps/>
+</xref>

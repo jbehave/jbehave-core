@@ -63,4 +63,16 @@ public interface StepCollector {
      * @return A List of executable {@link Step}s 
      */
     List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> parameters);
+
+    /**
+     * Collects all of the {@link Step}s to execute for a scenario.
+     * 
+     * @param candidateSteps the {@link CandidateSteps}.
+     * @param scenario the {@link Scenario}.
+     * @param parameters the parameters.
+     * @param stepMonitor the {@link StepMonitor}.
+     * @return A List of executable {@link Step}s 
+     */
+    List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> parameters, StepMonitor stepMonitor);
+
 }

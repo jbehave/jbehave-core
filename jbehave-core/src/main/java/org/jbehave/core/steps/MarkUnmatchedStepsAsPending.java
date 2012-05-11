@@ -85,8 +85,13 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
 
     public List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario,
             Map<String, String> parameters) {
+        return collectScenarioSteps(candidateSteps, scenario, parameters, new NullStepMonitor());
+    }
+
+    public List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario,
+            Map<String, String> parameters, StepMonitor stepMonitor) {
         List<Step> steps = new ArrayList<Step>();
-        addMatchedScenarioSteps(scenario, steps, parameters, candidateSteps);
+        addMatchedScenarioSteps(scenario, steps, parameters, candidateSteps, stepMonitor);
         return steps;
     }
 
@@ -101,7 +106,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
     }
 
     private void addMatchedScenarioSteps(Scenario scenario, List<Step> steps, Map<String, String> namedParameters,
-            List<CandidateSteps> candidateSteps) {
+            List<CandidateSteps> candidateSteps, StepMonitor stepMonitor) {
         List<StepCandidate> allCandidates = stepFinder.collectCandidates(candidateSteps);
         String previousNonAndStep = null;
         for (String stepAsString : scenario.getSteps()) {
@@ -110,6 +115,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
             List<Step> composedSteps = new ArrayList<Step>();
             List<StepCandidate> prioritisedCandidates = stepFinder.prioritise(stepAsString, allCandidates);
             for (StepCandidate candidate : prioritisedCandidates) {
+                candidate.useStepMonitor(stepMonitor);
                 if (candidate.ignore(stepAsString)) {
                     // ignorable steps are added
                     // so they can be reported

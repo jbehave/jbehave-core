@@ -1,9 +1,5 @@
 package org.jbehave.core.embedder;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +10,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -24,16 +21,8 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
-import org.jbehave.core.model.TableTransformers.FromLandscape;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.AbstractStepResult.Failed;
-import org.jbehave.core.steps.AbstractStepResult.Ignorable;
-import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
-import org.jbehave.core.steps.AbstractStepResult.Pending;
-import org.jbehave.core.steps.AbstractStepResult.Silent;
-import org.jbehave.core.steps.AbstractStepResult.Skipped;
-import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
@@ -42,9 +31,6 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.ParameterisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
-
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 /**
  * Creates a tree of {@link Performable} objects.
@@ -55,50 +41,6 @@ public class PerformableTree {
 
     public PerformableRoot getRoot() {
         return root;
-    }
-
-    public synchronized void serialiseRoot(File outputDirectory) {
-        serialise(root, "xml", outputDirectory);
-        serialise(root, "json", outputDirectory);
-    }
-
-    private void serialise(Object object, String format, File outputDirectory) {
-        XStream xstream = (format.equals("json") ? new XStream(new JsonHierarchicalStreamDriver()) : new XStream());
-        configure(xstream);
-        String name = "tree." + format;
-        try {
-            File outputDir = new File(outputDirectory, "view");
-            outputDir.mkdirs();
-            File file = new File(outputDir, name);
-            Writer writer = new FileWriter(file);
-            writer.write(xstream.toXML(object));
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            throw new RuntimeException(name, e);
-        }
-    }
-
-    private void configure(XStream xstream) {
-        xstream.setMode(XStream.NO_REFERENCES);
-        xstream.alias("tree", PerformableRoot.class);
-        xstream.alias("performableStory", PerformableStory.class);
-        xstream.alias("performableScenario", PerformableScenario.class);
-        xstream.alias("performableExample", PerformableExampleScenario.class);
-        xstream.alias("story", Story.class);
-        xstream.alias("scenario", Scenario.class);
-        xstream.alias("givenStory", GivenStory.class);
-        xstream.alias("failed", Failed.class);
-        xstream.alias("pending", Pending.class);
-        xstream.alias("notPerformed", NotPerformed.class);
-        xstream.alias("successful", Successful.class);
-        xstream.alias("ignorable", Ignorable.class);
-        xstream.alias("silent", Silent.class);
-        xstream.alias("skipped", Skipped.class);
-        xstream.alias("fromLandscape", FromLandscape.class);
-        xstream.omitField(ExamplesTable.class, "parameterConverters");
-        xstream.omitField(ExamplesTable.class, "tableTrasformers");
-        xstream.omitField(ExamplesTable.class, "defaults");
     }
 
     public void addStories(RunContext context, List<String> storyPaths) {
@@ -456,8 +398,10 @@ public class PerformableTree {
         }
 
         public PerformableSteps scenarioSteps(Scenario scenario, Map<String, String> parameters) {
-            return new PerformableSteps(configuration.stepCollector().collectScenarioSteps(candidateSteps, scenario,
-                    parameters));
+            MatchingStepMonitor monitor = new MatchingStepMonitor();
+            List<Step> steps = configuration.stepCollector().collectScenarioSteps(candidateSteps, scenario, parameters,
+                    monitor);
+            return new PerformableSteps(steps, monitor.matched());
         }
 
         public RunContext childContextFor(GivenStory givenStory) {
@@ -733,14 +677,21 @@ public class PerformableTree {
     public static class PerformableSteps implements Performable {
 
         private transient final List<Step> steps;
-        private final List<StepResult> results = new ArrayList<StepResult>();
+        @SuppressWarnings("unused")
+        private final List<StepMatch> matches;
+        private List<StepResult> results;
 
         public PerformableSteps() {
-            this(null);
+            this(null, null);
         }
 
         public PerformableSteps(List<Step> steps) {
+            this(steps, null);
+        }
+
+        public PerformableSteps(List<Step> steps, List<StepMatch> stepMatches) {
             this.steps = steps;
+            this.matches = stepMatches;
         }
 
         public void perform(RunContext context) throws InterruptedException {
@@ -749,6 +700,7 @@ public class PerformableTree {
             }
             State state = context.state();
             StoryReporter reporter = context.reporter();
+            results = new ArrayList<StepResult>();
             for (Step step : steps) {
                 context.interruptIfCancelled();
                 state = state.run(step, results, reporter, null);

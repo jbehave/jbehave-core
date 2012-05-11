@@ -293,9 +293,7 @@ public class StoryReporterBuilder {
         }
 
         DelegatingStoryReporter delegate = new DelegatingStoryReporter(delegates.values());
-        StoryReporter crossReferencing = (crossReference == null ? new NullStoryReporter() : reporterFor(storyPath,
-                crossReference));
-        return new ConcurrentStoryReporter(crossReferencing, delegate, multiThreading);
+        return new ConcurrentStoryReporter(new NullStoryReporter(), delegate, multiThreading);
     }
 
     public Map<String, StoryReporter> build(List<String> storyPaths) {

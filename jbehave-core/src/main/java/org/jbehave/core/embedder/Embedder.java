@@ -271,7 +271,7 @@ public class Embedder {
     public void generateCrossReference() {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
         if (builder.hasCrossReference()) {
-            builder.crossReference().outputToFiles(builder);
+            builder.crossReference().serialise(storyManager().performableRoot(), builder.outputDirectory());
         }
     }
 

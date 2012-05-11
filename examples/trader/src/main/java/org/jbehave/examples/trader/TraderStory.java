@@ -96,11 +96,11 @@ public abstract class TraderStory extends JUnitStory {
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withPathResolver(new ResolveToPackagedName())
                                 .withViewResources(viewResources).withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML)
-                                //.withCrossReference(xref)
+                                .withCrossReference(xref)
                                 .withFailureTrace(true).withFailureTraceCompression(true))
                 .useParameterConverters(parameterConverters)
                 // use '%' instead of '$' to identify parameters
-                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));//.useStepMonitor(xref.getStepMonitor());
+                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%")).useStepMonitor(xref.getStepMonitor());
     }
 
     @Override

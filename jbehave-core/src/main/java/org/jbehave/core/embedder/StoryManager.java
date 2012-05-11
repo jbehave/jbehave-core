@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Story;
@@ -57,6 +58,10 @@ public class StoryManager {
         runningStories.clear();
     }
 
+    public PerformableRoot performableRoot(){
+        return performableTree.getRoot();
+    }
+    
     public List<StoryOutcome> outcomes() {
         List<StoryOutcome> outcomes = new ArrayList<StoryOutcome>();
         for (RunningStory story : runningStories.values()) {
@@ -91,8 +96,6 @@ public class StoryManager {
         
         // collect failures
         failures.putAll(context.getFailures());
-
-        performableTree.serialiseRoot(configuration.storyReporterBuilder().outputDirectory());
     }
 
     public Map<String, RunningStory> runningStoriesAsPaths(RunContext context, List<String> storyPaths) {
