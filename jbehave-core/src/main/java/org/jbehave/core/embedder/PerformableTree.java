@@ -33,7 +33,18 @@ import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
 
 /**
- * Creates a tree of {@link Performable} objects.
+ * Creates a tree of {@link Performable} objects for a set of stories, grouping
+ * sets of performable steps for each story and scenario, and adding before and
+ * after stories steps. The process has two phases:
+ * <ol>
+ * <li>The tree is populated with groups of performable steps when the stories
+ * are added via the {@link #addStories(RunContext, List)} method.</li>
+ * <li>The performable steps are then populated with the results when the
+ * {@link #performBeforeOrAfterStories(RunContext, Stage)} and
+ * {@link #perform(RunContext, Story)} methods are executed.</li>
+ * </ol>
+ * The tree is created per {@link RunContext} for the set of stories being run
+ * but the individual stories can be performed concurrently.
  */
 public class PerformableTree {
 
@@ -52,7 +63,7 @@ public class PerformableTree {
         root.addAfterSteps(context.beforeOrAfterStoriesSteps(Stage.AFTER));
     }
 
-    public PerformableStory performableStory(RunContext context, Story story, Map<String, String> storyParameters) {
+    private PerformableStory performableStory(RunContext context, Story story, Map<String, String> storyParameters) {
         PerformableStory performableStory = new PerformableStory(story);
 
         // determine if story is allowed
@@ -287,7 +298,7 @@ public class PerformableTree {
         }
     }
 
-    public void performCancellable(RunContext context, Story story) throws InterruptedException {
+    private void performCancellable(RunContext context, Story story) throws InterruptedException {
         if (context.configuration().storyControls().resetStateBeforeStory()) {
             context.resetState();
         }
@@ -378,8 +389,8 @@ public class PerformableTree {
             return new FilteredStory(filter, story, configuration.storyControls());
         }
 
-        public String metaFilterAsString() {
-            return filter.asString();
+        public MetaFilter filter() {
+            return filter;
         }
 
         public PerformableSteps beforeOrAfterStoriesSteps(Stage stage) {

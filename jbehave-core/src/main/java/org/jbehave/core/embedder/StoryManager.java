@@ -71,11 +71,6 @@ public class StoryManager {
     }
 
     public void runStories(List<String> storyPaths, MetaFilter filter, BatchFailures failures) {
-        // configure cross reference with meta filter
-        if (configuration.storyReporterBuilder().hasCrossReference()) {
-            configuration.storyReporterBuilder().crossReference().withMetaFilter(filter.asString());
-        }
-
         // create new run context
         context = performableTree.newRunContext(configuration, stepsFactory, filter, failures);
         performableTree.addStories(context, storyPaths);
