@@ -125,7 +125,7 @@ public class OutcomesTable {
 
     @SuppressWarnings("serial")
     public static class OutcomesFailed extends UUIDExceptionWrapper {
-        private OutcomesTable outcomes;
+        private transient OutcomesTable outcomes;
 
         public OutcomesFailed(OutcomesTable outcomes) {
             this.outcomes = outcomes;
