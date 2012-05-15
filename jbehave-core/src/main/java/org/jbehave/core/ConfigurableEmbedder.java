@@ -24,9 +24,8 @@ import org.jbehave.core.steps.InjectableStepsFactory;
  * via the {@link #useConfiguration(Configuration)} method.
  * </p>
  * <p>
- * Users need to add the {@link CandidateSteps} instances, via the
- * {@link #addSteps(CandidateSteps...)} or {@link
- * #addSteps(List<CandidateSteps>)} methods.
+ * Users need to specify the {@link InjectableStepsFactory} which will be 
+ * used to create the {@link CandidateSteps}.
  * </p>
  * <p>
  * Typically, users that use JUnit will find it easier to extend other
@@ -50,24 +49,33 @@ public abstract class ConfigurableEmbedder implements Embeddable {
         this.configuration = configuration;
     }
 
+    public Configuration configuration() {
+        return configuration;
+    }
+    
+    /**
+     * @deprecated Use {@link #useStepsFactory(InjectableStepsFactory)}
+     */
     public void addSteps(CandidateSteps... steps) {
         addSteps(asList(steps));
     }
 
+    /**
+     * @deprecated Use {@link #useStepsFactory(InjectableStepsFactory)}
+     */
     public void addSteps(List<CandidateSteps> steps) {
         this.candidateSteps.addAll(steps);
     }
 
-    public void useStepsFactory(InjectableStepsFactory stepsFactory){
-        this.stepsFactory = stepsFactory;        
-    }
-    
-    public Configuration configuration() {
-        return configuration;
-    }
-
+    /**
+     * @deprecated Use {@link #stepsFactory()}
+     */
     public List<CandidateSteps> candidateSteps() {
         return candidateSteps;
+    }
+
+    public void useStepsFactory(InjectableStepsFactory stepsFactory){
+        this.stepsFactory = stepsFactory;        
     }
     
     public InjectableStepsFactory stepsFactory(){
