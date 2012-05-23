@@ -88,7 +88,7 @@
           </scenario>
           <allowed>false</allowed>
           <exampleScenarios/>
-          <performableGivenStories/>
+          <givenStories/>
           <beforeSteps/>
           <steps>
             <matches>

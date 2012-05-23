@@ -525,6 +525,10 @@ public class PerformableTree {
             throw new RuntimeException("No performable story for path " + story.getPath());
         }
 
+        public List<PerformableStory> getStories() {
+            return stories;
+        }
+
     }
 
     public static class PerformableStory implements Performable {
@@ -559,6 +563,10 @@ public class PerformableTree {
             scenarios.add(performableScenario);
         }
 
+        public Story getStory(){
+            return story;
+        }
+        
         public void perform(RunContext context) throws InterruptedException {
             context.reporter().narrative(story.getNarrative());
             if (!allowed) {
@@ -573,6 +581,10 @@ public class PerformableTree {
             context.reporter().afterStory(context.givenStory);
         }
 
+        public List<PerformableScenario> getScenarios() {
+            return scenarios;
+        }
+
     }
 
     public static class PerformableScenario implements Performable {
@@ -580,7 +592,7 @@ public class PerformableTree {
         private final Scenario scenario;
         private boolean allowed;
         private List<PerformableExampleScenario> exampleScenarios = new ArrayList<PerformableExampleScenario>();
-        private List<PerformableStory> performableGivenStories = new ArrayList<PerformableStory>();
+        private List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
         private PerformableSteps beforeSteps = new PerformableSteps();
         private PerformableSteps steps = new PerformableSteps();
         private PerformableSteps afterSteps = new PerformableSteps();
@@ -590,7 +602,7 @@ public class PerformableTree {
         }
 
         public void addGivenStories(List<PerformableStory> performableGivenStories) {
-            this.performableGivenStories.addAll(performableGivenStories);
+            this.givenStories.addAll(performableGivenStories);
         }
 
         public void addExampleScenario(PerformableExampleScenario exampleScenario) {
@@ -616,7 +628,27 @@ public class PerformableTree {
         public void addAfterSteps(PerformableSteps afterSteps) {
             this.afterSteps = afterSteps;
         }
+        
+        public Scenario getScenario() {
+            return scenario;
+        }
 
+        public boolean hasExamples() {
+            return exampleScenarios.size() > 0;
+        }
+
+        public List<PerformableExampleScenario> getExamples(){
+            return exampleScenarios;
+        }
+        
+        public boolean hasGivenStories() {
+            return givenStories.size() > 0;
+        }
+
+        public List<PerformableStory> getGivenStories(){
+            return givenStories;
+        }
+        
         public void perform(RunContext context) throws InterruptedException {
             context.reporter().beforeScenario(scenario.getTitle());
             if (!exampleScenarios.isEmpty()) {
@@ -632,7 +664,7 @@ public class PerformableTree {
                 beforeSteps.perform(context);
                 if (scenario.getGivenStories().getPaths().size() > 0) {
                     context.reporter().givenStories(scenario.getGivenStories());
-                    for (PerformableStory story : performableGivenStories) {
+                    for (PerformableStory story : givenStories) {
                         story.perform(context);
                     }
                 }
@@ -641,6 +673,7 @@ public class PerformableTree {
             }
             context.reporter().afterScenario();
         }
+
     }
 
     public static class PerformableExampleScenario implements Performable {
@@ -682,6 +715,10 @@ public class PerformableTree {
             }
             steps.perform(context);
             afterSteps.perform(context);
+        }
+
+        public Map<String, String> getParameters() {
+            return exampleParameters;            
         }
     }
 

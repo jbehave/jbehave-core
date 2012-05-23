@@ -75,6 +75,10 @@ public class StoryManager {
         context = performableTree.newRunContext(configuration, stepsFactory, filter, failures);
         performableTree.addStories(context, storyPaths);
         
+        performStories(context, performableTree, storyPaths, filter, failures);
+    }
+
+    public void performStories(RunContext context, PerformableTree performableTree, List<String> storyPaths, MetaFilter filter, BatchFailures failures) {
         // before stories
         performableTree.performBeforeOrAfterStories(context, Stage.BEFORE);
         
