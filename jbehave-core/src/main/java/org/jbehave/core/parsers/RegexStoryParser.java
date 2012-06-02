@@ -133,7 +133,7 @@ public class RegexStoryParser implements StoryParser {
         List<String> scenarios = new ArrayList<String>();
         String scenarioKeyword = keywords.scenario();
 
-        // remove anything after scenario keyword, if found
+        // use text after scenario keyword, if found
         if (StringUtils.contains(storyAsText, scenarioKeyword)) {
             storyAsText = StringUtils.substringAfter(storyAsText, scenarioKeyword);
         }
@@ -143,12 +143,17 @@ public class RegexStoryParser implements StoryParser {
                 scenarios.add(scenarioKeyword + "\n" + scenarioAsText);
             }
         }
+        
         return scenarios;
     }
 
     private Scenario parseScenario(String scenarioAsText) {
         String title = findScenarioTitle(scenarioAsText);
-        String scenarioWithoutTitle = removeStart(scenarioAsText, title);
+        String scenarioWithoutKeyword = removeStart(scenarioAsText, keywords.scenario()).trim();
+        String scenarioWithoutTitle = removeStart(scenarioWithoutKeyword, title);
+        if ( !scenarioWithoutTitle.startsWith("\n") ){ // always ensure scenario starts with newline
+            scenarioWithoutTitle = "\n" + scenarioWithoutTitle;
+        }
         Meta meta = findScenarioMeta(scenarioWithoutTitle);
         ExamplesTable examplesTable = findExamplesTable(scenarioWithoutTitle);
         GivenStories givenStories = findGivenStories(scenarioWithoutTitle);
