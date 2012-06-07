@@ -1,6 +1,10 @@
 package org.jbehave.core.steps;
 
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.jbehave.core.annotations.Composite;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
@@ -9,17 +13,16 @@ import org.jbehave.core.annotations.When;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 import static org.jbehave.core.steps.StepCandidateBehaviour.candidateMatchingStep;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class CompositeStepCandidateBehaviour {
 
@@ -258,4 +261,63 @@ public class CompositeStepCandidateBehaviour {
         
     }
     
+    @Test
+    public void recursiveCompositeStepsShouldWorkWithSomeMissingParameters(){
+        String userName = "someUserName";
+        CompositeStepParametersWithMissingParameters steps = new CompositeStepParametersWithMissingParameters();
+        List<StepCandidate> candidates = steps.listCandidates();
+        StepCandidate candidate = candidateMatchingStep(candidates, "Given I am logged in as " + userName);
+        assertThat(candidate.isComposite(), is(true));
+        Map<String, String> noNamedParameters = new HashMap<String, String>();
+        List<Step> composedSteps = new ArrayList<Step>();
+        candidate.addComposedSteps(composedSteps, "Given I am logged in as someUserName", noNamedParameters, candidates);
+        for (Step step : composedSteps) {
+            step.perform(null);
+        }
+        assertThat("Was unable to set the username", steps.username, equalTo(userName));
+        assertTrue("Didn't reach the login step", steps.isLoggedIn);
+    }
+    
+    static class CompositeStepParametersWithMissingParameters extends Steps {
+        private String username;
+        private boolean isLoggedIn;
+        
+        
+        @Given("I am logged in as $name")
+        @Composite(steps = {
+                "Given my user name is <name>",
+                "Given I log in"
+        })
+        public void logInAsUser(@Named("name")String name){}
+        
+        @Given("my user name is $name")
+        public void setUsername(@Named("name")String name){
+            this.username = name;
+        }
+        
+        @Given("I log in")
+        @Composite(steps = {
+                "Given I am on the Login page", 
+                "When I type my user name into the Username field", 
+                "When I type my password into the Password field", 
+                "When I click the Login button"} )
+        public void logIn(){
+            this.isLoggedIn = true;
+        }
+        
+        @Given("Given I am on the Login page")
+        public void onLoginPage(){}
+        
+        @Given("When I type my user name into the Username field")
+        public void typeUsername(){}
+        
+        @Given("When I type my password into the Password field")
+        public void typePassword(){}
+        
+        @Given("When I click the Login button")
+        public void clickLogin(){}
+        
+        
+    }
+
 }
