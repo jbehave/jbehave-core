@@ -98,20 +98,24 @@ public class StepCreator {
 
     public Map<String, String> matchedParameters(final Method method, final String stepAsString,
             final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
-        stepMatcher.find(stepWithoutStartingWord);
-        ParameterName[] parameterNames = parameterNames(method);
-        Type[] types = method.getGenericParameterTypes();
-        String[] values = parameterValuesForStep(namedParameters, types, parameterNames);
-
-        Map<String, String> matchedParameters = new HashMap<String, String>();
-        for (int i = 0; i < parameterNames.length; i++) {
-            String name = parameterNames[i].name;
-            if (name == null) {
-                name = stepMatcher.parameterNames()[i];
+        Map<String, String> matchedParameters = new HashMap<String, String>(); 
+        if (stepMatcher.find(stepWithoutStartingWord)) { 
+            // we've found a match, populate map
+            ParameterName[] parameterNames = parameterNames(method);
+            Type[] types = method.getGenericParameterTypes();
+            String[] values = parameterValuesForStep(namedParameters, types, parameterNames);
+    
+            
+            for (int i = 0; i < parameterNames.length; i++) {
+                String name = parameterNames[i].name;
+                if (name == null) {
+                    name = stepMatcher.parameterNames()[i];
+                }
+                matchedParameters.put(name, values[i]);
             }
-            matchedParameters.put(name, values[i]);
         }
-        return matchedParameters;
+        // else return empty map
+        return matchedParameters; 
     }
 
     /**
