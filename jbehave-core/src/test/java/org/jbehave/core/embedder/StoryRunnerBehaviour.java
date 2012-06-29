@@ -176,14 +176,15 @@ public class StoryRunnerBehaviour {
     }
     
     @Test
-    public void shouldRunGivenStoriesBeforeSteps() throws Throwable {
+    public void shouldRunGivenStoriesAtStoryAndScenarioLevel() throws Throwable {
         // Given
+        GivenStories storyGivenStories = new GivenStories("/path/to/given/story1");
+        GivenStories scenarioGivenStories = new GivenStories("/path/to/given/story1");
         Scenario scenario1 = new Scenario("scenario 1", asList("successfulStep"));
-        GivenStories givenStories = new GivenStories("/path/to/given/story1");
-        Scenario scenario2 = new Scenario("scenario 2", Meta.EMPTY, givenStories, ExamplesTable.EMPTY, 
+        Scenario scenario2 = new Scenario("scenario 2", Meta.EMPTY, scenarioGivenStories, ExamplesTable.EMPTY, 
                 asList("anotherSuccessfulStep"));
         Story story1 = new Story(new Description("story 1"), Narrative.EMPTY, asList(scenario1));
-        Story story2 = new Story(new Description("story 2"), Narrative.EMPTY, asList(scenario2));
+        Story story2 = new Story("", new Description("story 2"), Meta.EMPTY, Narrative.EMPTY, storyGivenStories, asList(scenario2));
 
         Step step = mock(Step.class);
         StepResult result = mock(StepResult.class);
@@ -216,7 +217,8 @@ public class StoryRunnerBehaviour {
         // Then
         InOrder inOrder = inOrder(reporter);
         inOrder.verify(reporter).beforeStory(story2, givenStory);
-        inOrder.verify(reporter).givenStories(givenStories);
+        inOrder.verify(reporter).givenStories(storyGivenStories);
+        inOrder.verify(reporter).givenStories(scenarioGivenStories);
         inOrder.verify(reporter).successful("successfulStep");
         inOrder.verify(reporter).successful("anotherSuccessfulStep");
         inOrder.verify(reporter).afterStory(givenStory);

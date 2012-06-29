@@ -57,8 +57,9 @@ public class RegexStoryParser implements StoryParser {
         Description description = parseDescriptionFrom(storyAsText);
         Meta meta = parseStoryMetaFrom(storyAsText);
         Narrative narrative = parseNarrativeFrom(storyAsText);
+        GivenStories givenStories = parseGivenStories(storyAsText);
         List<Scenario> scenarios = parseScenariosFrom(storyAsText);
-        Story story = new Story(storyPath, description, meta, narrative, scenarios);
+        Story story = new Story(storyPath, description, meta, narrative, givenStories, scenarios);
         if (storyPath != null) {
             story.namedAs(new File(storyPath).getName());
         }
@@ -120,6 +121,18 @@ public class RegexStoryParser implements StoryParser {
         }
         return Narrative.EMPTY;
     }
+    
+    private GivenStories parseGivenStories(String storyAsText) {
+        String scenarioKeyword = keywords.scenario();
+        // use text before scenario keyword, if found
+        String beforeScenario = "";
+        if (StringUtils.contains(storyAsText, scenarioKeyword)) {
+            beforeScenario = StringUtils.substringBefore(storyAsText, scenarioKeyword);
+        }
+        Matcher findingGivenStories = patternToPullStoryGivenStoriesIntoGroupOne().matcher(beforeScenario);
+        String givenStories = findingGivenStories.find() ? findingGivenStories.group(1).trim() : NONE;
+        return new GivenStories(givenStories);
+    }
 
     private List<Scenario> parseScenariosFrom(String storyAsText) {
         List<Scenario> parsed = new ArrayList<Scenario>();
@@ -156,7 +169,7 @@ public class RegexStoryParser implements StoryParser {
         }
         Meta meta = findScenarioMeta(scenarioWithoutTitle);
         ExamplesTable examplesTable = findExamplesTable(scenarioWithoutTitle);
-        GivenStories givenStories = findGivenStories(scenarioWithoutTitle);
+        GivenStories givenStories = findScenarioGivenStories(scenarioWithoutTitle);
         if (givenStories.requireParameters()) {
             givenStories.useExamplesTable(examplesTable);
         }
@@ -184,8 +197,8 @@ public class RegexStoryParser implements StoryParser {
         return tableFactory.createExamplesTable(tableInput);
     }
 
-    private GivenStories findGivenStories(String scenarioAsText) {
-        Matcher findingGivenStories = patternToPullGivenStoriesIntoGroupOne().matcher(scenarioAsText);
+    private GivenStories findScenarioGivenStories(String scenarioAsText) {
+        Matcher findingGivenStories = patternToPullScenarioGivenStoriesIntoGroupOne().matcher(scenarioAsText);
         String givenStories = findingGivenStories.find() ? findingGivenStories.group(1).trim() : NONE;
         return new GivenStories(givenStories);
     }
@@ -213,7 +226,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern patternToPullNarrativeIntoGroupOne() {
-        return compile(".*" + keywords.narrative() + "(.*?)\\s*(" + keywords.scenario() + ").*", DOTALL);
+        return compile(".*" + keywords.narrative() + "(.*?)\\s*(" + keywords.givenStories() + "|" + keywords.scenario() + ").*", DOTALL);
     }
 
     private Pattern patternToPullNarrativeElementsIntoGroups() {
@@ -232,7 +245,11 @@ public class RegexStoryParser implements StoryParser {
                 DOTALL);
     }
 
-    private Pattern patternToPullGivenStoriesIntoGroupOne() {
+    private Pattern patternToPullStoryGivenStoriesIntoGroupOne() {
+        return compile(".*" + keywords.givenStories() + "\\s*(.*)", DOTALL);
+    }
+
+    private Pattern patternToPullScenarioGivenStoriesIntoGroupOne() {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         return compile("\\n" + keywords.givenStories() + "((.|\\n)*?)\\s*(" + startingWords + ").*", DOTALL);
     }
