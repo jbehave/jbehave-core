@@ -257,6 +257,8 @@ public class StoryRunner {
 
             runBeforeOrAfterStorySteps(context, story, Stage.BEFORE);
 
+            runGivenStories(story.getGivenStories(), storyParameters, context);
+            
             // determine if before and after scenario steps should be run
             boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
 
@@ -289,7 +291,7 @@ public class StoryRunner {
                         runScenariosParametrisedByExamples(context, scenario, storyAndScenarioMeta);
                     } else { // run as plain old scenario
                         addMetaParameters(storyParameters, storyAndScenarioMeta);
-                        runGivenStories(scenario, storyParameters, context);
+                        runGivenStories(scenario.getGivenStories(), storyParameters, context);
                         runScenarioSteps(context, scenario, storyParameters);
                     }
 
@@ -363,16 +365,15 @@ public class StoryRunner {
         storyFailure.set(null);
     }
 
-    private void runGivenStories(Scenario scenario, Map<String, String> scenarioParameters, RunContext context) throws Throwable {
-        GivenStories givenStories = scenario.getGivenStories();
+    private void runGivenStories(GivenStories givenStories, Map<String, String> parameters, RunContext context) throws Throwable {
         if (givenStories.getPaths().size() > 0) {
             reporter.get().givenStories(givenStories);
             for (GivenStory givenStory : givenStories.getStories()) {
                 RunContext childContext = context.childContextFor(givenStory);
                 // run given story, using any parameters provided
                 Story story = storyOfPath(context.configuration(), childContext.path());
-                scenarioParameters.putAll(givenStory.getParameters());
-                run(childContext, story, scenarioParameters);
+                parameters.putAll(givenStory.getParameters());
+                run(childContext, story, parameters);
             }
         }
     }
@@ -392,7 +393,7 @@ public class StoryRunner {
             }
             runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE, ScenarioType.EXAMPLE);
             addMetaParameters(scenarioParameters, storyAndScenarioMeta);
-            runGivenStories(scenario, scenarioParameters, context);
+            runGivenStories(scenario.getGivenStories(), scenarioParameters, context);
             runScenarioSteps(context, scenario, scenarioParameters);
             runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER, ScenarioType.EXAMPLE);
         }

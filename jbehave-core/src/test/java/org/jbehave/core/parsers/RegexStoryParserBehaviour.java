@@ -119,7 +119,8 @@ public class RegexStoryParserBehaviour {
 
     @Test
     public void shouldParseStoryWithStepsContainingKeywordsAtStartOfOtherWords() {
-        String wholeStory = "Given a scenario Givenly" + NL +
+        String wholeStory = "Meta: @some" + NL +
+                "Given a scenario Givenly" + NL +
                 "When I parse it to Whenever" + NL +
                 "And I parse it to Anderson" + NL +
                 "!-- ignore me too" + NL +
@@ -133,6 +134,21 @@ public class RegexStoryParserBehaviour {
         assertThat(steps.get(2), equalTo("And I parse it to Anderson"));
         assertThat(steps.get(3), equalTo("!-- ignore me too"));
         assertThat(steps.get(4), equalTo("Then I should get steps Thenact"));
+    }
+
+    @Test
+    public void shouldParseStoryWithGivenStoriesAtStoryAndScenarioLevel() {
+        String wholeStory = "GivenStories: GivenAPreconditionToStory" + NL +
+                "Scenario:"+ NL +        
+                "GivenStories: GivenAPreconditionToScenario" + NL +
+                "Given a scenario Given";
+        Story story = parser.parseStory(wholeStory, storyPath);
+
+        assertThat(story.getGivenStories().getPaths(), equalTo(asList("GivenAPreconditionToStory")));
+        Scenario scenario = story.getScenarios().get(0);
+        assertThat(scenario.getGivenStories().getPaths(), equalTo(asList("GivenAPreconditionToScenario")));
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario Given"));
     }
 
     @Test
