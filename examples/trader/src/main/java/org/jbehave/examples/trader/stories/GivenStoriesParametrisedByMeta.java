@@ -2,6 +2,6 @@ package org.jbehave.examples.trader.stories;
 
 import org.jbehave.examples.trader.TraderStory;
 
-public class GivenStoriesAtStoryLevel extends TraderStory {
+public class GivenStoriesParametrisedByMeta extends TraderStory {
 
 }

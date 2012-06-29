@@ -10,20 +10,23 @@
 
 <p>BDD encourages the description of the acceptance tests in a
 manner that is intelligible and transparent to the business users. This
-in particular may mean setting up explicitly via scenario steps all the
-pre-requirements of a particular scenario. For complex scenarios this
+in particular may mean setting up explicitly via a series of scenario steps all the
+pre-requirements of a particular story or scenario. For complex scenarios this
 will rapidly lead to maintenance problems due to duplication of entire
 blocks of steps.</p>
 
 <p>To help the user better manager more complex scenarios, JBehave
-allow the specification of entire stories as a pre-requisite for another
+allow the specification of entire stories as a pre-requisite for another story or 
 scenario.</p>
 
 <pre class="brush: bdd">
-    Scenario:  A scenario in which the user can run other stories as pre-requisites
-    
-    GivenStories: path/to/precondition1.story,
-                  path/to/precondition2.story,
+    !-- A precondition to entire story
+    GivenStories: path/to/precondition1.story
+
+    Scenario:  A scenario in which the user can run additional stories as pre-requisites
+
+    !-- preconditions to scenario    
+    GivenStories: path/to/precondition2.story,
                   ...
                   path/to/preconditionN.story
     
@@ -32,7 +35,7 @@ scenario.</p>
 <p>When JBehave encounters the keyword <b>GivenStories</b>, it will
 run the (one or more) textual stories specified by path in the list
 (using the same Steps instances specified for the parent story) before
-proceeding to the execution of the normal scenario steps.</p>
+proceeding to the execution of the scenarios (if at story level) or scenario steps (if at scenario level).</p>
 
 <p>Another way to avoid duplication of textual scenario steps is to
 use the natural ordering of execution of the story classes. Typically,
@@ -45,7 +48,7 @@ be unnecessary and time consuming. For example, for debugging purposes
 one may need to one run one scenario, which may have a dependency on
 just one other story. This is where <b>GivenStories</b> is most useful.</p>
 
-<h2>Parametrized GivenStories</h2>
+<h2>GivenStories parametrized by Examples</h2>
 
 <p>In the spirit of avoid unnecessary duplication, it useful at
 times to allow parametrization of given stories, i.e. executing them
@@ -53,9 +56,26 @@ with different sets of parameters. Parametrized given stories work on
 the same principles of <a href="parametrised-scenarios.html">parametrized
 scenarios</a>, using <a href="parameter-injection.html">parameter
 injection</a>. The only thing that differs with the case of parametrized
-scenarios is the convention by which the parameter sets are provided. It
-still uses the <b>Examples:</b> keyword to collect the sets of
-parameters, but it allows the user to provide via an <b>anchor</b>, an
+scenarios is the convention by which the parameter sets are provided.</p>
+
+<h3>GivenStories parametrized by Meta</h3>
+
+<p>One way to parametrise the given stories is use the <b>Meta:</b> keyword:</p>
+
+<pre class="brush: bdd">
+    Meta: @One uno @Two due
+    
+    GivenStories: path/to/precondition.story
+    
+    Scenario:  A scenario which is executed after the parametrised story-level given stories
+    
+    Given ... // normal scenario steps
+</pre>
+
+<h3>GivenStories parametrized by Examples</h3>
+
+<p>Another way is to use the <b>Examples:</b> keyword to collect the sets of
+parameters, allowing the user to provide via an <b>anchor</b>, an
 optional appendix of the form <b>#{row}</b> to the story path, which is
 interpreted as row number of the parameters to inject in the story
 execution.</p>

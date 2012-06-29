@@ -257,6 +257,8 @@ public class StoryRunner {
 
             runBeforeOrAfterStorySteps(context, story, Stage.BEFORE);
 
+            addMetaParameters(storyParameters, storyMeta);
+
             runGivenStories(story.getGivenStories(), storyParameters, context);
             
             // determine if before and after scenario steps should be run
