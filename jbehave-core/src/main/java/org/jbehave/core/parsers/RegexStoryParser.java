@@ -258,7 +258,7 @@ public class RegexStoryParser implements StoryParser {
         String initialStartingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         String followingStartingWords = concatenateWithOr("\\n", "\\s", keywords.startingWords());
         return compile(
-                "((" + initialStartingWords + ") (.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"
+                "((" + initialStartingWords + ")\\s(.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"
                         + keywords.examplesTable() + ")", DOTALL);
     }
 
