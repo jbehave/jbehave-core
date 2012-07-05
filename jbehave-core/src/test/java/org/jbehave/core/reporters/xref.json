@@ -25,9 +25,52 @@
           ]
         },
         'scenarios': [
-        ]
+        ],
+        'givenStories': {
+          'givenStories': [
+          ],
+          'givenStoriesAsString': '',
+          'examplesTable': {
+            'tableAsString': '',
+            'headerSeparator': '|',
+            'valueSeparator': '|',
+            'ignorableSeparator': '|--',
+            'tableTransformers': {
+              'transformers': [
+                [
+                  'FROM_LANDSCAPE',
+                  {}
+                ]
+              ]
+            },
+            'headers': [
+            ],
+            'data': [
+            ],
+            'properties': [
+              {
+                '@name': 'headerSeparator',
+                '@value': '|'
+              },
+              {
+                '@name': 'valueSeparator',
+                '@value': '|'
+              },
+              {
+                '@name': 'ignorableSeparator',
+                '@value': '|--'
+              }
+            ],
+            'propertiesAsString': '',
+            'namedParameters': [
+            ],
+            'trim': true
+          }
+        }
       },
       'allowed': false,
+      'givenStories': [
+      ],
       'scenarios': [
         {
           'scenario': {

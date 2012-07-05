@@ -80,6 +80,8 @@ public class PerformableTree {
 
             performableStory.addBeforeSteps(context.beforeOrAfterStorySteps(story, Stage.BEFORE));
 
+            performableStory.addGivenStories(performableGivenStories(context, story.getGivenStories(), storyParameters));
+
             // determine if before and after scenario steps should be run
             boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
 
@@ -127,7 +129,7 @@ public class PerformableTree {
                 }
             } else { // plain old scenario
                 addMetaParameters(storyParameters, storyAndScenarioMeta);
-                performableScenario.addGivenStories(performableGivenStories(context, story, scenario, storyParameters));
+                performableScenario.addGivenStories(performableGivenStories(context, scenario.getGivenStories(), storyParameters));
                 performableScenario.addSteps(context.scenarioSteps(scenario, storyParameters));
             }
 
@@ -147,24 +149,23 @@ public class PerformableTree {
         exampleScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
                 ScenarioType.EXAMPLE));
         addMetaParameters(scenarioParameters, storyAndScenarioMeta);
-        exampleScenario.addGivenStories(performableGivenStories(context, story, scenario, scenarioParameters));
+        exampleScenario.addGivenStories(performableGivenStories(context, scenario.getGivenStories(), scenarioParameters));
         exampleScenario.addSteps(context.scenarioSteps(scenario, scenarioParameters));
         exampleScenario.addAfterSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER,
                 ScenarioType.EXAMPLE));
         return exampleScenario;
     }
 
-    private List<PerformableStory> performableGivenStories(RunContext context, Story story, Scenario scenario,
-            Map<String, String> scenarioParameters) {
+    private List<PerformableStory> performableGivenStories(RunContext context, GivenStories givenStories,
+            Map<String, String> parameters) {
         List<PerformableStory> stories = new ArrayList<PerformableStory>();
-        GivenStories givenStories = scenario.getGivenStories();
         if (givenStories.getPaths().size() > 0) {
             for (GivenStory givenStory : givenStories.getStories()) {
                 RunContext childContext = context.childContextFor(givenStory);
                 // run given story, using any parameters provided
                 Story storyOfPath = storyOfPath(context.configuration(), childContext.path());
-                scenarioParameters.putAll(givenStory.getParameters());
-                stories.add(performableStory(childContext, storyOfPath, scenarioParameters));
+                parameters.putAll(givenStory.getParameters());
+                stories.add(performableStory(childContext, storyOfPath, parameters));
             }
         }
         return stories;
@@ -535,6 +536,7 @@ public class PerformableTree {
 
         private final Story story;
         private boolean allowed;
+        private List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
         private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
         private PerformableSteps beforeSteps = new PerformableSteps();
         private PerformableSteps afterSteps = new PerformableSteps();
@@ -549,6 +551,10 @@ public class PerformableTree {
 
         public boolean isAllowed() {
             return allowed;
+        }
+
+        public void addGivenStories(List<PerformableStory> performableGivenStories) {
+            this.givenStories.addAll(performableGivenStories);
         }
 
         public void addBeforeSteps(PerformableSteps beforeSteps) {
