@@ -1,14 +1,10 @@
 ; JBehave Grammar expressed in EBNF (http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form)
 
 ; The story describes a feature via description, narrative and a set of scenarios
-Story := Description? Meta? Narrative? Scenario+ ;
+Story := Description? Meta? Narrative? GivenStories? Scenario+ ;
 
 ; The Description is expressed by any sequence of words that must not contain any keywords at start of lines.
 Description := (Word Space?)* ;
-
-; The narrative is identified by keyword "Narrative:" (or equivalent in I18n-ed locale),
-; It is followed by the narrative elements
-Narrative:= "Narrative:" InOrderTo AsA IWantTo ;
 
 ; The meta is identified by keyword "Meta:" (or equivalent in I18n-ed locale),
 ; It is followed by any number of meta elements
@@ -17,6 +13,10 @@ Meta:= "Meta:" (MetaElement)* ;
 ; The meta element is identified by keyword "@" (or equivalent in I18n-ed locale),
 ; It is followed by a name-value pair, where the value can be empty or have multiple words
 MetaElement:= "@" Space? Word Space (Word Space?)* ;
+
+; The narrative is identified by keyword "Narrative:" (or equivalent in I18n-ed locale),
+; It is followed by the narrative elements
+Narrative:= "Narrative:" InOrderTo AsA IWantTo ;
 
 ; The narrative elements
 InOrderTo:= "In order to" NarrativeElementContent ;
@@ -31,6 +31,9 @@ NarrativeCharacter := ? Any Unicode character ? ;
 
 ; The narrative starting words (or equivalent in I18n-ed locale)
 NarrativeStartingWord :== ("In order to" | "As a" | "I want to" ) ;
+
+; The comma-separated list of story resources that specify the stories to be run before a story or a scenario
+GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
 
 ; The scenario is identified by keyword "Scenario:" (or equivalent in I18n-ed locale),
 ; which is optional in the case of a single scenario.  
@@ -54,9 +57,6 @@ NonSpaceCharacter := ? Any Unicode character except Space ? ;
 
 ; The keywords which are reserved (or equivalent in I18n-ed locale)
 KeyWord := "Scenario:" | "GivenStories:" | "Given" | "When" | "Then" | "And" | "!--";
-
-; The comma-separated list of story resources that specify the stories to be run before the scenario steps
-GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
 
 ; The story resource path  
 StoryPath := PathCharacter+ ;
