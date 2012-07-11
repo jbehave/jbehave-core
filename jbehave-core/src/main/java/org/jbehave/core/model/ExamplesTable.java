@@ -236,7 +236,7 @@ public class ExamplesTable {
     private void parseByRows(List<String> headers, List<Map<String, String>> data, String tableAsString) {
         String[] rows = tableAsString.split(ROW_SEPARATOR);
         for (int row = 0; row < rows.length; row++) {
-            String rowAsString = rows[row];
+            String rowAsString = rows[row].trim();
             if (rowAsString.startsWith(properties.getProperty("ignorableSeparator")) || rowAsString.length() == 0) {
                 // skip ignorable or empty lines
                 continue;

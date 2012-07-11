@@ -389,9 +389,9 @@ public class ExamplesTableBehaviour {
 
     @Test
     public void shouldIgnoreEmptyLines() throws Exception {
-        // ignore blank line
-        String tableWithEmptyLine = "|one|two|\n|a|b|\n\n|c|d|\n";
-        ExamplesTable table = new ExamplesTable(tableWithEmptyLine);
+        // ignore blank lines
+        String tableWithEmptyLines = "|one|two|\n|a|b|\n\n|c|d|\n\r\n";
+        ExamplesTable table = new ExamplesTable(tableWithEmptyLines);
         assertThat(table.getRowCount(), equalTo(2));
         assertThat(table.asString(), equalTo("|one|two|\n|a|b|\n|c|d|\n"));
     }
