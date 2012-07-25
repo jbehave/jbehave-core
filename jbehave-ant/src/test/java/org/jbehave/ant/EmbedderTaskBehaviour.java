@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.tools.ant.Project;
@@ -13,6 +14,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
+import org.jbehave.core.embedder.executors.ExecutorServiceFactory;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.reporters.Format;
@@ -28,6 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -35,6 +38,7 @@ import static org.mockito.Mockito.verify;
 public class EmbedderTaskBehaviour {
 
     private Embedder embedder = mock(Embedder.class);
+    private static final ExecutorService EXECUTOR_SERVICE = mock(ExecutorService.class);
 
     @Test
     public void shouldCreateNewEmbedderWithDefaultControls() {
@@ -210,6 +214,18 @@ public class EmbedderTaskBehaviour {
         Embedder embedder = task.newEmbedder();
         // Then
         assertThat(embedder.getClass().getName(), equalTo(MyEmbedder.class.getName()));
+    }
+
+    @Test
+    public void shouldCreateNewEmbedderWithExecutors() {
+        // Given
+        AbstractEmbedderTask task = new AbstractEmbedderTask() {
+        };
+        // When
+        task.setExecutorsClass(MyExecutors.class.getName());
+        Embedder embedder = task.newEmbedder();
+        // Then
+        assertThat(embedder.executorService(), sameInstance(EXECUTOR_SERVICE));
     }
 
     public static class MyEmbedder extends Embedder {
@@ -446,6 +462,14 @@ public class EmbedderTaskBehaviour {
 
         // Then
         verify(embedder).runStoriesWithAnnotatedEmbedderRunner(classNames);
+    }
+
+    public static class MyExecutors implements ExecutorServiceFactory {
+
+        public ExecutorService create(EmbedderControls controls) {
+            return EXECUTOR_SERVICE;
+        }
+        
     }
 
 }

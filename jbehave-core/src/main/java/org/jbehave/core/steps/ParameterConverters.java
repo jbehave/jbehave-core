@@ -51,7 +51,7 @@ public class ParameterConverters {
     public static final StepMonitor DEFAULT_STEP_MONITOR = new SilentStepMonitor();
     public static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
     public static final String DEFAULT_LIST_SEPARATOR = ",";
-    public static final boolean DEFAULT_THREAD_SAFETY = false;
+    public static final boolean DEFAULT_THREAD_SAFETY = true;
 
     private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
     private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
@@ -210,18 +210,21 @@ public class ParameterConverters {
      * </p>
      */
     public static class NumberConverter implements ParameterConverter {
-
         private static List<Class<?>> primitiveTypes = asList(new Class<?>[] { byte.class, short.class, int.class,
                 float.class, long.class, double.class });
 
         private final NumberFormat numberFormat;
+        private ThreadLocal<NumberFormat> threadLocalNumberFormat = new ThreadLocal<NumberFormat>();
 
         public NumberConverter() {
             this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL));
         }
 
         public NumberConverter(NumberFormat numberFormat) {
-            this.numberFormat = numberFormat;
+            synchronized (this) {
+                this.numberFormat = numberFormat;
+                this.threadLocalNumberFormat.set((NumberFormat) this.numberFormat.clone());
+            }
         }
 
         public boolean accept(Type type) {
@@ -233,7 +236,7 @@ public class ParameterConverters {
 
         public Object convertValue(String value, Type type) {
             try {
-                Number n = numberFormat.parse(value);
+                Number n = numberFormat().parse(value);
                 if (type == Byte.class || type == byte.class) {
                     return n.byteValue();
                 } else if (type == Short.class || type == short.class) {
@@ -265,6 +268,20 @@ public class ParameterConverters {
         }
 
         /**
+         * Return NumberFormat instance with preferred locale threadsafe
+         * 
+         * @return A threadlocal version of original NumberFormat instance
+         */
+        private NumberFormat numberFormat() {
+            if (threadLocalNumberFormat.get() == null) {
+                synchronized (this) {
+                    threadLocalNumberFormat.set((NumberFormat) numberFormat.clone());
+                }
+            }
+            return threadLocalNumberFormat.get();
+        }
+
+        /**
          * Canonicalize a number representation to a format suitable for the
          * {@link BigDecimal(String)} constructor, taking into account the
          * settings of the currently configured DecimalFormat.
@@ -280,8 +297,8 @@ public class ParameterConverters {
             StringBuilder builder = new StringBuilder(value.length());
 
             // override defaults according to numberFormat's settings
-            if (numberFormat instanceof DecimalFormat) {
-                DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
+            if (numberFormat() instanceof DecimalFormat) {
+                DecimalFormatSymbols decimalFormatSymbols = ((DecimalFormat) numberFormat()).getDecimalFormatSymbols();
                 minusSign = decimalFormatSymbols.getMinusSign();
                 decimalPointSeparator = decimalFormatSymbols.getDecimalSeparator();
             }

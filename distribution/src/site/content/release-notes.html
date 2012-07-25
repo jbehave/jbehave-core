@@ -5,8 +5,154 @@
 </head>
 <body>
 
-<h1>JBehave Core - Version 3.6 (Mar xx, 2012)</h1> 
+<h1>JBehave Core - Version 3.6.8 (Jul 5, 2012)</h1> 
+            
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-784'>JBEHAVE-784</a>] -         Parser skips lines from story, if keyword is separated from text without space char.
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-788'>JBEHAVE-788</a>] -         Parsing recursive composite steps fail if the composite steps don&#39;t use any parameters
+</li>
+</ul>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-792'>JBEHAVE-792</a>] -         Allow GivenStories to be specified at story level
+</li>
+</ul>
+                    
+<h1>JBehave Core - Version 3.6.7 (Jun 2, 2012)</h1> 
+                    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-782'>JBEHAVE-782</a>] -         Minor change to function parseScenario in RegexStoryParser
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-787'>JBEHAVE-787</a>] -         Allow Freemarker TemplateProcessor to specifiy class for template loading
+</li>
+</ul>
+            
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-781'>JBEHAVE-781</a>] -         Deprecate ConfigurableEmbedder addSteps() methods in favour of useStepsFactory()
+</li>
+</ul>
+        
+<h1>JBehave Core - Version 3.6.6 (May 10, 2012)</h1> 
+            
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-779'>JBEHAVE-779</a>] -         Change of ExamplesTableFactory constructor in patch release
+</li>
+</ul>
+             
+<h1>JBehave Core - Version 3.6.5 (Apr 30, 2012)</h1> 
+            
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-762'>JBEHAVE-762</a>] -         CrossReference not creating givenStories hierarchy in xref.json
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-773'>JBEHAVE-773</a>] -         CrossReference does not consider pending steps as failures when the PendingStepStrategy is used
+</li>
+</ul>
+        
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-774'>JBEHAVE-774</a>] -         Embedder should pass meta filter to CrossReference
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-776'>JBEHAVE-776</a>] -         StoryManager should be responsible for running before and after stories steps
+</li>
+</ul>
+          
+<h1>JBehave Core - Version 3.6.4 (Apr 27, 2012)</h1> 
+                    
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-718'>JBEHAVE-718</a>] -         Allow transformation of example tables
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-722'>JBEHAVE-722</a>] -         Examples Table parser can be improved to allow a comment as the first line
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-769'>JBEHAVE-769</a>] -         Swedish language support
+</li>
+</ul>
+            
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-768'>JBEHAVE-768</a>] -         Add documentation page on how to contribute
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-770'>JBEHAVE-770</a>] -         Ensure behaviour is reproducible in unit tests when retrieving methods from Class.getMethods()
+</li>
+</ul>
 
+<h1>JBehave Core - Version 3.6.3 (Apr 18, 2012)</h1> 
+                        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-763'>JBEHAVE-763</a>] -         LoadFromRelativeFile break on windows when using maven traversal
+</li>
+</ul>
+        
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-767'>JBEHAVE-767</a>] -         Norwegian language support out-of-the-box
+</li>
+</ul>
+            
+<h2>        Task
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-765'>JBEHAVE-765</a>] -         Variants documentation is misleading wrt whitespace
+</li>
+</ul>
+        
+<h1>JBehave Core - Version 3.6.2 (Apr 10, 2012)</h1> 
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-760'>JBEHAVE-760</a>] -         TemplateableOutput does not handle properly parametrised scenarios
+</li>
+</ul>
+        
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-753'>JBEHAVE-753</a>] -         Allow GivenStories to be parametrised by examples in a scenario context
+</li>
+</ul>
+                    
+<h1>JBehave Core - Version 3.6.1 (Apr 4, 2012)</h1> 
+            
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-756'>JBEHAVE-756</a>] -         NumberConverter not threadsafe
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-758'>JBEHAVE-758</a>] -         NumberFormat instance in ParameterConverters.NumberConverter is not threadsafe
+</li>
+</ul>
+        
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-754'>JBEHAVE-754</a>] -         Support Spring AnnotationConfigApplicationContext
+</li>
+<li>[<a href='https://jira.codehaus.org/browse/JBEHAVE-757'>JBEHAVE-757</a>] -         Allow non-programmatic configuration of ExecutorService
+</li>
+</ul>
+                    
+<h1>JBehave Core - Version 3.6 (Mar 29, 2012)</h1> 
+            
 <h2>        Bug
 </h2>
 <ul>
@@ -23,6 +169,8 @@
 <li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-634'>JBEHAVE-634</a>] -         Ant copy-dependencies task (for the bin distribution) doesn&#39;t work in Windows
 </li>
 <li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-642'>JBEHAVE-642</a>] -         StackOverflowError in RegexStoryParser with long scenario titles
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-646'>JBEHAVE-646</a>] -         @Named not respecting parameter order
 </li>
 <li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-650'>JBEHAVE-650</a>] -         Ant copy-dependencies (binary distribution) doesn&#39;t find all required artifacts when the local maven cache is empty
 </li>
@@ -50,6 +198,8 @@
 </li>
 <li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-710'>JBEHAVE-710</a>] -         Pending steps methods should remove even more characters
 </li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-712'>JBEHAVE-712</a>] -         Spaces in path breaks StoryFinder().findPaths()
+</li>
 <li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-724'>JBEHAVE-724</a>] -         Too many columns in an example table give IndexOutOfBoundsException
 </li>
 <li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-725'>JBEHAVE-725</a>] -         Some unit tests fail on Windows due to cr/lf encoding
@@ -57,6 +207,14 @@
 <li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-729'>JBEHAVE-729</a>] -         Current path is converted to file:/home/.../ when accessing codeLocationFromClass from inside a jar
 </li>
 <li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-733'>JBEHAVE-733</a>] -         Composed steps don&#39;t behave like steps in a story when using parameters
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-739'>JBEHAVE-739</a>] -         NumberFormatException when trying to convert parameters to BigDecimal with German Locale
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-745'>JBEHAVE-745</a>] -         @Named annotation doesn&#39;t work in scenario when Examples table and MetaInfo is used
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-746'>JBEHAVE-746</a>] -         ReportsCount is counting files that aren&#39;t stories in the story count
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-747'>JBEHAVE-747</a>] -         codeLocationFromPath breaks for paths with spaces
 </li>
 </ul>
         
@@ -179,7 +337,20 @@
 </li>
 <li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-732'>JBEHAVE-732</a>] -         Configure atlassian repo for accessing Google GData artifact
 </li>
-</ul>        
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-736'>JBEHAVE-736</a>] -         Upgrade StoryNavigator to latest version
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-740'>JBEHAVE-740</a>] -         Better documentation of management of transitive dependencies
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-751'>JBEHAVE-751</a>] -         Need to update the EBNF grammar
+</li>
+</ul>
+    
+<h2>        Test
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/JBEHAVE-744'>JBEHAVE-744</a>] -         Unit test can fail due to random list ordering
+</li>
+</ul> 
                 
 <h1>JBehave Core - Version 3.5.4 (Nov 27, 2011)</h1>     
    

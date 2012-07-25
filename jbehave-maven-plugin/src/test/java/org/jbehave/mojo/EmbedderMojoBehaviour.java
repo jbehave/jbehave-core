@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Build;
@@ -21,6 +22,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.EmbedderClassLoader;
 import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
+import org.jbehave.core.embedder.executors.ExecutorServiceFactory;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.reporters.Format;
@@ -35,6 +37,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.sameInstance;
 
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -45,6 +48,8 @@ import static org.mockito.Mockito.when;
 public class EmbedderMojoBehaviour {
 
     private Embedder embedder = mock(Embedder.class);
+    private static final ExecutorService EXECUTOR_SERVICE = mock(ExecutorService.class);
+
 
     @Test
     public void shouldCreateNewEmbedderWithDefaultControls() {
@@ -92,6 +97,20 @@ public class EmbedderMojoBehaviour {
         assertThat(embedderControls.storyTimeoutInSecs(), is(60L));
         assertThat(embedderControls.threads(), is(2));
         assertThat(embedderControls.skip(), is(true));
+    }
+
+    @Test
+    public void shouldCreateNewEmbedderWithExecutors() {
+        // Given
+        AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            public void execute() throws MojoExecutionException, MojoFailureException {
+            }
+        };
+        // When
+        mojo.executorsClass = MyExecutors.class.getName();
+        Embedder embedder = mojo.newEmbedder();
+        // Then
+        assertThat(embedder.executorService(), sameInstance(EXECUTOR_SERVICE));
     }
 
     @Test
@@ -834,4 +853,11 @@ public class EmbedderMojoBehaviour {
         // and fail as expected ...
     }
 
+    public static class MyExecutors implements ExecutorServiceFactory {
+
+        public ExecutorService create(EmbedderControls controls) {
+            return EXECUTOR_SERVICE;
+        }
+        
+    }
 }

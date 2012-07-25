@@ -14,7 +14,9 @@ import org.jbehave.core.embedder.StoryRunner.State;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
+import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * Manages the execution and outcomes of running stories. While each story is
@@ -61,6 +63,36 @@ public class StoryManager {
             outcomes.add(new StoryOutcome(story));
         }
         return outcomes;
+    }
+    
+    public void runStories(List<String> storyPaths, MetaFilter filter, BatchFailures failures) {
+        // configure cross reference with meta filter
+        if ( configuration.storyReporterBuilder().hasCrossReference() ){
+            configuration.storyReporterBuilder().crossReference().withMetaFilter(filter.asString());
+        }
+        
+        // run before stories
+        State beforeStories = runBeforeOrAfterStories(failures, Stage.BEFORE);
+
+        // run stories as paths
+        runningStoriesAsPaths(storyPaths, filter, beforeStories);
+        waitUntilAllDoneOrFailed(failures);
+        List<Story> notAllowed = notAllowedBy(filter);
+        if (!notAllowed.isEmpty()) {
+            embedderMonitor.storiesNotAllowed(notAllowed, filter, embedderControls.verboseFiltering());
+        }
+
+        // run after stories
+       runBeforeOrAfterStories(failures, Stage.AFTER);
+    }
+
+    public State runBeforeOrAfterStories(BatchFailures failures, Stage stage) {
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        State state = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, stage);
+        if (storyRunner.failed(state)) {
+            failures.put(state.toString(), storyRunner.failure(state));
+        }
+        return state;
     }
 
     public Map<String, RunningStory> runningStoriesAsPaths(List<String> storyPaths, MetaFilter filter,

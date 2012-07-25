@@ -54,9 +54,11 @@ public class TemplateableOutput implements StoryReporter {
     }
 
     public void beforeStory(Story story, boolean givenStory) {
-        this.outputStory = new OutputStory();
-        this.outputStory.description = story.getDescription().asString();
-        this.outputStory.path = story.getPath();
+        if (!givenStory) {
+            this.outputStory = new OutputStory();
+            this.outputStory.description = story.getDescription().asString();
+            this.outputStory.path = story.getPath();
+        }
         if (!story.getMeta().isEmpty()) {
             this.outputStory.meta = new OutputMeta(story.getMeta());
         }
@@ -73,10 +75,12 @@ public class TemplateableOutput implements StoryReporter {
     }
 
     public void beforeScenario(String title) {
-        this.outputScenario = new OutputScenario();
+        if (this.outputScenario.currentExample == null) {
+            this.outputScenario = new OutputScenario();
+        }
         this.outputScenario.title = title;
     }
-    
+
     public void beforeStep(String step) {
     }
 
@@ -134,13 +138,16 @@ public class TemplateableOutput implements StoryReporter {
     }
 
     public void afterExamples() {
+        this.outputScenario.currentExample = null;
     }
 
     public void dryRun() {
     }
 
     public void afterScenario() {
-        this.outputStory.scenarios.add(outputScenario);
+        if (this.outputScenario.currentExample == null) {
+            this.outputStory.scenarios.add(outputScenario);
+        }
     }
 
     public void pendingMethods(List<String> methods) {
@@ -276,19 +283,19 @@ public class TemplateableOutput implements StoryReporter {
             return keywords.dryRun();
         }
 
-        public String getStoryCancelled(){
+        public String getStoryCancelled() {
             return keywords.storyCancelled();
         }
-        
-        public String getDuration(){
+
+        public String getDuration() {
             return keywords.duration();
         }
-        
-        public String getYes(){
+
+        public String getYes() {
             return keywords.yes();
         }
-        
-        public String getNo(){
+
+        public String getNo() {
             return keywords.no();
         }
     }
@@ -331,12 +338,12 @@ public class TemplateableOutput implements StoryReporter {
         public List<OutputScenario> getScenarios() {
             return scenarios;
         }
-        
-        public boolean isCancelled(){
+
+        public boolean isCancelled() {
             return cancelled;
         }
-        
-        public StoryDuration getStoryDuration(){
+
+        public StoryDuration getStoryDuration() {
             return storyDuration;
         }
     }
@@ -414,11 +421,11 @@ public class TemplateableOutput implements StoryReporter {
         }
 
         public List<OutputStep> getStepsByExample(Map<String, String> example) {
-             List<OutputStep> steps = stepsByExample.get(example);
-             if ( steps == null ){
-                 return new ArrayList<OutputStep>();
-             }
-             return steps;
+            List<OutputStep> steps = stepsByExample.get(example);
+            if (steps == null) {
+                return new ArrayList<OutputStep>();
+            }
+            return steps;
         }
 
         public OutputMeta getMeta() {

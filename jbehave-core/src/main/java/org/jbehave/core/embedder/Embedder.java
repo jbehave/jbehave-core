@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,7 +15,7 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.embedder.StoryRunner.State;
+import org.jbehave.core.embedder.executors.FixedThreadExecutors;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
@@ -30,7 +29,6 @@ import org.jbehave.core.reporters.ViewGenerator;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.ProvidedStepsFactory;
-import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Stepdoc;
 
@@ -77,8 +75,9 @@ public class Embedder {
 
         processSystemProperties();
 
+        StoryManager storyManager = storyManager();
         for (String storyPath : storyPaths) {
-            Story story = storyRunner.storyOfPath(configuration, storyPath);
+            Story story = storyManager.storyOfPath(storyPath);
             embedderMonitor.mappingStory(storyPath, metaFilters);
             storyMapper.map(story, new MetaFilter(""));
             for (String filter : metaFilters) {
@@ -193,34 +192,14 @@ public class Embedder {
         }
 
         try {
+
             // set up run context
-            Configuration configuration = configuration();
-            InjectableStepsFactory stepsFactory = stepsFactory();
-            StoryRunner storyRunner = storyRunner();
             StoryManager storyManager = createStoryManager();
             MetaFilter filter = metaFilter();
             BatchFailures failures = new BatchFailures(embedderControls.verboseFailures());
 
-            // run before stories
-            List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
-            State beforeStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.BEFORE);
-            if (storyRunner.failed(beforeStories)) {
-                failures.put(beforeStories.toString(), storyRunner.failure(beforeStories));
-            }
-
             // run stories
-            storyManager.runningStoriesAsPaths(storyPaths, filter, beforeStories);
-            storyManager.waitUntilAllDoneOrFailed(failures);
-            List<Story> notAllowed = storyManager.notAllowedBy(filter);
-            if (!notAllowed.isEmpty()) {
-                embedderMonitor.storiesNotAllowed(notAllowed, filter, embedderControls.verboseFiltering());
-            }
-
-            // run after stories
-            State afterStories = storyRunner.runBeforeOrAfterStories(configuration, candidateSteps, Stage.AFTER);
-            if (storyRunner.failed(afterStories)) {
-                failures.put(afterStories.toString(), storyRunner.failure(afterStories));
-            }
+            storyManager.runStories(storyPaths, filter, failures);
 
             // handle any failures
             handleFailures(failures);
@@ -233,6 +212,7 @@ public class Embedder {
                 generateReportsView();
             }
             shutdownExecutorService();
+
         }
     }
 
@@ -400,9 +380,7 @@ public class Embedder {
      * @return An ExecutorService
      */
     private ExecutorService createExecutorService() {
-        int threads = embedderControls.threads();
-        embedderMonitor.usingThreads(threads);
-        return createNewFixedThreadPool(threads);
+        return new FixedThreadExecutors().create(embedderControls);
     }
 
     /**
@@ -419,18 +397,8 @@ public class Embedder {
         }
     }
 
-    /**
-     * Create default threadpool. Visible for testing
-     * 
-     * @param threads the number of threads
-     * @return The ThreadPoolExecutor
-     */
-    protected ExecutorService createNewFixedThreadPool(int threads) {
-        return Executors.newFixedThreadPool(threads);
-    }
-
     public StoryManager storyManager() {
-        if ( storyManager == null ){
+        if (storyManager == null) {
             storyManager = createStoryManager();
         }
         return storyManager;

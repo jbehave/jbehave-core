@@ -7,7 +7,16 @@ import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 
 public class FreemarkerProcessor implements TemplateProcessor {
-    
+    private Class<?> templateLoadingFrom;
+        
+    public FreemarkerProcessor() {
+        this(FreemarkerProcessor.class);
+    }
+
+    public FreemarkerProcessor(Class<?> templateLoadingFrom) {
+        this.templateLoadingFrom = templateLoadingFrom;
+    }
+
     public void process(String resource, Map<String, Object> dataModel, Writer writer) {
         Configuration configuration = configuration();
         try {
@@ -19,7 +28,7 @@ public class FreemarkerProcessor implements TemplateProcessor {
 
     public Configuration configuration() {
         Configuration configuration = new Configuration();
-        configuration.setClassForTemplateLoading(FreemarkerProcessor.class, "/");
+        configuration.setClassForTemplateLoading(templateLoadingFrom, "/");
         configuration.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
         return configuration;
     }

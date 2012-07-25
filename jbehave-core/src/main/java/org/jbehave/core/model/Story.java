@@ -17,6 +17,7 @@ public class Story {
     private final Meta meta;
     private final List<Scenario> scenarios;
     private String name;
+    private final GivenStories givenStories;
 
     public Story() {
         this(Arrays.<Scenario>asList());
@@ -39,10 +40,16 @@ public class Story {
     }
 
     public Story(String path, Description description, Meta meta, Narrative narrative, List<Scenario> scenarios) {
+        this(path, description, meta, narrative, GivenStories.EMPTY, scenarios);
+    }
+
+
+    public Story(String path, Description description, Meta meta, Narrative narrative, GivenStories givenStories, List<Scenario> scenarios) {
         this.path = (path != null ? path : "");
         this.description = description;
         this.narrative = narrative;
         this.meta = meta;
+        this.givenStories = givenStories;
         this.scenarios = scenarios;
     }
 
@@ -70,6 +77,10 @@ public class Story {
         return meta;
     }
 
+    public GivenStories getGivenStories(){
+        return givenStories;
+    }
+    
     public List<Scenario> getScenarios() {
         return unmodifiableList(scenarios);
     }

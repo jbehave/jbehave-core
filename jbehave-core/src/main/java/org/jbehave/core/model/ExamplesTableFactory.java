@@ -19,12 +19,13 @@ import static org.apache.commons.lang.StringUtils.isBlank;
  * {@link ResourceLoader} (defaulting to {@link LoadFromClasspath}).</li>
  * </ul>
  * Factory also supports optional specification of {@link ParameterConverters}
- * to allow the ExamplesTable to convert row values. 
+ * to allow the ExamplesTable to convert row values.
  * <p>
- * <b>NOTE</b>: Users needing parameter conversion
- * in the ExamplesTable, i.e. invoking {@link ExamplesTable#getRowAsParameters(int)}, will need
- * to use a factory constructor providing explicitly the ParameterConverters instance
- * configured in the {@link Configuration#useParameterConverters(ParameterConverters)}.  
+ * <b>NOTE</b>: Users needing parameter conversion in the ExamplesTable, i.e.
+ * invoking {@link ExamplesTable#getRowAsParameters(int)}, will need to use a
+ * factory constructor providing explicitly the ParameterConverters instance
+ * configured in the
+ * {@link Configuration#useParameterConverters(ParameterConverters)}.
  * </p>
  */
 public class ExamplesTableFactory {
@@ -32,28 +33,39 @@ public class ExamplesTableFactory {
     private final Keywords keywords;
     private final ResourceLoader resourceLoader;
     private final ParameterConverters parameterConverters;
+    private final TableTransformers tableTransformers;
 
     public ExamplesTableFactory() {
         this(new LocalizedKeywords());
     }
 
     public ExamplesTableFactory(Keywords keywords) {
-        this(keywords, new LoadFromClasspath(), new ParameterConverters());
-    }
-
-    public ExamplesTableFactory(ParameterConverters parameterConverters) {
-        this(new LocalizedKeywords(), new LoadFromClasspath(), parameterConverters);
+        this(keywords, new LoadFromClasspath(), new ParameterConverters(), new TableTransformers());
     }
 
     public ExamplesTableFactory(ResourceLoader resourceLoader) {
-        this(new LocalizedKeywords(), resourceLoader, new ParameterConverters());
+        this(new LocalizedKeywords(), resourceLoader, new ParameterConverters(), new TableTransformers());
+    }
+
+    public ExamplesTableFactory(ParameterConverters parameterConverters) {
+        this(new LocalizedKeywords(), new LoadFromClasspath(), parameterConverters, new TableTransformers());
+    }
+
+    public ExamplesTableFactory(TableTransformers tableTransformers) {
+        this(new LocalizedKeywords(), new LoadFromClasspath(), new ParameterConverters(), tableTransformers);
     }
 
     public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
             ParameterConverters parameterConverters) {
+        this(keywords, resourceLoader, parameterConverters, new TableTransformers());
+    }
+
+    public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
+            ParameterConverters parameterConverters, TableTransformers tableTranformers) {
         this.keywords = keywords;
         this.resourceLoader = resourceLoader;
         this.parameterConverters = parameterConverters;
+        this.tableTransformers = tableTranformers;
     }
 
     public ExamplesTable createExamplesTable(String input) {
@@ -64,7 +76,8 @@ public class ExamplesTableFactory {
             tableAsString = resourceLoader.loadResourceAsText(input);
         }
         return new ExamplesTable(tableAsString, keywords.examplesTableHeaderSeparator(),
-                keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(), parameterConverters);
+                keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(),
+                parameterConverters, tableTransformers);
     }
 
     protected boolean isTable(String input) {

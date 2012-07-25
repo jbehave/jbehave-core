@@ -45,7 +45,7 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
             if (resources.size() > 0) {
                 try {
                     context = createApplicationContext(annotatedClass().getClassLoader(), resources);
-                } catch ( Exception e ){
+                } catch (Exception e) {
                     annotationMonitor().elementCreationFailed(ApplicationContext.class, e);
                 }
             }
@@ -73,7 +73,6 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
         return converters;
     }
 
-    @SuppressWarnings("unchecked")
     private List<ParameterConverter> getBeansOfType(ApplicationContext context, Class<ParameterConverter> type) {
         Map<String, ParameterConverter> beansOfType = context.getBeansOfType(type);
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
@@ -84,24 +83,23 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected <T, V extends T> T instanceOf(Class<T> type, Class<V> ofClass) {
         if (context != null) {
-            Map<String, Object> beansOfType;
             if (!type.equals(Object.class)) {
-                beansOfType = context.getBeansOfType(type);
+                if (context.getBeansOfType(type).size() > 0) {
+                    return context.getBeansOfType(type).values().iterator().next();
+                }
             } else {
-                beansOfType = context.getBeansOfType(ofClass);
-            }
-            if (beansOfType.size() > 0) {
-                return (T) beansOfType.values().iterator().next();
+                if (context.getBeansOfType(ofClass).size() > 0) {
+                    return context.getBeansOfType(ofClass).values().iterator().next();
+                }
             }
         }
         return super.instanceOf(type, ofClass);
     }
 
     protected ApplicationContext createApplicationContext(ClassLoader classLoader, List<String> resources) {
-        if ( context != null ){
+        if (context != null) {
             return context;
         }
         return new SpringApplicationContextFactory(classLoader, resources.toArray(new String[resources.size()]))

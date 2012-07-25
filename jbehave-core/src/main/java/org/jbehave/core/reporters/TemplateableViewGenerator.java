@@ -118,7 +118,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
     }
 
     public ReportsCount getReportsCount() {
-        int stories = reports.size();
+        int stories = countStoriesWithScenarios();
         int storiesNotAllowed = count("notAllowed", reports);
         int storiesPending = count("pending", reports);
         int scenarios = count("scenarios", reports);
@@ -130,6 +130,18 @@ public class TemplateableViewGenerator implements ViewGenerator {
                 scenariosNotAllowed, scenariosPending, stepsFailed);
     }
 
+    private int countStoriesWithScenarios(){
+        int storyCount = 0;
+        for (Report report : reports){
+            Map<String, Integer> stats = report.getStats();
+            if (stats.containsKey("scenarios")){
+                if (stats.get("scenarios") > 0)
+                storyCount++;
+            }
+        }
+        return storyCount;
+    }
+    
     int count(String event, Collection<Report> reports) {
         int count = 0;
         for (Report report : reports) {

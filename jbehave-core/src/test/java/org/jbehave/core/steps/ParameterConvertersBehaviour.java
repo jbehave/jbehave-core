@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -39,6 +41,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 
 public class ParameterConvertersBehaviour {
@@ -57,6 +60,10 @@ public class ParameterConvertersBehaviour {
     public void shouldConvertValuesToNumbersWithEnglishNumberFormat() {
         Locale locale = Locale.ENGLISH;
         ParameterConverter converter = new NumberConverter(NumberFormat.getInstance(locale));
+        assertConverterForLocale(converter, locale);
+    }
+
+    private void assertConverterForLocale(ParameterConverter converter, Locale locale) {
         assertThatAllNumberTypesAreAccepted(converter);
         assertThatAllNumbersAreConverted(converter, locale);
         assertThat((Integer) converter.convertValue("100,000", Integer.class), equalTo(100000));
@@ -65,7 +72,48 @@ public class ParameterConvertersBehaviour {
         assertThat((Double) converter.convertValue("100,000.01", Double.class), equalTo(100000.01d));        
         assertThat((Double) converter.convertValue("1,00,000.01", Double.class), equalTo(100000.01d)); //Hindi style       
     }
+    
+    @Test
+    public void shouldConvertValuesToNumbersWithEnglishNumberFormatInMultipleThreads() {
+        final Locale locale = Locale.ENGLISH;
+        final int threads = 3;
+        final ParameterConverter converter = new NumberConverter(NumberFormat.getInstance(locale));
+        final BlockingQueue<String> queue = new ArrayBlockingQueue<String>(threads);
+        Thread t1 = new Thread(){
+            @Override
+            public void run(){
+                assertConverterForLocale(converter, locale);
+                queue.add(Thread.currentThread().getName());
+            }
+        };
+        Thread t2 = new Thread(){
+            @Override
+            public void run(){
+                assertConverterForLocale(converter, locale);
+                queue.add(Thread.currentThread().getName());
+            }
+        };
+        Thread t3 = new Thread(){
+            @Override
+            public void run(){
+                assertConverterForLocale(converter, locale);
+                queue.add(Thread.currentThread().getName());
+            }
+        };
 
+        t1.start();
+        t2.start();
+        t3.start();
+        
+        for (int i = 0;i < threads;i++){
+            try {
+                System.out.println(queue.take() + " completed.");
+            } catch (InterruptedException e) {
+                fail(e.getMessage());
+            }
+        }
+
+    }
     @Test
     public void shouldConvertValuesToNumbersWithFrenchNumberFormat() {
         Locale locale = Locale.FRENCH;

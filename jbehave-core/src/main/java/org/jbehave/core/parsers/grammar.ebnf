@@ -1,10 +1,18 @@
 ; JBehave Grammar expressed in EBNF (http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form)
 
-; The story describes a feature via optional description and narrative, and a set of scenarios
-Story := Description? Narrative? Scenario+ ;
+; The story describes a feature via description, narrative and a set of scenarios
+Story := Description? Meta? Narrative? GivenStories? Scenario+ ;
 
 ; The Description is expressed by any sequence of words that must not contain any keywords at start of lines.
 Description := (Word Space?)* ;
+
+; The meta is identified by keyword "Meta:" (or equivalent in I18n-ed locale),
+; It is followed by any number of meta elements
+Meta:= "Meta:" (MetaElement)* ;
+
+; The meta element is identified by keyword "@" (or equivalent in I18n-ed locale),
+; It is followed by a name-value pair, where the value can be empty or have multiple words
+MetaElement:= "@" Space? Word Space (Word Space?)* ;
 
 ; The narrative is identified by keyword "Narrative:" (or equivalent in I18n-ed locale),
 ; It is followed by the narrative elements
@@ -24,13 +32,16 @@ NarrativeCharacter := ? Any Unicode character ? ;
 ; The narrative starting words (or equivalent in I18n-ed locale)
 NarrativeStartingWord :== ("In order to" | "As a" | "I want to" ) ;
 
+; The comma-separated list of story resources that specify the stories to be run before a story or a scenario
+GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
+
 ; The scenario is identified by keyword "Scenario:" (or equivalent in I18n-ed locale),
 ; which is optional in the case of a single scenario.  
 ; It can optionally be followed by a title, which is expressed by any sequence of words
 ; that must not contain any keywords at start of lines.
 ; It is followed by one or more Steps. 
 ; Finally the optional Examples table, which if present will execute the scenario for as many table rows present
-Scenario := "Scenario:"? Title? GivenStories? Step+ Examples? ;
+Scenario := "Scenario:"? Title? Meta? GivenStories? Step+ Examples? ;
 
 ; The free-text description 
 Title := (Word Space?)* ;
@@ -46,9 +57,6 @@ NonSpaceCharacter := ? Any Unicode character except Space ? ;
 
 ; The keywords which are reserved (or equivalent in I18n-ed locale)
 KeyWord := "Scenario:" | "GivenStories:" | "Given" | "When" | "Then" | "And" | "!--";
-
-; The comma-separated list of story resources that specify the stories to be run before the scenario steps
-GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
 
 ; The story resource path  
 StoryPath := PathCharacter+ ;

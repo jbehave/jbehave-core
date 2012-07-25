@@ -2,6 +2,21 @@ package org.jbehave.core.reporters;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+
+import org.jbehave.core.failures.FailingUponPendingStep;
+import org.jbehave.core.failures.PassingUponPendingStep;
+import org.jbehave.core.failures.PendingStepStrategy;
+import org.jbehave.core.io.StoryLocation;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.StepPattern;
+import org.jbehave.core.model.Story;
+import org.jbehave.core.steps.NullStepMonitor;
+import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.steps.StepType;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,16 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.StepPattern;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.NullStepMonitor;
-import org.jbehave.core.steps.StepMonitor;
-import org.jbehave.core.steps.StepType;
 
 public class CrossReference extends Format {
 
@@ -37,6 +42,8 @@ public class CrossReference extends Format {
     private StepMonitor stepMonitor = new XRefStepMonitor();
     private Set<String> failingStories = new HashSet<String>();
     private Set<String> stepsPerformed = new HashSet<String>();
+    private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
+    private String metaFilter = "";
     private boolean doJson = true;
     private boolean doXml = true;
     private boolean excludeStoriesWithNoExecutedScenarios = false;
@@ -65,6 +72,16 @@ public class CrossReference extends Format {
         return this;
     }
 
+    public CrossReference withMetaFilter(String metaFilter) {
+        this.metaFilter = metaFilter;
+        return this;
+    }
+
+    public CrossReference withPendingStepStrategy(PendingStepStrategy pendingStepStrategy) {
+        this.pendingStepStrategy = pendingStepStrategy;
+        return this;
+    }
+
     public CrossReference withOutputAfterEachStory(boolean outputAfterEachStory) {
         this.outputAfterEachStory = outputAfterEachStory;
         return this;
@@ -80,14 +97,20 @@ public class CrossReference extends Format {
         return this;
     }
 
+    public String getMetaFilter() {
+        return metaFilter;
+    }
+
     public StepMonitor getStepMonitor() {
         return stepMonitor;
     }
 
     /**
-     * Output to JSON and/or XML files.  Could be at the end of the suite, or per story
-     * In the case of the latter, synchronization is needed as two stories (on two threads) could
-     * be completing concurrently, and we need to guard against ConcurrentModificationException
+     * Output to JSON and/or XML files. Could be at the end of the suite, or per
+     * story In the case of the latter, synchronization is needed as two stories
+     * (on two threads) could be completing concurrently, and we need to guard
+     * against ConcurrentModificationException
+     * 
      * @param storyReporterBuilder the reporter to use
      */
     public synchronized void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
@@ -110,14 +133,14 @@ public class CrossReference extends Format {
         XRefRoot xrefRoot = newXRefRoot();
         xrefRoot.metaFilter = getMetaFilter();
         xrefRoot.setExcludeStoriesWithNoExecutedScenarios(excludeStoriesWithNoExecutedScenarios);
-        xrefRoot.processStories(stories, stepsPerformed,  times, storyReporterBuilder, failingStories);
+        xrefRoot.processStories(stories, stepsPerformed, times, storyReporterBuilder, failingStories);
         return xrefRoot;
     }
 
     protected XRefRoot newXRefRoot() {
         return new XRefRoot();
     }
-    
+
     private void outputFile(String name, XStream xstream, XRefRoot root, StoryReporterBuilder storyReporterBuilder) {
 
         File outputDir = new File(storyReporterBuilder.outputDirectory(), "view");
@@ -131,12 +154,6 @@ public class CrossReference extends Format {
             throw new XrefOutputFailed(name, e);
         }
 
-    }
-
-    /** Override this if the metaFilter is important to
-     * you in the Story Navigator output */
-    public String getMetaFilter() {
-        return "";
     }
 
     @SuppressWarnings("serial")
@@ -172,7 +189,8 @@ public class CrossReference extends Format {
     }
 
     @Override
-    public StoryReporter createStoryReporter(FilePrintStreamFactory factory, final StoryReporterBuilder storyReporterBuilder) {
+    public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+            final StoryReporterBuilder storyReporterBuilder) {
         StoryReporter delegate;
         if (threadSafeDelegateFormat == null) {
             delegate = new NullStoryReporter();
@@ -183,12 +201,22 @@ public class CrossReference extends Format {
 
             @Override
             public void beforeStory(Story story, boolean givenStory) {
+                if (givenStory)
+                    return;
                 synchronized (stories) {
                     stories.add(new StoryHolder(story));
                 }
                 currentStory.set(story);
                 currentStoryStart.set(System.currentTimeMillis());
                 super.beforeStory(story, givenStory);
+            }
+
+            @Override
+            public void pending(String step) {
+                if (pendingStepStrategy instanceof FailingUponPendingStep) {
+                    failingStories.add(currentStory.get().getPath());
+                }
+                super.pending(step);
             }
 
             @Override
@@ -199,6 +227,8 @@ public class CrossReference extends Format {
 
             @Override
             public void afterStory(boolean givenStory) {
+                if (givenStory)
+                    return;
                 times.put(currentStory.get().getPath(), System.currentTimeMillis() - currentStoryStart.get());
                 if (outputAfterEachStory) {
                     outputToFiles(storyReporterBuilder);
@@ -256,7 +286,6 @@ public class CrossReference extends Format {
         public XRefRoot() {
         }
 
-
         public void setExcludeStoriesWithNoExecutedScenarios(boolean exclude) {
             this.excludeStoriesWithNoExecutedScenarios = exclude;
         }
@@ -265,7 +294,8 @@ public class CrossReference extends Format {
             return "JBehave";
         }
 
-        protected void processStories(List<StoryHolder> stories, Set<String> stepsPerformed, Map<String, Long> times, StoryReporterBuilder builder, Set<String> failures) {
+        protected void processStories(List<StoryHolder> stories, Set<String> stepsPerformed, Map<String, Long> times,
+                StoryReporterBuilder builder, Set<String> failures) {
             // Prevent Concurrent Modification Exception.
             synchronized (stories) {
                 for (StoryHolder storyHolder : stories) {
@@ -354,8 +384,8 @@ public class CrossReference extends Format {
             this.name = story.getName();
             this.path = story.getPath();
             this.passed = passed;
-            this.html = storyReporterBuilder.pathResolver().resolveName(new StoryLocation(storyReporterBuilder.codeLocation(), story.getPath()),
-                    "html");
+            this.html = storyReporterBuilder.pathResolver().resolveName(
+                    new StoryLocation(storyReporterBuilder.codeLocation(), story.getPath()), "html");
         }
 
         protected void processScenarios() {
@@ -451,7 +481,6 @@ public class CrossReference extends Format {
             this.story = story;
             this.when = System.currentTimeMillis();
         }
-
 
     }
 }

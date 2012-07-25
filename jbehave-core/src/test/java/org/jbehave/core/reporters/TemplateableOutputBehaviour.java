@@ -93,7 +93,11 @@ public class TemplateableOutputBehaviour {
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
         reporter.example(table.getRow(0));
+        reporter.successful("Given money $30");
+        reporter.successful("Then I give it to Mauro");
         reporter.example(table.getRow(1));
+        reporter.successful("Given money $50");
+        reporter.successful("Then I give it to Paul");
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.afterStory(givenStory);

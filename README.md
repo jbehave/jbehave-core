@@ -19,7 +19,7 @@ Please report issues, feature requests on the Codehaus [issue
 tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
 [dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org). 
 
-Keep an eye on the  [Bamboo Continuous Integration](http://builds.codehaus.org/browse/JBEHAVE) server for JBehave builds.
+Keep an eye on the  [Bamboo Continuous Integration](http://bamboo.ci.codehaus.org/browse/JBEHAVE) server for JBehave builds.
 
 ### Depended-on Technologies
 
@@ -50,7 +50,7 @@ After that, it is necessary to only do the following:
 
 - default: builds all releasable modules
 - examples: builds all headless examples
-- gui: builds examples that require a GUI (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://builds.codehaus.org/browse/JBEHAVE) )
+- gui: builds examples that require a GUI (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://bamboo.ci.codehaus.org/browse/JBEHAVE) )
 - nt: no-test, builds skipping unit-test behaviors 
 
 #### Maven Build Profiles used during release cycle

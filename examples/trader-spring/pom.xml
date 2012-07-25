@@ -4,13 +4,13 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-examples</artifactId>
-    <version>3.6-SNAPSHOT</version>
+    <version>3.7-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-trader-spring-example</artifactId>
   <name>JBehave Trader Spring Example</name>
 
   <properties>
-    <spring.version>2.5.6</spring.version>
+    <spring.version>3.1.1.RELEASE</spring.version>
   </properties>
 
   <dependencyManagement>
@@ -27,6 +27,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
@@ -37,6 +38,11 @@
       <groupId>org.jbehave</groupId>
       <artifactId>jbehave-spring</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib</artifactId>
+      <version>2.2.2</version>
     </dependency>
   </dependencies>
 
@@ -52,7 +58,7 @@
             <phase>integration-test</phase>
             <configuration>
               <includes>
-                <include>**/TraderStoriesUsingSpring.java</include>
+                <include>**/TraderStoriesUsingSpringWith*.java</include>
               </includes>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInView>true</ignoreFailureInView>
