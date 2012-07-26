@@ -5,7 +5,7 @@
 <#assign metaProperties=meta.getProperties()>
 <#list metaProperties.keySet() as name>
 <#assign property = metaProperties.get(name)>
-<property keyword="${keywords.metaProperty}" name="${name}" value="${property}"/>
+<property keyword="${keywords.metaProperty}" name="${name?xml}" value="${property?xml}"/>
 </#list>
 </meta>
 </#macro>
@@ -17,9 +17,9 @@
 </narrative>
 </#macro>
 <#macro renderGivenStories givenStories>
-<givenStories keyword"${keywords.givenStories}">
+<givenStories keyword="${keywords.givenStories}">
 <#list givenStories.getStories() as givenStory>
-<givenStory <#if givenStory.hasAnchor()>parameters="${givenStory.parameters}"</#if>>${givenStory.path}/>
+<givenStory<#if givenStory.hasAnchor()> parameters="${givenStory.parameters}"</#if>>${givenStory.path}</givenStory>
 </#list>
 </givenStories>
 </#macro>
@@ -29,14 +29,14 @@
 <table>
 <headers>
 <#list headers as header>
-<header>${header}</header>
+<header>${header?xml}</header>
 </#list>
 </headers>
 <#list rows as row>
 <row>
 <#list headers as header>
 <#assign cell=row.get(header)>
-<value>${cell}</value>
+<value>${cell?xml}</value>
 </#list>
 </row>
 </#list>
@@ -48,14 +48,14 @@
 <outcomes>
 <fields>
 <#list fields as field>
-<field>${field}</field>
+<field>${field?xml}</field>
 </#list>
 <fields>
 <#list outcomes as outcome>
 <#assign isVerified=outcome.isVerified()?string>
 <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
 <outcome>
-<value>${outcome.description}</value><value>${outcome.value}</value><value>${outcome.matcher}</value><value><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></value>
+<value>${outcome.description?xml}</value><value>${outcome.value?xml}</value><value>${outcome.matcher?xml}</value><value><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></value>
 </outcome>
 </#list>
 </outcomes>
@@ -63,8 +63,8 @@
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep("<parameter>{0}</parameter>")>
 <step outcome="${step.outcome}">
-${formattedStep} <#if step.getTable()??><parameter><@renderTable step.getTable()/></parameter></#if>
-<#if step.getFailure()??><failure>${step.failureCause}</failure></#if><#if step.getOutcomes()??><@renderOutcomes step.getOutcomes()/></#if></step>
+${formattedStep?xml}<#if step.getTable()??> <parameter><@renderTable step.getTable()/></parameter></#if>
+<#if step.getFailure()??> <failure>${step.failureCause?xml}</failure></#if><#if step.getOutcomes()??><@renderOutcomes step.getOutcomes()/></#if></step>
 </#macro>
 
 <story path="${story.path}" title="${story.description}">
@@ -72,7 +72,7 @@ ${formattedStep} <#if step.getTable()??><parameter><@renderTable step.getTable()
 <#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
 <#assign scenarios = story.getScenarios()>
 <#list scenarios as scenario>
-<scenario keyword="${keywords.scenario}" title="${scenario.title}">   
+<scenario keyword="${keywords.scenario}" title="${scenario.title?xml}">   
 <#if scenario.getMeta()??><@renderMeta scenario.getMeta()/></#if>
 <#if scenario.getGivenStories()??><@renderGivenStories scenario.getGivenStories()/></#if>
 <#if scenario.getExamplesTable()??>
@@ -84,7 +84,7 @@ ${formattedStep} <#if step.getTable()??><parameter><@renderTable step.getTable()
 </examples>
 <#if scenario.getExamples()??>
 <#list scenario.getExamples() as example>
-<example keyword="${keywords.examplesTableRow}">${example}</example>
+<example keyword="${keywords.examplesTableRow}">${example?xml}</example>
 <#assign steps = scenario.getStepsByExample(example)>
 <#list steps as step>
 <@renderStep step/>

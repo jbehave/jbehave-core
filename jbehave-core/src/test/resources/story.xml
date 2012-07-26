@@ -10,10 +10,57 @@
 <iWantTo keyword="I want to">get a loan</iWantTo>
 </narrative>
 <scenario keyword="Scenario:" title="I ask for a loan">   
-<givenStories keyword"GivenStories:">
-<givenStory >/given/story1/>
-<givenStory >/given/story2/>
+<givenStories keyword="GivenStories:">
+<givenStory>/given/story1</givenStory>
+<givenStory>/given/story2</givenStory>
 </givenStories>
+<step outcome="successful">
+Given I have a balance of $50
+</step>
+<step outcome="ignorable">
+!-- A comment
+</step>
+<step outcome="successful">
+When I request $20
+</step>
+<step outcome="successful">
+When I ask Liz for a loan of $100
+</step>
+<step outcome="hi">
+Then I should... - try again
+</step>
+<step outcome="failed">
+Then I should have a balance of $30
+ <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:80)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:54)
+	(reflection-invoke)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</failure></step>
+<step outcome="notPerformed">
+Then I should have $20
+</step>
+<step outcome="failed">
+Then I don&apos;t return loan
+ <failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed
+	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:48)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:88)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:54)
+	(reflection-invoke)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</failure><outcomes>
+<fields>
+<field>Description</field>
+<field>Value</field>
+<field>Matcher</field>
+<field>Verified</field>
+<fields>
+
+<outcome>
+<value>I don&apos;t return all</value><value>100</value><value>&lt;50.0&gt;</value><value>No</value>
+</outcome>
+</outcomes>
+</step>
+</scenario> 
+<scenario keyword="Scenario:" title="Parametrised Scenario">   
 <examples keyword="Examples:">
 <step>Given money &lt;money&gt;</step>   
 <step>Then I give it to &lt;to&gt;</step>   
@@ -34,18 +81,25 @@
 </examples>
 <example keyword="Example:">{money=$30, to=Mauro}</example>
 <step outcome="successful">
-Given money $30 
+Given money $30
 </step>
 <step outcome="successful">
-Then I give it to Mauro 
+Then I give it to Mauro
 </step>
 <example keyword="Example:">{money=$50, to=Paul}</example>
 <step outcome="successful">
-Given money $50 
+Given money $50
 </step>
 <step outcome="successful">
-Then I give it to Paul 
+Then I give it to Paul
 </step>
+<step outcome="failed">
+Then I should have a balance of $30
+ <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:103)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:54)
+	(reflection-invoke)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</failure></step>
 </scenario> 
 <cancelled keyword="STORY CANCELLED" durationKeyword="DURATION" durationInSecs="2"/>
 </story>
