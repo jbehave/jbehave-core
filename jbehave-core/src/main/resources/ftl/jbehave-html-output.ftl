@@ -1,12 +1,12 @@
 <#ftl strip_whitespace=true>
-<#macro renderMultiline text>${text?replace("\n", "<br/>")}</#macro>
+<#macro renderMultiline text>${text?html?replace("\n", "<br/>")}</#macro>
 <#macro renderMeta meta>
 <div class="meta">
 <div class="keyword">${keywords.meta}</div>
 <#assign metaProperties=meta.getProperties()>
 <#list metaProperties.keySet() as name>
 <#assign property = metaProperties.get(name)>
-<div class="property">${keywords.metaProperty}${name} ${property}</div>
+<div class="property">${keywords.metaProperty}${name?html} ${property?html}</div>
 </#list>
 </div>
 </#macro>
@@ -31,7 +31,7 @@
 <table>
 <thead><tr>
 <#list headers as header>
-<th>${header}</th>
+<th>${header?html}</th>
 </#list>
 </tr></thead>
 <tbody>
@@ -39,7 +39,7 @@
 <tr>
 <#list headers as header>
 <#assign cell=row.get(header)>
-<td>${cell}</td>
+<td>${cell?html}</td>
 </#list>
 </tr>
 </#list>
@@ -52,7 +52,7 @@
 <table>
 <thead><tr>
 <#list fields as field>
-<th>${field}</th>
+<th>${field?html}</th>
 </#list>
 </tr></thead>
 <tbody>
@@ -60,7 +60,7 @@
 <#assign isVerified=outcome.isVerified()?string>
 <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
 <tr class="${verified}">
-<td>${outcome.description}</td><td>${outcome.value}</td><td>${outcome.matcher}</td><td><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></td>
+<td>${outcome.description?html}</td><td>${outcome.value?html}</td><td>${outcome.matcher?html}</td><td><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></td>
 </tr>
 </#list>
 </tbody>
@@ -68,11 +68,11 @@
 </#macro>
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep("<span class=\"step parameter\">{0}</span>")>
-<div class="step ${step.outcome}">${formattedStep} <#if step.getTable()??><span class="step parameter"><@renderTable step.getTable()/></span></#if> <@renderStepOutcome step.getOutcome()/></div>
-<#if step.getFailure()??><pre class="failure">${step.failureCause}</pre></#if>
+<div class="step ${step.outcome}">${formattedStep?html}<#if step.getTable()??> <span class="step parameter"><@renderTable step.getTable()/></span></#if> <@renderStepOutcome step.getOutcome()/></div>
+<#if step.getFailure()??><pre class="failure">${step.failureCause?html}</pre></#if>
 <#if step.getOutcomes()??>
 <div class="outcomes"><@renderOutcomes step.getOutcomes()/>
-<#if step.getOutcomesFailureCause()??><pre class="failure">${step.outcomesFailureCause}</pre></#if>
+<#if step.getOutcomesFailureCause()??><pre class="failure">${step.outcomesFailureCause?html}</pre></#if>
 </div>
 </#if>
 </#macro>
@@ -98,7 +98,7 @@
 </div>  <!-- end examples -->
 <#if scenario.getExamples()??>
 <#list scenario.getExamples() as example>
-<h3 class="example">${keywords.examplesTableRow} ${example}</h3>
+<h3 class="example">${keywords.examplesTableRow} ${example?html}</h3>
 <#assign steps = scenario.getStepsByExample(example)>
 <#list steps as step>
 <@renderStep step/>

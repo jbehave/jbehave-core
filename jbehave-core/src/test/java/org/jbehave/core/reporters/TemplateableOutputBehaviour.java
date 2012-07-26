@@ -36,7 +36,7 @@ public class TemplateableOutputBehaviour {
         StoryReporter reporter = new HtmlTemplateOutput(file, new LocalizedKeywords());
 
         // When
-        narrateAnInterestingStory(reporter, false);
+        narrateAnInterestingStory(reporter, true);
 
         // Then
         String expected = IOUtils.toString(new FileReader(new File("src/test/resources/story.html")));
@@ -51,7 +51,7 @@ public class TemplateableOutputBehaviour {
         StoryReporter reporter = new XmlTemplateOuput(file, new LocalizedKeywords());
 
         // When
-        narrateAnInterestingStory(reporter, false);
+        narrateAnInterestingStory(reporter, true);
 
         // Then
         String expected = IOUtils.toString(new FileReader(new File("src/test/resources/story.xml")));
@@ -76,9 +76,8 @@ public class TemplateableOutputBehaviour {
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
         reporter.restarted("Then I should... - try again", new RestartingScenarioFailure("hi"));
-        reporter.storyCancelled(story, new StoryDuration(2, 1));
         if (withFailure) {
-            reporter.failed("Then I should have a balance of $30", new NullPointerException());
+            reporter.failed("Then I should have a balance of $30", new Exception("Expected <30> got <25>"));
         } else {
             reporter.pending("Then I should have a balance of $30");
         }
@@ -90,6 +89,8 @@ public class TemplateableOutputBehaviour {
         } catch (UUIDExceptionWrapper e) {
             reporter.failedOutcomes("Then I don't return loan", ((OutcomesFailed) e.getCause()).outcomesTable());
         }
+        reporter.afterScenario();
+        reporter.beforeScenario("Parametrised Scenario");
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
         reporter.example(table.getRow(0));
@@ -98,8 +99,14 @@ public class TemplateableOutputBehaviour {
         reporter.example(table.getRow(1));
         reporter.successful("Given money $50");
         reporter.successful("Then I give it to Paul");
+        if (withFailure) {
+            reporter.failed("Then I should have a balance of $30", new Exception("Expected <30> got <25>"));
+        } else {
+            reporter.pending("Then I should have a balance of $30");
+        }
         reporter.afterExamples();
         reporter.afterScenario();
+        reporter.storyCancelled(story, new StoryDuration(2, 1));
         reporter.afterStory(givenStory);
         reporter.pendingMethods(asList("method1", "method2"));
     }
