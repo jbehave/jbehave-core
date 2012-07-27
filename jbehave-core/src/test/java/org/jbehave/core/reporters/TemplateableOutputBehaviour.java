@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -20,6 +21,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import static java.util.Arrays.asList;
 
@@ -45,7 +47,7 @@ public class TemplateableOutputBehaviour {
     }
 
     @Test
-    public void shouldReportEventsToXmlOutput() throws IOException {
+    public void shouldReportEventsToXmlOutput() throws IOException, SAXException {
         // Given
         File file = new File("target/story.xml");
         StoryReporter reporter = new XmlTemplateOuput(file, new LocalizedKeywords());
@@ -56,6 +58,12 @@ public class TemplateableOutputBehaviour {
         // Then
         String expected = IOUtils.toString(new FileReader(new File("src/test/resources/story.xml")));
         String out = IOUtils.toString(new FileReader(file));
+
+        // will throw SAXException if the xml file is not well-formed
+        XMLUnit.buildTestDocument(out);
+
+        System.out.println(file);
+        System.out.println(out);
         assertThatOutputIs(out, expected);
     }
 
@@ -102,13 +110,23 @@ public class TemplateableOutputBehaviour {
         if (withFailure) {
             reporter.failed("Then I should have a balance of $30", new Exception("Expected <30> got <25>"));
         } else {
-            reporter.pending("Then I should have a balance of $30");
+        	reporter.pending("Then I should have a balance of $30");
         }
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.storyCancelled(story, new StoryDuration(2, 1));
+        String method1="@When(\"something \\\"$param\\\"\")\n"
+        		+ "@Pending\n"
+        		+ "public void whenSomething() {\n"
+        		+ "  // PENDING\n"
+        		+ "}\n";
+        String method2="@Then(\"something is <param1>\")\n"
+        		+ "@Pending\n"
+        		+ "public void thenSomethingIsParam1() {\n"
+        		+ "  // PENDING\n"
+        		+ "}\n";
+        reporter.pendingMethods(asList(method1, method2));
         reporter.afterStory(givenStory);
-        reporter.pendingMethods(asList("method1", "method2"));
     }
 
     private void assertThatOutputIs(String out, String expected) {
