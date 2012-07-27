@@ -50,7 +50,7 @@
 <#list fields as field>
 <field>${field?xml}</field>
 </#list>
-<fields>
+</fields>
 <#list outcomes as outcome>
 <#assign isVerified=outcome.isVerified()?string>
 <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
@@ -102,10 +102,10 @@ ${formattedStep?xml}<#if step.getTable()??> <parameter><@renderTable step.getTab
 <#if story.isCancelled()?string == 'true'>
 <cancelled keyword="${keywords.storyCancelled}" durationKeyword="${keywords.duration}" durationInSecs="${story.storyDuration.durationInSecs}"/>
 </#if>
-</story>
 <#if story.getPendingMethods()??>
 <#list story.getPendingMethods() as method>
-<pendingMethod>${method}</pendingMethod>
+<pendingMethod>${method?xml}</pendingMethod>
 </#list>
 </#if>
+</story>
 
