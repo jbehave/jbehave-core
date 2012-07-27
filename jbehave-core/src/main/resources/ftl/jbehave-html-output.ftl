@@ -119,7 +119,7 @@
 </div> <!-- end story -->
 <#if story.getPendingMethods()??>
 <#list story.getPendingMethods() as method>
-<div><pre class="pending">${method}</pre></div>
+<div><pre class="pending">${method?html}</pre></div>
 </#list>
 </#if>
 </body>
