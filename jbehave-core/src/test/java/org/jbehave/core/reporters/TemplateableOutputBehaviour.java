@@ -61,9 +61,6 @@ public class TemplateableOutputBehaviour {
 
         // will throw SAXException if the xml file is not well-formed
         XMLUnit.buildTestDocument(out);
-
-        System.out.println(file);
-        System.out.println(out);
         assertThatOutputIs(out, expected);
     }
 
@@ -110,21 +107,21 @@ public class TemplateableOutputBehaviour {
         if (withFailure) {
             reporter.failed("Then I should have a balance of $30", new Exception("Expected <30> got <25>"));
         } else {
-        	reporter.pending("Then I should have a balance of $30");
+            reporter.pending("Then I should have a balance of $30");
         }
         reporter.afterExamples();
         reporter.afterScenario();
         reporter.storyCancelled(story, new StoryDuration(2, 1));
         String method1="@When(\"something \\\"$param\\\"\")\n"
-        		+ "@Pending\n"
-        		+ "public void whenSomething() {\n"
-        		+ "  // PENDING\n"
-        		+ "}\n";
+                + "@Pending\n"
+                + "public void whenSomething() {\n"
+                + "  // PENDING\n"
+                + "}\n";
         String method2="@Then(\"something is <param1>\")\n"
-        		+ "@Pending\n"
-        		+ "public void thenSomethingIsParam1() {\n"
-        		+ "  // PENDING\n"
-        		+ "}\n";
+                + "@Pending\n"
+                + "public void thenSomethingIsParam1() {\n"
+                + "  // PENDING\n"
+                + "}\n";
         reporter.pendingMethods(asList(method1, method2));
         reporter.afterStory(givenStory);
     }
