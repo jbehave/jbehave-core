@@ -48,7 +48,7 @@ public class TemplateableOutputBehaviour {
     public void shouldReportEventsToXmlOutput() throws IOException {
         // Given
         File file = new File("target/story.xml");
-        StoryReporter reporter = new XmlTemplateOuput(file, new LocalizedKeywords());
+        StoryReporter reporter = new XmlTemplateOutput(file, new LocalizedKeywords());
 
         // When
         narrateAnInterestingStory(reporter, true);
