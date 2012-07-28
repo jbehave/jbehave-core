@@ -10,13 +10,13 @@ import org.jbehave.core.configuration.Keywords;
  * but custom processors based on other templating systems can be provided and/or 
  * other template paths can be configured.
  */
-public class XmlTemplateOuput extends TemplateableOutput {
+public class XmlTemplateOutput extends TemplateableOutput {
 
-    public XmlTemplateOuput(File file, Keywords keywords) {
+    public XmlTemplateOutput(File file, Keywords keywords) {
         super(file, keywords, new FreemarkerProcessor(), "ftl/jbehave-xml-output.ftl");
     }
 
-    public XmlTemplateOuput(File file, Keywords keywords, TemplateProcessor processor, String templatePath) {
+    public XmlTemplateOutput(File file, Keywords keywords, TemplateProcessor processor, String templatePath) {
         super(file, keywords, processor, templatePath);
     }
 
