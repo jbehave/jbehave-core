@@ -76,7 +76,7 @@
 </div>
 </#if>
 </#macro>
-<#macro renderStepOutcome outcome><#if outcome=="pending"><span class=\"keyword ${outcome}\">(${keywords.pending})</span></#if><#if outcome=="failed"><span class=\"keyword ${outcome}\">(${keywords.failed})</span></#if><#if outcome=="notPerformed"><span class=\"keyword ${outcome}\">(${keywords.notPerformed})</span></#if></#macro>
+<#macro renderStepOutcome outcome><#if outcome=="pending"><span class="keyword ${outcome}">(${keywords.pending})</span></#if><#if outcome=="failed"><span class="keyword ${outcome}">(${keywords.failed})</span></#if><#if outcome=="notPerformed"><span class="keyword ${outcome}">(${keywords.notPerformed})</span></#if></#macro>
 
 <html>
 <body>
