@@ -19,7 +19,7 @@ public class OdtLoaderBehaviour {
                 .loadResourceAsText("org/jbehave/core/io/odf/stories/a_story.odt");
         String resourceFromTxt = new LoadFromClasspath(this.getClass())
                 .loadResourceAsText("org/jbehave/core/io/odf/stories/a_story.txt");
-        assertEquals(resourceFromTxt.trim(), resourceFromOdtWithTable.trim());
+        assertThatOutputIs(resourceFromOdtWithTable.trim(), resourceFromTxt.trim());
     }
 
     @Test(expected = InvalidStoryResource.class)
@@ -35,7 +35,7 @@ public class OdtLoaderBehaviour {
                 + "org/jbehave/core/io/odf/stories/a_story.odt");
         String resourceFromTxt = new LoadFromURL().loadResourceAsText(location
                 + "org/jbehave/core/io/odf/stories/a_story.txt");
-        assertEquals(resourceFromTxt.trim(), resourceFromOdtWithTable.trim());
+        assertThatOutputIs(resourceFromOdtWithTable.trim(), resourceFromTxt.trim());
     }
 
     @Test(expected = InvalidStoryResource.class)
@@ -64,6 +64,15 @@ public class OdtLoaderBehaviour {
     @Test
     public void shouldKeepCoberturaHappy() {
         Assert.assertNotNull(new OdfUtils());
+    }
+
+    // copied from core/TemplatableOutputBehaviour
+    private void assertThatOutputIs(String out, String expected) {
+        assertEquals(dos2unix(expected), dos2unix(out));
+    }
+
+    private String dos2unix(String string) {
+        return string.replace("\r\n", "\n");
     }
 
 }
