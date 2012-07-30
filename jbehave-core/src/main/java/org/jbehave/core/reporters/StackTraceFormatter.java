@@ -20,7 +20,7 @@ public class StackTraceFormatter {
         }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         cause.printStackTrace(new PrintStream(out));
-        return stackTrace(out.toString());
+        return stackTrace(out.toString().replaceAll("\r",""));
     }
 
     protected String stackTrace(String stackTrace) {
