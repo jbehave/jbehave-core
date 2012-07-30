@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.custommonkey.xmlunit.XMLUnit;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -34,6 +35,7 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.TemplateableViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 import static java.util.Arrays.asList;
 
@@ -61,13 +63,13 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter, false);
 
         // Then
-        String expected = "DRY RUN\n"
-                +"An interesting story\n"
+        String expected = "An interesting story\n"
                 + "(/path/to/story)\n"
                 + "Meta:\n"
                 + "@author Mauro\n"
                 + "@theme testing\n"
                 + "\n"
+                + "DRY RUN\n"
                 + "Narrative:\n"
                 + "In order to renovate my house\n"
                 + "As a customer\n"
@@ -98,9 +100,20 @@ public class PrintStreamOutputBehaviour {
                 + "\nExample: {money=$30, to=Mauro}\n"
                 + "\nExample: {money=$50, to=Paul}\n"
                 + "\n" // end of examples
-                + "\n\n" // end of scenario and story
-                + "method1\n" // pending methods
-                + "method2\n";
+                + "\n" // end of scenario
+                // pending methods
+                + "@When(\"something \\\"$param\\\"\")\n"
+                + "@Pending\n"
+                + "public void whenSomething() {\n"
+                + "  // PENDING\n"
+                + "}\n"
+                + "\n"
+                + "@Then(\"something is <param1>\")\n"
+                + "@Pending\n"
+                + "public void thenSomethingIsParam1() {\n"
+                + "  // PENDING\n"
+                + "}\n\n"
+                + "\n"; // end of story
         assertThatOutputIs(out, expected);
     }
 
@@ -143,20 +156,20 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter, false);
 
         // Then
-        String expected = "<div class=\"dryRun\">DRY RUN</div>\n"+""
-                + "<div class=\"story\">\n<h1>An interesting story</h1>\n"
+        String expected = "<div class=\"story\">\n<h1>An interesting story</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
                 + "<div class=\"meta\">\n"
                 + "<div class=\"keyword\">Meta:</div>\n"
                 + "<div class=\"property\">@author Mauro</div>\n"
                 + "<div class=\"property\">@theme testing</div>\n"
                 + "</div>\n"
+                + "<div class=\"dryRun\">DRY RUN</div>\n"
                 + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
                 + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
                 + "<div class=\"element asA\"><span class=\"keyword asA\">As a</span> customer</div>\n"
                 + "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">I want to</span> get a loan</div>\n"
                 + "</div>\n"
-                + "<div class=\"scenario\">\n<h2>Scenario: I ask for a loan</h2>\n"                
+                + "<div class=\"scenario\">\n<h2>Scenario: I ask for a loan</h2>\n"
                 + "<div class=\"givenStories\">GivenStories:\n"
                 + "<div class=\"givenStory\">/given/story1 </div>\n"
                 + "<div class=\"givenStory\">/given/story2 </div>\n"
@@ -179,7 +192,7 @@ public class PrintStreamOutputBehaviour {
                 + "<tr class=\"notVerified\">\n"
                 + "<td>I don't return all</td><td>100.0</td><td>&lt;50.0&gt;</td><td>No</td></tr>\n"
                 + "</tbody>\n"
-                + "</table></div>\n"                
+                + "</table></div>\n"
                 + "<div class=\"examples\">\n" + "<h3>Examples:</h3>\n"
                 + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
                 + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
@@ -193,9 +206,21 @@ public class PrintStreamOutputBehaviour {
                 + "\n<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
                 + "\n<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n" 
                 + "</div>\n"  // end of examples
-                + "</div>\n</div>\n" // end of scenario and story
-                + "<div><pre class=\"pending\">method1</pre></div>\n" // pending methods
-                + "<div><pre class=\"pending\">method2</pre></div>\n";
+                + "</div>\n" // end of scenario
+                // pending methods
+                + "<div><pre class=\"pending\">@When(&quot;something \\&quot;$param\\&quot;&quot;)\n"
+                + "@Pending\n"
+                + "public void whenSomething() {\n"
+                + "  // PENDING\n"
+                + "}\n"
+                + "</pre></div>\n"
+                + "<div><pre class=\"pending\">@Then(&quot;something is &lt;param1&gt;&quot;)\n"
+                + "@Pending\n"
+                + "public void thenSomethingIsParam1() {\n"
+                + "  // PENDING\n"
+                + "}\n"
+                + "</pre></div>\n"
+                + "</div>\n"; // end of story
         assertThatOutputIs(out, expected);
     }
 
@@ -250,14 +275,14 @@ public class PrintStreamOutputBehaviour {
         narrateAnInterestingStory(reporter, false);
 
         // Then
-        String expected =  "<div class=\"dryRun\">DRY RUN</div>\n"
-                + "<div class=\"story\">\n<h1>An interesting story</h1>\n"
+        String expected =  "<div class=\"story\">\n<h1>An interesting story</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
                 + "<div class=\"meta\">\n"
                 + "<div class=\"keyword\">Meta:</div>\n"
                 + "<div class=\"property\">@author Mauro</div>\n"
                 + "<div class=\"property\">@theme testing</div>\n"
                 + "</div>\n"
+                + "<div class=\"dryRun\">DRY RUN</div>\n"
                 + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
                 + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
                 + "<div class=\"element asA\"><span class=\"keyword asA\">As a</span> customer</div>\n"
@@ -286,7 +311,7 @@ public class PrintStreamOutputBehaviour {
                 + "<tr class=\"notVerified\">\n"
                 + "<td>I don't return all</td><td>100.0</td><td>&lt;50.0&gt;</td><td>No</td></tr>\n"
                 + "</tbody>\n"
-                + "</table></div>\n"                
+                + "</table></div>\n"
                 + "<div class=\"examples\">\n" + "<h3>Examples:</h3>\n"
                 + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
                 + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
@@ -300,14 +325,26 @@ public class PrintStreamOutputBehaviour {
                 + "\n<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
                 + "\n<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n" 
                 + "</div><!-- after examples -->\n"
-                + "</div><!-- after scenario -->\n" + "</div><!-- after story -->\n"
-                + "<div><pre class=\"pending\">method1</pre></div>\n" // pending methods
-                + "<div><pre class=\"pending\">method2</pre></div>\n";
+                + "</div><!-- after scenario -->\n"
+                // pending methods
+                + "<div><pre class=\"pending\">@When(&quot;something \\&quot;$param\\&quot;&quot;)\n"
+                + "@Pending\n"
+                + "public void whenSomething() {\n"
+                + "  // PENDING\n"
+                + "}\n"
+                + "</pre></div>\n"
+                + "<div><pre class=\"pending\">@Then(&quot;something is &lt;param1&gt;&quot;)\n"
+                + "@Pending\n"
+                + "public void thenSomethingIsParam1() {\n"
+                + "  // PENDING\n"
+                + "}\n"
+                + "</pre></div>\n"
+                + "</div><!-- after story -->\n";
         assertThatOutputIs(out, expected);
     }
 
     @Test
-    public void shouldReportEventsToXmlOutput() {
+    public void shouldReportEventsToXmlOutput() throws SAXException, IOException {
         // Given
         final OutputStream out = new ByteArrayOutputStream();
         PrintStreamFactory factory = new PrintStreamFactory() {
@@ -321,14 +358,13 @@ public class PrintStreamOutputBehaviour {
         // When
         narrateAnInterestingStory(reporter, false);
 
-
         // Then
-        String expected = "<dryRun>DRY RUN</dryRun>\n" 
-                + "<story path=\"/path/to/story\" title=\"An interesting story\">\n"
+        String expected = "<story path=\"/path/to/story\" title=\"An interesting story\">\n"
                 + "<meta>\n"
                 + "<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
                 + "<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"
                 + "</meta>\n"
+                + "<dryRun>DRY RUN</dryRun>\n" 
                 + "<narrative keyword=\"Narrative:\">\n"
                 + "  <inOrderTo keyword=\"In order to\">renovate my house</inOrderTo>\n"
                 + "  <asA keyword=\"As a\">customer</asA>\n"
@@ -363,10 +399,24 @@ public class PrintStreamOutputBehaviour {
                 + "\n<example keyword=\"Example:\">{money=$30, to=Mauro}</example>\n"
                 + "\n<example keyword=\"Example:\">{money=$50, to=Paul}</example>\n" 
                 + "</examples>\n"
-                + "</scenario>\n" + "</story>\n"
-                + "<pendingMethod>method1</pendingMethod>\n" // pending methods
-                + "<pendingMethod>method2</pendingMethod>\n";
-        assertThatOutputIs(out, expected);
+                + "</scenario>\n"
+                // pending methods
+                + "<pendingMethod>@When(&quot;something \\&quot;$param\\&quot;&quot;)\n"
+                + "@Pending\n"
+                + "public void whenSomething() {\n"
+                + "  // PENDING\n"
+                + "}\n"
+                + "</pendingMethod>\n"
+                + "<pendingMethod>@Then(&quot;something is &lt;param1&gt;&quot;)\n"
+                + "@Pending\n"
+                + "public void thenSomethingIsParam1() {\n"
+                + "  // PENDING\n"
+                + "}\n"
+                + "</pendingMethod>\n"
+                + "</story>\n";
+        String xmlDocument=out.toString();
+        XMLUnit.buildTestDocument(xmlDocument);
+        assertEquals(expected, xmlDocument);
     }
 
     @Test
@@ -450,8 +500,8 @@ public class PrintStreamOutputBehaviour {
         Story story = new Story("/path/to/story",
                 new Description("An interesting story"), new Meta(meta), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
         boolean givenStory = false;
-        reporter.dryRun();
         reporter.beforeStory(story, givenStory);
+        reporter.dryRun();
         reporter.narrative(story.getNarrative());
         reporter.beforeScenario("I ask for a loan");
         reporter.givenStories(asList("/given/story1","/given/story2"));
@@ -480,8 +530,18 @@ public class PrintStreamOutputBehaviour {
         reporter.example(table.getRow(1));
         reporter.afterExamples();
         reporter.afterScenario();
+        String method1="@When(\"something \\\"$param\\\"\")\n"
+                + "@Pending\n"
+                + "public void whenSomething() {\n"
+                + "  // PENDING\n"
+                + "}\n";
+        String method2="@Then(\"something is <param1>\")\n"
+                + "@Pending\n"
+                + "public void thenSomethingIsParam1() {\n"
+                + "  // PENDING\n"
+                + "}\n";
+        reporter.pendingMethods(asList(method1, method2));
         reporter.afterStory(givenStory);
-        reporter.pendingMethods(asList("method1", "method2"));
     }
 
     private void narrateAnInterestingStoryNotAllowedByFilter(StoryReporter reporter) {
