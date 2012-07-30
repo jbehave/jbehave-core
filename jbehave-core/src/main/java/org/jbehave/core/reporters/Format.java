@@ -92,7 +92,7 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("xml"));
-            return new XmlTemplateOuput(factory.getOutputFile(), storyReporterBuilder.keywords());
+            return new XmlTemplateOutput(factory.getOutputFile(), storyReporterBuilder.keywords());
         }
     };
 

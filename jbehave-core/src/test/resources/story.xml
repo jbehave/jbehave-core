@@ -32,8 +32,8 @@ Then I should... - try again
 <step outcome="failed">
 Then I should have a balance of $30
  <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:80)
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:54)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:85)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:56)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</failure></step>
 <step outcome="notPerformed">
@@ -43,8 +43,8 @@ Then I should have $20
 Then I don&apos;t return loan
  <failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:48)
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:88)
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:54)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:93)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:56)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</failure><outcomes>
 <fields>
@@ -52,7 +52,7 @@ Then I don&apos;t return loan
 <field>Value</field>
 <field>Matcher</field>
 <field>Verified</field>
-<fields>
+</fields>
 
 <outcome>
 <value>I don&apos;t return all</value><value>100</value><value>&lt;50.0&gt;</value><value>No</value>
@@ -96,11 +96,23 @@ Then I give it to Paul
 <step outcome="failed">
 Then I should have a balance of $30
  <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:103)
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:54)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:108)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:56)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</failure></step>
 </scenario> 
 <cancelled keyword="STORY CANCELLED" durationKeyword="DURATION" durationInSecs="2"/>
+<pendingMethod>@When(&quot;something \&quot;$param\&quot;&quot;)
+@Pending
+public void whenSomething() {
+  // PENDING
+}
+</pendingMethod>
+<pendingMethod>@Then(&quot;something is &lt;param1&gt;&quot;)
+@Pending
+public void thenSomethingIsParam1() {
+  // PENDING
+}
+</pendingMethod>
 </story>
 

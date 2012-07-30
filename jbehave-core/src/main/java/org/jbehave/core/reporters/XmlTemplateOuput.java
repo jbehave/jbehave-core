@@ -5,15 +5,12 @@ import java.io.File;
 import org.jbehave.core.configuration.Keywords;
 
 /**
- * A templateable output that generates XML. By default it uses
- * {@link FreemarkerProcessor} and template path <b>ftl/jbehave-xml-output.ftl</b>,
- * but custom processors based on other templating systems can be provided and/or 
- * other template paths can be configured.
+ * @deprecated Use {@link XmlTemplateOutput}
  */
-public class XmlTemplateOuput extends TemplateableOutput {
-
+public class XmlTemplateOuput extends XmlTemplateOutput {
+	
     public XmlTemplateOuput(File file, Keywords keywords) {
-        super(file, keywords, new FreemarkerProcessor(), "ftl/jbehave-xml-output.ftl");
+        super(file, keywords);
     }
 
     public XmlTemplateOuput(File file, Keywords keywords, TemplateProcessor processor, String templatePath) {
