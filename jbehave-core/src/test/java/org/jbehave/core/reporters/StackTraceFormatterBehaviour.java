@@ -91,4 +91,18 @@ public class StackTraceFormatterBehaviour {
                         "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)", formatter.stackTrace(start));
     }
 
+    @Test
+    public void exceptionShouldBeCompressible() throws IOException {
+        // Given a compressing formatter
+        StackTraceFormatter formatter = new StackTraceFormatter(true);
+
+        // When I format an Exception
+        String trace=formatter.stackTrace(new Exception("some cause"));
+
+        // Then it looks like
+        assertEquals("java.lang.Exception: some cause\n"
+                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:100)\n"
+                + "\t(reflection-invoke)\n"
+                + "\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)", trace);
+    }
 }
