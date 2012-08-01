@@ -31,6 +31,7 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.ParameterisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
+import org.jbehave.core.steps.Timer;
 
 /**
  * Creates a tree of {@link Performable} objects for a set of stories, grouping
@@ -540,6 +541,8 @@ public class PerformableTree {
         private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
         private PerformableSteps beforeSteps = new PerformableSteps();
         private PerformableSteps afterSteps = new PerformableSteps();
+        @SuppressWarnings("unused")
+        private StoryResult result; // outputted by CrossReference
 
         public PerformableStory(Story story) {
             this.story = story;
@@ -579,12 +582,21 @@ public class PerformableTree {
                 context.reporter().storyNotAllowed(story, context.filter.asString());
             }
             context.reporter().beforeStory(story, context.givenStory);
+            Timer timer = new Timer().start();
+            try {
+                performScenarios(context);
+            } finally {
+                result = new StoryResult(timer.stop());
+            }
+            context.reporter().afterStory(context.givenStory);
+        }
+
+        private void performScenarios(RunContext context) throws InterruptedException {
             beforeSteps.perform(context);
             for (PerformableScenario scenario : scenarios) {
                 scenario.perform(context);
             }
             afterSteps.perform(context);
-            context.reporter().afterStory(context.givenStory);
         }
 
         public List<PerformableScenario> getScenarios() {

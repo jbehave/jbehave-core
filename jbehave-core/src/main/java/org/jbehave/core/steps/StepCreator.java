@@ -728,20 +728,4 @@ public class StepCreator {
         }
     }
 
-    private static class Timer {
-        private long start;
-
-        public Timer start() {
-            start = System.currentTimeMillis();
-            return this;
-        }
-
-        public long stop() {
-            if (start == 0)
-                return 0;
-            return System.currentTimeMillis() - start;
-        }
-
-    }
-
 }
