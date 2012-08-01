@@ -312,12 +312,13 @@ public class ConcurrentStoryReporter implements StoryReporter {
         return delegate;
     }
 
+    public boolean invoked(){
+    	return invoked;
+    }
+    
     public void invokeDelayed() {
         if ( !multiThreading ){
             return;
-        }
-        if (invoked) {
-            throw new RuntimeException("Delayed methods already invoked");
         }
         synchronized (delegate) {
             for (DelayedMethod delayed : Collections.unmodifiableList(delayedMethods)) {
