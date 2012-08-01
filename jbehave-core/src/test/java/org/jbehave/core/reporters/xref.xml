@@ -133,6 +133,9 @@
       </scenarios>
       <beforeSteps/>
       <afterSteps/>
+      <timing>
+        <durationInMillis>0</durationInMillis>
+      </timing>
     </performableStory>
   </stories>
   <afterSteps/>

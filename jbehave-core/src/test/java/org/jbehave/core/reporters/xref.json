@@ -181,7 +181,10 @@
         }
       ],
       'beforeSteps': {},
-      'afterSteps': {}
+      'afterSteps': {},
+      'timing': {
+        'durationInMillis': 0
+      }
     }
   ],
   'afterSteps': {}

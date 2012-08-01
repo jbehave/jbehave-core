@@ -541,8 +541,7 @@ public class PerformableTree {
         private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
         private PerformableSteps beforeSteps = new PerformableSteps();
         private PerformableSteps afterSteps = new PerformableSteps();
-        @SuppressWarnings("unused")
-        private StoryResult result; // outputted by CrossReference
+        private Timing timing = new Timing();
 
         public PerformableStory(Story story) {
             this.story = story;
@@ -576,6 +575,10 @@ public class PerformableTree {
             return story;
         }
         
+        public Timing getTiming(){
+        	return timing;
+        }
+        
         public void perform(RunContext context) throws InterruptedException {
             context.reporter().narrative(story.getNarrative());
             if (!allowed) {
@@ -586,7 +589,7 @@ public class PerformableTree {
             try {
                 performScenarios(context);
             } finally {
-                result = new StoryResult(timer.stop());
+                timing.setDurationInMillis(timer.stop());
             }
             context.reporter().afterStory(context.givenStory);
         }
@@ -801,6 +804,19 @@ public class PerformableTree {
         }
 
     }
+    
+    public static class Timing {
+        private long durationInMillis;
+        
+        public long getDurationInMillis() {
+            return durationInMillis;
+        }
+
+		public void setDurationInMillis(long durationInMillis) {
+			this.durationInMillis = durationInMillis;			
+		}
+    }
+
 
     public RunContext newRunContext(Configuration configuration, InjectableStepsFactory stepsFactory,
             MetaFilter filter, BatchFailures failures) {
