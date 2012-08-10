@@ -67,8 +67,8 @@
 </table>
 </#macro>
 <#macro renderStep step>
-<#assign formattedStep = step.getFormattedStep(EscapeMode.HTML, "<span class=\"step parameter\">{0}</span>")>
-<div class="step ${step.outcome}">${formattedStep}<#if step.getTable()??> <span class="step parameter"><@renderTable step.getTable()/></span></#if> <@renderStepOutcome step.getOutcome()/></div>
+<#assign formattedStep = step.getFormattedStep("<span class=\"step parameter\">{0}</span>")>
+<div class="step ${step.outcome}">${formattedStep?html}<#if step.getTable()??> <span class="step parameter"><@renderTable step.getTable()/></span></#if> <@renderStepOutcome step.getOutcome()/></div>
 <#if step.getFailure()??><pre class="failure">${step.failureCause?html}</pre></#if>
 <#if step.getOutcomes()??>
 <div class="outcomes"><@renderOutcomes step.getOutcomes()/>
