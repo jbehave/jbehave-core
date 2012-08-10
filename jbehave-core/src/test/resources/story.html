@@ -30,13 +30,17 @@
 
 <div class="step successful">When I ask Liz for a loan of $<span class="step parameter">99</span> </div>
 
-<div class="step successful">When I ask for special xml chars &lt;&gt;&amp;&quot; </div>
+<div class="step successful">When I write special chars &lt;&gt;&amp;&quot; </div>
+
+<div class="step successful">When I write special chars in a parameter <span class="step parameter">&lt;&gt;&amp;&quot;</span> </div>
+
+<div class="step successful">When I write two parameters <span class="step parameter">,,,</span> and <span class="step parameter">&amp;&amp;&amp;</span> </div>
 
 <div class="step hi">Then I should... - try again </div>
 
 <div class="step failed">Then I should have a balance of $30 <span class="keyword failed">(FAILED)</span></div>
 <pre class="failure">java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:89)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:93)
 	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToHtmlOutput(TemplateableOutputBehaviour.java:42)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</pre>
@@ -45,7 +49,7 @@
 <div class="step failed">Then I don't return loan <span class="keyword failed">(FAILED)</span></div>
 <pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:48)
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:97)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:101)
 	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToHtmlOutput(TemplateableOutputBehaviour.java:42)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</pre>
@@ -66,7 +70,7 @@
 
 <pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:48)
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:97)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:101)
 	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToHtmlOutput(TemplateableOutputBehaviour.java:42)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</pre>
@@ -105,7 +109,7 @@
 
 <div class="step failed">Then I should have a balance of $30 <span class="keyword failed">(FAILED)</span></div>
 <pre class="failure">java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:112)
+	at org.jbehave.core.reporters.TemplateableOutputBehaviour.narrateAnInterestingStory(TemplateableOutputBehaviour.java:116)
 	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToHtmlOutput(TemplateableOutputBehaviour.java:42)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)</pre>

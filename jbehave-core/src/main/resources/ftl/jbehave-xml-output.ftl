@@ -61,9 +61,9 @@
 </outcomes>
 </#macro>
 <#macro renderStep step>
-<#assign formattedStep = step.getFormattedStep("<parameter>{0}</parameter>")>
+<#assign formattedStep = step.getFormattedStep(EscapeMode.XML, "<parameter>{0}</parameter>")>
 <step outcome="${step.outcome}">
-${formattedStep?xml}<#if step.getTable()??> <parameter><@renderTable step.getTable()/></parameter></#if>
+${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()/></parameter></#if>
 <#if step.getFailure()??> <failure>${step.failureCause?xml}</failure></#if><#if step.getOutcomes()??><@renderOutcomes step.getOutcomes()/></#if></step>
 </#macro>
 

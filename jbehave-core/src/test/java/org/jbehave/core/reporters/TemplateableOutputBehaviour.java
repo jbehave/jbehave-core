@@ -82,8 +82,12 @@ public class TemplateableOutputBehaviour {
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
         reporter.successful("When I ask Liz for a loan of $"+StepCreator.PARAMETER_VALUE_START+"99"+StepCreator.PARAMETER_VALUE_END);
-
-        reporter.successful("When I ask for special xml chars <>&\"");
+        reporter.successful("When I write special chars <>&\"");
+        reporter.successful("When I write special chars in a parameter "+StepCreator.PARAMETER_VALUE_START+"<>&\""+StepCreator.PARAMETER_VALUE_END);
+        reporter.successful("When I write two parameters "
+                + StepCreator.PARAMETER_VALUE_START+",,,"+StepCreator.PARAMETER_VALUE_END
+                + " and "
+                + StepCreator.PARAMETER_VALUE_START+"&&&"+StepCreator.PARAMETER_VALUE_END);
         reporter.restarted("Then I should... - try again", new RestartingScenarioFailure("hi"));
         if (withFailure) {
             reporter.failed("Then I should have a balance of $30", new Exception("Expected <30> got <25>"));
