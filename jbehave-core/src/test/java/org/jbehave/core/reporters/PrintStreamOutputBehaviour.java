@@ -34,6 +34,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.TemplateableViewGenerator.ViewGenerationFailedForTemplate;
+import org.jbehave.core.steps.StepCreator;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -83,6 +84,9 @@ public class PrintStreamOutputBehaviour {
                 + "!-- A comment\n"
                 + "When I request $20\n"
                 + "When I ask Liz for a loan of $100\n"
+                + "When I ask Liz for a loan of $99\n"
+                + "When I write special chars <>&\"\n"
+                + "When I write special chars in parameter <>&\"\n"
                 + "Then I should... - try again (hi)\n"
                 + "STORY CANCELLED (DURATION 2 s)\n"
                 + "Then I should have a balance of $30 (PENDING)\n"
@@ -178,6 +182,9 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step ignorable\">!-- A comment</div>\n"
                 + "<div class=\"step successful\">When I request $20</div>\n"
                 + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
+                + "<div class=\"step successful\">When I ask Liz for a loan of $<span class=\"step parameter\">99</span></div>\n"
+                + "<div class=\"step successful\">When I write special chars &lt;&gt;&amp;&quot;</div>\n"
+                + "<div class=\"step successful\">When I write special chars in parameter <span class=\"step parameter\">&lt;&gt;&amp;&quot;</span></div>\n"
                 + "<div class=\"step restarted\">Then I should... - try again <span class=\"message restarted\">hi</span></div>\n"
                 + "<div class=\"cancelled\">STORY CANCELLED (DURATION 2 s)</div>\n"
                 + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
@@ -297,6 +304,9 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"step ignorable\">!-- A comment</div>\n"
                 + "<div class=\"step successful\">When I request $20</div>\n"
                 + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
+                + "<div class=\"step successful\">When I ask Liz for a loan of $<span class=\"step parameter\">99</span></div>\n"
+                + "<div class=\"step successful\">When I write special chars &lt;&gt;&amp;&quot;</div>\n"
+                + "<div class=\"step successful\">When I write special chars in parameter <span class=\"step parameter\">&lt;&gt;&amp;&quot;</span></div>\n"
                 + "<div class=\"step restarted\">Then I should... - try again <span class=\"message restarted\">hi</span></div>\n"
                 + "<div class=\"cancelled\">STORY CANCELLED (DURATION 2 s)</div>\n"
                 + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
@@ -379,6 +389,9 @@ public class PrintStreamOutputBehaviour {
                 + "<step outcome=\"ignorable\">!-- A comment</step>\n"
                 + "<step outcome=\"successful\">When I request $20</step>\n"
                 + "<step outcome=\"successful\">When I ask Liz for a loan of $100</step>\n"
+                + "<step outcome=\"successful\">When I ask Liz for a loan of $<parameter>99</parameter></step>\n"
+                + "<step outcome=\"successful\">When I write special chars &lt;&gt;&amp;&quot;</step>\n"
+                + "<step outcome=\"successful\">When I write special chars in parameter <parameter>&lt;&gt;&amp;&quot;</parameter></step>\n"
                 + "<step outcome=\"restarted\">Then I should... - try again<reason>hi</reason></step>\n"
                 + "<cancelled keyword=\"STORY CANCELLED\" durationKeyword=\"DURATION\" durationInSecs=\"2\"/>\n"
                 + "<step outcome=\"pending\" keyword=\"PENDING\">Then I should have a balance of $30</step>\n"
@@ -509,6 +522,9 @@ public class PrintStreamOutputBehaviour {
         reporter.ignorable("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
+        reporter.successful("When I ask Liz for a loan of $"+StepCreator.PARAMETER_VALUE_START+"99"+StepCreator.PARAMETER_VALUE_END);
+        reporter.successful("When I write special chars <>&\"");
+        reporter.successful("When I write special chars in parameter "+StepCreator.PARAMETER_VALUE_START+"<>&\""+StepCreator.PARAMETER_VALUE_END);
         reporter.restarted("Then I should... - try again", new RestartingScenarioFailure("hi"));
         reporter.storyCancelled(story, new StoryDuration(2, 1));
         if (withFailure) {

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
@@ -21,6 +22,10 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.template.TemplateHashModel;
+import freemarker.template.TemplateModelException;
 
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
@@ -168,6 +173,18 @@ public class TemplateableOutput implements StoryReporter {
             Map<String, Object> model = newDataModel();
             model.put("story", outputStory);
             model.put("keywords", new OutputKeywords(keywords));
+
+            BeansWrapper wrapper = BeansWrapper.getDefaultInstance();
+            TemplateHashModel enumModels = wrapper.getEnumModels();
+            TemplateHashModel escapeEnums;
+            try {
+                String escapeModeEnum = EscapeMode.class.getCanonicalName();
+                escapeEnums = (TemplateHashModel) enumModels.get(escapeModeEnum);
+                model.put("EscapeMode", escapeEnums);  
+            } catch (TemplateModelException e) {
+                throw new IllegalArgumentException(e);
+            }  
+
             write(file, templatePath, model);
         }
     }
@@ -521,27 +538,51 @@ public class TemplateableOutput implements StoryReporter {
             return "";
         }
 
+        /*
+         * formatting without escaping doesn't make sense unless
+         * we do a ftl text output format
+         */
+        @Deprecated
         public String getFormattedStep(String parameterPattern) {
+            return getFormattedStep(EscapeMode.NONE, parameterPattern);
+        }
+
+        public String getFormattedStep(EscapeMode outputFormat, String parameterPattern) {
+            // note that escaping the stepPattern string only works
+            // because placeholders for parameters do not contain
+            // special chars (the placeholder is {0} etc)
+            String escapedStep = escapeString(outputFormat, stepPattern);
+            System.out.println("escape: "+stepPattern+" "+escapedStep);
             if (!parameters.isEmpty()) {
                 try {
-                    return MessageFormat.format(stepPattern, formatParameters(parameterPattern));
+                    return MessageFormat.format(escapedStep, formatParameters(outputFormat, parameterPattern));
                 } catch (RuntimeException e) {
                     throw new StepFormattingFailed(stepPattern, parameterPattern, parameters, e);
                 }
             }
-            return stepPattern;
+            return escapedStep;
         }
 
-        private Object[] formatParameters(String parameterPattern) {
+        private String escapeString(EscapeMode outputFormat, String string) {
+            if(outputFormat==EscapeMode.HTML) {
+                return StringEscapeUtils.escapeHtml(string);
+            } else if(outputFormat==EscapeMode.XML) {
+                return StringEscapeUtils.escapeXml(string);
+            } else {
+                return string;
+            }
+        }
+
+        private Object[] formatParameters(EscapeMode outputFormat, String parameterPattern) {
             Object[] arguments = new Object[parameters.size()];
             for (int a = 0; a < parameters.size(); a++) {
-                arguments[a] = MessageFormat.format(parameterPattern, parameters.get(a).getValue());
+                arguments[a] = MessageFormat.format(parameterPattern, escapeString(outputFormat, parameters.get(a).getValue()));
             }
             return arguments;
         }
 
         private void parseParameters() {
-            // first, look for parametrised scenarios
+            // first, look for parameterized scenarios
             parameters = findParameters(PARAMETER_VALUE_START + PARAMETER_VALUE_START, PARAMETER_VALUE_END
                     + PARAMETER_VALUE_END);
             // second, look for normal scenarios
@@ -552,7 +593,7 @@ public class TemplateableOutput implements StoryReporter {
 
         private List<OutputParameter> findParameters(String start, String end) {
             List<OutputParameter> parameters = new ArrayList<OutputParameter>();
-            Matcher matcher = Pattern.compile("(" + start + "[\\w\\s\\.\\-\\_\\*]*" + end + ")(\\W|\\Z)",
+            Matcher matcher = Pattern.compile("(" + start + ".*?" + end + ")(\\W|\\Z)",
                     Pattern.DOTALL).matcher(step);
             while (matcher.find()) {
                 parameters.add(new OutputParameter(step, matcher.start(), matcher.end()));
