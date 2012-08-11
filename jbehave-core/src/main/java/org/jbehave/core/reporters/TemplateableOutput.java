@@ -552,7 +552,6 @@ public class TemplateableOutput implements StoryReporter {
             // because placeholders for parameters do not contain
             // special chars (the placeholder is {0} etc)
             String escapedStep = escapeString(outputFormat, stepPattern);
-            System.out.println("escape: "+stepPattern+" "+escapedStep);
             if (!parameters.isEmpty()) {
                 try {
                     return MessageFormat.format(escapedStep, formatParameters(outputFormat, parameterPattern));
