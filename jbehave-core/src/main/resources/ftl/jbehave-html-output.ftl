@@ -60,12 +60,13 @@
 <#assign isVerified=outcome.isVerified()?string>
 <#if isVerified == "true"> <#assign verified="verified"><#else><#assign verified="notVerified"></#if>
 <tr class="${verified}">
-<td>${outcome.description?html}</td><td>${outcome.value?html}</td><td>${outcome.matcher?html}</td><td><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></td>
+<td>${outcome.description?html}</td><td><@renderOutcomeValue outcome.getValue() table.getDateFormat()/></td><td>${outcome.matcher?html}</td><td><#if isVerified == "true">${keywords.yes}<#else>${keywords.no}</#if></td>
 </tr>
 </#list>
 </tbody>
 </table>
 </#macro>
+<#macro renderOutcomeValue value dateFormat><#if value?is_date>${value?string(dateFormat)}<#else>${value?html}</#if></#macro>
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep(EscapeMode.HTML, "<span class=\"step parameter\">{0}</span>")>
 <div class="step ${step.outcome}">${formattedStep}<#if step.getTable()??> <span class="step parameter"><@renderTable step.getTable()/></span></#if> <@renderStepOutcome step.getOutcome()/></div>

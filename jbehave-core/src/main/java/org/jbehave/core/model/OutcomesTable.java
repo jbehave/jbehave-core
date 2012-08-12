@@ -16,8 +16,10 @@ public class OutcomesTable {
     private static final String NEWLINE = "\n";
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
+	private static final String DEFAULT_DATE_FORMAT = "EEE MMM dd hh:mm:ss zzz yyyy";
 
     private final Keywords keywords;
+	private final String dateFormat;
     private final List<Outcome<?>> outcomes = new ArrayList<Outcome<?>>();
     private final List<Outcome<?>> failedOutcomes = new ArrayList<Outcome<?>>();
     private UUIDExceptionWrapper failureCause;
@@ -27,7 +29,12 @@ public class OutcomesTable {
     }
     
     public OutcomesTable(Keywords keywords) {
+        this(keywords, DEFAULT_DATE_FORMAT);
+    }
+
+    public OutcomesTable(Keywords keywords, String dateFormat) {
         this.keywords = keywords;
+		this.dateFormat = dateFormat;
     }
 
     public <T> void addOutcome(String description, T value, Matcher<T> matcher) {
@@ -66,6 +73,10 @@ public class OutcomesTable {
         return keywords.outcomeFields();
     }
 
+    public String getDateFormat(){
+    	return dateFormat;
+    }
+    
     public String asString() {
         StringBuilder sb = new StringBuilder();
         for (Iterator<String> iterator = getOutcomeFields().iterator(); iterator.hasNext();) {
