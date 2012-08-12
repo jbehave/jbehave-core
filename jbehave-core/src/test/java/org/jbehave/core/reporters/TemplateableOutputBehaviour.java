@@ -1,9 +1,16 @@
 package org.jbehave.core.reporters;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
@@ -23,12 +30,6 @@ import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.StepCreator;
 import org.junit.Test;
 import org.xml.sax.SAXException;
-
-import static java.util.Arrays.asList;
-
-import static org.hamcrest.Matchers.equalTo;
-
-import static org.junit.Assert.assertEquals;
 
 public class TemplateableOutputBehaviour {
 
@@ -97,6 +98,9 @@ public class TemplateableOutputBehaviour {
         reporter.notPerformed("Then I should have $20");
         OutcomesTable outcomesTable = new OutcomesTable();
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
+        Date actualDate = dateFor("01/01/2011");
+		Date expectedDate = dateFor("02/01/2011");
+		outcomesTable.addOutcome("A wrong date", actualDate, equalTo(expectedDate));
         try {
             outcomesTable.verify();
         } catch (UUIDExceptionWrapper e) {
@@ -133,6 +137,14 @@ public class TemplateableOutputBehaviour {
         reporter.pendingMethods(asList(method1, method2));
         reporter.afterStory(givenStory);
     }
+
+	private static Date dateFor(String date) {
+		try {
+			return new SimpleDateFormat("dd/MM/yyyy").parse(date);
+		} catch (ParseException e) {
+			throw new RuntimeException(e);
+		}
+	}
 
     private void assertThatOutputIs(String out, String expected) {
         assertEquals(dos2unix(expected), dos2unix(out));
