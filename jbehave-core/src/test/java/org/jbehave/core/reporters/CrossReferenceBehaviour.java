@@ -68,7 +68,7 @@ public class CrossReferenceBehaviour {
         when(builder.pathResolver()).thenReturn(pathResolver);
 
         // When
-        PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
+        StoryNarrator.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
         crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern(StepType.GIVEN, "(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON        
@@ -111,7 +111,7 @@ public class CrossReferenceBehaviour {
                 "      <usages>\n" +
                 "        <use>\n" +
                 "          <story>/path/to/story</story>\n" +
-                "          <scenario>I ask for a loan</scenario>\n" +
+                "          <scenario>Parametrised Scenario</scenario>\n" +
                 "          <step>a</step>\n" +
                 "        </use>\n" +
                 "      </usages>\n" +
@@ -149,7 +149,7 @@ public class CrossReferenceBehaviour {
                 "      'usages': [\n" +
                 "        {\n" +
                 "          'story': '/path/to/story',\n" +
-                "          'scenario': 'I ask for a loan',\n" +
+                "          'scenario': 'Parametrised Scenario',\n" +
                 "          'step': 'a'\n" +
                 "        }\n" +
                 "      ]\n" +
@@ -205,7 +205,7 @@ public class CrossReferenceBehaviour {
         when(builder.pathResolver()).thenReturn(pathResolver);
 
         // When
-        PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
+        StoryNarrator.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
         crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern(StepType.GIVEN, "(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON
@@ -248,7 +248,7 @@ public class CrossReferenceBehaviour {
                 "      <usages>\n" +
                 "        <use>\n" +
                 "          <story>/path/to/story</story>\n" +
-                "          <scenario>I ask for a loan</scenario>\n" +
+                "          <scenario>Parametrised Scenario</scenario>\n" +
                 "          <step>a</step>\n" +
                 "        </use>\n" +
                 "      </usages>\n" +
@@ -307,7 +307,7 @@ public class CrossReferenceBehaviour {
         when(builder.pathResolver()).thenReturn(pathResolver);
 
         // When
-        PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
+        StoryNarrator.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
         crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern(StepType.GIVEN, "(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON
@@ -346,7 +346,7 @@ public class CrossReferenceBehaviour {
                 "      'usages': [\n" +
                 "        {\n" +
                 "          'story': '/path/to/story',\n" +
-                "          'scenario': 'I ask for a loan',\n" +
+                "          'scenario': 'Parametrised Scenario',\n" +
                 "          'step': 'a'\n" +
                 "        }\n" +
                 "      ]\n" +
@@ -404,7 +404,7 @@ public class CrossReferenceBehaviour {
         when(builder.pathResolver()).thenReturn(pathResolver);
 
         // When
-        PrintStreamOutputBehaviour.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
+        StoryNarrator.narrateAnInterestingStory(crossReference.createStoryReporter(factory, builder), true);
         crossReference.getStepMonitor().stepMatchesPattern("a", true, new StepPattern(StepType.GIVEN, "(def)", "[abc]"), Object.class.getDeclaredMethods()[0], new Object());
 
         // generate XML and JSON
@@ -446,7 +446,7 @@ public class CrossReferenceBehaviour {
                 "      <usages>\n" +
                 "        <use>\n" +
                 "          <story>/path/to/story</story>\n" +
-                "          <scenario>I ask for a loan</scenario>\n" +
+                "          <scenario>Parametrised Scenario</scenario>\n" +
                 "          <step>a</step>\n" +
                 "        </use>\n" +
                 "      </usages>\n" +
@@ -487,7 +487,7 @@ public class CrossReferenceBehaviour {
                 "      'usages': [\n" +
                 "        {\n" +
                 "          'story': '/path/to/story',\n" +
-                "          'scenario': 'I ask for a loan',\n" +
+                "          'scenario': 'Parametrised Scenario',\n" +
                 "          'step': 'a'\n" +
                 "        }\n" +
                 "      ]\n" +

@@ -3,7 +3,6 @@ package org.jbehave.core.reporters;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -17,8 +16,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Properties;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.Matchers.equalTo;
@@ -74,7 +71,7 @@ public class PostStoryStatisticsCollectorBehaviour {
     @Test
     public void shouldCollectStoryStatisticsWhenStoryNotAllowedByFilter() {
         // When
-        narrateAnInterestingStoryNotAllowedByFilter(true);
+        StoryNarrator.narrateAnInterestingStoryNotAllowedByFilter(reporter, true);
 
         // Then
         String statistics = out.toString();
@@ -84,7 +81,7 @@ public class PostStoryStatisticsCollectorBehaviour {
     @Test
     public void shouldCollectStoryStatisticsWhenScenariosNotAllowedByFilter() {
         // When
-        narrateAnInterestingStoryNotAllowedByFilter(false);
+        StoryNarrator.narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
         
         // Then
         String statistics = out.toString();
@@ -176,21 +173,4 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.afterStory(false);
     }
 
-    private void narrateAnInterestingStoryNotAllowedByFilter(boolean storyNotAllowed) {
-        Properties meta = new Properties();
-        meta.setProperty("theme", "testing");
-        meta.setProperty("author", "Mauro");
-        Story story = new Story("/path/to/story", new Description("An interesting story"), new Meta(meta),
-                new Narrative("renovate my house", "customer", "get a loan"), Arrays.asList(new Scenario("A scenario",
-                        new Meta(meta), GivenStories.EMPTY, ExamplesTable.EMPTY, new ArrayList<String>())));
-        if (storyNotAllowed) {
-            reporter.storyNotAllowed(story, "-theme testing");
-        } else {
-            reporter.beforeStory(story, false);
-            reporter.beforeScenario(story.getScenarios().get(0).getTitle());
-            reporter.scenarioNotAllowed(story.getScenarios().get(0), "-theme testing");
-            reporter.afterScenario();
-            reporter.afterStory(false);
-        }
-    }
 }
