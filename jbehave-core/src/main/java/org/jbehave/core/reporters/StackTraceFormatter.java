@@ -48,7 +48,7 @@ public class StackTraceFormatter {
             int ix = stackTrace.indexOf(at);
             ix = stackTrace.indexOf("\n", ix);
             if (ix != -1) {
-                stackTrace = stackTrace.substring(0, ix);
+                stackTrace = stackTrace.substring(0, ix) + "\n...";
             }
         }
         return stackTrace;
