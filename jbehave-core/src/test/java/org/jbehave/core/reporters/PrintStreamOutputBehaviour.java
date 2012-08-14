@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
@@ -20,6 +21,8 @@ import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
+import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.TemplateableViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -37,6 +40,8 @@ import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 
 public class PrintStreamOutputBehaviour {
 
@@ -82,7 +87,7 @@ public class PrintStreamOutputBehaviour {
                 + "(org.jbehave.core.model.OutcomesTable$OutcomesFailed)\n"
                 + "|Description|Value|Matcher|Verified|\n"
                 + "|I don't return all|100|<50.0>|No|\n"
-                + "|A wrong date|01.01.11 00:00|\"02/01/2011\"|No|\n"
+                + "|A wrong date|01/01/2011|\"02/01/2011\"|No|\n"
                 + "\n"
                 + "Scenario: Parametrised Scenario\n"
                 + "Examples:\n"
@@ -195,7 +200,7 @@ public class PrintStreamOutputBehaviour {
                 + "<tr class=\"notVerified\">\n"
                 + "<td>I don't return all</td><td>100.0</td><td>&lt;50.0&gt;</td><td>No</td></tr>\n"
                 + "<tr class=\"notVerified\">\n"
-                + "<td>A wrong date</td><td>Sat Jan 01 00:00:00 CET 2011</td><td>&quot;02/01/2011&quot;</td><td>No</td></tr>\n"
+                + "<td>A wrong date</td><td>01/01/2011</td><td>&quot;02/01/2011&quot;</td><td>No</td></tr>\n"
                 + "</tbody>\n"
                 + "</table></div>\n"
                 + "</div>\n"
@@ -333,7 +338,7 @@ public class PrintStreamOutputBehaviour {
                 + "<tr class=\"notVerified\">\n"
                 + "<td>I don't return all</td><td>100.0</td><td>&lt;50.0&gt;</td><td>No</td></tr>\n"
                 + "<tr class=\"notVerified\">\n"
-                + "<td>A wrong date</td><td>Sat Jan 01 00:00:00 CET 2011</td><td>&quot;02/01/2011&quot;</td><td>No</td></tr>\n"
+                + "<td>A wrong date</td><td>01/01/2011</td><td>&quot;02/01/2011&quot;</td><td>No</td></tr>\n"
                 + "</tbody>\n"
                 + "</table></div>\n"
                 + "</div><!-- after scenario -->\n"
@@ -431,7 +436,7 @@ public class PrintStreamOutputBehaviour {
                 + "<outcomes>\n"
                 + "<fields><field>Description</field><field>Value</field><field>Matcher</field><field>Verified</field></fields>\n"
                 + "<outcome><value>I don&apos;t return all</value><value>100.0</value><value>&lt;50.0&gt;</value><value>No</value></outcome>\n"
-                + "<outcome><value>A wrong date</value><value>Sat Jan 01 00:00:00 CET 2011</value><value>&quot;02/01/2011&quot;</value><value>No</value></outcome>\n"
+                + "<outcome><value>A wrong date</value><value>01/01/2011</value><value>&quot;02/01/2011&quot;</value><value>No</value></outcome>\n"
                 + "</outcomes>\n"
                 + "</scenario>\n"
                 + "<scenario keyword=\"Scenario:\" title=\"Parametrised Scenario\">\n"
@@ -642,7 +647,7 @@ public class PrintStreamOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(new IdeOnlyConsoleOutput(new LocalizedKeywords()), false);
         StoryNarrator.narrateAnInterestingStory(new IdeOnlyConsoleOutput(new Properties(), new LocalizedKeywords(), true), false);
     }
-    
+
     @Test
     public void shouldReportEventsToPrintStreamInItalian() {
         // Given
@@ -687,7 +692,7 @@ public class PrintStreamOutputBehaviour {
         printStream.print("Hello World");
 
         // Then
-        assertThat(file.exists(),  is(true));
+        assertThat(file.exists(), is(true));
         assertThat(IOUtils.toString(new FileReader(file)), equalTo("Hello World"));
     }
 
@@ -778,6 +783,31 @@ public class PrintStreamOutputBehaviour {
     private String storyPath(Class<MyStory> storyClass) {
         StoryPathResolver resolver = new UnderscoredCamelCaseResolver(".story");
         return resolver.resolve(storyClass);
+    }
+
+    @Test
+    public void shouldUseDateConversionPattern() {
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new TxtOutput(new PrintStream(out));
+
+        // When
+        OutcomesTable outcomesTable = new OutcomesTable(new LocalizedKeywords(), "dd/MM/yyyy");
+        Date actualDate = StoryNarrator.dateFor("01/01/2011");
+        Date expectedDate = StoryNarrator.dateFor("02/01/2011");
+        outcomesTable.addOutcome("A wrong date", actualDate, new IsDateEqual(expectedDate, outcomesTable.getDateFormat()));
+        try {
+            outcomesTable.verify();
+        } catch (UUIDExceptionWrapper e) {
+            reporter.failedOutcomes("some step", ((OutcomesFailed) e.getCause()).outcomesTable());
+        }
+
+        // Then
+        String expected = "some step (FAILED)\n"
+                + "(org.jbehave.core.model.OutcomesTable$OutcomesFailed)\n" 
+                + "|Description|Value|Matcher|Verified|\n"
+                + "|A wrong date|01/01/2011|\"02/01/2011\"|No|\n";
+        assertThatOutputIs(out, expected);
     }
 
     @SuppressWarnings("serial")

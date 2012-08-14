@@ -118,7 +118,7 @@ class StoryNarrator {
         }
         
     }
-    private static Date dateFor(String date) {
+    static Date dateFor(String date) {
         try {
             return new SimpleDateFormat("dd/MM/yyyy").parse(date);
         } catch (ParseException e) {
