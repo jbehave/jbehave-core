@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -156,13 +158,21 @@ public abstract class PrintStreamOutput implements StoryReporter {
         for (Outcome<?> outcome : rows) {
             print(format("outcomesTableRowStart", "|", outcome.isVerified() ? "verified" : "notVerified"));
             print(format("outcomesTableCell", "{0}|", outcome.getDescription()));
-            print(format("outcomesTableCell", "{0}|", outcome.getValue()));
+            print(format("outcomesTableCell", "{0}|", renderOutcomeValue(outcome.getValue(), table.getDateFormat())));
             print(format("outcomesTableCell", "{0}|", outcome.getMatcher()));
             print(format("outcomesTableCell", "{0}|", (outcome.isVerified() ? keywords.yes() : keywords.no())));
             print(format("outcomesTableRowEnd", "\n"));
         }
         print(format("outcomesTableBodyEnd", "\n"));
         print(format("outcomesTableEnd", "\n"));
+    }
+
+    private Object renderOutcomeValue(Object value, String dateFormat) {
+        if(value instanceof Date) {
+            return new SimpleDateFormat(dateFormat).format(value);
+        } else {
+            return value;
+        }
     }
 
     public void storyNotAllowed(Story story, String filter) {
