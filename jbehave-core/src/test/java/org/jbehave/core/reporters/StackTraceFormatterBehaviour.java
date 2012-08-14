@@ -2,9 +2,11 @@ package org.jbehave.core.reporters;
 
 import java.io.IOException;
 
+import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class StackTraceFormatterBehaviour {
 
@@ -66,7 +68,8 @@ public class StackTraceFormatterBehaviour {
                 "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:108)\n" +
                 "\tat org.codehaus.groovy.runtime.callsite.AbstractCallSite.call(AbstractCallSite.java:116)\n" +
                 "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n" +
-                "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)";
+                "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)\n" +
+                "\tat org.jbehave.core.embedder.StoryRunner.runStepsWhileKeepingState(StoryRunner.java:457)\n";
 
         StackTraceFormatter formatter = new StackTraceFormatter(true);
 
@@ -88,7 +91,8 @@ public class StackTraceFormatterBehaviour {
                         "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
                         "\t(groovy-call)\n" +
                         "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n" +
-                        "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)", formatter.stackTrace(start));
+                        "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)\n" +
+                        "...", formatter.stackTrace(start));
     }
 
     @Test
@@ -101,8 +105,19 @@ public class StackTraceFormatterBehaviour {
 
         // Then it looks like
         assertEquals("java.lang.Exception: some cause\n"
-                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:100)\n"
+                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:104)\n"
                 + "\t(reflection-invoke)\n"
-                + "\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)", trace);
+                + "\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)\n"
+                + "...", trace);
     }
+
+    @Test
+    public void UUIDExecptionShouldBeUnwrapped() {
+        Exception ex=new Exception();
+        Exception wrapEx=new UUIDExceptionWrapper(ex);
+
+        StackTraceFormatter formatter = new StackTraceFormatter(false);
+        assertTrue("UUIDException is not unwrapped", formatter.stackTrace(wrapEx).equals(formatter.stackTrace(ex)));
+    }
+
 }
