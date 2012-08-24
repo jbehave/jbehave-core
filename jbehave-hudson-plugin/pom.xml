@@ -11,7 +11,8 @@
   <url>http://jbehave.org/reference/stable/hudson-plugin.html</url>
   
   <properties>
-    <hudson.version>2.1.0</hudson.version>
+    <maven.hpi.plugin.version>3.0.1</maven.hpi.plugin.version>
+    <hudson.version>2.2.1</hudson.version>
     <xunit.plugin.version>1.9</xunit.plugin.version>
   </properties>
 
@@ -64,7 +65,7 @@
       <plugin>
         <groupId>org.jvnet.hudson.tools</groupId>
         <artifactId>maven-hpi-plugin</artifactId>
-        <version>${hudson.version}</version>
+        <version>${maven.hpi.plugin.version}</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
