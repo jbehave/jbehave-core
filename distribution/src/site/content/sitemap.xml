@@ -63,6 +63,7 @@
     <page>cross-reference.html</page>    
     <page>multi-threading.html</page>    
     <page>using-groovy.html</page>    
+    <page>using-jruby.html</page>    
     <page>using-scala.html</page>    
   </section>
   <section>
