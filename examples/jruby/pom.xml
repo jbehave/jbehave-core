@@ -11,6 +11,9 @@
   <name>JBehave JRuby Example</name>
 
   <properties>
+    <jruby.version>1.6.7.2</jruby.version>
+    <jruby.download.url>http://jruby.org.s3.amazonaws.com/downloads/${jruby.version}/jruby-bin-${jruby.version}.zip</jruby.download.url>
+    <jruby.install.dir>${project.build.directory}/jruby-${jruby.version}</jruby.install.dir>
     <jruby.generated.sources>${project.build.directory}/generated-sources/jruby</jruby.generated.sources>
   </properties>
 
@@ -23,7 +26,7 @@
     <dependency>
       <groupId>org.jruby</groupId>
       <artifactId>jruby</artifactId>
-      <version>1.6.7.2</version>
+      <version>${jruby.version}</version>
     </dependency>
   </dependencies>
 
@@ -50,10 +53,17 @@
             <phase>generate-sources</phase>
             <configuration>
               <tasks>
+                <property name="jruby.dist"
+                  value="${project.build.directory}/jruby.zip" />
+                <get src="${jruby.download.url}" dest="${jruby.dist}" />
+                <unzip src="${jruby.dist}" dest="${project.build.directory}" />
+                <property name="jrubyc.bin"
+                  value="${jruby.install.dir}/bin/jrubyc" />
+                <chmod file="${jrubyc.bin}" perm="ugo+rx" />
                 <pathconvert pathsep=":" property="jruby.classpath"
                   refid="maven.runtime.classpath" />
                 <mkdir dir="${jruby.generated.sources}" />
-                <exec dir="${basedir}" executable="jrubyc"
+                <exec dir="${basedir}" executable="${jrubyc.bin}"
                   failonerror="true">
                   <arg
                     line="--javac -c ${jruby.classpath} --target ${jruby.generated.sources} src/main/rb/*.rb" />
@@ -151,5 +161,4 @@
       </plugins>
     </pluginManagement>
   </build>
-
 </project>
