@@ -32,7 +32,7 @@ import static org.jbehave.core.reporters.Format.XML;
  * </p>
  * <p>
  * Stories are specified in classpath and correspondingly the {@link LoadFromClasspath} story loader is configured.
- * </p> 
+ * </p>
  */
 public class MyStories extends JUnitStories {
 
@@ -53,7 +53,7 @@ public class MyStories extends JUnitStories {
                 new ExamplesTableConverter(examplesTableFactory));
         return new MostUsefulConfiguration()
         .useStoryLoader(new LoadFromClasspath(embeddableClass))
-        .useStoryParser(new RegexStoryParser(examplesTableFactory)) 
+        .useStoryParser(new RegexStoryParser(examplesTableFactory))
         .useStoryReporterBuilder(new StoryReporterBuilder()
         .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
         .withDefaultFormats()
