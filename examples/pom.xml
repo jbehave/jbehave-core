@@ -16,6 +16,7 @@
   </properties>
 
   <modules>
+    <module>executable-jar</module>
     <module>gameoflife</module>
     <module>groovy</module>
     <module>jruby</module>
