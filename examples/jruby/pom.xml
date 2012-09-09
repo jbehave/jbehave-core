@@ -12,7 +12,6 @@
 
   <properties>
     <jruby.version>1.6.7.2</jruby.version>
-    <jruby.download.url>http://jruby.org.s3.amazonaws.com/downloads/${jruby.version}/jruby-bin-${jruby.version}.zip</jruby.download.url>
     <jruby.install.dir>${project.build.directory}/jruby-${jruby.version}</jruby.install.dir>
     <jruby.generated.sources>${project.build.directory}/generated-sources/jruby</jruby.generated.sources>
   </properties>
@@ -25,7 +24,7 @@
     </dependency>
     <dependency>
       <groupId>org.jruby</groupId>
-      <artifactId>jruby</artifactId>
+      <artifactId>jruby-complete</artifactId>
       <version>${jruby.version}</version>
     </dependency>
   </dependencies>
@@ -47,18 +46,38 @@
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${jruby.install.dir}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.jruby</groupId>
+                  <artifactId>jruby-complete</artifactId>
+                  <version>${jruby.version}</version>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
             <phase>generate-sources</phase>
             <configuration>
               <tasks>
-                <property name="jruby.dist"
-                  value="${project.build.directory}/jruby.zip" />
-                <get src="${jruby.download.url}" dest="${jruby.dist}" />
-                <unzip src="${jruby.dist}" dest="${project.build.directory}" />
                 <property name="jrubyc.bin"
-                  value="${jruby.install.dir}/bin/jrubyc" />
+                  value="${jruby.install.dir}/META-INF/jruby.home/bin/jrubyc" />
                 <chmod file="${jrubyc.bin}" perm="ugo+rx" />
                 <pathconvert pathsep=":" property="jruby.classpath"
                   refid="maven.runtime.classpath" />
@@ -148,6 +167,19 @@
                     <versionRange>[1.7,)</versionRange>
                     <goals>
                       <goal>run</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[2.4,)</versionRange>
+                    <goals>
+                      <goal>unpack</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
