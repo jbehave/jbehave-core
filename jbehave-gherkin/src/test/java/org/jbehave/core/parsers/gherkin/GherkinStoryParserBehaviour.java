@@ -95,4 +95,20 @@ public class GherkinStoryParserBehaviour {
 		assertThat(narrative.iWantTo(), equalTo("drive cars on 4 wheels"));
 	}
 
+	@Test
+	public void shouldParseStoryWithUnsupportedNarrativeUsingGherkin() throws IOException{
+		String storyAsText = "Feature: Hello Car\n"
+				    + "As a car driver\n"
+				    + "I want to drive cars on 4 wheels\n"
+				    + "So that I can feel safer\n"
+					+ "Scenario: Car can drive\n"
+					+ "Given I have a car with 4 wheels\n"
+					+ "Then I can drive it.\n";
+		Story story = storyParser.parseStory(storyAsText);
+		assertThat(story.getDescription().asString(), equalTo("Hello Car\n\n"
+						+ "As a car driver\n"
+					    + "I want to drive cars on 4 wheels\n"
+					    + "So that I can feel safer"));		
+	}
+
 }

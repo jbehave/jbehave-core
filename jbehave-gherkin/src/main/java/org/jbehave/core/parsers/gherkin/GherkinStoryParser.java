@@ -58,12 +58,14 @@ public class GherkinStoryParser extends TransformingStoryParser {
 				}
 
 				private void writeNarrative(String description) {
+					boolean valid = false;
 					Matcher findingNarrative = compile(".*" + keywords.narrative() + "(.*?)", DOTALL).matcher(description);
 			        if (findingNarrative.matches()) {
 			            String narrative = findingNarrative.group(1).trim();
 			            Matcher findingElements = compile(".*" + keywords.inOrderTo() + "(.*)\\s*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo()
 			                    + "(.*)", DOTALL).matcher(narrative);
 			            if (findingElements.matches()) {
+			            	valid = true;
 			                String inOrderTo = findingElements.group(1).trim();
 			                String asA = findingElements.group(2).trim();
 			                String iWantTo = findingElements.group(3).trim();
@@ -73,6 +75,12 @@ public class GherkinStoryParser extends TransformingStoryParser {
 			                out.append(keywords.iWantTo()).append(" ").append(iWantTo).append("\n\n");			                
 			            }
 			        }
+			        if (!valid){
+			        	// if narrative format does not match, write description as part of story description
+			        	out.append(description);
+
+			        }
+			       
 				}
 
 				public void background(Background background) {
@@ -123,6 +131,7 @@ public class GherkinStoryParser extends TransformingStoryParser {
 
 			};
 			new Parser(formatter).parse(storyAsText, "", 0);
+			System.out.println(out.toString());
 			return out.toString();
 		}
 	}
