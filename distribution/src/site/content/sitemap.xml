@@ -29,6 +29,7 @@
   <section>
     <name>Basic Topics</name>
     <page>developing-stories.html</page>
+    <page>story-syntax.html</page>
     <page>annotations.html</page>
     <page>configuration.html</page>
     <page>candidate-steps.html</page>

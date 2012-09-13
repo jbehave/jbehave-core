@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Story Syntax</title>
+</head>
+
+<body>
+
+<h2>Story Syntax</h2>
+
+<span class="followup">JBehave supports multiple story syntaxes.</span>
+
+<h2>JBehave Syntax</h2>
+
+<p>JBehave's syntax is supported
+by the <a
+    href="javadoc/core/org/jbehave/core/parsers//RegexStoryParser.html">RegexStoryParser</a>:</p>
+
+<pre class="brush: bdd">
+A story is a collection of scenarios
+
+Narrative:
+In order to communicate effectively to the business some functionality
+As a development team
+I want to use Behaviour-Driven Development
+    
+Scenario:  A scenario is a collection of executable steps of different type
+
+Given step represents a precondition to an event
+When step represents the occurrence of the event
+Then step represents the outcome of the event
+
+Scenario:  Another scenario exploring different combination of events
+
+Given a [precondition]
+When a negative event occurs
+Then a the outcome should [be-captured]    
+
+Examples: 
+|precondition|be-captured|
+|abc|be captured    |
+|xyz|not be captured|
+
+</pre>
+
+<h2>Gherkin Syntax</h2>
+
+<p><a href="https://github.com/cucumber/cucumber/wiki/Gherkin">Gherkin</a> syntax is supported
+by the <a
+    href="javadoc/core/org/jbehave/core/parsers/gherkin/GherkinStoryParser.html">GherkinStoryParser</a>:</p>
+
+<pre class="brush: bdd">
+Feature: A story is a collection of scenarios
+
+Narrative:
+In order to communicate effectively to the business some functionality
+As a development team
+I want to use Behaviour-Driven Development
+    
+Scenario:  A scenario is a collection of executable steps of different type
+
+Given step represents a precondition to an event
+When step represents the occurrence of the event
+Then step represents the outcome of the event
+
+Scenario Outline:  Another scenario exploring different combination of events
+
+Given a [precondition]
+When a negative event occurs
+Then a the outcome should [be-captured]    
+
+Examples: 
+|precondition|be-captured|
+|abc|be captured    |
+|xyz|not be captured|
+</pre>
+
+<p>The Gherkin syntax is supported via a transformation in the JBehave syntax, using a custom 
+<a href="javadoc/core/org/jbehave/core/parsers/StoryTransformer.html">StoryTransformer</a>, that uses
+the Gherkin parser to map the syntax's elements.  Some elements, e.g. Background don't have a direct correspondence.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>
