@@ -12,15 +12,6 @@
 
 <p>JRuby provides the extensions to Ruby that are required by JBehave to allow writing Steps classes directly in Ruby: method annotations and signatures.</p>
 
-<span class="followup">The JRuby classes must be compiled into Java bytecode.</span>
-
-<p>The <b>jrubyc</b> executable supports the <b>--javac</b> option to do just that:</p>
-<script type="syntaxhighlighter" class="brush: plain">
-<![CDATA[
-jrubyc --javac -c ${jruby.classpath} --target ${jruby.generated.sources} src/main/rb/*.rb
-]]>
-</script>
-
 <p>The JRuby steps classes must provide method metadata specifying the java annotation and signature:</p>
 <script type="syntaxhighlighter" class="brush: ruby">
 <![CDATA[
@@ -51,6 +42,42 @@ class JRubySteps
 end
 ]]>
 </script>
+
+<span class="followup">The JRuby classes must be compiled into Java bytecode.</span>
+
+<p>The <b>jrubyc</b> executable supports the <b>--javac</b> option to generate Java sources:</p>
+<script type="syntaxhighlighter" class="brush: plain">
+<![CDATA[
+jrubyc --javac -c ${jruby.classpath} --target ${jruby.generated.sources} src/main/rb/*.rb
+]]>
+</script>
+
+<p>The <b>jruby-complete</b> artifact contains the <b>jrubyc</b> script in the <b>META-INF/jruby.home/bin</b> directory.</p>
+
+<p>If using Maven, the jruby-maven-plugin can do the same task more cleanly:</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+      <plugin>
+        <groupId>de.saumya.mojo</groupId>
+        <artifactId>jruby-maven-plugin</artifactId>
+        <version>0.29.1</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <generateJava>true</generateJava>
+              <generatedJavaDirectory>${jruby.generated.sources}</generatedJavaDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+]]>
+</script>
+
 
 <div class="clear">
 <hr />
