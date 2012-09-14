@@ -12,7 +12,6 @@
 
   <properties>
     <jruby.version>1.6.7.2</jruby.version>
-    <jruby.install.dir>${project.build.directory}/jruby-${jruby.version}</jruby.install.dir>
     <jruby.generated.sources>${project.build.directory}/generated-sources/jruby</jruby.generated.sources>
   </properties>
 
@@ -39,59 +38,25 @@
         </excludes>
       </resource>
       <resource>
-        <directory>${basedir}/src/main/rb</directory>
+        <directory>${basedir}/src/main/ruby</directory>
         <filtering>false</filtering>
       </resource>
     </resources>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
+        <groupId>de.saumya.mojo</groupId>
+        <artifactId>jruby-maven-plugin</artifactId>
+        <version>0.29.1</version>
         <executions>
           <execution>
             <phase>generate-sources</phase>
             <goals>
-              <goal>unpack</goal>
+              <goal>compile</goal>
             </goals>
             <configuration>
-              <outputDirectory>${jruby.install.dir}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.jruby</groupId>
-                  <artifactId>jruby-complete</artifactId>
-                  <version>${jruby.version}</version>
-                </artifactItem>
-              </artifactItems>
+              <generateJava>true</generateJava>
+              <generatedJavaDirectory>${jruby.generated.sources}</generatedJavaDirectory>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <configuration>
-              <tasks>
-                <property name="jrubyc.bin"
-                  value="${jruby.install.dir}/META-INF/jruby.home/bin/jrubyc" />
-                <chmod file="${jrubyc.bin}" perm="ugo+rx" />
-                <pathconvert pathsep=":" property="jruby.classpath"
-                  refid="maven.runtime.classpath" />
-                <mkdir dir="${jruby.generated.sources}" />
-                <exec dir="${basedir}" executable="${jrubyc.bin}"
-                  failonerror="true">
-                  <arg
-                    line="--javac -c ${jruby.classpath} --target ${jruby.generated.sources} src/main/rb/*.rb" />
-                </exec>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
           </execution>
         </executions>
       </plugin>
@@ -180,6 +145,19 @@
                     <versionRange>[2.4,)</versionRange>
                     <goals>
                       <goal>unpack</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>de.saumya.mojo</groupId>
+                    <artifactId>jruby-maven-plugin</artifactId>
+                    <versionRange>[0.29.1,)</versionRange>
+                    <goals>
+                      <goal>compile</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
