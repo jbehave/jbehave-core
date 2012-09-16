@@ -18,6 +18,7 @@
   <modules>
     <module>executable-jar</module>
     <module>gameoflife</module>
+    <module>gherkin</module>
     <module>groovy</module>
     <module>jruby</module>
     <module>scala</module>
