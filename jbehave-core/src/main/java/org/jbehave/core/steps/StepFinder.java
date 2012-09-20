@@ -155,7 +155,7 @@ public class StepFinder {
 
     /**
      * Strategy to priorise candidate steps by <a
-     * href="http://www.merriampark.com/ld.htm">Levenshtein Distance</a>
+     * href="http://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein Distance</a>
      */
     public static class ByLevenshteinDistance implements PrioritisingStrategy {
 
