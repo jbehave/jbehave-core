@@ -34,12 +34,14 @@ import static org.jbehave.core.steps.AbstractStepResult.successful;
 
 public class StepCreator {
 
-    public static final String PARAMETER_TABLE_START = "\uff3b";
+	public static final String PARAMETER_TABLE_START = "\uff3b";
     public static final String PARAMETER_TABLE_END = "\uff3d";
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
     public static final String PARAMETER_VALUE_NEWLINE = "\u2424";
     public static final UUIDExceptionWrapper NO_FAILURE = new UUIDExceptionWrapper("no failure");
+	private static final String NEWLINE = "\n";
+    private static final String SPACE = " ";
     private final Class<?> stepsType;
     private final InjectableStepsFactory stepsFactory;
     private final ParameterConverters parameterConverters;
@@ -236,11 +238,16 @@ public class StepCreator {
             if (isTable(type)) {
                 stepText = stepText.replace(value, PARAMETER_TABLE_START + value + PARAMETER_TABLE_END);
             } else {
-                // only mark non-empty string as parameter (JBEHAVE-656)
+                // only mark non-empty string as parameter (JBEHAVE-656)            	
                 if (value.trim().length() != 0) {
-                    stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+                	// identify parameter values as padded by spaces to avoid duplicated replacements of overlapping values (JBEHAVE-837)
+                	if ( stepText.endsWith(value) ){
+                		stepText = stepText.replace(SPACE + value, SPACE + PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+                	} else {
+                		stepText = stepText.replace(SPACE + value + SPACE, SPACE + PARAMETER_VALUE_START + value + PARAMETER_VALUE_END + SPACE);                		
+                	}
                 }
-                stepText = stepText.replace("\n", PARAMETER_VALUE_NEWLINE);
+                stepText = stepText.replace(NEWLINE, PARAMETER_VALUE_NEWLINE);
             }
         }
         return stepText;
