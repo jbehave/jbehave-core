@@ -1,191 +1,191 @@
-{'xref': {
-  'beforeSteps': {},
-  'stories': [
+{"xref": {
+  "beforeSteps": {},
+  "stories": [
     {
-      'story': {
-        'path': '/path/to/story',
-        'description': {
-          'descriptionAsString': 'An interesting story'
+      "story": {
+        "path": "/path/to/story",
+        "description": {
+          "descriptionAsString": "An interesting story"
         },
-        'narrative': {
-          'inOrderTo': 'renovate my house',
-          'asA': 'customer',
-          'iWantTo': 'get a loan'
+        "narrative": {
+          "inOrderTo": "renovate my house",
+          "asA": "customer",
+          "iWantTo": "get a loan"
         },
-        'meta': {
-          'properties': [
+        "meta": {
+          "properties": [
             {
-              '@name': '+author',
-              '@value': 'Mauro'
+              "@name": "+author",
+              "@value": "Mauro"
             },
             {
-              '@name': '+theme',
-              '@value': 'testing'
+              "@name": "+theme",
+              "@value": "testing"
             }
           ]
         },
-        'scenarios': [
+        "scenarios": [
         ],
-        'givenStories': {
-          'givenStories': [
+        "givenStories": {
+          "givenStories": [
           ],
-          'givenStoriesAsString': '',
-          'examplesTable': {
-            'tableAsString': '',
-            'headerSeparator': '|',
-            'valueSeparator': '|',
-            'ignorableSeparator': '|--',
-            'tableTransformers': {
-              'transformers': [
+          "givenStoriesAsString": "",
+          "examplesTable": {
+            "tableAsString": "",
+            "headerSeparator": "|",
+            "valueSeparator": "|",
+            "ignorableSeparator": "|--",
+            "tableTransformers": {
+              "transformers": [
                 [
-                  'FROM_LANDSCAPE',
+                  "FROM_LANDSCAPE",
                   {}
                 ]
               ]
             },
-            'headers': [
+            "headers": [
             ],
-            'data': [
+            "data": [
             ],
-            'properties': [
+            "properties": [
               {
-                '@name': 'headerSeparator',
-                '@value': '|'
+                "@name": "headerSeparator",
+                "@value": "|"
               },
               {
-                '@name': 'valueSeparator',
-                '@value': '|'
+                "@name": "valueSeparator",
+                "@value": "|"
               },
               {
-                '@name': 'ignorableSeparator',
-                '@value': '|--'
+                "@name": "ignorableSeparator",
+                "@value": "|--"
               }
             ],
-            'propertiesAsString': '',
-            'namedParameters': [
+            "propertiesAsString": "",
+            "namedParameters": [
             ],
-            'trim': true
+            "trim": true
           }
         }
       },
-      'allowed': false,
-      'givenStories': [
+      "allowed": false,
+      "givenStories": [
       ],
-      'scenarios': [
+      "scenarios": [
         {
-          'scenario': {
-            'title': '',
-            'meta': {
-              'properties': [
+          "scenario": {
+            "title": "",
+            "meta": {
+              "properties": [
               ]
             },
-            'givenStories': {
-              'givenStories': [
+            "givenStories": {
+              "givenStories": [
               ],
-              'givenStoriesAsString': '',
-              'examplesTable': {
-                'tableAsString': '',
-                'headerSeparator': '|',
-                'valueSeparator': '|',
-                'ignorableSeparator': '|--',
-                'tableTransformers': {
-                  'transformers': [
+              "givenStoriesAsString": "",
+              "examplesTable": {
+                "tableAsString": "",
+                "headerSeparator": "|",
+                "valueSeparator": "|",
+                "ignorableSeparator": "|--",
+                "tableTransformers": {
+                  "transformers": [
                     [
-                      'FROM_LANDSCAPE',
+                      "FROM_LANDSCAPE",
                       {}
                     ]
                   ]
                 },
-                'headers': [
+                "headers": [
                 ],
-                'data': [
+                "data": [
                 ],
-                'properties': [
+                "properties": [
                   {
-                    '@name': 'headerSeparator',
-                    '@value': '|'
+                    "@name": "headerSeparator",
+                    "@value": "|"
                   },
                   {
-                    '@name': 'valueSeparator',
-                    '@value': '|'
+                    "@name": "valueSeparator",
+                    "@value": "|"
                   },
                   {
-                    '@name': 'ignorableSeparator',
-                    '@value': '|--'
+                    "@name": "ignorableSeparator",
+                    "@value": "|--"
                   }
                 ],
-                'propertiesAsString': '',
-                'namedParameters': [
+                "propertiesAsString": "",
+                "namedParameters": [
                 ],
-                'trim': true
+                "trim": true
               }
             },
-            'examplesTable': {
-              'tableAsString': '',
-              'headerSeparator': '|',
-              'valueSeparator': '|',
-              'ignorableSeparator': '|--',
-              'tableTransformers': {
-                'transformers': [
+            "examplesTable": {
+              "tableAsString": "",
+              "headerSeparator": "|",
+              "valueSeparator": "|",
+              "ignorableSeparator": "|--",
+              "tableTransformers": {
+                "transformers": [
                   [
-                    'FROM_LANDSCAPE',
+                    "FROM_LANDSCAPE",
                     {}
                   ]
                 ]
               },
-              'headers': [
+              "headers": [
               ],
-              'data': [
+              "data": [
               ],
-              'properties': [
+              "properties": [
                 {
-                  '@name': 'headerSeparator',
-                  '@value': '|'
+                  "@name": "headerSeparator",
+                  "@value": "|"
                 },
                 {
-                  '@name': 'valueSeparator',
-                  '@value': '|'
+                  "@name": "valueSeparator",
+                  "@value": "|"
                 },
                 {
-                  '@name': 'ignorableSeparator',
-                  '@value': '|--'
+                  "@name": "ignorableSeparator",
+                  "@value": "|--"
                 }
               ],
-              'propertiesAsString': '',
-              'namedParameters': [
+              "propertiesAsString": "",
+              "namedParameters": [
               ],
-              'trim': true
+              "trim": true
             },
-            'steps': [
+            "steps": [
               [
-                ''
+                ""
               ]
             ]
           },
-          'allowed': false,
-          'exampleScenarios': [
+          "allowed": false,
+          "exampleScenarios": [
           ],
-          'givenStories': [
+          "givenStories": [
           ],
-          'beforeSteps': {},
-          'steps': {
-            'matches': [
+          "beforeSteps": {},
+          "steps": {
+            "matches": [
               {
-                'type': 'GIVEN',
-                'annotatedPattern': '(def)',
-                'resolvedPattern': '[abc]'
+                "type": "GIVEN",
+                "annotatedPattern": "(def)",
+                "resolvedPattern": "[abc]"
               }
             ]
           },
-          'afterSteps': {}
+          "afterSteps": {}
         }
       ],
-      'beforeSteps': {},
-      'afterSteps': {},
-      'timing': {
-        'durationInMillis': 0
+      "beforeSteps": {},
+      "afterSteps": {},
+      "timing": {
+        "durationInMillis": 0
       }
     }
   ],
-  'afterSteps': {}
+  "afterSteps": {}
 }}

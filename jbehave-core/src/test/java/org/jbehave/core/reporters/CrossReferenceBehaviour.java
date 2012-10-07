@@ -39,8 +39,7 @@ public class CrossReferenceBehaviour {
         crossReference.serialise(root, outputDirectory);
 
         // Then
-        assertEquals(resource("xref.xml"), output(outputDirectory, "xref.xml"));
-        
+        assertEquals(resource("xref.xml"), output(outputDirectory, "xref.xml"));        
         assertEquals(resource("xref.json"), output(outputDirectory, "xref.json"));
     }
 
@@ -50,11 +49,6 @@ public class CrossReferenceBehaviour {
 
     private String output(File outputDirectory, String name) throws IOException, FileNotFoundException {
         String string = IOUtils.toString(new FileReader(new File(outputDirectory, "view/"+name)));
-        if ( name.endsWith("xml") ){
-            string = string.replaceAll("[0-9]{8,15}", "NUMBER").replaceAll("<duration>[0-9]*</duration>", "<duration>TIME</duration>"); // xml
-        } else {
-            string = string.replace('\"', '\'').replaceAll("[0-9]{8,15}", "NUMBER").replaceAll("duration': [0-9]*", "duration': TIME"); // json
-        }
         return string;
     }
 
