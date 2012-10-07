@@ -33,6 +33,7 @@ import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.AbstractStepResult.Skipped;
+import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.jbehave.core.steps.StepCreator.ParameterisedStep;
 import org.junit.Before;
@@ -177,19 +178,20 @@ public class StepCreatorBehaviour {
                 .perform(null);
 
         // Then
+        assertThat(stepResult, instanceOf(Successful.class));
         String expected = "When I use parameters " + PARAMETER_VALUE_START + firstParameterValue + PARAMETER_VALUE_END
                 + " and " + PARAMETER_VALUE_START + secondParameterValue + PARAMETER_VALUE_END;
         assertThat(stepResult.parametrisedStep(), equalTo(expected));
 	}
     
     @Test
-    public void shouldCreateParametrisedStepWithProvidedParametersValues() throws Exception {
-        assertThatParametrisedStepHasMarkedProvidedParameterValues("shopping cart", "book");
-    	assertThatParametrisedStepHasMarkedProvidedParameterValues("bookreading", "book");
-    	assertThatParametrisedStepHasMarkedProvidedParameterValues("book", "bookreading");
+    public void shouldCreateParametrisedStepWithNamedParametersValues() throws Exception {
+        assertThatParametrisedStepHasMarkedNamedParameterValues("shopping cart", "book");
+    	assertThatParametrisedStepHasMarkedNamedParameterValues("bookreading", "book");
+    	assertThatParametrisedStepHasMarkedNamedParameterValues("book", "bookreading");
     }
 
-	private void assertThatParametrisedStepHasMarkedProvidedParameterValues(String firstParameterValue,
+	private void assertThatParametrisedStepHasMarkedNamedParameterValues(String firstParameterValue,
 			String secondParameterValue) throws IntrospectionException {
 		// Given
         SomeSteps stepsInstance = new SomeSteps();
@@ -208,6 +210,7 @@ public class StepCreatorBehaviour {
                 .perform(null);
 
         // Then
+        assertThat(stepResult, instanceOf(Successful.class));
         String expected = "When I use parameters " + PARAMETER_VALUE_START + firstParameterValue + PARAMETER_VALUE_END
                 + " and " + PARAMETER_VALUE_START + secondParameterValue + PARAMETER_VALUE_END;
         assertThat(stepResult.parametrisedStep(), equalTo(expected));
