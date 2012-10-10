@@ -222,7 +222,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern patternToPullStoryMetaIntoGroupOne() {
-        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + keywords.narrative() + ").*", DOTALL);
+        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + keywords.narrative() + "|" +  keywords.givenStories() + ").*", DOTALL);
     }
 
     private Pattern patternToPullNarrativeIntoGroupOne() {
