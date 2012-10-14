@@ -65,8 +65,8 @@ public abstract class TraderStory extends JUnitStory {
     private final CrossReference xref = new CrossReference();
 
     public TraderStory() {
-        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
-                .doIgnoreFailureInView(true).useThreads(2).useStoryTimeoutInSecs(60).doVerboseFailures(true);
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
+                .doIgnoreFailureInView(true).useThreads(1).useStoryTimeoutInSecs(60);
         // Uncomment to set meta filter, which can also be set via Ant or Maven
         // configuredEmbedder().useMetaFilters(Arrays.asList("+theme parametrisation"));
     }

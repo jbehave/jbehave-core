@@ -223,7 +223,7 @@ public class StoryRunner {
     }
 
     private void runCancellable(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
-        if (!context.givenStory) {
+        if (!context.givenStory()) {
             reporter.set(reporterFor(context, story));
         }
         pendingStepStrategy.set(context.configuration().pendingStepStrategy());
@@ -529,7 +529,8 @@ public class StoryRunner {
         private final String path;
         private final MetaFilter filter;
         private final boolean givenStory;
-        private State state;
+		private State state;
+		private RunContext parentContext;
 
         public RunContext(Configuration configuration, InjectableStepsFactory stepsFactory, String path,
                 MetaFilter filter) {
@@ -537,16 +538,17 @@ public class StoryRunner {
         }
 
         public RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter) {
-            this(configuration, steps, path, filter, false);
+            this(configuration, steps, path, filter, false, null);
         }
 
         private RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter,
-                boolean givenStory) {
+                boolean givenStory, RunContext parentContext) {
             this.configuration = configuration;
             this.candidateSteps = steps;
             this.path = path;
             this.filter = filter;
             this.givenStory = givenStory;
+			this.parentContext = parentContext;
             resetState();
         }
 
@@ -602,7 +604,7 @@ public class StoryRunner {
 
         public RunContext childContextFor(GivenStory givenStory) {
             String actualPath = configuration.pathCalculator().calculate(path, givenStory.getPath());
-            return new RunContext(configuration, candidateSteps, actualPath, filter, true);
+            return new RunContext(configuration, candidateSteps, actualPath, filter, true, this);
         }
 
         public State state() {
@@ -611,6 +613,9 @@ public class StoryRunner {
 
         public void stateIs(State state) {
             this.state = state;
+            if ( parentContext != null ){
+            	parentContext.stateIs(state);
+            }
         }
 
         public boolean failureOccurred() {

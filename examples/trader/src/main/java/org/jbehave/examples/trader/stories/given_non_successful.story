@@ -7,7 +7,3 @@ Given the traders:
 |Larry|Stooge 3|
 |Moe  |Stooge 1|
 |Curly|Stooge 2|
-When Traders subset to ".*e" by name
-Then the traders returned are:
-|name|rank    |
-|Moe |Stooge 1|
