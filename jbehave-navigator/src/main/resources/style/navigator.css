@@ -187,6 +187,10 @@ tbody td {
 	vertical-align:top;
 }
 
+tbody td p {
+    color: #fff;
+}
+
 tbody td.status {
 	padding-left:35px;
 }
