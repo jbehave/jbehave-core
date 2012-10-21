@@ -1,0 +1,287 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!-- 
+
+JBehave Story Navigator using Angular.js.
+
+If learning Angular by reading this source file, take note of these:
+
+  1) There's a static JSON file adjacent to this index.html file .... xref.json (edit the URL bar to see it)
+
+  2) Angular bits and pieces used:
+
+     ng:show - an element is shown if the expression is true, hidden if false.
+     ng:click  - almost anything can be clicked on, and cause an action (setting something in the model most likely)
+     ng:repeat  - looping through repeating elements of a model 
+     ng:init  - setting initial values in the model
+
+     ng:show is quite a trick - some elements appear to share space on the page or be redundant .. but 
+     only one is shown at a time by virtue of locally opposite ng:show expressions.
+
+  3) the ng:repeat iterations through the array, are subject to ordering and sub-setting. See:
+    
+     .$filter(var)  -  sub-setting 
+     .$orderBy(var)  - reordering the array for the purposes of display.
+
+  4) We're using some aggregate functions on lists. Principally:
+
+     $size()  - gives us a number of matching rows
+     $sum(var)  - the sum of all duration for all the rows
+
+  5) Some filters
+
+   | date  - outputs a date format
+   | number  - outputs a number format.
+
+  
+  General Resources: 
+ 
+      http://docs.angularjs.org/#!/api/   - Angular's API docs
+      https://github.com/paul-hammant/StoryNavigator/blob/gh-pages/navigator.html   - this file in-situ on Github (colored - yay!)
+      http://paulhammant.com/   - author's blog.
+
+-->
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ng="http://angularjs.org" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<script type="text/javascript" ng:autobind src="js/angular-0.9.19.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="js/jquery-ui-1.8.17.custom.min.js"></script>
+<script type="text/javascript" src="js/jquery-framedialog-1.1.2.js"></script>
+<link rel="stylesheet" type="text/css" href="style/navigator.css"/>
+<link rel="stylesheet" type="text/css" href="style/jquery-ui.css"/>
+<title>Story Navigator</title>
+</head>
+<body ng:controller="MyController">
+<script type="text/javascript">
+    function MyController($resource) {
+        this.data = $resource("xref.json").get({});
+        this.c = {};
+		this.search = {};
+        this.ord = 'passed';
+        this.ord2 = 'type';
+
+        // show a single story.
+        this.showResults = function(story) {
+            jQuery.FrameDialog.create({
+                width: 1000,
+                height: 600,
+                closeText: 'foo',
+                url: story.html,
+                title: 'Results For ' + story.path,
+                closeOnEscape: true,
+                buttons: [
+                    {
+                    }
+                ]
+            })
+        };
+    }
+
+    MyController.$inject = ["$resource"];
+
+    // Sometimes story next has newline chars in it.
+    angular.filter('newlines', function(text) {
+        return text.replace(/\n/g, '<br/>');
+    });
+
+    // One tab for Stories, one for Steps.
+    $(document).ready(function() {
+        $("#tabs").tabs();
+    });
+</script>
+<div id="page-wrap">
+  <div id="inside">
+    <div id="header"> <a href="http://www.jbehave.org"><img src="images/jbehave-logo.png" alt="header"/></a> </div>
+    <div id="main-content">
+      <div id="tabs">
+        <ul>
+          <li><a href="#tabs-1">Stories ({{data.xref.stories.$size()}})</a></li>
+          <li><a href="#tabs-2">Steps ({{data.xref.stepMatches.$size()}})</a></li>
+        </ul>
+        
+        <!-- The Story List Tab -->
+        <div id="tabs-1"> <span></span>
+          <table summary="Navigator" cellspacing="0" cellpadding="0">
+            <thead>
+              <tr>
+                <th colspan="2" class="section"> Stories<br/>
+                  <p id="stories-total">Showing {{data.xref.stories.$filter(search).$size()}} of {{data.xref.stories.$size()}} stories</p>
+                </th>
+                <th colspan="5" class="section filter"> Filter scenarios
+                  <input name="search.scenarios" class="filterInput"/>
+                  <div id="view-selector">
+                    <label>View:</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" name="c.status" checked="true">
+                        Status
+                        </input>
+                      </li>
+                      <li>
+                        <input type="checkbox" name="c.path" checked="true">
+                        Path
+                        </input>
+                      </li>
+                      <li>
+                        <input type="checkbox" name="c.description" checked="true">
+                        Description
+                        </input>
+                      </li>
+                      <li>
+                        <input type="checkbox" name="c.meta" checked="true">
+                        Meta
+                        </input>
+                      </li>
+                      <li>
+                        <input type="checkbox" name="c.narrative" checked="true">
+                        Narrative
+                        </input>
+                      </li>
+                      <li>
+                        <input type="checkbox" name="c.started" checked="true">
+                        Started
+                        </input>
+                      </li>
+                      <li>
+                        <input type="checkbox" name="c.duration" checked="true">
+                        Duration
+                        </input>
+                      </li>
+                    </ul>
+                  </div>
+                </th>
+              </tr>
+
+              <!-- 
+                  For each of these table headers, there is three alternate <span> elements that could be displayed within.  
+                  Each one has a different ng:show directive, and only one will display at a time. Welcome to Angular!
+              -->
+
+              <tr class="columnTitles">
+                <th ng:show="c.status" class="status first"> 
+                  <span ng:show="ord != '-passed' &amp;&amp; ord != 'passed' " ng:click="ord = 'passed'">Status<img src="images/arrow-blank.png"/></span> 
+                  <span class="ordered" ng:show="ord == '-passed'" ng:click="ord = 'passed'">Status<img src="images/arrow-up.png"/></span> 
+                  <span class="ordered" ng:show="ord == 'passed'" ng:click="ord = '-passed'">Status<img src="images/arrow-down.png"/></span> 
+                </th>
+                <th ng:show="c.path" class="path"> 
+                  <span ng:show="ord != '-path' &amp;&amp; ord != 'path' " ng:click="ord = 'path'">Path<img src="images/arrow-blank.png"/></span> 
+                  <span class="ordered" ng:show="ord == '-path'" ng:click="ord = 'path'">Path<img src="images/arrow-up.png"/></span> 
+                  <span class="ordered" ng:show="ord == 'path'" ng:click="ord = '-path'">Path<img src="images/arrow-down.png"/></span> 
+                </th>
+                <th ng:show="c.description" class="description"> 
+                  <span ng:show="ord != '-description' &amp;&amp; ord != 'description' " ng:click="ord = 'description'">Description<img src="images/arrow-blank.png"/></span> 
+                  <span class="ordered" ng:show="ord == '-description'" ng:click="ord = 'description'">Description<img src="images/arrow-up.png"/></span> 
+                  <span class="ordered" ng:show="ord == 'description'" ng:click="ord = '-description'">Description<img src="images/arrow-down.png"/></span
+                </th>
+                <th ng:show="c.meta" class="meta"> 
+                  <span ng:show="ord != '-meta' &amp;&amp; ord != 'meta' " ng:click="ord = 'meta'">Meta<img src="images/arrow-blank.png"/></span> 
+                  <span class="ordered" ng:show="ord == '-meta'" ng:click="ord = 'meta'">Meta<img src="images/arrow-up.png"/></span> 
+                  <span class="ordered" ng:show="ord == 'meta'" ng:click="ord = '-meta'">Meta<img src="images/arrow-down.png"/></span> 
+                </th>
+                <th ng:show="c.narrative" class="narrative"> 
+                  <span ng:show="ord != '-narrative' &amp;&amp; ord != 'narrative' " ng:click="ord = 'narrative'">Narrative<img src="images/arrow-blank.png"/></span> 
+                  <span class="ordered" ng:show="ord == '-narrative'" ng:click="ord = 'narrative'">Narrative<img src="images/arrow-up.png"/></span> 
+                  <span class="ordered" ng:show="ord == 'narrative'" ng:click="ord = '-narrative'">Narrative<img src="images/arrow-down.png"/></span> 
+                </th>
+                <th ng:show="c.started" class="started"> 
+                  <span ng:show="ord != '-started' &amp;&amp; ord != 'started' " ng:click="ord = 'started'">Started<img src="images/arrow-blank.png"/></span> 
+                  <span class="ordered" ng:show="ord == '-started'" ng:click="ord = 'started'">Started<img src="images/arrow-up.png"/></span> 
+                  <span class="ordered" ng:show="ord == 'started'" ng:click="ord = '-started'">Started<img src="images/arrow-down.png"/></span> 
+                </th>
+                <th ng:show="c.duration" class="duration"> 
+                  <span ng:show="ord != '-duration' &amp;&amp; ord != 'duration' " ng:click="ord = 'duration'">Duration<img src="images/arrow-blank.png"/></span> 
+                  <span class="ordered" ng:show="ord == '-duration'" ng:click="ord = 'duration'">Duration<img src="images/arrow-up.png"/></span> 
+                  <span class="ordered" ng:show="ord == 'duration'" ng:click="ord = '-duration'">Duration<img src="images/arrow-down.png"/></span> 
+                </th>
+              </tr>
+              <tr>
+                <th ng:show="c.status" class="status filterLabel">Filter</th>
+                <th ng:show="c.path" class="path"><input name="search.path" class="filterInput"/></th>
+                <th ng:show="c.description" class="description"><input name="search.description" class="filterInput"/></th>
+                <th ng:show="c.meta" class="meta"> <select name="search.meta" class="filterInput">
+                    <option value="=" selected="selected">- All -</option>
+                    <option ng:repeat="permutation in data.xref.meta">{{permutation}}</option>
+                  </select></th>
+                <th ng:show="c.narrative" class="narrative"><input name="search.narrative" class="filterInput"/></th>
+                <th ng:show="c.started" class="started"/>
+                <th ng:show="c.duration" class="duration total">{{data.xref.stories.$filter(search).$sum('duration') /1000 | number:0}} secs</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng:repeat="story in data.xref.stories.$filter(search).$orderBy(ord)"
+                            ng:click="showResults(story)" title="Click to view the story details">
+                <td ng:show="c.status" class="status"><img src="images/passed-{{story.passed}}.png"
+                                                    alt="Story Passed == {{story.passed}}"/></td>
+                <td ng:show="c.path" class="path">{{story.path}}</td>
+                <td ng:show="c.description" class="description">{{story.description}}</td>
+                <td ng:show="c.meta" class="meta">{{story.meta}}</td>
+                <td ng:show="c.narrative" class="narrative">{{story.narrative | newlines | html}}</td>
+                <td ng:show="c.started" class="started"><div>{{story.started | date:'MM-dd-yyyy'}}</div>
+                  <div>{{story.started | date:'HH:mm:ss'}}</div></td>
+                <td ng:show="c.duration" class="duration">{{story.duration / 1000 | number:1}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- The Step-Match List Tab -->
+        
+        <div id="tabs-2">
+          <table cellspacing="0" cellpadding="0">
+            <thead>
+              <tr>
+                <th colspan="3" class="section">Steps</th>
+              </tr>
+              <tr class="columnTitles">
+                <th class="type first"> 
+                  <span ng:show="ord2 != '-type' &amp;&amp; ord2 != 'type' " ng:click="ord2 = 'type'">Type<img src="images/arrow-blank.png"/></span> 
+                  <span class="ordered" ng:show="ord2 == '-type'" ng:click="ord2 = 'type'">Type<img src="images/arrow-up.png"/></span> 
+                  <span class="ordered" ng:show="ord2 == 'type'" ng:click="ord2 = '-type'">Type<img src="images/arrow-down.png"/></span> 
+                </th>
+                <th class="pattern"> 
+	              <span ng:show="ord2 != '-annotatedPattern' &amp;&amp; ord2 != 'annotatedPattern' " ng:click="ord2 = 'annotatedPattern'">Pattern<img src="images/arrow-blank.png"/></span> 
+	              <span class="ordered" ng:show="ord2 == '-annotatedPattern'" ng:click="ord2 = 'annotatedPattern'">Pattern<img src="images/arrow-up.png"/></span> 
+	              <span class="ordered" ng:show="ord2 == 'annotatedPattern'" ng:click="ord2 = '-annotatedPattern'">Pattern<img src="images/arrow-down.png"/></span> 
+	            </th>
+                <th class="usages last"> 
+                  <span ng:show="ord2 != '-usages.$size()' &amp;&amp; ord2 != 'usages.$size()' " ng:click="ord2 = 'usages.$size()'">Usages<img src="images/arrow-blank.png"/></span> 
+                  <span class="ordered" ng:show="ord2 == '-usages.$size()'" ng:click="ord2 = 'usages.$size()'">Usages<img src="images/arrow-up.png"/></span> 
+                  <span class="ordered" ng:show="ord2 == 'usages.$size()'" ng:click="ord2 = '-usages.$size()'">Usages<img src="images/arrow-down.png"/></span> </th>
+              </tr>
+              <tr class="filters" ng:init="stepSearch.type = ''">
+                <th> 
+                  <select name="stepSearch.type" class="filterInput">
+                    <option value ="" selected>- All -</option>
+                    <option>Given</option>
+                    <option>When</option>
+                    <option>Then</option>
+                  </select>
+                </th>
+                <th><input name="stepSearch.annotatedPattern" class="filterInput"/></th>
+                <th>&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng:repeat="match in data.xref.stepMatches.$filter(stepSearch).$orderBy(ord2)">
+                <td class="type">{{match.type}}</td>
+                <td class="pattern">{{match.annotatedPattern}}</td>
+                <td class="size">{{match.usages.$size()}}</td>
+                <!-- <td class="size">{{match.usages[0].story}}</td> --> 
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="footer">
+      <div class="left">Data Generated by {{data.xref.createdBy}} on {{ data.xref.whenMade | date:'MM/dd/yy HH:mm:ss'}} <br/> {{search}} </div>
+      <div class="clear"></div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
