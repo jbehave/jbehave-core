@@ -1,5 +1,7 @@
 package org.jbehave.core.embedder;
 
+import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Map;
 
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -30,8 +33,6 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.ParameterisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
-
-import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
 
 /**
  * Runs a {@link Story}, given a {@link Configuration} and a list of
@@ -388,7 +389,12 @@ public class StoryRunner {
             throws Throwable {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.get().beforeExamples(scenario.getSteps(), table);
+    	Keywords keywords = context.configuration().keywords();
         for (Map<String, String> scenarioParameters : table.getRows()) {
+			Meta parameterMeta = parameterMeta(keywords, scenarioParameters);
+			if ( !context.filter.allow(parameterMeta) ){
+				continue;
+			}
             reporter.get().example(scenarioParameters);
             if (context.configuration().storyControls().resetStateBeforeScenario()) {
                 context.resetState();
@@ -401,6 +407,15 @@ public class StoryRunner {
         }
         reporter.get().afterExamples();
     }
+
+	private Meta parameterMeta(Keywords keywords,
+			Map<String, String> scenarioParameters) {
+		String meta = keywords.meta();
+		if (scenarioParameters.containsKey(meta)) {
+			return Meta.createMeta(scenarioParameters.get(meta), keywords);
+		}
+		return Meta.EMPTY;
+	}
 
     private void runBeforeOrAfterStorySteps(RunContext context, Story story, Stage stage) throws InterruptedException {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterStorySteps(story, stage));
