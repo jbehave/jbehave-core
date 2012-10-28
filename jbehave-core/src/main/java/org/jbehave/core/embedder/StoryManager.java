@@ -73,28 +73,33 @@ public class StoryManager {
     public void runStories(List<String> storyPaths, MetaFilter filter, BatchFailures failures) {
         // create new run context
         context = performableTree.newRunContext(configuration, stepsFactory, filter, failures);
-        performableTree.addStories(context, storyPaths);
         
-        performStories(context, performableTree, storyPaths, filter, failures);
+        // add stories        
+        performableTree.addStories(context, storyPaths);
+
+        // perform stories
+        performStories(context, performableTree, storyPaths);
+        
+        // collect failures
+        failures.putAll(context.getFailures());       
+        
     }
 
-    public void performStories(RunContext context, PerformableTree performableTree, List<String> storyPaths, MetaFilter filter, BatchFailures failures) {
+    public void performStories(RunContext context, PerformableTree performableTree, List<String> storyPaths) {
         // before stories
         performableTree.performBeforeOrAfterStories(context, Stage.BEFORE);
         
         // stories as paths
         runningStoriesAsPaths(context, storyPaths);        
         waitUntilAllDoneOrFailed(context);
-        List<Story> notAllowed = notAllowedBy(filter);
+        MetaFilter filter = context.filter();
+		List<Story> notAllowed = notAllowedBy(filter);
         if (!notAllowed.isEmpty()) {
             embedderMonitor.storiesNotAllowed(notAllowed, filter, embedderControls.verboseFiltering());
         }
 
         // after stories
         performableTree.performBeforeOrAfterStories(context, Stage.AFTER);     
-        
-        // collect failures
-        failures.putAll(context.getFailures());
     }
 
     public Map<String, RunningStory> runningStoriesAsPaths(RunContext context, List<String> storyPaths) {
