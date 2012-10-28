@@ -28,6 +28,9 @@ via the <a
         .usePendingStepStrategy(new FailingUponPendingStep());
 </pre>
 
+<span class="followup">Pending steps are steps that do not match any public Java method in the steps classes.
+They should not be confused with steps marked as NOT PERFORMED that occur after a step failure.</span>
+
 <h2>@Pending</h2>
 
 <p>The <a
@@ -77,6 +80,16 @@ the <a href="javadoc/core/org/jbehave/core/steps/Configuration.html">Configurati
 the step that is about to be performed will be followed by a "(DRY RUN)" additional tag.   When dry-run mode
 is activated, it will also be shown in the reporters' output.
 </p>
+
+<h2>Troubleshooting</h2>
+
+<p>If you are finding the methods are not being matched and the steps marked as pending, check that:</p>
+
+<ul>
+<li>the methods are <b>public</b></li>
+<li>the method annotations <b>@Given/@When/@Then</b> correspond to the keyword used in the step</li>
+<li>the pattern specified in the annotation is matching the step, using place holders of the parameters</li>
+</ul>
 
 <div class="clear">
 <hr />
