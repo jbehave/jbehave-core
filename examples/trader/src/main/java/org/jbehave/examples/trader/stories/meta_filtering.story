@@ -1,7 +1,7 @@
 A story description
 over multiple lines
 
-Meta: 
+Meta:
 
 !-- A first ignored comment
 @theme filtering
@@ -23,3 +23,13 @@ Meta:
 
 Given I do nothing
 
+Scenario:  A scenario with examples whose rows can be filtered on meta
+
+Meta: @run
+
+Given I do nothing
+
+Examples: 
+|Meta:|Parameter|
+|@run yes|value|
+|@run not|value|

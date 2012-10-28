@@ -1,6 +1,12 @@
 package org.jbehave.examples.trader;
 
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML;
+
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Properties;
 
 import org.jbehave.core.Embeddable;
@@ -41,11 +47,6 @@ import org.jbehave.examples.trader.steps.SandpitSteps;
 import org.jbehave.examples.trader.steps.SearchSteps;
 import org.jbehave.examples.trader.steps.TraderSteps;
 
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
-
 /**
  * <p>
  * Example of how to run a single story via JUnit. JUnitStory is a simple facade
@@ -68,7 +69,7 @@ public abstract class TraderStory extends JUnitStory {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
                 .doIgnoreFailureInView(true).useThreads(1).useStoryTimeoutInSecs(60);
         // Uncomment to set meta filter, which can also be set via Ant or Maven
-        // configuredEmbedder().useMetaFilters(Arrays.asList("+theme parametrisation"));
+        configuredEmbedder().useMetaFilters(Arrays.asList("+run yes"));
     }
 
     @Override

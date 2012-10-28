@@ -1,5 +1,6 @@
 package org.jbehave.core.model;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -9,6 +10,7 @@ import java.util.TreeSet;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.configuration.Keywords;
 
 public class Meta {
 
@@ -112,6 +114,19 @@ public class Meta {
             return value;
         }
 
+    }
+
+    public static Meta createMeta(String meta, Keywords keywords) {
+        List<String> properties = new ArrayList<String>();
+        for (String property : meta.split(keywords.metaProperty())) {
+            if (StringUtils.isNotBlank(property)) {
+                String beforeIgnorable = StringUtils.substringBefore(property,keywords.ignorable());
+                if ( StringUtils.isNotBlank(beforeIgnorable)){
+                    properties.add(beforeIgnorable);
+                }
+            }
+        }
+        return new Meta(properties);
     }
 
 }
