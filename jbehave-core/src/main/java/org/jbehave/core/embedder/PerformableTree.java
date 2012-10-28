@@ -10,6 +10,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.PendingStepFound;
@@ -674,8 +675,12 @@ public class PerformableTree {
             context.reporter().beforeScenario(scenario.getTitle());
             if (!exampleScenarios.isEmpty()) {
                 context.reporter().beforeExamples(scenario.getSteps(), scenario.getExamplesTable());
+            	Keywords keywords = context.configuration().keywords();
                 for (PerformableExampleScenario exampleScenario : exampleScenarios) {
-                    exampleScenario.perform(context);
+					Meta parameterMeta = parameterMeta(keywords, exampleScenario.getParameters());
+					if ( context.filter().allow(parameterMeta)){
+						exampleScenario.perform(context);
+					}
                 }
                 context.reporter().afterExamples();
             } else {
@@ -695,7 +700,16 @@ public class PerformableTree {
             context.reporter().afterScenario();
         }
 
+        private Meta parameterMeta(Keywords keywords,
+    			Map<String, String> scenarioParameters) {
+    		String meta = keywords.meta();
+    		if (scenarioParameters.containsKey(meta)) {
+    			return Meta.createMeta(scenarioParameters.get(meta), keywords);
+    		}
+    		return Meta.EMPTY;
+    	}
     }
+    
 
     public static class PerformableExampleScenario implements Performable {
 
@@ -709,7 +723,7 @@ public class PerformableTree {
             this.exampleParameters = exampleParameters;
         }
 
-        public void addGivenStories(List<PerformableStory> performableGivenStories) {
+		public void addGivenStories(List<PerformableStory> performableGivenStories) {
             this.performableGivenStories.addAll(performableGivenStories);
         }
 

@@ -1,7 +1,7 @@
 package org.jbehave.examples.trader;
 
 import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
