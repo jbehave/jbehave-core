@@ -45,7 +45,7 @@
 		                <td>{{performable.story.path}}</td>
 		                <td>{{performable.story.description.descriptionAsString}}</td>
 		                <td> <p ng-repeat="property in performable.story.meta.properties">
-		                    {{property}}
+		                    @{{property["@name"]}} {{property["@value"]}}
 		                     </p>
 		                </td>
 		                <td>In Order To {{performable.story.narrative.inOrderTo}}<br/>
@@ -70,7 +70,7 @@
                                     ng-click="showStory(performable.storyPath)" title="Click to view the story details">
                         <td>{{performable.scenario.title}}</td>
                         <td> <p ng-repeat="property in performable.scenario.meta.properties">
-                            {{property.value}}
+                            @{{property["@name"]}} {{property["@value"]}}
                              </p>
                         </td>
                         <td>
