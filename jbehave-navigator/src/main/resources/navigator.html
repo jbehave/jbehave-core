@@ -36,12 +36,14 @@
 		        <table>
 		           <thead>
 		             <tr>
-		               <th>Path</th><th>Description</th><th>Meta</th><th>Narrative</th><th>Duration</th>
+		               <th>Status</th><th>Path</th><th>Description</th><th>Meta</th><th>Narrative</th><th>Duration</th>
 		             </tr>
 		           </thead>
 		           <tbody>
 		              <tr ng-repeat="performable in data.xref.stories | filter:query"
 		                            ng-click="showStory(performable.story.path)" title="Click to view the story details">
+                        <td><img src="images/failed-{{performable.failed}}.png"
+                                                    alt="Story Failed == {{performable.passed}}"/></td>
 		                <td>{{performable.story.path}}</td>
 		                <td>{{performable.story.description.descriptionAsString}}</td>
 		                <td> <p ng-repeat="property in performable.story.meta.properties">

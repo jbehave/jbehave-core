@@ -69,6 +69,7 @@
       },
       "localizedNarrative": "In order to renovate my house\u000aAs a customer\u000aI want to get a loan",
       "allowed": false,
+      "failed": false,
       "givenStories": [
       ],
       "scenarios": [

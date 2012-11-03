@@ -24,7 +24,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.AbstractStepResult;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
@@ -540,6 +539,7 @@ public class PerformableTree {
         private final Story story;
 		private String localizedNarrative;
         private boolean allowed;
+		private boolean failed;
         private List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
         private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
         private PerformableSteps beforeSteps = new PerformableSteps();
@@ -559,6 +559,10 @@ public class PerformableTree {
             return allowed;
         }
 
+        public boolean hasFailed(){
+        	return failed;
+        }
+        
         public void addGivenStories(List<PerformableStory> performableGivenStories) {
             this.givenStories.addAll(performableGivenStories);
         }
@@ -579,6 +583,10 @@ public class PerformableTree {
             return story;
         }
         
+        public String getLocalisedNarrative(){
+        	return localizedNarrative;
+        }
+        
         public Timing getTiming(){
         	return timing;
         }
@@ -596,9 +604,11 @@ public class PerformableTree {
                 timing.setDurationInMillis(timer.stop());
             }
             context.reporter().afterStory(context.givenStory);            
+            this.failed = context.failed(context.state());
         }
 
-        private void performScenarios(RunContext context) throws InterruptedException {
+
+		private void performScenarios(RunContext context) throws InterruptedException {
             beforeSteps.perform(context);
             for (PerformableScenario scenario : scenarios) {
                 scenario.perform(context);
