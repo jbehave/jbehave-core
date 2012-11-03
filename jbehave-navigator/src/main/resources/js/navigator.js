@@ -2,10 +2,12 @@
 
 /* Navigator Module */
 
-angular.module('navigator', []).
-  config(['$routeProvider', function($routeProvider) {
-  $routeProvider.
-      when('/stories', {templateUrl: 'html/stories.html',   controller: StoriesController}).
-      when('/stories/:path', {templateUrl: 'html/story.html', controller: StoryController}).
-      otherwise({redirectTo: '/stories'});
-}]);
+var navigatorModule = angular.module('navigator', []);
+
+// add filters
+navigatorModule.filter('newline_to_comma', function() {
+	return function(text) {
+		return text.replace(/\n/g, ', ');
+	};
+});
+ 

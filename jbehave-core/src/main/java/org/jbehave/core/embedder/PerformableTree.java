@@ -67,7 +67,7 @@ public class PerformableTree {
     }
 
     private PerformableStory performableStory(RunContext context, Story story, Map<String, String> storyParameters) {
-        PerformableStory performableStory = new PerformableStory(story);
+        PerformableStory performableStory = new PerformableStory(story, context.configuration().keywords());
 
         // determine if story is allowed
         boolean storyAllowed = true;
@@ -538,6 +538,7 @@ public class PerformableTree {
     public static class PerformableStory implements Performable {
 
         private final Story story;
+		private String localizedNarrative;
         private boolean allowed;
         private List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
         private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
@@ -545,8 +546,9 @@ public class PerformableTree {
         private PerformableSteps afterSteps = new PerformableSteps();
         private Timing timing = new Timing();
 
-        public PerformableStory(Story story) {
+        public PerformableStory(Story story, Keywords keywords) {
             this.story = story;
+            this.localizedNarrative = story.getNarrative().asString(keywords);
         }
 
         public void allowed(boolean allowed) {
@@ -593,7 +595,7 @@ public class PerformableTree {
             } finally {
                 timing.setDurationInMillis(timer.stop());
             }
-            context.reporter().afterStory(context.givenStory);
+            context.reporter().afterStory(context.givenStory);            
         }
 
         private void performScenarios(RunContext context) throws InterruptedException {

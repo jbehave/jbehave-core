@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app>
+<html lang="en" ng-app="navigator">
 <head>
   <meta charset="utf-8">
   <title>JBehave Navigator</title>
@@ -48,9 +48,7 @@
 		                    @{{property["@name"]}} {{property["@value"]}}
 		                     </p>
 		                </td>
-		                <td>In Order To {{performable.story.narrative.inOrderTo}}<br/>
-		                    As a {{performable.story.narrative.asA}}<br/>
-		                    I Want To {{performable.story.narrative.iWantTo}}</td>
+		                <td>{{performable.localizedNarrative|newline_to_comma}}</td>
 		                <td>{{performable.timing.durationInMillis}}</td>
 		              </tr>
 		            </tbody>

@@ -47,6 +47,9 @@
           </examplesTable>
         </givenStories>
       </story>
+      <localizedNarrative>In order to renovate my house
+As a customer
+I want to get a loan</localizedNarrative>
       <allowed>false</allowed>
       <givenStories/>
       <scenarios>

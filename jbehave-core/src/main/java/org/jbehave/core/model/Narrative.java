@@ -1,7 +1,10 @@
 package org.jbehave.core.model;
 
+import java.text.MessageFormat;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.configuration.Keywords;
 
 public class Narrative {
 
@@ -33,9 +36,17 @@ public class Narrative {
         return EMPTY == this;
     }
 
+	public String asString(Keywords keywords) {
+		if ( isEmpty() ){
+			return "";
+		}
+		return MessageFormat.format("{0} {1}\n{2} {3}\n{4} {5}", keywords.inOrderTo(), inOrderTo, keywords.asA(), asA, keywords.iWantTo(), iWantTo);
+	}
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
+
 
 }

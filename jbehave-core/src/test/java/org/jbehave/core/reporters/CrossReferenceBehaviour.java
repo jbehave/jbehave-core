@@ -1,5 +1,7 @@
 package org.jbehave.core.reporters;
 
+import static junit.framework.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -14,6 +16,7 @@ import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableSteps;
 import org.jbehave.core.embedder.PerformableTree.PerformableStory;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
@@ -22,8 +25,6 @@ import org.jbehave.core.model.StepPattern;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepType;
 import org.junit.Test;
-
-import static junit.framework.Assert.assertEquals;
 
 public class CrossReferenceBehaviour {
 
@@ -55,7 +56,7 @@ public class CrossReferenceBehaviour {
     private PerformableRoot performableRoot() {
         PerformableRoot root = new PerformableRoot();
         Story story = new Story("/path/to/story", new Description("An interesting story"), new Meta(Arrays.asList("+theme testing", "+author Mauro")), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
-        PerformableStory performableStory = new PerformableStory(story);
+        PerformableStory performableStory = new PerformableStory(story, new LocalizedKeywords());
         root.add(performableStory);
         Scenario scenario = new Scenario(Arrays.asList(""));
         PerformableScenario performableScenario = new PerformableScenario(scenario, story.getPath());
