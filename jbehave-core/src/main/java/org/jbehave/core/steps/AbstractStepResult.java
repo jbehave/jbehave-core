@@ -26,11 +26,11 @@ public abstract class AbstractStepResult implements StepResult {
     public static class Failed extends AbstractStepResult {
 
         public Failed(String step, UUIDExceptionWrapper throwable) {
-            super(step, throwable);
+            super(step, Type.FAILED, throwable);
         }
 
         public Failed(Method method, UUIDExceptionWrapper throwable) {
-            super(asString(method), throwable);
+            super(asString(method), Type.FAILED, throwable);
         }
 
         public void describeTo(StoryReporter reporter) {
@@ -45,7 +45,7 @@ public abstract class AbstractStepResult implements StepResult {
     public static class NotPerformed extends AbstractStepResult {
 
         public NotPerformed(String step) {
-            super(step);
+            super(Type.NOT_PERFORMED, step);
         }
 
         public void describeTo(StoryReporter reporter) {
@@ -59,7 +59,7 @@ public abstract class AbstractStepResult implements StepResult {
         }
 
         public Pending(String step, PendingStepFound e) {
-            super(step, e);
+            super(step, Type.PENDING, e);
         }
 
         public void describeTo(StoryReporter reporter) {
@@ -70,11 +70,11 @@ public abstract class AbstractStepResult implements StepResult {
     public static class Successful extends AbstractStepResult {
 
         public Successful(String step) {
-            super(step);
+            super(Type.SUCCESSFUL, step);
         }
 
         public Successful(Method method) {
-            super(asString(method));
+            super(Type.SUCCESSFUL, asString(method));
         }
 
         public void describeTo(StoryReporter reporter) {
@@ -96,7 +96,7 @@ public abstract class AbstractStepResult implements StepResult {
 
     public static class Ignorable extends AbstractStepResult {
         public Ignorable(String step) {
-            super(step);
+            super(Type.IGNORABLE, step);
         }
 
         public void describeTo(StoryReporter reporter) {
@@ -107,7 +107,7 @@ public abstract class AbstractStepResult implements StepResult {
     public static class Skipped extends AbstractStepResult {
 
         public Skipped() {
-            super("");
+            super(Type.SKIPPED, "");
         }
 
         public void describeTo(StoryReporter reporter) {
@@ -116,16 +116,18 @@ public abstract class AbstractStepResult implements StepResult {
     }
 
     protected final String step;
+    protected final Type type;
     protected final UUIDExceptionWrapper throwable;
     private String parametrisedStep;
     private long durationInMillis;
 
-    public AbstractStepResult(String step) {
-        this(step, null);
+    public AbstractStepResult(Type type, String step) {
+        this(step, type, null);
     }
 
-    public AbstractStepResult(String step, UUIDExceptionWrapper throwable) {
+    public AbstractStepResult(String step, Type type, UUIDExceptionWrapper throwable) {
         this.step = step;
+		this.type = type;
         this.throwable = throwable;
     }
 

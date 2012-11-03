@@ -27,6 +27,7 @@
           <div id="tabs">
 	        <ul>
 	          <li><a href="#tabs-1">Stories</a></li>
+              <li><a href="#tabs-2">Scenarios</a></li>
 	        </ul>
         
 	        <!-- The Stories tab -->
@@ -40,7 +41,7 @@
 		           </thead>
 		           <tbody>
 		              <tr ng-repeat="performable in data.xref.stories | filter:query"
-		                            ng-click="showStory(performable)" title="Click to view the story details">
+		                            ng-click="showStory(performable.story.path)" title="Click to view the story details">
 		                <td>{{performable.story.path}}</td>
 		                <td>{{performable.story.description.descriptionAsString}}</td>
 		                <td> <p ng-repeat="property in performable.story.meta.properties">
@@ -55,8 +56,29 @@
 		            </tbody>
 		        </table>        
 	        </div>
-	        <!-- The Steps tab -->
+	        <!-- The Scenario tab -->
             <div id="tabs-2"> <span></span>
+                <p>Search: <input ng-model="query"/></p>
+                <table>
+                   <thead>
+                     <tr>
+                       <th>Title</th><th>Meta</th><th>Story</th>
+                     </tr>
+                   </thead>
+                   <tbody>
+                      <tr ng-repeat="performable in data.xref.scenarios | filter:query"
+                                    ng-click="showStory(performable.storyPath)" title="Click to view the story details">
+                        <td>{{performable.scenario.title}}</td>
+                        <td> <p ng-repeat="property in performable.scenario.meta.properties">
+                            {{property.value}}
+                             </p>
+                        </td>
+                        <td>
+                            {{performable.storyPath}}
+                        </td>
+                      </tr>
+                    </tbody>
+                </table>        
 	        </div>
         </div>
       </div>

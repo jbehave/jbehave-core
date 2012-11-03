@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
 import org.jbehave.core.embedder.PerformableTree.PerformableExampleScenario;
@@ -54,12 +56,14 @@ public class CrossReference {
 		return this;
 	}
 
-	public synchronized void serialise(Object root, File outputDirectory) {
+	public synchronized void serialise(PerformableRoot root,
+			File outputDirectory) {
+		XRef xref = new XRef(root);
 		if (doXml) {
-			serialise(root, "xml", outputDirectory);
+			serialise(xref, "xml", outputDirectory);
 		}
 		if (doJson) {
-			serialise(root, "json", outputDirectory);
+			serialise(xref, "json", outputDirectory);
 		}
 	}
 
@@ -95,6 +99,7 @@ public class CrossReference {
 
 	private void configure(XStream xstream) {
 		xstream.setMode(XStream.NO_REFERENCES);
+		xstream.alias("xref", XRef.class);
 		xstream.alias(name.toLowerCase(), PerformableRoot.class);
 		xstream.alias("performableStory", PerformableStory.class);
 		xstream.alias("performableScenario", PerformableScenario.class);
@@ -225,6 +230,19 @@ public class CrossReference {
 	 * @deprecated
 	 */
 	public static class XRefStory {
+	}
+
+	public static class XRef {
+		private List<PerformableStory> stories;
+		private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
+
+		public XRef(PerformableRoot root) {
+			stories = root.getStories();
+			for (PerformableStory story : stories) {
+				scenarios.addAll(story.getScenarios());
+			}
+		}
+
 	}
 
 }

@@ -24,6 +24,7 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.AbstractStepResult;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
@@ -102,7 +103,7 @@ public class PerformableTree {
     private PerformableScenario performableScenario(RunContext context, Story story,
             Map<String, String> storyParameters, FilteredStory filterContext, Meta storyMeta,
             boolean runBeforeAndAfterScenarioSteps, Scenario scenario) {
-        PerformableScenario performableScenario = new PerformableScenario(scenario);
+        PerformableScenario performableScenario = new PerformableScenario(scenario, story.getPath());
         // scenario also inherits meta from story
         boolean scenarioAllowed = true;
         if (failureOccurred(context) && context.configuration().storyControls().skipScenariosAfterFailure()) {
@@ -612,6 +613,7 @@ public class PerformableTree {
     public static class PerformableScenario implements Performable {
 
         private final Scenario scenario;
+		private final String storyPath;
         private boolean allowed;
         private List<PerformableExampleScenario> exampleScenarios = new ArrayList<PerformableExampleScenario>();
         private List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
@@ -619,8 +621,9 @@ public class PerformableTree {
         private PerformableSteps steps = new PerformableSteps();
         private PerformableSteps afterSteps = new PerformableSteps();
 
-        public PerformableScenario(Scenario scenario) {
+        public PerformableScenario(Scenario scenario, String storyPath) {
             this.scenario = scenario;
+			this.storyPath = storyPath;         
         }
 
         public void addGivenStories(List<PerformableStory> performableGivenStories) {
@@ -655,6 +658,10 @@ public class PerformableTree {
             return scenario;
         }
 
+        public String getStoryPath(){
+        	return storyPath;
+        }
+        
         public boolean hasExamples() {
             return exampleScenarios.size() > 0;
         }
@@ -785,8 +792,13 @@ public class PerformableTree {
             StoryReporter reporter = context.reporter();
             results = new ArrayList<StepResult>();
             for (Step step : steps) {
-                context.interruptIfCancelled();
-                state = state.run(step, results, reporter, null);
+                try {
+					context.interruptIfCancelled();
+					state = state.run(step, results, reporter, null);
+				} catch (InterruptedException e) {
+					results.add(step.doNotPerform(new UUIDExceptionWrapper(e)));
+					throw e;
+				}
             }
             context.stateIs(state);
             generatePendingStepMethods(context, steps);

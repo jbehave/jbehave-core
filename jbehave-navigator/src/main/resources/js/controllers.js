@@ -7,9 +7,9 @@ function StoriesController($scope, $http) {
     $scope.data = data;
   });
 
-  $scope.showStory = function(performable) {
-	    console.log("showing "+performable.story.path)	  
-	    var url = performable.story.path;
+  $scope.showStory = function(storyPath) {
+	    console.log("showing "+storyPath)	  
+	    var url = storyPath;
 	    url = url.replace(/\//g, '.');
 	    url = url.replace(".story",".html");
 	    console.log("showing "+url)	  
