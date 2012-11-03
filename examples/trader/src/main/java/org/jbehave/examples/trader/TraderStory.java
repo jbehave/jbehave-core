@@ -101,7 +101,7 @@ public abstract class TraderStory extends JUnitStory {
                                 .withFailureTrace(true).withFailureTraceCompression(true))
                 .useParameterConverters(parameterConverters)
                 // use '%' instead of '$' to identify parameters
-                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%")).useStepMonitor(xref.getStepMonitor());
+                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
     }
 
     @Override
