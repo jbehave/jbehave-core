@@ -25,6 +25,7 @@ import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.AbstractStepResult.Silent;
 import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.AbstractStepResult.Successful;
+import org.jbehave.core.steps.NullStepMonitor;
 import org.jbehave.core.steps.StepMonitor;
 
 import com.thoughtworks.xstream.XStream;
@@ -130,14 +131,13 @@ public class CrossReference {
 	 */
 	public synchronized void outputToFiles(
 			StoryReporterBuilder storyReporterBuilder) {
-		throw new UnsupportedOperationException("Deprecated");
 	}
 
 	/**
 	 * @deprecated
 	 */
 	public CrossReference withMetaFilter(String metaFilter) {
-		throw new UnsupportedOperationException("Deprecated");
+		return this;
 	}
 
 	/**
@@ -145,21 +145,21 @@ public class CrossReference {
 	 */
 	public CrossReference withPendingStepStrategy(
 			PendingStepStrategy pendingStepStrategy) {
-		throw new UnsupportedOperationException("Deprecated");
+		return this;
 	}
 
 	/**
 	 * @deprecated
 	 */
 	public CrossReference withOutputAfterEachStory(boolean outputAfterEachStory) {
-		throw new UnsupportedOperationException("Deprecated");
+		return this;
 	}
 
 	/**
 	 * @deprecated
 	 */
 	public CrossReference withThreadSafeDelegateFormat(Format format) {
-		throw new UnsupportedOperationException("Deprecated");
+		return this;
 	}
 
 	/**
@@ -167,49 +167,47 @@ public class CrossReference {
 	 */
 	public CrossReference excludingStoriesWithNoExecutedScenarios(
 			boolean exclude) {
-		throw new UnsupportedOperationException("Deprecated");
+		return this;
 	}
 
 	/**
 	 * @deprecated
 	 */
 	public String getMetaFilter() {
-		throw new UnsupportedOperationException("Deprecated");
+		return "";
 	}
 
 	/**
 	 * @deprecated
 	 */
 	public StepMonitor getStepMonitor() {
-		throw new UnsupportedOperationException("Deprecated");
+		return new NullStepMonitor();
 	}
 
 	/**
 	 * @deprecated
 	 */
 	protected XRefRoot newXRefRoot() {
-		throw new UnsupportedOperationException("Deprecated");
+		return new XRefRoot();
 	}
 
 	/**
 	 * @deprecated
 	 */
 	protected Writer makeWriter(File file) throws IOException {
-		throw new UnsupportedOperationException("Deprecated");
+		return new FileWriter(file);
 	}
 
 	/**
 	 * @deprecated
 	 */
 	protected void aliasForXRefStory(XStream xstream) {
-		throw new UnsupportedOperationException("Deprecated");
 	}
 
 	/**
 	 * @deprecated
 	 */
 	protected void aliasForXRefRoot(XStream xstream) {
-		throw new UnsupportedOperationException("Deprecated");
 	}
 
 	/**
@@ -217,7 +215,7 @@ public class CrossReference {
 	 */
 	public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
 			final StoryReporterBuilder storyReporterBuilder) {
-		throw new UnsupportedOperationException("Deprecated");
+		return new NullStoryReporter();
 	}
 
 	/**
