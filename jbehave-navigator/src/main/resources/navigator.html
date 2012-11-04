@@ -36,11 +36,16 @@
 		        <table>
 		           <thead>
 		             <tr>
-		               <th>Status</th><th>Path</th><th>Description</th><th>Meta</th><th>Narrative</th><th>Duration</th>
+		               <th>Status</th>
+		               <th><a href="" ng-click="predicate = 'story.description.descriptionAsString'; reverse=!reverse">Path</a></th>
+		               <th><a href="" ng-click="predicate = 'story.description.descriptionAsString'; reverse=!reverse">Description</a></th>
+		               <th>Meta</th>
+                       <th><a href="" ng-click="predicate = 'localizedNarrative'; reverse=!reverse">Narrative</a></th>
+                       <th><a href="" ng-click="predicate = 'timing.durationInMillis'; reverse=!reverse">Duration</a></th>
 		             </tr>
 		           </thead>
 		           <tbody>
-		              <tr ng-repeat="performable in data.xref.stories | filter:query"
+		              <tr ng-repeat="performable in data.xref.stories | filter:query | orderBy:predicate:reverse"
 		                            ng-click="showStory(performable.story.path)" title="Click to view the story details">
                         <td><img src="images/failed-{{performable.failed}}.png"
                                                     alt="Story Failed == {{performable.passed}}"/></td>
@@ -62,11 +67,13 @@
                 <table>
                    <thead>
                      <tr>
-                       <th>Title</th><th>Meta</th><th>Story</th>
+                       <th><a href="" ng-click="predicate = 'scenario.title'; reverse=!reverse">Title</a></th>
+                       <th>Meta</th>
+                       <th><a href="" ng-click="predicate = 'storyPath'; reverse=!reverse">Story</a></th>
                      </tr>
                    </thead>
                    <tbody>
-                      <tr ng-repeat="performable in data.xref.scenarios | filter:query"
+                      <tr ng-repeat="performable in data.xref.scenarios | filter:query | orderBy:predicate:reverse"
                                     ng-click="showStory(performable.storyPath)" title="Click to view the story details">
                         <td>{{performable.scenario.title}}</td>
                         <td> <p ng-repeat="property in performable.scenario.meta.properties">

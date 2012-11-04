@@ -7,6 +7,8 @@ function StoriesController($scope, $http) {
     $scope.data = data;
   });
 
+  $scope.predicate = '';
+  
   $scope.showStory = function(storyPath) {
 	    console.log("showing "+storyPath)	  
 	    var url = storyPath;
