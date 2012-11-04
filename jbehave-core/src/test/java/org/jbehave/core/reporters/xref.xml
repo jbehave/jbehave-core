@@ -51,7 +51,6 @@
 As a customer
 I want to get a loan</localizedNarrative>
       <allowed>false</allowed>
-      <failed>false</failed>
       <givenStories/>
       <scenarios>
         <performableScenario>

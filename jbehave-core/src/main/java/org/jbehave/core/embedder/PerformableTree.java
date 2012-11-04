@@ -348,6 +348,7 @@ public class PerformableTree {
         private boolean givenStory;
         private State state;
         private StoryReporter reporter;
+		private Map<String, List<PendingStep>> pendingStories = new HashMap<String, List<PendingStep>>();
 
         public RunContext(Configuration configuration, InjectableStepsFactory stepsFactory, MetaFilter filter,
                 BatchFailures failures) {
@@ -485,6 +486,16 @@ public class PerformableTree {
             }
         }
 
+		public void pendingSteps(List<PendingStep> pendingSteps) {
+			if ( !pendingSteps.isEmpty() ){
+				pendingStories.put(path, pendingSteps);
+			}
+		}
+
+		public boolean isStoryPending(){
+			return pendingStories.containsKey(path);
+		}
+		
         public MetaFilter getFilter() {
             return filter;
         }
@@ -534,12 +545,16 @@ public class PerformableTree {
 
     }
 
+	public static enum Status {
+		SUCCESS, FAILED, PENDING, NOT_ALLOWED;
+	}
+	
     public static class PerformableStory implements Performable {
 
         private final Story story;
 		private String localizedNarrative;
         private boolean allowed;
-		private boolean failed;
+		private Status status;
         private List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
         private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
         private PerformableSteps beforeSteps = new PerformableSteps();
@@ -559,8 +574,8 @@ public class PerformableTree {
             return allowed;
         }
 
-        public boolean hasFailed(){
-        	return failed;
+        public Status getStatus(){
+        	return status;
         }
         
         public void addGivenStories(List<PerformableStory> performableGivenStories) {
@@ -595,6 +610,7 @@ public class PerformableTree {
             context.reporter().narrative(story.getNarrative());
             if (!allowed) {
                 context.reporter().storyNotAllowed(story, context.filter.asString());
+                this.status = Status.NOT_ALLOWED;
             }
             context.reporter().beforeStory(story, context.givenStory);
             Timer timer = new Timer().start();
@@ -604,7 +620,11 @@ public class PerformableTree {
                 timing.setDurationInMillis(timer.stop());
             }
             context.reporter().afterStory(context.givenStory);            
-            this.failed = context.failed(context.state());
+            if ( context.isStoryPending() ){
+            	this.status = Status.PENDING;
+            } else {
+            	this.status = ( context.failed(context.state()) ? Status.FAILED : Status.SUCCESS );
+            }
         }
 
 
@@ -813,16 +833,22 @@ public class PerformableTree {
 				}
             }
             context.stateIs(state);
-            generatePendingStepMethods(context, steps);
+            List<PendingStep> pendingSteps = pendingSteps(steps);
+            context.pendingSteps(pendingSteps);
+            generatePendingStepMethods(context, pendingSteps);
         }
 
-        private void generatePendingStepMethods(RunContext context, List<Step> steps) {
-            List<PendingStep> pendingSteps = new ArrayList<PendingStep>();
+		private List<PendingStep> pendingSteps(List<Step> steps) {
+			List<PendingStep> pending = new ArrayList<PendingStep>();
             for (Step step : steps) {
                 if (step instanceof PendingStep) {
-                    pendingSteps.add((PendingStep) step);
+                    pending.add((PendingStep) step);
                 }
             }
+			return pending;
+		}
+
+        private void generatePendingStepMethods(RunContext context, List<PendingStep> pendingSteps) {
             if (!pendingSteps.isEmpty()) {
                 PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration()
                         .keywords());

@@ -36,7 +36,7 @@
 		        <table>
 		           <thead>
 		             <tr>
-		               <th class="status">Status</th>
+		               <th><a href="" ng-click="predicate = 'status'; reverse=!reverse" title="Click to sort">Status</a></th>
 		               <th><a href="" ng-click="predicate = 'story.description.descriptionAsString'; reverse=!reverse" title="Click to sort">Path</a></th>
 		               <th><a href="" ng-click="predicate = 'story.description.descriptionAsString'; reverse=!reverse" title="Click to sort">Description</a></th>
 		               <th>Meta</th>
@@ -47,8 +47,7 @@
 		           <tbody>
 		              <tr ng-repeat="performable in data.xref.stories | filter:query | orderBy:predicate:reverse"
 		                            ng-click="showStory(performable.story.path)" title="Click to view the story details">
-                        <td><img src="images/failed-{{performable.failed}}.png"
-                                                    alt="Failed: {{performable.failed}}"/></td>
+                        <td class="{{performable.status}}">{{performable.status}}</td>
 		                <td>{{performable.story.path}}</td>
 		                <td>{{performable.story.description.descriptionAsString}}</td>
 		                <td> <p ng-repeat="property in performable.story.meta.properties">

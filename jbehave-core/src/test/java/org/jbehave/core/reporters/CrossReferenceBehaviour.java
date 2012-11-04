@@ -16,6 +16,7 @@ import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableSteps;
 import org.jbehave.core.embedder.PerformableTree.PerformableStory;
+import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.Meta;
@@ -38,6 +39,7 @@ public class CrossReferenceBehaviour {
         PerformableRoot root = performableRoot();
         File outputDirectory = new File("target");
         crossReference.serialise(root, outputDirectory);
+        
 
         // Then
         assertEquals(resource("xref.xml"), output(outputDirectory, "xref.xml"));        

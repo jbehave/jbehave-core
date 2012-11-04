@@ -76,7 +76,8 @@
           <artifactId>jbehave-maven-plugin</artifactId>
           <version>${jbehave.version}</version>
         </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <!--This plugin's configuration is used to store Eclipse m2e settings 
+          only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
           <artifactId>lifecycle-mapping</artifactId>
@@ -93,6 +94,14 @@
                       <goal>unpack-view-resources</goal>
                     </goals>
                   </pluginExecutionFilter>
+                  <pluginExecutionFilter>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <versionRange>[2.4,)</versionRange>
+                    <goals>
+                      <goal>unpacks</goal>
+                    </goals>
+                  </pluginExecutionFilter>
                   <action>
                     <ignore></ignore>
                   </action>
@@ -104,6 +113,32 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-resources-core</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/jbehave/view</outputDirectory>
+              <overWriteReleases>true</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+              <excludes>**/*.class</excludes>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.jbehave</groupId>
+                  <artifactId>jbehave-navigator</artifactId>
+                  <version>${project.version}</version>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Unpack view resources, defined as dependencies -->
       <plugin>
         <groupId>org.jbehave</groupId>
