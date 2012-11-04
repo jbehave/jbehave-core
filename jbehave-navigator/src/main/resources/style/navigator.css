@@ -16,12 +16,18 @@ p, li {
 	margin-bottom: 10px;
 }
 
+p.search {
+    color: #000;
+    font: 1.2em Arial Rounded MT Bold,Arial,Tahoma,sans-serif;
+}
+
 a {
-	color: #3199ee;
-	text-decoration:none;
-} 
+	color: #f90;
+	text-decoration: none;
+}
+
 a:hover {
-	color:#f90;
+	color: #f90;
 }
 
 a img {
@@ -50,129 +56,22 @@ img {
 }
 
 table {
-	width:100%;
+	width: 100%;
 }
 
 thead th {
 	background-color:#444;
-	border-top:0px;
-	color: #3199ee;
-	font: 1.5em Arial Rounded MT Bold,Arial,Tahoma,sans-serif;
+	border-top: 0px;
+    color: #f90;
+    font: 1.5em Arial Rounded MT Bold,Arial,Tahoma,sans-serif;
 	padding:10px;
-	text-align:left;
-	text-transform:uppercase;
-}
-
-thead tr.columnTitles  th.first{
-	-moz-border-radius-topleft: 4px;
-	border-top-left-radius: 4px;
-}
-
-thead tr.columnTitles  th.last{
-	-moz-border-radius-topright: 4px;
-	border-top-right-radius: 4px;
-}
-
-thead tr.columnTitles th {
-	padding:15px 10px 5px 10px;
-}
-
-thead tr.filters th {
-	padding:10px 10px 15px 10px;
+	text-align: center;
+	text-transform: uppercase;
 }
 
 thead th a {
-	background-image:none;
-	background-position: center right;
-	background-repeat: no-repeat;
-	cursor:pointer;
-	margin-right:20px;
-	padding:10px 40px 10px 0;
-}
-
-a#status-asc,
-a#path-asc,
-a#description-asc,
-a#meta-asc,
-a#narrative-asc,
-a#type-asc,
-a#pattern-asc,
-a#usages-asc,
-a#duration-asc{
-	display:none;
-	background-image:url('../images/orange-arrow-down.png');
-}
-
-a#status-des,
-a#path-des,
-a#description-des,
-a#meta-des,
-a#narrative-des,
-a#type-des,
-a#pattern-des,
-a#usages-des,
-a#duration-des {
-	background-image:url('../images/orange-arrow-up.png');
-}
-
-thead th a.ascending {
-	color:#f90;
-	background-image:url('../images/orange-arrow-down.png');
-}
-
-thead th a.descending {
-	color:#f90;
-	background-image:url('../images/orange-arrow-up.png');
-}
-
-thead th a.reset {
-	color:#3199ee !important;
-	background-image:none !important;
-}
-
-thead th.section {
-	background:#ccc;
-	border:0;
-	color:#069;
-	font: 2.5em Arial Rounded MT Bold, Arial, Tahoma, sans-serif;
-	padding:0 8px 8px 8px;
-	text-transform:capitalize;
-	-moz-border-radius-topleft: 4px;
-	-moz-border-radius-topright: 4px;
-	border-top-left-radius: 4px;
-	border-top-right-radius: 4px;
-}
-
-thead th.duration       { width:5% }
-thead th.status 		{ width:10% }
-thead th.function		{ width:15% }
-thead th.feature 		{ width:15% }
-thead th.description	{ width:25% }
-thead th.narrative		{ width:30% }
-
-thead th.type 			{ width:35% }
-thead th.pattern		{ width:45% }
-thead th.usages 		{ width:15% }
-
-thead th.filter {
-	color:#555;
-	font-size:1.3em;
-	text-align:right;
-	text-transform:none;
-}
-
-thead th.filter input.filterInput {
-	border:1px solid #aaa;
-	font-size:1.1em !important;
-	margin-left:7px;
-}
-
-thead th.filterLabel {
-	color:#efefef;
-	padding-right:0;
-	font-size:1.1em;
-	text-align:right;
-	text-transform:capitalize;
+    color: #f90 !important;
+	cursor: pointer;
 }
 
 tbody {
@@ -180,98 +79,45 @@ tbody {
 }
 
 tbody td {
-	border-top:1px solid #fc0;
+	border-top: 1px solid #fc0;
 	color: #fff;
 	font: 1.1em  Arial, Tahoma, sans-serif;
-	padding:15px 15px 15px 10px;
-	vertical-align:top;
+	padding: 15px 15px 15px 10px;
+	vertical-align: top;	
 }
 
 tbody td p {
     color: #fff;
 }
 
-tbody td.status {
-	padding-left:35px;
-}
-
-tbody td.duration {
-	text-align: center;
-}
-
 tbody td a {
-	clear:both;
-	color:#3199ee !important;
-	display:block;
+	clear: both;
+	color: #3199ee !important;
+	display: block;
 }
+
 tbody td a:hover {
-	text-decoration:underline;
+	text-decoration: underline;
 }
 
-tbody td.function,
-tbody td.feature,
-tbody td.description {
-  text-transform:capitalize;
-}
-
-tbody td.type  span {
-	text-transform:capitalize;
+tbody td img {
+	height: 30px;	
+    display: block;
 }
 
 tbody tr:hover {
-	background:#069;
-	cursor:pointer;
-}
-
-tbody tr:hover td a {
-	color:#fff !important;
+	background: #f90;
+	cursor: pointer;
 }
 
 tbody tr:hover td a:hover {
-	color:#f90 !important;
+	color: #f90 !important;
 }
 
-tbody tr.draft-true						{ background-color: #666; }
-tbody tr.draft-true td				{ color:#bbb; }
-tbody tr.draft-true:hover			{	background:#899; }
-tbody tr.draft-true:hover td	{ color:#efefef; }
-
-tbody td.narrative:first-letter,
-tbody td.pattern:first-letter {
-	text-transform:capitalize;
-}
-
-tfoot tr  td{
+tfoot tr td {
 	background: #333;
-	-moz-border-radius-bottomleft: 4px;
-	-moz-border-radius-bottomright: 4px;
 	border-bottom-left-radius: 4px;
 	border-bottom-right-radius: 4px;
-}
-
-.filterInput {
-	background-color:#eee;
-	border:1px solid #369;	
-	color: #369;
-	font-family: Arial Rounded MT Bold, Arial, Tahoma, sans-serif;
-	padding: 2px;
-}
-
-select.filterInput {
-	text-transform:capitalize;
-	width:165px;
-}
-
-th.status select.filterInput {
-	width:90px;
-}
-
-input.filterInput {
-	width:235px;
-}
-
-th.path input.filterInput {
-	width:165px;
 }
 
 #page-wrap {
@@ -291,46 +137,15 @@ th.path input.filterInput {
 #main-content {
 	background: #303030;
 	margin: 10px 0;
-	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
 	
 #header {
-	background:url('../images/bg-jbehave-header.png') top left repeat-x #FFAA00;
+	background: url('../images/bg-jbehave-header.png') top left repeat-x #fa0;
 	text-align: left;
-	-moz-border-radius: 4px;
 	border-radius: 4px;
-	height:120px;
-	overflow:hidden;
-}
-
-#header h1 {
-	color:#069;
-	display:block;
-	float:right;
-	font: 2.5em Arial Rounded MT Bold,Arial,Tahoma,sans-serif;
-	position:relative;
-	right:20px;
-	top:70px;
-}
-
-#header h2 {
-	background:url('../images/jbehave-logo.png') bottom right no-repeat;
-	color:#069;
-	float:right;
-	font-size:1em;
-	position:relative;
-	text-align:right;
-	right:20px;
-	width:234px;
-	height:70px;
-}
-	
-#left-sidebar {
-	width: 150px;
-	float: left;
-	padding-left: 15px;
-	padding-top: 20px;
+	height: 120px;
+	overflow: hidden;
 }
 
 #footer {
@@ -340,7 +155,6 @@ th.path input.filterInput {
 	padding-top: 20px;
 	padding-bottom: 20px;
 	text-align: center;
-	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
 
@@ -350,15 +164,15 @@ th.path input.filterInput {
 
 pre {
 	font-family: Arial, Tahoma, sans-serif;
-	font-size:1em;
+	font-size: 1em;
 }
 
 pre br {
-	margin-bottom:20px;
+	margin-bottom: 20px;
 }
 
 /*
- * Over-ride jQuery UI theme
+ * Override jQuery UI theme
  */
 .ui-widget {
 	font-family: Arial,Tahoma,sans-serif !important;
@@ -397,8 +211,4 @@ pre br {
 
 .ui-state-active, .ui-widget-content .ui-state-active {
     background: url("../images/ui-bg_highlight-soft_75_cccccc_1x100.png") repeat-x scroll 0 50% #DADADA !important;
-}
-
-.ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a {
-    color:#069 !important;
 }
