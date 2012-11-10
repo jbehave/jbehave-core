@@ -86,15 +86,23 @@ tbody td {
 	vertical-align: top;	
 }
 
+tbody td.IGNORABLE {
+    color: blue;
+}
+
 tbody td.FAILED {
     color: red;
 }
 
-tbody td.PENDING {
-    color: yellow;
+tbody td.NOT_PERFORMED {
+    color: brown;
 }
 
-tbody td.SUCCESS {
+tbody td.PENDING {
+    color: olive;
+}
+
+tbody td.SUCCESSFUL {
     color: green;
 }
 

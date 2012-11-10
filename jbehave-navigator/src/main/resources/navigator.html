@@ -66,6 +66,7 @@
                 <table>
                    <thead>
                      <tr>
+                       <th><a href="" ng-click="predicate = 'status'; reverse=!reverse" title="Click to sort">Status</a></th>
                        <th><a href="" ng-click="predicate = 'scenario.title'; reverse=!reverse" title="Click to sort">Title</a></th>
                        <th>Meta</th>
                        <th><a href="" ng-click="predicate = 'storyPath'; reverse=!reverse" title="Click to sort">Story</a></th>
@@ -74,6 +75,7 @@
                    <tbody>
                       <tr ng-repeat="performable in data.xref.scenarios | filter:query | orderBy:predicate:reverse"
                                     ng-click="showStory(performable.storyPath)" title="Click to view the story details">
+                        <td class="{{performable.status}}">{{performable.status}}</td>                                    
                         <td>{{performable.scenario.title}}</td>
                         <td> <p ng-repeat="property in performable.scenario.meta.properties">
                             @{{property["@name"]}} {{property["@value"]}}

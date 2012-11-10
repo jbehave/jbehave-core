@@ -496,6 +496,20 @@ public class PerformableTree {
 			return pendingStories.containsKey(path);
 		}
 		
+		public boolean hasFailed(){
+			return failed(state);
+		}
+		
+    	public Status status(State initial) {
+			if ( isStoryPending() ){
+            	return Status.PENDING;
+			} else if ( failed(initial) ){
+				return Status.NOT_PERFORMED;
+            } else {
+            	return ( hasFailed() ? Status.FAILED : Status.SUCCESSFUL );
+            }
+		}
+
         public MetaFilter getFilter() {
             return filter;
         }
@@ -546,7 +560,7 @@ public class PerformableTree {
     }
 
 	public static enum Status {
-		SUCCESS, FAILED, PENDING, NOT_ALLOWED;
+		SUCCESSFUL, FAILED, PENDING, NOT_PERFORMED, NOT_ALLOWED;
 	}
 	
     public static class PerformableStory implements Performable {
@@ -613,20 +627,16 @@ public class PerformableTree {
                 this.status = Status.NOT_ALLOWED;
             }
             context.reporter().beforeStory(story, context.givenStory);
+            State state = context.state();
             Timer timer = new Timer().start();
             try {
                 performScenarios(context);
             } finally {
                 timing.setDurationInMillis(timer.stop());
             }
-            context.reporter().afterStory(context.givenStory);            
-            if ( context.isStoryPending() ){
-            	this.status = Status.PENDING;
-            } else {
-            	this.status = ( context.failed(context.state()) ? Status.FAILED : Status.SUCCESS );
-            }
+            context.reporter().afterStory(context.givenStory);        
+            this.status = context.status(state);
         }
-
 
 		private void performScenarios(RunContext context) throws InterruptedException {
             beforeSteps.perform(context);
@@ -647,6 +657,7 @@ public class PerformableTree {
         private final Scenario scenario;
 		private final String storyPath;
         private boolean allowed;
+        private Status status;
         private List<PerformableExampleScenario> exampleScenarios = new ArrayList<PerformableExampleScenario>();
         private List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
         private PerformableSteps beforeSteps = new PerformableSteps();
@@ -712,6 +723,7 @@ public class PerformableTree {
         
         public void perform(RunContext context) throws InterruptedException {
             context.reporter().beforeScenario(scenario.getTitle());
+            State state = context.state();
             if (!exampleScenarios.isEmpty()) {
                 context.reporter().beforeExamples(scenario.getSteps(), scenario.getExamplesTable());
             	Keywords keywords = context.configuration().keywords();
@@ -736,6 +748,7 @@ public class PerformableTree {
                 steps.perform(context);
                 afterSteps.perform(context);
             }
+            this.status = context.status(state);
             context.reporter().afterScenario();
         }
 
@@ -824,13 +837,8 @@ public class PerformableTree {
             StoryReporter reporter = context.reporter();
             results = new ArrayList<StepResult>();
             for (Step step : steps) {
-                try {
-					context.interruptIfCancelled();
-					state = state.run(step, results, reporter, null);
-				} catch (InterruptedException e) {
-					results.add(step.doNotPerform(new UUIDExceptionWrapper(e)));
-					throw e;
-				}
+				context.interruptIfCancelled();
+				state = state.run(step, results, reporter, null);
             }
             context.stateIs(state);
             List<PendingStep> pendingSteps = pendingSteps(steps);
