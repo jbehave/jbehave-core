@@ -2,6 +2,7 @@ package org.jbehave.core.embedder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,20 +51,23 @@ import org.jbehave.core.steps.Timer;
  */
 public class PerformableTree {
 
+    private static final Map<String, String> NO_PARAMETERS = new HashMap<String, String>();
+
     private PerformableRoot root = new PerformableRoot();
 
     public PerformableRoot getRoot() {
         return root;
     }
 
-    public void addStories(RunContext context, List<String> storyPaths) {
-        root.addBeforeSteps(context.beforeOrAfterStoriesSteps(Stage.BEFORE));
-        for (String storyPath : storyPaths) {
-            root.add(performableStory(context, storyOfPath(context.configuration, storyPath),
-                    new HashMap<String, String>()));
-        }
-        root.addAfterSteps(context.beforeOrAfterStoriesSteps(Stage.AFTER));
-    }
+	public void addStories(RunContext context, List<String> storyPaths) {
+		root.addBeforeSteps(context.beforeOrAfterStoriesSteps(Stage.BEFORE));
+		for (String storyPath : storyPaths) {
+			root.add(performableStory(context,
+					storyOfPath(context.configuration(), storyPath),
+					NO_PARAMETERS));
+		}
+		root.addAfterSteps(context.beforeOrAfterStoriesSteps(Stage.AFTER));
+	}
 
     private PerformableStory performableStory(RunContext context, Story story, Map<String, String> storyParameters) {
         PerformableStory performableStory = new PerformableStory(story, context.configuration().keywords());
@@ -529,7 +533,7 @@ public class PerformableTree {
     public static class PerformableRoot {
 
         private PerformableSteps beforeSteps = new PerformableSteps();
-        private List<PerformableStory> stories = new ArrayList<PerformableStory>();
+        private Map<String, PerformableStory> stories = new LinkedHashMap<String, PerformableStory>();
         private PerformableSteps afterSteps = new PerformableSteps();
 
         public void addBeforeSteps(PerformableSteps beforeSteps) {
@@ -537,7 +541,7 @@ public class PerformableTree {
         }
 
         public void add(PerformableStory performableStory) {
-            stories.add(performableStory);
+            stories.put(performableStory.getStory().getPath(), performableStory);
         }
 
         public void addAfterSteps(PerformableSteps afterSteps) {
@@ -545,16 +549,15 @@ public class PerformableTree {
         }
 
         public PerformableStory get(Story story) {
-            for (PerformableStory performableStory : stories) {
-                if (performableStory.story.getPath().equals(story.getPath())) {
-                    return performableStory;
-                }
+        	PerformableStory performableStory = stories.get(story.getPath());
+        	if ( performableStory != null ){
+            	return performableStory;
             }
             throw new RuntimeException("No performable story for path " + story.getPath());
         }
 
         public List<PerformableStory> getStories() {
-            return stories;
+            return new ArrayList<PerformableStory>(stories.values());
         }
 
     }
