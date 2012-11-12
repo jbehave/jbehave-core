@@ -1,5 +1,10 @@
 package org.jbehave.examples.trader.steps;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -7,12 +12,6 @@ import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 
 public class ParametrisationByDelimitedNameSteps {
 
@@ -37,6 +36,11 @@ public class ParametrisationByDelimitedNameSteps {
     if (products == null) products = new TreeSet<String>();
   }
 
+  @Given("a user $user has borrowed books $isbns")
+  public void createListOfBorrowedBooks(String user, String isbns) {
+	  System.out.println(user+", "+isbns);
+  }
+  
   @When("a $product is added to the cart")
   public void aProductIsAddedToCart(String product) {
     assertThat(products, notNullValue());

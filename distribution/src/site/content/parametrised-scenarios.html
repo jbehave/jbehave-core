@@ -94,7 +94,7 @@ other standalone aliases:</p>
 ]]>
 </script>
 
-<h2>Custom parameter delimiters</h2>
+<h2 id="parameter_controls">Custom parameter delimiters</h2>
 
 <p>The parameter name delimiters are purely conventional.  The step matching works just as well if other delimiters - e.g. [] - are used, 
 provided the patterns are updated accordingly:
@@ -132,7 +132,7 @@ provided the patterns are updated accordingly:
 ]]>
 </script>
 
-<h2>Parametrisation by name delimiters</h2>
+<h2 id="by_name_delimiters">Parametrisation by name delimiters</h2>
 
 <p>An alternative way to annotations in specifying the named parameters, is to leverage the name delimiters themselves.  Going back to our example:</p>
 
@@ -172,7 +172,31 @@ The default behaviour of parameter lookup is overridden via the  <a
 ]]>
 </script>
 
-<h2>Loading parameters from an external resource</h2>
+<p>Another use case of name delimited parameters is to reuse the same step for different parameter values (with different names), e.g.:</p>
+
+<script type="syntaxhighlighter" class="brush: bdd">
+<![CDATA[
+    Given a stock of <symbol> and a <threshold>
+    And a stock of <alternate_symbol> and a <threshold>
+    
+    Examples:     
+    |symbol|alternate_symbol|threshold|
+    |STK1|ALT1|1.0|
+]]>
+</script>
+
+<p>Both steps would be matched by the method:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Given("a stock of symbol $symbol") 
+    public void aStock(String symbol) {
+        // ...
+    }
+]]>
+</script>
+
+<h2 id="external_resources">Loading parameters from an external resource</h2>
 
 <p>The parameters table con also be loaded from an external
 resource, be it a classpath resource or a URL.</p>
