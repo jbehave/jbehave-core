@@ -3,9 +3,10 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>4.0-beta-2</version>
+    <version>4.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-distribution</artifactId>
+  <version>4.0-beta-2</version>
   <packaging>pom</packaging>
   <name>JBehave Distribution</name>
   <properties>
@@ -15,62 +16,62 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-core</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-gherkin</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-groovy</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-scala</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-guice</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-pico</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-spring</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-weld</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-odf</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-google</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-ant</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-core</artifactId>
-      <version>${project.version}</version>
+      <version>4.0-SNAPSHOT</version>
       <classifier>resources</classifier>
       <type>zip</type>
     </dependency>
