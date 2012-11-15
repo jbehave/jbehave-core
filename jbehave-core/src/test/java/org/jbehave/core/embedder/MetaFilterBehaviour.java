@@ -68,6 +68,14 @@ public class MetaFilterBehaviour {
     }
 
     @Test
+    public void shouldFilterByValueWithPunctuation() {
+    	char[] chars = new char[]{'.', ',', ';', ':', '!', '$', '&', };
+    	for ( char c : chars ){
+            assertFilterAllowsProperty("+map key"+c+"value", "map key"+c+"value", true);    		
+    	}
+    }
+
+    @Test
     public void shouldTreatNullFiltersAsEmptyFilters() {
         assertFilterAllowsProperty(null, "skip", true);
         assertFilterAllowsProperty("", "skip", true);

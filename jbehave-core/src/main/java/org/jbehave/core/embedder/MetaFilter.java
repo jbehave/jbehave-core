@@ -5,6 +5,7 @@ import groovy.lang.GroovyClassLoader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -48,6 +49,8 @@ import org.jbehave.core.model.Meta.Property;
  * </pre>
  */
 public class MetaFilter {
+
+	private static String DEFAULT_META_PREFIX_PATTERN = "(\\{0}(\\w|\\.|\\,|\\;|\\:|\\!|\\$|\\&|\\s|\\*)*)";
 
     public static final MetaFilter EMPTY = new MetaFilter();
 
@@ -163,7 +166,7 @@ public class MetaFilter {
         }
 
         private Pattern findAllPrefixed(String prefix) {
-            return Pattern.compile("(\\" + prefix + "(\\w|\\s|\\*)*)", Pattern.DOTALL);
+			return Pattern.compile(MessageFormat.format(DEFAULT_META_PREFIX_PATTERN, prefix), Pattern.DOTALL);
         }
 
         private Properties merge(Properties include, Properties exclude) {
