@@ -194,6 +194,7 @@ public class TemplateableOutput implements StoryReporter {
             file.getParentFile().mkdirs();
             Writer writer = new FileWriter(file);
             processor.process(resource, dataModel, writer);
+            writer.close();
             return file;
         } catch (Exception e) {
             throw new RuntimeException(resource, e);
