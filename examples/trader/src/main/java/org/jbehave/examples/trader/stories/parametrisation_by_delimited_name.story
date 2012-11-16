@@ -10,3 +10,16 @@ Examples:
 |Rui|chocolate|
 |Figueira|car|
 
+Scenario: Use delimited named parameters to look up different values in the examples table
+
+Meta:
+@themes Book
+
+Given a user <user> has borrowed books <isbns>
+And a user <user2> has borrowed books <isbns2>
+
+Examples:    
+    
+| user            | isbns                 | user2           | isbns2                |
+| user1@dings.com | 1111111111            | user2@dings.com | 2222222222            |
+

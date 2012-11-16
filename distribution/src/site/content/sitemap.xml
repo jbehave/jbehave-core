@@ -29,6 +29,7 @@
   <section>
     <name>Basic Topics</name>
     <page>developing-stories.html</page>
+    <page>story-syntax.html</page>
     <page>annotations.html</page>
     <page>configuration.html</page>
     <page>candidate-steps.html</page>
@@ -60,9 +61,11 @@
     <page>meta-filtering.html</page>
     <page>meta-parametrisation.html</page>
     <page>story-mapping.html</page>
+    <page>story-transformers.html</page>
     <page>cross-reference.html</page>    
     <page>multi-threading.html</page>    
     <page>using-groovy.html</page>    
+    <page>using-jruby.html</page>    
     <page>using-scala.html</page>    
   </section>
   <section>

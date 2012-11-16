@@ -113,12 +113,20 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     public void afterStory(boolean givenStory) {
+    	boolean write = false;
         if (givenStory) {
             this.givenStories--;
+            if ( has("stepsFailed") ){
+            	add("scenariosFailed");
+            	write = true;
+            }
         } else {
             if (has("scenariosPending") || has("givenStoryScenariosPending")) {
                 add("pending");
             }
+            write = true;
+        }
+        if ( write ) {
             int duration = (int)(System.currentTimeMillis() - storyStartTime);
             data.put("duration", duration);
             writeData();

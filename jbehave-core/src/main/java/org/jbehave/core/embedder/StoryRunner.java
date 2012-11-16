@@ -1,5 +1,7 @@
 package org.jbehave.core.embedder;
 
+import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +9,7 @@ import java.util.Map;
 
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -30,8 +33,6 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.ParameterisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
-
-import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
 
 /**
  * Runs a {@link Story}, given a {@link Configuration} and a list of
@@ -223,7 +224,7 @@ public class StoryRunner {
     }
 
     private void runCancellable(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
-        if (!context.givenStory) {
+        if (!context.givenStory()) {
             reporter.set(reporterFor(context, story));
         }
         pendingStepStrategy.set(context.configuration().pendingStepStrategy());
@@ -388,7 +389,12 @@ public class StoryRunner {
             throws Throwable {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.get().beforeExamples(scenario.getSteps(), table);
+    	Keywords keywords = context.configuration().keywords();
         for (Map<String, String> scenarioParameters : table.getRows()) {
+			Meta parameterMeta = parameterMeta(keywords, scenarioParameters);
+			if ( !context.filter.allow(parameterMeta) ){
+				continue;
+			}
             reporter.get().example(scenarioParameters);
             if (context.configuration().storyControls().resetStateBeforeScenario()) {
                 context.resetState();
@@ -401,6 +407,15 @@ public class StoryRunner {
         }
         reporter.get().afterExamples();
     }
+
+	private Meta parameterMeta(Keywords keywords,
+			Map<String, String> scenarioParameters) {
+		String meta = keywords.meta();
+		if (scenarioParameters.containsKey(meta)) {
+			return Meta.createMeta(scenarioParameters.get(meta), keywords);
+		}
+		return Meta.EMPTY;
+	}
 
     private void runBeforeOrAfterStorySteps(RunContext context, Story story, Stage stage) throws InterruptedException {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterStorySteps(story, stage));
@@ -529,7 +544,8 @@ public class StoryRunner {
         private final String path;
         private final MetaFilter filter;
         private final boolean givenStory;
-        private State state;
+		private State state;
+		private RunContext parentContext;
 
         public RunContext(Configuration configuration, InjectableStepsFactory stepsFactory, String path,
                 MetaFilter filter) {
@@ -537,16 +553,17 @@ public class StoryRunner {
         }
 
         public RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter) {
-            this(configuration, steps, path, filter, false);
+            this(configuration, steps, path, filter, false, null);
         }
 
         private RunContext(Configuration configuration, List<CandidateSteps> steps, String path, MetaFilter filter,
-                boolean givenStory) {
+                boolean givenStory, RunContext parentContext) {
             this.configuration = configuration;
             this.candidateSteps = steps;
             this.path = path;
             this.filter = filter;
             this.givenStory = givenStory;
+			this.parentContext = parentContext;
             resetState();
         }
 
@@ -602,7 +619,7 @@ public class StoryRunner {
 
         public RunContext childContextFor(GivenStory givenStory) {
             String actualPath = configuration.pathCalculator().calculate(path, givenStory.getPath());
-            return new RunContext(configuration, candidateSteps, actualPath, filter, true);
+            return new RunContext(configuration, candidateSteps, actualPath, filter, true, this);
         }
 
         public State state() {
@@ -611,6 +628,9 @@ public class StoryRunner {
 
         public void stateIs(State state) {
             this.state = state;
+            if ( parentContext != null ){
+            	parentContext.stateIs(state);
+            }
         }
 
         public boolean failureOccurred() {

@@ -1,5 +1,17 @@
 package org.jbehave.core.steps;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
 import java.util.Collections;
@@ -7,12 +19,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.parsers.RegexStepMatcher;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
@@ -28,20 +42,6 @@ import org.mockito.Matchers;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class StepCreatorBehaviour {
 
@@ -158,30 +158,64 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreateParametrisedStepWithReplacedValues() throws Exception {
-        // Given
+    public void shouldCreateParametrisedStepWithParsedParametersValues() throws Exception {
+        assertThatParametrisedStepHasMarkedParsedParametersValues("shopping cart", "book");
+        assertThatParametrisedStepHasMarkedParsedParametersValues("bookreading", "book");
+        assertThatParametrisedStepHasMarkedParsedParametersValues("book", "bookreading");
+    }
+
+	private void assertThatParametrisedStepHasMarkedParsedParametersValues(String firstParameterValue,
+			String secondParameterValue) throws IntrospectionException {
+		// Given
+        SomeSteps stepsInstance = new SomeSteps();
+        StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I use parameters $theme and $variant", Pattern.compile("When I use parameters (.*) and (.*)"), new String[]{"theme", "variant"});
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls());
+        Map<String, String> parameters = new HashMap<String, String>();
+        
+        // When
+        StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
+                "When I use parameters "+firstParameterValue+" and " + secondParameterValue, "When I use parameters "+firstParameterValue+" and " + secondParameterValue, parameters)
+                .perform(null);
+
+        // Then
+        assertThat(stepResult, instanceOf(Successful.class));
+        String expected = "When I use parameters " + PARAMETER_VALUE_START + firstParameterValue + PARAMETER_VALUE_END
+                + " and " + PARAMETER_VALUE_START + secondParameterValue + PARAMETER_VALUE_END;
+        assertThat(stepResult.parametrisedStep(), equalTo(expected));
+	}
+    
+    @Test
+    public void shouldCreateParametrisedStepWithNamedParametersValues() throws Exception {
+        assertThatParametrisedStepHasMarkedNamedParameterValues("shopping cart", "book");
+    	assertThatParametrisedStepHasMarkedNamedParameterValues("bookreading", "book");
+    	assertThatParametrisedStepHasMarkedNamedParameterValues("book", "bookreading");
+    }
+
+	private void assertThatParametrisedStepHasMarkedNamedParameterValues(String firstParameterValue,
+			String secondParameterValue) throws IntrospectionException {
+		// Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls());
         Map<String, String> parameters = new HashMap<String, String>();
-        parameters.put("theme", "shopping cart");
-        parameters.put("variant", "book");
+		parameters.put("theme", firstParameterValue);
+		parameters.put("variant", secondParameterValue);
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(parameters.keySet().toArray(new String[parameters.size()]));
-        when(stepMatcher.parameter(1)).thenReturn(parameters.get("theme"));
-        when(stepMatcher.parameter(2)).thenReturn(parameters.get("variant"));
+        when(stepMatcher.parameter(1)).thenReturn(parameters.get(firstParameterValue));
+        when(stepMatcher.parameter(2)).thenReturn(parameters.get(secondParameterValue));
         StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
                 "When I use parameters <theme> and <variant>", "I use parameters <theme> and <variant>", parameters)
                 .perform(null);
 
         // Then
         assertThat(stepResult, instanceOf(Successful.class));
-        String expected = "When I use parameters " + PARAMETER_VALUE_START + "shopping cart" + PARAMETER_VALUE_END
-                + " and " + PARAMETER_VALUE_START + "book" + PARAMETER_VALUE_END;
+        String expected = "When I use parameters " + PARAMETER_VALUE_START + firstParameterValue + PARAMETER_VALUE_END
+                + " and " + PARAMETER_VALUE_START + secondParameterValue + PARAMETER_VALUE_END;
         assertThat(stepResult.parametrisedStep(), equalTo(expected));
-    }
-
+	}
+    
     @Test
     public void shouldInvokeBeforeOrAfterStepMethodWithExpectedParametersFromMeta() throws Exception {
         // Given

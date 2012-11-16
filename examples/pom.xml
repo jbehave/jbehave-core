@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.7-SNAPSHOT</version>
+    <version>3.8-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-examples</artifactId>
   <packaging>pom</packaging>
@@ -18,7 +18,9 @@
   <modules>
     <module>executable-jar</module>
     <module>gameoflife</module>
+    <module>gherkin</module>
     <module>groovy</module>
+    <module>jruby</module>
     <module>scala</module>
     <!-- module>spring-security</module -->
     <module>performance</module>
@@ -86,7 +88,7 @@
                   <pluginExecutionFilter>
                     <groupId>org.jbehave</groupId>
                     <artifactId>jbehave-maven-plugin</artifactId>
-                    <versionRange>[3.7-SNAPSHOT,)</versionRange>
+                    <versionRange>[3.8-SNAPSHOT,)</versionRange>
                     <goals>
                       <goal>unpack-view-resources</goal>
                     </goals>

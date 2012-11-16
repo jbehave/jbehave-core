@@ -78,7 +78,7 @@ public class RegexStoryParser implements StoryParser {
         Matcher findingMeta = patternToPullStoryMetaIntoGroupOne().matcher(preScenarioText(storyAsText));
         if (findingMeta.matches()) {
             String meta = findingMeta.group(1).trim();
-            return createMeta(meta);
+            return Meta.createMeta(meta, keywords);
         }
         return Meta.EMPTY;
     }
@@ -86,19 +86,6 @@ public class RegexStoryParser implements StoryParser {
     private String preScenarioText(String storyAsText) {
         String[] split = storyAsText.split(keywords.scenario());
         return split.length > 0 ? split[0] : storyAsText;
-    }
-
-    private Meta createMeta(String meta) {
-        List<String> properties = new ArrayList<String>();
-        for (String property : meta.split(keywords.metaProperty())) {
-            if (StringUtils.isNotBlank(property)) {
-                String beforeIgnorable = StringUtils.substringBefore(property,keywords.ignorable());
-                if ( StringUtils.isNotBlank(beforeIgnorable)){
-                    properties.add(beforeIgnorable);
-                }
-            }
-        }
-        return new Meta(properties);
     }
 
     private Narrative parseNarrativeFrom(String storyAsText) {
@@ -186,7 +173,7 @@ public class RegexStoryParser implements StoryParser {
         Matcher findingMeta = patternToPullScenarioMetaIntoGroupOne().matcher(scenarioAsText);
         if (findingMeta.matches()) {
             String meta = findingMeta.group(1).trim();
-            return createMeta(meta);
+            return Meta.createMeta(meta, keywords);
         }
         return Meta.EMPTY;
     }
@@ -222,7 +209,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern patternToPullStoryMetaIntoGroupOne() {
-        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + keywords.narrative() + ").*", DOTALL);
+        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + keywords.narrative() + "|" +  keywords.givenStories() + ").*", DOTALL);
     }
 
     private Pattern patternToPullNarrativeIntoGroupOne() {

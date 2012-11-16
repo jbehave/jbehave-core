@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Using JRuby</title>
+</head>
+
+<body>
+
+<h2>Writing Steps in JRuby</h2>
+
+<p><a href="http://jruby.org">JRuby</a> makes the <a href="http://ruby-lang.org">Ruby</a> language available to the JVM.</p>
+
+<p>JRuby provides the extensions to Ruby that are required by JBehave to allow writing Steps classes directly in Ruby: method annotations and signatures.</p>
+
+<p>The JRuby steps classes must provide method metadata specifying the java annotation and signature:</p>
+<script type="syntaxhighlighter" class="brush: ruby">
+<![CDATA[
+require 'java'
+
+java_package 'org.jbehave.examples.jruby'
+
+class JRubySteps
+
+   java_annotation 'org.jbehave.core.annotations.Given("a date of $date")'
+   java_signature 'void givenADate(java.util.Date)'
+   def aDate(date) 
+     org.junit.Assert.assertNotNull(date)
+   end
+
+  java_annotation 'org.jbehave.core.annotations.When("$days days pass")'
+  java_signature 'void whenDaysPass(int)'
+  def daysPass(days) 
+     org.junit.Assert.assertNotNull(days)
+  end
+
+  java_annotation 'org.jbehave.core.annotations.Then("the date is $date")'
+  java_signature 'void thenTheDate(java.util.Date)'
+  def theDate(date) 
+     org.junit.Assert.assertNotNull(date)
+  end
+   
+end
+]]>
+</script>
+
+<span class="followup">The JRuby classes must be compiled into Java bytecode.</span>
+
+<p>The <b>jrubyc</b> executable supports the <b>--javac</b> option to generate Java sources:</p>
+<script type="syntaxhighlighter" class="brush: plain">
+<![CDATA[
+jrubyc --javac -c ${jruby.classpath} --target ${jruby.generated.sources} src/main/rb/*.rb
+]]>
+</script>
+
+<p>The <b>jruby-complete</b> artifact contains the <b>jrubyc</b> script in the <b>META-INF/jruby.home/bin</b> directory.</p>
+
+<p>If using Maven, the jruby-maven-plugin can do the same task more cleanly:</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+      <plugin>
+        <groupId>de.saumya.mojo</groupId>
+        <artifactId>jruby-maven-plugin</artifactId>
+        <version>0.29.1</version>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <generateJava>true</generateJava>
+              <generatedJavaDirectory>${jruby.generated.sources}</generatedJavaDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+]]>
+</script>
+
+
+<div class="clear">
+<hr />
+</div>
+</body>
+</html>

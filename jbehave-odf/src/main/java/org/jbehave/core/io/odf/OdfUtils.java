@@ -1,34 +1,34 @@
 package org.jbehave.core.io.odf;
 
 import static org.apache.commons.lang.StringUtils.join;
-import static org.odftoolkit.odfdom.incubator.doc.text.OdfTextExtractor.newOdfTextExtractor;
+import static org.odftoolkit.simple.common.TextExtractor.newOdfTextExtractor;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.odftoolkit.odfdom.doc.OdfDocument;
-import org.odftoolkit.odfdom.doc.OdfTextDocument;
-import org.odftoolkit.odfdom.doc.table.OdfTable;
-import org.odftoolkit.odfdom.doc.table.OdfTableCell;
-import org.odftoolkit.odfdom.doc.table.OdfTableRow;
 import org.odftoolkit.odfdom.dom.element.table.TableTableElement;
 import org.odftoolkit.odfdom.dom.element.text.TextParagraphElementBase;
+import org.odftoolkit.simple.Document;
+import org.odftoolkit.simple.TextDocument;
+import org.odftoolkit.simple.table.Cell;
+import org.odftoolkit.simple.table.Row;
+import org.odftoolkit.simple.table.Table;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class OdfUtils {
 
-    public static OdfTextDocument loadOdt(InputStream resourceAsStream) {
+    public static TextDocument loadOdt(InputStream resourceAsStream) {
         try {
-            return (OdfTextDocument) OdfTextDocument.loadDocument(resourceAsStream);
+            return TextDocument.loadDocument(resourceAsStream);
         } catch (Exception cause) {
             throw new OdfDocumentLoadingFailed(resourceAsStream, cause);
         }
     }
 
-    public static String parseOdt(OdfTextDocument document) {
+    public static String parseOdt(TextDocument document) {
         List<String> lines = new ArrayList<String>();
 
         try {
@@ -50,17 +50,17 @@ public class OdfUtils {
 
     private static Collection<String> parseTable(Node item) {
         ArrayList<String> lines = new ArrayList<String>();
-        OdfTable table = OdfTable.getInstance((TableTableElement) item);
-        for (OdfTableRow row : table.getRowList()) {
+        Table table = Table.getInstance((TableTableElement) item);
+        for (Row row : table.getRowList()) {
             lines.add(parseTableRow(row));
         }
         return lines;
     }
 
-    private static String parseTableRow(OdfTableRow row) {
+    private static String parseTableRow(Row row) {
         String line = "|";
         for (int i = 0; i < row.getCellCount(); i++) {
-            OdfTableCell cell = row.getCellByIndex(i);
+            Cell cell = row.getCellByIndex(i);
             line += cell.getDisplayText() + "|";
         }
         return line;
@@ -91,7 +91,7 @@ public class OdfUtils {
     @SuppressWarnings("serial")
     public static class OdfDocumentParsingFailed extends RuntimeException {
 
-        public OdfDocumentParsingFailed(OdfDocument document, Throwable cause) {
+        public OdfDocumentParsingFailed(Document document, Throwable cause) {
             super("Failed to parse ODF document " + document, cause);
         }
 

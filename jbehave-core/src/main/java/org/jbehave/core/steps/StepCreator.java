@@ -34,12 +34,15 @@ import static org.jbehave.core.steps.AbstractStepResult.successful;
 
 public class StepCreator {
 
-    public static final String PARAMETER_TABLE_START = "\uff3b";
+	public static final String PARAMETER_TABLE_START = "\uff3b";
     public static final String PARAMETER_TABLE_END = "\uff3d";
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
     public static final String PARAMETER_VALUE_NEWLINE = "\u2424";
     public static final UUIDExceptionWrapper NO_FAILURE = new UUIDExceptionWrapper("no failure");
+	private static final String NEWLINE = "\n";
+    private static final String SPACE = " ";
+	private static final String NONE = "";
     private final Class<?> stepsType;
     private final InjectableStepsFactory stepsFactory;
     private final ParameterConverters parameterConverters;
@@ -184,7 +187,7 @@ public class StepCreator {
 
     /**
      * Extract parameter names using
-     * {@link Paranamer#lookupParameterNames(java.lang.reflect.AccessibleObject, boolean)}
+     * {@link Paranamer#lookupParameterNames(AccessibleObject, boolean)}
      * 
      * @param method the Method inspected by Paranamer
      * @return An array of parameter names looked up by Paranamer
@@ -200,52 +203,62 @@ public class StepCreator {
 
     private String parametrisedStep(String stepAsString, Map<String, String> namedParameters, Type[] types,
             ParameterName[] names, String[] parameterValues) {
-        String parametrisedStep = stepAsString;
+    	String parametrisedStep = stepAsString;
+    	// mark parameter values that are parsed
         for (int position = 0; position < types.length; position++) {
-            parametrisedStep = replaceParameterValuesInStep(parametrisedStep, position, types, names, parameterValues,
-                    namedParameters);
+            parametrisedStep = markParsedParameterValue(parametrisedStep, types[position], parameterValues[position]);
         }
-
-        for (String key : namedParameters.keySet()) {
-            parametrisedStep = replaceParameterName(parametrisedStep, namedParameters, key);
+        // mark parameter values that are named
+        for (String name : namedParameters.keySet()) {
+            parametrisedStep = markNamedParameterValue(parametrisedStep, namedParameters, name);
         }
 
         return parametrisedStep;
     }
 
-    private String replaceParameterValuesInStep(String stepText, int position, Type[] types, ParameterName[] names,
-            String[] parameterValues, Map<String, String> namedParameters) {
-
-        stepText = replaceParameterValue(stepText, types[position], parameterValues[position]);
-
-        return stepText;
-    }
-
-    private String replaceParameterName(String stepText, Map<String, String> namedParameters, String name) {
+    private String markNamedParameterValue(String stepText, Map<String, String> namedParameters, String name) {
         String value = namedParameter(namedParameters, name);
         if (value != null) {
-            stepText = stepText.replace(
-                    parameterControls.nameDelimiterLeft() + name + parameterControls.nameDelimiterRight(),
-                    PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+			stepText = stepText.replace(delimitedName(name), markedValue(value));
         }
         return stepText;
     }
 
-    private String replaceParameterValue(String stepText, Type type, String value) {
+	private String delimitedName(String name) {
+		return parameterControls.nameDelimiterLeft() + name + parameterControls.nameDelimiterRight();
+	}
+
+    private String markParsedParameterValue(String stepText, Type type, String value) {
         if (value != null) {
             if (isTable(type)) {
-                stepText = stepText.replace(value, PARAMETER_TABLE_START + value + PARAMETER_TABLE_END);
+                stepText = stepText.replace(value, markedTable(value));
             } else {
-                // only mark non-empty string as parameter (JBEHAVE-656)
+                // only mark non-empty string as parameter (JBEHAVE-656)            	
                 if (value.trim().length() != 0) {
-                    stepText = stepText.replace(value, PARAMETER_VALUE_START + value + PARAMETER_VALUE_END);
+                	String markedValue = markedValue(value);
+                	// identify parameter values to mark as padded by spaces to avoid duplicated replacements of overlapping values (JBEHAVE-837)
+                	String leftPad = SPACE;
+                	String rightPad = ( stepText.endsWith(value) ? NONE : SPACE );
+            		stepText = stepText.replace(pad(value, leftPad, rightPad), pad(markedValue, leftPad, rightPad));
                 }
-                stepText = stepText.replace("\n", PARAMETER_VALUE_NEWLINE);
+                stepText = stepText.replace(NEWLINE, PARAMETER_VALUE_NEWLINE);
             }
         }
         return stepText;
     }
 
+	private String markedTable(String value) {
+		return pad(value, PARAMETER_TABLE_START, PARAMETER_TABLE_END);
+	}
+
+	private String markedValue(String value) {
+		return pad(value, PARAMETER_VALUE_START, PARAMETER_VALUE_END);
+	}
+
+	private String pad(String value, String left, String right){
+		return new StringBuilder().append(left).append(value).append(right).toString();
+	}
+	
     private boolean isTable(Type type) {
         return type instanceof Class && ((Class<?>) type).isAssignableFrom(ExamplesTable.class);
     }

@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Story Transformers</title>
+</head>
+
+<body>
+
+<h2>Story Transformers</h2>
+
+<p>The structured syntax used to write a story is central to BDD.  In some cases, it may be necessary to modify the input, either to clean it up or to transform it in some 
+that is consumable by JBehave.  To this end, JBehave provides the <a
+    href="javadoc/core/org/jbehave/core/parsers/StoryTransformer.html">StoryTransformer</a> interface:</p>
+
+<pre class="brush: java">
+public interface StoryTransformer {
+
+    String transform(String storyAsText);
+
+}
+</pre>
+
+<h2>Transforming Story Parser</h2>
+
+<p>The <a
+    href="javadoc/core/org/jbehave/core/parsers/TransformingStoryParser.html">TransformingStoryParser</a> is a parser that applies an arbitrary number of story transformers
+    and then delegates to the configured delegate story parser for the actual parsing.</p>
+
+<p>An example of its usage is the  <a
+    href="javadoc/gherkin/org/jbehave/core/parsers/gherkin/GherkinStoryParser.html">GherkinStoryParser</a>.</p>
+    
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>
