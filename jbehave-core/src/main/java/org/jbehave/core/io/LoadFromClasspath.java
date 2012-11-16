@@ -29,7 +29,9 @@ public class LoadFromClasspath implements ResourceLoader, StoryLoader {
     public String loadResourceAsText(String resourcePath) {
         InputStream stream = resourceAsStream(resourcePath);
         try {
-            return IOUtils.toString(stream);
+            final String result = IOUtils.toString(stream);
+            stream.close();
+            return result;
         } catch (IOException e) {
             throw new InvalidStoryResource(resourcePath, stream, e);
         }

@@ -209,6 +209,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void afterStory(boolean givenStory) {
         print(format("afterStory", "\n"));
+        // take care not to close System.out
+        // which is used for ConsoleOutput
+        if(!givenStory && output!=System.out) {
+            output.close();
+        }
     }
 
     public void givenStories(GivenStories givenStories) {

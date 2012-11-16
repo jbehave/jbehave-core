@@ -13,7 +13,10 @@ public class LoadFromURL implements ResourceLoader, StoryLoader {
 
     public String loadResourceAsText(String resourcePath) {
         try {
-            return IOUtils.toString(resourceAsStream(resourcePath));
+            final InputStream stream = resourceAsStream(resourcePath);
+            final String result = IOUtils.toString(stream);
+            stream.close();
+            return result;
         } catch (Exception cause) {
             throw new InvalidStoryResource(resourcePath, cause);
         }
