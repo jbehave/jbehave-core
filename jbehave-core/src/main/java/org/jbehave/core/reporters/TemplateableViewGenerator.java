@@ -174,7 +174,11 @@ public class TemplateableViewGenerator implements ViewGenerator {
                     String format = FilenameUtils.getExtension(fileName);
                     Map<String, Object> dataModel = newDataModel();
                     dataModel.put("name", name);
-                    dataModel.put("body", IOUtils.toString(new FileReader(file)));
+                    FileReader fr=new FileReader(file);
+                    String body=IOUtils.toString(fr);
+                    fr.close();
+                    dataModel.put("body", body);
+//                    dataModel.put("body", IOUtils.toString(new FileReader(file)));
                     dataModel.put("format", format);
                     File outputDirectory = file.getParentFile();
                     String outputName = viewDirectory + "/" + fileName;
@@ -235,6 +239,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
             file.getParentFile().mkdirs();
             Writer writer = new FileWriter(file);
             processor.process(resource, dataModel, writer);
+            writer.close();
             return file;
         } catch (Exception e) {
             throw new ViewGenerationFailedForTemplate(resource, e);
@@ -409,7 +414,10 @@ public class TemplateableViewGenerator implements ViewGenerator {
             long minutes = (millis % hour) / minute;
             long seconds = ((millis % hour) % minute) / second;
             long milliseconds = ((millis % hour) % minute % second);
-            return new Formatter().format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds).toString();
+            Formatter formatter=new Formatter();
+            String result=formatter.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds).toString();
+            formatter.close();
+            return result;
         }
 
     }

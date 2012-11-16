@@ -83,6 +83,13 @@ public class StoryRunner {
         }
         reporter.get().afterStory(false);
         storiesState.set(context.state());
+        // if we are running with multiple threads, call delayed
+        // methods, otherwise we will forget to close files on BeforeStories
+        if (stage == Stage.BEFORE) {
+            if (reporter.get() instanceof ConcurrentStoryReporter) {
+                ((ConcurrentStoryReporter) reporter.get()).invokeDelayed();
+            }
+        }
         // handle any after stories failure according to strategy
         if (stage == Stage.AFTER) {
             try {

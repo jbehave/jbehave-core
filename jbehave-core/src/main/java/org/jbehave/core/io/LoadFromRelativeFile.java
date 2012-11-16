@@ -79,7 +79,10 @@ public class LoadFromRelativeFile implements ResourceLoader, StoryLoader {
 
     protected String loadContent(String path) {
         try {
-            return IOUtils.toString(new FileInputStream(new File(path)));
+            final FileInputStream input = new FileInputStream(new File(path));
+            final String result = IOUtils.toString(input);
+            input.close();
+            return result;
         } catch (Exception e) {
             throw new InvalidStoryResource(path, e);
         }
