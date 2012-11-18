@@ -1,5 +1,7 @@
 package org.jbehave.core.reporters;
 
+import static java.util.Arrays.asList;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -21,15 +23,13 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.io.IOUtils;
 import org.jbehave.core.io.StoryNameResolver;
 import org.jbehave.core.model.StoryLanes;
 import org.jbehave.core.model.StoryMaps;
-
-import static java.util.Arrays.asList;
 
 /**
  * <p>
@@ -174,11 +174,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
                     String format = FilenameUtils.getExtension(fileName);
                     Map<String, Object> dataModel = newDataModel();
                     dataModel.put("name", name);
-                    FileReader fr=new FileReader(file);
-                    String body=IOUtils.toString(fr);
-                    fr.close();
-                    dataModel.put("body", body);
-//                    dataModel.put("body", IOUtils.toString(new FileReader(file)));
+                    dataModel.put("body", IOUtils.toString(new FileReader(file), true));
                     dataModel.put("format", format);
                     File outputDirectory = file.getParentFile();
                     String outputName = viewDirectory + "/" + fileName;
@@ -414,8 +410,8 @@ public class TemplateableViewGenerator implements ViewGenerator {
             long minutes = (millis % hour) / minute;
             long seconds = ((millis % hour) % minute) / second;
             long milliseconds = ((millis % hour) % minute % second);
-            Formatter formatter=new Formatter();
-            String result=formatter.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds).toString();
+            Formatter formatter = new Formatter();
+            String result = formatter.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, milliseconds).toString();
             formatter.close();
             return result;
         }

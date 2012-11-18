@@ -3,7 +3,6 @@ package org.jbehave.core.io;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -29,9 +28,7 @@ public class LoadFromClasspath implements ResourceLoader, StoryLoader {
     public String loadResourceAsText(String resourcePath) {
         InputStream stream = resourceAsStream(resourcePath);
         try {
-            final String result = IOUtils.toString(stream);
-            stream.close();
-            return result;
+            return IOUtils.toString(stream, true);
         } catch (IOException e) {
             throw new InvalidStoryResource(resourcePath, stream, e);
         }

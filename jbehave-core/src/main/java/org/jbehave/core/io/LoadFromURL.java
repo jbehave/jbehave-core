@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.apache.commons.io.IOUtils;
-
 /**
  * Loads story resources from URL
  */
@@ -13,10 +11,7 @@ public class LoadFromURL implements ResourceLoader, StoryLoader {
 
     public String loadResourceAsText(String resourcePath) {
         try {
-            final InputStream stream = resourceAsStream(resourcePath);
-            final String result = IOUtils.toString(stream);
-            stream.close();
-            return result;
+            return IOUtils.toString(resourceAsStream(resourcePath), true);
         } catch (Exception cause) {
             throw new InvalidStoryResource(resourcePath, cause);
         }
