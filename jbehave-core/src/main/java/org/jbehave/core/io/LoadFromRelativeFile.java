@@ -6,8 +6,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-
 /**
  * Loads story resources from relative file paths that are
  * traversal to a given location.
@@ -79,10 +77,7 @@ public class LoadFromRelativeFile implements ResourceLoader, StoryLoader {
 
     protected String loadContent(String path) {
         try {
-            final FileInputStream input = new FileInputStream(new File(path));
-            final String result = IOUtils.toString(input);
-            input.close();
-            return result;
+            return IOUtils.toString(new FileInputStream(new File(path)), true);
         } catch (Exception e) {
             throw new InvalidStoryResource(path, e);
         }

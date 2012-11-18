@@ -1,5 +1,16 @@
 package org.jbehave.core.reporters;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,37 +22,22 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.apache.commons.io.IOUtils;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
+import org.jbehave.core.io.IOUtils;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
+import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 import org.jbehave.core.reporters.TemplateableViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Test;
 import org.xml.sax.SAXException;
-
-import static java.util.Arrays.asList;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 
 public class PrintStreamOutputBehaviour {
 
@@ -693,7 +689,7 @@ public class PrintStreamOutputBehaviour {
 
         // Then
         assertThat(file.exists(), is(true));
-        assertThat(IOUtils.toString(new FileReader(file)), equalTo("Hello World"));
+        assertThat(IOUtils.toString(new FileReader(file), true), equalTo("Hello World"));
     }
 
     @Test
@@ -765,7 +761,7 @@ public class PrintStreamOutputBehaviour {
 
     private void ensureFileExists(File file) throws IOException, FileNotFoundException {
         assertThat(file.exists(), is(true));
-        assertThat(IOUtils.toString(new FileReader(file)).length(), greaterThan(0));
+        assertThat(IOUtils.toString(new FileReader(file), true).length(), greaterThan(0));
     }
 
     @Test(expected = ViewGenerationFailedForTemplate.class)
