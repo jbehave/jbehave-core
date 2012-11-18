@@ -6,9 +6,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-import org.apache.commons.io.IOUtils;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.IOUtils;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -24,8 +24,8 @@ public class TemplateableOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        String expected = IOUtils.toString(new FileReader(new File("src/test/resources/story.html")));
-        String out = IOUtils.toString(new FileReader(file));
+        String expected = IOUtils.toString(new FileReader(new File("src/test/resources/story.html")), true);
+        String out = IOUtils.toString(new FileReader(file), true);
         assertThatOutputIs(out, expected);
     }
 
@@ -39,8 +39,8 @@ public class TemplateableOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        String expected = IOUtils.toString(new FileReader(new File("src/test/resources/story.xml")));
-        String out = IOUtils.toString(new FileReader(file));
+        String expected = IOUtils.toString(new FileReader(new File("src/test/resources/story.xml")), true);
+        String out = IOUtils.toString(new FileReader(file), true);
 
         // will throw SAXException if the xml file is not well-formed
         XMLUnit.buildTestDocument(out);
