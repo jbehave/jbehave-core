@@ -10,38 +10,44 @@ import java.io.Reader;
  */
 public class IOUtils {
 
-	/**
-	 * Returns the content of the InputStream as a String, closing the stream afterwards if configured.
-	 * 
-	 * @param input the InputStream
-	 * @param close the boolean to close the input afterwards
-	 * @return A String with the content 
-	 * @throws IOException
-	 * @see {@link org.apache.commons.io.IOUtils.toString(InputStream)}
-	 */
-	public static String toString(InputStream input, boolean close) throws IOException {
-		final String content = org.apache.commons.io.IOUtils.toString(input);
-		if ( close ) {
-			input.close();
-		}
-		return content;
-	}
+    /**
+     * Returns the content of the InputStream as a String, closing the stream afterwards if configured.
+     * 
+     * @param input the InputStream
+     * @param close the boolean to close the input afterwards
+     * @return A String with the content 
+     * @throws IOException
+     * @see {@link org.apache.commons.io.IOUtils.toString(InputStream)}
+     */
+    public static String toString(InputStream input, boolean close) throws IOException {
+        try {
+            return org.apache.commons.io.IOUtils.toString(input);
+        }
+        finally {
+            if ( close ) {
+                input.close();
+            }
+        }
+    }
 
-	/**
-	 * Returns the content of the Reader as a String, closing the stream afterwards if configured.
-	 * 
-	 * @param input the Reader
-	 * @param close the boolean to close the input afterwards
-	 * @return A String with the content 
-	 * @throws IOException
-	 * @see {@link org.apache.commons.io.IOUtils.toString(InputStream)}
-	 */
-	public static String toString(Reader input, boolean close) throws IOException {
-		final String content = org.apache.commons.io.IOUtils.toString(input);
-		if ( close ) {
-			input.close();
-		}
-		return content;
-	}
+    /**
+     * Returns the content of the Reader as a String, closing the stream afterwards if configured.
+     * 
+     * @param input the Reader
+     * @param close the boolean to close the input afterwards
+     * @return A String with the content 
+     * @throws IOException
+     * @see {@link org.apache.commons.io.IOUtils.toString(Reader)}
+     */
+    public static String toString(Reader input, boolean close) throws IOException {
+        try {
+            return org.apache.commons.io.IOUtils.toString(input);
+        }
+        finally {
+            if ( close ) {
+                input.close();
+            }
+        }
+    }
 
 }
