@@ -7,7 +7,7 @@ import org.junit.Test;
 public class UnderscoredToCapitalizedBehaviour {
 
     @Test
-    public void testResolveName() {
+    public void shouldResolveNameWithDefaultExtension() {
         final StoryNameResolver resolver = new UnderscoredToCapitalized();
         assertEquals("Some Story", resolver.resolveName("some_story.story"));
         assertEquals("Some Story", resolver.resolveName("some/path/some_story.story"));
@@ -15,9 +15,18 @@ public class UnderscoredToCapitalizedBehaviour {
         assertEquals("Some Story", resolver.resolveName("some/story/path/some_story.story"));
         assertEquals("Some Story", resolver.resolveName("some.story.package.some_story.story"));
         assertEquals("Some Story", resolver.resolveName("this.story/path/some_story.story"));
+    }
 
-        final StoryNameResolver fooResolver = new UnderscoredToCapitalized(".foo");
-        assertEquals("Some Story", fooResolver.resolveName("some_story.foo"));
+    @Test
+    public void shouldResolveNameWithCustomExtension() {
+        final StoryNameResolver resolver = new UnderscoredToCapitalized(".foo");
+        assertEquals("Some Story", resolver.resolveName("some_story.foo"));
+    }
+
+    @Test
+    public void shouldResolveNameWithNoExtension() {
+        final StoryNameResolver resolver = new UnderscoredToCapitalized("");
+        assertEquals("X Y Z Google Search", resolver.resolveName("com.blah.story.x_y_z_google_search"));
     }
 
 }
