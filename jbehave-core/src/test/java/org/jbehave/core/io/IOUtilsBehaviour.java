@@ -1,8 +1,12 @@
 package org.jbehave.core.io;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.anyInt;
+import static org.mockito.Mockito.isA;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
@@ -44,40 +48,48 @@ public class IOUtilsBehaviour {
     }
 
     @Test
-    // test if the close parameter works as expected closing the Reader
     public void shouldCloseReader() throws IOException {
-        ReaderCloseSpy reader=new ReaderCloseSpy("aaa");
-        assertEquals("aaa", IOUtils.toString(reader, true));
-        assertTrue("method didn't close reader", reader.isClosed());
+        Reader reader = mock(Reader.class);
+        when(reader.read(isA(char[].class))).thenReturn(-1);
+        IOUtils.toString(reader, true);
+        verify(reader).close();
+    }
 
-        reader=new ReaderCloseSpy("aaa");
-        assertEquals("aaa", IOUtils.toString(reader, false));
-        assertFalse("method closed reader, which wasn't requested", reader.isClosed());
+    @Test
+    public void shouldNotCloseReader() throws IOException {
+        Reader reader = mock(Reader.class);
+        when(reader.read(isA(char[].class))).thenReturn(-1);
+        IOUtils.toString(reader, false);
+        verify(reader, never()).close();
+    }
 
-        reader=new ReaderCloseSpyException("aaa");
+    @Test
+    public void shouldCloseReaderException() throws IOException {
+        Reader reader = mock(Reader.class);
+        when(reader.read(isA(char[].class))).thenThrow(new IOException());
         try {
             IOUtils.toString(reader, true);
         }
         catch(IOException ioex) {
             // expected
         }
-        assertTrue("method didn't close reader on exception", reader.isClosed());
+        verify(reader).close();
     }
 
     // same for InputStream
     @Test
     public void shouldProcessInputStream() throws IOException {
-        assertEquals("", IOUtils.toString(new ByteArrayInputStream("".getBytes("utf-8")), true));
-        assertEquals("a", IOUtils.toString(new ByteArrayInputStream("a".getBytes("utf-8")), true));
-        assertEquals("asdf", IOUtils.toString(new ByteArrayInputStream("asdf".getBytes("utf-8")), true));
-//        assertEquals("äöü", IOUtils.toString(new ByteArrayInputStream("äöü".getBytes("utf-8")), true));
+        assertEquals("", IOUtils.toString(new ByteArrayInputStream("".getBytes()), true));
+        assertEquals("a", IOUtils.toString(new ByteArrayInputStream("a".getBytes()), true));
+        assertEquals("asdf", IOUtils.toString(new ByteArrayInputStream("asdf".getBytes()), true));
+        assertEquals("äöü", IOUtils.toString(new ByteArrayInputStream("äöü".getBytes()), true));
 
-        ByteArrayInputStream input = new ByteArrayInputStream("asdf".getBytes("utf-8"));
+        ByteArrayInputStream input = new ByteArrayInputStream("asdf".getBytes());
         assertEquals("asdf", IOUtils.toString(input, false));
         input.close();
 
         String longString=createLongString();
-        assertEquals(longString, IOUtils.toString(new ByteArrayInputStream(longString.getBytes("utf-8")), true));
+        assertEquals(longString, IOUtils.toString(new ByteArrayInputStream(longString.getBytes()), true));
 
         assertEquals("##########", IOUtils.toString(new FileInputStream("src/test/resources/testfile"), true));
 
@@ -92,22 +104,31 @@ public class IOUtilsBehaviour {
 
     @Test
     public void shouldCloseInputStream() throws IOException {
-        InputStreamCloseSpy inputStream=new InputStreamCloseSpy("aaa".getBytes("utf-8"));
-        assertEquals("aaa", IOUtils.toString(inputStream, true));
-        assertTrue("method didn't close reader", inputStream.isClosed());
+        InputStream stream = mock(InputStream.class);
+        when(stream.read(isA(byte[].class), anyInt(), anyInt())).thenReturn(-1);
+        IOUtils.toString(stream, true);
+        verify(stream).close();
+    }
 
-        inputStream=new InputStreamCloseSpy("aaa".getBytes("utf-8"));
-        assertEquals("aaa", IOUtils.toString(inputStream, false));
-        assertFalse("method closed reader, which wasn't requested", inputStream.isClosed());
+    @Test
+    public void shouldNotCloseInputStream() throws IOException {
+        InputStream stream = mock(InputStream.class);
+        when(stream.read(isA(byte[].class), anyInt(), anyInt())).thenReturn(-1);
+        IOUtils.toString(stream, false);
+        verify(stream, never()).close();
+    }
 
-        inputStream=new InputStreamCloseSpyException("aaa".getBytes("utf-8"));
+    @Test
+    public void shouldCloseInputStreamException() throws IOException {
+        InputStream stream = mock(InputStream.class);
+        when(stream.read(isA(byte[].class), anyInt(), anyInt())).thenThrow(new IOException());
         try {
-            IOUtils.toString(inputStream, true);
+            IOUtils.toString(stream, true);
         }
-        catch(RuntimeException e) {
+        catch(IOException ioex) {
             // expected
         }
-        assertTrue("method didn't close input stream on exception", inputStream.isClosed());
+        verify(stream).close();
     }
 
     /*
@@ -123,3 +144,4 @@ public class IOUtilsBehaviour {
     }
 
 }
+
