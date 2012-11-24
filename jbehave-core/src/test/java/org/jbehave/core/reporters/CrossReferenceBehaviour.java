@@ -58,7 +58,7 @@ public class CrossReferenceBehaviour {
     private PerformableRoot performableRoot() {
         PerformableRoot root = new PerformableRoot();
         Story story = new Story("/path/to/story", new Description("An interesting story"), new Meta(Arrays.asList("+theme testing", "+author Mauro")), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
-        PerformableStory performableStory = new PerformableStory(story, new LocalizedKeywords());
+        PerformableStory performableStory = new PerformableStory(story, new LocalizedKeywords(), false);
         root.add(performableStory);
         Scenario scenario = new Scenario(Arrays.asList(""));
         PerformableScenario performableScenario = new PerformableScenario(scenario, story.getPath());

@@ -70,7 +70,7 @@ public class PerformableTree {
 	}
 
     private PerformableStory performableStory(RunContext context, Story story, Map<String, String> storyParameters) {
-        PerformableStory performableStory = new PerformableStory(story, context.configuration().keywords());
+        PerformableStory performableStory = new PerformableStory(story, context.configuration().keywords(), context.givenStory());
 
         // determine if story is allowed
         boolean storyAllowed = true;
@@ -577,9 +577,11 @@ public class PerformableTree {
         private PerformableSteps beforeSteps = new PerformableSteps();
         private PerformableSteps afterSteps = new PerformableSteps();
         private Timing timing = new Timing();
+		private boolean givenStory;
 
-        public PerformableStory(Story story, Keywords keywords) {
+        public PerformableStory(Story story, Keywords keywords, boolean givenStory) {
             this.story = story;
+			this.givenStory = givenStory;
             this.localizedNarrative = story.getNarrative().asString(keywords);
         }
 
@@ -591,6 +593,10 @@ public class PerformableTree {
             return allowed;
         }
 
+        public boolean givenStory(){
+        	return givenStory;
+        }
+        
         public Status getStatus(){
         	return status;
         }
@@ -624,12 +630,12 @@ public class PerformableTree {
         }
         
         public void perform(RunContext context) throws InterruptedException {
-            context.reporter().narrative(story.getNarrative());
             if (!allowed) {
                 context.reporter().storyNotAllowed(story, context.filter.asString());
                 this.status = Status.NOT_ALLOWED;
             }
             context.reporter().beforeStory(story, context.givenStory);
+            context.reporter().narrative(story.getNarrative());
             State state = context.state();
             Timer timer = new Timer().start();
             try {
@@ -745,6 +751,7 @@ public class PerformableTree {
                 if (scenario.getGivenStories().getPaths().size() > 0) {
                     context.reporter().givenStories(scenario.getGivenStories());
                     for (PerformableStory story : givenStories) {
+                    	context.givenStory = story.givenStory();
                         story.perform(context);
                     }
                 }

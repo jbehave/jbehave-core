@@ -139,6 +139,7 @@ I want to get a loan</localizedNarrative>
       <timing>
         <durationInMillis>0</durationInMillis>
       </timing>
+      <givenStory>false</givenStory>
     </performableStory>
   </stories>
   <scenarios>

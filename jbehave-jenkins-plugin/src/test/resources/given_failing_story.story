@@ -1,4 +1,7 @@
-Narrative: A simple story with a single given story
+Narrative: 
+In order to xxx
+As a xxx
+I want to xxx
 
 Scenario: A simple successful scenario
 GivenStories: all_failed.story
