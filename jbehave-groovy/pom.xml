@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.7.4</version>
+    <version>3.8-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-groovy</artifactId>
   <name>JBehave Groovy</name>
