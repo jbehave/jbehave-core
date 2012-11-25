@@ -89,17 +89,22 @@
                   <pluginExecutionFilter>
                     <groupId>org.jbehave</groupId>
                     <artifactId>jbehave-maven-plugin</artifactId>
-                    <versionRange>[4.0-SNAPSHOT,)</versionRange>
+                    <versionRange>[${project.version},)</versionRange>
                     <goals>
                       <goal>unpack-view-resources</goal>
                     </goals>
                   </pluginExecutionFilter>
+                  <action>
+                    <ignore></ignore>
+                  </action>
+                </pluginExecution>
+                <pluginExecution>
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <versionRange>[2.4,)</versionRange>
                     <goals>
-                      <goal>unpacks</goal>
+                      <goal>unpack</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
