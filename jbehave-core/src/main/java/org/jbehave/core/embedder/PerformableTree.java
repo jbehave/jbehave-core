@@ -248,8 +248,11 @@ public class PerformableTree {
     }
 
     public interface State {
+        
         State run(Step step, List<StepResult> results, StoryReporter reporter,
                 UUIDExceptionWrapper storyFailureIfItHappened);
+
+        UUIDExceptionWrapper getFailure();
     }
 
     private final static class FineSoFar implements State {
@@ -277,13 +280,17 @@ public class PerformableTree {
                             : failure1;
         }
 
+        public UUIDExceptionWrapper getFailure() {
+            return null;
+        }
+
     }
 
     private final static class SomethingHappened implements State {
-        UUIDExceptionWrapper scenarioFailure;
+        private UUIDExceptionWrapper failure;
 
-        public SomethingHappened(UUIDExceptionWrapper scenarioFailure) {
-            this.scenarioFailure = scenarioFailure;
+        public SomethingHappened(UUIDExceptionWrapper failure) {
+            this.failure = failure;
         }
 
         public State run(Step step, List<StepResult> results, StoryReporter reporter, UUIDExceptionWrapper storyFailure) {
@@ -291,6 +298,10 @@ public class PerformableTree {
             results.add(result);
             result.describeTo(reporter);
             return this;
+        }
+
+        public UUIDExceptionWrapper getFailure() {
+            return failure;
         }
     }
 
@@ -477,7 +488,7 @@ public class PerformableTree {
 
         public Throwable failure(State state) {
             if (failed(state)) {
-                return ((SomethingHappened) state).scenarioFailure.getCause();
+                return state.getFailure().getCause();
             }
             return null;
         }
@@ -856,7 +867,7 @@ public class PerformableTree {
             results = new ArrayList<StepResult>();
             for (Step step : steps) {
                 context.interruptIfCancelled();
-                state = state.run(step, results, reporter, null);
+                state = state.run(step, results, reporter, state.getFailure());
             }
             context.stateIs(state);
             context.pendingSteps(pendingSteps);
