@@ -399,7 +399,7 @@ public class StoryRunner {
     	Keywords keywords = context.configuration().keywords();
         for (Map<String, String> scenarioParameters : table.getRows()) {
 			Meta parameterMeta = parameterMeta(keywords, scenarioParameters);
-			if ( !context.filter.allow(parameterMeta) ){
+			if ( !parameterMeta.isEmpty() && !context.filter.allow(parameterMeta) ){
 				continue;
 			}
             reporter.get().example(scenarioParameters);
