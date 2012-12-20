@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -42,6 +43,8 @@ public class CodeLocationsBehaviour {
         final String filename = CodeLocations.codeLocationFromClass(JUnitCore.class).getFile();
         assertThat(filename, not(containsString("/file:")));
         assertThat(filename, not(containsString("/jar:")));
+        assertThat(filename, not(endsWith("!")));
+        assertTrue(new File(filename).exists());
     }
 
     @Test(expected = InvalidCodeLocation.class)
