@@ -24,6 +24,9 @@ public class CodeLocations {
         String pathOfClass = codeLocationClass.getName().replace(".", "/") + ".class";
         URL classResource = codeLocationClass.getClassLoader().getResource(pathOfClass);
         String codeLocationPath = removeEnd(getPathFromURL(classResource), pathOfClass);
+        if(codeLocationPath.endsWith(".jar!/")) {
+            codeLocationPath=removeEnd(codeLocationPath,"!/");
+        }
         return codeLocationFromPath(codeLocationPath);
     }
 
