@@ -6,11 +6,11 @@ import org.junit.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
-public class LoadFromRelativeFileTest {
+public class LoadFromRelativeFileBehaviour {
 
     @Test
     public void testLoadFromRelativeFile() throws MalformedURLException {
-        URL baseLocation = CodeLocations.codeLocationFromClass(LoadFromRelativeFileTest.class);
+        URL baseLocation = CodeLocations.codeLocationFromClass(LoadFromRelativeFileBehaviour.class);
         URL subdir=new URL(baseLocation.toString()+"/test+dir");
         LoadFromRelativeFile load = new LoadFromRelativeFile(subdir);
         String storyText=load.loadStoryAsText("dummy.story");
