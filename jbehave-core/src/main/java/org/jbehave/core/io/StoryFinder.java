@@ -140,7 +140,7 @@ public class StoryFinder {
      * @return A List of paths found
      */
     public List<String> findPathsFromJar(URL jarPath, List<String> includes, List<String> excludes) {
-        return normalise(sort(JarFileScanner.scanJar(jarPath, includes, excludes)));
+        return normalise(sort(new JarFileScanner(jarPath, includes, excludes).scan()));
     }
 
     /**
@@ -172,7 +172,7 @@ public class StoryFinder {
      * @return A List of paths found
      */
     public List<String> findPathsFromJar(URL jarPath, String include, String exclude) {
-        return normalise(sort(JarFileScanner.scanJar(jarPath, include, exclude)));
+        return normalise(sort(new JarFileScanner(jarPath, include, exclude).scan()));
     }
 
     protected List<String> normalise(List<String> paths) {
