@@ -1,7 +1,6 @@
 package org.jbehave.examples.executable_jar;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.List;
 
 import org.jbehave.core.Embeddable;
@@ -10,6 +9,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.RegexStoryParser;
@@ -67,14 +67,13 @@ public class MyStories extends JUnitStories {
     }
 
     /*
-     * since the files inside a jar in the classpath currently cannot be searched, you
-     * have to list the paths for the stories directly.
+     * find story files from classes dir (when running inside IDE)
+     * or from jar file (supported starting with 3.7.5)
      */
-
     @Override
     protected List<String> storyPaths() {
-        return Arrays.asList("org/jbehave/examples/executable_jar/stories/jar.story",
-                "org/jbehave/examples/executable_jar/stories/jar2.story");
+        return new StoryFinder().findPaths(CodeLocations.codeLocationFromClass(getClass()),
+                "**/*.story", "");
     }
 
     public static void main(String[] args) throws Throwable {
