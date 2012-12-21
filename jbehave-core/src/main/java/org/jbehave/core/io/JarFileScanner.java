@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
@@ -12,6 +13,7 @@ import java.util.jar.JarFile;
 import org.codehaus.plexus.util.SelectorUtils;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 /**
  * Find all matching file entries in a jar.
@@ -36,8 +38,8 @@ public class JarFileScanner {
 
     public JarFileScanner(URL jarURL, List<String> includes, List<String> excludes) {
         this.jarURL = jarURL;
-        this.includes = includes;
-        this.excludes = excludes;
+        this.includes = ( includes != null ? includes : Arrays.<String>asList() );
+        this.excludes = ( excludes != null ? excludes : Arrays.<String>asList() );;
     }
 
     /**
@@ -58,7 +60,7 @@ public class JarFileScanner {
                     boolean match = includes.size() == 0;
                     if (!match) {
                         for (String pattern : includes) {
-                            if (pattern != null && patternMatches(pattern, path)) {
+                            if ( patternMatches(pattern, path)) {
                                 match = true;
                                 break;
                             }
@@ -66,7 +68,7 @@ public class JarFileScanner {
                     }
                     if (match) {
                         for (String pattern : excludes) {
-                            if (pattern != null && patternMatches(pattern, path)) {
+                            if ( patternMatches(pattern, path)) {
                                 match = false;
                                 break;
                             }
@@ -86,6 +88,7 @@ public class JarFileScanner {
     }
 
     private boolean patternMatches(String pattern, String path) {
+        if ( isBlank(pattern) ) return false;
         // SelectorUtils assumes local path separator for path and pattern
         String localPath = path.replace('/', File.separatorChar);
         return SelectorUtils.matchPath(pattern, localPath);

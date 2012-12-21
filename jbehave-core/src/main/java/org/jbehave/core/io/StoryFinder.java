@@ -45,12 +45,11 @@ public class StoryFinder {
      * Finds java source paths from a base directory, allowing for
      * includes/excludes, and converts them to class names.
      * 
-     * @param searchInDirectory
-     *            the base directory path to search in
-     * @param includes
-     *            the List of include patterns, or <code>null</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>null</code> if none
+     * @param searchInDirectory the base directory path to search in
+     * @param includes the List of include patterns, or <code>null</code> if
+     *            none
+     * @param excludes the List of exclude patterns, or <code>null</code> if
+     *            none
      * @return A List of class names found
      */
     public List<String> findClassNames(String searchInDirectory, List<String> includes, List<String> excludes) {
@@ -58,15 +57,13 @@ public class StoryFinder {
     }
 
     /**
-     * Finds paths from a base URL, allowing for single include/exclude pattern. Paths
-     * found are normalised by {@link StoryFinder#normalise(List<String>)}.
+     * Finds paths from a base URL, allowing for single include/exclude pattern.
+     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
+     * .
      * 
-     * @param searchInURL
-     *            the base URL to search in 
-     * @param include
-     *            the include pattern, or <code>""</code> if none
-     * @param exclude
-     *            the exclude pattern, or <code>""</code> if none
+     * @param searchInURL the base URL to search in
+     * @param include the include pattern, or <code>""</code> if none
+     * @param exclude the exclude pattern, or <code>""</code> if none
      * @return A List of paths found
      */
     public List<String> findPaths(URL searchInURL, String include, String exclude) {
@@ -77,12 +74,11 @@ public class StoryFinder {
      * Finds paths from a base directory, allowing for includes/excludes. Paths
      * found are normalised by {@link StoryFinder#normalise(List<String>)}.
      * 
-     * @param searchInDirectory
-     *            the base directory path to search in
-     * @param includes
-     *            the List of include patterns, or <code>null</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>null</code> if none
+     * @param searchInDirectory the base directory path to search in
+     * @param includes the List of include patterns, or <code>null</code> if
+     *            none
+     * @param excludes the List of exclude patterns, or <code>null</code> if
+     *            none
      * @return A List of paths found
      */
     public List<String> findPaths(String searchInDirectory, List<String> includes, List<String> excludes) {
@@ -95,14 +91,12 @@ public class StoryFinder {
      * StoryFinder#prefix(String, List<String>)} and normalised by {@link
      * StoryFinder#normalise(List<String>)}.
      * 
-     * @param searchInDirectory
-     *            the base directory path to search in
-     * @param includes
-     *            the List of include patterns, or <code>null</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>null</code> if none
-     * @param prefixWith
-     *            the root path prefixed to all paths found, or
+     * @param searchInDirectory the base directory path to search in
+     * @param includes the List of include patterns, or <code>null</code> if
+     *            none
+     * @param excludes the List of exclude patterns, or <code>null</code> if
+     *            none
+     * @param prefixWith the root path prefixed to all paths found, or
      *            <code>null</code> if none
      * @return A List of paths found
      */
@@ -112,15 +106,27 @@ public class StoryFinder {
     }
 
     /**
-     * Finds paths from a jar file, allowing for includes/excludes. Paths
-     * found are normalised by {@link StoryFinder#normalise(List<String>)}.
+     * Finds paths from a jar file, allowing for an include/exclude. Paths found
+     * are normalised by {@link StoryFinder#normalise(List<String>)}.
      * 
-     * @param jarPath
-     *            the filename of the jar to search in
-     * @param includes
-     *            the List of include patterns, or <code>null</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>null</code> if none
+     * @param jarPath the path of the jar to search in
+     * @param includes the includes pattern, or <code>""</code> if none
+     * @param excludes the excludes pattern, or <code>""</code> if none
+     * @return A List of paths found
+     */
+    public List<String> findPathsFromJar(String jarPath, String includes, String excludes) {
+        return findPathsFromJar(jarPath, asList(includes), asList(excludes));
+    }
+
+    /**
+     * Finds paths from a jar file, allowing for includes/excludes. Paths found
+     * are normalised by {@link StoryFinder#normalise(List<String>)}.
+     * 
+     * @param jarPath the path of the jar to search in
+     * @param includes the List of include patterns, or <code>null</code> if
+     *            none
+     * @param excludes the List of exclude patterns, or <code>null</code> if
+     *            none
      * @return A List of paths found
      */
     public List<String> findPathsFromJar(String jarPath, List<String> includes, List<String> excludes) {
@@ -128,51 +134,31 @@ public class StoryFinder {
     }
 
     /**
-     * Finds paths from a jar file, allowing for includes/excludes. Paths
-     * found are normalised by {@link StoryFinder#normalise(List<String>)}.
+     * Finds paths from a jar file, allowing for an include/exclude. Paths found
+     * are normalised by {@link StoryFinder#normalise(List<String>)}.
      * 
-     * @param jarPath
-     *            the filename (URL) of the jar to search in
-     * @param includes
-     *            the List of include patterns, or <code>null</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>null</code> if none
+     * @param jarURL the URL of the jar to search in
+     * @param includes the includes pattern, or <code>""</code> if none
+     * @param excludes the excludes pattern, or <code>""</code> if none
      * @return A List of paths found
      */
-    public List<String> findPathsFromJar(URL jarPath, List<String> includes, List<String> excludes) {
-        return normalise(sort(new JarFileScanner(jarPath, includes, excludes).scan()));
+    public List<String> findPathsFromJar(URL jarURL, String includes, String excludes) {
+        return findPathsFromJar(jarURL, asList(includes), asList(excludes));
     }
 
     /**
-     * Finds paths from a jar file, allowing for an include/exclude. Paths
-     * found are normalised by {@link StoryFinder#normalise(List<String>)}.
+     * Finds paths from a jar URL, allowing for includes/excludes. Paths found
+     * are normalised by {@link StoryFinder#normalise(List<String>)}.
      * 
-     * @param jarPath
-     *            the filename of the jar to search in
-     * @param includes
-     *            the List of include patterns, or <code>""</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>""</code> if none
+     * @param jarURL the URL of the jar to search in
+     * @param includes the List of include patterns, or <code>null</code> if
+     *            none
+     * @param excludes the List of exclude patterns, or <code>null</code> if
+     *            none
      * @return A List of paths found
      */
-    public List<String> findPathsFromJar(String jarPath, String include, String exclude) {
-        return findPathsFromJar(CodeLocations.codeLocationFromPath(jarPath), include, exclude);
-    }
-
-    /**
-     * Finds paths from a jar file, allowing for includes/excludes. Paths
-     * found are normalised by {@link StoryFinder#normalise(List<String>)}.
-     * 
-     * @param jarPath
-     *            the filename (URL) of the jar to search in
-     * @param includes
-     *            the List of include patterns, or <code>""</code> if none
-     * @param excludes
-     *            the List of exclude patterns, or <code>""</code> if none
-     * @return A List of paths found
-     */
-    public List<String> findPathsFromJar(URL jarPath, String include, String exclude) {
-        return normalise(sort(new JarFileScanner(jarPath, include, exclude).scan()));
+    public List<String> findPathsFromJar(URL jarURL, List<String> includes, List<String> excludes) {
+        return normalise(sort(scan(jarURL, includes, excludes)));
     }
 
     protected List<String> normalise(List<String> paths) {
@@ -225,8 +211,8 @@ public class StoryFinder {
     }
 
     /**
-     * Comparator used for sorting.  A <code>null</code> comparator means
-     * that {@link Collections#sort()} will use natural ordering.
+     * Comparator used for sorting. A <code>null</code> comparator means that
+     * {@link Collections#sort()} will use natural ordering.
      * 
      * @return A Comparator or <code>null</code> for natural ordering.
      */
@@ -248,6 +234,10 @@ public class StoryFinder {
         }
         scanner.scan();
         return asList(scanner.getIncludedFiles());
+    }
+
+    protected List<String> scan(URL jarURL, List<String> includes, List<String> excludes) {
+        return new JarFileScanner(jarURL, includes, excludes).scan();
     }
 
 }
