@@ -23,7 +23,7 @@ public class JarFileScanner {
     private List<String> excludes;
 
     public JarFileScanner(String jarPath, String includes, String excludes) {
-        this(CodeLocations.codeLocationFromPath(jarPath), includes, excludes);
+        this(jarPath, asList(includes), asList(excludes));
     }
 
     public JarFileScanner(String jarPath, List<String> includes, List<String> excludes) {
@@ -44,7 +44,7 @@ public class JarFileScanner {
      * Scans the jar file and returns the paths that match the includes and excludes.
      * 
      * @return A List of paths
-     * @throws An IllegalStateException when the jar file is not found.
+     * @throws An IllegalStateException when an I/O error occurs in reading the jar file.
      */
     public List<String> scan() {
         try {
@@ -55,11 +55,10 @@ public class JarFileScanner {
                 while (en.hasMoreElements()) {
                     JarEntry entry = en.nextElement();
                     String path = entry.getName();
-                    String pathLocal = localPathFormat(path);
                     boolean match = includes.size() == 0;
                     if (!match) {
                         for (String pattern : includes) {
-                            if (SelectorUtils.matchPath(pattern, pathLocal)) {
+                            if (pattern != null && patternMatches(pattern, path)) {
                                 match = true;
                                 break;
                             }
@@ -67,7 +66,7 @@ public class JarFileScanner {
                     }
                     if (match) {
                         for (String pattern : excludes) {
-                            if (SelectorUtils.matchPath(pattern, pathLocal)) {
+                            if (pattern != null && patternMatches(pattern, path)) {
                                 match = false;
                                 break;
                             }
@@ -86,9 +85,10 @@ public class JarFileScanner {
         }
     }
 
-    // SelectorUtils assumes local path separator for path and pattern
-    private String localPathFormat(String path) {
-        return path.replace('/', File.separatorChar);
+    private boolean patternMatches(String pattern, String path) {
+        // SelectorUtils assumes local path separator for path and pattern
+        String localPath = path.replace('/', File.separatorChar);
+        return SelectorUtils.matchPath(pattern, localPath);
     }
 
 }
