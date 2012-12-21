@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.codehaus.plexus.util.SelectorUtils;
 
 import static java.util.Arrays.asList;
@@ -38,8 +40,8 @@ public class JarFileScanner {
 
     public JarFileScanner(URL jarURL, List<String> includes, List<String> excludes) {
         this.jarURL = jarURL;
-        this.includes = ( includes != null ? includes : Arrays.<String>asList() );
-        this.excludes = ( excludes != null ? excludes : Arrays.<String>asList() );;
+        this.includes = ( includes != null ? toLocalPath(includes) : Arrays.<String>asList() );
+        this.excludes = ( excludes != null ? toLocalPath(excludes) : Arrays.<String>asList() );
     }
 
     /**
@@ -85,6 +87,17 @@ public class JarFileScanner {
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private List<String> toLocalPath(List<String> patternList) {
+        List<String> transformed = new ArrayList<String>(patternList);
+        CollectionUtils.transform(transformed, new Transformer() {
+            public Object transform(Object input) {
+                String pattern=(String)input;
+                return pattern!=null ? pattern.replace('/', File.separatorChar) : null;
+            }
+        });
+        return transformed;
     }
 
     private boolean patternMatches(String pattern, String path) {

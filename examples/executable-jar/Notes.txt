@@ -2,18 +2,11 @@ A simple example project showing how to put jbehave, your code and the
 stories inside a executable/runnable jar.
 
 The package target creates a jar file containing all classes from
-jbehave and its dependecies that can be run with
+jbehave and its dependencies that can be run with
 
 jar -jar jbehave-executable-jar-example-<VERSION>-jar-with-dependencies.jar,
 this way the tests do not have any dependencies except java itself.
 
-Currently there is no way to search for stories inside the classpath,
-which means that you have to list the story files explicitly in the
-storyPaths method, either by creating a list directly or reading a
-file.
+Reading the list of story files from the jar file is supported starting
+with jbehave 3.7.5. 
 
-When building the project with Maven, the story paths in the example
-are correct, when using the Export as Runnable Jar option in Eclipse,
-the paths change from e.g org/jbehave/path to resources/org/jbehave/path
-so the paths in the code have to changed accordingly when you want to
-use Eclipse export.
