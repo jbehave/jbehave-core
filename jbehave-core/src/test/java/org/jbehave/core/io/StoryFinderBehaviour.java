@@ -59,16 +59,16 @@ public class StoryFinderBehaviour {
     }
 
     @Test
-    public void shouldFindPathsFromJar() throws IOException {
+    public void shouldFindPathsFromJarPath() throws IOException {
         String jarPath = "src/test/resources/stories.jar";
-        assertThat(finder.findPathsFromJar(jarPath, "**/*.story", "**/*_search.story"),
+        assertThat(finder.findPaths(jarPath, "**/*.story", "**/*_search.story"),
                 equalTo((asList("etsy_browse.story", "etsy_cart.story"))));
     }
 
     @Test
-    public void shouldFindPathsFromURL() throws IOException {
+    public void shouldFindPathsFromJarURL() throws IOException {
         URL jarURL = CodeLocations.codeLocationFromPath("src/test/resources/stories.jar");
-        assertThat(finder.findPathsFromJar(jarURL, "**/*.story", "**/*_search.story"),
+        assertThat(finder.findPaths(jarURL, "**/*.story", "**/*_search.story"),
                 equalTo((asList("etsy_browse.story", "etsy_cart.story"))));
     }
 
@@ -128,7 +128,7 @@ public class StoryFinderBehaviour {
 
     @Test
     public void shouldIgnoreNullFiltersWhenFindingPaths() {
-        assertThat(finder.findPaths("src/test/java", null, null).size(), greaterThan(0));
+        assertThat(finder.findPaths("src/test/java", (List<String>)null, (List<String>)null).size(), greaterThan(0));
     }
 
     @Test
