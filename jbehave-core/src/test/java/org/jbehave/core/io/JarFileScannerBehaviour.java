@@ -47,6 +47,11 @@ public class JarFileScannerBehaviour {
                 hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy-steps.xml"));
     }
 
+    @Test(expected=IllegalStateException.class)
+    public void shouldThrowIllegalArgument() {
+        scan("nonexistent.jar", "", "");
+    }
+
     private List<String> scan(String jarPath, String includes, String excludes) {
         return new JarFileScanner(jarPath, includes, excludes).scan();
     }
