@@ -10,3 +10,10 @@ this way the tests do not have any dependencies except java itself.
 Reading the list of story files from the jar file is supported starting
 with jbehave 3.7.5. 
 
+When creating the jar file with Maven, the file layout is correct, when
+creating the jar file with Eclipse (Runnable JAR file), finding the
+stories will work when selecting "Extract required libraries into generated
+JAR", when selecting "Package required libraries into generated JAR", the
+story files will not be found since searching inside a jar that is
+accessible via resource manager is not implemented yet.
+
