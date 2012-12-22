@@ -76,6 +76,22 @@ public class StoryFinder {
     }
 
     /**
+     * Finds paths from a source URL, allowing for includes/excludes,
+     * pattern. Paths found are normalised by {@link
+     * StoryFinder#normalise(List<String>)}
+     * 
+     * @param searchIn the source URL to search in
+     * @param includes the List of include patterns, or <code>null</code> if
+     *            none
+     * @param excludes the List of exclude patterns, or <code>null</code> if
+     *            none
+     * @return A List of paths found
+     */
+    public List<String> findPaths(URL searchIn, List<String> includes, List<String> excludes) {
+        return findPaths(CodeLocations.getPathFromURL(searchIn), includes, excludes);
+    }
+
+    /**
      * Finds paths from a source path, allowing for single include/exclude
      * pattern. Paths found are normalised by {@link
      * StoryFinder#normalise(List<String>)}
