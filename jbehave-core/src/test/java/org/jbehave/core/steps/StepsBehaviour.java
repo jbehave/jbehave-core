@@ -255,15 +255,22 @@ public class StepsBehaviour {
     }
 
     @Test
-    public void shouldReportFailuresInBeforeAndAfterMethods() {
-    	BeforeAndAfterSteps steps = new BeforeAndAfterSteps();
+    public void shouldReportFailuresInBeforeMethods() {
+        assertFailureReturnedOnStepsPerformed(new BeforeSteps());
+    }
+
+    @Test
+    public void shouldReportFailuresInAfterMethods() {
+        assertFailureReturnedOnStepsPerformed(new AfterSteps());
+    }
+
+    private void assertFailureReturnedOnStepsPerformed(Steps steps) {
         ScenarioType scenarioType = ScenarioType.NORMAL;
-    	List<BeforeOrAfterStep> beforeScenario = steps.listBeforeOrAfterScenario(scenarioType);
-    	beforeScenario.get(0).createStep().perform(null);
-    	StepResult stepResult = beforeScenario.get(1).createStep().perform(null);
-    	assertThat(stepResult, instanceOf(Failed.class));
-    	assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
-    	assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
+        List<BeforeOrAfterStep> beforeOrAfterStepList = steps.listBeforeOrAfterScenario(scenarioType);
+        StepResult stepResult = beforeOrAfterStepList.get(0).createStep().perform(null);
+        assertThat(stepResult, instanceOf(Failed.class));
+        assertThat(stepResult.getFailure(), instanceOf(UUIDExceptionWrapper.class));
+        assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
     }
 
     @Test(expected=DuplicateCandidateFound.class)
@@ -440,17 +447,22 @@ public class StepsBehaviour {
 
     }
 
-    static class BeforeAndAfterSteps extends Steps {
+    static class BeforeSteps extends Steps {
         
         @org.jbehave.core.annotations.BeforeScenario
         public void beforeScenario() {
+            throw new RuntimeException("Damn, I failed!");
         }
 
-        @org.jbehave.core.annotations.BeforeScenario
-        public void beforeScenarioThatFails() {
-        	throw new RuntimeException("Damn, I failed!");
+    }
+
+    static class AfterSteps extends Steps {
+
+        @org.jbehave.core.annotations.AfterScenario
+        public void afterScenario() {
+            throw new RuntimeException("Damn, I failed!");
         }
-                
+
     }
 
     static class DuplicateSteps extends Steps {
