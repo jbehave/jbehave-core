@@ -1,5 +1,6 @@
 language: java
 env: MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=128m"
+install: /bin/true
 script: mvn clean install -s settings.xml -DskipTests=true -Pexamples -U | grep -v -E "Download(ed|ing)"
 jdk:
   - openjdk6
