@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/tanob/jbehave-core.png)](https://travis-ci.org/tanob/jbehave-core)
+
 # JBehave
 
 JBehave is a BDD framework for Java and Groovy, mirrored [at Github](https://github.com/jbehave/jbehave-core), definitive repo [at Codehaus](http://xircles.codehaus.org/projects/jbehave).
@@ -17,7 +19,7 @@ Canonical information for JBehave:
 
 Please report issues, feature requests on the Codehaus [issue
 tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
-[dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org). 
+[dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org).
 
 Keep an eye on the  [Bamboo Continuous Integration](http://bamboo.ci.codehaus.org/browse/JBEHAVE) server for JBehave builds.
 
@@ -29,11 +31,11 @@ JDK required: 5.0 (or above)
 ### Encoding
 
 Configure IDE to use UTF-8 for all files
-Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS 
- 
+Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS
+
 ### IDE Integration
 
-Maven is supported in Intellij IDEA out-of-the-box 
+Maven is supported in Intellij IDEA out-of-the-box
 Maven is supported in Eclipse via [m2eclipse plugin](http://m2eclipse.sonatype.org/)
 
 ### Building
@@ -51,7 +53,7 @@ After that, it is necessary to only do the following:
 - default: builds all releasable modules
 - examples: builds all headless examples
 - gui: builds examples that require a GUI (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://bamboo.ci.codehaus.org/browse/JBEHAVE) )
-- nt: no-test, builds skipping unit-test behaviors 
+- nt: no-test, builds skipping unit-test behaviors
 
 #### Maven Build Profiles used during release cycle
 
@@ -68,11 +70,11 @@ Note:  profiles are additive and the default profile is always active.
 
 #### Build with Reporting and Distribution
 
-    mvn install -Preporting,distribution 
+    mvn install -Preporting,distribution
 
 #### Building a Release with Maven
 
-    mvn release:prepare -Preporting,distribution 
+    mvn release:prepare -Preporting,distribution
     mvn release:perform -Preporting,distribution
 
 ## Related
@@ -81,4 +83,4 @@ See also the [jbehave-web](jbehave-web) sister project for web extensions to JBe
 
 ## License
 
-See LICENSE.txt in the source root (BSD).  
+See LICENSE.txt in the source root (BSD).
