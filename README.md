@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/tanob/jbehave-core.png)](https://travis-ci.org/tanob/jbehave-core)
+[![Build Status](https://travis-ci.org/jbehave/jbehave-core.png)](https://travis-ci.org/jbehave/jbehave-core)
 
 # JBehave
 
