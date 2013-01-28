@@ -42,6 +42,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
         Keywords keywords = new LocalizedKeywords(locale());
         Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
+                .useStepCollector(new MarkUnmatchedStepsAsPending(keywords))
                 .useStoryParser(new RegexStoryParser(keywords))
                 .useStoryLoader(
                         new LoadFromClasspath(classLoader))
