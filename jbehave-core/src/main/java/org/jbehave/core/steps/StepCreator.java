@@ -545,7 +545,7 @@ public class StepCreator {
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
             try {
                 parametriseStep();
-                stepMonitor.performing(stepAsString, dryRun);
+                stepMonitor.performing(parametrisedStep, dryRun);
                 if (!dryRun) {
                     method.invoke(stepsInstance(), convertedParameters);
                 }
