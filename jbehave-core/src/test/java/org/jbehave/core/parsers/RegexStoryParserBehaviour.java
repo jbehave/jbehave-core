@@ -1,16 +1,9 @@
 package org.jbehave.core.parsers;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.is;
-
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
@@ -22,6 +15,16 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.junit.Test;
+
+import static java.util.Arrays.asList;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 
 
 public class RegexStoryParserBehaviour {
@@ -136,6 +139,30 @@ public class RegexStoryParserBehaviour {
         assertThat(steps.get(2), equalTo("And I parse it to Anderson"));
         assertThat(steps.get(3), equalTo("!-- ignore me too"));
         assertThat(steps.get(4), equalTo("Then I should get steps Thenact"));
+    }
+
+    @Test
+    public void shouldParseStoryWithSynonymsOfStartingWords() {
+        StoryParser parser = new RegexStoryParser(new LocalizedKeywords(new Locale("sy")));
+
+        String wholeStory = "Given a scenario" + NL +
+                "When I parse it" + NL +
+                "And I parse it again" + NL +
+                "With another parse as well" + NL +
+                "!-- ignore me" + NL +
+                "Giveth another scenario" + NL +
+                "With a merry go round";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+
+        List<String> steps = story.getScenarios().get(0).getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+        assertThat(steps.get(1), equalTo("When I parse it"));
+        assertThat(steps.get(2), equalTo("And I parse it again"));
+        assertThat(steps.get(3), equalTo("With another parse as well"));
+        assertThat(steps.get(4), equalTo("!-- ignore me"));
+        assertThat(steps.get(5), equalTo("Giveth another scenario"));
+        assertThat(steps.get(6), equalTo("With a merry go round"));
     }
 
     @Test
