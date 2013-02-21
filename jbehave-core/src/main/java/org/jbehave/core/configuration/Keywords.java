@@ -1,6 +1,6 @@
 package org.jbehave.core.configuration;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +19,8 @@ import static java.util.Arrays.asList;
  */
 public class Keywords {
 
+    private static final String SYNONYM_SEPARATOR = "\\|";
+    
     public static final String META = "Meta";
     public static final String META_PROPERTY = "MetaProperty";
     public static final String NARRATIVE = "Narrative";
@@ -166,7 +168,7 @@ public class Keywords {
         this.outcomeVerified = keyword(OUTCOME_VERIFIED, keywords);
         this.yes = keyword(YES, keywords);
         this.no = keyword(NO, keywords);
-        
+
         startingWordsByType.put(StepType.GIVEN, given());
         startingWordsByType.put(StepType.WHEN, when());
         startingWordsByType.put(StepType.THEN, then());
@@ -282,17 +284,24 @@ public class Keywords {
     public List<String> outcomeFields() {
         return asList(outcomeDescription, outcomeValue, outcomeMatcher, outcomeVerified);
     }
-    
-    public String yes(){
+
+    public String yes() {
         return yes;
     }
-    
-    public String no(){
+
+    public String no() {
         return no;
     }
 
+    public String[] synonymsOf(String word) {
+        return word.split(SYNONYM_SEPARATOR);
+    }
+
     public String[] startingWords() {
-        Collection<String> words = startingWordsByType().values();
+        List<String> words = new ArrayList<String>();
+        for (String word : startingWordsByType().values()) {
+            words.addAll(asList(synonymsOf(word)));
+        }
         return words.toArray(new String[words.size()]);
     }
 
@@ -300,14 +309,22 @@ public class Keywords {
         return startingWordsByType;
     }
 
+    private boolean ofStepType(String stepAsString, StepType stepType) {
+        boolean isType = false;
+        for (String word : startingWordsFor(stepType)) {
+            isType = stepStartsWithWord(stepAsString, word);
+            if (isType)
+                break;
+        }
+        return isType;
+    }
+
     public boolean isAndStep(String stepAsString) {
-        String andWord = startingWordFor(StepType.AND);
-        return stepStartsWithWord(stepAsString, andWord);
+        return ofStepType(stepAsString, StepType.AND);
     }
 
     public boolean isIgnorableStep(String stepAsString) {
-        String ignorableWord = startingWordFor(StepType.IGNORABLE);
-        return stepStartsWithWord(stepAsString, ignorableWord);
+        return ofStepType(stepAsString, StepType.IGNORABLE);
     }
 
     public String stepWithoutStartingWord(String stepAsString, StepType stepType) {
@@ -317,36 +334,36 @@ public class Keywords {
     }
 
     public String startingWord(String stepAsString, StepType stepType) throws StartingWordNotFound {
-        String wordForType = startingWordFor(stepType);
-        if (stepStartsWithWord(stepAsString, wordForType)) {
-            return wordForType;
+        for (String wordForType : startingWordsFor(stepType)) {
+            if (stepStartsWithWord(stepAsString, wordForType)) {
+                return wordForType;
+            }
         }
-        String andWord = startingWordFor(StepType.AND);
-        if (stepStartsWithWord(stepAsString, andWord)) {
-            return andWord;
+        for (String andWord : startingWordsFor(StepType.AND)) {
+            if (stepStartsWithWord(stepAsString, andWord)) {
+                return andWord;
+            }
         }
         throw new StartingWordNotFound(stepAsString, stepType, startingWordsByType);
     }
 
     public String startingWord(String stepAsString) throws StartingWordNotFound {
         for (StepType stepType : startingWordsByType.keySet()) {
-            String wordForType = startingWordFor(stepType);
-            if (stepStartsWithWord(stepAsString, wordForType)) {
-                return wordForType;
+            for (String wordForType : startingWordsFor(stepType)) {
+                if (stepStartsWithWord(stepAsString, wordForType)) {
+                    return wordForType;
+                }
             }
-        }
-        String andWord = startingWordFor(StepType.AND);
-        if (stepStartsWithWord(stepAsString, andWord)) {
-            return andWord;
         }
         throw new StartingWordNotFound(stepAsString, startingWordsByType);
     }
 
     public StepType stepTypeFor(String stepAsString) throws StartingWordNotFound {
         for (StepType stepType : startingWordsByType.keySet()) {
-            String wordForType = startingWordFor(stepType);
-            if (stepStartsWithWord(stepAsString, wordForType)) {
-                return stepType;
+            for (String wordForType : startingWordsFor(stepType)) {
+                if (stepStartsWithWord(stepAsString, wordForType)) {
+                    return stepType;
+                }
             }
         }
         throw new StartingWordNotFound(stepAsString, startingWordsByType);
@@ -362,6 +379,10 @@ public class Keywords {
             throw new StartingWordNotFound(stepType, startingWordsByType);
         }
         return startingWord;
+    }
+
+    public String[] startingWordsFor(StepType stepType) {
+        return synonymsOf(startingWordFor(stepType));
     }
 
     @Override
