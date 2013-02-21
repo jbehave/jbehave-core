@@ -548,7 +548,7 @@ public class StepCreator {
             Timer timer = new Timer().start();
             try {
                 parametriseStep();
-                stepMonitor.performing(stepAsString, dryRun);
+                stepMonitor.performing(parametrisedStep, dryRun);
                 if (!dryRun) {
                     method.invoke(stepsInstance(), convertedParameters);
                 }
