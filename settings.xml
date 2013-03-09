@@ -55,6 +55,10 @@
       <pluginRepositories>
         <pluginRepository>
           <id>atlassian</id>
+          <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
+        </pluginRepository>
+        <pluginRepository>
+          <id>atlassian</id>
           <url>http://maven.atlassian.com/public</url>
         </pluginRepository>
       </pluginRepositories>
