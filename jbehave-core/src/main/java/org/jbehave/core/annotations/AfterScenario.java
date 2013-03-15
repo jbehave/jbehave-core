@@ -1,14 +1,16 @@
 package org.jbehave.core.annotations;
 
-import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
-
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
+@Documented
 public @interface AfterScenario {
 
 	enum Outcome { ANY, SUCCESS, FAILURE }

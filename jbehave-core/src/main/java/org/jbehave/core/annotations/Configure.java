@@ -1,5 +1,6 @@
 package org.jbehave.core.annotations;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
@@ -47,6 +48,7 @@ import com.thoughtworks.paranamer.Paranamer;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 @Inherited
+@Documented
 public @interface Configure {
 
     Class<? extends Configuration> using() default MostUsefulConfiguration.class;
