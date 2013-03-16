@@ -130,11 +130,11 @@ public class CrossReferenceBehaviour {
                 "  'stories': [\n" +
                 "    {\n" +
                 "      'description': 'An interesting story',\n" +
-                "      'narrative': 'In order to renovate my house\\u000aAs a customer\\u000aI want to get a loan\\u000a',\n" +
+                "      'narrative': 'In order to renovate my house\\nAs a customer\\nI want to get a loan\\n',\n" +
                 "      'name': '/path/to/story',\n" +
                 "      'path': '/path/to/story',\n" +
                 "      'html': 'path.to.html',\n" +
-                "      'meta': 'author=Mauro\\u000atheme=testing\\u000a',\n" +
+                "      'meta': 'author=Mauro\\ntheme=testing\\n',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
                 "      'started': NUMBER,\n" +
@@ -327,11 +327,11 @@ public class CrossReferenceBehaviour {
                 "  'stories': [\n" +
                 "    {\n" +
                 "      'description': 'An interesting story',\n" +
-                "      'narrative': 'In order to renovate my house\\u000aAs a customer\\u000aI want to get a loan\\u000a',\n" +
+                "      'narrative': 'In order to renovate my house\\nAs a customer\\nI want to get a loan\\n',\n" +
                 "      'name': '/path/to/story',\n" +
                 "      'path': '/path/to/story',\n" +
                 "      'html': 'path.to.html',\n" +
-                "      'meta': 'author=Mauro\\u000atheme=testing\\u000a',\n" +
+                "      'meta': 'author=Mauro\\ntheme=testing\\n',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
                 "      'started': NUMBER,\n" +
@@ -467,11 +467,11 @@ public class CrossReferenceBehaviour {
                 "  'stories': [\n" +
                 "    {\n" +
                 "      'description': 'An interesting story',\n" +
-                "      'narrative': 'In order to renovate my house\\u000aAs a customer\\u000aI want to get a loan\\u000a',\n" +
+                "      'narrative': 'In order to renovate my house\\nAs a customer\\nI want to get a loan\\n',\n" +
                 "      'name': '/path/to/story',\n" +
                 "      'path': '/path/to/story',\n" +
                 "      'html': 'path.to.html',\n" +
-                "      'meta': 'author=Mauro\\u000a',\n" +
+                "      'meta': 'author=Mauro\\n',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
                 "      'started': NUMBER,\n" +
