@@ -23,11 +23,9 @@
             }
           ]
         },
-        "scenarios": [
-        ],
+        "scenarios": [],
         "givenStories": {
-          "givenStories": [
-          ],
+          "givenStories": [],
           "givenStoriesAsString": "",
           "examplesTable": {
             "tableAsString": "",
@@ -42,10 +40,8 @@
                 ]
               ]
             },
-            "headers": [
-            ],
-            "data": [
-            ],
+            "headers": [],
+            "data": [],
             "properties": [
               {
                 "@name": "headerSeparator",
@@ -61,27 +57,23 @@
               }
             ],
             "propertiesAsString": "",
-            "namedParameters": [
-            ],
+            "namedParameters": [],
             "trim": true
           }
         }
       },
-      "localizedNarrative": "In order to renovate my house\u000aAs a customer\u000aI want to get a loan",
+      "localizedNarrative": "In order to renovate my house\nAs a customer\nI want to get a loan",
       "allowed": false,
-      "givenStories": [
-      ],
+      "givenStories": [],
       "scenarios": [
         {
           "scenario": {
             "title": "",
             "meta": {
-              "properties": [
-              ]
+              "properties": []
             },
             "givenStories": {
-              "givenStories": [
-              ],
+              "givenStories": [],
               "givenStoriesAsString": "",
               "examplesTable": {
                 "tableAsString": "",
@@ -96,10 +88,8 @@
                     ]
                   ]
                 },
-                "headers": [
-                ],
-                "data": [
-                ],
+                "headers": [],
+                "data": [],
                 "properties": [
                   {
                     "@name": "headerSeparator",
@@ -115,8 +105,7 @@
                   }
                 ],
                 "propertiesAsString": "",
-                "namedParameters": [
-                ],
+                "namedParameters": [],
                 "trim": true
               }
             },
@@ -133,10 +122,8 @@
                   ]
                 ]
               },
-              "headers": [
-              ],
-              "data": [
-              ],
+              "headers": [],
+              "data": [],
               "properties": [
                 {
                   "@name": "headerSeparator",
@@ -152,8 +139,7 @@
                 }
               ],
               "propertiesAsString": "",
-              "namedParameters": [
-              ],
+              "namedParameters": [],
               "trim": true
             },
             "steps": [
@@ -164,10 +150,8 @@
           },
           "storyPath": "/path/to/story",
           "allowed": false,
-          "exampleScenarios": [
-          ],
-          "givenStories": [
-          ],
+          "exampleScenarios": [],
+          "givenStories": [],
           "beforeSteps": {},
           "steps": {
             "matches": [
@@ -194,12 +178,10 @@
       "scenario": {
         "title": "",
         "meta": {
-          "properties": [
-          ]
+          "properties": []
         },
         "givenStories": {
-          "givenStories": [
-          ],
+          "givenStories": [],
           "givenStoriesAsString": "",
           "examplesTable": {
             "tableAsString": "",
@@ -214,10 +196,8 @@
                 ]
               ]
             },
-            "headers": [
-            ],
-            "data": [
-            ],
+            "headers": [],
+            "data": [],
             "properties": [
               {
                 "@name": "headerSeparator",
@@ -233,8 +213,7 @@
               }
             ],
             "propertiesAsString": "",
-            "namedParameters": [
-            ],
+            "namedParameters": [],
             "trim": true
           }
         },
@@ -251,10 +230,8 @@
               ]
             ]
           },
-          "headers": [
-          ],
-          "data": [
-          ],
+          "headers": [],
+          "data": [],
           "properties": [
             {
               "@name": "headerSeparator",
@@ -270,8 +247,7 @@
             }
           ],
           "propertiesAsString": "",
-          "namedParameters": [
-          ],
+          "namedParameters": [],
           "trim": true
         },
         "steps": [
@@ -282,10 +258,8 @@
       },
       "storyPath": "/path/to/story",
       "allowed": false,
-      "exampleScenarios": [
-      ],
-      "givenStories": [
-      ],
+      "exampleScenarios": [],
+      "givenStories": [],
       "beforeSteps": {},
       "steps": {
         "matches": [
