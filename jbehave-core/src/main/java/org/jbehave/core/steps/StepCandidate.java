@@ -68,6 +68,10 @@ public class StepCandidate {
         return stepsFactory.createInstanceOfType(stepsType);
     }
 
+    public Class<?> getStepsType() {
+        return stepsType;
+    }
+    
     public StepType getStepType() {
         return stepType;
     }
