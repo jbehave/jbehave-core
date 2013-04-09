@@ -34,7 +34,7 @@ import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
  * Abstract mojo that holds all the configuration parameters to specify and load
  * stories.
  * 
- * @requiresDependencyResolution
+ * @requiresDependencyResolution test
  */
 public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
