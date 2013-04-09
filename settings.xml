@@ -28,6 +28,17 @@
       </repositories>
       <pluginRepositories>
         <pluginRepository>
+          <id>jenkins-public-repository-group</id>
+          <name>Jenkins</name>
+          <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+        <pluginRepository>
           <id>codehaus-public-repository-group</id>
           <name>Codehaus Public Repository Group</name>
           <url>https://nexus.codehaus.org/content/groups/public/</url>
@@ -49,10 +60,25 @@
       <repositories>
         <repository>
           <id>atlassian</id>
-          <url>http://maven.atlassian.com/public</url>
+          <url>http://maven.atlassian.com/public/</url>
+        </repository>
+        <repository>
+          <id>atlassian2</id>
+          <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
         </repository>
       </repositories>
       <pluginRepositories>
+        <pluginRepository>
+          <id>jenkins-public-repository-group</id>
+          <name>Jenkins</name>
+          <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
         <pluginRepository>
           <id>atlassian</id>
           <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
