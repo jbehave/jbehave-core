@@ -136,7 +136,8 @@ public class ExamplesTable {
 
     public static final ExamplesTable EMPTY = new ExamplesTable("");
 
-    private static final String ROW_SEPARATOR = "\n";
+    private static final String ROW_SEPARATOR = "\r?\n";
+    private static final String NEW_LINE = "\n";
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
     private static final String IGNORABLE_SEPARATOR = "|--";
@@ -217,7 +218,7 @@ public class ExamplesTable {
         properties.setProperty("headerSeparator", headerSeparator);
         properties.setProperty("valueSeparator", valueSeparator);
         try {
-            properties.load(new ByteArrayInputStream(propertiesAsString.replace(",", ROW_SEPARATOR).getBytes()));
+            properties.load(new ByteArrayInputStream(propertiesAsString.replace(",", NEW_LINE).getBytes()));
         } catch (IOException e) {
             // carry on
         }
@@ -382,13 +383,13 @@ public class ExamplesTable {
         for (String header : headers) {
             sb.append(headerSeparator).append(header);
         }
-        sb.append(headerSeparator).append(ROW_SEPARATOR);
+        sb.append(headerSeparator).append(NEW_LINE);
         for (Map<String, String> row : getRows()) {
             for (String header : headers) {
                 sb.append(valueSeparator);
                 sb.append(row.get(header));
             }
-            sb.append(valueSeparator).append(ROW_SEPARATOR);
+            sb.append(valueSeparator).append(NEW_LINE);
         }
         return sb.toString();
     }
