@@ -4,10 +4,14 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jbehave.core.annotations.AsParameterConverter;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.steps.AbstractStepsFactory;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -32,6 +36,8 @@ import de.akquinet.jbosscc.needle.injection.InjectionProvider;
  */
 public class NeedleStepsFactory extends NeedleTestcase implements InjectableStepsFactory {
 
+	private final Map<Class<?>, Object> cachedStepsInstances = new LinkedHashMap<Class<?>, Object>();
+
 	private final Logger logger = LoggerFactory.getLogger(NeedleStepsFactory.class);
 	private final Configuration configuration;
 	private Class<?>[] steps;
@@ -43,13 +49,33 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 	 *            JBehave configuration
 	 * @param steps
 	 *            step classes
+	 */
+	public NeedleStepsFactory(final Configuration configuration, final Class<?>... steps) {
+		this(configuration, null, steps);
+	}
+
+	/**
+	 * Creates factory with given configuration, injection providers and step instances.
+	 * 
+	 * @param configuration
+	 *            JBehave configuration
+	 * @param steps
+	 *            step classes
 	 * @param providers
 	 *            injection providers.
 	 */
-	public NeedleStepsFactory(final Configuration configuration, final Class<?>... steps) {
+	public NeedleStepsFactory(final Configuration configuration, final Set<InjectionProvider<?>> injectionProviders,
+			final Class<?>... steps) {
 		super(setUpInjectionProviders(JBehaveNeedleConfiguration.RESOURCE_JBEHAVE_NEEDLE));
+		if (injectionProviders != null) {
+			addInjectionProvider(toArray(injectionProviders));
+		}
+		if (this.configuration == null) {
+			this.configuration = new MostUsefulConfiguration();
+		} else {
+			this.configuration = configuration;
+		}
 		this.steps = steps;
-		this.configuration = configuration;
 	}
 
 	/**
@@ -70,17 +96,24 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 	 * {@inheritDoc}
 	 */
 	public Object createInstanceOfType(Class<?> type) {
-		logger.debug("createInstance(): " + type.getCanonicalName());
-		try {
-			final Object stepsInstance = CreateInstanceByDefaultConstructor.INSTANCE.apply(type);
-			final InjectionProvider<?>[] foundProviders = CollectInjectionProvidersFromStepsInstance.INSTANCE
-					.apply(stepsInstance);
-			addInjectionProvider(foundProviders);
-			initTestcase(stepsInstance);
-			return stepsInstance;
-		} catch (final Exception e) {
-			throw new IllegalStateException(e);
+		final Object instance = cachedStepsInstances.get(type);
+		if (instance == null) {
+			if (logger.isTraceEnabled()) {
+				logger.debug("createInstanceOfType(): " + type.getCanonicalName());
+			}
+			try {
+				final Object stepsInstance = CreateInstanceByDefaultConstructor.INSTANCE.apply(type);
+				final InjectionProvider<?>[] foundProviders = CollectInjectionProvidersFromStepsInstance.INSTANCE
+						.apply(stepsInstance);
+				addInjectionProvider(foundProviders);
+				initTestcase(stepsInstance);
+				cachedStepsInstances.put(type, stepsInstance);
+				return stepsInstance;
+			} catch (final Exception e) {
+				throw new IllegalStateException(e);
+			}
 		}
+		return instance;
 	}
 
 	/**
@@ -88,7 +121,7 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 	 * 
 	 * @see {@link AbstractStepsFactory}
 	 */
-	private List<ParameterConverter> methodReturningConverters(Class<?> type) {
+	private List<ParameterConverter> methodReturningConverters(final Class<?> type) {
 		final List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
 		for (final Method method : type.getMethods()) {
 			if (method.isAnnotationPresent(AsParameterConverter.class)) {
@@ -96,6 +129,18 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 			}
 		}
 		return converters;
+	}
+
+	/**
+	 * Add injection providers.
+	 * 
+	 * @param providers
+	 *            add injection providers after factory construction.
+	 */
+	public void addInjectionProviders(final Set<InjectionProvider<?>> providers) {
+		if (providers != null) {
+			addInjectionProvider(toArray(providers));
+		}
 	}
 
 	/**
@@ -120,7 +165,25 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 		return false;
 	}
 
+	/**
+	 * Read injection providers configuration from a resource.
+	 * 
+	 * @param resourceName resource name
+	 * @return injection providers.
+	 */
 	static InjectionProvider<?>[] setUpInjectionProviders(final String resourceName) {
 		return new JBehaveNeedleConfiguration(resourceName).getInjectionProviders();
 	}
+
+	/**
+	 * Set to array.
+	 * 
+	 * @param injectionProviders
+	 *            set of providers
+	 * @return array of providers
+	 */
+	static InjectionProvider<?>[] toArray(final Set<InjectionProvider<?>> injectionProviders) {
+		return injectionProviders.toArray(new InjectionProvider<?>[injectionProviders.size()]);
+	}
+
 }
