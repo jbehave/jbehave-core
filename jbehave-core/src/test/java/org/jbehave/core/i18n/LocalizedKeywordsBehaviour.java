@@ -51,6 +51,7 @@ public class LocalizedKeywordsBehaviour {
         ensureKeywordsAreLocalisedFor(new Locale("de"));
         ensureKeywordsAreLocalisedFor(new Locale("en"));
         ensureKeywordsAreLocalisedFor(new Locale("fr"));
+        ensureKeywordsAreLocalisedFor(new Locale("fi"));
         ensureKeywordsAreLocalisedFor(new Locale("it"));
         ensureKeywordsAreLocalisedFor(new Locale("no"));
         ensureKeywordsAreLocalisedFor(new Locale("pt"));
