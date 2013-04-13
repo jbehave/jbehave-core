@@ -3,7 +3,7 @@ package org.jbehave.core.configuration;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -46,7 +46,7 @@ public class AnnotationFinder {
     @SuppressWarnings("unchecked")
     public <T, A extends Annotation> List<T> getAnnotatedValues(Class<A> annotationClass, Class<T> type,
             String memberName) {
-        Set<T> set = new HashSet<T>();
+        Set<T> set = new LinkedHashSet<T>();
         if (!isAnnotationPresent(annotationClass)) {
             return new ArrayList<T>(set);
         }
