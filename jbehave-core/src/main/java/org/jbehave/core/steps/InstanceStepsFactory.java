@@ -1,7 +1,7 @@
 package org.jbehave.core.steps;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
  */
 public class InstanceStepsFactory extends AbstractStepsFactory {
 
-    private final Map<Class<?>,Object> stepsInstances = new HashMap<Class<?>, Object>();
+    private final Map<Class<?>,Object> stepsInstances = new LinkedHashMap<Class<?>, Object>();
 
     public InstanceStepsFactory(Configuration configuration, Object... stepsInstances) {
         this(configuration, asList(stepsInstances));
