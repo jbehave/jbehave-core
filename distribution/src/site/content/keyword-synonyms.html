@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Keyword Synonyms</title>
+</head>
+
+<body>
+
+<h2>Keyword Synonyms</h2>
+
+<p>While it generally suffices to describe a scenario just using Given/When/Then/And step keywords, in some cases synonyms may make sound more natural. 
+So in place of:</p>
+
+<pre class="brush: bdd">
+Given our Payments system supports SWIFT messages
+When a FX transaction message arrives
+And the "from" currency is USD
+And the "to" currency is GBP
+And the exchange rate is 0.71002
+</pre>
+
+<p>someone would introduce "With' and "Having" as synonyms of "And" and rewrite the scenario as:
+</p>
+<pre class="brush: bdd">
+Given our Payments system supports SWIFT messages
+When a FX transaction message arrives
+Having the "from" currency as USD
+And the "to" currency as GBP
+With an exchange rate of 0.71002
+</pre>
+
+<p>To do so, simply add synonyms to the i18n locale entry, separated by "|":</p>
+
+<pre class="brush: bdd">
+And=And|With|Having
+</pre>
+
+<p>Any of the step-starting keywords can support synonyms, not just "And".  Be careful, though, when using synonyms as their overuse may render the intent of the scenario steps less 
+trasparent if the reader is not able to distinguish the step type, i.e. whether a precondition, an event or a verification.</p>
+
+<span class="followup">Refer to <a href="stories-in-your-language.html">stories in your language</a> for instructions on how to updated your i18n configuration.</span>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>
