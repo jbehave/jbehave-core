@@ -49,6 +49,7 @@
     <name>Advanced Topics</name>
     <page>archetypes.html</page>
     <page>aliases.html</page>
+    <page>keyword-synonyms.html</page>
     <page>pattern-variants.html</page>
     <page>dependency-injection.html</page>
     <page>parameter-injection.html</page>
