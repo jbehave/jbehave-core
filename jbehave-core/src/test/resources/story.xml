@@ -47,7 +47,7 @@ Then I should have a balance of $30
 	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:58)
 	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:39)
 	(reflection-invoke)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
 ...</failure></step>
 <step outcome="notPerformed">
 Then I should have $20
@@ -59,7 +59,7 @@ Then I don&apos;t return loan
 	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:69)
 	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:39)
 	(reflection-invoke)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
 ...</failure><outcomes>
 <fields>
 <field>Description</field>
@@ -117,7 +117,7 @@ Then I should have a balance of $30
 	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:84)
 	at org.jbehave.core.reporters.TemplateableOutputBehaviour.shouldReportEventsToXmlOutput(TemplateableOutputBehaviour.java:39)
 	(reflection-invoke)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:44)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)
 ...</failure></step>
 </scenario> 
 <cancelled keyword="STORY CANCELLED" durationKeyword="DURATION" durationInSecs="2"/>

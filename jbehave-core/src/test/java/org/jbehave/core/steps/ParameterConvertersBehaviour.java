@@ -40,6 +40,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.instanceOf;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -186,7 +187,7 @@ public class ParameterConvertersBehaviour {
         try {
             converter.convertValue("abc", Long.class);
         } catch (ParameterConvertionFailed e) {
-            assertThat(e.getCause(), is(ParseException.class));
+            assertThat(e.getCause(), is(instanceOf(ParseException.class)));
         }
     }
 
@@ -196,7 +197,7 @@ public class ParameterConvertersBehaviour {
         try {
             converter.convertValue("12.34.56", BigDecimal.class);
         } catch (ParameterConvertionFailed e) {
-            assertThat(e.getCause(), is(NumberFormatException.class));
+            assertThat(e.getCause(), is(instanceOf(NumberFormatException.class)));
         }
     }
 
