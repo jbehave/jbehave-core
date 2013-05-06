@@ -21,8 +21,6 @@ import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.needle.configuration.CollectInjectionProvidersFromStepsInstance;
 import org.jbehave.core.steps.needle.configuration.CreateInstanceByDefaultConstructor;
 import org.jbehave.core.steps.needle.configuration.JBehaveNeedleConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.akquinet.jbosscc.needle.NeedleTestcase;
 import de.akquinet.jbosscc.needle.injection.InjectionProvider;
@@ -38,7 +36,6 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 
 	private final Map<Class<?>, Object> cachedStepsInstances = new LinkedHashMap<Class<?>, Object>();
 
-	private final Logger logger = LoggerFactory.getLogger(NeedleStepsFactory.class);
 	private final Configuration configuration;
 	private Class<?>[] steps;
 
@@ -98,9 +95,6 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 	public Object createInstanceOfType(Class<?> type) {
 		final Object instance = cachedStepsInstances.get(type);
 		if (instance == null) {
-			if (logger.isTraceEnabled()) {
-				logger.debug("createInstanceOfType(): " + type.getCanonicalName());
-			}
 			try {
 				final Object stepsInstance = CreateInstanceByDefaultConstructor.INSTANCE.apply(type);
 				final InjectionProvider<?>[] foundProviders = CollectInjectionProvidersFromStepsInstance.INSTANCE
@@ -168,7 +162,8 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 	/**
 	 * Read injection providers configuration from a resource.
 	 * 
-	 * @param resourceName resource name
+	 * @param resourceName
+	 *            resource name
 	 * @return injection providers.
 	 */
 	static InjectionProvider<?>[] setUpInjectionProviders(final String resourceName) {

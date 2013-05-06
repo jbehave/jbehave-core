@@ -5,8 +5,6 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import org.jbehave.core.annotations.needle.InjectionProviderInstancesSupplier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.akquinet.jbosscc.needle.injection.InjectionProvider;
 
@@ -21,9 +19,6 @@ public class JBehaveNeedleConfiguration {
 	 * Default properties field name.
 	 */
 	public static final String RESOURCE_JBEHAVE_NEEDLE = "jbehave-needle";
-
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private final LoadResourceBundle loadResourceBundle = LoadResourceBundle.INSTANCE;
 	private final ReadInjectionProviderClassNames readInjectionProviderClassNames = ReadInjectionProviderClassNames.INSTANCE;

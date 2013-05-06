@@ -34,6 +34,7 @@
     <module>trader-testng</module>
     <module>trader-i18n</module>
     <module>trader-guice</module>
+    <module>trader-needle</module>
     <module>trader-pico</module>
     <module>trader-spring</module>
     <module>trader-weld</module>

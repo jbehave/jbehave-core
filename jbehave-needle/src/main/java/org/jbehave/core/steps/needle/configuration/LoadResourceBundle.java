@@ -4,9 +4,6 @@ import java.util.Enumeration;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Null safe Resource Loader. If ResourceBundle does not exist, an empty Bundle is returned.
  * 
@@ -38,8 +35,6 @@ public enum LoadResourceBundle {
 		}
 	};
 
-	private final Logger logger = LoggerFactory.getLogger(LoadResourceBundle.class);
-
 	public final ResourceBundle apply(final String resourceName) {
 		if (resourceName == null || "".equals(resourceName.trim())) {
 			throw new IllegalArgumentException("resourceName must not be null or empty!");
@@ -48,7 +43,6 @@ public enum LoadResourceBundle {
 		try {
 			return ResourceBundle.getBundle(resourceName);
 		} catch (final MissingResourceException e) {
-			logger.warn(e.getMessage());
 			return EMPTY_RESOURCE_BUNDLE;
 		}
 	}

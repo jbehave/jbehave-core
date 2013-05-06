@@ -16,8 +16,6 @@ import org.jbehave.core.configuration.PrintStreamAnnotationMonitor;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.needle.NeedleStepsFactory;
 import org.jbehave.core.steps.needle.configuration.CreateInstanceByDefaultConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.akquinet.jbosscc.needle.injection.InjectionProvider;
 
@@ -31,7 +29,6 @@ import de.akquinet.jbosscc.needle.injection.InjectionProvider;
  */
 public class NeedleAnnotationBuilder extends AnnotationBuilder {
 
-	private final Logger logger = LoggerFactory.getLogger(NeedleAnnotationBuilder.class);
 	private final Set<InjectionProvider<?>> provider = new HashSet<InjectionProvider<?>>();
 	private final Set<Class<?>> stepsClasses = new HashSet<Class<?>>();
 	private NeedleStepsFactory factory;
@@ -46,9 +43,6 @@ public class NeedleAnnotationBuilder extends AnnotationBuilder {
 
 	@Override
 	public Configuration buildConfiguration() throws AnnotationRequired {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Configuration built.");
-		}
 
 		final AnnotationFinder finder = annotationFinder();
 
@@ -78,9 +72,6 @@ public class NeedleAnnotationBuilder extends AnnotationBuilder {
 
 	@Override
 	public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Factory constructed.");
-		}
 		this.factory = new NeedleStepsFactory(configuration, provider, stepsClasses.toArray(new Class<?>[stepsClasses
 				.size()]));
 		return factory;
@@ -89,9 +80,6 @@ public class NeedleAnnotationBuilder extends AnnotationBuilder {
 	@Override
 	@SuppressWarnings("unchecked")
 	protected <T, V extends T> T instanceOf(Class<T> type, Class<V> ofClass) {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Instance of {} {}", type, ofClass);
-		}
 		/*
 		 * This allow usage of the factory only after step factory is constructed. Current implementation only supports
 		 * creation injection into steps. Further improvement will be to provide a needle factory capable of creating

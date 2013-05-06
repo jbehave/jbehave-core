@@ -7,9 +7,6 @@ import java.util.Set;
 
 import org.jbehave.core.annotations.needle.InjectionProviderInstancesSupplier;
 import org.jbehave.core.annotations.needle.NeedleInjectionProvider;
-import org.jbehave.core.steps.needle.NeedleStepsFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import de.akquinet.jbosscc.needle.injection.InjectionProvider;
 import de.akquinet.jbosscc.needle.reflection.ReflectionUtil;
@@ -25,11 +22,6 @@ public enum CollectInjectionProvidersFromStepsInstance {
 	 * stateless Singleton
 	 */
 	INSTANCE;
-
-	/**
-	 * Logger for the factory.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(NeedleStepsFactory.class);
 
 	/**
 	 * Collect providers direct in the step definition.
@@ -57,9 +49,6 @@ public enum CollectInjectionProvidersFromStepsInstance {
 			} catch (final Exception e) {
 				throw new IllegalStateException(e);
 			}
-		}
-		if (logger.isTraceEnabled()) {
-			logger.trace("Adding {} InjectionProvider instances.", providers.size());
 		}
 
 		return providers.toArray(new InjectionProvider<?>[providers.size()]);
