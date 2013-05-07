@@ -34,7 +34,7 @@ import de.akquinet.jbosscc.needle.injection.InjectionProvider;
  */
 public class NeedleStepsFactory extends NeedleTestcase implements InjectableStepsFactory {
 
-	private final Map<Class<?>, Object> cachedStepsInstances = new LinkedHashMap<Class<?>, Object>();
+	private final Map<Class<?>, Object> cachedTypeInstances = new LinkedHashMap<Class<?>, Object>();
 
 	private final Configuration configuration;
 	private Class<?>[] steps;
@@ -93,15 +93,14 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 	 * {@inheritDoc}
 	 */
 	public Object createInstanceOfType(Class<?> type) {
-		final Object instance = cachedStepsInstances.get(type);
+		final Object instance = cachedTypeInstances.get(type);
 		if (instance == null) {
 			try {
 				final Object stepsInstance = CreateInstanceByDefaultConstructor.INSTANCE.apply(type);
-				final InjectionProvider<?>[] foundProviders = CollectInjectionProvidersFromStepsInstance.INSTANCE
-						.apply(stepsInstance);
+				final InjectionProvider<?>[] foundProviders = CollectInjectionProvidersFromStepsInstance.INSTANCE.apply(stepsInstance);
 				addInjectionProvider(foundProviders);
 				initTestcase(stepsInstance);
-				cachedStepsInstances.put(type, stepsInstance);
+				cachedTypeInstances.put(type, stepsInstance);
 				return stepsInstance;
 			} catch (final Exception e) {
 				throw new IllegalStateException(e);
