@@ -34,12 +34,12 @@ import static org.jbehave.core.reporters.Format.XML;
 
 @RunWith(AnnotatedPathRunner.class)
 @Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, 
-        parameterConverters = { MyDateConverter.class })
+        parameterConverters = { MyDateConverter.class } )
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true,
                 storyTimeoutInSecs = 100, threads = 1, metaFilters = "-skip", systemProperties="java.awt.headless=true")
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
-@UsingPaths(searchIn = "../trader/src/main/java", includes = { "**/*.story" }, excludes = { "**/examples_table*.story" })
+@UsingPaths(searchIn = "../trader/src/main/java", includes = { "**/*.story" }, excludes = { "**/examples_table*.story", "**/given_relative_path*" })
 public class TraderAnnotatedPathRunner {
 
     public static class MyStoryControls extends StoryControls {
