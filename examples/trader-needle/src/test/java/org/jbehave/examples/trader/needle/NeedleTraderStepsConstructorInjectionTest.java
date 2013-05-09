@@ -5,29 +5,26 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import org.jbehave.examples.trader.model.Trader;
+import org.jbehave.examples.trader.needle.provider.TraderServiceInjectionProvider;
 import org.jbehave.examples.trader.service.TradingService;
 import org.junit.Rule;
 import org.junit.Test;
 
-import de.akquinet.jbosscc.needle.annotation.InjectIntoMany;
 import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
 import de.akquinet.jbosscc.needle.junit.NeedleRule;
 
+/**
+ * Assure constructor injection with {@link TradingService} works.
+ * 
+ * @author Jan Galinski, Holisticon AG
+ */
 public class NeedleTraderStepsConstructorInjectionTest {
 
   private static final String BAR = "bar";
   private static final String FOO = "foo";
 
   @Rule
-  public final NeedleRule needleRule = new NeedleRule();
-
-  /**
-   * Constructor Injection on needleTraderSteps works. But needle creates a mock
-   * of {@link TradingService} by default. By using {@link InjectIntoMany}, a
-   * concrete instance is bound.
-   */
-  @InjectIntoMany
-  private final TradingService tradingService = new TradingService();
+  public final NeedleRule needleRule = new NeedleRule(new TraderServiceInjectionProvider());
 
   @ObjectUnderTest
   private NeedleTraderSteps needleTraderSteps;
