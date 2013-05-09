@@ -6,6 +6,7 @@ import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.needle.UsingNeedle;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.junit.needle.NeedleAnnotatedEmbedderRunner;
+import org.jbehave.examples.trader.needle.provider.TraderServiceInjectionProvider;
 import org.junit.runner.RunWith;
 
 @RunWith(NeedleAnnotatedEmbedderRunner.class)

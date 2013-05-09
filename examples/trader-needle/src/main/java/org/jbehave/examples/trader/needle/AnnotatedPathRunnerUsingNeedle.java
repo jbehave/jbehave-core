@@ -9,9 +9,10 @@ import org.jbehave.core.junit.needle.NeedleAnnotatedPathRunner;
 import org.junit.runner.RunWith;
 
 /**
- * Run stories via annotated embedder configuration and steps using Needle. The textual trader stories are exactly the
- * same ones found in the jbehave-trader-example. Here we are only concerned with using the container to compose the
- * configuration and the steps instances.
+ * Run stories via annotated embedder configuration and steps using Needle. The
+ * textual trader stories are exactly the same ones found in the
+ * jbehave-trader-example. Here we are only concerned with using the container
+ * to compose the configuration and the steps instances.
  */
 @RunWith(NeedleAnnotatedPathRunner.class)
 @Configure
