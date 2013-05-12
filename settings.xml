@@ -54,12 +54,27 @@
       </repositories>
       <pluginRepositories>
         <pluginRepository>
-          <id>jenkins</id>
-          <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
-        </pluginRepository>
-        <pluginRepository>
           <id>atlassian</id>
           <url>http://maven.atlassian.com/public</url>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+    <profile>
+      <!-- Required for dependencies of Jenkins module -->
+      <id>jenkins</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>jenkins</id>
+          <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>jenkins</id>
+          <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>
