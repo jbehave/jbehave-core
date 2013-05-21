@@ -237,6 +237,10 @@ public class TemplateableOutput implements StoryReporter {
             return keywords.iWantTo();
         }
 
+        public String getSoThat() {
+            return keywords.soThat();
+        }
+
         public String getScenario() {
             return keywords.scenario();
         }
