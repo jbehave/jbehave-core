@@ -16,12 +16,13 @@ MetaElement:= "@" Space? Word Space (Word Space?)* ;
 
 ; The narrative is identified by keyword "Narrative:" (or equivalent in I18n-ed locale),
 ; It is followed by the narrative elements
-Narrative:= "Narrative:" InOrderTo AsA IWantTo ;
+Narrative:= "Narrative:" ( InOrderTo AsA IWantTo | AsA IWantTo SoThat ) ;
 
 ; The narrative elements
 InOrderTo:= "In order to" NarrativeElementContent ;
 AsA:= "As a" NarrativeElementContent ;
 IWantTo:= "I want to" NarrativeElementContent ;
+SoThat:= "So that" NarrativeElementContent ;
 
 ; The narrative element content is any sequence of characters that do not match a narrative starting word
 NarrativeElementContent := ? Any sequence of NarrativeCharacter that does not match NarrativeStartingWord ? ; 
@@ -30,7 +31,7 @@ NarrativeElementContent := ? Any sequence of NarrativeCharacter that does not ma
 NarrativeCharacter := ? Any Unicode character ? ;
 
 ; The narrative starting words (or equivalent in I18n-ed locale)
-NarrativeStartingWord :== ("In order to" | "As a" | "I want to" ) ;
+NarrativeStartingWord :== ("In order to" | "As a" | "I want to" | "So that") ;
 
 ; The comma-separated list of story resources that specify the stories to be run before a story or a scenario
 GivenStories:= "GivenStories:" (StoryPath ','?)+ ;

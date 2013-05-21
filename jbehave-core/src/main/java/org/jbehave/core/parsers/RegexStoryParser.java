@@ -98,13 +98,19 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Narrative createNarrative(String narrative) {
-        Pattern findElements = patternToPullNarrativeElementsIntoGroups();
-        Matcher findingElements = findElements.matcher(narrative);
+        Matcher findingElements = patternToPullNarrativeElementsIntoGroups().matcher(narrative);
         if (findingElements.matches()) {
             String inOrderTo = findingElements.group(1).trim();
             String asA = findingElements.group(2).trim();
             String iWantTo = findingElements.group(3).trim();
             return new Narrative(inOrderTo, asA, iWantTo);
+        }
+        Matcher findingAlternativeElements = patternToPullAlternativeNarrativeElementsIntoGroups().matcher(narrative);
+        if (findingAlternativeElements.matches()) {            
+            String asA = findingAlternativeElements.group(1).trim();
+            String iWantTo = findingAlternativeElements.group(2).trim();
+            String soThat = findingAlternativeElements.group(3).trim();
+            return new Narrative("", asA, iWantTo, soThat);
         }
         return Narrative.EMPTY;
     }
@@ -218,6 +224,11 @@ public class RegexStoryParser implements StoryParser {
 
     private Pattern patternToPullNarrativeElementsIntoGroups() {
         return compile(".*" + keywords.inOrderTo() + "(.*)\\s*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo()
+                + "(.*)", DOTALL);
+    }
+
+    private Pattern patternToPullAlternativeNarrativeElementsIntoGroups() {
+        return compile(".*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo() + "(.*)\\s*" + keywords.soThat()
                 + "(.*)", DOTALL);
     }
 

@@ -311,6 +311,25 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
+    public void shouldParseStoryWithAlternativeNarrative() {
+        String wholeStory = "Story: This is free-text description"+ NL +
+                "Narrative: This is an alternative narrative" + NL +
+                "As a customer" + NL +
+                "I want to get a loan" + NL +
+                "So that I can renovate my house" + NL +
+                "Scenario:  A first scenario";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+        Description description = story.getDescription();
+        assertThat(description.asString(), equalTo("Story: This is free-text description"));
+        Narrative narrative = story.getNarrative();
+        assertThat(narrative.isEmpty(), not(true));
+        assertThat(narrative.asA().toString(), equalTo("customer"));
+        assertThat(narrative.iWantTo().toString(), equalTo("get a loan"));
+        assertThat(narrative.soThat().toString(), equalTo("I can renovate my house"));
+    }
+
+    @Test
     public void shouldParseStoryWithIncompleteNarrative() {
         String wholeStory = "Story: This is free-text description"+ NL +
                 "Narrative: This is an incomplete narrative" + NL +
