@@ -12,9 +12,16 @@
 </#macro>
 <#macro renderNarrative narrative>
 <div class="narrative"><h2>${keywords.narrative}</h2>
+<#assign isAlternative=narrative.isAlternative()?string>
+<#if isAlternative == "true">
+<div class="element asA"><span class="keyword asA">${keywords.asA}</span> ${narrative.asA}</div>
+<div class="element iWantTo"><span class="keyword iWantTo">${keywords.iWantTo}</span> ${narrative.iWantTo}</div>
+<div class="element soThat"><span class="keyword soThat">${keywords.soThat}</span> ${narrative.soThat}</div>
+<#else>
 <div class="element inOrderTo"><span class="keyword inOrderTo">${keywords.inOrderTo}</span> ${narrative.inOrderTo}</div>
 <div class="element asA"><span class="keyword asA">${keywords.asA}</span> ${narrative.asA}</div>
 <div class="element iWantTo"><span class="keyword iWantTo">${keywords.iWantTo}</span> ${narrative.iWantTo}</div>
+</#if>
 </div>
 </#macro>
 <#macro renderGivenStories givenStories>

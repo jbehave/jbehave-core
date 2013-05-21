@@ -11,9 +11,16 @@
 </#macro>
 <#macro renderNarrative narrative>
 <narrative keyword="${keywords.narrative}">
+<#assign isAlternative=narrative.isAlternative()?string>
+<#if isAlternative == "true">
+<asA keyword="${keywords.asA}">${narrative.asA}</asA>
+<iWantTo keyword="${keywords.iWantTo}">${narrative.iWantTo}</iWantTo>
+<soThat keyword="${keywords.soThat}">${narrative.soThat}</soThat>
+<#else>
 <inOrderTo keyword="${keywords.inOrderTo}">${narrative.inOrderTo}</inOrderTo>
 <asA keyword="${keywords.asA}">${narrative.asA}</asA>
 <iWantTo keyword="${keywords.iWantTo}">${narrative.iWantTo}</iWantTo>
+</#if>
 </narrative>
 </#macro>
 <#macro renderGivenStories givenStories>

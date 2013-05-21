@@ -402,6 +402,14 @@ public class TemplateableOutput implements StoryReporter {
         public String getiWantTo() {
             return narrative.iWantTo();
         }
+        
+        public String getSoThat(){
+            return narrative.soThat();
+        }
+        
+        public boolean isAlternative(){
+            return narrative.isAlternative();
+        }
 
     }
 

@@ -9,7 +9,8 @@
         "narrative": {
           "inOrderTo": "renovate my house",
           "asA": "customer",
-          "iWantTo": "get a loan"
+          "iWantTo": "get a loan",
+          "soThat": ""
         },
         "meta": {
           "properties": [

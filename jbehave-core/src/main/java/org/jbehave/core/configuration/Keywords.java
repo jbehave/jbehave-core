@@ -27,6 +27,7 @@ public class Keywords {
     public static final String IN_ORDER_TO = "InOrderTo";
     public static final String AS_A = "AsA";
     public static final String I_WANT_TO = "IWantTo";
+    public static final String SO_THAT = "SoThat";
     public static final String SCENARIO = "Scenario";
     public static final String GIVEN_STORIES = "GivenStories";
     public static final String EXAMPLES_TABLE = "ExamplesTable";
@@ -52,7 +53,7 @@ public class Keywords {
     public static final String YES = "Yes";
     public static final String NO = "No";
 
-    public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO,
+    public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SO_THAT,
             SCENARIO, GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE,
             PENDING, NOT_PERFORMED, FAILED, DRY_RUN, STORY_CANCELLED, DURATION, OUTCOME_DESCRIPTION, OUTCOME_VALUE,
@@ -64,6 +65,7 @@ public class Keywords {
     private final String inOrderTo;
     private final String asA;
     private final String iWantTo;
+    private final String soThat;
     private final String scenario;
     private final String givenStories;
     private final String examplesTable;
@@ -95,9 +97,10 @@ public class Keywords {
         keywords.put(META, "Meta:");
         keywords.put(META_PROPERTY, "@");
         keywords.put(NARRATIVE, "Narrative:");
-        keywords.put(IN_ORDER_TO, "In order to:");
-        keywords.put(AS_A, "As a:");
-        keywords.put(I_WANT_TO, "I want to:");
+        keywords.put(IN_ORDER_TO, "In order to");
+        keywords.put(AS_A, "As a");
+        keywords.put(I_WANT_TO, "I want to");
+        keywords.put(SO_THAT, "So that");
         keywords.put(SCENARIO, "Scenario:");
         keywords.put(GIVEN_STORIES, "GivenStories:");
         keywords.put(EXAMPLES_TABLE, "Examples:");
@@ -144,6 +147,7 @@ public class Keywords {
         this.inOrderTo = keyword(IN_ORDER_TO, keywords);
         this.asA = keyword(AS_A, keywords);
         this.iWantTo = keyword(I_WANT_TO, keywords);
+        this.soThat = keyword(SO_THAT, keywords);
         this.scenario = keyword(SCENARIO, keywords);
         this.givenStories = keyword(GIVEN_STORIES, keywords);
         this.examplesTable = keyword(EXAMPLES_TABLE, keywords);
@@ -207,6 +211,10 @@ public class Keywords {
 
     public String iWantTo() {
         return iWantTo;
+    }
+
+    public String soThat() {
+        return soThat;
     }
 
     public String scenario() {

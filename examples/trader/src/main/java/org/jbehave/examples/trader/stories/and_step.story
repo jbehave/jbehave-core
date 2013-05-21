@@ -1,7 +1,7 @@
 Narrative:
-In order to be more communicative
 As a story writer
 I want to explain the use of And steps and also show that I can use keywords in scenario title and comments
+So that I'll be more communicative
 
 Scenario: An initial And step should be marked as pending as there is not previous step
 
