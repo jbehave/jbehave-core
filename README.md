@@ -23,10 +23,17 @@ tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
 
 Keep an eye on the  [Bamboo Continuous Integration](http://bamboo.ci.codehaus.org/browse/JBEHAVE) server for JBehave builds.
 
-### Depended-on Technologies
+### JDK
 
-JDK required: 5.0 (or above)
-[Maven](http://maven.apache.org) required (2.2.1 or above, 3.0 or above for reporting).
+JDK version required: 
+
+1.7 or above to build (tested with Oracle JDK on different platforms)
+
+The target runtime version is still 1.5 or above.
+
+### Maven 
+
+[Maven](http://maven.apache.org) version required to build: 3.0 or above.
 
 ### Encoding
 
@@ -36,11 +43,11 @@ Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS
 ### IDE Integration
 
 Maven is supported in Intellij IDEA out-of-the-box
-Maven is supported in Eclipse via [m2eclipse plugin](http://m2eclipse.sonatype.org/)
+Maven is supported in Eclipse via [m2e plugin](http://eclipse.org/m2e), included out-of-the-box in some Eclipse distributions.
 
 ### Building
 
-The first time you run the Maven build (Maven 2.2.1 or above required), do:
+The first time you run the Maven build, do:
 
     mvn install -s settings.xml
 
