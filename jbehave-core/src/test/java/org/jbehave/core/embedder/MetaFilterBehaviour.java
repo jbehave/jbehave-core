@@ -13,7 +13,7 @@ import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -132,7 +132,7 @@ public class MetaFilterBehaviour {
             }
         }
         long delta = System.currentTimeMillis() - start;
-        assertThat("should be less than half a second for 1000 matches on a simple case", delta, Matchers.lessThan(500L));
+        assertThat("1000 matches should take less than a second, but took "+delta+" ms.", delta, lessThan(1000L));
     }
     
     private MetaFilter filter(String filterAsString) {
