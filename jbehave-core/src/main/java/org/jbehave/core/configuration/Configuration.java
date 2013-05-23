@@ -59,33 +59,33 @@ public abstract class Configuration {
     /**
      * Use default story controls
      */
-    private StoryControls storyControls = new StoryControls();
+    private StoryControls storyControls;
 
     /**
      * Use English language for keywords
      */
-    private Keywords keywords = new LocalizedKeywords();
+    private Keywords keywords;
 
     /**
      * Provides pending steps where unmatched steps exist.
      */
-    private StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
+    private StepCollector stepCollector;
 
     /**
      * Parses the textual representation via pattern matching of keywords
      */
-    private StoryParser storyParser = new RegexStoryParser(keywords);
+    private StoryParser storyParser;
 
     /**
      * Loads story content from classpath
      */
-    private StoryLoader storyLoader = new LoadFromClasspath();
+    private StoryLoader storyLoader;
 
     /**
      * Resolves story paths from class names using underscored camel case with
      * ".story" extension
      */
-    private StoryPathResolver storyPathResolver = new UnderscoredCamelCaseResolver();
+    private StoryPathResolver storyPathResolver;
 
     /**
      * Handles errors by re-throwing them.
@@ -96,7 +96,7 @@ public abstract class Configuration {
      * Users wanting a different behaviour may use
      * {@link SilentlyAbsorbingFailure}.
      */
-    private FailureStrategy failureStrategy = new RethrowingFailure();
+    private FailureStrategy failureStrategy;
 
     /**
      * Allows pending steps to pass, so that steps that to do not match any
@@ -105,66 +105,88 @@ public abstract class Configuration {
      * Uses wanting a stricter behaviour for pending steps may use
      * {@link FailingUponPendingStep}.
      */
-    private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
+    private PendingStepStrategy pendingStepStrategy;
 
     /**
      * Reports stories to console output
      */
-    private StoryReporter defaultStoryReporter = new ConsoleOutput();
+    private StoryReporter defaultStoryReporter;
 
     /**
      * The story reporter builder
      */
-    private StoryReporterBuilder storyReporterBuilder = new StoryReporterBuilder();
+    private StoryReporterBuilder storyReporterBuilder;
 
     /**
      * Finder of matching candidate steps
      */
-    private StepFinder stepFinder = new StepFinder();
+    private StepFinder stepFinder;
 
     /**
      * Report candidate steps found to a PrintStream
      */
-    private StepdocReporter stepdocReporter = new PrintStreamStepdocReporter();
+    private StepdocReporter stepdocReporter;
 
     /**
      * Pattern build that uses prefix for identifying parameters
      */
-    private StepPatternParser stepPatternParser = new RegexPrefixCapturingPatternParser();
+    private StepPatternParser stepPatternParser;
 
     /**
-     * Controls of step parmetrisation
+     * Controls of step parameterization
      */
-    private ParameterControls parameterControls = new ParameterControls();
+    private ParameterControls parameterControls;
 
     /**
      * Silent monitoring that does not produce any noise of the step matching.
      * </p> If needed, users can switch on verbose monitoring using
      * {@link PrintStreamStepMonitor}
      */
-    private StepMonitor stepMonitor = new SilentStepMonitor();
+    private StepMonitor stepMonitor;
 
     /**
      * Paranamer is switched off by default
      */
-    private Paranamer paranamer = new NullParanamer();
+    private Paranamer paranamer;
 
     /**
      * Use default built-in parameter converters
      */
-    private ParameterConverters parameterConverters = new ParameterConverters();
+    private ParameterConverters parameterConverters;
 
     /**
      * Use Freemarker-based view generator
      */
-    private ViewGenerator viewGenerator = new FreemarkerViewGenerator();
+    private ViewGenerator viewGenerator;
 
     /**
      * Use an absolute path calculator
      */
-    private PathCalculator pathCalculator = new AbsolutePathCalculator();
+    private PathCalculator pathCalculator;
 
-
+    public Configuration() {
+    	storyControls = new StoryControls();
+    	keywords = new LocalizedKeywords();
+    	
+    	stepCollector = new MarkUnmatchedStepsAsPending();
+    	storyParser = new RegexStoryParser(keywords);
+    	storyLoader = new LoadFromClasspath();
+    	storyPathResolver = new UnderscoredCamelCaseResolver();
+    	failureStrategy = new RethrowingFailure();
+    	pendingStepStrategy = new PassingUponPendingStep();
+    	defaultStoryReporter = new ConsoleOutput();
+    	storyReporterBuilder = new StoryReporterBuilder();
+    	stepFinder = new StepFinder();
+    	stepdocReporter = new PrintStreamStepdocReporter();
+    	stepPatternParser = new RegexPrefixCapturingPatternParser();
+    	parameterControls = new ParameterControls();
+    	stepMonitor = new SilentStepMonitor();
+    	paranamer = new NullParanamer();
+    	parameterConverters = new ParameterConverters();
+    	viewGenerator = new FreemarkerViewGenerator();
+    	pathCalculator = new AbsolutePathCalculator();
+	}
+    
     public Keywords keywords() {
         return keywords;
     }

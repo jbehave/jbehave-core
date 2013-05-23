@@ -138,15 +138,23 @@ public class StoryReporterBuilder {
     }
 
     private List<org.jbehave.core.reporters.Format> formats = new ArrayList<org.jbehave.core.reporters.Format>();
-    private String relativeDirectory = new FileConfiguration().getRelativeDirectory();
-    private FilePathResolver pathResolver = new FileConfiguration().getPathResolver();
-    private URL codeLocation = CodeLocations.codeLocationFromPath("target/classes");
-    private Properties viewResources = new FreemarkerViewGenerator().defaultViewProperties();
+    private String relativeDirectory;
+    private FilePathResolver pathResolver;
+    private URL codeLocation;
+    private Properties viewResources;
     private boolean reportFailureTrace = false;
     private boolean compressFailureTrace = false;
-    private Keywords keywords = new LocalizedKeywords();
+    private Keywords keywords;
     private CrossReference crossReference;
     private boolean multiThreading;
+    
+    public StoryReporterBuilder() {
+    	relativeDirectory = new FileConfiguration().getRelativeDirectory();
+    	pathResolver = new FileConfiguration().getPathResolver();
+    	codeLocation = CodeLocations.codeLocationFromPath("target/classes");
+    	viewResources = new FreemarkerViewGenerator().defaultViewProperties();
+    	keywords = new LocalizedKeywords();
+    }
 
     public File outputDirectory() {
         return filePrintStreamFactory("").outputDirectory();

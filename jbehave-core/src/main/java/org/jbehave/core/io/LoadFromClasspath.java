@@ -11,7 +11,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
  */
 public class LoadFromClasspath implements ResourceLoader, StoryLoader {
 
-    private final ClassLoader classLoader;
+    protected final ClassLoader classLoader;
 
     public LoadFromClasspath() {
         this(Thread.currentThread().getContextClassLoader());
