@@ -58,6 +58,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.instanceOf;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -1241,7 +1242,8 @@ public class EmbedderBehaviour {
     public void shouldAllowStringRepresentationOfEmbedder() throws Throwable {
         // Given
         Embedder embedder = new Embedder();
-
+        assertThat(embedder.configuration(), instanceOf(MostUsefulConfiguration.class));
+        
         // When
         String embedderAsString = embedder.toString();
 

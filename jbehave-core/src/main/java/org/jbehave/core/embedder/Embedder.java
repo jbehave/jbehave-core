@@ -2,7 +2,6 @@ package org.jbehave.core.embedder;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
@@ -42,14 +41,14 @@ public class Embedder {
     private StoryMapper storyMapper;
     private StoryRunner storyRunner;
     private EmbedderMonitor embedderMonitor;
-    private EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
-    private EmbedderControls embedderControls = new EmbedderControls();
-    private EmbedderFailureStrategy embedderFailureStrategy = new ThrowingRunningStoriesFailed();
-    private Configuration configuration = new MostUsefulConfiguration();
-    private List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
+    private EmbedderClassLoader classLoader;
+    private EmbedderControls embedderControls;
+    private EmbedderFailureStrategy embedderFailureStrategy;
+    private Configuration configuration;
+    private List<CandidateSteps> candidateSteps;
     private InjectableStepsFactory stepsFactory;
-    private List<String> metaFilters = Arrays.asList();
-    private Properties systemProperties = new Properties();
+    private List<String> metaFilters;
+    private Properties systemProperties;
     private ExecutorService executorService;
     private boolean executorServiceCreated;
     private StoryManager storyManager;
@@ -64,7 +63,7 @@ public class Embedder {
         this.embedderMonitor = embedderMonitor;
     }
 
-    public void mapStoriesAsPaths(List<String> storyPaths) {
+	public void mapStoriesAsPaths(List<String> storyPaths) {
         EmbedderControls embedderControls = embedderControls();
         embedderMonitor.usingControls(embedderControls);
 
@@ -78,7 +77,7 @@ public class Embedder {
         StoryManager storyManager = storyManager();
         for (String storyPath : storyPaths) {
             Story story = storyManager.storyOfPath(storyPath);
-            embedderMonitor.mappingStory(storyPath, metaFilters);
+            embedderMonitor.mappingStory(storyPath, metaFilters());
             storyMapper.map(story, new MetaFilter(""));
             for (String filter : metaFilters) {
                 storyMapper.map(story, new MetaFilter(filter));
@@ -184,6 +183,8 @@ public class Embedder {
 
         processSystemProperties();
 
+        EmbedderControls embedderControls = embedderControls();
+        
         embedderMonitor.usingControls(embedderControls);
 
         if (embedderControls.skip()) {
@@ -218,10 +219,10 @@ public class Embedder {
 
     private void handleFailures(BatchFailures failures) {
         if (failures.size() > 0) {
-            if (embedderControls.ignoreFailureInStories()) {
+            if (embedderControls().ignoreFailureInStories()) {
                 embedderMonitor.batchFailed(failures);
             } else {
-                embedderFailureStrategy.handleFailures(failures);
+                embedderFailureStrategy().handleFailures(failures);
             }
         }
     }
@@ -235,7 +236,7 @@ public class Embedder {
 
     public void generateReportsView(File outputDirectory, List<String> formats, Properties viewResources) {
 
-        if (embedderControls.skip()) {
+        if (embedderControls().skip()) {
             embedderMonitor.reportsViewNotGenerated();
             return;
         }
@@ -259,10 +260,10 @@ public class Embedder {
             failed = failed || count.pending();
         }
         if (failed) {
-            if (embedderControls.ignoreFailureInView()) {
+            if (embedderControls().ignoreFailureInView()) {
                 embedderMonitor.reportsViewFailures(count);
             } else {
-                embedderFailureStrategy.handleFailures(count);
+                embedderFailureStrategy().handleFailures(count);
             }
         }
     }
@@ -330,26 +331,38 @@ public class Embedder {
     }
 
     public EmbedderClassLoader classLoader() {
+        if ( classLoader == null ){
+            this.classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
+        }
         return classLoader;
     }
 
     public Configuration configuration() {
-        configureThreads(configuration, embedderControls.threads());
+        if ( configuration == null ){
+            this.configuration = new MostUsefulConfiguration();
+        }
+        configureThreads(configuration, embedderControls().threads());
         return configuration;
     }
 
     public List<CandidateSteps> candidateSteps() {
+        if ( candidateSteps == null ){
+            candidateSteps = new ArrayList<CandidateSteps>();
+        }
         return candidateSteps;
     }
 
     public InjectableStepsFactory stepsFactory() {
         if (stepsFactory == null) {
-            stepsFactory = new ProvidedStepsFactory(candidateSteps);
+            stepsFactory = new ProvidedStepsFactory(candidateSteps());
         }
         return stepsFactory;
     }
 
     public EmbedderControls embedderControls() {
+        if ( embedderControls == null ){
+            embedderControls = new EmbedderControls();
+        }
         return embedderControls;
     }
 
@@ -358,6 +371,9 @@ public class Embedder {
     }
 
     public EmbedderFailureStrategy embedderFailureStrategy() {
+        if ( embedderFailureStrategy == null ){
+            this.embedderFailureStrategy = new ThrowingRunningStoriesFailed();
+        }
         return embedderFailureStrategy;
     }
 
@@ -380,7 +396,7 @@ public class Embedder {
      * @return An ExecutorService
      */
     private ExecutorService createExecutorService() {
-        return new FixedThreadExecutors().create(embedderControls);
+        return new FixedThreadExecutors().create(embedderControls());
     }
 
     /**
@@ -416,11 +432,14 @@ public class Embedder {
     }
 
     public List<String> metaFilters() {
+        if ( metaFilters == null ){
+            metaFilters = new ArrayList<String>();
+        }
         return metaFilters;
     }
 
     public MetaFilter metaFilter() {
-        return new MetaFilter(StringUtils.join(metaFilters, " "), embedderMonitor);
+        return new MetaFilter(StringUtils.join(metaFilters(), " "), embedderMonitor);
     }
 
     public StoryRunner storyRunner() {
@@ -428,6 +447,9 @@ public class Embedder {
     }
 
     public Properties systemProperties() {
+        if ( systemProperties == null ){
+            systemProperties = new Properties();
+        }
         return systemProperties;
     }
 

@@ -2,6 +2,7 @@ package org.jbehave.core.configuration;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -249,9 +250,27 @@ public class AnnotationBuilder {
     }
 
     protected <T, V extends T> T instanceOf(Class<T> type, Class<V> ofClass) {
-        try {
+    	try { 
+    	    // by classloader constructor
+    		try {
+    			Constructor<V> constructor =
+    					ofClass.getConstructor(new Class<?>[]{ClassLoader.class});
+    			return constructor.newInstance(annotatedClass.getClassLoader());
+    		}
+    		catch(NoSuchMethodException ns){
+    		}
+    		// by class constructor
+    		try {
+    			Constructor<V> constructor =
+    					ofClass.getConstructor(new Class<?>[]{Class.class});
+    			return constructor.newInstance(annotatedClass);
+    		}
+    		catch(NoSuchMethodException ns){
+    		}    	     	
+    		// by class instance
             return ofClass.newInstance();
-        } catch (Exception e) {
+    	}
+    	catch (Exception e) {
             annotationMonitor.elementCreationFailed(ofClass, e);
             throw new InstantiationFailed(ofClass, type, e);
         }
@@ -293,11 +312,11 @@ public class AnnotationBuilder {
     public static class InstantiationFailed extends RuntimeException {
 
         public InstantiationFailed(Class<?> ofClass, Class<?> type, Throwable cause) {
-            super("Failed to instantiate class " + ofClass + " of type " + type, cause);
+            super("Failed to instantiate " + ofClass + " of type " + type, cause);
         }
 
         public InstantiationFailed(Class<?> ofClass, Throwable cause) {
-            super("Failed to instantiate class " + ofClass, cause);
+            super("Failed to instantiate " + ofClass, cause);
         }
 
     }
