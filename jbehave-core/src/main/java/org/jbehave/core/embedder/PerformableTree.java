@@ -1,7 +1,6 @@
 package org.jbehave.core.embedder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,6 +21,7 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.GivenStory;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -130,6 +130,7 @@ public class PerformableTree {
                         Stage.BEFORE, ScenarioType.NORMAL));
             }
 
+            performableScenario.addBeforeSteps(context.lifecycleSteps(story.getLifecycle(), storyAndScenarioMeta, Stage.BEFORE));
             if (isParameterisedByExamples(scenario)) {
                 ExamplesTable table = scenario.getExamplesTable();
                 for (Map<String, String> scenarioParameters : table.getRows()) {
@@ -142,6 +143,7 @@ public class PerformableTree {
                         storyParameters));
                 performableScenario.addSteps(context.scenarioSteps(scenario, storyParameters));
             }
+            performableScenario.addAfterSteps(context.lifecycleSteps(story.getLifecycle(), storyAndScenarioMeta, Stage.AFTER));
 
             // after scenario steps, if allowed
             if (runBeforeAndAfterScenarioSteps) {
@@ -432,6 +434,12 @@ public class PerformableTree {
                     storyAndScenarioMeta, stage, type));
         }
 
+        public PerformableSteps lifecycleSteps(Lifecycle lifecycle, Meta meta, Stage stage) {
+            MatchingStepMonitor monitor = new MatchingStepMonitor();
+            List<Step> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, meta, stage);
+            return new PerformableSteps(steps, monitor.matched());
+        }
+
         public PerformableSteps scenarioSteps(Scenario scenario, Map<String, String> parameters) {
             MatchingStepMonitor monitor = new MatchingStepMonitor();
             List<Step> steps = configuration.stepCollector().collectScenarioSteps(candidateSteps, scenario, parameters,
@@ -655,6 +663,7 @@ public class PerformableTree {
             }
             context.reporter().beforeStory(story, context.givenStory);
             context.reporter().narrative(story.getNarrative());
+            context.reporter().lifecyle(story.getLifecycle());
             State state = context.state();
             Timer timer = new Timer().start();
             try {
@@ -714,15 +723,15 @@ public class PerformableTree {
         }
 
         public void addBeforeSteps(PerformableSteps beforeSteps) {
-            this.beforeSteps = beforeSteps;
+            this.beforeSteps.add(beforeSteps);
         }
 
         public void addSteps(PerformableSteps steps) {
-            this.steps = steps;
+            this.steps.add(steps);
         }
 
         public void addAfterSteps(PerformableSteps afterSteps) {
-            this.afterSteps = afterSteps;
+            this.afterSteps.add(afterSteps);
         }
 
         public Scenario getScenario() {
@@ -807,15 +816,15 @@ public class PerformableTree {
         }
 
         public void addBeforeSteps(PerformableSteps beforeSteps) {
-            this.beforeSteps = beforeSteps;
+            this.beforeSteps.add(beforeSteps);
         }
 
         public void addSteps(PerformableSteps steps) {
-            this.steps = steps;
+            this.steps.add(steps);
         }
 
         public void addAfterSteps(PerformableSteps afterSteps) {
-            this.afterSteps = afterSteps;
+            this.afterSteps.add(afterSteps);
         }
 
         public void perform(RunContext context) throws InterruptedException {
@@ -840,12 +849,11 @@ public class PerformableTree {
 
         private transient final List<Step> steps;
         private transient final List<PendingStep> pendingSteps;
-        @SuppressWarnings("unused")
-        private final List<StepMatch> matches;
+        private List<StepMatch> matches;
         private List<StepResult> results;
 
         public PerformableSteps() {
-            this(null, null);
+            this(null);
         }
 
         public PerformableSteps(List<Step> steps) {
@@ -853,13 +861,24 @@ public class PerformableTree {
         }
 
         public PerformableSteps(List<Step> steps, List<StepMatch> stepMatches) {
-            this.steps = steps;
-            this.pendingSteps = pendingSteps(steps);
+            this.steps =  ( steps == null ? new ArrayList<Step>() : steps );
+            this.pendingSteps = pendingSteps();
             this.matches = stepMatches;
         }
 
+        public void add(PerformableSteps performableSteps){
+            this.steps.addAll(performableSteps.steps);
+            this.pendingSteps.addAll(performableSteps.pendingSteps);
+            if ( performableSteps.matches != null ){
+                if ( this.matches == null ){
+                    this.matches = new ArrayList<StepMatch>();
+                }
+                this.matches.addAll(performableSteps.matches);
+            }
+        }
+        
         public void perform(RunContext context) throws InterruptedException {
-            if (steps == null || steps.size() == 0) {
+            if (steps.size() == 0) {
                 return;
             }
             State state = context.state();
@@ -874,10 +893,7 @@ public class PerformableTree {
             generatePendingStepMethods(context, pendingSteps);
         }
 
-        private List<PendingStep> pendingSteps(List<Step> steps) {
-            if ( steps == null ) {
-                return Arrays.asList();
-            }
+        private List<PendingStep> pendingSteps() {
             List<PendingStep> pending = new ArrayList<PendingStep>();
             for (Step step : steps) {
                 if (step instanceof PendingStep) {
