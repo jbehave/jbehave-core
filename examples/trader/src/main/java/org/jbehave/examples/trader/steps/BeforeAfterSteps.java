@@ -7,8 +7,10 @@ import org.jbehave.core.annotations.AfterStory;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.annotations.BeforeStory;
+import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.annotations.Then;
 
 /**
  * Steps executed before and after stories/story/scenario
@@ -94,5 +96,14 @@ public class BeforeAfterSteps {
     public void afterExampleScenario() {
         System.out.println("After Example Scenario ...");
     }
+    
+    @Given("a setup")
+    public void givenASetup(){
+        System.out.println("Doing a setup");
+    }
 
+    @Then("a teardown")
+    public void thenATeardown(){
+        System.out.println("Doing a teardown");
+    }
 }

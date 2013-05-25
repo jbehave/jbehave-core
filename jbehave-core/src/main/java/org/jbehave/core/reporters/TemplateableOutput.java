@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -74,6 +75,13 @@ public class TemplateableOutput implements StoryReporter {
             this.outputStory.narrative = new OutputNarrative(narrative);
         }
     }
+
+    public void lifecyle(Lifecycle lifecycle) {
+        if(!lifecycle.isEmpty()){
+            this.outputStory.lifecycle = new OutputLifecycle(lifecycle);            
+        }
+    }
+
 
     public void scenarioNotAllowed(Scenario scenario, String filter) {
         this.outputScenario.notAllowedBy = filter;
@@ -327,6 +335,7 @@ public class TemplateableOutput implements StoryReporter {
         private String path;
         private OutputMeta meta;
         private OutputNarrative narrative;
+        private OutputLifecycle lifecycle;
         private String notAllowedBy;
         private List<String> pendingMethods;
         private List<OutputScenario> scenarios = new ArrayList<OutputScenario>();
@@ -347,6 +356,10 @@ public class TemplateableOutput implements StoryReporter {
 
         public OutputNarrative getNarrative() {
             return narrative;
+        }
+
+        public OutputLifecycle getLifecycle() {
+            return lifecycle;
         }
 
         public String getNotAllowedBy() {
@@ -413,6 +426,23 @@ public class TemplateableOutput implements StoryReporter {
         
         public boolean isAlternative(){
             return narrative.isAlternative();
+        }
+
+    }
+
+    public static class OutputLifecycle {
+        private final Lifecycle lifecycle;
+
+        public OutputLifecycle(Lifecycle lifecycle) {
+            this.lifecycle = lifecycle;
+        }
+
+        public List<String> getBeforeSteps(){
+            return lifecycle.getBeforeSteps();
+        }
+
+        public List<String> getAfterSteps(){
+            return lifecycle.getAfterSteps();
         }
 
     }

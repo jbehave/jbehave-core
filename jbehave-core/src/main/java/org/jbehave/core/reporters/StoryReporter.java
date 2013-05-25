@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -29,6 +30,8 @@ public interface StoryReporter {
     void afterStory(boolean givenStory);
 
     void narrative(Narrative narrative);
+
+    void lifecyle(Lifecycle lifecycle);
 
     void scenarioNotAllowed(Scenario scenario, String filter);
 
@@ -67,5 +70,6 @@ public interface StoryReporter {
     void dryRun();
 
     void pendingMethods(List<String> methods);
+
 
 }

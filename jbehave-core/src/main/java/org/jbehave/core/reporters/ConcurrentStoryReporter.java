@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -25,8 +26,9 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method storyCancelled;
     private static Method storyNotAllowed;
     private static Method beforeStory;
-    private static Method narrative;
     private static Method afterStory;
+    private static Method narrative;
+    private static Method lifecycle;
     private static Method scenarioNotAllowed;
     private static Method beforeScenario;
     private static Method scenarioMeta;
@@ -52,8 +54,9 @@ public class ConcurrentStoryReporter implements StoryReporter {
             storyCancelled = StoryReporter.class.getMethod("storyCancelled", Story.class, StoryDuration.class);
             storyNotAllowed = StoryReporter.class.getMethod("storyNotAllowed", Story.class, String.class);
             beforeStory = StoryReporter.class.getMethod("beforeStory", Story.class, Boolean.TYPE);
-            narrative = StoryReporter.class.getMethod("narrative", Narrative.class);
             afterStory = StoryReporter.class.getMethod("afterStory", Boolean.TYPE);
+            narrative = StoryReporter.class.getMethod("narrative", Narrative.class);
+            lifecycle = StoryReporter.class.getMethod("lifecyle", Lifecycle.class);
             scenarioNotAllowed = StoryReporter.class.getMethod("scenarioNotAllowed", Scenario.class, String.class);
             beforeScenario = StoryReporter.class.getMethod("beforeScenario", String.class);
             scenarioMeta = StoryReporter.class.getMethod("scenarioMeta", Meta.class);
@@ -108,6 +111,15 @@ public class ConcurrentStoryReporter implements StoryReporter {
         }
     }
 
+    public void afterStory(boolean givenStory) {
+        crossReferencing.afterStory(givenStory);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(afterStory, givenStory));
+        } else {
+            delegate.afterStory(givenStory);
+        }
+    }
+
     public void narrative(Narrative aNarrative) {
         crossReferencing.narrative(aNarrative);
         if (multiThreading) {
@@ -116,13 +128,13 @@ public class ConcurrentStoryReporter implements StoryReporter {
             delegate.narrative(aNarrative);
         }
     }
-
-    public void afterStory(boolean givenStory) {
-        crossReferencing.afterStory(givenStory);
+    
+    public void lifecyle(Lifecycle aLifecycle) {
+        crossReferencing.lifecyle(aLifecycle);
         if (multiThreading) {
-            delayedMethods.add(new DelayedMethod(afterStory, givenStory));
+            delayedMethods.add(new DelayedMethod(lifecycle, aLifecycle));
         } else {
-            delegate.afterStory(givenStory);
+            delegate.lifecyle(aLifecycle);
         }
     }
 
@@ -347,6 +359,5 @@ public class ConcurrentStoryReporter implements StoryReporter {
             }
         }
     }
-
 
 }

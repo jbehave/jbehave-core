@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -55,6 +56,9 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     public void narrative(final Narrative narrative) {
+    }
+
+    public void lifecyle(Lifecycle lifecycle) {
     }
 
     public void givenStories(GivenStories givenStories) {

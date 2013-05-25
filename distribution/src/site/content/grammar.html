@@ -13,7 +13,7 @@
 ; JBehave Grammar expressed in EBNF (http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form)
 
 ; The story describes a feature via description, narrative and a set of scenarios
-Story := Description? Meta? Narrative? GivenStories? Scenario+ ;
+Story := Description? Meta? Narrative? GivenStories? Lifecycle? Scenario+ ;
 
 ; The Description is expressed by any sequence of words that must not contain any keywords at start of lines.
 Description := (Word Space?)* ;
@@ -47,6 +47,18 @@ NarrativeStartingWord :== ("In order to" | "As a" | "I want to" | "So that") ;
 
 ; The comma-separated list of story resources that specify the stories to be run before a story or a scenario
 GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
+
+; The lifecycle is identified by keyword "Lifecycle:" (or equivalent in I18n-ed locale),
+; It is followed by the lifecycle elements
+Lifecycle:= "Lifecycle:" LifecycleBefore? LifecycleAfter?
+
+; The before lifecyle element identified by keyword "Before:" (or equivalent in I18n-ed locale), 
+; followed by one or more steps
+LifecycleBefore:= "Before:" Step+
+
+; The after lifecyle element identified by keyword "After:" (or equivalent in I18n-ed locale), 
+; followed by one or more steps
+LifecycleAfter:= "After:" Step+
 
 ; The scenario is identified by keyword "Scenario:" (or equivalent in I18n-ed locale),
 ; which is optional in the case of a single scenario.  

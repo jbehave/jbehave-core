@@ -24,6 +24,7 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.GivenStory;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -201,6 +202,22 @@ public abstract class PrintStreamOutput implements StoryReporter {
                 print(format("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n", keywords.narrative(), keywords.asA(),
                         narrative.asA(), keywords.iWantTo(), narrative.iWantTo(), keywords.soThat(), narrative.soThat()));                
             }
+        }
+    }
+
+    public void lifecyle(Lifecycle lifecycle) {
+        if (!lifecycle.isEmpty()) {
+            print(format("lifecycle", "{0}\n", keywords.lifecycle()));                
+            print(format("before", "{0}\n", keywords.before()));
+            print(lifecycle.getBeforeSteps());
+            print(format("after", "{0}\n", keywords.after()));
+            print(lifecycle.getAfterSteps());
+        }        
+    }
+
+    private void print(List<String> steps) {
+        for ( String step : steps ){
+            print(format("step", "{0}\n", step));                
         }
     }
 

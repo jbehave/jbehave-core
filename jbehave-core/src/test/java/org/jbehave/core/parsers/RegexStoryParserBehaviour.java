@@ -22,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
@@ -210,6 +211,29 @@ public class RegexStoryParserBehaviour {
                             "|Dato che|Quando|Allora|E|" + NL +
                             "|Dado que|Quando|Então|E|" + NL));
     }
+    
+    @Test
+    public void shouldParseStoryWithLifecycle() {
+        String wholeStory = "Lifecycle: " + NL +
+                "Before:" + NL + NL +
+                "Given a step before each scenario" + NL + 
+                "And another before step" + NL +
+                "After:" + NL + NL +
+                "Given a step after each scenario" + NL + 
+                "And another after step" + NL +
+                "Scenario:"+ NL +        
+                "Given a scenario";
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<String> beforeSteps = story.getLifecycle().getBeforeSteps();
+        assertThat(beforeSteps.get(0), equalTo("Given a step before each scenario"));
+        assertThat(beforeSteps.get(1), equalTo("And another before step"));
+        List<String> afterSteps = story.getLifecycle().getAfterSteps();
+        assertThat(afterSteps.get(0), equalTo("Given a step after each scenario"));
+        assertThat(afterSteps.get(1), equalTo("And another after step"));
+        Scenario scenario = story.getScenarios().get(0);
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+    }
 
     @Test
     public void shouldParseStoryWithGivenStoriesAndExamplesCommentedOut() {
@@ -353,6 +377,14 @@ public class RegexStoryParserBehaviour {
                 "As a developer" + NL +
                 "I want to see the narrative for my story when a scenario in that story breaks" + NL +
 
+                "GivenStories: path1,path2" + NL + NL +
+                
+                "Lifecycle: " + NL +
+                "Before: " + NL + NL+
+                "Given a setup step" + NL +
+                "After: " + NL + NL+
+                "Then a teardown step" + NL +
+
                 "Scenario: A pending scenario" + NL + NL +
                 "Given a step that's pending" + NL +
                 "When I run the scenario" + NL +
@@ -379,6 +411,15 @@ public class RegexStoryParserBehaviour {
         assertThat(story.getNarrative().inOrderTo(), equalTo("see what we're not delivering"));
         assertThat(story.getNarrative().asA(), equalTo("developer"));
         assertThat(story.getNarrative().iWantTo(), equalTo("see the narrative for my story when a scenario in that story breaks"));
+
+        assertThat(story.getGivenStories().getPaths(), hasItem("path1"));
+        assertThat(story.getGivenStories().getPaths(), hasItem("path2"));
+
+        assertThat(story.toString(), containsString("Lifecycle"));
+        assertThat(story.getLifecycle().getBeforeSteps().size(), equalTo(1));
+        assertThat(story.getLifecycle().getBeforeSteps(), hasItem("Given a setup step"));
+        assertThat(story.getLifecycle().getAfterSteps().size(), equalTo(1));
+        assertThat(story.getLifecycle().getAfterSteps(), hasItem("Then a teardown step"));
 
         Meta storyAsMeta = story.asMeta("story_");
         assertThat(storyAsMeta.getProperty("story_path"), equalTo(story.getPath()));
