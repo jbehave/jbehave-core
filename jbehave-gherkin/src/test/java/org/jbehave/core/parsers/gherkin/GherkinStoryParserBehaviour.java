@@ -1,8 +1,5 @@
 package org.jbehave.core.parsers.gherkin;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertThat;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -12,12 +9,17 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.StoryParser;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItem;
+
+import static org.junit.Assert.assertThat;
+
 public class GherkinStoryParserBehaviour {
 
 	private StoryParser storyParser = new GherkinStoryParser();
 	
 	@Test
-	public void shouldParseStoryWithTabularParameterUsingGherkin() throws IOException{
+	public void shouldParseStoryWithTabularParameter() throws IOException{
 		String storyAsText = "Feature: Hello Car\n"
 					+ "Scenario: Car can drive\n"
 					+ "Given I have a car\n"
@@ -45,7 +47,7 @@ public class GherkinStoryParserBehaviour {
 	}
 
 	@Test
-	public void shouldParseStoryWithExamplesUsingGherkin() throws IOException{
+	public void shouldParseStoryWithExamples() throws IOException{
 		String storyAsText = "Feature: Hello Car\n"
 					+ "Scenario Outline: Car can drive\n"
 					+ "Given I have a car\n"
@@ -78,7 +80,7 @@ public class GherkinStoryParserBehaviour {
 	}
 	
 	@Test
-	public void shouldParseStoryWithNarrativeUsingGherkin() throws IOException{
+	public void shouldParseStoryWithNarrative() throws IOException{
 		String storyAsText = "Feature: Hello Car\n"
 				    + "Narrative:\n"
 				    + "In order to feel safer\n"
@@ -96,8 +98,9 @@ public class GherkinStoryParserBehaviour {
 	}
 
 	@Test
-	public void shouldParseStoryWithUnsupportedNarrativeUsingGherkin() throws IOException{
+	public void shouldParseStoryWithAlternativeNarrative() throws IOException{
 		String storyAsText = "Feature: Hello Car\n"
+				    + "Narrative:\n"
 				    + "As a car driver\n"
 				    + "I want to drive cars on 4 wheels\n"
 				    + "So that I can feel safer\n"
@@ -105,10 +108,24 @@ public class GherkinStoryParserBehaviour {
 					+ "Given I have a car with 4 wheels\n"
 					+ "Then I can drive it.\n";
 		Story story = storyParser.parseStory(storyAsText);
-		assertThat(story.getDescription().asString(), equalTo("Hello Car\n\n"
-						+ "As a car driver\n"
-					    + "I want to drive cars on 4 wheels\n"
-					    + "So that I can feel safer"));		
+        assertThat(story.getDescription().asString(), equalTo("Hello Car"));
+        Narrative narrative = story.getNarrative();
+        assertThat(narrative.asA(), equalTo("car driver"));
+        assertThat(narrative.iWantTo(), equalTo("drive cars on 4 wheels"));
+        assertThat(narrative.soThat(), equalTo("I can feel safer"));
 	}
 
+    @Test
+    public void shouldParseStoryWithBackground() throws IOException{
+        String storyAsText = "Feature: Hello Car\n\n"
+                    + "Background:\n"
+                    + "Given I have a license\n\n"
+                    + "Scenario: Car can drive\n"
+                    + "Given I have a car with 4 wheels\n"
+                    + "Then I can drive it.\n";
+        Story story = storyParser.parseStory(storyAsText);
+        assertThat(story.getDescription().asString(), equalTo("Hello Car"));
+        assertThat(story.getLifecycle().getBeforeSteps(), hasItem("Given I have a license"));
+        assertThat(story.getScenarios().get(0).getSteps().size(), equalTo(2));
+    }
 }

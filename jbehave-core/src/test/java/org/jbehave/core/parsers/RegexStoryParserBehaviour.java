@@ -236,6 +236,44 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
+    public void shouldParseStoryWithLifecycleBeforeOnly() {
+        String wholeStory = "Lifecycle: " + NL +
+                "Before:" + NL + NL +
+                "Given a step before each scenario" + NL + 
+                "And another before step" + NL +
+                "Scenario:"+ NL +        
+                "Given a scenario";
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<String> beforeSteps = story.getLifecycle().getBeforeSteps();
+        assertThat(beforeSteps.get(0), equalTo("Given a step before each scenario"));
+        assertThat(beforeSteps.get(1), equalTo("And another before step"));
+        List<String> afterSteps = story.getLifecycle().getAfterSteps();
+        assertThat(afterSteps.isEmpty(), equalTo(true));
+        Scenario scenario = story.getScenarios().get(0);
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+    }
+
+    @Test
+    public void shouldParseStoryWithLifecycleAfterOnly() {
+        String wholeStory = "Lifecycle: " + NL +
+                "After:" + NL + NL +
+                "Given a step after each scenario" + NL + 
+                "And another after step" + NL +
+                "Scenario:"+ NL +        
+                "Given a scenario";
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<String> beforeSteps = story.getLifecycle().getBeforeSteps();
+        assertThat(beforeSteps.isEmpty(), equalTo(true));
+        List<String> afterSteps = story.getLifecycle().getAfterSteps();
+        assertThat(afterSteps.get(0), equalTo("Given a step after each scenario"));
+        assertThat(afterSteps.get(1), equalTo("And another after step"));
+        Scenario scenario = story.getScenarios().get(0);
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+    }
+
+    @Test
     public void shouldParseStoryWithGivenStoriesAndExamplesCommentedOut() {
         String wholeStory = "Scenario: Show that we can comment out GivenStories and Examples portions of a scenario"+ NL +
                 "!-- GivenStories: AGivenStoryToBeCommented" + NL +

@@ -11,6 +11,10 @@ public class GherkinSteps {
     
 	private Car car;
 
+    @Given("I have a license")
+    public void givenIHaveALicense() {
+    }
+	
 	@Given("I have a car")
 	public void givenIHaveACar() {
 		car = new Car();
