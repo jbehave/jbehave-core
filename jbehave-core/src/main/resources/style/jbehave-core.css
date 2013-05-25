@@ -254,12 +254,24 @@ span.inOrderTo,span.asA,span.iWantTo,span.soThat {
 	font-weight: bold;
 }
 
-.givenStories, .path {
+.givenStories,.path {
 	font-weight: bolder;
 	font-size: 16px;
     opacity: 0.85;
 	margin-bottom: 10px;
 	padding: 5px 10px;
+}
+
+.lifecycle {
+    text-align: left;
+}
+
+h2.lifecycle,h3.lifecycle {
+    opacity: 0.85;
+}
+
+.before,.after {
+    margin-left: 10px;
 }
 
 .scenario {

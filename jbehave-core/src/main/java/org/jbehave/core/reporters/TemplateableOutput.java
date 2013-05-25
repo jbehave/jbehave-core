@@ -221,6 +221,18 @@ public class TemplateableOutput implements StoryReporter {
             this.keywords = keywords;
         }
 
+        public String getLifecycle(){
+            return keywords.lifecycle();
+        }
+
+        public String getBefore(){
+            return keywords.before();
+        }
+
+        public String getAfter(){
+            return keywords.after();
+        }
+
         public String getMeta() {
             return keywords.meta();
         }

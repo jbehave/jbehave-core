@@ -30,6 +30,20 @@
 </#list>
 </givenStories>
 </#macro>
+<#macro renderLifecycle lifecycle>
+<lifecycle keyword="${keywords.lifecycle}">
+<before keyword="${keywords.before}">
+<#list lifecycle.getBeforeSteps() as step>
+<step>${step?xml}</step> 
+</#list>
+</before>
+<after keyword="${keywords.after}">
+<#list lifecycle.getAfterSteps() as step>
+<step>${step?xml}</step> 
+</#list>
+</after>
+</lifecycle>
+</#macro>
 <#macro renderTable table>
 <#assign rows=table.getRows()>
 <#assign headers=table.getHeaders()>
@@ -78,6 +92,7 @@ ${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()
 <story path="${story.path}" title="${story.description}">
 <#if story.getMeta()??><@renderMeta story.getMeta()/></#if>
 <#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
+<#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
 <#assign scenarios = story.getScenarios()>
 <#list scenarios as scenario>
 <scenario keyword="${keywords.scenario}" title="${scenario.title?xml}">   

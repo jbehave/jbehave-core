@@ -32,6 +32,20 @@
 </#list>
 </div>
 </#macro>
+<#macro renderLifecycle lifecycle>
+<div class="lifecycle"><h2>${keywords.lifecycle}</h2>
+<div class="before"><h3>${keywords.before}</h3>
+<#list lifecycle.getBeforeSteps() as step>
+<div class="step">${step?html}</div>   
+</#list>
+</div>
+<div class="after"><h3>${keywords.after}</h3>
+<#list lifecycle.getAfterSteps() as step>
+<div class="step">${step?html}</div>   
+</#list>
+</div>
+</div>
+</#macro>
 <#macro renderTable table>
 <#assign rows=table.getRows()>
 <#assign headers=table.getHeaders()>
@@ -92,6 +106,7 @@
 <div class="path">${story.path}</div>
 <#if story.getMeta()??><@renderMeta story.getMeta()/></#if>
 <#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
+<#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
 <#assign scenarios = story.getScenarios()>
 <#list scenarios as scenario>
 <div class="scenario"><h2>${keywords.scenario} <@renderMultiline scenario.getTitle()/></h2>   
