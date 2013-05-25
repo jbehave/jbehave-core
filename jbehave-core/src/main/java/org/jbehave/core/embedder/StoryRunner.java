@@ -18,6 +18,7 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.GivenStory;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -271,7 +272,8 @@ public class StoryRunner {
             
             // determine if before and after scenario steps should be run
             boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
-
+            
+            reporter.get().lifecyle(story.getLifecycle());
             for (Scenario scenario : story.getScenarios()) {
                 // scenario also inherits meta from story
                 boolean scenarioAllowed = true;
@@ -296,7 +298,7 @@ public class StoryRunner {
                         runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE,
                                 ScenarioType.NORMAL);
                     }
-
+                    runLifecycleSteps(context, story.getLifecycle(), Stage.BEFORE, storyAndScenarioMeta);
                     if (isParameterisedByExamples(scenario)) { // run parametrised scenarios by examples
                         runScenariosParametrisedByExamples(context, scenario, storyAndScenarioMeta);
                     } else { // run as plain old scenario
@@ -304,6 +306,7 @@ public class StoryRunner {
                         runGivenStories(scenario.getGivenStories(), storyParameters, context);
                         runScenarioSteps(context, scenario, storyParameters);
                     }
+                    runLifecycleSteps(context, story.getLifecycle(), Stage.AFTER, storyAndScenarioMeta);
 
                     // run after scenario steps, if allowed
                     if (runBeforeAndAfterScenarioSteps) {
@@ -424,13 +427,17 @@ public class StoryRunner {
 		return Meta.EMPTY;
 	}
 
-    private void runBeforeOrAfterStorySteps(RunContext context, Story story, Stage stage) throws InterruptedException {
+	private void runBeforeOrAfterStorySteps(RunContext context, Story story, Stage stage) throws InterruptedException {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterStorySteps(story, stage));
     }
 
     private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Meta storyAndScenarioMeta,
             Stage stage, ScenarioType type) throws InterruptedException {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterScenarioSteps(storyAndScenarioMeta, stage, type));
+    }
+
+    private void runLifecycleSteps(RunContext context, Lifecycle lifecycle, Stage stage, Meta storyAndScenarioMeta) throws InterruptedException {
+        runStepsWhileKeepingState(context, context.collectLifecycleSteps(lifecycle, storyAndScenarioMeta, stage));        
     }
 
     private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters)
@@ -609,7 +616,7 @@ public class StoryRunner {
         public String metaFilterAsString() {
             return filter.asString();
         }
-
+        
         public List<Step> collectBeforeOrAfterStorySteps(Story story, Stage stage) {
             return configuration.stepCollector().collectBeforeOrAfterStorySteps(candidateSteps, story, stage,
                     givenStory);
@@ -618,6 +625,10 @@ public class StoryRunner {
         public List<Step> collectBeforeOrAfterScenarioSteps(Meta storyAndScenarioMeta, Stage stage, ScenarioType type) {
             return configuration.stepCollector().collectBeforeOrAfterScenarioSteps(candidateSteps,
                     storyAndScenarioMeta, stage, type);
+        }
+
+        public List<Step> collectLifecycleSteps(Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage) {
+            return configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, storyAndScenarioMeta, stage);
         }
 
         public List<Step> collectScenarioSteps(Scenario scenario, Map<String, String> parameters) {

@@ -11,6 +11,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -99,7 +100,11 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         }
     }
 
-    public void narrative(final Narrative narrative) {
+    public void narrative(Narrative narrative) {
+    }
+    
+    public void lifecyle(Lifecycle lifecycle) {
+        
     }
 
     public void storyNotAllowed(Story story, String filter) {
@@ -253,6 +258,5 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(output).append(data).toString();
     }
-
 
 }

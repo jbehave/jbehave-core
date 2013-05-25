@@ -30,6 +30,9 @@ public class Keywords {
     public static final String SO_THAT = "SoThat";
     public static final String SCENARIO = "Scenario";
     public static final String GIVEN_STORIES = "GivenStories";
+    public static final String LIFECYCLE = "Lifecycle";
+    public static final String BEFORE = "Before";
+    public static final String AFTER = "After";
     public static final String EXAMPLES_TABLE = "ExamplesTable";
     public static final String EXAMPLES_TABLE_ROW = "ExamplesTableRow";
     public static final String EXAMPLES_TABLE_HEADER_SEPARATOR = "ExamplesTableHeaderSeparator";
@@ -54,10 +57,11 @@ public class Keywords {
     public static final String NO = "No";
 
     public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SO_THAT,
-            SCENARIO, GIVEN_STORIES, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
+            SCENARIO, GIVEN_STORIES, LIFECYCLE, BEFORE, AFTER, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE,
             PENDING, NOT_PERFORMED, FAILED, DRY_RUN, STORY_CANCELLED, DURATION, OUTCOME_DESCRIPTION, OUTCOME_VALUE,
             OUTCOME_MATCHER, OUTCOME_VERIFIED, YES, NO);
+
 
     private final String meta;
     private final String metaProperty;
@@ -68,6 +72,9 @@ public class Keywords {
     private final String soThat;
     private final String scenario;
     private final String givenStories;
+    private final String lifecycle;
+    private final String before;
+    private final String after;
     private final String examplesTable;
     private final String examplesTableRow;
     private final String examplesTableHeaderSeparator;
@@ -92,6 +99,7 @@ public class Keywords {
     private final String no;
     private final Map<StepType, String> startingWordsByType = new HashMap<StepType, String>();
 
+
     public static Map<String, String> defaultKeywords() {
         Map<String, String> keywords = new HashMap<String, String>();
         keywords.put(META, "Meta:");
@@ -103,6 +111,9 @@ public class Keywords {
         keywords.put(SO_THAT, "So that");
         keywords.put(SCENARIO, "Scenario:");
         keywords.put(GIVEN_STORIES, "GivenStories:");
+        keywords.put(LIFECYCLE, "Lifecycle:");
+        keywords.put(BEFORE, "Before:");
+        keywords.put(AFTER, "After:");
         keywords.put(EXAMPLES_TABLE, "Examples:");
         keywords.put(EXAMPLES_TABLE_ROW, "Example:");
         keywords.put(EXAMPLES_TABLE_HEADER_SEPARATOR, "|");
@@ -150,6 +161,9 @@ public class Keywords {
         this.soThat = keyword(SO_THAT, keywords);
         this.scenario = keyword(SCENARIO, keywords);
         this.givenStories = keyword(GIVEN_STORIES, keywords);
+        this.lifecycle = keyword(LIFECYCLE, keywords);
+        this.before = keyword(BEFORE, keywords);
+        this.after = keyword(AFTER, keywords);
         this.examplesTable = keyword(EXAMPLES_TABLE, keywords);
         this.examplesTableRow = keyword(EXAMPLES_TABLE_ROW, keywords);
         this.examplesTableHeaderSeparator = keyword(EXAMPLES_TABLE_HEADER_SEPARATOR, keywords);
@@ -223,6 +237,18 @@ public class Keywords {
 
     public String givenStories() {
         return givenStories;
+    }
+
+    public String lifecycle() {
+        return lifecycle;
+    }
+
+    public String before() {
+        return before;
+    }
+
+    public String after() {
+        return after;
     }
 
     public String examplesTable() {

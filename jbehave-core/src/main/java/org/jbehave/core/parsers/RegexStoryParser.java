@@ -13,6 +13,7 @@ import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
@@ -58,8 +59,9 @@ public class RegexStoryParser implements StoryParser {
         Meta meta = parseStoryMetaFrom(storyAsText);
         Narrative narrative = parseNarrativeFrom(storyAsText);
         GivenStories givenStories = parseGivenStories(storyAsText);
+        Lifecycle lifecycle = parseLifecycle(storyAsText);
         List<Scenario> scenarios = parseScenariosFrom(storyAsText);
-        Story story = new Story(storyPath, description, meta, narrative, givenStories, scenarios);
+        Story story = new Story(storyPath, description, meta, narrative, givenStories, lifecycle, scenarios);
         if (storyPath != null) {
             story.namedAs(new File(storyPath).getName());
         }
@@ -127,6 +129,24 @@ public class RegexStoryParser implements StoryParser {
         return new GivenStories(givenStories);
     }
 
+    private Lifecycle parseLifecycle(String storyAsText) {
+        String scenarioKeyword = keywords.scenario();
+        // use text before scenario keyword, if found
+        String beforeScenario = "";
+        if (StringUtils.contains(storyAsText, scenarioKeyword)) {
+            beforeScenario = StringUtils.substringBefore(storyAsText, scenarioKeyword);
+        }
+        Matcher findingLifecycle = patternToPullLifecycleIntoGroupOne().matcher(beforeScenario);
+        String lifecycle = findingLifecycle.find() ? findingLifecycle.group(1).trim() : NONE;
+        Matcher findingElements = patternToPullLifecyleElementsIntoGroups().matcher(lifecycle);
+        if ( findingElements.matches() ){
+            List<String> beforeSteps = findSteps(startingWithNL(findingElements.group(1).trim()));
+            List<String> afterSteps = findSteps(startingWithNL(findingElements.group(2).trim()));
+            return new Lifecycle(beforeSteps, afterSteps);
+        }
+        return Lifecycle.EMPTY;
+    }
+
     private List<Scenario> parseScenariosFrom(String storyAsText) {
         List<Scenario> parsed = new ArrayList<Scenario>();
         for (String scenarioAsText : splitScenarios(storyAsText)) {
@@ -157,9 +177,7 @@ public class RegexStoryParser implements StoryParser {
         String title = findScenarioTitle(scenarioAsText);
         String scenarioWithoutKeyword = removeStart(scenarioAsText, keywords.scenario()).trim();
         String scenarioWithoutTitle = removeStart(scenarioWithoutKeyword, title);
-        if ( !scenarioWithoutTitle.startsWith("\n") ){ // always ensure scenario starts with newline
-            scenarioWithoutTitle = "\n" + scenarioWithoutTitle;
-        }
+        scenarioWithoutTitle = startingWithNL(scenarioWithoutTitle);
         Meta meta = findScenarioMeta(scenarioWithoutTitle);
         ExamplesTable examplesTable = findExamplesTable(scenarioWithoutTitle);
         GivenStories givenStories = findScenarioGivenStories(scenarioWithoutTitle);
@@ -168,6 +186,13 @@ public class RegexStoryParser implements StoryParser {
         }
         List<String> steps = findSteps(scenarioWithoutTitle);
         return new Scenario(title, meta, givenStories, examplesTable, steps);
+    }
+
+    private String startingWithNL(String text) {
+        if ( !text.startsWith("\n") ){ // always ensure starts with newline
+            return "\n" + text;
+        }
+        return text;
     }
 
     private String findScenarioTitle(String scenarioAsText) {
@@ -210,16 +235,18 @@ public class RegexStoryParser implements StoryParser {
     // Regex Patterns
 
     private Pattern patternToPullDescriptionIntoGroupOne() {
-        String metaOrNarrativeOrScenario = concatenateWithOr(keywords.meta(), keywords.narrative(), keywords.scenario());
-        return compile("(.*?)(" + metaOrNarrativeOrScenario + ").*", DOTALL);
+        String metaOrNarrativeOrLifecycleOrScenario = concatenateWithOr(keywords.meta(), keywords.narrative(), keywords.lifecycle(), keywords.scenario());
+        return compile("(.*?)(" + metaOrNarrativeOrLifecycleOrScenario + ").*", DOTALL);
     }
 
     private Pattern patternToPullStoryMetaIntoGroupOne() {
-        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + keywords.narrative() + "|" +  keywords.givenStories() + ").*", DOTALL);
+        String narrativeOrGivenStories = concatenateWithOr(keywords.narrative(), keywords.givenStories());
+        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + narrativeOrGivenStories + ").*", DOTALL);
     }
 
     private Pattern patternToPullNarrativeIntoGroupOne() {
-        return compile(".*" + keywords.narrative() + "(.*?)\\s*(" + keywords.givenStories() + "|" + keywords.scenario() + ").*", DOTALL);
+        String givenStoriesOrLifecycleOrScenario = concatenateWithOr(keywords.givenStories(), keywords.lifecycle(), keywords.scenario());
+        return compile(".*" + keywords.narrative() + "(.*?)\\s*(" + givenStoriesOrLifecycleOrScenario + ").*", DOTALL);
     }
 
     private Pattern patternToPullNarrativeElementsIntoGroups() {
@@ -231,7 +258,16 @@ public class RegexStoryParser implements StoryParser {
         return compile(".*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo() + "(.*)\\s*" + keywords.soThat()
                 + "(.*)", DOTALL);
     }
-
+    
+    private Pattern patternToPullStoryGivenStoriesIntoGroupOne() {
+        String lifecycleOrScenario = concatenateWithOr(keywords.lifecycle(), keywords.scenario());
+        return compile(".*" + keywords.givenStories() + "(.*?)\\s*(\\Z|" + lifecycleOrScenario + ").*", DOTALL);
+    }
+    
+    private Pattern patternToPullLifecycleIntoGroupOne() {
+        return compile(".*" + keywords.lifecycle() + "\\s*(.*)", DOTALL);
+    }
+    
     private Pattern patternToPullScenarioTitleIntoGroupOne() {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         return compile(keywords.scenario() + "((.)*?)\\s*(" + keywords.meta() + "|" + startingWords + ").*", DOTALL);
@@ -243,8 +279,8 @@ public class RegexStoryParser implements StoryParser {
                 DOTALL);
     }
 
-    private Pattern patternToPullStoryGivenStoriesIntoGroupOne() {
-        return compile(".*" + keywords.givenStories() + "\\s*(.*)", DOTALL);
+    private Pattern patternToPullLifecyleElementsIntoGroups() {
+        return compile(".*" + keywords.before() + "(.*)\\s*" + keywords.after() + "(.*)\\s*" , DOTALL);
     }
 
     private Pattern patternToPullScenarioGivenStoriesIntoGroupOne() {

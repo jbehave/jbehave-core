@@ -74,6 +74,12 @@ public class DelegatingStoryReporter implements StoryReporter {
         }
     }
 
+    public void lifecyle(Lifecycle lifecycle) {
+        for (StoryReporter reporter : delegates) {
+            reporter.lifecyle(lifecycle);
+        }
+    }
+
     public void beforeExamples(List<String> steps, ExamplesTable table) {
         for (StoryReporter reporter : delegates) {
             reporter.beforeExamples(steps, table);

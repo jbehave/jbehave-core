@@ -18,7 +18,6 @@
             <property name="+theme" value="testing"/>
           </properties>
         </meta>
-        <scenarios/>
         <givenStories>
           <givenStories/>
           <givenStoriesAsString></givenStoriesAsString>
@@ -47,6 +46,15 @@
             <trim>true</trim>
           </examplesTable>
         </givenStories>
+        <lifecycle>
+          <beforeSteps class="java.util.Arrays$ArrayList">
+            <a class="string-array"/>
+          </beforeSteps>
+          <afterSteps class="java.util.Arrays$ArrayList">
+            <a class="string-array"/>
+          </afterSteps>
+        </lifecycle>
+        <scenarios/>
       </story>
       <localizedNarrative>In order to renovate my house
 As a customer

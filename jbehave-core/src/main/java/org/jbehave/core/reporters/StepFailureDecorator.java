@@ -54,6 +54,10 @@ public class StepFailureDecorator implements StoryReporter {
         delegate.narrative(narrative);
     }
 
+    public void lifecyle(Lifecycle lifecycle) {
+        delegate.lifecyle(lifecycle);
+    }
+
     public void failed(String step, Throwable cause) {
 		failure = (UUIDExceptionWrapper) cause;
 		delegate.failed(step, failure);
@@ -127,4 +131,5 @@ public class StepFailureDecorator implements StoryReporter {
     public void storyCancelled(Story story, StoryDuration storyDuration) {
         delegate.storyCancelled(story, storyDuration);
     }
+
 }

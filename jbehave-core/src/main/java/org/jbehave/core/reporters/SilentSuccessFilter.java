@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
@@ -74,6 +75,14 @@ public class SilentSuccessFilter implements StoryReporter {
         beforeStoryState.report();
     }
 
+    public void lifecyle(final Lifecycle lifecycle) {
+        beforeStoryState = new State() {
+            public void report() {
+                delegate.lifecyle(lifecycle);
+            }
+        };
+        beforeStoryState.report();
+    }
 
     public void storyNotAllowed(final Story story, final String filter) {
         beforeStoryState = new State() {
