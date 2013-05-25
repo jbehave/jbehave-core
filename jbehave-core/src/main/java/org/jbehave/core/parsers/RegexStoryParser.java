@@ -138,10 +138,22 @@ public class RegexStoryParser implements StoryParser {
         }
         Matcher findingLifecycle = patternToPullLifecycleIntoGroupOne().matcher(beforeScenario);
         String lifecycle = findingLifecycle.find() ? findingLifecycle.group(1).trim() : NONE;
-        Matcher findingElements = patternToPullLifecyleElementsIntoGroups().matcher(lifecycle);
-        if ( findingElements.matches() ){
-            List<String> beforeSteps = findSteps(startingWithNL(findingElements.group(1).trim()));
-            List<String> afterSteps = findSteps(startingWithNL(findingElements.group(2).trim()));
+        Matcher findingBeforeAndAfter = compile(".*" + keywords.before() + "(.*)\\s*" + keywords.after() + "(.*)\\s*" , DOTALL).matcher(lifecycle);
+        if ( findingBeforeAndAfter.matches() ){
+            List<String> beforeSteps = findSteps(startingWithNL(findingBeforeAndAfter.group(1).trim()));
+            List<String> afterSteps = findSteps(startingWithNL(findingBeforeAndAfter.group(2).trim()));
+            return new Lifecycle(beforeSteps, afterSteps);
+        }
+        Matcher findingBefore = compile(".*" + keywords.before() + "(.*)\\s*" , DOTALL).matcher(lifecycle);
+        if ( findingBefore.matches() ){
+            List<String> beforeSteps = findSteps(startingWithNL(findingBefore.group(1).trim()));
+            List<String> afterSteps = new ArrayList<String>();
+            return new Lifecycle(beforeSteps, afterSteps);
+        }
+        Matcher findingAfter = compile(".*" + keywords.after() + "(.*)\\s*" , DOTALL).matcher(lifecycle);
+        if ( findingAfter.matches() ){
+            List<String> beforeSteps = new ArrayList<String>();
+            List<String> afterSteps = findSteps(startingWithNL(findingAfter.group(1).trim()));
             return new Lifecycle(beforeSteps, afterSteps);
         }
         return Lifecycle.EMPTY;
@@ -277,10 +289,6 @@ public class RegexStoryParser implements StoryParser {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         return compile(".*" + keywords.meta() + "(.*?)\\s*(" + keywords.givenStories() + "|" + startingWords + ").*",
                 DOTALL);
-    }
-
-    private Pattern patternToPullLifecyleElementsIntoGroups() {
-        return compile(".*" + keywords.before() + "(.*)\\s*" + keywords.after() + "(.*)\\s*" , DOTALL);
     }
 
     private Pattern patternToPullScenarioGivenStoriesIntoGroupOne() {

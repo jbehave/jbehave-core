@@ -58,44 +58,70 @@ public class GherkinStoryParser extends TransformingStoryParser {
 				}
 
 				private void writeNarrative(String description) {
-					boolean valid = false;
+                    boolean matches = false;
 					Matcher findingNarrative = compile(".*" + keywords.narrative() + "(.*?)", DOTALL).matcher(description);
 			        if (findingNarrative.matches()) {
 			            String narrative = findingNarrative.group(1).trim();
-			            Matcher findingElements = compile(".*" + keywords.inOrderTo() + "(.*)\\s*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo()
-			                    + "(.*)", DOTALL).matcher(narrative);
-			            if (findingElements.matches()) {
-			            	valid = true;
-			                String inOrderTo = findingElements.group(1).trim();
-			                String asA = findingElements.group(2).trim();
-			                String iWantTo = findingElements.group(3).trim();
-			                out.append(keywords.narrative()).append("\n");
-			                out.append(keywords.inOrderTo()).append(" ").append(inOrderTo).append("\n");
-			                out.append(keywords.asA()).append(" ").append(asA).append("\n");
-			                out.append(keywords.iWantTo()).append(" ").append(iWantTo).append("\n\n");			                
+			            matches = writeNarrativeWithDefaultSyntax(out, narrative);
+			            if (!matches){
+			                matches = writeNarrativeWithAlternativeSyntax(out, narrative);
 			            }
 			        }
-			        if (!valid){
+                    if (!matches){
 			        	// if narrative format does not match, write description as part of story description
 			        	out.append(description);
-
-			        }
-			       
+			        }			       
 				}
 
+                private boolean writeNarrativeWithDefaultSyntax(final StringBuffer out, String narrative) {
+                    boolean matches = false;
+                    Matcher findingElements = compile(".*" + keywords.inOrderTo() + "(.*)\\s*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo()
+                            + "(.*)", DOTALL).matcher(narrative);
+                    if (findingElements.matches()) {
+                        String inOrderTo = findingElements.group(1).trim();
+                        String asA = findingElements.group(2).trim();
+                        String iWantTo = findingElements.group(3).trim();
+                        out.append(keywords.narrative()).append("\n");
+                        out.append(keywords.inOrderTo()).append(" ").append(inOrderTo).append("\n");
+                        out.append(keywords.asA()).append(" ").append(asA).append("\n");
+                        out.append(keywords.iWantTo()).append(" ").append(iWantTo).append("\n\n");
+                        matches = true;
+                    }
+                    return matches;
+                }
+
+                private boolean writeNarrativeWithAlternativeSyntax(final StringBuffer out, String narrative) {
+                    boolean matches = false;
+                    Matcher findingElements = compile(".*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo() + "(.*)\\s*" + keywords.soThat()
+                            + "(.*)", DOTALL).matcher(narrative);
+                    if (findingElements.matches()) {
+                        String asA = findingElements.group(1).trim();
+                        String iWantTo = findingElements.group(2).trim();
+                        String soThat = findingElements.group(3).trim();
+                        out.append(keywords.narrative()).append("\n");
+                        out.append(keywords.asA()).append(" ").append(asA).append("\n");
+                        out.append(keywords.iWantTo()).append(" ").append(iWantTo).append("\n\n");                          
+                        out.append(keywords.soThat()).append(" ").append(soThat).append("\n");
+                        matches = true;
+                    }
+                    return matches;
+                }
+
 				public void background(Background background) {
+                    out.append(keywords.lifecycle()+background.getName()).append("\n")
+                       .append(keywords.before()+"\n");
 				}
 
 				public void scenario(Scenario scenario) {
-					out.append(keywords.scenario()+scenario.getName()).append("\n\n");
+					out.append("\n").append(keywords.scenario()+scenario.getName()).append("\n\n");
 				}
 
 				public void scenarioOutline(ScenarioOutline scenarioOutline) {
-					out.append(keywords.scenario()+scenarioOutline.getName()).append("\n\n");
+					out.append("\n").append(keywords.scenario()+scenarioOutline.getName()).append("\n\n");
 				}
 
 				public void examples(Examples examples) {
-					out.append(keywords.examplesTable()+examples.getName()).append("\n");
+					out.append("\n").append(keywords.examplesTable()+examples.getName()).append("\n");
 					writeRows(examples.getRows());
 				}
 
