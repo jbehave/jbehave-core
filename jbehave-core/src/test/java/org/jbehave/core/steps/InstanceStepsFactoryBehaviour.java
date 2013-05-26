@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.jbehave.core.annotations.AsParameterConverter;
@@ -31,7 +32,29 @@ public class InstanceStepsFactoryBehaviour {
         InstanceStepsFactory factory = new InstanceStepsFactory(new MostUsefulConfiguration());
         assertThat(factory.hasAnnotatedMethods(MySteps.class), is(true));
         assertThat(factory.hasAnnotatedMethods(NoAnnotatedMethods.class), is(false));
-    }    
+    } 
+
+	@Test
+	public void shouldAllowGenericList() {
+		List<? super MyInterface> list = new ArrayList<MyInterface>();
+		list.add(new MyStepsAWithInterface());
+		list.add(new MyStepsBWithInterface());
+		InstanceStepsFactory factory = new InstanceStepsFactory(
+		        new MostUsefulConfiguration(), list);
+		List<CandidateSteps> candidateSteps = factory.createCandidateSteps();		
+		assertThat(candidateSteps.size(), equalTo(2));
+
+	}
+
+	static interface MyInterface {
+
+	}
+
+	static class MyStepsAWithInterface implements MyInterface {
+	}
+
+	static class MyStepsBWithInterface implements MyInterface {
+	}
 
     static class MySteps  {
 

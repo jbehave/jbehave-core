@@ -20,7 +20,7 @@ public class InstanceStepsFactory extends AbstractStepsFactory {
         this(configuration, asList(stepsInstances));
     }
 
-    public InstanceStepsFactory(Configuration configuration, List<Object> stepsInstances) {
+    public InstanceStepsFactory(Configuration configuration, List<?> stepsInstances) {
         super(configuration);
         for (Object instance : stepsInstances) {
             this.stepsInstances.put(instance.getClass(), instance);
