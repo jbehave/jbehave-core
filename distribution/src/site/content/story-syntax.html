@@ -23,6 +23,12 @@ Narrative:
 In order to communicate effectively to the business some functionality
 As a development team
 I want to use Behaviour-Driven Development
+
+Lifecycle: 
+Before:
+Given a step that is executed before each scenario 
+After:
+Given a step that is executed after each scenario 
     
 Scenario:  A scenario is a collection of executable steps of different type
 
@@ -57,6 +63,10 @@ In order to communicate effectively to the business some functionality
 As a development team
 I want to use Behaviour-Driven Development
     
+Background: 
+
+Given a step that is executed before each scenario 
+
 Scenario:  A scenario is a collection of executable steps of different type
 
 Given step represents a precondition to an event
@@ -76,7 +86,10 @@ Examples:
 </pre>
 
 <p>The Gherkin syntax is supported via <a href="story-transformers.html">story transformers</a>, that use
-the Gherkin parser to transform the syntax to JBehave's.  Some elements, e.g. Background don't have a direct correspondence.</p>
+the Gherkin parser to transform the syntax to JBehave's.</p>
+
+<span class="followup">Note that Gherkin's Background element corresponds to the JBehave Lifecycle Before element. 
+JBehave also supports a Lifecycle After element which is not currently available in Gherkin.</span>
 
 <div class="clear">
 <hr />
