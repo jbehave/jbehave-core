@@ -16,27 +16,27 @@
   </properties>
 
   <modules>
+    <module>core</module>
+    <module>ant</module>
+    <module>annotations</module>
     <module>executable-jar</module>
     <module>gameoflife</module>
     <module>gherkin</module>
     <module>groovy</module>
     <module>jruby</module>
     <module>scala</module>
-    <!-- module>spring-security</module -->
     <module>performance</module>
     <module>threads</module>
-    <module>trader</module>
-    <module>trader-ant</module>
-    <module>trader-annotations</module>
-    <module>trader-urls</module>
-    <module>trader-maps</module>
-    <module>trader-stepdocs</module>
-    <module>trader-testng</module>
-    <module>trader-i18n</module>
-    <module>trader-guice</module>
-    <module>trader-pico</module>
-    <module>trader-spring</module>
-    <module>trader-weld</module>
+    <module>urls</module>
+    <module>maps</module>
+    <module>stepdocs</module>
+    <module>testng</module>
+    <module>i18n</module>
+    <module>guice</module>
+    <module>pico</module>
+    <module>spring</module>
+    <!-- module>spring-security</module -->
+    <module>weld</module>
   </modules>
 
   <dependencies>

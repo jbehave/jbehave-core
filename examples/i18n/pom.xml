@@ -1,0 +1,45 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbehave</groupId>
+    <artifactId>jbehave-examples</artifactId>
+    <version>4.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbehave-i18n-example</artifactId>
+  <name>JBehave I18n Example</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-core-example</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>embeddable-stories</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <includes>
+                <include>**/LocalizedStories.java</include>
+              </includes>
+              <ignoreFailureInStories>true</ignoreFailureInStories>
+              <ignoreFailureInView>true</ignoreFailureInView>
+            </configuration>
+            <goals>
+              <goal>run-stories-as-embeddables</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  
+</project>
