@@ -66,6 +66,13 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("metaEnd", "</div>\n");
         patterns.setProperty("filter", "<div class=\"filter\">{0}</div>\n");        
         patterns.setProperty("narrative", "<div class=\"narrative\"><h2>{0}</h2>\n<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">{1}</span> {2}</div>\n<div class=\"element asA\"><span class=\"keyword asA\">{3}</span> {4}</div>\n<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">{5}</span> {6}</div>\n</div>\n");        
+        patterns.setProperty("lifecycleStart", "<div class=\"lifecycle\"><h2>{0}</h2>");
+        patterns.setProperty("lifecycleEnd", "</div>");        
+        patterns.setProperty("lifecycleBeforeStart", "<div class=\"before\"><h3>{0}</h3>");
+        patterns.setProperty("lifecycleBeforeEnd", "</div>");        
+        patterns.setProperty("lifecycleAfterStart", "<div class=\"after\"><h3>{0}</h3>");
+        patterns.setProperty("lifecycleAfterEnd", "</div>");        
+        patterns.setProperty("lifecycleStep", "<div class=\"step\">{0}</div>\n");          
         patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<h2>{0} {1}</h2>\n");
         patterns.setProperty("afterScenario", "</div>\n");
         patterns.setProperty("afterScenarioWithFailure", "<pre class=\"failure\">{0}</pre>\n</div>\n");
