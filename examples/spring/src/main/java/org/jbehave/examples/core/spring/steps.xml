@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+
+  <bean class="org.jbehave.examples.core.steps.BeforeAfterSteps" />
+
+  <bean class="org.jbehave.examples.core.steps.AndSteps" />
+
+  <bean class="org.jbehave.examples.core.steps.CalendarSteps" />
+
+  <bean class="org.jbehave.examples.core.steps.CompositeSteps" />
+
+  <bean class="org.jbehave.examples.core.steps.PendingSteps" />
+
+  <bean class="org.jbehave.examples.core.steps.PriorityMatchingSteps" />
+
+  <bean class="org.jbehave.examples.core.steps.SandpitSteps" />
+
+  <bean class="org.jbehave.examples.core.steps.SearchSteps" />
+
+  <bean id="traderSteps" class="org.jbehave.examples.core.steps.TraderSteps">
+    <constructor-arg>
+      <bean class="org.jbehave.examples.core.service.TradingService"/>
+    </constructor-arg>
+  </bean>
+
+  <!-- Abstract steps will be ignored -->
+  <bean class="org.jbehave.examples.core.steps.AbstractSteps" abstract="true" />
+
+</beans>
