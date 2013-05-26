@@ -65,6 +65,13 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("metaEnd", "</meta>\n");
         patterns.setProperty("filter", "<filter>{0}</filter>\n");        
         patterns.setProperty("narrative", "<narrative keyword=\"{0}\">\n  <inOrderTo keyword=\"{1}\">{2}</inOrderTo>\n  <asA keyword=\"{3}\">{4}</asA>\n  <iWantTo keyword=\"{5}\">{6}</iWantTo>\n</narrative>\n");
+        patterns.setProperty("lifecycleStart", "<lifecycle keyword=\"{0}\">\n");
+        patterns.setProperty("lifecycleEnd", "</lifecycle>\n");        
+        patterns.setProperty("lifecycleBeforeStart", "<before keyword=\"{0}\">\n");
+        patterns.setProperty("lifecycleBeforeEnd", "</before>\n");        
+        patterns.setProperty("lifecycleAfterStart", "<after keyword=\"{0}\">\n");
+        patterns.setProperty("lifecycleAfterEnd", "</after>\n");  
+        patterns.setProperty("lifecycleStep", "<step>{0}</step>\n");          
         patterns.setProperty("beforeScenario", "<scenario keyword=\"{0}\" title=\"{1}\">\n");
         patterns.setProperty("scenarioNotAllowed", "<notAllowed pattern=\"{0}\"/>\n");        
         patterns.setProperty("afterScenario", "</scenario>\n");

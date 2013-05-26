@@ -32,16 +32,20 @@
 </#macro>
 <#macro renderLifecycle lifecycle>
 <lifecycle keyword="${keywords.lifecycle}">
+<#if !lifecycle.getBeforeSteps().isEmpty()>
 <before keyword="${keywords.before}">
 <#list lifecycle.getBeforeSteps() as step>
 <step>${step?xml}</step> 
 </#list>
 </before>
+</#if>
+<#if !lifecycle.getAfterSteps().isEmpty()>
 <after keyword="${keywords.after}">
 <#list lifecycle.getAfterSteps() as step>
 <step>${step?xml}</step> 
 </#list>
 </after>
+</#if>
 </lifecycle>
 </#macro>
 <#macro renderTable table>

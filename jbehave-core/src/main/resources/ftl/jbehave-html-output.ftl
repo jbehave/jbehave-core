@@ -34,16 +34,20 @@
 </#macro>
 <#macro renderLifecycle lifecycle>
 <div class="lifecycle"><h2>${keywords.lifecycle}</h2>
+<#if !lifecycle.getBeforeSteps().isEmpty()>
 <div class="before"><h3>${keywords.before}</h3>
 <#list lifecycle.getBeforeSteps() as step>
 <div class="step">${step?html}</div>   
 </#list>
 </div>
+</#if>
+<#if !lifecycle.getAfterSteps().isEmpty()>
 <div class="after"><h3>${keywords.after}</h3>
 <#list lifecycle.getAfterSteps() as step>
 <div class="step">${step?html}</div>   
 </#list>
 </div>
+</#if>
 </div>
 </#macro>
 <#macro renderTable table>

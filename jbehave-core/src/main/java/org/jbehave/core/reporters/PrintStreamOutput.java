@@ -169,7 +169,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     private Object renderOutcomeValue(Object value, String dateFormat) {
-        if(value instanceof Date) {
+        if (value instanceof Date) {
             return new SimpleDateFormat(dateFormat).format(value);
         } else {
             return value;
@@ -195,29 +195,37 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     public void narrative(Narrative narrative) {
         if (!narrative.isEmpty()) {
-            if ( !narrative.isAlternative() ){
-                print(format("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n", keywords.narrative(), keywords.inOrderTo(),
-                        narrative.inOrderTo(), keywords.asA(), narrative.asA(), keywords.iWantTo(), narrative.iWantTo()));
+            if (!narrative.isAlternative()) {
+                print(format("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n", keywords.narrative(),
+                        keywords.inOrderTo(), narrative.inOrderTo(), keywords.asA(), narrative.asA(),
+                        keywords.iWantTo(), narrative.iWantTo()));
             } else {
                 print(format("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n", keywords.narrative(), keywords.asA(),
-                        narrative.asA(), keywords.iWantTo(), narrative.iWantTo(), keywords.soThat(), narrative.soThat()));                
+                        narrative.asA(), keywords.iWantTo(), narrative.iWantTo(), keywords.soThat(), narrative.soThat()));
             }
         }
     }
 
     public void lifecyle(Lifecycle lifecycle) {
         if (!lifecycle.isEmpty()) {
-            print(format("lifecycle", "{0}\n", keywords.lifecycle()));                
-            print(format("before", "{0}\n", keywords.before()));
-            print(lifecycle.getBeforeSteps());
-            print(format("after", "{0}\n", keywords.after()));
-            print(lifecycle.getAfterSteps());
-        }        
+            print(format("lifecycleStart", "{0}\n", keywords.lifecycle()));
+            if (!lifecycle.getBeforeSteps().isEmpty()) {
+                print(format("lifecycleBeforeStart", "{0}\n", keywords.before()));
+                print(lifecycle.getBeforeSteps());
+                print(format("lifecycleBeforeEnd", ""));
+            }
+            if (!lifecycle.getAfterSteps().isEmpty()) {
+                print(format("lifecycleAfterStart", "{0}\n", keywords.after()));
+                print(lifecycle.getAfterSteps());
+                print(format("lifecycleAfterEnd", ""));
+            }
+            print(format("lifecycleEnd", "\n"));
+        }
     }
 
     private void print(List<String> steps) {
-        for ( String step : steps ){
-            print(format("step", "{0}\n", step));                
+        for (String step : steps) {
+            print(format("lifecycleStep", "{0}\n", step));
         }
     }
 
@@ -233,7 +241,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("afterStory", "\n"));
         // take care not to close System.out
         // which is used for ConsoleOutput
-        if(!givenStory && output!=System.out) {
+        if (!givenStory && output != System.out) {
             output.close();
         }
     }
