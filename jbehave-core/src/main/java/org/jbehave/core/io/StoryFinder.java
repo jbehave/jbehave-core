@@ -1,7 +1,5 @@
 package org.jbehave.core.io;
 
-import static java.util.Arrays.asList;
-
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -13,6 +11,8 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
+
+import static java.util.Arrays.asList;
 
 /**
  * Finds stories by scanning source paths, which can be either filesystem
@@ -72,13 +72,12 @@ public class StoryFinder {
      * @return A List of paths found
      */
     public List<String> findPaths(URL searchIn, String include, String exclude) {
-        return findPaths(CodeLocations.getPathFromURL(searchIn), asList(include), asList(exclude));
+        return findPaths(CodeLocations.getPathFromURL(searchIn), asCSVList(include), asCSVList(exclude));
     }
 
     /**
-     * Finds paths from a source URL, allowing for includes/excludes,
-     * pattern. Paths found are normalised by {@link
-     * StoryFinder#normalise(List<String>)}
+     * Finds paths from a source URL, allowing for includes/excludes patterns.
+     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
      * 
      * @param searchIn the source URL to search in
      * @param includes the Array of include patterns, or <code>null</code> if
@@ -92,9 +91,38 @@ public class StoryFinder {
     }
 
     /**
-     * Finds paths from a source URL, allowing for includes/excludes,
-     * pattern. Paths found are normalised by {@link
-     * StoryFinder#normalise(List<String>)}
+     * Finds paths from a source path, allowing for include/exclude patterns,
+     * which can be comma-separated values of multiple patterns.
+     * 
+     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
+     * 
+     * @param searchIn the source path to search in
+     * @param include the CSV include pattern, or <code>null</code> if none
+     * @param exclude the CSV exclude pattern, or <code>null</code> if none
+     * @return A List of paths found
+     */
+    public List<String> findPaths(String searchIn, String include, String exclude) {
+        return findPaths(searchIn, asCSVList(include), asCSVList(exclude));
+    }
+
+    /**
+     * Finds paths from a source path, allowing for include/exclude patterns.
+     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
+     * 
+     * @param searchIn the source path to search in
+     * @param includes the Array of include patterns, or <code>null</code> if
+     *            none
+     * @param excludes the Array of exclude patterns, or <code>null</code> if
+     *            none
+     * @return A List of paths found
+     */
+    public List<String> findPaths(String searchIn, String[] includes, String[] excludes) {
+        return findPaths(searchIn, asList(includes), asList(excludes));
+    }
+
+    /**
+     * Finds paths from a source URL, allowing for includes/excludes patterns.
+     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
      * 
      * @param searchIn the source URL to search in
      * @param includes the List of include patterns, or <code>null</code> if
@@ -108,38 +136,9 @@ public class StoryFinder {
     }
 
     /**
-     * Finds paths from a source path, allowing for single include/exclude
-     * pattern. Paths found are normalised by {@link
-     * StoryFinder#normalise(List<String>)}
-     * 
-     * @param searchIn the source path to search in
-     * @param include the include pattern, or <code>""</code> if none
-     * @param exclude the exclude pattern, or <code>""</code> if none
-     * @return A List of paths found
-     */
-    public List<String> findPaths(String searchIn, String include, String exclude) {
-        return findPaths(searchIn, asList(include), asList(exclude));
-    }
-    
-    /**
-     * Finds paths from a source path, allowing for single include/exclude
-     * pattern. Paths found are normalised by {@link
-     * StoryFinder#normalise(List<String>)}
-     * 
-     * @param searchIn the source path to search in
-     * @param includes the Array of include patterns, or <code>null</code> if
-     *            none
-     * @param excludes the Array of exclude patterns, or <code>null</code> if
-     *            none
-     * @return A List of paths found
-     */
-    public List<String> findPaths(String searchIn, String[] includes, String[] excludes) {
-    	return findPaths(searchIn, asList(includes), asList(excludes));
-    }
-
-    /**
-     * Finds paths from a source path, allowing for includes/excludes. Paths
-     * found are normalised by {@link StoryFinder#normalise(List<String>)}.
+     * Finds paths from a source path, allowing for include/exclude patterns.
+     * Paths found are normalised by {@link StoryFinder#normalise(List<String>)}
+     * .
      * 
      * @param searchIn the source path to search in
      * @param includes the List of include patterns, or <code>null</code> if
@@ -235,6 +234,16 @@ public class StoryFinder {
             return scanJar(source, includes, excludes);
         }
         return scanDirectory(source, includes, excludes);
+    }
+
+    private List<String> asCSVList(String pattern) {
+        List<String> list;
+        if (pattern == null) {
+            list = asList();
+        } else {
+            list = asList(pattern.split(","));
+        }
+        return list;
     }
 
     private List<String> scanDirectory(String basedir, List<String> includes, List<String> excludes) {

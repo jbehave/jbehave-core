@@ -26,9 +26,26 @@ public class StoryFinderBehaviour {
     private StoryFinder finder = new StoryFinder();
 
     @Test
-    public void shouldFindPaths() {
-        List<String> storyPaths = new ArrayList<String>(finder.findPaths("src/test/java", asList("**/stories/*_story"),
-                asList("")));
+    public void shouldFindNoPaths() {
+        List<String> storyPaths = new ArrayList<String>(finder.findPaths("src/test/java", (String)null, (String)null));
+        assertThat(storyPaths.size(), equalTo(0));
+    }
+
+    @Test
+    public void shouldFindPathsWithFiltersAsArrays() {
+        List<String> storyPaths = new ArrayList<String>(finder.findPaths("src/test/java", new String[]{"**/stories/*_story"},
+                new String[]{}));
+        assertThat(storyPaths.size(), equalTo(4));
+        assertThat(storyPaths, hasItem(containsString("/")));
+        assertThat(storyPaths, hasItem(not(startsWith("/"))));
+        assertThat(storyPaths, hasItem(startsWith("org/jbehave/core/io/stories")));
+        assertThat(storyPaths, hasItem(endsWith("_story")));
+    }
+
+    @Test
+    public void shouldFindPathsWithFiltersAsCSV() {
+        List<String> storyPaths = new ArrayList<String>(finder.findPaths("src/test/java", "**/stories/*_story,**/my_*",
+                "**/*.txt,**/none*"));
         assertThat(storyPaths.size(), equalTo(4));
         assertThat(storyPaths, hasItem(containsString("/")));
         assertThat(storyPaths, hasItem(not(startsWith("/"))));
