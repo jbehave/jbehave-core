@@ -181,6 +181,7 @@
             <preparationGoals>clean install</preparationGoals>
             <goals>deploy</goals>
             <pushChanges>false</pushChanges>
+            <localCheckout>true</localCheckout>
           </configuration>
         </plugin>
         <plugin>
