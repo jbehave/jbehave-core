@@ -8,7 +8,7 @@
   <groupId>org.jbehave</groupId>
   <artifactId>jbehave</artifactId>
   <packaging>pom</packaging>
-  <version>3.9-SNAPSHOT</version>
+  <version>3.9-beta-1</version>
   <name>JBehave</name>
   <inceptionYear>2003</inceptionYear>
   <description>JBehave is a project that supports and facilitates Behaviour-Driven Development.</description>
@@ -360,7 +360,7 @@
     <connection>scm:git:git://git.codehaus.org/jbehave-core.git</connection>
     <developerConnection>scm:git:ssh://git@git.codehaus.org/jbehave-core.git</developerConnection>
     <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git</url>
-    <tag>HEAD</tag>
+    <tag>jbehave-3.9-beta-1</tag>
   </scm>
 
 </project>
