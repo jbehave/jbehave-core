@@ -182,6 +182,7 @@
             <pushChanges>false</pushChanges>
             <goals>deploy</goals>
             <pushChanges>false</pushChanges>
+            <localCheckout>true</localCheckout>
           </configuration>
         </plugin>
         <plugin>
