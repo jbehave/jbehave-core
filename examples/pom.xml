@@ -36,7 +36,7 @@
     <module>needle</module>
     <module>pico</module>
     <module>spring</module>
-    <!-- module>spring-security</module -->
+    <module>spring-security</module>
     <module>weld</module>
   </modules>
 
