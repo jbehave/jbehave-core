@@ -33,7 +33,8 @@
     <module>jbehave-groovy</module>
     <module>jbehave-scala</module>
     <module>jbehave-guice</module>
-    <module>jbehave-odf</module>
+    <module>jbehave-needle</module>
+	<module>jbehave-odf</module>
     <module>jbehave-pico</module>
     <module>jbehave-spring</module>
     <module>jbehave-weld</module>

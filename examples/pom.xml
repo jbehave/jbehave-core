@@ -33,6 +33,7 @@
     <module>testng</module>
     <module>i18n</module>
     <module>guice</module>
+    <module>needle</module>
     <module>pico</module>
     <module>spring</module>
     <!-- module>spring-security</module -->
