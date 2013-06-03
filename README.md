@@ -10,18 +10,17 @@ JBehave is a BDD framework for Java and Groovy, mirrored [at Github](https://git
 
 Canonical information for JBehave:
 
-1. [News](http://jbehave.org).
-2. [Documentation](http://jbehave.org/documentation/).
+1. [Web Site](http://jbehave.org).
+2. [Stable Reference](http://jbehave.org/reference/stable/).
 3. [User mail-list](http://xircles.codehaus.org/lists/user@jbehave.codehaus.org)
-4. Jars in [Maven Repositories](http://mvnrepository.com/search.html?query=jbehave)
+4. [Search Maven](http://search.maven.org/#search|ga|1|jbehave)
 
 ## Contributing and Developing
 
-Please report issues, feature requests on the Codehaus [issue
-tracker](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
+Please report issues, feature requests on the Codehaus [JIRA](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
 [dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org).
 
-Keep an eye on the  [Bamboo Continuous Integration](http://bamboo.ci.codehaus.org/browse/JBEHAVE) server for JBehave builds.
+Keep an eye on the  [Travis CI](http://travis-ci.org/jbehave/jbehave-core) server for JBehave builds.
 
 ### JDK
 
@@ -59,7 +58,7 @@ After that, it is necessary to only do the following:
 
 - default: builds all releasable modules
 - examples: builds all headless examples
-- gui: builds examples that require a GUI (i.e. non-headless) mode (separated as they do not run on [Bamboo CI](http://bamboo.ci.codehaus.org/browse/JBEHAVE) )
+- gui: builds examples that require a GUI (i.e. non-headless) mode (separated as they do not run on CI.
 - nt: no-test, builds skipping unit-test behaviors
 
 #### Maven Build Profiles used during release cycle
@@ -84,9 +83,12 @@ Note:  profiles are additive and the default profile is always active.
     mvn release:prepare -Preporting,distribution
     mvn release:perform -Preporting,distribution
 
-## Related
+## Related JBehave projects
 
-See also the [jbehave-web](jbehave-web) sister project for web extensions to JBehave, and [jbehave-tutorial](jbehave-tutorial) for a decent example of JBehave testing of a web application.
+See also: 
+
+- [jbehave-web](jbehave-web) web extensions to JBehave
+- [jbehave-tutorial](jbehave-tutorial) for an example of JBehave testing of a real web application.
 
 ## License
 
