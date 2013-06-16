@@ -20,6 +20,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.annotations.AsParameters;
+import org.jbehave.core.annotations.Parameter;
 import org.jbehave.core.model.ExamplesTable.RowNotFound;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.jbehave.core.steps.ConvertedParameters.ValueNotFound;
@@ -301,7 +302,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldMapTableRowToCustomType() throws Exception {
+    public void shouldMapParametersToAnnotatedType() throws Exception {
         // Given
         ExamplesTableFactory factory = new ExamplesTableFactory();
 
@@ -311,6 +312,22 @@ public class ExamplesTableBehaviour {
 
         // Then
         for (MyParameters parameters : examplesTable.getRowsAs(MyParameters.class)) {
+            assertThat(parameters.string, equalTo("11"));
+            assertThat(parameters.integer, equalTo(22));
+        }
+    }
+
+    @Test
+    public void shouldMapParametersToAnnotatedTypeWithAnnotatedFields() throws Exception {
+        // Given
+        ExamplesTableFactory factory = new ExamplesTableFactory();
+
+        // When
+        String tableAsString = "|aString|anInteger|\n|11|22|";
+        ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
+
+        // Then
+        for (MyParametersWithAnnotatedFields parameters : examplesTable.getRowsAs(MyParametersWithAnnotatedFields.class)) {
             assertThat(parameters.string, equalTo("11"));
             assertThat(parameters.integer, equalTo(22));
         }
@@ -458,4 +475,19 @@ public class ExamplesTableBehaviour {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
         }
     }
+
+    @AsParameters
+    public static class MyParametersWithAnnotatedFields {
+
+        @Parameter(name = "aString")
+        private String string;
+        @Parameter(name = "anInteger")
+        private Integer integer;
+
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        }
+    }
+
 }

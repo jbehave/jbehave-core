@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.annotations.Parameter;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.jbehave.core.steps.ChainedRow;
 import org.jbehave.core.steps.ConvertedParameters;
@@ -167,9 +168,10 @@ public class ExamplesTable {
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
             String ignorableSeparator, ParameterConverters parameterConverters) {
-        this(tableAsString, headerSeparator, valueSeparator, ignorableSeparator, parameterConverters, new TableTransformers());
+        this(tableAsString, headerSeparator, valueSeparator, ignorableSeparator, parameterConverters,
+                new TableTransformers());
     }
-    
+
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
             String ignorableSeparator, ParameterConverters parameterConverters, TableTransformers tableTransformers) {
         this.tableAsString = tableAsString;
@@ -364,23 +366,37 @@ public class ExamplesTable {
         return rows;
     }
 
-    private <T> T mapToType(Parameters parameters, Class<T> type){
+    private <T> T mapToType(Parameters parameters, Class<T> type) {
         try {
             T instance = type.newInstance();
             Map<String, String> values = parameters.values();
-            for ( String name : values.keySet() ){
-                Field f = type.getDeclaredField(name);
-                Class<?> fieldType = (Class<?>) f.getGenericType();
-                Object value = parameters.valueAs(name, fieldType);    
-                f.setAccessible(true);
-                f.set(instance, value);
+            for (String name : values.keySet()) {
+                Field field = findField(type, name);
+                Class<?> fieldType = (Class<?>) field.getGenericType();
+                Object value = parameters.valueAs(name, fieldType);
+                field.setAccessible(true);
+                field.set(instance, value);
             }
             return instance;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to map parameters to type "+type, e);
+            throw new ParametersNotMappableToType(parameters, type, e);
         }
     }
-       
+
+    private <T> Field findField(Class<T> type, String name) throws NoSuchFieldException {
+        // First look for fields annotated by @Parameter specifying the name
+        for (Field field : type.getDeclaredFields()) {
+            if (field.isAnnotationPresent(Parameter.class)) {
+                Parameter parameter = field.getAnnotation(Parameter.class);
+                if (name.equals(parameter.name())) {
+                    return field;
+                }
+            }
+        }
+        // Default to field matching given name
+        return type.getDeclaredField(name);
+    }
+
     private Parameters createParameters(Map<String, String> values) {
         return new ConvertedParameters(new ChainedRow(new ConvertedParameters(values, parameterConverters), defaults),
                 parameterConverters);
@@ -431,6 +447,15 @@ public class ExamplesTable {
 
         public RowNotFound(int row) {
             super(Integer.toString(row));
+        }
+
+    }
+
+    @SuppressWarnings("serial")
+    public static class ParametersNotMappableToType extends RuntimeException {
+
+        public ParametersNotMappableToType(Parameters parameters, Class<?> type, Exception e) {
+            super(parameters.values() + " not mappable to type " + type, e);
         }
 
     }
