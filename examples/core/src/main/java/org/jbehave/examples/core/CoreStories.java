@@ -28,6 +28,7 @@ import org.jbehave.examples.core.steps.AndSteps;
 import org.jbehave.examples.core.steps.BeforeAfterSteps;
 import org.jbehave.examples.core.steps.CalendarSteps;
 import org.jbehave.examples.core.steps.CompositeSteps;
+import org.jbehave.examples.core.steps.ExamplesTableParametersSteps;
 import org.jbehave.examples.core.steps.MetaParametrisationSteps;
 import org.jbehave.examples.core.steps.NamedParametersSteps;
 import org.jbehave.examples.core.steps.PendingSteps;
@@ -95,12 +96,12 @@ public class CoreStories extends JUnitStories {
     public InjectableStepsFactory stepsFactory() {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
                 new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new SandpitSteps(),
-                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(), new NamedParametersSteps());
+                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(), new NamedParametersSteps(), new ExamplesTableParametersSteps());
     }
 
     @Override
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/stories/*.story", "**/failing_before*.story");
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/stories/*parameters.story", "**/failing_before*.story");
                 
     }
         
