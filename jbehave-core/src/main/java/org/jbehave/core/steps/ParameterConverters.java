@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
@@ -41,6 +42,8 @@ import static java.util.Arrays.asList;
  * <li>{@link ParameterConverters.DateConverter DateConverter}</li>
  * <li>{@link ParameterConverters.ExamplesTableConverter ExamplesTableConverter}
  * </li>
+ * <li>{@link ParameterConverters.ExamplesTableParametersConverter
+ * ExamplesTableParametersConverter}</li>
  * <li>{@link ParameterConverters.MethodReturningConverter
  * MethodReturningConverter}</li>
  * </ul>
@@ -116,11 +119,12 @@ public class ParameterConverters {
 
     protected ParameterConverter[] defaultConverters(Locale locale, String listSeparator) {
         String escapedListSeparator = escapeRegexPunctuation(listSeparator);
+        ExamplesTableFactory tableFactory = new ExamplesTableFactory(this);
         ParameterConverter[] defaultConverters = { new BooleanConverter(),
                 new NumberConverter(NumberFormat.getInstance(locale)),
                 new NumberListConverter(NumberFormat.getInstance(locale), escapedListSeparator),
                 new StringListConverter(escapedListSeparator), new DateConverter(),
-                new ExamplesTableConverter(new ExamplesTableFactory(this)) };
+                new ExamplesTableConverter(tableFactory), new ExamplesTableParametersConverter(tableFactory) };
         return defaultConverters;
     }
 
@@ -635,6 +639,58 @@ public class ParameterConverters {
 
         public Object convertValue(String value, Type type) {
             return factory.createExamplesTable(value);
+        }
+
+    }
+
+    /**
+     * Converts ExamplesTable to list of parameters, mapped to annotated custom
+     * types.
+     */
+    public static class ExamplesTableParametersConverter implements ParameterConverter {
+
+        private final ExamplesTableFactory factory;
+
+        public ExamplesTableParametersConverter() {
+            this(new ExamplesTableFactory());
+        }
+
+        public ExamplesTableParametersConverter(ExamplesTableFactory factory) {
+            this.factory = factory;
+        }
+
+        public boolean accept(Type type) {
+            if (type instanceof ParameterizedType) {
+                Class<?> rawClass = rawClass(type);
+                Class<?> argumentClass = argumentClass(type);
+                if (rawClass.isAnnotationPresent(AsParameters.class)
+                        || argumentClass.isAnnotationPresent(AsParameters.class)) {
+                    return true;
+                }
+            } else if (type instanceof Class) {
+                return ((Class<?>) type).isAnnotationPresent(AsParameters.class);
+            }
+            return false;
+        }
+
+        private Class<?> rawClass(Type type) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        }
+
+        private Class<?> argumentClass(Type type) {
+            if (type instanceof ParameterizedType) {
+                return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
+            } else {
+                return (Class<?>) type;
+            }
+        }
+
+        public Object convertValue(String value, Type type) {
+            List<?> rows = factory.createExamplesTable(value).getRowsAs(argumentClass(type));
+            if (type instanceof ParameterizedType) {
+                return rows;
+            }
+            return rows.iterator().next();
         }
 
     }

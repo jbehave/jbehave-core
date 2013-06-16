@@ -28,19 +28,21 @@ import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.EnumConverter;
 import org.jbehave.core.steps.ParameterConverters.EnumListConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
+import org.jbehave.core.steps.ParameterConverters.ExamplesTableParametersConverter;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConvertionFailed;
 import org.jbehave.core.steps.ParameterConverters.StringListConverter;
+import org.jbehave.core.steps.SomeSteps.MyParameters;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -337,7 +339,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertMultilineTableParameter() throws ParseException, IntrospectionException {
+    public void shouldConvertMultilineTable() throws ParseException, IntrospectionException {
         ParameterConverter converter = new ExamplesTableConverter();
         assertThat(converter.accept(ExamplesTable.class), is(true));
         assertThat(converter.accept(WrongType.class), is(false));
@@ -352,6 +354,38 @@ public class ParameterConvertersBehaviour {
         Map<String, String> row2 = table.getRow(1);
         assertThat(row2.get("col1"), equalTo("row21"));
         assertThat(row2.get("col2"), equalTo("row22"));
+    }
+
+    @Test
+    public void shouldConvertMultilineTableToParameters() throws ParseException, IntrospectionException {
+        ParameterConverter converter = new ExamplesTableParametersConverter();
+        Type type = SomeSteps.methodFor("aMethodWithExamplesTableParameters").getGenericParameterTypes()[0];
+        assertThat(converter.accept(type), is(true));
+        assertThat(converter.accept(WrongType.class), is(false));
+        assertThat(converter.accept(mock(Type.class)), is(false));
+        String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
+        @SuppressWarnings("unchecked")
+        List<MyParameters> parameters = (List<MyParameters>) converter.convertValue(value, type);
+        assertThat(parameters.size(), equalTo(2));
+        MyParameters row1 = parameters.get(0);
+        assertThat(row1.col1, equalTo("row11"));
+        assertThat(row1.col2, equalTo("row12"));
+        MyParameters row2 = parameters.get(1);
+        assertThat(row2.col1, equalTo("row21"));
+        assertThat(row2.col2, equalTo("row22"));
+    }
+
+    @Test
+    public void shouldConvertSinglelineTableToParameters() throws ParseException, IntrospectionException {
+        ParameterConverter converter = new ExamplesTableParametersConverter();
+        Type type = SomeSteps.methodFor("aMethodWithExamplesTableParameter").getGenericParameterTypes()[0];
+        assertThat(converter.accept(type), is(true));
+        assertThat(converter.accept(WrongType.class), is(false));
+        assertThat(converter.accept(mock(Type.class)), is(false));
+        String value = "|col1|col2|\n|row11|row12|\n";
+        MyParameters parameters = (MyParameters) converter.convertValue(value, type);
+        assertThat(parameters.col1, equalTo("row11"));
+        assertThat(parameters.col2, equalTo("row12"));
     }
 
     @Test
