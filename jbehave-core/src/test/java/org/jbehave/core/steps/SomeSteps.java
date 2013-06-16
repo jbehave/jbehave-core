@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.PendingStepFound;
@@ -101,6 +102,21 @@ public class SomeSteps extends Steps {
 
     public ExamplesTable aMethodReturningExamplesTable(String value){
     	return new ExamplesTable(value);
+    }
+
+    public void aMethodWithExamplesTableParameter(MyParameters args) {
+        this.args = args;
+    }
+
+    public void aMethodWithExamplesTableParameters(List<MyParameters> args) {
+        this.args = args;
+    }
+
+    @AsParameters
+    public static class MyParameters {
+        String col1;
+        String col2;
+        
     }
 
     public ExamplesTable aFailingMethodReturningExamplesTable(String value){

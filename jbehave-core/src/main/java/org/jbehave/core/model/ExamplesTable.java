@@ -3,6 +3,7 @@ package org.jbehave.core.model;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -353,6 +354,33 @@ public class ExamplesTable {
         return rows;
     }
 
+    public <T> List<T> getRowsAs(Class<T> type) {
+        List<T> rows = new ArrayList<T>();
+
+        for (Parameters parameters : getRowsAsParameters()) {
+            rows.add(mapToType(parameters, type));
+        }
+
+        return rows;
+    }
+
+    private <T> T mapToType(Parameters parameters, Class<T> type){
+        try {
+            T instance = type.newInstance();
+            Map<String, String> values = parameters.values();
+            for ( String name : values.keySet() ){
+                Field f = type.getDeclaredField(name);
+                Class<?> fieldType = (Class<?>) f.getGenericType();
+                Object value = parameters.valueAs(name, fieldType);    
+                f.setAccessible(true);
+                f.set(instance, value);
+            }
+            return instance;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to map parameters to type "+type, e);
+        }
+    }
+       
     private Parameters createParameters(Map<String, String> values) {
         return new ConvertedParameters(new ChainedRow(new ConvertedParameters(values, parameterConverters), defaults),
                 parameterConverters);
@@ -406,4 +434,5 @@ public class ExamplesTable {
         }
 
     }
+
 }
