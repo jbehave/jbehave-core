@@ -48,17 +48,19 @@ import static org.jbehave.core.reporters.Format.XML_TEMPLATE;
  * Example of how multiple stories can be run via JUnit.
  * </p>
  * <p>
- * Stories are specified in classpath and correspondingly the {@link LoadFromClasspath} story loader is configured.
- * </p> 
+ * Stories are specified in classpath and correspondingly the
+ * {@link LoadFromClasspath} story loader is configured.
+ * </p>
  */
 public class CoreStories extends JUnitStories {
-    
+
     private final CrossReference xref = new CrossReference();
 
     public CoreStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
                 .doIgnoreFailureInView(true).doVerboseFailures(true).useThreads(2).useStoryTimeoutInSecs(60);
-        //configuredEmbedder().useEmbedderControls(new PropertyBasedEmbedderControls());
+        // configuredEmbedder().useEmbedderControls(new
+        // PropertyBasedEmbedderControls());
     }
 
     @Override
@@ -69,40 +71,39 @@ public class CoreStories extends JUnitStories {
         viewResources.put("reports", "ftl/jbehave-reports-with-totals.ftl");
         // Start from default ParameterConverters instance
         ParameterConverters parameterConverters = new ParameterConverters();
-        // factory to allow parameter conversion and loading from external resources (used by StoryParser too)
-        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), new LoadFromClasspath(embeddableClass), parameterConverters, new TableTransformers());
+        // factory to allow parameter conversion and loading from external
+        // resources (used by StoryParser too)
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(),
+                new LoadFromClasspath(embeddableClass), parameterConverters, new TableTransformers());
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
         return new MostUsefulConfiguration()
-            .useStoryLoader(new LoadFromClasspath(embeddableClass))
-            .useStoryParser(new RegexStoryParser(examplesTableFactory)) 
-            .useStoryReporterBuilder(new StoryReporterBuilder()
-                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
-                .withDefaultFormats()
-                .withViewResources(viewResources)
-                .withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE)
-                .withFailureTrace(true)
-                .withFailureTraceCompression(true)                
-                .withCrossReference(xref)) 
-            .useParameterConverters(parameterConverters)                     
-            // use '%' instead of '$' to identify parameters
-            .useStepPatternParser(new RegexPrefixCapturingPatternParser(
-                            "%")) 
-            .useStepMonitor(xref.getStepMonitor());                               
+                .useStoryLoader(new LoadFromClasspath(embeddableClass))
+                .useStoryParser(new RegexStoryParser(examplesTableFactory))
+                .useStoryReporterBuilder(
+                        new StoryReporterBuilder()
+                                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
+                                .withDefaultFormats().withViewResources(viewResources)
+                                .withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
+                                .withFailureTraceCompression(true).withCrossReference(xref))
+                .useParameterConverters(parameterConverters)
+                // use '%' instead of '$' to identify parameters
+                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%")).useStepMonitor(xref.getStepMonitor());
     }
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
-                new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new SandpitSteps(),
-                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(), new NamedParametersSteps(), new ExamplesTableParametersSteps());
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
+                new MetaParametrisationSteps(), new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(),
+                new SandpitSteps(), new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(),
+                new NamedParametersSteps(), new ExamplesTableParametersSteps());
     }
 
     @Override
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/stories/*parameters.story", "**/failing_before*.story");
-                
+        String filter = System.getProperty("story.filter", "**/*.story");
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing_before*.story");
     }
-        
+
 }
