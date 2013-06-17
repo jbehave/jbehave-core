@@ -12,27 +12,27 @@ import org.jbehave.core.annotations.Parameter;
 public class ExamplesTableParametersSteps {
 
     @Given("the parameters mapped via annotations to custom types: %table")
-    public void givenTheAnnotatedParametersList(List<AnnotatedParameters> list) {
+    public void givenTheMyParametersList(List<MyParameters> list) {
         System.out.println("List annotated: "+list);
     }
 
     @Given("the parameters mapped via annotations to custom type: %table")
-    public void givenTheAnnotatedParametersType(AnnotatedParameters type) {
-        System.out.println("Single annotated: "+type);
+    public void givenTheMyParametersType(MyParameters single) {
+        System.out.println("Single annotated: "+single);
     }
 
     @Given("the parameters mapped via names to custom types: %table")
-    public void givenTheNamedParametersList(List<AnnotatedParameters> list) {
+    public void givenTheNamedParametersList(List<MyParameters> list) {
         System.out.println("List named: "+list);
     }
 
     @Given("the parameters mapped via names to custom type: %table")
-    public void givenTheNamedParametersType(AnnotatedParameters type) {
-        System.out.println("Single named: "+type);
+    public void givenTheNamedParametersType(MyParameters single) {
+        System.out.println("Single named: "+single);
     }
 
     @AsParameters
-    public static class AnnotatedParameters {
+    public static class MyParameters {
         @Parameter(name = "aString")
         private String string;
         @Parameter(name = "anInteger")
