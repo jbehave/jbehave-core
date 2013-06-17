@@ -37,12 +37,11 @@ import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.SearchSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
 
-import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
 import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
+import static org.jbehave.core.reporters.Format.XML_TEMPLATE;
 
 /**
  * <p>
@@ -54,7 +53,7 @@ import static org.jbehave.core.reporters.Format.XML;
  * </p>
  */
 public class CoreStories extends JUnitStories {
-    
+
     private final CrossReference xref = new CrossReference();
 
     public CoreStories() {
@@ -86,7 +85,7 @@ public class CoreStories extends JUnitStories {
                         new StoryReporterBuilder()
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withViewResources(viewResources)
-                                .withFormats(CONSOLE, TXT, XML, HTML_TEMPLATE)
+                                .withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE)
                                 .withCrossReference(xref)
                                 .withFailureTrace(true).withFailureTraceCompression(true))
                 .useParameterConverters(parameterConverters)
@@ -96,15 +95,16 @@ public class CoreStories extends JUnitStories {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(), new MetaParametrisationSteps(),
-                new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(), new SandpitSteps(),
-                new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(), new NamedParametersSteps(), new ExamplesTableParametersSteps());
+        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
+                new MetaParametrisationSteps(), new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(),
+                new SandpitSteps(), new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(),
+                new NamedParametersSteps(), new ExamplesTableParametersSteps());
     }
 
     @Override
     protected List<String> storyPaths() {
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/stories/*parameters.story", "**/failing_before*.story");
-                
+        String filter = System.getProperty("story.filter", "**/*.story");
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing_before*.story");
     }
 
 }
