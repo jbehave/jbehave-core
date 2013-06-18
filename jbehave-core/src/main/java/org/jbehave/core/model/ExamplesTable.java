@@ -357,21 +357,25 @@ public class ExamplesTable {
     }
 
     public <T> List<T> getRowsAs(Class<T> type) {
+        return getRowsAs(type, new HashMap<String, String>());
+    }
+
+    public <T> List<T> getRowsAs(Class<T> type, Map<String, String> fieldNameMapping) {
         List<T> rows = new ArrayList<T>();
 
         for (Parameters parameters : getRowsAsParameters()) {
-            rows.add(mapToType(parameters, type));
+            rows.add(mapToType(parameters, type, fieldNameMapping));
         }
 
         return rows;
     }
 
-    private <T> T mapToType(Parameters parameters, Class<T> type) {
+    private <T> T mapToType(Parameters parameters, Class<T> type, Map<String, String> fieldNameMapping) {
         try {
             T instance = type.newInstance();
             Map<String, String> values = parameters.values();
             for (String name : values.keySet()) {
-                Field field = findField(type, name);
+                Field field = findField(type, name, fieldNameMapping);
                 Class<?> fieldType = (Class<?>) field.getGenericType();
                 Object value = parameters.valueAs(name, fieldType);
                 field.setAccessible(true);
@@ -383,18 +387,24 @@ public class ExamplesTable {
         }
     }
 
-    private <T> Field findField(Class<T> type, String name) throws NoSuchFieldException {
+    private <T> Field findField(Class<T> type, String name, Map<String, String> fieldNameMapping)
+            throws NoSuchFieldException {
+        // Get field name from mapping, if specified
+        String fieldName = fieldNameMapping.get(name);
+        if (fieldName == null) {
+            fieldName = name;
+        }
         // First look for fields annotated by @Parameter specifying the name
         for (Field field : type.getDeclaredFields()) {
             if (field.isAnnotationPresent(Parameter.class)) {
                 Parameter parameter = field.getAnnotation(Parameter.class);
-                if (name.equals(parameter.name())) {
+                if (fieldName.equals(parameter.name())) {
                     return field;
                 }
             }
         }
         // Default to field matching given name
-        return type.getDeclaredField(name);
+        return type.getDeclaredField(fieldName);
     }
 
     private Parameters createParameters(Map<String, String> values) {
