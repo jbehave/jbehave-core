@@ -302,7 +302,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldMapParametersToAnnotatedType() throws Exception {
+    public void shouldMapParametersToType() throws Exception {
         // Given
         ExamplesTableFactory factory = new ExamplesTableFactory();
 
@@ -318,7 +318,27 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldMapParametersToAnnotatedTypeWithAnnotatedFields() throws Exception {
+    public void shouldMapParametersToTypeWithFieldMappings() throws Exception {
+        // Given
+        ExamplesTableFactory factory = new ExamplesTableFactory();
+
+        // When
+        String tableAsString = "|aString|anInteger|\n|11|22|";
+        ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
+
+        Map<String, String> nameMapping = new HashMap<String, String>();
+        nameMapping.put("aString", "string");
+        nameMapping.put("anInteger", "integer");
+        
+        // Then
+        for (MyParameters parameters : examplesTable.getRowsAs(MyParameters.class, nameMapping)) {
+            assertThat(parameters.string, equalTo("11"));
+            assertThat(parameters.integer, equalTo(22));
+        }
+    }
+
+    @Test
+    public void shouldMapParametersToTypeWithAnnotatedFields() throws Exception {
         // Given
         ExamplesTableFactory factory = new ExamplesTableFactory();
 
