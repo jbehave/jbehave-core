@@ -79,17 +79,17 @@ public class IOUtilsBehaviour {
     // same for InputStream
     @Test
     public void shouldProcessInputStream() throws IOException {
-        assertEquals("", IOUtils.toString(new ByteArrayInputStream("".getBytes()), true));
-        assertEquals("a", IOUtils.toString(new ByteArrayInputStream("a".getBytes()), true));
-        assertEquals("asdf", IOUtils.toString(new ByteArrayInputStream("asdf".getBytes()), true));
-        assertEquals("äöü", IOUtils.toString(new ByteArrayInputStream("äöü".getBytes()), true));
+        assertEquals("", IOUtils.toString(new ByteArrayInputStream("".getBytes("UTF-8")), true));
+        assertEquals("a", IOUtils.toString(new ByteArrayInputStream("a".getBytes("UTF-8")), true));
+        assertEquals("asdf", IOUtils.toString(new ByteArrayInputStream("asdf".getBytes("UTF-8")), true));
+        assertEquals("äöü", IOUtils.toString(new ByteArrayInputStream("äöü".getBytes("UTF-8")), true));
 
-        ByteArrayInputStream input = new ByteArrayInputStream("asdf".getBytes());
+        ByteArrayInputStream input = new ByteArrayInputStream("asdf".getBytes("UTF-8"));
         assertEquals("asdf", IOUtils.toString(input, false));
         input.close();
 
         String longString=createLongString();
-        assertEquals(longString, IOUtils.toString(new ByteArrayInputStream(longString.getBytes()), true));
+        assertEquals(longString, IOUtils.toString(new ByteArrayInputStream(longString.getBytes("UTF-8")), true));
 
         assertEquals("##########", IOUtils.toString(new FileInputStream("src/test/resources/testfile"), true));
 
