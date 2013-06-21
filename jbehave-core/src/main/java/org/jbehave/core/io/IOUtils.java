@@ -21,7 +21,7 @@ public class IOUtils {
      */
     public static String toString(InputStream input, boolean close) throws IOException {
         try {
-            return org.apache.commons.io.IOUtils.toString(input);
+            return org.apache.commons.io.IOUtils.toString(input, "UTF-8");
         }
         finally {
             if ( close ) {
