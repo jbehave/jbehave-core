@@ -72,4 +72,22 @@ public class PatternVariantBuilderBehaviour {
 		assertTrue(result.contains("When $A is added to $B"));
 	}
 
+	@Test
+	public void hasUnclosedBracket() {
+		PatternVariantBuilder builder = new PatternVariantBuilder("When $A {+|plus|is added to $B");
+		Set<String> result = builder.allVariants();
+        assertEquals(1, result.size());
+		assertTrue(result.contains("When $A {+|plus|is added to $B"));
+	}
+
+	@Test
+	public void hasUnclosedBrackets() {
+        PatternVariantBuilder builder = new PatternVariantBuilder("When $A {+|plus|is added to} $B and }{$C");
+        Set<String> result = builder.allVariants();
+        assertEquals(3, result.size());
+        assertTrue(result.contains("When $A + $B and }{$C"));
+        assertTrue(result.contains("When $A plus $B and }{$C"));
+        assertTrue(result.contains("When $A is added to $B and }{$C"));
+	}
+
 }
