@@ -100,7 +100,7 @@ public class PatternVariantBuilder {
      * Regular expression that locates patterns to be evaluated in the input
      * pattern.
      */
-    private final Pattern regex = Pattern.compile("(.*?)?(\\{((.*?)(\\|)?)*?\\})(.*)");
+    private final Pattern regex = Pattern.compile("([^\\n{]*+)(\\{(([^|}]++)(\\|)?+)*+\\})([^\\n]*+)");
 
     private final Set<String> variants;
 
