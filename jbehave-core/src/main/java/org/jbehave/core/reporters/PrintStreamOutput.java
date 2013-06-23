@@ -275,7 +275,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public void afterScenario() {
-        if (cause.get() != null && reportFailureTrace.get() && !(cause.get() instanceof KnownFailure)) {
+        if (cause.get() != null && !(cause.get() instanceof KnownFailure) && reportFailureTrace() ) {
             print(format("afterScenarioWithFailure", "\n{0}\n",
                     new StackTraceFormatter(compressFailureTrace()).stackTrace(cause.get())));
         } else {
@@ -411,7 +411,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     public boolean reportFailureTrace() {
-        return reportFailureTrace.get();
+        Boolean reportFailure = reportFailureTrace.get();
+        if ( reportFailure != null ){
+            return reportFailure;
+        }
+        return false;
     }
 
     public PrintStreamOutput doReportFailureTrace(boolean reportFailureTrace) {
