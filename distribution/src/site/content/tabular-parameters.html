@@ -147,6 +147,50 @@ that any existing value in the row map of data will not be overridden.</p>
 ]]>
 </script>
 
+<h2>Mapping parameters to custom types</h2>
+
+<p>It may sometime be useful to map the table row parameters to a custom object. This can be done by annotating the type with the <a
+    href="javadoc/core/org/jbehave/core/annotations/AsParameters.html">AsParameters</a> annotation:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @AsParameters
+    public static class MyParameters {
+        @Parameter(name = "aString")
+        private String string;
+        @Parameter(name = "anInteger")
+        private Integer integer;
+        @Parameter(name = "aBigDecimal")
+        private BigDecimal bigDecimal;
+    }
+ ]]>
+</script>
+<p>The fields can be optionally mapped to the parameter names via the <a
+    href="javadoc/core/org/jbehave/core/annotations/Parameter.html">Parameter</a> annotation.</p>  If not present, the default mapping will use the name of fields to match the name of the parameters.
+
+<p>Once we've defined our custom parameters type, we can inject it in a method requiring one or more of these types:</p> 
+<script type="syntaxhighlighter" class="brush: java">
+    @Given("the parameters mapped via names to custom types: %table")
+    public void givenTheNamedParametersList(List<MyParameters> list) {
+        System.out.println("List named: "+list);
+    }
+
+    @Given("the parameters mapped via names to custom type: %table")
+    public void givenTheNamedParametersType(MyParameters single) {
+        System.out.println("Single named: "+single);
+    }
+</script>
+<p>If we cannot control the custom type, e.g. we want to map to a type contained in a third-party library, we can still achieve the mapping programmatically:</p>
+<script type="syntaxhighlighter" class="brush: java">
+    @Given("the parameters mapped via names to custom types: %table")
+    public void givenTheNamedParametersList(ExamplesTable table) {
+        Map<String, String> nameMapping = new HashMap<String, String>();
+        nameMapping.put("aString", "string");
+        nameMapping.put("anInteger", "integer");        
+        List<ThirdPartyParameters> parameters = examplesTable.getRowsAs(ThirdPartyParameters.class, nameMapping);
+        ...
+    }
+</script>
+
 <h2>Preserving whitespace</h2>
 
 <p>By default, value in the table are trimmed, i.e. any preceding
@@ -230,7 +274,7 @@ Given the traders: org/jbehave/examples/trader/stories/traders.table
 
 <p>We need to enable theExamplesTable parameter converter to find
 the resource with the appropriate resource loader configured via the <a
-    href="javadoc/core/org/jbehave/core/model/ExamplesTableFactory.html">ExamplesTableFactory</a>:
+    href="javadoc/core/org/jbehave/core/model/ExamplesTableFactory.html">ExamplesTableFactory</a></p>:
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     new ParameterConverters().addConverters(new ExamplesTableConverter(new ExamplesTableFactory(new LoadFromClasspath(this.getClass()))))
