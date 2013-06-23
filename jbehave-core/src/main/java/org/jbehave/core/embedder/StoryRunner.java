@@ -221,6 +221,7 @@ public class StoryRunner {
         } catch (Throwable e) {
             if (cancelledStories.containsKey(story)) {
                 reporter.get().storyCancelled(story, cancelledStories.get(story));
+                reporter.get().afterScenario();
                 reporter.get().afterStory(context.givenStory);
             }
             throw e;
