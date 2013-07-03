@@ -10,25 +10,15 @@
 	<name>JBehave Needle Example</name>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.jbehave</groupId>
-			<artifactId>jbehave-core-example</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
+    	<dependency>
+      		<groupId>org.jbehave</groupId>
+      		<artifactId>jbehave-core-example</artifactId>
+      		<version>${project.version}</version>
+    	</dependency>
+    	<dependency>
 			<groupId>org.jbehave</groupId>
 			<artifactId>jbehave-needle</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>3.1</version>
-        </dependency>    
-		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>1</version>
 		</dependency>
 		<dependency>
 		  <groupId>org.slf4j</groupId>

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.jbehave.core.annotations.UsingSteps;
-import org.jbehave.core.annotations.needle.InjectionProviderInstancesSupplier;
 import org.jbehave.core.annotations.needle.UsingNeedle;
 import org.jbehave.core.configuration.AnnotationBuilder;
 import org.jbehave.core.configuration.AnnotationFinder;
@@ -18,6 +17,7 @@ import org.jbehave.core.steps.needle.NeedleStepsFactory;
 import org.jbehave.core.steps.needle.configuration.CreateInstanceByDefaultConstructor;
 
 import de.akquinet.jbosscc.needle.injection.InjectionProvider;
+import de.holisticon.toolbox.needle.provider.InjectionProviderInstancesSupplier;
 
 /**
  * Extends {@link AnnotationBuilder} to provide Needle-based dependency injection if {@link UsingNeedle} annotation is

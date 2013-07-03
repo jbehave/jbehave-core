@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.jbehave.core.annotations.needle.InjectionProviderInstancesSupplier;
 import org.jbehave.core.annotations.needle.NeedleInjectionProvider;
 
 import de.akquinet.jbosscc.needle.injection.InjectionProvider;
 import de.akquinet.jbosscc.needle.reflection.ReflectionUtil;
+import de.holisticon.toolbox.needle.provider.InjectionProviderInstancesSupplier;
 
 /**
  * Collects {@link InjectionProvider} instances.
