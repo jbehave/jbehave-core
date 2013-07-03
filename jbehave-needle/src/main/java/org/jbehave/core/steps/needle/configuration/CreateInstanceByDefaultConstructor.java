@@ -1,6 +1,5 @@
 package org.jbehave.core.steps.needle.configuration;
 
-
 /**
  * Instantiates new java object by default constructor
  * 
@@ -18,7 +17,10 @@ public enum CreateInstanceByDefaultConstructor {
 			final T newInstance = type.getConstructor().newInstance();
 			return newInstance;
 		} catch (final Exception e) {
-			throw new IllegalStateException("Can not instantiate Instance by Default Constructor.", e);
+			throw new IllegalStateException(
+					String.format(
+							"Can not instantiate instance of %s by default constructor.",
+							type.getSimpleName()), e);
 		}
 	}
 

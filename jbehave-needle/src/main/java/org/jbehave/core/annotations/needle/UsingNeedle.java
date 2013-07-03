@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import de.akquinet.jbosscc.needle.injection.InjectionProvider;
+import de.holisticon.toolbox.needle.provider.InjectionProviderInstancesSupplier;
 
 /**
  * Indicates usage of Needle as DI.
