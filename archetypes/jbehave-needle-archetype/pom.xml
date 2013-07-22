@@ -1,0 +1,15 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbehave</groupId>
+    <artifactId>jbehave-archetypes</artifactId>
+    <version>3.9-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbehave-needle-archetype</artifactId>
+  <packaging>maven-archetype</packaging>
+
+  <name>JBehave Needle Archetype</name>
+  <description>
+    An archetype to run multiple textual stories configured programmatically but with steps classes composed using Needle.
+  </description>
+</project>

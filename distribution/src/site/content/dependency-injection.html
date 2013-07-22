@@ -17,22 +17,26 @@ injection.</p>
 <ul>
 	<li><a href="http://code.google.com/p/google-guice/">Guice</a>
 	(when the extension module <b>jbehave-guice</b> is added to the
-	classpath):</li>
+	classpath),</li>
 
+	<li><a href="http://needle.spree.de/">Needle</a>
+	(when the extension module <b>jbehave-needle</b> is added to the
+	classpath),</li>
+	
 	<li><a href="http://picocontainer.org">PicoContainer</a> (when the
-	extension module <b>jbehave-pico</b> is added to the classpath):</li>
+	extension module <b>jbehave-pico</b> is added to the classpath),</li>
 
 	<li><a href="http://springframework.org">Spring</a> (when the
-	extension module <b>jbehave-spring</b> is added to the classpath):</li>
+	extension module <b>jbehave-spring</b> is added to the classpath),</li>
 
     <li><a href="http://www.seamframework.org/Weld">Weld</a> (when the
-    extension module <b>jbehave-weld</b> is added to the classpath):</li>
+    extension module <b>jbehave-weld</b> is added to the classpath).</li>
 	
 </ul>
 </p>
 
 <p><span class="followup">Fully-working examples of running
-stories with dependency-injection support can be found in the <b>trader-[guice|pico|spring|weld]</b>
+stories with dependency-injection support can be found in the <b>trader-[guice|needle|pico|spring|weld]</b>
 <a href="running-examples.html">examples</a>. Note that dependency
 injection examples only concentrate on the composition via the
 respective containers but do not replicate what is in the <b>trader</b>
@@ -99,6 +103,46 @@ public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 }
 ]]>
 </script>
+
+<h3>Using Needle</h3>
+
+<p>When using Needle, we can specify the steps used in tests.</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+
+@RunWith(NeedleAnnotatedEmbedderRunner.class)
+@Configure()
+@UsingSteps(instances = Steps.class)
+@UsingEmbedder()
+@UsingNeedle
+public class RunningWithAnnotatedEmbedderRunner extends InjectableEmbedder {
+
+    @Test
+    public void run() {
+        injectedEmbedder().runStoriesAsPaths(storyPaths());
+    }
+
+    protected List<String> storyPaths() {
+        String searchInDirectory = codeLocationFromPath("../trader/src/main/java").getFile();
+        return new StoryFinder().findPaths(searchInDirectory, asList("**/*.story"), null);
+    }
+
+	public static class Steps {
+		@NeedleInjectionProvider
+		InjectionProvider<ValueGetter> provider = new ValueGetterProvider();
+
+		@Inject
+		private ValueGetter getter;
+
+		@Given("Some")
+		public boolean complete() {
+			return ValueGetter.VALUE.equals(getter.getValue());
+		}
+	}
+}
+]]>
+</script>
+
 
 <h3>Using PicoContainer</h3>
 
@@ -288,6 +332,45 @@ public class GuiceTraderSteps extends TraderSteps {
     public GuiceTraderSteps(TradingService service) {
         super(service);
     }
+
+}
+</pre>
+
+<h3>Using Needle</h3>
+
+<p>CandidateSteps can be created with Needle using the <a
+	href="javadoc/guice/org/jbehave/core/steps/needle/NeedleStepsFactory.html">NeedleStepsFactory</a>:
+</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    @Override
+    public InjectableStepsFactory stepsFactory() {
+		final Class<?>[] steps = new Class<?>[] { MySteps.class };
+
+		final Set<InjectionProvider<?>> providers = new HashSet<InjectionProvider<?>>();
+		// always inject the same instance
+		providers.add(DefaultInstanceInjectionProvider.providerFor(...));
+		return new NeedleStepsFactory(configuration(), providers, steps);
+    }    
+]]>
+</script>
+<p>Steps classes can use injection points which are by default supplied with a mock implementation
+provided by Needle's mock provider (defaults to mockito, can be changed to easymock). This behaviour
+may be changed and an Injection provider for a given inhection point can be configured,
+so a specific instance can be supplied. See Needle documentation for more details.</p>
+<pre class="brush: java">
+public class MySteps {
+
+    @Inject
+    private TradingService tradingService;
+    
+    
+    @Given("I make trade")
+    public void doNothing() {
+    	tradingService.newStock(....);
+    }
+	......
 
 }
 </pre>
