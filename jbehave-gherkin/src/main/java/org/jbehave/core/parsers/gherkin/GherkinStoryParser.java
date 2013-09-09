@@ -1,7 +1,5 @@
 package org.jbehave.core.parsers.gherkin;
 
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.compile;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.model.Background;
 import gherkin.formatter.model.Examples;
@@ -10,6 +8,7 @@ import gherkin.formatter.model.Row;
 import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.ScenarioOutline;
 import gherkin.formatter.model.Step;
+import gherkin.formatter.model.Tag;
 import gherkin.parser.Parser;
 
 import java.util.List;
@@ -20,6 +19,9 @@ import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.parsers.StoryTransformer;
 import org.jbehave.core.parsers.TransformingStoryParser;
+
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.compile;
 
 public class GherkinStoryParser extends TransformingStoryParser {
 
@@ -53,9 +55,20 @@ public class GherkinStoryParser extends TransformingStoryParser {
 
 				public void feature(Feature feature) {
 					out.append(feature.getName()).append("\n\n");
-					String description = feature.getDescription();
-					writeNarrative(description);
+					writeNarrative(feature.getDescription());
+					writeMeta(feature.getTags());
 				}
+
+                private void writeMeta(List<Tag> tags) {
+                    if (tags.isEmpty()) {
+                        return;
+                    }
+                    out.append(keywords.meta()).append(" ");
+                    for (Tag tag : tags) {
+                        out.append(tag.getName()).append(" ");
+                    }
+                    out.append("\n");
+                }
 
 				private void writeNarrative(String description) {
                     boolean matches = false;
@@ -114,10 +127,12 @@ public class GherkinStoryParser extends TransformingStoryParser {
 
 				public void scenario(Scenario scenario) {
 					out.append("\n").append(keywords.scenario()+scenario.getName()).append("\n\n");
+	                writeMeta(scenario.getTags());
 				}
 
 				public void scenarioOutline(ScenarioOutline scenarioOutline) {
 					out.append("\n").append(keywords.scenario()+scenarioOutline.getName()).append("\n\n");
+                    writeMeta(scenarioOutline.getTags());
 				}
 
 				public void examples(Examples examples) {

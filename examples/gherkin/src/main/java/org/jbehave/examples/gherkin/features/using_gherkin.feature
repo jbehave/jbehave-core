@@ -1,10 +1,11 @@
-
+@feature
 Feature: Hello Car
 
 Background: 
 
 Given I have a license
 
+@scenario
 Scenario: Car can drive
 
 Given I have a car
