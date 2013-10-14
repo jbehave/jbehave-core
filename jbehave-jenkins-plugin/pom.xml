@@ -14,12 +14,12 @@
     <hudson.test.harness.version>1.395</hudson.test.harness.version>
     <hudson.version>2.2.1</hudson.version>
     <hpi.plugin.version>3.0.1</hpi.plugin.version>
-    <xunit.plugin.version>1.9</xunit.plugin.version>
+    <xunit.plugin.version>1.62</xunit.plugin.version>
   </properties>
 
   <dependencies>
     <dependency>
-      <groupId>org.jvnet.hudson.plugins</groupId>
+      <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>xunit</artifactId>
       <version>${xunit.plugin.version}</version>
       <exclusions>
