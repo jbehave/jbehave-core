@@ -16,7 +16,7 @@ public class JBehaveType extends XUnitType {
     }
 
     public Object readResolve() {
-        return new JBehavePluginType(this.getPattern(), this.isFaildedIfNotNew(), this.isDeleteJUnitFiles());
+        return new JBehavePluginType(this.getPattern(), this.isFailIfNotNew(), this.isDeleteJUnitFiles(), this.isStopProcessingIfError());
     }
 
 }

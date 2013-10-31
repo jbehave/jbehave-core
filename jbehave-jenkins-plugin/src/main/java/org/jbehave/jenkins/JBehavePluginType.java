@@ -10,9 +10,14 @@ import hudson.Extension;
 @SuppressWarnings("serial")
 public class JBehavePluginType extends TestType {
 
+    // @DataBoundConstructor
+     public JBehavePluginType(String pattern, boolean failedIfNotNew, boolean deleteOutputFiles) {
+        this(pattern, failedIfNotNew, deleteOutputFiles,true);
+    }
+
     @DataBoundConstructor
-    public JBehavePluginType(String pattern, boolean failedIfNotNew, boolean deleteOutputFiles) {
-        super(pattern, failedIfNotNew, deleteOutputFiles);
+    public JBehavePluginType(String pattern, boolean failedIfNotNew, boolean deleteOutputFiles, boolean stopProcessingIfError) {
+        super(pattern, failedIfNotNew, deleteOutputFiles, stopProcessingIfError);
     }
 
     public TestTypeDescriptor<?> getDescriptor() {
