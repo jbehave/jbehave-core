@@ -17,7 +17,7 @@
 	</xsl:template>
 	
 	<xsl:template match="step[@outcome='failed']">
-		<failure message="{text()}"><xsl:value-of select="//failure"/></failure>
+		<failure message="{text()}"><xsl:value-of select="failure"/></failure>
 	</xsl:template>
 	
 	<xsl:template match="step[@outcome='pending']">
