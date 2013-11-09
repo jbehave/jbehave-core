@@ -3,8 +3,7 @@ package org.jbehave.core.io.rest;
 import java.net.MalformedURLException;
 
 import org.jbehave.core.io.StoryLoader;
-import org.jbehave.core.io.rest.LoadFromREST;
-import org.jbehave.core.io.rest.LoadFromREST.Type;
+import org.jbehave.core.io.rest.RESTClient.Type;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
