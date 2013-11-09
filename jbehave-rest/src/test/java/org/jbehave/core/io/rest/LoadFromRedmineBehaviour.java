@@ -1,16 +1,16 @@
 package org.jbehave.core.io.rest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.startsWith;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.apache.commons.io.IOUtils;
-import org.jbehave.core.io.rest.LoadFromRedmine;
-import org.jbehave.core.io.rest.LoadFromREST.Type;
+import org.jbehave.core.io.rest.RESTClient.Type;
 import org.junit.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.startsWith;
 
 public class LoadFromRedmineBehaviour {
 

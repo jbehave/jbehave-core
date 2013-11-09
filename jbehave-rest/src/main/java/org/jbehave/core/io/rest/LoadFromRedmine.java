@@ -1,10 +1,12 @@
 package org.jbehave.core.io.rest;
 
-import static java.text.MessageFormat.format;
+import org.jbehave.core.io.rest.RESTClient.Type;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
 import com.thoughtworks.xstream.XStream;
+
+import static java.text.MessageFormat.format;
 
 /**
  * Loads story resources from Redmine wiki pages using the REST API
@@ -14,7 +16,7 @@ public class LoadFromRedmine extends LoadFromREST {
 	private static final String REDMINE_URI = "{0}.{1}";
 
 	public LoadFromRedmine(Type type) {
-		super(type);
+		this(type, null, null);
 	}
 
 	public LoadFromRedmine(Type type, String username, String password) {
