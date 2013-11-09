@@ -1,4 +1,4 @@
-package org.jbehave.core.rest;
+package org.jbehave.core.io.rest;
 
 import static java.text.MessageFormat.format;
 
