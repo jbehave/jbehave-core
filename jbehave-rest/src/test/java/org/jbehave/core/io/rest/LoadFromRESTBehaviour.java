@@ -10,23 +10,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.containsString;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 
 public class LoadFromRESTBehaviour {
 
-	private static final String URL = "http://www.redmine.org/projects/redmine/wiki/Themes";
-
 	@Test
-	public void canLoadFromRESTAsJSON() throws MalformedURLException {
-		StoryLoader loadFromURL = new LoadFromREST(Type.JSON);
-		String text = loadFromURL.loadStoryAsText(URL+".json");
-		assertThat(text, containsString("wiki_page"));
+	public void canLoadFromREST() throws MalformedURLException {
+	    RESTClient client = mock(RESTClient.class);
+	    when(client.getType()).thenReturn(Type.JSON);
+	    String url = "http://wiki/page";
+        String entity = "Some content";
+        when(client.get(url)).thenReturn(entity);
+		StoryLoader loadFromURL = new LoadFromREST(client);
+		String text = loadFromURL.loadStoryAsText(url);
+		assertThat(text, containsString(entity));
 	}
 
-	@Test
-	public void canLoadFromRESTAsXML() throws MalformedURLException {
-		StoryLoader loadFromURL = new LoadFromREST(Type.XML);
-		String text = loadFromURL.loadStoryAsText(URL+".xml");
-        assertThat(text, containsString("wiki_page"));
-	}
-	
 }

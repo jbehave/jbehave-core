@@ -20,6 +20,10 @@ public class LoadFromREST implements StoryLoader, ResourceLoader {
         this.client = new RESTClient(type, username, password);
     }
     
+    public LoadFromREST(RESTClient client) {
+        this.client = client;
+    }
+    
     public String loadResourceAsText(String resourcePath) {
 		try {
 			Type type = client.getType();
