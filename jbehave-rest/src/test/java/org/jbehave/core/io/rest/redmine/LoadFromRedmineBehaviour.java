@@ -1,10 +1,11 @@
-package org.jbehave.core.io.rest;
+package org.jbehave.core.io.rest.redmine;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.io.rest.RESTClient.Type;
+import org.jbehave.core.io.rest.redmine.LoadFromRedmine;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
