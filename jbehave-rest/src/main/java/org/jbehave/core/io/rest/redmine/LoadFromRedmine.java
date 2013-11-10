@@ -1,7 +1,6 @@
 package org.jbehave.core.io.rest.redmine;
 
 import org.jbehave.core.io.rest.LoadFromREST;
-import org.jbehave.core.io.rest.RESTClient;
 import org.jbehave.core.io.rest.RESTClient.Type;
 
 import com.google.gson.Gson;

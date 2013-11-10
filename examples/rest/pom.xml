@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbehave</groupId>
+    <artifactId>jbehave-examples</artifactId>
+    <version>3.9-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbehave-rest-example</artifactId>
+  <name>JBehave REST Example</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-rest</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <properties>
+    <embeddables>**/RESTStories.java</embeddables>
+    <ignore.failre.in.stories>true</ignore.failre.in.stories>
+    <meta.filter></meta.filter>
+    <threads>1</threads>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>embeddable-stories</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <includes>
+                <include>${embeddables}</include>
+              </includes>
+              <excludes />
+              <skip>${skip}</skip>
+              <batch>false</batch>
+              <threads>${threads}</threads>
+              <generateViewAfterStories>true</generateViewAfterStories>
+              <ignoreFailureInStories>${ignore.failre.in.stories}</ignoreFailureInStories>
+              <ignoreFailureInView>true</ignoreFailureInView>
+              <metaFilters>
+                <metaFilter>${meta.filter}</metaFilter>
+              </metaFilters>
+            </configuration>
+            <goals>
+              <goal>run-stories-as-embeddables</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

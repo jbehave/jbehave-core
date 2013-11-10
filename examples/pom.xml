@@ -26,6 +26,7 @@
     <module>jruby</module>
     <module>scala</module>
     <module>performance</module>
+    <module>rest</module>
     <module>threads</module>
     <module>urls</module>
     <module>maps</module>
