@@ -24,7 +24,7 @@ public class LoadFromRedmineBehaviour {
 	}
 
 	@Test
-	public void canLoadFromRedmineAsJSON() {
+	public void canReadFromRedmineAsJSON() {
 		LoadFromRedmine loader = new LoadFromRedmine(Type.JSON);
 		String entity = read("redmine.json");
 		String text = loader.text(entity, Type.JSON);
@@ -40,7 +40,7 @@ public class LoadFromRedmineBehaviour {
 	}
 
 	@Test
-	public void canLoadFromRedmineAsXML() throws MalformedURLException {
+	public void canReadFromRedmineAsXML() throws MalformedURLException {
 		LoadFromRedmine loader = new LoadFromRedmine(Type.XML);
 		String entity = read("redmine.xml");
 		String text = loader.text(entity, Type.XML);
