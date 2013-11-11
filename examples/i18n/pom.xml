@@ -9,6 +9,10 @@
   <artifactId>jbehave-i18n-example</artifactId>
   <name>JBehave I18n Example</name>
 
+  <properties>
+    <embeddables>**/ItStories*</embeddables>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
@@ -28,7 +32,7 @@
             <phase>integration-test</phase>
             <configuration>
               <includes>
-                <include>**/LocalizedStories.java</include>
+                <include>${embeddables}</include>
               </includes>
               <ignoreFailureInStories>true</ignoreFailureInStories>
               <ignoreFailureInView>true</ignoreFailureInView>
