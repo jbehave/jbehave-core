@@ -27,6 +27,12 @@ import org.jbehave.core.io.UnderscoredToCapitalized;
  * </pre>
  * 
  * </p>
+ * <p>
+ * The view generator can also specify the {@link StoryNameResolver} (defaulting
+ * to {@link UnderscoredToCapitalized}) and the class whose ClassLoader
+ * Freemarker uses to load the templates from (defaulting to
+ * {@link FreemarkerProcessor}).
+ * </p>
  * 
  * @author Mauro Talevi
  */
@@ -38,6 +44,14 @@ public class FreemarkerViewGenerator extends TemplateableViewGenerator {
 
     public FreemarkerViewGenerator(StoryNameResolver nameResolver) {
         super(nameResolver, new FreemarkerProcessor());
+    }
+
+    public FreemarkerViewGenerator(Class<?> templateLoadingFrom) {
+        this(new UnderscoredToCapitalized(), templateLoadingFrom);
+    }
+
+    public FreemarkerViewGenerator(StoryNameResolver nameResolver, Class<?> templateLoadingFrom) {
+        super(nameResolver, new FreemarkerProcessor(templateLoadingFrom));
     }
 
     public Properties defaultViewProperties() {
@@ -53,5 +67,5 @@ public class FreemarkerViewGenerator extends TemplateableViewGenerator {
         properties.setProperty("viewDirectory", "view");
         return properties;
     }
-  
+
 }

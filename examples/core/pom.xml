@@ -10,7 +10,7 @@
   <name>JBehave Core Example</name>
 
   <properties>
-    <embeddables>**/*CoreStories.java</embeddables>
+    <embeddables>**/CoreStories.java</embeddables>
     <meta.filter></meta.filter>
     <ignore.failure.in.stories>true</ignore.failure.in.stories>
     <ignore.failure.in.view>true</ignore.failure.in.view>
