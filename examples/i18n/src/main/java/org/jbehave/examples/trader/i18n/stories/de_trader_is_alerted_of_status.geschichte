@@ -1,0 +1,31 @@
+Erzählung:
+Um für eine schnelle Antwort zu sorgen
+Als Händler, der Deutsch spricht
+Möchte ich Aktienkurse überprüfen
+
+Szenario: 
+
+Gegeben ich habe eine Aktion mit dem Symbol STK1 und eine Schwelle von 15,0
+!-- Kommentar: Eigentlich müsste es "gehandelt" lauten, aber wir möchten Umlaute mitüberprüfen.
+Wenn die Aktie zum Preis 5,0 gehändelt wird
+Dann ist der Status der Meldung OFF
+Wenn die Aktie zum Preis 11,0 gehändelt wird
+Dann ist der Status der Meldung OFF
+Wenn die Aktie zum Preis 16,0 gehändelt wird
+Dann ist der Status der Meldung ON
+Wenn die Aktie zum Preiiiiiiiis 20,0 gehandelt wird
+Dann ist der Status der Meldung ON
+
+Szenario:
+
+Gegeben ich habe die Tabelle
+|eins|zwäi|
+|-- Kommentar: Eigentlich müsste es "zwei" lauten, aber wir möchten hier Umlaute mitüberprüfen. --|
+|11|12|
+|-- Noch ein Kommentar. --|
+|21|22|
+Dann hat die Tabelle 2 Zeilen
+Und in Zeile 1 und Spalte eins ist: 11
+Und in Zeile 1 und Spalte zwäi ist: 12
+Und in Zeile 2 und Spalte eins ist: 21
+Und in Zeile 2 und Spalte zwäi ist: 22
