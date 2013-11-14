@@ -26,6 +26,14 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
 
     @Test
+    public void shouldMatchStepWithPatternsUsingAccentsInPlacehoderNames() {
+        assertThatPatternMatchesStep(parser, "une maison avec $numérosDesPortes portes et $quelques fenêtres",
+                "une maison avec 3 portes et 4 fenêtres", "numérosDesPortes", "quelques");
+        assertThatPatternMatchesStep(parser, "ein Haus mit $anzahlDerTüren Türen und $einige Fenster",
+                "ein Haus mit 3 Türen und 4 Fenster", "anzahlDerTüren", "einige");        
+    }
+
+    @Test
     public void shouldMatchStepWithPatternsOfCustomPrefix() {
         StepPatternParser parser = new RegexPrefixCapturingPatternParser("%");
         assertThat(((RegexPrefixCapturingPatternParser) parser).getPrefix(), equalTo("%"));
