@@ -19,7 +19,7 @@ public class DeSteps {
 
     // Actually it would be spelled "symbol" in German, but
     // we want to verify that umlauts work for parameter names.
-    @Given("ich habe eine Aktion mit dem Symbol $symbol und eine Schwelle von $threshold")
+    @Given("ich habe eine Aktion mit dem Symbol $sümbol und eine Schwelle von $threshold")
     public void aStock(@Named("sümbol") String symbol, @Named("threshold") double threshold) {
         stock = new Stock(symbol, threshold);
     }
