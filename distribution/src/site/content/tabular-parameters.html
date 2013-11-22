@@ -211,12 +211,12 @@ can specify an optional parsing property:</p>
 <p>
  The separators are also configurable via inlined properties: 
 <pre class="brush: plain">
-{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!}
+{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,commentSeparator=#}
 !header 1!header 2! .... !header n!
-!-- A commented row --!
-!value 11!value 12! .... !value 1n!
+!-- An ignored row --!
+!value 11#comment in value!value 12! .... !value 1n!
 ...
-!-- Another commented row --!
+!-- Another ignored row --!
 !value m1!value m2! .... !value mn!
 </pre>
 </p>
