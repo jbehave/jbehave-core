@@ -90,6 +90,16 @@ import static java.util.regex.Pattern.compile;
  * | value 11 | value 12 | .... | value 1n |
  * </pre>
  * 
+ * <p>
+ * Comments is column values are supported via the "commentSeparator" inlined property:
+ * 
+ * <pre>
+ * {commentSeparator=#}
+ * | header 1#comment | header 2 | .... | header n |
+ * | value 11#comment | value 12 | .... | value 1n |
+ * </pre>
+ * 
+ * Comments including the separator are stripped. 
  * </p>
  * 
  * <p>
@@ -244,9 +254,11 @@ public class ExamplesTable {
                 // skip ignorable or empty lines
                 continue;
             } else if (headers.isEmpty()) {
-                headers.addAll(TableUtils.parseRow(rowAsString, properties.getProperty("headerSeparator"), trim));
+                headers.addAll(TableUtils.parseRow(rowAsString, properties.getProperty("headerSeparator"),
+                        properties.getProperty("commentSeparator"), trim));
             } else {
-                List<String> columns = TableUtils.parseRow(rowAsString, properties.getProperty("valueSeparator"), trim);
+                List<String> columns = TableUtils.parseRow(rowAsString, properties.getProperty("valueSeparator"),
+                        properties.getProperty("commentSeparator"), trim);
                 Map<String, String> map = new LinkedHashMap<String, String>();
                 for (int column = 0; column < columns.size(); column++) {
                     if (column < headers.size()) {
