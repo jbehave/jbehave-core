@@ -63,7 +63,7 @@ public class Embedder {
         this.embedderMonitor = embedderMonitor;
     }
 
-	public void mapStoriesAsPaths(List<String> storyPaths) {
+    public void mapStoriesAsPaths(List<String> storyPaths) {
         EmbedderControls embedderControls = embedderControls();
         embedderMonitor.usingControls(embedderControls);
 
@@ -184,7 +184,7 @@ public class Embedder {
         processSystemProperties();
 
         EmbedderControls embedderControls = embedderControls();
-        
+
         embedderMonitor.usingControls(embedderControls);
 
         if (embedderControls.skip()) {
@@ -206,13 +206,16 @@ public class Embedder {
             handleFailures(failures);
 
         } finally {
-
             // generate reports view regardless of failures in running stories
             // (if configured to do so)
-            if (embedderControls.generateViewAfterStories()) {
-                generateReportsView();
+            try {
+                if (embedderControls.generateViewAfterStories()) {
+                    generateReportsView();
+                }
+            } finally {
+                // shutdown regardless of failures in reports view
+                shutdownExecutorService();
             }
-            shutdownExecutorService();
 
         }
     }
@@ -331,14 +334,14 @@ public class Embedder {
     }
 
     public EmbedderClassLoader classLoader() {
-        if ( classLoader == null ){
+        if (classLoader == null) {
             this.classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         }
         return classLoader;
     }
 
     public Configuration configuration() {
-        if ( configuration == null ){
+        if (configuration == null) {
             this.configuration = new MostUsefulConfiguration();
         }
         configureThreads(configuration, embedderControls().threads());
@@ -346,7 +349,7 @@ public class Embedder {
     }
 
     public List<CandidateSteps> candidateSteps() {
-        if ( candidateSteps == null ){
+        if (candidateSteps == null) {
             candidateSteps = new ArrayList<CandidateSteps>();
         }
         return candidateSteps;
@@ -360,7 +363,7 @@ public class Embedder {
     }
 
     public EmbedderControls embedderControls() {
-        if ( embedderControls == null ){
+        if (embedderControls == null) {
             embedderControls = new EmbedderControls();
         }
         return embedderControls;
@@ -371,7 +374,7 @@ public class Embedder {
     }
 
     public EmbedderFailureStrategy embedderFailureStrategy() {
-        if ( embedderFailureStrategy == null ){
+        if (embedderFailureStrategy == null) {
             this.embedderFailureStrategy = new ThrowingRunningStoriesFailed();
         }
         return embedderFailureStrategy;
@@ -432,7 +435,7 @@ public class Embedder {
     }
 
     public List<String> metaFilters() {
-        if ( metaFilters == null ){
+        if (metaFilters == null) {
             metaFilters = new ArrayList<String>();
         }
         return metaFilters;
@@ -447,7 +450,7 @@ public class Embedder {
     }
 
     public Properties systemProperties() {
-        if ( systemProperties == null ){
+        if (systemProperties == null) {
             systemProperties = new Properties();
         }
         return systemProperties;
