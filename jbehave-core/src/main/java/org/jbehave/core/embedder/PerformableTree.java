@@ -176,12 +176,36 @@ public class PerformableTree {
             for (GivenStory givenStory : givenStories.getStories()) {
                 RunContext childContext = context.childContextFor(givenStory);
                 // run given story, using any parameters provided
-                Story storyOfPath = storyOfPath(context.configuration(), childContext.path());
+                Story story = storyOfPath(context.configuration(), childContext.path());                
+                if ( givenStory.hasAnchorParameters() ){
+                    story = storyWithMatchingScenarios(story, givenStory.getAnchorParameters());
+                }
                 parameters.putAll(givenStory.getParameters());
-                stories.add(performableStory(childContext, storyOfPath, parameters));
+                stories.add(performableStory(childContext, story, parameters));
             }
         }
         return stories;
+    }
+
+    private Story storyWithMatchingScenarios(Story story, Map<String,String> parameters) {
+        if ( parameters.isEmpty() ) return story;
+        List<Scenario> scenarios = new ArrayList<Scenario>();
+        for ( Scenario scenario : story.getScenarios() ){
+            if ( matchesParameters(scenario, parameters) ){
+                scenarios.add(scenario);
+            }
+        }
+        return new Story(story.getPath(), story.getDescription(), story.getMeta(), story.getNarrative(), scenarios); 
+    }
+
+    private boolean matchesParameters(Scenario scenario, Map<String, String> parameters) {
+        Meta meta = scenario.getMeta();
+        for ( String name : parameters.keySet() ){
+            if ( meta.hasProperty(name) ){
+                return meta.getProperty(name).equals(parameters.get(name));
+            }
+        }
+        return false;
     }
 
     /**
