@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
@@ -71,6 +72,23 @@ public class RegexStoryParserBehaviour {
         assertThat(scenarios.get(0).getMeta().getProperty("author"), equalTo("Mauro"));
         assertThat(scenarios.get(1).getTitle(), equalTo("Another scenario"));
         assertThat(scenarios.get(1).getMeta().getProperty("author"), equalTo("Paul"));
+    }
+    
+    @Test
+    public void shouldParseStoryWithGivenStoriesWithAnchorParameters() {
+        String wholeStory = "GivenStories: path1#{id1:scenario1;id2:scenario2}" + NL +
+                "Scenario: A scenario" + NL +
+                "Given a step";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+        assertThat(story.getPath(), equalTo(storyPath));
+        assertThat(story.getGivenStories().getStories().size(), equalTo(1));
+        GivenStory givenStory = story.getGivenStories().getStories().get(0);
+        assertThat(givenStory.hasAnchorParameters(), equalTo(true));
+        Map<String, String> anchorParameters = givenStory.getAnchorParameters();
+        assertThat(anchorParameters.size(), equalTo(2));
+        assertThat(anchorParameters.get("id1"), equalTo("scenario1"));        
+        assertThat(anchorParameters.get("id2"), equalTo("scenario2"));        
     }
     
     @Test

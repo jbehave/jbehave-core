@@ -1,7 +1,5 @@
 package org.jbehave.core.embedder;
 
-import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +32,8 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.ParameterisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
+
+import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
 
 /**
  * Runs a {@link Story}, given a {@link Configuration} and a list of
@@ -386,10 +386,34 @@ public class StoryRunner {
                 RunContext childContext = context.childContextFor(givenStory);
                 // run given story, using any parameters provided
                 Story story = storyOfPath(context.configuration(), childContext.path());
+                if ( givenStory.hasAnchorParameters() ){
+                    story = storyWithMatchingScenarios(story, givenStory.getAnchorParameters());
+                }
                 parameters.putAll(givenStory.getParameters());
                 run(childContext, story, parameters);
             }
         }
+    }
+
+    private Story storyWithMatchingScenarios(Story story, Map<String,String> parameters) {
+        if ( parameters.isEmpty() ) return story;
+        List<Scenario> scenarios = new ArrayList<Scenario>();
+        for ( Scenario scenario : story.getScenarios() ){
+            if ( matchesParameters(scenario, parameters) ){
+                scenarios.add(scenario);
+            }
+        }
+        return new Story(story.getPath(), story.getDescription(), story.getMeta(), story.getNarrative(), scenarios); 
+    }
+
+    private boolean matchesParameters(Scenario scenario, Map<String, String> parameters) {
+        Meta meta = scenario.getMeta();
+        for ( String name : parameters.keySet() ){
+            if ( meta.hasProperty(name) ){
+                return meta.getProperty(name).equals(parameters.get(name));
+            }
+        }
+        return false;
     }
 
     private boolean isParameterisedByExamples(Scenario scenario) {

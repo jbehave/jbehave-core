@@ -1,8 +1,5 @@
 package org.jbehave.core.model;
 
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.compile;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -12,8 +9,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.compile;
+
 public class GivenStory {
 
+    private static final String PATH_REGEX = "(.*)\\#\\{(.*?)\\}";
+    private static final String PARAMETERS_REGEX = ".*(\\:|\\;).*";
     private final String givenStoryAsString;
     private Map<String, String> parameters = new HashMap<String, String>();
     private String path;
@@ -25,7 +27,7 @@ public class GivenStory {
     }
 
     private void parse() {
-        Pattern pattern = compile("(.*)\\#\\{(.*?)\\}", DOTALL);
+        Pattern pattern = compile(PATH_REGEX, DOTALL);
         Matcher matcher = pattern.matcher(givenStoryAsString.trim());
         if (matcher.matches()) {
             path = matcher.group(1).trim();
@@ -46,6 +48,21 @@ public class GivenStory {
 
     public boolean hasAnchor() {
         return !StringUtils.isBlank(anchor);
+    }
+
+    public boolean hasAnchorParameters() {
+        return hasAnchor() && anchor.matches(PARAMETERS_REGEX);
+    }
+
+    public Map<String, String> getAnchorParameters() {
+        Map<String,String> parameters = new HashMap<String, String>();
+        for ( String pair : anchor.trim().split(";") ){
+            String[] split = pair.split(":");
+            if ( split.length > 1 ){
+                parameters.put(split[0], split[1]);
+            }
+        }
+        return parameters;
     }
 
     public Map<String, String> getParameters() {
