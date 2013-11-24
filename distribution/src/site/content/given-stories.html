@@ -48,6 +48,38 @@ be unnecessary and time consuming. For example, for debugging purposes
 one may need to one run one scenario, which may have a dependency on
 just one other story. This is where <b>GivenStories</b> is most useful.</p>
 
+<h3>GivenStories filtered by scenario meta parameters</h3>
+
+<p>At times, it's useful only to depend on one or two scenarios of a story, and not the entire story. 
+In this case, we can use an anchor in the story path to filter the scenarios that need to be executed.
+The scenarios will be filtered using meta parameters defined in the scenarios:</p>
+
+<pre class="brush: bdd">
+    GivenStories: path/to/precondition.story#{id1:scenario1;id2:scenario2}
+</pre>
+
+<p>The precondition.story could e.g. contain three scenarios, of which we want to execute only the first two:</p>
+
+<pre class="brush: bdd">
+    
+    Scenario:  Scenario 1
+    Meta: @id1 scenario1
+         
+    Given ... // scenario executed as a precondition
+
+    Scenario:  Scenario 2
+    Meta: @id2 scenario2
+         
+    Given ... // scenario executed as a precondition
+
+    Scenario:  Scenario 3
+    Meta: @id3 scenario3
+         
+    Given ... // scenario not executed as a precondition
+    
+</pre>
+
+
 <h2>GivenStories parametrized by Examples</h2>
 
 <p>In the spirit of avoid unnecessary duplication, it useful at
