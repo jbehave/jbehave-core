@@ -54,7 +54,10 @@ public class ListFromRedmine {
         WikiPages pages = ((WikiPages) xstream.fromXML(entity));
         List<String> list = new ArrayList<String>();
         for (WikiPage page : pages.wiki_pages) {
-            list.add(format(PAGE_URI, rootPath, page.title));
+            if ( page.parent != null ){
+                // only include pages with parent to exclude the root page
+                list.add(format(PAGE_URI, rootPath, page.title));
+            }
         }
         return list;
     }
@@ -65,6 +68,7 @@ public class ListFromRedmine {
 
     private static class WikiPage {
         private String title;
+        private String parent;
     }
 
 }

@@ -23,9 +23,9 @@ import static org.jbehave.core.reporters.Format.HTML;
  * Example of how stories can be retrieved via REST.
  * </p>
  */
-public class RESTSTories extends JUnitStories {
+public class RESTStories extends JUnitStories {
 
-    public RESTSTories() {
+    public RESTStories() {
     }
 
     @Override
