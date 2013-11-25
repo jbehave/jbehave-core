@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.jbehave.core.io.InvalidStoryResource;
 import org.jbehave.core.io.rest.RESTClient;
+import org.jbehave.core.io.rest.ResourceLister;
 import org.jbehave.core.io.rest.RESTClient.Type;
 
 import com.thoughtworks.xstream.XStream;
@@ -14,7 +15,7 @@ import static java.text.MessageFormat.format;
 /**
  * List story resources from Redmine wiki pages using the REST API
  */
-public class ListFromRedmine {
+public class ListFromRedmine implements ResourceLister {
 
     private static final String INDEX_URI = "{0}/index.xml";
     private static final String PAGE_URI = "{0}/{1}";

@@ -5,6 +5,7 @@ import java.util.List;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.io.rest.ResourceLister;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.redmine.ListFromRedmine;
 import org.jbehave.core.io.rest.redmine.LoadFromRedmine;
@@ -20,7 +21,7 @@ public class RESTSteps {
 
     @When("index is retrieved from Redmine at $uri")
     public void indexIsRetrievedFromRedmine(String uri){
-        ListFromRedmine loadFromRedmine = new ListFromRedmine();
+        ResourceLister loadFromRedmine = new ListFromRedmine();
         list = loadFromRedmine.listResources(uri);        
     }
     
