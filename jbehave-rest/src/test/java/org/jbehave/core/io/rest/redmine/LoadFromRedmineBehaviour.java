@@ -18,7 +18,7 @@ public class LoadFromRedmineBehaviour {
 	@Test
 	public void canFormatURIForJSON() {
 		LoadFromRedmine loader = new LoadFromRedmine(Type.JSON);
-		String url = "http://redmine/project/bdd/wiki/stories/some_story";
+		String url = "http://demo.redmine.org/project/jbehave/wiki/some_story";
 		String text = loader.uri(url, Type.JSON);
 		assertThat(text, equalTo(url+".json"));
 	}
@@ -34,7 +34,7 @@ public class LoadFromRedmineBehaviour {
 	@Test
 	public void canFormatURIForXML() {
 		LoadFromRedmine loader = new LoadFromRedmine(Type.XML);
-		String url = "http://redmine/project/bdd/wiki/stories/some_story";
+		String url = "http://demo.redmine.org/project/jbehave/wiki/some_story";
 		String text = loader.uri(url, Type.XML);
 		assertThat(text, equalTo(url+".xml"));
 	}
