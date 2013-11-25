@@ -2,13 +2,12 @@ package org.jbehave.core.io.rest;
 
 import org.jbehave.core.io.InvalidStoryResource;
 import org.jbehave.core.io.ResourceLoader;
-import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.rest.RESTClient.Type;
 
 /**
- * Loads story resources from REST
+ * Loads resources from REST
  */
-public class LoadFromREST implements StoryLoader, ResourceLoader {
+public class LoadFromREST implements ResourceLoader {
 
     private RESTClient client; 
     
@@ -31,10 +30,6 @@ public class LoadFromREST implements StoryLoader, ResourceLoader {
 		} catch (Exception cause) {
 			throw new InvalidStoryResource(resourcePath, cause);
 		}
-	}
-
-	public String loadStoryAsText(String storyPath) {
-		return loadResourceAsText(storyPath);
 	}
 
 	protected String uri(String resourcePath, Type type) {
