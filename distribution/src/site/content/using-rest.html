@@ -14,19 +14,21 @@
 
 <p>REST is typically used to access wikis.  Each REST provider has its own API. Currently supported is the <a href="http://redmine.org">Redmine</a> API.</p>
 
-<p>To list the story resource from Redmine</p>
+<p>To index the story resources from Redmine from a root URI:</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-    ListFromRedmine listFromRedmine = new ListFromRedmine();
-    List<String> uris = listFromRedmine("http://demo.redmine.org/project/jbehave/wiki/");
+    ResourceIndexer indexer = new IndexFromRedmine();
+    Map<String,Resource> index = indexer.indexResources("http://demo.redmine.org/project/jbehave/wiki/");
+    Resource resource = index.get("A_story");
+    String uri = resource.getURI();
 ]]>
 </script>
 
 <p>To load a story resource from a URI:</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-    LoadFromRedmine loadFromRedmine = new LoadFromRedmine();
-    String text = loadFromRedmine.loadResourceAsText("http://demo.redmine.org/project/jbehave/wiki/A_story");
+    ResourceLoader loader = new LoadFromRedmine(Type.JSON);
+    String text = loader.loadResourceAsText("http://demo.redmine.org/project/jbehave/wiki/A_story");
 ]]>
 </script>
 

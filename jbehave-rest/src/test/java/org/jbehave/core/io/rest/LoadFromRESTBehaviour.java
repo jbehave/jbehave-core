@@ -2,7 +2,7 @@ package org.jbehave.core.io.rest;
 
 import java.net.MalformedURLException;
 
-import org.jbehave.core.io.StoryLoader;
+import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.junit.Test;
 
@@ -23,8 +23,8 @@ public class LoadFromRESTBehaviour {
 	    String url = "http://wiki/page";
         String entity = "Some content";
         when(client.get(url)).thenReturn(entity);
-		StoryLoader loadFromURL = new LoadFromREST(client);
-		String text = loadFromURL.loadStoryAsText(url);
+		ResourceLoader loader = new LoadFromREST(client);
+		String text = loader.loadResourceAsText(url);
 		assertThat(text, containsString(entity));
 	}
 
