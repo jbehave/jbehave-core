@@ -18,7 +18,7 @@ public class RESTSteps {
     private String text;
     private List<String> list;
 
-    @When("list of pages is retrieved from Redmine at $uri")
+    @When("index is retrieved from Redmine at $uri")
     public void indexIsRetrievedFromRedmine(String uri){
         ListFromRedmine loadFromRedmine = new ListFromRedmine();
         list = loadFromRedmine.listResources(uri);        
@@ -29,15 +29,24 @@ public class RESTSteps {
         assertThat(list.size(), Matchers.equalTo(number));
     }
 
-    @When("a wiki page is retrieved from Redmine at $uri")
-    public void resourcesAreRetrievedFromRedmine(String uri){
+    @When("story $title is loaded from Redmine")
+    public void storyIsLoadedFromRedmine(String title){
         LoadFromRedmine loadFromRedmine = new LoadFromRedmine(Type.JSON);
-        text = loadFromRedmine.loadResourceAsText(uri);
+        text = loadFromRedmine.loadResourceAsText(findURI(title));
     }
 
-    @Then("the page contains the stories")
-    public void pageContainsStories(){
-        assertThat(text, containsString("Stories"));
+    private String findURI(String title) {
+        for ( String uri : list ){
+            if ( uri.endsWith(title) ){
+                return uri;
+            }
+        }
+        throw new RuntimeException("No uri found with tile "+title);
+    }
+
+    @Then("story contains title '$title'")
+    public void storyContainsTitle(String title){
+        assertThat(text, containsString(title));
     }
 
 }

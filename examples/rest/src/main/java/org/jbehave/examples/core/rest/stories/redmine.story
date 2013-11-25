@@ -1,9 +1,11 @@
-Scenario:  List is retrieved
+Scenario:  Story index is retrieved from Redmine
 
-When list of pages is retrieved from Redmine at http://demo.redmine.org/projects/rossodisera/wiki
-Then the index contains 3 stories
+When index is retrieved from Redmine at http://demo.redmine.org/projects/rossodisera/wiki
+Then the index contains 2 stories
 
-Scenario:  Page is retrieved
+Scenario:  Story is loaded from Redmine
 
-When a wiki page is retrieved from Redmine at http://demo.redmine.org/projects/rossodisera/wiki/Wiki
-Then the page contains the stories
+When story A_story is loaded from Redmine 
+Then story contains title 'A story'
+When story Another_story is loaded from Redmine 
+Then story contains title 'Another story'
