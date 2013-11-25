@@ -4,3 +4,9 @@ install: /bin/true
 script: mvn clean install -s settings.xml -P examples -U | grep -v -E "Download(ed|ing)"
 jdk:
   - oraclejdk7
+before_install:
+- wget http://artfiles.org/apache.org/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz
+- tar xvfz apache-maven-3.0.5-bin.tar.gz
+- sudo mv apache-maven-3.0.5 /opt
+- export PATH=/opt/apache-maven-3.0.5/bin:$PATH
+- export M2_HOME=/opt/apache-maven-3.0.5
