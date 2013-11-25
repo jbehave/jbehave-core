@@ -1,6 +1,6 @@
 Scenario:  Story index is retrieved from Redmine
 
-When index is retrieved from Redmine at http://demo.redmine.org/projects/rossodisera/wiki
+When index is retrieved from Redmine at http://demo.redmine.org/projects/jbehave/wiki
 Then the index contains 2 stories
 
 Scenario:  Story is loaded from Redmine
