@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.codehaus</groupId>
@@ -9,7 +8,7 @@
   <groupId>org.jbehave</groupId>
   <artifactId>jbehave</artifactId>
   <packaging>pom</packaging>
-  <version>3.9-SNAPSHOT</version>
+  <version>3.9-beta-3</version>
   <name>JBehave</name>
   <inceptionYear>2003</inceptionYear>
   <description>JBehave is a project that supports and facilitates Behaviour-Driven Development.</description>
@@ -365,7 +364,7 @@
     <connection>scm:git:git://git.codehaus.org/jbehave-core.git</connection>
     <developerConnection>scm:git:ssh://git@git.codehaus.org/jbehave-core.git</developerConnection>
     <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git</url>
-    <tag>HEAD</tag>
+    <tag>jbehave-3.9-beta-3</tag>
   </scm>
 
 </project>
