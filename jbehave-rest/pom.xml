@@ -7,13 +7,14 @@
 		<version>3.9-SNAPSHOT</version>
 	</parent>
 	<artifactId>jbehave-rest</artifactId>
+    <packaging>maven-plugin</packaging>
 	<name>JBehave REST</name>
 	<description>Extension of JBehave Core that supports REST APIs to access stories resources</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.jbehave</groupId>
-			<artifactId>jbehave-core</artifactId>
+			<artifactId>jbehave-maven-plugin</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
