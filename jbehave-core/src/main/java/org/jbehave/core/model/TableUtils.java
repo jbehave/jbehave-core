@@ -18,7 +18,8 @@ public class TableUtils {
         }
         List<String> values = new ArrayList<String>();
         for ( String value : rowAsString.split(regex.toString(),-1) ){
-            String trimmed = trimValues ? value.trim() : value;
+            String stripped = StringUtils.substringBefore(value, commentSeparator);
+            String trimmed = trimValues ? stripped.trim() : stripped;
             values.add(StringUtils.substringBefore(trimmed, commentSeparator));
         }
         // ignore a leading and a trailing empty value

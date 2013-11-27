@@ -19,7 +19,6 @@ import java.util.Properties;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.Parameter;
 import org.jbehave.core.model.ExamplesTable.RowNotFound;
@@ -35,8 +34,10 @@ import static org.codehaus.plexus.util.StringUtils.isBlank;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 
 public class ExamplesTableBehaviour {
 
@@ -92,19 +93,35 @@ public class ExamplesTableBehaviour {
 
     @Test
     public void shouldParseTableWithCommentsInValues() {
-        String tableWithEmptyValues = "{commentSeparator=#}\n|one#comment|two|\n |11#comment|12#comment|\n |21|22|\n";
+        String tableWithEmptyValues = "{commentSeparator=#}\n|one #comment|two|\n |11 #comment|12 #comment|\n |21|22|\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
         assertThat(table.getRowCount(), equalTo(2));
         for (Parameters row : table.getRowsAsParameters()) {
             Map<String, String> values = row.values();
             assertThat(values.size(), equalTo(2));
             for (String column : values.keySet()) {
-                assertThat(values.get(column), Matchers.not(Matchers.containsString("#comment")));
+                assertThat(values.get(column), not(containsString("#comment")));
             }
         }
         assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
     }
 
+    @Test
+    public void shouldParseTableWithUntrimmedCommentsInValues() {
+        String tableWithEmptyValues = "{commentSeparator=#, trim=false}\n|one #comment|two|\n |11 #comment|12 #comment|\n |21|22|\n";
+        ExamplesTable table = new ExamplesTable(tableWithEmptyValues);
+        assertThat(table.getRowCount(), equalTo(2));
+        for (Parameters row : table.getRowsAsParameters()) {
+            Map<String, String> values = row.values();
+            assertThat(values.size(), equalTo(2));
+            for (String column : values.keySet()) {
+                assertThat(values.get(column), not(containsString("#comment")));
+            }
+        }
+        assertThat(table.asString(), equalTo("|one |two|\n|11 |12 |\n|21|22|\n"));
+    }
+
+    
     @Test
     public void shouldParseEmptyTable() {
         String tableAsString = "";
