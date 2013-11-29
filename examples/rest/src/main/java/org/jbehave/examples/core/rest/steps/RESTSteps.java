@@ -8,8 +8,10 @@ import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.ResourceIndexer;
+import org.jbehave.core.io.rest.ResourceUploader;
 import org.jbehave.core.io.rest.redmine.IndexFromRedmine;
 import org.jbehave.core.io.rest.redmine.LoadFromRedmine;
+import org.jbehave.core.io.rest.redmine.UploadToRedmine;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -43,4 +45,10 @@ public class RESTSteps {
         assertThat(text, containsString(title));
     }
 
+    @When("story $name is uploaded to Redmine")
+    public void storyIsUploadedToRedmine(String name){
+        ResourceUploader uploader = new UploadToRedmine(Type.JSON);
+        uploader.uploadResourceAsText(index.get(name).getURI(), text);
+    }
+    
 }
