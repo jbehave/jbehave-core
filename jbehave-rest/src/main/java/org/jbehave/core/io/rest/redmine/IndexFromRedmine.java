@@ -15,7 +15,7 @@ import com.thoughtworks.xstream.XStream;
 import static java.text.MessageFormat.format;
 
 /**
- * List story resources from Redmine wiki pages using the REST API
+ * Indexes resources from Redmine using the REST API
  */
 public class IndexFromRedmine implements ResourceIndexer {
 
@@ -32,11 +32,11 @@ public class IndexFromRedmine implements ResourceIndexer {
         this.client = new RESTClient(Type.XML, username, password);
     }
 
-    public Map<String,Resource> indexResources(String rootPath) {
+    public Map<String,Resource> indexResources(String rootURI) {
         try {
-            return index(entity(uri(rootPath)), rootPath);
+            return index(entity(uri(rootURI)), rootURI);
         } catch (Exception cause) {
-            throw new InvalidStoryResource(rootPath, cause);
+            throw new InvalidStoryResource(rootURI, cause);
         }
     }
 
@@ -48,7 +48,7 @@ public class IndexFromRedmine implements ResourceIndexer {
         return format(INDEX_URI, rootPath);
     }
 
-    protected Map<String, Resource> index(String entity, String rootPath) {
+    protected Map<String, Resource> index(String entity, String rootURI) {
         XStream xstream = new XStream();
         xstream.alias("wiki_pages", WikiPages.class);
         xstream.alias("wiki_page", WikiPage.class);
@@ -60,7 +60,7 @@ public class IndexFromRedmine implements ResourceIndexer {
             if ( page.parent != null ){
                 // only include pages with parent to exclude the root page
                 String name = page.title;
-                index.put(name, new Resource(name, format(PAGE_URI, rootPath, name)));
+                index.put(name, new Resource(name, format(PAGE_URI, rootURI, name)));
             }
         }
         return index;

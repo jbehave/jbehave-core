@@ -10,7 +10,7 @@ import com.thoughtworks.xstream.XStream;
 import static java.text.MessageFormat.format;
 
 /**
- * Loads story resources from Redmine wiki pages using the REST API
+ * Loads resource from Redmine wiki pages using the REST API
  */
 public class LoadFromRedmine extends LoadFromREST {
 

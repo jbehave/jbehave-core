@@ -5,7 +5,7 @@ import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.RESTClient.Type;
 
 /**
- * Loads resources from REST
+ * Loads resource from REST
  */
 public class LoadFromREST implements ResourceLoader {
 
@@ -26,7 +26,7 @@ public class LoadFromREST implements ResourceLoader {
     public String loadResourceAsText(String resourcePath) {
 		try {
 			Type type = client.getType();
-            return text(entity(uri(resourcePath, type)), type);
+            return text(get(uri(resourcePath, type)), type);
 		} catch (Exception cause) {
 			throw new InvalidStoryResource(resourcePath, cause);
 		}
@@ -40,7 +40,7 @@ public class LoadFromREST implements ResourceLoader {
 		return entity;
 	}
 
-	private String entity(String uri) {
+	private String get(String uri) {
 		return client.get(uri);
 	}
 

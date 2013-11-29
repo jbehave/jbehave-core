@@ -28,8 +28,8 @@ public class ImportToFilesystem implements ResourceImporter {
         this.targetExt = targetExt;
     }
 
-    public void importResources(String sourcePath) {
-        Map<String, Resource> index = indexer.indexResources(sourcePath);
+    public void importResources(String rootURI) {
+        Map<String, Resource> index = indexer.indexResources(rootURI);
         loadResources(index);
         writeResources(index, targetPath, targetExt);
     }
