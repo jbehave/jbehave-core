@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.io.rest.Resource;
+import org.jbehave.core.io.rest.ResourceIndexer;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -15,10 +16,10 @@ public class IndexFromRedmineBehaviour {
 
     @Test
     public void canIndexFromRedmine() {
-        IndexFromRedmine loader = new IndexFromRedmine();
-        String entity = read("redmine-index.xml");
+        ResourceIndexer indexer = new IndexFromRedmine();
         String rootPath = "http://redmine.org/wiki";
-        Map<String, Resource> index = loader.index(entity, rootPath);
+        String entity = read("redmine-index.xml");
+        Map<String, Resource> index = indexer.indexResources(rootPath, entity);
         assertThat(index.size(), equalTo(2));
         assertThat(index.containsKey("A_story"), equalTo(true));
         assertThat(index.get("A_story").getURI(), equalTo(rootPath+"/A_story"));

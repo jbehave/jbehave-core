@@ -80,6 +80,9 @@ public class ImportToFilesystemMojo extends AbstractMojo {
     private ResourceImporter createImporter() {
         ResourceIndexer indexer = newResourceIndexer();
         ResourceLoader loader = newResourceLoader();
+        getLog().info(
+                "Creating importer to filesystem with indexer " + indexer.getClass() + ", loader " + loader.getClass()
+                        + ", targetPath " + targetPath + ", targetExt " + targetExt);
         return new ImportToFilesystem(indexer, loader, targetPath, targetExt);
     }
 

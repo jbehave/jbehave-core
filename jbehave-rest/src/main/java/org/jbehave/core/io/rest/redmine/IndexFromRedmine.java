@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.io.InvalidStoryResource;
 import org.jbehave.core.io.rest.RESTClient;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.Resource;
@@ -33,29 +32,12 @@ public class IndexFromRedmine implements ResourceIndexer {
     }
 
     public Map<String,Resource> indexResources(String rootURI) {
-        try {
-            return index(entity(uri(rootURI)), rootURI);
-        } catch (Exception cause) {
-            throw new InvalidStoryResource(rootURI, cause);
-        }
+        return indexResources(rootURI, entity(uri(rootURI)));
     }
 
-    private String entity(String uri) {
-        return client.get(uri);
-    }
-
-    private String uri(String rootPath) {
-        return format(INDEX_URI, rootPath);
-    }
-
-    protected Map<String, Resource> index(String entity, String rootURI) {
-        XStream xstream = new XStream();
-        xstream.alias("wiki_pages", WikiPages.class);
-        xstream.alias("wiki_page", WikiPage.class);
-        xstream.addImplicitCollection(WikiPages.class, "wiki_pages");
-        xstream.ignoreUnknownElements();
-        WikiPages pages = ((WikiPages) xstream.fromXML(entity));
+    public Map<String, Resource> indexResources(String rootURI, String entity) {
         Map<String, Resource> index = new HashMap<String, Resource>();
+        WikiPages pages = parse(entity);
         for (WikiPage page : pages.wiki_pages) {
             if ( page.parent != null ){
                 // only include pages with parent to exclude the root page
@@ -64,6 +46,24 @@ public class IndexFromRedmine implements ResourceIndexer {
             }
         }
         return index;
+    }
+
+    private WikiPages parse(String entity) {
+        XStream xstream = new XStream();
+        xstream.alias("wiki_pages", WikiPages.class);
+        xstream.alias("wiki_page", WikiPage.class);
+        xstream.addImplicitCollection(WikiPages.class, "wiki_pages");
+        xstream.ignoreUnknownElements();
+        WikiPages pages = ((WikiPages) xstream.fromXML(entity));
+        return pages;
+    }
+
+    private String entity(String uri) {
+        return client.get(uri);
+    }
+
+    private String uri(String rootPath) {
+        return format(INDEX_URI, rootPath);
     }
 
     private static class WikiPages {

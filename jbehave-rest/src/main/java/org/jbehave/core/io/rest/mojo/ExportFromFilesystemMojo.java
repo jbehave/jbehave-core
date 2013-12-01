@@ -65,6 +65,13 @@ public class ExportFromFilesystemMojo extends AbstractMojo {
      */
     String sourceExt;
 
+    /**
+     * The path to the resource index
+     * 
+     * @parameter expression="${jbehave.indexPath}
+     */
+    String indexPath;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
             getLog().info("Exporting from filesystem resources to REST root path " + restRootPath);
@@ -80,7 +87,11 @@ public class ExportFromFilesystemMojo extends AbstractMojo {
     private ResourceExporter createExporter() {
         ResourceIndexer indexer = newResourceIndexer();
         ResourceUploader uploader = newResourceUploader();
-        return new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt);
+        getLog().info(
+                "Creating exporter from filesystem with with indexer " + indexer.getClass() + ", uploader "
+                        + uploader.getClass() + ", sourcePath " + sourcePath + ", sourceExt " + sourceExt
+                        + " and indexPath " + indexPath);
+        return new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, indexPath);
     }
 
     ResourceIndexer newResourceIndexer() {

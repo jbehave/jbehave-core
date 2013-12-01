@@ -44,13 +44,26 @@
     String targetPath = "target/stories";
     String targetExt = ".story";
     ResourceImporter importer = new ImportToFilesystem(indexer, loader, targetPath, targetExt);
-    importer.importResources("http://demo.redmine.org/project/jbehave/wiki");
+    importer.importResources("http://demo.redmine.org/project/jbehave-rest/wiki");
+]]>
+</script>
+
+<p>To export story resources from filesystem, use the <a href="javadoc/rest/org/jbehave/core/io/rest/ExportFromFilesystem.html">ExportFromFilesystem</a>:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    ResourceIndexer indexer = new IndexFromRedmine();
+    ResourceUploader uploader = new UploadToRedmine(Type.JSON);
+    String sourcePath = "target/stories";
+    String sourceExt = ".story";
+    String indexPath = "target/stories/index.xml"; // if null the index will be retrieved from root URI
+    ResourceExporter exporter = new ExportFromFilesystem(indexer, loader, sourcePath, sourceExt, indexPath);
+    exporter.exportResources("http://demo.redmine.org/project/jbehave-rest/wiki");
 ]]>
 </script>
 
 <h3>Using Maven goal</h3>
 
-<p>The import to filesystem functionality is also exposed via a Maven goal:</p>
+<p>The import/export functionality is also exposed via Maven goals:</p>
 
 <script type="syntaxhighlighter" class="brush: xml">
 <![CDATA[
@@ -63,7 +76,7 @@
                 <id>import-to-filesystem</id>
                 <phase>process-resources</phase>
                 <configuration>
-                    <restRootPath>http://demo.redmine.org/project/jbehave/wiki</restRootPath>
+                    <restRootPath>http://demo.redmine.org/project/jbehave-rest/wiki</restRootPath>
                     <restUsername>[optional]</restUsername>
                     <restPassword>[optional]</restPassword>
                     <targetPath>target/stories</targetPath>
@@ -73,19 +86,37 @@
                     <goal>import-to-filesystem</goal>
                 </goals>
             </execution>
+            <execution>
+                <id>export-from-filesystem</id>
+                <phase>process-resources</phase>
+                <configuration>
+                    <restRootPath>http://demo.redmine.org/project/jbehave-rest/wiki</restRootPath>
+                    <restUsername>[optional]</restUsername>
+                    <restPassword>[optional]</restPassword>
+                    <sourcePath>target/stories</sourcePath>
+                    <sourceExt>.story</sourceExt>
+                    <indexPath>target/stories/index.xml</indexPath>
+                </configuration>
+                <goals>
+                    <goal>export-from-filesystem</goal>
+                </goals>
+            </execution>
         </executions>
     </plugin>
 ]]>
 </script>
 
-<p>In command-line, without needing to configure in a pom.xml:</p>
+<p>In command-line, without the need to configure the plugin in a pom.xml:</p>
 
 <script type="syntaxhighlighter" class="brush: plain">
 <![CDATA[
-mvn org.jbehave:jbehave-rest:import-to-filesystem -Djbehave.restRootPath=http://demo.redmine.org/projects/jbehave/wiki 
+mvn org.jbehave:jbehave-rest:import-to-filesystem -Djbehave.restRootPath=http://demo.redmine.org/projects/jbehave-rest/wiki 
                                                   -Djbehave.targetPath=target/stories -Djbehave.targetExt=.story
+mvn org.jbehave:jbehave-rest:export-from-filesystem -Djbehave.restRootPath=http://demo.redmine.org/projects/jbehave-rest/wiki 
+                                                    -Djbehave.sourcePath=target/stories -Djbehave.sourceExt=.story -Djbehave.indexPath=target/stories/index.xml
 ]]>
 </script>
+
 <div class="clear">
 <hr />
 </div>
