@@ -52,6 +52,31 @@ public class ParameterConvertersBehaviour {
     private static String NAN = new DecimalFormatSymbols().getNaN();
     private static String INFINITY = new DecimalFormatSymbols().getInfinity();
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldDefineDefaultConverters() {
+        ParameterConverters converters = new ParameterConverters();
+        ParameterConverter[] defaultConverters = converters.defaultConverters(Locale.ENGLISH, ",");
+        assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,
+                NumberListConverter.class, StringListConverter.class, DateConverter.class, EnumConverter.class,
+                EnumListConverter.class, ExamplesTableConverter.class, ExamplesTableParametersConverter.class);
+    }
+
+    private void assertThatDefaultConvertersInclude(ParameterConverter[] defaultConverters,
+            Class<? extends ParameterConverter>... converterTypes) {
+        for (Class<? extends ParameterConverter> type : converterTypes) {
+            boolean found = false;
+            for (ParameterConverter converter : defaultConverters) {
+                if (converter.getClass().isAssignableFrom(type)) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                throw new RuntimeException("Converter " + type + " should be in the list of default converters");
+            }
+        }
+    }
+
     @Test
     public void shouldConvertValuesToNumbersWithDefaultNumberFormat() {
         NumberConverter converter = new NumberConverter();

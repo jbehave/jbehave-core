@@ -124,6 +124,7 @@ public class ParameterConverters {
                 new NumberConverter(NumberFormat.getInstance(locale)),
                 new NumberListConverter(NumberFormat.getInstance(locale), escapedListSeparator),
                 new StringListConverter(escapedListSeparator), new DateConverter(),
+                new EnumConverter(), new EnumListConverter(),
                 new ExamplesTableConverter(tableFactory), new ExamplesTableParametersConverter(tableFactory) };
         return defaultConverters;
     }
@@ -562,6 +563,7 @@ public class ParameterConverters {
             Method valueOfMethod = null;
             try {
                 valueOfMethod = enumClass.getMethod("valueOf", new Class[] { String.class });
+                valueOfMethod.setAccessible(true);
                 return valueOfMethod.invoke(enumClass, new Object[] { value });
             } catch (Exception e) {
                 throw new ParameterConvertionFailed("Failed to convert " + value + " for Enum " + typeClass, e);

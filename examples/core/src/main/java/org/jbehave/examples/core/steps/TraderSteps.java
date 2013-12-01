@@ -21,8 +21,8 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.Parameters;
 import org.jbehave.examples.core.CoreStory;
 import org.jbehave.examples.core.model.Stock;
-import org.jbehave.examples.core.model.Trader;
 import org.jbehave.examples.core.model.Stock.AlertStatus;
+import org.jbehave.examples.core.model.Trader;
 import org.jbehave.examples.core.persistence.TraderPersister;
 import org.jbehave.examples.core.service.TradingService;
 
@@ -48,6 +48,7 @@ public class TraderSteps {
 	private ExamplesTable ranksTable;
 	private String stockExchange;
 	private String assetClass;
+    private TradeType tradeType;
 
 	public TraderSteps() {
 		this(new TradingService());
@@ -191,6 +192,29 @@ public class TraderSteps {
 		assertThat(trader.getStocks().size(), equalTo(0));
 	}
 
+    @Given("a trade type %tradeType")
+    public void givenATradeType(TradeType type) {
+        this.tradeType = type;
+    }
+
+    @Then("the current trade type is %type")
+    public void thenTheCurrentTradeTypeIs(String type) {
+        assertThat(this.tradeType.name(), equalTo(type));
+    }
+
+    @Then("the list of trade types is %types")
+    public void thenTheListTradeTypesIs(List<TradeType> types) {
+        List<String> values = new ArrayList<String>();
+        for (TradeType type : TradeType.values()) {
+            values.add(type.name());
+        }
+        assertThat(types.toString(), equalTo(values.toString()));
+    }
+
+    enum TradeType {
+        BUY, SELL;
+    }
+
 	// Method used as dynamical parameter converter
 	@AsParameterConverter
 	public Trader retrieveTrader(String name) {
@@ -205,5 +229,6 @@ public class TraderSteps {
 	static TraderPersister mockTradePersister() {
 		return new TraderPersister(new Trader("Mauro", asList(new Stock("STK1", 10.d))));
 	}
-
+	
 }
+
