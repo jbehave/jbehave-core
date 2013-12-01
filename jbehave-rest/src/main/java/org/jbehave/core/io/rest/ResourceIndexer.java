@@ -10,6 +10,21 @@ import java.util.Map;
  */
 public interface ResourceIndexer {
 
+    /**
+     * Indexes resources retrieved from the given root URI
+     * 
+     * @param rootURI the root URI
+     * @return The Map of index Resource objects
+     */
     Map<String, Resource> indexResources(String rootURI);
+
+    /**
+     * Indexes resources contained in the given index entity
+     * 
+     * @param rootURI the root URI
+     * @param entity the entity containg the index
+     * @return The Map of index Resource objects
+     */
+    Map<String, Resource> indexResources(String rootURI, String entity);
 
 }
