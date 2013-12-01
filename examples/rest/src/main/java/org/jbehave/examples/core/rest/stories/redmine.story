@@ -1,7 +1,7 @@
 Scenario:  Story index is retrieved from Redmine
 
-When index is retrieved from Redmine at http://demo.redmine.org/projects/jbehave/wiki
-Then the index contains 2 stories
+When index is retrieved from Redmine at http://demo.redmine.org/projects/jbehave-rest/wiki
+Then the index is not empty
 
 Scenario:  Story is loaded from Redmine
 
