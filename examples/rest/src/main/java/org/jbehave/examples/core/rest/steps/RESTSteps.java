@@ -16,7 +16,7 @@ import org.jbehave.core.io.rest.redmine.UploadToRedmine;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
 
 public class RESTSteps {
 
@@ -29,9 +29,9 @@ public class RESTSteps {
         index = indexer.indexResources(uri);        
     }
     
-    @Then("the index contains $number stories")
-    public void indexContainsStories(int number){
-        assertThat(index.size(), equalTo(number));
+    @Then("the index is not empty")
+    public void indexContainsStories(){
+        assertThat(index.size(), greaterThan(0));
     }
 
     @When("story $name is loaded from Redmine")
@@ -47,7 +47,7 @@ public class RESTSteps {
 
     @When("story $name is uploaded to Redmine")
     public void storyIsUploadedToRedmine(String name){
-        ResourceUploader uploader = new UploadToRedmine(Type.JSON);
+        ResourceUploader uploader = new UploadToRedmine(Type.JSON, "jbehave", "jbehave");
         uploader.uploadResourceAsText(index.get(name).getURI(), text);
     }
     
