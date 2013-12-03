@@ -403,7 +403,10 @@ public class CrossReference extends Format {
         private void processScenarioMeta(Meta meta) {
         	for (String name : meta.getPropertyNames()) {
                 String property = name + "=" + meta.getProperty(name);
-                this.meta = appendMetaProperty(property, this.meta);
+                String newMeta = appendMetaProperty(property, this.meta);
+                if (newMeta != null) {
+                    this.meta = newMeta;
+                }
             }
 		}
 
@@ -412,7 +415,10 @@ public class CrossReference extends Format {
             for (String next : storyMeta.getPropertyNames()) {
                 String property = next + "=" + storyMeta.getProperty(next);
                 addMetaProperty(property, root.meta);
-                this.meta = appendMetaProperty(property, this.meta);
+                String newMeta = appendMetaProperty(property, this.meta);
+                if (newMeta != null) {
+                    this.meta = newMeta;
+                }
             }
         }
 
