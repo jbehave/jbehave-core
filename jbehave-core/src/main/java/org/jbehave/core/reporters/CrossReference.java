@@ -391,6 +391,7 @@ public class CrossReference extends Format {
         protected void processScenarios() {
             for (Scenario scenario : story.getScenarios()) {
                 String body = "Scenario:" + scenario.getTitle() + "\n";
+                processScenarioMeta(scenario.getMeta());
                 List<String> steps = scenario.getSteps();
                 for (String step : steps) {
                     body = body + step + "\n";
@@ -399,15 +400,19 @@ public class CrossReference extends Format {
             }
         }
 
-        protected void processMetaTags(XRefRoot root) {
+        private void processScenarioMeta(Meta meta) {
+        	for (String name : meta.getPropertyNames()) {
+                String property = name + "=" + meta.getProperty(name);
+                this.meta = appendMetaProperty(property, this.meta);
+            }
+		}
+
+		protected void processMetaTags(XRefRoot root) {
             Meta storyMeta = story.getMeta();
             for (String next : storyMeta.getPropertyNames()) {
                 String property = next + "=" + storyMeta.getProperty(next);
                 addMetaProperty(property, root.meta);
-                String newMeta = appendMetaProperty(property, this.meta);
-                if (newMeta != null) {
-                    this.meta = newMeta;
-                }
+                this.meta = appendMetaProperty(property, this.meta);
             }
         }
 
