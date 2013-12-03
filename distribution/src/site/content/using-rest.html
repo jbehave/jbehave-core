@@ -22,7 +22,7 @@
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     ResourceIndexer indexer = new IndexFromRedmine();
-    Map<String,Resource> index = indexer.indexResources("http://demo.redmine.org/project/jbehave/wiki/");
+    Map<String,Resource> index = indexer.indexResources("http://demo.redmine.org/project/jbehave-rest/wiki/");
     Resource resource = index.get("A_story");
     String uri = resource.getURI();
 ]]>
@@ -32,7 +32,7 @@
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
     ResourceLoader loader = new LoadFromRedmine(Type.JSON);
-    String text = loader.loadResourceAsText("http://demo.redmine.org/project/jbehave/wiki/A_story");
+    String text = loader.loadResourceAsText("http://demo.redmine.org/project/jbehave-rest/wiki/A_story");
 ]]>
 </script>
 
@@ -76,7 +76,7 @@
                 <id>import-to-filesystem</id>
                 <phase>process-resources</phase>
                 <configuration>
-                    <restRootPath>http://demo.redmine.org/project/jbehave-rest/wiki</restRootPath>
+                    <restRootURI>http://demo.redmine.org/project/jbehave-rest/wiki</restRootURI>
                     <restUsername>[optional]</restUsername>
                     <restPassword>[optional]</restPassword>
                     <targetPath>target/stories</targetPath>
@@ -90,7 +90,7 @@
                 <id>export-from-filesystem</id>
                 <phase>process-resources</phase>
                 <configuration>
-                    <restRootPath>http://demo.redmine.org/project/jbehave-rest/wiki</restRootPath>
+                    <restRootURI>http://demo.redmine.org/project/jbehave-rest/wiki</restRootURI>
                     <restUsername>[optional]</restUsername>
                     <restPassword>[optional]</restPassword>
                     <sourcePath>target/stories</sourcePath>
@@ -110,9 +110,9 @@
 
 <script type="syntaxhighlighter" class="brush: plain">
 <![CDATA[
-mvn org.jbehave:jbehave-rest:import-to-filesystem -Djbehave.restRootPath=http://demo.redmine.org/projects/jbehave-rest/wiki 
+mvn org.jbehave:jbehave-rest:import-to-filesystem -Djbehave.restRootURI=http://demo.redmine.org/projects/jbehave-rest/wiki 
                                                   -Djbehave.targetPath=target/stories -Djbehave.targetExt=.story
-mvn org.jbehave:jbehave-rest:export-from-filesystem -Djbehave.restRootPath=http://demo.redmine.org/projects/jbehave-rest/wiki 
+mvn org.jbehave:jbehave-rest:export-from-filesystem -Djbehave.restRootURI=http://demo.redmine.org/projects/jbehave-rest/wiki 
                                                     -Djbehave.sourcePath=target/stories -Djbehave.sourceExt=.story -Djbehave.indexPath=target/stories/index.xml
 ]]>
 </script>

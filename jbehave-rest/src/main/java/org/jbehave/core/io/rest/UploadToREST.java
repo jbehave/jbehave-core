@@ -25,7 +25,7 @@ public class UploadToREST implements ResourceUploader {
     public void uploadResourceAsText(String resourcePath, String text) {
         try {
             Type type = client.getType();
-            put(uri(resourcePath, type), entity(text,type));
+            put(uri(resourcePath, type), entity(resourcePath,text, type));
         } catch (Exception cause) {
             throw new InvalidStoryResource(resourcePath, cause);
         }
@@ -35,7 +35,7 @@ public class UploadToREST implements ResourceUploader {
 		return resourcePath;
 	}
 
-	protected String entity(String text, Type type) {
+	protected String entity(String resourcePath, String text, Type type) {
 		return text;
 	}
 
