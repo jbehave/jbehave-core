@@ -4,10 +4,10 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.jbehave.core.io.ResourceLoader;
-import org.jbehave.core.io.rest.ImportToFilesystem;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.ResourceImporter;
 import org.jbehave.core.io.rest.ResourceIndexer;
+import org.jbehave.core.io.rest.filesystem.ImportToFilesystem;
 import org.jbehave.core.io.rest.redmine.IndexFromRedmine;
 import org.jbehave.core.io.rest.redmine.LoadFromRedmine;
 

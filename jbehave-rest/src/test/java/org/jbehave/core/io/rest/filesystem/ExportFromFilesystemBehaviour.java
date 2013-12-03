@@ -1,4 +1,4 @@
-package org.jbehave.core.io.rest;
+package org.jbehave.core.io.rest.filesystem;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -11,6 +11,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.jbehave.core.io.rest.Resource;
+import org.jbehave.core.io.rest.ResourceExporter;
+import org.jbehave.core.io.rest.ResourceIndexer;
+import org.jbehave.core.io.rest.ResourceUploader;
+import org.jbehave.core.io.rest.filesystem.ExportFromFilesystem;
 import org.junit.Test;
 
 public class ExportFromFilesystemBehaviour {

@@ -1,6 +1,8 @@
-package org.jbehave.core.io.rest;
+package org.jbehave.core.io.rest.filesystem;
 
 import java.io.File;
+
+import org.jbehave.core.io.rest.Resource;
 
 public class FilesystemUtils {
 

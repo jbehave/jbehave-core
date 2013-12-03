@@ -1,12 +1,16 @@
-package org.jbehave.core.io.rest;
+package org.jbehave.core.io.rest.filesystem;
 
-import static org.jbehave.core.io.rest.FilesystemUtils.asFile;
+import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.asFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.jbehave.core.io.rest.Resource;
+import org.jbehave.core.io.rest.ResourceExporter;
+import org.jbehave.core.io.rest.ResourceIndexer;
+import org.jbehave.core.io.rest.ResourceUploader;
 
 /**
  * Implementation that reads from filesystem the resources and uploads them.
