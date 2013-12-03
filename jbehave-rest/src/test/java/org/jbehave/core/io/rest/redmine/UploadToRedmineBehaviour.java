@@ -16,16 +16,17 @@ public class UploadToRedmineBehaviour {
 	@Test
 	public void canFormatURIForJSON() {
 	    UploadToRedmine uploader = new UploadToRedmine(Type.JSON);
-		String url = "http://demo.redmine.org/project/jbehave/wiki/some_story";
-		String text = uploader.uri(url, Type.JSON);
-		assertThat(text, equalTo(url+".json"));
+		String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
+		String text = uploader.uri(resourcePath, Type.JSON);
+		assertThat(text, equalTo(resourcePath+".json"));
 	}
 
 	@Test
 	public void canFormatAsJSON() {
 	    UploadToRedmine uploader = new UploadToRedmine(Type.JSON);
+		String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
 		String text = read("redmine.json");
-		String entity = uploader.entity(text, Type.JSON);
+		String entity = uploader.entity(resourcePath, text, Type.JSON);
 		assertThat(entity, startsWith("{\"wiki_page\""));
 	}
 

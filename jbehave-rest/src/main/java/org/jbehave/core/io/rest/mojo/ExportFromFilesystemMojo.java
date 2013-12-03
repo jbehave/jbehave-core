@@ -29,12 +29,12 @@ public class ExportFromFilesystemMojo extends AbstractMojo {
     String restProvider;
 
     /**
-     * The root path of the REST API
+     * The root URI of the REST API
      * 
-     * @parameter expression="${jbehave.restRootPath}
+     * @parameter expression="${jbehave.restRootURI}
      * @required
      */
-    String restRootPath;
+    String restRootURI;
 
     /**
      * The username to access the REST API. May be null if no security enabled.
@@ -74,11 +74,11 @@ public class ExportFromFilesystemMojo extends AbstractMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
-            getLog().info("Exporting from filesystem resources to REST root path " + restRootPath);
+            getLog().info("Exporting from filesystem resources to REST root URI " + restRootURI);
             ResourceExporter exporter = createExporter();
-            exporter.exportResources(restRootPath);
+            exporter.exportResources(restRootURI);
         } catch (Exception e) {
-            String message = "Failed to export from filesystem resources to REST root path " + restRootPath;
+            String message = "Failed to export from filesystem resources to REST root URI " + restRootURI;
             getLog().warn(message);
             throw new MojoExecutionException(message, e);
         }
