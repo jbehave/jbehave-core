@@ -1,4 +1,4 @@
-package org.jbehave.core.io.rest;
+package org.jbehave.core.io.rest.filesystem;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,10 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jbehave.core.io.ResourceLoader;
-import org.jbehave.core.io.rest.ImportToFilesystem;
 import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.ResourceImporter;
 import org.jbehave.core.io.rest.ResourceIndexer;
+import org.jbehave.core.io.rest.filesystem.ImportToFilesystem;
 import org.junit.Test;
 
 import static org.apache.commons.io.FileUtils.readFileToString;

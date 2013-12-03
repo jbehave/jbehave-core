@@ -1,6 +1,6 @@
-package org.jbehave.core.io.rest;
+package org.jbehave.core.io.rest.filesystem;
 
-import static org.jbehave.core.io.rest.FilesystemUtils.asFile;
+import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.asFile;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.jbehave.core.io.ResourceLoader;
+import org.jbehave.core.io.rest.Resource;
+import org.jbehave.core.io.rest.ResourceImporter;
+import org.jbehave.core.io.rest.ResourceIndexer;
 
 /**
  * Implementation that writes to filesystem the imported resources, using the

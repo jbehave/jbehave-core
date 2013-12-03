@@ -3,11 +3,11 @@ package org.jbehave.core.io.rest.mojo;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.jbehave.core.io.rest.ExportFromFilesystem;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.ResourceExporter;
 import org.jbehave.core.io.rest.ResourceIndexer;
 import org.jbehave.core.io.rest.ResourceUploader;
+import org.jbehave.core.io.rest.filesystem.ExportFromFilesystem;
 import org.jbehave.core.io.rest.redmine.IndexFromRedmine;
 import org.jbehave.core.io.rest.redmine.UploadToRedmine;
 
