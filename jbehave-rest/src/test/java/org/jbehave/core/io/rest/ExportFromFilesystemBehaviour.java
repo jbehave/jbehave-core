@@ -1,5 +1,9 @@
 package org.jbehave.core.io.rest;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -8,10 +12,6 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class ExportFromFilesystemBehaviour {
 
@@ -30,11 +30,11 @@ public class ExportFromFilesystemBehaviour {
         write(text1, file1);
         File file2 = new File(sourcePath + "/Another_story" + sourceExt);
         write(text2, file2);
-        String indexPath = "src/test/resources/redmine-index.xml";
+        String indexPath = "src/test/resources/redmine-index.json";
         String indexEntity = FileUtils.readFileToString(new File(indexPath));
         Map<String, Resource> index = new HashMap<String, Resource>();
-        index.put("A_story", new Resource("A_story", rootURI + "/A_story"));
-        index.put("Another_story", new Resource("Another_story", rootURI + "/Another_story"));
+        index.put("A_story", new Resource(rootURI + "/A_story"));
+        index.put("Another_story", new Resource(rootURI + "/Another_story"));
         when(indexer.indexResources(rootURI, indexEntity)).thenReturn(index);
 
         // When

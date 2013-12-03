@@ -1,5 +1,7 @@
 package org.jbehave.core.io.rest;
 
+import static org.jbehave.core.io.rest.FilesystemUtils.asFile;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -45,8 +47,7 @@ public class ImportToFilesystem implements ResourceImporter {
     private void writeResources(Map<String, Resource> index, String targetPath, String targetExt) {
         for (String name : index.keySet()) {
             Resource resource = index.get(name);
-            File file = new File(targetPath, name + targetExt);
-            writeResource(resource, file);
+            writeResource(resource, asFile(resource, targetPath, targetExt));
         }
     }
 
