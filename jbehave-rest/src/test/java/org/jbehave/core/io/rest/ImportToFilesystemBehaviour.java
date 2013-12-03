@@ -31,8 +31,8 @@ public class ImportToFilesystemBehaviour {
         ResourceLoader loader = mock(ResourceLoader.class);
         String rootURI = "http://wiki";
         Map<String, Resource> index = new HashMap<String, Resource>();
-        index.put("one", new Resource("one", rootURI + "/one"));
-        index.put("two", new Resource("two", rootURI + "/two"));
+        index.put("one", new Resource(rootURI + "/one"));
+        index.put("two", new Resource(rootURI + "/two"));
         when(indexer.indexResources(rootURI)).thenReturn(index);
         String text1 = "story text 1";
         when(loader.loadResourceAsText(index.get("one").getURI())).thenReturn(text1);

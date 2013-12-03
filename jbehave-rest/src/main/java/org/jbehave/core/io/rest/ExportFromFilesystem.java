@@ -1,5 +1,7 @@
 package org.jbehave.core.io.rest;
 
+import static org.jbehave.core.io.rest.FilesystemUtils.asFile;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -62,8 +64,7 @@ public class ExportFromFilesystem implements ResourceExporter {
     private void readResources(Map<String, Resource> index, String sourcePath, String sourceExt) {
         for (String name : index.keySet()) {
             Resource resource = index.get(name);
-            File file = new File(sourcePath, name + sourceExt);
-            readResource(resource, file);
+            readResource(resource, asFile(resource, sourcePath, sourceExt));
         }
     }
 

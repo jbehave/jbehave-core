@@ -18,13 +18,14 @@ public class IndexFromRedmineBehaviour {
     public void canIndexFromRedmine() {
         ResourceIndexer indexer = new IndexFromRedmine();
         String rootPath = "http://redmine.org/wiki";
-        String entity = read("redmine-index.xml");
+        String entity = read("redmine-index.json");
         Map<String, Resource> index = indexer.indexResources(rootPath, entity);
-        assertThat(index.size(), equalTo(2));
         assertThat(index.containsKey("A_story"), equalTo(true));
-        assertThat(index.get("A_story").getURI(), equalTo(rootPath+"/A_story"));
+        assertThat(index.get("A_story").getURI(), equalTo(rootPath + "/A_story"));
+        assertThat(index.get("A_story").getBreadcrumbs(), equalTo("Stories"));
         assertThat(index.containsKey("Another_story"), equalTo(true));
-        assertThat(index.get("Another_story").getURI(), equalTo(rootPath+"/Another_story"));
+        assertThat(index.get("Another_story").getURI(), equalTo(rootPath + "/Another_story"));
+        assertThat(index.get("Another_story").getBreadcrumbs(), equalTo("Stories"));
     }
 
     private String read(String path) {
