@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-archetypes</artifactId>
-    <version>3.9-beta-5</version>
+    <version>3.9-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-spring-archetype</artifactId>
   <packaging>maven-archetype</packaging>
