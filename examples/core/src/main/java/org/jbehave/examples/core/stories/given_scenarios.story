@@ -1,4 +1,4 @@
-Scenarios that are used as preconditions, used via GivenStories: /path/to/story#{idX:scenarioX}
+Scenarios that are used as preconditions, used via given stories /path/to/story#{idX:scenarioX}
 
 Scenario: Scenario 1
 
