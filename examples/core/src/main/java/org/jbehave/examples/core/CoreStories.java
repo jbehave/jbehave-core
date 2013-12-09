@@ -1,5 +1,11 @@
 package org.jbehave.examples.core;
 
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML_TEMPLATE;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Properties;
@@ -18,11 +24,14 @@ import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.steps.ContextStepMonitor;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.JFrameContextView;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
+import org.jbehave.core.steps.StepContext;
 import org.jbehave.examples.core.service.TradingService;
 import org.jbehave.examples.core.steps.AndSteps;
 import org.jbehave.examples.core.steps.BeforeAfterSteps;
@@ -36,12 +45,6 @@ import org.jbehave.examples.core.steps.PriorityMatchingSteps;
 import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.SearchSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
-
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML_TEMPLATE;
 
 /**
  * <p>
@@ -78,7 +81,7 @@ public class CoreStories extends JUnitStories {
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
-        return new MostUsefulConfiguration()
+        return new MostUsefulConfiguration()        		
                 .useStoryLoader(new LoadFromClasspath(embeddableClass))
                 .useStoryParser(new RegexStoryParser(examplesTableFactory))
                 .useStoryReporterBuilder(
@@ -89,7 +92,8 @@ public class CoreStories extends JUnitStories {
                                 .withFailureTraceCompression(true).withCrossReference(xref))
                 .useParameterConverters(parameterConverters)
                 // use '%' instead of '$' to identify parameters
-                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%")).useStepMonitor(xref.getStepMonitor());
+                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"))
+                .useStepMonitor(new ContextStepMonitor(new JFrameContextView().sized(500, 100), new StepContext(), xref.getStepMonitor()));
     }
 
     @Override
