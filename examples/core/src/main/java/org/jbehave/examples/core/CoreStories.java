@@ -13,6 +13,9 @@ import java.util.Properties;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.context.Context;
+import org.jbehave.core.context.ContextView;
+import org.jbehave.core.context.JFrameContextView;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -22,16 +25,16 @@ import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
+import org.jbehave.core.reporters.ContextOutput;
 import org.jbehave.core.reporters.CrossReference;
+import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ContextStepMonitor;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.core.steps.JFrameContextView;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
-import org.jbehave.core.steps.StepContext;
 import org.jbehave.examples.core.service.TradingService;
 import org.jbehave.examples.core.steps.AndSteps;
 import org.jbehave.examples.core.steps.BeforeAfterSteps;
@@ -58,6 +61,10 @@ import org.jbehave.examples.core.steps.TraderSteps;
 public class CoreStories extends JUnitStories {
 
     private final CrossReference xref = new CrossReference();
+    private Context context = new Context();
+	private Format contextFormat = new ContextOutput(context);
+    private ContextView contextView = new JFrameContextView().sized(640, 120);
+    private ContextStepMonitor contextStepMonitor = new ContextStepMonitor(context, contextView, xref.getStepMonitor());
 
     public CoreStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
@@ -81,19 +88,19 @@ public class CoreStories extends JUnitStories {
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
-        return new MostUsefulConfiguration()        		
+		return new MostUsefulConfiguration()        		
                 .useStoryLoader(new LoadFromClasspath(embeddableClass))
                 .useStoryParser(new RegexStoryParser(examplesTableFactory))
                 .useStoryReporterBuilder(
                         new StoryReporterBuilder()
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withViewResources(viewResources)
-                                .withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
+                                .withFormats(contextFormat, CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
                                 .withFailureTraceCompression(true).withCrossReference(xref))
                 .useParameterConverters(parameterConverters)
                 // use '%' instead of '$' to identify parameters
                 .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"))
-                .useStepMonitor(new ContextStepMonitor(new JFrameContextView().sized(500, 100), new StepContext(), xref.getStepMonitor()));
+                .useStepMonitor(contextStepMonitor);
     }
 
     @Override
