@@ -81,51 +81,6 @@
         <extensions>true</extensions>
       </plugin>
     </plugins>
-    <pluginManagement>
-      <plugins>
-        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.jvnet.hudson.tools</groupId>
-                    <artifactId>maven-hpi-plugin</artifactId>
-                    <versionRange>[1.57,)</versionRange>
-                    <goals>
-                      <goal>resolve-test-dependencies</goal>
-                      <goal>test-hpl</goal>
-                      <goal>apt-compile</goal>
-                      <goal>insert-test</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.kohsuke</groupId>
-                    <artifactId>access-modifier-checker</artifactId>
-                    <versionRange>[1.0,)</versionRange>
-                    <goals>
-                      <goal>enforce</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
 </project>
