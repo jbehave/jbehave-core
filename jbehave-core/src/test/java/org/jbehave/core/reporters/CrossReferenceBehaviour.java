@@ -99,6 +99,7 @@ public class CrossReferenceBehaviour {
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
+                "      <pending>false</pending>\n" +
                 "      <started>NUMBER</started>\n" +
                 "      <duration>TIME</duration>\n" +
                 "    </story>\n" +
@@ -137,6 +138,7 @@ public class CrossReferenceBehaviour {
                 "      'meta': 'author=Mauro\\ntheme=testing\\n',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
+                "      'pending': false,\n" +
                 "      'started': NUMBER,\n" +
                 "      'duration': TIME\n" +
                 "    }\n" +
@@ -236,6 +238,7 @@ public class CrossReferenceBehaviour {
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
+                "      <pending>false</pending>\n" +
                 "      <started>NUMBER</started>\n" +
                 "      <duration>TIME</duration>\n" +
                 "    </story>\n" +
@@ -334,6 +337,7 @@ public class CrossReferenceBehaviour {
                 "      'meta': 'author=Mauro\\ntheme=testing\\n',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
+                "      'pending': false,\n" +
                 "      'started': NUMBER,\n" +
                 "      'duration': TIME\n" +
                 "    }\n" +
@@ -433,6 +437,7 @@ public class CrossReferenceBehaviour {
                 "</meta>\n" +
                 "      <scenarios></scenarios>\n" +
                 "      <passed>false</passed>\n" +
+                "      <pending>false</pending>\n" +
                 "      <started>NUMBER</started>\n" +
                 "      <duration>TIME</duration>\n" +
                 "      <theme>testing</theme>\n" +
@@ -474,6 +479,7 @@ public class CrossReferenceBehaviour {
                 "      'meta': 'author=Mauro\\n',\n" +
                 "      'scenarios': '',\n" +
                 "      'passed': false,\n" +
+                "      'pending': false,\n" +
                 "      'started': NUMBER,\n" +
                 "      'duration': TIME,\n" +
                 "      'theme': 'testing'\n" +
@@ -517,8 +523,8 @@ public class CrossReferenceBehaviour {
         }
 
         @Override
-        protected CrossReference.XRefStory createXRefStory(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed) {
-            return new XRefStoryWithTheme(story, storyReporterBuilder, passed, themes);
+        protected CrossReference.XRefStory createXRefStory(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed, boolean pending) {
+            return new XRefStoryWithTheme(story, storyReporterBuilder, passed, pending, themes);
         }
     }
 
@@ -543,8 +549,8 @@ public class CrossReferenceBehaviour {
     private static class XRefStoryWithTheme extends CrossReference.XRefStory {
         private String theme;
         private transient Set<String> themes = new HashSet<String>();
-        public XRefStoryWithTheme(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed, Set<String> themes) {
-            super(story, storyReporterBuilder, passed);
+        public XRefStoryWithTheme(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed, boolean pending, Set<String> themes) {
+            super(story, storyReporterBuilder, passed, pending);
             this.themes = themes;
         }
 

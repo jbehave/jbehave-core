@@ -1,7 +1,16 @@
 package org.jbehave.core.reporters;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PassingUponPendingStep;
@@ -17,17 +26,8 @@ import org.jbehave.core.steps.NullStepMonitor;
 import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.StepType;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 
 public class CrossReference extends Format {
 
@@ -41,6 +41,7 @@ public class CrossReference extends Format {
     private Map<String, StepMatch> stepMatches = new HashMap<String, StepMatch>();
     private StepMonitor stepMonitor = new XRefStepMonitor();
     private Set<String> failingStories = new HashSet<String>();
+    private Set<String> pendingStories = new HashSet<String>();
     private Set<String> stepsPerformed = new HashSet<String>();
     private PendingStepStrategy pendingStepStrategy = new PassingUponPendingStep();
     private String metaFilter = "";
@@ -114,7 +115,7 @@ public class CrossReference extends Format {
      * @param storyReporterBuilder the reporter to use
      */
     public synchronized void outputToFiles(StoryReporterBuilder storyReporterBuilder) {
-        XRefRoot root = createXRefRoot(storyReporterBuilder, stories, failingStories);
+        XRefRoot root = createXRefRoot(storyReporterBuilder, stories, failingStories, pendingStories);
         root.addStepMatches(stepMatches);
         if (doXml) {
             outputFile(fileName("xml"), XSTREAM_FOR_XML, root, storyReporterBuilder);
@@ -129,11 +130,11 @@ public class CrossReference extends Format {
     }
 
     protected final XRefRoot createXRefRoot(StoryReporterBuilder storyReporterBuilder, List<StoryHolder> stories,
-            Set<String> failingStories) {
+            Set<String> failingStories, Set<String> pendingStories) {
         XRefRoot xrefRoot = newXRefRoot();
         xrefRoot.metaFilter = getMetaFilter();
         xrefRoot.setExcludeStoriesWithNoExecutedScenarios(excludeStoriesWithNoExecutedScenarios);
-        xrefRoot.processStories(stories, stepsPerformed, times, storyReporterBuilder, failingStories);
+        xrefRoot.processStories(stories, stepsPerformed, times, storyReporterBuilder, failingStories, pendingStories);
         return xrefRoot;
     }
 
@@ -213,6 +214,7 @@ public class CrossReference extends Format {
 
             @Override
             public void pending(String step) {
+                pendingStories.add(currentStory.get().getPath());                	
                 if (pendingStepStrategy instanceof FailingUponPendingStep) {
                     failingStories.add(currentStory.get().getPath());
                 }
@@ -273,13 +275,13 @@ public class CrossReference extends Format {
     }
 
     public static class XRefRoot {
-        protected long whenMade = System.currentTimeMillis();
+		protected long whenMade = System.currentTimeMillis();
         protected String createdBy = createdBy();
         protected String metaFilter = "";
 
         private Set<String> meta = new HashSet<String>();
         private List<XRefStory> stories = new ArrayList<XRefStory>();
-        private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
+    	private List<StepMatch> stepMatches = new ArrayList<StepMatch>();
 
         private transient boolean excludeStoriesWithNoExecutedScenarios;
 
@@ -295,7 +297,7 @@ public class CrossReference extends Format {
         }
 
         protected void processStories(List<StoryHolder> stories, Set<String> stepsPerformed, Map<String, Long> times,
-                StoryReporterBuilder builder, Set<String> failures) {
+                StoryReporterBuilder builder, Set<String> failures, Set<String> pendingStories) {
             // Prevent Concurrent Modification Exception.
             synchronized (stories) {
                 for (StoryHolder storyHolder : stories) {
@@ -303,7 +305,7 @@ public class CrossReference extends Format {
                     String path = story.getPath();
                     if (!path.equals("BeforeStories") && !path.equals("AfterStories")) {
                         if (someScenarios(story, stepsPerformed) || !excludeStoriesWithNoExecutedScenarios) {
-                            XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(path), this);
+                            XRefStory xRefStory = createXRefStory(builder, story, !failures.contains(path), pendingStories.contains(path), this);
                             xRefStory.started = storyHolder.when;
                             xRefStory.duration = getTime(times, story);
                             this.stories.add(xRefStory);
@@ -331,8 +333,8 @@ public class CrossReference extends Format {
          * methods are invoked (or overridden)
          */
         protected final XRefStory createXRefStory(StoryReporterBuilder storyReporterBuilder, Story story,
-                boolean passed, XRefRoot root) {
-            XRefStory xrefStory = createXRefStory(storyReporterBuilder, story, passed);
+                boolean passed, boolean pending, XRefRoot root) {
+            XRefStory xrefStory = createXRefStory(storyReporterBuilder, story, passed, pending);
             xrefStory.processMetaTags(root);
             xrefStory.processScenarios();
             return xrefStory;
@@ -345,10 +347,11 @@ public class CrossReference extends Format {
          * @param storyReporterBuilder the story reporter builder
          * @param story the story
          * @param passed the story passed (or failed)
+         * @param pending the story is pending
          * @return An XRefStory
          */
-        protected XRefStory createXRefStory(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed) {
-            return new XRefStory(story, storyReporterBuilder, passed);
+        protected XRefStory createXRefStory(StoryReporterBuilder storyReporterBuilder, Story story, boolean passed, boolean pending) {
+            return new XRefStory(story, storyReporterBuilder, passed, pending);
         }
 
         protected void addStepMatches(Map<String, StepMatch> stepMatchMap) {
@@ -370,10 +373,11 @@ public class CrossReference extends Format {
         private String meta = "";
         private String scenarios = "";
         private boolean passed;
+		private boolean pending;
         public long started;
         public long duration;
 
-        public XRefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed) {
+        public XRefStory(Story story, StoryReporterBuilder storyReporterBuilder, boolean passed, boolean pending) {
             this.story = story;
             Narrative narrative = story.getNarrative();
             if (!narrative.isEmpty()) {
@@ -384,6 +388,7 @@ public class CrossReference extends Format {
             this.name = story.getName();
             this.path = story.getPath();
             this.passed = passed;
+            this.pending = pending;
             this.html = storyReporterBuilder.pathResolver().resolveName(
                     new StoryLocation(storyReporterBuilder.codeLocation(), story.getPath()), "html");
         }
