@@ -1,4 +1,4 @@
-package org.jbehave.core.steps;
+package org.jbehave.core.context;
 
 /**
  * ContextView allows the viewing of context-related messages.

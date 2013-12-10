@@ -1,9 +1,9 @@
-package org.jbehave.core.steps;
+package org.jbehave.core.context;
 
 /**
  * Holds context-related information
  */
-public class StepContext {
+public class Context {
 	
 	private ThreadLocal<String> currentScenario = new ThreadLocal<String>();
 
