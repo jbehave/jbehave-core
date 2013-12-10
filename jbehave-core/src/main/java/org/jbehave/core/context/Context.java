@@ -5,9 +5,18 @@ package org.jbehave.core.context;
  */
 public class Context {
 	
+	private ThreadLocal<String> currentStory = new ThreadLocal<String>();
 	private ThreadLocal<String> currentScenario = new ThreadLocal<String>();
 
-    public String getCurrentScenario() {
+    public String getCurrentStory() {
+		return currentStory.get();
+	}
+
+	public void setCurrentStory(String currentStory) {
+		this.currentStory.set(currentStory);
+	}
+
+	public String getCurrentScenario() {
 		return currentScenario.get();
 	}
 

@@ -1,16 +1,18 @@
 package org.jbehave.core.context;
 
+import static java.text.MessageFormat.format;
+import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
+
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.MouseInputAdapter;
-
-import org.apache.commons.lang.StringEscapeUtils;
 
 public class JFrameContextView implements ContextView {
 
@@ -55,12 +57,28 @@ public class JFrameContextView implements ContextView {
 		return this;
 	}
 
-	public synchronized void show(String scenario, String step) {
+	public synchronized void show(String story, String scenario, String step) {
 		if (frame == null) {
 			initialize();
 		}
-		label.setText("<html><b>" + StringEscapeUtils.escapeHtml(scenario)
-				+ "</b><br/>" + StringEscapeUtils.escapeHtml(step) + "</html>");
+		label.setText(formatText(story, scenario, step));
+		try {
+			TimeUnit.MILLISECONDS.sleep(pauseInMillis());
+		} catch (InterruptedException e) {
+			// continue
+		}
+	}
+
+	protected String formatText(String story, String scenario, String step) {
+		return format(labelTemplate(), (story != null ? escapeHtml(story) : ""), (scenario != null ? escapeHtml(scenario) : ""), escapeHtml(step));
+	}
+
+	protected String labelTemplate() {
+		return "<html><h3>{0}</h3><h4>{1}</h4><p>{2}</p></html>";
+	}
+
+	protected long pauseInMillis() {
+		return 250;
 	}
 
 	public synchronized void close() {
