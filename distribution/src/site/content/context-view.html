@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Context View</title>
+</head>
+<body>
+<h2>Context View</h2>
+
+<p>The <a
+    href="javadoc/core/org/jbehave/core/context/ContextView.html">ContextView</a>
+allows the viewing of context-related information, such as the current story, scenario or step being executed.
+A Swing-based <a
+    href="javadoc/core/org/jbehave/core/context/JFrameContextView.html">JFrameContextView</a> is provided, but 
+    other custom implementations can be provided by the user.</p>
+
+<p>The context view is activated by configuring the <a
+    href="javadoc/core/org/jbehave/core/steps/ContextStepMonitor.html">ContextStepMonitor</a>.</p>
+
+<p>A typical configuration looks like:</p>
+
+<pre class="brush: java">
+    private Context context = new Context();
+	private Format contextFormat = new ContextOutput(context);
+    private ContextView contextView = new JFrameContextView().sized(640, 120);
+    private StepMonitor delegate = ... 
+    private ContextStepMonitor contextStepMonitor = new ContextStepMonitor(context, contextView, delegate);
+</pre>
+
+<p>The ContextStepMonitor needs to be added to the Configuration:</p>
+
+<pre class="brush: java">
+   Configuration = new MostUsefulConfiguration()        		
+                .useStepMonitor(contextStepMonitor);
+</pre>
+
+<h2>Examples</h2>
+
+<p>Examples of configuration of ContextView can be found in <a href="running-examples.html">core example</a>.</p>
+
+</body>
+</html>
