@@ -11,6 +11,7 @@ import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.STATS;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -75,7 +76,7 @@ public class SpringAnnotationBuilderBehaviour {
         try {
             assertThat((Date) parameterConverters.convert(date, Date.class), equalTo(dateFormat.parse(date)));
         } catch (ParseException e) {
-            Assert.fail();
+            fail();
         }
     }
 
@@ -145,7 +146,12 @@ public class SpringAnnotationBuilderBehaviour {
     public void shouldNotBuildContainerIfResourceNotLoadable() {
         AnnotationMonitor annotationMonitor = mock(AnnotationMonitor.class);
         AnnotationBuilder builderUnloadableResource = new SpringAnnotationBuilder(AnnotatedWithUnloadableResource.class, annotationMonitor);
-        assertThatStepsInstancesAre(builderUnloadableResource.buildCandidateSteps());
+        try {
+            assertThatStepsInstancesAre(builderUnloadableResource.buildCandidateSteps());
+            fail("Exception expected");
+        } catch (AnnotationBuilder.InstantiationFailed e) {
+            // expected
+        }
         verify(annotationMonitor).elementCreationFailed(isA(Class.class), isA(Exception.class));
     }
 

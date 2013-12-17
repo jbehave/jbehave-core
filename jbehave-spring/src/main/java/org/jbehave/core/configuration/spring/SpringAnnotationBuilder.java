@@ -47,6 +47,7 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
                     context = createApplicationContext(annotatedClass().getClassLoader(), resources);
                 } catch (Exception e) {
                     annotationMonitor().elementCreationFailed(ApplicationContext.class, e);
+                    throw new InstantiationFailed(annotatedClass(), e);
                 }
             }
         } else {
