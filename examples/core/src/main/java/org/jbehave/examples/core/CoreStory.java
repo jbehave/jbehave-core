@@ -1,5 +1,10 @@
 package org.jbehave.examples.core;
 
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
+import static org.jbehave.core.reporters.Format.XML;
+
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
@@ -31,8 +36,10 @@ import org.jbehave.examples.core.steps.BeforeAfterSteps;
 import org.jbehave.examples.core.steps.CalendarSteps;
 import org.jbehave.examples.core.steps.CompositeNestedSteps;
 import org.jbehave.examples.core.steps.CompositeSteps;
+import org.jbehave.examples.core.steps.ContextSteps;
 import org.jbehave.examples.core.steps.ExamplesTableParametersSteps;
 import org.jbehave.examples.core.steps.MetaParametrisationSteps;
+import org.jbehave.examples.core.steps.MyContext;
 import org.jbehave.examples.core.steps.NamedParametersSteps;
 import org.jbehave.examples.core.steps.ParameterDelimitersSteps;
 import org.jbehave.examples.core.steps.ParametrisedSteps;
@@ -41,11 +48,6 @@ import org.jbehave.examples.core.steps.PriorityMatchingSteps;
 import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.SearchSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
-
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
 
 /**
  * <p>
@@ -105,11 +107,12 @@ public abstract class CoreStory extends JUnitStory {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
+    	MyContext context = new MyContext();
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
                 new MetaParametrisationSteps(), new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(),
                 new ParametrisedSteps(), new SandpitSteps(), new SearchSteps(), new BeforeAfterSteps(),
                 new CompositeSteps(), new CompositeNestedSteps(), new NamedParametersSteps(),
-                new ParameterDelimitersSteps(), new ExamplesTableParametersSteps());
+                new ParameterDelimitersSteps(), new ExamplesTableParametersSteps(), new ContextSteps(context));
     }
 
 }
