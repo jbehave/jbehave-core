@@ -24,13 +24,13 @@ public class ContextSteps {
 		context.variables.put(name, name);
 	}
 
-	@Then("the context variables includes the name %name")
+	@Then("the context includes the name %name")
 	public void thenTheContextIncludes(String name){
 		Map<String, Object> variables = context.variables;
 		MatcherAssert.assertThat(variables, hasEntry(name, (Object)name));
 	}
 
-	@Then("the context variables does not include the name %name")
+	@Then("the context does not include the name %name")
 	public void thenTheContextDoesNotInclude(String name){
 		Map<String, Object> variables = context.variables;
 		MatcherAssert.assertThat(variables, not(hasEntry(name, (Object)name)));
