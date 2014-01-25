@@ -26,6 +26,12 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
 
     @Test
+    public void shouldMatchStepWithPatternsUsingNumbersInPlacehoderNames() {
+        assertThatPatternMatchesStep(parser, "a house with $numberOf1stFloorDoors doors and $facing2 windows",
+                "a house with 3 doors and 4 windows", "numberOf1stFloorDoors", "facing2");
+    }
+
+    @Test
     public void shouldMatchStepWithPatternsUsingAccentsInPlacehoderNames() {
         assertThatPatternMatchesStep(parser, "une maison avec $numérosDesPortes portes et $quelques fenêtres",
                 "une maison avec 3 portes et 4 fenêtres", "numérosDesPortes", "quelques");

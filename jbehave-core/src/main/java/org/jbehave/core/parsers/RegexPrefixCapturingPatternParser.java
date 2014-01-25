@@ -82,8 +82,9 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
     }
 
     private Pattern findAllPrefixedWords() {
-        // Use \p{L} in place of \w to allow for all unicode-supported letters, not only ASCII
-        return Pattern.compile("(\\" + prefix + "\\p{L}*)(\\W|\\Z)", Pattern.DOTALL);
+        // Use [\p{L}]p{N}] in place of \w to allow for all unicode-supported letters and numbers, not only ASCII
+    	// http://www.regular-expressions.info/unicode.html
+        return Pattern.compile("(\\" + prefix + "[\\p{L}\\p{N}]*)(\\W|\\Z)", Pattern.DOTALL);
     }
 
 	private String replaceParametersWithCapture(String escapedMatch,
