@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+	<link rel="http://www.xwiki.org/rel/space"
+		href="http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main" />
+	<link rel="http://www.xwiki.org/rel/parent"
+		href="http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/parent_story" />
+	<link rel="http://www.xwiki.org/rel/history"
+		href="http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story/history" />
+	<link rel="http://www.xwiki.org/rel/syntaxes" href="http://localhost:8080/xwiki/rest/syntaxes" />
+	<link rel="self"
+		href="http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story" />
+	<link rel="http://www.xwiki.org/rel/class"
+		href="http://localhost:8080/xwiki/rest/wikis/xwiki/classes/Main.some_story" />
+	<id>xwiki:Main.some_story</id>
+	<fullName>Main.some_story</fullName>
+	<wiki>xwiki</wiki>
+	<space>Main</space>
+	<name>some_story</name>
+	<title>Hello world</title>
+	<parent>parent_story</parent>
+	<parentId>xwiki:Main.parent_story</parentId>
+	<version>2.1</version>
+	<author>XWiki.jbehave</author>
+	<xwikiRelativeUrl>http://localhost:8080/xwiki/bin/view/Main/some_story</xwikiRelativeUrl>
+	<xwikiAbsoluteUrl>http://localhost:8080/xwiki/bin/view/Main/some_story</xwikiAbsoluteUrl>
+	<translations />
+	<syntax>xwiki/2.0</syntax>
+	<language />
+	<majorVersion>2</majorVersion>
+	<minorVersion>1</minorVersion>
+	<created>2014-01-30T11:11:11+01:00</created>
+	<creator>XWiki.jbehave</creator>
+	<modified>2014-01-30T11:11:11+01:00</modified>
+	<modifier>XWiki.jbehave</modifier>
+	<comment />
+	<content>Narrative: 
+In order to ensure secure access
+As a security officer
+I want to authenticate users</content>
+</page>
