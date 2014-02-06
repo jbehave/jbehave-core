@@ -19,12 +19,13 @@ public interface ResourceIndexer {
     Map<String, Resource> indexResources(String rootURI);
 
     /**
-     * Indexes resources contained in the given index entity
+     * Indexes resources found in the given root path
      * 
      * @param rootURI the root URI
-     * @param entity the entity containg the index
+     * @param rootPath the root path of the resources to index
+     * @param includes the pattern of resources to include 
      * @return The Map of index Resource objects
      */
-    Map<String, Resource> indexResources(String rootURI, String entity);
+    Map<String, Resource> indexResources(String rootURI, String rootPath, String includes);
 
 }

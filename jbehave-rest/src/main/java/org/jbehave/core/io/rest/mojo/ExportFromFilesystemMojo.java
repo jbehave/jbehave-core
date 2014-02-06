@@ -66,11 +66,11 @@ public class ExportFromFilesystemMojo extends AbstractMojo {
     String sourceExt;
 
     /**
-     * The path to the resource index
+     * The includes pattern of the resources
      * 
-     * @parameter expression="${jbehave.indexPath}
+     * @parameter expression="${jbehave.includes}
      */
-    String indexPath;
+    String includes;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
@@ -90,8 +90,8 @@ public class ExportFromFilesystemMojo extends AbstractMojo {
         getLog().info(
                 "Creating exporter from filesystem with with indexer " + indexer.getClass() + ", uploader "
                         + uploader.getClass() + ", sourcePath " + sourcePath + ", sourceExt " + sourceExt
-                        + " and indexPath " + indexPath);
-        return new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, indexPath);
+                        + " and including " + includes);
+        return new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, includes);
     }
 
     ResourceIndexer newResourceIndexer() {

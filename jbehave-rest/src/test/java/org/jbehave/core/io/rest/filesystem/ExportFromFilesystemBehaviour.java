@@ -35,15 +35,14 @@ public class ExportFromFilesystemBehaviour {
         write(text1, file1);
         File file2 = new File(sourcePath + "/Another_story" + sourceExt);
         write(text2, file2);
-        String indexPath = "src/test/resources/redmine-index.json";
-        String indexEntity = FileUtils.readFileToString(new File(indexPath));
         Map<String, Resource> index = new HashMap<String, Resource>();
         index.put("A_story", new Resource(rootURI + "/A_story"));
         index.put("Another_story", new Resource(rootURI + "/Another_story"));
-        when(indexer.indexResources(rootURI, indexEntity)).thenReturn(index);
+        String includes = "**";
+		when(indexer.indexResources(rootURI, sourcePath, includes)).thenReturn(index);
 
         // When
-        ResourceExporter exporter = new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, indexPath);
+        ResourceExporter exporter = new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, includes);
         exporter.exportResources(rootURI);
 
         // Then
