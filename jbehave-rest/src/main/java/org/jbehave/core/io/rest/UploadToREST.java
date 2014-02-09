@@ -22,12 +22,13 @@ public class UploadToREST implements ResourceUploader {
         this.client = client;
     }
     
-    public void uploadResourceAsText(String resourcePath, String text) {
+    public void uploadResource(Resource resource) {
         try {
             Type type = client.getType();
-            put(uri(resourcePath, type), entity(resourcePath,text, type));
+            String resourcePath = resource.getURI();
+			put(uri(resourcePath, type), entity(resource, type));
         } catch (Exception cause) {
-            throw new InvalidStoryResource(resourcePath, cause);
+            throw new InvalidStoryResource(resource.toString(), cause);
         }
     }
 
@@ -35,8 +36,8 @@ public class UploadToREST implements ResourceUploader {
 		return resourcePath;
 	}
 
-	protected String entity(String resourcePath, String text, Type type) {
-		return text;
+	protected String entity(Resource resource, Type type) {
+		return resource.getText();
 	}
 
 	private void put(String uri, String entity) {

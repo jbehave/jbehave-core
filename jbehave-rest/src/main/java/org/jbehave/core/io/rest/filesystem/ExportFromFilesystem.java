@@ -48,7 +48,7 @@ public class ExportFromFilesystem implements ResourceExporter {
 	private void uploadResources(Map<String, Resource> index) {
 		for (String name : index.keySet()) {
 			Resource resource = index.get(name);
-			uploader.uploadResourceAsText(resource.getURI(), resource.getText());
+			uploader.uploadResource(resource);
 		}
 	}
 

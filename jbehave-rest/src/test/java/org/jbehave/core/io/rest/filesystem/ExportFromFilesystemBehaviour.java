@@ -10,12 +10,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.ResourceExporter;
 import org.jbehave.core.io.rest.ResourceIndexer;
 import org.jbehave.core.io.rest.ResourceUploader;
-import org.jbehave.core.io.rest.filesystem.ExportFromFilesystem;
 import org.junit.Test;
 
 public class ExportFromFilesystemBehaviour {
@@ -36,8 +34,10 @@ public class ExportFromFilesystemBehaviour {
         File file2 = new File(sourcePath + "/Another_story" + sourceExt);
         write(text2, file2);
         Map<String, Resource> index = new HashMap<String, Resource>();
-        index.put("A_story", new Resource(rootURI + "/A_story"));
-        index.put("Another_story", new Resource(rootURI + "/Another_story"));
+        Resource aResource = new Resource(rootURI + "/A_story");
+		index.put("A_story", aResource);
+        Resource anotherResource = new Resource(rootURI + "/Another_story");
+		index.put("Another_story", anotherResource);
         String includes = "**";
 		when(indexer.indexResources(rootURI, sourcePath, includes)).thenReturn(index);
 
@@ -46,8 +46,8 @@ public class ExportFromFilesystemBehaviour {
         exporter.exportResources(rootURI);
 
         // Then
-        verify(uploader).uploadResourceAsText(rootURI + "/A_story", text1);
-        verify(uploader).uploadResourceAsText(rootURI + "/Another_story", text2);
+        verify(uploader).uploadResource(aResource);
+        verify(uploader).uploadResource(anotherResource);
     }
 
     private void write(String text, File file) throws IOException {

@@ -4,6 +4,7 @@ import static java.text.MessageFormat.format;
 import static org.apache.commons.lang.StringUtils.substringAfterLast;
 
 import org.jbehave.core.io.rest.RESTClient.Type;
+import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.UploadToREST;
 
 import com.google.gson.Gson;
@@ -27,19 +28,19 @@ public class UploadToRedmine extends UploadToREST {
 		return format(REDMINE_URI, resourcePath, type.name().toLowerCase());
 	}
 
-	protected String entity(String resourcePath, String text, Type type) {
+	protected String entity(Resource resource, Type type) {
 		switch (type) {
 		case JSON:
 			Gson gson = new Gson();
 			WikiPage page = new WikiPage();
-			page.title = substringAfterLast(resourcePath, "/");
-			page.text = text;
+			page.title = substringAfterLast(resource.getURI(), "/");
+			page.text = resource.getText();
 			Entity entity = new Entity();
 			entity.wiki_page = page;
 			return gson.toJson(entity);
 		case XML:
 		default:
-			return text;
+			return resource.getText();
 		}
 	}
 
