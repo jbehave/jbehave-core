@@ -7,6 +7,6 @@ package org.jbehave.core.io.rest;
  */
 public interface ResourceUploader {
 
-    void uploadResourceAsText(String resourcePath, String text);
+    void uploadResource(Resource resource);
     
 }

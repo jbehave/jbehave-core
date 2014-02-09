@@ -48,13 +48,13 @@ public class RESTSteps {
 	@When("story $name is loaded")
 	public void storyIsLoaded(String name) {
 		ResourceLoader loader = resourceLoader();
-		String uri = index.get(name).getURI();
-		storyText = loader.loadResourceAsText(uri);
+		Resource resource = index.get(name);
+		storyText = loader.loadResourceAsText(resource.getURI());
 	}
 
 	@When("stories in $sourcePath are exported to $rootURI")
 	public void whenStoriesAreExported(String sourcePath, String rootURI) {
-		ResourceExporter exporter = new ExportFromFilesystem(resourceIndexer(), resourceupLoader(), sourcePath, ".story", "**/.*story");
+		ResourceExporter exporter = new ExportFromFilesystem(resourceIndexer(), resourceupLoader(), sourcePath, ".story", "**/*.story");
 		exporter.exportResources(rootURI);
 	}
 
@@ -66,8 +66,8 @@ public class RESTSteps {
 	@When("story $name is uploaded appending '$text'")
 	public void storyIsUploaded(String name, String text) {
 		ResourceUploader uploader = resourceupLoader();
-		String uri = index.get(name).getURI();
-		uploader.uploadResourceAsText(uri, storyText + " " + text);
+		Resource resource = index.get(name);
+		uploader.uploadResource(resource);
 	}
 
 	private ResourceIndexer resourceIndexer() {
