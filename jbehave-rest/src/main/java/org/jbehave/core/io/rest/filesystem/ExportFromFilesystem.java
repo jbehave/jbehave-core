@@ -61,6 +61,7 @@ public class ExportFromFilesystem implements ResourceExporter {
 	}
 
 	private void readResource(Resource resource, File file) {
+		if ( file.isDirectory() || !file.exists() ) return;
 		try {
 			String text = FileUtils.readFileToString(file);
 			resource.setText(text);
