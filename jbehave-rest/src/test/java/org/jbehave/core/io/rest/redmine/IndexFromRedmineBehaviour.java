@@ -19,9 +19,9 @@ public class IndexFromRedmineBehaviour {
         String entity = read("redmine-index.json");
         Map<String, Resource> index = indexer.createIndexFromEntity(rootPath, entity);
         assertThat(index.containsKey("a_story"), equalTo(true));
-        assertThat(index.get("a_story").getURI(), equalTo(rootPath + "/a_story"));
+        assertThat(index.get("a_story").getURI(), equalTo(rootPath + "/A_story"));
         assertThat(index.containsKey("another_story"), equalTo(true));
-        assertThat(index.get("another_story").getURI(), equalTo(rootPath + "/another_story"));
+        assertThat(index.get("another_story").getURI(), equalTo(rootPath + "/Another_story"));
     }
 
     private String read(String path) {

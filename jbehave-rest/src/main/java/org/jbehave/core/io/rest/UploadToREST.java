@@ -37,7 +37,7 @@ public class UploadToREST implements ResourceUploader {
 	}
 
 	protected String entity(Resource resource, Type type) {
-		return resource.getText();
+		return resource.getContent();
 	}
 
 	private void put(String uri, String entity) {

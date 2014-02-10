@@ -43,7 +43,7 @@ public class ImportToFilesystem implements ResourceImporter {
         for (String name : index.keySet()) {
             Resource resource = index.get(name);
             String text = loader.loadResourceAsText(resource.getURI());
-            resource.setText(text);
+            resource.setContent(text);
         }
     }
 
@@ -57,11 +57,11 @@ public class ImportToFilesystem implements ResourceImporter {
     private void writeResource(Resource resource, File file) {
         try {
             file.getParentFile().mkdirs();
-            FileWriter writer = new FileWriter(file);
-            if (resource.hasText()) {
-                writer.write(resource.getText());
+            if (resource.hasContent()) {
+                FileWriter writer = new FileWriter(file);
+                writer.write(resource.getContent());
+                writer.close();
             }
-            writer.close();
         } catch (IOException e) {
             throw new RuntimeException("Failed to write resource " + resource + " to file " + file, e);
         }

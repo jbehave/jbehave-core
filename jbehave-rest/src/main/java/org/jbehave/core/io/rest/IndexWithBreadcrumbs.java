@@ -1,7 +1,7 @@
 package org.jbehave.core.io.rest;
 
-import static org.apache.commons.lang.StringUtils.join;
-import static org.apache.commons.lang.StringUtils.substringBeforeLast;
+import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.fileNameWithoutExt;
+import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.normalisedPathOf;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,33 +51,33 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
 	private void addPath(String rootURI, String rootPath, String path,
 			Map<String, Resource> index) {
 		File file = new File(path);
-		String name = substringBeforeLast(file.getName(), ".").toLowerCase();
+		String name = fileNameWithoutExt(file).toLowerCase();
 		String parentName = parentName(file, rootPath);
 		String uri = rootURI + "/" + name;
 		Resource resource = new Resource(uri, name, parentName);
-		resource.setText(textOf(file));
+		resource.setContent(contentOf(file));
 		index.put(name, resource);
 		if ( parentName != null ) {
 			addPath(rootURI, rootPath, file.getParent(), index);
 		}
 	}
-
+	
 	private String parentName(File file, String rootPath) {
 		File parent = file.getParentFile();
-		if (parent != null && !parent.getPath().equals(rootPath)) {
+		if (parent != null && !normalisedPathOf(parent).equals(rootPath)) {
 			return parent.getName().toLowerCase();
 		}
 		return null;
 	}
-
-	private String textOf(File file) {
+	
+	private String contentOf(File file) {
 		if (file.isDirectory()) {
 			return "";
 		}
 		try {
 			return FileUtils.readFileToString(file);
 		} catch (IOException e) {
-			throw new RuntimeException("Failed to read file " + file, e);
+			throw new RuntimeException("Failed to read content of file " + file, e);
 		}
 	}
 
@@ -85,9 +85,7 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
 		for (Resource resource : index.values()) {
 			List<String> breadcrumbs = new ArrayList<String>();
 			collectBreadcrumbs(breadcrumbs, resource, index);
-			if (!breadcrumbs.isEmpty()) {
-				resource.setBreadcrumbs(join(breadcrumbs, "/"));
-			}
+			resource.setBreadcrumbs(breadcrumbs);
 		}
 	}
 

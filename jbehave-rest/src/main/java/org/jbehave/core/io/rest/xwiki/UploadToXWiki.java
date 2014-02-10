@@ -26,7 +26,7 @@ public class UploadToXWiki extends UploadToREST {
 		Page page = new Page();
 		page.title = substringAfterLast(resource.getURI(), "/");
 		page.syntax = "xwiki/2.0";
-		page.content = resource.getText();
+		page.content = resource.getContent();
 		page.parent = resource.getParentName();
 		switch (type) {
 		case JSON:
@@ -44,7 +44,7 @@ public class UploadToXWiki extends UploadToREST {
 			String xml = xstream.toXML(page);
 			return xml;
 		default:
-			return resource.getText();
+			return resource.getContent();
 		}
 	}
 
