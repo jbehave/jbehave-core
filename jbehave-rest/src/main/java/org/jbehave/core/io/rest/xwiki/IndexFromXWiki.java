@@ -35,11 +35,10 @@ public class IndexFromXWiki extends IndexWithBreadcrumbs {
 		Collection<Page> pages = parse(entity);
 		Map<String, Resource> index = new HashMap<String, Resource>();
 		for (Page page : pages) {
-			String name = page.name.toLowerCase();
-			String parentName = (page.parent != null ? page.parent.toLowerCase() : null);
-			String uri = format(PAGE_URI, rootURI, name);
-			Resource resource = new Resource(uri, name, parentName);
-			index.put(name, resource);
+			String parentName = (page.parent != null ? page.parent : null);
+			String uri = format(PAGE_URI, rootURI, page.name);
+			Resource resource = new Resource(uri, page.name.toLowerCase(), parentName);
+			index.put(resource.getName(), resource);
 		}
 		return index;
 	}

@@ -18,7 +18,7 @@ public class UploadToXWikiBehaviour {
 		String resourcePath = "http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages/some_story";
 		String text = read("xwiki.json");
 		Resource resource = new Resource(resourcePath);
-		resource.setText(text);
+		resource.setContent(text);
 		String entity = uploader.entity(resource, Type.JSON);
 		assertThat(entity, startsWith("{\"title\""));
 	}

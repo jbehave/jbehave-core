@@ -29,26 +29,26 @@ public class UploadToRedmine extends UploadToREST {
 	}
 
 	protected String entity(Resource resource, Type type) {
+		Page page = new Page();
+		page.title = substringAfterLast(resource.getURI(), "/");
+		page.text = resource.getContent();
+		Entity entity = new Entity();
+		entity.wiki_page = page;
 		switch (type) {
 		case JSON:
 			Gson gson = new Gson();
-			WikiPage page = new WikiPage();
-			page.title = substringAfterLast(resource.getURI(), "/");
-			page.text = resource.getText();
-			Entity entity = new Entity();
-			entity.wiki_page = page;
 			return gson.toJson(entity);
 		case XML:
 		default:
-			return resource.getText();
+			return resource.getContent();
 		}
 	}
 
 	private static class Entity {
-		private WikiPage wiki_page;
+		private Page wiki_page;
 	}
 
-	private static class WikiPage {
+	private static class Page {
 		private String title;
 		private String text;
 	}

@@ -27,7 +27,7 @@ public class UploadToRedmineBehaviour {
 		String resourcePath = "http://demo.redmine.org/project/jbehave/wiki/some_story";
 		String text = read("redmine.json");
 		Resource resource = new Resource(resourcePath);
-		resource.setText(text);
+		resource.setContent(text);
 		String entity = uploader.entity(resource, Type.JSON);
 		assertThat(entity, startsWith("{\"wiki_page\""));
 	}

@@ -2,6 +2,8 @@ package org.jbehave.core.io.rest;
 
 import static org.apache.commons.lang.StringUtils.substringAfterLast;
 
+import java.util.List;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -13,10 +15,10 @@ public class Resource {
     private final String uri;
     private final String name;
     private final String parentName;
-    private String text;
-    private String breadcrumbs;
+    private List<String> breadcrumbs;
+    private String content;
 
-    public Resource(String uri) {
+	public Resource(String uri) {
         this(uri, substringAfterLast(uri, "/"));
     }
 
@@ -46,28 +48,28 @@ public class Resource {
         return parentName != null;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public boolean hasText() {
-        return text != null;
-    }
-
-    public String getBreadcrumbs() {
+    public List<String> getBreadcrumbs() {
         return breadcrumbs;
     }
 
-    public void setBreadcrumbs(String breadcrumbs) {
+	public void setBreadcrumbs(List<String> breadcrumbs) {
         this.breadcrumbs = breadcrumbs;
     }
 
     public boolean hasBreadcrumbs() {
-        return breadcrumbs != null;
+        return breadcrumbs != null && !breadcrumbs.isEmpty();
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public boolean hasContent() {
+        return content != null && !content.trim().isEmpty();
     }
 
     public String toString() {
