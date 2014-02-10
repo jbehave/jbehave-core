@@ -10,6 +10,7 @@ import org.jbehave.core.io.rest.IndexWithBreadcrumbs;
 import org.jbehave.core.io.rest.RESTClient;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.Resource;
+import org.jbehave.core.io.rest.ResourceNameResolver;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonParser;
@@ -28,16 +29,20 @@ public class IndexFromRedmine extends IndexWithBreadcrumbs {
     }
 
     public IndexFromRedmine(String username, String password) {
-        super(new RESTClient(Type.JSON, username, password));
+        this(username, password, new ToLowerCase());
+    }
+
+    public IndexFromRedmine(String username, String password, ResourceNameResolver nameResolver) {
+        super(new RESTClient(Type.JSON, username, password), nameResolver);
     }
 
     protected Map<String, Resource> createIndexFromEntity(String rootURI, String entity) {
     	Collection<Page> pages = parse(entity);
         Map<String, Resource> index = new HashMap<String, Resource>();
         for (Page page : pages) {
-            String parentName = (page.parent != null ? page.parent.title : null);
+            String parentName = (page.parent != null ? resolveName(page.parent.title) : null);
             String uri = format(PAGE_URI, rootURI, page.title);
-            Resource resource = new Resource(uri, page.title.toLowerCase(), parentName);
+            Resource resource = new Resource(uri, resolveName(page.title), parentName);
             index.put(resource.getName(), resource);
         }
         return index;
