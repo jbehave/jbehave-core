@@ -19,21 +19,21 @@ public class ExportFromFilesystemMojo extends AbstractFilesystemMojo {
 	 * The source path of the filesystem from which the resources are read
 	 * 
 	 * @parameter default-value="src/main/resources/stories"
-	 *            expression="${jbehave.sourcePath}
+	 *            expression="${jbehave.rest.sourcePath}
 	 */
 	String sourcePath;
 
 	/**
 	 * The extension of the files read
 	 * 
-	 * @parameter default-value=".story" expression="${jbehave.sourceExt}
+	 * @parameter default-value=".story" expression="${jbehave.rest.sourceExt}
 	 */
 	String sourceExt;
 
 	/**
 	 * The includes pattern of the resources
 	 * 
-	 * @parameter default-value="**" expression="${jbehave.includes}
+	 * @parameter default-value="**" expression="${jbehave.rest.includes}
 	 */
 	String includes;
 

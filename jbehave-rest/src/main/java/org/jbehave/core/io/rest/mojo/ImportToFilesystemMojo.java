@@ -18,15 +18,15 @@ public class ImportToFilesystemMojo extends AbstractFilesystemMojo {
 	/**
 	 * The target path of the filesystem to which the resources are written
 	 * 
-	 * @parameter default-value="target/stories"
-	 *            expression="${jbehave.targetPath}
+	 * @parameter default-value="src/main/resources/stories"
+	 *            expression="${jbehave.rest.targetPath}
 	 */
 	String targetPath;
 
 	/**
 	 * The extension of the files written
 	 * 
-	 * @parameter default-value=".story" expression="${jbehave.targetExt}
+	 * @parameter default-value=".story" expression="${jbehave.rest.targetExt}
 	 */
 	String targetExt;
 
