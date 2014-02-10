@@ -23,14 +23,14 @@ public abstract class AbstractFilesystemMojo extends AbstractMojo {
     /**
      * The REST provider.  Currently supported are "redmine" and "xwiki"
      * 
-     * @parameter default-value="xwiki" expression="${jbehave.restProvider}
+     * @parameter default-value="xwiki" expression="${jbehave.rest.provider}
      */
     String restProvider;
 
     /**
      * The root URI of the REST API
      * 
-     * @parameter expression="${jbehave.restRootURI}
+     * @parameter expression="${jbehave.rest.rootURI}
      * @required
      */
     String restRootURI;
@@ -38,14 +38,14 @@ public abstract class AbstractFilesystemMojo extends AbstractMojo {
     /**
      * The username to access the REST API. May be null if no security enabled.
      * 
-     * @parameter expression="${jbehave.restUsername}
+     * @parameter expression="${jbehave.rest.username}
      */
     String restUsername;
 
     /**
      * The password to access the REST API. May be null if no security enabled.
      * 
-     * @parameter expression="${jbehave.restPassword}
+     * @parameter expression="${jbehave.rest.password}
      */
     String restPassword;
 
