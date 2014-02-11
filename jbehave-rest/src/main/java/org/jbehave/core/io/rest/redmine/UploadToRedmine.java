@@ -1,7 +1,6 @@
 package org.jbehave.core.io.rest.redmine;
 
 import static java.text.MessageFormat.format;
-import static org.apache.commons.lang.StringUtils.substringAfterLast;
 
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.Resource;
@@ -30,7 +29,7 @@ public class UploadToRedmine extends UploadToREST {
 
 	protected String entity(Resource resource, Type type) {
 		Page page = new Page();
-		page.title = substringAfterLast(resource.getURI(), "/");
+		page.title = resource.getName();
 		page.text = resource.getContent();
 		Entity entity = new Entity();
 		entity.wiki_page = page;
