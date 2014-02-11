@@ -1,7 +1,5 @@
 package org.jbehave.core.io.rest.xwiki;
 
-import static org.apache.commons.lang.StringUtils.substringAfterLast;
-
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.UploadToREST;
@@ -24,13 +22,12 @@ public class UploadToXWiki extends UploadToREST {
 
 	protected String entity(Resource resource, Type type) {
 		Page page = new Page();
-		page.title = substringAfterLast(resource.getURI(), "/");
 		page.syntax = "xwiki/2.0";
+		page.title = resource.getName();
 		page.content = resource.getContent();
 		page.parent = resource.getParentName();
 		switch (type) {
 		case JSON:
-			//TODO JSON upload does not seem to work
 			Gson gson = new Gson();
 			String json = gson.toJson(page);
 			return json;

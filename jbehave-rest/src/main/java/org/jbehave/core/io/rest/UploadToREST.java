@@ -25,8 +25,7 @@ public class UploadToREST implements ResourceUploader {
     public void uploadResource(Resource resource) {
         try {
             Type type = client.getType();
-            String resourcePath = resource.getURI();
-			put(uri(resourcePath, type), entity(resource, type));
+            put(uri(resource.getURI(), type), entity(resource, type));
         } catch (Exception cause) {
             throw new InvalidStoryResource(resource.toString(), cause);
         }
