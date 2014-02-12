@@ -8,27 +8,12 @@ import org.jbehave.core.io.rest.ResourceIndexer;
 import org.jbehave.core.io.rest.filesystem.ImportToFilesystem;
 
 /**
- * Mojo to import resources from REST root path to filesystem target path.
+ * Mojo to import resources from REST root path to filesystem.
  * 
  * @goal import-to-filesystem
  * @requiresProject false
  */
 public class ImportToFilesystemMojo extends AbstractFilesystemMojo {
-
-	/**
-	 * The target path of the filesystem to which the resources are written
-	 * 
-	 * @parameter default-value="src/main/resources/stories"
-	 *            expression="${jbehave.rest.targetPath}
-	 */
-	String targetPath;
-
-	/**
-	 * The extension of the files written
-	 * 
-	 * @parameter default-value=".story" expression="${jbehave.rest.targetExt}
-	 */
-	String targetExt;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
@@ -50,9 +35,9 @@ public class ImportToFilesystemMojo extends AbstractFilesystemMojo {
 		ResourceLoader loader = newResourceLoader();
 		getLog().info(
 				"Creating importer to filesystem using REST provider "
-						+ restProvider + " with targetPath " + targetPath
-						+ ", targetExt " + targetExt);
-		return new ImportToFilesystem(indexer, loader, targetPath, targetExt);
+						+ restProvider + " with resourcesPath " + resourcesPath
+						+ " and resourcesExt " + resourcesExt);
+		return new ImportToFilesystem(indexer, loader, resourcesPath, resourcesExt);
 	}
 
 }
