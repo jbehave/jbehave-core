@@ -8,7 +8,7 @@ import org.jbehave.core.io.rest.ResourceUploader;
 import org.jbehave.core.io.rest.filesystem.ExportFromFilesystem;
 
 /**
- * Mojo to export resources to REST root path from filesystem source path.
+ * Mojo to export resources to REST root path from filesystem.
  * 
  * @goal export-from-filesystem
  * @requiresProject false
@@ -16,26 +16,12 @@ import org.jbehave.core.io.rest.filesystem.ExportFromFilesystem;
 public class ExportFromFilesystemMojo extends AbstractFilesystemMojo {
 
 	/**
-	 * The source path of the filesystem from which the resources are read
-	 * 
-	 * @parameter default-value="src/main/resources/stories"
-	 *            expression="${jbehave.rest.sourcePath}
-	 */
-	String sourcePath;
-
-	/**
-	 * The extension of the files read
-	 * 
-	 * @parameter default-value=".story" expression="${jbehave.rest.sourceExt}
-	 */
-	String sourceExt;
-
-	/**
 	 * The includes pattern of the resources
 	 * 
-	 * @parameter default-value="**" expression="${jbehave.rest.includes}
+	 * @parameter default-value="**"
+	 *            expression="${jbehave.rest.resourcesIncludes}
 	 */
-	String includes;
+	String resourcesIncludes;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
@@ -57,11 +43,11 @@ public class ExportFromFilesystemMojo extends AbstractFilesystemMojo {
 		ResourceUploader uploader = newResourceUploader();
 		getLog().info(
 				"Creating exporter from filesystem using REST provider "
-						+ restProvider + " with sourcePath " + sourcePath
-						+ ", sourceExt " + sourceExt + " and including "
-						+ includes);
-		return new ExportFromFilesystem(indexer, uploader, sourcePath,
-				sourceExt, includes);
+						+ restProvider + " with resourcesPath " + resourcesPath
+						+ ", resourcesExt " + resourcesExt + " and resoucesIncludes "
+						+ resourcesIncludes);
+		return new ExportFromFilesystem(indexer, uploader, resourcesPath,
+				resourcesExt, resourcesIncludes);
 	}
 
 }

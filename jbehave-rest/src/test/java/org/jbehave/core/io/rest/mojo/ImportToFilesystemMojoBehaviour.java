@@ -55,8 +55,8 @@ public class ImportToFilesystemMojoBehaviour {
             }
             
         };
-        mojo.targetPath = targetPath;
-        mojo.targetExt = targetExt;
+        mojo.resourcesPath = targetPath;
+        mojo.resourcesExt = targetExt;
         
         mojo.execute();
         
