@@ -52,6 +52,7 @@ public abstract class LocalizedStories extends JUnitStories {
         Keywords keywords = new LocalizedKeywords(locale());
         Properties properties = new Properties();
         properties.setProperty("reports", "ftl/jbehave-reports.ftl");
+        properties.setProperty("encoding", "UTF-8");
         Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
                 .useStepCollector(new MarkUnmatchedStepsAsPending(keywords))

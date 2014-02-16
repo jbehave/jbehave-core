@@ -72,6 +72,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
 
     public Properties defaultViewProperties() {
         Properties properties = new Properties();
+        properties.setProperty("encoding", "ISO-8859-1");
         properties.setProperty("decorateNonHtml", "true");
         properties.setProperty("defaultFormats", "stats");
         properties.setProperty("viewDirectory", "view");
@@ -84,21 +85,18 @@ public class TemplateableViewGenerator implements ViewGenerator {
         return merged;
     }
 
-    private void generateViewsIndex(File outputDirectory) {
-        String outputName = templateResource("viewDirectory") + "/index.html";
-        String viewsTemplate = templateResource("views");
-        Map<String, Object> dataModel = newDataModel();
-        dataModel.put("date", new Date());
-        write(outputDirectory, outputName, viewsTemplate, dataModel);
-    }
+	private void addDateAndEncoding(Map<String, Object> dataModel) {
+		dataModel.put("date", new Date());
+        dataModel.put("encoding", this.viewProperties.getProperty("encoding"));
+	}
 
     public void generateMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
         String outputName = templateResource("viewDirectory") + "/maps.html";
         String mapsTemplate = templateResource("maps");
         Map<String, Object> dataModel = newDataModel();
+        addDateAndEncoding(dataModel);
         dataModel.put("storyLanes", new StoryLanes(storyMaps, nameResolver));
-        dataModel.put("date", new Date());
         write(outputDirectory, outputName, mapsTemplate, dataModel);
         generateViewsIndex(outputDirectory);
     }
@@ -110,14 +108,22 @@ public class TemplateableViewGenerator implements ViewGenerator {
         List<String> mergedFormats = mergeFormatsWithDefaults(formats);
         reports = createReports(readReportFiles(outputDirectory, outputName, mergedFormats));
         Map<String, Object> dataModel = newDataModel();
-        dataModel.put("reportsTable", new ReportsTable(reports, nameResolver));
-        dataModel.put("date", new Date());
+        addDateAndEncoding(dataModel);
         dataModel.put("timeFormatter", new TimeFormatter());
+        dataModel.put("reportsTable", new ReportsTable(reports, nameResolver));
         write(outputDirectory, outputName, reportsTemplate, dataModel);
         generateViewsIndex(outputDirectory);
     }
 
-    public ReportsCount getReportsCount() {
+	private void generateViewsIndex(File outputDirectory) {
+        String outputName = templateResource("viewDirectory") + "/index.html";
+        String viewsTemplate = templateResource("views");
+        Map<String, Object> dataModel = newDataModel();
+        addDateAndEncoding(dataModel);
+        write(outputDirectory, outputName, viewsTemplate, dataModel);
+    }
+
+	public ReportsCount getReportsCount() {
         int stories = countStoriesWithScenarios();
         int storiesNotAllowed = count("notAllowed", reports);
         int storiesPending = count("pending", reports);

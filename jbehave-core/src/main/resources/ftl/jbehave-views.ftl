@@ -6,7 +6,7 @@
 <html>
 <head>
 <title>JBehave Views</title>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=${encoding}" />
 <style type="text/css" media="all">
 @import url( "./style/jbehave-core.css" );
 </style>
