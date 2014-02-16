@@ -446,6 +446,9 @@ public class ExamplesTable {
 
     private String format() {
         StringBuffer sb = new StringBuffer();
+        if ( !propertiesAsString.isEmpty() ){
+        	sb.append("{").append(propertiesAsString).append("}").append(NEW_LINE);
+        }
         for (String header : headers) {
             sb.append(headerSeparator).append(header);
         }

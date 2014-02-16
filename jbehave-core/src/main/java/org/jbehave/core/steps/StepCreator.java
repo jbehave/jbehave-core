@@ -13,6 +13,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Named;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -92,9 +93,9 @@ public class StepCreator {
         default:
             return new BeforeOrAfterStep(method, storyAndScenarioMeta);
         case SUCCESS:
-            return new SuccessStep(method, storyAndScenarioMeta);
+            return new UponSuccessStep(method, storyAndScenarioMeta);
         case FAILURE:
-            return new FailureStep(method, storyAndScenarioMeta);
+            return new UponFailureStep(method, storyAndScenarioMeta);
         }
     }
 
@@ -433,6 +434,10 @@ public class StepCreator {
 
     public static abstract class AbstractStep implements Step {
 
+    	public String asString(Keywords keywords) {
+			return toString();
+		}
+    	
         @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
@@ -488,12 +493,16 @@ public class StepCreator {
                 return storyFailureIfItHappened;
             }
         }
+
+		public String asString(Keywords keywords) {
+			return method.getName()+";"+meta.asString(keywords);
+		}
     }
 
-    public class SuccessStep extends AbstractStep {
+    public class UponSuccessStep extends AbstractStep {
         private BeforeOrAfterStep beforeOrAfterStep;
 
-        public SuccessStep(Method method, Meta storyAndScenarioMeta) {
+        public UponSuccessStep(Method method, Meta storyAndScenarioMeta) {
             this.beforeOrAfterStep = new BeforeOrAfterStep(method, storyAndScenarioMeta);
         }
 
@@ -504,12 +513,17 @@ public class StepCreator {
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return beforeOrAfterStep.perform(storyFailureIfItHappened);
         }
+
+		public String asString(Keywords keywords) {
+			return beforeOrAfterStep.asString(keywords);
+		}
+
     }
 
-    public class FailureStep extends AbstractStep {
+    public class UponFailureStep extends AbstractStep {
         private final BeforeOrAfterStep beforeOrAfterStep;
 
-        public FailureStep(Method method, Meta storyAndScenarioMeta) {
+        public UponFailureStep(Method method, Meta storyAndScenarioMeta) {
             this.beforeOrAfterStep = new BeforeOrAfterStep(method, storyAndScenarioMeta);
         }
 
@@ -520,6 +534,11 @@ public class StepCreator {
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return skipped();
         }
+
+		public String asString(Keywords keywords) {
+			return beforeOrAfterStep.asString(keywords);
+		}
+    
     }
 
     public class ParameterisedStep extends AbstractStep {
@@ -580,6 +599,13 @@ public class StepCreator {
             return notPerformed(stepAsString).withParameterValues(parametrisedStep);
         }
 
+		public String asString(Keywords keywords) {
+			if ( parametrisedStep == null){
+				parametriseStep();
+			}
+        	return parametrisedStep;
+        }
+        
         private void parametriseStep() {
             stepMatcher.find(stepWithoutStartingWord);
             ParameterName[] names = parameterNames(method);
@@ -634,6 +660,10 @@ public class StepCreator {
             return method != null;
         }
 
+		public String asString(Keywords keywords) {
+			return stepAsString;
+		}
+
     }
 
     public static class IgnorableStep extends AbstractStep {
@@ -650,6 +680,11 @@ public class StepCreator {
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return ignorable(stepAsString);
         }
+        
+		public String asString(Keywords keywords) {
+			return stepAsString;
+		}
+
     }
 
     private class MethodInvoker {

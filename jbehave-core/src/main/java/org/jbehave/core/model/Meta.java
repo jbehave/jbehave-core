@@ -17,6 +17,7 @@ public class Meta {
     public static final Meta EMPTY = new Meta();
 
     public static final String BLANK = "";
+    public static final String SPACE = " ";
 
     private final Properties properties;
 
@@ -82,6 +83,15 @@ public class Meta {
     public boolean isEmpty() {
         return properties.isEmpty();
     }
+    
+	public String asString(Keywords keywords) {
+		StringBuffer sb = new StringBuffer();
+		for (String name : getPropertyNames()) {
+			sb.append(keywords.metaProperty()).append(name).append(SPACE)
+					.append(getProperty(name)).append(SPACE);
+		}
+		return sb.toString().trim();
+	}
 
     @Override
     public String toString() {
@@ -89,8 +99,6 @@ public class Meta {
     }
 
     public static class Property {
-
-        private static final String SPACE = " ";
 
         private String propertyAsString;
         private String name;

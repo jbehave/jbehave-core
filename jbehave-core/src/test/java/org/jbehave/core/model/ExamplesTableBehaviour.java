@@ -103,7 +103,7 @@ public class ExamplesTableBehaviour {
                 assertThat(values.get(column), not(containsString("#comment")));
             }
         }
-        assertThat(table.asString(), equalTo("|one|two|\n|11|12|\n|21|22|\n"));
+        assertThat(table.asString(), equalTo("{commentSeparator=#}\n|one|two|\n|11|12|\n|21|22|\n"));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class ExamplesTableBehaviour {
                 assertThat(values.get(column), not(containsString("#comment")));
             }
         }
-        assertThat(table.asString(), equalTo("|one |two|\n|11 |12 |\n|21|22|\n"));
+        assertThat(table.asString(), equalTo("{commentSeparator=#, trim=false}\n|one |two|\n|11 |12 |\n|21|22|\n"));
     }
 
     
@@ -178,7 +178,7 @@ public class ExamplesTableBehaviour {
         Properties properties = table.getProperties();
         assertThat(properties.getProperty("trim"), equalTo("false"));
         ensureWhitespaceIsPreserved(table);
-        assertThat(table.asString(), equalTo("|one |two | |\n|11 |12 | |\n| 21| 22| |\n"));
+        assertThat(table.asString(), equalTo("{trim=false}\n|one |two | |\n|11 |12 | |\n| 21| 22| |\n"));
     }
 
     @Test
