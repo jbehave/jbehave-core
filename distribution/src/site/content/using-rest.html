@@ -38,8 +38,8 @@ the <a href="javadoc/rest/org/jbehave/core/io/rest/ResourceUploader.html">Resour
                     <restRootURI>http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages</restRootURI>
                     <restUsername>[optional]</restUsername>
                     <restPassword>[optional]</restPassword>
-                    <targetPath>target/stories</targetPath>
-                    <targetExt>.story</targetExt>
+                    <resourcesPath>[optional|src/main/resources/stories]</resourcesPath>
+                    <resourcesExt>[optional|.story]</resourcesExt>
                 </configuration>
                 <goals>
                     <goal>import-to-filesystem</goal>
@@ -53,9 +53,9 @@ the <a href="javadoc/rest/org/jbehave/core/io/rest/ResourceUploader.html">Resour
                     <restRootURI>http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages</restRootURI>
                     <restUsername>[optional]</restUsername>
                     <restPassword>[optional]</restPassword>
-                    <sourcePath>target/stories</sourcePath>
-                    <sourceExt>.story</sourceExt>
-                    <includes>**/*.story</includes>
+                    <resourcesPath>[optional|src/main/resources/stories]</resourcesPath>
+                    <resourcesExt>[optional|.story]</resourcesExt>
+                    <resourcesIncludes>[optional|**]</resourcesIncludes>
                 </configuration>
                 <goals>
                     <goal>export-from-filesystem</goal>
@@ -70,10 +70,11 @@ the <a href="javadoc/rest/org/jbehave/core/io/rest/ResourceUploader.html">Resour
 
 <script type="syntaxhighlighter" class="brush: plain">
 <![CDATA[
-mvn org.jbehave:jbehave-rest:import-to-filesystem -Djbehave.rest.rootURI=http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages 
-                                                  -Djbehave.rest.targetPath=target/stories -Djbehave.rest.targetExt=.story
+mvn org.jbehave:jbehave-rest:import-to-filesystem   -Djbehave.rest.rootURI=http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages 
+                                                    -Djbehave.rest.resourcesPath=src/main/resources/stories -Djbehave.rest.resourcesExt=.story 
 mvn org.jbehave:jbehave-rest:export-from-filesystem -Djbehave.restRootURI=http://localhost:8080/xwiki/rest/wikis/xwiki/spaces/Main/pages 
-                                                    -Djbehave.rest.sourcePath=target/stories -Djbehave.rest.sourceExt=.story -Djbehave.rest.includes=**/*.story
+                                                    -Djbehave.rest.resourcesPath=src/main/resources/stories -Djbehave.rest.resourcesExt=.story 
+													-Djbehave.rest.resourcesIncludes=**/*.story
 ]]>
 </script>
 
