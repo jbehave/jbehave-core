@@ -1,7 +1,5 @@
 package org.jbehave.core.model;
 
-import java.text.MessageFormat;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
@@ -9,6 +7,9 @@ import org.jbehave.core.configuration.Keywords;
 public class Narrative {
 
     public static final Narrative EMPTY = new Narrative("", "", "");
+
+	private static final String NL = "\n";
+	private static final String SPACE = " ";
 
     private final String inOrderTo;
     private final String asA;
@@ -49,16 +50,21 @@ public class Narrative {
     public boolean isAlternative(){
         return inOrderTo.isEmpty();
     }
-    
-	public String asString(Keywords keywords) {
-		if ( isEmpty() ){
-			return "";
-		}
-		if ( isAlternative() ){
-            return MessageFormat.format("{0} {1}\n{2} {3}\n{4} {5}", keywords.asA(), asA, keywords.iWantTo(), iWantTo, keywords.soThat(), soThat);		    
+
+    public String asString(Keywords keywords) {
+		StringBuffer sb = new StringBuffer();
+		if (isAlternative()) {
+			sb.append(keywords.asA()).append(SPACE).append(asA).append(NL);
+			sb.append(keywords.iWantTo()).append(SPACE).append(iWantTo)
+					.append(NL);
+			sb.append(keywords.soThat()).append(SPACE).append(soThat);
 		} else {
-		    return MessageFormat.format("{0} {1}\n{2} {3}\n{4} {5}", keywords.inOrderTo(), inOrderTo, keywords.asA(), asA, keywords.iWantTo(), iWantTo);
+			sb.append(keywords.inOrderTo()).append(SPACE).append(inOrderTo)
+					.append(NL);
+			sb.append(keywords.asA()).append(SPACE).append(asA).append(NL);
+			sb.append(keywords.iWantTo()).append(SPACE).append(iWantTo);
 		}
+		return sb.toString();
 	}
 
     @Override
