@@ -1,0 +1,5 @@
+another_story
+
+Narrative:
+
+....
