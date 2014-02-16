@@ -40,6 +40,8 @@ public abstract class LocalizedTraderStories extends JUnitStories {
         ClassLoader classLoader = this.getClass().getClassLoader();
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         Keywords keywords = new LocalizedKeywords(locale());
+		Properties properties = new Properties();
+        properties.setProperty("encoding", "UTF-8");
         Configuration configuration = new MostUsefulConfiguration()
                 .useKeywords(keywords)
                 .useStepCollector(new MarkUnmatchedStepsAsPending(keywords))
@@ -52,6 +54,7 @@ public abstract class LocalizedTraderStories extends JUnitStories {
                     .withPathResolver(new ResolveToSimpleName())
                     .withDefaultFormats()
                     .withFormats(CONSOLE, TXT, HTML, XML)
+					.withViewResources(properties)
                     .withFailureTrace(false)
                     .withKeywords(keywords))
                 .useParameterConverters(
