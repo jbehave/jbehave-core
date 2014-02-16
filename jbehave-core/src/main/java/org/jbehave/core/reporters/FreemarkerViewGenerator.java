@@ -55,16 +55,13 @@ public class FreemarkerViewGenerator extends TemplateableViewGenerator {
     }
 
     public Properties defaultViewProperties() {
-        Properties properties = new Properties();
+        Properties properties = new Properties(super.defaultViewProperties());
         properties.setProperty("views", "ftl/jbehave-views.ftl");
         properties.setProperty("maps", "ftl/jbehave-maps.ftl");
         properties.setProperty("navigator", "ftl/jbehave-navigator.ftl");
         properties.setProperty("reports", "ftl/jbehave-reports-with-totals.ftl");
         properties.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
         properties.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
-        properties.setProperty("decorateNonHtml", "true");
-        properties.setProperty("defaultFormats", "stats");
-        properties.setProperty("viewDirectory", "view");
         return properties;
     }
 
