@@ -1,6 +1,7 @@
 package org.jbehave.core.io.rest;
 
 import static java.text.MessageFormat.format;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.fileNameWithoutExt;
 import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.normalisedPathOf;
@@ -37,35 +38,38 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
 	}
 
 	public Map<String, Resource> indexResources(String rootURI,
-			String rootPath, String includes) {
+			String rootPath, String syntax, String includes) {
 		Map<String, Resource> index = createIndexFromPaths(rootURI, rootPath,
-				includes);
+				syntax, includes);
 		addBreadcrumbs(index);
 		return index;
 	}
 
 	protected Map<String, Resource> createIndexFromPaths(String rootURI,
-			String rootPath, String includes) {
+			String rootPath, String syntax, String includes) {
 		Map<String, Resource> index = new HashMap<String, Resource>();
 		List<String> paths = new StoryFinder().findPaths(
 				codeLocationFromPath(rootPath), includes, EMPTY);
 		for (String path : paths) {
-			addPath(rootURI, rootPath, fullPath(rootPath, path), index);
+			addPath(rootURI, rootPath, fullPath(rootPath, path), syntax, index);
 		}
 		return index;
 	}
 
 	private void addPath(String rootURI, String rootPath, String path,
-			Map<String, Resource> index) {
+			String syntax, Map<String, Resource> index) {
 		File file = new File(path);
 		String name = resolveName(fileNameWithoutExt(file));
 		String parentName = parentName(file, rootPath);
 		String uri = fullPath(rootURI, name);
 		Resource resource = new Resource(uri, name, parentName);
 		resource.setContent(contentOf(file));
+		if ( isNotBlank(syntax) ){
+			resource.setSyntax(syntax);
+		}
 		index.put(name, resource);
 		if (parentName != null) {
-			addPath(rootURI, rootPath, file.getParent(), index);
+			addPath(rootURI, rootPath, file.getParent(), syntax, index);
 		}
 	}
 

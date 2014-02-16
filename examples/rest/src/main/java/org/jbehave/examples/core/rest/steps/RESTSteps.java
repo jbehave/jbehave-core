@@ -27,7 +27,6 @@ public class RESTSteps {
 
 	private String providerName;
 	private Map<String, Resource> index;
-	private String storyText;
 
 	@Given("REST provider is $name")
 	public void givenRESTProvider(String name) {
@@ -45,28 +44,25 @@ public class RESTSteps {
 		assertThat(index.isEmpty(), is(false));
 	}
 
-	@When("story $name is loaded")
-	public void storyIsLoaded(String name) {
+	@When("story $name text contains '$text'")
+	public void storyIsLoaded(String name, String text) {
 		ResourceLoader loader = resourceLoader();
 		Resource resource = index.get(name);
-		storyText = loader.loadResourceAsText(resource.getURI());
+		String asText = loader.loadResourceAsText(resource.getURI());
+		assertThat(asText, containsString(text));
 	}
 
 	@When("stories in $sourcePath are exported to $rootURI")
 	public void whenStoriesAreExported(String sourcePath, String rootURI) {
-		ResourceExporter exporter = new ExportFromFilesystem(resourceIndexer(), resourceupLoader(), sourcePath, ".story", "**/*.story");
+		ResourceExporter exporter = new ExportFromFilesystem(resourceIndexer(), resourceupLoader(), sourcePath, ".story", "", "**/*.story");
 		exporter.exportResources(rootURI);
-	}
-
-	@Then("story text contains '$text'")
-	public void storyContainsText(String text) {
-		assertThat(storyText, containsString(text));
 	}
 
 	@When("story $name is uploaded appending '$text'")
 	public void storyIsUploaded(String name, String text) {
 		ResourceUploader uploader = resourceupLoader();
 		Resource resource = index.get(name);
+		resource.setContent(resource.getContent()+" "+text);
 		uploader.uploadResource(resource);
 	}
 

@@ -23,6 +23,14 @@ public class ExportFromFilesystemMojo extends AbstractFilesystemMojo {
 	 */
 	String resourcesIncludes;
 
+	/**
+	 * The syntax of the resources
+	 * 
+	 * @parameter default-value=""
+	 * 			  expression="${jbehave.rest.resourcesSyntax}
+	 */
+	String resourcesSyntax;
+
 	public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			getLog().info(
@@ -44,10 +52,11 @@ public class ExportFromFilesystemMojo extends AbstractFilesystemMojo {
 		getLog().info(
 				"Creating exporter from filesystem using REST provider "
 						+ restProvider + " with resourcesPath " + resourcesPath
-						+ ", resourcesExt " + resourcesExt + " and resoucesIncludes "
+						+ ", resourcesExt " + resourcesExt + ", resourcesSyntax "
+						+ resourcesSyntax + " and resourcesIncludes "
 						+ resourcesIncludes);
 		return new ExportFromFilesystem(indexer, uploader, resourcesPath,
-				resourcesExt, resourcesIncludes);
+				resourcesExt, resourcesSyntax, resourcesIncludes);
 	}
 
 }

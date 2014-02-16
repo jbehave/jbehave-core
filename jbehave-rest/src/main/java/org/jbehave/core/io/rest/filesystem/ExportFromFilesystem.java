@@ -26,21 +26,23 @@ public class ExportFromFilesystem implements ResourceExporter {
 	private final ResourceUploader uploader;
 	private final String sourcePath;
 	private final String sourceExt;
+	private String syntax;
 	private String includes;
 
 	public ExportFromFilesystem(ResourceIndexer indexer,
 			ResourceUploader uploader, String sourcePath, String sourceExt,
-			String includes) {
+			String syntax, String includes) {
 		this.indexer = indexer;
 		this.uploader = uploader;
 		this.sourcePath = sourcePath;
 		this.sourceExt = sourceExt;
+		this.syntax = syntax;
 		this.includes = includes;
 	}
 
 	public void exportResources(String rootURI) {
 		Map<String, Resource> index = indexer.indexResources(rootURI,
-				sourcePath, includes);
+				sourcePath, syntax, includes);
 		readResources(index, sourcePath, sourceExt);
 		uploadResources(index);
 	}

@@ -29,6 +29,7 @@ public class ExportFromFilesystemBehaviour {
         String text2 = "story2";
         String sourcePath = "target/stories";
         String sourceExt = ".story";
+        String sourceSyntax = "jbehave/3.0";
         File file1 = new File(sourcePath + "/A_story" + sourceExt);
         write(text1, file1);
         File file2 = new File(sourcePath + "/Another_story" + sourceExt);
@@ -39,10 +40,10 @@ public class ExportFromFilesystemBehaviour {
         Resource anotherResource = new Resource(rootURI + "/Another_story");
 		index.put("Another_story", anotherResource);
         String includes = "**";
-		when(indexer.indexResources(rootURI, sourcePath, includes)).thenReturn(index);
+		when(indexer.indexResources(rootURI, sourcePath, sourceSyntax, includes)).thenReturn(index);
 
         // When
-        ResourceExporter exporter = new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, includes);
+        ResourceExporter exporter = new ExportFromFilesystem(indexer, uploader, sourcePath, sourceExt, sourceSyntax, includes);
         exporter.exportResources(rootURI);
 
         // Then

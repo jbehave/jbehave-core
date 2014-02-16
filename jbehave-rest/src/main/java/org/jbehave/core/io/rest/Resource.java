@@ -1,5 +1,6 @@
 package org.jbehave.core.io.rest;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.StringUtils.substringAfterLast;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class Resource {
     private final String parentName;
     private List<String> breadcrumbs;
     private String content;
+    private String syntax;
 
 	public Resource(String uri) {
         this(uri, substringAfterLast(uri, "/"));
@@ -69,10 +71,22 @@ public class Resource {
     }
 
     public boolean hasContent() {
-        return content != null && !content.trim().isEmpty();
+        return isNotBlank(content);
     }
 
-    public String toString() {
+    public String getSyntax() {
+		return syntax;
+	}
+
+	public void setSyntax(String syntax) {
+		this.syntax = syntax;
+	}
+
+    public boolean hasSyntax() {
+        return isNotBlank(syntax);
+    }
+
+	public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 

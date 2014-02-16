@@ -23,9 +23,10 @@ public interface ResourceIndexer {
      * 
      * @param rootURI the root URI
      * @param rootPath the root path of the resources to index
-     * @param includes the pattern of resources to include 
+     * @param syntax the syntax of the resources to index.  Can be <code>null</code> or blank.
+     * @param includes the Ant-like pattern of the paths to index.  Can be <code>null</code> or blank. 
      * @return The Map of index Resource objects
      */
-    Map<String, Resource> indexResources(String rootURI, String rootPath, String includes);
+    Map<String, Resource> indexResources(String rootURI, String rootPath, String syntax, String includes);
 
 }
