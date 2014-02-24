@@ -20,7 +20,6 @@ Scenario: Using a composite step with normal parameter matching
 !--                      "When a <product> is added to the cart" }) 
 !-- public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters 
 !-- }
-!--
 
 Given Mr Jones has previously bought a ticket
 
@@ -33,7 +32,6 @@ Scenario: Using a composite step in a parameterised scenario
 !--                      "When a <product> is added to the cart" })
 !-- public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters 
 !-- }
-!--
 
 Given <customer> has previously bought a <product>
 
@@ -50,6 +48,5 @@ The composed step not found should be reported as pending and the subsequent com
 !--                      "Given <customer> has a cart", })
 !-- public void aCompositeStep(@Named("customer") String customer) { // composed steps use these named parameters 
 !-- }
-!--
 
 Given Mr Jones returns to cart
