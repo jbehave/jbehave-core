@@ -71,6 +71,15 @@
         <filtering>false</filtering>
       </resource>
     </resources>
+	<pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.jbehave</groupId>
+				<artifactId>jbehave-maven-plugin</artifactId>
+				<version>${project.version}</version>
+			</plugin>
+		</plugins>
+	</pluginManagement>
     <plugins>
       <!-- Unpack view resources, defined as dependencies -->
       <plugin>
