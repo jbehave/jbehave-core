@@ -21,6 +21,7 @@ import org.jbehave.core.model.Story;
  * steps to run at before/after stages.
  */
 public interface StepCollector {
+	
     enum Stage {
         BEFORE, AFTER
     }
@@ -61,7 +62,7 @@ public interface StepCollector {
      * 
      * @param candidateSteps the {@link CandidateSteps}.
      * @param lifecycle the {@link Lifecycle}
-     * @param storyAndScenarioMeta TODO
+     * @param storyAndScenarioMeta the story and scenario {@link org.jbehave.core.model.Meta} parameters
      * @param stage the {@link Stage} of execution
      * @return A List of executable {@link Step}s 
      */
@@ -76,4 +77,5 @@ public interface StepCollector {
      * @return A List of executable {@link Step}s 
      */
     List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario, Map<String, String> parameters);
+    
 }

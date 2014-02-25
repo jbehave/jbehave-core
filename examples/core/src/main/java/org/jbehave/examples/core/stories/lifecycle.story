@@ -1,19 +1,37 @@
 Story:  Showing lifecycle behaviour
 
 Lifecycle:
-Before: 
+Before:
 
-Given a setup
+Given I have a bank account
+And my balance is 100
 
-After: 
-Then a teardown
+After:
+Then my balance is archived
 
-Scenario: Pass on a step
+Scenario: Simple scenario
+Meta: @simple
 
-Given I do nothing
-Then I pass
+When I withdraw 10
+Then my bank account balance should be 90
 
-Scenario: Fail on a step
+Scenario: Scenario with Examples
+Meta: @examples
 
-Given I do nothing
-Then I fail
+When I add <value>
+Then my bank account balance should be <balance>
+
+Examples:
+|value|balance|
+|30|130|
+|50|150|
+
+Scenario: Scenario with data tables
+Meta: @tables
+
+Given these people have bank accounts with balances:
+|Name|balance|
+|Person1|1000|
+|Person2|500|
+When I take all their money
+Then my bank account balance should be 1600
