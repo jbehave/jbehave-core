@@ -24,7 +24,7 @@ public abstract class AbstractFilesystemMojo extends AbstractMojo {
     private static final String CONFLUENCE = "confluence";
 
     /**
-     * The REST provider.  Currently supported are "redmine" and "xwiki"
+     * The REST provider.  Currently supported are "redmine" and "xwiki".  Also supported is "confluence" for import only.
      *
      * @parameter default-value="xwiki" expression="${jbehave.rest.provider}
      */
@@ -77,7 +77,7 @@ public abstract class AbstractFilesystemMojo extends AbstractMojo {
         if (restProvider.equals(CONFLUENCE)) {
             return new IndexFromConfluence(restUsername, restPassword);
         }
-        throw new RuntimeException("Unsupported REST provider " + restProvider);
+        throw new RuntimeException("Unsupported ResourceIndexer provider " + restProvider);
     }
 
     ResourceLoader newResourceLoader() {
@@ -91,7 +91,7 @@ public abstract class AbstractFilesystemMojo extends AbstractMojo {
             return new LoadFromConfluence(restUsername, restPassword);
         }
 
-        throw new RuntimeException("Unsupported REST provider " + restProvider);
+        throw new RuntimeException("Unsupported ResourceLoader provider " + restProvider);
     }
 
     ResourceUploader newResourceUploader() {
@@ -102,7 +102,7 @@ public abstract class AbstractFilesystemMojo extends AbstractMojo {
             return new UploadToXWiki(Type.XML, restUsername, restPassword);
         }
 
-        throw new RuntimeException("Unsupported REST provider " + restProvider);
+        throw new RuntimeException("Unsupported ResourceUploader provider " + restProvider);
     }
 
 }

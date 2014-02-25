@@ -25,7 +25,7 @@ public class IndexFromConfluence implements ResourceIndexer {
     }
 
     public IndexFromConfluence(RESTClient client) {
-        confluence = new Confluence(client);
+        this.confluence = new Confluence(client);
     }
 
     public Map<String, Resource> indexResources(String rootURI) {

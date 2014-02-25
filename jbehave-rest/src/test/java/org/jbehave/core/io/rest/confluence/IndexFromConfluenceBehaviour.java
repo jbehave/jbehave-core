@@ -13,7 +13,7 @@ import org.junit.Test;
 public class IndexFromConfluenceBehaviour {
 
     @Test
-    public void should_index_from_confluence() {
+    public void shouldIndexFromConfluence() {
         // given
         IndexFromConfluence indexer = new IndexFromConfluence(new MockRESTClient());
 
