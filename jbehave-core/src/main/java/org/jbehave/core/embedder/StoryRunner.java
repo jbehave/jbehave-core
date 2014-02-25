@@ -299,15 +299,15 @@ public class StoryRunner {
                         runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE,
                                 ScenarioType.NORMAL);
                     }
-                    runLifecycleSteps(context, story.getLifecycle(), Stage.BEFORE, storyAndScenarioMeta);
                     if (isParameterisedByExamples(scenario)) { // run parametrised scenarios by examples
-                        runScenariosParametrisedByExamples(context, scenario, storyAndScenarioMeta);
+                        runScenariosParametrisedByExamples(context, scenario, story.getLifecycle(), storyAndScenarioMeta);
                     } else { // run as plain old scenario
+                        runLifecycleSteps(context, story.getLifecycle(), Stage.BEFORE, storyAndScenarioMeta);
                         addMetaParameters(storyParameters, storyAndScenarioMeta);
                         runGivenStories(scenario.getGivenStories(), storyParameters, context);
                         runScenarioSteps(context, scenario, storyParameters);
+                        runLifecycleSteps(context, story.getLifecycle(), Stage.AFTER, storyAndScenarioMeta);
                     }
-                    runLifecycleSteps(context, story.getLifecycle(), Stage.AFTER, storyAndScenarioMeta);
 
                     // run after scenario steps, if allowed
                     if (runBeforeAndAfterScenarioSteps) {
@@ -420,7 +420,7 @@ public class StoryRunner {
         return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireParameters();
     }
 
-    private void runScenariosParametrisedByExamples(RunContext context, Scenario scenario, Meta storyAndScenarioMeta)
+    private void runScenariosParametrisedByExamples(RunContext context, Scenario scenario, Lifecycle lifecycle, Meta storyAndScenarioMeta)
             throws Throwable {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.get().beforeExamples(scenario.getSteps(), table);
@@ -434,11 +434,13 @@ public class StoryRunner {
             if (context.configuration().storyControls().resetStateBeforeScenario()) {
                 context.resetState();
             }
+            runLifecycleSteps(context, lifecycle, Stage.BEFORE, storyAndScenarioMeta);
             runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE, ScenarioType.EXAMPLE);
             addMetaParameters(scenarioParameters, storyAndScenarioMeta);
             runGivenStories(scenario.getGivenStories(), scenarioParameters, context);
             runScenarioSteps(context, scenario, scenarioParameters);
             runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER, ScenarioType.EXAMPLE);
+            runLifecycleSteps(context, lifecycle, Stage.AFTER, storyAndScenarioMeta);
         }
         reporter.get().afterExamples();
     }
