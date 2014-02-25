@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<content type="page" expand="space,children,comments,attachments,labels" id="12517648">
+    <link rel="alternate" type="text/html" href="https://demo.confluence.com/display/JBEV/jBehave" />
+    <link rel="alternate" type="application/pdf" href="https://demo.confluence.com/spaces/flyingpdf/pdfpageexport.action?pageId=12517648" />
+    <link rel="self" href="https://demo.confluence.com/rest/prototype/1/content/12517648" />
+    <title>jBehave-Parent</title>
+    <parentId>8618138</parentId>
+    <wikiLink>[JBEV:jBehave]</wikiLink>
+    <lastModifiedDate date="2014-02-25T08:59:28+0100" friendly="about 2 hours ago" />
+    <createdDate date="2014-02-24T15:08:29+0100" friendly="yesterday at 3:08 PM" />
+    <space type="space" title="JBEV" name="jBehave" key="JBEV">
+        <link rel="self" href="https://demo.confluence.com/rest/prototype/1/space/JBEV" />
+    </space>
+    <children size="1" expand="content">
+        <content type="page" id="3342596">
+            <link rel="alternate" type="text/html" href="https://demo.confluence.com/display/jbev/Test+1" />
+            <link rel="alternate" type="application/pdf"
+                href="https://demo.confluence.com/spaces/flyingpdf/pdfpageexport.action?pageId=3342596" />
+            <link rel="self" href="https://demo.confluence.com/rest/prototype/1/content/3342596" />
+            <title>Test 1</title>
+        </content>
+    </children>
+    <comments total="0" />
+    <body type="2">&lt;h1&gt;A story is a collection of scenarios&lt;/h1&gt;&lt;ac:structured-macro ac:name=&quot;panel&quot;&gt;&lt;ac:parameter ac:name=&quot;title&quot;&gt;Narrative&lt;/ac:parameter&gt;&lt;ac:rich-text-body&gt;&lt;div class=&quot;line number4 index3 alt1&quot;&gt;In order to communicate effectively to the business some functionality&lt;/div&gt;&lt;div class=&quot;line number5 index4 alt2&quot;&gt;As a development team&lt;/div&gt;&lt;div class=&quot;line number6 index5 alt1&quot;&gt;I want to use Behaviour-Driven Development&lt;/div&gt;&lt;/ac:rich-text-body&gt;&lt;/ac:structured-macro&gt;&lt;p&gt;Some text that does not show up. Feel free to add some more context.&lt;/p&gt;&lt;ac:structured-macro ac:name=&quot;info&quot;&gt;&lt;ac:parameter ac:name=&quot;title&quot;&gt;Lifecycle&lt;/ac:parameter&gt;&lt;ac:rich-text-body&gt;&lt;div class=&quot;line number9 index8 alt2&quot;&gt;&lt;strong&gt;Before&lt;/strong&gt;:&lt;/div&gt;&lt;div class=&quot;line number10 index9 alt1&quot;&gt;Given a step that is executed before each scenario&lt;/div&gt;&lt;div class=&quot;line number11 index10 alt2&quot;&gt;&lt;strong&gt;After&lt;/strong&gt;:&lt;/div&gt;&lt;div class=&quot;line number12 index11 alt1&quot;&gt;Given a step that is executed after each scenario&lt;/div&gt;&lt;/ac:rich-text-body&gt;&lt;/ac:structured-macro&gt;&lt;h2&gt;Screenshots&lt;/h2&gt;&lt;p&gt;Home screen wireframe:&lt;/p&gt;&lt;p&gt;&lt;ac:structured-macro ac:name=&quot;gliffy&quot;&gt;&lt;ac:parameter ac:name=&quot;&quot; /&gt;&lt;ac:parameter ac:name=&quot;name&quot;&gt;demo_wireframe&lt;/ac:parameter&gt;&lt;/ac:structured-macro&gt;&lt;/p&gt;&lt;h2&gt;Scenarios&lt;/h2&gt;&lt;ac:structured-macro ac:name=&quot;panel&quot;&gt;&lt;ac:parameter ac:name=&quot;title&quot;&gt;Scenario: A scenario is a collection of executable steps of different type&lt;/ac:parameter&gt;&lt;ac:rich-text-body&gt;&lt;p&gt;&lt;strong style=&quot;line-height: 1.4285715;&quot;&gt;Given&lt;/strong&gt; step represents a precondition to an event&lt;/p&gt;&lt;div class=&quot;line number17 index16 alt2&quot;&gt;&lt;strong&gt;When&lt;/strong&gt; step represents the occurrence of the event&lt;/div&gt;&lt;div class=&quot;line number18 index17 alt1&quot;&gt;&lt;strong&gt;Then&lt;/strong&gt; step represents the outcome of the event&lt;/div&gt;&lt;/ac:rich-text-body&gt;&lt;/ac:structured-macro&gt;&lt;ac:structured-macro ac:name=&quot;panel&quot;&gt;&lt;ac:parameter ac:name=&quot;title&quot;&gt;Scenario: Another scenario exploring different combination of events&lt;/ac:parameter&gt;&lt;ac:rich-text-body&gt;&lt;div class=&quot;line number18 index17 alt1&quot;&gt;&lt;div class=&quot;line number22 index21 alt1&quot;&gt;&lt;strong&gt;Given&lt;/strong&gt; a [precondition]&lt;/div&gt;&lt;div class=&quot;line number23 index22 alt2&quot;&gt;&lt;strong&gt;When&lt;/strong&gt; a negative event occurs&lt;/div&gt;&lt;div class=&quot;line number24 index23 alt1&quot;&gt;&lt;strong&gt;Then&lt;/strong&gt; a the outcome should [be-captured] &amp;nbsp;&amp;nbsp;&lt;/div&gt;&lt;/div&gt;&lt;/ac:rich-text-body&gt;&lt;/ac:structured-macro&gt;&lt;h2 class=&quot;line number26 index25 alt1&quot;&gt;Examples&lt;/h2&gt;&lt;div class=&quot;line number26 index25 alt1&quot;&gt;&lt;p&gt;Table of examples.&lt;/p&gt;&lt;table&gt;&lt;tbody&gt;&lt;tr&gt;&lt;th&gt;precondition&lt;/th&gt;&lt;th&gt;be-captured&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;abc&lt;/td&gt;&lt;td&gt;be captured&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=&quot;1&quot;&gt;xyz&lt;/td&gt;&lt;td colspan=&quot;1&quot;&gt;not be captured&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/div&gt;</body>
+    <attachments size="2" />
+    <labels />
+    <creator>
+        <links rel="self" href="https://demo.confluence.com/rest/prototype/1/user/non-system/jbehave" />
+        <name>jbehave</name>
+        <displayName>jBehave</displayName>
+        <avatarUrl>/download/attachments/262147/jbehave-58153-pp-portrait.jpg?version=1&amp;modificationDate=1328048741000&amp;api=v2
+        </avatarUrl>
+        <displayableEmail>test@jbehave.org</displayableEmail>
+        <anonymous>false</anonymous>
+    </creator>
+    <lastModifier>
+        <links rel="self" href="https://demo.confluence.com/rest/prototype/1/user/non-system/jbehave" />
+        <name>jbehave</name>
+        <displayName>Thomas Hug</displayName>
+        <avatarUrl>/download/attachments/262147/jbehave-58153-pp-portrait.jpg?version=1&amp;modificationDate=1328048741000&amp;api=v2
+        </avatarUrl>
+        <displayableEmail>test@jbehave.org</displayableEmail>
+        <anonymous>false</anonymous>
+    </lastModifier>
+</content>
