@@ -1,0 +1,36 @@
+
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<results>
+    <group name="page">
+        <result xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="contentEntity" type="page" id="12517648">
+            <link rel="alternate" type="text/html" href="https://demo.confluence.com/display/JBEV/jBehave" />
+            <link rel="alternate" type="application/pdf"
+                href="https://demo.confluence.com/spaces/flyingpdf/pdfpageexport.action?pageId=12517648" />
+            <link rel="self" href="https://demo.confluence.com/rest/prototype/1/content/12517648" />
+            <title>jBehave</title>
+            <wikiLink>[JBEV:jBehave]</wikiLink>
+            <lastModifiedDate date="2014-02-25T08:59:28+0100" friendly="about 4 hours ago" />
+            <createdDate date="2014-02-24T15:08:29+0100" friendly="yesterday at 3:08 PM" />
+            <space type="space" title="JBEV" name="JBEV" key="JBEV">
+                <link rel="self" href="https://demo.confluence.com/rest/prototype/1/space/JBEV" />
+            </space>
+            <creator>
+                <links rel="self" href="https://demo.confluence.com/rest/prototype/1/user/non-system/jbehave" />
+                <name>jbehave</name>
+                <displayName>jBehave</displayName>
+                <avatarUrl>/download/attachments/262147/jbehave-58153-pp-portrait.jpg?version=1&amp;modificationDate=1328048741000&amp;api=v2</avatarUrl>
+                <displayableEmail>jbehave@demo.confluence.com</displayableEmail>
+                <anonymous>false</anonymous>
+            </creator>
+            <lastModifier>
+                <links rel="self" href="https://demo.confluence.com/rest/prototype/1/user/non-system/jbehave" />
+                <name>jbehave</name>
+                <displayName>jBehave</displayName>
+                <avatarUrl>/download/attachments/262147/thug-58153-pp-portrait.jpg?version=1&amp;modificationDate=1328048741000&amp;api=v2</avatarUrl>
+                <displayableEmail>jbehave@demo.confluence.com</displayableEmail>
+                <anonymous>false</anonymous>
+            </lastModifier>
+        </result>
+    </group>
+    <totalSize>0</totalSize>
+</results>
