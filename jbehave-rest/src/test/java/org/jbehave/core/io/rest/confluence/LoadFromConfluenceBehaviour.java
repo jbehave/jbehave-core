@@ -14,7 +14,7 @@ import org.junit.Test;
 public class LoadFromConfluenceBehaviour {
 
     @Test
-    public void should_load_from_confluence() {
+    public void shouldLoadFromConfluence() {
         // given
         LoadFromConfluence loader = new LoadFromConfluence(new MockRESTClient());
 

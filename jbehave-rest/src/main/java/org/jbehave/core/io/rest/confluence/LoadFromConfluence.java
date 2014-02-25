@@ -28,7 +28,7 @@ public class LoadFromConfluence implements ResourceLoader {
     }
 
     public LoadFromConfluence(RESTClient client) {
-        confluence = new Confluence(client);
+        this.confluence = new Confluence(client);
     }
 
     public String loadResourceAsText(String resourcePath) {
@@ -42,9 +42,8 @@ public class LoadFromConfluence implements ResourceLoader {
     }
 
     protected void addTitle(Document doc, StringBuilder builder) {
-        Element titleEl = doc.getElementsByTag("h1").first();
-        String title = titleEl.text();
-        builder.append(title).append("\n\n");
+        Element element = doc.getElementsByTag("h1").first();
+        builder.append(element.text()).append("\n\n");
     }
 
     protected void addPanels(Document doc, StringBuilder builder) {
@@ -61,9 +60,9 @@ public class LoadFromConfluence implements ResourceLoader {
     private void appendMacroTitle(StringBuilder builder, Element element) {
         Elements parameters = element.getElementsByTag("ac:parameter");
         if (parameters.size() > 0) {
-            for (Element param : parameters) {
-                if ("title".equals(param.attr("ac:name"))) {
-                    String text = param.text();
+            for (Element parameter : parameters) {
+                if ("title".equals(parameter.attr("ac:name"))) {
+                    String text = parameter.text();
                     if (!text.contains(":")) {
                         text = text + ":";
                     }
@@ -103,18 +102,15 @@ public class LoadFromConfluence implements ResourceLoader {
         }
     }
 
-    protected void cleanNodes(Element element, String tag) {
-        Elements elementsByTag = element.getElementsByTag(tag);
-        for (Element el : elementsByTag) {
-            if (el == null || el.parent() == null) {
+    protected void cleanNodes(Element body, String tag) {
+        for (Element element : body.getElementsByTag(tag)) {
+            if (element == null || element.parent() == null) {
                 continue;
             }
-            Elements children = el.children().select(tag);
-            for (Element child : children) {
+            for (Element child : element.children().select(tag)) {
                 cleanNodes(child, tag);
             }
-            TextNode text = new TextNode(el.text() + "<br/>", "");
-            el.replaceWith(text);
+            element.replaceWith(new TextNode(element.text() + "<br/>", ""));
         }
     }
 }
