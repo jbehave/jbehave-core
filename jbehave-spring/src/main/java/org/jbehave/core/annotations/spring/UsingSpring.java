@@ -14,5 +14,7 @@ public @interface UsingSpring {
     String[] resources() default {};
 
     boolean inheritResources() default true;
+    
+    boolean ignoreContextFailure() default true;
 
 }

@@ -195,7 +195,7 @@ public class SpringAnnotationBuilderBehaviour {
     }
 
     @Configure()
-    @UsingSpring(resources = { "inexistent"} )
+    @UsingSpring(resources = { "inexistent"}, ignoreContextFailure = false )
     private static class AnnotatedWithUnloadableResource {
 
     }
