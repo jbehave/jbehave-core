@@ -14,14 +14,29 @@
 
 <p>REST is typically used to access wikis.  Each REST provider has its own API.</p>
 
-<p>Currently supported as REST providers are <a href="http://redmine.org">Redmine</a> and <a href="http://xwiki.org">XWiki</a>.
-The implementations that are provider-specific are the <a href="javadoc/rest/org/jbehave/core/io/rest/ResourceIndexer.html">ResourceIndexer</a>, 
-the <a href="javadoc/core/org/jbehave/core/io/ResourceLooader.html">ResourceLoader</a> and 
-the <a href="javadoc/rest/org/jbehave/core/io/rest/ResourceUploader.html">ResourceUploader</a>.</p>
+<h3>Using provider-specific components</h3>
 
-<h3>Using Maven goal</h3>
+<p>JBehave allows provider-specific implementation of the following interface:</p>
+<ul>
+<li><a href="javadoc/rest/org/jbehave/core/io/rest/ResourceIndexer.html">ResourceIndexer</a>:  indexes resources</li>
+<li><a href="javadoc/core/org/jbehave/core/io/ResourceLooader.html">ResourceLoader</a>:  loads resources from provider</li>
+<li><a href="javadoc/rest/org/jbehave/core/io/rest/ResourceUploader.html">ResourceUploader</a>:  uploads resources to provider</li>
+</ul>
+</p>
+<p>Currently supported as REST providers are <a href="http://redmine.org">Redmine</a> and <a href="http://xwiki.org">XWiki</a>.  
+Also supported for resource indexing and loading (but not for uploading) is <a href="https://www.atlassian.com/software/confluence">Confluence</a>.</p>
 
-<p>The import/export functionality is also exposed via Maven goals:</p>
+<p>JBehave allows provider-agnostic components for importing/export from/to providers:</p>
+<ul>
+<li><a href="javadoc/rest/org/jbehave/core/io/rest/ResourceImporter.html">ResourceImporter</a>:  imports resources from provider</li>
+<li><a href="javadoc/rest/org/jbehave/core/io/rest/ResourceExporter.html">ResourceExporter</a>:  exports resources to provider</li>
+</ul>
+<p>Currently supported are import/export implementations to/from filesystem.  Typically, importer/exporter implementations will be injected with 
+provider-specific implementations of resource indexer, loader and uploader.</p>
+
+<h3>Using Maven goals</h3>
+
+<p>The import/export filesystem functionality is also exposed via Maven goals:</p>
 
 <script type="syntaxhighlighter" class="brush: xml">
 <![CDATA[
