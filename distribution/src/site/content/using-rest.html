@@ -19,7 +19,7 @@
 <p>JBehave allows provider-specific implementation of the following interface:</p>
 <ul>
 <li><a href="javadoc/rest/org/jbehave/core/io/rest/ResourceIndexer.html">ResourceIndexer</a>:  indexes resources</li>
-<li><a href="javadoc/core/org/jbehave/core/io/ResourceLooader.html">ResourceLoader</a>:  loads resources from provider</li>
+<li><a href="javadoc/core/org/jbehave/core/io/ResourceLoader.html">ResourceLoader</a>:  loads resources from provider</li>
 <li><a href="javadoc/rest/org/jbehave/core/io/rest/ResourceUploader.html">ResourceUploader</a>:  uploads resources to provider</li>
 </ul>
 </p>
@@ -31,8 +31,14 @@ Also supported for resource indexing and loading (but not for uploading) is <a h
 <li><a href="javadoc/rest/org/jbehave/core/io/rest/ResourceImporter.html">ResourceImporter</a>:  imports resources from provider</li>
 <li><a href="javadoc/rest/org/jbehave/core/io/rest/ResourceExporter.html">ResourceExporter</a>:  exports resources to provider</li>
 </ul>
-<p>Currently supported are import/export implementations to/from filesystem.  Typically, importer/exporter implementations will be injected with 
-provider-specific implementations of resource indexer, loader and uploader.</p>
+
+<p>Currently supported are filesystem-based import/export implementations:</p>
+<ul>
+<li><a href="javadoc/rest/org/jbehave/core/io/rest/filesystem/ImportToFilesystem.html">ImportToFilesystem</a>:  imports resources to filesystem</li>
+<li><a href="javadoc/rest/org/jbehave/core/io/rest/filesystem/ExportFromFilesystem.html">ExportFromFilesystem</a>:  exports resources from filesystem</li>
+</ul>
+
+<p> Typically, importer/exporter implementations will be injected with provider-specific implementations of resource indexer, loader and uploader.</p>
 
 <h3>Using Maven goals</h3>
 
