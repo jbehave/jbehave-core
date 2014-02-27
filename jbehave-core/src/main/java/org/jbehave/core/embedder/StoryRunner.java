@@ -637,7 +637,7 @@ public class StoryRunner {
         }
 
         public FilteredStory filter(Story story) {
-            return new FilteredStory(filter, story, configuration.storyControls());
+            return new FilteredStory(filter, story, configuration.storyControls(), givenStory);
         }
 
         public String metaFilterAsString() {
