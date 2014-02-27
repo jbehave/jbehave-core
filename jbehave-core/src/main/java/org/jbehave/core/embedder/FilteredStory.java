@@ -9,10 +9,18 @@ import org.jbehave.core.model.Story;
 
 public class FilteredStory {
 
+	private boolean alwaysAllowed;
     private boolean storyAllowed;
     private Map<Scenario, Boolean> scenariosAllowed;
 
-    public FilteredStory(MetaFilter filter, Story story, StoryControls storyControls) {
+    public FilteredStory(MetaFilter filter, Story story, StoryControls storyControls){
+    	this(filter, story, storyControls, false);
+    }
+    
+    public FilteredStory(MetaFilter filter, Story story, StoryControls storyControls, boolean givenStory) {
+    	if (  givenStory && storyControls.ignoreMetaFiltersIfGivenStory() ){
+    		alwaysAllowed = true;
+    	}
         String storyMetaPrefix = storyControls.storyMetaPrefix();
         String scenarioMetaPrefix = storyControls.scenarioMetaPrefix();
         Meta storyMeta = story.getMeta().inheritFrom(story.asMeta(storyMetaPrefix));
@@ -27,10 +35,12 @@ public class FilteredStory {
     }
 
     public boolean allowed() {
+    	if ( alwaysAllowed ) return true;
         return storyAllowed || scenariosAllowed.values().contains(true);
     }
 
     public boolean allowed(Scenario scenario) {
+    	if ( alwaysAllowed ) return true;
         return scenariosAllowed.get(scenario);
     }
 }
