@@ -14,6 +14,7 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
     public static final String VERBOSE_FAILURES = "VERBOSE_FAILURES";
     public static final String VERBOSE_FILTERING = "VERBOSE_FILTERING";
     public static final String STORY_TIMEOUT_IN_SECS = "STORY_TIMEOUT_IN_SECS";
+    public static final String FAIL_ON_STORY_TIMEOUT = "FAIL_ON_STORY_TIMEOUT";
     public static final String THREADS = "THREADS";
 
     private ParameterConverters converters = new ParameterConverters();
@@ -57,6 +58,12 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
     public long storyTimeoutInSecs() {
         return propertyAs(STORY_TIMEOUT_IN_SECS, Long.class, super.storyTimeoutInSecs()); 
     }
+
+    
+    @Override
+	public boolean failOnStoryTimeout() {
+        return propertyAs(FAIL_ON_STORY_TIMEOUT, Boolean.class, super.failOnStoryTimeout()); 
+	}
 
     @Override
     public int threads() {

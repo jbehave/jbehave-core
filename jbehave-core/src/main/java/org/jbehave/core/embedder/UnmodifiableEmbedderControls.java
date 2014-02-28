@@ -50,8 +50,13 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
     public long storyTimeoutInSecs() {
         return delegate.storyTimeoutInSecs();
     }
-
+    
     @Override
+	public boolean failOnStoryTimeout() {
+        return delegate.failOnStoryTimeout();
+	}
+
+	@Override
     public int threads() {
         return delegate.threads();
     }

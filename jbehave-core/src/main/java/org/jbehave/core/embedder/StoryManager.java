@@ -155,6 +155,12 @@ public class StoryManager {
                         embedderMonitor.storyTimeout(story, storyDuration);
                         context.cancelStory(story, storyDuration);
                         future.cancel(true);
+						if (embedderControls.failOnStoryTimeout()) {
+							StoryTimeout timeout = new StoryTimeout(
+									durationInSecs + "s > " + timeoutInSecs + "s");
+							throw new StoryExecutionFailed(story.getPath(),
+									timeout);
+						}
                     }
                     break;
                 } else {
@@ -247,6 +253,15 @@ public class StoryManager {
         public StoryExecutionFailed(String storyPath, Throwable failure) {
             super(storyPath, failure);
         }
+
+    }
+
+    @SuppressWarnings("serial")
+    public static class StoryTimeout extends RuntimeException {
+
+    	public StoryTimeout(String message) {
+			super(message);
+		}
 
     }
 
