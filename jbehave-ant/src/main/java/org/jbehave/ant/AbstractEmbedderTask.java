@@ -111,6 +111,11 @@ public abstract class AbstractEmbedderTask extends Task {
     long storyTimeoutInSecs = 300;
 
     /**
+     * The boolean flag to fail on story timeout
+     */
+    private boolean failOnStoryTimeout = false;
+
+    /**
      * The number of threads
      */
     private int threads = 1;
@@ -210,7 +215,8 @@ public abstract class AbstractEmbedderTask extends Task {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
                 .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
-                .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
+                .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs)
+                .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads));
     }
 
     /**
@@ -501,6 +507,10 @@ public abstract class AbstractEmbedderTask extends Task {
         this.storyTimeoutInSecs = storyTimeoutInSecs;
     }
 
+	public void setFailOnStoryTimeout(boolean failOnStoryTimeout) {
+		this.failOnStoryTimeout = failOnStoryTimeout;
+	}
+	
     public void setThreads(int threads) {
         this.threads = threads;
     }

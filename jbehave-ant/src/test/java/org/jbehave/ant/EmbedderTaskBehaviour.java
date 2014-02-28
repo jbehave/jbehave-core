@@ -53,10 +53,11 @@ public class EmbedderTaskBehaviour {
         assertThat(embedderControls.generateViewAfterStories(), is(true));
         assertThat(embedderControls.ignoreFailureInStories(), is(false));
         assertThat(embedderControls.ignoreFailureInView(), is(false));
-        assertThat(embedderControls.skip(), is(false));
         assertThat(embedderControls.verboseFailures(), is(false));
         assertThat(embedderControls.verboseFiltering(), is(false));
+        assertThat(embedderControls.skip(), is(false));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(300L));
+        assertThat(embedderControls.failOnStoryTimeout(), is(false));
         assertThat(embedderControls.threads(), equalTo(1));  
     }
 
@@ -74,6 +75,7 @@ public class EmbedderTaskBehaviour {
         task.setVerboseFiltering(true);
         task.setSkip(true);
         task.setStoryTimeoutInSecs(60);
+        task.setFailOnStoryTimeout(true);
         task.setThreads(2);
         Embedder embedder = task.newEmbedder();
         // Then
@@ -82,10 +84,11 @@ public class EmbedderTaskBehaviour {
         assertThat(embedderControls.generateViewAfterStories(), is(false));
         assertThat(embedderControls.ignoreFailureInStories(), is(true));
         assertThat(embedderControls.ignoreFailureInView(), is(true));
-        assertThat(embedderControls.skip(), is(true));
         assertThat(embedderControls.verboseFailures(), is(true));
         assertThat(embedderControls.verboseFiltering(), is(true));
+        assertThat(embedderControls.skip(), is(true));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(60L));
+        assertThat(embedderControls.failOnStoryTimeout(), is(true));
         assertThat(embedderControls.threads(), equalTo(2));        
     }
 

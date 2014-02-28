@@ -24,6 +24,7 @@ public @interface UsingEmbedder {
 	boolean verboseFailures() default false;
     boolean verboseFiltering() default false;
     long storyTimeoutInSecs() default 300;
+    boolean failOnStoryTimeout() default false;
 	int threads() default 1;
 	boolean stepsFactory() default true;
     String[] metaFilters() default {};
