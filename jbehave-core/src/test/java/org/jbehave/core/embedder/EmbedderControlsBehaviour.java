@@ -28,6 +28,7 @@ public class EmbedderControlsBehaviour {
         assertThat(embedderControls.verboseFailures(), is(defaultControls.verboseFailures()));
         assertThat(embedderControls.verboseFiltering(), is(defaultControls.verboseFiltering()));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(defaultControls.storyTimeoutInSecs()));
+        assertThat(embedderControls.failOnStoryTimeout(), is(defaultControls.failOnStoryTimeout()));
         assertThat(embedderControls.threads(), equalTo(defaultControls.threads()));
 
         System.setProperty(PropertyBasedEmbedderControls.BATCH, "true");
@@ -38,6 +39,7 @@ public class EmbedderControlsBehaviour {
         System.setProperty(PropertyBasedEmbedderControls.VERBOSE_FAILURES, "true");
         System.setProperty(PropertyBasedEmbedderControls.VERBOSE_FILTERING, "true");
         System.setProperty(PropertyBasedEmbedderControls.STORY_TIMEOUT_IN_SECS, "500");
+        System.setProperty(PropertyBasedEmbedderControls.FAIL_ON_STORY_TIMEOUT, "true");
         System.setProperty(PropertyBasedEmbedderControls.THREADS, "5");
 
         assertThat(embedderControls.batch(), is(true));
@@ -48,6 +50,7 @@ public class EmbedderControlsBehaviour {
         assertThat(embedderControls.verboseFailures(), is(true));
         assertThat(embedderControls.verboseFiltering(), is(true));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(500L));
+        assertThat(embedderControls.failOnStoryTimeout(), is(true));
         assertThat(embedderControls.threads(), equalTo(5));
     }
     
@@ -73,6 +76,7 @@ public class EmbedderControlsBehaviour {
         assertThatNotAllowed(embedderControls, "doVerboseFailures", boolean.class, true);
         assertThatNotAllowed(embedderControls, "doVerboseFiltering", boolean.class, true);
         assertThatNotAllowed(embedderControls, "useStoryTimeoutInSecs", long.class, 1);
+        assertThatNotAllowed(embedderControls, "doFailOnStoryTimeout", boolean.class, true);
         assertThatNotAllowed(embedderControls, "useThreads", int.class, 1);
     }
 

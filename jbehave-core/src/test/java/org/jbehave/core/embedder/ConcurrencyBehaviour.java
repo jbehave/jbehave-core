@@ -1,18 +1,27 @@
 package org.jbehave.core.embedder;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.CONSOLE;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.XML;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder.RunningEmbeddablesFailed;
+import org.jbehave.core.embedder.StoryManager.StoryExecutionFailed;
+import org.jbehave.core.embedder.StoryManager.StoryTimeout;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
@@ -27,12 +36,6 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.Test;
 
-import static java.util.Arrays.asList;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.XML;
-
 public class ConcurrencyBehaviour {
 
     @Test
@@ -43,8 +46,8 @@ public class ConcurrencyBehaviour {
             embedder.runAsEmbeddables(asList(XmlFormat.class.getName()));
         } catch (RunningEmbeddablesFailed e) {
             String xmlOutput = XmlFormat.out.toString();
-            MatcherAssert.assertThat(xmlOutput, CoreMatchers.containsString("</scenario>"));
-            MatcherAssert.assertThat(xmlOutput, CoreMatchers.containsString("</story>"));
+            assertThat(xmlOutput, containsString("</scenario>"));
+            assertThat(xmlOutput, containsString("</story>"));
         }
     }
 
@@ -55,6 +58,19 @@ public class ConcurrencyBehaviour {
         embedder.runAsEmbeddables(asList(MississipiCancelled.class.getName()));
     }
 
+    @Test
+    public void shouldFailOnTimeout() {
+        Embedder embedder = new Embedder();
+        embedder.embedderControls().useStoryTimeoutInSecs(1).doFailOnStoryTimeout(true);
+        try {
+            embedder.runAsEmbeddables(asList(XmlFormat.class.getName()));
+        } catch (RunningEmbeddablesFailed e) {
+            assertThat(e.getCause(), instanceOf(StoryExecutionFailed.class));
+            assertThat(e.getCause().getCause(), instanceOf(StoryTimeout.class));
+        }
+    }
+
+    
     public static class MississipiCancelled extends JUnitStories {
 
         @Override

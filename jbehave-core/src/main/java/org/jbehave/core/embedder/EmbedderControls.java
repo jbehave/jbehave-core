@@ -16,6 +16,7 @@ public class EmbedderControls {
     private boolean verboseFailures = false;
     private boolean verboseFiltering = false;
     private long storyTimeoutInSecs = 300; // 5 mins is default.
+	private boolean failOnStoryTimeout = false;
     private int threads = 1;
 
     public EmbedderControls() {
@@ -53,7 +54,11 @@ public class EmbedderControls {
         return storyTimeoutInSecs;
     }
 
-    public int threads() {
+	public boolean failOnStoryTimeout() {
+		return failOnStoryTimeout;
+	}
+
+	public int threads() {
        return threads;
     }
 
@@ -97,6 +102,11 @@ public class EmbedderControls {
         return this;
     }
 
+    public EmbedderControls doFailOnStoryTimeout(boolean failOnStoryTimeout) {
+        this.failOnStoryTimeout = failOnStoryTimeout;
+        return this;
+    }
+
     public EmbedderControls useThreads(int threads) {
         this.threads = threads;
         return this;
@@ -106,5 +116,4 @@ public class EmbedderControls {
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-
 }
