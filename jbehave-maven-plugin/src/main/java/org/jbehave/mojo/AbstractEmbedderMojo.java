@@ -162,6 +162,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     long storyTimeoutInSecs = 300;
 
     /**
+     * The boolean flag to fail on story timeout
+     * 
+     * @parameter default-value="false"
+     */
+    boolean failOnStoryTimeout = false;
+
+    /**
      * The number of threads
      * 
      * @parameter default-value="1"
@@ -364,7 +371,8 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
                 .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
-                .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs).useThreads(threads));
+                .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs)
+                .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads));
     }
 
     protected class MavenEmbedderMonitor extends NullEmbedderMonitor {
