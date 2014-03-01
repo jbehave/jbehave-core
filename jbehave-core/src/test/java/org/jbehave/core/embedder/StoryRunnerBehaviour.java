@@ -223,6 +223,37 @@ public class StoryRunnerBehaviour {
         verify(reporter, never()).beforeStory(story1, givenStory);
     }
 
+    
+    @Test
+	public void shouldIgnoreMetaFilteringInGivenStoriesIfConfigured()
+			throws Throwable {
+		// Given
+		Scenario scenario = new Scenario("scenario", new Meta(
+				asList("run false")), new GivenStories("/path/to/given/story"),
+				ExamplesTable.EMPTY, asList("anotherSuccessfulStep"));
+		Story story = new Story("", new Description("story"), new Meta(
+				asList("run false")), Narrative.EMPTY, new GivenStories(
+				"/path/to/given/story"), asList(scenario));
+
+		// When
+		MetaFilter filter = new MetaFilter("+run true");
+		FilteredStory ignoreMeta = new FilteredStory(filter, story,
+				new StoryControls().doIgnoreMetaFiltersIfGivenStory(true), true);
+
+		// Then
+		assertThat(ignoreMeta.allowed(), is(true));
+		assertThat(ignoreMeta.allowed(scenario), is(true));
+
+		// When
+		FilteredStory doNotIgnoreMeta = new FilteredStory(filter, story,
+				new StoryControls().doIgnoreMetaFiltersIfGivenStory(false), true);
+
+		// Then
+		assertThat(doNotIgnoreMeta.allowed(), is(false));
+		assertThat(doNotIgnoreMeta.allowed(scenario), is(false));
+
+    }
+
     @Test
     public void shouldNotPerformStepsAfterFailedOrPendingSteps() throws Throwable {
         // Given
