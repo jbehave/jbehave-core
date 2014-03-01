@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.10-SNAPSHOT</version>
+    <version>3.9.1</version>
   </parent>
   <artifactId>jbehave-hudson-plugin</artifactId>
   <packaging>hpi</packaging>
