@@ -38,21 +38,21 @@ import org.jbehave.core.steps.Stepdoc;
  */
 public class Embedder {
 
-    private StoryMapper storyMapper;
-    private StoryRunner storyRunner;
-    private EmbedderMonitor embedderMonitor;
-    private EmbedderClassLoader classLoader;
-    private EmbedderControls embedderControls;
-    private EmbedderFailureStrategy embedderFailureStrategy;
-    private Configuration configuration;
-    private List<CandidateSteps> candidateSteps;
-    private InjectableStepsFactory stepsFactory;
-    private List<String> metaFilters;
-    private Properties systemProperties;
-    private ExecutorService executorService;
-    private boolean executorServiceCreated;
-    private PerformableTree performableTree = new PerformableTree();
-    private StoryManager storyManager;
+	protected StoryMapper storyMapper;
+	protected StoryRunner storyRunner;
+	protected EmbedderMonitor embedderMonitor;
+	protected EmbedderClassLoader classLoader;
+	protected EmbedderControls embedderControls;
+	protected EmbedderFailureStrategy embedderFailureStrategy;
+    protected Configuration configuration;
+    protected List<CandidateSteps> candidateSteps;
+    protected InjectableStepsFactory stepsFactory;
+    protected List<String> metaFilters;
+    protected Properties systemProperties;
+    protected ExecutorService executorService;
+    protected boolean executorServiceCreated;
+    protected PerformableTree performableTree = new PerformableTree();
+    protected StoryManager storyManager;
 
     public Embedder() {
         this(new StoryMapper(), new PerformableTree(), new PrintStreamEmbedderMonitor());
@@ -430,7 +430,7 @@ public class Embedder {
                 executorService(), performableTree());
     }
 
-    private void configureThreads(Configuration configuration, int threads) {
+    protected void configureThreads(Configuration configuration, int threads) {
         StoryReporterBuilder reporterBuilder = configuration.storyReporterBuilder();
         reporterBuilder.withMultiThreading(threads > 1);
         configuration.useStoryReporterBuilder(reporterBuilder);

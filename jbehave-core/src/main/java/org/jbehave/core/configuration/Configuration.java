@@ -59,33 +59,33 @@ public abstract class Configuration {
     /**
      * Use default story controls
      */
-    private StoryControls storyControls;
+    protected StoryControls storyControls;
 
     /**
      * Use English language for keywords
      */
-    private Keywords keywords;
+    protected Keywords keywords;
 
     /**
      * Provides pending steps where unmatched steps exist.
      */
-    private StepCollector stepCollector;
+    protected StepCollector stepCollector;
 
     /**
      * Parses the textual representation via pattern matching of keywords
      */
-    private StoryParser storyParser;
+    protected StoryParser storyParser;
 
     /**
      * Loads story content from classpath
      */
-    private StoryLoader storyLoader;
+    protected StoryLoader storyLoader;
 
     /**
      * Resolves story paths from class names using underscored camel case with
      * ".story" extension
      */
-    private StoryPathResolver storyPathResolver;
+    protected StoryPathResolver storyPathResolver;
 
     /**
      * Handles errors by re-throwing them.
@@ -96,7 +96,7 @@ public abstract class Configuration {
      * Users wanting a different behaviour may use
      * {@link SilentlyAbsorbingFailure}.
      */
-    private FailureStrategy failureStrategy;
+    protected FailureStrategy failureStrategy;
 
     /**
      * Allows pending steps to pass, so that steps that to do not match any
@@ -105,64 +105,64 @@ public abstract class Configuration {
      * Uses wanting a stricter behaviour for pending steps may use
      * {@link FailingUponPendingStep}.
      */
-    private PendingStepStrategy pendingStepStrategy;
+    protected PendingStepStrategy pendingStepStrategy;
 
     /**
      * Reports stories to console output
      */
-    private StoryReporter defaultStoryReporter;
+    protected StoryReporter defaultStoryReporter;
 
     /**
      * The story reporter builder
      */
-    private StoryReporterBuilder storyReporterBuilder;
+    protected StoryReporterBuilder storyReporterBuilder;
 
     /**
      * Finder of matching candidate steps
      */
-    private StepFinder stepFinder;
+    protected StepFinder stepFinder;
 
     /**
      * Report candidate steps found to a PrintStream
      */
-    private StepdocReporter stepdocReporter;
+    protected StepdocReporter stepdocReporter;
 
     /**
      * Pattern build that uses prefix for identifying parameters
      */
-    private StepPatternParser stepPatternParser;
+    protected StepPatternParser stepPatternParser;
 
     /**
      * Controls of step parameterization
      */
-    private ParameterControls parameterControls;
+    protected ParameterControls parameterControls;
 
     /**
      * Silent monitoring that does not produce any noise of the step matching.
      * </p> If needed, users can switch on verbose monitoring using
      * {@link PrintStreamStepMonitor}
      */
-    private StepMonitor stepMonitor;
+    protected StepMonitor stepMonitor;
 
     /**
      * Paranamer is switched off by default
      */
-    private Paranamer paranamer;
+    protected Paranamer paranamer;
 
     /**
      * Use default built-in parameter converters
      */
-    private ParameterConverters parameterConverters;
+    protected ParameterConverters parameterConverters;
 
     /**
      * Use Freemarker-based view generator
      */
-    private ViewGenerator viewGenerator;
+    protected ViewGenerator viewGenerator;
 
     /**
      * Use an absolute path calculator
      */
-    private PathCalculator pathCalculator;
+    protected PathCalculator pathCalculator;
 
     public Configuration() {
     	storyControls = new StoryControls();
