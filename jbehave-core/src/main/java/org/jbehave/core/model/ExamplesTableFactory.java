@@ -30,7 +30,7 @@ import static org.apache.commons.lang.StringUtils.isBlank;
  */
 public class ExamplesTableFactory {
 
-    private final Keywords keywords;
+    private Keywords keywords;
     private final ResourceLoader resourceLoader;
     private final ParameterConverters parameterConverters;
     private final TableTransformers tableTransformers;
@@ -67,6 +67,13 @@ public class ExamplesTableFactory {
         this.parameterConverters = parameterConverters;
         this.tableTransformers = tableTranformers;
     }
+    
+    public ExamplesTableFactory(Configuration configuration) {
+    	this.keywords = configuration.keywords();
+    	this.resourceLoader = configuration.resourceLoader();
+    	this.parameterConverters = configuration.parameterConverters();
+    	this.tableTransformers = new TableTransformers();
+    }
 
     public ExamplesTable createExamplesTable(String input) {
         String tableAsString;
@@ -84,4 +91,11 @@ public class ExamplesTableFactory {
         return input.contains(keywords.examplesTableHeaderSeparator());
     }
 
+    public void useKeywords(Keywords keywords){
+    	this.keywords = keywords;
+    }
+
+	public Keywords keywords() {
+		return this.keywords;
+	}
 }

@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
@@ -38,18 +39,25 @@ public class RegexStoryParser implements StoryParser {
     }
 
     public RegexStoryParser(Keywords keywords) {
-        this(keywords, new ExamplesTableFactory());
+        this(keywords, new ExamplesTableFactory(keywords));
     }
 
     public RegexStoryParser(ExamplesTableFactory tableFactory) {
-        this(new LocalizedKeywords(), tableFactory);
+        this(tableFactory.keywords(), tableFactory);
     }
 
     public RegexStoryParser(Keywords keywords, ExamplesTableFactory tableFactory) {
         this.keywords = keywords;
         this.tableFactory = tableFactory;
+        // must ensure that both are using same keywords
+        this.tableFactory.useKeywords(keywords);
     }
 
+    public RegexStoryParser(Configuration configuration) {
+    	this.keywords = configuration.keywords();
+    	this.tableFactory = new ExamplesTableFactory(configuration);
+    }
+    
     public Story parseStory(String storyAsText) {
         return parseStory(storyAsText, null);
     }
