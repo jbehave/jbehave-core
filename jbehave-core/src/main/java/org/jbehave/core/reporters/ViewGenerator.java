@@ -20,5 +20,6 @@ public interface ViewGenerator {
 
 	ReportsCount getReportsCount();
 
+	Properties defaultViewProperties();
 	
 }
