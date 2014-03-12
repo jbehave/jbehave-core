@@ -55,6 +55,8 @@ public class ImportToFilesystemMojoBehaviour {
             }
             
         };
+        mojo.restProvider = "wiki";
+        mojo.restRootURI = rootURI;
         mojo.resourcesPath = targetPath;
         mojo.resourcesExt = targetExt;
         
