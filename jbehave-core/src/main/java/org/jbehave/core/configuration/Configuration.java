@@ -13,6 +13,7 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.AbsolutePathCalculator;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.PathCalculator;
+import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
@@ -80,6 +81,11 @@ public abstract class Configuration {
      * Loads story content from classpath
      */
     protected StoryLoader storyLoader;
+
+    /**
+     * Loads resources content from classpath
+     */
+    protected ResourceLoader resourceLoader;
 
     /**
      * Resolves story paths from class names using underscored camel case with
@@ -165,65 +171,83 @@ public abstract class Configuration {
     protected PathCalculator pathCalculator;
 
     public Configuration() {
-    	storyControls = new StoryControls();
-    	keywords = new LocalizedKeywords();
-    	
-    	stepCollector = new MarkUnmatchedStepsAsPending();
-    	storyParser = new RegexStoryParser(keywords);
-    	storyLoader = new LoadFromClasspath();
-    	storyPathResolver = new UnderscoredCamelCaseResolver();
-    	failureStrategy = new RethrowingFailure();
-    	pendingStepStrategy = new PassingUponPendingStep();
-    	defaultStoryReporter = new ConsoleOutput();
-    	storyReporterBuilder = new StoryReporterBuilder();
-    	stepFinder = new StepFinder();
-    	stepdocReporter = new PrintStreamStepdocReporter();
-    	stepPatternParser = new RegexPrefixCapturingPatternParser();
-    	parameterControls = new ParameterControls();
-    	stepMonitor = new SilentStepMonitor();
-    	paranamer = new NullParanamer();
-    	parameterConverters = new ParameterConverters();
-    	viewGenerator = new FreemarkerViewGenerator();
-    	pathCalculator = new AbsolutePathCalculator();
 	}
-    
-    public Keywords keywords() {
-        return keywords;
-    }
+
+	public Keywords keywords() {
+		if (keywords == null) {
+			keywords = new LocalizedKeywords();
+		}
+		return keywords;
+	}
 
     public boolean dryRun() {
         return storyControls.dryRun();
     }
     
     public StoryControls storyControls() {
-        return storyControls;
-    }
+		if (storyControls == null) {
+			storyControls = new StoryControls();
+		}
+		return storyControls;
+	}
 
     public StoryParser storyParser() {
-        return storyParser;
-    }
+		if (storyParser == null) {
+			storyParser = new RegexStoryParser(this);
+		}
+		return storyParser;
+	}
 
-    public StoryLoader storyLoader() {
-        return storyLoader;
-    }
+	public ResourceLoader resourceLoader() {
+		if (resourceLoader == null) {
+			resourceLoader = new LoadFromClasspath();
+		}
+		return resourceLoader;
+	}
+	
+	@Deprecated()
+	public StoryLoader storyLoader() {
+		if (storyLoader == null) {
+			if ((resourceLoader != null)
+					&& (resourceLoader.getClass()
+							.isAssignableFrom(StoryLoader.class))) {
+				storyLoader = (StoryLoader) resourceLoader;
+			} else {
+				storyLoader = new LoadFromClasspath();
+			}
+		}
+		return storyLoader;
+	}
+    
+	public StoryPathResolver storyPathResolver() {
+		if (storyPathResolver == null) {
+			storyPathResolver = new UnderscoredCamelCaseResolver();
+		}
+		return storyPathResolver;
+	}
 
-    public StoryPathResolver storyPathResolver() {
-        return storyPathResolver;
-    }
+	public FailureStrategy failureStrategy() {
+		if (failureStrategy == null) {
+			failureStrategy = new RethrowingFailure();
+		}
+		return failureStrategy;
+	}
 
-    public FailureStrategy failureStrategy() {
-        return failureStrategy;
-    }
-
-    public PendingStepStrategy pendingStepStrategy() {
-        return pendingStepStrategy;
-    }
+	public PendingStepStrategy pendingStepStrategy() {
+		if (pendingStepStrategy == null) {
+			pendingStepStrategy = new PassingUponPendingStep();
+		}
+		return pendingStepStrategy;
+	}
 
     /**
      * @deprecated Use {@link StoryReporterBuilder}
      */
     public StoryReporter defaultStoryReporter() {
-        return defaultStoryReporter;
+    	if (defaultStoryReporter == null) {
+    		defaultStoryReporter = new ConsoleOutput();
+    	}
+    	return defaultStoryReporter;
     }
 
     public StoryReporter storyReporter(String storyPath) {
@@ -231,48 +255,81 @@ public abstract class Configuration {
     }
 
     public StoryReporterBuilder storyReporterBuilder() {
-        return storyReporterBuilder;
-    }
+		if (storyReporterBuilder == null) {
+			storyReporterBuilder = new StoryReporterBuilder();
+		}
+		return storyReporterBuilder;
+	}
 
-    public StepCollector stepCollector() {
-        return stepCollector;
-    }
-
-    public StepFinder stepFinder() {
-        return stepFinder;
-    }
-
-    public StepdocReporter stepdocReporter() {
-        return stepdocReporter;
-    }
+	public StepCollector stepCollector() {
+		if (stepCollector == null) {
+			stepCollector = new MarkUnmatchedStepsAsPending();
+		}
+		return stepCollector;
+	}
+	
+	public StepFinder stepFinder() {
+		if (stepFinder == null) {
+			stepFinder = new StepFinder();
+		}
+		return stepFinder;
+	}
+	
+	public StepdocReporter stepdocReporter() {
+		if (stepdocReporter == null) {
+			stepdocReporter = new PrintStreamStepdocReporter();
+		}
+		return stepdocReporter;
+	}
 
     public StepPatternParser stepPatternParser() {
-        return stepPatternParser;
-    }
-
-    public ParameterControls parameterControls() {
-        return parameterControls;
-    }
-
-    public StepMonitor stepMonitor() {
-        return stepMonitor;
-    }
+		if (stepPatternParser == null) {
+			stepPatternParser = new RegexPrefixCapturingPatternParser();
+		}
+		return stepPatternParser;
+	}
+    
+	public ParameterControls parameterControls() {
+		if (parameterControls == null) {
+			parameterControls = new ParameterControls();
+		}
+		return parameterControls;
+	}
+	
+	public StepMonitor stepMonitor() {
+		if (stepMonitor == null) {
+			stepMonitor = new SilentStepMonitor();
+		}
+		return stepMonitor;
+	}
 
     public Paranamer paranamer() {
-        return paranamer;
-    }
-
-    public ParameterConverters parameterConverters() {
-        return parameterConverters;
-    }
+		if (paranamer == null) {
+			paranamer = new NullParanamer();
+		}
+		return paranamer;
+	}
     
-    public ViewGenerator viewGenerator() {
-        return viewGenerator;
-    }
+	public ParameterConverters parameterConverters() {
+		if (parameterConverters == null) {
+			parameterConverters = new ParameterConverters();
+		}
+		return parameterConverters;
+	}
+    
+	public ViewGenerator viewGenerator() {
+		if (viewGenerator == null) {
+			viewGenerator = new FreemarkerViewGenerator();
+		}
+		return viewGenerator;
+	}
 
-    public PathCalculator pathCalculator() {
-        return pathCalculator;
-    }
+	public PathCalculator pathCalculator() {
+		if (pathCalculator == null) {
+			pathCalculator = new AbsolutePathCalculator();
+		}
+		return pathCalculator;
+	}
 
     public Configuration useKeywords(Keywords keywords) {
         this.keywords = keywords;
@@ -309,6 +366,11 @@ public abstract class Configuration {
         return this;
     }
 
+    public Configuration useResourceLoader(ResourceLoader resourceLoader) {
+    	this.resourceLoader = resourceLoader;
+    	return this;
+    }
+    
     public Configuration useStoryPathResolver(StoryPathResolver storyPathResolver) {
         this.storyPathResolver = storyPathResolver;
         return this;
