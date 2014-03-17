@@ -166,6 +166,10 @@ public class ConcurrencyBehaviour {
                 return "Scenario: \nGiven something too long";
             }
 
+			public String loadResourceAsText(String resourcePath) {
+				return null;
+			}
+
         }
     }
 

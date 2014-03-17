@@ -70,7 +70,7 @@ public class ExamplesTableFactory {
     
     public ExamplesTableFactory(Configuration configuration) {
     	this.keywords = configuration.keywords();
-    	this.resourceLoader = configuration.resourceLoader();
+    	this.resourceLoader = configuration.storyLoader();
     	this.parameterConverters = configuration.parameterConverters();
     	this.tableTransformers = new TableTransformers();
     }

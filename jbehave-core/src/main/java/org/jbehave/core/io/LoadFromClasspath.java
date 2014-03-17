@@ -9,7 +9,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 /**
  * Loads story resources from classpath
  */
-public class LoadFromClasspath implements ResourceLoader, StoryLoader {
+public class LoadFromClasspath implements StoryLoader {
 
     protected final ClassLoader classLoader;
 
