@@ -26,6 +26,12 @@ public class RegexPrefixCapturingPatternParserBehaviour {
     }
 
     @Test
+    public void shouldMatchStepWithPatternsUsingUnderscoresInParameterNames() {
+        assertThatPatternMatchesStep(parser, "a house with $number_of_1st_floor_doors doors and $facing_to windows",
+                "a house with 3 doors and 4 windows", true, "number_of_1st_floor_doors", "facing_to");
+    }
+
+    @Test
     public void shouldMatchStepWithPatternsUsingNumbersInParameterNames() {
         assertThatPatternMatchesStep(parser, "a house with $numberOf1stFloorDoors doors and $facing2 windows",
                 "a house with 3 doors and 4 windows", true, "numberOf1stFloorDoors", "facing2");

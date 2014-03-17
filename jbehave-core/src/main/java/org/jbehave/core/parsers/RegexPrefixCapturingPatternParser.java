@@ -17,7 +17,7 @@ import org.jbehave.core.steps.StepType;
  * The parameter names are by default assumed to be any unicode-supported
  * alphanumeric sequence, not limited to ASCII (see
  * http://www.regular-expressions.info/unicode.html), i.e. corresponding to
- * character class [\p{L}\p{N}]. A different character class can optionally be
+ * character class [\p{L}\p{N}\p{Pc}]. A different character class can optionally be
  * provided.
  * 
  * @author Elizabeth Keogh
@@ -32,7 +32,7 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 	/**
 	 * The default character class to match the parameter names.
 	 */
-	private static final String DEFAULT_CHARACTER_CLASS = "[\\p{L}\\p{N}]";
+	private static final String DEFAULT_CHARACTER_CLASS = "[\\p{L}\\p{N}\\p{Pc}]";
 
 	private final String prefix;
 	private final String characterClass;
