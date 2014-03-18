@@ -145,13 +145,12 @@ public class StoryReporterBuilderBehaviour {
         // Given
         String storyPath = storyPath(MyStory.class);
         Keywords keywords = new LocalizedKeywords(new Locale("it"));
-        final URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
         final OutputStream out = new ByteArrayOutputStream();
 
         StoryReporterBuilder builder = new StoryReporterBuilder() {
             @Override
             protected FilePrintStreamFactory filePrintStreamFactory(String storyPath) {
-                return new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath)) {
+                return new FilePrintStreamFactory(new StoryLocation(codeLocation(), storyPath)) {
                     @Override
                     public PrintStream createPrintStream() {
                         return new PrintStream(out);

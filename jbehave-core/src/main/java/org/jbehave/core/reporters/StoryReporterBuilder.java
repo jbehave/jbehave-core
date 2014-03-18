@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
@@ -34,7 +35,8 @@ import static java.util.Arrays.asList;
  * Class&lt;MyStory&gt; storyClass = MyStory.class;
  * StoryPathResolver resolver = new UnderscoredCamelCaseResolver();
  * String storyPath = resolver.resolve(storyClass);
- * StoryReporter reporter = new StoryReporterBuilder().withCodeLocation(CodeLocations.codeLocationFromClass(storyClass))
+ * StoryReporter reporter = new StoryReporterBuilder()
+ *         .withCodeLocation(CodeLocations.codeLocationFromClass(storyClass))
  *         .withDefaultFormats().withFormats(TXT, HTML, XML).build(storyPath);
  * </pre>
  * 
@@ -60,7 +62,9 @@ import static java.util.Arrays.asList;
  * file:
  * 
  * <pre>
- * new StoryReporterBuilder().withCodeLocation(CodeLocations.codeLocationFromFile(new File(&quot;target/classes&quot;)))
+ * new StoryReporterBuilder()
+ *         .withCodeLocation(
+ *                 CodeLocations.codeLocationFromFile(new File(&quot;target/classes&quot;)))
  *         .withDefaultFormats().withFormats(TXT, HTML, XML).build(storyPath);
  * </pre>
  * 
@@ -122,12 +126,12 @@ import static java.util.Arrays.asList;
 public class StoryReporterBuilder {
 
     public enum Format {
-        CONSOLE(org.jbehave.core.reporters.Format.CONSOLE),
-        IDE_CONSOLE(org.jbehave.core.reporters.Format.IDE_CONSOLE),
-        TXT(org.jbehave.core.reporters.Format.TXT),
-        HTML(org.jbehave.core.reporters.Format.HTML),
-        XML(org.jbehave.core.reporters.Format.XML),
-        STATS(org.jbehave.core.reporters.Format.STATS);
+        CONSOLE(org.jbehave.core.reporters.Format.CONSOLE), IDE_CONSOLE(
+                org.jbehave.core.reporters.Format.IDE_CONSOLE), TXT(
+                org.jbehave.core.reporters.Format.TXT), HTML(
+                org.jbehave.core.reporters.Format.HTML), XML(
+                org.jbehave.core.reporters.Format.XML), STATS(
+                org.jbehave.core.reporters.Format.STATS);
 
         private org.jbehave.core.reporters.Format realFormat;
 
@@ -138,22 +142,23 @@ public class StoryReporterBuilder {
     }
 
     private List<org.jbehave.core.reporters.Format> formats = new ArrayList<org.jbehave.core.reporters.Format>();
-    private String relativeDirectory;
-    private FilePathResolver pathResolver;
-    private URL codeLocation;
-    private Properties viewResources;
-    private boolean reportFailureTrace = false;
-    private boolean compressFailureTrace = false;
-    private Keywords keywords;
-    private CrossReference crossReference;
-    private boolean multiThreading;
-    
+    protected String relativeDirectory;
+    protected FilePathResolver pathResolver;
+    protected URL codeLocation;
+    protected Properties viewResources;
+    protected boolean reportFailureTrace = false;
+    protected boolean compressFailureTrace = false;
+    protected Keywords keywords;
+    protected CrossReference crossReference;
+    protected boolean multiThreading;
+    protected Configuration configuration;
+    private FileConfiguration defaultFileConfiguration = new FileConfiguration();
+
     public StoryReporterBuilder() {
-    	relativeDirectory = new FileConfiguration().getRelativeDirectory();
-    	pathResolver = new FileConfiguration().getPathResolver();
-    	codeLocation = CodeLocations.codeLocationFromPath("target/classes");
-    	viewResources = new FreemarkerViewGenerator().defaultViewProperties();
-    	keywords = new LocalizedKeywords();
+    }
+
+    public StoryReporterBuilder(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     public File outputDirectory() {
@@ -161,14 +166,23 @@ public class StoryReporterBuilder {
     }
 
     public String relativeDirectory() {
+        if (relativeDirectory == null) {
+            relativeDirectory = defaultFileConfiguration.getRelativeDirectory();
+        }
         return relativeDirectory;
     }
 
     public FilePathResolver pathResolver() {
+        if (pathResolver == null) {
+            pathResolver = defaultFileConfiguration.getPathResolver();
+        }
         return pathResolver;
     }
 
     public URL codeLocation() {
+        if (codeLocation == null) {
+            codeLocation = CodeLocations.codeLocationFromPath("target/classes");
+        }
         return codeLocation;
     }
 
@@ -193,13 +207,19 @@ public class StoryReporterBuilder {
     }
 
     public Keywords keywords() {
+        if (keywords == null) {
+            if (configuration != null) {
+                keywords = configuration.keywords();
+            }
+            keywords = new LocalizedKeywords();
+        }
         return keywords;
     }
 
-    public boolean multiThreading(){
+    public boolean multiThreading() {
         return multiThreading;
     }
-    
+
     public boolean reportFailureTrace() {
         return reportFailureTrace;
     }
@@ -209,6 +229,15 @@ public class StoryReporterBuilder {
     }
 
     public Properties viewResources() {
+        if (viewResources == null) {
+            if (configuration != null) {
+                viewResources = configuration.viewGenerator()
+                        .defaultViewProperties();
+            } else {
+                viewResources = new FreemarkerViewGenerator()
+                        .defaultViewProperties();
+            }
+        }
         return viewResources;
     }
 
@@ -245,7 +274,8 @@ public class StoryReporterBuilder {
     }
 
     /**
-     * @deprecated Use {@link withFormats(org.jbehave.core.reporters.Format... formats)}
+     * @deprecated Use {@link withFormats(org.jbehave.core.reporters.Format...
+     *             formats)}
      */
     @Deprecated
     public StoryReporterBuilder withFormats(Format... formats) {
@@ -257,7 +287,8 @@ public class StoryReporterBuilder {
         return this;
     }
 
-    public StoryReporterBuilder withFormats(org.jbehave.core.reporters.Format... formats) {
+    public StoryReporterBuilder withFormats(
+            org.jbehave.core.reporters.Format... formats) {
         this.formats.addAll(asList(formats));
         return this;
     }
@@ -274,7 +305,8 @@ public class StoryReporterBuilder {
         return this;
     }
 
-    public StoryReporterBuilder withFailureTraceCompression(boolean compressFailureTrace) {
+    public StoryReporterBuilder withFailureTraceCompression(
+            boolean compressFailureTrace) {
         this.compressFailureTrace = compressFailureTrace;
         return this;
     }
@@ -300,8 +332,10 @@ public class StoryReporterBuilder {
             delegates.put(format, reporterFor(storyPath, format));
         }
 
-        DelegatingStoryReporter delegate = new DelegatingStoryReporter(delegates.values());
-        return new ConcurrentStoryReporter(new NullStoryReporter(), delegate, multiThreading);
+        DelegatingStoryReporter delegate = new DelegatingStoryReporter(
+                delegates.values());
+        return new ConcurrentStoryReporter(new NullStoryReporter(), delegate,
+                multiThreading());
     }
 
     public Map<String, StoryReporter> build(List<String> storyPaths) {
@@ -317,23 +351,27 @@ public class StoryReporterBuilder {
         return reporterFor(storyPath, format.realFormat);
     }
 
-    public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
+    public StoryReporter reporterFor(String storyPath,
+            org.jbehave.core.reporters.Format format) {
         FilePrintStreamFactory factory = filePrintStreamFactory(storyPath);
         return format.createStoryReporter(factory, this);
     }
 
     protected FilePrintStreamFactory filePrintStreamFactory(String storyPath) {
-        return new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), fileConfiguration(""));
+        return new FilePrintStreamFactory(new StoryLocation(codeLocation(),
+                storyPath), fileConfiguration(""));
     }
 
     public FileConfiguration fileConfiguration(String extension) {
-        return new FileConfiguration(relativeDirectory, extension, pathResolver);
+        return new FileConfiguration(relativeDirectory(), extension,
+                pathResolver());
     }
 
     /**
      * A Format that wraps a StoryReporter instance provided.
      */
-    public static class ProvidedFormat extends org.jbehave.core.reporters.Format {
+    public static class ProvidedFormat extends
+            org.jbehave.core.reporters.Format {
 
         private final StoryReporter reporter;
 
@@ -343,10 +381,11 @@ public class StoryReporterBuilder {
         }
 
         @Override
-        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+        public StoryReporter createStoryReporter(
+                FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             return reporter;
         }
-        
+
     }
 }
