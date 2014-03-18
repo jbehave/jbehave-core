@@ -39,7 +39,7 @@ import org.jbehave.core.io.UnderscoredToCapitalized;
 public class FreemarkerViewGenerator extends TemplateableViewGenerator {
 
     public FreemarkerViewGenerator() {
-        this(new UnderscoredToCapitalized());
+        this(FreemarkerViewGenerator.class);
     }
 
     public FreemarkerViewGenerator(StoryNameResolver nameResolver) {
