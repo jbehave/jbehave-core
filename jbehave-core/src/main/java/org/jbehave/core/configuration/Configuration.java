@@ -13,7 +13,6 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.AbsolutePathCalculator;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.PathCalculator;
-import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
@@ -81,11 +80,6 @@ public abstract class Configuration {
      * Loads story content from classpath
      */
     protected StoryLoader storyLoader;
-
-    /**
-     * Loads resources content from classpath
-     */
-    protected ResourceLoader resourceLoader;
 
     /**
      * Resolves story paths from class names using underscored camel case with
@@ -198,23 +192,9 @@ public abstract class Configuration {
 		return storyParser;
 	}
 
-	public ResourceLoader resourceLoader() {
-		if (resourceLoader == null) {
-			resourceLoader = new LoadFromClasspath();
-		}
-		return resourceLoader;
-	}
-	
-	@Deprecated()
 	public StoryLoader storyLoader() {
 		if (storyLoader == null) {
-			if ((resourceLoader != null)
-					&& (resourceLoader.getClass()
-							.isAssignableFrom(StoryLoader.class))) {
-				storyLoader = (StoryLoader) resourceLoader;
-			} else {
-				storyLoader = new LoadFromClasspath();
-			}
+			storyLoader = new LoadFromClasspath();
 		}
 		return storyLoader;
 	}
@@ -364,11 +344,6 @@ public abstract class Configuration {
     public Configuration useStoryLoader(StoryLoader storyLoader) {
         this.storyLoader = storyLoader;
         return this;
-    }
-
-    public Configuration useResourceLoader(ResourceLoader resourceLoader) {
-    	this.resourceLoader = resourceLoader;
-    	return this;
     }
     
     public Configuration useStoryPathResolver(StoryPathResolver storyPathResolver) {
