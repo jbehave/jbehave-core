@@ -158,7 +158,7 @@ public class AnnotationBuilder {
 
     public Embedder buildEmbedder() {
         if (!finder.isAnnotationPresent(UsingEmbedder.class)) {
-            return new Embedder();
+            return defaultEmbedder();
         }
 
         boolean batch = control(finder, "batch");
@@ -197,11 +197,19 @@ public class AnnotationBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    private Embedder embedder() {
+    protected Embedder embedder() {
         return instanceOf(Embedder.class,
                 (Class<? extends Embedder>) finder.getAnnotatedValue(UsingEmbedder.class, Class.class, "embedder"));
     }
+    
+    protected Embedder defaultEmbedder() {
+    	return new Embedder();
+    }
 
+    public AnnotationFinder finder() {
+    	return finder;
+    }
+    
     public List<String> findPaths() {
         if (!finder.isAnnotationPresent(UsingPaths.class)) {
             return new ArrayList<String>();
@@ -228,7 +236,7 @@ public class AnnotationBuilder {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Class<T> elementImplementation(AnnotationFinder finder, String name) {
+	protected <T> Class<T> elementImplementation(AnnotationFinder finder, String name) {
         return finder.getAnnotatedValue(Configure.class, Class.class, name);
     }
 
