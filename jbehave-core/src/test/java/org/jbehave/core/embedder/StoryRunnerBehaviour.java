@@ -8,6 +8,7 @@ import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
 import static org.jbehave.core.steps.AbstractStepResult.successful;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -40,6 +41,7 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
@@ -684,6 +686,52 @@ public class StoryRunnerBehaviour {
         inOrder.verify(reporter).successful("step <two>");
         inOrder.verify(reporter).afterScenario();
         inOrder.verify(reporter).afterStory(givenStory);
+    }
+
+    @Test
+    public void shouldRunScenarioAndLifecycleStepsInCorrectOrderWithExamplesTable() throws Throwable{
+        // Given
+        ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
+        Map<String, String> tableRow = examplesTable.getRow(0);
+        Scenario scenario1 = new Scenario("my title 1", Meta.EMPTY, GivenStories.EMPTY, examplesTable, asList("step <one>",
+                "step <two>"));
+        Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1));
+        StoryReporter reporter = mock(ConcurrentStoryReporter.class);
+        StepCollector collector = mock(StepCollector.class);
+        FailureStrategy failureStrategy = mock(FailureStrategy.class);
+        Configuration configuration = configurationWith(reporter, collector, failureStrategy);
+        configuration.storyControls().doDryRun(true);
+        CandidateSteps mySteps = new Steps(configuration);
+        Step firstStep = mockSuccessfulStep("step <one>");
+        Step secondStep = mockSuccessfulStep("step <two>");
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1,tableRow)).thenReturn(
+                asList(firstStep, secondStep));
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
+
+        Step beforeExampleStep = mockSuccessfulStep("beforeExampleStep");
+        Step afterExampleStep = mockSuccessfulStep("afterExampleStep");
+        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.BEFORE), eq(ScenarioType.EXAMPLE))).thenReturn(asList(beforeExampleStep));
+        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.AFTER), eq(ScenarioType.EXAMPLE))).thenReturn(asList(afterExampleStep));
+
+        Step beforeStep = mockSuccessfulStep("lifecycleBeforeStep");
+        Step afterStep = mockSuccessfulStep("lifecycleAfterStep");
+        when(collector.collectLifecycleSteps(eq(asList(mySteps)), eq(Lifecycle.EMPTY), any(Meta.class), eq(Stage.BEFORE))).thenReturn(asList(beforeStep));
+        when(collector.collectLifecycleSteps(eq(asList(mySteps)), eq(Lifecycle.EMPTY), any(Meta.class), eq(Stage.AFTER))).thenReturn(asList(afterStep));
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        runner.run(configuration, asList(mySteps), story);
+
+        // Then
+        InOrder inOrder = inOrder(reporter, failureStrategy);
+        inOrder.verify(reporter).successful("beforeExampleStep");
+        inOrder.verify(reporter).successful("lifecycleBeforeStep");
+        inOrder.verify(reporter).successful("step <one>");
+        inOrder.verify(reporter).successful("step <two>");
+        inOrder.verify(reporter).successful("lifecycleAfterStep");
+        inOrder.verify(reporter).successful("afterExampleStep");
+
     }
 
 
