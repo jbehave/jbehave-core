@@ -133,16 +133,12 @@ public class PerformableTree {
             if (isParameterisedByExamples(scenario)) {
                 ExamplesTable table = scenario.getExamplesTable();
                 for (Map<String, String> scenarioParameters : table.getRows()) {
-                    performableScenario.addExampleScenario(exampleScenario(context, story, scenario,
+                    performableScenario.addExampleScenario(exampleScenario(context, story.getLifecycle(), scenario,
                             storyAndScenarioMeta, scenarioParameters));
                 }
             } else { // plain old scenario
-                performableScenario.addBeforeSteps(context.lifecycleSteps(story.getLifecycle(), storyAndScenarioMeta, Stage.BEFORE));
-                addMetaParameters(storyParameters, storyAndScenarioMeta);
-                performableScenario.addGivenStories(performableGivenStories(context, scenario.getGivenStories(),
-                        storyParameters));
-                performableScenario.addSteps(context.scenarioSteps(scenario, storyParameters));
-                performableScenario.addAfterSteps(context.lifecycleSteps(story.getLifecycle(), storyAndScenarioMeta, Stage.AFTER));
+                addStepsWithLifecycle(performableScenario, context, story.getLifecycle(), storyParameters,
+						scenario, storyAndScenarioMeta);
             }
 
             // after scenario steps, if allowed
@@ -155,19 +151,30 @@ public class PerformableTree {
         return performableScenario;
     }
 
-    private PerformableExampleScenario exampleScenario(RunContext context, Story story, Scenario scenario,
+	private void addStepsWithLifecycle(PerformableScenario performableScenario, RunContext context,
+			Lifecycle lifecycle, Map<String, String> storyParameters,
+			Scenario scenario, Meta storyAndScenarioMeta) {
+		performableScenario.addBeforeSteps(context.lifecycleSteps(lifecycle, storyAndScenarioMeta, Stage.BEFORE));
+		addMetaParameters(storyParameters, storyAndScenarioMeta);
+		performableScenario.addGivenStories(performableGivenStories(context, scenario.getGivenStories(),
+		        storyParameters));
+		performableScenario.addSteps(context.scenarioSteps(scenario, storyParameters));
+		performableScenario.addAfterSteps(context.lifecycleSteps(lifecycle, storyAndScenarioMeta, Stage.AFTER));
+	}
+
+    private PerformableExampleScenario exampleScenario(RunContext context, Lifecycle lifecycle, Scenario scenario,
             Meta storyAndScenarioMeta, Map<String, String> scenarioParameters) {
         PerformableExampleScenario exampleScenario = new PerformableExampleScenario(scenarioParameters);
-        exampleScenario.addBeforeSteps(context.lifecycleSteps(story.getLifecycle(), storyAndScenarioMeta, Stage.BEFORE));
         exampleScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
                 ScenarioType.EXAMPLE));
+        exampleScenario.addBeforeSteps(context.lifecycleSteps(lifecycle, storyAndScenarioMeta, Stage.BEFORE));
         addMetaParameters(scenarioParameters, storyAndScenarioMeta);
         exampleScenario
                 .addGivenStories(performableGivenStories(context, scenario.getGivenStories(), scenarioParameters));
         exampleScenario.addSteps(context.scenarioSteps(scenario, scenarioParameters));
+        exampleScenario.addAfterSteps(context.lifecycleSteps(lifecycle, storyAndScenarioMeta, Stage.AFTER));
         exampleScenario.addAfterSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER,
                 ScenarioType.EXAMPLE));
-        exampleScenario.addAfterSteps(context.lifecycleSteps(story.getLifecycle(), storyAndScenarioMeta, Stage.AFTER));
         return exampleScenario;
     }
 
