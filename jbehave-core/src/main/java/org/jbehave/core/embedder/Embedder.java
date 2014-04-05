@@ -293,11 +293,12 @@ public class Embedder {
         for (Embeddable embeddable : embeddables(classNames, classLoader())) {
             if (embeddable instanceof ConfigurableEmbedder) {
                 ConfigurableEmbedder configurableEmbedder = (ConfigurableEmbedder) embeddable;
-                List<CandidateSteps> steps = configurableEmbedder.candidateSteps();
+				Embedder configuredEmbedder = configurableEmbedder.configuredEmbedder();
+				List<CandidateSteps> steps = configuredEmbedder.candidateSteps();
                 if (steps.isEmpty()) {
-                    steps = configurableEmbedder.stepsFactory().createCandidateSteps();
+                    steps = configuredEmbedder.stepsFactory().createCandidateSteps();
                 }
-                reportStepdocs(configurableEmbedder.configuration(), steps);
+                reportStepdocs(configuredEmbedder.configuration(), steps);
             } else {
                 embedderMonitor.embeddableNotConfigurable(embeddable.getClass().getName());
             }
@@ -474,7 +475,7 @@ public class Embedder {
     }
 
     public void useStepsFactory(InjectableStepsFactory stepsFactory) {
-        this.stepsFactory = stepsFactory;
+		this.stepsFactory = stepsFactory;
     }
 
     public void useEmbedderControls(EmbedderControls embedderControls) {
