@@ -146,12 +146,12 @@ public class StepsBehaviour {
         assertThat(beforeAfterScenario.size(), equalTo(4));
 
         beforeAfterScenario.get(0).createStep().perform(null);
-        assertThat(steps.beforeScenario, is(true));
+        assertThat(steps.beforeNormalScenario, is(true));
 
         Meta storyAndScenarioMeta = null;
         // uponOutcome=ANY
         beforeAfterScenario.get(1).createStepUponOutcome(storyAndScenarioMeta).perform(null);
-        assertThat(steps.afterAnyScenario, is(true));
+        assertThat(steps.afterNormalScenario, is(true));
 
         // uponOutcome=SUCCESS
         beforeAfterScenario.get(2).createStepUponOutcome(storyAndScenarioMeta).doNotPerform(null);
@@ -170,12 +170,12 @@ public class StepsBehaviour {
         assertThat(beforeAfterScenario.size(), equalTo(4));
         
         beforeAfterScenario.get(0).createStep().perform(null);
-        assertThat(steps.beforeScenario, is(true));
+        assertThat(steps.beforeNormalScenario, is(true));
 
         Meta storyAndScenarioMeta = null;
         // uponOutcome=ANY
         beforeAfterScenario.get(1).createStepUponOutcome(storyAndScenarioMeta).perform(null);
-        assertThat(steps.afterAnyScenario, is(true));
+        assertThat(steps.afterNormalScenario, is(true));
         
         // uponOutcome=SUCCESS
         beforeAfterScenario.get(2).createStepUponOutcome(storyAndScenarioMeta).perform(null);
@@ -195,13 +195,13 @@ public class StepsBehaviour {
 		assertThat(beforeAfterScenario.size(), equalTo(4));
 		
     	beforeAfterScenario.get(0).createStep().doNotPerform(null);
-    	assertThat(steps.beforeScenario, is(true));
+    	assertThat(steps.beforeNormalScenario, is(true));
 
         Meta storyAndScenarioMeta = null;
         UUIDExceptionWrapper failure = new UUIDExceptionWrapper();
         // uponOutcome=ANY
         beforeAfterScenario.get(1).createStepUponOutcome(storyAndScenarioMeta).doNotPerform(failure);
-    	assertThat(steps.afterAnyScenario, is(true));
+    	assertThat(steps.afterNormalScenario, is(true));
     	
     	// uponOutcome=SUCCESS
         beforeAfterScenario.get(2).createStepUponOutcome(storyAndScenarioMeta).doNotPerform(failure);
@@ -224,7 +224,22 @@ public class StepsBehaviour {
 
         beforeAfterScenario.get(1).createStep().perform(null);
         assertThat(steps.afterExampleScenario, is(true));
-        
+
+    }
+
+    @Test
+    public void shouldProvideStepsToBePerformedBeforeAndAfterAnyScenario() {
+        MultipleAliasesSteps steps = new MultipleAliasesSteps();
+        ScenarioType scenarioType = ScenarioType.ANY;
+        List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterScenario(scenarioType);
+        assertThat(beforeAfterScenario.size(), equalTo(2));
+
+        beforeAfterScenario.get(0).createStep().perform(null);
+        assertThat(steps.beforeAnyScenario, is(true));
+
+        beforeAfterScenario.get(1).createStep().perform(null);
+        assertThat(steps.afterAnyScenario, is(true));
+
     }
 
     @Test
@@ -301,12 +316,14 @@ public class StepsBehaviour {
         private int whens;
         private int thens;
         
-        private boolean beforeScenario;
-        private boolean afterAnyScenario;
+        private boolean beforeNormalScenario;
+        private boolean afterNormalScenario;
         private boolean afterSuccessfulScenario;
         private boolean afterFailedScenario;
         private boolean beforeExampleScenario;
         private boolean afterExampleScenario;
+        private boolean beforeAnyScenario;
+        private boolean afterAnyScenario;
         private boolean beforeStory;
         private boolean afterStory;
         private boolean beforeGivenStory;
@@ -363,8 +380,8 @@ public class StepsBehaviour {
         }        
         
         @org.jbehave.core.annotations.BeforeScenario
-        public void beforeAnyScenarios() {
-        	beforeScenario = true;
+        public void beforeNormalScenarios() {
+        	beforeNormalScenario = true;
         }
 
         @org.jbehave.core.annotations.BeforeScenario(uponType=ScenarioType.EXAMPLE)
@@ -372,16 +389,26 @@ public class StepsBehaviour {
             beforeExampleScenario = true;
         }
 
+        @org.jbehave.core.annotations.BeforeScenario(uponType=ScenarioType.ANY)
+        public void beforeAnyScenarios() {
+            beforeAnyScenario = true;
+        }
+
         @org.jbehave.core.annotations.AfterScenario
-        public void afterAnyScenarios() {
-        	afterAnyScenario = true;
+        public void afterNormalScenarios() {
+        	afterNormalScenario = true;
         }
 
         @org.jbehave.core.annotations.AfterScenario(uponType=ScenarioType.EXAMPLE)
         public void afterExampleScenarios() {
             afterExampleScenario = true;
         }
-        
+
+        @org.jbehave.core.annotations.AfterScenario(uponType=ScenarioType.ANY)
+        public void afterAnyScenarios() {
+            afterAnyScenario = true;
+        }
+
         @org.jbehave.core.annotations.AfterScenario(uponOutcome=AfterScenario.Outcome.SUCCESS)
         public void afterSuccessfulScenarios() {
         	afterSuccessfulScenario = true;

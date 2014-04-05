@@ -691,8 +691,9 @@ public class StoryRunnerBehaviour {
     @Test
     public void shouldRunScenarioAndLifecycleStepsInCorrectOrderWithExamplesTable() throws Throwable{
         // Given
-        ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n");
-        Map<String, String> tableRow = examplesTable.getRow(0);
+        ExamplesTable examplesTable = new ExamplesTable("|one|two|\n|1|2|\n|3|4|\n");
+        Map<String, String> tableRow1 = examplesTable.getRow(0);
+        Map<String, String> tableRow2 = examplesTable.getRow(1);
         Scenario scenario1 = new Scenario("my title 1", Meta.EMPTY, GivenStories.EMPTY, examplesTable, asList("step <one>",
                 "step <two>"));
         Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1));
@@ -704,20 +705,18 @@ public class StoryRunnerBehaviour {
         CandidateSteps mySteps = new Steps(configuration);
         Step firstStep = mockSuccessfulStep("step <one>");
         Step secondStep = mockSuccessfulStep("step <two>");
-        when(collector.collectScenarioSteps(asList(mySteps), scenario1,tableRow)).thenReturn(
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1,tableRow1)).thenReturn(
+                asList(firstStep, secondStep));
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1,tableRow2)).thenReturn(
                 asList(firstStep, secondStep));
         boolean givenStory = false;
         givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
 
-        Step beforeExampleStep = mockSuccessfulStep("beforeExampleStep");
-        Step afterExampleStep = mockSuccessfulStep("afterExampleStep");
-        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.BEFORE), eq(ScenarioType.EXAMPLE))).thenReturn(asList(beforeExampleStep));
-        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(Stage.AFTER), eq(ScenarioType.EXAMPLE))).thenReturn(asList(afterExampleStep));
+        givenBeforeAndAfterScenarioSteps(ScenarioType.NORMAL, collector, mySteps);
+        givenBeforeAndAfterScenarioSteps(ScenarioType.ANY, collector, mySteps);
+        givenBeforeAndAfterScenarioSteps(ScenarioType.EXAMPLE, collector, mySteps);
 
-        Step beforeStep = mockSuccessfulStep("lifecycleBeforeStep");
-        Step afterStep = mockSuccessfulStep("lifecycleAfterStep");
-        when(collector.collectLifecycleSteps(eq(asList(mySteps)), eq(Lifecycle.EMPTY), any(Meta.class), eq(Stage.BEFORE))).thenReturn(asList(beforeStep));
-        when(collector.collectLifecycleSteps(eq(asList(mySteps)), eq(Lifecycle.EMPTY), any(Meta.class), eq(Stage.AFTER))).thenReturn(asList(afterStep));
+        givenLifecycleSteps(collector, mySteps);
 
         // When
         StoryRunner runner = new StoryRunner();
@@ -725,15 +724,67 @@ public class StoryRunnerBehaviour {
 
         // Then
         InOrder inOrder = inOrder(reporter, failureStrategy);
-        inOrder.verify(reporter).successful("beforeExampleStep");
-        inOrder.verify(reporter).successful("lifecycleBeforeStep");
+        inOrder.verify(reporter).successful(stepNameFor(Stage.BEFORE, ScenarioType.NORMAL));
+
+        inOrder.verify(reporter).successful(stepNameFor(Stage.BEFORE, ScenarioType.EXAMPLE));
+        inOrder.verify(reporter).successful(stepNameFor(Stage.BEFORE, ScenarioType.ANY));
+        inOrder.verify(reporter).successful(lifecycleStepNameFor(Stage.BEFORE));
         inOrder.verify(reporter).successful("step <one>");
         inOrder.verify(reporter).successful("step <two>");
-        inOrder.verify(reporter).successful("lifecycleAfterStep");
-        inOrder.verify(reporter).successful("afterExampleStep");
+        inOrder.verify(reporter).successful(lifecycleStepNameFor(Stage.AFTER));
+        inOrder.verify(reporter).successful(stepNameFor(Stage.AFTER, ScenarioType.ANY));
+        inOrder.verify(reporter).successful(stepNameFor(Stage.AFTER, ScenarioType.EXAMPLE));
+
+        inOrder.verify(reporter).successful(stepNameFor(Stage.BEFORE, ScenarioType.EXAMPLE));
+        inOrder.verify(reporter).successful(stepNameFor(Stage.BEFORE, ScenarioType.ANY));
+        inOrder.verify(reporter).successful(lifecycleStepNameFor(Stage.BEFORE));
+        inOrder.verify(reporter).successful("step <one>");
+        inOrder.verify(reporter).successful("step <two>");
+        inOrder.verify(reporter).successful(lifecycleStepNameFor(Stage.AFTER));
+        inOrder.verify(reporter).successful(stepNameFor(Stage.AFTER, ScenarioType.ANY));
+        inOrder.verify(reporter).successful(stepNameFor(Stage.AFTER, ScenarioType.EXAMPLE));
+
+        inOrder.verify(reporter).successful(stepNameFor(Stage.AFTER, ScenarioType.NORMAL));
 
     }
 
+    @Test
+    public void shouldRunAfterAndBeforeScenarioSteps() throws Throwable{
+        // Given
+        Scenario scenario1 = new Scenario("my title 1", Meta.EMPTY, GivenStories.EMPTY, ExamplesTable.EMPTY, asList("step"));
+        Story story = new Story(new Description("my blurb"), Narrative.EMPTY, asList(scenario1));
+        StoryReporter reporter = mock(ConcurrentStoryReporter.class);
+        StepCollector collector = mock(StepCollector.class);
+        FailureStrategy failureStrategy = mock(FailureStrategy.class);
+        Configuration configuration = configurationWith(reporter, collector, failureStrategy);
+        configuration.storyControls().doDryRun(true);
+        CandidateSteps mySteps = new Steps(configuration);
+        Step firstStep = mockSuccessfulStep("step");
+        when(collector.collectScenarioSteps(asList(mySteps), scenario1, new HashMap<String, String>())).thenReturn(
+                asList(firstStep));
+        boolean givenStory = false;
+        givenStoryWithNoBeforeOrAfterSteps(story, givenStory, collector, mySteps);
+
+        givenBeforeAndAfterScenarioSteps(ScenarioType.NORMAL, collector, mySteps);
+        givenBeforeAndAfterScenarioSteps(ScenarioType.ANY, collector, mySteps);
+
+        givenLifecycleSteps(collector, mySteps);
+
+        // When
+        StoryRunner runner = new StoryRunner();
+        runner.run(configuration, asList(mySteps), story);
+
+        // Then
+        InOrder inOrder = inOrder(reporter, failureStrategy);
+        inOrder.verify(reporter).successful(stepNameFor(Stage.BEFORE, ScenarioType.NORMAL));
+        inOrder.verify(reporter).successful(stepNameFor(Stage.BEFORE, ScenarioType.ANY));
+        inOrder.verify(reporter).successful(lifecycleStepNameFor(Stage.BEFORE));
+        inOrder.verify(reporter).successful("step");
+        inOrder.verify(reporter).successful(lifecycleStepNameFor(Stage.AFTER));
+        inOrder.verify(reporter).successful(stepNameFor(Stage.AFTER, ScenarioType.ANY));
+        inOrder.verify(reporter).successful(stepNameFor(Stage.AFTER, ScenarioType.NORMAL));
+
+    }
 
     @Test
     public void shouldRunStepsInDryRunMode() throws Throwable {
@@ -904,6 +955,35 @@ public class StoryRunnerBehaviour {
         List<Step> steps = asList();
         when(collector.collectBeforeOrAfterStorySteps(asList(mySteps), story, Stage.BEFORE, givenStory)).thenReturn(steps);
         when(collector.collectBeforeOrAfterStorySteps(asList(mySteps), story, Stage.AFTER, givenStory)).thenReturn(steps);
+    }
+
+
+    private void givenLifecycleSteps(StepCollector collector, CandidateSteps mySteps) {
+        givenLifecycleStep(Stage.BEFORE, collector, mySteps);
+        givenLifecycleStep(Stage.AFTER, collector, mySteps);
+    }
+
+    private void givenLifecycleStep(Stage stage, StepCollector collector, CandidateSteps mySteps) {
+        Step beforeStep = mockSuccessfulStep(lifecycleStepNameFor(stage));
+        when(collector.collectLifecycleSteps(eq(asList(mySteps)), eq(Lifecycle.EMPTY), any(Meta.class), eq(stage))).thenReturn(asList(beforeStep));
+    }
+
+    private String lifecycleStepNameFor(Stage stage) {
+        return String.format("Lifecycle %s Step", stage);
+    }
+
+    private void givenBeforeAndAfterScenarioSteps(ScenarioType scenarioType, StepCollector collector, CandidateSteps mySteps) {
+        givenBeforeOrAfterScenarioStep(Stage.BEFORE, scenarioType, collector, mySteps);
+        givenBeforeOrAfterScenarioStep(Stage.AFTER, scenarioType, collector, mySteps);
+    }
+
+    private void givenBeforeOrAfterScenarioStep(Stage stage, ScenarioType scenarioType, StepCollector collector, CandidateSteps mySteps) {
+        Step step = mockSuccessfulStep(stepNameFor(stage, scenarioType));
+        when(collector.collectBeforeOrAfterScenarioSteps(eq(asList(mySteps)), Matchers.<Meta>any(), eq(stage), eq(scenarioType))).thenReturn(asList(step));
+    }
+
+    private String stepNameFor(Stage stage, ScenarioType scenarioType) {
+        return String.format("%s %s Step", stage, scenarioType);
     }
 
     private Configuration configurationWithPendingStrategy(StepCollector collector, StoryReporter reporter,
