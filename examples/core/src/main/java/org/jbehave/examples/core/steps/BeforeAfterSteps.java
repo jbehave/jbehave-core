@@ -13,7 +13,7 @@ import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.annotations.Then;
 
 /**
- * Steps executed before and after stories/story/scenario
+ * Steps executed before and after stories/story/scenario depending on type and outcome
  */
 public class BeforeAfterSteps {
 
@@ -58,9 +58,9 @@ public class BeforeAfterSteps {
     @BeforeScenario
     public void beforeScenario(@Named("theme") String theme) {
         if (theme.length() > 0) {
-            System.out.println("Before scenario with theme: " + theme);
+            System.out.println("Before Normal Scenario with theme: " + theme);
         } else {
-            System.out.println("Before Scenario ...");
+            System.out.println("Before Normal Scenario ...");
         }
     }
 
@@ -69,32 +69,42 @@ public class BeforeAfterSteps {
         System.out.println("Before Example Scenario ...");
     }
 
-    @AfterScenario
+    @BeforeScenario(uponType = ScenarioType.ANY)
+    public void beforeAnyScenario() {
+        System.out.println("Before Any Scenario ...");
+    }
+
+    @AfterScenario(uponType = ScenarioType.NORMAL)
     public void afterScenario(@Named("variant") String variant, @Named("theme") String theme) {
         if (variant.length() > 0 && theme.length() > 0) {
-            System.out.println("After scenario with variant '" + variant + "' and theme '" + theme + "'.");
+            System.out.println("After Normal Scenario with variant '" + variant + "' and theme '" + theme + "'.");
         } else {
-            System.out.println("After Any Scenario ...");
+            System.out.println("After Normal Scenario with any outcome ...");
         }
     }
 
-    @AfterScenario(uponOutcome = Outcome.FAILURE)
+    @AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome = Outcome.FAILURE)
     public void afterFailedScenario(@Named("theme") String theme) {
         if ("parametrisation".equals(theme)) {
-            System.out.println("Wow, something failed in a scenario with theme 'parametrisation'.");
+            System.out.println("After Normal Scenario with failed outcome with theme 'parametrisation'.");
         } else {
-            System.out.println("After Failed Scenario ...");
+            System.out.println("After Normal Scenario with failed outcome ...");
         }
     }
 
-    @AfterScenario(uponOutcome = Outcome.SUCCESS)
+    @AfterScenario(uponType = ScenarioType.NORMAL, uponOutcome = Outcome.SUCCESS)
     public void afterSuccessfulScenario() {
-        System.out.println("After Successful Scenario ...");
+        System.out.println("After Normal Scenario with successful outcome ...");
     }
-
+    
     @AfterScenario(uponType = ScenarioType.EXAMPLE)
     public void afterExampleScenario() {
         System.out.println("After Example Scenario ...");
+    }
+    
+    @AfterScenario(uponType = ScenarioType.ANY)
+    public void afterAnyScenario() {
+        System.out.println("After Any Scenario ...");
     }
     
     @Given("a setup")

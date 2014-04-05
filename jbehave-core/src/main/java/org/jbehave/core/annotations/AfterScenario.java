@@ -23,7 +23,7 @@ public @interface AfterScenario {
 	Outcome uponOutcome() default ANY;
 
     /**
-     * Signals that the annoated method should be invoked only upon given type
+     * Signals that the annotated method should be invoked only upon given type
      * 
      * @return A ScenarioType upon which the method should be invoked
      */

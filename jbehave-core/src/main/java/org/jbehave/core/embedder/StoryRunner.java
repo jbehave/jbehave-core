@@ -438,11 +438,13 @@ public class StoryRunner {
     }
 
     private void runStepsWithLifecycle(RunContext context, Lifecycle lifecycle, Map<String, String> parameters, Scenario scenario, Meta storyAndScenarioMeta) throws Throwable {
+        runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE, ScenarioType.ANY);
         runLifecycleSteps(context, lifecycle, Stage.BEFORE, storyAndScenarioMeta);
         addMetaParameters(parameters, storyAndScenarioMeta);
         runGivenStories(scenario.getGivenStories(), parameters, context);
         runScenarioSteps(context, scenario, parameters);
         runLifecycleSteps(context, lifecycle, Stage.AFTER, storyAndScenarioMeta);
+        runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER, ScenarioType.ANY);
     }
 
     private Meta parameterMeta(Keywords keywords,
