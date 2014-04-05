@@ -128,19 +128,85 @@ I want to get a loan</localizedNarrative>
           </scenario>
           <storyPath>/path/to/story</storyPath>
           <allowed>false</allowed>
-          <exampleScenarios/>
-          <givenStories/>
-          <beforeSteps/>
-          <steps>
-            <matches>
-              <stepMatch>
-                <type>GIVEN</type>
-                <annotatedPattern>(def)</annotatedPattern>
-                <resolvedPattern>[abc]</resolvedPattern>
-              </stepMatch>
-            </matches>
-          </steps>
-          <afterSteps/>
+          <normalPerformableScenario>
+            <parameters/>
+            <givenStories/>
+            <beforeSteps/>
+            <steps>
+              <matches>
+                <stepMatch>
+                  <type>GIVEN</type>
+                  <annotatedPattern>(def)</annotatedPattern>
+                  <resolvedPattern>[abc]</resolvedPattern>
+                </stepMatch>
+              </matches>
+            </steps>
+            <afterSteps/>
+            <scenario>
+              <title></title>
+              <meta>
+                <properties/>
+              </meta>
+              <givenStories>
+                <givenStories/>
+                <givenStoriesAsString></givenStoriesAsString>
+                <examplesTable>
+                  <tableAsString></tableAsString>
+                  <headerSeparator>|</headerSeparator>
+                  <valueSeparator>|</valueSeparator>
+                  <ignorableSeparator>|--</ignorableSeparator>
+                  <tableTransformers>
+                    <transformers>
+                      <entry>
+                        <string>FROM_LANDSCAPE</string>
+                        <fromLandscape/>
+                      </entry>
+                    </transformers>
+                  </tableTransformers>
+                  <headers/>
+                  <data/>
+                  <properties>
+                    <property name="headerSeparator" value="|"/>
+                    <property name="valueSeparator" value="|"/>
+                    <property name="ignorableSeparator" value="|--"/>
+                  </properties>
+                  <propertiesAsString></propertiesAsString>
+                  <namedParameters/>
+                  <trim>true</trim>
+                </examplesTable>
+              </givenStories>
+              <examplesTable>
+                <tableAsString></tableAsString>
+                <headerSeparator>|</headerSeparator>
+                <valueSeparator>|</valueSeparator>
+                <ignorableSeparator>|--</ignorableSeparator>
+                <tableTransformers>
+                  <transformers>
+                    <entry>
+                      <string>FROM_LANDSCAPE</string>
+                      <fromLandscape/>
+                    </entry>
+                  </transformers>
+                </tableTransformers>
+                <headers/>
+                <data/>
+                <properties>
+                  <property name="headerSeparator" value="|"/>
+                  <property name="valueSeparator" value="|"/>
+                  <property name="ignorableSeparator" value="|--"/>
+                </properties>
+                <propertiesAsString></propertiesAsString>
+                <namedParameters/>
+                <trim>true</trim>
+              </examplesTable>
+              <steps class="java.util.Arrays$ArrayList">
+                <a class="string-array">
+                  <string></string>
+                </a>
+              </steps>
+            </scenario>
+          </normalPerformableScenario>
+          <examplePerformableScenarios/>
         </performableScenario>
       </scenarios>
       <beforeSteps/>
@@ -218,19 +284,85 @@ I want to get a loan</localizedNarrative>
       </scenario>
       <storyPath>/path/to/story</storyPath>
       <allowed>false</allowed>
-      <exampleScenarios/>
-      <givenStories/>
-      <beforeSteps/>
-      <steps>
-        <matches>
-          <stepMatch>
-            <type>GIVEN</type>
-            <annotatedPattern>(def)</annotatedPattern>
-            <resolvedPattern>[abc]</resolvedPattern>
-          </stepMatch>
-        </matches>
-      </steps>
-      <afterSteps/>
+      <normalPerformableScenario>
+        <parameters/>
+        <givenStories/>
+        <beforeSteps/>
+        <steps>
+          <matches>
+            <stepMatch>
+              <type>GIVEN</type>
+              <annotatedPattern>(def)</annotatedPattern>
+              <resolvedPattern>[abc]</resolvedPattern>
+            </stepMatch>
+          </matches>
+        </steps>
+        <afterSteps/>
+        <scenario>
+          <title></title>
+          <meta>
+            <properties/>
+          </meta>
+          <givenStories>
+            <givenStories/>
+            <givenStoriesAsString></givenStoriesAsString>
+            <examplesTable>
+              <tableAsString></tableAsString>
+              <headerSeparator>|</headerSeparator>
+              <valueSeparator>|</valueSeparator>
+              <ignorableSeparator>|--</ignorableSeparator>
+              <tableTransformers>
+                <transformers>
+                  <entry>
+                    <string>FROM_LANDSCAPE</string>
+                    <fromLandscape/>
+                  </entry>
+                </transformers>
+              </tableTransformers>
+              <headers/>
+              <data/>
+              <properties>
+                <property name="headerSeparator" value="|"/>
+                <property name="valueSeparator" value="|"/>
+                <property name="ignorableSeparator" value="|--"/>
+              </properties>
+              <propertiesAsString></propertiesAsString>
+              <namedParameters/>
+              <trim>true</trim>
+            </examplesTable>
+          </givenStories>
+          <examplesTable>
+            <tableAsString></tableAsString>
+            <headerSeparator>|</headerSeparator>
+            <valueSeparator>|</valueSeparator>
+            <ignorableSeparator>|--</ignorableSeparator>
+            <tableTransformers>
+              <transformers>
+                <entry>
+                  <string>FROM_LANDSCAPE</string>
+                  <fromLandscape/>
+                </entry>
+              </transformers>
+            </tableTransformers>
+            <headers/>
+            <data/>
+            <properties>
+              <property name="headerSeparator" value="|"/>
+              <property name="valueSeparator" value="|"/>
+              <property name="ignorableSeparator" value="|--"/>
+            </properties>
+            <propertiesAsString></propertiesAsString>
+            <namedParameters/>
+            <trim>true</trim>
+          </examplesTable>
+          <steps class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string></string>
+            </a>
+          </steps>
+        </scenario>
+      </normalPerformableScenario>
+      <examplePerformableScenarios/>
     </performableScenario>
   </scenarios>
 </xref>

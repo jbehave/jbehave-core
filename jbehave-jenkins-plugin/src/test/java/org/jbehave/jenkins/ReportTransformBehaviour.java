@@ -126,6 +126,7 @@ public class ReportTransformBehaviour {
     }
 
     @Test
+    @Ignore("Filtered stories not run anymore")
     public void transformFilterScenarioReport() throws FileNotFoundException, Throwable {
         runStories("filter_scenario.story");
         Document document = tranformReport("filter_scenario.xml");

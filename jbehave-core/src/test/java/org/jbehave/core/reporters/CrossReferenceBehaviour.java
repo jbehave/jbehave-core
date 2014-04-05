@@ -1,5 +1,7 @@
 package org.jbehave.core.reporters;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -10,6 +12,7 @@ import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
+import org.jbehave.core.embedder.PerformableTree.NormalPerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableSteps;
@@ -24,7 +27,6 @@ import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepType;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
 
 public class CrossReferenceBehaviour {
 
@@ -64,7 +66,9 @@ public class CrossReferenceBehaviour {
         performableStory.add(performableScenario);
         List<StepMatch> stepMatches = new ArrayList<StepMatch>();
         stepMatches.add(new StepMatch(new StepPattern(StepType.GIVEN, "(def)", "[abc]")));
-        performableScenario.addSteps(new PerformableSteps(null, stepMatches));
+        NormalPerformableScenario normalScenario = new NormalPerformableScenario(scenario);
+        normalScenario.addSteps(new PerformableSteps(null, stepMatches));
+        performableScenario.useNormalScenario(normalScenario);
         return root;
     }   
 
