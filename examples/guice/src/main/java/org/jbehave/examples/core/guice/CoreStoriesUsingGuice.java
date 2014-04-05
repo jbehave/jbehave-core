@@ -14,7 +14,7 @@ import com.google.inject.Injector;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
- * Run core stories using GuiceStepsFactory. The textual trader stories are
+ * Run core stories using GuiceStepsFactory. The textual core stories are
  * exactly the same ones found in the core example. Here we are only
  * concerned with using the container to compose the steps instances.
  */

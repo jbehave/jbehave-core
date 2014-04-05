@@ -24,8 +24,8 @@ import org.junit.runner.RunWith;
 
 /**
  * Run stories via annotated embedder configuration and steps using Spring. The
- * textual trader stories are exactly the same ones found in the
- * jbehave-trader-example. Here we are only concerned with using the container
+ * textual core stories are exactly the same ones found in the
+ * jbehave-core-example. Here we are only concerned with using the container
  * to compose the configuration and the steps instances.
  */
 @RunWith(SpringAnnotatedEmbedderRunner.class)
@@ -33,7 +33,7 @@ import org.junit.runner.RunWith;
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 @UsingSteps(instances = { TraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
-@UsingSpring(resources = { "org/jbehave/examples/trader/spring/configuration.xml" })
+@UsingSpring(resources = { "org/jbehave/examples/core/spring/configuration.xml" })
 public class AnnotatedEmbedderUsingSpringAndSteps extends InjectableEmbedder {
 
     @Test

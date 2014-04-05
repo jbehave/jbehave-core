@@ -16,6 +16,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.context.Context;
 import org.jbehave.core.context.ContextView;
 import org.jbehave.core.context.JFrameContextView;
+import org.jbehave.core.embedder.PropertyBasedEmbedderControls;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -71,12 +72,15 @@ public class CoreStories extends JUnitStories {
     public CoreStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
                 .doIgnoreFailureInView(true).doVerboseFailures(true).useThreads(2).useStoryTimeoutInSecs(60);
-        // configuredEmbedder().useEmbedderControls(new
-        // PropertyBasedEmbedderControls());
+        configuredEmbedder().useEmbedderControls(new PropertyBasedEmbedderControls());
     }
 
-    @Override
-    public Configuration configuration() {
+	public Configuration configuration() {
+		// avoid re-instantiating configuration for the steps factory
+		// alternative use #useConfiguration() in the constructor
+		if ( super.hasConfiguration() ){
+			return super.configuration();
+		}
         Class<? extends Embeddable> embeddableClass = this.getClass();
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
@@ -103,7 +107,7 @@ public class CoreStories extends JUnitStories {
                 // use '%' instead of '$' to identify parameters
                 .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"))
                 .useStepMonitor(contextStepMonitor);
-    }
+	}
 
     @Override
     public InjectableStepsFactory stepsFactory() {

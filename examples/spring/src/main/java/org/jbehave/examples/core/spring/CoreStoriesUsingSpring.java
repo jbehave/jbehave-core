@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
- * Run core stories using SpringStepsFactory. The textual trader stories are
+ * Run core stories using SpringStepsFactory. The textual core stories are
  * exactly the same ones found in the core example. Here we are only
  * concerned with using the container to compose the steps instances.
  */
@@ -24,7 +24,7 @@ public class CoreStoriesUsingSpring extends CoreStories {
     }
 
     protected ApplicationContext createContext() {
-        return new SpringApplicationContextFactory("org/jbehave/examples/trader/spring/steps.xml")
+        return new SpringApplicationContextFactory("org/jbehave/examples/core/spring/steps.xml")
                 .createApplicationContext();
     }
 

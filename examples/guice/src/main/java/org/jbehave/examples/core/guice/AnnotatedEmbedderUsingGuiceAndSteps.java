@@ -25,8 +25,8 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
  * Run stories via annotated embedder configuration and steps using Guice. The
- * textual trader stories are exactly the same ones found in the
- * jbehave-trader-example. Here we are only concerned with using the container
+ * textual core stories are exactly the same ones found in the
+ * jbehave-core-example. Here we are only concerned with using the container
  * to compose the configuration and the steps instances.
  */
 @RunWith(GuiceAnnotatedEmbedderRunner.class)
