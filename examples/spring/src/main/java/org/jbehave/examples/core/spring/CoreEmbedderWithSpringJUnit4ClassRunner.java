@@ -23,7 +23,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
  * any testing framework.  Similary, we could extend a JUnit 3 test class.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/org/jbehave/examples/trader/spring/steps.xml" })
+@ContextConfiguration(locations = { "/org/jbehave/examples/core/spring/steps.xml" })
 public class CoreEmbedderWithSpringJUnit4ClassRunner {
 
     @Autowired
