@@ -19,6 +19,7 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStory;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.TableTransformers.Formatting;
 import org.jbehave.core.model.TableTransformers.FromLandscape;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
@@ -120,6 +121,7 @@ public class CrossReference {
 		xstream.alias("silent", Silent.class);
 		xstream.alias("skipped", Skipped.class);
 		xstream.alias("fromLandscape", FromLandscape.class);
+		xstream.alias("formatting", Formatting.class);
 		xstream.alias("stepMatch", StepMatch.class);
 		xstream.omitField(ExamplesTable.class, "parameterConverters");
 		xstream.omitField(ExamplesTable.class, "tableTrasformers");
