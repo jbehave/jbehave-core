@@ -38,7 +38,7 @@ public class EnsuringOrderUsingSteps implements Embeddable {
 
     @Test
     public void run() {
-        embedder.runStoriesAsPaths(Arrays.asList("org/jbehave/examples/trader/stories/ensuring_order_using_steps.story"));
+        embedder.runStoriesAsPaths(Arrays.asList("org/jbehave/examples/core/stories/ensuring_order_using_steps.story"));
     }
 
     private static final List<String> ORDER = new LinkedList<String>();
