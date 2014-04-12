@@ -21,6 +21,8 @@ import java.util.Properties;
  * name {@link TableTransformers#FROM_LANDSCAPE}</li>
  * <li>{@link TableTransformers.Formatting Formatting}: registered under name
  * {@link TableTransformers#FORMATTING}</li>
+ * <li>{@link TableTransformers.Replacing Replacing}: registered under name
+ * {@link TableTransformers#REPLACING}</li>
  * </ul>
  * </p>
  */
@@ -28,11 +30,14 @@ public class TableTransformers {
 
 	public static final String FROM_LANDSCAPE = "FROM_LANDSCAPE";
 	public static final String FORMATTING = "FORMATTING";
+	public static final String REPLACING = "REPLACING";
+
 	private final Map<String, TableTransformer> transformers = new HashMap<String, TableTransformer>();
 
 	public TableTransformers() {
 		useTransformer(FROM_LANDSCAPE, new FromLandscape());
 		useTransformer(FORMATTING, new Formatting());
+		useTransformer(REPLACING, new Replacing());
 	}
 
 	public String transform(String transformerName, String tableAsString,
@@ -189,4 +194,15 @@ public class TableTransformers {
 
 	}
 
+	public static class Replacing implements TableTransformer {
+
+		public String transform(String tableAsString, Properties properties) {
+			String replacing = properties.getProperty("replacing");
+			String replacement = properties.getProperty("replacement");
+			if ( replacing == null || replacement == null ) {
+				return tableAsString;
+			}
+			return tableAsString.replace(replacing, replacement);
+		}
+	}
 }
