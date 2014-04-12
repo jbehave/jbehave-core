@@ -33,6 +33,10 @@
                   <fromLandscape/>
                 </entry>
                 <entry>
+                  <string>REPLACING</string>
+                  <replacing/>
+                </entry>
+                <entry>
                   <string>FORMATTING</string>
                   <formatting/>
                 </entry>
@@ -87,6 +91,10 @@ I want to get a loan</localizedNarrative>
                       <fromLandscape/>
                     </entry>
                     <entry>
+                      <string>REPLACING</string>
+                      <replacing/>
+                    </entry>
+                    <entry>
                       <string>FORMATTING</string>
                       <formatting/>
                     </entry>
@@ -114,6 +122,10 @@ I want to get a loan</localizedNarrative>
                   <entry>
                     <string>FROM_LANDSCAPE</string>
                     <fromLandscape/>
+                  </entry>
+                  <entry>
+                    <string>REPLACING</string>
+                    <replacing/>
                   </entry>
                   <entry>
                     <string>FORMATTING</string>
@@ -174,6 +186,10 @@ I want to get a loan</localizedNarrative>
                         <fromLandscape/>
                       </entry>
                       <entry>
+                        <string>REPLACING</string>
+                        <replacing/>
+                      </entry>
+                      <entry>
                         <string>FORMATTING</string>
                         <formatting/>
                       </entry>
@@ -201,6 +217,10 @@ I want to get a loan</localizedNarrative>
                     <entry>
                       <string>FROM_LANDSCAPE</string>
                       <fromLandscape/>
+                    </entry>
+                    <entry>
+                      <string>REPLACING</string>
+                      <replacing/>
                     </entry>
                     <entry>
                       <string>FORMATTING</string>
@@ -259,6 +279,10 @@ I want to get a loan</localizedNarrative>
                   <fromLandscape/>
                 </entry>
                 <entry>
+                  <string>REPLACING</string>
+                  <replacing/>
+                </entry>
+                <entry>
                   <string>FORMATTING</string>
                   <formatting/>
                 </entry>
@@ -286,6 +310,10 @@ I want to get a loan</localizedNarrative>
               <entry>
                 <string>FROM_LANDSCAPE</string>
                 <fromLandscape/>
+              </entry>
+              <entry>
+                <string>REPLACING</string>
+                <replacing/>
               </entry>
               <entry>
                 <string>FORMATTING</string>
@@ -346,6 +374,10 @@ I want to get a loan</localizedNarrative>
                     <fromLandscape/>
                   </entry>
                   <entry>
+                    <string>REPLACING</string>
+                    <replacing/>
+                  </entry>
+                  <entry>
                     <string>FORMATTING</string>
                     <formatting/>
                   </entry>
@@ -373,6 +405,10 @@ I want to get a loan</localizedNarrative>
                 <entry>
                   <string>FROM_LANDSCAPE</string>
                   <fromLandscape/>
+                </entry>
+                <entry>
+                  <string>REPLACING</string>
+                  <replacing/>
                 </entry>
                 <entry>
                   <string>FORMATTING</string>

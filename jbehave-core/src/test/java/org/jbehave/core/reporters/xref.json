@@ -39,6 +39,10 @@
                   {}
                 ],
                 [
+                  "REPLACING",
+                  {}
+                ],
+                [
                   "FORMATTING",
                   {}
                 ]
@@ -100,6 +104,10 @@
                       {}
                     ],
                     [
+                      "REPLACING",
+                      {}
+                    ],
+                    [
                       "FORMATTING",
                       {}
                     ]
@@ -135,6 +143,10 @@
                 "transformers": [
                   [
                     "FROM_LANDSCAPE",
+                    {}
+                  ],
+                  [
+                    "REPLACING",
                     {}
                   ],
                   [
@@ -205,6 +217,10 @@
                         {}
                       ],
                       [
+                        "REPLACING",
+                        {}
+                      ],
+                      [
                         "FORMATTING",
                         {}
                       ]
@@ -240,6 +256,10 @@
                   "transformers": [
                     [
                       "FROM_LANDSCAPE",
+                      {}
+                    ],
+                    [
+                      "REPLACING",
                       {}
                     ],
                     [
@@ -308,6 +328,10 @@
                   {}
                 ],
                 [
+                  "REPLACING",
+                  {}
+                ],
+                [
                   "FORMATTING",
                   {}
                 ]
@@ -343,6 +367,10 @@
             "transformers": [
               [
                 "FROM_LANDSCAPE",
+                {}
+              ],
+              [
+                "REPLACING",
                 {}
               ],
               [
@@ -413,6 +441,10 @@
                     {}
                   ],
                   [
+                    "REPLACING",
+                    {}
+                  ],
+                  [
                     "FORMATTING",
                     {}
                   ]
@@ -448,6 +480,10 @@
               "transformers": [
                 [
                   "FROM_LANDSCAPE",
+                  {}
+                ],
+                [
+                  "REPLACING",
                   {}
                 ],
                 [
