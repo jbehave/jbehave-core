@@ -43,6 +43,23 @@ public class TableTransformersBehaviour {
     }
 
     @Test
+    public void shouldTransformTableByReplacement() {
+        TableTransformers tableTransformers = new TableTransformers();
+        Properties properties = new Properties();
+        properties.setProperty("replacing", "|");
+        properties.setProperty("replacement", "\t");
+		String transformed = tableTransformers.transform(TableTransformers.REPLACING, tableAsString, properties);
+        assertThat(transformed, equalTo(tableAsString.replace("|", "\t")));
+    }
+
+    @Test
+    public void shouldTransformNotTableByReplacementIfPropertiesNotFound() {
+        TableTransformers tableTransformers = new TableTransformers();
+        String transformed = tableTransformers.transform(TableTransformers.REPLACING, tableAsString, new Properties());
+        assertThat(transformed, equalTo(tableAsString));
+    }
+
+    @Test
     public void shouldTransformTableWithCustomTransformer() {
         TableTransformers tableTransformers = new TableTransformers();
         tableTransformers.useTransformer("myTransformer", new TableTransformer(){
