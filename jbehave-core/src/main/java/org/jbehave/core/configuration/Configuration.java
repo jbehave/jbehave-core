@@ -193,7 +193,7 @@ public abstract class Configuration {
 
     public StoryParser storyParser() {
 		if (storyParser == null) {
-			storyParser = new RegexStoryParser(this);
+			storyParser = new RegexStoryParser();
 		}
 		return storyParser;
 	}
@@ -251,7 +251,7 @@ public abstract class Configuration {
     }
 
     public StoryReporter storyReporter(String storyPath) {
-        return storyReporterBuilder.build(storyPath);
+        return storyReporterBuilder().build(storyPath);
     }
 
     public StoryReporterBuilder storyReporterBuilder() {
