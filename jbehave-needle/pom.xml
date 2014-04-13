@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.jbehave</groupId>
 		<artifactId>jbehave</artifactId>
-		<version>4.0-SNAPSHOT</version>
+		<version>4.0-beta-6</version>
 	</parent>
 	<artifactId>jbehave-needle</artifactId>
 	<name>JBehave Needle</name>
