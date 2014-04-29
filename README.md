@@ -43,6 +43,7 @@ Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS
 
 Maven is supported in Intellij IDEA out-of-the-box
 Maven is supported in Eclipse via [m2e plugin](http://eclipse.org/m2e), included out-of-the-box in some Eclipse distributions.
+Eclipse users may also want to load the ides/eclipse/lifecycle-mapping-metadata.xml or ignore the m2e lifecycle mappings manually.
 
 ### Building
 
