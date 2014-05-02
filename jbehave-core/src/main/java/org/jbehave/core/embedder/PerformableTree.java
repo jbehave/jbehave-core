@@ -715,6 +715,7 @@ public class PerformableTree {
             State state = context.state();
             Timer timer = new Timer().start();
             try {
+            	performGivenStories(context);
                 performScenarios(context);
             } finally {
                 timing.setDurationInMillis(timer.stop());
@@ -723,6 +724,16 @@ public class PerformableTree {
             this.status = context.status(state);
         }
 
+		private void performGivenStories(RunContext context) throws InterruptedException {
+			if (givenStories.size() > 0) {
+				context.reporter().givenStories(story.getGivenStories());
+				for (PerformableStory story : givenStories) {
+					context.givenStory = story.givenStory();
+					story.perform(context);
+				}
+			}
+		}
+		
         private void performScenarios(RunContext context) throws InterruptedException {
             beforeSteps.perform(context);
             for (PerformableScenario scenario : scenarios) {
@@ -852,13 +863,13 @@ public class PerformableTree {
                 context.resetState();
             }
             beforeSteps.perform(context);
-            if (scenario.getGivenStories().getPaths().size() > 0) {
-                context.reporter().givenStories(scenario.getGivenStories());
-                for (PerformableStory story : givenStories) {
-                    context.givenStory = story.givenStory();
-                    story.perform(context);
-                }
-            }
+			if (givenStories.size() > 0) {
+				context.reporter().givenStories(scenario.getGivenStories());
+				for (PerformableStory story : givenStories) {
+					context.givenStory = story.givenStory();
+					story.perform(context);
+				}
+			}
             steps.perform(context);
             afterSteps.perform(context);
         }
@@ -881,6 +892,7 @@ public class PerformableTree {
             context.reporter().example(parameters);
             beforeSteps.perform(context);
             for (PerformableStory story : givenStories) {
+				context.givenStory = story.givenStory();
                 story.perform(context);
             }
             steps.perform(context);
