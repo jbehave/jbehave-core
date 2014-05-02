@@ -1,5 +1,9 @@
 package org.jbehave.core.parsers;
 
+import static java.util.regex.Pattern.DOTALL;
+import static java.util.regex.Pattern.compile;
+import static org.apache.commons.lang.StringUtils.removeStart;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -15,14 +20,11 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Lifecycle.Steps;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-
-import static java.util.regex.Pattern.DOTALL;
-import static java.util.regex.Pattern.compile;
-import static org.apache.commons.lang.StringUtils.removeStart;
 
 /**
  * Pattern-based story parser, which uses the keywords provided to parse the
@@ -146,28 +148,63 @@ public class RegexStoryParser implements StoryParser {
         }
         Matcher findingLifecycle = patternToPullLifecycleIntoGroupOne().matcher(beforeScenario);
         String lifecycle = findingLifecycle.find() ? findingLifecycle.group(1).trim() : NONE;
-        Matcher findingBeforeAndAfter = compile(".*" + keywords.before() + "(.*)\\s*" + keywords.after() + "(.*)\\s*" , DOTALL).matcher(lifecycle);
+        Matcher findingBeforeAndAfter = compile(".*" + keywords.before() + "(.*)\\s*" + keywords.after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBeforeAndAfter.matches() ){
-            List<String> beforeSteps = findSteps(startingWithNL(findingBeforeAndAfter.group(1).trim()));
-            List<String> afterSteps = findSteps(startingWithNL(findingBeforeAndAfter.group(2).trim()));
+            String beforeLifecycle = findingBeforeAndAfter.group(1).trim();
+			Steps beforeSteps = parseBeforeLifecycle(beforeLifecycle);
+            String afterLifecycle = findingBeforeAndAfter.group(2).trim();
+			Steps[] afterSteps = parseAfterLifecycle(afterLifecycle);
             return new Lifecycle(beforeSteps, afterSteps);
         }
-        Matcher findingBefore = compile(".*" + keywords.before() + "(.*)\\s*" , DOTALL).matcher(lifecycle);
+        Matcher findingBefore = compile(".*" + keywords.before() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBefore.matches() ){
-            List<String> beforeSteps = findSteps(startingWithNL(findingBefore.group(1).trim()));
-            List<String> afterSteps = new ArrayList<String>();
-            return new Lifecycle(beforeSteps, afterSteps);
+            String beforeLifecycle = findingBefore.group(1).trim();
+			Steps beforeSteps = parseBeforeLifecycle(beforeLifecycle);
+            return new Lifecycle(beforeSteps, new Steps(new ArrayList<String>()));
         }
-        Matcher findingAfter = compile(".*" + keywords.after() + "(.*)\\s*" , DOTALL).matcher(lifecycle);
+        Matcher findingAfter = compile(".*" + keywords.after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingAfter.matches() ){
-            List<String> beforeSteps = new ArrayList<String>();
-            List<String> afterSteps = findSteps(startingWithNL(findingAfter.group(1).trim()));
+            Steps beforeSteps = Steps.EMPTY;
+            String afterLifecycle = findingAfter.group(1).trim();
+			Steps[] afterSteps = parseAfterLifecycle(afterLifecycle);
             return new Lifecycle(beforeSteps, afterSteps);
         }
         return Lifecycle.EMPTY;
     }
 
-    private List<Scenario> parseScenariosFrom(String storyAsText) {
+	private Steps parseBeforeLifecycle(String lifecycleAsText) {
+		return new Steps(findSteps(startingWithNL(lifecycleAsText)));
+	}
+
+	private Steps[] parseAfterLifecycle(String lifecycleAsText) {
+		List<Steps> list = new ArrayList<Steps>();
+		for (String stepsByOutcome : lifecycleAsText.split("Outcome:") ){ // TODO i18n
+			if ( stepsByOutcome.trim().isEmpty() ) continue;
+			String outcomeAsText = findOutcome(stepsByOutcome);
+			List<String> steps = findSteps(startingWithNL(StringUtils.removeStart(stepsByOutcome.trim(), outcomeAsText)));
+			list.add(new Steps(parseOutcome(outcomeAsText), steps));
+		}
+		return list.toArray(new Steps[list.size()]);
+	}
+
+    private Outcome parseOutcome(String outcomeAsText) {
+    	if ( outcomeAsText.equals("SUCCESS") ){
+    		return Outcome.SUCCESS;
+    	} else if ( outcomeAsText.equals("FAILURE") ){
+    		return Outcome.FAILURE;
+    	}
+		return Outcome.ANY;
+	}
+
+	private String findOutcome(String stepsByOutcome) {
+    	Matcher findingOutcome = patternToPullLifecycleOutcomeIntoGroupOne().matcher(stepsByOutcome);
+    	if ( findingOutcome.matches() ){
+    		return findingOutcome.group(1).trim();
+    	}
+		return "ANY";
+    }
+
+	private List<Scenario> parseScenariosFrom(String storyAsText) {
         List<Scenario> parsed = new ArrayList<Scenario>();
         for (String scenarioAsText : splitScenarios(storyAsText)) {
             parsed.add(parseScenario(scenarioAsText));
@@ -241,8 +278,8 @@ public class RegexStoryParser implements StoryParser {
         return new GivenStories(givenStories);
     }
 
-    private List<String> findSteps(String scenarioAsText) {
-        Matcher matcher = patternToPullStepsIntoGroupOne().matcher(scenarioAsText);
+    private List<String> findSteps(String stepsAsText) {
+        Matcher matcher = patternToPullStepsIntoGroupOne().matcher(stepsAsText);
         List<String> steps = new ArrayList<String>();
         int startAt = 0;
         while (matcher.find(startAt)) {
@@ -286,6 +323,12 @@ public class RegexStoryParser implements StoryParser {
     
     private Pattern patternToPullLifecycleIntoGroupOne() {
         return compile(".*" + keywords.lifecycle() + "\\s*(.*)", DOTALL);
+    }
+    
+    private Pattern patternToPullLifecycleOutcomeIntoGroupOne() {
+        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
+        String outcomes = concatenateWithOr("ANY", "SUCCESS", "FAILURE"); //TODO i18n
+        return compile("\\s*("+ outcomes +")\\s*(" + startingWords + ").*", DOTALL);
     }
     
     private Pattern patternToPullScenarioTitleIntoGroupOne() {

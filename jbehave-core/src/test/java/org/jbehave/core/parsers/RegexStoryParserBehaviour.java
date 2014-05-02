@@ -1,32 +1,32 @@
 package org.jbehave.core.parsers;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.model.Description;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.GivenStory;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.junit.Test;
-
 import static java.util.Arrays.asList;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.model.Description;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.GivenStory;
+import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
+import org.junit.Test;
 
 
 public class RegexStoryParserBehaviour {
@@ -286,6 +286,37 @@ public class RegexStoryParserBehaviour {
         List<String> afterSteps = story.getLifecycle().getAfterSteps();
         assertThat(afterSteps.get(0), equalTo("Given a step after each scenario"));
         assertThat(afterSteps.get(1), equalTo("And another after step"));
+        Scenario scenario = story.getScenarios().get(0);
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+    }
+
+    @Test
+    public void shouldParseStoryWithLifecycleAfterUponOutcome() {
+        String wholeStory = "Lifecycle: " + NL +
+                "After:" + NL + NL +
+                "Outcome: ANY " + NL +
+                "Given a step after any scenario" + NL + 
+                "Outcome: SUCCESS " + NL +
+                "Given a step after successful scenario" + NL + 
+                "Outcome: FAILURE " + NL +
+                "Given a step after failed scenario" + NL + 
+                "Scenario:"+ NL +        
+                "Given a scenario";
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<String> beforeSteps = story.getLifecycle().getBeforeSteps();
+        assertThat(beforeSteps.isEmpty(), equalTo(true));
+        Lifecycle lifecycle = story.getLifecycle();
+		List<String> afterSteps = lifecycle.getAfterSteps();
+        assertThat(afterSteps.get(0), equalTo("Given a step after any scenario"));
+        assertThat(afterSteps.get(1), equalTo("Given a step after successful scenario"));
+        assertThat(afterSteps.get(2), equalTo("Given a step after failed scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.ANY).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.ANY).get(0), equalTo("Given a step after any scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS).get(0), equalTo("Given a step after successful scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE).get(0), equalTo("Given a step after failed scenario"));
         Scenario scenario = story.getScenarios().get(0);
         List<String> steps = scenario.getSteps();
         assertThat(steps.get(0), equalTo("Given a scenario"));
