@@ -13,7 +13,7 @@ import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
 @Documented
 public @interface AfterScenario {
 
-	enum Outcome { ANY, SUCCESS, FAILURE }
+	public enum Outcome { ANY, SUCCESS, FAILURE }
 	
 	/**
 	 * Signals that the annotated method should be invoked only upon given outcome
