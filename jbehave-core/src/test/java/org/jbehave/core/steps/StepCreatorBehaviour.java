@@ -35,7 +35,7 @@ import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.AbstractStepResult.Successful;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
-import org.jbehave.core.steps.StepCreator.ParameterisedStep;
+import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Matchers;
@@ -90,7 +90,7 @@ public class StepCreatorBehaviour {
 
         // When
         Method method = SomeSteps.methodFor("aMethod");
-        ((ParameterisedStep) stepCreator.createParametrisedStep(method, "When I run", "I run", null)).describeTo(storyReporter);
+        ((ParametrisedStep) stepCreator.createParametrisedStep(method, "When I run", "I run", null)).describeTo(storyReporter);
 
         // Then
         verify(storyReporter).beforeStep("When I run");

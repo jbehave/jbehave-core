@@ -68,7 +68,7 @@ public abstract class CoreStory extends JUnitStory {
     private final CrossReference xref = new CrossReference();
 
     public CoreStory() {
-        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
+        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
                 .doIgnoreFailureInView(true).useThreads(1).useStoryTimeoutInSecs(60);
         // Uncomment to set meta filter, which can also be set via Ant or Maven
         //configuredEmbedder().useMetaFilters(Arrays.asList("+category smoke"));

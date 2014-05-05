@@ -29,7 +29,7 @@ import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.ProvidedStepsFactory;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.StepCreator.ParameterisedStep;
+import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
 
@@ -528,8 +528,8 @@ public class StoryRunner {
     private final class FineSoFar implements State {
 
         public State run(Step step) {
-            if ( step instanceof ParameterisedStep ){
-                ((ParameterisedStep)step).describeTo(reporter.get());
+            if ( step instanceof ParametrisedStep ){
+                ((ParametrisedStep)step).describeTo(reporter.get());
             }
             UUIDExceptionWrapper storyFailureIfItHappened = storyFailure.get(); 
             StepResult result = step.perform(storyFailureIfItHappened);

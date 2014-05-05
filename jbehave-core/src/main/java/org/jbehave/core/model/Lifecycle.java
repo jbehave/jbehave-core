@@ -2,7 +2,9 @@ package org.jbehave.core.model;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -34,6 +36,14 @@ public class Lifecycle {
 			afterSteps.addAll(steps.steps);
 		}
         return afterSteps;
+    }
+
+    public Set<Outcome> getOutcomes(){
+    	Set<Outcome> outcomes = new LinkedHashSet<Outcome>();
+    	for ( Steps steps : after ){
+    		outcomes.add(steps.outcome);
+    	}
+    	return outcomes;
     }
 
     public List<String> getAfterSteps(Outcome outcome) {
