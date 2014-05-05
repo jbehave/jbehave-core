@@ -63,11 +63,19 @@ public class BankAccountSteps {
         }
     }
 
-    @Then("my balance is archived")
+    @Then("my balance is printed")
     public void thenBalanceIsPrinted() {
+    }
+
+    @Then("my balance is archived")
+    public void thenBalanceIsArchived() {
     	account.archive();
     }
-    
+
+    @Then("my balance is not archived")
+    public void thenBalanceIsNotArchived() {
+    }
+
     public static class BankAccount {
         private int balance;
         private final String name;

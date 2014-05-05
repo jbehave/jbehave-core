@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.Then;
@@ -147,6 +148,11 @@ public class StepCandidate {
     public Step createMatchedStep(String stepAsString, Map<String, String> namedParameters) {
         return stepCreator.createParametrisedStep(method, stepAsString, stripStartingWord(stepAsString),
                 namedParameters);
+    }
+
+    public Step createMatchedStepUponOutcome(String stepAsString, Map<String, String> namedParameters, Outcome outcome) {
+        return stepCreator.createParametrisedStepUponOutcome(method, stepAsString, stripStartingWord(stepAsString),
+                namedParameters, outcome);
     }
 
     public void addComposedSteps(List<Step> steps, String stepAsString, Map<String, String> namedParameters,

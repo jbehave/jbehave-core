@@ -1,5 +1,16 @@
 package org.jbehave.core.steps;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.lessThan;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -9,6 +20,7 @@ import java.util.Properties;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.AfterStory;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.BeforeStory;
@@ -16,6 +28,7 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -27,21 +40,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 
 import com.thoughtworks.xstream.XStream;
-
-import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertEquals;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class MarkUnmatchedStepsAsPendingBehaviour {
 
@@ -97,6 +95,51 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // Then
         assertThat(executableSteps.size(), equalTo(2));
+    }
+
+    @Test
+    public void shouldCreateExecutableStepsUponOutcome() {
+        // Given
+        StepCollector stepCollector = new MarkUnmatchedStepsAsPending();
+
+        CandidateSteps steps = mock(Steps.class);
+        StepCandidate anyCandidate = mock(StepCandidate.class, "anyCandidate");
+        StepCandidate successCandidate = mock(StepCandidate.class, "successCandidate");
+        StepCandidate failureCandidate = mock(StepCandidate.class, "failureCandidate");
+        Step anyStep = mock(Step.class, "anyStep");
+        Step successStep = mock(Step.class, "successStep");
+        Step failureStep = mock(Step.class, "failureStep");
+
+        String myAnyStep = "my any step";
+        when(anyCandidate.matches(myAnyStep)).thenReturn(true);
+        when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Outcome.ANY)).thenReturn(anyStep);
+        when(successCandidate.isAndStep(myAnyStep)).thenReturn(false);
+        String mySuccessStep = "my success step";
+        when(successCandidate.matches(mySuccessStep)).thenReturn(true);
+        when(successCandidate.isAndStep(mySuccessStep)).thenReturn(false);
+        when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Outcome.SUCCESS)).thenReturn(successStep);
+        String myFailureStep = "my failure step";
+        when(successCandidate.matches(myFailureStep)).thenReturn(true);
+        when(successCandidate.isAndStep(myFailureStep)).thenReturn(false);
+        when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Outcome.FAILURE)).thenReturn(failureStep);
+
+        when(steps.listCandidates()).thenReturn(asList(anyCandidate, successCandidate, failureCandidate));
+
+		Lifecycle lifecycle = new Lifecycle(
+				org.jbehave.core.model.Lifecycle.Steps.EMPTY,
+				new org.jbehave.core.model.Lifecycle.Steps(Outcome.ANY, asList(myAnyStep)),
+				new org.jbehave.core.model.Lifecycle.Steps(Outcome.SUCCESS, asList(mySuccessStep)),
+				new org.jbehave.core.model.Lifecycle.Steps(Outcome.FAILURE, asList(myFailureStep)));
+
+		// When
+        List<Step> executableSteps = stepCollector.collectLifecycleSteps(asList(steps),
+                lifecycle, Meta.EMPTY, Stage.AFTER);
+
+        // Then
+        assertThat(executableSteps.size(), equalTo(3));
+        assertThat(executableSteps.get(0), equalTo(anyStep));
+        assertThat(executableSteps.get(1), equalTo(successStep));
+        assertThat(executableSteps.get(2), equalTo(failureStep));
     }
 
     @Test
@@ -442,22 +485,21 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         ScenarioType scenarioType = ScenarioType.NORMAL;
         List<Step> subset = foo.collectBeforeOrAfterScenarioSteps(steps, null, Stage.BEFORE, scenarioType);
         String subsetAsXML = xs.toXML(subset);
-        assertTrue(subsetAsXML.indexOf("<name>a</name>") > -1); // there
-        assertEquals(subsetAsXML.indexOf("<name>b</name>"), -1); // not there
-        assertTrue(subsetAsXML.indexOf("<name>c</name>") > -1); // there
-        assertEquals(subsetAsXML.indexOf("<name>d</name>"), -1); // not there
-        assertTrue(subsetAsXML.indexOf("<name>a</name>") < subsetAsXML.indexOf("<name>c</name>")); // there
+        assertThat(subsetAsXML.indexOf("<name>a</name>"), greaterThan(-1)); // there
+        assertThat(subsetAsXML.indexOf("<name>b</name>"), equalTo(-1)); // not there
+        assertThat(subsetAsXML.indexOf("<name>c</name>"), greaterThan(-1)); // there
+        assertThat(subsetAsXML.indexOf("<name>d</name>"), equalTo(-1)); // not there
+        assertThat(subsetAsXML.indexOf("<name>a</name>"), lessThan(subsetAsXML.indexOf("<name>c</name>"))); // there
 
-        assertEquals(stepsAsString, steps.toString()); // steps have not been
-                                                       // mutated.
+        assertThat(stepsAsString, equalTo(steps.toString())); // steps have not been mutated.
 
         subset = foo.collectBeforeOrAfterScenarioSteps(steps, null, Stage.AFTER, scenarioType);
         subsetAsXML = xs.toXML(subset);
-        assertEquals(subsetAsXML.indexOf("<name>a</name>"), -1); // not there
-        assertTrue(subsetAsXML.indexOf("<name>b</name>") > -1); // there
-        assertEquals(subsetAsXML.indexOf("<name>c</name>"), -1); // not there
-        assertTrue(subsetAsXML.indexOf("<name>d</name>") > -1); // there
-        assertTrue(subsetAsXML.indexOf("<name>d</name>") < subsetAsXML.indexOf("<name>b</name>")); // reverse order
+        assertThat(subsetAsXML.indexOf("<name>a</name>"), equalTo(-1)); // not there
+        assertThat(subsetAsXML.indexOf("<name>b</name>"), greaterThan(-1)); // there
+        assertThat(subsetAsXML.indexOf("<name>c</name>"), equalTo(-1)); // not there
+        assertThat(subsetAsXML.indexOf("<name>d</name>"), greaterThan(-1)); // there
+        assertThat(subsetAsXML.indexOf("<name>d</name>"), lessThan(subsetAsXML.indexOf("<name>b</name>"))); // reverse order
 
     }
 
@@ -472,12 +514,12 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         List<Step> beforeSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
                 Stage.BEFORE, scenarioType);
         beforeSteps.get(0).perform(null);
-        assertThat(steps.value, is("before"));
+        assertThat(steps.value, equalTo("before"));
 
         List<Step> afterSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
                 Stage.AFTER, scenarioType);
         afterSteps.get(0).perform(null);
-        assertThat(steps.value, is("after"));
+        assertThat(steps.value, equalTo("after"));
     }
 
     @Test
@@ -492,15 +534,15 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         List<Step> beforeSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
                 Stage.BEFORE, scenarioType);
         beforeSteps.get(0).doNotPerform(failureOccurred);
-        assertThat(steps.value, is("before"));
-        assertThat(steps.exception, is(failureOccurred));
+        assertThat(steps.value, equalTo("before"));
+        assertThat(steps.exception, equalTo(failureOccurred));
 
         List<Step> afterSteps = collector.collectBeforeOrAfterScenarioSteps(asList((CandidateSteps) steps), meta,
                 Stage.AFTER, scenarioType);
         failureOccurred = new UUIDExceptionWrapper();
         afterSteps.get(0).doNotPerform(failureOccurred);
-        assertThat(steps.value, is("after"));
-        assertThat(steps.exception, is(failureOccurred));
+        assertThat(steps.value, equalTo("after"));
+        assertThat(steps.exception, equalTo(failureOccurred));
     }
 
     @Test
@@ -514,12 +556,12 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         List<Step> beforeSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
                 Stage.BEFORE, false);
         beforeSteps.get(0).perform(null);
-        assertThat(steps.value, is("before"));
+        assertThat(steps.value, equalTo("before"));
 
         List<Step> afterSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
                 Stage.AFTER, false);
         afterSteps.get(0).perform(null);
-        assertThat(steps.value, is("after"));
+        assertThat(steps.value, equalTo("after"));
     }
 
     @Test
@@ -534,15 +576,15 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 Stage.BEFORE, false);
         UUIDExceptionWrapper failureOccurred = new UUIDExceptionWrapper();
         beforeSteps.get(0).doNotPerform(failureOccurred);
-        assertThat(steps.value, is("before"));
-        assertThat(steps.exception, is(failureOccurred));
+        assertThat(steps.value, equalTo("before"));
+        assertThat(steps.exception, equalTo(failureOccurred));
 
         List<Step> afterSteps = collector.collectBeforeOrAfterStorySteps(asList((CandidateSteps) steps), story,
                 Stage.AFTER, false);
         failureOccurred = new UUIDExceptionWrapper();
         afterSteps.get(0).doNotPerform(failureOccurred);
-        assertThat(steps.value, is("after"));
-        assertThat(steps.exception, is(failureOccurred));
+        assertThat(steps.value, equalTo("after"));
+        assertThat(steps.exception, equalTo(failureOccurred));
     }
 
     private Meta beforeAndAfterMeta() {

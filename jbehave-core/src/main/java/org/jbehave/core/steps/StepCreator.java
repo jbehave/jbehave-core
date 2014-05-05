@@ -200,7 +200,21 @@ public class StepCreator {
 
     public Step createParametrisedStep(final Method method, final String stepAsString,
             final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
-        return new ParameterisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+        return new ParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+    }
+
+    public Step createParametrisedStepUponOutcome(final Method method, final String stepAsString,
+            final String stepWithoutStartingWord, final Map<String, String> namedParameters, Outcome outcome) {
+        switch (outcome) {
+        case ANY:
+            return new UponAnyParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+        case SUCCESS:
+            return new UponSuccessParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+        case FAILURE:
+            return new UponFailureParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+        default:
+            return new ParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+        }
     }
 
     private String parametrisedStep(String stepAsString, Map<String, String> namedParameters, Type[] types,
@@ -542,8 +556,8 @@ public class StepCreator {
 		}
     
     }
-
-    public class ParameterisedStep extends AbstractStep {
+    
+    public class ParametrisedStep extends AbstractStep {
         private Object[] convertedParameters;
         private String parametrisedStep;
         private final String stepAsString;
@@ -551,7 +565,7 @@ public class StepCreator {
         private final String stepWithoutStartingWord;
         private final Map<String, String> namedParameters;
 
-        public ParameterisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
+        public ParametrisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
                 Map<String, String> namedParameters) {
             this.stepAsString = stepAsString;
             this.method = method;
@@ -627,6 +641,72 @@ public class StepCreator {
             }
         }
 
+    }
+
+    public class UponAnyParametrisedStep extends AbstractStep {
+        private ParametrisedStep parametrisedStep;
+
+        public UponAnyParametrisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
+                Map<String, String> namedParameters){
+            this.parametrisedStep = new ParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+        }
+
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return perform(storyFailureIfItHappened);
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return parametrisedStep.perform(storyFailureIfItHappened);
+        }
+
+		public String asString(Keywords keywords) {
+			return parametrisedStep.asString(keywords);
+		}
+
+    }
+
+    public class UponSuccessParametrisedStep extends AbstractStep {
+        private ParametrisedStep parametrisedStep;
+
+        public UponSuccessParametrisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
+                Map<String, String> namedParameters){
+            this.parametrisedStep = new ParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+        }
+
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return skipped();
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return parametrisedStep.perform(storyFailureIfItHappened);
+        }
+
+		public String asString(Keywords keywords) {
+			return parametrisedStep.asString(keywords);
+		}
+
+    }
+
+    public class UponFailureParametrisedStep extends AbstractStep {
+        private ParametrisedStep parametrisedStep;
+
+        public UponFailureParametrisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
+                Map<String, String> namedParameters){
+            this.parametrisedStep = new ParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+        }
+
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return parametrisedStep.perform(storyFailureIfItHappened);
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return skipped();
+        }
+
+		public String asString(Keywords keywords) {
+			return parametrisedStep.asString(keywords);
+		}
+    
     }
 
     public static class PendingStep extends AbstractStep {

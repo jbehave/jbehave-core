@@ -216,7 +216,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
             }
             if (!lifecycle.getAfterSteps().isEmpty()) {
                 print(format("lifecycleAfterStart", "{0}\n", keywords.after()));
-                print(lifecycle.getAfterSteps());
+                for ( org.jbehave.core.annotations.AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
+                	print("Outcome: "+outcome+"\n"); //TODO i18n
+                	print(lifecycle.getAfterSteps(outcome));
+                }
                 print(format("lifecycleAfterEnd", ""));
             }
             print(format("lifecycleEnd", "\n"));
