@@ -55,12 +55,12 @@
           </examplesTable>
         </givenStories>
         <lifecycle>
-          <beforeSteps class="java.util.Arrays$ArrayList">
-            <a class="string-array"/>
-          </beforeSteps>
-          <afterSteps class="java.util.Arrays$ArrayList">
-            <a class="string-array"/>
-          </afterSteps>
+          <before>
+            <steps class="java.util.Arrays$ArrayList">
+              <a class="string-array"/>
+            </steps>
+          </before>
+          <after/>
         </lifecycle>
         <scenarios/>
       </story>

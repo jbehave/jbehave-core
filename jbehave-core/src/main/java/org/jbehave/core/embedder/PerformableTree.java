@@ -33,7 +33,7 @@ import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.StepCreator.ParameterisedStep;
+import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
 import org.jbehave.core.steps.Timer;
@@ -309,8 +309,8 @@ public class PerformableTree {
 
         public State run(Step step, List<StepResult> results, StoryReporter reporter,
                 UUIDExceptionWrapper storyFailureIfItHappened) {
-            if (step instanceof ParameterisedStep) {
-                ((ParameterisedStep) step).describeTo(reporter);
+            if (step instanceof ParametrisedStep) {
+                ((ParametrisedStep) step).describeTo(reporter);
             }
             StepResult result = step.perform(storyFailureIfItHappened);
             results.add(result);

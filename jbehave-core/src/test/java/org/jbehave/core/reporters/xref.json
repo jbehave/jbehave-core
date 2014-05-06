@@ -70,12 +70,12 @@
           }
         },
         "lifecycle": {
-          "beforeSteps": [
-            []
-          ],
-          "afterSteps": [
-            []
-          ]
+          "before": {
+            "steps": [
+              []
+            ]
+          },
+          "after": []
         },
         "scenarios": []
       },
