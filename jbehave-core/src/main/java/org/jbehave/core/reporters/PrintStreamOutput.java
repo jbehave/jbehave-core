@@ -217,7 +217,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
             if (!lifecycle.getAfterSteps().isEmpty()) {
                 print(format("lifecycleAfterStart", "{0}\n", keywords.after()));
                 for ( org.jbehave.core.annotations.AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
-                	print("Outcome: "+outcome+"\n"); //TODO i18n
+                	print(format("lifecycleOutcome", "{0} {1}\n", keywords.outcome(), i18n(outcome)));
                 	print(lifecycle.getAfterSteps(outcome));
                 }
                 print(format("lifecycleAfterEnd", ""));
@@ -226,7 +226,17 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
-    private void print(List<String> steps) {
+    private String i18n(
+			org.jbehave.core.annotations.AfterScenario.Outcome outcome) {
+    	switch ( outcome ){
+    	case ANY: return keywords.outcomeAny();
+    	case SUCCESS: return keywords.outcomeSuccess();
+    	case FAILURE: return keywords.outcomeFailure();
+    	default: return outcome.name();
+    	}
+	}
+
+	private void print(List<String> steps) {
         for (String step : steps) {
             print(format("lifecycleStep", "{0}\n", step));
         }

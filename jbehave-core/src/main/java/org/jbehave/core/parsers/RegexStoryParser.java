@@ -170,7 +170,7 @@ public class RegexStoryParser implements StoryParser {
 
 	private Steps[] parseAfterLifecycle(String lifecycleAsText) {
 		List<Steps> list = new ArrayList<Steps>();
-		for (String stepsByOutcome : lifecycleAsText.split("Outcome:") ){ // TODO i18n
+		for (String stepsByOutcome : lifecycleAsText.split(keywords.outcome()) ){ 
 			if ( stepsByOutcome.trim().isEmpty() ) continue;
 			String outcomeAsText = findOutcome(stepsByOutcome);
 			List<String> steps = findSteps(startingWithNL(StringUtils.removeStart(stepsByOutcome.trim(), outcomeAsText)));
@@ -319,7 +319,7 @@ public class RegexStoryParser implements StoryParser {
     
     private Pattern patternToPullLifecycleOutcomeIntoGroupOne() {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        String outcomes = concatenateWithOr("ANY", "SUCCESS", "FAILURE"); //TODO i18n
+        String outcomes = concatenateWithOr(keywords.outcomeAny(), keywords.outcomeSuccess(), keywords.outcomeFailure());
         return compile("\\s*("+ outcomes +")\\s*(" + startingWords + ").*", DOTALL);
     }
     

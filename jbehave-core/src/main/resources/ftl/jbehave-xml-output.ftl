@@ -41,8 +41,14 @@
 </#if>
 <#if !lifecycle.getAfterSteps().isEmpty()>
 <after keyword="${keywords.after}">
-<#list lifecycle.getAfterSteps() as step>
+<#list lifecycle.getOutcomes() as outcome>
+<div class="outcome">
+<outcome keyword="${keywords.outcome}">
+<value>${outcome}</value>
+<#list lifecycle.getAfterSteps(outcome) as step>
 <step>${step?xml}</step> 
+</#list>
+</outcome>
 </#list>
 </after>
 </#if>
