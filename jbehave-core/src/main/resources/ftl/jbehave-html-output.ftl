@@ -43,8 +43,13 @@
 </#if>
 <#if !lifecycle.getAfterSteps().isEmpty()>
 <div class="after"><h3>${keywords.after}</h3>
-<#list lifecycle.getAfterSteps() as step>
+<#list lifecycle.getOutcomes() as outcome>
+<div class="outcome">
+<h4>${keywords.outcome} ${outcome}</h4>
+<#list lifecycle.getAfterSteps(outcome) as step>
 <div class="step">${step?html}</div>   
+</#list>
+</div>
 </#list>
 </div>
 </#if>

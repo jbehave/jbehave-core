@@ -71,7 +71,8 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("lifecycleBeforeStart", "<div class=\"before\"><h3>{0}</h3>");
         patterns.setProperty("lifecycleBeforeEnd", "</div>");        
         patterns.setProperty("lifecycleAfterStart", "<div class=\"after\"><h3>{0}</h3>");
-        patterns.setProperty("lifecycleAfterEnd", "</div>");        
+        patterns.setProperty("lifecycleAfterEnd", "</div>");   
+        patterns.setProperty("lifecycleOutcome", "<div class=\"outcome\">{0} {1}</div>");
         patterns.setProperty("lifecycleStep", "<div class=\"step\">{0}</div>\n");          
         patterns.setProperty("beforeScenario", "<div class=\"scenario\">\n<h2>{0} {1}</h2>\n");
         patterns.setProperty("afterScenario", "</div>\n");
