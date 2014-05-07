@@ -883,9 +883,10 @@ public class PerformableTree {
         }
 
         public void perform(RunContext context) throws InterruptedException {
-            if (!context.filter().allow(parameterMeta(context.configuration().keywords(), parameters))) {
-                return;
-            }
+			Meta parameterMeta = parameterMeta(context.configuration().keywords(), parameters);
+			if (!parameterMeta.isEmpty() && !context.filter().allow(parameterMeta)) {
+				return;
+			}
             if (context.configuration().storyControls().resetStateBeforeScenario()) {
                 context.resetState();
             }
