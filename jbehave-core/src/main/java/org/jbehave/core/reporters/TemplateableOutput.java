@@ -1,5 +1,10 @@
 package org.jbehave.core.reporters;
 
+import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
@@ -8,11 +13,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -27,11 +34,6 @@ import org.jbehave.core.model.StoryDuration;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModelException;
-
-import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 
 /**
  * <p>
@@ -333,6 +335,10 @@ public class TemplateableOutput implements StoryReporter {
             return keywords.duration();
         }
 
+        public String getOutcome(){
+        	return keywords.outcome();
+        }
+        
         public String getYes() {
             return keywords.yes();
         }
@@ -455,6 +461,14 @@ public class TemplateableOutput implements StoryReporter {
 
         public List<String> getAfterSteps(){
             return lifecycle.getAfterSteps();
+        }
+
+        public Set<Outcome> getOutcomes(){
+            return lifecycle.getOutcomes();
+        }
+
+        public List<String> getAfterSteps(Outcome outcome){
+            return lifecycle.getAfterSteps(outcome);
         }
 
     }
