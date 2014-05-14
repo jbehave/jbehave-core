@@ -188,9 +188,9 @@ public class RegexStoryParser implements StoryParser {
 	}
 
     private Outcome parseOutcome(String outcomeAsText) {
-    	if ( outcomeAsText.equals("SUCCESS") ){
+    	if ( outcomeAsText.equals(keywords.outcomeSuccess()) ){
     		return Outcome.SUCCESS;
-    	} else if ( outcomeAsText.equals("FAILURE") ){
+    	} else if ( outcomeAsText.equals(keywords.outcomeFailure()) ){
     		return Outcome.FAILURE;
     	}
 		return Outcome.ANY;
@@ -201,7 +201,7 @@ public class RegexStoryParser implements StoryParser {
     	if ( findingOutcome.matches() ){
     		return findingOutcome.group(1).trim();
     	}
-		return "ANY";
+		return keywords.outcomeAny();
     }
 
 	private List<Scenario> parseScenariosFrom(String storyAsText) {
