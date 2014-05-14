@@ -323,6 +323,38 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
+    public void shouldParseStoryWithLifecycleAfterUponOutcomeInNonEnglishLocale() {    	 
+    	String wholeStory = "Lebenszyklus: " + NL +
+                "Nach:" + NL + NL +
+                "Ergebnis: IRGENDWELCHE " + NL +
+                "Gegeben im Lager sind 200 T-Shirts" + NL + 
+                "Ergebnis: ERFOLG " + NL +
+                "Gegeben im Lager sind 300 T-Shirts" + NL + 
+                "Ergebnis: AUSFALL " + NL +
+                "Gegeben im Lager sind 400 T-Shirts" + NL + 
+                "Szenario:"+ NL +        
+                "Wenn ein Kunde 20 T-Shirts bestellt";
+    	parser = new RegexStoryParser(new LocalizedKeywords(Locale.GERMAN));
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<String> beforeSteps = story.getLifecycle().getBeforeSteps();
+        assertThat(beforeSteps.isEmpty(), equalTo(true));
+        Lifecycle lifecycle = story.getLifecycle();
+		List<String> afterSteps = lifecycle.getAfterSteps();
+        assertThat(afterSteps.get(0), equalTo("Gegeben im Lager sind 200 T-Shirts"));
+        assertThat(afterSteps.get(1), equalTo("Gegeben im Lager sind 300 T-Shirts"));
+        assertThat(afterSteps.get(2), equalTo("Gegeben im Lager sind 400 T-Shirts"));
+        assertThat(lifecycle.getAfterSteps(Outcome.ANY).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.ANY).get(0), equalTo("Gegeben im Lager sind 200 T-Shirts"));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS).get(0), equalTo("Gegeben im Lager sind 300 T-Shirts"));
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE).get(0), equalTo("Gegeben im Lager sind 400 T-Shirts"));
+        Scenario scenario = story.getScenarios().get(0);
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Wenn ein Kunde 20 T-Shirts bestellt"));
+    }
+
+    @Test
     public void shouldParseStoryWithGivenStoriesAndExamplesCommentedOut() {
         String wholeStory = "Scenario: Show that we can comment out GivenStories and Examples portions of a scenario"+ NL +
                 "!-- GivenStories: AGivenStoryToBeCommented" + NL +
