@@ -21,10 +21,9 @@ import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.needle.configuration.CollectInjectionProvidersFromStepsInstance;
 import org.jbehave.core.steps.needle.configuration.CreateInstanceByDefaultConstructor;
 import org.jbehave.core.steps.needle.configuration.JBehaveNeedleConfiguration;
-
-import de.akquinet.jbosscc.needle.NeedleTestcase;
-import de.akquinet.jbosscc.needle.injection.InjectionProvider;
-import de.akquinet.jbosscc.needle.reflection.ReflectionUtil;
+import org.needle4j.NeedleTestcase;
+import org.needle4j.injection.InjectionProvider;
+import org.needle4j.reflection.ReflectionUtil;
 
 /**
  * An {@link InjectableStepsFactory} that uses a Needle {@link InjectionProvider} for the composition and instantiation

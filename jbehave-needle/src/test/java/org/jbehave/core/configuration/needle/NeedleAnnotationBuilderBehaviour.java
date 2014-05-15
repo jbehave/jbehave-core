@@ -1,5 +1,13 @@
 package org.jbehave.core.configuration.needle;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -25,16 +33,6 @@ import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooStepsWithDep
 import org.jbehave.core.steps.needle.ValueGetter;
 import org.junit.Assert;
 import org.junit.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class NeedleAnnotationBuilderBehaviour {
 

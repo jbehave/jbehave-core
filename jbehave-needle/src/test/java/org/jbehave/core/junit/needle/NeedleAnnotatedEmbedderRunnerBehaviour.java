@@ -24,8 +24,7 @@ import org.jbehave.core.steps.needle.ValueGetter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.InitializationError;
-
-import de.akquinet.jbosscc.needle.injection.InjectionProvider;
+import org.needle4j.injection.InjectionProvider;
 
 public class NeedleAnnotatedEmbedderRunnerBehaviour {
 

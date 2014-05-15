@@ -4,8 +4,8 @@ import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import de.akquinet.jbosscc.needle.injection.InjectionProvider;
-import de.holisticon.toolbox.needle.provider.InjectionProviderInstancesSupplier;
+import org.needle4j.injection.InjectionProvider;
+import org.needle4j.injection.InjectionProviderInstancesSupplier;
 
 /**
  * Reads jbehave-needle.properties to initialize additional {@link InjectionProvider}s.

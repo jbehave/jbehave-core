@@ -6,10 +6,9 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.jbehave.core.annotations.needle.NeedleInjectionProvider;
-
-import de.akquinet.jbosscc.needle.injection.InjectionProvider;
-import de.akquinet.jbosscc.needle.reflection.ReflectionUtil;
-import de.holisticon.toolbox.needle.provider.InjectionProviderInstancesSupplier;
+import org.needle4j.injection.InjectionProvider;
+import org.needle4j.injection.InjectionProviderInstancesSupplier;
+import org.needle4j.reflection.ReflectionUtil;
 
 /**
  * Collects {@link InjectionProvider} instances.
