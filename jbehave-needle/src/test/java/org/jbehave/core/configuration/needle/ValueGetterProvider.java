@@ -1,9 +1,8 @@
 package org.jbehave.core.configuration.needle;
 
 import org.jbehave.core.steps.needle.ValueGetter;
-
-import de.akquinet.jbosscc.needle.injection.InjectionProvider;
-import de.akquinet.jbosscc.needle.injection.InjectionTargetInformation;
+import org.needle4j.injection.InjectionProvider;
+import org.needle4j.injection.InjectionTargetInformation;
 
 public class ValueGetterProvider implements InjectionProvider<ValueGetter> {
 

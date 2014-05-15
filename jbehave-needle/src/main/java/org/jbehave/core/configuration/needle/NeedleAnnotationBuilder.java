@@ -15,9 +15,8 @@ import org.jbehave.core.configuration.PrintStreamAnnotationMonitor;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.needle.NeedleStepsFactory;
 import org.jbehave.core.steps.needle.configuration.CreateInstanceByDefaultConstructor;
-
-import de.akquinet.jbosscc.needle.injection.InjectionProvider;
-import de.holisticon.toolbox.needle.provider.InjectionProviderInstancesSupplier;
+import org.needle4j.injection.InjectionProvider;
+import org.needle4j.injection.InjectionProviderInstancesSupplier;
 
 /**
  * Extends {@link AnnotationBuilder} to provide Needle-based dependency injection if {@link UsingNeedle} annotation is

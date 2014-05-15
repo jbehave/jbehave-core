@@ -5,7 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import de.akquinet.jbosscc.needle.injection.InjectionProvider;
+import org.needle4j.injection.InjectionProvider;
 
 /**
  * Annotation to mark InjectionProviders in the JBehave steps. <br/>
