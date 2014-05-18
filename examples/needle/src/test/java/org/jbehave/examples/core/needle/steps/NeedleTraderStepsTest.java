@@ -9,9 +9,8 @@ import javax.inject.Inject;
 import org.jbehave.examples.core.service.TradingService;
 import org.junit.Rule;
 import org.junit.Test;
-
-import de.akquinet.jbosscc.needle.annotation.ObjectUnderTest;
-import de.akquinet.jbosscc.needle.junit.NeedleRule;
+import org.needle4j.annotation.ObjectUnderTest;
+import org.needle4j.junit.NeedleRule;
 
 /**
  * Test Constructor injection for steps.
