@@ -464,6 +464,8 @@ public abstract class PrintStreamOutput implements StoryReporter {
                     .replace(tableAsString, formatTable(new ExamplesTable(tableAsString)))
                     .replace(tableStart, format("parameterValueStart", EMPTY))
                     .replace(tableEnd, format("parameterValueEnd", EMPTY))
+                    .replace(format(PARAMETER_VALUE_START, PARAMETER_VALUE_START), format("parameterValueStart", EMPTY))
+                    .replace(format(PARAMETER_VALUE_END, PARAMETER_VALUE_END), format("parameterValueEnd", EMPTY))
                     .replace(format(PARAMETER_VALUE_NEWLINE, PARAMETER_VALUE_NEWLINE),
                             format("parameterValueNewline", "\n")));
         } else {

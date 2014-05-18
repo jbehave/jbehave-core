@@ -221,8 +221,9 @@ public class StepCreator {
             ParameterName[] names, String[] parameterValues) {
     	String parametrisedStep = stepAsString;
     	// mark parameter values that are parsed
+    	boolean hasTable = hasTable(types);
         for (int position = 0; position < types.length; position++) {
-            parametrisedStep = markParsedParameterValue(parametrisedStep, types[position], parameterValues[position]);
+            parametrisedStep = markParsedParameterValue(parametrisedStep, types[position], parameterValues[position], hasTable);
         }
         // mark parameter values that are named
         for (String name : namedParameters.keySet()) {
@@ -232,7 +233,16 @@ public class StepCreator {
         return parametrisedStep;
     }
 
-    private String markNamedParameterValue(String stepText, Map<String, String> namedParameters, String name) {
+    private boolean hasTable(Type[] types) {
+    	for (Type type : types) {
+			if ( isTable(type) ){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private String markNamedParameterValue(String stepText, Map<String, String> namedParameters, String name) {
         String value = namedParameter(namedParameters, name);
         if (value != null) {
 			stepText = stepText.replace(delimitedName(name), markedValue(value));
@@ -244,7 +254,7 @@ public class StepCreator {
 		return parameterControls.nameDelimiterLeft() + name + parameterControls.nameDelimiterRight();
 	}
 
-    private String markParsedParameterValue(String stepText, Type type, String value) {
+    private String markParsedParameterValue(String stepText, Type type, String value, boolean hasTable) {
         if (value != null) {
             if (isTable(type)) {
                 stepText = stepText.replace(value, markedTable(value));
@@ -257,7 +267,9 @@ public class StepCreator {
                 	String rightPad = ( stepText.endsWith(value) ? NONE : SPACE );
             		stepText = stepText.replace(pad(value, leftPad, rightPad), pad(markedValue, leftPad, rightPad));
                 }
-                stepText = stepText.replace(NEWLINE, PARAMETER_VALUE_NEWLINE);
+                if ( !hasTable ){
+                	stepText = stepText.replace(NEWLINE, PARAMETER_VALUE_NEWLINE);
+                }
             }
         }
         return stepText;
