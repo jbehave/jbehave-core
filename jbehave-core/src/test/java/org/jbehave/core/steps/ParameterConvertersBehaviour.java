@@ -482,11 +482,27 @@ public class ParameterConvertersBehaviour {
     @Test
     public void shouldConvertBoolean() throws IntrospectionException {
         ParameterConverter converter = new BooleanConverter();
+        assertThat(converter.accept(Boolean.TYPE), equalTo(true));
         assertThat(converter.accept(Boolean.class), equalTo(true));
         assertThat(converter.accept(WrongType.class), is(false));
         assertThat(converter.accept(mock(Type.class)), is(false));
         Type type = SomeSteps.methodFor("aMethodWithBoolean").getGenericParameterTypes()[0];
         assertThat((Boolean) converter.convertValue("true", type), is(true));
+        assertThat((Boolean) converter.convertValue("false", type), is(false));
+        assertThat((Boolean) converter.convertValue("whatever", type), is(false));
+    }
+
+    @Test
+    public void shouldConvertBooleanWithCustomValues() throws IntrospectionException {
+        ParameterConverter converter = new BooleanConverter("ON", "OFF");
+        assertThat(converter.accept(Boolean.TYPE), equalTo(true));
+        assertThat(converter.accept(Boolean.class), equalTo(true));
+        assertThat(converter.accept(WrongType.class), is(false));
+        assertThat(converter.accept(mock(Type.class)), is(false));
+        Type type = SomeSteps.methodFor("aMethodWithBoolean").getGenericParameterTypes()[0];
+        assertThat((Boolean) converter.convertValue("ON", type), is(true));
+        assertThat((Boolean) converter.convertValue("OFF", type), is(false));
+        assertThat((Boolean) converter.convertValue("whatever", type), is(false));
     }
 
     @SuppressWarnings("unchecked")

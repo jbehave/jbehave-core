@@ -489,13 +489,17 @@ public class ParameterConverters {
 
         public boolean accept(Type type) {
             if (type instanceof Class<?>) {
-                return Boolean.class.isAssignableFrom((Class<?>) type);
+                return Boolean.class.isAssignableFrom((Class<?>) type) || Boolean.TYPE.isAssignableFrom((Class<?>) type);
             }
             return false;
         }
 
         public Object convertValue(String value, Type type) {
-            return BooleanUtils.toBoolean(value, trueValue, falseValue);
+            try {
+				return BooleanUtils.toBoolean(value, trueValue, falseValue);
+			} catch (IllegalArgumentException e) {
+				return false;
+			}
         }
     }
 
