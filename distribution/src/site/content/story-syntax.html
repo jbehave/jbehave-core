@@ -28,8 +28,13 @@ Lifecycle:
 Before:
 Given a step that is executed before each scenario 
 After:
-Given a step that is executed after each scenario 
-    
+Outcome: ANY    
+Given a step that is executed after each scenario regardless of outcome
+Outcome: SUCCESS 
+Given a step that is executed after each successful scenario
+Outcome: FAILURE 
+Given a step that is executed after each failed scenario
+
 Scenario:  A scenario is a collection of executable steps of different type
 
 Given step represents a precondition to an event
