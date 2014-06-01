@@ -326,11 +326,11 @@ public class RegexStoryParserBehaviour {
     public void shouldParseStoryWithLifecycleAfterUponOutcomeInNonEnglishLocale() {    	 
     	String wholeStory = "Lebenszyklus: " + NL +
                 "Nach:" + NL + NL +
-                "Ergebnis: IRGENDWELCHE " + NL +
+                "Ergebnis: JEDES " + NL +
                 "Gegeben im Lager sind 200 T-Shirts" + NL + 
                 "Ergebnis: ERFOLG " + NL +
                 "Gegeben im Lager sind 300 T-Shirts" + NL + 
-                "Ergebnis: AUSFALL " + NL +
+                "Ergebnis: FEHLER " + NL +
                 "Gegeben im Lager sind 400 T-Shirts" + NL + 
                 "Szenario:"+ NL +        
                 "Wenn ein Kunde 20 T-Shirts bestellt";
