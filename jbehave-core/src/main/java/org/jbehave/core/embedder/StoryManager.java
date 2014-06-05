@@ -70,27 +70,39 @@ public class StoryManager {
         return outcomes;
     }
 
-    public void runStories(List<String> storyPaths, MetaFilter filter, BatchFailures failures) {
+    public void runStoriesAsPaths(List<String> storyPaths, MetaFilter filter, BatchFailures failures) {
+    	runStories(storiesOf(storyPaths), filter, failures);    	
+    }
+
+    private List<Story> storiesOf(List<String> storyPaths) {
+		List<Story> stories = new ArrayList<Story>();
+    	for (String storyPath : storyPaths) {
+			stories.add(storyOfPath(storyPath));
+		}
+    	return stories;
+	}
+
+    public void runStories(List<Story> stories, MetaFilter filter, BatchFailures failures) {
         // create new run context
         context = performableTree.newRunContext(configuration, stepsFactory, filter, failures);
         
         // add stories        
-        performableTree.addStories(context, storyPaths);
+        performableTree.addStories(context, stories);
 
         // perform stories
-        performStories(context, performableTree, storyPaths);
+        performStories(context, performableTree, stories);
         
         // collect failures
         failures.putAll(context.getFailures());       
         
     }
 
-    public void performStories(RunContext context, PerformableTree performableTree, List<String> storyPaths) {
+    private void performStories(RunContext context, PerformableTree performableTree, List<Story> stories) {
         // before stories
         performableTree.performBeforeOrAfterStories(context, Stage.BEFORE);
         
-        // stories as paths
-        runningStoriesAsPaths(context, storyPaths);        
+        // run stories
+        runningStories(context, stories);        
         waitUntilAllDoneOrFailed(context);
         MetaFilter filter = context.filter();
 		List<Story> notAllowed = notAllowedBy(filter);
@@ -100,13 +112,6 @@ public class StoryManager {
 
         // after stories
         performableTree.performBeforeOrAfterStories(context, Stage.AFTER);     
-    }
-
-    public Map<String, RunningStory> runningStoriesAsPaths(RunContext context, List<String> storyPaths) {
-        for (String storyPath : storyPaths) {
-            filterRunning(context, storyOfPath(storyPath));
-        }
-        return runningStories;
     }
 
     public Map<String, RunningStory> runningStories(RunContext context, List<Story> stories) {

@@ -62,10 +62,10 @@ public class PerformableTree {
         return root;
     }
 
-    public void addStories(RunContext context, List<String> storyPaths) {
+    public void addStories(RunContext context, List<Story> stories) {
         root.addBeforeSteps(context.beforeOrAfterStoriesSteps(Stage.BEFORE));
-        for (String storyPath : storyPaths) {
-            root.add(performableStory(context, storyOfPath(context.configuration(), storyPath), NO_PARAMETERS));
+        for (Story story : stories) {
+            root.add(performableStory(context, story, NO_PARAMETERS));
         }
         root.addAfterSteps(context.beforeOrAfterStoriesSteps(Stage.AFTER));
     }

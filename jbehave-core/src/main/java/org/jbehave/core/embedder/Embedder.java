@@ -201,7 +201,7 @@ public class Embedder {
             BatchFailures failures = new BatchFailures(embedderControls.verboseFailures());
 
             // run stories
-            storyManager.runStories(storyPaths, filter, failures);
+            storyManager.runStoriesAsPaths(storyPaths, filter, failures);
 
             // handle any failures
             handleFailures(failures);
