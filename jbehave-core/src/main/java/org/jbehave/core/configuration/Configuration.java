@@ -175,7 +175,7 @@ public abstract class Configuration {
 	}
 
     public boolean dryRun() {
-        return storyControls.dryRun();
+        return storyControls().dryRun();
     }
     
     public StoryControls storyControls() {
@@ -317,7 +317,7 @@ public abstract class Configuration {
     }
 
     public Configuration doDryRun(Boolean dryRun) {
-        this.storyControls.doDryRun(dryRun);
+        this.storyControls().doDryRun(dryRun);
         return this;
     }
     
