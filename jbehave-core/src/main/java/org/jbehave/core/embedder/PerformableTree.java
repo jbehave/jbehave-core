@@ -715,8 +715,10 @@ public class PerformableTree {
             State state = context.state();
             Timer timer = new Timer().start();
             try {
+                beforeSteps.perform(context);
             	performGivenStories(context);
                 performScenarios(context);
+                afterSteps.perform(context);
             } finally {
                 timing.setDurationInMillis(timer.stop());
             }
@@ -735,11 +737,9 @@ public class PerformableTree {
 		}
 		
         private void performScenarios(RunContext context) throws InterruptedException {
-            beforeSteps.perform(context);
             for (PerformableScenario scenario : scenarios) {
                 scenario.perform(context);
             }
-            afterSteps.perform(context);
         }
 
         public List<PerformableScenario> getScenarios() {
