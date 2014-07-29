@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>4.0-SNAPSHOT</version>
+    <version>4.0-beta-9</version>
   </parent>
   <artifactId>jbehave-odf</artifactId>
   <name>JBehave ODF</name>
