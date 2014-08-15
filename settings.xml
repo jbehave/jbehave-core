@@ -49,13 +49,13 @@
       <repositories>
         <repository>
           <id>atlassian</id>
-          <url>http://maven.atlassian.com/public</url>
+          <url>https://maven.atlassian.com/content/groups/public/</url>
         </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
           <id>atlassian</id>
-          <url>http://maven.atlassian.com/public</url>
+          <url>https://maven.atlassian.com/content/groups/public/</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>
