@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
@@ -34,6 +35,8 @@ public interface EmbedderMonitor {
     void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter);
 
     void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter, boolean verbose);
+
+	void scenarioNotAllowed(Scenario scenario, MetaFilter filter);
 
     void batchFailed(BatchFailures failures);
 

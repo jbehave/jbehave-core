@@ -11,6 +11,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
@@ -85,7 +86,13 @@ public class PrintStreamEmbedderMonitor extends NullEmbedderMonitor {
         print(sb.toString());
     }
 
-    public void runningWithAnnotatedEmbedderRunner(String className) {
+	public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
+        StringBuffer sb = new StringBuffer();
+        sb.append("Scenario '"+scenario.getTitle()+"' excluded by filter: " + filter.asString() + "\n");
+        print(sb.toString());
+	}
+
+	public void runningWithAnnotatedEmbedderRunner(String className) {
         print("Running with AnnotatedEmbedderRunner '" + className + "'");
     }
 

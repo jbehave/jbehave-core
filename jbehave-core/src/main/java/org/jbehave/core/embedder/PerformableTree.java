@@ -411,6 +411,7 @@ public class PerformableTree {
         private final Configuration configuration;
         private final InjectableStepsFactory stepsFactory;
         private final List<CandidateSteps> candidateSteps;
+		private final EmbedderMonitor embedderMonitor;
         private final MetaFilter filter;
         private final BatchFailures failures;
         private Map<Story, StoryDuration> cancelledStories = new HashMap<Story, StoryDuration>();
@@ -420,10 +421,11 @@ public class PerformableTree {
         private StoryReporter reporter;
         private Map<String, List<PendingStep>> pendingStories = new HashMap<String, List<PendingStep>>();
 
-        public RunContext(Configuration configuration, InjectableStepsFactory stepsFactory, MetaFilter filter,
-                BatchFailures failures) {
+        public RunContext(Configuration configuration, InjectableStepsFactory stepsFactory, EmbedderMonitor embedderMonitor,
+                MetaFilter filter, BatchFailures failures) {
             this.configuration = configuration;
             this.stepsFactory = stepsFactory;
+			this.embedderMonitor = embedderMonitor;
             this.candidateSteps = stepsFactory.createCandidateSteps();
             this.filter = filter;
             this.failures = failures;
@@ -496,7 +498,7 @@ public class PerformableTree {
         }
 
         public RunContext childContextFor(GivenStory givenStory) {
-            RunContext child = new RunContext(configuration, stepsFactory, filter, failures);
+            RunContext child = new RunContext(configuration, stepsFactory, embedderMonitor, filter, failures);
             child.path = configuration.pathCalculator().calculate(path, givenStory.getPath());
             child.givenStory = true;
             return child;
@@ -596,6 +598,10 @@ public class PerformableTree {
 
         public BatchFailures getFailures() {
             return failures;
+        }
+        
+        public EmbedderMonitor embedderMonitor(){
+        	return embedderMonitor;
         }
     }
 
@@ -795,6 +801,10 @@ public class PerformableTree {
         }
 
         public void perform(RunContext context) throws InterruptedException {
+        	if ( !isAllowed() ) {
+        		context.embedderMonitor().scenarioNotAllowed(scenario, context.filter());
+        		return;
+        	}
             context.reporter().beforeScenario(scenario.getTitle());
             State state = context.state();
 			if (!examplePerformableScenarios.isEmpty()) {
@@ -1005,8 +1015,8 @@ public class PerformableTree {
     }
 
     public RunContext newRunContext(Configuration configuration, InjectableStepsFactory stepsFactory,
-            MetaFilter filter, BatchFailures failures) {
-        return new RunContext(configuration, stepsFactory, filter, failures);
+            EmbedderMonitor embedderMonitor, MetaFilter filter, BatchFailures failures) {
+        return new RunContext(configuration, stepsFactory, embedderMonitor, filter, failures);
     }
 
 }

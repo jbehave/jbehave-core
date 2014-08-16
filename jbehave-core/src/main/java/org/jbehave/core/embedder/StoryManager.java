@@ -84,7 +84,7 @@ public class StoryManager {
 
     public void runStories(List<Story> stories, MetaFilter filter, BatchFailures failures) {
         // create new run context
-        context = performableTree.newRunContext(configuration, stepsFactory, filter, failures);
+        context = performableTree.newRunContext(configuration, stepsFactory, embedderMonitor, filter, failures);
         
         // add stories        
         performableTree.addStories(context, stories);

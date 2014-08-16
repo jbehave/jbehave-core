@@ -1,5 +1,7 @@
 package org.jbehave.mojo;
 
+import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -23,12 +25,11 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.ReportsCount;
-
-import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
 
 /**
  * Abstract mojo that holds all the configuration parameters to specify and load
@@ -427,6 +428,12 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             }
             getLog().info(sb.toString());
         }
+
+    	public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
+            StringBuffer sb = new StringBuffer();
+            sb.append("Scenario '"+scenario.getTitle()+"' excluded by filter: " + filter.asString() + "\n");
+            getLog().info(sb.toString());
+    	}
 
         public void runningWithAnnotatedEmbedderRunner(String className) {
             getLog().info("Running with AnnotatedEmbedderRunner '" + className + "'");
