@@ -1,6 +1,6 @@
 <#ftl strip_whitespace=true>
 <#macro renderStat stats name class=""><#assign value = stats.get(name)!0><#if (value != 0)><span class="${class}">${value}</span><#else>${value}</#if></#macro>
-<#macro renderMillis stats name class=""><#assign millis = stats.get(name)!0><span class="${class}"><#assign time = timeFormatter.formatMillis(millis)>${time}</span></#macro>
+<#macro renderTime millis class=""><span class="${class}"><#assign time = timeFormatter.formatMillis(millis)>${time}</span></#macro>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -129,7 +129,8 @@
 <@renderStat stats "stepsIgnorable" "ignorable"/>
 </td>
 <td>
-<@renderMillis stats "duration"/>
+<#assign path = report.getPath()>
+<@renderTime storyDurations.get(path)!0/>
 </td>
 <td>
 <#assign filesByFormat = report.filesByFormat>
@@ -193,7 +194,7 @@
 <@renderStat stats "stepsIgnorable" "ignorable"/>
 </td>
 <td>
-<@renderMillis stats "duration"/>
+<@renderTime storyDurations.get('total')!0/>
 </td>
 <td>
 Totals
@@ -206,7 +207,7 @@ Totals
 <div class="clear"></div>
 <div id="footer">
 <div class="left">Generated on ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
-<div class="right">JBehave &#169; 2003-2011</div>
+<div class="right">JBehave &#169; 2003-2014</div>
 <div class="clear"></div>
 </div>
 

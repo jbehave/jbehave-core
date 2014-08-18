@@ -110,7 +110,7 @@ public class EmbedderMonitorBehaviour {
         Story story = mock(Story.class);
         long durationInSecs = 1L;
         long timeoutInSecs = 2L;
-        StoryDuration storyDuration = new StoryDuration(durationInSecs, timeoutInSecs);
+        StoryDuration storyDuration = new StoryDuration(timeoutInSecs);
         monitor.storyTimeout(story, storyDuration);
         String value = "value";
         monitor.systemPropertySet(name, value);

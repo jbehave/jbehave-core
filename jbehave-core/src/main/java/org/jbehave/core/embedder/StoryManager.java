@@ -1,9 +1,14 @@
 package org.jbehave.core.embedder;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -33,7 +38,7 @@ public class StoryManager {
     private final StoryRunner storyRunner;
     private final Map<String, RunningStory> runningStories = new HashMap<String, RunningStory>();
     private final Map<MetaFilter, List<Story>> excludedStories = new HashMap<MetaFilter, List<Story>>();
-
+    
     public StoryManager(Configuration configuration, EmbedderControls embedderControls,
             EmbedderMonitor embedderMonitor, ExecutorService executorService, InjectableStepsFactory stepsFactory,
             StoryRunner storyRunner) {
@@ -134,32 +139,28 @@ public class StoryManager {
     }
 
     public void waitUntilAllDoneOrFailed(BatchFailures failures) {
-        long start = System.currentTimeMillis();
         boolean allDone = false;
         while (!allDone) {
             allDone = true;
             for (RunningStory runningStory : runningStories.values()) {
                 Future<ThrowableStory> future = runningStory.getFuture();
-                if (!future.isDone()) {
+                Story story = runningStory.getStory();
+                long storyTimeoutInSecs = embedderControls.storyTimeoutInSecs();
+                StoryDuration storyDuration = runningStory.getDuration(storyTimeoutInSecs);
+				if (!future.isDone()) {
                     allDone = false;
-                    long durationInSecs = storyDurationInSecs(start);
-                    long timeoutInSecs = embedderControls.storyTimeoutInSecs();
-                    if (durationInSecs > timeoutInSecs) {
-                        Story story = runningStory.getStory();
-                        StoryDuration storyDuration = new StoryDuration(durationInSecs, timeoutInSecs);
+                    runningStory.updateDuration();
+                    if ( storyDuration.timedOut() ) {
                         embedderMonitor.storyTimeout(story, storyDuration);
                         storyRunner.cancelStory(story, storyDuration);
                         future.cancel(true);
 						if (embedderControls.failOnStoryTimeout()) {
-							StoryTimeout timeout = new StoryTimeout(
-									durationInSecs + "s > " + timeoutInSecs + "s");
 							throw new StoryExecutionFailed(story.getPath(),
-									timeout);
+									new StoryTimeout(storyDuration));
 						}
                     }
                     break;
                 } else {
-                    Story story = runningStory.getStory();
                     try {
                         ThrowableStory throwableStory = future.get();
                         Throwable throwable = throwableStory.getThrowable();
@@ -179,25 +180,38 @@ public class StoryManager {
             }
             tickTock();
         }
-        // cancel any outstanding execution which is not done before returning
+        // collect story durations and cancel any outstanding execution which is not done before returning
+        Properties storyDurations = new Properties();
+        long total = 0;
         for (RunningStory runningStory : runningStories.values()) {
+        	long durationInMillis = runningStory.getDurationInMillis();
+        	total += durationInMillis;
+			storyDurations.setProperty(runningStory.getStory().getPath(), Long.toString(durationInMillis));
             Future<ThrowableStory> future = runningStory.getFuture();
             if (!future.isDone()) {
                 future.cancel(true);
-            }
+            }            
         }
-
+        storyDurations.setProperty("total", Long.toString(total));
+        write(storyDurations, "storyDurations.props");
     }
 
-    private void tickTock() {
+    private void write(Properties p, String name) {
+        File outputDirectory = configuration.storyReporterBuilder().outputDirectory();
+        try {
+        	Writer output = new FileWriter(new File(outputDirectory, name));
+            p.store(output, this.getClass().getName());
+            output.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+	private void tickTock() {
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
         }
-    }
-
-    private long storyDurationInSecs(long start) {
-        return (System.currentTimeMillis() - start) / 1000;
     }
 
     private synchronized RunningStory submit(EnqueuedStory enqueuedStory) {
@@ -261,8 +275,8 @@ public class StoryManager {
     @SuppressWarnings("serial")
     public static class StoryTimeout extends RuntimeException {
 
-    	public StoryTimeout(String message) {
-			super(message);
+		public StoryTimeout(StoryDuration storyDuration) {
+			super(storyDuration.getDurationInSecs() + "s > " + storyDuration.getTimeoutInSecs() + "s");
 		}
 
     }
@@ -287,20 +301,39 @@ public class StoryManager {
 
     public static class RunningStory {
         private Story story;
+        private StoryDuration duration;
         private Future<ThrowableStory> future;
-
+        
         public RunningStory(Story story, Future<ThrowableStory> future) {
             this.story = story;
             this.future = future;
         }
 
-        public Future<ThrowableStory> getFuture() {
+		public Future<ThrowableStory> getFuture() {
             return future;
         }
 
         public Story getStory() {
             return story;
         }
+
+        public long getDurationInMillis() {
+        	if ( duration == null ){
+        		return 0;
+        	}
+			return duration.getDurationInSecs() * 1000;
+		}
+
+        public StoryDuration getDuration(long timeoutInSecs) {
+            if ( duration == null ){
+            	duration = new StoryDuration(timeoutInSecs);
+            }        
+            return duration;
+    	}
+
+		public void updateDuration() {
+            duration.update();
+		}
 
         public boolean isDone() {
             return future.isDone();

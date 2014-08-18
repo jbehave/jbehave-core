@@ -53,7 +53,7 @@ class StoryNarrator {
                 + " and "
                 + StepCreator.PARAMETER_VALUE_START+"&&&"+StepCreator.PARAMETER_VALUE_END);
         reporter.restarted("Then I should... - try again", new RestartingScenarioFailure("hi"));
-        reporter.storyCancelled(story, new StoryDuration(2, 1));
+        reporter.storyCancelled(story, new StoryDuration(1).setDurationInSecs(2));
         if (withFailure) {
             reporter.failed("Then I should have a balance of $30", new Exception("Expected <30> got <25>"));
         } else {

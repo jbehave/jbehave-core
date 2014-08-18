@@ -1300,6 +1300,7 @@ public class EmbedderBehaviour {
 
     private Story mockStory(Meta meta) {
         Story story = mock(Story.class);
+        when(story.getPath()).thenReturn("/a/path");
         when(story.getMeta()).thenReturn(meta);
         when(story.asMeta(Mockito.anyString())).thenReturn(meta);
         return story;
