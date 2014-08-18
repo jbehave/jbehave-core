@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -111,9 +112,32 @@ public class TemplateableViewGenerator implements ViewGenerator {
         addDateAndEncoding(dataModel);
         dataModel.put("timeFormatter", new TimeFormatter());
         dataModel.put("reportsTable", new ReportsTable(reports, nameResolver));
+        dataModel.put("storyDurations", storyDurations(outputDirectory));
         write(outputDirectory, outputName, reportsTemplate, dataModel);
         generateViewsIndex(outputDirectory);
     }
+
+	private Map<String,Long> storyDurations(File outputDirectory) {
+		Properties p = new Properties();
+		try {
+			p.load(new FileReader(new File(outputDirectory, "storyDurations.props")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		Map<String,Long> durations = new HashMap<String, Long>();
+		for ( Object key : p.keySet() ){
+			durations.put(toReportPath(key), toMillis(p.get(key)));
+		}
+		return durations;
+	}
+
+	private long toMillis(Object value) {
+		return Long.parseLong((String)value);
+	}
+
+	private String toReportPath(Object key) {
+		return FilenameUtils.getBaseName(((String)key).replace("/", "."));
+	}
 
 	private void generateViewsIndex(File outputDirectory) {
         String outputName = templateResource("viewDirectory") + "/index.html";

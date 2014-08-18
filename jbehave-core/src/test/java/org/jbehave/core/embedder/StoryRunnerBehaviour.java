@@ -359,7 +359,7 @@ public class StoryRunnerBehaviour {
         //When
         long durationInSecs = 2;
         long timeoutInSecs = 1;
-        StoryDuration storyDuration = new StoryDuration(durationInSecs, timeoutInSecs);
+        StoryDuration storyDuration = new StoryDuration(timeoutInSecs);
         try {
             StoryRunner runner = new StoryRunner();
             runner.cancelStory(story, storyDuration);

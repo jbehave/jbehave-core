@@ -40,7 +40,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     private Throwable cause;
     private OutcomesTable outcomesFailed;
     private int givenStories;
-    private long storyStartTime;
     private boolean currentScenarioNotAllowed;
 
     public PostStoryStatisticsCollector(OutputStream output) {
@@ -96,7 +95,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
         if (!givenStory) {
             resetData();
-            storyStartTime = System.currentTimeMillis();
         }
     }
 
@@ -132,8 +130,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
             write = true;
         }
         if ( write ) {
-            int duration = (int)(System.currentTimeMillis() - storyStartTime);
-            data.put("duration", duration);
             writeData();
         }
     }
