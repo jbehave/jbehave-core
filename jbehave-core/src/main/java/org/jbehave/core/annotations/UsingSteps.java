@@ -14,7 +14,9 @@ import java.lang.annotation.Target;
 public @interface UsingSteps {
 
     Class<?>[] instances() default {};
-    
+
+    String[] packages() default {};
+
     boolean inheritInstances() default true;
     
 }

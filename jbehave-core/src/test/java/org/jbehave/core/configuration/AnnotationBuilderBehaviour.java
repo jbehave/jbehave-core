@@ -1,5 +1,19 @@
 package org.jbehave.core.configuration;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.lang.reflect.Type;
+import java.util.List;
+
 import org.hamcrest.Matchers;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.InjectableEmbedder;
@@ -14,21 +28,10 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.Steps;
+import org.jbehave.core.steps.scan.GivenOnly;
+import org.jbehave.core.steps.scan.GivenWhen;
+import org.jbehave.core.steps.scan.GivenWhenThen;
 import org.junit.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.Type;
-import java.util.List;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
 
 public class AnnotationBuilderBehaviour {
 
@@ -191,6 +194,14 @@ public class AnnotationBuilderBehaviour {
 
     }
 
+    @Test
+    public void shouldBuildCandidateStepsFromPackages() {
+        AnnotationBuilder annotatedWithPackages = new AnnotationBuilder(AnnotatedWithPackages.class);
+        List<CandidateSteps> candidateSteps = annotatedWithPackages.buildCandidateSteps();
+		assertThatStepsInstancesAre(candidateSteps, GivenOnly.class, GivenWhen.class, GivenWhenThen.class);
+    }
+
+    
     @Configure(parameterConverters = { MyParameterConverter.class })
     @UsingSteps(instances = { MySteps.class, MyOtherSteps.class })
     static class Annotated {
@@ -226,6 +237,12 @@ public class AnnotationBuilderBehaviour {
 
     @UsingSteps()
     static class AnnotatedWithoutSteps {
+
+    }
+    
+    @Configure
+    @UsingSteps(packages = { "org.jbehave.core.steps.scan" })
+    static class AnnotatedWithPackages {
 
     }
 

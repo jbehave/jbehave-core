@@ -33,6 +33,7 @@ import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ScanningStepsFactory;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
@@ -141,11 +142,21 @@ public class AnnotationBuilder {
         List<Object> stepsInstances = new ArrayList<Object>();
         InjectableStepsFactory factory = null;
         if (finder.isAnnotationPresent(UsingSteps.class)) {
-            List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(UsingSteps.class, Object.class, "instances");
-            for (Class<Object> stepsClass : stepsClasses) {
-                stepsInstances.add(instanceOf(Object.class, stepsClass));
-            }
-            factory = new InstanceStepsFactory(configuration, stepsInstances);
+			List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(
+					UsingSteps.class, Object.class, "instances");
+			if (!stepsClasses.isEmpty()) {
+				for (Class<Object> stepsClass : stepsClasses) {
+					stepsInstances.add(instanceOf(Object.class, stepsClass));
+				}
+				factory = new InstanceStepsFactory(configuration,
+						stepsInstances);
+			}
+			List<String> packages = finder.getAnnotatedValues(UsingSteps.class,
+					String.class, "packages");
+			if (!packages.isEmpty()) {
+				factory = new ScanningStepsFactory(configuration,
+						packages.toArray(new String[packages.size()]));
+			}
         } else {
             annotationMonitor.annotationNotFound(UsingSteps.class, annotatedClass);
         }
