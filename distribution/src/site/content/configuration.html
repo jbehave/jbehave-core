@@ -280,6 +280,42 @@ public class TraderStories extends JUnitStories {
 using story paths as URLs, and correspondingly we configure the use of <a
 	href="javadoc/core/org/jbehave/core/io/LoadFromURL.html">LoadFromURL</a>.</span>
 
+<h3>Scanning for steps</h3>
+
+<p>JBehave also supports the ability to scan packages for the Steps classes.  If using the annotated approach:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+@UsingSteps(packages = { "org.jbehave.examples.core.steps", "my.other.steps" }, matchingNames = ".*Steps", notMatchingNames = ".*SkipSteps" )
+]]>
+</script>
+
+<p>If using the programmatic approach:</p>
+
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    public InjectableStepsFactory stepsFactory() {
+        return new ScanningStepsFactory(configuration(), "org.jbehave.examples.core.steps", "my.other.steps" ).matchingNames(".*Steps").notMatchingNames(".*SkipSteps");
+    }
+]]>
+</script>
+
+<p>Scanning requires an additional runtime dependency on <a href="https://github.com/ronmamo/reflections">Reflections</a>:</p>
+
+<script type="syntaxhighlighter" class="brush: xml">
+<![CDATA[
+    <dependency>
+        <groupId>org.reflections</groupId>
+        <artifactId>reflections</artifactId>
+        <version>[version]</version>
+    </dependency>
+]]>
+</script>
+
+<span class="followup">It is important to remember that all Steps classes created using the scanning approach must have a default constructor and no 
+<a href="dependency-injection.html">dependency injection</a> mechanism is supported.  If dependency injection is required, most frameworks also support
+their own version of class scanning.</span>
+
 <h3>Configurable Elements</h3>
 
 <p>All configurable elements of <a

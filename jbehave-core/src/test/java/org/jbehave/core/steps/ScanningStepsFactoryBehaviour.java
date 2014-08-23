@@ -36,6 +36,15 @@ public class ScanningStepsFactoryBehaviour {
 	}
 
 	@Test
+	public void shouldScanStepsFromPackagesAndFilterMatchingNames() {
+		InjectableStepsFactory factory = new ScanningStepsFactory(
+				new MostUsefulConfiguration(), "org.jbehave.core.steps.scan")
+				.matchingNames(".*GivenWhen.*").notMatchingNames(".*GivenWhenThen");
+		List<CandidateSteps> candidateSteps = factory.createCandidateSteps();
+		assertThat(candidateSteps.size(), Matchers.equalTo(1));
+	}
+
+	@Test
 	public void shouldNotFindAnyStepsFromInexistingPackage() {
 		InjectableStepsFactory factory = new ScanningStepsFactory(
 				new MostUsefulConfiguration(), "org.jbehave.inexisting");
