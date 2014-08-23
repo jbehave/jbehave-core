@@ -154,8 +154,13 @@ public class AnnotationBuilder {
 			List<String> packages = finder.getAnnotatedValues(UsingSteps.class,
 					String.class, "packages");
 			if (!packages.isEmpty()) {
+				String matchingNames = finder.getAnnotatedValue(UsingSteps.class,
+						String.class, "matchingNames");
+				String notMatchingNames = finder.getAnnotatedValue(UsingSteps.class,
+						String.class, "notMatchingNames");
 				factory = new ScanningStepsFactory(configuration,
-						packages.toArray(new String[packages.size()]));
+						packages.toArray(new String[packages.size()]))
+						.matchingNames(matchingNames).notMatchingNames(notMatchingNames);
 			}
         } else {
             annotationMonitor.annotationNotFound(UsingSteps.class, annotatedClass);

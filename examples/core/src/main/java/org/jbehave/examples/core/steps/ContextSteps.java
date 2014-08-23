@@ -15,6 +15,10 @@ public class ContextSteps {
 
 	private MyContext context;
 
+	public ContextSteps(){
+		this(new MyContext());
+	}
+	
 	public ContextSteps(MyContext context) {
 		this.context = context;
 	}

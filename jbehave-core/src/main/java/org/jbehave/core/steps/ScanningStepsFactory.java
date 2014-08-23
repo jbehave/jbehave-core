@@ -24,13 +24,19 @@ import org.reflections.scanners.MethodAnnotationsScanner;
 
 /**
  * An {@link InjectableStepsFactory} that scans for classes in the classpath.
- * The factory allows the package names to scan to be specified, or the root
- * class from which the package name is derived.
- * All classes that include any method annotation will be collected in the scan.
+ * The constructors allows the specification of the package names to scan or the
+ * root class from which the package name is derived. All classes that include
+ * any step method annotation ({@link Given}, {@link When}, {@link Then},
+ * {@link Before}, {@link After}, etc ... ) will be collected in the scan.
+ * Additional regex filters on the class names are provided via the
+ * {@link #matchingNames(String)} and {@link #notMatchingNames(String)} methods,
+ * which by default match all names.
  */
 public class ScanningStepsFactory extends AbstractStepsFactory {
 
 	private final Set<Class<?>> types = new HashSet<Class<?>>();
+	private String matchingRegex = ".*";
+	private String notMatchingRegex = "";
 
 	public ScanningStepsFactory(Configuration configuration, Class<?> root) {
 		this(configuration, root.getPackage().getName());
@@ -42,6 +48,16 @@ public class ScanningStepsFactory extends AbstractStepsFactory {
 		for (String packageName : packageNames) {
 			types.addAll(scanTypes(packageName));
 		}
+	}
+
+	public ScanningStepsFactory matchingNames(String matchingRegex) {
+		this.matchingRegex = matchingRegex;
+		return this;
+	}
+
+	public ScanningStepsFactory notMatchingNames(String notMatchingRegex) {
+		this.notMatchingRegex = notMatchingRegex;
+		return this;
 	}
 
 	private Set<Class<?>> scanTypes(String packageName) {
@@ -75,7 +91,14 @@ public class ScanningStepsFactory extends AbstractStepsFactory {
 
 	@Override
 	protected List<Class<?>> stepsTypes() {
-		return new ArrayList<Class<?>>(types);
+		List<Class<?>> matchingTypes = new ArrayList<Class<?>>();
+		for (Class<?> type : types) {
+			String name = type.getName();
+			if (name.matches(matchingRegex) && !name.matches(notMatchingRegex)) {
+				matchingTypes.add(type);
+			}
+		}
+		return matchingTypes;
 	}
 
 	public Object createInstanceOfType(Class<?> type) {

@@ -17,6 +17,10 @@ public @interface UsingSteps {
 
     String[] packages() default {};
 
+    String matchingNames() default ".*";
+    
+    String notMatchingNames() default "";
+    
     boolean inheritInstances() default true;
     
 }
