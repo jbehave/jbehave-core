@@ -1,5 +1,21 @@
 package org.jbehave.core.embedder;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
@@ -36,7 +52,6 @@ import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.junit.JUnitStoryMaps;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMap;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.CrossReference;
@@ -53,27 +68,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.instanceOf;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.sameInstance;
-
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class EmbedderBehaviour {
 
@@ -591,115 +585,6 @@ public class EmbedderBehaviour {
         assertThat(out.toString(), containsString("Skipped stories " + storyPaths));
     }
 
-    @Test()
-    public void shouldCancelStoryIfTimeoutIsSetAndStoryIsBusy() throws Throwable {
-        testStoryIfTimeoutIsSet(new Answer<PerformableTree>() {
-
-            public PerformableTree answer(InvocationOnMock invocation) throws Throwable {
-                for (long i = 0; i < Long.MAX_VALUE; i++) {
-                    // keep it busy
-                }
-                return null;
-            }
-
-        });
-    }
-
-    @Test()
-    public void shouldCancelStoryIfTimeoutIsSetAndStoryIsSleeping() throws Throwable {
-        testStoryIfTimeoutIsSet(new Answer<PerformableTree>() {
-
-            public PerformableTree answer(InvocationOnMock invocation) throws Throwable {
-                TimeUnit.SECONDS.sleep(3);
-                return null;
-            }
-
-        });
-    }
-
-    private void testStoryIfTimeoutIsSet(Answer<PerformableTree> answer) throws Throwable {
-        // Given
-        long timeoutInSecs = 1;
-
-        PerformableTree performableTree = mock(PerformableTree.class);
-        EmbedderMonitor monitor = mock(EmbedderMonitor.class);
-
-        EmbedderControls embedderControls = new EmbedderControls().useStoryTimeoutInSecs(timeoutInSecs);
-
-        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
-        Configuration configuration = embedder.configuration();
-        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
-        MetaFilter filter = embedder.metaFilter();
-        StoryPathResolver resolver = configuration.storyPathResolver();
-
-        List<String> storyPaths = new ArrayList<String>();
-        String storyPath = resolver.resolve(MyStory.class);
-        storyPaths.add(storyPath);
-        Story story = mockStory(Meta.EMPTY);
-        when(story.getPath()).thenReturn(storyPath);
-        when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-        when(story.getPath()).thenReturn(storyPath);
-
-        Mockito.doAnswer(answer).when(performableTree).perform(Matchers.isA(RunContext.class), Matchers.eq(story));
-        RunContext runContext = new RunContext(configuration, stepsFactory, monitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                		isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
-
-        // When
-        boolean exceptionWasThrown = false;
-        try {
-            embedder.runStoriesAsPaths(storyPaths);
-        } catch (Exception exception) {
-            exceptionWasThrown = true;
-        }
-
-        // Then
-        assertThat(exceptionWasThrown, is(true));
-        assertThat(runContext.isCancelled(story), org.hamcrest.Matchers.is(true));
-        verify(monitor).storyTimeout(Matchers.eq(story), Matchers.any(StoryDuration.class));
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expected = RunningStoriesFailed.class)
-    public void shouldThrowExceptionUponFailingStoriesAsPathsIfIgnoreFailureInStoriesFlagIsNotSet() throws Throwable {
-        // Given
-        PerformableTree performableTree = mock(PerformableTree.class);
-        EmbedderControls embedderControls = new EmbedderControls();
-        OutputStream out = new ByteArrayOutputStream();
-        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
-        List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
-
-        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
-        Configuration configuration = embedder.configuration();
-        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
-        MetaFilter filter = embedder.metaFilter();
-        StoryPathResolver resolver = configuration.storyPathResolver();
-        List<String> storyPaths = new ArrayList<String>();
-        Map<String, Story> stories = new HashMap<String, Story>();
-        for (Class<? extends Embeddable> embeddable : embeddables) {
-            String storyPath = resolver.resolve(embeddable);
-            storyPaths.add(storyPath);
-            Story story = mockStory(Meta.EMPTY);
-            stories.put(storyPath, story);
-            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-            when(story.getPath()).thenReturn(storyPath);
-        }
-        RunContext runContext = new RunContext(configuration, stepsFactory, monitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
-                runContext);
-
-        for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(performableTree).perform(runContext, stories.get(storyPath));
-        }
-        // When
-        embedder.runStoriesAsPaths(storyPaths);
-
-        // Then fail as expected
-
-    }
 
     @SuppressWarnings("unchecked")
     @Test
@@ -738,6 +623,7 @@ public class EmbedderBehaviour {
 
         // When
         embedder.runStoriesAsPaths(storyPaths);
+        TimeUnit.SECONDS.sleep(2);
 
         // Then
         for (String storyPath : storyPaths) {
@@ -789,49 +675,6 @@ public class EmbedderBehaviour {
         for (String storyPath : storyPaths) {
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test(expected = RunningStoriesFailed.class)
-    public void shouldThrowExceptionUponFailingStoriesAsPathsInBatchIfIgnoreFailureInStoriesFlagIsNotSet()
-            throws Throwable {
-        // Given
-        PerformableTree performableTree = mock(PerformableTree.class);
-        EmbedderControls embedderControls = new EmbedderControls().doBatch(true);
-        OutputStream out = new ByteArrayOutputStream();
-        EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
-        List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
-
-        Embedder embedder = embedderWith(performableTree, embedderControls, monitor);
-        Configuration configuration = embedder.configuration();
-        InjectableStepsFactory stepsFactory = embedder.stepsFactory();
-        MetaFilter filter = embedder.metaFilter();
-        StoryPathResolver resolver = configuration.storyPathResolver();
-        List<String> storyPaths = new ArrayList<String>();
-        Map<String, Story> stories = new HashMap<String, Story>();
-        for (Class<? extends Embeddable> embeddable : embeddables) {
-            String storyPath = resolver.resolve(embeddable);
-            storyPaths.add(storyPath);
-            Story story = mockStory(Meta.EMPTY);
-            stories.put(storyPath, story);
-            when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-            when(story.getPath()).thenReturn(storyPath);
-        }
-        RunContext runContext = new RunContext(configuration, stepsFactory, monitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
-                runContext);
-
-        for (String storyPath : storyPaths) {
-            doThrow(new RuntimeException(storyPath + " failed")).when(performableTree).perform(runContext, stories.get(storyPath));
-        }
-
-        // When
-        embedder.runStoriesAsPaths(storyPaths);
-
-        // Then fail as expected
-
     }
 
     @SuppressWarnings("unchecked")

@@ -156,66 +156,64 @@ public class StoryManager {
 				embedderControls, embedderMonitor, story));
 	}
 
-	public void waitUntilAllDoneOrFailed(RunContext context) {
-		boolean allDone = false;
-		while (!allDone) {
-			allDone = true;
-			for (RunningStory runningStory : runningStories.values()) {
-				Future<ThrowableStory> future = runningStory.getFuture();
-				Story story = runningStory.getStory();
-				long storyTimeoutInSecs = embedderControls.storyTimeoutInSecs();
-				StoryDuration storyDuration = runningStory
-						.getDuration(storyTimeoutInSecs);
-				if (!future.isDone()) {
-					allDone = false;
-					runningStory.updateDuration();
-					if (storyDuration.timedOut()) {
-						embedderMonitor.storyTimeout(story, storyDuration);
-						context.cancelStory(story, storyDuration);
-						future.cancel(true);
-						if (embedderControls.failOnStoryTimeout()) {
-							throw new StoryExecutionFailed(story.getPath(),
-									new StoryTimeout(storyDuration));
+    public void waitUntilAllDoneOrFailed(RunContext context) {
+        boolean allDone = false;
+        while (!allDone) {
+            allDone = true;
+            for (RunningStory runningStory : runningStories.values()) {            	
+                if ( runningStory.isStarted() ){
+                    Story story = runningStory.getStory();
+					Future<ThrowableStory> future = runningStory.getFuture();
+					if (!future.isDone()) {
+						allDone = false;
+						StoryDuration duration = runningStory.getDuration();
+						runningStory.updateDuration();
+						if (duration.timedOut()) {
+							embedderMonitor.storyTimeout(story, duration);
+							context.cancelStory(story, duration);
+							future.cancel(true);
+							if (embedderControls.failOnStoryTimeout()) {
+								throw new StoryExecutionFailed(story.getPath(),
+										new StoryTimeout(duration));
+							}
+							continue;
 						}
-					}
-					break;
-				} else {
-					try {
-						ThrowableStory throwableStory = future.get();
-						Throwable throwable = throwableStory.getThrowable();
-						if (throwable != null) {
-							context.addFailure(story.getPath(), throwable);
+					} else {
+						try {
+							ThrowableStory throwableStory = future.get();
+							Throwable throwable = throwableStory.getThrowable();
+							if (throwable != null) {
+								context.addFailure(story.getPath(), throwable);
+								if (!embedderControls.ignoreFailureInStories()) {
+									continue;
+								}
+							}
+						} catch (Throwable e) {
+							context.addFailure(story.getPath(), e);
 							if (!embedderControls.ignoreFailureInStories()) {
-								break;
+								continue;
 							}
 						}
-					} catch (Throwable e) {
-						context.addFailure(story.getPath(), e);
-						if (!embedderControls.ignoreFailureInStories()) {
-							break;
-						}
 					}
-				}
-			}
-			tickTock();
-		}
-		// collect story durations and cancel any outstanding execution which is
-		// not done before returning
-		Properties storyDurations = new Properties();
-		long total = 0;
-		for (RunningStory runningStory : runningStories.values()) {
-			long durationInMillis = runningStory.getDurationInMillis();
-			total += durationInMillis;
-			storyDurations.setProperty(runningStory.getStory().getPath(),
-					Long.toString(durationInMillis));
-			Future<ThrowableStory> future = runningStory.getFuture();
-			if (!future.isDone()) {
-				future.cancel(true);
-			}
-		}
-		storyDurations.setProperty("total", Long.toString(total));
-		write(storyDurations, "storyDurations.props");
-	}
+                }
+            }
+            tickTock();
+        }
+        // collect story durations and cancel any outstanding execution which is not done before returning
+        Properties storyDurations = new Properties();
+        long total = 0;
+        for (RunningStory runningStory : runningStories.values()) {
+        	long durationInMillis = runningStory.getDurationInMillis();
+        	total += durationInMillis;
+			storyDurations.setProperty(runningStory.getStory().getPath(), Long.toString(durationInMillis));
+            Future<ThrowableStory> future = runningStory.getFuture();
+            if (!future.isDone()) {
+                future.cancel(true);
+            }            
+        }
+        storyDurations.setProperty("total", Long.toString(total));
+        write(storyDurations, "storyDurations.props");
+    }
 
 	private void write(Properties p, String name) {
 		File outputDirectory = configuration.storyReporterBuilder()
@@ -237,8 +235,7 @@ public class StoryManager {
 	}
 
 	private synchronized RunningStory submit(EnqueuedStory enqueuedStory) {
-		return new RunningStory(enqueuedStory.getStory(),
-				executorService.submit(enqueuedStory));
+		return new RunningStory(enqueuedStory, executorService.submit(enqueuedStory));
 	}
 
 	private static class EnqueuedStory implements Callable<ThrowableStory> {
@@ -248,6 +245,7 @@ public class StoryManager {
 		private final EmbedderControls embedderControls;
 		private final EmbedderMonitor embedderMonitor;
 		private final Story story;
+		private long startedAtMillis;
 
 		public EnqueuedStory(PerformableTree performableTree,
 				RunContext context, EmbedderControls embedderControls,
@@ -263,6 +261,7 @@ public class StoryManager {
 			String storyPath = story.getPath();
 			try {
 				embedderMonitor.runningStory(storyPath);
+				startedAtMillis = System.currentTimeMillis();
 				performableTree.perform(context, story);
 			} catch (Throwable e) {
 				if (embedderControls.ignoreFailureInStories()) {
@@ -279,6 +278,14 @@ public class StoryManager {
 			return story;
 		}
 
+		public long getStartedAtMillis() {
+			return startedAtMillis;
+		}
+
+		public long getTimeoutInSecs() {
+			return embedderControls.storyTimeoutInSecs();
+		}
+
 	}
 
 	@SuppressWarnings("serial")
@@ -290,8 +297,8 @@ public class StoryManager {
 
 	}
 
-	@SuppressWarnings("serial")
-	public static class StoryTimeout extends RuntimeException {
+    @SuppressWarnings("serial")
+    public static class StoryTimeout extends RuntimeException {
 
 		public StoryTimeout(StoryDuration storyDuration) {
 			super(storyDuration.getDurationInSecs() + "s > "
@@ -319,12 +326,13 @@ public class StoryManager {
 	}
 
 	public static class RunningStory {
-		private Story story;
-		private StoryDuration duration;
+		private EnqueuedStory enqueuedStory;
 		private Future<ThrowableStory> future;
+		private StoryDuration duration;
 
-		public RunningStory(Story story, Future<ThrowableStory> future) {
-			this.story = story;
+		public RunningStory(EnqueuedStory enqueuedStory,
+				Future<ThrowableStory> future) {
+			this.enqueuedStory = enqueuedStory;
 			this.future = future;
 		}
 
@@ -333,19 +341,19 @@ public class StoryManager {
 		}
 
 		public Story getStory() {
-			return story;
+			return enqueuedStory.getStory();
 		}
 
 		public long getDurationInMillis() {
-			if (duration == null) {
+			if ( duration == null ){
 				return 0;
 			}
 			return duration.getDurationInSecs() * 1000;
 		}
 
-		public StoryDuration getDuration(long timeoutInSecs) {
+		public StoryDuration getDuration() {
 			if (duration == null) {
-				duration = new StoryDuration(timeoutInSecs);
+				duration = new StoryDuration(enqueuedStory.getStartedAtMillis(), enqueuedStory.getTimeoutInSecs());
 			}
 			return duration;
 		}
@@ -367,6 +375,10 @@ public class StoryManager {
 				}
 			}
 			return false;
+		}
+		
+		public boolean isStarted(){
+			return enqueuedStory.getStartedAtMillis() != 0;
 		}
 	}
 
@@ -394,5 +406,5 @@ public class StoryManager {
 		}
 
 	}
-
+	
 }

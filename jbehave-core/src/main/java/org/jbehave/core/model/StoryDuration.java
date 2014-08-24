@@ -5,12 +5,16 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 public class StoryDuration {
 
-	private long start;
+	private long startedAtMillis;
     private long durationInMillis;
     private final long timeoutInSecs;
 
     public StoryDuration(long timeoutInSecs) {
-        this.start = System.currentTimeMillis();
+        this(System.currentTimeMillis(), timeoutInSecs);
+    }
+
+    public StoryDuration(long startedAtMillis, long timeoutInSecs) {
+        this.startedAtMillis = startedAtMillis;
         this.timeoutInSecs = timeoutInSecs;
     }
 
@@ -33,7 +37,7 @@ public class StoryDuration {
 	}
 
     private long elapsedTimeInMillis() {
-        return System.currentTimeMillis() - start;
+        return System.currentTimeMillis() - startedAtMillis;
     }    
 
 	public boolean timedOut() {
