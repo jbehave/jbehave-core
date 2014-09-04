@@ -2,12 +2,16 @@ package org.jbehave.core.steps.spring;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.steps.AbstractStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.ClassUtils;
 
 /**
  * An {@link InjectableStepsFactory} that uses Spring's
@@ -28,14 +32,16 @@ public class SpringStepsFactory extends AbstractStepsFactory {
 
     @Override
     protected List<Class<?>> stepsTypes() {
-        List<Class<?>> types = new ArrayList<Class<?>>();
+        // Using set because in some cases (eg: scoped proxies),
+        // there may be two actual beans for each defined bean).
+        Set<Class<?>> types = new HashSet<Class<?>>();
         for (String name : context.getBeanDefinitionNames()) {
-            Class<?> type = context.getType(name);
+            Class<?> type = extractType(name);
             if (isAllowed(type) && hasAnnotatedMethods(type)) {
                 types.add(type);
             }
         }
-        return types;
+        return new ArrayList<Class<?>>(types);
     }
 
     /**
@@ -51,13 +57,28 @@ public class SpringStepsFactory extends AbstractStepsFactory {
 
     public Object createInstanceOfType(Class<?> type) {
         for (String name : context.getBeanDefinitionNames()) {
-            Class<?> beanType = context.getType(name);
+            Class<?> beanType = extractType(name);
             if (type.equals(beanType)) {
                 return context.getBean(name);
             }
         }
 
         throw new StepsInstanceNotFound(type, this);
+    }
+    
+    /**
+     * Handles the type extraction from the bean name, untangling the proxy if
+     * needed
+     * 
+     * @param name
+     * @return
+     */
+    private Class<?> extractType(String name) {
+        Class<?> type = context.getType(name);
+        if (ClassUtils.isCglibProxyClass(type)) {
+            return AopProxyUtils.ultimateTargetClass(context.getBean(name));
+        }
+        return type;
     }
 
 }
