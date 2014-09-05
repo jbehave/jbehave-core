@@ -23,62 +23,63 @@ import org.springframework.util.ClassUtils;
  */
 public class SpringStepsFactory extends AbstractStepsFactory {
 
-    private final ApplicationContext context;
+	private final ApplicationContext context;
 
-    public SpringStepsFactory(Configuration configuration, ApplicationContext context) {
-        super(configuration);
-        this.context = context;
-    }
+	public SpringStepsFactory(Configuration configuration,
+			ApplicationContext context) {
+		super(configuration);
+		this.context = context;
+	}
 
-    @Override
-    protected List<Class<?>> stepsTypes() {
-        // Using set because in some cases (eg: scoped proxies),
-        // there may be two actual beans for each defined bean).
-        Set<Class<?>> types = new HashSet<Class<?>>();
-        for (String name : context.getBeanDefinitionNames()) {
-            Class<?> type = extractType(name);
-            if (isAllowed(type) && hasAnnotatedMethods(type)) {
-                types.add(type);
-            }
-        }
-        return new ArrayList<Class<?>>(types);
-    }
+	@Override
+	protected List<Class<?>> stepsTypes() {
+		// Using set because in some cases (eg: scoped proxies),
+		// there may be two actual beans for each defined bean).
+		Set<Class<?>> types = new HashSet<Class<?>>();
+		for (String name : context.getBeanDefinitionNames()) {
+			Class<?> type = beanType(name);
+			if (isAllowed(type) && hasAnnotatedMethods(type)) {
+				types.add(type);
+			}
+		}
+		return new ArrayList<Class<?>>(types);
+	}
 
-    /**
-     * Checks if type returned from context is allowed, i.e. not null and not
-     * abstract.
-     * 
-     * @param type the Class of the bean
-     * @return A boolean, <code>true</code> if allowed
-     */
-    protected boolean isAllowed(Class<?> type) {
-        return type != null && !Modifier.isAbstract(type.getModifiers());
-    }
+	/**
+	 * Checks if type returned from context is allowed, i.e. not null and not
+	 * abstract.
+	 * 
+	 * @param type
+	 *            the Class of the bean
+	 * @return A boolean, <code>true</code> if allowed
+	 */
+	protected boolean isAllowed(Class<?> type) {
+		return type != null && !Modifier.isAbstract(type.getModifiers());
+	}
 
-    public Object createInstanceOfType(Class<?> type) {
-        for (String name : context.getBeanDefinitionNames()) {
-            Class<?> beanType = extractType(name);
-            if (type.equals(beanType)) {
-                return context.getBean(name);
-            }
-        }
+	public Object createInstanceOfType(Class<?> type) {
+		for (String name : context.getBeanDefinitionNames()) {
+			Class<?> beanType = beanType(name);
+			if (type.equals(beanType)) {
+				return context.getBean(name);
+			}
+		}
+		throw new StepsInstanceNotFound(type, this);
+	}
 
-        throw new StepsInstanceNotFound(type, this);
-    }
-    
-    /**
-     * Handles the type extraction from the bean name, untangling the proxy if
-     * needed
-     * 
-     * @param name
-     * @return
-     */
-    private Class<?> extractType(String name) {
-        Class<?> type = context.getType(name);
-        if (ClassUtils.isCglibProxyClass(type)) {
-            return AopProxyUtils.ultimateTargetClass(context.getBean(name));
-        }
-        return type;
-    }
+	/**
+	 * Return the bean type, untangling the proxy if needed
+	 * 
+	 * @param name
+	 *            the bean name
+	 * @return The Class of the bean
+	 */
+	private Class<?> beanType(String name) {
+		Class<?> type = context.getType(name);
+		if (ClassUtils.isCglibProxyClass(type)) {
+			return AopProxyUtils.ultimateTargetClass(context.getBean(name));
+		}
+		return type;
+	}
 
 }
