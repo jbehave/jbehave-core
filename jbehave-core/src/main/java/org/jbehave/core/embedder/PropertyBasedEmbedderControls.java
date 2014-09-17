@@ -81,7 +81,19 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        // Calling accessor methods to show the expected system based values
+        // rather than the object values
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+        .append("batch", batch())
+        .append("skip", skip())
+        .append("generateViewAfterStories", generateViewAfterStories())
+        .append("ignoreFailureInStories", ignoreFailureInStories())
+        .append("ignoreFailureInView", ignoreFailureInView())
+        .append("verboseFailures", verboseFailures())
+        .append("verboseFiltering", verboseFiltering())
+        .append("storyTimeoutInSecs", storyTimeoutInSecs())
+        .append("threads", threads())
+        .toString();        
     }
     
 }
