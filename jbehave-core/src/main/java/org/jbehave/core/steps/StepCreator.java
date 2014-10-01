@@ -293,7 +293,7 @@ public class StepCreator {
     private String[] parameterValuesForStep(Map<String, String> namedParameters, Type[] types, ParameterName[] names) {
         final String[] parameters = new String[types.length];
         for (int position = 0; position < types.length; position++) {
-            parameters[position] = parameterForPosition(position, names, namedParameters);
+        	parameters[position] = parameterForPosition(position, names, namedParameters);
         }
         return parameters;
     }
@@ -784,14 +784,14 @@ public class StepCreator {
         private final ParameterConverters parameterConverters;
         private final Paranamer paranamer;
         private final Meta meta;
-        private int methodArity;
-
+        private final Type[] parameterTypes;
+        
         public MethodInvoker(Method method, ParameterConverters parameterConverters, Paranamer paranamer, Meta meta) {
             this.method = method;
             this.parameterConverters = parameterConverters;
             this.paranamer = paranamer;
             this.meta = meta;
-            this.methodArity = method.getParameterTypes().length;
+            this.parameterTypes = method.getGenericParameterTypes();
         }
 
         public void invoke() throws InvocationTargetException, IllegalAccessException {
@@ -799,48 +799,47 @@ public class StepCreator {
         }
 
         private Parameter[] methodParameters() {
-            Parameter[] parameters = new Parameter[methodArity];
-            String[] annotationNamedParameters = annotatedParameterNames(method);
-            String[] parameterNames = paranamer.lookupParameterNames(method, false);
-            Class<?>[] parameterTypes = method.getParameterTypes();
+            Parameter[] parameters = new Parameter[parameterTypes.length];
+            String[] annotatedNames = annotatedParameterNames(method);
+            String[] paranamerNames = paranamer.lookupParameterNames(method, false);
 
-            for (int paramPosition = 0; paramPosition < methodArity; paramPosition++) {
-                String paramName = parameterNameFor(paramPosition, annotationNamedParameters, parameterNames);
-                parameters[paramPosition] = new Parameter(paramPosition, parameterTypes[paramPosition], paramName);
+            for (int position = 0; position < parameterTypes.length; position++) {
+                String name = parameterNameFor(position, annotatedNames, paranamerNames);
+                parameters[position] = new Parameter(position, parameterTypes[position], name);
             }
 
             return parameters;
         }
 
-        private String parameterNameFor(int paramPosition, String[] annotationNamedParameters, String[] parameterNames) {
-            String nameFromAnnotation = nameIfValidPositionInArray(annotationNamedParameters, paramPosition);
-            String parameterName = nameIfValidPositionInArray(parameterNames, paramPosition);
-            if (nameFromAnnotation != null) {
-                return nameFromAnnotation;
-            } else if (parameterName != null) {
-                return parameterName;
+        private String parameterNameFor(int position, String[] annotatedNames, String[] paranamerNames) {
+            String annotatedName = nameByPosition(annotatedNames, position);
+            String paranamerName = nameByPosition(paranamerNames, position);
+            if (annotatedName != null) {
+                return annotatedName;
+            } else if (paranamerName != null) {
+                return paranamerName;
             }
             return null;
         }
 
-        private String nameIfValidPositionInArray(String[] paramNames, int paramPosition) {
-            return paramPosition < paramNames.length ? paramNames[paramPosition] : null;
+        private String nameByPosition(String[] names, int position) {
+            return position < names.length ? names[position] : null;
         }
 
         private Object[] parameterValuesFrom(Meta meta) {
-            Object[] values = new Object[methodArity];
+            Object[] values = new Object[parameterTypes.length];
             for (Parameter parameter : methodParameters()) {
-                values[parameter.position] = parameterConverters.convert(parameter.valueFrom(meta), parameter.type);
+            	values[parameter.position] = parameterConverters.convert(parameter.valueFrom(meta), parameter.type);
             }
             return values;
         }
 
         private class Parameter {
             private final int position;
-            private final Class<?> type;
+            private final Type type;
             private final String name;
 
-            public Parameter(int position, Class<?> type, String name) {
+            public Parameter(int position, Type type, String name) {
                 this.position = position;
                 this.type = type;
                 this.name = name;
