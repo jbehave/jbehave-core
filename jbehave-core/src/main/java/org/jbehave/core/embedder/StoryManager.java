@@ -157,11 +157,16 @@ public class StoryManager {
 	}
 
     public void waitUntilAllDoneOrFailed(RunContext context) {
+        if ( runningStories.values().isEmpty() ) {
+        	return;
+        }
         boolean allDone = false;
-        while (!allDone) {
+        boolean started = false;
+        while (!allDone || !started) {
             allDone = true;
             for (RunningStory runningStory : runningStories.values()) {            	
                 if ( runningStory.isStarted() ){
+                	started = true;
                     Story story = runningStory.getStory();
 					Future<ThrowableStory> future = runningStory.getFuture();
 					if (!future.isDone()) {
@@ -195,6 +200,8 @@ public class StoryManager {
 							}
 						}
 					}
+                } else {
+                	started = false;
                 }
             }
             tickTock();
