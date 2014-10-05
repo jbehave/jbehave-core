@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>3.9.5</version>
+    <version>3.10-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-scala</artifactId>
   <name>JBehave Scala</name>
