@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-archetypes</artifactId>
-    <version>4.0-beta-11</version>
+    <version>4.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-needle-archetype</artifactId>
   <packaging>maven-archetype</packaging>
