@@ -181,6 +181,13 @@ public class DelegatingStoryReporter implements StoryReporter {
             reporter.restarted(step, cause);
         }
     }
+    
+    public void restartedStory(Story story, Throwable cause) {
+    	for (StoryReporter reporter : delegates) {
+            reporter.restartedStory(story, cause);
+        }
+        
+    }
 
     public void storyCancelled(Story story, StoryDuration storyDuration) {
         for (StoryReporter reporter : delegates) {

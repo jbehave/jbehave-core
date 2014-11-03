@@ -76,6 +76,7 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("notPerformed", "{0} ({1})\n");
         patterns.setProperty("failed", "{0} ({1})\n({2})\n");
         patterns.setProperty("restarted", "{0} ({1})\n");
+        patterns.setProperty("restartedStory", "{0} ({1})\n");
         patterns.setProperty("outcomesTableStart", "");
         patterns.setProperty("outcomesTableHeadStart", "|");
         patterns.setProperty("outcomesTableHeadCell", "{0}|");

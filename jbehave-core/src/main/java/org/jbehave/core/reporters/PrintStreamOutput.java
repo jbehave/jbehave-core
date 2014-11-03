@@ -325,6 +325,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
     public void restarted(String step, Throwable cause) {
         print(format("restarted", "{0} {1}\n", step, cause.getMessage()));
     }
+    
+    public void restartedStory(Story story, Throwable cause) {
+        print(format("restartedStory", "{0} {1}\n", story.getPath(), cause.getMessage()));
+    }
 
     /**
      * Formats event output by key, usually equal to the method name.

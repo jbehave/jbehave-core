@@ -12,6 +12,7 @@ import java.util.Properties;
 
 import org.hamcrest.core.IsEqual;
 import org.jbehave.core.failures.RestartingScenarioFailure;
+import org.jbehave.core.failures.RestartingStoryFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
@@ -53,6 +54,7 @@ class StoryNarrator {
                 + " and "
                 + StepCreator.PARAMETER_VALUE_START+"&&&"+StepCreator.PARAMETER_VALUE_END);
         reporter.restarted("Then I should... - try again", new RestartingScenarioFailure("hi"));
+        reporter.restartedStory(story, new RestartingStoryFailure("Restarted Story"));
         reporter.storyCancelled(story, new StoryDuration(1).setDurationInSecs(2));
         if (withFailure) {
             reporter.failed("Then I should have a balance of $30", new Exception("Expected <30> got <25>"));

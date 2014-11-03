@@ -206,6 +206,9 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     public void restarted(String step, Throwable cause) {
     }
+    
+    public void restartedStory(Story story, Throwable cause) {
+    }
 
     private void add(String event) {
         Integer count = data.get(event);

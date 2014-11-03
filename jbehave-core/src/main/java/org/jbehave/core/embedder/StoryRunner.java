@@ -12,6 +12,7 @@ import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.failures.RestartingScenarioFailure;
+import org.jbehave.core.failures.RestartingStoryFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -49,6 +50,7 @@ public class StoryRunner {
     private ThreadLocal<FailureStrategy> failureStrategy = new ThreadLocal<FailureStrategy>();
     private ThreadLocal<PendingStepStrategy> pendingStepStrategy = new ThreadLocal<PendingStepStrategy>();
     private ThreadLocal<UUIDExceptionWrapper> storyFailure = new ThreadLocal<UUIDExceptionWrapper>();
+    private ThreadLocal<UUIDExceptionWrapper> beforeAfterStoryFailure = new ThreadLocal<UUIDExceptionWrapper>();
     private ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
     private ThreadLocal<String> reporterStoryPath = new ThreadLocal<String>();
     private ThreadLocal<State> storiesState = new ThreadLocal<State>();
@@ -214,19 +216,50 @@ public class StoryRunner {
     public void cancelStory(Story story, StoryDuration storyDuration) {
         cancelledStories.put(story, storyDuration);
     }
+    
+    /**
+     * Helper method to determine if the cause of a story failure contains {@link RestartingStoryFailure}
+     * @param cause - the stacktrace to check for {@link RestartingStoryFailure}
+     * @return true if found, false otherwise
+     */
+    public boolean hasRestartingStoryException(Throwable cause)
+    {
+    	while(cause != null) {
+			if (cause instanceof RestartingStoryFailure) {
+				return true;
+			}
+			cause = cause.getCause();
+    	}
+    	return false;
+    }
 
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
-        try {
+
+    	boolean restartingStory = false;
+    	
+    	try {
             runCancellable(context, story, storyParameters);
         } catch (Throwable e) {
-            if (cancelledStories.containsKey(story)) {
-                reporter.get().storyCancelled(story, cancelledStories.get(story));
-                reporter.get().afterScenario();
-                reporter.get().afterStory(context.givenStory);
-            }
-            throw e;
-        } finally {
-            if (!context.givenStory() && reporter.get() instanceof ConcurrentStoryReporter) {
+        	
+			
+        	if (cancelledStories.containsKey(story)) {
+        		reporter.get().storyCancelled(story, cancelledStories.get(story));
+        		reporter.get().afterScenario();
+        		reporter.get().afterStory(context.givenStory);
+        	}
+        	
+			// Restart entire story if determined it needs it
+			if (hasRestartingStoryException(e) || hasRestartingStoryException(beforeAfterStoryFailure.get())) {
+				//this is not getting logged when running in multi-threaded mode
+				reporter.get().restartedStory(story, e);
+				restartingStory = true;
+				run(context, story, storyParameters);
+			} else {
+				throw e;
+			}
+
+        }finally {
+            if (!context.givenStory() && reporter.get() instanceof ConcurrentStoryReporter && !restartingStory) {
                 ((ConcurrentStoryReporter) reporter.get()).invokeDelayed();
             }
         }
@@ -373,6 +406,7 @@ public class StoryRunner {
         }
         currentStrategy.set(context.configuration().failureStrategy());
         storyFailure.set(null);
+        beforeAfterStoryFailure.set(null);
     }
 
     private void runGivenStories(GivenStories givenStories, Map<String, String> parameters, RunContext context) throws Throwable {
@@ -569,6 +603,12 @@ public class StoryRunner {
         public State run(Step step) {
             StepResult result = step.doNotPerform(scenarioFailure);
             result.describeTo(reporter.get());
+            
+			if (result.getFailure() != null) {
+				//persist failures to see if we need to restart the story
+				beforeAfterStoryFailure.set(result.getFailure());
+			}
+            
             return this;
         }
     }
