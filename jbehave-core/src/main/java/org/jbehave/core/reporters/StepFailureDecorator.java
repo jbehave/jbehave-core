@@ -127,6 +127,10 @@ public class StepFailureDecorator implements StoryReporter {
     public void restarted(String step, Throwable cause) {
         delegate.restarted(step, cause);
     }
+    
+    public void restartedStory(Story story, Throwable cause) {
+        delegate.restartedStory(story, cause);
+    }
 
     public void storyCancelled(Story story, StoryDuration storyDuration) {
         delegate.storyCancelled(story, storyDuration);

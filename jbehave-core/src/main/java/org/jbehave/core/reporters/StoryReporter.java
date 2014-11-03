@@ -66,6 +66,8 @@ public interface StoryReporter {
 	void failedOutcomes(String step, OutcomesTable table);
 
     void restarted(String step, Throwable cause);
+    
+    void restartedStory(Story story, Throwable cause);
 
     void dryRun();
 

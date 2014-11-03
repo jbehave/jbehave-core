@@ -48,6 +48,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method dryRun;
     private static Method pendingMethods;
     private static Method restarted;
+    private static Method restartedStory;
 
     static {
         try {
@@ -76,6 +77,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
             dryRun = StoryReporter.class.getMethod("dryRun");
             pendingMethods = StoryReporter.class.getMethod("pendingMethods", List.class);
             restarted = StoryReporter.class.getMethod("restarted", String.class, Throwable.class);
+            restartedStory = StoryReporter.class.getMethod("restartedStory", Story.class, Throwable.class);
         } catch (NoSuchMethodException e) {
             throw new RuntimeException(e);
         }
@@ -300,13 +302,22 @@ public class ConcurrentStoryReporter implements StoryReporter {
         }
         
     }
-
+    
     public void restarted(String step, Throwable cause) {
         crossReferencing.restarted(step, cause);
         if (multiThreading) {
             delayedMethods.add(new DelayedMethod(restarted, step, cause));
         } else {
             delegate.restarted(step, cause);
+        }
+    }
+    
+    public void restartedStory(Story story, Throwable cause){
+        crossReferencing.restartedStory(story, cause);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(restartedStory, story, cause));
+        } else {
+            delegate.restartedStory(story, cause);
         }
     }
 
