@@ -48,6 +48,7 @@ import org.jbehave.examples.core.steps.MyContext;
 import org.jbehave.examples.core.steps.NamedParametersSteps;
 import org.jbehave.examples.core.steps.PendingSteps;
 import org.jbehave.examples.core.steps.PriorityMatchingSteps;
+import org.jbehave.examples.core.steps.RestartingSteps;
 import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.SearchSteps;
 import org.jbehave.examples.core.steps.TableSteps;
@@ -116,7 +117,8 @@ public class CoreStories extends JUnitStories {
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
                 new MetaParametrisationSteps(), new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(),
                 new SandpitSteps(), new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(),
-                new NamedParametersSteps(), new ExamplesTableParametersSteps(), new TableSteps(), new ContextSteps(context));
+                new NamedParametersSteps(), new ExamplesTableParametersSteps(), new TableSteps(), 
+                new ContextSteps(context), new RestartingSteps());
     }
 
     @Override
