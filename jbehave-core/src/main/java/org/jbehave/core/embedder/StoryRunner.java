@@ -50,7 +50,6 @@ public class StoryRunner {
     private ThreadLocal<FailureStrategy> failureStrategy = new ThreadLocal<FailureStrategy>();
     private ThreadLocal<PendingStepStrategy> pendingStepStrategy = new ThreadLocal<PendingStepStrategy>();
     private ThreadLocal<UUIDExceptionWrapper> storyFailure = new ThreadLocal<UUIDExceptionWrapper>();
-    private ThreadLocal<UUIDExceptionWrapper> beforeAfterStoryFailure = new ThreadLocal<UUIDExceptionWrapper>();
     private ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
     private ThreadLocal<String> reporterStoryPath = new ThreadLocal<String>();
     private ThreadLocal<State> storiesState = new ThreadLocal<State>();
@@ -218,20 +217,19 @@ public class StoryRunner {
     }
     
     /**
-     * Helper method to determine if the cause of a story failure contains {@link RestartingStoryFailure}
-     * @param cause - the stacktrace to check for {@link RestartingStoryFailure}
+     * Determines if the cause of a story failure is {@link RestartingStoryFailure}
+     * @param cause the {@link Throwable} containing the {@link RestartingStoryFailure} in its stack trace
      * @return true if found, false otherwise
      */
-    public boolean hasRestartingStoryException(Throwable cause)
-    {
-    	while(cause != null) {
+	private boolean restartStory(Throwable cause) {
+		while (cause != null) {
 			if (cause instanceof RestartingStoryFailure) {
 				return true;
 			}
 			cause = cause.getCause();
-    	}
-    	return false;
-    }
+		}
+		return false;
+	}
 
     private void run(RunContext context, Story story, Map<String, String> storyParameters) throws Throwable {
 
@@ -248,8 +246,8 @@ public class StoryRunner {
         		reporter.get().afterStory(context.givenStory);
         	}
         	
-			// Restart entire story if determined it needs it
-			if (hasRestartingStoryException(e) || hasRestartingStoryException(beforeAfterStoryFailure.get())) {
+			// Restart entire story if needed
+			if (restartStory(e)) {
 				//this is not getting logged when running in multi-threaded mode
 				reporter.get().restartedStory(story, e);
 				restartingStory = true;
@@ -406,7 +404,6 @@ public class StoryRunner {
         }
         currentStrategy.set(context.configuration().failureStrategy());
         storyFailure.set(null);
-        beforeAfterStoryFailure.set(null);
     }
 
     private void runGivenStories(GivenStories givenStories, Map<String, String> parameters, RunContext context) throws Throwable {
@@ -594,21 +591,15 @@ public class StoryRunner {
     }
 
     private final class SomethingHappened implements State {
-        UUIDExceptionWrapper scenarioFailure;
+        UUIDExceptionWrapper failure;
 
-        public SomethingHappened(UUIDExceptionWrapper scenarioFailure) {
-            this.scenarioFailure = scenarioFailure;
+        public SomethingHappened(UUIDExceptionWrapper failure) {
+            this.failure = failure;
         }
 
         public State run(Step step) {
-            StepResult result = step.doNotPerform(scenarioFailure);
+            StepResult result = step.doNotPerform(failure);
             result.describeTo(reporter.get());
-            
-			if (result.getFailure() != null) {
-				//persist failures to see if we need to restart the story
-				beforeAfterStoryFailure.set(result.getFailure());
-			}
-            
             return this;
         }
     }
@@ -736,7 +727,7 @@ public class StoryRunner {
 
     public Throwable failure(State state) {
         if (failed(state)) {
-            return ((SomethingHappened) state).scenarioFailure.getCause();
+            return ((SomethingHappened) state).failure.getCause();
         }
         return null;
     }
