@@ -17,6 +17,8 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepsFound;
+import org.jbehave.core.failures.RestartingScenarioFailure;
+import org.jbehave.core.failures.RestartingStoryFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -356,16 +358,23 @@ public class PerformableTree {
     }
 
     public void perform(RunContext context, Story story) {
+    	boolean restartingStory = false;
+
         try {
             performCancellable(context, story);
-        } catch (Throwable e) {
+            if (context.restartStory()){
+				context.reporter().restartedStory(story, context.failure(context.state()));
+				restartingStory = true;
+            	perform(context, story);
+            }
+        } catch (InterruptedException e) {
             if (context.isCancelled(story)) {
                 context.reporter().storyCancelled(story, context.storyDuration(story));
                 context.reporter().afterStory(context.givenStory);
             }
-            throw new UUIDExceptionWrapper(e);
+	        throw new UUIDExceptionWrapper(e);
         } finally {
-            if (!context.givenStory() && context.reporter() instanceof ConcurrentStoryReporter) {
+            if (!context.givenStory() && context.reporter() instanceof ConcurrentStoryReporter && !restartingStory ) {
                 ((ConcurrentStoryReporter) context.reporter()).invokeDelayed();
             }
         }
@@ -374,6 +383,7 @@ public class PerformableTree {
     private void performCancellable(RunContext context, Story story) throws InterruptedException {
         if (context.configuration().storyControls().resetStateBeforeStory()) {
             context.resetState();
+            context.resetFailures();
         }
         context.currentPath(story.getPath());
 
@@ -432,7 +442,29 @@ public class PerformableTree {
             resetState();
         }
 
-        public void currentPath(String path) {
+    	public boolean restartScenario() {
+    		Throwable cause = failure(state);
+    		while (cause != null) {
+    			if (cause instanceof RestartingScenarioFailure) {
+    				return true;
+    			}
+    			cause = cause.getCause();
+    		}
+    		return false;
+    	}
+
+    	public boolean restartStory() {
+    		Throwable cause = failure(state);
+    		while (cause != null) {
+    			if (cause instanceof RestartingStoryFailure) {
+    				return true;
+    			}
+    			cause = cause.getCause();
+    		}
+    		return false;
+    	}
+
+		public void currentPath(String path) {
             this.path = path;
             this.reporter = configuration.storyReporter(path);
         }
@@ -761,7 +793,8 @@ public class PerformableTree {
         private boolean allowed;
 		private NormalPerformableScenario normalPerformableScenario;
         private List<ExamplePerformableScenario> examplePerformableScenarios = new ArrayList<ExamplePerformableScenario>();
-        Status status;
+        @SuppressWarnings("unused")
+		private Status status;
 
         public PerformableScenario(Scenario scenario, String storyPath) {
             this.scenario = scenario;
@@ -858,6 +891,18 @@ public class PerformableTree {
         public Map<String, String> getParameters() {
             return parameters;
         }
+
+		protected void performRestartableSteps(RunContext context)
+				throws InterruptedException {
+			boolean restart = true;
+			while (restart) {
+				restart = false;
+				steps.perform(context);
+				if (context.restartScenario()){
+					restart = true;
+				}
+			}
+		}
     }
 
     public static class NormalPerformableScenario extends AbstractPerformableScenario {
@@ -880,7 +925,7 @@ public class PerformableTree {
 					story.perform(context);
 				}
 			}
-            steps.perform(context);
+			performRestartableSteps(context);	        
             afterSteps.perform(context);
         }
 
@@ -906,7 +951,7 @@ public class PerformableTree {
 				context.givenStory = story.givenStory();
                 story.perform(context);
             }
-            steps.perform(context);
+			performRestartableSteps(context);	        
             afterSteps.perform(context);
         }
 
@@ -960,8 +1005,12 @@ public class PerformableTree {
             StoryReporter reporter = context.reporter();
             results = new ArrayList<StepResult>();
             for (Step step : steps) {
-                context.interruptIfCancelled();
-                state = state.run(step, results, reporter, state.getFailure());
+                try {
+					context.interruptIfCancelled();
+					state = state.run(step, results, reporter, state.getFailure());
+				} catch (RestartingScenarioFailure e) {
+	                reporter.restarted(step.toString(), e);
+				}
             }
             context.stateIs(state);
             context.pendingSteps(pendingSteps);
