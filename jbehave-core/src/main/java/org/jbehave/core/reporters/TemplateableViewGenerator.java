@@ -122,7 +122,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
 		try {
 			p.load(new FileReader(new File(outputDirectory, "storyDurations.props")));
 		} catch (IOException e) {
-			e.printStackTrace();
+			// story durations file not found - carry on
 		}
 		Map<String,Long> durations = new HashMap<String, Long>();
 		for ( Object key : p.keySet() ){
