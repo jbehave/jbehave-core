@@ -8,9 +8,6 @@
 <head>
 <title>JBehave Reports</title>
 <meta http-equiv="Content-Type" content="text/html; charset=${encoding}" />
-<style type="text/css" media="all">
-@import url( "./style/jbehave-core.css" );
-</style>
 </head>
 
 <body>
@@ -22,7 +19,7 @@
 
 <h2>Story Reports</h2>
 
-<table>
+<table id="mainTable">
 <colgroup span="2" class="stories"></colgroup>
 <colgroup span="5" class="scenarios"></colgroup>
 <colgroup span="5" class="scenarios"></colgroup>
@@ -210,6 +207,20 @@ Totals
 <div class="right">JBehave &#169; 2003-2014</div>
 <div class="clear"></div>
 </div>
+
+<script type="text/javascript" language="javascript" src="TableFilter/tablefilter.js"></script>  
+    <script language="javascript" type="text/javascript">  
+	
+	var mainTable_Props = {
+        filters_row_index: 2,
+		btn_reset: true
+    };
+    var tableFilter = setFilterGrid("mainTable", mainTable_Props, 2);
+</script>
+
+<style type="text/css" media="all">
+@import url( "./style/jbehave-core.css" );
+</style>
 
 </body>
 
