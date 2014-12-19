@@ -333,6 +333,30 @@ public class ExamplesTableBehaviour {
 
     }
 
+    /**
+     * The values given named parameter values as strings should not suffer any modification after are replaced in table.
+     * @see {@link String#replaceAll(String, String)} to see why are not present in values the '\' and '$' characters.
+     */
+    @Test
+    public void shouldKeepExactValueInReplacedNamedParameterValues() throws Exception {
+        // Given
+        ExamplesTableFactory factory = new ExamplesTableFactory();
+        String problematicNamedParameterValueCharacters = "value having the \\ backslash and the $ dollar character";
+
+        // When
+        String tableAsString = "|Name|Value|\n|name|<value>|";
+        Map<String, String> namedParameters = new HashMap<String, String>();
+        namedParameters.put("<value>", problematicNamedParameterValueCharacters);
+        ExamplesTable table = factory.createExamplesTable(tableAsString).withNamedParameters(namedParameters);
+
+        // Then
+        Parameters firstRow = table.getRowsAsParameters(true).get(0);
+        Map<String, String> firstRowValues = firstRow.values();
+        assertThat(firstRowValues.containsKey("Value"), is(true));
+        assertThat(firstRow.valueAs("Value", String.class), is(problematicNamedParameterValueCharacters));
+
+    }
+
     @Test
     public void shouldMapParametersToType() throws Exception {
         // Given
