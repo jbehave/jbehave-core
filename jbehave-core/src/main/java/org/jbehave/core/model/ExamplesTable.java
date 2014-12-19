@@ -335,7 +335,7 @@ public class ExamplesTable {
             String replacedValue = row.get(key);
             for (String namedKey : namedParameters.keySet()) {
                 String namedValue = namedParameters.get(namedKey);
-                replacedValue = replacedValue.replaceAll(namedKey, namedValue);
+                replacedValue = replacedValue.replaceAll(namedKey, Matcher.quoteReplacement(namedValue));
             }
             replaced.put(key, replacedValue);
         }
