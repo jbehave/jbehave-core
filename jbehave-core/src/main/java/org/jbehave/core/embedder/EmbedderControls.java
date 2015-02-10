@@ -16,6 +16,7 @@ public class EmbedderControls {
     private boolean verboseFailures = false;
     private boolean verboseFiltering = false;
     private long storyTimeoutInSecs = 300; // 5 mins is default.
+    private String storyTimeoutInSecsByPath = ""; // If not specified or specified as blank, storyTimeoutInSecs's default is used 
 	private boolean failOnStoryTimeout = false;
     private int threads = 1;
 
@@ -52,6 +53,10 @@ public class EmbedderControls {
 
     public long storyTimeoutInSecs() {
         return storyTimeoutInSecs;
+    }
+    
+    public String storyTimeoutInSecsByPath() {
+        return storyTimeoutInSecsByPath;
     }
 
 	public boolean failOnStoryTimeout() {
@@ -99,6 +104,11 @@ public class EmbedderControls {
 
     public EmbedderControls useStoryTimeoutInSecs(long storyTimeoutInSecs) {
         this.storyTimeoutInSecs = storyTimeoutInSecs;
+        return this;
+    }
+    
+    public EmbedderControls useStoryTimeoutInSecsByPath(String storyTimeoutInSecsByPath) {
+        this.storyTimeoutInSecsByPath = storyTimeoutInSecsByPath;
         return this;
     }
 

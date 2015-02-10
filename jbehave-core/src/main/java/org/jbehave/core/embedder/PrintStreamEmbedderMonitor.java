@@ -182,6 +182,11 @@ public class PrintStreamEmbedderMonitor extends NullEmbedderMonitor {
     public void usingControls(EmbedderControls embedderControls) {
         print("Using controls " + embedderControls);
     }
+    
+    public String getSearchDirectory() {
+    	//Setting this to 'test' for Unit Test runs
+    	return "src/test/java";
+    }
 
     @Override
     public String toString() {

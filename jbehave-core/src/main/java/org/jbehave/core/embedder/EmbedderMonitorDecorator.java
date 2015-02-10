@@ -155,4 +155,12 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
         delegate.usingControls(embedderControls);        
     }
 
+	public String getSearchDirectory() {
+		return null;
+	}
+
+	public void storyFailedDueToInvalidTimeoutFormat(String path, Throwable cause) {
+		delegate.storyFailedDueToInvalidTimeoutFormat(path, cause);
+	}
+
 }

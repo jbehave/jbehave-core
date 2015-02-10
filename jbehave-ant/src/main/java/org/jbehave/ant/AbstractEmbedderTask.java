@@ -110,6 +110,11 @@ public abstract class AbstractEmbedderTask extends Task {
      * The story timeout in secs
      */
     long storyTimeoutInSecs = 300;
+    
+    /**
+     * The story timeout in secs by path
+     */
+    String storyTimeoutInSecsByPath = "";
 
     /**
      * The boolean flag to fail on story timeout
@@ -217,6 +222,7 @@ public abstract class AbstractEmbedderTask extends Task {
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
                 .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
                 .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs)
+                .useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads));
     }
 
@@ -444,14 +450,22 @@ public abstract class AbstractEmbedderTask extends Task {
         public void usingControls(EmbedderControls embedderControls) {
             log("Using controls " + embedderControls, MSG_INFO);
         }
+        
+        public String getSearchDirectory() {
+        	return searchDirectory();
+        }
+        
+        public void storyFailedDueToInvalidTimeoutFormat(String path, Throwable cause) {
+        	log("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format", cause, MSG_WARN);
+        	log("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"", MSG_WARN);
+    	}
 
         @Override
         public String toString() {
             return this.getClass().getSimpleName();
-        }
-
+        } 
     }
-
+    
     // Setters used by Task to inject dependencies
 
     public void setSourceDirectory(String sourceDirectory) {
@@ -512,6 +526,10 @@ public abstract class AbstractEmbedderTask extends Task {
 
     public void setStoryTimeoutInSecs(long storyTimeoutInSecs) {
         this.storyTimeoutInSecs = storyTimeoutInSecs;
+    }
+    
+    public void setStoryTimeoutInSecsByPath(String storyTimeoutInSecsByPath) {
+        this.storyTimeoutInSecsByPath = storyTimeoutInSecsByPath;
     }
 
 	public void setFailOnStoryTimeout(boolean failOnStoryTimeout) {

@@ -119,5 +119,12 @@ public class NullEmbedderMonitor implements EmbedderMonitor {
     public void usingControls(EmbedderControls embedderControls) {
     }
 
+	public String getSearchDirectory() {
+		return null;
+	}
+
+	public void storyFailedDueToInvalidTimeoutFormat(String path, Throwable cause) {
+	}
+
 
 }

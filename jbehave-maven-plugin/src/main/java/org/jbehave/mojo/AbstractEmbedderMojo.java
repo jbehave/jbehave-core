@@ -161,6 +161,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @parameter default-value="300"
      */
     long storyTimeoutInSecs = 300;
+    
+    /**
+     * The story timeout in secs by path
+     * 
+     * @parameter default-value=""
+     */
+    String storyTimeoutInSecsByPath = "";
 
     /**
      * The boolean flag to fail on story timeout
@@ -373,6 +380,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
                 .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
                 .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs)
+                .useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads));
     }
 
@@ -535,6 +543,15 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         public void usingControls(EmbedderControls embedderControls) {
             getLog().info("Using controls " + embedderControls);
         }
+        
+        public String getSearchDirectory() {
+        	return searchDirectory();
+        }
+        
+        public void storyFailedDueToInvalidTimeoutFormat(String path, Throwable cause) {
+        	getLog().warn("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format", cause);
+        	getLog().warn("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
+    	}
 
         @Override
         public String toString() {

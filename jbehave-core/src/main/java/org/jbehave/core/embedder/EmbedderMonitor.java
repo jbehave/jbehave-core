@@ -80,5 +80,8 @@ public interface EmbedderMonitor {
     void usingExecutorService(ExecutorService executorService);
 
     void usingControls(EmbedderControls embedderControls);
-
+    
+    String getSearchDirectory();
+    
+    void storyFailedDueToInvalidTimeoutFormat(String path, Throwable cause);
 }

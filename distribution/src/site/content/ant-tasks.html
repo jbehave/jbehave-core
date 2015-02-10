@@ -44,6 +44,11 @@ tasks:</p>
 	<li>ignoreFailureInView: [true|false], defaults to <b>false</b></li>
 	<li>generateViewAfterStories: [true|false], defaults to <b>true</b></li>
     <li>storyTimeoutInSecs: defaults to <b>300</b></li>
+    <li>storyTimeoutInSecsByPath: defaults to <b>300 (the default of storyTimeoutInSecs)</b></li>
+    	<ul>
+    		<li>Overrides the default value in storyTimeoutInSecs, and can be expressed as a CSV of regex
+    		<br>expressions matching story paths. E.g. "*/long/.story:5000,*/short/.story:200,*/medium/m_story.story:1000"</br></li>
+    	</ul>
 	<li>failOnStoryTimeout: [true|false], defaults to <b>false</b></li>
     <li>threads: defaults to <b>1</b></li>
 	<li>embedderClass: defaults to <a
@@ -52,6 +57,11 @@ tasks:</p>
 	<li>storyFinderClass: defaults to <a
 		href="javadoc/core/org/jbehave/core/io/StoryFinder.html">StoryFinder</a></li>
 </ul>
+
+<span class="followup">Performance Testing: You can make use of
+<b>storyTimeoutInSecs</b> and <b>storyTimeoutInSecsByPath</b> to ensure
+tests run under the time(s) specified
+</span>
 
 <p>An example of a typical Ant task usage is:</p>
 <script type="syntaxhighlighter" class="brush: xml">
