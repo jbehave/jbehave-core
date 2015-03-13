@@ -123,8 +123,10 @@ public class NullEmbedderMonitor implements EmbedderMonitor {
 		return null;
 	}
 
-	public void storyFailedDueToInvalidTimeoutFormat(String path, Throwable cause) {
+	public void invalidTimeoutFormat(String path) {
 	}
 
+	public void usingTimeout(String path, long timeout) {
+	}
 
 }

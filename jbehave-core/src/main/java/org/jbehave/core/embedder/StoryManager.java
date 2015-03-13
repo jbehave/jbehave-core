@@ -13,14 +13,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
 import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -43,9 +42,6 @@ public class StoryManager {
 	private final Map<MetaFilter, List<Story>> excludedStories = new HashMap<MetaFilter, List<Story>>();
 	private RunContext context;
 	
-	// 'timeoutValuesUsed' can be used during debugging/testing to see the timeouts used by each running story
-	public static Map<String,Long> timeoutValuesUsed = new HashMap<String,Long>();
-
 	public StoryManager(Configuration configuration,
 			InjectableStepsFactory stepsFactory,
 			EmbedderControls embedderControls, EmbedderMonitor embedderMonitor,
@@ -94,7 +90,7 @@ public class StoryManager {
 		}
 		return stories;
 	}
-
+	
 	public void runStories(List<Story> stories, MetaFilter filter,
 			BatchFailures failures) {
 		// create new run context
@@ -296,43 +292,34 @@ public class StoryManager {
 		}
 
 		public long getTimeoutInSecs() {
-			String specificStoryTimeoutsByPath = embedderControls.storyTimeoutInSecsByPath();
+			String storyTimeoutsByPath = embedderControls.storyTimeoutInSecsByPath();
 			
-			if( (specificStoryTimeoutsByPath != null) && (!specificStoryTimeoutsByPath.isEmpty())) {
-				String[] specificStoryPaths = specificStoryTimeoutsByPath.split(",");
+			if( StringUtils.isNotBlank(storyTimeoutsByPath) ){
+				Map<String,Long> storyTimeouts = new HashMap<String, Long>();
+				Pattern validStoryTimeout = Pattern.compile("[\\S*]:[\\d+]");
 				
-				Map<String,Integer> specificStoryTimeouts = new HashMap<String, Integer>();
-				String specificStoryTimeoutsRegexCheck = "[\\S*]:[\\d+]";
-				Pattern pattern = Pattern.compile(specificStoryTimeoutsRegexCheck);
-				
-				for(String storyPath: specificStoryPaths) {
-			        Matcher m = pattern.matcher(storyPath);
-			        if(!m.find()) {
-			        	embedderMonitor.storyFailedDueToInvalidTimeoutFormat(story.getPath(), new Exception());
+				for(String storyTimeout: storyTimeoutsByPath.split(",")) {
+			        if(!validStoryTimeout.matcher(storyTimeout).find()) {
+			        	embedderMonitor.invalidTimeoutFormat(storyTimeout);
 			        }
-					specificStoryTimeouts.put(storyPath.split(":")[0], Integer.parseInt(storyPath.split(":")[1]));
+					storyTimeouts.put(storyTimeout.split(":")[0], Long.parseLong(storyTimeout.split(":")[1]));
 				}
 				
-				List<String> paths = new ArrayList<String>();
-				for(String storyPath: specificStoryTimeouts.keySet()) {
-					paths.add(storyPath);
+				for(String storyPattern: storyTimeouts.keySet()) {
+					if( story.getPath().matches(regexOf(storyPattern)) ){
+						Long timeout = storyTimeouts.get(storyPattern);
+						embedderMonitor.usingTimeout(story.getName(), timeout);
+						return timeout;
+					}	
 				}
 				
-				String searchDirectory = this.embedderMonitor.getSearchDirectory();
-				
-				for(String path: paths) {
-					StoryFinder finder = new StoryFinder();
-					List<String> foundStoryPaths = finder.findPaths(searchDirectory, path, null);
-					for(String storyPath: foundStoryPaths) {
-						if(storyPath.contains(story.getName())) {
-							timeoutValuesUsed.put(story.getName(), specificStoryTimeouts.get(path).longValue());
-							return specificStoryTimeouts.get(path);
-						}	
-					}
-				}
 			}
-			timeoutValuesUsed.put(story.getName(), embedderControls.storyTimeoutInSecs());
+			embedderMonitor.usingTimeout(story.getName(), embedderControls.storyTimeoutInSecs());
 			return embedderControls.storyTimeoutInSecs();
+		}
+
+		private String regexOf(String storyPattern) {
+			return storyPattern.replace("**", ".*");
 		}
 	}
 
@@ -454,5 +441,5 @@ public class StoryManager {
 		}
 
 	}
-	
+
 }

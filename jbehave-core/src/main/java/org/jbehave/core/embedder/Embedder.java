@@ -51,11 +51,15 @@ public class Embedder {
     protected Properties systemProperties;
     protected ExecutorService executorService;
     protected boolean executorServiceCreated;
-    protected PerformableTree performableTree = new PerformableTree();
+    protected PerformableTree performableTree;
     protected StoryManager storyManager;
 
     public Embedder() {
-        this(new StoryMapper(), new PerformableTree(), new PrintStreamEmbedderMonitor());
+        this(new PrintStreamEmbedderMonitor());
+    }
+
+    public Embedder(EmbedderMonitor embedderMonitor) {
+        this(new StoryMapper(), new PerformableTree(), embedderMonitor);
     }
 
     public Embedder(StoryMapper storyMapper, PerformableTree performableTree, EmbedderMonitor embedderMonitor) {
@@ -585,5 +589,6 @@ public class Embedder {
                     + viewResources, cause);
         }
     }
+
 
 }

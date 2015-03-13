@@ -81,7 +81,8 @@ public interface EmbedderMonitor {
 
     void usingControls(EmbedderControls embedderControls);
     
-    String getSearchDirectory();
+    void invalidTimeoutFormat(String path);
     
-    void storyFailedDueToInvalidTimeoutFormat(String path, Throwable cause);
+    void usingTimeout(String path, long timeout);
+
 }

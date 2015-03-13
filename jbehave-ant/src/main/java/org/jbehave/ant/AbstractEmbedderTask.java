@@ -450,14 +450,14 @@ public abstract class AbstractEmbedderTask extends Task {
         public void usingControls(EmbedderControls embedderControls) {
             log("Using controls " + embedderControls, MSG_INFO);
         }
-        
-        public String getSearchDirectory() {
-        	return searchDirectory();
-        }
-        
-        public void storyFailedDueToInvalidTimeoutFormat(String path, Throwable cause) {
-        	log("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format", cause, MSG_WARN);
+                
+        public void invalidTimeoutFormat(String path) {
+        	log("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format", MSG_WARN);
         	log("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"", MSG_WARN);
+    	}
+        
+    	public void usingTimeout(String path, long timeout) {
+        	log("Using timeout for story " + path + " of "+timeout+" secs.", MSG_INFO);
     	}
 
         @Override

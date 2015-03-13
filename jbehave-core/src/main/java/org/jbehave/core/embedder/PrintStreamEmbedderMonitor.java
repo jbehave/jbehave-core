@@ -183,12 +183,17 @@ public class PrintStreamEmbedderMonitor extends NullEmbedderMonitor {
         print("Using controls " + embedderControls);
     }
     
-    public String getSearchDirectory() {
-    	//Setting this to 'test' for Unit Test runs
-    	return "src/test/java";
+    
+    public void invalidTimeoutFormat(String path) {
+    	print("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format");
+    	print("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
     }
 
-    @Override
+    public void usingTimeout(String path, long timeout) {
+    	print("Using timeout for story " + path + " of "+timeout+" secs.");
+    }
+
+     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }

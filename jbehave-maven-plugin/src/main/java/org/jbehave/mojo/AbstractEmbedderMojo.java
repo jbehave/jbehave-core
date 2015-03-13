@@ -544,13 +544,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info("Using controls " + embedderControls);
         }
         
-        public String getSearchDirectory() {
-        	return searchDirectory();
-        }
-        
-        public void storyFailedDueToInvalidTimeoutFormat(String path, Throwable cause) {
-        	getLog().warn("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format", cause);
+        public void invalidTimeoutFormat(String path) {
+        	getLog().warn("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format");
         	getLog().warn("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
+    	}
+
+    	public void usingTimeout(String path, long timeout) {
+        	getLog().info("Using timeout for story " + path + " of "+timeout+" secs.");
     	}
 
         @Override
