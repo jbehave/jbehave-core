@@ -29,6 +29,7 @@ import org.jbehave.core.steps.ParameterConverters.EnumConverter;
 import org.jbehave.core.steps.ParameterConverters.EnumListConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableParametersConverter;
+import org.jbehave.core.steps.ParameterConverters.FluentEnumConverter;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
@@ -457,6 +458,13 @@ public class ParameterConvertersBehaviour {
         assertThat(converter.accept(mock(Type.class)), is(false));
         Type type = SomeSteps.methodFor("aMethodWithEnum").getGenericParameterTypes()[0];
         assertThat((SomeEnum) converter.convertValue("ONE", type), equalTo(SomeEnum.ONE));
+    }
+
+    @Test
+    public void flexibleEnumConverter_givenLowercasedSpaceSeparatedValue() {
+        ParameterConverter converter = new FluentEnumConverter();
+        assertThat(converter.accept(SomeEnum.class), equalTo(true));
+        assertThat((SomeEnum) converter.convertValue("multiple words and 1 number", SomeEnum.class), equalTo(SomeEnum.MULTIPLE_WORDS_AND_1_NUMBER));
     }
     
     

@@ -169,5 +169,7 @@ public class SomeSteps extends Steps {
 enum SomeEnum {
     ONE,
     TWO,
-    THREE;
+    THREE,
+    MULTIPLE_WORDS_AND_1_NUMBER,
+    ;
 }
