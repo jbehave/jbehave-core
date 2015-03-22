@@ -576,6 +576,37 @@ public class ParameterConverters {
     }
 
     /**
+     * An {@link EnumConverter} allowing stories prose to be more natural.
+     * Before performing the actual conversion, it transforms values to upper-case,
+     * with any non-alphanumeric character replaced by an underscore ('_').
+     * <p>
+     * <b>Example</b>:
+     * assuming we have defined the step "{@code Given I am on the $page}"
+     * which is mapped to the method {@code iAmOnPage(PageEnum page)},
+     * we can then write in a scenario:
+     * <pre>{@code
+     * Given I am on the login page
+     * }</pre>
+     * instead of:
+     * <pre>{@code
+     * Given I am on the LOGIN_PAGE
+     * }</pre>
+     * <p>
+     * <b>Warning</b>. This <i>requires</i> enum constants to follow the
+     * <a href="https://google-styleguide.googlecode.com/svn/trunk/javaguide.html#s5.2.4-constant-names">
+     * standard conventions for constant names</a>, i.e. all uppercase letters,
+     * with words separated by underscores.
+     */
+    public static class FluentEnumConverter extends EnumConverter {
+
+        @Override
+        public Object convertValue(String value, Type type) {
+            String transformedValue = value.replaceAll("\\W", "_").toUpperCase();
+            return super.convertValue(transformedValue, type);
+        }
+    }
+
+    /**
      * Parses value to list of the same {@link Enum}, using an injectable value
      * separator (defaults to ",") and trimming each element of the list.
      */
