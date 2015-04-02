@@ -12,6 +12,7 @@
   <properties>
     <embeddables>**/CoreStories.java</embeddables>
     <meta.filter></meta.filter>
+    <threads>2</threads>
     <ignore.failure.in.stories>true</ignore.failure.in.stories>
     <ignore.failure.in.view>true</ignore.failure.in.view>
   </properties>
@@ -35,7 +36,7 @@
               <generateViewAfterStories>true</generateViewAfterStories>
               <ignoreFailureInStories>${ignore.failure.in.stories}</ignoreFailureInStories>
               <ignoreFailureInView>${ignore.failure.in.view}</ignoreFailureInView>
-              <threads>2</threads>
+              <threads>${threads}</threads>
               <metaFilters>
                 <metaFilter>${meta.filter}</metaFilter>
               </metaFilters>
