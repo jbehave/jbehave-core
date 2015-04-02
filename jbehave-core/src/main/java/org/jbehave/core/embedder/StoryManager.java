@@ -199,10 +199,14 @@ public class StoryManager {
             if (!future.isDone()) {
                 future.cancel(true);
             }            
-        }
-        storyDurations.setProperty("total", Long.toString(total));
-        write(storyDurations, "storyDurations.props");
-    }
+		}
+		int threads = embedderControls.threads();
+		long threadAverage = total / threads;
+		storyDurations.setProperty("total", Long.toString(total));
+		storyDurations.setProperty("threads", Long.toString(threads));
+		storyDurations.setProperty("threadAverage", Long.toString(threadAverage));
+		write(storyDurations, "storyDurations.props");
+	}
 
     private void write(Properties p, String name) {
         File outputDirectory = configuration.storyReporterBuilder().outputDirectory();

@@ -197,6 +197,20 @@
 Totals
 </td>
 </tr>
+
+<#assign threads = storyDurations.get('threads')!1>
+<#if (threads != 1) >
+<tr class="totals">
+<td colspan="18"/>
+<td>
+<@renderTime storyDurations.get('threadAverage')!0/>
+</td>
+<td>
+${threads}-Thread Average
+</td>
+</tr>
+</#if>
+
 </table>
 <br />
 </div>
