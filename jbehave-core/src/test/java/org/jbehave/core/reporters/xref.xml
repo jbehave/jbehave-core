@@ -29,16 +29,16 @@
             <tableTransformers>
               <transformers>
                 <entry>
-                  <string>FROM_LANDSCAPE</string>
-                  <fromLandscape/>
+                  <string>FORMATTING</string>
+                  <formatting/>
                 </entry>
                 <entry>
                   <string>REPLACING</string>
                   <replacing/>
                 </entry>
                 <entry>
-                  <string>FORMATTING</string>
-                  <formatting/>
+                  <string>FROM_LANDSCAPE</string>
+                  <fromLandscape/>
                 </entry>
               </transformers>
             </tableTransformers>
@@ -87,16 +87,16 @@ I want to get a loan</localizedNarrative>
                 <tableTransformers>
                   <transformers>
                     <entry>
-                      <string>FROM_LANDSCAPE</string>
-                      <fromLandscape/>
+                      <string>FORMATTING</string>
+                      <formatting/>
                     </entry>
                     <entry>
                       <string>REPLACING</string>
                       <replacing/>
                     </entry>
                     <entry>
-                      <string>FORMATTING</string>
-                      <formatting/>
+                      <string>FROM_LANDSCAPE</string>
+                      <fromLandscape/>
                     </entry>
                   </transformers>
                 </tableTransformers>
@@ -120,16 +120,16 @@ I want to get a loan</localizedNarrative>
               <tableTransformers>
                 <transformers>
                   <entry>
-                    <string>FROM_LANDSCAPE</string>
-                    <fromLandscape/>
+                    <string>FORMATTING</string>
+                    <formatting/>
                   </entry>
                   <entry>
                     <string>REPLACING</string>
                     <replacing/>
                   </entry>
                   <entry>
-                    <string>FORMATTING</string>
-                    <formatting/>
+                    <string>FROM_LANDSCAPE</string>
+                    <fromLandscape/>
                   </entry>
                 </transformers>
               </tableTransformers>
@@ -182,16 +182,16 @@ I want to get a loan</localizedNarrative>
                   <tableTransformers>
                     <transformers>
                       <entry>
-                        <string>FROM_LANDSCAPE</string>
-                        <fromLandscape/>
+                        <string>FORMATTING</string>
+                        <formatting/>
                       </entry>
                       <entry>
                         <string>REPLACING</string>
                         <replacing/>
                       </entry>
                       <entry>
-                        <string>FORMATTING</string>
-                        <formatting/>
+                        <string>FROM_LANDSCAPE</string>
+                        <fromLandscape/>
                       </entry>
                     </transformers>
                   </tableTransformers>
@@ -215,16 +215,16 @@ I want to get a loan</localizedNarrative>
                 <tableTransformers>
                   <transformers>
                     <entry>
-                      <string>FROM_LANDSCAPE</string>
-                      <fromLandscape/>
+                      <string>FORMATTING</string>
+                      <formatting/>
                     </entry>
                     <entry>
                       <string>REPLACING</string>
                       <replacing/>
                     </entry>
                     <entry>
-                      <string>FORMATTING</string>
-                      <formatting/>
+                      <string>FROM_LANDSCAPE</string>
+                      <fromLandscape/>
                     </entry>
                   </transformers>
                 </tableTransformers>
@@ -275,16 +275,16 @@ I want to get a loan</localizedNarrative>
             <tableTransformers>
               <transformers>
                 <entry>
-                  <string>FROM_LANDSCAPE</string>
-                  <fromLandscape/>
+                  <string>FORMATTING</string>
+                  <formatting/>
                 </entry>
                 <entry>
                   <string>REPLACING</string>
                   <replacing/>
                 </entry>
                 <entry>
-                  <string>FORMATTING</string>
-                  <formatting/>
+                  <string>FROM_LANDSCAPE</string>
+                  <fromLandscape/>
                 </entry>
               </transformers>
             </tableTransformers>
@@ -308,16 +308,16 @@ I want to get a loan</localizedNarrative>
           <tableTransformers>
             <transformers>
               <entry>
-                <string>FROM_LANDSCAPE</string>
-                <fromLandscape/>
+                <string>FORMATTING</string>
+                <formatting/>
               </entry>
               <entry>
                 <string>REPLACING</string>
                 <replacing/>
               </entry>
               <entry>
-                <string>FORMATTING</string>
-                <formatting/>
+                <string>FROM_LANDSCAPE</string>
+                <fromLandscape/>
               </entry>
             </transformers>
           </tableTransformers>
@@ -370,16 +370,16 @@ I want to get a loan</localizedNarrative>
               <tableTransformers>
                 <transformers>
                   <entry>
-                    <string>FROM_LANDSCAPE</string>
-                    <fromLandscape/>
+                    <string>FORMATTING</string>
+                    <formatting/>
                   </entry>
                   <entry>
                     <string>REPLACING</string>
                     <replacing/>
                   </entry>
                   <entry>
-                    <string>FORMATTING</string>
-                    <formatting/>
+                    <string>FROM_LANDSCAPE</string>
+                    <fromLandscape/>
                   </entry>
                 </transformers>
               </tableTransformers>
@@ -403,16 +403,16 @@ I want to get a loan</localizedNarrative>
             <tableTransformers>
               <transformers>
                 <entry>
-                  <string>FROM_LANDSCAPE</string>
-                  <fromLandscape/>
+                  <string>FORMATTING</string>
+                  <formatting/>
                 </entry>
                 <entry>
                   <string>REPLACING</string>
                   <replacing/>
                 </entry>
                 <entry>
-                  <string>FORMATTING</string>
-                  <formatting/>
+                  <string>FROM_LANDSCAPE</string>
+                  <fromLandscape/>
                 </entry>
               </transformers>
             </tableTransformers>
