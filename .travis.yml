@@ -1,12 +1,5 @@
 language: java
-env: MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=128m"
-install: /bin/true
-script: mvn clean install -s settings.xml -P examples -U | grep -v -E "Download(ed|ing)"
+install: mvn install -s settings.xml -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode -e --quiet
 jdk:
   - oraclejdk7
-before_install:
-- wget http://artfiles.org/apache.org/maven/maven-3/3.0.5/binaries/apache-maven-3.0.5-bin.tar.gz
-- tar xvfz apache-maven-3.0.5-bin.tar.gz
-- sudo mv apache-maven-3.0.5 /opt
-- export PATH=/opt/apache-maven-3.0.5/bin:$PATH
-- export M2_HOME=/opt/apache-maven-3.0.5
+script: mvn install -s settings.xml -P examples --batch-mode -e
