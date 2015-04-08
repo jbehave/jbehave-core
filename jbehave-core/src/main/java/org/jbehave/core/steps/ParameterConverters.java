@@ -601,8 +601,7 @@ public class ParameterConverters {
 
         @Override
         public Object convertValue(String value, Type type) {
-            String transformedValue = value.replaceAll("\\W", "_").toUpperCase();
-            return super.convertValue(transformedValue, type);
+            return super.convertValue(value.replaceAll("\\W", "_").toUpperCase(), type);
         }
     }
 
