@@ -14,6 +14,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.codehaus.plexus.util.StringUtils;
 import org.jbehave.core.configuration.Configuration;
@@ -251,7 +252,7 @@ public class StoryManager {
 		return new RunningStory(enqueuedStory, executorService.submit(enqueuedStory));
 	}
 
-	private static class EnqueuedStory implements Callable<ThrowableStory> {
+	static class EnqueuedStory implements Callable<ThrowableStory> {
 
 		private final PerformableTree performableTree;
 		private final RunContext context;
@@ -323,7 +324,14 @@ public class StoryManager {
 		}
 
 		private String regexOf(String storyPattern) {
-			return storyPattern.replace("**", ".*");
+			try {
+				// check if pattern is already a valid regex
+				Pattern.compile(storyPattern);
+				return storyPattern;
+			} catch (PatternSyntaxException e) {
+				// assume Ant-style pattern:  **/path/*.story
+				return storyPattern.replace("*", ".*");
+			}			
 		}
 	}
 
