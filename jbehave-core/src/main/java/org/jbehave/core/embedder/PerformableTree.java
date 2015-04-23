@@ -764,16 +764,18 @@ public class PerformableTree {
             this.status = context.status(state);
         }
 
-		private void performGivenStories(RunContext context) throws InterruptedException {
-			if (givenStories.size() > 0) {
-				context.reporter().givenStories(story.getGivenStories());
-				for (PerformableStory story : givenStories) {
-					context.givenStory = story.givenStory();
-					story.perform(context);
-				}
-			}
-		}
-		
+        private void performGivenStories(RunContext context) throws InterruptedException {
+            if (givenStories.size() > 0) {
+                context.reporter().givenStories(story.getGivenStories());
+                final boolean parentGivenStory = context.givenStory;
+                for (PerformableStory story : givenStories) {
+                    context.givenStory = story.givenStory();
+                    story.perform(context);
+                }
+                context.givenStory = parentGivenStory;
+           }
+        }
+
         private void performScenarios(RunContext context) throws InterruptedException {
             for (PerformableScenario scenario : scenarios) {
                 scenario.perform(context);
