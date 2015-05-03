@@ -63,7 +63,10 @@
       <!-- Required for dependencies of Jenkins module -->
       <id>jenkins</id>
       <activation>
-        <activeByDefault>true</activeByDefault>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>hudson.version</name>
+        </property>
       </activation>
       <repositories>
         <repository>
