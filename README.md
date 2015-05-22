@@ -2,7 +2,7 @@
 
 # JBehave
 
-JBehave is a BDD framework for Java and Groovy, mirrored [at Github](https://github.com/jbehave/jbehave-core), definitive repo [at Codehaus](http://xircles.codehaus.org/projects/jbehave).
+JBehave is a BDD framework for Java and all JVM languages (Groovy, Ruby, Scala).
 
 <img src="http://jbehave.org/reference/preview/images/jbehave-logo.png" alt="JBehave logo" align="right" />
 
@@ -12,13 +12,13 @@ Canonical information for JBehave:
 
 1. [Web Site](http://jbehave.org).
 2. [Stable Reference](http://jbehave.org/reference/stable/).
-3. [User mail-list](http://xircles.codehaus.org/lists/user@jbehave.codehaus.org)
+3. [User mailing list](http://jbehave.org/mailing-lists.html)
 4. [Search Maven](http://search.maven.org/#search|ga|1|jbehave)
 
 ## Contributing and Developing
 
-Please report issues, feature requests on the Codehaus [JIRA](http://jira.codehaus.org/browse/JBEHAVE) or discuss them on the
-[dev mail-list](http://xircles.codehaus.org/lists/dev@jbehave.codehaus.org).
+Please report issues, feature requests on [JIRA](http://jbehave.org/issue-tracking.html) or discuss them on the
+[dev mailing list](http://jbehave.org/mailing-lists.html).
 
 Keep an eye on the  [Travis CI](http://travis-ci.org/jbehave/jbehave-core) server for JBehave builds.
 
