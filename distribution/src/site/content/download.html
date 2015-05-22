@@ -9,7 +9,7 @@
 <h2>Stable releases</h2>
 
 <p>Stable releases can be found on the <a
-  href="https://nexus.codehaus.org/content/repositories/releases/org/jbehave/">Codehaus
+  href="https://oss.sonatype.org/content/repositories/releases/org/jbehave/">Codehaus
 Nexus Repository Manager</a> (which is synched with the <a
   href="http://central.maven.org/maven2/org/jbehave/">Central Maven
 Repository</a>).</p>
@@ -17,7 +17,7 @@ Repository</a>).</p>
 <h2 id="snapshot">Latest Snapshots</h2>
 
 <p>The snapshot builds of JBehave can be found on the <a
-  href="https://nexus.codehaus.org/content/repositories/snapshots/org/jbehave/">Codehaus
+  href="https://oss.sonatype.org/content/repositories/snapshots/org/jbehave/">Codehaus
 Nexus Repository Manager</a>. Be sure to choose the snapshot with the latest
 version and the filename with the latest timestamp.</p>
 
@@ -27,35 +27,38 @@ version and the filename with the latest timestamp.</p>
 If you are using a Repository Manager, such as Nexus, then consult the administrator for the Maven client configuration.  
 </p>
 
-<p>Released artifacts not yet synched to Central (usually synch occurs every 4h) and snapshots are accessible by activating the following Maven profile:</p>
+<p>Released artifacts not yet synched to Central (usually synch occurs every hour or two) and snapshots are accessible by activating the following Maven profile:</p>
 
 <script type="syntaxhighlighter" class="brush: xml">
 <![CDATA[
   <profiles>
     <profile>
-      <id>codehaus</id>
+      <!-- Required for dependencies of JBehave snapshots -->
+      <id>sonatype</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
       <repositories>
         <repository>
-          <id>codehaus-public-repository-group</id>
-          <name>Codehaus Public Repository Group</name>
-          <url>https://nexus.codehaus.org/content/groups/public/</url>
+          <id>sonatype-public-repository-group</id>
+          <name>Sonatype Public Repository Group</name>
+          <url>https://oss.sonatype.org/content/groups/public/</url>
           <layout>default</layout>
           <releases>
             <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
           </releases>
           <snapshots>
             <enabled>true</enabled>
+            <updatePolicy>never</updatePolicy>
           </snapshots>
         </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
-          <id>codehaus-public-repository-group</id>
-          <name>Codehaus Public Repository Group</name>
-          <url>https://nexus.codehaus.org/content/groups/public/</url>
+          <id>sonatype-public-repository-group</id>
+          <name>Sonatype Public Repository Group</name>
+          <url>https://oss.sonatype.org/content/groups/public/</url>
           <releases>
             <enabled>true</enabled>
           </releases>

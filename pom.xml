@@ -51,7 +51,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <!-- hack to overcome http://jira.codehaus.org/browse/MSITE-228 -->
+      <!-- hack to overcome https://issues.apache.org/jira/browse/MSITE-228-->
       <groupId>org.apache.maven.skins</groupId>
       <artifactId>maven-default-skin</artifactId>
       <version>1.0</version>
@@ -354,7 +354,7 @@
   <licenses>
     <license>
       <name>BSD license</name>
-      <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git;a=blob_plain;f=LICENSE.txt;hb=HEAD</url>
+      <url>https://github.com/jbehave/jbehave-core/blob/master/LICENSE.txt</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -363,9 +363,9 @@
   <contributors />
 
   <scm>
-    <connection>scm:git:git://git.codehaus.org/jbehave-core.git</connection>
-    <developerConnection>scm:git:ssh://git@git.codehaus.org/jbehave-core.git</developerConnection>
-    <url>http://git.codehaus.org/gitweb.cgi?p=jbehave-core.git</url>
+    <connection>scm:git:git://github.com/jbehave/jbehave-core.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/jbehave/jbehave-core.git</developerConnection>
+    <url>http://github.com/jbehave/jbehave-core</url>
     <tag>HEAD</tag>
   </scm>
 
