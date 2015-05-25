@@ -204,7 +204,7 @@ Totals
 <div class="clear"></div>
 <div id="footer">
 <div class="left">Generated on ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
-<div class="right">JBehave &#169; 2003-2014</div>
+<div class="right">JBehave &#169; 2003-2015</div>
 <div class="clear"></div>
 </div>
 
