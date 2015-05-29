@@ -20,7 +20,7 @@ Canonical information for JBehave:
 Please report issues, feature requests on [JIRA](http://jbehave.org/issue-tracking.html) or discuss them on the
 [dev mailing list](http://jbehave.org/mailing-lists.html).
 
-Keep an eye on the  [Travis CI](http://travis-ci.org/jbehave/jbehave-core) server for JBehave builds.
+Keep an eye on the  [Travis CI](http://travis-ci.org/jbehave) server for JBehave builds.
 
 ### JDK
 
@@ -88,7 +88,10 @@ Note:  profiles are additive and the default profile is always active.
 
 See also: 
 
+- [jbehave-pom](jbehave-pom) JBehave POM
 - [jbehave-web](jbehave-web) web extensions to JBehave
+- [jbehave-osgi](jbehave-osgi) OSGi extensions to JBehave
+- [jbehave-eclipse](jbehave-eclipse) Eclipse integration for JBehave
 - [jbehave-tutorial](jbehave-tutorial) for an example of JBehave testing of a real web application.
 
 ## License
