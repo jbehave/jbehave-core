@@ -197,7 +197,7 @@ public class StepCreatorBehaviour {
 		// Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
-        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls());
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls().useDelimiterNamedParameters(false));
         Map<String, String> parameters = new HashMap<String, String>();
 		parameters.put("theme", firstParameterValue);
 		parameters.put("variant", secondParameterValue);

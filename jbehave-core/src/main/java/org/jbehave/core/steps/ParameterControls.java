@@ -12,13 +12,13 @@ public class ParameterControls {
     private boolean delimiterNamedParameters;
     
     public ParameterControls() {
-        this(DEFAULT_NAME_DELIMITER_LEFT, DEFAULT_NAME_DELIMITER_RIGHT, false);
+        this(DEFAULT_NAME_DELIMITER_LEFT, DEFAULT_NAME_DELIMITER_RIGHT, true);
     }
 
-    public ParameterControls(String nameDelimiterLeft, String nameDelimiterRight, boolean nameDelimitedParameters) {
+    public ParameterControls(String nameDelimiterLeft, String nameDelimiterRight, boolean delimiterNamedParameters) {
         this.nameDelimiterLeft = nameDelimiterLeft;
         this.nameDelimiterRight = nameDelimiterRight;
-        this.delimiterNamedParameters = nameDelimitedParameters;
+        this.delimiterNamedParameters = delimiterNamedParameters;
     }
 
     public String nameDelimiterLeft() {
