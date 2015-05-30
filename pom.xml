@@ -134,7 +134,7 @@
           <version>2.10.3</version>
           <executions>
             <execution>
-              <id>attach-javadoc</id>
+              <id>attach-javadocs</id>
               <phase>package</phase>
               <goals>
                 <goal>jar</goal>
