@@ -57,13 +57,13 @@ mvn clean install -Djbehave.version=[version]
 <span class="followup">Note that running the examples in 'standalone' mode requires the JBehave parent POM to be present, as it
 contains the information about the setup of the project, e.g. the compiler, the layout of the source, etc. </span>
 
-<p>One option, is to pull the snapshot from the Codehaus repository, activated by the <b>codehaus</b> profile in the <b>settings.xml</b>
+<p>One option, is to pull the dependencies from the snapshots repository, activated by the <b>sonatype</b> profile in the <b>settings.xml</b>
 provided next to the top-level POM.</p>
 
 <script type="syntaxhighlighter" class="brush: plain">
 <![CDATA[
 cd examples 
-mvn -Pcodehaus -s ../settings.xml clean install -Djbehave.version=[version]
+mvn -Psonatype -s ../settings.xml clean install -Djbehave.version=[version]
 ]]>
 </script>
 
