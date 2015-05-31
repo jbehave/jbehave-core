@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-examples</artifactId>
-    <version>4.0-SNAPSHOT</version>
+    <version>4.1-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-urls-example</artifactId>
   <name>JBehave URLs Example</name>
