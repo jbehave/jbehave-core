@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,23 +210,30 @@ public class StoryManager {
             }
             tickTock();
         }
-        // collect story durations and cancel any outstanding execution which is not done before returning
-        Properties storyDurations = new Properties();
-        long total = 0;
-        for (RunningStory runningStory : runningStories.values()) {
-        	long durationInMillis = runningStory.getDurationInMillis();
-        	total += durationInMillis;
-			storyDurations.setProperty(runningStory.getStory().getPath(), Long.toString(durationInMillis));
-            Future<ThrowableStory> future = runningStory.getFuture();
-            if (!future.isDone()) {
-                future.cancel(true);
-            }            
+        writeStoryDurations(runningStories.values());
+	}
+
+	protected void writeStoryDurations(Collection<RunningStory> runningStories) {
+		// collect story durations and cancel any outstanding execution which is
+		// not done before returning
+		Properties storyDurations = new Properties();
+		long total = 0;
+		for (RunningStory runningStory : runningStories) {
+			long durationInMillis = runningStory.getDurationInMillis();
+			total += durationInMillis;
+			storyDurations.setProperty(runningStory.getStory().getPath(),
+					Long.toString(durationInMillis));
+			Future<ThrowableStory> future = runningStory.getFuture();
+			if (!future.isDone()) {
+				future.cancel(true);
+			}
 		}
 		int threads = embedderControls.threads();
 		long threadAverage = total / threads;
 		storyDurations.setProperty("total", Long.toString(total));
 		storyDurations.setProperty("threads", Long.toString(threads));
-		storyDurations.setProperty("threadAverage", Long.toString(threadAverage));
+		storyDurations.setProperty("threadAverage",
+				Long.toString(threadAverage));
 		write(storyDurations, "storyDurations.props");
 	}
 
@@ -233,6 +241,7 @@ public class StoryManager {
 		File outputDirectory = configuration.storyReporterBuilder()
 				.outputDirectory();
 		try {
+			outputDirectory.mkdirs();
 			Writer output = new FileWriter(new File(outputDirectory, name));
 			p.store(output, this.getClass().getName());
 			output.close();
