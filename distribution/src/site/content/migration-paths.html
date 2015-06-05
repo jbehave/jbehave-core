@@ -6,6 +6,21 @@
 
 <body>
 
+<h2>From 3.x to 4.0</h2>
+
+<p>JBehave 4.x is an evolution of 3.x.</p>
+
+<p>From the textual stories point of view, these are completely backward compatible.</p>
+
+<p>From the Java point of view, the most significant change has been the
+execution mechanism of the stories, with the StoryRunner
+replaced by the PerformableTree. The result of execution of the
+performable tree should be serialisable and consumable by any
+reporting/UI layer independent of the StoryReporters.  Correspondingly, the CrossReference 
+class has also changed.  As customising the StoryRunner and the CrossReference is likely to 
+be a very niche use case, most users will  not notice any significant difference. 
+The rest of the configuration is backward compatible.</p>
+
 <h2>From 3.0 to 3.1</h2>
 
 <p>The Story Maps view has been added to the Story Reports view. As
@@ -66,11 +81,6 @@ used without change in JBehave 3.</p>
 	rendering has been changed to view generation.</li>
 	<li>The Ant tasks and Maven goals have also been renamed to
 	reflect the terminology change.</li>
-	<li>To facilitate the migration due to the terminology changes in
-	the textual scenarios/stories and in the Ant/Maven files, one can use
-	the script provided in the <a
-		href="https://github.com/jbehave/jbehave-core/tree/master/examples/migrating-from-2.x">migrating-from-2.x
-	example</a>.</li>
 	<li>The root package has changed from <b>org.jbehave.scenario</b>
 	to <b>org.jbehave.core</b> to avoid classpath clashes.</li>
 	<li><b>JUnitStory</b> does not extend JUnit's TestCase any more.
