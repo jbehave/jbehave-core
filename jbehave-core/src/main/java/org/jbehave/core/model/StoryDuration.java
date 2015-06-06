@@ -41,7 +41,7 @@ public class StoryDuration {
     }    
 
 	public boolean timedOut() {
-		return getDurationInSecs() > timeoutInSecs;
+		return timeoutInSecs != 0 && getDurationInSecs() > timeoutInSecs;
 	}
 
 	@Override
