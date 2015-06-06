@@ -17,6 +17,8 @@ import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.codehaus.plexus.util.StringUtils;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
@@ -183,7 +185,7 @@ public class StoryManager {
 							future.cancel(true);
 							if (embedderControls.failOnStoryTimeout()) {
 								throw new StoryExecutionFailed(story.getPath(),
-										new StoryTimeout(duration));
+										new StoryTimedOut(duration));
 							}
 							continue;
 						}
@@ -306,44 +308,88 @@ public class StoryManager {
 		}
 
 		public long getTimeoutInSecs() {
-			String storyTimeoutsByPath = embedderControls.storyTimeoutInSecsByPath();
-			
-			if( StringUtils.isNotBlank(storyTimeoutsByPath) ){
-				Map<String,Long> storyTimeouts = new HashMap<String, Long>();
-				Pattern validStoryTimeout = Pattern.compile("[\\S*]:[\\d+]");
-				
-				for(String storyTimeout: storyTimeoutsByPath.split(",")) {
-			        if(!validStoryTimeout.matcher(storyTimeout).find()) {
-			        	embedderMonitor.invalidTimeoutFormat(storyTimeout);
-			        }
-					storyTimeouts.put(storyTimeout.split(":")[0], Long.parseLong(storyTimeout.split(":")[1]));
+			// timeout by path
+			for (StoryTimeout timeout : asMap(
+					embedderControls.storyTimeoutInSecsByPath()).values()) {
+				if (timeout.allowedByPath(story.getPath())) {
+					long timeoutInSecs = timeout.getTimeoutInSecs();
+					embedderMonitor
+							.usingTimeout(story.getName(), timeoutInSecs);
+					return timeoutInSecs;
 				}
-				
-				for(String storyPattern: storyTimeouts.keySet()) {
-					if( story.getPath().matches(regexOf(storyPattern)) ){
-						Long timeout = storyTimeouts.get(storyPattern);
-						embedderMonitor.usingTimeout(story.getName(), timeout);
-						return timeout;
-					}	
-				}
-				
 			}
-			embedderMonitor.usingTimeout(story.getName(), embedderControls.storyTimeoutInSecs());
-			return embedderControls.storyTimeoutInSecs();
+
+			// default timeout
+			long timeoutInSecs = embedderControls.storyTimeoutInSecs();
+			embedderMonitor.usingTimeout(story.getName(), timeoutInSecs);
+			return timeoutInSecs;
 		}
 
-		private String regexOf(String storyPattern) {
-			try {
-				// check if pattern is already a valid regex
-				Pattern.compile(storyPattern);
-				return storyPattern;
-			} catch (PatternSyntaxException e) {
-				// assume Ant-style pattern:  **/path/*.story
-				return storyPattern.replace("*", ".*");
-			}			
+		private Map<String, StoryTimeout> asMap(String storyTimeoutsByPath) {
+			Map<String,StoryTimeout> storyTimeouts = new HashMap<String, StoryTimeout>();			
+			if( StringUtils.isBlank(storyTimeoutsByPath) ){
+				return storyTimeouts;
+			}
+
+			for(String timeoutAsString: storyTimeoutsByPath.split(",")) {
+				StoryTimeout timeout = new StoryTimeout(timeoutAsString, embedderMonitor);
+				storyTimeouts.put(timeout.getPattern(), timeout);
+			}
+			return storyTimeouts;
 		}
+
 	}
 
+	public static class StoryTimeout {
+		private Pattern validTimeout = Pattern.compile("[\\S*]:[\\d+]");
+		private String pattern = "";
+		private String timeout = "0";
+		private String timeoutAsString;
+
+		public StoryTimeout(String timeoutAsString, EmbedderMonitor embedderMonitor) {
+			this.timeoutAsString = timeoutAsString;
+			if ( validTimeout.matcher(timeoutAsString).find() ){
+				String[] timeoutByPattern = timeoutAsString.split(":");
+				pattern = timeoutByPattern[0];
+				timeout = timeoutByPattern[1];
+			} else {
+				embedderMonitor.invalidTimeoutFormat(timeoutAsString);
+			}
+		}
+
+		public boolean allowedByPath(String path) {
+			return path.matches(regexOf(pattern));
+		}
+
+		public String getPattern() {
+			return pattern;
+		}
+		
+		public long getTimeoutInSecs() {
+			return Long.parseLong(timeout);
+		}
+
+		public String getTimeoutAsString() {
+			return timeoutAsString;
+		}
+
+		private String regexOf(String pattern) {
+			try {
+				// check if pattern is already a valid regex
+				Pattern.compile(pattern);
+				return pattern;
+			} catch (PatternSyntaxException e) {
+				// assume Ant-style pattern:  **/path/*.story
+				return pattern.replace("*", ".*");
+			}			
+		}
+
+		@Override
+		public String toString() {
+			return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+		}
+	}
+	
 	@SuppressWarnings("serial")
 	public static class StoryExecutionFailed extends RuntimeException {
 
@@ -354,9 +400,9 @@ public class StoryManager {
 	}
 
     @SuppressWarnings("serial")
-    public static class StoryTimeout extends RuntimeException {
+    public static class StoryTimedOut extends RuntimeException {
 
-		public StoryTimeout(StoryDuration storyDuration) {
+		public StoryTimedOut(StoryDuration storyDuration) {
 			super(storyDuration.getDurationInSecs() + "s > "
 					+ storyDuration.getTimeoutInSecs() + "s");
 		}

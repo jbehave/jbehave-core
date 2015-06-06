@@ -22,7 +22,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder.RunningEmbeddablesFailed;
 import org.jbehave.core.embedder.StoryManager.StoryExecutionFailed;
-import org.jbehave.core.embedder.StoryManager.StoryTimeout;
+import org.jbehave.core.embedder.StoryManager.StoryTimedOut;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
@@ -87,7 +87,7 @@ public class ConcurrencyBehaviour {
 			embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
 		} catch (RunningEmbeddablesFailed e) {
 			assertThat(e.getCause(), instanceOf(StoryExecutionFailed.class));
-			assertThat(e.getCause().getCause(), instanceOf(StoryTimeout.class));
+			assertThat(e.getCause().getCause(), instanceOf(StoryTimedOut.class));
 		}
 	}
 	 
@@ -99,7 +99,7 @@ public class ConcurrencyBehaviour {
              embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
          } catch (RunningEmbeddablesFailed e) {
             assertThat(e.getCause(), instanceOf(StoryExecutionFailed.class));
-            assertThat(e.getCause().getCause(), instanceOf(StoryTimeout.class));
+            assertThat(e.getCause().getCause(), instanceOf(StoryTimedOut.class));
          }
 	 }
 	 
