@@ -158,23 +158,25 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     /**
      * The story timeouts
      * 
-     * @parameter default-value=""
+     * @parameter
      */
-    String storyTimeouts = "";
+    String storyTimeouts;
 
     /**
      * The story timeout in secs
      * 
-     * @parameter default-value="300"
+     * @parameter
+     * @deprecated Use storyTimeouts
      */
-    long storyTimeoutInSecs = 300;
+    long storyTimeoutInSecs;
     
     /**
      * The story timeout in secs by path
      * 
-     * @parameter default-value=""
+     * @parameter
+     * @deprecated Use storyTimeouts
      */
-    String storyTimeoutInSecsByPath = "";
+    String storyTimeoutInSecsByPath;
 
     /**
      * The boolean flag to fail on story timeout
@@ -383,14 +385,21 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     }
 
     protected EmbedderControls embedderControls() {
-        return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
+        EmbedderControls embedderControls = new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
                 .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
                 .doVerboseFiltering(verboseFiltering)
-                .useStoryTimeouts(storyTimeouts)
-                .useStoryTimeoutInSecs(storyTimeoutInSecs)
-                .useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath)
-                .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads));
+                .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads);
+        if ( storyTimeoutInSecs != 0 ){
+        	embedderControls.useStoryTimeoutInSecs(storyTimeoutInSecs);
+        }
+        if ( storyTimeoutInSecsByPath != null ){
+        	embedderControls.useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath);
+        }
+        if ( storyTimeouts != null ){
+        	embedderControls.useStoryTimeouts(storyTimeouts);
+        }        
+		return new UnmodifiableEmbedderControls(embedderControls);
     }
 
     protected class MavenEmbedderMonitor extends NullEmbedderMonitor {

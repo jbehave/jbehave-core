@@ -73,7 +73,7 @@ public class CoreStories extends JUnitStories {
 
     public CoreStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
-                .doIgnoreFailureInView(true).doVerboseFailures(true).useThreads(2).useStoryTimeoutInSecs(60);
+                .doIgnoreFailureInView(true).doVerboseFailures(true).useThreads(2).useStoryTimeouts("60");
         configuredEmbedder().useEmbedderControls(new PropertyBasedEmbedderControls());
     }
 

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.annotations.Configure;
@@ -14,6 +15,7 @@ import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.UsingPaths;
 import org.jbehave.core.annotations.UsingSteps;
 import org.jbehave.core.embedder.Embedder;
+import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -190,13 +192,20 @@ public class AnnotationBuilder {
         boolean failOnStoryTimeout = control(finder, "failOnStoryTimeout");
         int threads = finder.getAnnotatedValue(UsingEmbedder.class, Integer.class, "threads");
         Embedder embedder = embedder();
-        embedder.embedderControls().doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
+		EmbedderControls embedderControls = embedder.embedderControls();
+		embedderControls.doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView)
                 .doVerboseFailures(verboseFailures).doVerboseFiltering(verboseFiltering)
-                .useStoryTimeouts(storyTimeouts)
-                .useStoryTimeoutInSecs(storyTimeoutInSecs)
-                .useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads);
+		if ( storyTimeoutInSecs != 0 ){
+			embedderControls.useStoryTimeoutInSecs(storyTimeoutInSecs);
+		}
+		if ( StringUtils.isNotBlank(storyTimeoutInSecsByPath) ){
+			embedderControls.useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath);
+		}
+		if ( StringUtils.isNotBlank(storyTimeouts) ){
+			embedderControls.useStoryTimeouts(storyTimeouts);
+		}
         Configuration configuration = buildConfiguration();
         embedder.useConfiguration(configuration);
         boolean useStepsFactory = finder.getAnnotatedValue(UsingEmbedder.class, Boolean.class, "stepsFactory");

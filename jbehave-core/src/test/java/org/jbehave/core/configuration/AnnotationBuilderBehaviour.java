@@ -59,8 +59,6 @@ public class AnnotationBuilderBehaviour {
         assertThat(embedderControls.ignoreFailureInView(), is(true));
         assertThat(embedderControls.skip(), is(true));
         assertThat(embedderControls.storyTimeouts(), equalTo("**/longs/*.story:60,**/shorts/*.story:10"));
-        assertThat(embedderControls.storyTimeoutInSecs(), equalTo(100L));
-        assertThat(embedderControls.storyTimeoutInSecsByPath(), equalTo("**/longs/*.story:60,**/shorts/*.story:10"));
         assertThat(embedderControls.failOnStoryTimeout(), is(true));
         assertThat(embedderControls.threads(), equalTo(2));
         assertThat(embedderControls.verboseFailures(), is(true));
@@ -283,7 +281,7 @@ public class AnnotationBuilderBehaviour {
     }
 
 	@UsingEmbedder(batch = true, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true, skip = true, verboseFailures = true, verboseFiltering = true, 
-			storyTimeouts = "**/longs/*.story:60,**/shorts/*.story:10", storyTimeoutInSecs = 100, storyTimeoutInSecsByPath = "**/longs/*.story:60,**/shorts/*.story:10", failOnStoryTimeout = true, threads = 2)
+			storyTimeouts = "**/longs/*.story:60,**/shorts/*.story:10", failOnStoryTimeout = true, threads = 2)
 	@UsingSteps(instances = { MySteps.class })
 	static class AnnotedEmbedderControls extends InjectableEmbedder {
 

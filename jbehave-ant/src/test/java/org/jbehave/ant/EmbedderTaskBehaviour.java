@@ -56,9 +56,7 @@ public class EmbedderTaskBehaviour {
         assertThat(embedderControls.verboseFailures(), is(false));
         assertThat(embedderControls.verboseFiltering(), is(false));
         assertThat(embedderControls.skip(), is(false));
-        assertThat(embedderControls.storyTimeouts(), equalTo(""));
-        assertThat(embedderControls.storyTimeoutInSecs(), equalTo(300L));
-        assertThat(embedderControls.storyTimeoutInSecsByPath(), equalTo(""));
+        assertThat(embedderControls.storyTimeouts(), equalTo("300"));
         assertThat(embedderControls.failOnStoryTimeout(), is(false));
         assertThat(embedderControls.threads(), equalTo(1));  
     }
@@ -77,8 +75,6 @@ public class EmbedderTaskBehaviour {
         task.setVerboseFiltering(true);
         task.setSkip(true);
         task.setStoryTimeouts("**/shorts/BddShortTest.story:5");
-        task.setStoryTimeoutInSecs(60);
-        task.setStoryTimeoutInSecsByPath("**/shorts/BddShortTest.story:5");
         task.setFailOnStoryTimeout(true);
         task.setThreads(2);
         Embedder embedder = task.newEmbedder();
@@ -92,8 +88,6 @@ public class EmbedderTaskBehaviour {
         assertThat(embedderControls.verboseFiltering(), is(true));
         assertThat(embedderControls.skip(), is(true));
         assertThat(embedderControls.storyTimeouts(), equalTo("**/shorts/BddShortTest.story:5"));
-        assertThat(embedderControls.storyTimeoutInSecs(), equalTo(60L));
-        assertThat(embedderControls.storyTimeoutInSecsByPath(), equalTo("**/shorts/BddShortTest.story:5"));
         assertThat(embedderControls.failOnStoryTimeout(), is(true));
         assertThat(embedderControls.threads(), equalTo(2));        
     }

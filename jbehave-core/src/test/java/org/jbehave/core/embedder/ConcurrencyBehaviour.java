@@ -43,7 +43,7 @@ public class ConcurrencyBehaviour {
 	@Test
     public void shouldCompleteXmlReportWhenStoryIsCancelled() {
         Embedder embedder = new Embedder();
-        embedder.embedderControls().useStoryTimeoutInSecs(1);
+        embedder.embedderControls().useStoryTimeouts("1");
         try {
             embedder.runAsEmbeddables(asList(XmlFormat.class.getName()));
         } catch (RunningEmbeddablesFailed e) {
@@ -56,21 +56,21 @@ public class ConcurrencyBehaviour {
 	@Test(expected = RunningEmbeddablesFailed.class)
 	public void shouldAllowStoriesToBeCancelled() {
 		Embedder embedder = new Embedder();
-		embedder.embedderControls().useStoryTimeoutInSecs(1);
+		embedder.embedderControls().useStoryTimeouts("1");
 		embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
 	}
 	
 	@Test(expected = RunningEmbeddablesFailed.class)
 	public void shouldAllowStoriesToBeCancelledByPaths() {
 		Embedder embedder = new Embedder();
-		embedder.embedderControls().useStoryTimeoutInSecsByPath("**/*.story:1");
+		embedder.embedderControls().useStoryTimeouts("**/*.story:1");
 		embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
 	}
 
 	@Test
 	public void shouldAllowStoriesToBeTimed() {
 		Embedder embedder = new Embedder();
-		embedder.embedderControls().useStoryTimeoutInSecs(10).useThreads(2).doVerboseFailures(true);
+		embedder.embedderControls().useStoryTimeouts("10").useThreads(2).doVerboseFailures(true);
 		try {
 			embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
 		} finally {
@@ -81,7 +81,7 @@ public class ConcurrencyBehaviour {
 	@Test
 	public void shouldFailOnTimeout() {
 		Embedder embedder = new Embedder();
-		embedder.embedderControls().useStoryTimeoutInSecs(1)
+		embedder.embedderControls().useStoryTimeouts("1")
 				.doFailOnStoryTimeout(true);
 		try {
 			embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
@@ -94,7 +94,7 @@ public class ConcurrencyBehaviour {
 	 @Test
 	 public void shouldFailOnTimeoutWhenSpecifiedByPath() {
 		 Embedder embedder = new Embedder();
-         embedder.embedderControls().useStoryTimeoutInSecsByPath("**/*.story:1").doFailOnStoryTimeout(true);
+         embedder.embedderControls().useStoryTimeouts("**/*.story:1").doFailOnStoryTimeout(true);
          try {
              embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
          } catch (RunningEmbeddablesFailed e) {
@@ -118,7 +118,7 @@ public class ConcurrencyBehaviour {
 	     OutputStream out = new ByteArrayOutputStream();
 	     Embedder embedder = new Embedder(embedderMonitor(out));
 		 try {
-			 embedder.embedderControls().useStoryTimeoutInSecsByPath("**/another_long.story:1").doFailOnStoryTimeout(true);
+			 embedder.embedderControls().useStoryTimeouts("**/another_long.story:1").doFailOnStoryTimeout(true);
 		   	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
 		   	    
 	        } catch (RunningEmbeddablesFailed e) {
@@ -133,8 +133,7 @@ public class ConcurrencyBehaviour {
 	     OutputStream out = new ByteArrayOutputStream();
 	     Embedder embedder = new Embedder(embedderMonitor(out));
 		 try {
-			 embedder.embedderControls().useStoryTimeoutInSecs(10).doFailOnStoryTimeout(true);
-			 embedder.embedderControls().useStoryTimeoutInSecsByPath("**/a_short.story:1,**/another_long.story:2").doFailOnStoryTimeout(true);
+			 embedder.embedderControls().useStoryTimeouts("10,**/a_short.story:1,**/another_long.story:2").doFailOnStoryTimeout(true);
 		   	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
 	        } catch (RunningEmbeddablesFailed e) {
 	        	assertThat(out.toString(), containsString("Using timeout for story a_short.story of 1"));
@@ -148,8 +147,7 @@ public class ConcurrencyBehaviour {
 	     OutputStream out = new ByteArrayOutputStream();
 	     Embedder embedder = new Embedder(embedderMonitor(out));
 		 ThreadsStories.setCustomStoryPath("**/a_short.story");
-		 embedder.embedderControls().useStoryTimeoutInSecs(7).doFailOnStoryTimeout(true);
-		 embedder.embedderControls().useStoryTimeoutInSecsByPath("**/a_short.story:7").doFailOnStoryTimeout(true);
+		 embedder.embedderControls().useStoryTimeouts("7,**/a_short.story:7").doFailOnStoryTimeout(true);
 		 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName())); 
       	 assertThat(out.toString(), containsString("Using timeout for story a_short.story of 7"));
          ThreadsStories.setCustomStoryPath(null);
@@ -161,7 +159,7 @@ public class ConcurrencyBehaviour {
 	     Embedder embedder = new Embedder(embedderMonitor(out));
 		 try {
 			 ThreadsStories.setCustomStoryPath("**/another_long.story");
-			 embedder.embedderControls().useStoryTimeoutInSecsByPath("**/another_long.story:0").doFailOnStoryTimeout(true);
+			 embedder.embedderControls().useStoryTimeouts("**/another_long.story:0").doFailOnStoryTimeout(true);
 		   	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));  
 	        } catch (RunningEmbeddablesFailed e) {
 	        	assertThat(out.toString(), containsString("Using timeout for story another_long.story of 0"));
@@ -176,7 +174,7 @@ public class ConcurrencyBehaviour {
 	     OutputStream out = new ByteArrayOutputStream();
 	     Embedder embedder = new Embedder(embedderMonitor(out));
 		 ThreadsStories.setCustomStoryPath("**/a_short.story");
-		 embedder.embedderControls().useStoryTimeoutInSecsByPath("").doFailOnStoryTimeout(true);
+		 embedder.embedderControls().useStoryTimeouts("").doFailOnStoryTimeout(true);
 		 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));  
       	 assertThat(out.toString(), containsString("Using timeout for story a_short.story of 300"));
 	     ThreadsStories.setCustomStoryPath(null);
@@ -189,7 +187,7 @@ public class ConcurrencyBehaviour {
 		 
 		 // Note: **/another_long_TEST.story is an invalid path and therefore won't be considered
 		 String timeoutsByPath = "**/a_short.story:10,**/a_long.story:15,**/another_long_TEST.story:77";
-		 embedder.embedderControls().useStoryTimeoutInSecsByPath(timeoutsByPath).doFailOnStoryTimeout(true);
+		 embedder.embedderControls().useStoryTimeouts(timeoutsByPath).doFailOnStoryTimeout(true);
 	   	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
 		   	    
       	 assertThat(out.toString(), containsString("Using timeout for story a_short.story of 10"));
@@ -201,7 +199,7 @@ public class ConcurrencyBehaviour {
 	 public void shouldNotAllowTimeoutByPathToBeInvalidFormat1() {
 		 try {
 			 Embedder embedder = new Embedder();
-			 embedder.embedderControls().useStoryTimeoutInSecsByPath("**/a_long.story:adhgaldsh").doFailOnStoryTimeout(true);
+			 embedder.embedderControls().useStoryTimeouts("**/a_long.story:adhgaldsh").doFailOnStoryTimeout(true);
 		 	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
 	        } catch (RunningEmbeddablesFailed e) {
 	            assertThat(e.getCause(), instanceOf(NumberFormatException.class));
@@ -212,7 +210,7 @@ public class ConcurrencyBehaviour {
 	 public void shouldNotAllowTimeoutByPathToBeInvalidFormat2() {
 		 try {
 			 Embedder embedder = new Embedder();
-			 embedder.embedderControls().useStoryTimeoutInSecsByPath("**/a_long.story:       ").doFailOnStoryTimeout(true);
+			 embedder.embedderControls().useStoryTimeouts("**/a_long.story:       ").doFailOnStoryTimeout(true);
 		 	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
 	        } catch (RunningEmbeddablesFailed e) {
 	            assertThat(e.getCause(), instanceOf(NumberFormatException.class));
@@ -224,7 +222,7 @@ public class ConcurrencyBehaviour {
 	     OutputStream out = new ByteArrayOutputStream();
 	     Embedder embedder = new Embedder(embedderMonitor(out));		 
 		 ThreadsStories.setCustomStoryPath("**/a_short.story");
-		 embedder.embedderControls().useStoryTimeoutInSecsByPath("**/a_short.story:25,**/a_short.story:25").doFailOnStoryTimeout(true);
+		 embedder.embedderControls().useStoryTimeouts("**/a_short.story:25,**/a_short.story:25").doFailOnStoryTimeout(true);
 	   	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
       	 assertThat(out.toString(), containsString("Using timeout for story a_short.story of 25"));
          ThreadsStories.setCustomStoryPath(null);
@@ -296,7 +294,7 @@ public class ConcurrencyBehaviour {
 
         public XmlFormat() {
             Embedder embeeder = configuredEmbedder();
-            embeeder.embedderControls().useStoryTimeoutInSecs(1L);
+            embeeder.embedderControls().useStoryTimeouts("1");
         }
 
         @Override

@@ -14,12 +14,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
-import org.codehaus.plexus.util.StringUtils;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
@@ -45,6 +40,7 @@ public class StoryManager {
 	private final Map<String, RunningStory> runningStories = new HashMap<String, RunningStory>();
 	private final Map<MetaFilter, List<Story>> excludedStories = new HashMap<MetaFilter, List<Story>>();
 	private RunContext context;
+	private StoryTimeouts timeouts;
 	
 	public StoryManager(Configuration configuration,
 			InjectableStepsFactory stepsFactory,
@@ -56,6 +52,7 @@ public class StoryManager {
 		this.executorService = executorService;
 		this.stepsFactory = stepsFactory;
 		this.performableTree = performableTree;
+		this.timeouts = new StoryTimeouts(embedderControls, embedderMonitor);
 	}
 
 	public Story storyOfPath(String storyPath) {
@@ -159,7 +156,7 @@ public class StoryManager {
 
 	public RunningStory runningStory(Story story) {
 		return submit(new EnqueuedStory(performableTree, context,
-				embedderControls, embedderMonitor, story));
+				embedderControls, embedderMonitor, story, timeouts));
 	}
 
     public void waitUntilAllDoneOrFailed(RunContext context) {
@@ -270,16 +267,18 @@ public class StoryManager {
 		private final EmbedderControls embedderControls;
 		private final EmbedderMonitor embedderMonitor;
 		private final Story story;
+		private final StoryTimeouts timeouts;
 		private long startedAtMillis;
 
 		public EnqueuedStory(PerformableTree performableTree,
 				RunContext context, EmbedderControls embedderControls,
-				EmbedderMonitor embedderMonitor, Story story) {
+				EmbedderMonitor embedderMonitor, Story story, StoryTimeouts timeouts) {
 			this.performableTree = performableTree;
 			this.context = context;
 			this.embedderControls = embedderControls;
 			this.embedderMonitor = embedderMonitor;
 			this.story = story;
+			this.timeouts = timeouts;
 		}
 
 		public ThrowableStory call() throws Exception {
@@ -308,95 +307,11 @@ public class StoryManager {
 		}
 
 		public long getTimeoutInSecs() {
-			// timeout by path
-			for (StoryTimeout timeout : storyTimeouts().values()) {
-				if (timeout.allowedByPath(story.getPath())) {
-					long timeoutInSecs = timeout.getTimeoutInSecs();
-					embedderMonitor
-							.usingTimeout(story.getName(), timeoutInSecs);
-					return timeoutInSecs;
-				}
-			}
-
-			// default timeout
-			long timeoutInSecs = embedderControls.storyTimeoutInSecs();
-			embedderMonitor.usingTimeout(story.getName(), timeoutInSecs);
-			return timeoutInSecs;
-		}
-
-		private Map<String, StoryTimeout> storyTimeouts() {
-			return asMap(embedderControls.storyTimeouts());
-		}
-
-		private Map<String, StoryTimeout> asMap(String timeoutsAsString) {
-			Map<String,StoryTimeout> timeouts = new HashMap<String, StoryTimeout>();			
-			if( StringUtils.isBlank(timeoutsAsString) ){
-				return timeouts;
-			}
-
-			for(String timeoutAsString: timeoutsAsString.split(",")) {
-				StoryTimeout timeout = new StoryTimeout(timeoutAsString, embedderMonitor);
-				timeouts.put(timeout.getPathPattern(), timeout);
-			}
-			return timeouts;
+			return timeouts.getTimeoutInSecs(story);
 		}
 
 	}
 
-	public static class StoryTimeout {
-		private Pattern validNumber = Pattern.compile("[\\d+]");
-		private Pattern validTimeout = Pattern.compile("[\\S*]:[\\S+]");
-		private String pathPattern = "";
-		private String timeout = "0";
-		private String timeoutAsString;
-
-		public StoryTimeout(String timeoutAsString, EmbedderMonitor embedderMonitor) {
-			this.timeoutAsString = timeoutAsString;
-			if ( validTimeout.matcher(timeoutAsString).find() ){
-				String[] timeoutByPath = timeoutAsString.split(":");
-				pathPattern = timeoutByPath[0];
-				timeout = timeoutByPath[1];
-			} else {
-				embedderMonitor.invalidTimeoutFormat(timeoutAsString);
-			}
-		}
-
-		public boolean allowedByPath(String path) {
-			return path.matches(regexOf(pathPattern));
-		}
-
-		public String getPathPattern() {
-			return pathPattern;
-		}
-		
-		public long getTimeoutInSecs() {
-			if ( validNumber.matcher(timeout).find() ){
-				return Long.parseLong(timeout);
-			}
-			return 0; 
-		}
-
-		public String getTimeoutAsString() {
-			return timeoutAsString;
-		}
-
-		private String regexOf(String pattern) {
-			try {
-				// check if pattern is already a valid regex
-				Pattern.compile(pattern);
-				return pattern;
-			} catch (PatternSyntaxException e) {
-				// assume Ant-style pattern:  **/path/*.story
-				return pattern.replace("*", ".*");
-			}			
-		}
-
-		@Override
-		public String toString() {
-			return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-		}
-	}
-	
 	@SuppressWarnings("serial")
 	public static class StoryExecutionFailed extends RuntimeException {
 

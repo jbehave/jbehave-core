@@ -68,9 +68,7 @@ public class EmbedderMojoBehaviour {
         assertThat(embedderControls.ignoreFailureInView(), is(false));
         assertThat(embedderControls.threads(), is(1));
         assertThat(embedderControls.skip(), is(false));
-        assertThat(embedderControls.storyTimeouts(), equalTo(""));
-        assertThat(embedderControls.storyTimeoutInSecs(), equalTo(300L));
-        assertThat(embedderControls.storyTimeoutInSecsByPath(), equalTo(""));
+        assertThat(embedderControls.storyTimeouts(), equalTo("300"));
         assertThat(embedderControls.failOnStoryTimeout(), is(false));
         assertThat(embedderControls.threads(), equalTo(1));
     }
@@ -89,8 +87,6 @@ public class EmbedderMojoBehaviour {
         mojo.ignoreFailureInView = true;
         mojo.skip = true;
         mojo.storyTimeouts = "**/longs/BddTest2Long.feature:7";
-        mojo.storyTimeoutInSecs = 60;
-        mojo.storyTimeoutInSecsByPath = "**/longs/BddTest2Long.feature:7";
         mojo.failOnStoryTimeout = true;
         mojo.threads = 2;
         Embedder embedder = mojo.newEmbedder();
@@ -102,9 +98,6 @@ public class EmbedderMojoBehaviour {
         assertThat(embedderControls.ignoreFailureInView(), is(true));
         assertThat(embedderControls.skip(), is(true));
         assertThat(embedderControls.storyTimeouts(), is("**/longs/BddTest2Long.feature:7"));
-        assertThat(embedderControls.storyTimeoutInSecs(), is(60L));
-        assertThat(embedderControls.storyTimeoutInSecsByPath(), is("**/longs/BddTest2Long.feature:7"));
-        assertThat(embedderControls.failOnStoryTimeout(), is(true));
         assertThat(embedderControls.threads(), is(2));
     }
 

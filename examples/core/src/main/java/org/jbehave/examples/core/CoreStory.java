@@ -74,7 +74,7 @@ public abstract class CoreStory extends JUnitStory {
 
     public CoreStory() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
-                .doIgnoreFailureInView(true).useThreads(1).useStoryTimeoutInSecs(60);
+                .doIgnoreFailureInView(true).useThreads(1).useStoryTimeouts("60");
     }
 
     @Override

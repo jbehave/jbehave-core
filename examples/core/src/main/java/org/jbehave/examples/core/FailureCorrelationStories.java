@@ -25,7 +25,7 @@ public class FailureCorrelationStories extends CoreStories {
 
     public FailureCorrelationStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).useThreads(1).useStoryTimeoutInSecs(60);
+                .doIgnoreFailureInView(true).useThreads(1).useStoryTimeouts("60");
     }
 
     @Override
