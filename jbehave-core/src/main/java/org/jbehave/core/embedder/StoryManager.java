@@ -309,8 +309,7 @@ public class StoryManager {
 
 		public long getTimeoutInSecs() {
 			// timeout by path
-			for (StoryTimeout timeout : asMap(
-					embedderControls.storyTimeoutInSecsByPath()).values()) {
+			for (StoryTimeout timeout : storyTimeouts().values()) {
 				if (timeout.allowedByPath(story.getPath())) {
 					long timeoutInSecs = timeout.getTimeoutInSecs();
 					embedderMonitor
@@ -325,48 +324,56 @@ public class StoryManager {
 			return timeoutInSecs;
 		}
 
-		private Map<String, StoryTimeout> asMap(String storyTimeoutsByPath) {
-			Map<String,StoryTimeout> storyTimeouts = new HashMap<String, StoryTimeout>();			
-			if( StringUtils.isBlank(storyTimeoutsByPath) ){
-				return storyTimeouts;
+		private Map<String, StoryTimeout> storyTimeouts() {
+			return asMap(embedderControls.storyTimeouts());
+		}
+
+		private Map<String, StoryTimeout> asMap(String timeoutsAsString) {
+			Map<String,StoryTimeout> timeouts = new HashMap<String, StoryTimeout>();			
+			if( StringUtils.isBlank(timeoutsAsString) ){
+				return timeouts;
 			}
 
-			for(String timeoutAsString: storyTimeoutsByPath.split(",")) {
+			for(String timeoutAsString: timeoutsAsString.split(",")) {
 				StoryTimeout timeout = new StoryTimeout(timeoutAsString, embedderMonitor);
-				storyTimeouts.put(timeout.getPattern(), timeout);
+				timeouts.put(timeout.getPathPattern(), timeout);
 			}
-			return storyTimeouts;
+			return timeouts;
 		}
 
 	}
 
 	public static class StoryTimeout {
-		private Pattern validTimeout = Pattern.compile("[\\S*]:[\\d+]");
-		private String pattern = "";
+		private Pattern validNumber = Pattern.compile("[\\d+]");
+		private Pattern validTimeout = Pattern.compile("[\\S*]:[\\S+]");
+		private String pathPattern = "";
 		private String timeout = "0";
 		private String timeoutAsString;
 
 		public StoryTimeout(String timeoutAsString, EmbedderMonitor embedderMonitor) {
 			this.timeoutAsString = timeoutAsString;
 			if ( validTimeout.matcher(timeoutAsString).find() ){
-				String[] timeoutByPattern = timeoutAsString.split(":");
-				pattern = timeoutByPattern[0];
-				timeout = timeoutByPattern[1];
+				String[] timeoutByPath = timeoutAsString.split(":");
+				pathPattern = timeoutByPath[0];
+				timeout = timeoutByPath[1];
 			} else {
 				embedderMonitor.invalidTimeoutFormat(timeoutAsString);
 			}
 		}
 
 		public boolean allowedByPath(String path) {
-			return path.matches(regexOf(pattern));
+			return path.matches(regexOf(pathPattern));
 		}
 
-		public String getPattern() {
-			return pattern;
+		public String getPathPattern() {
+			return pathPattern;
 		}
 		
 		public long getTimeoutInSecs() {
-			return Long.parseLong(timeout);
+			if ( validNumber.matcher(timeout).find() ){
+				return Long.parseLong(timeout);
+			}
+			return 0; 
 		}
 
 		public String getTimeoutAsString() {

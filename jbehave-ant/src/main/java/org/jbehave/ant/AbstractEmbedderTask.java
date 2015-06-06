@@ -107,6 +107,11 @@ public abstract class AbstractEmbedderTask extends Task {
     private boolean verboseFiltering = false;
 
     /**
+     * The story timeouts
+     */
+    String storyTimeouts = "";
+
+    /**
      * The story timeout in secs
      */
     long storyTimeoutInSecs = 300;
@@ -168,6 +173,7 @@ public abstract class AbstractEmbedderTask extends Task {
      */
     private EmbedderClassLoader classLoader;
 
+
     /**
      * Determines if the scope of the source directory is "test"
      * 
@@ -221,7 +227,9 @@ public abstract class AbstractEmbedderTask extends Task {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
                 .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
-                .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs)
+                .doVerboseFiltering(verboseFiltering)
+                .useStoryTimeouts(storyTimeouts)
+                .useStoryTimeoutInSecs(storyTimeoutInSecs)
                 .useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads));
     }
@@ -523,6 +531,11 @@ public abstract class AbstractEmbedderTask extends Task {
     public void setVerboseFiltering(boolean verboseFiltering) {
         this.verboseFiltering = verboseFiltering;
     }
+
+
+	public void setStoryTimeouts(String storyTimeouts) {
+		this.storyTimeouts = storyTimeouts;
+	}
 
     public void setStoryTimeoutInSecs(long storyTimeoutInSecs) {
         this.storyTimeoutInSecs = storyTimeoutInSecs;

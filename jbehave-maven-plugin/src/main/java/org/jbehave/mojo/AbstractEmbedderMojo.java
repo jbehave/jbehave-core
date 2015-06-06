@@ -156,6 +156,13 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
     boolean verboseFiltering = false;
 
     /**
+     * The story timeouts
+     * 
+     * @parameter default-value=""
+     */
+    String storyTimeouts = "";
+
+    /**
      * The story timeout in secs
      * 
      * @parameter default-value="300"
@@ -379,7 +386,9 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         return new UnmodifiableEmbedderControls(new EmbedderControls().doBatch(batch).doSkip(skip)
                 .doGenerateViewAfterStories(generateViewAfterStories).doIgnoreFailureInStories(ignoreFailureInStories)
                 .doIgnoreFailureInView(ignoreFailureInView).doVerboseFailures(verboseFailures)
-                .doVerboseFiltering(verboseFiltering).useStoryTimeoutInSecs(storyTimeoutInSecs)
+                .doVerboseFiltering(verboseFiltering)
+                .useStoryTimeouts(storyTimeouts)
+                .useStoryTimeoutInSecs(storyTimeoutInSecs)
                 .useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads));
     }

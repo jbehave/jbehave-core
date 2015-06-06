@@ -27,6 +27,7 @@ public class EmbedderControlsBehaviour {
         assertThat(embedderControls.skip(), is(defaultControls.skip()));
         assertThat(embedderControls.verboseFailures(), is(defaultControls.verboseFailures()));
         assertThat(embedderControls.verboseFiltering(), is(defaultControls.verboseFiltering()));
+        assertThat(embedderControls.storyTimeouts(), equalTo(defaultControls.storyTimeouts()));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(defaultControls.storyTimeoutInSecs()));
         assertThat(embedderControls.storyTimeoutInSecsByPath(), equalTo(defaultControls.storyTimeoutInSecsByPath()));
         assertThat(embedderControls.failOnStoryTimeout(), is(defaultControls.failOnStoryTimeout()));
@@ -69,6 +70,7 @@ public class EmbedderControlsBehaviour {
         assertThat(embedderControls.verboseFailures(), is(delegate.verboseFailures()));
         assertThat(embedderControls.verboseFiltering(), is(delegate.verboseFiltering()));
         assertThat(embedderControls.skip(), equalTo(delegate.skip()));
+        assertThat(embedderControls.storyTimeouts(), equalTo(delegate.storyTimeouts()));
         assertThat(embedderControls.storyTimeoutInSecs(), equalTo(delegate.storyTimeoutInSecs()));
         assertThat(embedderControls.storyTimeoutInSecsByPath(), equalTo(delegate.storyTimeoutInSecsByPath()));
         assertThat(embedderControls.threads(), equalTo(delegate.threads()));

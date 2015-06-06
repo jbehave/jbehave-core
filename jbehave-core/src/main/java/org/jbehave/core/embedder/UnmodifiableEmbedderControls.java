@@ -47,6 +47,11 @@ public class UnmodifiableEmbedderControls extends EmbedderControls {
     }
 
     @Override
+    public String storyTimeouts() {
+        return delegate.storyTimeouts();
+    }
+    
+    @Override
     public long storyTimeoutInSecs() {
         return delegate.storyTimeoutInSecs();
     }

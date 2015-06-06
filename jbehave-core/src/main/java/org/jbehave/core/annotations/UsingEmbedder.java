@@ -23,6 +23,7 @@ public @interface UsingEmbedder {
 	boolean ignoreFailureInView()  default false;
 	boolean verboseFailures() default false;
     boolean verboseFiltering() default false;
+    String storyTimeouts() default "";
     long storyTimeoutInSecs() default 300;
     String storyTimeoutInSecsByPath() default "";
     boolean failOnStoryTimeout() default false;

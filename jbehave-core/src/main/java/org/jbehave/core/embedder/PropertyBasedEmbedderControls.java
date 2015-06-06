@@ -13,6 +13,7 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
     public static final String SKIP = "SKIP";
     public static final String VERBOSE_FAILURES = "VERBOSE_FAILURES";
     public static final String VERBOSE_FILTERING = "VERBOSE_FILTERING";
+    public static final String STORY_TIMEOUTS = "STORY_TIMEOUTS";
     public static final String STORY_TIMEOUT_IN_SECS = "STORY_TIMEOUT_IN_SECS";
     public static final String STORY_TIMEOUT_IN_SECS_BY_PATH = "STORY_TIMEOUT_IN_SECS_BY_PATH";
     public static final String FAIL_ON_STORY_TIMEOUT = "FAIL_ON_STORY_TIMEOUT";
@@ -55,6 +56,11 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
         return propertyAs(VERBOSE_FILTERING, Boolean.class, super.verboseFiltering()); 
     }
     
+    @Override
+    public String storyTimeouts() {
+        return propertyAs(STORY_TIMEOUTS, String.class, super.storyTimeouts()); 
+    }
+
     @Override
     public long storyTimeoutInSecs() {
         return propertyAs(STORY_TIMEOUT_IN_SECS, Long.class, super.storyTimeoutInSecs()); 
