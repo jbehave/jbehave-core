@@ -18,7 +18,7 @@ import org.jbehave.core.io.UnderscoredToCapitalized;
  * &quot;views&quot;: &quot;ftl/jbehave-views.ftl&quot;
  * &quot;maps&quot;: &quot;ftl/jbehave-maps.ftl&quot;
  * &quot;navigator&quot;: &quot;ftl/jbehave-navigator.ftl&quot;
- * &quot;reports&quot;: &quot;ftl/jbehave-reports-with-totals.ftl&quot;
+ * &quot;reports&quot;: &quot;ftl/jbehave-reports.ftl&quot;
  * &quot;decorated&quot;: &quot;ftl/jbehave-report-decorated.ftl&quot;
  * &quot;nonDecorated&quot;: &quot;ftl/jbehave-report-non-decorated.ftl&quot;
  * &quot;decorateNonHtml&quot;: &quot;true&quot;
@@ -59,7 +59,7 @@ public class FreemarkerViewGenerator extends TemplateableViewGenerator {
         properties.setProperty("views", "ftl/jbehave-views.ftl");
         properties.setProperty("maps", "ftl/jbehave-maps.ftl");
         properties.setProperty("navigator", "ftl/jbehave-navigator.ftl");
-        properties.setProperty("reports", "ftl/jbehave-reports-with-totals.ftl");
+        properties.setProperty("reports", "ftl/jbehave-reports.ftl");
         properties.setProperty("decorated", "ftl/jbehave-report-decorated.ftl");
         properties.setProperty("nonDecorated", "ftl/jbehave-report-non-decorated.ftl");
         return properties;

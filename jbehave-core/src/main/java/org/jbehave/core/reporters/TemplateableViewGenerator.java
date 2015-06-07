@@ -31,6 +31,7 @@ import org.jbehave.core.io.IOUtils;
 import org.jbehave.core.io.StoryNameResolver;
 import org.jbehave.core.model.StoryLanes;
 import org.jbehave.core.model.StoryMaps;
+import org.jbehave.core.reporters.TemplateableViewGenerator.Reports.ViewType;
 
 /**
  * <p>
@@ -64,7 +65,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
     private final StoryNameResolver nameResolver;
     private final TemplateProcessor processor;
     private Properties viewProperties;
-    private List<Report> reports = new ArrayList<Report>();
+    private Reports reports;
 
     public TemplateableViewGenerator(StoryNameResolver nameResolver, TemplateProcessor processor) {
         this.nameResolver = nameResolver;
@@ -76,6 +77,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         properties.setProperty("encoding", "ISO-8859-1");
         properties.setProperty("decorateNonHtml", "true");
         properties.setProperty("defaultFormats", "stats");
+        properties.setProperty("reportsViewType", Reports.ViewType.LIST.name());        
         properties.setProperty("viewDirectory", "view");
         return properties;
     }
@@ -108,10 +110,11 @@ public class TemplateableViewGenerator implements ViewGenerator {
         String reportsTemplate = templateResource("reports");
         List<String> mergedFormats = mergeFormatsWithDefaults(formats);
         reports = createReports(readReportFiles(outputDirectory, outputName, mergedFormats));
+        reports.viewAs(ViewType.valueOf(viewProperties.getProperty("reportsViewType", Reports.ViewType.LIST.name())));
         Map<String, Object> dataModel = newDataModel();
         addDateAndEncoding(dataModel);
         dataModel.put("timeFormatter", new TimeFormatter());
-        dataModel.put("reportsTable", new ReportsTable(reports, nameResolver));
+        dataModel.put("reports", reports);
         dataModel.put("storyDurations", storyDurations(outputDirectory));
         write(outputDirectory, outputName, reportsTemplate, dataModel);
         generateViewsIndex(outputDirectory);
@@ -162,7 +165,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
 
     private int countStoriesWithScenarios(){
         int storyCount = 0;
-        for (Report report : reports){
+        for (Report report : reports.getReports()){
             Map<String, Integer> stats = report.getStats();
             if (stats.containsKey("scenarios")){
                 if (stats.get("scenarios") > 0)
@@ -172,9 +175,9 @@ public class TemplateableViewGenerator implements ViewGenerator {
         return storyCount;
     }
     
-    int count(String event, Collection<Report> reports) {
+    int count(String event, Reports reports) {
         int count = 0;
-        for (Report report : reports) {
+        for (Report report : reports.getReports()) {
             Properties stats = report.asProperties("stats");
             if (stats.containsKey(event)) {
                 count = count + Integer.parseInt((String) stats.get(event));
@@ -190,7 +193,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         return merged;
     }
 
-    List<Report> createReports(Map<String, List<File>> reportFiles) {
+    Reports createReports(Map<String, List<File>> reportFiles) {
         try {
             String decoratedTemplate = templateResource("decorated");
             String nonDecoratedTemplate = templateResource("nonDecorated");
@@ -221,7 +224,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
                 }
                 reports.add(new Report(name, filesByFormat));
             }
-            return reports;
+            return new Reports(reports, nameResolver);
         } catch (Exception e) {
             throw new ReportCreationFailed(reportFiles, e);
         }
@@ -297,15 +300,41 @@ public class TemplateableViewGenerator implements ViewGenerator {
 
     }
 
-    public static class ReportsTable {
-
+    public static class Reports {
+    	public enum ViewType { LIST };
+    	
         private final Map<String, Report> reports = new HashMap<String, Report>();
         private final StoryNameResolver nameResolver;
+		private ViewType viewType = ViewType.LIST;
 
-        public ReportsTable(List<Report> reports, StoryNameResolver nameResolver) {
+        public Reports(List<Report> reports, StoryNameResolver nameResolver) {
             this.nameResolver = nameResolver;
             index(reports);
             addTotalsReport();
+        }
+        
+        public ViewType getViewType(){
+        	return viewType;        	
+        }
+        
+        public void viewAs(ViewType viewType){
+        	this.viewType = viewType;
+        }
+        
+        public List<Report> getReports() {
+            List<Report> list = new ArrayList<Report>(reports.values());
+            Collections.sort(list);
+            return list;
+        }
+
+        public List<String> getReportNames() {
+            List<String> list = new ArrayList<String>(reports.keySet());
+            Collections.sort(list);
+            return list;
+        }
+
+        public Report getReport(String name) {
+            return reports.get(name);
         }
 
         private void index(List<Report> reports) {
@@ -337,21 +366,6 @@ public class TemplateableViewGenerator implements ViewGenerator {
             return new Report("Totals", new HashMap<String, File>(), totals);
         }
 
-        public List<Report> getReports() {
-            List<Report> list = new ArrayList<Report>(reports.values());
-            Collections.sort(list);
-            return list;
-        }
-
-        public List<String> getReportNames() {
-            List<String> list = new ArrayList<String>(reports.keySet());
-            Collections.sort(list);
-            return list;
-        }
-
-        public Report getReport(String name) {
-            return reports.get(name);
-        }
     }
 
     public static class Report implements Comparable<Report> {

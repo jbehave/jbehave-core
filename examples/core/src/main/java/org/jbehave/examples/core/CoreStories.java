@@ -86,7 +86,7 @@ public class CoreStories extends JUnitStories {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
-        viewResources.put("reports", "ftl/jbehave-reports-with-totals.ftl");
+        viewResources.put("reports", "ftl/jbehave-reports.ftl");
         // Start from default ParameterConverters instance
         ParameterConverters parameterConverters = new ParameterConverters();
         // factory to allow parameter conversion and loading from external
