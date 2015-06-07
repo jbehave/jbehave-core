@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Story Timeouts</title>
+</head>
+<body>
+
+<h2>Story Timeouts</h2>
+
+<p>Story execution often requires stories to time out after a given duration.   The story timeouts are configurable via the <a
+    href="javadoc/core/org/jbehave/core/embedder/EmbedderControls.html">EmbedderControls</a>, or equivalently via <a
+    href="javadoc/core/org/jbehave/core/annotations/UsingEmbedder.html">@UsingEmbedder</a> or the 
+    <a href="ant-tasks.html">Ant tasks</a> or <a href="maven-goals.html">Maven goals</a>.</p>
+
+<h2>Multiple timeout formats</h2>
+
+<p>JBehave supports multiple timeout formats:</p>
+
+<ul>
+    <li>Simple format: 1d 12h 30m 15s.  Any of the units can be omitted.</li>
+    <li>Digits format: only specifying digits will be understood as being expressed in seconds</li>
+</ul>
+
+<p>The format parsing will be attempted in the given order.  If no valid format is found, the parsing will fail with a runtime TimeoutFormatException.</p>
+
+<h2>Specification by path</h2>
+
+<p>Timeouts can be configured to be applicable only for a specific groups of path patterns.  
+The story timeouts property is a comma-separated list of colon-separated pattern-timeout pairs:</p>
+
+<pre class="brush: plain">
+    ([path-pattern-1]:?)[timeout-1],...,([path-pattern-N]:?)[timeout-N]
+</pre>
+
+<p>The path pattern is optional and if not specified it is assumed to be a default timeout used when other paths are not matched.  
+The first such default timeout found in the list will be used.</p>
+
+<p>The path patterns can be either Ant-style or regular expression patterns.  Valid examples of story timeouts include:</p>
+
+<pre class="brush: plain">
+    2m 30s
+    2m 30s,**/*short*:50s,**/*long*:5m
+    **/.*short.*:50,**/*long*:300
+    /[a-z]+/.*short.*:50s,/[a-z]+/.*long.*:5m
+    /[a-z]+/.*short.*:50s,**/*long*:5m
+</pre>
+
+</body>
+</html>

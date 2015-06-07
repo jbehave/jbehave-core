@@ -23,6 +23,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder.RunningEmbeddablesFailed;
 import org.jbehave.core.embedder.StoryManager.StoryExecutionFailed;
 import org.jbehave.core.embedder.StoryManager.StoryTimedOut;
+import org.jbehave.core.embedder.StoryTimeouts.TimeoutFormatException;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
@@ -196,26 +197,21 @@ public class ConcurrencyBehaviour {
 	 }
 
 	 @Test
-	 public void shouldNotAllowTimeoutByPathToBeInvalidFormat1() {
-		 try {
-			 Embedder embedder = new Embedder();
-			 embedder.embedderControls().useStoryTimeouts("**/a_long.story:adhgaldsh").doFailOnStoryTimeout(true);
-		 	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-	        } catch (RunningEmbeddablesFailed e) {
-	            assertThat(e.getCause(), instanceOf(NumberFormatException.class));
-	        }
+	 public void shouldNotAllowTimeoutByPathToBeInvalidFormats() {
+		 assertThatStoryTimeoutIsInvalid("**/a_long.story:adhgaldsh");
+		 assertThatStoryTimeoutIsInvalid("**/a_long.story:       ");
 	 }
-	 
-	 @Test
-	 public void shouldNotAllowTimeoutByPathToBeInvalidFormat2() {
-		 try {
-			 Embedder embedder = new Embedder();
-			 embedder.embedderControls().useStoryTimeouts("**/a_long.story:       ").doFailOnStoryTimeout(true);
-		 	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-	        } catch (RunningEmbeddablesFailed e) {
-	            assertThat(e.getCause(), instanceOf(NumberFormatException.class));
-	        }
-	 }
+
+	private void assertThatStoryTimeoutIsInvalid(String storyTimeouts) {
+		try {
+			Embedder embedder = new Embedder();
+			embedder.embedderControls().useStoryTimeouts(storyTimeouts)
+					.doFailOnStoryTimeout(true);
+			embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+		} catch (RunningEmbeddablesFailed e) {
+			assertThat(e.getCause(), instanceOf(TimeoutFormatException.class));
+		}
+	}
 	 
 	 @Test
 	 public void shouldHandleRepeatedTimeoutsByPath() {

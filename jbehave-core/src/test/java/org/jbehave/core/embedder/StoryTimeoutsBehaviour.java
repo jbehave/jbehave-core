@@ -10,18 +10,18 @@ import org.junit.Test;
 
 public class StoryTimeoutsBehaviour {
 
-	private EmbedderMonitor embedderMonitor = new NullEmbedderMonitor(); 
+	private EmbedderMonitor embedderMonitor = new NullEmbedderMonitor();
 	private EmbedderControls embedderControls = new EmbedderControls();
 	private Story story = mock(Story.class);
 
 	@Test
-	public void shouldSupportDefaultStoryTimeout(){
+	public void shouldAllowADefaultTimeout() {
 		when(story.getPath()).thenReturn("/any/path.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(300L));
 	}
 
 	@Test
-	public void shouldSupportStoryTimeoutsByPathUsingAntPatterns(){
+	public void shouldAllowTimeoutByPathUsingAntPatterns() {
 		embedderControls.useStoryTimeouts("**/*short*:50,**/*long*:500");
 		when(story.getPath()).thenReturn("/path/to/a_short_and_sweet.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
@@ -30,8 +30,9 @@ public class StoryTimeoutsBehaviour {
 	}
 
 	@Test
-	public void shouldSupportStoryTimeoutsByPathUsingRegexPatterns(){
-		embedderControls.useStoryTimeouts("/[a-z]+/.*short.*:50,/[a-z]+/.*long.*:500");
+	public void shouldAllowTimeoutByPathUsingRegexPatterns() {
+		embedderControls
+				.useStoryTimeouts("/[a-z]+/.*short.*:50,/[a-z]+/.*long.*:500");
 		when(story.getPath()).thenReturn("/path/to/a_short_and_sweet.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
 		when(story.getPath()).thenReturn("/path/to/a_long_and_winding.story");
@@ -39,12 +40,35 @@ public class StoryTimeoutsBehaviour {
 	}
 
 	@Test
-	public void shouldSupportStoryTimeoutsByPathUsingMixedPatterns(){
+	public void shouldAllowTimeoutByPathUsingMixedPatterns() {
 		embedderControls.useStoryTimeouts("/[a-z]+/.*short.*:50,**/*long*:500");
 		when(story.getPath()).thenReturn("/path/to/a_short_and_sweet.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
 		when(story.getPath()).thenReturn("/path/to/a_long_and_winding.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(500L));
+	}
+
+	@Test
+	public void shouldAllowTimeoutToBeSpecifiedyBySimpleTextualFormat() {
+		embedderControls.useStoryTimeouts("50");
+		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
+		embedderControls.useStoryTimeouts("50s");
+		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
+		embedderControls.useStoryTimeouts("5m 30s");
+		assertThat(timeouts().getTimeoutInSecs(story), is(330L));
+		embedderControls.useStoryTimeouts("1h 30m 15s");
+		assertThat(timeouts().getTimeoutInSecs(story), is(5415L));
+		embedderControls.useStoryTimeouts("1d 12h 30m 15s");
+		assertThat(timeouts().getTimeoutInSecs(story), is(131415L));
+	}
+
+	@Test
+	public void shouldAllowTimeoutByPathUsingMixedFormats() {
+		embedderControls.useStoryTimeouts("**/.*short.*:50,**/*long*:5m");
+		when(story.getPath()).thenReturn("/path/to/a_short_and_sweet.story");
+		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
+		when(story.getPath()).thenReturn("/path/to/a_long_and_winding.story");
+		assertThat(timeouts().getTimeoutInSecs(story), is(300L));
 	}
 
 	private StoryTimeouts timeouts() {
