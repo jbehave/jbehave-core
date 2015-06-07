@@ -8,6 +8,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryControls;
+import org.jbehave.core.embedder.StoryTimeouts.TimeoutParser;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
@@ -26,8 +27,9 @@ public class ThreadsStories extends JUnitStories {
     public ThreadsStories() {
         Embedder embedder = configuredEmbedder();
         embedder.embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).doVerboseFiltering(true).useThreads(1).useStoryTimeouts("7").doFailOnStoryTimeout(false);
+                .doIgnoreFailureInView(true).doVerboseFiltering(true).useThreads(1).useStoryTimeouts("7secs").doFailOnStoryTimeout(false);
         embedder.useMetaFilters(Arrays.asList("groovy: story_path ==~ /.*long.*/"));
+        embedder.useTimeoutParsers(new CustomTimeoutParser());
     }
 
     @Override
@@ -51,5 +53,18 @@ public class ThreadsStories extends JUnitStories {
     protected List<String> storyPaths() {
         return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/*.story", "");
     }
+    
+    public static class CustomTimeoutParser implements TimeoutParser {
+
+    	public boolean isValid(String timeout) {
+    		return true;
+    	}
+
+    	public long asSeconds(String timeout) {
+    		return Long.parseLong(timeout.substring(0, 1));
+    	}
+
+    }
+
 
 }

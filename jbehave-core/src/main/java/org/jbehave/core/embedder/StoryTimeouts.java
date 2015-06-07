@@ -1,5 +1,6 @@
 package org.jbehave.core.embedder;
 
+import static java.util.Arrays.asList;
 import static java.util.regex.Pattern.compile;
 
 import java.util.ArrayList;
@@ -17,19 +18,32 @@ import org.jbehave.core.model.Story;
 
 public class StoryTimeouts {
 
+	private static final String COMMA = ",";
 	private EmbedderControls embedderControls;
 	private EmbedderMonitor embedderMonitor;
+	private List<TimeoutParser> parsers = new ArrayList<TimeoutParser>();
 
 	public StoryTimeouts(EmbedderControls embedderControls,
 			EmbedderMonitor embedderMonitor) {
 		this.embedderControls = embedderControls;
 		this.embedderMonitor = embedderMonitor;
+		configureDefaultParsers();
 	}
 
+	private void configureDefaultParsers() {
+		this.parsers.addAll(asList(new SimpleTimeoutParser(), new DigitTimeoutParser()));
+	}
+
+	public StoryTimeouts withParsers(TimeoutParser...parsers){
+		this.parsers.addAll(0, asList(parsers));
+		return this;
+	}
+	
 	public long getTimeoutInSecs(Story story) {
-		// timeout by path
 		Map<String, StoryTimeout> timeouts = asMap(embedderControls
 				.storyTimeouts());
+		
+		// look for timeout by path
 		for (StoryTimeout timeout : timeouts.values()) {
 			if (timeout.allowedByPath(story.getPath())) {
 				long timeoutInSecs = timeout.getTimeoutInSecs();
@@ -47,7 +61,7 @@ public class StoryTimeouts {
 			}
 		}
 
-		// default to 300
+		// default to 300 for backward compatibility
 		long timeoutInSecs = 300;
 		embedderMonitor.usingTimeout(story.getName(), timeoutInSecs);
 		return timeoutInSecs;
@@ -57,34 +71,33 @@ public class StoryTimeouts {
 		Map<String, StoryTimeout> timeouts = new HashMap<String, StoryTimeout>();
 		if (StringUtils.isBlank(timeoutsAsString)) {
 			return timeouts;
-		}
-
-		for (String timeoutAsString : timeoutsAsString.split(",")) {
-			StoryTimeout timeout = new StoryTimeout(timeoutAsString);
+		}		
+		for (String timeoutAsString : timeoutsAsString.split(COMMA)) {
+			StoryTimeout timeout = new StoryTimeout(timeoutAsString, parsers);
 			timeouts.put(timeout.getPathPattern(), timeout);
 		}
 		return timeouts;
 	}
 
 	public static class StoryTimeout {
+		private static final String COLON = ":";
+		private boolean isDefault;
 		private String pathPattern = "";
 		private String timeout = "0";
 		private String timeoutAsString;
-		private boolean isDefault;
-		private List<TimeoutParser> parsers = new ArrayList<TimeoutParser>();
-
-		public StoryTimeout(String timeoutAsString) {
+		private List<TimeoutParser> parsers;
+	
+		public StoryTimeout(String timeoutAsString, List<TimeoutParser> parsers) {
 			this.timeoutAsString = timeoutAsString;
-			if (timeoutAsString.contains(":")) {
-				String[] timeoutByPath = timeoutAsString.split(":");
+			this.parsers = parsers;
+			if (timeoutAsString.contains(COLON)) {
+				String[] timeoutByPath = timeoutAsString.split(COLON);
 				pathPattern = timeoutByPath[0];
 				timeout = timeoutByPath[1];
 			} else {
 				isDefault = true;
 				timeout = timeoutAsString;
 			}
-			parsers.add(new SimpleTimeoutParser());
-			parsers.add(new DigitTimeoutParser());
 		}
 
 		public boolean allowedByPath(String path) {

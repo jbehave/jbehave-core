@@ -5,8 +5,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
+
+import org.jbehave.core.embedder.StoryTimeouts.TimeoutParser;
 import org.jbehave.core.model.Story;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 public class StoryTimeoutsBehaviour {
 
@@ -69,6 +73,14 @@ public class StoryTimeoutsBehaviour {
 		assertThat(timeouts().getTimeoutInSecs(story), is(50L));
 		when(story.getPath()).thenReturn("/path/to/a_long_and_winding.story");
 		assertThat(timeouts().getTimeoutInSecs(story), is(300L));
+	}
+	
+	@Test
+	public void shouldAllowCustomTimeoutParser() throws IOException{
+		TimeoutParser timeoutParser = mock(TimeoutParser.class);
+		when(timeoutParser.isValid(Mockito.anyString())).thenReturn(true);
+		when(timeoutParser.asSeconds(Mockito.anyString())).thenReturn(1L);
+		assertThat(timeouts().withParsers(timeoutParser).getTimeoutInSecs(story), is(1L));
 	}
 
 	private StoryTimeouts timeouts() {

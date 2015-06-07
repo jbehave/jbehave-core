@@ -14,6 +14,7 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.StoryTimeouts.TimeoutParser;
 import org.jbehave.core.embedder.executors.FixedThreadExecutors;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.FailingUponPendingStep;
@@ -53,6 +54,7 @@ public class Embedder {
     protected boolean executorServiceCreated;
     protected PerformableTree performableTree;
     protected StoryManager storyManager;
+    protected TimeoutParser[] timeoutParsers;
 
     public Embedder() {
         this(new PrintStreamEmbedderMonitor());
@@ -431,7 +433,7 @@ public class Embedder {
 
     private StoryManager createStoryManager() {
         return new StoryManager(configuration(), stepsFactory(), embedderControls(), embedderMonitor(),
-                executorService(), performableTree());
+                executorService(), performableTree(), timeoutParsers());
     }
 
     protected void configureThreads(Configuration configuration, int threads) {
@@ -464,6 +466,13 @@ public class Embedder {
             systemProperties = new Properties();
         }
         return systemProperties;
+    }
+    
+    public TimeoutParser[] timeoutParsers(){
+    	if (timeoutParsers == null){
+    		timeoutParsers = new TimeoutParser[]{};
+    	}
+    	return timeoutParsers;
     }
 
     public void useClassLoader(EmbedderClassLoader classLoader) {
@@ -515,6 +524,10 @@ public class Embedder {
         this.systemProperties = systemProperties;
     }
 
+    public void useTimeoutParsers(TimeoutParser... timeoutParsers){
+		this.timeoutParsers = timeoutParsers;    	
+    }
+    
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

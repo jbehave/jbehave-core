@@ -23,6 +23,14 @@
 
 <p>The format parsing will be attempted in the given order.  If no valid format is found, the parsing will fail with a runtime TimeoutFormatException.</p>
 
+<h3>Custom timeout parsers</h3>
+
+<p>Custom timeout parsers can be provided by implementing the <a href="javadoc/core/org/jbehave/core/embedder/StoryTimeouts.TimeoutParser.html">TimeoutParser</a> interface and
+configuring it via the Embedder <a href="javadoc/core/org/jbehave/core/embedder/Embedder.html#useTimeoutParsers(org.jbehave.core.embedder.StoryTimeouts.TimeoutParser[])">useTimeoutParsers</a> method.
+</p>
+
+<p>User-provided parsers will take precedence over the default parsers.</p>
+
 <h2>Specification by path</h2>
 
 <p>Timeouts can be configured to be applicable only for a specific groups of path patterns.  

@@ -18,6 +18,7 @@ import java.util.concurrent.Future;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
 import org.jbehave.core.embedder.PerformableTree.RunContext;
+import org.jbehave.core.embedder.StoryTimeouts.TimeoutParser;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
@@ -45,7 +46,7 @@ public class StoryManager {
 	public StoryManager(Configuration configuration,
 			InjectableStepsFactory stepsFactory,
 			EmbedderControls embedderControls, EmbedderMonitor embedderMonitor,
-			ExecutorService executorService, PerformableTree performableTree) {
+			ExecutorService executorService, PerformableTree performableTree, TimeoutParser... parsers) {
 		this.configuration = configuration;
 		this.embedderControls = embedderControls;
 		this.embedderMonitor = embedderMonitor;
@@ -53,6 +54,7 @@ public class StoryManager {
 		this.stepsFactory = stepsFactory;
 		this.performableTree = performableTree;
 		this.timeouts = new StoryTimeouts(embedderControls, embedderMonitor);
+		this.timeouts.withParsers(parsers);
 	}
 
 	public Story storyOfPath(String storyPath) {
