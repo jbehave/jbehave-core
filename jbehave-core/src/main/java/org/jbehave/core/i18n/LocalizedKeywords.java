@@ -30,7 +30,7 @@ public class LocalizedKeywords extends Keywords {
     }
 
     public LocalizedKeywords(Locale locale, String bundleName, ClassLoader classLoader) {
-        super(keywords(bundleName, locale, classLoader));
+        super(keywords(bundleName, classLoader, locale));
         this.locale = locale;
     }
 
@@ -38,28 +38,35 @@ public class LocalizedKeywords extends Keywords {
         return locale;
     }
     
-    private static Map<String, String> keywords(String bundleName, Locale locale,
-            ClassLoader classLoader) {
-        ResourceBundle bundle = lookupBunde(bundleName.trim(), locale, classLoader);
-        Map<String, String> keywords = new HashMap<String, String>();
-        for (String key : KEYWORDS) {
-            try {
-                keywords.put(key, bundle.getString(key));
-            } catch (MissingResourceException e) {
-                throw new LocalizedKeywordNotFound(key, bundleName, locale);
-            }
-        }
-        return keywords;
-    }
+	private static Map<String, String> keywords(String bundleName,
+			ClassLoader classLoader, Locale locale) {
+		ResourceBundle bundle = findBunde(bundleName, classLoader, locale);
+		ResourceBundle defaultBundle = findBunde(bundleName, classLoader,
+				Locale.ENGLISH);
+		Map<String, String> keywords = new HashMap<String, String>();
+		for (String key : KEYWORDS) {
+			try {
+				keywords.put(key, bundle.getString(key));
+			} catch (MissingResourceException e) {
+				if (locale == Locale.ENGLISH) {
+					throw new LocalizedKeywordNotFound(key, bundleName, locale);
+				} else {
+					keywords.put(key, defaultBundle.getString(key));
+				}
+			}
+		}
+		return keywords;
+	}
 
-    private static ResourceBundle lookupBunde(String bundleName, Locale locale, ClassLoader classLoader) {
+    private static ResourceBundle findBunde(String bundleName, ClassLoader classLoader, Locale locale) {
+    	String name = bundleName.trim();
         try {            
             if (classLoader != null) {
-                return getBundle(bundleName, locale, classLoader);
+                return getBundle(name, locale, classLoader);
             }
-            return getBundle(bundleName, locale);
+            return getBundle(name, locale);
         } catch (MissingResourceException e) {
-            throw new ResourceBundleNotFound(bundleName, locale, classLoader, e);
+            throw new ResourceBundleNotFound(name, locale, classLoader, e);
         }
     }
 

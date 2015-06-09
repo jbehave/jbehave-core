@@ -1,7 +1,7 @@
 package org.jbehave.core.i18n;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.jbehave.core.configuration.Keywords.AND;
 import static org.jbehave.core.configuration.Keywords.AS_A;
@@ -34,7 +34,6 @@ import java.util.Properties;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.i18n.LocalizedKeywords.LocalizedKeywordNotFound;
 import org.jbehave.core.i18n.LocalizedKeywords.ResourceBundleNotFound;
 import org.jbehave.core.steps.StepType;
 import org.junit.Test;
@@ -44,6 +43,11 @@ public class LocalizedKeywordsBehaviour {
     @Test
     public void shouldAllowKeywordsInEnglishAsDefault() throws IOException {
         ensureKeywordsAreLocalisedFor(null);
+    }
+
+    @Test
+    public void shouldDefaultToEnglishIfKeywordIsNotFound() throws IOException {
+        ensureKeywordsAreLocalisedFor(new Locale("mk"), null);
     }
 
     @Test
@@ -71,11 +75,6 @@ public class LocalizedKeywordsBehaviour {
     @Test(expected = ResourceBundleNotFound.class)
     public void shouldFailIfResourceBundleIsNotFound() throws IOException {
         ensureKeywordsAreLocalisedFor(new Locale("en"), "unknown");
-    }
-
-    @Test(expected = LocalizedKeywordNotFound.class)
-    public void shouldFailIfKeywordIsNotFound() throws IOException {
-        ensureKeywordsAreLocalisedFor(new Locale("mk"), null);
     }
 
     @Test
