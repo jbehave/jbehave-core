@@ -256,4 +256,8 @@ public class MetaFilter {
         }
     }
 
+	public boolean isEmpty() {
+		return EMPTY == this;
+	}
+
 }

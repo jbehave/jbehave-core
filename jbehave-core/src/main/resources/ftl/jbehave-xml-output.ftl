@@ -45,6 +45,8 @@
 <div class="outcome">
 <outcome keyword="${keywords.outcome}">
 <value>${outcome}</value>
+<#assign metaFilter=lifecycle.getMetaFilter(outcome)>
+<#if !metaFilter.isEmpty()><#assign metaFilterAsString=metaFilter.asString()><metaFilter keyword="${keywords.metaFilter}">${metaFilterAsString}</metaFilter></#if>
 <#list lifecycle.getAfterSteps(outcome) as step>
 <step>${step?xml}</step> 
 </#list>

@@ -270,6 +270,11 @@ h2.lifecycle,h3.lifecycle {
     opacity: 0.85;
 }
 
+.metaFilter {
+    color: #996633;
+    padding: 2px 2px 2px 20px;
+}
+
 .before,.after {
     margin-left: 10px;
 }

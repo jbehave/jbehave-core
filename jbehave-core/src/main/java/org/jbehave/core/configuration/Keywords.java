@@ -57,6 +57,7 @@ public class Keywords {
     public static final String OUTCOME_VALUE = "OutcomeValue";
     public static final String OUTCOME_MATCHER = "OutcomeMatcher";
     public static final String OUTCOME_VERIFIED = "OutcomeVerified";
+	public static final String META_FILTER = "MetaFilter";
     public static final String YES = "Yes";
     public static final String NO = "No";
 
@@ -64,7 +65,7 @@ public class Keywords {
             SCENARIO, GIVEN_STORIES, LIFECYCLE, BEFORE, AFTER, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE,
             PENDING, NOT_PERFORMED, FAILED, DRY_RUN, STORY_CANCELLED, DURATION, OUTCOME, OUTCOME_ANY, OUTCOME_SUCCESS, OUTCOME_FAILURE,
-            OUTCOME_DESCRIPTION, OUTCOME_VALUE, OUTCOME_MATCHER, OUTCOME_VERIFIED, YES, NO);
+            OUTCOME_DESCRIPTION, OUTCOME_VALUE, OUTCOME_MATCHER, OUTCOME_VERIFIED, META_FILTER, YES, NO);
 
 
     private final String meta;
@@ -103,10 +104,10 @@ public class Keywords {
     private final String outcomeValue;
     private final String outcomeMatcher;
     private final String outcomeVerified;
+	private final String metaFilter;
     private final String yes;
     private final String no;
     private final Map<StepType, String> startingWordsByType = new HashMap<StepType, String>();
-
 
 
     public static Map<String, String> defaultKeywords() {
@@ -147,6 +148,7 @@ public class Keywords {
         keywords.put(OUTCOME_MATCHER, "MATCHER");
         keywords.put(OUTCOME_VALUE, "VALUE");
         keywords.put(OUTCOME_VERIFIED, "VERIFIED");
+        keywords.put(META_FILTER, "MetaFilter:");
         keywords.put(YES, "Yes");
         keywords.put(NO, "No");
         return keywords;
@@ -201,6 +203,7 @@ public class Keywords {
         this.outcomeMatcher = keyword(OUTCOME_MATCHER, keywords);
         this.outcomeValue = keyword(OUTCOME_VALUE, keywords);
         this.outcomeVerified = keyword(OUTCOME_VERIFIED, keywords);
+        this.metaFilter = keyword(META_FILTER, keywords);
         this.yes = keyword(YES, keywords);
         this.no = keyword(NO, keywords);
 
@@ -351,6 +354,10 @@ public class Keywords {
 	public List<String> outcomeFields() {
         return asList(outcomeDescription, outcomeValue, outcomeMatcher, outcomeVerified);
     }
+
+	public String metaFilter() {
+		return metaFilter;
+	}
 
     public String yes() {
         return yes;

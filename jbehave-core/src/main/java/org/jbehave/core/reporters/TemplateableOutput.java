@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Lifecycle;
@@ -343,6 +344,10 @@ public class TemplateableOutput implements StoryReporter {
         	return keywords.outcome();
         }
         
+        public String getMetaFilter(){
+        	return keywords.metaFilter();
+        }
+        
         public String getYes() {
             return keywords.yes();
         }
@@ -471,8 +476,16 @@ public class TemplateableOutput implements StoryReporter {
             return lifecycle.getOutcomes();
         }
 
+        public MetaFilter getMetaFilter(Outcome outcome){
+        	return lifecycle.getMetaFilter(outcome);
+        }
+        
         public List<String> getAfterSteps(Outcome outcome){
             return lifecycle.getAfterSteps(outcome);
+        }
+
+        public List<String> getAfterSteps(Outcome outcome, Meta meta){
+            return lifecycle.getAfterSteps(outcome, meta);
         }
 
     }

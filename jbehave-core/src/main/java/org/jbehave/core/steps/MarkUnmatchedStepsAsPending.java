@@ -78,9 +78,9 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         if (stage == Stage.BEFORE) {
             addMatchedSteps(lifecycle.getBeforeSteps(), steps, namedParameters, candidateSteps);
         } else {
-            addMatchedSteps(lifecycle.getAfterSteps(Outcome.ANY), steps, namedParameters, candidateSteps, Outcome.ANY);
-            addMatchedSteps(lifecycle.getAfterSteps(Outcome.SUCCESS), steps, namedParameters, candidateSteps, Outcome.SUCCESS);
-            addMatchedSteps(lifecycle.getAfterSteps(Outcome.FAILURE), steps, namedParameters, candidateSteps, Outcome.FAILURE);
+            addMatchedSteps(lifecycle.getAfterSteps(Outcome.ANY, storyAndScenarioMeta), steps, namedParameters, candidateSteps, Outcome.ANY);
+            addMatchedSteps(lifecycle.getAfterSteps(Outcome.SUCCESS, storyAndScenarioMeta), steps, namedParameters, candidateSteps, Outcome.SUCCESS);
+            addMatchedSteps(lifecycle.getAfterSteps(Outcome.FAILURE, storyAndScenarioMeta), steps, namedParameters, candidateSteps, Outcome.FAILURE);
         }
         return steps;
     }

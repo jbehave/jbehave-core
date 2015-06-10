@@ -45,7 +45,9 @@
 <div class="after"><h3>${keywords.after}</h3>
 <#list lifecycle.getOutcomes() as outcome>
 <div class="outcome">
-<h4>${keywords.outcome} ${outcome}</h4>
+${keywords.outcome} ${outcome}
+<#assign metaFilter=lifecycle.getMetaFilter(outcome)>
+<#if !metaFilter.isEmpty()><#assign metaFilterAsString=metaFilter.asString()><div class="metaFilter step">${keywords.metaFilter} ${metaFilterAsString}</div></#if>
 <#list lifecycle.getAfterSteps(outcome) as step>
 <div class="step">${step?html}</div>   
 </#list>

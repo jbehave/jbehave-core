@@ -10,12 +10,14 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
@@ -317,6 +319,55 @@ public class RegexStoryParserBehaviour {
         assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS).get(0), equalTo("Given a step after successful scenario"));
         assertThat(lifecycle.getAfterSteps(Outcome.FAILURE).size(), equalTo(1));
         assertThat(lifecycle.getAfterSteps(Outcome.FAILURE).get(0), equalTo("Given a step after failed scenario"));
+        Scenario scenario = story.getScenarios().get(0);
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+    }
+
+
+    @Test
+    public void shouldParseStoryWithLifecycleAfterUponOutcomeAndMetaFilter() {
+        String wholeStory = "Lifecycle: " + NL +
+                "After:" + NL + NL +
+                "Outcome: ANY " + NL +
+                "MetaFilter: +all" + NL +
+                "Given a step after any scenario" + NL + 
+                "Outcome: SUCCESS " + NL +
+                "MetaFilter: +happy" + NL +
+                "Given a step after successful scenario" + NL + 
+                "Outcome: FAILURE " + NL +
+                "MetaFilter: +sad" + NL +
+                "Given a step after failed scenario" + NL + 
+                "Scenario:"+ NL +        
+                "Given a scenario";
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<String> beforeSteps = story.getLifecycle().getBeforeSteps();
+        assertThat(beforeSteps.isEmpty(), equalTo(true));
+        Lifecycle lifecycle = story.getLifecycle();
+		List<String> afterSteps = lifecycle.getAfterSteps();
+        assertThat(afterSteps.get(0), equalTo("Given a step after any scenario"));
+        assertThat(afterSteps.get(1), equalTo("Given a step after successful scenario"));
+        assertThat(afterSteps.get(2), equalTo("Given a step after failed scenario"));
+        assertThat(new ArrayList<Outcome>(lifecycle.getOutcomes()), equalTo(Arrays.asList(Outcome.ANY, Outcome.SUCCESS, Outcome.FAILURE)));
+        assertThat(lifecycle.getAfterSteps(Outcome.ANY).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.ANY).get(0), equalTo("Given a step after any scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS).get(0), equalTo("Given a step after successful scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE).get(0), equalTo("Given a step after failed scenario"));
+        assertThat(lifecycle.getMetaFilter(Outcome.ANY).asString(), equalTo("+all"));
+        Keywords keywords = new Keywords();
+		assertThat(lifecycle.getAfterSteps(Outcome.ANY, Meta.createMeta("@all", keywords)).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.ANY, Meta.createMeta("@all", keywords)).get(0), equalTo("Given a step after any scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.ANY, Meta.createMeta("@none", keywords)).size(), equalTo(0));
+        assertThat(lifecycle.getMetaFilter(Outcome.SUCCESS).asString(), equalTo("+happy"));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS, Meta.createMeta("@happy", keywords)).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS, Meta.createMeta("@happy", keywords)).get(0), equalTo("Given a step after successful scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS, Meta.createMeta("@none", keywords)).size(), equalTo(0));
+        assertThat(lifecycle.getMetaFilter(Outcome.FAILURE).asString(), equalTo("+sad"));        
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE, Meta.createMeta("@sad", keywords)).size(), equalTo(1));
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE, Meta.createMeta("@sad", keywords)).get(0), equalTo("Given a step after failed scenario"));
+        assertThat(lifecycle.getAfterSteps(Outcome.FAILURE, Meta.createMeta("@none", keywords)).size(), equalTo(0));
         Scenario scenario = story.getScenarios().get(0);
         List<String> steps = scenario.getSteps();
         assertThat(steps.get(0), equalTo("Given a scenario"));

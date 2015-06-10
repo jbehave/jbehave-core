@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
@@ -218,6 +219,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
                 print(format("lifecycleAfterStart", "{0}\n", keywords.after()));
                 for ( org.jbehave.core.annotations.AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
                 	print(format("lifecycleOutcome", "{0} {1}\n", keywords.outcome(), i18n(outcome)));
+                	MetaFilter metaFilter = lifecycle.getMetaFilter(outcome);
+                	if ( !metaFilter.isEmpty() ){
+                		print(format("lifecycleMetaFilter", "{0} {1}\n", keywords.metaFilter(), metaFilter.asString()));
+                	}
                 	print(lifecycle.getAfterSteps(outcome));
                 }
                 print(format("lifecycleAfterEnd", ""));

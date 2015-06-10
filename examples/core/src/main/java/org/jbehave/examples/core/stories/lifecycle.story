@@ -9,8 +9,11 @@ And my balance is 100
 After:
 Outcome: ANY
 Then my balance is printed
+
 Outcome: SUCCESS
+MetaFilter: -simple
 Then my balance is archived
+
 Outcome: FAILURE
 Then my balance is not archived
 
