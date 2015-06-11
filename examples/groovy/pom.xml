@@ -41,6 +41,13 @@
         <artifactId>jbehave-maven-plugin</artifactId>
         <executions>
           <execution>
+            <id>unpack-view-resources</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>unpack-view-resources</goal>
+            </goals>
+          </execution>
+          <execution>
             <id>embeddable-stories</id>
             <phase>integration-test</phase>
             <configuration>
