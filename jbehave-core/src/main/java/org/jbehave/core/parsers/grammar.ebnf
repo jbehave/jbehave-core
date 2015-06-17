@@ -45,8 +45,14 @@ Lifecycle:= "Lifecycle:" LifecycleBefore? LifecycleAfter?
 LifecycleBefore:= "Before:" Step+
 
 ; The after lifecyle element identified by keyword "After:" (or equivalent in I18n-ed locale), 
-; followed by one or more steps
-LifecycleAfter:= "After:" Step+
+; followed by one or more sets of outcome, meta filter and steps
+LifecycleAfter:= "After:" (Outcome? MetaFilter? Step+)+
+
+; The outcome element identified by keyword "Outcome:" (or equivalent in I18n-ed locale), 
+Outcome:= "Outcome:" "ANY" | "SUCCESS" | "FAILURE";
+
+; The meta filter element identified by keyword "MetaFilter:" (or equivalent in I18n-ed locale), 
+MetaFilter:= "MetaFilter:" (Word Space?)*
 
 ; The scenario is identified by keyword "Scenario:" (or equivalent in I18n-ed locale),
 ; which is optional in the case of a single scenario.  
