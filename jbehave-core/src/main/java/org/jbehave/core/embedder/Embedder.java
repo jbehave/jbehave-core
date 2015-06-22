@@ -40,7 +40,6 @@ import org.jbehave.core.steps.Stepdoc;
 public class Embedder {
 
 	protected StoryMapper storyMapper;
-	protected StoryRunner storyRunner;
 	protected EmbedderMonitor embedderMonitor;
 	protected EmbedderClassLoader classLoader;
 	protected EmbedderControls embedderControls;
@@ -453,10 +452,6 @@ public class Embedder {
         return new MetaFilter(StringUtils.join(metaFilters(), " "), embedderMonitor);
     }
 
-    public StoryRunner storyRunner() {
-        return storyRunner;
-    }
-
     public PerformableTree performableTree() {
         return performableTree;
     }
@@ -514,10 +509,6 @@ public class Embedder {
 
     public void usePerformableTree(PerformableTree performableTree) {
         this.performableTree = performableTree;
-    }
-
-    public void useStoryRunner(StoryRunner storyRunner) {
-        this.storyRunner = storyRunner;
     }
 
     public void useSystemProperties(Properties systemProperties) {

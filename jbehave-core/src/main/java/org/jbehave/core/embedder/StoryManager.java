@@ -27,7 +27,7 @@ import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * Manages the execution and outcomes of running stories. While each story is
- * run by the {@link StoryRunner}, the manager is responsible for the concurrent
+ * run by the {@link PerformableTree}, the manager is responsible for the concurrent
  * submission and monitoring of their execution via the {@link ExecutorService}.
  */
 public class StoryManager {

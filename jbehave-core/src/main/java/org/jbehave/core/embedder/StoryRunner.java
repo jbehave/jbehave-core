@@ -43,6 +43,7 @@ import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
  * @author Elizabeth Keogh
  * @author Mauro Talevi
  * @author Paul Hammant
+ * @deprecated Replaced by {@link PerformableTree}.  Kept only to facilitate the comparison with 3.x.
  */
 public class StoryRunner {
 
