@@ -2,7 +2,7 @@ package org.jbehave.jenkins;
 
 import java.io.Serializable;
 
-import com.thalesgroup.dtkit.metrics.model.AbstractOutputMetric;
+import org.jenkinsci.lib.dtkit.model.AbstractOutputMetric;
 
 @SuppressWarnings("serial")
 public class MavenSurefireModel extends AbstractOutputMetric implements Serializable {

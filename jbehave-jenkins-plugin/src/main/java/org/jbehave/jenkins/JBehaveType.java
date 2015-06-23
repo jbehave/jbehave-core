@@ -1,13 +1,13 @@
 package org.jbehave.jenkins;
 
-import com.thalesgroup.dtkit.metrics.hudson.api.descriptor.TestTypeDescriptor;
-import com.thalesgroup.hudson.plugins.xunit.types.XUnitType;
+import org.jenkinsci.lib.dtkit.descriptor.TestTypeDescriptor;
+import org.jenkinsci.plugins.xunit.types.JUnitType;
 
 @SuppressWarnings("serial")
-public class JBehaveType extends XUnitType {
+public class JBehaveType extends JUnitType {
 
-    public JBehaveType(String pattern, boolean failedIfNotNew, boolean deleteJUnitFiles) {
-        super(pattern, failedIfNotNew, deleteJUnitFiles);
+    public JBehaveType(final String pattern, final boolean skipNoTestFiles, final boolean failIfNotNew, final boolean deleteOutputFiles, final boolean stopProcessingIfError) {
+        super(pattern, skipNoTestFiles, failIfNotNew, deleteOutputFiles, stopProcessingIfError);
     }
 
     @Override
@@ -15,8 +15,9 @@ public class JBehaveType extends XUnitType {
         return null;
     }
 
+    @Override
     public Object readResolve() {
-        return new JBehavePluginType(this.getPattern(), this.isFailIfNotNew(), this.isDeleteJUnitFiles(), this.isStopProcessingIfError());
+        return new JBehavePluginType(this.getPattern(), this.isFailIfNotNew(), this.isDeleteOutputFiles(), this.isStopProcessingIfError());
     }
 
 }
