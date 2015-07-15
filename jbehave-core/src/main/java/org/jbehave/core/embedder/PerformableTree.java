@@ -425,11 +425,11 @@ public class PerformableTree {
         private final MetaFilter filter;
         private final BatchFailures failures;
         private Map<Story, StoryDuration> cancelledStories = new HashMap<Story, StoryDuration>();
+        private Map<String, List<PendingStep>> pendingStories = new HashMap<String, List<PendingStep>>();
+        private final ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
         private String path;
         private boolean givenStory;
         private State state;
-        private StoryReporter reporter;
-        private Map<String, List<PendingStep>> pendingStories = new HashMap<String, List<PendingStep>>();
 
         public RunContext(Configuration configuration, InjectableStepsFactory stepsFactory, EmbedderMonitor embedderMonitor,
                 MetaFilter filter, BatchFailures failures) {
@@ -466,7 +466,7 @@ public class PerformableTree {
 
 		public void currentPath(String path) {
             this.path = path;
-            this.reporter = configuration.storyReporter(path);
+            this.reporter.set(configuration.storyReporter(path));
         }
 
         public void interruptIfCancelled() throws InterruptedException {
@@ -569,7 +569,7 @@ public class PerformableTree {
         }
 
         public StoryReporter reporter() {
-            return reporter;
+            return reporter.get();
         }
 
         public boolean failed(State state) {
