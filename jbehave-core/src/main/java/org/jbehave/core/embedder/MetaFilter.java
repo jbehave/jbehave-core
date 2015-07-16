@@ -163,7 +163,7 @@ public class MetaFilter {
         }
 
         private Pattern findAllPrefixed(String prefix) {
-            return Pattern.compile("(\\" + prefix + "(\\w|\\s|\\*)*)", Pattern.DOTALL);
+            return Pattern.compile("((^|\\s)\\" + prefix + "([^\\s](\\s[^\\-\\+])?)*)", Pattern.DOTALL);
         }
 
         private Properties merge(Properties include, Properties exclude) {
