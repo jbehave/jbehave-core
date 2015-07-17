@@ -1,5 +1,15 @@
 package org.jbehave.core.embedder;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.hamcrest.Matchers;
@@ -8,19 +18,9 @@ import org.jbehave.core.embedder.MetaFilter.MetaMatcher;
 import org.jbehave.core.model.Meta;
 import org.junit.Test;
 
-import static java.util.Arrays.asList;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.lessThan;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 public class MetaFilterBehaviour {
 
-    MetaBuilder metaBuilder = new MetaBuilder();
+	MetaBuilder metaBuilder = new MetaBuilder();
 
     @Test
     public void shouldParseIncludesAndExcludesUsingDefaultMetaMatcher() {
@@ -134,10 +134,31 @@ public class MetaFilterBehaviour {
         long delta = System.currentTimeMillis() - start;
         assertThat("1000 matches should take less than a second, but took "+delta+" ms.", delta, lessThan(1000L));
     }
-    
+        
     private MetaFilter filter(String filterAsString) {
         return new MetaFilter(filterAsString, new SilentEmbedderMonitor(System.out));
     }
+
+    @Test
+    public void shouldFilterUsingCustomMetaMatcher() {
+        String filterAsString = "custom: anything goes";
+		Map<String, MetaMatcher> metaMatchers = new HashMap<String, MetaMatcher>();
+		metaMatchers.put("custom:", new AnythingGoesMetaMatcher());
+		MetaFilter filter = new MetaFilter(filterAsString, new SilentEmbedderMonitor(System.out), metaMatchers);
+		assertThat(filter.metaMatcher(), instanceOf(AnythingGoesMetaMatcher.class));
+		assertTrue(filter.allow(metaBuilder.clear().d("anything").build()));		
+    }
+
+    public class AnythingGoesMetaMatcher implements MetaMatcher {
+
+		public void parse(String filterAsString) {
+		}
+
+		public boolean match(Meta meta) {
+			return true;
+		}
+
+	}
 
     public static class MetaBuilder {
 

@@ -2,7 +2,9 @@ package org.jbehave.core.embedder;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -14,6 +16,7 @@ import org.jbehave.core.ConfigurableEmbedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.embedder.MetaFilter.MetaMatcher;
 import org.jbehave.core.embedder.StoryTimeouts.TimeoutParser;
 import org.jbehave.core.embedder.executors.FixedThreadExecutors;
 import org.jbehave.core.failures.BatchFailures;
@@ -48,6 +51,7 @@ public class Embedder {
     protected List<CandidateSteps> candidateSteps;
     protected InjectableStepsFactory stepsFactory;
     protected List<String> metaFilters;
+    protected Map<String,MetaMatcher> metaMatchers;
     protected Properties systemProperties;
     protected ExecutorService executorService;
     protected boolean executorServiceCreated;
@@ -448,8 +452,15 @@ public class Embedder {
         return metaFilters;
     }
 
+    public Map<String,MetaMatcher> metaMatchers(){
+    	if (metaMatchers == null){
+    		metaMatchers = new HashMap<String, MetaMatcher>();
+    	}
+    	return metaMatchers;
+    }
+    
     public MetaFilter metaFilter() {
-        return new MetaFilter(StringUtils.join(metaFilters(), " "), embedderMonitor);
+        return new MetaFilter(StringUtils.join(metaFilters(), " "), embedderMonitor, metaMatchers());
     }
 
     public PerformableTree performableTree() {
@@ -505,6 +516,10 @@ public class Embedder {
 
     public void useMetaFilters(List<String> metaFilters) {
         this.metaFilters = metaFilters;
+    }
+
+    public void useMetaMatchers(Map<String,MetaMatcher> metaMatchers) {
+        this.metaMatchers = metaMatchers;
     }
 
     public void usePerformableTree(PerformableTree performableTree) {

@@ -5,7 +5,9 @@ import groovy.lang.GroovyClassLoader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -34,30 +36,50 @@ import org.jbehave.core.model.Meta.Property;
  * and "-" for exclusion. E.g.:
  * 
  * <pre>
- * MetaFilter filter = new MetaFilter("+author Mauro -theme smoke testing +map *API -skip");
- * filter.allow(new Meta(asList("map someAPI")));
+ * MetaFilter filter = new MetaFilter(
+ * 		&quot;+author Mauro -theme smoke testing +map *API -skip&quot;);
+ * filter.allow(new Meta(asList(&quot;map someAPI&quot;)));
  * </pre>
  * 
  * </p>
  * <p>
- * The use of the {@link GroovyMetaMatcher} is triggered by the prefix "groovy:" and 
- * allows the filter to be interpreted as a Groovy expression.
+ * The use of the {@link GroovyMetaMatcher} is triggered by the prefix "groovy:"
+ * and allows the filter to be interpreted as a Groovy expression.
  * </p>
+ * 
  * <pre>
- * MetaFilter filter = new MetaFilter("groovy: (a == '11' | a == '22') && b == '33'");
+ * MetaFilter filter = new MetaFilter(
+ * 		&quot;groovy: (a == '11' | a == '22') &amp;&amp; b == '33'&quot;);
  * </pre>
+ * <p>
+ * Custom {@link MetaMatcher} instances can also be provided as a map, indexed
+ * by the prefix used in the filter content:
+ * </p>
+ * 
+ * <pre>
+ * Map&lt;String, MetaMatcher&gt; customMatchers = new HashMap&lt;&gt;();
+ * customMatchers.put(&quot;ruby:&quot;, new RubyMetaMatcher());
+ * MetaFilter filter = new MetaFilter(&quot;ruby: # some ruby script&quot;, customMatchers);
+ * </pre>
+ * <p>
+ * Custom MetaMatcher instances, when they are matched by the prefix of the
+ * filter content, will take precedence over the Groovy or default matchers.
+ * </p>
  */
 public class MetaFilter {
 
-    public static final MetaFilter EMPTY = new MetaFilter();
+    private static final String NO_FILTER = "";
+	private static final String GROOVY = "groovy:";
+
+	public static final MetaFilter EMPTY = new MetaFilter();
 
     private final String filterAsString;
     private final EmbedderMonitor monitor;
-
-    private MetaMatcher metaMatcher;
+	private final Map<String, MetaMatcher> metaMatchers;
+    private final MetaMatcher filterMatcher;
 
     public MetaFilter() {
-        this("");
+        this(NO_FILTER);
     }
 
     public MetaFilter(String filterAsString) {
@@ -65,27 +87,42 @@ public class MetaFilter {
     }
 
     public MetaFilter(String filterAsString, EmbedderMonitor monitor) {
-        this.filterAsString = filterAsString == null ? "" : filterAsString;
+    	this(filterAsString, monitor, new HashMap<String, MetaMatcher>());
+    }
+
+    public MetaFilter(String filterAsString, Map<String,MetaMatcher> metaMatchers) {
+    	this(filterAsString, new PrintStreamEmbedderMonitor(), metaMatchers);
+    }
+
+    public MetaFilter(String filterAsString, EmbedderMonitor monitor, Map<String,MetaMatcher> metaMatchers) {
+		this.filterAsString = filterAsString == null ? NO_FILTER : filterAsString;
         this.monitor = monitor;
-        this.metaMatcher = createMetaMatcher(this.filterAsString);
-        this.metaMatcher.parse(filterAsString);
+        this.metaMatchers = metaMatchers;
+        this.filterMatcher = createMetaMatcher(this.filterAsString, this.metaMatchers);
+        this.filterMatcher.parse(filterAsString);
     }
 
     /**
      * Creates a MetaMatcher based on the filter content.  
      * 
      * @param filterAsString the String representation of the filter
-     * @return A MetaMatcher
+     * @param metaMatchers the Map of custom MetaMatchers 
+     * @return A MetaMatcher used to match the filter content
      */
-    protected MetaMatcher createMetaMatcher(String filterAsString) {
-        if (filterAsString.startsWith("groovy: ")) {
+    protected MetaMatcher createMetaMatcher(String filterAsString, Map<String, MetaMatcher> metaMatchers) {
+    	for ( String key : metaMatchers.keySet() ){
+    		if ( filterAsString.startsWith(key)){
+    			return metaMatchers.get(key);
+    		}
+    	}
+        if (filterAsString.startsWith(GROOVY)) {
             return new GroovyMetaMatcher();
         }
         return new DefaultMetaMatcher();
     }
 
     public boolean allow(Meta meta) {
-        boolean allowed = this.metaMatcher.match(meta);
+        boolean allowed = this.filterMatcher.match(meta);
         if (!allowed) {
             monitor.metaNotAllowed(meta, this);
         }
@@ -93,7 +130,7 @@ public class MetaFilter {
     }
 
     public MetaMatcher metaMatcher() {
-        return metaMatcher;
+        return filterMatcher;
     }
 
     public String asString() {
@@ -215,7 +252,7 @@ public class MetaFilter {
             String groovyString = "public class GroovyMatcher {\n" +
                     "public org.jbehave.core.model.Meta meta\n" +
                     "  public boolean match() {\n" +
-                    "    return (" + filterAsString.substring("groovy: ".length()) + ")\n" +
+                    "    return (" + filterAsString.substring(GROOVY.length()) + ")\n" +
                     "  }\n" +
                     "  def propertyMissing(String name) {\n" +
                     "    if (!meta.hasProperty(name)) {\n" +

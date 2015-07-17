@@ -72,6 +72,32 @@ an exact match of the property value (including empty value) or use the
 add it to the runtime classpath.  If using Maven, you need to define Groovy as a Plugin dependency, c.f. <a href="maven-goals.html">Maven goals</a>.
 </span>
 
+<h3>Custom Meta Matchers</h3>
+
+<p>Custom meta matcher instances can also be provided to the <a href="javadoc/core/org/jbehave/core/embedder/Embedder.html">Embedder</a> as a map, indexed by the prefix used in the filter content:</p>
+ 
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+ Map<String, MetaMatcher> customMatchers = new HashMap<String, MetaMatcher>();
+ customMatchers.put("ruby:", new RubyMetaMatcher());
+ embedder.useMetaMatchers(customMatchers);
+]]>
+</script>
+<p>
+The filter content will then need to start by the same prefix defined in the map:
+</p>
+<pre class="brush: plain">
+    ruby: # some ruby matching code
+</pre>
+
+<p>
+Custom instances that are matched by the prefix of the filter content will take precedence over the Groovy or default matchers.
+</p>
+
+<span class="followup">Users wanting to use a custom Meta Matcher need to add to the runtime classpath any dependencies required by the 
+implementation of the matcher.  If using Maven, you need to define them as a Plugin dependency, c.f. <a href="maven-goals.html">Maven goals</a>.
+</span>
+
 <h2>Filtering on Story and Scenario Elements</h2>
 
 <p>In addition to the <a href="meta-info.html">meta info</a> that is defined by the user, both at story and scenario level, JBehave also 
