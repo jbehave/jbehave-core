@@ -1,7 +1,7 @@
 package org.jbehave.core.failures;
 
 /**
- * Runtime exception thrown to indicate that the scenario should be restarted.
+ * Runtime exception thrown to indicate that the current and following steps should be ignored
  */
 @SuppressWarnings("serial")
 public class IgnoringStepsFailure extends RuntimeException {
