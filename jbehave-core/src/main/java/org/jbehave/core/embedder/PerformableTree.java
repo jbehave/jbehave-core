@@ -899,9 +899,11 @@ public class PerformableTree {
 			boolean restart = true;
 			while (restart) {
 				restart = false;
-				steps.perform(context);
-				if (context.restartScenario()){
-					restart = true;
+				try {
+				    steps.perform(context);
+				} catch (RestartingScenarioFailure e) {
+				    restart = true;
+				    continue;
 				}
 			}
 		}
@@ -1012,6 +1014,7 @@ public class PerformableTree {
 					state = state.run(step, results, reporter, state.getFailure());
 				} catch (RestartingScenarioFailure e) {
 	                reporter.restarted(step.toString(), e);
+	                throw e;
 				}
             }
             context.stateIs(state);
