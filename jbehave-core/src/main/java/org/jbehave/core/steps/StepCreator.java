@@ -15,6 +15,7 @@ import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
+import org.jbehave.core.failures.IgnoringStepsFailure;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
@@ -605,6 +606,9 @@ public class StepCreator {
             } catch (InvocationTargetException e) {
                 if (e.getCause() instanceof RestartingScenarioFailure) {
                     throw (RestartingScenarioFailure) e.getCause();
+                }
+                if (e.getCause() instanceof IgnoringStepsFailure) {
+                    throw (IgnoringStepsFailure) e.getCause();
                 }
                 Throwable failureCause = e.getCause();
                 if (failureCause instanceof UUIDExceptionWrapper) {
