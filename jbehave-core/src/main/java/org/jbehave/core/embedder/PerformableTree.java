@@ -1006,6 +1006,7 @@ public class PerformableTree {
             if (steps.size() == 0) {
                 return;
             }
+		    Keywords keywords = context.configuration().keywords();
             State state = context.state();
             StoryReporter reporter = context.reporter();
             results = new ArrayList<StepResult>();
@@ -1014,16 +1015,16 @@ public class PerformableTree {
                 try {
 					context.interruptIfCancelled();
 					if (ignoring) {
-					    reporter.ignorable(step.toString());
+						reporter.ignorable(step.asString(keywords));
 					} else {
 					    state = state.run(step, results, reporter, state.getFailure());
 					}
-				} catch (RestartingScenarioFailure e) {
-	                reporter.restarted(step.toString(), e);
-	                throw e;
 				} catch (IgnoringStepsFailure e) {
+					reporter.ignorable(step.asString(keywords));
 				    ignoring = true;
-				    reporter.ignorable(step.toString());
+				} catch (RestartingScenarioFailure e) {
+	                reporter.restarted(step.asString(keywords), e);
+	                throw e;
 				}
             }
             context.stateIs(state);

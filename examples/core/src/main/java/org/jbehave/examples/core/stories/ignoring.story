@@ -1,5 +1,7 @@
 
 Scenario: Ignoring steps
 
-When I ignore next steps
-Then this step is ignored
+Given a successful step
+When ignore steps failure occurs
+Then step is ignored
+Then step is ignored
