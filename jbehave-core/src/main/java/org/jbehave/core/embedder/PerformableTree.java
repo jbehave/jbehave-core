@@ -386,7 +386,10 @@ public class PerformableTree {
             context.resetState();
             context.resetFailures();
         }
-        context.currentPath(story.getPath());
+
+        if (!story.getPath().equals(context.path())) {
+            context.currentPath(story.getPath());
+        }
 
         root.get(story).perform(context);
         if (context.failureOccurred()) {
@@ -761,7 +764,11 @@ public class PerformableTree {
             } finally {
                 timing.setDurationInMillis(timer.stop());
             }
-            context.reporter().afterStory(context.givenStory);
+            if (context.restartStory()) {
+                context.reporter().afterStory(true);
+            } else {
+                context.reporter().afterStory(context.givenStory);
+            }
             this.status = context.status(state);
         }
 

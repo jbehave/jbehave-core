@@ -255,11 +255,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("metaEnd", "\n"));
     }
 
-    public void afterStory(boolean givenStory) {
+    public void afterStory(boolean givenStoryOrRestarted) {
         print(format("afterStory", "\n"));
         // take care not to close System.out
         // which is used for ConsoleOutput
-        if (!givenStory && output != System.out) {
+        if (!givenStoryOrRestarted && output != System.out) {
             output.close();
         }
     }

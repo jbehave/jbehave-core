@@ -27,7 +27,7 @@ public interface StoryReporter {
 
     void beforeStory(Story story, boolean givenStory);
 
-    void afterStory(boolean givenStory);
+    void afterStory(boolean givenStoryOrRestarted);
 
     void narrative(Narrative narrative);
 
