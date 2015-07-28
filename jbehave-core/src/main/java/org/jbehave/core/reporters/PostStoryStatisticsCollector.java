@@ -9,6 +9,7 @@ import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.jbehave.core.failures.RestartingStoryFailure;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Lifecycle;
@@ -76,9 +77,12 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     public void failed(String step, Throwable cause) {
         this.cause = cause;
-        add("steps");
-        add("stepsFailed");
-        add("currentScenarioSteps");
+        
+        if (cause != null && !(cause.getCause() instanceof RestartingStoryFailure)) {
+            add("steps");
+            add("stepsFailed");
+            add("currentScenarioSteps");
+        }
     }
 
     public void failedOutcomes(String step, OutcomesTable table) {
@@ -208,6 +212,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
     
     public void restartedStory(Story story, Throwable cause) {
+        resetData();
     }
 
     private void add(String event) {
