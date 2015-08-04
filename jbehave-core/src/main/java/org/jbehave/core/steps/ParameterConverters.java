@@ -298,7 +298,7 @@ public class ParameterConverters {
         private String canonicalize(String value) {
             char decimalPointSeparator = '.'; // default
             char minusSign = '-'; // default
-            String rxNotDigits = "[^0-9]";
+            String rxNotDigits = "[\\.,]";
             StringBuilder builder = new StringBuilder(value.length());
 
             // override defaults according to numberFormat's settings
@@ -310,10 +310,16 @@ public class ParameterConverters {
 
             value = value.trim();
             int decimalPointPosition = value.lastIndexOf(decimalPointSeparator);
+            int firstDecimalPointPosition = value.indexOf(decimalPointSeparator);
+
+            if (firstDecimalPointPosition != decimalPointPosition) {
+                throw new NumberFormatException("Invalid format, more than one decimal point has been found.");
+            }
+
             boolean isNegative = value.charAt(0) == minusSign;
 
             if (isNegative) {
-                builder.append('-'); // fixed "-" for BigDecimal constructur
+                builder.append('-'); // fixed "-" for BigDecimal constructor
             }
 
             if (decimalPointPosition != -1) {

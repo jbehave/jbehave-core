@@ -98,6 +98,7 @@ public class ParameterConvertersBehaviour {
         assertThat((Float) converter.convertValue("100,000.01", Float.class), equalTo(100000.01f));
         assertThat((Double) converter.convertValue("100,000.01", Double.class), equalTo(100000.01d));        
         assertThat((Double) converter.convertValue("1,00,000.01", Double.class), equalTo(100000.01d)); //Hindi style       
+        assertThat((BigDecimal) converter.convertValue("1,000,000.01", BigDecimal.class), equalTo(new BigDecimal("1000000.01")));
     }
     
     @Test
@@ -209,22 +210,28 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertInvalidNumbersWithNumberFormat() {
+        boolean hasFailed = false;
         NumberConverter converter = new NumberConverter();
         try {
             converter.convertValue("abc", Long.class);
         } catch (ParameterConvertionFailed e) {
+            hasFailed = true;
             assertThat(e.getCause(), is(instanceOf(ParseException.class)));
         }
+        assertThat("Conversion has not failed", hasFailed);
     }
 
     @Test
     public void shouldFailToConvertInvalidNumbersWithNumberFormat2()  {
+        boolean hasFailed = false;
         NumberConverter converter = new NumberConverter();
         try {
             converter.convertValue("12.34.56", BigDecimal.class);
         } catch (ParameterConvertionFailed e) {
+            hasFailed = true;
             assertThat(e.getCause(), is(instanceOf(NumberFormatException.class)));
         }
+        assertThat("Conversion has not failed", hasFailed);
     }
 
     @Test
