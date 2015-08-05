@@ -346,6 +346,14 @@
     </profile>
   </profiles>
 
+  <licenses>
+    <license>
+      <name>BSD license</name>
+      <url>http://jbehave.org/license.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
   <scm>
     <connection>scm:git:git://github.com/jbehave/jbehave-core.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/jbehave/jbehave-core.git</developerConnection>
