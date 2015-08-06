@@ -160,19 +160,14 @@ public class ConcurrencyBehaviour {
 	 }
 	 
 	 @Test
-	 public void shouldAllowTimeoutByPathToBeZero() {
+	 public void shouldAllowTimeoutByPathToBeZeroMeaningNoTimeLimit() {
 	     OutputStream out = new ByteArrayOutputStream();
 	     Embedder embedder = new Embedder(embedderMonitor(out));
-		 try {
-			 ThreadsStories.setCustomStoryPath("**/another_long.story");
-			 embedder.embedderControls().useStoryTimeouts("**/another_long.story:0").doFailOnStoryTimeout(true);
-			 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-			 fail("Exception was not thrown");
-		 } catch (RunningEmbeddablesFailed e) {
-			 assertThat(out.toString(), containsString("Using timeout for story another_long.story of 0"));
-		 } finally {
-			 ThreadsStories.setCustomStoryPath(null);
-		 }
+		 ThreadsStories.setCustomStoryPath("**/another_long.story");
+		 embedder.embedderControls().useStoryTimeouts("**/another_long.story:0").doFailOnStoryTimeout(true);
+		 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+		 assertThat(out.toString(), containsString("Using timeout for story another_long.story of 0"));
+		 ThreadsStories.setCustomStoryPath(null);
 	 }
 	 
 	 @Test
