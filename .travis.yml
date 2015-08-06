@@ -1,5 +1,5 @@
 language: java
 install: mvn install -s settings.xml -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode -e --quiet
 jdk:
-  - oraclejdk7
+  - oraclejdk8
 script: mvn install -s settings.xml -P examples --batch-mode -e
