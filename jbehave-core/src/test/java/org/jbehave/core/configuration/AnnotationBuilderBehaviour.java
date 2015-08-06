@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -109,6 +110,7 @@ public class AnnotationBuilderBehaviour {
                 new PrintStreamAnnotationMonitor(new PrintStream(baos)));
         try {
             assertThatStepsInstancesAre(annotatedFailing.buildCandidateSteps(), MySteps.class);
+            fail("Exception was not thrown");
         } catch (RuntimeException e) {
             assertThat(baos.toString(), containsString("Element creation failed"));
             assertThat(baos.toString(), containsString("RuntimeException"));
@@ -187,6 +189,7 @@ public class AnnotationBuilderBehaviour {
                 new PrintStreamAnnotationMonitor(new PrintStream(baos)));
         try {
             annotatedPrivate.embeddableInstance();
+            fail("Exception was not thrown");
         } catch (InstantiationFailed e) {
             assertThat(baos.toString(), containsString("Element creation failed"));
             assertThat(baos.toString(), containsString("IllegalAccessException"));

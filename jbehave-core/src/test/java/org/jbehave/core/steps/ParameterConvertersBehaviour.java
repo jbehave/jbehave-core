@@ -210,28 +210,24 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertInvalidNumbersWithNumberFormat() {
-        boolean hasFailed = false;
         NumberConverter converter = new NumberConverter();
         try {
             converter.convertValue("abc", Long.class);
+            fail("Exception was not thrown");
         } catch (ParameterConvertionFailed e) {
-            hasFailed = true;
             assertThat(e.getCause(), is(instanceOf(ParseException.class)));
         }
-        assertThat("Conversion has not failed", hasFailed);
     }
 
     @Test
     public void shouldFailToConvertInvalidNumbersWithNumberFormat2()  {
-        boolean hasFailed = false;
         NumberConverter converter = new NumberConverter();
         try {
             converter.convertValue("12.34.56", BigDecimal.class);
+            fail("Exception was not thrown");
         } catch (ParameterConvertionFailed e) {
-            hasFailed = true;
             assertThat(e.getCause(), is(instanceOf(NumberFormatException.class)));
         }
-        assertThat("Conversion has not failed", hasFailed);
     }
 
     @Test

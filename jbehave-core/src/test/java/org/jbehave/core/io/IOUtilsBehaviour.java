@@ -63,17 +63,15 @@ public class IOUtilsBehaviour {
         verify(reader, never()).close();
     }
 
-    @Test
+    @Test(expected = IOException.class)
     public void shouldCloseReaderException() throws IOException {
         Reader reader = mock(Reader.class);
         when(reader.read(isA(char[].class))).thenThrow(new IOException());
         try {
             IOUtils.toString(reader, true);
+        } finally {
+            verify(reader).close();
         }
-        catch(IOException ioex) {
-            // expected
-        }
-        verify(reader).close();
     }
 
     // same for InputStream
@@ -118,17 +116,15 @@ public class IOUtilsBehaviour {
         verify(stream, never()).close();
     }
 
-    @Test
+    @Test(expected = IOException.class)
     public void shouldCloseInputStreamException() throws IOException {
         InputStream stream = mock(InputStream.class);
         when(stream.read(isA(byte[].class), anyInt(), anyInt())).thenThrow(new IOException());
         try {
             IOUtils.toString(stream, true);
+        } finally {
+            verify(stream).close();
         }
-        catch(IOException ioex) {
-            // expected
-        }
-        verify(stream).close();
     }
 
     /*

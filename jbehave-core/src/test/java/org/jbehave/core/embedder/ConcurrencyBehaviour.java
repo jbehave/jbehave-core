@@ -8,6 +8,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.XML;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -47,6 +48,7 @@ public class ConcurrencyBehaviour {
         embedder.embedderControls().useStoryTimeouts("1");
         try {
             embedder.runAsEmbeddables(asList(XmlFormat.class.getName()));
+            fail("Exception was not thrown");
         } catch (RunningEmbeddablesFailed e) {
             String xmlOutput = XmlFormat.out.toString();
             assertThat(xmlOutput, containsString("</scenario>"));
@@ -86,6 +88,7 @@ public class ConcurrencyBehaviour {
 				.doFailOnStoryTimeout(true);
 		try {
 			embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+			fail("Exception was not thrown");
 		} catch (RunningEmbeddablesFailed e) {
 			assertThat(e.getCause(), instanceOf(StoryExecutionFailed.class));
 			assertThat(e.getCause().getCause(), instanceOf(StoryTimedOut.class));
@@ -98,6 +101,7 @@ public class ConcurrencyBehaviour {
          embedder.embedderControls().useStoryTimeouts("**/*.story:1").doFailOnStoryTimeout(true);
          try {
              embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+             fail("Exception was not thrown");
          } catch (RunningEmbeddablesFailed e) {
             assertThat(e.getCause(), instanceOf(StoryExecutionFailed.class));
             assertThat(e.getCause().getCause(), instanceOf(StoryTimedOut.class));
@@ -120,13 +124,13 @@ public class ConcurrencyBehaviour {
 	     Embedder embedder = new Embedder(embedderMonitor(out));
 		 try {
 			 embedder.embedderControls().useStoryTimeouts("**/another_long.story:1").doFailOnStoryTimeout(true);
-		   	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-		   	    
-	        } catch (RunningEmbeddablesFailed e) {
-	        	assertThat(out.toString(), containsString("Using timeout for story a_short.story of 300"));
-	        	assertThat(out.toString(), containsString("Using timeout for story a_long.story of 300"));
-	        	assertThat(out.toString(), containsString("Using timeout for story another_long.story of 1"));
-	        }
+			 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+			 fail("Exception was not thrown");
+		 } catch (RunningEmbeddablesFailed e) {
+			 assertThat(out.toString(), containsString("Using timeout for story a_short.story of 300"));
+			 assertThat(out.toString(), containsString("Using timeout for story a_long.story of 300"));
+			 assertThat(out.toString(), containsString("Using timeout for story another_long.story of 1"));
+		 }
 	 }
 	 
 	 @Test
@@ -136,11 +140,12 @@ public class ConcurrencyBehaviour {
 		 try {
 			 embedder.embedderControls().useStoryTimeouts("10,**/a_short.story:1,**/another_long.story:2").doFailOnStoryTimeout(true);
 		   	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-	        } catch (RunningEmbeddablesFailed e) {
-	        	assertThat(out.toString(), containsString("Using timeout for story a_short.story of 1"));
-	        	assertThat(out.toString(), containsString("Using timeout for story a_long.story of 10"));
-	        	assertThat(out.toString(), containsString("Using timeout for story another_long.story of 2"));
-	        }
+			 fail("Exception was not thrown");
+		 } catch (RunningEmbeddablesFailed e) {
+			 assertThat(out.toString(), containsString("Using timeout for story a_short.story of 1"));
+			 assertThat(out.toString(), containsString("Using timeout for story a_long.story of 10"));
+			 assertThat(out.toString(), containsString("Using timeout for story another_long.story of 2"));
+		}
 	 }
 	 
 	 @Test
@@ -161,11 +166,11 @@ public class ConcurrencyBehaviour {
 		 try {
 			 ThreadsStories.setCustomStoryPath("**/another_long.story");
 			 embedder.embedderControls().useStoryTimeouts("**/another_long.story:0").doFailOnStoryTimeout(true);
-		   	 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));  
-	        } catch (RunningEmbeddablesFailed e) {
-	        	assertThat(out.toString(), containsString("Using timeout for story another_long.story of 0"));
-	        }
-		 finally {
+			 embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+			 fail("Exception was not thrown");
+		 } catch (RunningEmbeddablesFailed e) {
+			 assertThat(out.toString(), containsString("Using timeout for story another_long.story of 0"));
+		 } finally {
 			 ThreadsStories.setCustomStoryPath(null);
 		 }
 	 }
@@ -208,6 +213,7 @@ public class ConcurrencyBehaviour {
 			embedder.embedderControls().useStoryTimeouts(storyTimeouts)
 					.doFailOnStoryTimeout(true);
 			embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+			fail("Exception was not thrown");
 		} catch (RunningEmbeddablesFailed e) {
 			assertThat(e.getCause(), instanceOf(TimeoutFormatException.class));
 		}

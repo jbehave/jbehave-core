@@ -38,6 +38,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.fail;
 
 public class ExamplesTableBehaviour {
 
@@ -424,11 +425,13 @@ public class ExamplesTableBehaviour {
         assertThat(integers.valueAs("one", Integer.class), equalTo(11));
         try {
             integers.valueAs("unknown", Integer.class);
+            fail("Exception was not thrown");
         } catch (ValueNotFound e) {
             assertThat(e.getMessage(), equalTo("unknown"));
         }
         try {
             examplesTable.getRowAsParameters(1);
+            fail("Exception was not thrown");
         } catch (RowNotFound e) {
             assertThat(e.getMessage(), equalTo("1"));
         }

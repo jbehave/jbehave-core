@@ -10,6 +10,7 @@ import java.util.List;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.fail;
 
 public class OutcomesTableBehaviour {
 
@@ -35,6 +36,7 @@ public class OutcomesTableBehaviour {
         table.addOutcome("a failure", two, is(false));
         try {
             table.verify();
+            fail("Exception was not thrown");
         } catch (UUIDExceptionWrapper ce) {
             OutcomesFailed e = (OutcomesFailed) ce.getCause();
             assertThat(e.outcomesTable().getOutcomes().size(), equalTo(2));
