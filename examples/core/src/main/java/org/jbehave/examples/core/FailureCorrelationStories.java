@@ -14,6 +14,7 @@ import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.Assert;
 
@@ -24,8 +25,11 @@ public class FailureCorrelationStories extends CoreStories {
     private List<String> failures = new ArrayList<String>();
 
     public FailureCorrelationStories() {
-        configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(true)
-                .doIgnoreFailureInView(true).useThreads(1).useStoryTimeouts("60");
+        configuredEmbedder().embedderControls()
+                .doGenerateViewAfterStories(true)
+                .doIgnoreFailureInStories(true)
+                .doIgnoreFailureInView(true)
+                .useThreads(1).useStoryTimeouts("60");
     }
 
     @Override
@@ -34,10 +38,8 @@ public class FailureCorrelationStories extends CoreStories {
     }
 
     @Override
-    public List<CandidateSteps> candidateSteps() {
-        List<CandidateSteps> candidateSteps = new ArrayList<CandidateSteps>();
-        candidateSteps.addAll(new InstanceStepsFactory(configuration(), this).createCandidateSteps());
-        return candidateSteps;
+    public InjectableStepsFactory stepsFactory() {
+        return new InstanceStepsFactory(configuration(), this);
     }
 
     @Override
