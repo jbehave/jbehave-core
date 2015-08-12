@@ -145,7 +145,10 @@ public class PerformableTree {
 					ExamplePerformableScenario exampleScenario = exampleScenario(
 							context, lifecycle, scenario, storyAndScenarioMeta,
 							scenarioParameters);
-					performableScenario.addExampleScenario(exampleScenario);
+
+					if (exampleScenario != null) {
+					    performableScenario.addExampleScenario(exampleScenario);
+					}
                 }
             } else { // plain old scenario
 				performableScenario.useNormalScenario(normalScenario);
@@ -173,14 +176,32 @@ public class PerformableTree {
 	private ExamplePerformableScenario exampleScenario(RunContext context,
 			Lifecycle lifecycle, Scenario scenario, Meta storyAndScenarioMeta,
 			Map<String, String> parameters) {
-        ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(parameters);
-        exampleScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
-                ScenarioType.EXAMPLE));
-        addStepsWithLifecycle(exampleScenario, context, lifecycle, parameters, scenario, storyAndScenarioMeta);
-        exampleScenario.addAfterSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER,
-                ScenarioType.EXAMPLE));
+        ExamplePerformableScenario exampleScenario = null;
+        
+        Meta exampleScenarioMeta = parameterMeta(context, parameters);
+        boolean exampleScenarioAllowed = context.filter().allow(exampleScenarioMeta);
+
+        if (exampleScenarioAllowed) {
+            exampleScenario = new ExamplePerformableScenario(parameters);
+            exampleScenario.addBeforeSteps(
+                    context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE, ScenarioType.EXAMPLE));
+            addStepsWithLifecycle(exampleScenario, context, lifecycle, parameters, scenario, storyAndScenarioMeta);
+            exampleScenario.addAfterSteps(
+                    context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER, ScenarioType.EXAMPLE));
+        }
+
         return exampleScenario;
     }
+	
+	private Meta parameterMeta(RunContext context, Map<String, String> parameters) {
+	    Meta meta = Meta.EMPTY;
+        Keywords keywords = context.configuration().keywords();
+        String metaText = keywords.meta();
+        if (parameters.containsKey(metaText)) {
+            meta = Meta.createMeta(parameters.get(metaText), keywords);
+        }
+        return meta;
+	}
 
 	private void addStepsWithLifecycle(AbstractPerformableScenario performableScenario, RunContext context,
 			Lifecycle lifecycle, Map<String, String> parameters, Scenario scenario, Meta storyAndScenarioMeta) {
