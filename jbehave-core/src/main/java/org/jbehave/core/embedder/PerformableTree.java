@@ -142,13 +142,15 @@ public class PerformableTree {
 			if (isParameterisedByExamples(scenario)) {
                 ExamplesTable table = scenario.getExamplesTable();
                 for (Map<String, String> scenarioParameters : table.getRows()) {
-					ExamplePerformableScenario exampleScenario = exampleScenario(
-							context, lifecycle, scenario, storyAndScenarioMeta,
-							scenarioParameters);
+                    Meta exampleScenarioMeta = parameterMeta(context, scenarioParameters);
+                    boolean exampleScenarioAllowed = context.filter().allow(exampleScenarioMeta);
 
-					if (exampleScenario != null) {
-					    performableScenario.addExampleScenario(exampleScenario);
-					}
+                    if (exampleScenarioAllowed) {
+                        ExamplePerformableScenario exampleScenario = exampleScenario(
+                                context, lifecycle, scenario, storyAndScenarioMeta,
+                                scenarioParameters);
+                        performableScenario.addExampleScenario(exampleScenario);
+                    }
                 }
             } else { // plain old scenario
 				performableScenario.useNormalScenario(normalScenario);
@@ -176,20 +178,12 @@ public class PerformableTree {
 	private ExamplePerformableScenario exampleScenario(RunContext context,
 			Lifecycle lifecycle, Scenario scenario, Meta storyAndScenarioMeta,
 			Map<String, String> parameters) {
-        ExamplePerformableScenario exampleScenario = null;
-        
-        Meta exampleScenarioMeta = parameterMeta(context, parameters);
-        boolean exampleScenarioAllowed = context.filter().allow(exampleScenarioMeta);
-
-        if (exampleScenarioAllowed) {
-            exampleScenario = new ExamplePerformableScenario(parameters);
+        ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(parameters);
             exampleScenario.addBeforeSteps(
                     context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE, ScenarioType.EXAMPLE));
             addStepsWithLifecycle(exampleScenario, context, lifecycle, parameters, scenario, storyAndScenarioMeta);
             exampleScenario.addAfterSteps(
                     context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER, ScenarioType.EXAMPLE));
-        }
-
         return exampleScenario;
     }
 	
