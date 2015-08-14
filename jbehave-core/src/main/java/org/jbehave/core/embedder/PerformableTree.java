@@ -178,12 +178,12 @@ public class PerformableTree {
 	private ExamplePerformableScenario exampleScenario(RunContext context,
 			Lifecycle lifecycle, Scenario scenario, Meta storyAndScenarioMeta,
 			Map<String, String> parameters) {
-        ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(parameters);
-            exampleScenario.addBeforeSteps(
-                    context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE, ScenarioType.EXAMPLE));
-            addStepsWithLifecycle(exampleScenario, context, lifecycle, parameters, scenario, storyAndScenarioMeta);
-            exampleScenario.addAfterSteps(
-                    context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER, ScenarioType.EXAMPLE));
+	    ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(parameters);
+        exampleScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
+                ScenarioType.EXAMPLE));
+        addStepsWithLifecycle(exampleScenario, context, lifecycle, parameters, scenario, storyAndScenarioMeta);
+        exampleScenario.addAfterSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER,
+                ScenarioType.EXAMPLE));
         return exampleScenario;
     }
 	
