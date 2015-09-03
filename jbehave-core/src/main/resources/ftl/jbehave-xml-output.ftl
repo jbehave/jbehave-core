@@ -101,7 +101,7 @@ ${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()
 <#if step.getFailure()??> <failure>${step.failureCause?xml}</failure></#if><#if step.getOutcomes()??><@renderOutcomes step.getOutcomes()/></#if></step>
 </#macro>
 
-<story path="${story.path}" title="${story.description}">
+<story path="${story.path}" title="${story.description?xml}">
 <#if story.getMeta()??><@renderMeta story.getMeta()/></#if>
 <#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
 <#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
