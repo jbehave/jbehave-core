@@ -51,7 +51,7 @@ public class PrintStreamOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String expected = "An interesting story\n"
+        String expected = "An interesting story & special chars\n"
                 + "(/path/to/story)\n"
                 + "Meta:\n"
                 + "@author Mauro\n"
@@ -156,7 +156,7 @@ public class PrintStreamOutputBehaviour {
 
         // Then
         String expected = "<div class=\"story\">\n"
-                + "<h1>An interesting story</h1>\n"
+                + "<h1>An interesting story &amp; special chars</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
                 + "<div class=\"meta\">\n"
                 + "<div class=\"keyword\">Meta:</div>\n"
@@ -295,7 +295,7 @@ public class PrintStreamOutputBehaviour {
 
         // Then
         String expected =  "<div class=\"story\">\n"
-                + "<h1>An interesting story</h1>\n"
+                + "<h1>An interesting story &amp; special chars</h1>\n"
                 + "<div class=\"path\">/path/to/story</div>\n"
                 + "<div class=\"meta\">\n"
                 + "<div class=\"keyword\">Meta:</div>\n"
@@ -403,7 +403,7 @@ public class PrintStreamOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String expected = "<story path=\"/path/to/story\" title=\"An interesting story\">\n"
+        String expected = "<story path=\"/path/to/story\" title=\"An interesting story &amp; special chars\">\n"
                 + "<meta>\n"
                 + "<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
                 + "<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"

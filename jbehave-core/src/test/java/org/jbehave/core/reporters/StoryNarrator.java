@@ -34,7 +34,7 @@ class StoryNarrator {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
-        Story story = new Story("/path/to/story", new Description("An interesting story"), new Meta(meta),
+        Story story = new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
                 new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
         boolean givenStory = false;
         reporter.beforeStory(story, givenStory);
