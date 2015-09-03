@@ -43,8 +43,14 @@ public class CrossReferenceBehaviour {
         
 
         // Then
-        assertEquals(resource("xref.xml"), output(outputDirectory, "xref.xml"));        
-        assertEquals(resource("xref.json"), output(outputDirectory, "xref.json"));
+        String expectedXml = resource("xref.xml").replaceAll("(?:\\n|\\r)", "");
+        String actualXml = output(outputDirectory, "xref.xml").replaceAll("(?:\\n|\\r)", "");
+
+        String expectedJson = resource("xref.json").replaceAll("(?:\\n|\\r)", "");
+        String actualJson = output(outputDirectory, "xref.json").replaceAll("(?:\\n|\\r)", "");
+        
+        assertEquals(expectedXml, actualXml);
+        assertEquals(expectedJson, actualJson);
     }
 
     private String resource(String name) throws IOException {
