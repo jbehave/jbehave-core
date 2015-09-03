@@ -3,12 +3,26 @@ package org.jbehave.core.io;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
+
+import org.apache.commons.io.Charsets;
 
 /**
  * A collection of utility methods performing I/O operations,
  * complementing IOUtils methods provided by other libraries.
  */
 public class IOUtils {
+	
+    public static String toString(InputStream input, Charset charset, boolean close) throws IOException {
+        try {
+            return org.apache.commons.io.IOUtils.toString(input, charset.name());
+        }
+        finally {
+            if ( close ) {
+                input.close();
+            }
+        }
+    }
 
     /**
      * Returns the content of the InputStream as a String, closing the stream afterwards if configured.
@@ -20,14 +34,7 @@ public class IOUtils {
      * @see {@link org.apache.commons.io.IOUtils.toString(InputStream)}
      */
     public static String toString(InputStream input, boolean close) throws IOException {
-        try {
-            return org.apache.commons.io.IOUtils.toString(input, "UTF-8");
-        }
-        finally {
-            if ( close ) {
-                input.close();
-            }
-        }
+        return toString(input, Charsets.UTF_8, close);
     }
 
     /**
