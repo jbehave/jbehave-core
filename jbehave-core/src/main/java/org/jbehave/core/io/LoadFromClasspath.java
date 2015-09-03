@@ -13,14 +13,23 @@ public class LoadFromClasspath implements StoryLoader {
 
     protected final ClassLoader classLoader;
 
+    /**
+     * Uses default enconding UTF-8.
+     */
     public LoadFromClasspath() {
         this(Thread.currentThread().getContextClassLoader());
     }
 
+    /**
+     * @see {@link #LoadFromClasspath(ClassLoader)}.
+     */
     public LoadFromClasspath(Class<?> loadFromClass) {
         this(loadFromClass.getClassLoader());
     }
 
+    /**
+     * Uses default enconding UTF-8
+     */
     public LoadFromClasspath(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
