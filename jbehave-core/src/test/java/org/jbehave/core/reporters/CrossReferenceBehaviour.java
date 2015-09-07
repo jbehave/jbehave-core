@@ -43,23 +43,22 @@ public class CrossReferenceBehaviour {
         
 
         // Then
-        String expectedXml = resource("xref.xml").replaceAll("(?:\\n|\\r)", "");
-        String actualXml = output(outputDirectory, "xref.xml").replaceAll("(?:\\n|\\r)", "");
+        String expectedXml = resource("xref.xml");
+        String actualXml = output(outputDirectory, "xref.xml");
 
-        String expectedJson = resource("xref.json").replaceAll("(?:\\n|\\r)", "");
-        String actualJson = output(outputDirectory, "xref.json").replaceAll("(?:\\n|\\r)", "");
+        String expectedJson = resource("xref.json");
+        String actualJson = output(outputDirectory, "xref.json");
         
         assertEquals(expectedXml, actualXml);
         assertEquals(expectedJson, actualJson);
     }
 
     private String resource(String name) throws IOException {
-        return IOUtils.toString(this.getClass().getResourceAsStream(name));
+        return IOUtils.toString(this.getClass().getResourceAsStream(name)).replaceAll("(?:\\n|\\r)", "");
     }
 
     private String output(File outputDirectory, String name) throws IOException, FileNotFoundException {
-        String string = IOUtils.toString(new FileReader(new File(outputDirectory, "view/"+name)));
-        return string;
+        return IOUtils.toString(new FileReader(new File(outputDirectory, "view/"+name))).replaceAll("(?:\\n|\\r)", "");
     }
 
     private PerformableRoot performableRoot() {
