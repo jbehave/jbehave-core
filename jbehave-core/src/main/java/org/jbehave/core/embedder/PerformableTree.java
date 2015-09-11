@@ -98,8 +98,11 @@ public class PerformableTree {
             boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
 
             for (Scenario scenario : story.getScenarios()) {
-                performableStory.add(performableScenario(context, story, storyParameters, filteredStory, storyMeta,
-                        runBeforeAndAfterScenarioSteps, scenario));
+                PerformableScenario performableScenario = performableScenario(context, story, storyParameters, filteredStory, storyMeta,
+                        runBeforeAndAfterScenarioSteps, scenario);
+                if (performableScenario.isNormalPerformableScenario() || performableScenario.hasExamples()) {
+                    performableStory.add(performableScenario);
+                }
             }
 
             performableStory.addAfterSteps(context.beforeOrAfterStorySteps(story, Stage.AFTER));
@@ -856,6 +859,10 @@ public class PerformableTree {
 
         public List<ExamplePerformableScenario> getExamples() {
             return examplePerformableScenarios;
+        }
+        
+        public boolean isNormalPerformableScenario() {
+            return normalPerformableScenario != null;
         }
 
         public void perform(RunContext context) throws InterruptedException {
