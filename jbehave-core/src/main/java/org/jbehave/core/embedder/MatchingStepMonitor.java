@@ -11,12 +11,17 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jbehave.core.model.StepPattern;
-import org.jbehave.core.steps.NullStepMonitor;
+import org.jbehave.core.steps.DelegatingStepMonitor;
+import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.StepType;
 
-public class MatchingStepMonitor extends NullStepMonitor {
+public class MatchingStepMonitor extends DelegatingStepMonitor {
 
-    private Map<String, StepMatch> matched = new HashMap<String, StepMatch>();
+    public MatchingStepMonitor(StepMonitor delegate) {
+		super(delegate);
+	}
+
+	private Map<String, StepMatch> matched = new HashMap<String, StepMatch>();
 
     public List<StepMatch> matched() {
         return new ArrayList<StepMatch>(matched.values());
@@ -24,6 +29,7 @@ public class MatchingStepMonitor extends NullStepMonitor {
 
     public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method,
             Object stepsInstance) {
+    	super.stepMatchesPattern(step, matches, pattern, method, stepsInstance);
         if (matches) {
             String key = pattern.type() + " " + pattern.annotated();
             StepMatch stepMatch = matched.get(key);

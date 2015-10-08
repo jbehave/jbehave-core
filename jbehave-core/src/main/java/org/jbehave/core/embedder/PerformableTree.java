@@ -539,13 +539,13 @@ public class PerformableTree {
         }
 
         public PerformableSteps lifecycleSteps(Lifecycle lifecycle, Meta meta, Stage stage) {
-            MatchingStepMonitor monitor = new MatchingStepMonitor();
+            MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             List<Step> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, meta, stage);
             return new PerformableSteps(steps, monitor.matched());
         }
 
         public PerformableSteps scenarioSteps(Scenario scenario, Map<String, String> parameters) {
-            MatchingStepMonitor monitor = new MatchingStepMonitor();
+            MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             List<Step> steps = configuration.stepCollector().collectScenarioSteps(candidateSteps, scenario, parameters,
                     monitor);
             return new PerformableSteps(steps, monitor.matched());
