@@ -297,7 +297,7 @@ public class PerformableTree {
     }
 
     private boolean isParameterisedByExamples(Scenario scenario) {
-        return scenario.getExamplesTable().getRowCount() > 0 && !scenario.getGivenStories().requireParameters();
+        return scenario.getExamplesTable().getHeaders().size() > 0 && !scenario.getGivenStories().requireParameters();
     }
 
     static void generatePendingStepMethods(RunContext context, List<Step> steps) {
