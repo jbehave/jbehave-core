@@ -24,7 +24,7 @@
 
   <properties>
     <embeddables>**/ThreadsStories.java</embeddables>
-    <ignore.failre.in.stories>true</ignore.failre.in.stories>
+    <ignore.failure.in.stories>true</ignore.failure.in.stories>
     <meta.filter></meta.filter>
     <threads>2</threads>
     <story.timeout.in.secs>3</story.timeout.in.secs>
@@ -56,7 +56,7 @@
               <threads>${threads}</threads>
               <storyTimeoutInSecs>${story.timeout.in.secs}</storyTimeoutInSecs>
               <generateViewAfterStories>true</generateViewAfterStories>
-              <ignoreFailureInStories>${ignore.failre.in.stories}</ignoreFailureInStories>
+              <ignoreFailureInStories>${ignore.failure.in.stories}</ignoreFailureInStories>
               <ignoreFailureInView>true</ignoreFailureInView>
               <metaFilters>
                 <metaFilter>${meta.filter}</metaFilter>
@@ -83,7 +83,7 @@
     <profile>
       <id>fail-fast</id>
       <properties>
-        <ignore.failre.in.stories>false</ignore.failre.in.stories>
+        <ignore.failure.in.stories>false</ignore.failure.in.stories>
       </properties>
     </profile>
   </profiles>
