@@ -19,7 +19,7 @@
 
   <properties>
     <embeddables>**/RESTStories.java</embeddables>
-    <ignore.failre.in.stories>true</ignore.failre.in.stories>
+    <ignore.failure.in.stories>true</ignore.failure.in.stories>
     <meta.filter></meta.filter>
     <threads>1</threads>
   </properties>
@@ -49,7 +49,7 @@
               <batch>false</batch>
               <threads>${threads}</threads>
               <generateViewAfterStories>true</generateViewAfterStories>
-              <ignoreFailureInStories>${ignore.failre.in.stories}</ignoreFailureInStories>
+              <ignoreFailureInStories>${ignore.failure.in.stories}</ignoreFailureInStories>
               <ignoreFailureInView>true</ignoreFailureInView>
               <metaFilters>
                 <metaFilter>${meta.filter}</metaFilter>
