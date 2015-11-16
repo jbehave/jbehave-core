@@ -122,7 +122,6 @@ public class ExamplesTableBehaviour {
         assertThat(table.asString(), equalTo("{commentSeparator=#, trim=false}\n|one |two|\n|11 |12 |\n|21|22|\n"));
     }
 
-    
     @Test
     public void shouldParseEmptyTable() {
         String tableAsString = "";
@@ -268,11 +267,11 @@ public class ExamplesTableBehaviour {
 
         // Then
         Parameters integers = examplesTable.getRowAsParameters(0);
-        assertThat(integers.valueAs("one", Integer.class), equalTo(11));
-        assertThat(integers.valueAs("two", Integer.class), equalTo(22));
+        assertThat(integers.<Integer>valueAs("one", Integer.class), equalTo(11));
+        assertThat(integers.<Integer>valueAs("two", Integer.class), equalTo(22));
         Parameters dates = examplesTable.getRowAsParameters(1);
-        assertThat(dates.valueAs("one", Date.class), equalTo(convertDate("1/1/2010")));
-        assertThat(dates.valueAs("two", Date.class), equalTo(convertDate("2/2/2010")));
+        assertThat(dates.<Date>valueAs("one", Date.class), equalTo(convertDate("1/1/2010")));
+        assertThat(dates.<Date>valueAs("two", Date.class), equalTo(convertDate("2/2/2010")));
     }
 
     @Test
@@ -294,22 +293,22 @@ public class ExamplesTableBehaviour {
         Parameters firstRow = examplesTable.getRowAsParameters(0);
         Map<String, String> firstRowValues = firstRow.values();
         assertThat(firstRowValues.containsKey("one"), is(true));
-        assertThat(firstRow.valueAs("one", String.class), is("11"));
-        assertThat(firstRow.valueAs("one", Integer.class), is(11));
+        assertThat(firstRow.<String>valueAs("one", String.class), is("11"));
+        assertThat(firstRow.<Integer>valueAs("one", Integer.class), is(11));
         assertThat(firstRowValues.containsKey("three"), is(true));
-        assertThat(firstRow.valueAs("three", String.class), is("99"));
-        assertThat(firstRow.valueAs("three", Integer.class), is(99));
+        assertThat(firstRow.<String>valueAs("three", String.class), is("99"));
+        assertThat(firstRow.<Integer>valueAs("three", Integer.class), is(99));
         assertThat(firstRowValues.containsKey("XX"), is(false));
         assertThat(firstRow.valueAs("XX", Integer.class, 13), is(13));
 
         Parameters secondRow = examplesTable.getRowAsParameters(1);
         Map<String, String> secondRowValues = secondRow.values();
         assertThat(secondRowValues.containsKey("one"), is(true));
-        assertThat(secondRow.valueAs("one", String.class), is("22"));
-        assertThat(secondRow.valueAs("one", Integer.class), is(22));
+        assertThat(secondRow.<String>valueAs("one", String.class), is("22"));
+        assertThat(secondRow.<Integer>valueAs("one", Integer.class), is(22));
         assertThat(secondRowValues.containsKey("three"), is(true));
-        assertThat(secondRow.valueAs("three", String.class), is("99"));
-        assertThat(secondRow.valueAs("three", Integer.class), is(99));
+        assertThat(secondRow.<String>valueAs("three", String.class), is("99"));
+        assertThat(secondRow.<Integer>valueAs("three", Integer.class), is(99));
         assertThat(secondRowValues.containsKey("XX"), is(false));
         assertThat(secondRow.valueAs("XX", Integer.class, 13), is(13));
 
@@ -330,12 +329,13 @@ public class ExamplesTableBehaviour {
         Parameters firstRow = table.getRowsAsParameters(true).get(0);
         Map<String, String> firstRowValues = firstRow.values();
         assertThat(firstRowValues.containsKey("Value"), is(true));
-        assertThat(firstRow.valueAs("Value", String.class), is("value1"));
+        assertThat(firstRow.<String>valueAs("Value", String.class), is("value1"));
 
     }
 
     /**
      * The values given named parameter values as strings should not suffer any modification after are replaced in table.
+     *
      * @see {@link String#replaceAll(String, String)} to see why are not present in values the '\' and '$' characters.
      */
     @Test
@@ -354,7 +354,7 @@ public class ExamplesTableBehaviour {
         Parameters firstRow = table.getRowsAsParameters(true).get(0);
         Map<String, String> firstRowValues = firstRow.values();
         assertThat(firstRowValues.containsKey("Value"), is(true));
-        assertThat(firstRow.valueAs("Value", String.class), is(problematicNamedParameterValueCharacters));
+        assertThat(firstRow.<String>valueAs("Value", String.class), is(problematicNamedParameterValueCharacters));
 
     }
 
@@ -364,13 +364,15 @@ public class ExamplesTableBehaviour {
         ExamplesTableFactory factory = new ExamplesTableFactory();
 
         // When
-        String tableAsString = "|string|integer|\n|11|22|";
+        String tableAsString = "|string|integer|stringList|integerList|\n|11|22|1,1|2,2|";
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
 
         // Then
         for (MyParameters parameters : examplesTable.getRowsAs(MyParameters.class)) {
             assertThat(parameters.string, equalTo("11"));
             assertThat(parameters.integer, equalTo(22));
+            assertThat(parameters.stringList, equalTo(asList("1", "1")));
+            assertThat(parameters.integerList, equalTo(asList(2, 2)));
         }
     }
 
@@ -380,17 +382,21 @@ public class ExamplesTableBehaviour {
         ExamplesTableFactory factory = new ExamplesTableFactory();
 
         // When
-        String tableAsString = "|aString|anInteger|\n|11|22|";
+        String tableAsString = "|aString|anInteger|aStringList|anIntegerList|\n|11|22|1,1|2,2|";
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
 
         Map<String, String> nameMapping = new HashMap<String, String>();
         nameMapping.put("aString", "string");
         nameMapping.put("anInteger", "integer");
-        
+        nameMapping.put("aStringList", "stringList");
+        nameMapping.put("anIntegerList", "integerList");
+
         // Then
         for (MyParameters parameters : examplesTable.getRowsAs(MyParameters.class, nameMapping)) {
             assertThat(parameters.string, equalTo("11"));
             assertThat(parameters.integer, equalTo(22));
+            assertThat(parameters.stringList, equalTo(asList("1", "1")));
+            assertThat(parameters.integerList, equalTo(asList(2, 2)));
         }
     }
 
@@ -400,13 +406,15 @@ public class ExamplesTableBehaviour {
         ExamplesTableFactory factory = new ExamplesTableFactory();
 
         // When
-        String tableAsString = "|aString|anInteger|\n|11|22|";
+        String tableAsString = "|aString|anInteger|aStringList|anIntegerList|\n|11|22|1,1|2,2|";
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
 
         // Then
         for (MyParametersWithAnnotatedFields parameters : examplesTable.getRowsAs(MyParametersWithAnnotatedFields.class)) {
             assertThat(parameters.string, equalTo("11"));
             assertThat(parameters.integer, equalTo(22));
+            assertThat(parameters.stringList, equalTo(asList("1", "1")));
+            assertThat(parameters.integerList, equalTo(asList(2, 2)));
         }
     }
 
@@ -422,7 +430,7 @@ public class ExamplesTableBehaviour {
 
         // Then
         Parameters integers = examplesTable.getRowAsParameters(0);
-        assertThat(integers.valueAs("one", Integer.class), equalTo(11));
+        assertThat(integers.<Integer>valueAs("one", Integer.class), equalTo(11));
         try {
             integers.valueAs("unknown", Integer.class);
             fail("Exception was not thrown");
@@ -457,13 +465,13 @@ public class ExamplesTableBehaviour {
 
         // Then
         Parameters firstRow = examplesTable.getRowAsParameters(0);
-        assertThat(firstRow.valueAs("one", Integer.class), equalTo(111));
-        assertThat(firstRow.valueAs("two", Integer.class), equalTo(12));
-        assertThat(firstRow.valueAs("three", Integer.class), equalTo(333));
+        assertThat(firstRow.<Integer>valueAs("one", Integer.class), equalTo(111));
+        assertThat(firstRow.<Integer>valueAs("two", Integer.class), equalTo(12));
+        assertThat(firstRow.<Integer>valueAs("three", Integer.class), equalTo(333));
         Parameters secondRow = examplesTable.getRowAsParameters(1);
-        assertThat(secondRow.valueAs("one", Integer.class), equalTo(21));
-        assertThat(secondRow.valueAs("two", Integer.class), equalTo(222));
-        assertThat(secondRow.valueAs("three", String.class), equalTo(""));
+        assertThat(secondRow.<Integer>valueAs("one", Integer.class), equalTo(21));
+        assertThat(secondRow.<Integer>valueAs("two", Integer.class), equalTo(222));
+        assertThat(secondRow.<String>valueAs("three", String.class), equalTo(""));
         assertThat(examplesTable.asString(), equalTo("|one|two|three|\n|111|12|333|\n|21|222||\n"));
     }
 
@@ -548,6 +556,8 @@ public class ExamplesTableBehaviour {
 
         private String string;
         private Integer integer;
+        private List<String> stringList;
+        private List<Integer> integerList;
 
         @Override
         public String toString() {
@@ -562,6 +572,10 @@ public class ExamplesTableBehaviour {
         private String string;
         @Parameter(name = "anInteger")
         private Integer integer;
+        @Parameter(name = "aStringList")
+        private List<String> stringList;
+        @Parameter(name = "anIntegerList")
+        private List<Integer> integerList;
 
         @Override
         public String toString() {

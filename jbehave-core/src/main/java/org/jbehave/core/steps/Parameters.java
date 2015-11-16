@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import java.lang.reflect.Type;
+
 /**
  * Provides parameter values as given types
  */
@@ -12,7 +14,7 @@ public interface Parameters extends Row {
      * @param name the name of the parameter
      * @return The value of type <T>
      */
-    <T> T valueAs(String name, Class<T> type);
+    <T> T valueAs(String name, Type type);
 
     /**
      * Returns the value of a named parameter as a given type while providing a
@@ -23,6 +25,6 @@ public interface Parameters extends Row {
      * @param defaultValue the default value if the name is not found
      * @return The value of type <T>
      */
-    <T> T valueAs(String name, Class<T> type, T defaultValue);
+    <T> T valueAs(String name, Type type, T defaultValue);
 
 }

@@ -205,7 +205,7 @@ public class ParameterConverters {
      * <li>Long, long: {@link Number#longValue()}</li>
      * <li>Double, double: {@link Number#doubleValue()}</li>
      * <li>BigInteger: {@link BigInteger#valueOf(Long)}</li>
-     * <li>BigDecimal: {@link BigDecimal#valueOf(Double)}</li></li>
+     * <li>BigDecimal: {@link BigDecimal#valueOf(Double)}</li>
      * </ul>
      * If no number format is provided, it defaults to
      * {@link NumberFormat#getInstance(Locale.ENGLISH)}.
@@ -407,7 +407,6 @@ public class ParameterConverters {
         }
 
         /**
-         * @param numberFormat Specific NumberFormat to use.
          * @param valueSeparator A regexp to use as list separate
          */
         public StringListConverter(String valueSeparator) {

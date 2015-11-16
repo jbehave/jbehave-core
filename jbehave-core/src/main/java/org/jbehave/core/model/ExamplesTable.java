@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -388,7 +389,7 @@ public class ExamplesTable {
             Map<String, String> values = parameters.values();
             for (String name : values.keySet()) {
                 Field field = findField(type, name, fieldNameMapping);
-                Class<?> fieldType = (Class<?>) field.getGenericType();
+                Type fieldType = field.getGenericType();
                 Object value = parameters.valueAs(name, fieldType);
                 field.setAccessible(true);
                 field.set(instance, value);
