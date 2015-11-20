@@ -97,8 +97,11 @@ public class PerformableTree {
             // determine if before and after scenario steps should be run
             boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
 
+
+            Map<String, String> scenarioParameters;
             for (Scenario scenario : story.getScenarios()) {
-                PerformableScenario performableScenario = performableScenario(context, story, storyParameters, filteredStory, storyMeta,
+                scenarioParameters = new HashMap<String, String>(storyParameters);
+                PerformableScenario performableScenario = performableScenario(context, story, scenarioParameters, filteredStory, storyMeta,
                         runBeforeAndAfterScenarioSteps, scenario);
                 if (performableScenario.isNormalPerformableScenario() || performableScenario.hasExamples()) {
                     performableStory.add(performableScenario);
