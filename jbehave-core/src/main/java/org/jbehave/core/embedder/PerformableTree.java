@@ -91,9 +91,6 @@ public class PerformableTree {
 
             performableStory.addBeforeSteps(context.beforeOrAfterStorySteps(story, Stage.BEFORE));
 
-            performableStory
-                    .addGivenStories(performableGivenStories(context, story.getGivenStories(), storyParameters));
-
             // determine if before and after scenario steps should be run
             boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
 
@@ -105,6 +102,12 @@ public class PerformableTree {
                 if (performableScenario.isNormalPerformableScenario() || performableScenario.hasExamples()) {
                     performableStory.add(performableScenario);
                 }
+            }
+
+            // Add Given stories only if story contains scenarios
+            if (!performableStory.getScenarios().isEmpty()) {
+                performableStory.addGivenStories(performableGivenStories(context, story.getGivenStories(),
+                        storyParameters));
             }
 
             performableStory.addAfterSteps(context.beforeOrAfterStorySteps(story, Stage.AFTER));
