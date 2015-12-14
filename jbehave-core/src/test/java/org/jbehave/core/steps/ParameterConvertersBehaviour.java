@@ -203,6 +203,7 @@ public class ParameterConvertersBehaviour {
         assertThat((BigDecimal) converter.convertValue("3" + dot + "00", BigDecimal.class), equalTo(new BigDecimal("3.00"))); // currency
         assertThat((BigDecimal) converter.convertValue("30000000", BigDecimal.class), equalTo(new BigDecimal(30000000))); // 7 or more digits
         assertThat((BigDecimal) converter.convertValue("3" + dot + "000", BigDecimal.class), equalTo(new BigDecimal("3.000"))); // something else!
+        assertThat((BigDecimal) converter.convertValue("-3", BigDecimal.class), equalTo(new BigDecimal("-3"))); // negative
         assertThat(((AtomicInteger)converter.convertValue("3", AtomicInteger.class)).get(), equalTo(3));
         assertThat(((AtomicLong)converter.convertValue("3", AtomicLong.class)).get(), equalTo(3L));
         assertThat((Number) converter.convertValue("3", Number.class), equalTo((Number)3L));

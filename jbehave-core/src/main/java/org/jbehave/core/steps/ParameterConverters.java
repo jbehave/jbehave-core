@@ -316,12 +316,6 @@ public class ParameterConverters {
                 throw new NumberFormatException("Invalid format, more than one decimal point has been found.");
             }
 
-            boolean isNegative = value.charAt(0) == minusSign;
-
-            if (isNegative) {
-                builder.append('-'); // fixed "-" for BigDecimal constructor
-            }
-
             if (decimalPointPosition != -1) {
                 String sf = value.substring(0, decimalPointPosition).replaceAll(rxNotDigits, "");
                 String dp = value.substring(decimalPointPosition + 1).replaceAll(rxNotDigits, "");
@@ -332,6 +326,12 @@ public class ParameterConverters {
 
             } else {
                 builder.append(value.replaceAll(rxNotDigits, ""));
+            }
+
+            boolean isNegative = value.charAt(0) == minusSign;
+
+            if (isNegative) {
+                builder.setCharAt(1, '-'); // fixed "-" for BigDecimal constructor
             }
             return builder.toString();
         }
