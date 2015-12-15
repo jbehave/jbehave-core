@@ -331,7 +331,7 @@ public class ParameterConverters {
             boolean isNegative = value.charAt(0) == minusSign;
 
             if (isNegative) {
-                builder.setCharAt(1, '-'); // fixed "-" for BigDecimal constructor
+                builder.setCharAt(0, '-'); // fixed "-" for BigDecimal constructor
             }
             return builder.toString();
         }
