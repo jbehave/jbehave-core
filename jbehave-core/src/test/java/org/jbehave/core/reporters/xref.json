@@ -197,6 +197,9 @@
               ]
             },
             "afterSteps": {},
+            "storyAndScenarioMeta": {
+              "properties": []
+            },
             "scenario": {
               "title": "",
               "meta": {
@@ -421,6 +424,9 @@
           ]
         },
         "afterSteps": {},
+        "storyAndScenarioMeta": {
+          "properties": []
+        },
         "scenario": {
           "title": "",
           "meta": {

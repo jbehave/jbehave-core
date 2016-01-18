@@ -166,6 +166,9 @@ I want to get a loan</localizedNarrative>
               </matches>
             </steps>
             <afterSteps/>
+            <storyAndScenarioMeta>
+              <properties/>
+            </storyAndScenarioMeta>
             <scenario>
               <title></title>
               <meta>
@@ -354,6 +357,9 @@ I want to get a loan</localizedNarrative>
           </matches>
         </steps>
         <afterSteps/>
+        <storyAndScenarioMeta>
+          <properties/>
+        </storyAndScenarioMeta>
         <scenario>
           <title></title>
           <meta>
