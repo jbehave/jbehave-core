@@ -13,7 +13,7 @@
   <properties>
     <hudson.test.harness.version>1.395</hudson.test.harness.version>
     <hudson.version>2.2.1</hudson.version>
-    <hpi.plugin.version>3.0.1</hpi.plugin.version>
+    <hpi.plugin.version>3.0.3</hpi.plugin.version>
     <xunit.plugin.version>1.96</xunit.plugin.version>
   </properties>
 
@@ -103,7 +103,7 @@
     <defaultGoal>package</defaultGoal>
     <plugins>
       <plugin>
-        <groupId>org.jvnet.hudson.tools</groupId>
+        <groupId>org.eclipse.hudson.tools</groupId>
         <artifactId>maven-hpi-plugin</artifactId>
         <version>${hpi.plugin.version}</version>
         <extensions>true</extensions>
