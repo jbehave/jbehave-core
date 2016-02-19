@@ -117,9 +117,7 @@ configuration.storyControls().useStoryMetaPrefix("story_").useScenarioMetaPrefix
 
 <p>Meta info can also be specified to filter the example scenarios to be run:</p>
 <pre class="brush: bdd">
-Scenario:  A scenario with filtering on examples
-
-Meta:  @os 
+Scenario:  A scenario with filtering on examples 
 
 Given an operating system [value]
 
@@ -132,9 +130,6 @@ Examples:
 <p>To activate meta-filtering on example scenarios, add a column <b>Meta:</b> (or equivalent Meta keyword in your language locale).
 If the meta info in a given row of the column is matched by the meta filter, the corresponding scenario is run.
 </p>
-
-<span class="followup">Note that because the meta filter is unique, this must also match the containing scenario or story. 
-For example, if the rows are filtered on a meta property value, this can be ensured by the presence of the property name (without value) at the scenario level.</span>
 
 <h2>Configuring Meta Filters</h2>
 

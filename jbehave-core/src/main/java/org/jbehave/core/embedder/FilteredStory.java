@@ -27,9 +27,14 @@ public class FilteredStory {
         storyAllowed = filter.allow(storyMeta);
         scenariosAllowed = new HashMap<Scenario, Boolean>();
         for (Scenario scenario : story.getScenarios()) {
-            Meta scenarioMeta = scenario.getMeta().inheritFrom(
-                    scenario.asMeta(scenarioMetaPrefix).inheritFrom(storyMeta));
-            boolean scenarioAllowed = filter.allow(scenarioMeta);
+            boolean scenarioAllowed;
+            if (scenario.getExamplesTable().getRowCount() > 0) {
+                scenarioAllowed = true;
+            } else {
+                Meta scenarioMeta = scenario.getMeta().inheritFrom(
+                        scenario.asMeta(scenarioMetaPrefix).inheritFrom(storyMeta));
+                scenarioAllowed = filter.allow(scenarioMeta);
+            }
             scenariosAllowed.put(scenario, scenarioAllowed);
         }
     }
