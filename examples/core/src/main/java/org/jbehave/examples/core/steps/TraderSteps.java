@@ -108,7 +108,7 @@ public class TraderSteps {
 	public void theTradersActivityIs(ExamplesTable activityTable) {
 		for (int i = 0; i < activityTable.getRowCount(); i++) {
 			Parameters row = activityTable.withDefaults(this.ranksTable.getRowAsParameters(i)).getRowAsParameters(i);
-			System.out.println(row.valueAs("name", Trader.class).getName() + " ("
+			System.out.println(row.valueAs("name", Trader.class) + " ("
 					+ row.valueAs("rank", String.class, "N/A") + ") has done " + row.valueAs("trades", Integer.class)
 					+ " trades");
 		}
