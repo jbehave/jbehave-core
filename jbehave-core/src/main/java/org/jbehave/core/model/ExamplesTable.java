@@ -128,6 +128,16 @@ import static java.util.regex.Pattern.compile;
  * </p>
  * 
  * <p>
+ * The table allow filtering on meta by row via the "metaByRow" inlined property:
+ * 
+ * <pre>
+ * {metaByRow=true}
+ * | Meta:       | header 1 | .... | header n |
+ * | @name=value | value 11 | .... | value 1n |
+ * </pre>
+ * 
+ * </p>
+ * <p>
  * Once created, the table row can be modified, via the
  * {@link #withRowValues(int, Map)} method, by specifying the map of row values
  * to be changed.
@@ -345,6 +355,10 @@ public class ExamplesTable {
 
     public int getRowCount() {
         return data.size();
+    }
+    
+    public boolean metaByRow(){
+    	return parseBoolean(properties.getProperty("metaByRow", "false"));        
     }
 
     public List<Map<String, String>> getRows() {

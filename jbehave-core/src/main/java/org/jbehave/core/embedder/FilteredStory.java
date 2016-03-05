@@ -28,7 +28,8 @@ public class FilteredStory {
         scenariosAllowed = new HashMap<Scenario, Boolean>();
         for (Scenario scenario : story.getScenarios()) {
             boolean scenarioAllowed;
-            if (scenario.getExamplesTable().getRowCount() > 0) {
+            if (scenario.getExamplesTable().getRowCount() > 0 && scenario.getExamplesTable().metaByRow()) {
+            	// allow filtering on meta by row 
                 scenarioAllowed = true;
             } else {
                 Meta scenarioMeta = scenario.getMeta().inheritFrom(
