@@ -12,8 +12,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -392,7 +392,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
      */
     protected Object[] escape(final Format format, Object... args) {
         // Transformer that escapes HTML and XML strings
-        Transformer escapingTransformer = new Transformer() {
+        Transformer<Object, Object> escapingTransformer = new Transformer<Object, Object>() {
             public Object transform(Object object) {
                 switch (format) {
                 case HTML:
@@ -408,7 +408,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
                 return (object != null ? object.toString() : EMPTY);
             }
         };
-        List<?> list = Arrays.asList(ArrayUtils.clone(args));
+        List<Object> list = Arrays.asList(ArrayUtils.clone(args));
         CollectionUtils.transform(list, escapingTransformer);
         return list.toArray();
     }

@@ -7,8 +7,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
 
@@ -172,9 +172,8 @@ public class StoryFinder {
 
     protected List<String> normalise(List<String> paths) {
         List<String> transformed = new ArrayList<String>(paths);
-        CollectionUtils.transform(transformed, new Transformer() {
-            public Object transform(Object input) {
-                String path = (String) input;
+        CollectionUtils.transform(transformed, new Transformer<String, String>() {
+            public String transform(String path) {
                 return path.replace('\\', '/');
             }
         });
@@ -186,9 +185,8 @@ public class StoryFinder {
             return paths;
         }
         List<String> transformed = new ArrayList<String>(paths);
-        CollectionUtils.transform(transformed, new Transformer() {
-            public Object transform(Object input) {
-                String path = (String) input;
+        CollectionUtils.transform(transformed, new Transformer<String, String>() {
+            public String transform(String path) {
                 return prefixWith + path;
             }
         });
@@ -197,11 +195,10 @@ public class StoryFinder {
 
     protected List<String> classNames(List<String> paths) {
         List<String> trasformed = new ArrayList<String>(paths);
-        CollectionUtils.transform(trasformed, new Transformer() {
-            public Object transform(Object input) {
-                String path = (String) input;
+        CollectionUtils.transform(trasformed, new Transformer<String, String>() {
+            public String transform(String path) {
                 if (!StringUtils.endsWithIgnoreCase(path, classNameExtension())) {
-                    return input;
+                    return path;
                 }
                 return StringUtils.removeEndIgnoreCase(path, classNameExtension()).replace('/', '.');
             }
