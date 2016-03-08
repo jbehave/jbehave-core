@@ -15,7 +15,7 @@ import org.apache.commons.collections4.Transformer;
 import org.codehaus.plexus.util.SelectorUtils;
 
 import static java.util.Arrays.asList;
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  * Find all matching file entries in a jar.
  */

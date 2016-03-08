@@ -17,8 +17,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MetaFilter;
@@ -650,7 +650,7 @@ public class TemplateableOutput implements StoryReporter {
 
         private String escapeString(EscapeMode outputFormat, String string) {
             if(outputFormat==EscapeMode.HTML) {
-                return StringEscapeUtils.escapeHtml(string);
+                return StringEscapeUtils.escapeHtml4(string);
             } else if(outputFormat==EscapeMode.XML) {
                 return StringEscapeUtils.escapeXml(string);
             } else {

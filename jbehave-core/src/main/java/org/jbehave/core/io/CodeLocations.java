@@ -1,7 +1,7 @@
 package org.jbehave.core.io;
 
-import static org.apache.commons.lang.StringUtils.removeEnd;
-import static org.apache.commons.lang.StringUtils.removeStart;
+import static org.apache.commons.lang3.StringUtils.removeEnd;
+import static org.apache.commons.lang3.StringUtils.removeStart;
 
 import java.io.File;
 import java.net.URI;

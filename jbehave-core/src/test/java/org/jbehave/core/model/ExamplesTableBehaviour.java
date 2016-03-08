@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.Parameter;
 import org.jbehave.core.model.ExamplesTable.RowNotFound;

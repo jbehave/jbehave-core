@@ -1,6 +1,6 @@
 package org.jbehave.mojo;
 
-import static org.apache.commons.lang.ArrayUtils.isNotEmpty;
+import static org.apache.commons.lang3.ArrayUtils.isNotEmpty;
 
 import java.io.File;
 import java.net.MalformedURLException;

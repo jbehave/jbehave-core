@@ -14,10 +14,10 @@ import java.util.Properties;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.failures.KnownFailure;
@@ -34,9 +34,9 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 
-import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
-import static org.apache.commons.lang.StringEscapeUtils.escapeXml;
-import static org.apache.commons.lang.StringUtils.substringBetween;
+import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
+import static org.apache.commons.lang3.StringEscapeUtils.escapeXml;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
@@ -396,7 +396,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
             public Object transform(Object object) {
                 switch (format) {
                 case HTML:
-                    return escapeHtml(asString(object));
+                    return escapeHtml4(asString(object));
                 case XML:
                     return escapeXml(asString(object));
                 default:

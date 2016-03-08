@@ -1,10 +1,10 @@
 package org.jbehave.core.io.rest.filesystem;
 
-import static org.apache.commons.lang.StringUtils.substringBeforeLast;
+import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
 import java.io.File;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.io.rest.Resource;
 
 public class FilesystemUtils {

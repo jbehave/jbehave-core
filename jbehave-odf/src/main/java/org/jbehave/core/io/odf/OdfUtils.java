@@ -1,6 +1,6 @@
 package org.jbehave.core.io.odf;
 
-import static org.apache.commons.lang.StringUtils.join;
+import static org.apache.commons.lang3.StringUtils.join;
 import static org.odftoolkit.simple.common.TextExtractor.newOdfTextExtractor;
 
 import java.io.InputStream;

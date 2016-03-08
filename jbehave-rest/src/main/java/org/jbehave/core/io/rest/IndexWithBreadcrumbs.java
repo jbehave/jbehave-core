@@ -1,7 +1,7 @@
 package org.jbehave.core.io.rest;
 
 import static java.text.MessageFormat.format;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.fileNameWithoutExt;
 import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.normalisedPathOf;

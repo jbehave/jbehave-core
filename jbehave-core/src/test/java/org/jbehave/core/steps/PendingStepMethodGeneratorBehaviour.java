@@ -6,7 +6,7 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.junit.Test;
 
-import static org.apache.commons.lang.StringEscapeUtils.escapeJava;
+import static org.apache.commons.lang3.StringEscapeUtils.escapeJava;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 

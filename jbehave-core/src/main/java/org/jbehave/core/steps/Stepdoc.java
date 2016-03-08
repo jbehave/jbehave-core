@@ -2,8 +2,8 @@ package org.jbehave.core.steps;
 
 import java.lang.reflect.Method;
 
-import org.apache.commons.lang.builder.CompareToBuilder;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * A Stepdoc represents the documentation on a single {@link StepCandidate},
