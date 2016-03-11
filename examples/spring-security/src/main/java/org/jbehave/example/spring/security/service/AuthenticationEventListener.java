@@ -1,6 +1,6 @@
 package org.jbehave.example.spring.security.service;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jbehave.example.spring.security.dao.UserDao;
 import org.jbehave.example.spring.security.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
