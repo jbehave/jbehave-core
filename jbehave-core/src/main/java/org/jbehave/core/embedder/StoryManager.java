@@ -207,6 +207,7 @@ public class StoryManager {
 					}
                 } else {
                 	started = false;
+                	allDone = false;
                 }
             }
             tickTock();
@@ -284,10 +285,10 @@ public class StoryManager {
 		}
 
 		public ThrowableStory call() throws Exception {
+		    startedAtMillis = System.currentTimeMillis();
 			String storyPath = story.getPath();
 			try {
 				embedderMonitor.runningStory(storyPath);
-				startedAtMillis = System.currentTimeMillis();
 				performableTree.perform(context, story);
 			} catch (Throwable e) {
 				if (embedderControls.ignoreFailureInStories()) {
