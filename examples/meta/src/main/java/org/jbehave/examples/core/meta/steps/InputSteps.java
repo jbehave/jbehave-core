@@ -1,4 +1,4 @@
-package org.jbehave.examples.example.meta.steps;
+package org.jbehave.examples.core.meta.steps;
 
 import org.jbehave.core.annotations.Given;
 import org.springframework.stereotype.Component;
