@@ -14,6 +14,7 @@ public class StoryControls {
     private boolean skipScenariosAfterFailure = false;
     private boolean skipBeforeAndAfterScenarioStepsIfGivenStory = false;
 	private boolean ignoreMetaFiltersIfGivenStory = false;
+	private boolean metaByRow = false;
     private String storyMetaPrefix = "";
     private String scenarioMetaPrefix = "";
 
@@ -43,6 +44,10 @@ public class StoryControls {
     public boolean ignoreMetaFiltersIfGivenStory() {
 		return ignoreMetaFiltersIfGivenStory;
 	}
+
+    public boolean metaByRow() {
+        return metaByRow;
+    }
 
     public String storyMetaPrefix() {
         return storyMetaPrefix;
@@ -81,6 +86,11 @@ public class StoryControls {
 			boolean ignoreMetaFiltersIfGivenStory) {
 		this.ignoreMetaFiltersIfGivenStory = ignoreMetaFiltersIfGivenStory;
 		return this;
+	}
+
+	public StoryControls doMetaByRow(boolean metaByRow) {
+	    this.metaByRow = metaByRow;
+	    return this;
 	}
 
     public StoryControls useStoryMetaPrefix(String storyMetaPrefix){

@@ -130,7 +130,8 @@ Examples:
 
 <span class="followup">Note that because the meta filter is unique, this must also match the containing scenario or story. 
 For example, if the rows are filtered on a meta property value, this can be ensured by the presence of the property name 
-(without value) at the scenario level, unless the inline property is set <b>metaByRow=true</b>.</span>
+(without value) at the scenario level, unless the inline property is set <b>metaByRow=true</b>. Alternatively, you can define a global 
+metaByRow policicy using <b>configuration.storyControls().doMetaByRow(true)</b>, being false by default, and it can be overridden by inline property.</span>
 
 <p>To activate meta-filtering on example scenarios, add a column <b>Meta:</b> (or equivalent Meta keyword in your language locale).
 If the meta info in a given row of the column is matched by the meta filter, the corresponding scenario is run.

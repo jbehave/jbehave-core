@@ -38,6 +38,7 @@
     <module>spring</module>
     <module>spring-security</module>
     <module>weld</module>
+    <module>example-meta</module>
   </modules>
 
   <dependencies>

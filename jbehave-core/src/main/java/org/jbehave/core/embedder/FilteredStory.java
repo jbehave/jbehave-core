@@ -28,7 +28,7 @@ public class FilteredStory {
         scenariosAllowed = new HashMap<Scenario, Boolean>();
         for (Scenario scenario : story.getScenarios()) {
             boolean scenarioAllowed;
-            if (scenario.getExamplesTable().getRowCount() > 0 && scenario.getExamplesTable().metaByRow()) {
+            if (scenario.getExamplesTable().getRowCount() > 0 && metaByRow(scenario, storyControls)) {
             	// allow filtering on meta by row 
                 scenarioAllowed = true;
             } else {
@@ -48,5 +48,13 @@ public class FilteredStory {
     public boolean allowed(Scenario scenario) {
     	if ( alwaysAllowed ) return true;
         return scenariosAllowed.get(scenario);
+    }
+
+    private boolean metaByRow(Scenario scenario, StoryControls storyControls) {
+        if (scenario.getExamplesTable().getProperties().containsKey("metaByRow")) {
+            return scenario.getExamplesTable().metaByRow();
+        }
+
+        return storyControls.metaByRow();
     }
 }
