@@ -2,8 +2,6 @@ package org.jbehave.examples.core.meta;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
-import java.util.List;
-
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.spring.UsingSpring;
@@ -20,13 +18,9 @@ public final class MetaByRowEmbedder extends InjectableEmbedder {
 
 	@Test
 	public void run() {
-		final List<String> stories = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()).getFile(),
-				"stories/*.story", " ");
-
-		final List<String> metaFilters = injectedEmbedder().metaFilters();
-		metaFilters.add("+smoke");
-
-		injectedEmbedder().runStoriesAsPaths(stories);
+		injectedEmbedder().metaFilters().add("+smoke");
+		injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(
+				codeLocationFromClass(this.getClass()), "**/*.story", ""));
 	}
 
 }
