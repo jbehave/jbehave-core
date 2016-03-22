@@ -11,10 +11,9 @@
   <url>http://jbehave.org/reference/stable/hudson-plugin.html</url>
 
   <properties>
-    <hudson.test.harness.version>1.395</hudson.test.harness.version>
-    <hudson.version>2.2.1</hudson.version>
-    <hpi.plugin.version>3.0.3</hpi.plugin.version>
-    <xunit.plugin.version>1.96</xunit.plugin.version>
+    <jenkins.version>1.580</jenkins.version>
+    <hpi.plugin.version>1.117</hpi.plugin.version>
+    <xunit.plugin.version>1.101</xunit.plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -39,35 +38,23 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jvnet.hudson.main</groupId>
-      <artifactId>hudson-core</artifactId>
-      <version>${hudson.version}</version>
+      <groupId>org.jenkins-ci.main</groupId>
+      <artifactId>jenkins-core</artifactId>
+      <version>${jenkins.version}</version>
       <scope>provided</scope>
-      <exclusions>
-      	<exclusion>
-      		<artifactId>junit</artifactId>
-      		<groupId>junit</groupId>
-      	</exclusion>
-      </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.jvnet.hudson.main</groupId>
-      <artifactId>hudson-war</artifactId>
+      <groupId>org.jenkins-ci.main</groupId>
+      <artifactId>jenkins-test-harness</artifactId>
+      <version>${jenkins.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jenkins-ci.main</groupId>
+      <artifactId>jenkins-war</artifactId>
       <type>war</type>
-      <version>${hudson.version}</version>
+      <version>${jenkins.version}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.jvnet.hudson.main</groupId>
-      <artifactId>hudson-test-harness</artifactId>
-      <version>${hudson.test.harness.version}</version>
-      <scope>test</scope>
-      <exclusions>
-      	<exclusion>
-      		<artifactId>junit</artifactId>
-      		<groupId>junit</groupId>
-      	</exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jbehave</groupId>
@@ -103,7 +90,7 @@
     <defaultGoal>package</defaultGoal>
     <plugins>
       <plugin>
-        <groupId>org.eclipse.hudson.tools</groupId>
+	<groupId>org.jenkins-ci.tools</groupId>
         <artifactId>maven-hpi-plugin</artifactId>
         <version>${hpi.plugin.version}</version>
         <extensions>true</extensions>
