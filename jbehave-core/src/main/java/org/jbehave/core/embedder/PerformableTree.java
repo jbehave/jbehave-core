@@ -283,7 +283,9 @@ public class PerformableTree {
 
     private void addMetaParameters(Map<String, String> storyParameters, Meta meta) {
         for (String name : meta.getPropertyNames()) {
-            storyParameters.put(name, meta.getProperty(name));
+            if (!storyParameters.containsKey(name)) {
+                storyParameters.put(name, meta.getProperty(name));
+            }
         }
     }
 
