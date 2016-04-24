@@ -12,7 +12,7 @@
   <description>JBehave Core is a project providing core functionality supporting and facilitating Behaviour-Driven Development.</description>
 
   <properties>
-    <jdk.version>1.5</jdk.version>
+    <jdk.version>1.6</jdk.version>
   </properties>
 
   <modules>
@@ -142,7 +142,7 @@
                 <failOnError>false</failOnError>              
                 <additionalparam>-Xdoclint:none</additionalparam>
                 <links>
-                  <link>http://java.sun.com/j2se/1.5/docs/api</link>
+                  <link>http://docs.oracle.com/javase/6/docs/api</link>
                 </links>
               </configuration>
             </execution>
