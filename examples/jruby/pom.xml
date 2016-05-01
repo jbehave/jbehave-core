@@ -11,7 +11,7 @@
   <name>JBehave JRuby Example</name>
 
   <properties>
-    <jruby.version>1.6.7.2</jruby.version>
+    <jruby.version>1.6.8</jruby.version>
     <jruby.generated.sources>${project.build.directory}/generated-sources/jruby</jruby.generated.sources>
   </properties>
 

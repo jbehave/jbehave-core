@@ -107,7 +107,7 @@ public class StackTraceFormatterBehaviour {
         assertEquals("java.lang.Exception: some cause\n"
                 + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:104)\n"
                 + "\t(reflection-invoke)\n"
-                + "\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:47)\n"
+                + "\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)\n"
                 + "...", trace);
     }
 
