@@ -172,7 +172,6 @@ public class GherkinStoryParser extends TransformingStoryParser {
 
 			};
 			new Parser(formatter).parse(storyAsText, "", 0);
-			System.out.println(out.toString());
 			return out.toString();
 		}
 	}
