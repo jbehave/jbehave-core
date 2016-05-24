@@ -120,6 +120,8 @@ public abstract class AbstractStepResult implements StepResult {
     protected final UUIDExceptionWrapper throwable;
     private String parametrisedStep;
     private long durationInMillis;
+    private long start;
+    private long end;
 
     public AbstractStepResult(Type type, String step) {
         this(step, type, null);
@@ -144,8 +146,10 @@ public abstract class AbstractStepResult implements StepResult {
         return durationInMillis;
     }
     
-    public StepResult withDurationInMillis(long millis) {
-        this.durationInMillis = millis;
+    public StepResult setTimings(Timer timer) {
+        this.start = timer.getStart();
+        this.end = timer.getEnd();
+        this.durationInMillis = timer.getDuration();
         return this;
     }
     

@@ -789,7 +789,7 @@ public class PerformableTree {
                 performScenarios(context);
                 afterSteps.perform(context);
             } finally {
-                timing.setDurationInMillis(timer.stop());
+                timing.setTimings(timer.stop());
             }
             if (context.restartStory()) {
                 context.reporter().afterStory(true);
@@ -1125,13 +1125,17 @@ public class PerformableTree {
 
     public static class Timing {
         private long durationInMillis;
+        private long start;
+        private long end;
 
         public long getDurationInMillis() {
             return durationInMillis;
         }
 
-        public void setDurationInMillis(long durationInMillis) {
-            this.durationInMillis = durationInMillis;
+        public void setTimings(Timer timer) {
+            this.start = timer.getStart();
+            this.end = timer.getEnd();
+            this.durationInMillis = timer.getDuration();
         }
     }
 

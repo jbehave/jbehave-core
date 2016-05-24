@@ -256,6 +256,8 @@ I want to get a loan</localizedNarrative>
       <afterSteps/>
       <timing>
         <durationInMillis>0</durationInMillis>
+        <start>0</start>
+        <end>0</end>
       </timing>
       <givenStory>false</givenStory>
     </performableStory>

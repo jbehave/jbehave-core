@@ -489,13 +489,13 @@ public class StepCreator {
             Timer timer = new Timer().start();
             try {
                 methodInvoker.invoke();
-                return silent(method).withDurationInMillis(timer.stop());
+                return silent(method).setTimings(timer.stop());
             } catch (InvocationTargetException e) {
                 return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())))
-                        .withDurationInMillis(timer.stop());
+                        .setTimings(timer.stop());
             } catch (Throwable t) {
                 return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, t)))
-                        .withDurationInMillis(timer.stop());
+                        .setTimings(timer.stop());
             }
         }
 
@@ -599,7 +599,7 @@ public class StepCreator {
                     method.invoke(stepsInstance(), convertedParameters);
                 }
                 return successful(stepAsString).withParameterValues(parametrisedStep)
-                        .withDurationInMillis(timer.stop());
+                        .setTimings(timer.stop());
             } catch (ParameterNotFound e) {
                 // step parametrisation failed, return pending StepResult
                 return pending(stepAsString).withParameterValues(parametrisedStep);
@@ -615,10 +615,10 @@ public class StepCreator {
                     failureCause = failureCause.getCause();
                 }
                 return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, failureCause)).withParameterValues(
-                        parametrisedStep).withDurationInMillis(timer.stop());
+                        parametrisedStep).setTimings(timer.stop());
             } catch (Throwable t) {
                 return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, t)).withParameterValues(
-                        parametrisedStep).withDurationInMillis(timer.stop());
+                        parametrisedStep).setTimings(timer.stop());
             }
         }
 

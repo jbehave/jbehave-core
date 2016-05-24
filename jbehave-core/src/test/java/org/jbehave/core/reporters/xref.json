@@ -304,7 +304,9 @@
       "beforeSteps": {},
       "afterSteps": {},
       "timing": {
-        "durationInMillis": 0
+        "durationInMillis": 0,
+        "start": 0,
+        "end": 0
       },
       "givenStory": false
     }

@@ -19,7 +19,7 @@ public interface StepResult {
 
 	StepResult withParameterValues(String parametrisedStep);
 
-    StepResult withDurationInMillis(long duration);
+    StepResult setTimings(Timer timer);
 
 	void describeTo(StoryReporter reporter);
 
