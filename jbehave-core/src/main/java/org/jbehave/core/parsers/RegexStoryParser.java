@@ -311,8 +311,8 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern findingStoryMeta() {
-        String narrativeOrGivenStories = concatenateWithOr(keywords.narrative(), keywords.givenStories());
-        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + narrativeOrGivenStories + ").*", DOTALL);
+        String narrativeOrLifecycleOrGivenStories = concatenateWithOr(keywords.narrative(), keywords.lifecycle(), keywords.givenStories());
+        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + narrativeOrLifecycleOrGivenStories + ").*", DOTALL);
     }
 
     private Pattern findingNarrative() {
@@ -390,8 +390,7 @@ public class RegexStoryParser implements StoryParser {
         for (String keyword : keywords) {
             builder.append(before).append(keyword).append(after).append("|");
         }
-        return StringUtils.chomp(builder.toString(), "|"); // chop off the last
-                                                           // "|"
+        return StringUtils.removeEnd(builder.toString(), "|"); // remove last "|"
     }
 
 }

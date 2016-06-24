@@ -52,7 +52,7 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryWithMeta() {
+    public void shouldParseStoryWithMetaAndGivenStories() {
         String wholeStory = "Meta: @skip @theme parsing" + NL + 
         		"GivenStories: path1,path2 " + NL +
                 "Scenario: A scenario" + NL +
@@ -76,6 +76,64 @@ public class RegexStoryParserBehaviour {
         assertThat(scenarios.get(1).getMeta().getProperty("author"), equalTo("Paul"));
     }
     
+    @Test
+    public void shouldParseStoryWithMetaAndLifecycle() {
+        String wholeStory = "Meta: @skip @theme parsing" + NL + 
+        		"Lifecycle:" + NL +
+                "Before:" + NL +
+                "Given a step before each scenario" + NL + 
+                "And another before step" + NL +
+                "Scenario: A scenario" + NL +
+                "Meta: @author Mauro" + NL +
+                "Given a step " + NL +
+                "Scenario: Another scenario" + NL +
+                "Meta: @author Paul" + NL +
+                "Given another step ";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+        assertThat(story.getPath(), equalTo(storyPath));
+        Meta storyMeta = story.getMeta();
+        assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
+        assertThat(storyMeta.getProperty("skip"), equalTo(""));
+        assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
+        Lifecycle lifecycle = story.getLifecycle();
+        assertThat(lifecycle.getBeforeSteps().size(), equalTo(2));
+        List<Scenario> scenarios = story.getScenarios();
+        assertThat(scenarios.get(0).getTitle(), equalTo("A scenario"));
+        assertThat(scenarios.get(0).getMeta().getProperty("author"), equalTo("Mauro"));
+        assertThat(scenarios.get(1).getTitle(), equalTo("Another scenario"));
+        assertThat(scenarios.get(1).getMeta().getProperty("author"), equalTo("Paul"));
+    }
+
+    @Test
+    public void shouldParseStoryWithMetaAndNarrative() {
+        String wholeStory = "Meta: @skip @theme parsing" + NL + 
+                "Narrative: This bit of text is ignored" + NL +
+                "In order to renovate my house" + NL +
+                "As a customer" + NL +
+                "I want to get a loan" + NL +
+                "Scenario: A scenario" + NL +
+                "Meta: @author Mauro" + NL +
+                "Given a step " + NL +
+                "Scenario: Another scenario" + NL +
+                "Meta: @author Paul" + NL +
+                "Given another step ";
+        Story story = parser.parseStory(
+                wholeStory, storyPath);
+        assertThat(story.getPath(), equalTo(storyPath));
+        Meta storyMeta = story.getMeta();
+        assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
+        assertThat(storyMeta.getProperty("skip"), equalTo(""));
+        assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
+        Narrative narrative = story.getNarrative();
+        assertThat(narrative.isEmpty(), not(true));
+        List<Scenario> scenarios = story.getScenarios();
+        assertThat(scenarios.get(0).getTitle(), equalTo("A scenario"));
+        assertThat(scenarios.get(0).getMeta().getProperty("author"), equalTo("Mauro"));
+        assertThat(scenarios.get(1).getTitle(), equalTo("Another scenario"));
+        assertThat(scenarios.get(1).getMeta().getProperty("author"), equalTo("Paul"));
+    }
+
     @Test
     public void shouldParseStoryWithGivenStoriesWithAnchorParameters() {
         String wholeStory = "GivenStories: path1#{id1:scenario1;id2:scenario2}" + NL +
