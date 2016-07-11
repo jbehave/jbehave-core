@@ -32,6 +32,7 @@ import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.ContextObjects;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.Step;
@@ -778,6 +779,7 @@ public class PerformableTree {
                 context.reporter().storyNotAllowed(story, context.filter.asString());
                 this.status = Status.NOT_ALLOWED;
             }
+            ContextObjects.resetStoryObjects();
             context.reporter().beforeStory(story, context.givenStory);
             context.reporter().narrative(story.getNarrative());
             context.reporter().lifecyle(story.getLifecycle());
@@ -879,6 +881,7 @@ public class PerformableTree {
         		context.embedderMonitor().scenarioNotAllowed(scenario, context.filter());
         		return;
         	}
+        	ContextObjects.resetScenarioObjects();
             context.reporter().beforeScenario(scenario.getTitle());
             State state = context.state();
 			if (!examplePerformableScenarios.isEmpty()) {
@@ -1002,6 +1005,7 @@ public class PerformableTree {
             if (context.configuration().storyControls().resetStateBeforeScenario()) {
                 context.resetState();
             }
+            ContextObjects.resetExampleObjects();
             context.reporter().example(parameters);
             beforeSteps.perform(context);
 			if (givenStories.size() > 0) {

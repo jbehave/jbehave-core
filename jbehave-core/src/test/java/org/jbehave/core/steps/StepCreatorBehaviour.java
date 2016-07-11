@@ -35,6 +35,8 @@ import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.AbstractStepResult.Silent;
 import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.AbstractStepResult.Successful;
+import org.jbehave.core.steps.ContextObjects.ObjectAlreadyStoredException;
+import org.jbehave.core.steps.ContextObjects.ObjectNotStoredException;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.junit.Before;
@@ -514,9 +516,104 @@ public class StepCreatorBehaviour {
 
     }
 
+    @Test
+    public void shouldStoreAndReadObjectsInContext() throws IntrospectionException {
+        Method methodStoring = SomeSteps.methodFor("aMethodStoringAString");
+        shouldStoreAndReadObjects(methodStoring);
+    }
+
+    @Test
+    public void shouldStoreInScenarioAndReadObjectsInContext() throws IntrospectionException {
+        Method methodStoring = SomeSteps.methodFor("aMethodStoringAStringInScenario");
+        shouldStoreAndReadObjects(methodStoring);
+    }
+
+    @Test
+    public void shouldStoreInStoryAndReadObjectsInContext() throws IntrospectionException {
+        Method methodStoring = SomeSteps.methodFor("aMethodStoringAStringInStory");
+        shouldStoreAndReadObjects(methodStoring);
+    }
+
+    private void shouldStoreAndReadObjects(Method methodStoring) throws IntrospectionException {
+        // Given
+        setupContext();
+        SomeSteps stepsInstance = new SomeSteps();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I read from context",
+                Pattern.compile("I read from context"), new String[] {});
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
+                stepMatcher, new SilentStepMonitor());
+
+        // When
+        Method methodRead = SomeSteps.methodFor("aMethodReadingFromContext");
+        StepResult stepResult = stepCreator.createParametrisedStep(methodStoring, "When I store in context",
+                "I store in context", new HashMap<String, String>()).perform(null);
+        StepResult stepResultRead = stepCreator.createParametrisedStep(methodRead, "And I read from context",
+                "I read from context", new HashMap<String, String>()).perform(null);
+
+        // Then
+        assertThat(stepResult, instanceOf(Successful.class));
+        assertThat(stepResultRead, instanceOf(Successful.class));
+        assertThat(stepsInstance.args, instanceOf(String.class));
+        assertThat((String) stepsInstance.args, is("someValue"));
+    }
+
+    @Test
+    public void shouldHandleObjectNotStoredFailure() throws IntrospectionException {
+        // Given
+        setupContext();
+        SomeSteps stepsInstance = new SomeSteps();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I read from context",
+                Pattern.compile("I read from context"), new String[] {});
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
+                stepMatcher, new SilentStepMonitor());
+
+        // When
+        Method method = SomeSteps.methodFor("aMethodReadingFromContext");
+        StepResult stepResult = stepCreator.createParametrisedStep(method, "When I read from context", "I read from context",
+                new HashMap<String, String>()).perform(null);
+
+        // Then
+        assertThat(stepResult, instanceOf(Failed.class));
+        Throwable cause = stepResult.getFailure().getCause();
+        assertThat(cause, instanceOf(ObjectNotStoredException.class));
+    }
+
+    @Test
+    public void shouldHandleObjectAlreadyStoredFailure() throws IntrospectionException {
+        // Given
+        setupContext();
+        SomeSteps stepsInstance = new SomeSteps();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I read from context",
+                Pattern.compile("I read from context"), new String[] {});
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
+                stepMatcher, new SilentStepMonitor());
+
+        // When
+        Method method = SomeSteps.methodFor("aMethodStoringAString");
+        StepResult stepResult = stepCreator.createParametrisedStep(method, "When I store in context", "I store in context",
+                new HashMap<String, String>()).perform(null);
+        StepResult stepResultSecondWrite = stepCreator.createParametrisedStep(method, "And I store in context",
+                "I store in context", new HashMap<String, String>()).perform(null);
+
+        // Then
+        assertThat(stepResult, instanceOf(Successful.class));
+        assertThat(stepResultSecondWrite, instanceOf(Failed.class));
+        Throwable cause = stepResultSecondWrite.getFailure().getCause();
+        assertThat(cause, instanceOf(ObjectAlreadyStoredException.class));
+    }
+
     private StepCreator stepCreatorUsing(SomeSteps stepsInstance, StepMatcher stepMatcher, ParameterControls parameterControls) {
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
         return new StepCreator(stepsInstance.getClass(), stepsFactory, parameterConverters, parameterControls,
                 stepMatcher, new SilentStepMonitor());
+    }
+
+    private void setupContext() {
+        ContextObjects.resetExampleObjects();
+        ContextObjects.resetScenarioObjects();
+        ContextObjects.resetStoryObjects();
     }
 }

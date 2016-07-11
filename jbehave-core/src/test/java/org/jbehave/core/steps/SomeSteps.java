@@ -12,6 +12,8 @@ import java.util.Set;
 
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.BeforeScenario;
+import org.jbehave.core.annotations.ContextOutcome;
+import org.jbehave.core.annotations.ContextParam;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -152,6 +154,25 @@ public class SomeSteps extends Steps {
 
     public void aMethodThatExpectsUUIDExceptionWrapper(UUIDExceptionWrapper exception) {
         this.args = exception;
+    }
+
+    @ContextOutcome("someKey")
+    public String aMethodStoringAString() {
+        return "someValue";
+    }
+    
+    @ContextOutcome(value = "someKey", retentionLevel=ContextOutcome.RetentionLevel.SCENARIO)
+    public String aMethodStoringAStringInScenario() {
+        return "someValue";
+    }
+    
+    @ContextOutcome(value = "someKey", retentionLevel=ContextOutcome.RetentionLevel.STORY)
+    public String aMethodStoringAStringInStory() {
+        return "someValue";
+    }
+
+    public void aMethodReadingFromContext(@ContextParam("someKey") String value) {
+        this.args = value;
     }
 
     public static Method methodFor(String methodName) throws IntrospectionException {
