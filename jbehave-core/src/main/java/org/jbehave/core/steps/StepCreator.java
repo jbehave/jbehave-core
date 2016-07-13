@@ -713,7 +713,6 @@ public class StepCreator {
             ParameterName[] names = parameterNames(method);
             Type[] types = method.getGenericParameterTypes();
             String[] parameterValues = parameterValuesForStep(namedParameters, types, names);
-            // TODO: Do not convert Context Parameter, create Object Array in advance with such values.
             convertedParameters = convertParameterValues(parameterValues, types, names);
             addNamedParametersToExamplesTables();
             parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, names, parameterValues);

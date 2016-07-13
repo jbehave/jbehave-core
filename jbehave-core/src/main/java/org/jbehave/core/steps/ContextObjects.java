@@ -1,7 +1,9 @@
 package org.jbehave.core.steps;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.jbehave.core.annotations.ContextOutcome;
 
@@ -12,6 +14,7 @@ public class ContextObjects {
     private static final ThreadLocal<Map<String, Object>> exampleObjects = new ThreadLocal<Map<String, Object>>();
     private static final ThreadLocal<Map<String, Object>> scenarioObjects = new ThreadLocal<Map<String, Object>>();
     private static final ThreadLocal<Map<String, Object>> storyObjects = new ThreadLocal<Map<String, Object>>();
+    private static final ThreadLocal<Set<String>> keysStored = new ThreadLocal<Set<String>>();
     private static final String OBJECT_ALREADY_STORED_MESSAGE = "Object key '%s' has been already stored before.";
     private static final String OBJECT_NOT_STORED_MESSAGE = "Object key '%s' has not been stored";
 
@@ -19,6 +22,7 @@ public class ContextObjects {
     }
 
     static void setObject(String key, Object object, ContextOutcome.RetentionLevel retentionLevel) {
+        checkForDuplicate(key);
         Map<String, Object> objects;
         if (ContextOutcome.RetentionLevel.EXAMPLE.equals(retentionLevel)) {
             objects = getExampleObjects();
@@ -27,11 +31,16 @@ public class ContextObjects {
         } else {
             objects = getStoryObjects();
         }
-
-        if (objects.containsKey(key)) {
-            throw new ObjectAlreadyStoredException(String.format(OBJECT_ALREADY_STORED_MESSAGE, key));
-        }
         objects.put(key, object);
+    }
+
+    private static void checkForDuplicate(String key) {
+        Set<String> keys = keysStored.get();
+        if (keys.contains(key)) {
+            throw new ObjectAlreadyStoredException(String.format(OBJECT_ALREADY_STORED_MESSAGE, key));
+        } else {
+            keys.add(key);
+        }
     }
 
     static Object getObject(String key) {
@@ -76,6 +85,12 @@ public class ContextObjects {
     public static void resetStoryObjects() {
         Map<String, Object> objects = new HashMap<String, Object>();
         storyObjects.set(objects);
+        resetStoredKeys();
+    }
+
+    private static void resetStoredKeys() {
+        Set<String> keys = new HashSet<String>();
+        keysStored.set(keys);
     }
 
     public static class ObjectNotStoredException extends RuntimeException {

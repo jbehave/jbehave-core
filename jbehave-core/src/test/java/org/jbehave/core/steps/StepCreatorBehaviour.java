@@ -581,21 +581,30 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldHandleObjectAlreadyStoredFailure() throws IntrospectionException {
+    public void shouldHandleObjectAlreadyStoredFailureInSameLevel() throws IntrospectionException {
+        Method method = SomeSteps.methodFor("aMethodStoringAString");
+        shouldHandleObjectAlreadyStoredFailure(method);
+    }
+
+    @Test
+    public void shouldHandleObjectAlreadyStoredFailureInDifferentLevel() throws IntrospectionException {
+        Method method = SomeSteps.methodFor("aMethodStoringAStringInStory");
+        shouldHandleObjectAlreadyStoredFailure(method);
+    }
+
+    private void shouldHandleObjectAlreadyStoredFailure(Method duplicateStoreMethod) throws IntrospectionException {
         // Given
         setupContext();
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I read from context",
-                Pattern.compile("I read from context"), new String[] {});
         StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
-                stepMatcher, new SilentStepMonitor());
+                mock(StepMatcher.class), new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aMethodStoringAString");
         StepResult stepResult = stepCreator.createParametrisedStep(method, "When I store in context", "I store in context",
                 new HashMap<String, String>()).perform(null);
-        StepResult stepResultSecondWrite = stepCreator.createParametrisedStep(method, "And I store in context",
+        StepResult stepResultSecondWrite = stepCreator.createParametrisedStep(duplicateStoreMethod, "And I store in context",
                 "I store in context", new HashMap<String, String>()).perform(null);
 
         // Then
