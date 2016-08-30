@@ -53,4 +53,8 @@ public class DelegatingStepMonitor implements StepMonitor {
     	delegate.usingTableParameterNameForParameter(name, position);
     }
 
+    public void usingStepsContextParameter(String parameter) {
+        delegate.usingStepsContextParameter(parameter);
+    }
+
 }

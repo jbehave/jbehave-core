@@ -29,6 +29,7 @@ public class PrintStreamStepMonitor implements StepMonitor {
 	private static final String TABLE_PARAMETER = "table parameter";
 	private static final String USING_NATURAL_ORDER_FOR_PARAMETER = "Using natural order for parameter position {0}";
 	private static final String FOUND_PARAMETER = "Found parameter ''{0}'' for position {1}";
+	private static final String STEPS_CONTEXT_PARAMETER = "Found parameter ''{0}'' from Steps Context";
 
 	private final PrintStream output;
 
@@ -90,6 +91,10 @@ public class PrintStreamStepMonitor implements StepMonitor {
 
 	public void foundParameter(String parameter, int position) {
 		print(output, format(FOUND_PARAMETER, parameter, position));
+	}
+
+	public void usingStepsContextParameter(String parameter) {
+		print(output, format(STEPS_CONTEXT_PARAMETER, parameter));
 	}
 
 	protected void print(PrintStream output, String message) {

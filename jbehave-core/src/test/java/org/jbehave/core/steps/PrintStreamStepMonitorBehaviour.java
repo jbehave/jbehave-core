@@ -20,10 +20,12 @@ public class PrintStreamStepMonitorBehaviour {
         // When
         monitor.performing("a step", false);
         monitor.foundParameter("parameter", 0);
+        monitor.usingStepsContextParameter("fromContext");
 
         // Then
         assertThat(out.toString(), containsString("Performing step 'a step'"));
         assertThat(out.toString(), containsString("Found parameter 'parameter' for position 0"));
+        assertThat(out.toString(), containsString("Found parameter 'fromContext' from Steps Context"));
     }
 
   

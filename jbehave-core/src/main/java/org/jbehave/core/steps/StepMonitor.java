@@ -30,4 +30,6 @@ public interface StepMonitor {
     void usingNaturalOrderForParameter(int position);
 
     void foundParameter(String parameter, int position);
+
+    void usingStepsContextParameter(String parameter);
 }

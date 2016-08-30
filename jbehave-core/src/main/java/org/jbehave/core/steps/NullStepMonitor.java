@@ -41,4 +41,7 @@ public class NullStepMonitor implements StepMonitor {
 
     public void foundParameter(String parameter, int position) {
     }
+
+    public void usingStepsContextParameter(String parameter) {
+    }
 }

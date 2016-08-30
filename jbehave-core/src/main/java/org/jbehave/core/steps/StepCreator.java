@@ -389,6 +389,7 @@ public class StepCreator {
             
             if (fromContext && parameter == null) {
                 parameter = name;
+                stepMonitor.usingStepsContextParameter(parameter);
             }
 
         }
