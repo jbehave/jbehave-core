@@ -35,8 +35,9 @@ import org.jbehave.core.steps.AbstractStepResult.Pending;
 import org.jbehave.core.steps.AbstractStepResult.Silent;
 import org.jbehave.core.steps.AbstractStepResult.Skipped;
 import org.jbehave.core.steps.AbstractStepResult.Successful;
-import org.jbehave.core.steps.ContextObjects.ObjectAlreadyStoredException;
-import org.jbehave.core.steps.ContextObjects.ObjectNotStoredException;
+import org.jbehave.core.steps.context.StepsContext;
+import org.jbehave.core.steps.context.StepsContext.ObjectAlreadyStoredException;
+import org.jbehave.core.steps.context.StepsContext.ObjectNotStoredException;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.junit.Before;
@@ -49,6 +50,8 @@ import com.thoughtworks.paranamer.CachingParanamer;
 public class StepCreatorBehaviour {
 
     private ParameterConverters parameterConverters = mock(ParameterConverters.class);
+
+    private StepsContext stepsContext = new StepsContext();
 
     @Before
     public void setUp() throws Exception {
@@ -519,24 +522,26 @@ public class StepCreatorBehaviour {
     @Test
     public void shouldStoreAndReadObjectsInContext() throws IntrospectionException {
         Method methodStoring = SomeSteps.methodFor("aMethodStoringAString");
-        shouldStoreAndReadObjects(methodStoring);
+        shouldStoreAndReadObjects(methodStoring, true);
     }
 
     @Test
     public void shouldStoreInScenarioAndReadObjectsInContext() throws IntrospectionException {
         Method methodStoring = SomeSteps.methodFor("aMethodStoringAStringInScenario");
-        shouldStoreAndReadObjects(methodStoring);
+        shouldStoreAndReadObjects(methodStoring, true);
     }
 
     @Test
     public void shouldStoreInStoryAndReadObjectsInContext() throws IntrospectionException {
         Method methodStoring = SomeSteps.methodFor("aMethodStoringAStringInStory");
-        shouldStoreAndReadObjects(methodStoring);
+        shouldStoreAndReadObjects(methodStoring, true);
     }
 
-    private void shouldStoreAndReadObjects(Method methodStoring) throws IntrospectionException {
+    private void shouldStoreAndReadObjects(Method methodStoring, boolean resetContext) throws IntrospectionException {
         // Given
-        setupContext();
+        if (resetContext) {
+            setupContext();
+        }
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
         StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I read from context",
@@ -614,6 +619,21 @@ public class StepCreatorBehaviour {
         assertThat(cause, instanceOf(ObjectAlreadyStoredException.class));
     }
 
+    @Test
+    public void shouldResetKeysBetweenExamples() throws IntrospectionException {
+        setupContext();
+        Method methodStoring = SomeSteps.methodFor("aMethodStoringAString");
+
+        // First Example
+        shouldStoreAndReadObjects(methodStoring, false);
+
+        // Reset Example objects
+        stepsContext.resetExample();
+
+        // Second Example
+        shouldStoreAndReadObjects(methodStoring, false);
+    }
+
     private StepCreator stepCreatorUsing(SomeSteps stepsInstance, StepMatcher stepMatcher, ParameterControls parameterControls) {
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
         return new StepCreator(stepsInstance.getClass(), stepsFactory, parameterConverters, parameterControls,
@@ -621,8 +641,8 @@ public class StepCreatorBehaviour {
     }
 
     private void setupContext() {
-        ContextObjects.resetExampleObjects();
-        ContextObjects.resetScenarioObjects();
-        ContextObjects.resetStoryObjects();
+        stepsContext.resetStory();
+        stepsContext.resetScenario();
+        stepsContext.resetExample();
     }
 }

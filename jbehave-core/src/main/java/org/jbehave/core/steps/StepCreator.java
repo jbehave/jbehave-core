@@ -12,8 +12,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
-import org.jbehave.core.annotations.ContextOutcome;
-import org.jbehave.core.annotations.ContextParam;
+import org.jbehave.core.annotations.ToContext;
+import org.jbehave.core.annotations.FromContext;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
@@ -27,6 +27,7 @@ import org.jbehave.core.reporters.StoryReporter;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
+import org.jbehave.core.steps.context.StepsContext;
 
 import static java.util.Arrays.asList;
 import static org.jbehave.core.steps.AbstractStepResult.failed;
@@ -57,6 +58,7 @@ public class StepCreator {
     private StepMonitor stepMonitor;
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
+    private static final StepsContext stepsContext = new StepsContext();
 
     public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory,
             ParameterConverters parameterConverters, ParameterControls parameterControls, StepMatcher stepMatcher,
@@ -181,9 +183,9 @@ public class StepCreator {
     }
     
     /**
-     * Extract parameter names using {@link ContextParam}-annotated parameters
+     * Extract parameter names using {@link FromContext}-annotated parameters
      * 
-     * @param method the Method with {@link ContextParam}-annotated parameters
+     * @param method the Method with {@link FromContext}-annotated parameters
      * @return An array of annotated parameter names, which <b>may</b> include
      *         <code>null</code> values for parameters that are not annotated
      */
@@ -217,15 +219,15 @@ public class StepCreator {
     }
 
     /**
-     * Returns the value of the annotation {@link ContextParam}.
+     * Returns the value of the annotation {@link FromContext}.
      * 
      * @param annotation the Annotation
      * @return The annotated value or <code>null</code> if no annotation is
      *         found
      */
     private String contextName(Annotation annotation) {
-        if (annotation.annotationType().isAssignableFrom(ContextParam.class)) {
-            return ((ContextParam) annotation).value();
+        if (annotation.annotationType().isAssignableFrom(FromContext.class)) {
+            return ((FromContext) annotation).value();
         } else {
             return null;
         }
@@ -347,7 +349,7 @@ public class StepCreator {
         final Object[] parameters = new Object[valuesAsString.length];
         for (int position = 0; position < valuesAsString.length; position++) {
             if (names[position].fromContext) {
-                parameters[position] = ContextObjects.getObject(valuesAsString[position]);
+                parameters[position] = stepsContext.getObject(valuesAsString[position]);
             } else {
                 parameters[position] = parameterConverters.convert(valuesAsString[position], types[position]);
             }
@@ -504,6 +506,13 @@ public class StepCreator {
         return new IgnorableStep(stepAsString);
     }
 
+    private void storeOutput(Object object, Method method) {
+        ToContext annotation = method.getAnnotation(ToContext.class);
+        if (annotation != null) {
+            stepsContext.setObject(annotation.value(), object, annotation.retentionLevel());
+        }
+    }
+
     /**
      * This is a different class, because the @Inject jar may not be in the
      * classpath.
@@ -556,7 +565,8 @@ public class StepCreator {
                     meta);
             Timer timer = new Timer().start();
             try {
-                methodInvoker.invoke();
+                Object outputObject = methodInvoker.invoke();
+                storeOutput(outputObject, method);
                 return silent(method).setTimings(timer.stop());
             } catch (InvocationTargetException e) {
                 return failed(method, new UUIDExceptionWrapper(new BeforeOrAfterFailed(method, e.getCause())))
@@ -665,7 +675,7 @@ public class StepCreator {
                 stepMonitor.performing(parametrisedStep, dryRun);
                 if (!dryRun) {
                     Object outputObject = method.invoke(stepsInstance(), convertedParameters);
-                    storeOutput(outputObject);
+                    storeOutput(outputObject, method);
                 }
                 return successful(stepAsString).withParameterValues(parametrisedStep)
                         .setTimings(timer.stop());
@@ -725,14 +735,6 @@ public class StepCreator {
                 }
             }
         }
-
-        private void storeOutput(Object object) {
-            ContextOutcome annotation = method.getAnnotation(ContextOutcome.class);
-            if (annotation != null) {
-                ContextObjects.setObject(annotation.value(), object, annotation.retentionLevel());
-            }
-        }
-
     }
 
     public class UponAnyParametrisedStep extends AbstractStep {
@@ -877,8 +879,8 @@ public class StepCreator {
             this.parameterTypes = method.getGenericParameterTypes();
         }
 
-        public void invoke() throws InvocationTargetException, IllegalAccessException {
-            method.invoke(stepsInstance(), parameterValuesFrom(meta));
+        public Object invoke() throws InvocationTargetException, IllegalAccessException {
+            return method.invoke(stepsInstance(), parameterValuesFrom(meta));
         }
 
         private Parameter[] methodParameters() {

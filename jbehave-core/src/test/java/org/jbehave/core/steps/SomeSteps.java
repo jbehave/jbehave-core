@@ -12,8 +12,8 @@ import java.util.Set;
 
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.BeforeScenario;
-import org.jbehave.core.annotations.ContextOutcome;
-import org.jbehave.core.annotations.ContextParam;
+import org.jbehave.core.annotations.ToContext;
+import org.jbehave.core.annotations.FromContext;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -156,22 +156,22 @@ public class SomeSteps extends Steps {
         this.args = exception;
     }
 
-    @ContextOutcome("someKey")
+    @ToContext("someKey")
     public String aMethodStoringAString() {
         return "someValue";
     }
     
-    @ContextOutcome(value = "someKey", retentionLevel=ContextOutcome.RetentionLevel.SCENARIO)
+    @ToContext(value = "someKey", retentionLevel= ToContext.RetentionLevel.SCENARIO)
     public String aMethodStoringAStringInScenario() {
         return "someValue";
     }
     
-    @ContextOutcome(value = "someKey", retentionLevel=ContextOutcome.RetentionLevel.STORY)
+    @ToContext(value = "someKey", retentionLevel= ToContext.RetentionLevel.STORY)
     public String aMethodStoringAStringInStory() {
         return "someValue";
     }
 
-    public void aMethodReadingFromContext(@ContextParam("someKey") String value) {
+    public void aMethodReadingFromContext(@FromContext("someKey") String value) {
         this.args = value;
     }
 
