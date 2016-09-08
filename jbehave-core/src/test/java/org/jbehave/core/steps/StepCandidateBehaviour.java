@@ -1,5 +1,23 @@
 package org.jbehave.core.steps;
 
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.jbehave.core.steps.StepType.GIVEN;
+import static org.jbehave.core.steps.StepType.IGNORABLE;
+import static org.jbehave.core.steps.StepType.THEN;
+import static org.jbehave.core.steps.StepType.WHEN;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -25,32 +43,12 @@ import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
+import org.jbehave.core.steps.context.StepsContext;
 import org.junit.Test;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
 import com.thoughtworks.paranamer.Paranamer;
-
-import static java.util.Arrays.asList;
-import static junit.framework.Assert.fail;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
-import static org.jbehave.core.steps.StepType.GIVEN;
-import static org.jbehave.core.steps.StepType.IGNORABLE;
-import static org.jbehave.core.steps.StepType.THEN;
-import static org.jbehave.core.steps.StepType.WHEN;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 public class StepCandidateBehaviour {
 
@@ -65,8 +63,8 @@ public class StepCandidateBehaviour {
     private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance, ParameterControls parameterControls) {
         Class<?> stepsType = instance.getClass();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), instance);
-        return new StepCandidate(patternAsString, 0, stepType, method, stepsType, stepsFactory, keywords,
-                new RegexPrefixCapturingPatternParser(), new ParameterConverters(), parameterControls);
+        return new StepCandidate(patternAsString, 0, stepType, method, stepsType, stepsFactory, new StepsContext(),
+                keywords, new RegexPrefixCapturingPatternParser(), new ParameterConverters(), parameterControls);
     }
     
     @Test
@@ -131,8 +129,8 @@ public class StepCandidateBehaviour {
             }
             
         };
-        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, null, keywords,
-                new RegexPrefixCapturingPatternParser(), new ParameterConverters(), new ParameterControls());
+        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, null, new StepsContext(),
+                keywords, new RegexPrefixCapturingPatternParser(), new ParameterConverters(), new ParameterControls());
         assertThat(candidate.matches("When windows on the 1st floor"), is(false));
         assertThat(candidate.ignore("!-- windows on the 1st floor"), is(false));
     }

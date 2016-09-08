@@ -60,8 +60,6 @@ public class PerformableTree {
 
     private static final Map<String, String> NO_PARAMETERS = new HashMap<String, String>();
 
-    private static final StepsContext stepsContext = new StepsContext();
-
     private PerformableRoot root = new PerformableRoot();
 
     public PerformableRoot getRoot() {
@@ -458,6 +456,7 @@ public class PerformableTree {
 		private final EmbedderMonitor embedderMonitor;
         private final MetaFilter filter;
         private final BatchFailures failures;
+		private final StepsContext stepsContext;
         private Map<Story, StoryDuration> cancelledStories = new HashMap<Story, StoryDuration>();
         private Map<String, List<PendingStep>> pendingStories = new HashMap<String, List<PendingStep>>();
         private final ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
@@ -473,8 +472,13 @@ public class PerformableTree {
             this.candidateSteps = stepsFactory.createCandidateSteps();
             this.filter = filter;
             this.failures = failures;
+            this.stepsContext = configuration.stepsContext();
             resetState();
         }
+
+		public StepsContext stepsContext() {
+			return stepsContext;
+		}
 
     	public boolean restartScenario() {
     		Throwable cause = failure(state);
@@ -669,6 +673,7 @@ public class PerformableTree {
         public EmbedderMonitor embedderMonitor(){
         	return embedderMonitor;
         }
+
     }
 
     public static interface Performable {
@@ -781,7 +786,7 @@ public class PerformableTree {
                 context.reporter().storyNotAllowed(story, context.filter.asString());
                 this.status = Status.NOT_ALLOWED;
             }
-            stepsContext.resetStory();
+            context.stepsContext().resetStory();
             context.reporter().beforeStory(story, context.givenStory);
             context.reporter().narrative(story.getNarrative());
             context.reporter().lifecyle(story.getLifecycle());
@@ -883,7 +888,7 @@ public class PerformableTree {
         		context.embedderMonitor().scenarioNotAllowed(scenario, context.filter());
         		return;
         	}
-            stepsContext.resetScenario();
+        	context.stepsContext().resetScenario();
             context.reporter().beforeScenario(scenario.getTitle());
             State state = context.state();
 			if (!examplePerformableScenarios.isEmpty()) {
@@ -1007,7 +1012,7 @@ public class PerformableTree {
             if (context.configuration().storyControls().resetStateBeforeScenario()) {
                 context.resetState();
             }
-            stepsContext.resetExample();
+            context.stepsContext().resetExample();
             context.reporter().example(parameters);
             beforeSteps.perform(context);
 			if (givenStories.size() > 0) {

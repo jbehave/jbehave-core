@@ -1,5 +1,13 @@
 package org.jbehave.core.steps;
 
+import static java.util.Arrays.asList;
+import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
+import static org.jbehave.core.annotations.AfterScenario.Outcome.FAILURE;
+import static org.jbehave.core.annotations.AfterScenario.Outcome.SUCCESS;
+import static org.jbehave.core.steps.StepType.GIVEN;
+import static org.jbehave.core.steps.StepType.THEN;
+import static org.jbehave.core.steps.StepType.WHEN;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,14 +34,6 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.steps.StepCollector.Stage;
-
-import static java.util.Arrays.asList;
-import static org.jbehave.core.annotations.AfterScenario.Outcome.ANY;
-import static org.jbehave.core.annotations.AfterScenario.Outcome.FAILURE;
-import static org.jbehave.core.annotations.AfterScenario.Outcome.SUCCESS;
-import static org.jbehave.core.steps.StepType.GIVEN;
-import static org.jbehave.core.steps.StepType.THEN;
-import static org.jbehave.core.steps.StepType.WHEN;
 
 /**
  * <p>
@@ -229,7 +229,7 @@ public class Steps implements CandidateSteps {
     private StepCandidate createCandidate(Method method, StepType stepType, String stepPatternAsString, int priority,
             Configuration configuration) {
         return new StepCandidate(stepPatternAsString, priority, stepType, method, type, stepsFactory,
-                configuration.keywords(), configuration.stepPatternParser(), configuration.parameterConverters(), configuration.parameterControls());
+                configuration.stepsContext(), configuration.keywords(), configuration.stepPatternParser(), configuration.parameterConverters(), configuration.parameterControls());
     }
 
     public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
@@ -331,7 +331,7 @@ public class Steps implements CandidateSteps {
 
     private BeforeOrAfterStep createBeforeOrAfterStep(Stage stage, Method method, Outcome outcome) {
         return new BeforeOrAfterStep(stage, method, outcome, new StepCreator(type, stepsFactory,
-                configuration.parameterConverters(), configuration.parameterControls(), null, configuration.stepMonitor()));
+                configuration.stepsContext(), configuration.parameterConverters(), configuration.parameterControls(), null, configuration.stepMonitor()));
     }
 
     private List<Method> allMethods() {

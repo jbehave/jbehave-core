@@ -68,7 +68,7 @@ public class StepCreatorBehaviour {
         MostUsefulConfiguration configuration = new MostUsefulConfiguration();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(configuration, stepsInstance);
         StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory,
-                configuration.parameterConverters(), new ParameterControls(), null, new SilentStepMonitor());
+                stepsContext, configuration.parameterConverters(), new ParameterControls(), null, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingBeforeScenarioMethod");
@@ -90,8 +90,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null,
-                new ParameterControls(), null, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext,
+                null, new ParameterControls(), null, new SilentStepMonitor());
         StoryReporter storyReporter = mock(StoryReporter.class);
 
         // When
@@ -107,8 +107,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null,
-                new ParameterControls(), null, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext,
+                null, new ParameterControls(), null, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aFailingMethod");
@@ -123,8 +123,8 @@ public class StepCreatorBehaviour {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null,
-                new ParameterControls(), null, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext,
+                null, new ParameterControls(), null, new SilentStepMonitor());
 
         // When
         Method method = null;
@@ -140,8 +140,8 @@ public class StepCreatorBehaviour {
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, new ParameterConverters(),
-                new ParameterControls(), stepMatcher, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext,
+                new ParameterConverters(), new ParameterControls(), stepMatcher, new SilentStepMonitor());
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(new String[] {});
@@ -546,8 +546,8 @@ public class StepCreatorBehaviour {
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
         StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I read from context",
                 Pattern.compile("I read from context"), new String[] {});
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
-                stepMatcher, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext, null,
+                new ParameterControls(), stepMatcher, new SilentStepMonitor());
 
         // When
         Method methodRead = SomeSteps.methodFor("aMethodReadingFromContext");
@@ -571,8 +571,8 @@ public class StepCreatorBehaviour {
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
         StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I read from context",
                 Pattern.compile("I read from context"), new String[] {});
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
-                stepMatcher, new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext, null,
+                new ParameterControls(), stepMatcher, new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aMethodReadingFromContext");
@@ -602,8 +602,8 @@ public class StepCreatorBehaviour {
         setupContext();
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, null, new ParameterControls(),
-                mock(StepMatcher.class), new SilentStepMonitor());
+        StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext, null,
+                new ParameterControls(), mock(StepMatcher.class), new SilentStepMonitor());
 
         // When
         Method method = SomeSteps.methodFor("aMethodStoringAString");
@@ -636,8 +636,8 @@ public class StepCreatorBehaviour {
 
     private StepCreator stepCreatorUsing(SomeSteps stepsInstance, StepMatcher stepMatcher, ParameterControls parameterControls) {
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
-        return new StepCreator(stepsInstance.getClass(), stepsFactory, parameterConverters, parameterControls,
-                stepMatcher, new SilentStepMonitor());
+        return new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext, parameterConverters,
+                parameterControls, stepMatcher, new SilentStepMonitor());
     }
 
     private void setupContext() {

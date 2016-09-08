@@ -11,14 +11,16 @@ import org.jbehave.core.annotations.ToContext;
  * Holds runtime context-related objects.
  */
 public class StepsContext {
-    private static final ThreadLocal<Map<String, Object>> exampleObjects = new ThreadLocal<Map<String, Object>>();
-    private static final ThreadLocal<Map<String, Object>> scenarioObjects = new ThreadLocal<Map<String, Object>>();
-    private static final ThreadLocal<Map<String, Object>> storyObjects = new ThreadLocal<Map<String, Object>>();
-    private static final ThreadLocal<Set<String>> keysStored = new ThreadLocal<Set<String>>();
+
     private static final String OBJECT_ALREADY_STORED_MESSAGE = "Object key '%s' has been already stored before.";
     private static final String OBJECT_NOT_STORED_MESSAGE = "Object key '%s' has not been stored";
 
-    public void setObject(String key, Object object, ToContext.RetentionLevel retentionLevel) {
+	private static final ThreadLocal<Map<String, Object>> exampleObjects = new ThreadLocal<Map<String, Object>>();
+    private static final ThreadLocal<Map<String, Object>> scenarioObjects = new ThreadLocal<Map<String, Object>>();
+    private static final ThreadLocal<Map<String, Object>> storyObjects = new ThreadLocal<Map<String, Object>>();
+    private static final ThreadLocal<Set<String>> keysStored = new ThreadLocal<Set<String>>();
+
+    public void put(String key, Object object, ToContext.RetentionLevel retentionLevel) {
         checkForDuplicate(key);
         Map<String, Object> objects;
         if (ToContext.RetentionLevel.EXAMPLE.equals(retentionLevel)) {
@@ -40,7 +42,7 @@ public class StepsContext {
         }
     }
 
-    public Object getObject(String key) {
+    public Object get(String key) {
         Object object = getExampleObjects().get(key);
         if (object == null) {
             object = getScenarioObjects().get(key);
@@ -109,16 +111,16 @@ public class StepsContext {
         keysStored.set(new HashSet<String>());
     }
 
-    public static class ObjectNotStoredException extends RuntimeException {
-        private static final long serialVersionUID = 1L;
+    @SuppressWarnings("serial")
+	public static class ObjectNotStoredException extends RuntimeException {
 
         public ObjectNotStoredException(String message) {
             super(message);
         }
     }
 
-    public static class ObjectAlreadyStoredException extends RuntimeException {
-        private static final long serialVersionUID = 1L;
+    @SuppressWarnings("serial")
+	public static class ObjectAlreadyStoredException extends RuntimeException {
 
         public ObjectAlreadyStoredException(String message) {
             super(message);

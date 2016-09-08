@@ -55,16 +55,17 @@ public class StepCreator {
     private final ParameterControls parameterControls;
     private final Pattern delimitedNamePattern;
     private final StepMatcher stepMatcher;
+    private final StepsContext stepsContext;
     private StepMonitor stepMonitor;
     private Paranamer paranamer = new NullParanamer();
     private boolean dryRun = false;
-    private static final StepsContext stepsContext = new StepsContext();
 
     public StepCreator(Class<?> stepsType, InjectableStepsFactory stepsFactory,
-            ParameterConverters parameterConverters, ParameterControls parameterControls, StepMatcher stepMatcher,
-            StepMonitor stepMonitor) {
+            StepsContext stepsContext, ParameterConverters parameterConverters, ParameterControls parameterControls,
+            StepMatcher stepMatcher, StepMonitor stepMonitor) {
         this.stepsType = stepsType;
         this.stepsFactory = stepsFactory;
+		this.stepsContext = stepsContext;
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
         this.stepMatcher = stepMatcher;
@@ -349,7 +350,7 @@ public class StepCreator {
         final Object[] parameters = new Object[valuesAsString.length];
         for (int position = 0; position < valuesAsString.length; position++) {
             if (names[position].fromContext) {
-                parameters[position] = stepsContext.getObject(valuesAsString[position]);
+                parameters[position] = stepsContext.get(valuesAsString[position]);
             } else {
                 parameters[position] = parameterConverters.convert(valuesAsString[position], types[position]);
             }
@@ -510,7 +511,7 @@ public class StepCreator {
     private void storeOutput(Object object, Method method) {
         ToContext annotation = method.getAnnotation(ToContext.class);
         if (annotation != null) {
-            stepsContext.setObject(annotation.value(), object, annotation.retentionLevel());
+            stepsContext.put(annotation.value(), object, annotation.retentionLevel());
         }
     }
 

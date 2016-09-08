@@ -35,6 +35,7 @@ import org.jbehave.core.steps.SilentStepMonitor;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.StepMonitor;
+import org.jbehave.core.steps.context.StepsContext;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -116,6 +117,11 @@ public abstract class Configuration {
      * The story reporter builder
      */
     protected StoryReporterBuilder storyReporterBuilder;
+    
+    /**
+     * The steps context
+     */
+	protected StepsContext stepsContext;
 
     /**
      * Finder of matching candidate steps
@@ -240,6 +246,14 @@ public abstract class Configuration {
 		}
 		return storyReporterBuilder;
 	}
+
+	public StepsContext stepsContext() {
+		if ( stepsContext == null ){
+			stepsContext = new StepsContext();
+		}
+		return stepsContext;
+	}
+
 
 	public StepCollector stepCollector() {
 		if (stepCollector == null) {

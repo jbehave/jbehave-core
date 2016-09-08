@@ -14,6 +14,7 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.parsers.StepPatternParser;
+import org.jbehave.core.steps.context.StepsContext;
 
 import com.thoughtworks.paranamer.Paranamer;
 
@@ -39,8 +40,8 @@ public class StepCandidate {
     private StepMonitor stepMonitor = new SilentStepMonitor();
 
     public StepCandidate(String patternAsString, int priority, StepType stepType, Method method, Class<?> stepsType,
-            InjectableStepsFactory stepsFactory, Keywords keywords, StepPatternParser stepPatternParser,
-            ParameterConverters parameterConverters, ParameterControls parameterControls) {
+            InjectableStepsFactory stepsFactory, StepsContext stepsContext, Keywords keywords,
+            StepPatternParser stepPatternParser, ParameterConverters parameterConverters, ParameterControls parameterControls) {
         this.patternAsString = patternAsString;
         this.priority = priority;
         this.stepType = stepType;
@@ -49,8 +50,8 @@ public class StepCandidate {
         this.stepsFactory = stepsFactory;
         this.keywords = keywords;
         this.stepMatcher = stepPatternParser.parseStep(stepType, patternAsString);
-        this.stepCreator = new StepCreator(stepsType, stepsFactory, parameterConverters, parameterControls,
-                stepMatcher, stepMonitor);
+        this.stepCreator = new StepCreator(stepsType, stepsFactory, stepsContext, parameterConverters,
+                parameterControls, stepMatcher, stepMonitor);
     }
 
     public Method getMethod() {
