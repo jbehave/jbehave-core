@@ -47,6 +47,7 @@ import org.jbehave.examples.core.steps.PendingSteps;
 import org.jbehave.examples.core.steps.PriorityMatchingSteps;
 import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.SearchSteps;
+import org.jbehave.examples.core.steps.StepsContextSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
 
 import static org.jbehave.core.reporters.Format.CONSOLE;
@@ -117,7 +118,8 @@ public abstract class CoreStory extends JUnitStory {
                 new MetaParametrisationSteps(), new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(),
                 new ParametrisedSteps(), new SandpitSteps(), new SearchSteps(), new BeforeAfterSteps(),
                 new CompositeSteps(), new CompositeNestedSteps(), new NamedParametersSteps(),
-                new ParameterDelimitersSteps(), new ExamplesTableParametersSteps(), new ContextSteps(context));
+                new ParameterDelimitersSteps(), new ExamplesTableParametersSteps(), new ContextSteps(context),
+                new StepsContextSteps());
     }
 
 }
