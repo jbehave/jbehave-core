@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.ToContext;
 import org.jbehave.core.annotations.FromContext;
 import org.jbehave.core.annotations.Named;
@@ -333,9 +335,56 @@ public class StepCreator {
 	private String pad(String value, String left, String right){
 		return new StringBuilder().append(left).append(value).append(right).toString();
 	}
-	
+
     private boolean isTable(Type type) {
+        return isExamplesTable(type) || isExamplesTableParameters(type);
+    }
+
+    private boolean isExamplesTable(Type type) {
         return type instanceof Class && ((Class<?>) type).isAssignableFrom(ExamplesTable.class);
+    }
+
+    private boolean isExamplesTableParameters(Type type) {
+        boolean result = false;
+
+        if (type instanceof Class) {
+            ((Class) type).isAnnotationPresent(AsParameters.class);
+        }
+        else if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            result = isExamplesTableParameters(rawClass(parameterizedType)) || isExamplesTableParameters(argumentClass(parameterizedType));
+        }
+
+        return result;
+    }
+
+    private boolean isExamplesTableParameters(Class type) {
+        return type != null && type.isAnnotationPresent(AsParameters.class);
+    }
+
+    private Class<?> rawClass(ParameterizedType type) {
+        Class result = null;
+
+        Type rawType = type.getRawType();
+        if (rawType instanceof Class) {
+            result = (Class) rawType;
+        }
+
+        return result;
+    }
+
+    private Class<?> argumentClass(ParameterizedType type) {
+        Class result = null;
+
+        Type[] typeArguments = type.getActualTypeArguments();
+        if (typeArguments.length > 0) {
+            Type argument = typeArguments[0];
+            if (argument instanceof Class) {
+                result = (Class) argument;
+            }
+        }
+
+        return result;
     }
 
     private String[] parameterValuesForStep(Map<String, String> namedParameters, Type[] types, ParameterName[] names) {
