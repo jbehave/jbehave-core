@@ -63,21 +63,18 @@
       <!-- Required for dependencies of Jenkins module -->
       <id>jenkins</id>
       <activation>
-        <activeByDefault>false</activeByDefault>
-        <property>
-          <name>hudson.version</name>
-        </property>
+        <activeByDefault>true</activeByDefault>
       </activation>
       <repositories>
         <repository>
           <id>jenkins</id>
-          <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
+          <url>https://repo.jenkins-ci.org/public/</url>
         </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
           <id>jenkins</id>
-          <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
+          <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>
