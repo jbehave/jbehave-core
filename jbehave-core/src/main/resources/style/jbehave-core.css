@@ -1,98 +1,98 @@
 #banner {
-	background: #fff url(../images/background-banner.png) repeat top left;
+    background: #fff url(../images/background-banner.png) repeat top left;
 }
 
 #banner img {
-	padding: 4px 0 4px 20px;
+    padding: 4px 0 4px 20px;
 }
 
 #footer {
-	width: 100%;
-	background: #fff url(../images/background-footer.png) repeat;
-	color: #fff;
-	border: 1px solid;
-	padding: 5px 0 5px 0;
-	margin-top: 50px;
-	font-size: 0.8em;
-	position: fixed;
-	bottom: 0;
+    width: 100%;
+    background: #fff url(../images/background-footer.png) repeat;
+    color: #fff;
+    border: 1px solid;
+    padding: 5px 0 5px 0;
+    margin-top: 50px;
+    font-size: 0.8em;
+    position: fixed;
+    bottom: 0;
 }
 
 #footer div.left {
-	float: left;
+    float: left;
 }
 
 #header {
-	margin: 0 auto 0 auto;
-	margin-left: 30px;
-	margin-bottom: 40px;
+    margin: 0 auto 0 auto;
+    margin-left: 30px;
+    margin-bottom: 40px;
 }
 
 body {
-	margin: 0;
-	font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana",
-		sans-serif;
-	font-size: 0.84em;
-	color: #555;
-	text-align: left;
-	padding: 0 0 10px 0;
-	background-color: #fff;
+    margin: 0;
+    font-family: "Lucida Grande", "Arial", "Helvetica", "Verdana",
+        sans-serif;
+    font-size: 0.84em;
+    color: #555;
+    text-align: left;
+    padding: 0 0 10px 0;
+    background-color: #fff;
 }
 
 h2 {
-	background-color: #ffcd13;
-	margin-bottom: 10px;
-	padding: 5px 10px;
+    background-color: #ffcd13;
+    margin-bottom: 10px;
+    padding: 5px 10px;
 }
 
 body,td,select,input,li {
-	font-size: 13px;
+    font-size: 13px;
 }
 
 a {
-	text-decoration: none;
+    text-decoration: none;
 }
 
 a:link {
-	color: #39912b;
-	font-weight: bold;
+    color: #39912b;
+    font-weight: bold;
 }
 
 a:visited {
-	color: #39912b;
+    color: #39912b;
 }
 
 a:active,a:hover {
-	color: #39912b;
+    color: #39912b;
 }
 
 b {
-	color: #333;
+    color: #333;
 }
 
 .logo {
-	float: right;
-	margin-right: 30px;
+    float: right;
+    margin-right: 30px;
 }
 
 .clear {
-	clear: both;
+    clear: both;
 }
 
 .left {
-	text-align: left;
-	margin-left: 10px;
+    text-align: left;
+    margin-left: 10px;
 }
 
 .right {
-	text-align: right;
-	margin-right: 10px;
+    text-align: right;
+    margin-right: 10px;
 }
 
 .reports {
-	margin-left: 30px;
-	margin-top: 30px;
-	text-align: left;
+    margin-left: 30px;
+    margin-top: 30px;
+    text-align: left;
 }
 
 .reports h2 {
@@ -100,7 +100,7 @@ b {
 }
 
 table {
-	border-collapse: collapse;
+    border-collapse: collapse;
 }
 
 .stories {
@@ -108,11 +108,11 @@ table {
 }
 
 .scenarios {
-	border: 1px solid #000;
+    border: 1px solid #000;
 }
 
 .steps {
-	border: 1px solid #000;
+    border: 1px solid #000;
 }
 
 .totals {
@@ -122,24 +122,24 @@ table {
 }	
 
 .reports table {
-	border: solid;
+    border: solid;
 }
 
 .reports table th {
-	border-bottom: 1px solid #000;
-	text-align: center;
-	font-weight: bold;
-	padding: 10px;
+    border-bottom: 1px solid #000;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
 }
 
 .reports table td {
-	text-align: center;
-	padding: 5px;
+    text-align: center;
+    padding: 5px;
 }
 
 .reports table td.story {
-	text-align: left;
-	padding: 5px;
+    text-align: left;
+    padding: 5px;
 }
 
 .reports table td a {
@@ -151,9 +151,9 @@ table {
 }
 
 .maps {
-	margin-left: 30px;
-	margin-top: 30px;
-	text-align: left;
+    margin-left: 30px;
+    margin-top: 30px;
+    text-align: left;
 }
 
 .maps h2 {
@@ -161,23 +161,23 @@ table {
 }
 
 .maps table {
-	border: solid;
+    border: solid;
 }
 
 .maps table th {
-	text-align: center;
-	font-weight: bold;
-	padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
 }
 
 .maps table td {
-	text-align: center;
-	padding: 5px;
+    text-align: center;
+    padding: 5px;
 }
 
 .maps table td.name {
-	text-align: left;
-	padding: 5px;
+    text-align: left;
+    padding: 5px;
 }
 
 .views {
@@ -211,55 +211,55 @@ table {
 }
 
 .story {
-	text-align: left;
-	margin-left: 10px;
+    text-align: left;
+    margin-left: 10px;
 }
 
 .story h2 {
-	background-color: #fff;
-	border-color: #ffcd13;
+    background-color: #fff;
+    border-color: #ffcd13;
 }
 
 .meta {
-	text-align: left;
-	color: purple;
-	margin-bottom: 10px;
+    text-align: left;
+    color: purple;
+    margin-bottom: 10px;
 }
 
 .filter {
-	text-align: left;
-	color: red;
-	margin-left: 10px;
-	margin-bottom: 10px;
+    text-align: left;
+    color: red;
+    margin-left: 10px;
+    margin-bottom: 10px;
 }
 
 .keyword {
-	margin-left: 10px;
+    margin-left: 10px;
 }
 
 .property {
-	margin-left: 10px;
+    margin-left: 10px;
 }
 
 .narrative {
-	text-align: left;
-	color: blue;
+    text-align: left;
+    color: blue;
 }
 
 .element {
-	padding-left: 10px;
+    padding-left: 10px;
 }
 
 span.inOrderTo,span.asA,span.iWantTo,span.soThat {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .givenStories,.path {
-	font-weight: bolder;
-	font-size: 16px;
+    font-weight: bolder;
+    font-size: 16px;
     opacity: 0.85;
-	margin-bottom: 10px;
-	padding: 5px 10px;
+    margin-bottom: 10px;
+    padding: 5px 10px;
 }
 
 .lifecycle {
@@ -280,82 +280,86 @@ h2.lifecycle,h3.lifecycle {
 }
 
 .scenario {
-	text-align: left;
-	padding-left: 1px;
+    text-align: left;
+    padding-left: 1px;
 }
 
 .step {
-	color: black;
-	padding: 2px 2px 2px 20px;
+    color: black;
+    padding: 2px 2px 2px 20px;
 }
 
 .successful {
-	color: green;
+    color: green;
 }
 
 .ignorable {
-	color: blue;
+    color: blue;
+}
+
+.comment {
+    color: blue;
 }
 
 .pending {
-	color: olive;
+    color: olive;
 }
 
 .notPerformed {
-	color: brown;
+    color: brown;
 }
 
 .failed {
-	color: red;
+    color: red;
 }
 
 .cancelled {
-	color: red;
+    color: red;
 }
 
 .restarted {
-	color: orange;
+    color: orange;
 }
 
 .dryRun {
-	border: solid;
-	color: amber;
-	background-color: yellow;
-	margin-left: 12px;
-	padding: 10px;
-	font-size: 20px;
-	text-align: center;
-	text-weight: bold;
+    border: solid;
+    color: amber;
+    background-color: yellow;
+    margin-left: 12px;
+    padding: 10px;
+    font-size: 20px;
+    text-align: center;
+    text-weight: bold;
 }
 
 .parameter {
-	color: purple;
-	padding-left: 0px;
-	text-weight: bold;
+    color: purple;
+    padding-left: 0px;
+    text-weight: bold;
 }
 
 .keyword {
-	text-weight: bold;
+    text-weight: bold;
 }
 
 .examples {
-	margin-left: 10px;
+    margin-left: 10px;
     padding-bottom: 20px;
 }
 
 .examples h3 {
-	opacity: 0.85;
+    opacity: 0.85;
 }
 
 .examples table {
-	border: 1px solid;
-	margin-top: 12px;
-	margin-left: 12px;
+    border: 1px solid;
+    margin-top: 12px;
+    margin-left: 12px;
 }
 
 .examples table th, td {
-	text-align: center;
-	padding-left: 5px;
+    text-align: center;
+    padding-left: 5px;
     padding-right: 5px;
     border-left: 1px solid;	
 }
@@ -382,15 +386,15 @@ h2.lifecycle,h3.lifecycle {
 }
 
 .outcomes table tr.notVerified {
-	color: red;
+    color: red;
 }
 
 .outcomes table tr.verified {
-	color: green;
+    color: green;
 }
 
 .outcomes {
-	padding-bottom: 20px;
+    padding-bottom: 20px;
 }
 
 .parameter table {
@@ -411,6 +415,6 @@ h2.lifecycle,h3.lifecycle {
 }
 
 pre.failure {
-	padding-left: 10px;
-	color: red;
+    padding-left: 10px;
+    color: red;
 }

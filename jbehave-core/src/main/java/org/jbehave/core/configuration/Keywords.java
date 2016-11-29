@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.steps.StepType;
@@ -57,7 +58,7 @@ public class Keywords {
     public static final String OUTCOME_VALUE = "OutcomeValue";
     public static final String OUTCOME_MATCHER = "OutcomeMatcher";
     public static final String OUTCOME_VERIFIED = "OutcomeVerified";
-	public static final String META_FILTER = "MetaFilter";
+    public static final String META_FILTER = "MetaFilter";
     public static final String YES = "Yes";
     public static final String NO = "No";
 
@@ -96,15 +97,15 @@ public class Keywords {
     private final String dryRun;
     private final String storyCancelled;
     private final String duration;
-	private final String outcome;
-	private final String outcomeAny;
-	private final String outcomeSuccess;
-	private final String outcomeFailure;
+    private final String outcome;
+    private final String outcomeAny;
+    private final String outcomeSuccess;
+    private final String outcomeFailure;
     private final String outcomeDescription;
     private final String outcomeValue;
     private final String outcomeMatcher;
     private final String outcomeVerified;
-	private final String metaFilter;
+    private final String metaFilter;
     private final String yes;
     private final String no;
     private final Map<StepType, String> startingWordsByType = new HashMap<StepType, String>();
@@ -335,29 +336,29 @@ public class Keywords {
         return duration;
     }
 
-	public String outcome() {
-		return outcome;
-	}
+    public String outcome() {
+        return outcome;
+    }
 
-	public String outcomeAny(){
-		return outcomeAny;
-	}
-	
-	public String outcomeSuccess(){
-		return outcomeSuccess;
-	}
-	
-	public String outcomeFailure(){
-		return outcomeFailure;
-	}
+    public String outcomeAny(){
+        return outcomeAny;
+    }
 
-	public List<String> outcomeFields() {
+    public String outcomeSuccess(){
+        return outcomeSuccess;
+    }
+
+    public String outcomeFailure(){
+        return outcomeFailure;
+    }
+
+    public List<String> outcomeFields() {
         return asList(outcomeDescription, outcomeValue, outcomeMatcher, outcomeVerified);
     }
 
-	public String metaFilter() {
-		return metaFilter;
-	}
+    public String metaFilter() {
+        return metaFilter;
+    }
 
     public String yes() {
         return yes;
@@ -444,7 +445,13 @@ public class Keywords {
     }
 
     public boolean stepStartsWithWord(String step, String word) {
-        return step.startsWith(word + " "); // space after qualifies it as word
+        return stepStartsWithWords(step, word);
+    }
+
+    public boolean stepStartsWithWords(String step, String... words) {
+        char separator = ' '; // space after qualifies it as word
+        String start = StringUtils.join(words, separator) + separator;
+        return step.startsWith(start);
     }
 
     public String startingWordFor(StepType stepType) {
@@ -488,8 +495,5 @@ public class Keywords {
         public StartingWordNotFound(StepType stepType, Map<StepType, String> startingWordsByType) {
             super("No starting word found of type '" + stepType + "' amongst '" + startingWordsByType + "'");
         }
-
     }
-
-
 }

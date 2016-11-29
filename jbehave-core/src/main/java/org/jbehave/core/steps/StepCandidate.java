@@ -110,10 +110,30 @@ public class StepCandidate {
     public boolean ignore(String stepAsString) {
         try {
             String ignoreWord = keywords.startingWordFor(StepType.IGNORABLE);
-            return keywords.stepStartsWithWord(stepAsString, ignoreWord);
+            return isIgnoredStep(stepAsString, ignoreWord);
         } catch (StartingWordNotFound e) {
             return false;
         }
+    }
+
+    public boolean comment(String stepAsString) {
+        try {
+            String ignoreWord = keywords.startingWordFor(StepType.IGNORABLE);
+            return keywords.stepStartsWithWord(stepAsString, ignoreWord) && !isIgnoredStep(stepAsString, ignoreWord);
+        } catch (StartingWordNotFound e) {
+            return false;
+        }
+    }
+
+    private boolean isIgnoredStep(String stepAsString, String ignoreWord) {
+        for (Map.Entry<StepType, String> stepStartingWord : keywords.startingWordsByType().entrySet()) {
+            if (stepStartingWord.getKey() != StepType.IGNORABLE) {
+                if (keywords.stepStartsWithWords(stepAsString, ignoreWord, stepStartingWord.getValue())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public boolean isPending() {

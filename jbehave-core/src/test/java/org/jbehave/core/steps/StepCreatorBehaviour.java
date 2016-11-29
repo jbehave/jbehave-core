@@ -22,6 +22,7 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 
 import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -29,6 +30,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.parsers.RegexStepMatcher;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.AbstractStepResult.Comment;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.Pending;
@@ -151,16 +153,39 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreatePendingAndIgnorableAsStepResults() throws IntrospectionException {
+    public void shouldCreatePendingAsStepResults() throws IntrospectionException {
         // When
-        Step ignorableStep = StepCreator.createIgnorableStep("!-- ignore me");
-        Step pendingStep = StepCreator.createPendingStep("When I'm pending", null);
+        String stepAsString = "When I'm pending";
+        Step pendingStep = StepCreator.createPendingStep(stepAsString, null);
 
         // Then
-        assertThat(ignorableStep.perform(null), instanceOf(Ignorable.class));
-        assertThat(ignorableStep.doNotPerform(null), instanceOf(Ignorable.class));
+        assertThat(pendingStep.asString(new Keywords()), equalTo(stepAsString));
         assertThat(pendingStep.perform(null), instanceOf(Pending.class));
         assertThat(pendingStep.doNotPerform(null), instanceOf(Pending.class));
+    }
+
+    @Test
+    public void shouldCreateIgnorableAsStepResults() throws IntrospectionException {
+        // When
+        String stepAsString = "!-- Then ignore me";
+        Step ignorableStep = StepCreator.createIgnorableStep(stepAsString);
+
+        // Then
+        assertThat(ignorableStep.asString(new Keywords()), equalTo(stepAsString));
+        assertThat(ignorableStep.perform(null), instanceOf(Ignorable.class));
+        assertThat(ignorableStep.doNotPerform(null), instanceOf(Ignorable.class));
+    }
+
+    @Test
+    public void shouldCreateCommentAsStepResults() throws IntrospectionException {
+        // When
+        String stepAsString = "!-- A comment";
+        Step comment = StepCreator.createComment(stepAsString);
+
+        // Then
+        assertThat(comment.asString(new Keywords()), equalTo(stepAsString));
+        assertThat(comment.perform(null), instanceOf(Comment.class));
+        assertThat(comment.doNotPerform(null), instanceOf(Comment.class));
     }
 
     @Test
@@ -170,14 +195,14 @@ public class StepCreatorBehaviour {
         assertThatParametrisedStepHasMarkedParsedParametersValues("book", "bookreading");
     }
 
-	private void assertThatParametrisedStepHasMarkedParsedParametersValues(String firstParameterValue,
-			String secondParameterValue) throws IntrospectionException {
-		// Given
+    private void assertThatParametrisedStepHasMarkedParsedParametersValues(String firstParameterValue,
+            String secondParameterValue) throws IntrospectionException {
+        // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I use parameters $theme and $variant", Pattern.compile("When I use parameters (.*) and (.*)"), new String[]{"theme", "variant"});
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls());
         Map<String, String> parameters = new HashMap<String, String>();
-        
+
         // When
         StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
                 "When I use parameters "+firstParameterValue+" and " + secondParameterValue, "When I use parameters "+firstParameterValue+" and " + secondParameterValue, parameters)
@@ -188,24 +213,24 @@ public class StepCreatorBehaviour {
         String expected = "When I use parameters " + PARAMETER_VALUE_START + firstParameterValue + PARAMETER_VALUE_END
                 + " and " + PARAMETER_VALUE_START + secondParameterValue + PARAMETER_VALUE_END;
         assertThat(stepResult.parametrisedStep(), equalTo(expected));
-	}
-    
+    }
+
     @Test
     public void shouldCreateParametrisedStepWithNamedParametersValues() throws Exception {
         assertThatParametrisedStepHasMarkedNamedParameterValues("shopping cart", "book");
-    	assertThatParametrisedStepHasMarkedNamedParameterValues("bookreading", "book");
-    	assertThatParametrisedStepHasMarkedNamedParameterValues("book", "bookreading");
+        assertThatParametrisedStepHasMarkedNamedParameterValues("bookreading", "book");
+        assertThatParametrisedStepHasMarkedNamedParameterValues("book", "bookreading");
     }
 
-	private void assertThatParametrisedStepHasMarkedNamedParameterValues(String firstParameterValue,
-			String secondParameterValue) throws IntrospectionException {
-		// Given
+    private void assertThatParametrisedStepHasMarkedNamedParameterValues(String firstParameterValue,
+            String secondParameterValue) throws IntrospectionException {
+        // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls().useDelimiterNamedParameters(false));
         Map<String, String> parameters = new HashMap<String, String>();
-		parameters.put("theme", firstParameterValue);
-		parameters.put("variant", secondParameterValue);
+        parameters.put("theme", firstParameterValue);
+        parameters.put("variant", secondParameterValue);
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(parameters.keySet().toArray(new String[parameters.size()]));
@@ -220,8 +245,8 @@ public class StepCreatorBehaviour {
         String expected = "When I use parameters " + PARAMETER_VALUE_START + firstParameterValue + PARAMETER_VALUE_END
                 + " and " + PARAMETER_VALUE_START + secondParameterValue + PARAMETER_VALUE_END;
         assertThat(stepResult.parametrisedStep(), equalTo(expected));
-	}
-    
+    }
+
     @Test
     public void shouldInvokeBeforeOrAfterStepMethodWithExpectedParametersFromMeta() throws Exception {
         // Given
@@ -489,7 +514,7 @@ public class StepCreatorBehaviour {
 
     }
 
-    
+
     @SuppressWarnings("unchecked")
     @Test
     public void shouldMatchParametersByNamedAnnotationsIfConfiguredToNotUseDelimiterNamedParamters() throws Exception {

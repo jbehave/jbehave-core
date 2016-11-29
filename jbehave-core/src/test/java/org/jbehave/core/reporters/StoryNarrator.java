@@ -43,7 +43,8 @@ class StoryNarrator {
         reporter.beforeScenario("I ask for a loan");
         reporter.givenStories(asList("/given/story1", "/given/story2"));
         reporter.successful("Given I have a balance of $50");
-        reporter.ignorable("!-- A comment");
+        reporter.ignorable("!-- Then ignore me");
+        reporter.comment("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
         reporter.successful("When I ask Liz for a loan of $"+StepCreator.PARAMETER_VALUE_START+"99"+StepCreator.PARAMETER_VALUE_END);

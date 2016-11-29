@@ -32,6 +32,7 @@ import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.steps.context.StepsContext;
 
 import static java.util.Arrays.asList;
+import static org.jbehave.core.steps.AbstractStepResult.comment;
 import static org.jbehave.core.steps.AbstractStepResult.failed;
 import static org.jbehave.core.steps.AbstractStepResult.ignorable;
 import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
@@ -42,15 +43,15 @@ import static org.jbehave.core.steps.AbstractStepResult.successful;
 
 public class StepCreator {
 
-	public static final String PARAMETER_TABLE_START = "\uff3b";
+    public static final String PARAMETER_TABLE_START = "\uff3b";
     public static final String PARAMETER_TABLE_END = "\uff3d";
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
     public static final String PARAMETER_VALUE_NEWLINE = "\u2424";
     public static final UUIDExceptionWrapper NO_FAILURE = new UUIDExceptionWrapper("no failure");
-	private static final String NEWLINE = "\n";
+    private static final String NEWLINE = "\n";
     private static final String SPACE = " ";
-	private static final String NONE = "";
+    private static final String NONE = "";
     private final Class<?> stepsType;
     private final InjectableStepsFactory stepsFactory;
     private final ParameterConverters parameterConverters;
@@ -67,7 +68,7 @@ public class StepCreator {
             StepMatcher stepMatcher, StepMonitor stepMonitor) {
         this.stepsType = stepsType;
         this.stepsFactory = stepsFactory;
-		this.stepsContext = stepsContext;
+        this.stepsContext = stepsContext;
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
         this.stepMatcher = stepMatcher;
@@ -268,9 +269,9 @@ public class StepCreator {
 
     private String parametrisedStep(String stepAsString, Map<String, String> namedParameters, Type[] types,
             ParameterName[] names, String[] parameterValues) {
-    	String parametrisedStep = stepAsString;
-    	// mark parameter values that are parsed
-    	boolean hasTable = hasTable(types);
+        String parametrisedStep = stepAsString;
+        // mark parameter values that are parsed
+        boolean hasTable = hasTable(types);
         for (int position = 0; position < types.length; position++) {
             parametrisedStep = markParsedParameterValue(parametrisedStep, types[position], parameterValues[position], hasTable);
         }
@@ -283,25 +284,25 @@ public class StepCreator {
     }
 
     private boolean hasTable(Type[] types) {
-    	for (Type type : types) {
-			if ( isTable(type) ){
-				return true;
-			}
-		}
-		return false;
-	}
+        for (Type type : types) {
+            if ( isTable(type) ){
+                return true;
+            }
+        }
+        return false;
+    }
 
-	private String markNamedParameterValue(String stepText, Map<String, String> namedParameters, String name) {
+    private String markNamedParameterValue(String stepText, Map<String, String> namedParameters, String name) {
         String value = namedParameter(namedParameters, name);
         if (value != null) {
-			stepText = stepText.replace(delimitedName(name), markedValue(value));
+            stepText = stepText.replace(delimitedName(name), markedValue(value));
         }
         return stepText;
     }
 
-	private String delimitedName(String name) {
-		return parameterControls.nameDelimiterLeft() + name + parameterControls.nameDelimiterRight();
-	}
+    private String delimitedName(String name) {
+        return parameterControls.nameDelimiterLeft() + name + parameterControls.nameDelimiterRight();
+    }
 
     private String markParsedParameterValue(String stepText, Type type, String value, boolean hasTable) {
         if (value != null) {
@@ -310,31 +311,31 @@ public class StepCreator {
             } else {
                 // only mark non-empty string as parameter (JBEHAVE-656)            	
                 if (value.trim().length() != 0) {
-                	String markedValue = markedValue(value);
-                	// identify parameter values to mark as padded by spaces to avoid duplicated replacements of overlapping values (JBEHAVE-837)
-                	String leftPad = SPACE;
-                	String rightPad = ( stepText.endsWith(value) ? NONE : SPACE );
-            		stepText = stepText.replace(pad(value, leftPad, rightPad), pad(markedValue, leftPad, rightPad));
+                    String markedValue = markedValue(value);
+                    // identify parameter values to mark as padded by spaces to avoid duplicated replacements of overlapping values (JBEHAVE-837)
+                    String leftPad = SPACE;
+                    String rightPad = ( stepText.endsWith(value) ? NONE : SPACE );
+                    stepText = stepText.replace(pad(value, leftPad, rightPad), pad(markedValue, leftPad, rightPad));
                 }
                 if ( !hasTable ){
-                	stepText = stepText.replace(NEWLINE, PARAMETER_VALUE_NEWLINE);
+                    stepText = stepText.replace(NEWLINE, PARAMETER_VALUE_NEWLINE);
                 }
             }
         }
         return stepText;
     }
 
-	private String markedTable(String value) {
-		return pad(value, PARAMETER_TABLE_START, PARAMETER_TABLE_END);
-	}
+    private String markedTable(String value) {
+        return pad(value, PARAMETER_TABLE_START, PARAMETER_TABLE_END);
+    }
 
-	private String markedValue(String value) {
-		return pad(value, PARAMETER_VALUE_START, PARAMETER_VALUE_END);
-	}
+    private String markedValue(String value) {
+        return pad(value, PARAMETER_VALUE_START, PARAMETER_VALUE_END);
+    }
 
-	private String pad(String value, String left, String right){
-		return new StringBuilder().append(left).append(value).append(right).toString();
-	}
+    private String pad(String value, String left, String right){
+        return new StringBuilder().append(left).append(value).append(right).toString();
+    }
 
     private boolean isTable(Type type) {
         return isExamplesTable(type) || isExamplesTableParameters(type);
@@ -390,7 +391,7 @@ public class StepCreator {
     private String[] parameterValuesForStep(Map<String, String> namedParameters, Type[] types, ParameterName[] names) {
         final String[] parameters = new String[types.length];
         for (int position = 0; position < types.length; position++) {
-        	parameters[position] = parameterForPosition(position, names, namedParameters);
+            parameters[position] = parameterForPosition(position, names, namedParameters);
         }
         return parameters;
     }
@@ -557,6 +558,10 @@ public class StepCreator {
         return new IgnorableStep(stepAsString);
     }
 
+    public static Step createComment(final String stepAsString) {
+        return new Comment(stepAsString);
+    }
+
     private void storeOutput(Object object, Method method) {
         ToContext annotation = method.getAnnotation(ToContext.class);
         if (annotation != null) {
@@ -590,10 +595,10 @@ public class StepCreator {
 
     public static abstract class AbstractStep implements Step {
 
-    	public String asString(Keywords keywords) {
-			return toString();
-		}
-    	
+        public String asString(Keywords keywords) {
+            return toString();
+        }
+
         @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
@@ -652,9 +657,9 @@ public class StepCreator {
             }
         }
 
-		public String asString(Keywords keywords) {
-			return method.getName()+";"+meta.asString(keywords);
-		}
+        public String asString(Keywords keywords) {
+            return method.getName()+";"+meta.asString(keywords);
+        }
     }
 
     public class UponSuccessStep extends AbstractStep {
@@ -672,9 +677,9 @@ public class StepCreator {
             return beforeOrAfterStep.perform(storyFailureIfItHappened);
         }
 
-		public String asString(Keywords keywords) {
-			return beforeOrAfterStep.asString(keywords);
-		}
+        public String asString(Keywords keywords) {
+            return beforeOrAfterStep.asString(keywords);
+        }
 
     }
 
@@ -693,9 +698,9 @@ public class StepCreator {
             return skipped();
         }
 
-		public String asString(Keywords keywords) {
-			return beforeOrAfterStep.asString(keywords);
-		}
+        public String asString(Keywords keywords) {
+            return beforeOrAfterStep.asString(keywords);
+        }
     
     }
     
@@ -762,11 +767,11 @@ public class StepCreator {
             return notPerformed(stepAsString).withParameterValues(parametrisedStep);
         }
 
-		public String asString(Keywords keywords) {
-			if ( parametrisedStep == null){
-				parametriseStep();
-			}
-        	return parametrisedStep;
+        public String asString(Keywords keywords) {
+            if ( parametrisedStep == null){
+                parametriseStep();
+            }
+            return parametrisedStep;
         }
         
         private void parametriseStep() {
@@ -804,9 +809,9 @@ public class StepCreator {
             return parametrisedStep.perform(storyFailureIfItHappened);
         }
 
-		public String asString(Keywords keywords) {
-			return parametrisedStep.asString(keywords);
-		}
+        public String asString(Keywords keywords) {
+            return parametrisedStep.asString(keywords);
+        }
 
     }
 
@@ -826,9 +831,9 @@ public class StepCreator {
             return parametrisedStep.perform(storyFailureIfItHappened);
         }
 
-		public String asString(Keywords keywords) {
-			return parametrisedStep.asString(keywords);
-		}
+        public String asString(Keywords keywords) {
+            return parametrisedStep.asString(keywords);
+        }
 
     }
 
@@ -848,9 +853,9 @@ public class StepCreator {
             return skipped();
         }
 
-		public String asString(Keywords keywords) {
-			return parametrisedStep.asString(keywords);
-		}
+        public String asString(Keywords keywords) {
+            return parametrisedStep.asString(keywords);
+        }
     
     }
 
@@ -888,9 +893,9 @@ public class StepCreator {
             return method != null;
         }
 
-		public String asString(Keywords keywords) {
-			return stepAsString;
-		}
+        public String asString(Keywords keywords) {
+            return stepAsString;
+        }
 
     }
 
@@ -909,10 +914,29 @@ public class StepCreator {
             return ignorable(stepAsString);
         }
         
-		public String asString(Keywords keywords) {
-			return stepAsString;
-		}
+        public String asString(Keywords keywords) {
+            return stepAsString;
+        }
+    }
 
+    public static class Comment extends AbstractStep {
+        private final String stepAsString;
+
+        public Comment(String stepAsString) {
+            this.stepAsString = stepAsString;
+        }
+
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return comment(stepAsString);
+        }
+
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return comment(stepAsString);
+        }
+
+        public String asString(Keywords keywords) {
+            return stepAsString;
+        }
     }
 
     private class MethodInvoker {
@@ -965,7 +989,7 @@ public class StepCreator {
         private Object[] parameterValuesFrom(Meta meta) {
             Object[] values = new Object[parameterTypes.length];
             for (Parameter parameter : methodParameters()) {
-            	values[parameter.position] = parameterConverters.convert(parameter.valueFrom(meta), parameter.type);
+                values[parameter.position] = parameterConverters.convert(parameter.valueFrom(meta), parameter.type);
             }
             return values;
         }
@@ -1001,5 +1025,4 @@ public class StepCreator {
             this.fromContext = fromContext;
         }
     }
-
 }

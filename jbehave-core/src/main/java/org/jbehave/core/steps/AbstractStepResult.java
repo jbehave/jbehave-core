@@ -104,6 +104,16 @@ public abstract class AbstractStepResult implements StepResult {
         }
     }
 
+    public static class Comment extends AbstractStepResult {
+        public Comment(String step) {
+            super(Type.COMMENT, step);
+        }
+
+        public void describeTo(StoryReporter reporter) {
+            reporter.comment(step);
+        }
+    }
+
     public static class Skipped extends AbstractStepResult {
 
         public Skipped() {
@@ -129,7 +139,7 @@ public abstract class AbstractStepResult implements StepResult {
 
     public AbstractStepResult(String step, Type type, UUIDExceptionWrapper throwable) {
         this.step = step;
-		this.type = type;
+        this.type = type;
         this.throwable = throwable;
     }
 
@@ -172,6 +182,10 @@ public abstract class AbstractStepResult implements StepResult {
 
     public static StepResult ignorable(String step) {
         return new Ignorable(step);
+    }
+
+    public static StepResult comment(String step) {
+        return new Comment(step);
     }
 
     public static StepResult pending(String step) {
@@ -219,7 +233,4 @@ public abstract class AbstractStepResult implements StepResult {
         }
         return sb.append(")").toString();
     }
-
-
-
 }

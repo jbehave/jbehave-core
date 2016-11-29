@@ -54,10 +54,11 @@ public class PostStoryStatisticsCollectorBehaviour {
         assertThat(statistics, containsString("givenStoryScenariosPending=1"));
         assertThat(statistics, containsString("givenStoryScenariosFailed=0"));
 
-        assertThat(statistics, containsString("steps=9"));
+        assertThat(statistics, containsString("steps=10"));
         assertThat(statistics, containsString("stepsFailed=1"));
         assertThat(statistics, containsString("stepsPending=1"));
         assertThat(statistics, containsString("stepsIgnorable=1"));
+        assertThat(statistics, containsString("comments=1"));
         assertThat(statistics, containsString("stepsNotPerformed=2"));
         assertThat(statistics, containsString("stepsSuccessful=4"));
 
@@ -141,7 +142,8 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.afterStory(true);
 
         reporter.successful("Given I have a balance of $50");
-        reporter.ignorable("!-- A comment");
+        reporter.ignorable("!-- Then ignore me");
+        reporter.comment("!-- A comment");
         reporter.successful("When I request $20");
         reporter.successful("When I ask Liz for a loan of $100");
         reporter.afterScenario();

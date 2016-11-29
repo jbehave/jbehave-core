@@ -58,10 +58,12 @@ public class TemplateableOutput implements StoryReporter {
         this.templatePath = templatePath;
     }
 
+    @Override
     public void storyNotAllowed(Story story, String filter) {
         this.outputStory.notAllowedBy = filter;
     }
 
+    @Override
     public void beforeStory(Story story, boolean givenStory) {
         if (!givenStory) {
             this.outputStory = new OutputStory();
@@ -73,12 +75,14 @@ public class TemplateableOutput implements StoryReporter {
         }
     }
 
+    @Override
     public void narrative(Narrative narrative) {
         if (!narrative.isEmpty()) {
             this.outputStory.narrative = new OutputNarrative(narrative);
         }
     }
 
+    @Override
     public void lifecyle(Lifecycle lifecycle) {
         if(!lifecycle.isEmpty()){
             this.outputStory.lifecycle = new OutputLifecycle(lifecycle);            
@@ -86,10 +90,12 @@ public class TemplateableOutput implements StoryReporter {
     }
 
 
+    @Override
     public void scenarioNotAllowed(Scenario scenario, String filter) {
         this.outputScenario.notAllowedBy = filter;
     }
 
+    @Override
     public void beforeScenario(String title) {
         if (this.outputScenario.currentExample == null) {
             this.outputScenario = new OutputScenario();
@@ -97,92 +103,117 @@ public class TemplateableOutput implements StoryReporter {
         this.outputScenario.title = title;
     }
 
+    @Override
     public void beforeStep(String step) {
     }
 
+    @Override
     public void successful(String step) {
         this.outputScenario.addStep(new OutputStep(step, "successful"));
     }
 
+    @Override
     public void ignorable(String step) {
         this.outputScenario.addStep(new OutputStep(step, "ignorable"));
     }
 
+    @Override
+    public void comment(String step) {
+        this.outputScenario.addStep(new OutputStep(step, "comment"));
+    }
+
+    @Override
     public void pending(String step) {
         this.outputScenario.addStep(new OutputStep(step, "pending"));
     }
 
+    @Override
     public void notPerformed(String step) {
         this.outputScenario.addStep(new OutputStep(step, "notPerformed"));
     }
 
+    @Override
     public void failed(String step, Throwable storyFailure) {
         this.failedStep = new OutputStep(step, "failed");
         failedStep.failure = storyFailure;
         this.outputScenario.addStep(failedStep);
     }
 
+    @Override
     public void failedOutcomes(String step, OutcomesTable table) {
         failed(step, table.failureCause());
         this.failedStep.outcomes = table;
     }
 
+    @Override
     public void givenStories(GivenStories givenStories) {
         if (!givenStories.getStories().isEmpty()) {
             this.outputScenario.givenStories = givenStories;
         }
     }
 
+    @Override
     public void givenStories(List<String> storyPaths) {
         givenStories(new GivenStories(StringUtils.join(storyPaths, ",")));
     }
 
+    @Override
     public void scenarioMeta(Meta meta) {
         if (!meta.isEmpty()) {
             this.outputScenario.meta = new OutputMeta(meta);
         }
     }
 
+    @Override
     public void beforeExamples(List<String> steps, ExamplesTable table) {
         this.outputScenario.examplesSteps = steps;
         this.outputScenario.examplesTable = table;
     }
 
+    @Override
     public void example(Map<String, String> parameters) {
         this.outputScenario.examples.add(parameters);
         this.outputScenario.currentExample = parameters;
     }
 
+    @Override
     public void afterExamples() {
         this.outputScenario.currentExample = null;
     }
 
+    @Override
     public void dryRun() {
     }
 
+    @Override
     public void afterScenario() {
         if (this.outputScenario.currentExample == null) {
             this.outputStory.scenarios.add(outputScenario);
         }
     }
 
+    @Override
     public void pendingMethods(List<String> methods) {
         this.outputStory.pendingMethods = methods;
     }
 
+    @Override
     public void restarted(String step, Throwable cause) {
         this.outputScenario.addStep(new OutputRestart(step, cause.getMessage()));
     }
     
+    @Override
     public void restartedStory(Story story, Throwable cause) {
     	this.outputScenario.addStep(new OutputRestart(story.getName(), cause.getMessage()));
     }
 
+    @Override
     public void storyCancelled(Story story, StoryDuration storyDuration) {
         this.outputStory.cancelled = true;
         this.outputStory.storyDuration = storyDuration;
     }
 
+    @Override
     public void afterStory(boolean givenStory) {
         if (!givenStory) {
             Map<String, Object> model = newDataModel();

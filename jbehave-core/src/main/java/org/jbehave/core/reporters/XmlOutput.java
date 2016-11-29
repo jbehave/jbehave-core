@@ -28,13 +28,13 @@ public class XmlOutput extends PrintStreamOutput {
         this(output, outputPatterns, new LocalizedKeywords());
     }
     
-	public XmlOutput(PrintStream output, Keywords keywords) {
-		this(output, new Properties(), keywords);
-	}
+    public XmlOutput(PrintStream output, Keywords keywords) {
+        this(output, new Properties(), keywords);
+    }
 
-	public XmlOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
-		this(output, outputPatterns, keywords, false);
-	}
+    public XmlOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
+        this(output, outputPatterns, keywords, false);
+    }
 
     public XmlOutput(PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace) {
@@ -84,6 +84,7 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("givenStoriesEnd", "</givenStories>\n");
         patterns.setProperty("successful", "<step outcome=\"successful\">{0}</step>\n");
         patterns.setProperty("ignorable", "<step outcome=\"ignorable\">{0}</step>\n");
+        patterns.setProperty("comment", "<step outcome=\"comment\">{0}</step>\n");
         patterns.setProperty("pending", "<step outcome=\"pending\" keyword=\"{1}\">{0}</step>\n");
         patterns.setProperty("notPerformed", "<step outcome=\"notPerformed\" keyword=\"{1}\">{0}</step>\n");
         patterns.setProperty("failed", "<step outcome=\"failed\" keyword=\"{1}\">{0}<failure>{2}</failure></step>\n");
@@ -118,5 +119,4 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueNewline", "\n");        
         return patterns;
     }
-
 }

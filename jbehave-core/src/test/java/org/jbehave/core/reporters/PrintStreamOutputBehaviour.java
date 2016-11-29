@@ -68,6 +68,7 @@ public class PrintStreamOutputBehaviour {
                 + "/given/story2 \n"
                 + "\n"
                 + "Given I have a balance of $50\n"
+                + "!-- Then ignore me\n"
                 + "!-- A comment\n"
                 + "When I request $20\n"
                 + "When I ask Liz for a loan of $100\n"
@@ -176,7 +177,8 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"givenStory\">/given/story2 </div>\n"
                 + "</div>\n"
                 + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
-                + "<div class=\"step ignorable\">!-- A comment</div>\n"
+                + "<div class=\"step ignorable\">!-- Then ignore me</div>\n"
+                + "<div class=\"comment\">!-- A comment</div>\n"
                 + "<div class=\"step successful\">When I request $20</div>\n"
                 + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
                 + "<div class=\"step successful\">When I ask Liz for a loan of $<span class=\"step parameter\">99</span></div>\n"
@@ -315,7 +317,8 @@ public class PrintStreamOutputBehaviour {
                 + "<div class=\"givenStory\">/given/story2 </div>\n"
                 + "</div>\n"
                 + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
-                + "<div class=\"step ignorable\">!-- A comment</div>\n"
+                + "<div class=\"step ignorable\">!-- Then ignore me</div>\n"
+                + "<div class=\"comment\">!-- A comment</div>\n"
                 + "<div class=\"step successful\">When I request $20</div>\n"
                 + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
                 + "<div class=\"step successful\">When I ask Liz for a loan of $<span class=\"step parameter\">99</span></div>\n"
@@ -420,7 +423,8 @@ public class PrintStreamOutputBehaviour {
                 + "<givenStory parameters=\"\">/given/story2</givenStory>\n"
                 + "</givenStories>\n"
                 + "<step outcome=\"successful\">Given I have a balance of $50</step>\n"
-                + "<step outcome=\"ignorable\">!-- A comment</step>\n"
+                + "<step outcome=\"ignorable\">!-- Then ignore me</step>\n"
+                + "<step outcome=\"comment\">!-- A comment</step>\n"
                 + "<step outcome=\"successful\">When I request $20</step>\n"
                 + "<step outcome=\"successful\">When I ask Liz for a loan of $100</step>\n"
                 + "<step outcome=\"successful\">When I ask Liz for a loan of $<parameter>99</parameter></step>\n"
@@ -505,7 +509,6 @@ public class PrintStreamOutputBehaviour {
 
     @Test
     public void shouldSuppressStackTraceForKnownFailure() {
-
         // Given
         final OutputStream out = new ByteArrayOutputStream();
         PrintStreamFactory factory = new PrintStreamFactory() {
@@ -523,7 +526,6 @@ public class PrintStreamOutputBehaviour {
         assertThatOutputIs(out, "Then I should have a balance of $30 (FAILED)\n" +
                 "(org.jbehave.core.reporters.PrintStreamOutputBehaviour$MyKnownFailure)\n\n" +
                 "");
-
     }
 
     @Test

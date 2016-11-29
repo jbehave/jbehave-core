@@ -12,8 +12,12 @@ import org.jbehave.core.model.Story;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InOrder;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import static java.util.Arrays.asList;
 
@@ -23,16 +27,14 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+@RunWith(MockitoJUnitRunner.class)
 public class StepFailureDecoratorBehaviour {
 
+    @Mock
     private StoryReporter delegate;
-    private StepFailureDecorator decorator;
 
-    @Before
-    public void createDecorator() {
-        delegate = mock(StoryReporter.class);
-        decorator = new StepFailureDecorator(delegate);
-    }
+    @InjectMocks
+    private StepFailureDecorator decorator;
 
     @Test
     public void shouldJustDelegateAllReportingMethodsOtherThanFailure() {
@@ -49,7 +51,8 @@ public class StepFailureDecoratorBehaviour {
         decorator.beforeScenario("My core 1");
         GivenStories givenStories = new GivenStories("/path1,/path2");
         decorator.givenStories(givenStories);
-        decorator.ignorable("!-- ignore me");
+        decorator.ignorable("!-- Then ignore me");
+        decorator.comment("!-- A comment");
         decorator.successful("Given step 1.1");
         decorator.pending("When step 1.2");
         decorator.notPerformed("Then step 1.3");
@@ -65,7 +68,8 @@ public class StepFailureDecoratorBehaviour {
         inOrder.verify(delegate).beforeStory(story, givenStory);
         inOrder.verify(delegate).beforeScenario("My core 1");
         inOrder.verify(delegate).givenStories(givenStories);
-        inOrder.verify(delegate).ignorable("!-- ignore me");
+        inOrder.verify(delegate).ignorable("!-- Then ignore me");
+        inOrder.verify(delegate).comment("!-- A comment");
         inOrder.verify(delegate).successful("Given step 1.1");
         inOrder.verify(delegate).pending("When step 1.2");
         inOrder.verify(delegate).notPerformed("Then step 1.3");

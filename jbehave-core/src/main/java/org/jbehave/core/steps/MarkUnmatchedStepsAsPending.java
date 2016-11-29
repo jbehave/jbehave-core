@@ -148,9 +148,13 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
             for (StepCandidate candidate : prioritisedCandidates) {
                 candidate.useStepMonitor(stepMonitor);
                 if (candidate.ignore(stepAsString)) {
-                    // ignorable steps are added
-                    // so they can be reported
+                    // ignorable steps are added so they can be reported
                     step = StepCreator.createIgnorableStep(stepAsString);
+                    break;
+                }
+                if (candidate.comment(stepAsString)) {
+                    // comments are added so they can be reported
+                    step = StepCreator.createComment(stepAsString);
                     break;
                 }
                 if (matchesCandidate(stepAsString, previousNonAndStep, candidate)) {
@@ -158,11 +162,11 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
                     if (candidate.isPending()) {
                         ((PendingStep) step).annotatedOn(candidate.getMethod());
                     } else {
-                    	if ( outcome != null ){
-                    		step = candidate.createMatchedStepUponOutcome(stepAsString, namedParameters, outcome);
-                    	} else {
-                    		step = candidate.createMatchedStep(stepAsString, namedParameters);
-                    	}
+                        if ( outcome != null ){
+                            step = candidate.createMatchedStepUponOutcome(stepAsString, namedParameters, outcome);
+                        } else {
+                            step = candidate.createMatchedStep(stepAsString, namedParameters);
+                        }
                         if ( candidate.isComposite() ){
                             candidate.addComposedSteps(composedSteps, stepAsString, namedParameters, allCandidates);
                         }

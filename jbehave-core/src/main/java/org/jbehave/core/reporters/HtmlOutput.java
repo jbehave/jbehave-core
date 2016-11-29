@@ -29,13 +29,13 @@ public class HtmlOutput extends PrintStreamOutput {
         this(output, outputPatterns, new LocalizedKeywords());
     }
     
-	public HtmlOutput(PrintStream output, Keywords keywords) {
-		this(output, new Properties(), keywords);
-	}
-	
-	public HtmlOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
-		this(output, outputPatterns, keywords, false);
-	}
+    public HtmlOutput(PrintStream output, Keywords keywords) {
+        this(output, new Properties(), keywords);
+    }
+
+    public HtmlOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
+        this(output, outputPatterns, keywords, false);
+    }
 
     public HtmlOutput(PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace) {
@@ -84,6 +84,7 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("givenStoriesEnd", "</div>\n");
         patterns.setProperty("successful", "<div class=\"step successful\">{0}</div>\n");
         patterns.setProperty("ignorable", "<div class=\"step ignorable\">{0}</div>\n");
+        patterns.setProperty("comment", "<div class=\"comment\">{0}</div>\n");
         patterns.setProperty("pending", "<div class=\"step pending\">{0} <span class=\"keyword pending\">({1})</span></div>\n");
         patterns.setProperty("notPerformed", "<div class=\"step notPerformed\">{0} <span class=\"keyword notPerformed\">({1})</span></div>\n");
         patterns.setProperty("failed", "<div class=\"step failed\">{0} <span class=\"keyword failed\">({1})</span><br/><span class=\"message failed\">{2}</span></div>\n");

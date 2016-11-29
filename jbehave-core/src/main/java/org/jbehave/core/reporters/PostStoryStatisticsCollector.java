@@ -33,7 +33,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<String, Integer>();
     private final List<String> events = asList("notAllowed", "pending", "scenariosNotAllowed",
-            "givenStoryScenariosNotAllowed", "steps", "stepsSuccessful", "stepsIgnorable", "stepsPending",
+            "givenStoryScenariosNotAllowed", "steps", "stepsSuccessful", "stepsIgnorable", "comments", "stepsPending",
             "stepsNotPerformed", "stepsFailed", "currentScenarioSteps", "currentScenarioStepsPending", "scenarios",
             "scenariosSuccessful", "scenariosPending", "scenariosFailed", "givenStories", "givenStoryScenarios",
             "givenStoryScenariosSuccessful", "givenStoryScenariosPending", "givenStoryScenariosFailed", "examples");
@@ -47,21 +47,32 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         this.output = output;
     }
 
+    @Override
     public void beforeStep(String step) {
     }
 
+    @Override
     public void successful(String step) {
         add("steps");
         add("stepsSuccessful");
         add("currentScenarioSteps");
     }
 
+    @Override
     public void ignorable(String step) {
         add("steps");
         add("stepsIgnorable");
         add("currentScenarioSteps");
     }
 
+    @Override
+    public void comment(String step) {
+        add("steps");
+        add("comments");
+        add("currentScenarioSteps");
+    }
+
+    @Override
     public void pending(String step) {
         add("steps");
         add("stepsPending");
@@ -69,15 +80,17 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         add("currentScenarioStepsPending");
     }
 
+    @Override
     public void notPerformed(String step) {
         add("steps");
         add("stepsNotPerformed");
         add("currentScenarioSteps");
     }
 
+    @Override
     public void failed(String step, Throwable cause) {
         this.cause = cause;
-        
+
         if (cause != null && !(cause.getCause() instanceof RestartingStoryFailure)) {
             add("steps");
             add("stepsFailed");
@@ -85,6 +98,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         }
     }
 
+    @Override
     public void failedOutcomes(String step, OutcomesTable table) {
         this.outcomesFailed = table;
         add("steps");
@@ -92,6 +106,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         add("currentScenarioSteps");
     }
 
+    @Override
     public void beforeStory(Story story, boolean givenStory) {
         if (givenStory) {
             this.givenStories++;
@@ -102,30 +117,34 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         }
     }
 
+    @Override
     public void narrative(Narrative narrative) {
     }
-    
+
+    @Override
     public void lifecyle(Lifecycle lifecycle) {
-        
     }
 
+    @Override
     public void storyNotAllowed(Story story, String filter) {
         resetData();
         add("notAllowed");
         writeData();
     }
 
+    @Override
     public void storyCancelled(Story story, StoryDuration storyDuration) {
         add("cancelled");
     }
 
+    @Override
     public void afterStory(boolean givenStory) {
-    	boolean write = false;
+        boolean write = false;
         if (givenStory) {
             this.givenStories--;
             if ( has("stepsFailed") ){
-            	add("scenariosFailed");
-            	write = true;
+                add("scenariosFailed");
+                write = true;
             }
         } else {
             if (has("scenariosPending") || has("givenStoryScenariosPending")) {
@@ -138,14 +157,17 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         }
     }
 
+    @Override
     public void givenStories(GivenStories givenStories) {
         add("givenStories");
     }
 
+    @Override
     public void givenStories(List<String> storyPaths) {
         add("givenStories");
     }
 
+    @Override
     public void beforeScenario(String title) {
         cause = null;
         outcomesFailed = null;
@@ -154,6 +176,7 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         reset("currentScenarioStepsPending");
     }
 
+    @Override
     public void scenarioNotAllowed(Scenario scenario, String filter) {
         if (givenStories > 0) {
             add("givenStoryScenariosNotAllowed");
@@ -163,9 +186,11 @@ public class PostStoryStatisticsCollector implements StoryReporter {
         }
     }
 
+    @Override
     public void scenarioMeta(Meta meta) {
     }
 
+    @Override
     public void afterScenario() {
         if (givenStories > 0) {
             countScenarios("givenStoryScenarios");
@@ -184,33 +209,40 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     private void countScenarios(String namespace) {
         add(namespace);
         if (!currentScenarioNotAllowed){
-	        if (cause != null || outcomesFailed != null) {
-	            add(namespace + "Failed");
-	        } else {
-	            add(namespace + "Successful");
-	        }
+            if (cause != null || outcomesFailed != null) {
+                add(namespace + "Failed");
+            } else {
+                add(namespace + "Successful");
+            }
         }
     }
 
+    @Override
     public void beforeExamples(List<String> steps, ExamplesTable table) {
     }
 
+    @Override
     public void example(Map<String, String> tableRow) {
         add("examples");
     }
 
+    @Override
     public void afterExamples() {
     }
 
+    @Override
     public void dryRun() {
     }
 
+    @Override
     public void pendingMethods(List<String> methods) {
     }
 
+    @Override
     public void restarted(String step, Throwable cause) {
     }
-    
+
+    @Override
     public void restartedStory(Story story, Throwable cause) {
         resetData();
     }
@@ -262,5 +294,4 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(output).append(data).toString();
     }
-
 }

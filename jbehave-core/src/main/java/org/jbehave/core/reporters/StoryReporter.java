@@ -43,7 +43,7 @@ public interface StoryReporter {
 
     void givenStories(GivenStories givenStories);
 
-	void givenStories(List<String> storyPaths);
+    void givenStories(List<String> storyPaths);
 
     void beforeExamples(List<String> steps, ExamplesTable table);
 
@@ -57,13 +57,15 @@ public interface StoryReporter {
 
     void ignorable(String step);
 
+    void comment(String step);
+
     void pending(String step);
 
     void notPerformed(String step);
 
     void failed(String step, Throwable cause);
 
-	void failedOutcomes(String step, OutcomesTable table);
+    void failedOutcomes(String step, OutcomesTable table);
 
     void restarted(String step, Throwable cause);
     
@@ -72,6 +74,4 @@ public interface StoryReporter {
     void dryRun();
 
     void pendingMethods(List<String> methods);
-
-
 }

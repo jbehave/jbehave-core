@@ -13,6 +13,7 @@ import static org.hamcrest.Matchers.containsString;
 
 import static org.jbehave.core.steps.AbstractStepResult.failed;
 import static org.jbehave.core.steps.AbstractStepResult.ignorable;
+import static org.jbehave.core.steps.AbstractStepResult.comment;
 import static org.jbehave.core.steps.AbstractStepResult.notPerformed;
 import static org.jbehave.core.steps.AbstractStepResult.pending;
 import static org.jbehave.core.steps.AbstractStepResult.skipped;
@@ -38,8 +39,10 @@ public class StepResultBehaviour {
         pending(pending, pendingStepFound).describeTo(reporter);
         String notPerformed = "Then the step should describe itself properly to reporters";
         notPerformed(notPerformed).describeTo(reporter);
-        String ignorable = "!-- this is a comment";
+        String ignorable = "!-- Then ignore me";
         ignorable(ignorable).describeTo(reporter);
+        String comment = "!-- this is a comment";
+        comment(comment).describeTo(reporter);
         String failed = "And any errors should appear at the end of the story";
         UUIDExceptionWrapper cause = new UUIDExceptionWrapper(new IllegalStateException());
         failed(failed, cause).describeTo(reporter);
@@ -53,6 +56,7 @@ public class StepResultBehaviour {
         verify(reporter, times(2)).pending(pending);
         verify(reporter).notPerformed(notPerformed);
         verify(reporter).ignorable(ignorable);
+        verify(reporter).comment(comment);
         verify(reporter).failed(failed, cause);
         verify(reporter).failedOutcomes(failedOutcomes, outcomesTable);
     }
@@ -80,7 +84,6 @@ public class StepResultBehaviour {
         verify(reporter).failed(failed, cause);
     }
 
-    
     @Test
     public void shouldDescribeResultToString() {
         // Given        
@@ -95,5 +98,4 @@ public class StepResultBehaviour {
         assertThat(resultWithoutParameterValues.toString(), containsString(stepPattern));
         assertThat(resultWithParameterValues.toString(), containsString(successful));
     }
-
 }

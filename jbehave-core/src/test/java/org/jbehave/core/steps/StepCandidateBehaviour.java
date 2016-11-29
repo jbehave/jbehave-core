@@ -115,7 +115,14 @@ public class StepCandidateBehaviour {
     public void shouldIgnoreStep() throws Exception {
         Method method = SomeSteps.class.getMethod("aMethod");
         StepCandidate candidate = candidateWith("", IGNORABLE, method, new SomeSteps());
-        assertThat(candidate.ignore("!-- ignore me"), is(true));
+        assertThat(candidate.ignore("!-- Then ignore me"), is(true));
+    }
+
+    @Test
+    public void shouldComment() throws Exception {
+        Method method = SomeSteps.class.getMethod("aMethod");
+        StepCandidate candidate = candidateWith("", IGNORABLE, method, new SomeSteps());
+        assertThat(candidate.comment("!-- comment"), is(true));
     }
 
     @Test

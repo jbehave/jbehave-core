@@ -3,6 +3,7 @@ package org.jbehave.core.reporters;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -24,9 +25,8 @@ public class TemplateableOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        String expected = IOUtils.toString(new FileReader(new File("src/test/resources/story.html")), true);
         String out = IOUtils.toString(new FileReader(file), true);
-        assertThatOutputIs(out, expected);
+        assertThatOutputIs(out, "src/test/resources/story.html");
     }
 
     @Test
@@ -39,15 +39,15 @@ public class TemplateableOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        String expected = IOUtils.toString(new FileReader(new File("src/test/resources/story.xml")), true);
         String out = IOUtils.toString(new FileReader(file), true);
 
         // will throw SAXException if the xml file is not well-formed
         XMLUnit.buildTestDocument(out);
-        assertThatOutputIs(out, expected);
+        assertThatOutputIs(out, "src/test/resources/story.xml");
     }
 
-    private void assertThatOutputIs(String out, String expected) {
+    private void assertThatOutputIs(String out, String pathToExpected) throws IOException {
+        String expected = IOUtils.toString(new FileReader(new File(pathToExpected)), true);
         assertEquals(dos2unix(expected), dos2unix(out));
     }
 

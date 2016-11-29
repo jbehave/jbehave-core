@@ -112,25 +112,36 @@ public abstract class PrintStreamOutput implements StoryReporter {
         doCompressFailureTrace(compressFailureTrace);
     }
 
+    @Override
     public void beforeStep(String step) {
     }
 
+    @Override
     public void successful(String step) {
         print(format("successful", "{0}\n", step));
     }
 
+    @Override
     public void ignorable(String step) {
         print(format("ignorable", "{0}\n", step));
     }
 
+    @Override
+    public void comment(String step) {
+        print(format("comment", "{0}\n", step));
+    }
+
+    @Override
     public void pending(String step) {
         print(format("pending", "{0} ({1})\n", step, keywords.pending()));
     }
 
+    @Override
     public void notPerformed(String step) {
         print(format("notPerformed", "{0} ({1})\n", step, keywords.notPerformed()));
     }
 
+    @Override
     public void failed(String step, Throwable storyFailure) {
         // storyFailure be used if a subclass has rewritten the "failed" pattern
         // to have a {3} as WebDriverHtmlOutput (jbehave-web) does.
@@ -143,6 +154,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
+    @Override
     public void failedOutcomes(String step, OutcomesTable table) {
         failed(step, table.failureCause());
         print(table);
@@ -177,15 +189,18 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
+    @Override
     public void storyNotAllowed(Story story, String filter) {
         print(format("filter", "{0}\n", filter));
     }
 
+    @Override
     public void storyCancelled(Story story, StoryDuration storyDuration) {
         print(format("storyCancelled", "{0}: {1} ({2} s)\n", keywords.storyCancelled(), keywords.duration(),
                 storyDuration.getDurationInSecs()));
     }
 
+    @Override
     public void beforeStory(Story story, boolean givenStory) {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
         if (!story.getMeta().isEmpty()) {
@@ -194,6 +209,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
+    @Override
     public void narrative(Narrative narrative) {
         if (!narrative.isEmpty()) {
             if (!narrative.isAlternative()) {
@@ -207,6 +223,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
+    @Override
     public void lifecyle(Lifecycle lifecycle) {
         if (!lifecycle.isEmpty()) {
             print(format("lifecycleStart", "{0}\n", keywords.lifecycle()));
@@ -218,12 +235,12 @@ public abstract class PrintStreamOutput implements StoryReporter {
             if (!lifecycle.getAfterSteps().isEmpty()) {
                 print(format("lifecycleAfterStart", "{0}\n", keywords.after()));
                 for ( org.jbehave.core.annotations.AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
-                	print(format("lifecycleOutcome", "{0} {1}\n", keywords.outcome(), i18n(outcome)));
-                	MetaFilter metaFilter = lifecycle.getMetaFilter(outcome);
-                	if ( !metaFilter.isEmpty() ){
-                		print(format("lifecycleMetaFilter", "{0} {1}\n", keywords.metaFilter(), metaFilter.asString()));
-                	}
-                	print(lifecycle.getAfterSteps(outcome));
+                    print(format("lifecycleOutcome", "{0} {1}\n", keywords.outcome(), i18n(outcome)));
+                    MetaFilter metaFilter = lifecycle.getMetaFilter(outcome);
+                    if ( !metaFilter.isEmpty() ){
+                        print(format("lifecycleMetaFilter", "{0} {1}\n", keywords.metaFilter(), metaFilter.asString()));
+                    }
+                    print(lifecycle.getAfterSteps(outcome));
                 }
                 print(format("lifecycleAfterEnd", ""));
             }
@@ -231,17 +248,16 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
-    private String i18n(
-			org.jbehave.core.annotations.AfterScenario.Outcome outcome) {
-    	switch ( outcome ){
-    	case ANY: return keywords.outcomeAny();
-    	case SUCCESS: return keywords.outcomeSuccess();
-    	case FAILURE: return keywords.outcomeFailure();
-    	default: return outcome.name();
-    	}
-	}
+    private String i18n(org.jbehave.core.annotations.AfterScenario.Outcome outcome) {
+        switch ( outcome ){
+        case ANY: return keywords.outcomeAny();
+        case SUCCESS: return keywords.outcomeSuccess();
+        case FAILURE: return keywords.outcomeFailure();
+        default: return outcome.name();
+        }
+    }
 
-	private void print(List<String> steps) {
+    private void print(List<String> steps) {
         for (String step : steps) {
             print(format("lifecycleStep", "{0}\n", step));
         }
@@ -255,6 +271,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("metaEnd", "\n"));
     }
 
+    @Override
     public void afterStory(boolean givenOrRestartingStory) {
         print(format("afterStory", "\n"));
         // take care not to close System.out
@@ -264,6 +281,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
+    @Override
     public void givenStories(GivenStories givenStories) {
         print(format("givenStoriesStart", "{0}\n", keywords.givenStories()));
         for (GivenStory givenStory : givenStories.getStories()) {
@@ -273,25 +291,30 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(format("givenStoriesEnd", "\n"));
     }
 
+    @Override
     public void givenStories(List<String> storyPaths) {
         givenStories(new GivenStories(StringUtils.join(storyPaths, ",")));
     }
 
+    @Override
     public void scenarioNotAllowed(Scenario scenario, String filter) {
         print(format("filter", "{0}\n", filter));
     }
 
+    @Override
     public void beforeScenario(String title) {
         cause.set(null);
         print(format("beforeScenario", "{0} {1}\n", keywords.scenario(), title));
     }
 
+    @Override
     public void scenarioMeta(Meta meta) {
         if (!meta.isEmpty()) {
             print(meta);
         }
     }
 
+    @Override
     public void afterScenario() {
         if (cause.get() != null && !(cause.get() instanceof KnownFailure) && reportFailureTrace() ) {
             print(format("afterScenarioWithFailure", "\n{0}\n",
@@ -301,6 +324,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         }
     }
 
+    @Override
     public void beforeExamples(List<String> steps, ExamplesTable table) {
         print(format("beforeExamples", "{0}\n", keywords.examplesTable()));
         for (String step : steps) {
@@ -309,28 +333,34 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(formatTable(table));
     }
 
+    @Override
     public void example(Map<String, String> tableRow) {
         print(format("example", "\n{0} {1}\n", keywords.examplesTableRow(), tableRow));
     }
 
+    @Override
     public void afterExamples() {
         print(format("afterExamples", "\n"));
     }
 
+    @Override
     public void dryRun() {
         print(format("dryRun", "{0}\n", keywords.dryRun()));
     }
 
+    @Override
     public void pendingMethods(List<String> methods) {
         for (String method : methods) {
             print(format("pendingMethod", "{0}\n", method));
         }
     }
 
+    @Override
     public void restarted(String step, Throwable cause) {
         print(format("restarted", "{0} {1}\n", step, cause.getMessage()));
     }
     
+    @Override
     public void restartedStory(Story story, Throwable cause) {
         print(format("restartedStory", "{0} {1}\n", story.getPath(), cause.getMessage()));
     }
@@ -385,7 +415,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     /**
      * Escapes args' string values according to format
-     * 
+     *
      * @param format the Format used by the PrintStream
      * @param args the array of args to escape
      * @return The cloned and escaped array of args
@@ -393,6 +423,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
     protected Object[] escape(final Format format, Object... args) {
         // Transformer that escapes HTML and XML strings
         Transformer<Object, Object> escapingTransformer = new Transformer<Object, Object>() {
+            @Override
             public Object transform(Object object) {
                 switch (format) {
                 case HTML:
@@ -496,5 +527,4 @@ public abstract class PrintStreamOutput implements StoryReporter {
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(format).append(output).toString();
     }
-
 }

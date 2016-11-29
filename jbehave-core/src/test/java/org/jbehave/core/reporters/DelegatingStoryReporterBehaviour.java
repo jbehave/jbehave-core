@@ -45,7 +45,8 @@ public class DelegatingStoryReporterBehaviour {
         delegator.givenStories(givenStoryPaths);
         delegator.givenStories(givenStories);
         delegator.successful("Given step 1.1");
-        delegator.ignorable("!-- ignore me");
+        delegator.ignorable("!-- Then ignore me");
+        delegator.comment("!-- comment");
         delegator.pending("When step 1.2");
         delegator.notPerformed("Then step 1.3");
         delegator.beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
@@ -77,7 +78,8 @@ public class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).givenStories(givenStoryPaths);
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).successful("Given step 1.1");
-        inOrder.verify(delegate).ignorable("!-- ignore me");
+        inOrder.verify(delegate).ignorable("!-- Then ignore me");
+        inOrder.verify(delegate).comment("!-- comment");
         inOrder.verify(delegate).pending("When step 1.2");
         inOrder.verify(delegate).notPerformed("Then step 1.3");
         inOrder.verify(delegate).beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
@@ -92,6 +94,5 @@ public class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).afterScenario();
         
         inOrder.verify(delegate).afterStory(givenStory);
-        
     }
 }
