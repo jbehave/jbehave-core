@@ -7,7 +7,7 @@
   </parent>
   <artifactId>jbehave</artifactId>
   <packaging>pom</packaging>
-  <version>4.2-SNAPSHOT</version>
+  <version>4.1-SNAPSHOT</version>
   <name>JBehave</name>
   <description>JBehave Core is a project providing core functionality supporting and facilitating Behaviour-Driven Development.</description>
 
