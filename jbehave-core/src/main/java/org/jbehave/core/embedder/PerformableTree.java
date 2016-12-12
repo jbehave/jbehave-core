@@ -899,6 +899,7 @@ public class PerformableTree {
 				}
 				context.reporter().afterExamples();
 			} else {
+			    context.stepsContext().resetExample();
 				normalPerformableScenario.perform(context);
 			}
 			this.status = context.status(state);
