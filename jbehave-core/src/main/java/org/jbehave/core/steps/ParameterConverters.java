@@ -20,10 +20,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.jbehave.core.annotations.AsJson;
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.JsonFactory;
 
 import static java.util.Arrays.asList;
 
@@ -120,12 +122,14 @@ public class ParameterConverters {
     protected ParameterConverter[] defaultConverters(Locale locale, String listSeparator) {
         String escapedListSeparator = escapeRegexPunctuation(listSeparator);
         ExamplesTableFactory tableFactory = new ExamplesTableFactory(this);
+        JsonFactory jsonFactory = new JsonFactory(this);
         ParameterConverter[] defaultConverters = { new BooleanConverter(),
                 new NumberConverter(NumberFormat.getInstance(locale)),
                 new NumberListConverter(NumberFormat.getInstance(locale), escapedListSeparator),
                 new StringListConverter(escapedListSeparator), new DateConverter(),
                 new EnumConverter(), new EnumListConverter(),
-                new ExamplesTableConverter(tableFactory), new ExamplesTableParametersConverter(tableFactory) };
+                new ExamplesTableConverter(tableFactory), new ExamplesTableParametersConverter(tableFactory),
+                new JsonConverter(jsonFactory)};
         return defaultConverters;
     }
 
@@ -732,6 +736,49 @@ public class ParameterConverters {
                 return rows;
             }
             return rows.iterator().next();
+        }
+
+    }
+
+    public static class JsonConverter implements ParameterConverter {
+
+        private final JsonFactory factory;
+
+        public JsonConverter() {
+            this(new JsonFactory());
+        }
+
+        public JsonConverter(final JsonFactory factory) {
+            this.factory = factory;
+        }
+
+        public boolean accept(final Type type) {
+            if (type instanceof ParameterizedType) {
+                Class<?> rawClass = rawClass(type);
+                Class<?> argumentClass = argumentClass(type);
+                if (rawClass.isAnnotationPresent(AsJson.class) || argumentClass.isAnnotationPresent(AsJson.class)) {
+                    return true;
+                }
+            } else if (type instanceof Class) {
+                return ((Class<?>) type).isAnnotationPresent(AsJson.class);
+            }
+            return false;
+        }
+
+        public Object convertValue(final String value, final Type type) {
+            return factory.createJson(value, type);
+        }
+
+        private Class<?> rawClass(final Type type) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        }
+
+        private Class<?> argumentClass(final Type type) {
+            if (type instanceof ParameterizedType) {
+                return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
+            } else {
+                return (Class<?>) type;
+            }
         }
 
     }

@@ -43,6 +43,7 @@ import org.jbehave.examples.core.steps.CalendarSteps;
 import org.jbehave.examples.core.steps.CompositeSteps;
 import org.jbehave.examples.core.steps.ContextSteps;
 import org.jbehave.examples.core.steps.ExamplesTableParametersSteps;
+import org.jbehave.examples.core.steps.JsonSteps;
 import org.jbehave.examples.core.steps.MetaParametrisationSteps;
 import org.jbehave.examples.core.steps.MyContext;
 import org.jbehave.examples.core.steps.NamedParametersSteps;
@@ -118,7 +119,7 @@ public class CoreStories extends JUnitStories {
                 new MetaParametrisationSteps(), new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(),
                 new SandpitSteps(), new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(),
                 new NamedParametersSteps(), new ExamplesTableParametersSteps(), new TableSteps(), 
-                new ContextSteps(context), new RestartingSteps());
+                new ContextSteps(context), new RestartingSteps(), new JsonSteps());
     }
 
     @Override
