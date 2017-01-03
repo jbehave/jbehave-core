@@ -58,7 +58,7 @@ public class JsonFactory {
         return new Gson().fromJson(jsonAsString, type);
     }
 
-    protected boolean isJson(String input) {
+    protected boolean isJson(final String input) {
         return (input.startsWith("[") && input.endsWith("]")) || (input.startsWith("{") && input.endsWith("}"));
     }
 
