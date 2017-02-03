@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -341,14 +342,14 @@ public class ExamplesTable {
     }
 
     private Map<String, String> replaceNamedParameters(Map<String, String> row) {
-        Map<String, String> replaced = new HashMap<String, String>();
-        for (String key : row.keySet()) {
-            String replacedValue = row.get(key);
+        Map<String, String> replaced = new LinkedHashMap<String, String>();
+        for (Entry<String, String> rowEntry : row.entrySet()) {
+            String replacedValue = rowEntry.getValue();
             for (String namedKey : namedParameters.keySet()) {
                 String namedValue = namedParameters.get(namedKey);
                 replacedValue = replacedValue.replaceAll(namedKey, Matcher.quoteReplacement(namedValue));
             }
-            replaced.put(key, replacedValue);
+            replaced.put(rowEntry.getKey(), replacedValue);
         }
         return replaced;
     }

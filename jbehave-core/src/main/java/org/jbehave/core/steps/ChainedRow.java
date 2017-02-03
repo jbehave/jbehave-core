@@ -1,7 +1,8 @@
 package org.jbehave.core.steps;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Implementation of Row that chains delegate Rows in resolving requests for
@@ -20,12 +21,14 @@ public class ChainedRow implements Row {
      * 
      * @return The Map of aggregated values
      */
+    @Override
     public Map<String, String> values() {
-        Map<String, String> values = new HashMap<String, String>();
+        Map<String, String> values = new LinkedHashMap<String, String>();
         for (Row each : delegates) {
-            for (String name : each.values().keySet()) {
+            for (Entry<String, String> entry : each.values().entrySet()) {
+                String name = entry.getKey();
                 if (!values.containsKey(name)) {
-                    values.put(name, each.values().get(name));
+                    values.put(name, entry.getValue());
                 }
             }
         }
