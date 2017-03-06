@@ -889,7 +889,8 @@ public class PerformableTree {
         		return;
         	}
         	context.stepsContext().resetScenario();
-            context.reporter().beforeScenario(scenario.getTitle());
+        	context.reporter().beforeScenario(scenario.getTitle());
+        	context.reporter().scenarioMeta(scenario.getMeta());
             State state = context.state();
 			if (!examplePerformableScenarios.isEmpty()) {
 				context.reporter().beforeExamples(scenario.getSteps(),
