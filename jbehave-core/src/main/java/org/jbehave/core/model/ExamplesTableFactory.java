@@ -88,7 +88,8 @@ public class ExamplesTableFactory {
     }
 
     protected boolean isTable(String input) {
-        return input.contains(keywords.examplesTableHeaderSeparator());
+        return input.trim().startsWith(keywords.examplesTableHeaderSeparator())
+                || ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(input).matches();
     }
 
     public void useKeywords(Keywords keywords){

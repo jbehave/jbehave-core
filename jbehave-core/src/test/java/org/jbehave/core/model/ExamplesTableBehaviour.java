@@ -209,7 +209,8 @@ public class ExamplesTableBehaviour {
         TableTransformers tableTransformers = new TableTransformers();
         tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 
-            public String transform(String tableAsString, Properties properties) {
+            @Override
+            public String transform(String tableAsString, ExamplesTableProperties properties) {
                 return tableWithSpacesAsString;
             }
 

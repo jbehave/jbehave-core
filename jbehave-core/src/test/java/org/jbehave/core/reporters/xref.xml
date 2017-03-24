@@ -23,9 +23,6 @@
           <givenStoriesAsString></givenStoriesAsString>
           <examplesTable>
             <tableAsString></tableAsString>
-            <headerSeparator>|</headerSeparator>
-            <valueSeparator>|</valueSeparator>
-            <ignorableSeparator>|--</ignorableSeparator>
             <tableTransformers>
               <transformers>
                 <entry>
@@ -45,13 +42,14 @@
             <headers/>
             <data/>
             <properties>
-              <property name="headerSeparator" value="|"/>
-              <property name="valueSeparator" value="|"/>
-              <property name="ignorableSeparator" value="|--"/>
+              <properties>
+                <property name="headerSeparator" value="|"/>
+                <property name="valueSeparator" value="|"/>
+                <property name="ignorableSeparator" value="|--"/>
+              </properties>
             </properties>
             <propertiesAsString></propertiesAsString>
             <namedParameters/>
-            <trim>true</trim>
           </examplesTable>
         </givenStories>
         <lifecycle>
@@ -81,9 +79,6 @@ I want to get a loan</localizedNarrative>
               <givenStoriesAsString></givenStoriesAsString>
               <examplesTable>
                 <tableAsString></tableAsString>
-                <headerSeparator>|</headerSeparator>
-                <valueSeparator>|</valueSeparator>
-                <ignorableSeparator>|--</ignorableSeparator>
                 <tableTransformers>
                   <transformers>
                     <entry>
@@ -103,20 +98,18 @@ I want to get a loan</localizedNarrative>
                 <headers/>
                 <data/>
                 <properties>
-                  <property name="headerSeparator" value="|"/>
-                  <property name="valueSeparator" value="|"/>
-                  <property name="ignorableSeparator" value="|--"/>
+                  <properties>
+                    <property name="headerSeparator" value="|"/>
+                    <property name="valueSeparator" value="|"/>
+                    <property name="ignorableSeparator" value="|--"/>
+                  </properties>
                 </properties>
                 <propertiesAsString></propertiesAsString>
                 <namedParameters/>
-                <trim>true</trim>
               </examplesTable>
             </givenStories>
             <examplesTable>
               <tableAsString></tableAsString>
-              <headerSeparator>|</headerSeparator>
-              <valueSeparator>|</valueSeparator>
-              <ignorableSeparator>|--</ignorableSeparator>
               <tableTransformers>
                 <transformers>
                   <entry>
@@ -136,13 +129,14 @@ I want to get a loan</localizedNarrative>
               <headers/>
               <data/>
               <properties>
-                <property name="headerSeparator" value="|"/>
-                <property name="valueSeparator" value="|"/>
-                <property name="ignorableSeparator" value="|--"/>
+                <properties>
+                  <property name="headerSeparator" value="|"/>
+                  <property name="valueSeparator" value="|"/>
+                  <property name="ignorableSeparator" value="|--"/>
+                </properties>
               </properties>
               <propertiesAsString></propertiesAsString>
               <namedParameters/>
-              <trim>true</trim>
             </examplesTable>
             <steps class="java.util.Arrays$ArrayList">
               <a class="string-array">
@@ -179,9 +173,6 @@ I want to get a loan</localizedNarrative>
                 <givenStoriesAsString></givenStoriesAsString>
                 <examplesTable>
                   <tableAsString></tableAsString>
-                  <headerSeparator>|</headerSeparator>
-                  <valueSeparator>|</valueSeparator>
-                  <ignorableSeparator>|--</ignorableSeparator>
                   <tableTransformers>
                     <transformers>
                       <entry>
@@ -201,20 +192,18 @@ I want to get a loan</localizedNarrative>
                   <headers/>
                   <data/>
                   <properties>
-                    <property name="headerSeparator" value="|"/>
-                    <property name="valueSeparator" value="|"/>
-                    <property name="ignorableSeparator" value="|--"/>
+                    <properties>
+                      <property name="headerSeparator" value="|"/>
+                      <property name="valueSeparator" value="|"/>
+                      <property name="ignorableSeparator" value="|--"/>
+                    </properties>
                   </properties>
                   <propertiesAsString></propertiesAsString>
                   <namedParameters/>
-                  <trim>true</trim>
                 </examplesTable>
               </givenStories>
               <examplesTable>
                 <tableAsString></tableAsString>
-                <headerSeparator>|</headerSeparator>
-                <valueSeparator>|</valueSeparator>
-                <ignorableSeparator>|--</ignorableSeparator>
                 <tableTransformers>
                   <transformers>
                     <entry>
@@ -234,13 +223,14 @@ I want to get a loan</localizedNarrative>
                 <headers/>
                 <data/>
                 <properties>
-                  <property name="headerSeparator" value="|"/>
-                  <property name="valueSeparator" value="|"/>
-                  <property name="ignorableSeparator" value="|--"/>
+                  <properties>
+                    <property name="headerSeparator" value="|"/>
+                    <property name="valueSeparator" value="|"/>
+                    <property name="ignorableSeparator" value="|--"/>
+                  </properties>
                 </properties>
                 <propertiesAsString></propertiesAsString>
                 <namedParameters/>
-                <trim>true</trim>
               </examplesTable>
               <steps class="java.util.Arrays$ArrayList">
                 <a class="string-array">
@@ -274,9 +264,6 @@ I want to get a loan</localizedNarrative>
           <givenStoriesAsString></givenStoriesAsString>
           <examplesTable>
             <tableAsString></tableAsString>
-            <headerSeparator>|</headerSeparator>
-            <valueSeparator>|</valueSeparator>
-            <ignorableSeparator>|--</ignorableSeparator>
             <tableTransformers>
               <transformers>
                 <entry>
@@ -296,20 +283,18 @@ I want to get a loan</localizedNarrative>
             <headers/>
             <data/>
             <properties>
-              <property name="headerSeparator" value="|"/>
-              <property name="valueSeparator" value="|"/>
-              <property name="ignorableSeparator" value="|--"/>
+              <properties>
+                <property name="headerSeparator" value="|"/>
+                <property name="valueSeparator" value="|"/>
+                <property name="ignorableSeparator" value="|--"/>
+              </properties>
             </properties>
             <propertiesAsString></propertiesAsString>
             <namedParameters/>
-            <trim>true</trim>
           </examplesTable>
         </givenStories>
         <examplesTable>
           <tableAsString></tableAsString>
-          <headerSeparator>|</headerSeparator>
-          <valueSeparator>|</valueSeparator>
-          <ignorableSeparator>|--</ignorableSeparator>
           <tableTransformers>
             <transformers>
               <entry>
@@ -329,13 +314,14 @@ I want to get a loan</localizedNarrative>
           <headers/>
           <data/>
           <properties>
-            <property name="headerSeparator" value="|"/>
-            <property name="valueSeparator" value="|"/>
-            <property name="ignorableSeparator" value="|--"/>
+            <properties>
+              <property name="headerSeparator" value="|"/>
+              <property name="valueSeparator" value="|"/>
+              <property name="ignorableSeparator" value="|--"/>
+            </properties>
           </properties>
           <propertiesAsString></propertiesAsString>
           <namedParameters/>
-          <trim>true</trim>
         </examplesTable>
         <steps class="java.util.Arrays$ArrayList">
           <a class="string-array">
@@ -372,9 +358,6 @@ I want to get a loan</localizedNarrative>
             <givenStoriesAsString></givenStoriesAsString>
             <examplesTable>
               <tableAsString></tableAsString>
-              <headerSeparator>|</headerSeparator>
-              <valueSeparator>|</valueSeparator>
-              <ignorableSeparator>|--</ignorableSeparator>
               <tableTransformers>
                 <transformers>
                   <entry>
@@ -394,20 +377,18 @@ I want to get a loan</localizedNarrative>
               <headers/>
               <data/>
               <properties>
-                <property name="headerSeparator" value="|"/>
-                <property name="valueSeparator" value="|"/>
-                <property name="ignorableSeparator" value="|--"/>
+                <properties>
+                  <property name="headerSeparator" value="|"/>
+                  <property name="valueSeparator" value="|"/>
+                  <property name="ignorableSeparator" value="|--"/>
+                </properties>
               </properties>
               <propertiesAsString></propertiesAsString>
               <namedParameters/>
-              <trim>true</trim>
             </examplesTable>
           </givenStories>
           <examplesTable>
             <tableAsString></tableAsString>
-            <headerSeparator>|</headerSeparator>
-            <valueSeparator>|</valueSeparator>
-            <ignorableSeparator>|--</ignorableSeparator>
             <tableTransformers>
               <transformers>
                 <entry>
@@ -427,13 +408,14 @@ I want to get a loan</localizedNarrative>
             <headers/>
             <data/>
             <properties>
-              <property name="headerSeparator" value="|"/>
-              <property name="valueSeparator" value="|"/>
-              <property name="ignorableSeparator" value="|--"/>
+              <properties>
+                <property name="headerSeparator" value="|"/>
+                <property name="valueSeparator" value="|"/>
+                <property name="ignorableSeparator" value="|--"/>
+              </properties>
             </properties>
             <propertiesAsString></propertiesAsString>
             <namedParameters/>
-            <trim>true</trim>
           </examplesTable>
           <steps class="java.util.Arrays$ArrayList">
             <a class="string-array">
