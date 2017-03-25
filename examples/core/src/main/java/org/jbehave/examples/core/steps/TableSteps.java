@@ -7,6 +7,7 @@ import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.ExamplesTableProperties;
 import org.jbehave.core.model.TableTransformers;
 
 public class TableSteps {
@@ -34,7 +35,7 @@ public class TableSteps {
 
 	@Then("the table transformed by %transformer is: %table")
 	public void thenTheTransformedTableIs(String transformer, String table) {
-		String transformed = this.transformers.transform(transformer, this.table, new Properties());
+		String transformed = this.transformers.transform(transformer, this.table, new ExamplesTableProperties(new Properties()));
 		MatcherAssert.assertThat(transformed.trim(), Matchers.equalTo(table));
 	}
 	

@@ -6,7 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-final class ExamplesTableProperties
+public final class ExamplesTableProperties
 {
     private static final String HEADER_SEPARATOR_KEY = "headerSeparator";
     private static final String VALUE_SEPARATOR_KEY = "valueSeparator";
@@ -17,7 +17,11 @@ final class ExamplesTableProperties
 
     private final Properties properties = new Properties();
 
-    ExamplesTableProperties(String propertiesAsString, String defaultHeaderSeparator, String defaultValueSeparator,
+    public ExamplesTableProperties(Properties properties){
+        this.properties.putAll(properties);
+    }
+
+    public ExamplesTableProperties(String propertiesAsString, String defaultHeaderSeparator, String defaultValueSeparator,
             String defaultIgnorableSeparator) {
         properties.setProperty(HEADER_SEPARATOR_KEY, defaultHeaderSeparator);
         properties.setProperty(VALUE_SEPARATOR_KEY, defaultValueSeparator);
