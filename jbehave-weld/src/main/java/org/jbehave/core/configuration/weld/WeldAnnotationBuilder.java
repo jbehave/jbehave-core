@@ -59,10 +59,4 @@ public class WeldAnnotationBuilder extends AnnotationBuilder {
         }
         return factoryUsingSteps;
     }
-    
-    @Override
-    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
-        ParameterConverters converters = super.parameterConverters(annotationFinder);
-        return converters;
-    }
 }

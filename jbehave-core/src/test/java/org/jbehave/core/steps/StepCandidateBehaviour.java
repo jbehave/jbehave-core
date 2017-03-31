@@ -39,6 +39,7 @@ import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
@@ -62,9 +63,11 @@ public class StepCandidateBehaviour {
 
     private StepCandidate candidateWith(String patternAsString, StepType stepType, Method method, Object instance, ParameterControls parameterControls) {
         Class<?> stepsType = instance.getClass();
-        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), instance);
+        MostUsefulConfiguration configuration = new MostUsefulConfiguration();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(configuration, instance);
         return new StepCandidate(patternAsString, 0, stepType, method, stepsType, stepsFactory, new StepsContext(),
-                keywords, new RegexPrefixCapturingPatternParser(), new ParameterConverters(), parameterControls);
+                keywords, new RegexPrefixCapturingPatternParser(), configuration.parameterConverters(),
+                parameterControls);
     }
     
     @Test
@@ -136,8 +139,9 @@ public class StepCandidateBehaviour {
             }
             
         };
-        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, null, new StepsContext(),
-                keywords, new RegexPrefixCapturingPatternParser(), new ParameterConverters(), new ParameterControls());
+        StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, null,
+                new StepsContext(), keywords, new RegexPrefixCapturingPatternParser(),
+                new ParameterConverters(new TableTransformers()), new ParameterControls());
         assertThat(candidate.matches("When windows on the 1st floor"), is(false));
         assertThat(candidate.ignore("!-- windows on the 1st floor"), is(false));
     }

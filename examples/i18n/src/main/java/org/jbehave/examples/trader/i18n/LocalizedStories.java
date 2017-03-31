@@ -16,6 +16,7 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -53,12 +54,14 @@ public abstract class LocalizedStories extends JUnitStories {
         Properties properties = new Properties();
         properties.setProperty("reports", "ftl/jbehave-reports.ftl");
         properties.setProperty("encoding", "UTF-8");
-        Configuration configuration = new MostUsefulConfiguration()
+        TableTransformers tableTransformers = new TableTransformers();
+        ParameterConverters parameterConverters = new ParameterConverters(tableTransformers)
+                .addConverters(customConverters(keywords, tableTransformers));
+        return new MostUsefulConfiguration()
                 .useKeywords(keywords)
                 .useStepCollector(new MarkUnmatchedStepsAsPending(keywords))
-                .useStoryParser(new RegexStoryParser(keywords))
-                .useStoryLoader(
-                        new LoadFromClasspath(classLoader))
+                .useStoryParser(new RegexStoryParser(keywords, tableTransformers))
+                .useStoryLoader(new LoadFromClasspath(classLoader))
                 .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
                     .withPathResolver(new ResolveToSimpleName())
@@ -67,15 +70,14 @@ public abstract class LocalizedStories extends JUnitStories {
                     .withFailureTrace(false)
                     .withViewResources(properties)
                     .withKeywords(keywords))
-                .useParameterConverters(
-                        new ParameterConverters().addConverters(customConverters(keywords)));
-        return configuration;
+                .useParameterConverters(parameterConverters)
+                .useTableTransformers(tableTransformers);
     }
     
-    private ParameterConverter[] customConverters(Keywords keywords) {
+    private ParameterConverter[] customConverters(Keywords keywords, TableTransformers tableTransformers) {
         List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
         converters.add(new NumberConverter(NumberFormat.getInstance(locale())));
-        converters.add(new ExamplesTableConverter(new ExamplesTableFactory(keywords)));
+        converters.add(new ExamplesTableConverter(new ExamplesTableFactory(keywords, tableTransformers)));
         return converters.toArray(new ParameterConverter[converters.size()]);
     }
 

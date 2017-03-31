@@ -9,6 +9,7 @@ import org.jbehave.core.configuration.AnnotationFinder;
 import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.AnnotationRequired;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.CompositeStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
@@ -67,10 +68,11 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
         }
         return factoryUsingSteps;
     }
-    
+
     @Override
-    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
-        ParameterConverters converters = super.parameterConverters(annotationFinder);
+    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder,
+            TableTransformers tableTransformers) {
+        ParameterConverters converters = super.parameterConverters(annotationFinder, tableTransformers);
         if (container != null) {
             return converters.addConverters(container.getComponents(ParameterConverter.class));
         }

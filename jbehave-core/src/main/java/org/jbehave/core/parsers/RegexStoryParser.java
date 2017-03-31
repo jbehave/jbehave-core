@@ -25,6 +25,7 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.model.TableTransformers;
 
 /**
  * Pattern-based story parser, which uses the keywords provided to parse the
@@ -37,11 +38,15 @@ public class RegexStoryParser implements StoryParser {
     private final ExamplesTableFactory tableFactory;
 
     public RegexStoryParser() {
-        this(new LocalizedKeywords());
+        this(new TableTransformers());
     }
 
-    public RegexStoryParser(Keywords keywords) {
-        this(keywords, new ExamplesTableFactory(keywords));
+    public RegexStoryParser(TableTransformers tableTransformers) {
+        this(new LocalizedKeywords(), tableTransformers);
+    }
+
+    public RegexStoryParser(Keywords keywords, TableTransformers tableTransformers) {
+        this(keywords, new ExamplesTableFactory(keywords, tableTransformers));
     }
 
     public RegexStoryParser(ExamplesTableFactory tableFactory) {

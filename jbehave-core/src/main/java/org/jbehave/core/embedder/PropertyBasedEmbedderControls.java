@@ -2,7 +2,6 @@ package org.jbehave.core.embedder;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jbehave.core.steps.ParameterConverters;
 
 public class PropertyBasedEmbedderControls extends EmbedderControls {
 
@@ -18,8 +17,6 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
     public static final String STORY_TIMEOUT_IN_SECS_BY_PATH = "STORY_TIMEOUT_IN_SECS_BY_PATH";
     public static final String FAIL_ON_STORY_TIMEOUT = "FAIL_ON_STORY_TIMEOUT";
     public static final String THREADS = "THREADS";
-
-    private ParameterConverters converters = new ParameterConverters();
 
     @Override
     public boolean batch() {
@@ -87,7 +84,19 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
         if ( property == null ){
             return defaultValue;
         }
-        return (T) converters.convert(property, type);
+        if (type == String.class) {
+            return (T) property;
+        }
+        if (type == Boolean.class) {
+            return (T) Boolean.valueOf(property);
+        }
+        if (type == Long.class) {
+            return (T) Long.valueOf(property);
+        }
+        if (type == Integer.class) {
+            return (T) Integer.valueOf(property);
+        }
+        throw new IllegalArgumentException("Unsupported type: " + type);
     }
 
     @Override
@@ -107,5 +116,5 @@ public class PropertyBasedEmbedderControls extends EmbedderControls {
         .append("threads", threads())
         .toString();        
     }
-    
+
 }

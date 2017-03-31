@@ -9,6 +9,7 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStoryMaps;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 
@@ -28,10 +29,14 @@ public class CoreStoryMaps extends JUnitStoryMaps {
 
     @Override
     public Configuration configuration() {
+        TableTransformers tableTransformers = new TableTransformers();
+        ExamplesTableFactory tableFactory = new ExamplesTableFactory(new LoadFromClasspath(this.getClass()),
+                tableTransformers);
         return new MostUsefulConfiguration()
-            .useStoryParser(new RegexStoryParser(new ExamplesTableFactory(new LoadFromClasspath(this.getClass()))))
+            .useStoryParser(new RegexStoryParser(tableFactory))
             .useStoryReporterBuilder(new StoryReporterBuilder()
-                .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass())));
+                .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass())))
+            .useTableTransformers(tableTransformers);
     }
 
     @Override
@@ -42,7 +47,5 @@ public class CoreStoryMaps extends JUnitStoryMaps {
     @Override
     protected List<String> storyPaths() {
         return new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"), "**/*.story", "");
-                
     }
-        
 }

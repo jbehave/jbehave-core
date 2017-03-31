@@ -173,17 +173,13 @@ public class ExamplesTable {
     private Map<String, String> namedParameters = new HashMap<String, String>();
 
     public ExamplesTable(String tableAsString) {
-        this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR);
-    }
-
-    public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator) {
-        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR, new ParameterConverters());
+        this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR, new TableTransformers());
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-            String ignorableSeparator, ParameterConverters parameterConverters) {
-        this(tableAsString, headerSeparator, valueSeparator, ignorableSeparator, parameterConverters,
-                new TableTransformers());
+            TableTransformers tableTransformers) {
+        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR,
+                new ParameterConverters(tableTransformers), tableTransformers);
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,

@@ -20,6 +20,7 @@ import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromURL;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters;
@@ -38,7 +39,7 @@ public class ConfigurationProducer
         viewResources.setProperty("index", "my-reports-index.ftl");
         viewResources.setProperty("decorateNonHtml", "true");
 
-        
+        TableTransformers tableTransformers = new TableTransformers();
         return new MostUsefulConfiguration()
                     .useStoryControls(new StoryControls()
                             .doDryRun(true)
@@ -52,8 +53,9 @@ public class ConfigurationProducer
                             .withKeywords(new LocalizedKeywords(Locale.ITALIAN))
                             .withRelativeDirectory("my-output-directory")
                             .withViewResources(viewResources).withFailureTrace(true))
-                    .useParameterConverters(new ParameterConverters()
-                            .addConverters(new CustomConverter(),new MyDateConverter()));
+                    .useParameterConverters(new ParameterConverters(tableTransformers)
+                            .addConverters(new CustomConverter(),new MyDateConverter()))
+                    .useTableTransformers(tableTransformers);
                     
     }
     

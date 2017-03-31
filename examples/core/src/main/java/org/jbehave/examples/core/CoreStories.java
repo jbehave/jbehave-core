@@ -68,7 +68,7 @@ public class CoreStories extends JUnitStories {
 
     private final CrossReference xref = new CrossReference();
     private Context context = new Context();
-	private Format contextFormat = new ContextOutput(context);
+    private Format contextFormat = new ContextOutput(context);
     private ContextView contextView = new JFrameContextView().sized(640, 120);
     private ContextStepMonitor contextStepMonitor = new ContextStepMonitor(context, contextView, xref.getStepMonitor());
 
@@ -78,26 +78,28 @@ public class CoreStories extends JUnitStories {
         configuredEmbedder().useEmbedderControls(new PropertyBasedEmbedderControls());
     }
 
-	public Configuration configuration() {
-		// avoid re-instantiating configuration for the steps factory
-		// alternative use #useConfiguration() in the constructor
-		if ( super.hasConfiguration() ){
-			return super.configuration();
-		}
+    @Override
+    public Configuration configuration() {
+        // avoid re-instantiating configuration for the steps factory
+        // alternative use #useConfiguration() in the constructor
+        if ( super.hasConfiguration() ){
+            return super.configuration();
+        }
         Class<? extends Embeddable> embeddableClass = this.getClass();
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
         viewResources.put("reports", "ftl/jbehave-reports.ftl");
+        TableTransformers tableTransformers = new TableTransformers();
         // Start from default ParameterConverters instance
-        ParameterConverters parameterConverters = new ParameterConverters();
+        ParameterConverters parameterConverters = new ParameterConverters(tableTransformers);
         // factory to allow parameter conversion and loading from external
         // resources (used by StoryParser too)
         ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(),
-                new LoadFromClasspath(embeddableClass), parameterConverters, new TableTransformers());
+                new LoadFromClasspath(embeddableClass), parameterConverters, tableTransformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
-		return new MostUsefulConfiguration()        		
+        return new MostUsefulConfiguration()                
                 .useStoryLoader(new LoadFromClasspath(embeddableClass))
                 .useStoryParser(new RegexStoryParser(examplesTableFactory))
                 .useStoryReporterBuilder(
@@ -110,11 +112,11 @@ public class CoreStories extends JUnitStories {
                 // use '%' instead of '$' to identify parameters
                 .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"))
                 .useStepMonitor(contextStepMonitor);
-	}
+    }
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-    	MyContext context = new MyContext();
+        MyContext context = new MyContext();
         return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
                 new MetaParametrisationSteps(), new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(),
                 new SandpitSteps(), new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(),
@@ -127,5 +129,4 @@ public class CoreStories extends JUnitStories {
         String filter = System.getProperty("story.filter", "**/*.story");
         return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing_before*.story,**/given_relative_path*");
     }
-
 }

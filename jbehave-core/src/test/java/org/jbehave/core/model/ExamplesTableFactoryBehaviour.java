@@ -31,7 +31,7 @@ public class ExamplesTableFactoryBehaviour {
     @Test
     public void shouldCreateExamplesTableFromTableInput() {
         // Given
-        ExamplesTableFactory factory = new ExamplesTableFactory();
+        ExamplesTableFactory factory = new ExamplesTableFactory(new TableTransformers());
         
         // When        
         ExamplesTable examplesTable = factory.createExamplesTable(TABLE_AS_STRING);
@@ -44,7 +44,7 @@ public class ExamplesTableFactoryBehaviour {
     public void shouldCreateExamplesTableFromResourceInput() {
         // Given
         ResourceLoader resourceLoader = mock(ResourceLoader.class);
-        ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader);
+        ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
         
         // When
         String resourcePath = "/path/to/table";
@@ -58,7 +58,7 @@ public class ExamplesTableFactoryBehaviour {
     @Test
     public void shouldCreateExamplesTableFromTableInputWithInlinedSeparators() {
         // Given
-        ExamplesTableFactory factory = new ExamplesTableFactory();
+        ExamplesTableFactory factory = new ExamplesTableFactory(new TableTransformers());
 
         // When
         ExamplesTable examplesTable = factory.createExamplesTable(TABLE_WITH_INLINED_SEPARATTORS);
@@ -66,5 +66,4 @@ public class ExamplesTableFactoryBehaviour {
         // Then
         assertThat(examplesTable.asString(), equalTo(FILTERED_TABLE_WITH_INLINED_SEPARATTORS));
     }
-
 }

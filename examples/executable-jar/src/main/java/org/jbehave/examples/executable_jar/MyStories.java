@@ -12,6 +12,7 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -44,10 +45,12 @@ public class MyStories extends JUnitStories {
     @Override
     public Configuration configuration() {
         Class<? extends Embeddable> embeddableClass = this.getClass();
+        TableTransformers tableTransformers = new TableTransformers();
         // Start from default ParameterConverters instance
-        ParameterConverters parameterConverters = new ParameterConverters();
+        ParameterConverters parameterConverters = new ParameterConverters(tableTransformers);
         // factory to allow parameter conversion and loading from external resources (used by StoryParser too)
-        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), new LoadFromClasspath(embeddableClass), parameterConverters);
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(),
+                new LoadFromClasspath(embeddableClass), parameterConverters, tableTransformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
@@ -58,7 +61,8 @@ public class MyStories extends JUnitStories {
         .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
         .withDefaultFormats()
         .withFormats(CONSOLE, TXT, HTML, XML))
-        .useParameterConverters(parameterConverters);
+        .useParameterConverters(parameterConverters)
+        .useTableTransformers(tableTransformers);
     }
 
     @Override

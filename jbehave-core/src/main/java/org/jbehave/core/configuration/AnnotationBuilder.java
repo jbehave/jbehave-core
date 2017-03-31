@@ -23,6 +23,7 @@ import org.jbehave.core.io.PathCalculator;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StepdocReporter;
@@ -104,7 +105,8 @@ public class AnnotationBuilder {
         configuration.useStoryReporterBuilder(configurationElement(finder, "storyReporterBuilder",
                 StoryReporterBuilder.class));
         configuration.useViewGenerator(configurationElement(finder, "viewGenerator", ViewGenerator.class));
-        configuration.useParameterConverters(parameterConverters(finder));
+        configuration.useTableTransformers(configurationElement(finder, "tableTransformers", TableTransformers.class));
+        configuration.useParameterConverters(parameterConverters(finder, configuration.tableTransformers()));
         configuration.useParameterControls(configurationElement(finder, "parameterControls", ParameterControls.class));
         configuration.usePathCalculator(configurationElement(finder, "pathCalculator", PathCalculator.class));
         return configuration;
@@ -280,13 +282,14 @@ public class AnnotationBuilder {
         return properties;
     }
 
-    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder) {
-        List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
+    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder,
+            TableTransformers tableTransformers) {
+        ParameterConverters parameterConverters = new ParameterConverters(tableTransformers);
         for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(Configure.class,
                 ParameterConverter.class, "parameterConverters")) {
-            converters.add(instanceOf(ParameterConverter.class, converterClass));
+            parameterConverters.addConverters(instanceOf(ParameterConverter.class, converterClass));
         }
-        return new ParameterConverters().addConverters(converters);
+        return parameterConverters;
     }
 
     protected <T, V extends T> T instanceOf(Class<T> type, Class<V> ofClass) {

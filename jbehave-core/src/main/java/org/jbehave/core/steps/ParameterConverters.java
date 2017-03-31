@@ -26,6 +26,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.JsonFactory;
+import org.jbehave.core.model.TableTransformers;
 
 import static java.util.Arrays.asList;
 
@@ -71,28 +72,32 @@ public class ParameterConverters {
      * Creates a non-thread-safe instance of ParameterConverters using default
      * dependencies, a SilentStepMonitor, English as Locale and "," as list
      * separator.
+     * 
+     * @param tableTransformers ExamplesTable transformers
      */
-    public ParameterConverters() {
-        this(DEFAULT_STEP_MONITOR);
+    public ParameterConverters(TableTransformers tableTransformers) {
+        this(DEFAULT_STEP_MONITOR, tableTransformers);
     }
 
     /**
      * Creates a ParameterConverters using given StepMonitor
      * 
      * @param monitor the StepMonitor to use
+     * @param tableTransformers ExamplesTable transformers
      */
-    public ParameterConverters(StepMonitor monitor) {
-        this(monitor, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, DEFAULT_THREAD_SAFETY);
+    public ParameterConverters(StepMonitor monitor, TableTransformers tableTransformers) {
+        this(monitor, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, DEFAULT_THREAD_SAFETY);
     }
 
     /**
      * Create a ParameterConverters with given thread-safety
      * 
+     * @param tableTransformers ExamplesTable transformers
      * @param threadSafe the boolean flag to determine if access to
-     *            {@link ParameterConverter} should be thread-safe
+     * {@link ParameterConverter} should be thread-safe
      */
-    public ParameterConverters(boolean threadSafe) {
-        this(DEFAULT_STEP_MONITOR, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, threadSafe);
+    public ParameterConverters(TableTransformers tableTransformers, boolean threadSafe) {
+        this(DEFAULT_STEP_MONITOR, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, threadSafe);
     }
 
     /**
@@ -102,35 +107,36 @@ public class ParameterConverters {
      * (for instance "," is used as decimal separator in some Locale)
      * 
      * @param monitor the StepMonitor reporting the conversions
+     * @param tableTransformers ExamplesTable transformers
      * @param locale the Locale to use when reading numbers
      * @param listSeparator the String to use as list separator
      * @param threadSafe the boolean flag to determine if modification of
-     *            {@link ParameterConverter} should be thread-safe
+     * {@link ParameterConverter} should be thread-safe
      */
-    public ParameterConverters(StepMonitor monitor, Locale locale, String listSeparator, boolean threadSafe) {
+    public ParameterConverters(StepMonitor monitor, TableTransformers tableTransformers, Locale locale,
+            String listSeparator, boolean threadSafe) {
         this(monitor, new ArrayList<ParameterConverter>(), threadSafe);
-        this.addConverters(defaultConverters(locale, listSeparator));
+        this.addConverters(defaultConverters(tableTransformers, locale, listSeparator));
     }
 
     private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters, boolean threadSafe) {
         this.monitor = monitor;
         this.threadSafe = threadSafe;
-        this.converters = (threadSafe ? new CopyOnWriteArrayList<ParameterConverter>(converters)
-                : new ArrayList<ParameterConverter>(converters));
+        this.converters = threadSafe ? new CopyOnWriteArrayList<ParameterConverter>(converters)
+                : new ArrayList<ParameterConverter>(converters);
     }
 
-    protected ParameterConverter[] defaultConverters(Locale locale, String listSeparator) {
+    protected ParameterConverter[] defaultConverters(TableTransformers tableTransformers, Locale locale,
+            String listSeparator) {
         String escapedListSeparator = escapeRegexPunctuation(listSeparator);
-        ExamplesTableFactory tableFactory = new ExamplesTableFactory(this);
-        JsonFactory jsonFactory = new JsonFactory(this);
-        ParameterConverter[] defaultConverters = { new BooleanConverter(),
+        ExamplesTableFactory tableFactory = new ExamplesTableFactory(this, tableTransformers);
+        JsonFactory jsonFactory = new JsonFactory();
+        return new ParameterConverter[] { new BooleanConverter(),
                 new NumberConverter(NumberFormat.getInstance(locale)),
                 new NumberListConverter(NumberFormat.getInstance(locale), escapedListSeparator),
-                new StringListConverter(escapedListSeparator), new DateConverter(),
-                new EnumConverter(), new EnumListConverter(),
-                new ExamplesTableConverter(tableFactory), new ExamplesTableParametersConverter(tableFactory),
-                new JsonConverter(jsonFactory)};
-        return defaultConverters;
+                new StringListConverter(escapedListSeparator), new DateConverter(), new EnumConverter(),
+                new EnumListConverter(), new ExamplesTableConverter(tableFactory),
+                new ExamplesTableParametersConverter(tableFactory), new JsonConverter(jsonFactory) };
     }
 
     // TODO : This is a duplicate from RegExpPrefixCapturing
@@ -297,7 +303,7 @@ public class ParameterConverters {
          * 
          * @param value a localized number value
          * @return A canonicalized string value suitable for consumption by
-         *         BigDecimal
+         * BigDecimal
          */
         private String canonicalize(String value) {
             char decimalPointSeparator = '.'; // default
@@ -505,10 +511,10 @@ public class ParameterConverters {
 
         public Object convertValue(String value, Type type) {
             try {
-				return BooleanUtils.toBoolean(value, trueValue, falseValue);
-			} catch (IllegalArgumentException e) {
-				return false;
-			}
+                return BooleanUtils.toBoolean(value, trueValue, falseValue);
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
         }
     }
 
@@ -667,14 +673,11 @@ public class ParameterConverters {
 
         private final ExamplesTableFactory factory;
 
-        public ExamplesTableConverter() {
-            this(new ExamplesTableFactory());
-        }
-
         public ExamplesTableConverter(ExamplesTableFactory factory) {
             this.factory = factory;
         }
 
+        @Override
         public boolean accept(Type type) {
             if (type instanceof Class<?>) {
                 return ExamplesTable.class.isAssignableFrom((Class<?>) type);
@@ -682,6 +685,7 @@ public class ParameterConverters {
             return false;
         }
 
+        @Override
         public Object convertValue(String value, Type type) {
             return factory.createExamplesTable(value);
         }
@@ -696,14 +700,11 @@ public class ParameterConverters {
 
         private final ExamplesTableFactory factory;
 
-        public ExamplesTableParametersConverter() {
-            this(new ExamplesTableFactory());
-        }
-
         public ExamplesTableParametersConverter(ExamplesTableFactory factory) {
             this.factory = factory;
         }
 
+        @Override
         public boolean accept(Type type) {
             if (type instanceof ParameterizedType) {
                 Class<?> rawClass = rawClass(type);
@@ -730,6 +731,7 @@ public class ParameterConverters {
             }
         }
 
+        @Override
         public Object convertValue(String value, Type type) {
             List<?> rows = factory.createExamplesTable(value).getRowsAs(argumentClass(type));
             if (type instanceof ParameterizedType) {

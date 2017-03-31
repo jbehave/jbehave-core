@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.gson.Gson;
 
 import org.jbehave.core.annotations.AsJson;
-import org.jbehave.core.steps.ParameterConverters;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
@@ -53,8 +52,7 @@ public class JsonBehaviour {
     @Test
     public void shouldPutNullsIfValuesOfObjectNotFoundInJson() throws Exception {
         // Given
-        ParameterConverters parameterConverters = new ParameterConverters();
-        JsonFactory factory = new JsonFactory(parameterConverters);
+        JsonFactory factory = new JsonFactory();
 
         // When
         String jsonAsString = "{\"integer\":22,\"stringList\":[\"1\",\"1\"]}";

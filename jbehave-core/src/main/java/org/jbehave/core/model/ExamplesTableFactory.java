@@ -35,29 +35,20 @@ public class ExamplesTableFactory {
     private final ParameterConverters parameterConverters;
     private final TableTransformers tableTransformers;
 
-    public ExamplesTableFactory() {
-        this(new LocalizedKeywords());
-    }
-
-    public ExamplesTableFactory(Keywords keywords) {
-        this(keywords, new LoadFromClasspath(), new ParameterConverters(), new TableTransformers());
-    }
-
-    public ExamplesTableFactory(ResourceLoader resourceLoader) {
-        this(new LocalizedKeywords(), resourceLoader, new ParameterConverters(), new TableTransformers());
-    }
-
-    public ExamplesTableFactory(ParameterConverters parameterConverters) {
-        this(new LocalizedKeywords(), new LoadFromClasspath(), parameterConverters, new TableTransformers());
-    }
-
     public ExamplesTableFactory(TableTransformers tableTransformers) {
-        this(new LocalizedKeywords(), new LoadFromClasspath(), new ParameterConverters(), tableTransformers);
+        this(new LocalizedKeywords(), tableTransformers);
     }
 
-    public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
-            ParameterConverters parameterConverters) {
-        this(keywords, resourceLoader, parameterConverters, new TableTransformers());
+    public ExamplesTableFactory(Keywords keywords, TableTransformers tableTransformers) {
+        this(keywords, new LoadFromClasspath(), new ParameterConverters(tableTransformers), tableTransformers);
+    }
+
+    public ExamplesTableFactory(ResourceLoader resourceLoader, TableTransformers tableTransformers) {
+        this(new LocalizedKeywords(), resourceLoader, new ParameterConverters(tableTransformers), tableTransformers);
+    }
+
+    public ExamplesTableFactory(ParameterConverters parameterConverters, TableTransformers tableTransformers) {
+        this(new LocalizedKeywords(), new LoadFromClasspath(), parameterConverters, tableTransformers);
     }
 
     public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
@@ -72,7 +63,7 @@ public class ExamplesTableFactory {
     	this.keywords = configuration.keywords();
     	this.resourceLoader = configuration.storyLoader();
     	this.parameterConverters = configuration.parameterConverters();
-    	this.tableTransformers = new TableTransformers();
+    	this.tableTransformers = configuration.tableTransformers();
     }
 
     public ExamplesTable createExamplesTable(String input) {

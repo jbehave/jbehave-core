@@ -23,6 +23,7 @@ import org.jbehave.core.io.PathCalculator;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StepPatternParser;
@@ -88,6 +89,8 @@ public @interface Configure {
     Class<? extends EmbedderControls> embedderControls() default EmbedderControls.class;
 
     Class<? extends ViewGenerator> viewGenerator() default FreemarkerViewGenerator.class;
+
+    Class<? extends TableTransformers> tableTransformers() default TableTransformers.class;
 
     Class<? extends PathCalculator> pathCalculator() default AbsolutePathCalculator.class;
 

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.ConvertedParameters;
 import org.jbehave.core.steps.ParameterConverters;
 import org.junit.Before;
@@ -25,7 +26,7 @@ public class ConvertedParametersBehaviour {
     public void setUp() throws Exception {
         map = new HashMap<String, String>();
         map.put("one", "11");
-        parameters = new ConvertedParameters(map, new ParameterConverters());
+        parameters = new ConvertedParameters(map, new ParameterConverters(new TableTransformers()));
     }
 
     @Test

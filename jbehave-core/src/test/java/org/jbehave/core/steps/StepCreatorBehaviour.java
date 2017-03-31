@@ -27,6 +27,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStepMatcher;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.reporters.StoryReporter;
@@ -121,7 +122,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldHandleFailureInParametrisedStep() throws IntrospectionException {
+    public void shouldHandleFailureInParametrisedStep() {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
@@ -137,13 +138,14 @@ public class StepCreatorBehaviour {
     }
 
     @Test(expected = ParameterNotFound.class)
-    public void shouldFailIfMatchedParametersAreNotFound() throws IntrospectionException {
+    public void shouldFailIfMatchedParametersAreNotFound() {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
-        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), stepsInstance);
+        MostUsefulConfiguration configuration = new MostUsefulConfiguration();
+        InjectableStepsFactory stepsFactory = new InstanceStepsFactory(configuration, stepsInstance);
         StepCreator stepCreator = new StepCreator(stepsInstance.getClass(), stepsFactory, stepsContext,
-                new ParameterConverters(), new ParameterControls(), stepMatcher, new SilentStepMonitor());
+                configuration.parameterConverters(), new ParameterControls(), stepMatcher, new SilentStepMonitor());
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(new String[] {});
@@ -153,7 +155,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreatePendingAsStepResults() throws IntrospectionException {
+    public void shouldCreatePendingAsStepResults() {
         // When
         String stepAsString = "When I'm pending";
         Step pendingStep = StepCreator.createPendingStep(stepAsString, null);
@@ -165,7 +167,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreateIgnorableAsStepResults() throws IntrospectionException {
+    public void shouldCreateIgnorableAsStepResults() {
         // When
         String stepAsString = "!-- Then ignore me";
         Step ignorableStep = StepCreator.createIgnorableStep(stepAsString);
@@ -177,7 +179,7 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldCreateCommentAsStepResults() throws IntrospectionException {
+    public void shouldCreateCommentAsStepResults() {
         // When
         String stepAsString = "!-- A comment";
         Step comment = StepCreator.createComment(stepAsString);
@@ -430,7 +432,7 @@ public class StepCreatorBehaviour {
     public void shouldInjectExceptionThatHappenedIfTargetMethodExpectsIt() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters();
+        parameterConverters = new ParameterConverters(new TableTransformers());
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
 
         // When
@@ -448,7 +450,7 @@ public class StepCreatorBehaviour {
     public void shouldInjectNoFailureIfNoExceptionHappenedAndTargetMethodExpectsIt() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters();
+        parameterConverters = new ParameterConverters(new TableTransformers());
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
 
         // When
@@ -467,7 +469,7 @@ public class StepCreatorBehaviour {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters();
+        parameterConverters = new ParameterConverters(new TableTransformers());
         StepMatcher stepMatcher = mock(StepMatcher.class);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
@@ -491,7 +493,7 @@ public class StepCreatorBehaviour {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters();
+        parameterConverters = new ParameterConverters(new TableTransformers());
         StepMatcher stepMatcher = mock(StepMatcher.class);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
@@ -521,7 +523,7 @@ public class StepCreatorBehaviour {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters();
+        parameterConverters = new ParameterConverters(new TableTransformers());
         StepMatcher stepMatcher = mock(StepMatcher.class);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(false);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
@@ -541,7 +543,6 @@ public class StepCreatorBehaviour {
         Map<String, String> results = (Map<String, String>) stepsInstance.args;
         assertThat(results.get("theme"), equalTo("a theme"));
         assertThat(results.get("variant"), equalTo("a variant"));
-
     }
 
     @Test

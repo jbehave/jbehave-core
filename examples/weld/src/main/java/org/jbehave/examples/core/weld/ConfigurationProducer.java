@@ -16,6 +16,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters;
@@ -28,6 +29,7 @@ public class ConfigurationProducer {
 
     @Produces @WeldConfiguration
     public Configuration getConfiguration() {
+        TableTransformers tableTransformers = new TableTransformers();
         return new MostUsefulConfiguration()
             .useStoryControls(new StoryControls()
                 .doDryRun(false)
@@ -37,7 +39,8 @@ public class ConfigurationProducer {
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withDefaultFormats()
                 .withFormats(CONSOLE, HTML, TXT, XML))
-            .useParameterConverters(new ParameterConverters()
-                .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd"))));
+            .useParameterConverters(new ParameterConverters(tableTransformers)
+                .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd"))))
+            .useTableTransformers(tableTransformers);
     }
 }

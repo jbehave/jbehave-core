@@ -47,6 +47,7 @@ import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
@@ -988,8 +989,8 @@ public class StoryRunnerBehaviour {
 
     private Configuration configurationWithPendingStrategy(StepCollector collector, StoryReporter reporter,
                                                                 PendingStepStrategy strategy) {
-        return configurationWith(new RegexStoryParser(), new LoadFromClasspath(), reporter, collector,
-                new RethrowingFailure(), strategy);
+        return configurationWith(new RegexStoryParser(new TableTransformers()), new LoadFromClasspath(), reporter,
+                collector, new RethrowingFailure(), strategy);
     }
 
     private Configuration configurationWith(final StoryReporter reporter, final StepCollector collector) {
@@ -997,7 +998,8 @@ public class StoryRunnerBehaviour {
     }
 
     private Configuration configurationWith(StoryReporter reporter, StepCollector collector, FailureStrategy failureStrategy) {
-        return configurationWith(new RegexStoryParser(), new LoadFromClasspath(), reporter, collector, failureStrategy);
+        return configurationWith(new RegexStoryParser(new TableTransformers()), new LoadFromClasspath(), reporter,
+                collector, failureStrategy);
     }
 
     private Configuration configurationWith(StoryParser parser, final StoryLoader storyLoader, final StoryReporter reporter,

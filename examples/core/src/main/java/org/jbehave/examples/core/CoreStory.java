@@ -83,12 +83,13 @@ public abstract class CoreStory extends JUnitStory {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
+        TableTransformers tableTranformers = new TableTransformers();
         // Start from default ParameterConverters instance
-        ParameterConverters parameterConverters = new ParameterConverters();
+        ParameterConverters parameterConverters = new ParameterConverters(tableTranformers);
         // factory to allow parameter conversion and loading from external
         // resources (used by StoryParser too)
         ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(),
-                new LoadFromClasspath(embeddableClass), parameterConverters, new TableTransformers());
+                new LoadFromClasspath(embeddableClass), parameterConverters, tableTranformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
@@ -121,5 +122,4 @@ public abstract class CoreStory extends JUnitStory {
                 new ParameterDelimitersSteps(), new ExamplesTableParametersSteps(), new ContextSteps(context),
                 new StepsContextSteps());
     }
-
 }
