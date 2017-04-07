@@ -33,39 +33,39 @@ public final class ExamplesTableProperties
         }
     }
 
-    String getRowSeparator() {
+    public String getRowSeparator() {
         return ROW_SEPARATOR;
     }
 
-    String getHeaderSeparator() {
+    public String getHeaderSeparator() {
         return properties.getProperty(HEADER_SEPARATOR_KEY);
     }
 
-    String getValueSeparator() {
+    public String getValueSeparator() {
         return properties.getProperty(VALUE_SEPARATOR_KEY);
     }
 
-    String getIgnorableSeparator() {
+    public String getIgnorableSeparator() {
         return properties.getProperty(IGNORABLE_SEPARATOR_KEY);
     }
 
-    String getCommentSeparator() {
+    public String getCommentSeparator() {
         return properties.getProperty(COMMENT_SEPARATOR_KEY);
     }
 
-    boolean isTrim() {
+    public boolean isTrim() {
         return parseBoolean(properties.getProperty("trim", "true"));
     }
 
-    boolean isMetaByRow(){
+    public boolean isMetaByRow(){
         return parseBoolean(properties.getProperty("metaByRow", "false"));
     }
 
-    String getTransformer() {
+    public String getTransformer() {
         return properties.getProperty("transformer");
     }
 
-    Properties getProperties() {
+    public Properties getProperties() {
         return properties;
     }
 }
