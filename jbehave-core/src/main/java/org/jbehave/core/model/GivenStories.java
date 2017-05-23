@@ -11,7 +11,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class GivenStories {
-    
+
     public static final GivenStories EMPTY = new GivenStories("");
 
     private final List<GivenStory> givenStories = new ArrayList<GivenStory>();
@@ -20,20 +20,15 @@ public class GivenStories {
 
     public GivenStories(String givenStoriesAsString) {
         this.givenStoriesAsString = givenStoriesAsString;
-        if ( !StringUtils.isBlank(givenStoriesAsString) ){
-            parse();            
-        }
-    }
-
-    private void parse() {
-        givenStories.clear();
-        for (String storyPath : givenStoriesAsString.split(",", -1)) {
-            givenStories.add(new GivenStory(storyPath));
+        for (String storyPath : givenStoriesAsString.split(",")) {
+            if (StringUtils.isNotBlank(storyPath)) {
+                givenStories.add(new GivenStory(storyPath));
+            }
         }
     }
 
     public List<GivenStory> getStories() {
-        for (GivenStory givenStory : givenStories) {            
+        for (GivenStory givenStory : givenStories) {
             givenStory.useParameters(parametersByAnchor(givenStory.getAnchor()));
         }
         return givenStories;
@@ -83,9 +78,8 @@ public class GivenStories {
         return givenStoriesAsString;
     }
 
+    @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
-
-
 }
