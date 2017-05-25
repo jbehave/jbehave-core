@@ -98,7 +98,7 @@ ${keywords.outcome} ${outcome}
 </tbody>
 </table>
 </#macro>
-<#macro renderOutcomeValue value dateFormat><#if value?is_date>${value?string(dateFormat)}<#else>${value?html}</#if></#macro>
+<#macro renderOutcomeValue value dateFormat><#if value?is_date>${value?string(dateFormat)}<#elseif value?is_boolean>${value?c}<#else>${value?html}</#if></#macro>
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep(EscapeMode.HTML, "<span class=\"step parameter\">{0}</span>")>
 <div class="step ${step.outcome}">${formattedStep}<#if step.getTable()??> <span class="step parameter"><@renderTable step.getTable()/></span></#if> <@renderStepOutcome step.getOutcome()/></div>
