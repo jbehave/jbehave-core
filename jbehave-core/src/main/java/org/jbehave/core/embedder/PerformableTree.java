@@ -31,6 +31,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
+import org.jbehave.core.reporters.DelegatingStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.context.StepsContext;
@@ -446,6 +447,10 @@ public class PerformableTree {
     private void invokeDelayedReporters(StoryReporter reporter) {
         if (reporter instanceof ConcurrentStoryReporter) {
             ((ConcurrentStoryReporter) reporter).invokeDelayed();
+        } else if (reporter instanceof DelegatingStoryReporter) {
+            for (StoryReporter delegate : ((DelegatingStoryReporter) reporter).getDelegates()) {
+                invokeDelayedReporters(delegate);
+            }
         }
     }
 

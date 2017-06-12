@@ -33,6 +33,7 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.CrossReference;
+import org.jbehave.core.reporters.DelegatingStoryReporter;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.reporters.StoryReporterBuilder;
@@ -311,6 +312,11 @@ public class ConcurrencyBehaviour {
         public Configuration configuration() {
             return new MostUsefulConfiguration().useStoryLoader(new MyStoryLoader()).useStoryReporterBuilder(
                     new StoryReporterBuilder() {
+                        @Override
+                        public StoryReporter build(String storyPath) {
+                            return new DelegatingStoryReporter(super.build(storyPath));
+                        }
+
                         @Override
                         public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
                             if (storyPath.contains("format")) {
