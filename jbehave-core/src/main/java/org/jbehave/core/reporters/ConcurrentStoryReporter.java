@@ -382,9 +382,10 @@ public class ConcurrentStoryReporter implements StoryReporter {
             return;
         }
         synchronized (delegate) {
-            for (DelayedMethod delayed : Collections.unmodifiableList(delayedMethods)) {
+            for (DelayedMethod delayed : delayedMethods) {
                 delayed.invoke(delegate);
             }
+            delayedMethods.clear();
         }
         invoked = true;
     }

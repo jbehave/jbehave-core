@@ -2,6 +2,7 @@ package org.jbehave.core.embedder;
 
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
@@ -14,6 +15,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -50,10 +52,21 @@ public class ConcurrencyBehaviour {
             embedder.runAsEmbeddables(asList(XmlFormat.class.getName()));
             fail("Exception was not thrown");
         } catch (RunningEmbeddablesFailed e) {
-            String xmlOutput = XmlFormat.out.toString();
+            String xmlOutput = XmlFormat.xmlOut.toString();
             assertThat(xmlOutput, containsString("</scenario>"));
             assertThat(xmlOutput, containsString("</story>"));
         }
+    }
+
+    @Test
+    public void shouldCompleteTextReportWhenStoryIsFinishedSuccessfully() {
+        Embedder embedder = new Embedder();
+        embedder.embedderControls().useStoryTimeouts("4");
+        embedder.embedderControls().useThreads(2);
+        embedder.runAsEmbeddables(asList(XmlFormat.class.getName()));
+        String textOutput = XmlFormat.textOut.toString();
+        assertThat(textOutput,
+                equalTo("beforeStory: BeforeStories\nafterStory\nbeforeStory: AfterStories\nafterStory\n"));
     }
 
 	@Test(expected = RunningEmbeddablesFailed.class)
@@ -286,28 +299,28 @@ public class ConcurrencyBehaviour {
 	}
     
     public static class XmlFormat extends JUnitStory {
-        static ByteArrayOutputStream out = new ByteArrayOutputStream();
-        final PrintStream printStream = new PrintStream(out);
+        static ByteArrayOutputStream xmlOut;
+        static ByteArrayOutputStream textOut;
 
-        public XmlFormat() {
-            Embedder embeeder = configuredEmbedder();
-            embeeder.embedderControls().useStoryTimeouts("1");
+        XmlFormat() {
+            xmlOut = new ByteArrayOutputStream();
+            textOut = new ByteArrayOutputStream();
         }
 
         @Override
         public Configuration configuration() {
-            final XmlOutput xmlOutput = new XmlOutput(printStream);
-            
             return new MostUsefulConfiguration().useStoryLoader(new MyStoryLoader()).useStoryReporterBuilder(
                     new StoryReporterBuilder() {
                         @Override
-                        public StoryReporter build(String storyPath) {
+                        public StoryReporter reporterFor(String storyPath, org.jbehave.core.reporters.Format format) {
                             if (storyPath.contains("format")) {
-                                return xmlOutput;
+                                return new XmlOutput(new PrintStream(xmlOut));
                             } else {
-                                return new TxtOutput(new PrintStream(new ByteArrayOutputStream()));
+                                Properties properties = new Properties();
+                                properties.put("beforeStory", "beforeStory: {1}\n");
+                                properties.put("afterStory", "afterStory\n");
+                                return new TxtOutput(new PrintStream(textOut), properties);
                             }
-
                         }
                     }.withFormats(Format.XML));
         }
@@ -319,9 +332,8 @@ public class ConcurrencyBehaviour {
 
         @Given("something too long")
         public void somethingLong() throws Exception {
-            Thread.sleep(5000L);
+            Thread.sleep(2500L);
         }
-
 
         public static class MyStoryLoader implements StoryLoader {
 
@@ -329,11 +341,9 @@ public class ConcurrencyBehaviour {
                 return "Scenario: \nGiven something too long";
             }
 
-			public String loadResourceAsText(String resourcePath) {
-				return null;
-			}
-
+            public String loadResourceAsText(String resourcePath) {
+                return null;
+            }
         }
     }
-
 }
