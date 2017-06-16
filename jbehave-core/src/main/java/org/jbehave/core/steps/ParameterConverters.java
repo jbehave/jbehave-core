@@ -68,12 +68,22 @@ public class ParameterConverters {
     private final List<ParameterConverter> converters;
     private final boolean threadSafe;
 
+
+    /**
+     * Creates a non-thread-safe instance of ParameterConverters using the default table transformers,
+     * default dependencies, a SilentStepMonitor, English as Locale and "," as list
+     * separator.
+     */
+    public ParameterConverters() {
+        this(new TableTransformers());
+    }
+
     /**
      * Creates a non-thread-safe instance of ParameterConverters using default
      * dependencies, a SilentStepMonitor, English as Locale and "," as list
      * separator.
      * 
-     * @param tableTransformers ExamplesTable transformers
+     * @param tableTransformers the table transformers
      */
     public ParameterConverters(TableTransformers tableTransformers) {
         this(DEFAULT_STEP_MONITOR, tableTransformers);
@@ -83,7 +93,7 @@ public class ParameterConverters {
      * Creates a ParameterConverters using given StepMonitor
      * 
      * @param monitor the StepMonitor to use
-     * @param tableTransformers ExamplesTable transformers
+     * @param tableTransformers the table transformers
      */
     public ParameterConverters(StepMonitor monitor, TableTransformers tableTransformers) {
         this(monitor, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR, DEFAULT_THREAD_SAFETY);
@@ -92,7 +102,7 @@ public class ParameterConverters {
     /**
      * Create a ParameterConverters with given thread-safety
      * 
-     * @param tableTransformers ExamplesTable transformers
+     * @param tableTransformers the table transformers
      * @param threadSafe the boolean flag to determine if access to
      * {@link ParameterConverter} should be thread-safe
      */
@@ -107,7 +117,7 @@ public class ParameterConverters {
      * (for instance "," is used as decimal separator in some Locale)
      * 
      * @param monitor the StepMonitor reporting the conversions
-     * @param tableTransformers ExamplesTable transformers
+     * @param tableTransformers the table transformers
      * @param locale the Locale to use when reading numbers
      * @param listSeparator the String to use as list separator
      * @param threadSafe the boolean flag to determine if modification of
