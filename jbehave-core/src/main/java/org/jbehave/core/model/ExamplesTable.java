@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.Parameter;
+import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.jbehave.core.steps.ChainedRow;
 import org.jbehave.core.steps.ConvertedParameters;
@@ -173,13 +174,14 @@ public class ExamplesTable {
     private Map<String, String> namedParameters = new HashMap<String, String>();
 
     public ExamplesTable(String tableAsString) {
-        this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR, new TableTransformers());
+        this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR,
+                new ParameterConverters(new LoadFromClasspath(), new TableTransformers()), new TableTransformers());
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-            TableTransformers tableTransformers) {
-        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR,
-                new ParameterConverters(tableTransformers), tableTransformers);
+            ParameterConverters parameterConverters, TableTransformers tableTransformers) {
+        this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR, parameterConverters,
+                tableTransformers);
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,

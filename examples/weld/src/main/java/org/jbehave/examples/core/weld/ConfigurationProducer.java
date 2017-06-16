@@ -29,17 +29,18 @@ public class ConfigurationProducer {
 
     @Produces @WeldConfiguration
     public Configuration getConfiguration() {
+        LoadFromClasspath resourceLoader = new LoadFromClasspath(getClass().getClassLoader());
         TableTransformers tableTransformers = new TableTransformers();
         return new MostUsefulConfiguration()
             .useStoryControls(new StoryControls()
                 .doDryRun(false)
                 .doSkipScenariosAfterFailure(false))
             .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"))
-            .useStoryLoader(new LoadFromClasspath(getClass().getClassLoader()))
+            .useStoryLoader(resourceLoader)
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withDefaultFormats()
                 .withFormats(CONSOLE, HTML, TXT, XML))
-            .useParameterConverters(new ParameterConverters(tableTransformers)
+            .useParameterConverters(new ParameterConverters(resourceLoader, tableTransformers)
                 .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd"))))
             .useTableTransformers(tableTransformers);
     }

@@ -1,14 +1,13 @@
 package org.jbehave.core.steps;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.ConvertedParameters;
 import org.jbehave.core.steps.ParameterConverters;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,17 +16,11 @@ import static org.hamcrest.Matchers.is;
 
 public class ConvertedParametersBehaviour {
 
-    private Map<String, String> map;
-    private Parameters parameters;
+    private Map<String, String> map = Collections.singletonMap("one", "11");
+    private Parameters parameters = new ConvertedParameters(map,
+            new ParameterConverters(new LoadFromClasspath(), new TableTransformers()));
     private List<String> stringList;
     private List<Integer> integerList;
-
-    @Before
-    public void setUp() throws Exception {
-        map = new HashMap<String, String>();
-        map.put("one", "11");
-        parameters = new ConvertedParameters(map, new ParameterConverters(new TableTransformers()));
-    }
 
     @Test
     public void shouldReturnParameterValueConvertedToGivenType() throws Exception {

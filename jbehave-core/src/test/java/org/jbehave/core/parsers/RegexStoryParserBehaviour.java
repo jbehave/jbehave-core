@@ -19,6 +19,7 @@ import java.util.Map;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
@@ -35,7 +36,8 @@ import org.junit.Test;
 public class RegexStoryParserBehaviour {
 
     private static final String NL = "\n";
-    private StoryParser parser = new RegexStoryParser(new LocalizedKeywords(), new TableTransformers());
+    private StoryParser parser = new RegexStoryParser(new LocalizedKeywords(), new LoadFromClasspath(),
+            new TableTransformers());
     private String storyPath = "path/to/my.story";
 
     @Test
@@ -223,7 +225,8 @@ public class RegexStoryParserBehaviour {
 
     @Test
     public void shouldParseStoryWithSynonymsOfStartingWords() {
-        StoryParser parser = new RegexStoryParser(new LocalizedKeywords(new Locale("sy")), new TableTransformers());
+        StoryParser parser = new RegexStoryParser(new LocalizedKeywords(new Locale("sy")), new LoadFromClasspath(),
+                new TableTransformers());
 
         String wholeStory = "Given a scenario" + NL +
                 "When I parse it" + NL +
@@ -444,7 +447,8 @@ public class RegexStoryParserBehaviour {
                 "Gegeben im Lager sind 400 T-Shirts" + NL + 
                 "Szenario:"+ NL +        
                 "Wenn ein Kunde 20 T-Shirts bestellt";
-    	parser = new RegexStoryParser(new LocalizedKeywords(Locale.GERMAN), new TableTransformers());
+        parser = new RegexStoryParser(new LocalizedKeywords(Locale.GERMAN), new LoadFromClasspath(),
+                new TableTransformers());
         Story story = parser.parseStory(wholeStory, storyPath);
         List<String> beforeSteps = story.getLifecycle().getBeforeSteps();
         assertThat(beforeSteps.isEmpty(), equalTo(true));

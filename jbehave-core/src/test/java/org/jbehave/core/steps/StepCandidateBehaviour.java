@@ -38,6 +38,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
@@ -139,9 +140,11 @@ public class StepCandidateBehaviour {
             }
             
         };
+        ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath(),
+                new TableTransformers());
         StepCandidate candidate = new StepCandidate("windows on the $nth floor", 0, WHEN, method, null, null,
-                new StepsContext(), keywords, new RegexPrefixCapturingPatternParser(),
-                new ParameterConverters(new TableTransformers()), new ParameterControls());
+                new StepsContext(), keywords, new RegexPrefixCapturingPatternParser(), parameterConverters,
+                new ParameterControls());
         assertThat(candidate.matches("When windows on the 1st floor"), is(false));
         assertThat(candidate.ignore("!-- windows on the 1st floor"), is(false));
     }

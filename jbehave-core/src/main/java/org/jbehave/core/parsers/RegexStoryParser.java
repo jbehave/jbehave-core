@@ -15,6 +15,8 @@ import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.Description;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
@@ -38,15 +40,15 @@ public class RegexStoryParser implements StoryParser {
     private final ExamplesTableFactory tableFactory;
 
     public RegexStoryParser() {
-        this(new TableTransformers());
+        this(new LoadFromClasspath(), new TableTransformers());
     }
 
-    public RegexStoryParser(TableTransformers tableTransformers) {
-        this(new LocalizedKeywords(), tableTransformers);
+    public RegexStoryParser(ResourceLoader resourceLoader, TableTransformers tableTransformers) {
+        this(new LocalizedKeywords(), resourceLoader, tableTransformers);
     }
 
-    public RegexStoryParser(Keywords keywords, TableTransformers tableTransformers) {
-        this(keywords, new ExamplesTableFactory(keywords, tableTransformers));
+    public RegexStoryParser(Keywords keywords, ResourceLoader resourceLoader, TableTransformers tableTransformers) {
+        this(keywords, new ExamplesTableFactory(keywords, resourceLoader, tableTransformers));
     }
 
     public RegexStoryParser(ExamplesTableFactory tableFactory) {
@@ -61,8 +63,8 @@ public class RegexStoryParser implements StoryParser {
     }
 
     public RegexStoryParser(Configuration configuration) {
-    	this.keywords = configuration.keywords();
-    	this.tableFactory = new ExamplesTableFactory(configuration);
+        this.keywords = configuration.keywords();
+        this.tableFactory = new ExamplesTableFactory(configuration);
     }
     
     public Story parseStory(String storyAsText) {
@@ -156,74 +158,74 @@ public class RegexStoryParser implements StoryParser {
         Matcher findingBeforeAndAfter = compile(".*" + keywords.before() + "(.*)\\s*" + keywords.after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBeforeAndAfter.matches() ){
             String beforeLifecycle = findingBeforeAndAfter.group(1).trim();
-			Steps beforeSteps = parseBeforeLifecycle(beforeLifecycle);
+            Steps beforeSteps = parseBeforeLifecycle(beforeLifecycle);
             String afterLifecycle = findingBeforeAndAfter.group(2).trim();
-			Steps[] afterSteps = parseAfterLifecycle(afterLifecycle);
+            Steps[] afterSteps = parseAfterLifecycle(afterLifecycle);
             return new Lifecycle(beforeSteps, afterSteps);
         }
         Matcher findingBefore = compile(".*" + keywords.before() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBefore.matches() ){
             String beforeLifecycle = findingBefore.group(1).trim();
-			Steps beforeSteps = parseBeforeLifecycle(beforeLifecycle);
+            Steps beforeSteps = parseBeforeLifecycle(beforeLifecycle);
             return new Lifecycle(beforeSteps, new Steps(new ArrayList<String>()));
         }
         Matcher findingAfter = compile(".*" + keywords.after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingAfter.matches() ){
             Steps beforeSteps = Steps.EMPTY;
             String afterLifecycle = findingAfter.group(1).trim();
-			Steps[] afterSteps = parseAfterLifecycle(afterLifecycle);
+            Steps[] afterSteps = parseAfterLifecycle(afterLifecycle);
             return new Lifecycle(beforeSteps, afterSteps);
         }
         return Lifecycle.EMPTY;
     }
 
-	private Steps parseBeforeLifecycle(String lifecycleAsText) {
-		return new Steps(findSteps(startingWithNL(lifecycleAsText)));
-	}
-
-	private Steps[] parseAfterLifecycle(String lifecycleAsText) {
-		List<Steps> list = new ArrayList<Steps>();
-		for (String byOutcome : lifecycleAsText.split(keywords.outcome()) ){ 
-			byOutcome = byOutcome.trim();
-			if ( byOutcome.isEmpty() ) continue;
-			String outcomeAsText = findOutcome(byOutcome);
-			String filtersAsText = findFilters(removeStart(byOutcome, outcomeAsText));
-			List<String> steps = findSteps(startingWithNL(removeStart(byOutcome, filtersAsText)));
-			list.add(new Steps(parseOutcome(outcomeAsText), parseFilters(filtersAsText), steps));
-		}
-		return list.toArray(new Steps[list.size()]);
-	}
-
-	private String findOutcome(String stepsByOutcome) {
-    	Matcher findingOutcome = findingLifecycleOutcome().matcher(stepsByOutcome);
-    	if ( findingOutcome.matches() ){
-    		return findingOutcome.group(1).trim();
-    	}
-		return keywords.outcomeAny();
+    private Steps parseBeforeLifecycle(String lifecycleAsText) {
+        return new Steps(findSteps(startingWithNL(lifecycleAsText)));
     }
 
-	private Outcome parseOutcome(String outcomeAsText) {
-    	if ( outcomeAsText.equals(keywords.outcomeSuccess()) ){
-    		return Outcome.SUCCESS;
-    	} else if ( outcomeAsText.equals(keywords.outcomeFailure()) ){
-    		return Outcome.FAILURE;
-    	}
-		return Outcome.ANY;
-	}
+    private Steps[] parseAfterLifecycle(String lifecycleAsText) {
+        List<Steps> list = new ArrayList<Steps>();
+        for (String byOutcome : lifecycleAsText.split(keywords.outcome()) ){ 
+            byOutcome = byOutcome.trim();
+            if ( byOutcome.isEmpty() ) continue;
+            String outcomeAsText = findOutcome(byOutcome);
+            String filtersAsText = findFilters(removeStart(byOutcome, outcomeAsText));
+            List<String> steps = findSteps(startingWithNL(removeStart(byOutcome, filtersAsText)));
+            list.add(new Steps(parseOutcome(outcomeAsText), parseFilters(filtersAsText), steps));
+        }
+        return list.toArray(new Steps[list.size()]);
+    }
 
-	private String findFilters(String stepsByFilters) {
-    	Matcher findingFilters = findingLifecycleFilters().matcher(stepsByFilters.trim());
-    	if ( findingFilters.matches() ){
-    		return findingFilters.group(1).trim();
-    	}
-		return NONE;
+    private String findOutcome(String stepsByOutcome) {
+        Matcher findingOutcome = findingLifecycleOutcome().matcher(stepsByOutcome);
+        if ( findingOutcome.matches() ){
+            return findingOutcome.group(1).trim();
+        }
+        return keywords.outcomeAny();
+    }
+
+    private Outcome parseOutcome(String outcomeAsText) {
+        if ( outcomeAsText.equals(keywords.outcomeSuccess()) ){
+            return Outcome.SUCCESS;
+        } else if ( outcomeAsText.equals(keywords.outcomeFailure()) ){
+            return Outcome.FAILURE;
+        }
+        return Outcome.ANY;
+    }
+
+    private String findFilters(String stepsByFilters) {
+        Matcher findingFilters = findingLifecycleFilters().matcher(stepsByFilters.trim());
+        if ( findingFilters.matches() ){
+            return findingFilters.group(1).trim();
+        }
+        return NONE;
     }
 
     private String parseFilters(String filtersAsText) {
-		return removeStart(filtersAsText, keywords.metaFilter()).trim();
-	}
+        return removeStart(filtersAsText, keywords.metaFilter()).trim();
+    }
 
-	private List<Scenario> parseScenariosFrom(String storyAsText) {
+    private List<Scenario> parseScenariosFrom(String storyAsText) {
         List<Scenario> parsed = new ArrayList<Scenario>();
         for (String scenarioAsText : splitScenarios(storyAsText)) {
             parsed.add(parseScenario(scenarioAsText));

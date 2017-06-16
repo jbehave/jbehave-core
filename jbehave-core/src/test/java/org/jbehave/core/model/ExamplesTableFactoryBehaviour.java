@@ -1,5 +1,6 @@
 package org.jbehave.core.model;
 
+import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.ResourceLoader;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class ExamplesTableFactoryBehaviour {
     @Test
     public void shouldCreateExamplesTableFromTableInput() {
         // Given
-        ExamplesTableFactory factory = new ExamplesTableFactory(new TableTransformers());
+        ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
         
         // When        
         ExamplesTable examplesTable = factory.createExamplesTable(TABLE_AS_STRING);
@@ -58,7 +59,7 @@ public class ExamplesTableFactoryBehaviour {
     @Test
     public void shouldCreateExamplesTableFromTableInputWithInlinedSeparators() {
         // Given
-        ExamplesTableFactory factory = new ExamplesTableFactory(new TableTransformers());
+        ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
 
         // When
         ExamplesTable examplesTable = factory.createExamplesTable(TABLE_WITH_INLINED_SEPARATTORS);

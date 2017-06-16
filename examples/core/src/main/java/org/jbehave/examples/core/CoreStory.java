@@ -1,7 +1,6 @@
 package org.jbehave.examples.core;
 
 import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
@@ -50,10 +49,7 @@ import org.jbehave.examples.core.steps.SearchSteps;
 import org.jbehave.examples.core.steps.StepsContextSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
 
-import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
 
 /**
  * <p>
@@ -83,13 +79,14 @@ public abstract class CoreStory extends JUnitStory {
         Class<? extends Embeddable> embeddableClass = this.getClass();
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
+        LoadFromClasspath resourceLoader = new LoadFromClasspath(embeddableClass);
         TableTransformers tableTranformers = new TableTransformers();
         // Start from default ParameterConverters instance
-        ParameterConverters parameterConverters = new ParameterConverters(tableTranformers);
+        ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, tableTranformers);
         // factory to allow parameter conversion and loading from external
         // resources (used by StoryParser too)
-        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(),
-                new LoadFromClasspath(embeddableClass), parameterConverters, tableTranformers);
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), resourceLoader,
+                parameterConverters, tableTranformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
@@ -97,7 +94,7 @@ public abstract class CoreStory extends JUnitStory {
         return new MostUsefulConfiguration()
                 .useStoryControls(new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false))
                 //.usePendingStepStrategy(new FailingUponPendingStep())
-                .useStoryLoader(new LoadFromClasspath(embeddableClass))
+                .useStoryLoader(resourceLoader)
                 .useStoryParser(new RegexStoryParser(examplesTableFactory))
                 .useStoryPathResolver(new UnderscoredCamelCaseResolver())
                 .useStoryReporterBuilder(
