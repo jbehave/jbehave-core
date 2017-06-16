@@ -16,6 +16,7 @@ import org.hamcrest.Matchers;
 import org.jbehave.core.embedder.MetaFilter.DefaultMetaMatcher;
 import org.jbehave.core.embedder.MetaFilter.MetaMatcher;
 import org.jbehave.core.model.Meta;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class MetaFilterBehaviour {
@@ -120,6 +121,7 @@ public class MetaFilterBehaviour {
     }
 
     @Test
+    @Ignore("Run on-demand depending when the env allows it")
     public void shouldBeFastUsingGroovy() {
         MetaFilter filter = filter("groovy: a != '11' && b != '22'");
         long start = System.currentTimeMillis();
