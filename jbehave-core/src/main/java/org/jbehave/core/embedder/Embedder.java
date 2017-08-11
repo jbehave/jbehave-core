@@ -88,9 +88,9 @@ public class Embedder {
         for (String storyPath : storyPaths) {
             Story story = storyManager.storyOfPath(storyPath);
             embedderMonitor.mappingStory(storyPath, metaFilters());
-            storyMapper.map(story, new MetaFilter(""));
+            storyMapper.map(story, new MetaFilter("", embedderMonitor));
             for (String filter : metaFilters) {
-                storyMapper.map(story, new MetaFilter(filter));
+                storyMapper.map(story, new MetaFilter(filter, embedderMonitor));
             }
         }
 
