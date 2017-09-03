@@ -14,6 +14,7 @@ public class ExecutorsBehaviour {
     @Test
     public void shouldCreateExecutors() {
         assertThat(new FixedThreadExecutors().create(new EmbedderControls()), instanceOf(ExecutorService.class));
+        assertThat(new DirectExecutorService().create(new EmbedderControls()), instanceOf(ExecutorService.class));
         assertThat(new SameThreadExecutors().create(new EmbedderControls()), instanceOf(ExecutorService.class));
     }
   

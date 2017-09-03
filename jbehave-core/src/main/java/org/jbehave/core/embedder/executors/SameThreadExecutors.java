@@ -8,6 +8,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 
 /**
  *  Creates instances of {@link MoreExecutors#sameThreadExecutor()}.
+ *  @deprecated Use {@link DirectExecutorService}
  */
 public class SameThreadExecutors implements ExecutorServiceFactory {
 
