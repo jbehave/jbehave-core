@@ -17,6 +17,7 @@
 
   <modules>
     <module>core</module>
+    <module>failing</module>
     <module>ant</module>
     <module>annotations</module>
     <module>executable-jar</module>

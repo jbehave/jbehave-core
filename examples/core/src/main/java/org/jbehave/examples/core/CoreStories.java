@@ -128,6 +128,6 @@ public class CoreStories extends JUnitStories {
     @Override
     protected List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/*.story");
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing_before*.story,**/given_relative_path*");
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing/*.story,**/given_relative_path*");
     }
 }

@@ -1,4 +1,4 @@
-package org.jbehave.examples.core.stories;
+package org.jbehave.examples.core.stories.failing;
 
 import org.jbehave.core.annotations.BeforeStories;
 import org.jbehave.core.configuration.Configuration;

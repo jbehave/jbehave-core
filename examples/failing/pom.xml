@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.jbehave</groupId>
+    <artifactId>jbehave-examples</artifactId>
+    <version>4.2-SNAPSHOT</version>
+  </parent>
+  <artifactId>jbehave-failing-example</artifactId>
+  <name>JBehave Failing Example</name>
+
+  <properties>
+    <embeddables>**/FailingStories.java</embeddables>
+    <meta.filter></meta.filter>
+    <threads>2</threads>
+    <ignore.failure.in.stories>true</ignore.failure.in.stories>
+    <ignore.failure.in.view>true</ignore.failure.in.view>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.jbehave</groupId>
+      <artifactId>jbehave-core-example</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.jbehave</groupId>
+        <artifactId>jbehave-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack-view-resources</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>unpack-view-resources</goal>
+            </goals>
+          </execution>        
+          <execution>
+            <id>embeddable-stories</id>
+            <phase>integration-test</phase>
+            <configuration>
+              <includes>
+                <include>${embeddables}</include>
+              </includes>
+              <excludes />
+              <skip>${skip}</skip>
+              <batch>false</batch>
+              <generateViewAfterStories>true</generateViewAfterStories>
+              <ignoreFailureInStories>${ignore.failure.in.stories}</ignoreFailureInStories>
+              <ignoreFailureInView>${ignore.failure.in.view}</ignoreFailureInView>
+              <storyTimeoutInSecs>300</storyTimeoutInSecs>  
+              <storyTimeoutInSecsByPath>**/and_*.story:8,**/*calendar.story:15</storyTimeoutInSecsByPath>  
+              <threads>${threads}</threads>
+              <metaFilters>
+                <metaFilter>${meta.filter}</metaFilter>
+              </metaFilters>
+            </configuration>
+            <goals>
+              <goal>run-stories-as-embeddables</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
