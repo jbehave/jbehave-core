@@ -11,10 +11,10 @@
 
   <properties>
     <embeddables>**/CoreStories.java</embeddables>
-    <meta.filter></meta.filter>
+    <meta.filter>-skip</meta.filter>
     <threads>2</threads>
     <ignore.failure.in.stories>true</ignore.failure.in.stories>
-    <ignore.failure.in.view>true</ignore.failure.in.view>
+    <ignore.failure.in.view>false</ignore.failure.in.view>
   </properties>
 
   <build>
