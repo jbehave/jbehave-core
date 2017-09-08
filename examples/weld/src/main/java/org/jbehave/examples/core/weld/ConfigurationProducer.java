@@ -35,7 +35,6 @@ public class ConfigurationProducer {
             .useStoryControls(new StoryControls()
                 .doDryRun(false)
                 .doSkipScenariosAfterFailure(false))
-            .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"))
             .useStoryLoader(resourceLoader)
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withDefaultFormats()

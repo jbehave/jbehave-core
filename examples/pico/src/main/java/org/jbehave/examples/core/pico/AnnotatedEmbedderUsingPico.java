@@ -67,7 +67,6 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
         public void configure(MutablePicoContainer container) {
             container.addComponent(StoryControls.class, new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
             container.addComponent(StoryLoader.class, new LoadFromClasspath(this.getClass().getClassLoader()));
-            container.addComponent(StepPatternParser.class, new RegexPrefixCapturingPatternParser("%"));
             container.addComponent(ParameterConverter.class, new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
             container.addComponent(new StoryReporterBuilder().withDefaultFormats().withFormats(CONSOLE, HTML, TXT, XML)
                     .withCodeLocation(CodeLocations.codeLocationFromClass(this.getClass())).withFailureTrace(true));

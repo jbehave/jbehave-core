@@ -68,7 +68,6 @@ public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
         @Override
         protected void configure() {
             bind(StoryControls.class).toInstance(new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
-            bind(StepPatternParser.class).toInstance(new RegexPrefixCapturingPatternParser("%"));
             bind(StoryLoader.class).toInstance(new LoadFromClasspath(this.getClass().getClassLoader()));
             bind(ParameterConverter.class).toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
             bind(StoryReporterBuilder.class).toInstance(

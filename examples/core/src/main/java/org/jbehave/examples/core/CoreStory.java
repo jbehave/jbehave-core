@@ -104,9 +104,7 @@ public abstract class CoreStory extends JUnitStory {
                                 .withViewResources(viewResources).withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML)
                                 .withCrossReference(xref)
                                 .withFailureTrace(true).withFailureTraceCompression(true))
-                .useParameterConverters(parameterConverters)
-                // use '%' instead of '$' to identify parameters
-                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"));
+                .useParameterConverters(parameterConverters);
     }
 
     @Override

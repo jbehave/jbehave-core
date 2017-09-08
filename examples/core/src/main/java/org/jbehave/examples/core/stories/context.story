@@ -1,7 +1,5 @@
-Narrative: 
-In order to share variables between steps 
-As a scenario writer
-I want to use a context object
+
+Meta: @skip
 
 Scenario:  One
 
