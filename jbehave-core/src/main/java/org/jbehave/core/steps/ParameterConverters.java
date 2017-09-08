@@ -85,7 +85,7 @@ public class ParameterConverters {
      * dependencies, a SilentStepMonitor, English as Locale and "," as list
      * separator.
      * 
-     * @param resourceLoader the resource loader
+     * @param resourceLoader Resource loader
      * @param tableTransformers the table transformers
      */
     public ParameterConverters(ResourceLoader resourceLoader, TableTransformers tableTransformers) {
@@ -96,7 +96,7 @@ public class ParameterConverters {
      * Creates a ParameterConverters using given StepMonitor
      * 
      * @param monitor the StepMonitor to use
-     * @param resourceLoader the resource loader
+     * @param resourceLoader Resource loader
      * @param tableTransformers the table transformers
      */
     public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader,
@@ -108,7 +108,7 @@ public class ParameterConverters {
     /**
      * Create a ParameterConverters with given thread-safety
      * 
-     * @param resourceLoader the resource loader
+     * @param resourceLoader Resource loader
      * @param tableTransformers the table transformers
      * @param threadSafe the boolean flag to determine if access to
      * {@link ParameterConverter} should be thread-safe
@@ -125,7 +125,7 @@ public class ParameterConverters {
      * (for instance "," is used as decimal separator in some Locale)
      * 
      * @param monitor the StepMonitor reporting the conversions
-     * @param resourceLoader the resource loader
+     * @param resourceLoader Resource loader
      * @param tableTransformers the table transformers
      * @param locale the Locale to use when reading numbers
      * @param listSeparator the String to use as list separator
