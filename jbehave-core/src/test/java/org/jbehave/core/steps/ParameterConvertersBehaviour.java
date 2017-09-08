@@ -21,7 +21,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
@@ -57,11 +56,9 @@ public class ParameterConvertersBehaviour {
     @SuppressWarnings("unchecked")
     @Test
     public void shouldDefineDefaultConverters() {
-        LoadFromClasspath resourceLoader = new LoadFromClasspath();
         TableTransformers tableTransformers = new TableTransformers();
-        ParameterConverters converters = new ParameterConverters(resourceLoader, tableTransformers);
-        ParameterConverter[] defaultConverters = converters.defaultConverters(resourceLoader, tableTransformers,
-                Locale.ENGLISH, ",");
+        ParameterConverters converters = new ParameterConverters(tableTransformers);
+        ParameterConverter[] defaultConverters = converters.defaultConverters(tableTransformers, Locale.ENGLISH, ",");
         assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,
                 NumberListConverter.class, StringListConverter.class, DateConverter.class, EnumConverter.class,
                 EnumListConverter.class, ExamplesTableConverter.class, ExamplesTableParametersConverter.class);
@@ -374,8 +371,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldConvertMultilineTable() throws ParseException, IntrospectionException {
-        ParameterConverter converter = new ExamplesTableConverter(
-                new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
+        ParameterConverter converter = new ExamplesTableConverter(new ExamplesTableFactory(new TableTransformers()));
         assertThat(converter.accept(ExamplesTable.class), is(true));
         assertThat(converter.accept(WrongType.class), is(false));
         assertThat(converter.accept(mock(Type.class)), is(false));
@@ -394,7 +390,7 @@ public class ParameterConvertersBehaviour {
     @Test
     public void shouldConvertMultilineTableToParameters() throws ParseException, IntrospectionException {
         ParameterConverter converter = new ExamplesTableParametersConverter(
-                new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
+                new ExamplesTableFactory(new TableTransformers()));
         Type type = SomeSteps.methodFor("aMethodWithExamplesTableParameters").getGenericParameterTypes()[0];
         assertThat(converter.accept(type), is(true));
         assertThat(converter.accept(WrongType.class), is(false));
@@ -414,7 +410,7 @@ public class ParameterConvertersBehaviour {
     @Test
     public void shouldConvertSinglelineTableToParameters() throws ParseException, IntrospectionException {
         ParameterConverter converter = new ExamplesTableParametersConverter(
-                new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
+                new ExamplesTableFactory(new TableTransformers()));
         Type type = SomeSteps.methodFor("aMethodWithExamplesTableParameter").getGenericParameterTypes()[0];
         assertThat(converter.accept(type), is(true));
         assertThat(converter.accept(WrongType.class), is(false));
@@ -454,7 +450,7 @@ public class ParameterConvertersBehaviour {
 
     @Test(expected = ParameterConvertionFailed.class)
     public void shouldFailToConvertToUnknownType() throws ParseException, IntrospectionException {
-        new ParameterConverters(new LoadFromClasspath(), new TableTransformers()).convert("abc", WrongType.class);
+        new ParameterConverters(new TableTransformers()).convert("abc", WrongType.class);
     }
 
     static class WrongType {
@@ -538,7 +534,7 @@ public class ParameterConvertersBehaviour {
 
     @Test(expected = ParameterConvertionFailed.class)
     public void shouldNotModifyListOfConvertersFromOriginalParameterConvertersWhenCreatingNewInstance() throws Exception {
-        ParameterConverters original = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
+        ParameterConverters original = new ParameterConverters(new TableTransformers());
         original.newInstanceAdding(new FooToBarParameterConverter());
 
         ensureItStillDoesNotKnowHowToConvertFooToBar(original);

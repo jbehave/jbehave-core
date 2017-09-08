@@ -36,7 +36,6 @@ import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.SilentlyAbsorbingFailure;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.ExamplesTable;
@@ -300,7 +299,7 @@ public class GuiceAnnotationBuilderBehaviour {
     public static class MyExampleTableConverter extends ParameterConverters.ExamplesTableConverter {
 
         public MyExampleTableConverter() {
-            super(new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers()));
+            super(new ExamplesTableFactory(new TableTransformers()));
         }
 
     }

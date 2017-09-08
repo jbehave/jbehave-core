@@ -89,19 +89,18 @@ public class CoreStories extends JUnitStories {
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
         viewResources.put("reports", "ftl/jbehave-reports.ftl");
-        LoadFromClasspath resourceLoader = new LoadFromClasspath(embeddableClass);
         TableTransformers tableTransformers = new TableTransformers();
         // Start from default ParameterConverters instance
-        ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, tableTransformers);
+        ParameterConverters parameterConverters = new ParameterConverters(tableTransformers);
         // factory to allow parameter conversion and loading from external
         // resources (used by StoryParser too)
-        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), resourceLoader,
-                parameterConverters, tableTransformers);
+        ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(),
+                new LoadFromClasspath(embeddableClass), parameterConverters, tableTransformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
         return new MostUsefulConfiguration()                
-                .useStoryLoader(resourceLoader)
+                .useStoryLoader(new LoadFromClasspath(embeddableClass))
                 .useStoryParser(new RegexStoryParser(examplesTableFactory))
                 .useStoryReporterBuilder(
                         new StoryReporterBuilder()

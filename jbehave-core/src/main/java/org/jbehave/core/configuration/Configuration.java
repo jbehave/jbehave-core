@@ -199,7 +199,7 @@ public abstract class Configuration {
 
     public StoryParser storyParser() {
         if (storyParser == null) {
-            storyParser = new RegexStoryParser(storyLoader(), tableTransformers());
+            storyParser = new RegexStoryParser(tableTransformers());
         }
         return storyParser;
     }
@@ -312,7 +312,7 @@ public abstract class Configuration {
 
     public ParameterConverters parameterConverters() {
         if (parameterConverters == null) {
-            parameterConverters = new ParameterConverters(storyLoader(), tableTransformers());
+            parameterConverters = new ParameterConverters(tableTransformers());
         }
         return parameterConverters;
     }

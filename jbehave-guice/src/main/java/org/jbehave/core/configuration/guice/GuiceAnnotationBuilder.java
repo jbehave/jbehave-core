@@ -10,7 +10,6 @@ import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.AnnotationRequired;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.PrintStreamAnnotationMonitor;
-import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.CompositeStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -80,9 +79,9 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder, ResourceLoader resourceLoader,
+    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder,
             TableTransformers tableTransformers) {
-        ParameterConverters converters = super.parameterConverters(annotationFinder, resourceLoader, tableTransformers);
+        ParameterConverters converters = super.parameterConverters(annotationFinder, tableTransformers);
         if (injector != null) {
             return converters.addConverters(findConverters(injector));
         }

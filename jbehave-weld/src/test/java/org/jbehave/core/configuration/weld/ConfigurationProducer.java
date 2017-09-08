@@ -40,13 +40,12 @@ public class ConfigurationProducer
         viewResources.setProperty("decorateNonHtml", "true");
 
         TableTransformers tableTransformers = new TableTransformers();
-        LoadFromURL resourceLoader = new LoadFromURL();
         return new MostUsefulConfiguration()
                     .useStoryControls(new StoryControls()
                             .doDryRun(true)
                             .doSkipScenariosAfterFailure(true))
                     .useFailureStrategy(new SilentlyAbsorbingFailure())
-                    .useStoryLoader(resourceLoader)
+                    .useStoryLoader(new LoadFromURL())
                     .useStepPatternParser(new RegexPrefixCapturingPatternParser("MyPrefix"))
                     .useStoryReporterBuilder(new StoryReporterBuilder()
                             .withDefaultFormats()
@@ -54,7 +53,7 @@ public class ConfigurationProducer
                             .withKeywords(new LocalizedKeywords(Locale.ITALIAN))
                             .withRelativeDirectory("my-output-directory")
                             .withViewResources(viewResources).withFailureTrace(true))
-                    .useParameterConverters(new ParameterConverters(resourceLoader, tableTransformers)
+                    .useParameterConverters(new ParameterConverters(tableTransformers)
                             .addConverters(new CustomConverter(),new MyDateConverter()))
                     .useTableTransformers(tableTransformers);
                     
