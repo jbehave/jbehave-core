@@ -8,7 +8,7 @@ import org.jbehave.core.annotations.When;
 
 public class CompositeSteps {
 
-    @Given("%customer has previously bought a %product") // used in normal parameter matching
+    @Given("$customer has previously bought a $product") // used in normal parameter matching
     @Alias("<customer> has previously bought a <product>") // used in parameterised scenarios
     @Composite(steps = { "Given <customer> is logged in", 
                          "Given <customer> has a cart", 
@@ -16,7 +16,7 @@ public class CompositeSteps {
     public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters 
     }
     
-    @Given("%customer returns to cart")
+    @Given("$customer returns to cart")
     @Composite(steps = { "Given step not found", 
                          "Given <customer> has a cart" })
     public void anotherCompositeStep(@Named("customer") String customer) { // composed steps use these named parameters 

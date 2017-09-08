@@ -47,7 +47,7 @@ public class FailureCorrelationStories extends CoreStories {
         return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), "**/failure_correlation*.story", "");                
     }
 
-    @When("a failure occurs in story %count")
+    @When("a failure occurs in story $count")
     public void whenSomethingHappens(int count){
         throw new RuntimeException("BUM! in story "+count);
     }

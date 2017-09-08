@@ -27,7 +27,7 @@ public class MetaParametrisationSteps {
         this.variant = variant;
     }
 
-    @Then("the theme is '%theme' with variant '%variant'")
+    @Then("the theme is '$theme' with variant '$variant'")
     public void thenTheThemeAndVariantAre(String theme, String variant) {
         assertEquals(theme, this.theme);
         assertEquals(variant, this.variant);

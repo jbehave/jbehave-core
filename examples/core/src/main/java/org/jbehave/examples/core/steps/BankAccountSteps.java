@@ -24,29 +24,29 @@ public class BankAccountSteps {
         this.account = new BankAccount("Me");
     }
 
-    @Given("my balance is %balance")
+    @Given("my balance is $balance")
     public void givenBalanceIs(int balance){
         account.setBalance(balance);
     }
 
-    @When("I withdraw %value")
+    @When("I withdraw $value")
     public void whenIWithdraw(int value){
         account.withdraw(value);
     }
 
-    @Then("my bank account balance should be %balance")
+    @Then("my bank account balance should be $balance")
     @Alias("my bank account balance should be <balance>")
     public void thenBalanceShouldBe(@Named("balance")int balance){
         Assert.assertEquals(balance, account.getBalance());
     }
 
-    @When("I add %value")
+    @When("I add $value")
     @Alias("I add <value>")
     public void whenIAdd(@Named("value")int value) {
         account.add(value);
     }
 
-    @Given("these people have bank accounts with balances: %accountInfos")
+    @Given("these people have bank accounts with balances: $accountInfos")
     public void givenPeopleHaveBankAccounts(@Named("accountInfos")ExamplesTable accountInfos) throws Throwable {
         for(Map<String, String> info : accountInfos.getRows()) {
             final BankAccount account = new BankAccount(info.get("Name"));

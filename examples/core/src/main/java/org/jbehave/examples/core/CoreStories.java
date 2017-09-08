@@ -110,8 +110,6 @@ public class CoreStories extends JUnitStories {
                                 .withFormats(contextFormat, CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
                                 .withFailureTraceCompression(true).withCrossReference(xref))
                 .useParameterConverters(parameterConverters)
-                // use '%' instead of '$' to identify parameters
-                .useStepPatternParser(new RegexPrefixCapturingPatternParser("%"))
                 .useStepMonitor(contextStepMonitor);
     }
 
