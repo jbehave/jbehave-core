@@ -35,7 +35,8 @@ public class TableSteps {
 
 	@Then("the table transformed by $transformer is: $table")
 	public void thenTheTransformedTableIs(String transformer, String table) {
-		String transformed = this.transformers.transform(transformer, this.table, new ExamplesTableProperties(new Properties()));
+		ExamplesTableProperties properties = new ExamplesTableProperties(new ExamplesTable(this.table).getProperties());
+		String transformed = this.transformers.transform(transformer, this.table, properties);
 		MatcherAssert.assertThat(transformed.trim(), Matchers.equalTo(table));
 	}
 	
