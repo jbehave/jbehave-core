@@ -40,7 +40,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class TraderSteps {
 
 	private TradingService service;
-	private Stock stock;
+	private ThreadLocal<Stock> stock = new ThreadLocal<Stock>();
 	private Trader trader;
 	private List<Trader> traders = new ArrayList<Trader>();
 	private List<Trader> searchedTraders;
@@ -150,7 +150,7 @@ public class TraderSteps {
 	@Alias("a stock of <symbol> and a <threshold>")
 	// alias used with examples table
 	public void aStock(@Named("symbol") String symbol, @Named("threshold") double threshold) {
-		stock = getService().newStock(symbol, threshold);
+		stock.set(getService().newStock(symbol, threshold));
 	}
 
 	@When("the stock is traded at price $price")
@@ -158,14 +158,14 @@ public class TraderSteps {
 			"the stock is traded with <price>" })
 	// multiple aliases, one used with examples table
 	public void theStockIsTraded(@Named("price") double price) {
-		stock.tradeAt(price);
+		stock.get().tradeAt(price);
 	}
 
 	@Given("the alert status is $status")
 	// shows that matching pattern need only be unique for step type
 	public void theAlertStatusIsReset(@Named("status") String status) {
-		if (AlertStatus.OFF.name().startsWith(status) && stock != null) {
-			stock.resetAlert();
+		if (AlertStatus.OFF.name().startsWith(status) && stock.get() != null) {
+			stock.get().resetAlert();
 		}
 	}
 
@@ -173,13 +173,13 @@ public class TraderSteps {
 	@Alias("the trader is alerted with <status>")
 	// alias used with examples table
 	public void theAlertStatusIs(@Named("status") String status) {
-		assertThat(stock.getStatus().name(), equalTo(status));
+		assertThat(stock.get().getStatus().name(), equalTo(status));
 	}
 
 	@Then(value = "the alert status is currently $status", priority = 1)
 	// prioritise over potential match with previous method
 	public void theAlertStatusIsCurrently(@Named("status") String status) {
-		assertThat(stock.getStatus().name(), equalTo(status));
+		assertThat(stock.get().getStatus().name(), equalTo(status));
 	}
 
 	@When("the trader sells all stocks")
