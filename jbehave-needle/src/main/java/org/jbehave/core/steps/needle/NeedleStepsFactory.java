@@ -35,7 +35,7 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
 
     private final Map<Class<?>, Object> cachedTypeInstances = new LinkedHashMap<Class<?>, Object>();
 
-    private final Configuration configuration;
+    private Configuration configuration;
     private Class<?>[] steps;
 
     /**
@@ -53,10 +53,10 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
      * Creates factory with given configuration, injection providers and step instances.
      * @param configuration
      *        JBehave configuration
+     * @param injectionProviders
+     *        injection providers.
      * @param steps
      *        step classes
-     * @param providers
-     *        injection providers.
      */
     public NeedleStepsFactory(final Configuration configuration, final Set<InjectionProvider<?>> injectionProviders, final Class<?>... steps) {
         super(setUpInjectionProviders(JBehaveNeedleConfiguration.RESOURCE_JBEHAVE_NEEDLE));

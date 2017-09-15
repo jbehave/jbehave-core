@@ -12,7 +12,7 @@
   <description>JBehave Core is a project providing core functionality supporting and facilitating Behaviour-Driven Development.</description>
 
   <properties>
-    <jdk.version>1.6</jdk.version>
+    <jdk.version>1.7</jdk.version>
   </properties>
 
   <modules>
