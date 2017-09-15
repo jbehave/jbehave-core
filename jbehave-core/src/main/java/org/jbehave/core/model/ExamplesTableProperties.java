@@ -6,8 +6,13 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Properties;
 
-public final class ExamplesTableProperties
-{
+public final class ExamplesTableProperties {
+
+    private static final String HEADER_SEPARATOR = "|";
+    private static final String VALUE_SEPARATOR = "|";
+    private static final String IGNORABLE_SEPARATOR = "|--";
+    private static final String COMMENT_SEPARATOR = "#";
+
     private static final String HEADER_SEPARATOR_KEY = "headerSeparator";
     private static final String VALUE_SEPARATOR_KEY = "valueSeparator";
     private static final String IGNORABLE_SEPARATOR_KEY = "ignorableSeparator";
@@ -19,6 +24,18 @@ public final class ExamplesTableProperties
 
     public ExamplesTableProperties(Properties properties){
         this.properties.putAll(properties);
+        if ( !this.properties.containsKey(HEADER_SEPARATOR_KEY) ){
+            this.properties.setProperty(HEADER_SEPARATOR_KEY, HEADER_SEPARATOR);
+        }
+        if ( !this.properties.containsKey(VALUE_SEPARATOR_KEY) ){
+            this.properties.setProperty(VALUE_SEPARATOR_KEY, VALUE_SEPARATOR);
+        }
+        if ( !this.properties.containsKey(IGNORABLE_SEPARATOR_KEY) ){
+            this.properties.setProperty(IGNORABLE_SEPARATOR_KEY, IGNORABLE_SEPARATOR);
+        }
+        if ( !this.properties.containsKey(COMMENT_SEPARATOR_KEY) ){
+            this.properties.setProperty(COMMENT_SEPARATOR_KEY, COMMENT_SEPARATOR);
+        }
     }
 
     public ExamplesTableProperties(String propertiesAsString, String defaultHeaderSeparator, String defaultValueSeparator,

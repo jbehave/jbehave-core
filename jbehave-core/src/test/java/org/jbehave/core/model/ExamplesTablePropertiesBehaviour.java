@@ -10,104 +10,42 @@ import java.util.Properties;
 import org.junit.Test;
 
 /**
- * @author Valery_Yatsynovich
+ * @author Valery Yatsynovich
  */
 public class ExamplesTablePropertiesBehaviour {
 
-    private static final String DEFAULT_SEPARATOR = "|";
-    private static final String DEFAULT_IGNORABLE_SEPARATOR = "|--";
-
-    private static final String PROPERTIES_AS_STRING = "ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,"
-            + "commentSeparator=#,trim=false,metaByRow=true,transformer=CUSTOM_TRANSFORMER";
-
-    private ExamplesTableProperties customExamplesTableProperties() {
-        return new ExamplesTableProperties(PROPERTIES_AS_STRING, DEFAULT_SEPARATOR, DEFAULT_SEPARATOR,
-                DEFAULT_IGNORABLE_SEPARATOR);
-    }
-
-    private ExamplesTableProperties emptyExamplesTableProperties() {
-        return new ExamplesTableProperties("", DEFAULT_SEPARATOR, DEFAULT_SEPARATOR, DEFAULT_IGNORABLE_SEPARATOR);
+    @Test
+    public void canGetCustomProperties() {
+        ExamplesTableProperties properties = new ExamplesTableProperties("ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,"
+                + "commentSeparator=#,trim=false,metaByRow=true,transformer=CUSTOM_TRANSFORMER", "|", "|",
+                "|--");
+        assertEquals("\n", properties.getRowSeparator());
+        assertEquals("!", properties.getHeaderSeparator());
+        assertEquals("!", properties.getValueSeparator());
+        assertEquals("!--", properties.getIgnorableSeparator());
+        assertEquals("#", properties.getCommentSeparator());
+        assertFalse(properties.isTrim());
+        assertTrue(properties.isMetaByRow());
+        assertEquals("CUSTOM_TRANSFORMER", properties.getTransformer());
     }
 
     @Test
-    public void testGetRowSeparator() {
-        assertEquals("\n", customExamplesTableProperties().getRowSeparator());
+    public void canGetDefaultProperties() {
+        ExamplesTableProperties properties = new ExamplesTableProperties(new Properties());
+        assertEquals("|", properties.getHeaderSeparator());
+        assertEquals("|", properties.getValueSeparator());
+        assertEquals("|--", properties.getIgnorableSeparator());
+        assertEquals("#", properties.getCommentSeparator());
+        assertTrue(properties.isTrim());
+        assertFalse(properties.isMetaByRow());
+        assertNull(properties.getTransformer());
     }
 
     @Test
-    public void testGetCustomHeaderSeparator() {
-        assertEquals("!", customExamplesTableProperties().getHeaderSeparator());
-    }
-
-    @Test
-    public void testGetCustomValueSeparator() {
-        assertEquals("!", customExamplesTableProperties().getValueSeparator());
-    }
-
-    @Test
-    public void testGetCustomIgnorableSeparator() {
-        assertEquals("!--", customExamplesTableProperties().getIgnorableSeparator());
-    }
-
-    @Test
-    public void testGetCustomCommentSeparator() {
-        assertEquals("#", customExamplesTableProperties().getCommentSeparator());
-    }
-
-    @Test
-    public void testGetCustomTrim() {
-        assertFalse(customExamplesTableProperties().isTrim());
-    }
-
-    @Test
-    public void testGetCustomMetaByRow() {
-        assertTrue(customExamplesTableProperties().isMetaByRow());
-    }
-
-    @Test
-    public void testGetCustomTransformer() {
-        assertEquals("CUSTOM_TRANSFORMER", customExamplesTableProperties().getTransformer());
-    }
-
-    @Test
-    public void testGetDefaultHeaderSeparator() {
-        assertEquals(DEFAULT_SEPARATOR, emptyExamplesTableProperties().getHeaderSeparator());
-    }
-
-    @Test
-    public void testGetDefaultValueSeparator() {
-        assertEquals(DEFAULT_SEPARATOR, emptyExamplesTableProperties().getValueSeparator());
-    }
-
-    @Test
-    public void testGetDefaultIgnorableSeparator() {
-        assertEquals(DEFAULT_IGNORABLE_SEPARATOR, emptyExamplesTableProperties().getIgnorableSeparator());
-    }
-
-    @Test
-    public void testGetDefaultCommentSeparator() {
-        assertNull(emptyExamplesTableProperties().getCommentSeparator());
-    }
-
-    @Test
-    public void testGetDefaultTrim() {
-        assertTrue(emptyExamplesTableProperties().isTrim());
-    }
-
-    @Test
-    public void testGetDefaultMetaByRow() {
-        assertFalse(emptyExamplesTableProperties().isMetaByRow());
-    }
-
-    @Test
-    public void testGetDefaultTransformer() {
-        assertNull(emptyExamplesTableProperties().getTransformer());
-    }
-
-    @Test
-    public void testGetAllProperties() {
+    public void canGetAllProperties() {
         Properties properties = new Properties();
         properties.setProperty("key", "value");
-        assertEquals(properties, new ExamplesTableProperties(properties).getProperties());
+        ExamplesTableProperties tableProperties = new ExamplesTableProperties(properties);
+        assertTrue(tableProperties.getProperties().containsKey("key"));
     }
 }
