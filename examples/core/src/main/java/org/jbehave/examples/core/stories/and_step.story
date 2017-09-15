@@ -3,12 +3,6 @@ As a story writer
 I want to explain the use of And steps and also show that I can use keywords in scenario title and comments
 So that I'll be more communicative
 
-Scenario: An initial And step should be marked as pending as there is not previous step
-
-!-- What is this And of?  JBehave treats as pending 
-And the wind blows
-!-- Look Ma' - I can also use keywords in scenario title and step comments!
-
 Scenario: And steps should match the previous step type
 
 Given the wind blows
