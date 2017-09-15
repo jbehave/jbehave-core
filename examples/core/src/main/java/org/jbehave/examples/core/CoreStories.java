@@ -69,8 +69,6 @@ public class CoreStories extends JUnitStories {
     private final CrossReference xref = new CrossReference();
     private Context context = new Context();
     private Format contextFormat = new ContextOutput(context);
-    private ContextView contextView = new JFrameContextView().sized(640, 120);
-    private ContextStepMonitor contextStepMonitor = new ContextStepMonitor(context, contextView, xref.getStepMonitor());
 
     public CoreStories() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
@@ -108,8 +106,7 @@ public class CoreStories extends JUnitStories {
                                 .withDefaultFormats().withViewResources(viewResources)
                                 .withFormats(contextFormat, CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
                                 .withFailureTraceCompression(true).withCrossReference(xref))
-                .useParameterConverters(parameterConverters)
-                .useStepMonitor(contextStepMonitor);
+                .useParameterConverters(parameterConverters);
     }
 
     @Override
