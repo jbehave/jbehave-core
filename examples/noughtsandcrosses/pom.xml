@@ -13,8 +13,8 @@
     <dependency>
       <groupId>org.uispec4j</groupId>
       <artifactId>uispec4j</artifactId>
-      <version>2.4</version>
-      <classifier>jdk16</classifier>
+      <version>2.5-RC1</version>
+      <classifier>jdk7</classifier>
     </dependency>
   </dependencies>
 

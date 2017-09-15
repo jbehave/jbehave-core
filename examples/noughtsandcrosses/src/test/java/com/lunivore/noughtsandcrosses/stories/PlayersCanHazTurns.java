@@ -9,6 +9,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -34,7 +35,7 @@ public class PlayersCanHazTurns extends NoughtsAndCrossesStory {
                 "i18n/keywords", classLoader);
         Configuration configuration = new MostUsefulConfiguration()
             .useKeywords(keywords)
-            .useStoryParser(new RegexStoryParser(keywords))
+            .useStoryParser(new RegexStoryParser(keywords, new TableTransformers()))
             .useStoryPathResolver(new UnderscoredCamelCaseResolver(""))
             .useStoryReporterBuilder(new StoryReporterBuilder()
                     .withCodeLocation(codeLocation)
