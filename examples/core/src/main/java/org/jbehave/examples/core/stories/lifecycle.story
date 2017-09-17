@@ -23,18 +23,6 @@ Meta: @simple
 When I withdraw 10
 Then my bank account balance should be 90
 
-Scenario: Failing archiving scenario
-Meta: @archiving
-
-When I withdraw 10
-Then my bank account balance should be 100
-
-Scenario: Failing non-archiving scenario
-Meta: @non-archiving
-
-When I withdraw 10
-Then my bank account balance should be 100
-
 Scenario: Scenario with Examples
 Meta: @examples
 
