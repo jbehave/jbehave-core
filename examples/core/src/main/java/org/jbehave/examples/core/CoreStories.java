@@ -37,23 +37,7 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.examples.core.service.TradingService;
-import org.jbehave.examples.core.steps.AndSteps;
-import org.jbehave.examples.core.steps.BeforeAfterSteps;
-import org.jbehave.examples.core.steps.CalendarSteps;
-import org.jbehave.examples.core.steps.CompositeSteps;
-import org.jbehave.examples.core.steps.ContextSteps;
-import org.jbehave.examples.core.steps.ExamplesTableParametersSteps;
-import org.jbehave.examples.core.steps.JsonSteps;
-import org.jbehave.examples.core.steps.MetaParametrisationSteps;
-import org.jbehave.examples.core.steps.MyContext;
-import org.jbehave.examples.core.steps.NamedParametersSteps;
-import org.jbehave.examples.core.steps.PendingSteps;
-import org.jbehave.examples.core.steps.PriorityMatchingSteps;
-import org.jbehave.examples.core.steps.RestartingSteps;
-import org.jbehave.examples.core.steps.SandpitSteps;
-import org.jbehave.examples.core.steps.SearchSteps;
-import org.jbehave.examples.core.steps.TableSteps;
-import org.jbehave.examples.core.steps.TraderSteps;
+import org.jbehave.examples.core.steps.*;
 
 /**
  * <p>
@@ -112,16 +96,21 @@ public class CoreStories extends JUnitStories {
     @Override
     public InjectableStepsFactory stepsFactory() {
         MyContext context = new MyContext();
-        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
-                new MetaParametrisationSteps(), new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(),
-                new SandpitSteps(), new SearchSteps(), new BeforeAfterSteps(), new CompositeSteps(),
-                new NamedParametersSteps(), new ExamplesTableParametersSteps(), new TableSteps(), 
-                new ContextSteps(context), new RestartingSteps(), new JsonSteps());
+        return new InstanceStepsFactory(configuration(),
+                new AndSteps(), new BankAccountSteps(), new BeforeAfterSteps(),
+                new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(), new ContextSteps(context), new StepsContextSteps(),
+                new ExamplesTableParametersSteps(),
+                new JsonSteps(), new MetaParametrisationSteps(), new NamedParametersSteps(),
+                new ParameterDelimitersSteps(), new ParametrisationByDelimitedNameSteps(), new ParametrisedSteps(),
+                new PendingSteps(), new PriorityMatchingSteps(),
+                new RestartingSteps(), new SandpitSteps(), new SearchSteps(),
+                new TableSteps(), new TraderSteps(new TradingService())
+        );
     }
 
     @Override
     protected List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/*.story");
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing/*.story,**/given_relative_path*");
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/failing/*.story,**/pending/*.story,**/given_relative_path*");
     }
 }

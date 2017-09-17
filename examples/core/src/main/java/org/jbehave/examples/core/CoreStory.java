@@ -31,24 +31,7 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.examples.core.service.TradingService;
-import org.jbehave.examples.core.steps.AndSteps;
-import org.jbehave.examples.core.steps.BeforeAfterSteps;
-import org.jbehave.examples.core.steps.CalendarSteps;
-import org.jbehave.examples.core.steps.CompositeNestedSteps;
-import org.jbehave.examples.core.steps.CompositeSteps;
-import org.jbehave.examples.core.steps.ContextSteps;
-import org.jbehave.examples.core.steps.ExamplesTableParametersSteps;
-import org.jbehave.examples.core.steps.MetaParametrisationSteps;
-import org.jbehave.examples.core.steps.MyContext;
-import org.jbehave.examples.core.steps.NamedParametersSteps;
-import org.jbehave.examples.core.steps.ParameterDelimitersSteps;
-import org.jbehave.examples.core.steps.ParametrisedSteps;
-import org.jbehave.examples.core.steps.PendingSteps;
-import org.jbehave.examples.core.steps.PriorityMatchingSteps;
-import org.jbehave.examples.core.steps.SandpitSteps;
-import org.jbehave.examples.core.steps.SearchSteps;
-import org.jbehave.examples.core.steps.StepsContextSteps;
-import org.jbehave.examples.core.steps.TraderSteps;
+import org.jbehave.examples.core.steps.*;
 
 import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
@@ -112,12 +95,16 @@ public abstract class CoreStory extends JUnitStory {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-    	MyContext context = new MyContext();
-        return new InstanceStepsFactory(configuration(), new TraderSteps(new TradingService()), new AndSteps(),
-                new MetaParametrisationSteps(), new CalendarSteps(), new PriorityMatchingSteps(), new PendingSteps(),
-                new ParametrisedSteps(), new SandpitSteps(), new SearchSteps(), new BeforeAfterSteps(),
-                new CompositeSteps(), new CompositeNestedSteps(), new NamedParametersSteps(),
-                new ParameterDelimitersSteps(), new ExamplesTableParametersSteps(), new ContextSteps(context),
-                new StepsContextSteps());
+        MyContext context = new MyContext();
+        return new InstanceStepsFactory(configuration(),
+                new AndSteps(), new BankAccountSteps(), new BeforeAfterSteps(),
+                new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(), new ContextSteps(context), new StepsContextSteps(),
+                new ExamplesTableParametersSteps(),
+                new JsonSteps(), new MetaParametrisationSteps(), new NamedParametersSteps(),
+                new ParameterDelimitersSteps(), new ParametrisationByDelimitedNameSteps(), new ParametrisedSteps(),
+                new PendingSteps(), new PriorityMatchingSteps(),
+                new RestartingSteps(), new SandpitSteps(), new SearchSteps(),
+                new TableSteps(), new TraderSteps(new TradingService())
+        );
     }
 }

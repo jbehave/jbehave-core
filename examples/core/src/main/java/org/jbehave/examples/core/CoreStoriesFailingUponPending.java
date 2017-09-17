@@ -17,10 +17,4 @@ public class CoreStoriesFailingUponPending extends CoreStories {
 					.usePendingStepStrategy(new FailingUponPendingStep());
 	}
 
-    @Override
-    protected List<String> storyPaths() {
-        String filter = System.getProperty("story.filter", "**/pending.story");
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "");
-    }
-
 }

@@ -34,15 +34,3 @@ Examples:
 |@run yes|value|
 |@run not|value|
 
-
-Scenario:  A parametrised scenario that is yet to be implemented
-
-Meta:
-@run pending
-
-When I lookup my <car reservation>
-Then I will see <car type>
-
-Examples:
-| car reservation | car type | 
-| 1223395844      | midsize  | 

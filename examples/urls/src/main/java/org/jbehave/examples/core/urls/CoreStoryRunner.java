@@ -23,7 +23,7 @@ public class CoreStoryRunner {
         Embedder embedder = new URLCoreEmbedder();
         String codeLocation = codeLocationFromClass(this.getClass()).getFile();
         List<String> storyPaths = new StoryFinder().findPaths(codeLocation, asList(
-                "**/trader_is_alerted_of_status.story", "**/traders_can_be_subset.story"), null, "file:"
+                "**/trader_is_alerted_of_status.story", "**/traders_can_be_searched.story"), null, "file:"
                 + codeLocation);
         embedder.runStoriesAsPaths(storyPaths);
     }

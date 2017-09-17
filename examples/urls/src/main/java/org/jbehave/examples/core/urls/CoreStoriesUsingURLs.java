@@ -41,7 +41,7 @@ public class CoreStoriesUsingURLs extends CoreStories {
         // Specify story paths as URLs
         String codeLocation = codeLocationFromPath("../core/src/main/java").getFile();
         return new StoryFinder().findPaths(codeLocation, asList("**/trader_is_alerted_of_status.story",
-                "**/traders_can_be_subset.story"), asList(""), "file:" + codeLocation);
+                "**/traders_can_be_searched.story"), asList(""), "file:" + codeLocation);
     }
 
 }
