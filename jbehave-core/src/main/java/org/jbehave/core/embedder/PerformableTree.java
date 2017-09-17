@@ -110,8 +110,10 @@ public class PerformableTree {
 
             // Add Given stories only if story contains scenarios
             if (!performableStory.getScenarios().isEmpty()) {
+                Map<String, String> givenStoryParameters = new HashMap<>(storyParameters);
+                addMetaParameters(givenStoryParameters, storyMeta);
                 performableStory.addGivenStories(performableGivenStories(context, story.getGivenStories(),
-                        storyParameters));
+                        givenStoryParameters));
             }
 
             performableStory.addAfterSteps(context.lifecycleSteps(story.getLifecycle(), storyMeta, Stage.AFTER, Scope.STORY));
