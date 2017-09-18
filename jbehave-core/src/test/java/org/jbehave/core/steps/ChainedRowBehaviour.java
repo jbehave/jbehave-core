@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers;
 import org.junit.Test;
 
@@ -20,7 +21,8 @@ public class ChainedRowBehaviour {
         map2.put("one", "21");
         map2.put("two", "22");
 
-        ParameterConverters parameterConverters = new ParameterConverters(new TableTransformers());
+        ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath(),
+                new TableTransformers());
         Map<String,String> chainedValues = new ChainedRow(new ConvertedParameters(map1, parameterConverters),
                 new ConvertedParameters(map2, parameterConverters)).values();
         assertThat(chainedValues.get("one"), equalTo("11"));

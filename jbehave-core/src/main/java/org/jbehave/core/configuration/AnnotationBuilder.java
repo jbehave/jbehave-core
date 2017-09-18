@@ -20,6 +20,7 @@ import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.PathCalculator;
+import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
@@ -106,7 +107,8 @@ public class AnnotationBuilder {
                 StoryReporterBuilder.class));
         configuration.useViewGenerator(configurationElement(finder, "viewGenerator", ViewGenerator.class));
         configuration.useTableTransformers(configurationElement(finder, "tableTransformers", TableTransformers.class));
-        configuration.useParameterConverters(parameterConverters(finder, configuration.tableTransformers()));
+        configuration.useParameterConverters(
+                parameterConverters(finder, configuration.storyLoader(), configuration.tableTransformers()));
         configuration.useParameterControls(configurationElement(finder, "parameterControls", ParameterControls.class));
         configuration.usePathCalculator(configurationElement(finder, "pathCalculator", PathCalculator.class));
         return configuration;
@@ -146,26 +148,26 @@ public class AnnotationBuilder {
         List<Object> stepsInstances = new ArrayList<Object>();
         InjectableStepsFactory factory = null;
         if (finder.isAnnotationPresent(UsingSteps.class)) {
-			List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(
-					UsingSteps.class, Object.class, "instances");
-			if (!stepsClasses.isEmpty()) {
-				for (Class<Object> stepsClass : stepsClasses) {
-					stepsInstances.add(instanceOf(Object.class, stepsClass));
-				}
-				factory = new InstanceStepsFactory(configuration,
-						stepsInstances);
-			}
-			List<String> packages = finder.getAnnotatedValues(UsingSteps.class,
-					String.class, "packages");
-			if (!packages.isEmpty()) {
-				String matchingNames = finder.getAnnotatedValue(UsingSteps.class,
-						String.class, "matchingNames");
-				String notMatchingNames = finder.getAnnotatedValue(UsingSteps.class,
-						String.class, "notMatchingNames");
-				factory = new ScanningStepsFactory(configuration,
-						packages.toArray(new String[packages.size()]))
-						.matchingNames(matchingNames).notMatchingNames(notMatchingNames);
-			}
+            List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(
+                    UsingSteps.class, Object.class, "instances");
+            if (!stepsClasses.isEmpty()) {
+                for (Class<Object> stepsClass : stepsClasses) {
+                    stepsInstances.add(instanceOf(Object.class, stepsClass));
+                }
+                factory = new InstanceStepsFactory(configuration,
+                        stepsInstances);
+            }
+            List<String> packages = finder.getAnnotatedValues(UsingSteps.class,
+                    String.class, "packages");
+            if (!packages.isEmpty()) {
+                String matchingNames = finder.getAnnotatedValue(UsingSteps.class,
+                        String.class, "matchingNames");
+                String notMatchingNames = finder.getAnnotatedValue(UsingSteps.class,
+                        String.class, "notMatchingNames");
+                factory = new ScanningStepsFactory(configuration,
+                        packages.toArray(new String[packages.size()]))
+                        .matchingNames(matchingNames).notMatchingNames(notMatchingNames);
+            }
         } else {
             annotationMonitor.annotationNotFound(UsingSteps.class, annotatedClass);
         }
@@ -194,20 +196,20 @@ public class AnnotationBuilder {
         boolean failOnStoryTimeout = control(finder, "failOnStoryTimeout");
         int threads = finder.getAnnotatedValue(UsingEmbedder.class, Integer.class, "threads");
         Embedder embedder = embedder();
-		EmbedderControls embedderControls = embedder.embedderControls();
-		embedderControls.doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
+        EmbedderControls embedderControls = embedder.embedderControls();
+        embedderControls.doBatch(batch).doSkip(skip).doGenerateViewAfterStories(generateViewAfterStories)
                 .doIgnoreFailureInStories(ignoreFailureInStories).doIgnoreFailureInView(ignoreFailureInView)
                 .doVerboseFailures(verboseFailures).doVerboseFiltering(verboseFiltering)
                 .doFailOnStoryTimeout(failOnStoryTimeout).useThreads(threads);
-		if ( storyTimeoutInSecs != 0 ){
-			embedderControls.useStoryTimeoutInSecs(storyTimeoutInSecs);
-		}
-		if ( StringUtils.isNotBlank(storyTimeoutInSecsByPath) ){
-			embedderControls.useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath);
-		}
-		if ( StringUtils.isNotBlank(storyTimeouts) ){
-			embedderControls.useStoryTimeouts(storyTimeouts);
-		}
+        if ( storyTimeoutInSecs != 0 ){
+            embedderControls.useStoryTimeoutInSecs(storyTimeoutInSecs);
+        }
+        if ( StringUtils.isNotBlank(storyTimeoutInSecsByPath) ){
+            embedderControls.useStoryTimeoutInSecsByPath(storyTimeoutInSecsByPath);
+        }
+        if ( StringUtils.isNotBlank(storyTimeouts) ){
+            embedderControls.useStoryTimeouts(storyTimeouts);
+        }
         Configuration configuration = buildConfiguration();
         embedder.useConfiguration(configuration);
         boolean useStepsFactory = finder.getAnnotatedValue(UsingEmbedder.class, Boolean.class, "stepsFactory");
@@ -235,11 +237,11 @@ public class AnnotationBuilder {
     }
     
     protected Embedder defaultEmbedder() {
-    	return new Embedder();
+        return new Embedder();
     }
 
     public AnnotationFinder finder() {
-    	return finder;
+        return finder;
     }
     
     public List<String> findPaths() {
@@ -268,7 +270,7 @@ public class AnnotationBuilder {
     }
 
     @SuppressWarnings("unchecked")
-	protected <T> Class<T> elementImplementation(AnnotationFinder finder, String name) {
+    protected <T> Class<T> elementImplementation(AnnotationFinder finder, String name) {
         return finder.getAnnotatedValue(Configure.class, Class.class, name);
     }
 
@@ -283,8 +285,8 @@ public class AnnotationBuilder {
     }
 
     protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder,
-            TableTransformers tableTransformers) {
-        ParameterConverters parameterConverters = new ParameterConverters(tableTransformers);
+            ResourceLoader resourceLoader, TableTransformers tableTransformers) {
+        ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, tableTransformers);
         for (Class<ParameterConverter> converterClass : annotationFinder.getAnnotatedClasses(Configure.class,
                 ParameterConverter.class, "parameterConverters")) {
             parameterConverters.addConverters(instanceOf(ParameterConverter.class, converterClass));
@@ -293,27 +295,27 @@ public class AnnotationBuilder {
     }
 
     protected <T, V extends T> T instanceOf(Class<T> type, Class<V> ofClass) {
-    	try { 
-    	    // by classloader constructor
-    		try {
-    			Constructor<V> constructor =
-    					ofClass.getConstructor(new Class<?>[]{ClassLoader.class});
-    			return constructor.newInstance(annotatedClass.getClassLoader());
-    		}
-    		catch(NoSuchMethodException ns){
-    		}
-    		// by class constructor
-    		try {
-    			Constructor<V> constructor =
-    					ofClass.getConstructor(new Class<?>[]{Class.class});
-    			return constructor.newInstance(annotatedClass);
-    		}
-    		catch(NoSuchMethodException ns){
-    		}    	     	
-    		// by class instance
+        try { 
+            // by classloader constructor
+            try {
+                Constructor<V> constructor =
+                        ofClass.getConstructor(new Class<?>[]{ClassLoader.class});
+                return constructor.newInstance(annotatedClass.getClassLoader());
+            }
+            catch(NoSuchMethodException ns){
+            }
+            // by class constructor
+            try {
+                Constructor<V> constructor =
+                        ofClass.getConstructor(new Class<?>[]{Class.class});
+                return constructor.newInstance(annotatedClass);
+            }
+            catch(NoSuchMethodException ns){
+            }                 
+            // by class instance
             return ofClass.newInstance();
-    	}
-    	catch (Exception e) {
+        }
+        catch (Exception e) {
             annotationMonitor.elementCreationFailed(ofClass, e);
             throw new InstantiationFailed(ofClass, type, e);
         }

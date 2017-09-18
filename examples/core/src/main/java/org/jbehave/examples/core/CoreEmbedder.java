@@ -41,15 +41,16 @@ public class CoreEmbedder extends Embedder {
     public Configuration configuration() {
         Class<? extends CoreEmbedder> embedderClass = this.getClass();
         TableTransformers tableTransformers = new TableTransformers();
+        LoadFromClasspath resourceLoader = new LoadFromClasspath(embedderClass.getClassLoader());
         return new MostUsefulConfiguration()
-            .useStoryLoader(new LoadFromClasspath(embedderClass.getClassLoader()))
+            .useStoryLoader(resourceLoader)
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withCodeLocation(CodeLocations.codeLocationFromClass(embedderClass))
                 .withDefaultFormats()
                 .withFormats(CONSOLE, TXT, HTML, XML)
                 .withCrossReference(new CrossReference()))
             .useTableTransformers(tableTransformers)
-            .useParameterConverters(new ParameterConverters(tableTransformers)
+            .useParameterConverters(new ParameterConverters(resourceLoader, tableTransformers)
                     .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(
                             "%")) // use '%' instead of '$' to identify parameters

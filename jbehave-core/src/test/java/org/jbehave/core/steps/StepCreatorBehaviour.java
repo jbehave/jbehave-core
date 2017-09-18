@@ -26,6 +26,7 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.failures.BeforeOrAfterFailed;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStepMatcher;
@@ -432,7 +433,7 @@ public class StepCreatorBehaviour {
     public void shouldInjectExceptionThatHappenedIfTargetMethodExpectsIt() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters(new TableTransformers());
+        parameterConverters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
 
         // When
@@ -450,7 +451,7 @@ public class StepCreatorBehaviour {
     public void shouldInjectNoFailureIfNoExceptionHappenedAndTargetMethodExpectsIt() throws Exception {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters(new TableTransformers());
+        parameterConverters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, mock(StepMatcher.class), new ParameterControls());
 
         // When
@@ -469,7 +470,7 @@ public class StepCreatorBehaviour {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters(new TableTransformers());
+        parameterConverters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
         StepMatcher stepMatcher = mock(StepMatcher.class);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
@@ -493,7 +494,7 @@ public class StepCreatorBehaviour {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters(new TableTransformers());
+        parameterConverters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
         StepMatcher stepMatcher = mock(StepMatcher.class);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
@@ -523,7 +524,7 @@ public class StepCreatorBehaviour {
 
         // Given
         SomeSteps stepsInstance = new SomeSteps();
-        parameterConverters = new ParameterConverters(new TableTransformers());
+        parameterConverters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
         StepMatcher stepMatcher = mock(StepMatcher.class);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(false);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);

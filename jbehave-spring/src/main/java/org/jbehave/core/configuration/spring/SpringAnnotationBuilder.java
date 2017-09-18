@@ -10,6 +10,7 @@ import org.jbehave.core.configuration.AnnotationFinder;
 import org.jbehave.core.configuration.AnnotationMonitor;
 import org.jbehave.core.configuration.AnnotationRequired;
 import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.CompositeStepsFactory;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -70,9 +71,9 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
     }
 
     @Override
-    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder,
+    protected ParameterConverters parameterConverters(AnnotationFinder annotationFinder, ResourceLoader resourceLoader,
             TableTransformers tableTransformers) {
-        ParameterConverters converters = super.parameterConverters(annotationFinder, tableTransformers);
+        ParameterConverters converters = super.parameterConverters(annotationFinder, resourceLoader, tableTransformers);
         if (context != null) {
             return converters.addConverters(getBeansOfType(context, ParameterConverter.class));
         }

@@ -989,8 +989,9 @@ public class StoryRunnerBehaviour {
 
     private Configuration configurationWithPendingStrategy(StepCollector collector, StoryReporter reporter,
                                                                 PendingStepStrategy strategy) {
-        return configurationWith(new RegexStoryParser(new TableTransformers()), new LoadFromClasspath(), reporter,
-                collector, new RethrowingFailure(), strategy);
+        LoadFromClasspath resourceLoadder = new LoadFromClasspath();
+        RegexStoryParser storyParser = new RegexStoryParser(resourceLoadder, new TableTransformers());
+        return configurationWith(storyParser, resourceLoadder, reporter, collector, new RethrowingFailure(), strategy);
     }
 
     private Configuration configurationWith(final StoryReporter reporter, final StepCollector collector) {
@@ -998,8 +999,9 @@ public class StoryRunnerBehaviour {
     }
 
     private Configuration configurationWith(StoryReporter reporter, StepCollector collector, FailureStrategy failureStrategy) {
-        return configurationWith(new RegexStoryParser(new TableTransformers()), new LoadFromClasspath(), reporter,
-                collector, failureStrategy);
+        LoadFromClasspath resourceLoadder = new LoadFromClasspath();
+        RegexStoryParser storyParser = new RegexStoryParser(resourceLoadder, new TableTransformers());
+        return configurationWith(storyParser, resourceLoadder, reporter, collector, failureStrategy);
     }
 
     private Configuration configurationWith(StoryParser parser, final StoryLoader storyLoader, final StoryReporter reporter,
