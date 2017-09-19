@@ -1,6 +1,6 @@
 Scenario: A scenario that depends on a non successful story
 
-GivenStories: org/jbehave/examples/core/stories/non_successful.story
+GivenStories: org/jbehave/examples/core/stories/failing/non_successful.story
 
 Given the traders:
 |name |rank    |

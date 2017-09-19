@@ -9,7 +9,7 @@ import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Parameter;
 
-public class ExamplesTableParametersSteps {
+public class TableMappingSteps {
 
     @Given("the parameters mapped via annotations to custom types: $table")
     public void givenTheMyParametersList(List<MyParameters> list) {

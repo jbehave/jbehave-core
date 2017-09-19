@@ -1,7 +1,6 @@
 package org.jbehave.examples.core;
 
 import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
@@ -20,7 +19,6 @@ import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
@@ -33,10 +31,7 @@ import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.examples.core.service.TradingService;
 import org.jbehave.examples.core.steps.*;
 
-import static org.jbehave.core.reporters.Format.CONSOLE;
 import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
 
 /**
  * <p>
@@ -99,7 +94,7 @@ public abstract class CoreStory extends JUnitStory {
         return new InstanceStepsFactory(configuration(),
                 new AndSteps(), new BankAccountSteps(), new BeforeAfterSteps(),
                 new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(), new ContextSteps(context), new StepsContextSteps(),
-                new ExamplesTableParametersSteps(), new IgnoringSteps(), new JsonSteps(),
+                new TableMappingSteps(), new IgnoringSteps(), new JsonSteps(),
                 new MetaParametrisationSteps(), new NamedAnnotationsSteps(), new NamedParametersSteps(),
                 new ParameterDelimitersSteps(), new ParametrisationByDelimitedNameSteps(), new ParametrisedSteps(),
                 new PendingSteps(), new PriorityMatchingSteps(),

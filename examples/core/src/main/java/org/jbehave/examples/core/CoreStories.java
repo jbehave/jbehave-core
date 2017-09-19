@@ -14,8 +14,6 @@ import org.jbehave.core.Embeddable;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.context.Context;
-import org.jbehave.core.context.ContextView;
-import org.jbehave.core.context.JFrameContextView;
 import org.jbehave.core.embedder.PropertyBasedEmbedderControls;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.CodeLocations;
@@ -24,13 +22,11 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.ContextOutput;
 import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.steps.ContextStepMonitor;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterConverters;
@@ -99,7 +95,7 @@ public class CoreStories extends JUnitStories {
         return new InstanceStepsFactory(configuration(),
                 new AndSteps(), new BankAccountSteps(), new BeforeAfterSteps(),
                 new CalendarSteps(), new CompositeSteps(), new CompositeNestedSteps(), new ContextSteps(context), new StepsContextSteps(),
-                new ExamplesTableParametersSteps(), new IgnoringSteps(), new JsonSteps(),
+                new TableMappingSteps(), new IgnoringSteps(), new JsonSteps(),
                 new MetaParametrisationSteps(), new NamedAnnotationsSteps(), new NamedParametersSteps(),
                 new ParameterDelimitersSteps(), new ParametrisationByDelimitedNameSteps(), new ParametrisedSteps(),
                 new PendingSteps(), new PriorityMatchingSteps(),
