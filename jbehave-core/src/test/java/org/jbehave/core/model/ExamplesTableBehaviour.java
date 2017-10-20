@@ -341,7 +341,24 @@ public class ExamplesTableBehaviour {
         Map<String, String> firstRowValues = firstRow.values();
         assertThat(firstRowValues.containsKey("Value"), is(true));
         assertThat(firstRow.<String>valueAs("Value", String.class), is("value1"));
+    }
 
+    @Test
+    public void shouldReplaceNamedParameterValuesInValuePart() throws Exception {
+        // Given
+        ExamplesTableFactory factory = createFactory();
+
+        // When
+        String tableAsString = "|Name|Value|\n|name1|foo-<value>-bar|";
+        Map<String, String> namedParameters = new HashMap<String, String>();
+        namedParameters.put("value", "value1");
+        ExamplesTable table = factory.createExamplesTable(tableAsString).withNamedParameters(namedParameters);
+
+        // Then
+        Parameters firstRow = table.getRowsAsParameters(true).get(0);
+        Map<String, String> firstRowValues = firstRow.values();
+        assertThat(firstRowValues.containsKey("Value"), is(true));
+        assertThat(firstRow.<String>valueAs("Value", String.class), is("foo-value1-bar"));
     }
 
     /**

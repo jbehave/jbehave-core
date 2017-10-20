@@ -5,7 +5,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -74,7 +77,7 @@ public class StepCreator {
         this.stepMatcher = stepMatcher;
         this.stepMonitor = stepMonitor;
         this.delimitedNamePattern = Pattern.compile(parameterControls.nameDelimiterLeft() + "(\\w+?)"
-                + parameterControls.nameDelimiterRight());
+                + parameterControls.nameDelimiterRight(), Pattern.DOTALL);
     }
 
     public void useStepMonitor(StepMonitor stepMonitor) {
@@ -295,7 +298,7 @@ public class StepCreator {
     private String markNamedParameterValue(String stepText, Map<String, String> namedParameters, String name) {
         String value = namedParameter(namedParameters, name);
         if (value != null) {
-            return stepText.replace(parameterControls.createDelimitedName(name), markedValue(value));
+            return parameterControls.replaceAllDelimitedNames(stepText, name, markedValue(value));
         }
         return stepText;
     }
@@ -412,21 +415,25 @@ public class StepCreator {
             boolean annotated = names[position].annotated;
             boolean fromContext = names[position].fromContext;
 
-            boolean delimitedNamedParameters = false;
+            List<String> delimitedNames = Collections.emptyList();
 
             if (isGroupName(name)) {
                 parameter = matchedParameter(name);
-                String delimitedName = delimitedNameFor(parameter);
+                delimitedNames = delimitedNameFor(parameter);
 
-                if (delimitedName != null) {
-                    name = delimitedName;
-                    delimitedNamedParameters = true;
-                } else {
+                if (delimitedNames.isEmpty()) {
                     monitorUsingNameForParameter(name, position, annotated);
                 }
             }
 
-            if (delimitedNamedParameters || isTableName(namedParameters, name)) {
+            if (!delimitedNames.isEmpty()) {
+                for(String delimitedName : delimitedNames) {
+                    monitorUsingTableNameForParameter(delimitedName, position, annotated);
+                    parameter = parameterControls.replaceAllDelimitedNames(parameter, delimitedName,
+                            namedParameter(namedParameters, delimitedName));
+                }
+            }
+            else if (isTableName(namedParameters, name)) {
                 parameter = namedParameter(namedParameters, name);
                 if (parameter != null) {
                     monitorUsingTableNameForParameter(name, position, annotated); 
@@ -445,10 +452,13 @@ public class StepCreator {
             position = position - numberOfPreviousFromContext(names, position);
             stepMonitor.usingNaturalOrderForParameter(position);
             parameter = matchedParameter(position);
-            String delimitedName = delimitedNameFor(parameter);
+            List<String> delimitedNames = delimitedNameFor(parameter);
 
-            if (delimitedName != null && isTableName(namedParameters, delimitedName)) {
-                parameter = namedParameter(namedParameters, delimitedName);
+            for(String delimitedName : delimitedNames) {
+                if (isTableName(namedParameters, delimitedName)) {
+                    parameter = parameterControls.replaceAllDelimitedNames(parameter, delimitedName,
+                            namedParameter(namedParameters, delimitedName));
+                }
             }
         }
 
@@ -485,12 +495,15 @@ public class StepCreator {
         }
     }
 
-    private String delimitedNameFor(String parameter) {
-        if (!parameterControls.delimiterNamedParameters()) {
-            return null;
+    private List<String> delimitedNameFor(String parameter) {
+        List<String> delimitedNames = new ArrayList<String>();
+        if (parameterControls.delimiterNamedParameters()) {
+            Matcher matcher = delimitedNamePattern.matcher(parameter);
+            while(matcher.find()) {
+                delimitedNames.add(matcher.group(1));
+            }
         }
-        Matcher matcher = delimitedNamePattern.matcher(parameter);
-        return matcher.matches() ? matcher.group(1) : null;
+        return delimitedNames;
     }
 
     String matchedParameter(String name) {

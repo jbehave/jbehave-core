@@ -1,5 +1,6 @@
 package org.jbehave.core.steps;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -49,8 +50,12 @@ public class ParameterControls {
         return this;
     }
 
-    public String createDelimitedName(String name) {
+    private String createDelimitedName(String name) {
         return nameDelimiterLeft + name + nameDelimiterRight;
+    }
+
+    public String replaceAllDelimitedNames(String text, String name, String value) {
+        return StringUtils.replace(text, createDelimitedName(name), value);
     }
 
     @Override

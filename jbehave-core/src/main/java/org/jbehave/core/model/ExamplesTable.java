@@ -320,8 +320,8 @@ public class ExamplesTable {
         for (Entry<String, String> rowEntry : row.entrySet()) {
             String replacedValue = rowEntry.getValue();
             for (Entry<String, String> namedParameter : namedParameters.entrySet()) {
-                replacedValue = replacedValue.replaceAll(parameterControls.createDelimitedName(namedParameter.getKey()),
-                        Matcher.quoteReplacement(namedParameter.getValue()));
+                replacedValue = parameterControls.replaceAllDelimitedNames(replacedValue, namedParameter.getKey(),
+                        namedParameter.getValue());
             }
             replaced.put(rowEntry.getKey(), replacedValue);
         }

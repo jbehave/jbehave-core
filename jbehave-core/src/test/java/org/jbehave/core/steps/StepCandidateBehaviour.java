@@ -166,6 +166,31 @@ public class StepCandidateBehaviour {
     }
 
     @Test
+    public void shouldCreatePerformableStepUsingTheMatchedStringAndNamedParameterWithPartialValue() throws Exception {
+        SomeSteps someSteps = new SomeSteps();
+        Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
+        StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
+        namedParameters.put("number", "1");
+        candidate.createMatchedStep("Then I live on the <number>st floor", namedParameters).perform(null);
+        assertThat((String) someSteps.args, equalTo("1st"));
+    }
+
+    @Test
+    public void shouldCreatePerformableStepUsingTheMatchedStringAndMultilinedNamedParameterWithPartialValue()
+            throws Exception {
+        SomeSteps someSteps = new SomeSteps();
+        Method method = SomeSteps.class.getMethod("aMethodWith", String.class);
+        StepCandidate candidate = candidateWith("I live at$address", THEN, method, someSteps);
+        namedParameters.put("houseNumber", "221b");
+        namedParameters.put("zipCode", "NW1 6XE");
+        String stepAsString = "Then I live at" + System.lineSeparator() + "<houseNumber> Baker St,"
+                + System.lineSeparator() + "Marylebone, London <zipCode>, UK";
+        candidate.createMatchedStep(stepAsString, namedParameters).perform(null);
+        assertThat((String) someSteps.args, equalTo(
+                System.lineSeparator() + "221b Baker St," + System.lineSeparator() + "Marylebone, London NW1 6XE, UK"));
+    }
+
+    @Test
     public void shouldCreatePerformableStepWithResultThatDescribesTheStepPerformed() throws Exception {
         StoryReporter reporter = mock(StoryReporter.class);
         SomeSteps someSteps = new SomeSteps();
