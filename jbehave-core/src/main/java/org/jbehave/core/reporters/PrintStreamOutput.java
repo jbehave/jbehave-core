@@ -91,7 +91,30 @@ public abstract class PrintStreamOutput implements StoryReporter {
     private static final String EMPTY = "";
 
     public enum Format {
-        TXT, HTML, XML
+        TXT {
+            @Override
+            public Object escapeValue(Object object) {
+                return object;
+            }
+        },
+        HTML {
+            @Override
+            public Object escapeValue(Object object) {
+                return escapeHtml4(asString(object));
+            }
+        },
+        XML {
+            @Override
+            public Object escapeValue(Object object) {
+                return escapeXml(asString(object));
+            }
+        };
+
+        public abstract Object escapeValue(Object object);
+
+        private static String asString(Object object) {
+            return object != null ? object.toString() : EMPTY;
+        }
     }
 
     private final Format format;
@@ -102,6 +125,12 @@ public abstract class PrintStreamOutput implements StoryReporter {
     private ThreadLocal<Boolean> compressFailureTrace = new ThreadLocal<Boolean>();
     private ThreadLocal<Throwable> cause = new ThreadLocal<Throwable>();
 
+    protected PrintStreamOutput(Format format, PrintStream output, Properties defaultPatterns,
+            Properties outputPatterns, Keywords keywords, boolean reportFailureTrace, boolean compressFailureTrace) {
+        this(format, output, mergePatterns(defaultPatterns, outputPatterns), keywords, reportFailureTrace,
+                compressFailureTrace);
+    }
+
     protected PrintStreamOutput(Format format, PrintStream output, Properties outputPatterns, Keywords keywords,
             boolean reportFailureTrace, boolean compressFailureTrace) {
         this.format = format;
@@ -110,6 +139,14 @@ public abstract class PrintStreamOutput implements StoryReporter {
         this.keywords = keywords;
         doReportFailureTrace(reportFailureTrace);
         doCompressFailureTrace(compressFailureTrace);
+    }
+
+    private static Properties mergePatterns(Properties defaultPatterns, Properties outputPatterns) {
+        Properties patterns = new Properties();
+        patterns.putAll(defaultPatterns);
+        // override any default pattern
+        patterns.putAll(outputPatterns);
+        return patterns;
     }
 
     @Override
@@ -425,18 +462,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         Transformer<Object, Object> escapingTransformer = new Transformer<Object, Object>() {
             @Override
             public Object transform(Object object) {
-                switch (format) {
-                case HTML:
-                    return escapeHtml4(asString(object));
-                case XML:
-                    return escapeXml(asString(object));
-                default:
-                    return object;
-                }
-            }
-
-            private String asString(Object object) {
-                return (object != null ? object.toString() : EMPTY);
+                return format.escapeValue(object);
             }
         };
         List<Object> list = Arrays.asList(ArrayUtils.clone(args));

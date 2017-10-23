@@ -27,29 +27,22 @@ public class TxtOutput extends PrintStreamOutput {
         this(output, outputPatterns, new LocalizedKeywords());
     }
 
-	public TxtOutput(PrintStream output, Keywords keywords) {
-		this(output, new Properties(), keywords);
-	}
+    public TxtOutput(PrintStream output, Keywords keywords) {
+        this(output, new Properties(), keywords);
+    }
 
-	public TxtOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
-		this(output, outputPatterns, keywords, false);
-	}
+    public TxtOutput(PrintStream output, Properties outputPatterns, Keywords keywords) {
+        this(output, outputPatterns, keywords, false);
+    }
 
     public TxtOutput(PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace) {
-        this(output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace, false);
+        this(output, outputPatterns, keywords, reportFailureTrace, false);
     }
 
     public TxtOutput(PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace, boolean compressFailureTrace) {
-        super(TXT, output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace, compressFailureTrace);
-    }
-
-    private static Properties mergeWithDefault(Properties outputPatterns) {
-        Properties patterns = defaultPatterns();
-        // override any default pattern
-        patterns.putAll(outputPatterns);
-        return patterns;
+        super(TXT, output, defaultPatterns(), outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
     }
 
     private static Properties defaultPatterns() {
@@ -106,6 +99,4 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueNewline", "\n");     
         return patterns;
     }
-
-
 }

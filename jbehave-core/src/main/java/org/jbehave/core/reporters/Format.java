@@ -18,9 +18,7 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return new ConsoleOutput(storyReporterBuilder.keywords()).doReportFailureTrace(
-                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
-                    storyReporterBuilder.compressFailureTrace());
+            return configureReporting(storyReporterBuilder, new ConsoleOutput(storyReporterBuilder.keywords()));
         }
     };
 
@@ -28,9 +26,7 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return new ANSIConsoleOutput(storyReporterBuilder.keywords()).doReportFailureTrace(
-                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
-                    storyReporterBuilder.compressFailureTrace());
+            return configureReporting(storyReporterBuilder, new ANSIConsoleOutput(storyReporterBuilder.keywords()));
         }
     };
 
@@ -38,9 +34,7 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return new IdeOnlyConsoleOutput(storyReporterBuilder.keywords()).doReportFailureTrace(
-                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
-                    storyReporterBuilder.compressFailureTrace());
+            return configureReporting(storyReporterBuilder, new IdeOnlyConsoleOutput(storyReporterBuilder.keywords()));
         }
     };
 
@@ -49,9 +43,8 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("txt"));
-            return new TxtOutput(factory.createPrintStream(), storyReporterBuilder.keywords()).doReportFailureTrace(
-                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
-                    storyReporterBuilder.compressFailureTrace());
+            return configureReporting(storyReporterBuilder,
+                    new TxtOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
         }
     };
 
@@ -61,9 +54,8 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("html"));
-            return new HtmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()).doReportFailureTrace(
-                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
-                    storyReporterBuilder.compressFailureTrace());
+            return configureReporting(storyReporterBuilder,
+                    new HtmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
         }
     };
 
@@ -81,9 +73,8 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("xml"));
-            return new XmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()).doReportFailureTrace(
-                    storyReporterBuilder.reportFailureTrace()).doCompressFailureTrace(
-                    storyReporterBuilder.compressFailureTrace());
+            return configureReporting(storyReporterBuilder,
+                    new XmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
         }
     };
 
@@ -131,4 +122,10 @@ public abstract class Format {
         return name;
     }
 
+    private static PrintStreamOutput configureReporting(StoryReporterBuilder storyReporterBuilder,
+            PrintStreamOutput output) {
+        return output
+                .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
+                .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
+    }
 }

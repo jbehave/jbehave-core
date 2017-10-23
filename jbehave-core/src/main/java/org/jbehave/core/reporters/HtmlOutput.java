@@ -39,19 +39,12 @@ public class HtmlOutput extends PrintStreamOutput {
 
     public HtmlOutput(PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace) {
-        this(output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace, false);
+        this(output, outputPatterns, keywords, reportFailureTrace, false);
     }
 
     public HtmlOutput(PrintStream output, Properties outputPatterns,
             Keywords keywords, boolean reportFailureTrace, boolean compressFailureTrace) {
-        super(HTML, output, mergeWithDefault(outputPatterns), keywords, reportFailureTrace, compressFailureTrace);
-    }
-
-    private static Properties mergeWithDefault(Properties outputPatterns) {
-        Properties patterns = defaultHtmlPatterns();
-        // override any default pattern
-        patterns.putAll(outputPatterns);
-        return patterns;
+        super(HTML, output, defaultHtmlPatterns(), outputPatterns, keywords, reportFailureTrace, compressFailureTrace);
     }
 
     private static Properties defaultHtmlPatterns() {
@@ -119,5 +112,4 @@ public class HtmlOutput extends PrintStreamOutput {
         patterns.setProperty("parameterValueNewline", "<br/>");
         return patterns;
     }
-
 }
