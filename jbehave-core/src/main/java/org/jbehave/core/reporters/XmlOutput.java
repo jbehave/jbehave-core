@@ -47,13 +47,13 @@ public class XmlOutput extends PrintStreamOutput {
     }
 
     private static Properties mergeWithDefault(Properties outputPatterns) {
-        Properties patterns = defaultHtmlPatterns();
+        Properties patterns = defaultXmlPatterns();
         // override any default pattern
         patterns.putAll(outputPatterns);
         return patterns;
     }
 
-    private static Properties defaultHtmlPatterns() {
+    private static Properties defaultXmlPatterns() {
         Properties patterns = new Properties();
         patterns.setProperty("dryRun", "<dryRun>{0}</dryRun>\n");        
         patterns.setProperty("beforeStory", "<story path=\"{1}\" title=\"{0}\">\n");
