@@ -72,18 +72,33 @@ public class ParameterConverters {
 
 
     /**
-     * Creates a non-thread-safe instance of ParameterConverters using the default table transformers,
-     * default dependencies, a SilentStepMonitor, English as Locale and "," as list
-     * separator.
+     * Creates a ParameterConverters using the default resource loader and table transformers,
+     * a SilentStepMonitor, English as Locale and "," as list separator.
      */
     public ParameterConverters() {
         this(new LoadFromClasspath(), new TableTransformers());
     }
 
     /**
-     * Creates a non-thread-safe instance of ParameterConverters using default
-     * dependencies, a SilentStepMonitor, English as Locale and "," as list
-     * separator.
+     * Creates a ParameterConverters using the given table transformers.
+     *
+     * @param tableTransformers the table transformers
+     */
+    public ParameterConverters(TableTransformers tableTransformers) {
+        this(new LoadFromClasspath(), tableTransformers);
+    }
+
+    /**
+     * Creates a ParameterConverters of ParameterConverters using the given resource loader.
+     *
+     * @param resourceLoader the resource loader
+     */
+    public ParameterConverters(ResourceLoader resourceLoader) {
+        this(resourceLoader, new TableTransformers());
+    }
+
+    /**
+     * Creates a ParameterConverters given resource loader and table transformers.
      * 
      * @param resourceLoader the resource loader
      * @param tableTransformers the table transformers
@@ -93,7 +108,7 @@ public class ParameterConverters {
     }
 
     /**
-     * Creates a ParameterConverters using given StepMonitor
+     * Creates a ParameterConverters using given StepMonitor, resource loader and table transformers.
      * 
      * @param monitor the StepMonitor to use
      * @param resourceLoader the resource loader
