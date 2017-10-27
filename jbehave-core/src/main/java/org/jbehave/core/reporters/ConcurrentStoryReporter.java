@@ -34,8 +34,10 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method beforeScenario;
     private static Method scenarioMeta;
     private static Method afterScenario;
+    private static Method beforeGivenStories;
     private static Method givenStories;
     private static Method givenStoriesPaths;
+    private static Method afterGivenStories;
     private static Method beforeExamples;
     private static Method example;
     private static Method afterExamples;
@@ -64,8 +66,10 @@ public class ConcurrentStoryReporter implements StoryReporter {
             beforeScenario = StoryReporter.class.getMethod("beforeScenario", String.class);
             scenarioMeta = StoryReporter.class.getMethod("scenarioMeta", Meta.class);
             afterScenario = StoryReporter.class.getMethod("afterScenario");
+            beforeGivenStories = StoryReporter.class.getMethod("beforeGivenStories");
             givenStories = StoryReporter.class.getMethod("givenStories", GivenStories.class);
             givenStoriesPaths = StoryReporter.class.getMethod("givenStories", List.class);
+            afterGivenStories = StoryReporter.class.getMethod("afterGivenStories");
             beforeExamples = StoryReporter.class.getMethod("beforeExamples", List.class, ExamplesTable.class);
             example = StoryReporter.class.getMethod("example", Map.class);
             afterExamples = StoryReporter.class.getMethod("afterExamples");
@@ -189,6 +193,16 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeGivenStories() {
+        crossReferencing.beforeGivenStories();
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(beforeGivenStories));
+        } else {
+            delegate.beforeGivenStories();
+        }
+    }
+
+    @Override
     public void givenStories(GivenStories stories) {
         crossReferencing.givenStories(stories);
         if (multiThreading) {
@@ -205,6 +219,16 @@ public class ConcurrentStoryReporter implements StoryReporter {
             delayedMethods.add(new DelayedMethod(givenStoriesPaths, storyPaths));
         } else {
             delegate.givenStories(storyPaths);
+        }
+    }
+
+    @Override
+    public void afterGivenStories() {
+        crossReferencing.afterGivenStories();
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(afterGivenStories));
+        } else {
+            delegate.afterGivenStories();
         }
     }
 

@@ -123,6 +123,13 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeGivenStories() {
+        for (StoryReporter reporter : delegates) {
+            reporter.beforeGivenStories();
+        }
+    }
+
+    @Override
     public void givenStories(GivenStories givenStories) {
         for (StoryReporter reporter : delegates) {
             reporter.givenStories(givenStories);
@@ -133,6 +140,13 @@ public class DelegatingStoryReporter implements StoryReporter {
     public void givenStories(List<String> storyPaths) {
         for (StoryReporter reporter : delegates) {
             reporter.givenStories(storyPaths);
+        }
+    }
+
+    @Override
+    public void afterGivenStories() {
+        for (StoryReporter reporter : delegates) {
+            reporter.afterGivenStories();
         }
     }
 

@@ -737,6 +737,21 @@ public class PerformableTree {
         SUCCESSFUL, FAILED, PENDING, NOT_PERFORMED, NOT_ALLOWED;
     }
 
+    private static void performGivenStories(RunContext context, List<PerformableStory> performableGivenStories,
+            GivenStories givenStories) throws InterruptedException {
+        if (performableGivenStories.size() > 0) {
+            context.reporter().beforeGivenStories();
+            context.reporter().givenStories(givenStories);
+            final boolean parentGivenStory = context.givenStory;
+            for (PerformableStory story : performableGivenStories) {
+                context.givenStory = story.givenStory();
+                story.perform(context);
+            }
+            context.givenStory = parentGivenStory;
+            context.reporter().afterGivenStories();
+        }
+    }
+
     public static class PerformableStory implements Performable {
 
         private final Story story;
@@ -813,7 +828,7 @@ public class PerformableTree {
             Timer timer = new Timer().start();
             try {
                 beforeSteps.perform(context);
-            	performGivenStories(context);
+                performGivenStories(context, givenStories, story.getGivenStories());
                 performScenarios(context);
                 afterSteps.perform(context);
             } finally {
@@ -825,18 +840,6 @@ public class PerformableTree {
                 context.reporter().afterStory(context.givenStory);
             }
             this.status = context.status(state);
-        }
-
-        private void performGivenStories(RunContext context) throws InterruptedException {
-            if (givenStories.size() > 0) {
-                context.reporter().givenStories(story.getGivenStories());
-                final boolean parentGivenStory = context.givenStory;
-                for (PerformableStory story : givenStories) {
-                    context.givenStory = story.givenStory();
-                    story.perform(context);
-                }
-                context.givenStory = parentGivenStory;
-           }
         }
 
         private void performScenarios(RunContext context) throws InterruptedException {
@@ -1001,16 +1004,8 @@ public class PerformableTree {
                 context.resetState();
             }
             beforeSteps.perform(context);
-			if (givenStories.size() > 0) {
-				context.reporter().givenStories(scenario.getGivenStories());
-                final boolean parentGivenStory = context.givenStory;
-				for (PerformableStory story : givenStories) {
-					context.givenStory = story.givenStory();
-					story.perform(context);
-				}
-				context.givenStory = parentGivenStory;
-			}
-			performRestartableSteps(context);	        
+            performGivenStories(context, givenStories, scenario.getGivenStories());
+            performRestartableSteps(context);
             afterSteps.perform(context);
         }
 
@@ -1036,16 +1031,8 @@ public class PerformableTree {
             context.stepsContext().resetExample();
             context.reporter().example(parameters);
             beforeSteps.perform(context);
-			if (givenStories.size() > 0) {
-				context.reporter().givenStories(scenario.getGivenStories());
-				final boolean parentGivenStory = context.givenStory;
-				for (PerformableStory story : givenStories) {
-					context.givenStory = story.givenStory();
-					story.perform(context);
-				}
-				context.givenStory = parentGivenStory;
-			}
-			performRestartableSteps(context);	        
+            performGivenStories(context, givenStories, scenario.getGivenStories());
+            performRestartableSteps(context);
             afterSteps.perform(context);
         }
 

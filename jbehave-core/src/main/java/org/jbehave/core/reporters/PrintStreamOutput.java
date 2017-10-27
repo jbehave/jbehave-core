@@ -319,6 +319,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     @Override
+    public void beforeGivenStories() {
+        print(format("beforeGivenStories", ""));
+    }
+
+    @Override
     public void givenStories(GivenStories givenStories) {
         print(format("givenStoriesStart", "{0}\n", keywords.givenStories()));
         for (GivenStory givenStory : givenStories.getStories()) {
@@ -331,6 +336,11 @@ public abstract class PrintStreamOutput implements StoryReporter {
     @Override
     public void givenStories(List<String> storyPaths) {
         givenStories(new GivenStories(StringUtils.join(storyPaths, ",")));
+    }
+
+    @Override
+    public void afterGivenStories() {
+        print(format("afterGivenStories", ""));
     }
 
     @Override

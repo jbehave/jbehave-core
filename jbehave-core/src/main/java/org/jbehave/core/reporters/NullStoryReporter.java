@@ -79,11 +79,19 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeGivenStories(){
+    }
+
+    @Override
     public void givenStories(GivenStories givenStories) {
     }
 
     @Override
     public void givenStories(List<String> storyPaths) {
+    }
+
+    @Override
+    public void afterGivenStories(){
     }
 
     @Override
