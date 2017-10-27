@@ -28,7 +28,7 @@ import static java.util.Arrays.asList;
  * stream after each story
  * </p>
  */
-public class PostStoryStatisticsCollector implements StoryReporter {
+public class PostStoryStatisticsCollector extends NullStoryReporter {
 
     private final OutputStream output;
     private final Map<String, Integer> data = new HashMap<String, Integer>();
@@ -45,10 +45,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
 
     public PostStoryStatisticsCollector(OutputStream output) {
         this.output = output;
-    }
-
-    @Override
-    public void beforeStep(String step) {
     }
 
     @Override
@@ -118,14 +114,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     @Override
-    public void narrative(Narrative narrative) {
-    }
-
-    @Override
-    public void lifecyle(Lifecycle lifecycle) {
-    }
-
-    @Override
     public void storyNotAllowed(Story story, String filter) {
         resetData();
         add("notAllowed");
@@ -187,10 +175,6 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     @Override
-    public void scenarioMeta(Meta meta) {
-    }
-
-    @Override
     public void afterScenario() {
         if (givenStories > 0) {
             countScenarios("givenStoryScenarios");
@@ -218,28 +202,8 @@ public class PostStoryStatisticsCollector implements StoryReporter {
     }
 
     @Override
-    public void beforeExamples(List<String> steps, ExamplesTable table) {
-    }
-
-    @Override
     public void example(Map<String, String> tableRow) {
         add("examples");
-    }
-
-    @Override
-    public void afterExamples() {
-    }
-
-    @Override
-    public void dryRun() {
-    }
-
-    @Override
-    public void pendingMethods(List<String> methods) {
-    }
-
-    @Override
-    public void restarted(String step, Throwable cause) {
     }
 
     @Override

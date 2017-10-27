@@ -18,7 +18,7 @@ import org.jbehave.core.model.StoryDuration;
  * Filters out the reports from all stories that pass, The delegate receives
  * output only for failing or pending stories.
  */
-public class SilentSuccessFilter implements StoryReporter {
+public class SilentSuccessFilter extends NullStoryReporter {
 
     private final StoryReporter delegate;
     private State runState = State.SILENT;
@@ -52,18 +52,6 @@ public class SilentSuccessFilter implements StoryReporter {
             }
         };
         runState.report();
-    }
-
-    @Override
-    public void restarted(String step, Throwable cause) {
-    }
-    
-    @Override
-    public void restartedStory(Story story, Throwable cause) {
-    }
-
-    @Override
-    public void storyCancelled(Story story, StoryDuration storyDuration) {
     }
 
     @Override
@@ -116,10 +104,6 @@ public class SilentSuccessFilter implements StoryReporter {
         afterStoryState.report();
     }
     
-    @Override
-    public void beforeStep(String step) {
-    }
-
     @Override
     public void ignorable(final String step) {
         scenarioTodos.add(new Todo() {

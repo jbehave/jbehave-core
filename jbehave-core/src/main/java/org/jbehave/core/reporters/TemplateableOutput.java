@@ -41,7 +41,7 @@ import freemarker.template.TemplateModelException;
  * Story reporter that outputs to a template.
  * </p>
  */
-public class TemplateableOutput implements StoryReporter {
+public class TemplateableOutput extends NullStoryReporter {
 
     private final File file;
     private final Keywords keywords;
@@ -89,7 +89,6 @@ public class TemplateableOutput implements StoryReporter {
         }
     }
 
-
     @Override
     public void scenarioNotAllowed(Scenario scenario, String filter) {
         this.outputScenario.notAllowedBy = filter;
@@ -101,10 +100,6 @@ public class TemplateableOutput implements StoryReporter {
             this.outputScenario = new OutputScenario();
         }
         this.outputScenario.title = title;
-    }
-
-    @Override
-    public void beforeStep(String step) {
     }
 
     @Override
@@ -179,10 +174,6 @@ public class TemplateableOutput implements StoryReporter {
     @Override
     public void afterExamples() {
         this.outputScenario.currentExample = null;
-    }
-
-    @Override
-    public void dryRun() {
     }
 
     @Override
