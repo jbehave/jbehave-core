@@ -54,6 +54,10 @@ public class GivenStory {
         return hasAnchor() && anchor.matches(PARAMETERS_REGEX);
     }
 
+    public boolean hasAnchorWithExamplesReference() {
+        return hasAnchor() && !anchor.matches(PARAMETERS_REGEX);
+    }
+
     public Map<String, String> getAnchorParameters() {
         Map<String,String> parameters = new HashMap<>();
         for (String pair : anchor.trim().split(";")) {
