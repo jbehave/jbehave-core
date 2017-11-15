@@ -149,14 +149,17 @@ class RegexStoryParserBehaviour {
                 wholeStory, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
         assertThat(story.getGivenStories().getStories().size(), equalTo(1));
-        GivenStory givenStory = story.getGivenStories().getStories().get(0);
+        GivenStories givenStories = story.getGivenStories();
+        assertThat(givenStories.requireParameters(), equalTo(false));
+        GivenStory givenStory = givenStories.getStories().get(0);
         assertThat(givenStory.hasAnchorParameters(), equalTo(true));
+        assertThat(givenStory.hasAnchorWithExamplesReference(), equalTo(false));
         Map<String, String> anchorParameters = givenStory.getAnchorParameters();
         assertThat(anchorParameters.size(), equalTo(2));
         assertThat(anchorParameters.get("id1"), equalTo("scenario1"));        
         assertThat(anchorParameters.get("id2"), equalTo("scenario2"));        
     }
-    
+
     @Test
     void shouldAllowSpacesInMetaProperties() {
         String wholeStory = "Meta: @ theme parsing @ skip"
@@ -1005,28 +1008,33 @@ class RegexStoryParserBehaviour {
         assertThat(givenStories.requireParameters(), equalTo(true));
         GivenStory givenStory1 = givenStories.getStories().get(0);
         assertThat(givenStory1.hasAnchor(), equalTo(true));
+        assertThat(givenStory1.hasAnchorWithExamplesReference(), equalTo(true));
         assertThat(givenStory1.getAnchor(), equalTo("0"));
         assertThat(givenStory1.getPath(), equalTo("path/to/one"));
         assertThat(givenStory1.getParameters().get("one"), equalTo("11"));
         assertThat(givenStory1.getParameters().get("two"), equalTo("12"));
         GivenStory givenStory2 = givenStories.getStories().get(1);
         assertThat(givenStory2.hasAnchor(), equalTo(true));
+        assertThat(givenStory2.hasAnchorWithExamplesReference(), equalTo(true));
         assertThat(givenStory2.getAnchor(), equalTo("1"));
         assertThat(givenStory2.getPath(), equalTo("path/to/two"));
         assertThat(givenStory2.getParameters().get("one"), equalTo("21"));
         assertThat(givenStory2.getParameters().get("two"), equalTo("22"));
         GivenStory givenStory3 = givenStories.getStories().get(2);
         assertThat(givenStory3.hasAnchor(), equalTo(true));
+        assertThat(givenStory3.hasAnchorWithExamplesReference(), equalTo(true));
         assertThat(givenStory3.getAnchor(), equalTo("2"));
         assertThat(givenStory3.getPath(), equalTo("path/to/three"));
         assertThat(givenStory3.getParameters().size(), equalTo(0));
         GivenStory givenStory4 = givenStories.getStories().get(3);
         assertThat(givenStory4.hasAnchor(), equalTo(true));
+        assertThat(givenStory4.hasAnchorWithExamplesReference(), equalTo(true));
         assertThat(givenStory4.getAnchor(), equalTo("a"));
         assertThat(givenStory4.getPath(), equalTo("path/to/four"));
         assertThat(givenStory4.getParameters().size(), equalTo(0));
         GivenStory givenStory5 = givenStories.getStories().get(4);
         assertThat(givenStory5.hasAnchor(), equalTo(false));
+        assertThat(givenStory5.hasAnchorWithExamplesReference(), equalTo(false));
         assertThat(givenStory5.getAnchor(), equalTo(EMPTY));
         assertThat(givenStory5.getPath(), equalTo("path/to/five"));
         assertThat(givenStory5.getParameters().size(), equalTo(0));
