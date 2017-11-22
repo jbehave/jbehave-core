@@ -7,6 +7,7 @@ public class ParameterControls {
 
     public static final String DEFAULT_NAME_DELIMITER_LEFT = "<";
     public static final String DEFAULT_NAME_DELIMITER_RIGHT = ">";
+
     private String nameDelimiterLeft;
     private String nameDelimiterRight;
     private boolean delimiterNamedParameters;
@@ -47,7 +48,11 @@ public class ParameterControls {
         this.delimiterNamedParameters = delimiterNamedParameters;
         return this;
     }
-    
+
+    public String createDelimitedName(String name) {
+        return nameDelimiterLeft + name + nameDelimiterRight;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

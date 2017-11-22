@@ -24,6 +24,7 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
+import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
@@ -57,8 +58,9 @@ public abstract class LocalizedStories extends JUnitStories {
         properties.setProperty("encoding", "UTF-8");
         LoadFromClasspath resourceLoader = new LoadFromClasspath(classLoader);
         TableTransformers tableTransformers = new TableTransformers();
-        ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, tableTransformers)
-                .addConverters(customConverters(keywords, resourceLoader, tableTransformers));
+        ParameterControls parameterControls = new ParameterControls();
+        ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, parameterControls,
+                tableTransformers, true).addConverters(customConverters(keywords, resourceLoader, tableTransformers));
         return new MostUsefulConfiguration()
                 .useKeywords(keywords)
                 .useStepCollector(new MarkUnmatchedStepsAsPending(keywords))
@@ -73,6 +75,7 @@ public abstract class LocalizedStories extends JUnitStories {
                     .withViewResources(properties)
                     .withKeywords(keywords))
                 .useParameterConverters(parameterConverters)
+                .useParameterControls(parameterControls)
                 .useTableTransformers(tableTransformers);
     }
     

@@ -104,7 +104,7 @@ public class ParameterConverters {
      * @param tableTransformers the table transformers
      */
     public ParameterConverters(ResourceLoader resourceLoader, TableTransformers tableTransformers) {
-        this(DEFAULT_STEP_MONITOR, resourceLoader, tableTransformers);
+        this(DEFAULT_STEP_MONITOR, resourceLoader, new ParameterControls(), tableTransformers);
     }
 
     /**
@@ -112,24 +112,27 @@ public class ParameterConverters {
      * 
      * @param monitor the StepMonitor to use
      * @param resourceLoader the resource loader
+     * @param parameterControls the parameter controls
      * @param tableTransformers the table transformers
      */
-    public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader,
+    public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader, ParameterControls parameterControls,
             TableTransformers tableTransformers) {
-        this(monitor, resourceLoader, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL, DEFAULT_LIST_SEPARATOR,
-                DEFAULT_THREAD_SAFETY);
+        this(monitor, resourceLoader, parameterControls, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL,
+                DEFAULT_LIST_SEPARATOR, DEFAULT_THREAD_SAFETY);
     }
 
     /**
      * Create a ParameterConverters with given thread-safety
      * 
      * @param resourceLoader the resource loader
+     * @param parameterControls the parameter controls
      * @param tableTransformers the table transformers
      * @param threadSafe the boolean flag to determine if access to
      * {@link ParameterConverter} should be thread-safe
      */
-    public ParameterConverters(ResourceLoader resourceLoader, TableTransformers tableTransformers, boolean threadSafe) {
-        this(DEFAULT_STEP_MONITOR, resourceLoader, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL,
+    public ParameterConverters(ResourceLoader resourceLoader, ParameterControls parameterControls,
+            TableTransformers tableTransformers, boolean threadSafe) {
+        this(DEFAULT_STEP_MONITOR, resourceLoader, parameterControls, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL,
                 DEFAULT_LIST_SEPARATOR, threadSafe);
     }
 
@@ -141,16 +144,18 @@ public class ParameterConverters {
      * 
      * @param monitor the StepMonitor reporting the conversions
      * @param resourceLoader the resource loader
+     * @param parameterControls the parameter controls
      * @param tableTransformers the table transformers
      * @param locale the Locale to use when reading numbers
      * @param listSeparator the String to use as list separator
      * @param threadSafe the boolean flag to determine if modification of
      * {@link ParameterConverter} should be thread-safe
      */
-    public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader, TableTransformers tableTransformers,
-            Locale locale, String listSeparator, boolean threadSafe) {
+    public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader, ParameterControls parameterControls,
+            TableTransformers tableTransformers, Locale locale, String listSeparator, boolean threadSafe) {
         this(monitor, new ArrayList<ParameterConverter>(), threadSafe);
-        this.addConverters(defaultConverters(resourceLoader, tableTransformers, locale, listSeparator));
+        this.addConverters(
+                defaultConverters(resourceLoader, parameterControls, tableTransformers, locale, listSeparator));
     }
 
     private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters, boolean threadSafe) {
@@ -160,10 +165,11 @@ public class ParameterConverters {
                 : new ArrayList<ParameterConverter>(converters);
     }
 
-    protected ParameterConverter[] defaultConverters(ResourceLoader resourceLoader, TableTransformers tableTransformers,
-            Locale locale, String listSeparator) {
+    protected ParameterConverter[] defaultConverters(ResourceLoader resourceLoader, ParameterControls parameterControls,
+            TableTransformers tableTransformers, Locale locale, String listSeparator) {
         String escapedListSeparator = escapeRegexPunctuation(listSeparator);
-        ExamplesTableFactory tableFactory = new ExamplesTableFactory(resourceLoader, this, tableTransformers);
+        ExamplesTableFactory tableFactory = new ExamplesTableFactory(resourceLoader, this, parameterControls,
+                tableTransformers);
         JsonFactory jsonFactory = new JsonFactory();
         return new ParameterConverter[] { new BooleanConverter(),
                 new NumberConverter(NumberFormat.getInstance(locale)),

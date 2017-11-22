@@ -16,7 +16,7 @@ public class ConcurrencyBehaviour {
     public void shouldAllowConcurrentAdditionOfParameterConvertersInThreadSafeMode() {
 
         final ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath(),
-                new TableTransformers(), true);
+                new ParameterControls(), new TableTransformers(), true);
 
         final boolean[] active = new boolean[] { true };
         final ParameterConverter[] toAdd = new ParameterConverter[] { mock(ParameterConverter.class, "one"),

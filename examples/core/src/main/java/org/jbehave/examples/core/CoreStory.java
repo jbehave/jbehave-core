@@ -25,6 +25,7 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
+import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
@@ -62,13 +63,14 @@ public abstract class CoreStory extends JUnitStory {
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
         LoadFromClasspath resourceLoader = new LoadFromClasspath(embeddableClass);
-        TableTransformers tableTranformers = new TableTransformers();
+        TableTransformers tableTransformers = new TableTransformers();
+        ParameterControls parameterControls = new ParameterControls();
         // Start from default ParameterConverters instance
-        ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, tableTranformers);
+        ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, tableTransformers);
         // factory to allow parameter conversion and loading from external
         // resources (used by StoryParser too)
         ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), resourceLoader,
-                parameterConverters, tableTranformers);
+                parameterConverters, parameterControls, tableTransformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
@@ -86,7 +88,9 @@ public abstract class CoreStory extends JUnitStory {
                                 .withViewResources(viewResources).withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML)
                                 .withCrossReference(xref)
                                 .withFailureTrace(true).withFailureTraceCompression(true))
-                .useParameterConverters(parameterConverters);
+                .useParameterConverters(parameterConverters)
+                .useParameterControls(parameterControls)
+                .useTableTransformers(tableTransformers);
     }
 
     @Override

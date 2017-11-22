@@ -268,7 +268,7 @@ public class StepCreator {
     }
 
     private String parametrisedStep(String stepAsString, Map<String, String> namedParameters, Type[] types,
-            ParameterName[] names, String[] parameterValues) {
+            String[] parameterValues) {
         String parametrisedStep = stepAsString;
         // mark parameter values that are parsed
         boolean hasTable = hasTable(types);
@@ -295,31 +295,26 @@ public class StepCreator {
     private String markNamedParameterValue(String stepText, Map<String, String> namedParameters, String name) {
         String value = namedParameter(namedParameters, name);
         if (value != null) {
-            stepText = stepText.replace(delimitedName(name), markedValue(value));
+            return stepText.replace(parameterControls.createDelimitedName(name), markedValue(value));
         }
         return stepText;
-    }
-
-    private String delimitedName(String name) {
-        return parameterControls.nameDelimiterLeft() + name + parameterControls.nameDelimiterRight();
     }
 
     private String markParsedParameterValue(String stepText, Type type, String value, boolean hasTable) {
         if (value != null) {
             if (isTable(type)) {
-                stepText = stepText.replace(value, markedTable(value));
-            } else {
-                // only mark non-empty string as parameter (JBEHAVE-656)            	
-                if (value.trim().length() != 0) {
-                    String markedValue = markedValue(value);
-                    // identify parameter values to mark as padded by spaces to avoid duplicated replacements of overlapping values (JBEHAVE-837)
-                    String leftPad = SPACE;
-                    String rightPad = ( stepText.endsWith(value) ? NONE : SPACE );
-                    stepText = stepText.replace(pad(value, leftPad, rightPad), pad(markedValue, leftPad, rightPad));
-                }
-                if ( !hasTable ){
-                    stepText = stepText.replace(NEWLINE, PARAMETER_VALUE_NEWLINE);
-                }
+                return stepText.replace(value, markedTable(value));
+            }
+            // only mark non-empty string as parameter (JBEHAVE-656)
+            if (value.trim().length() != 0) {
+                String markedValue = markedValue(value);
+                // identify parameter values to mark as padded by spaces to avoid duplicated replacements of overlapping values (JBEHAVE-837)
+                String leftPad = SPACE;
+                String rightPad = stepText.endsWith(value) ? NONE : SPACE;
+                return stepText.replace(pad(value, leftPad, rightPad), pad(markedValue, leftPad, rightPad));
+            }
+            if (!hasTable){
+                return stepText.replace(NEWLINE, PARAMETER_VALUE_NEWLINE);
             }
         }
         return stepText;
@@ -781,7 +776,7 @@ public class StepCreator {
             String[] parameterValues = parameterValuesForStep(namedParameters, types, names);
             convertedParameters = convertParameterValues(parameterValues, types, names);
             addNamedParametersToExamplesTables();
-            parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, names, parameterValues);
+            parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, parameterValues);
         }
 
         private void addNamedParametersToExamplesTables() {
