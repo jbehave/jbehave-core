@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Lifecycle;
@@ -73,14 +74,18 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
     }
 
     public List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage) {
+        return collectLifecycleSteps(candidateSteps, lifecycle, storyAndScenarioMeta, stage, Scope.SCENARIO);
+    }
+
+    public List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage, Scope scope) {
         List<Step> steps = new ArrayList<Step>();
         Map<String, String> namedParameters = new HashMap<String, String>();
         if (stage == Stage.BEFORE) {
-            addMatchedSteps(lifecycle.getBeforeSteps(), steps, namedParameters, candidateSteps);
+            addMatchedSteps(lifecycle.getBeforeSteps(scope), steps, namedParameters, candidateSteps);
         } else {
-            addMatchedSteps(lifecycle.getAfterSteps(Outcome.ANY, storyAndScenarioMeta), steps, namedParameters, candidateSteps, Outcome.ANY);
-            addMatchedSteps(lifecycle.getAfterSteps(Outcome.SUCCESS, storyAndScenarioMeta), steps, namedParameters, candidateSteps, Outcome.SUCCESS);
-            addMatchedSteps(lifecycle.getAfterSteps(Outcome.FAILURE, storyAndScenarioMeta), steps, namedParameters, candidateSteps, Outcome.FAILURE);
+            addMatchedSteps(lifecycle.getAfterSteps(scope, Outcome.ANY, storyAndScenarioMeta), steps, namedParameters, candidateSteps, Outcome.ANY);
+            addMatchedSteps(lifecycle.getAfterSteps(scope, Outcome.SUCCESS, storyAndScenarioMeta), steps, namedParameters, candidateSteps, Outcome.SUCCESS);
+            addMatchedSteps(lifecycle.getAfterSteps(scope, Outcome.FAILURE, storyAndScenarioMeta), steps, namedParameters, candidateSteps, Outcome.FAILURE);
         }
         return steps;
     }

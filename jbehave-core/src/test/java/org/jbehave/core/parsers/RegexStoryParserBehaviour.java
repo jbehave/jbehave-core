@@ -17,6 +17,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
@@ -312,6 +313,33 @@ public class RegexStoryParserBehaviour {
         List<String> afterSteps = story.getLifecycle().getAfterSteps();
         assertThat(afterSteps.get(0), equalTo("Given a step after each scenario"));
         assertThat(afterSteps.get(1), equalTo("And another after step"));
+        Scenario scenario = story.getScenarios().get(0);
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+    }
+
+    @Test
+    public void shouldParseStoryWithLifecycleAndScope() {
+        String wholeStory = "Lifecycle: " + NL +
+                "Before:" + NL + NL +
+                "Scope: STORY" + NL +
+                "Given a step before each story" + NL +
+                "And another before step" + NL +
+                "After:" + NL + NL +
+                "Scope: STORY" + NL +
+                "Given a step after each story" + NL +
+                "And another after step" + NL +
+                "Scenario:"+ NL +
+                "Given a scenario";
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<String> beforeSteps = story.getLifecycle().getBeforeSteps(Scope.STORY);
+        assertThat(beforeSteps.get(0), equalTo("Given a step before each story"));
+        assertThat(beforeSteps.get(1), equalTo("And another before step"));
+        assertThat(story.getLifecycle().getBeforeSteps(Scope.SCENARIO).size(), equalTo(0));
+        List<String> afterSteps = story.getLifecycle().getAfterSteps(Scope.STORY);
+        assertThat(afterSteps.get(0), equalTo("Given a step after each story"));
+        assertThat(afterSteps.get(1), equalTo("And another after step"));
+        assertThat(story.getLifecycle().getAfterSteps(Scope.SCENARIO).size(), equalTo(0));
         Scenario scenario = story.getScenarios().get(0);
         List<String> steps = scenario.getSteps();
         assertThat(steps.get(0), equalTo("Given a scenario"));

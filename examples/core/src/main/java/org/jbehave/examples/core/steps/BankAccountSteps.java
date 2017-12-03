@@ -65,6 +65,7 @@ public class BankAccountSteps {
 
     @Then("my balance is printed")
     public void thenBalanceIsPrinted() {
+        System.out.println("My balance is "+account.getBalance());
     }
 
     @Then("my balance is archived")

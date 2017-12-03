@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -155,6 +156,7 @@ public class RegexStoryParser implements StoryParser {
         }
         Matcher findingLifecycle = findingLifecycle().matcher(beforeScenario);
         String lifecycle = findingLifecycle.find() ? findingLifecycle.group(1).trim() : NONE;
+
         Matcher findingBeforeAndAfter = compile(".*" + keywords.before() + "(.*)\\s*" + keywords.after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBeforeAndAfter.matches() ){
             String beforeLifecycle = findingBeforeAndAfter.group(1).trim();
@@ -179,11 +181,21 @@ public class RegexStoryParser implements StoryParser {
         return Lifecycle.EMPTY;
     }
 
+    private Pattern findingBeforeAndAfterSteps() {
+        String initialStartingWords = concatenateWithOr("\\n", "", keywords.before(), keywords.after());
+        String followingStartingWords = concatenateWithOr("\\n", "\\s", keywords.startingWords());
+        return compile(
+                "((" + initialStartingWords + ")\\s(.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"
+                        + keywords.examplesTable() + ")", DOTALL);
+    }
+
     private Steps parseBeforeLifecycle(String lifecycleAsText) {
-        return new Steps(findSteps(startingWithNL(lifecycleAsText)));
+        Scope scope = parseScope(findScope(lifecycleAsText));
+        return new Steps(scope, findSteps(startingWithNL(lifecycleAsText)));
     }
 
     private Steps[] parseAfterLifecycle(String lifecycleAsText) {
+        Scope scope = parseScope(findScope(lifecycleAsText));
         List<Steps> list = new ArrayList<Steps>();
         for (String byOutcome : lifecycleAsText.split(keywords.outcome()) ){ 
             byOutcome = byOutcome.trim();
@@ -191,9 +203,26 @@ public class RegexStoryParser implements StoryParser {
             String outcomeAsText = findOutcome(byOutcome);
             String filtersAsText = findFilters(removeStart(byOutcome, outcomeAsText));
             List<String> steps = findSteps(startingWithNL(removeStart(byOutcome, filtersAsText)));
-            list.add(new Steps(parseOutcome(outcomeAsText), parseFilters(filtersAsText), steps));
+            list.add(new Steps(scope, parseOutcome(outcomeAsText), parseFilters(filtersAsText), steps));
         }
         return list.toArray(new Steps[list.size()]);
+    }
+
+    private String findScope(String lifecycleAsText) {
+        Matcher findingScope = findingLifecycleScope().matcher(lifecycleAsText.trim());
+        if ( findingScope.matches() ){
+            return findingScope.group(1).trim();
+        }
+        return NONE;
+    }
+
+    private Scope parseScope(String scopeAsText) {
+        if ( scopeAsText.equals(keywords.scopeScenario()) ){
+            return Scope.SCENARIO;
+        } else if ( scopeAsText.equals(keywords.scopeStory()) ){
+            return Scope.STORY;
+        }
+        return Scope.SCENARIO;
     }
 
     private String findOutcome(String stepsByOutcome) {
@@ -345,7 +374,12 @@ public class RegexStoryParser implements StoryParser {
     private Pattern findingLifecycle() {
         return compile(".*" + keywords.lifecycle() + "\\s*(.*)", DOTALL);
     }
-    
+
+    private Pattern findingLifecycleScope() {
+        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
+        return compile(keywords.scope() + "((.)*?)\\s*(" + keywords.outcome() + "|" + keywords.metaFilter() + "|" + startingWords + ").*", DOTALL);
+    }
+
     private Pattern findingLifecycleOutcome() {
         String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
         String outcomes = concatenateWithOr(keywords.outcomeAny(), keywords.outcomeSuccess(), keywords.outcomeFailure());

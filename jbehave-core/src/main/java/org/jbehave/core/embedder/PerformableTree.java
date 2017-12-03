@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
@@ -91,6 +92,7 @@ public class PerformableTree {
         if (storyAllowed) {
 
             performableStory.addBeforeSteps(context.beforeOrAfterStorySteps(story, Stage.BEFORE));
+            performableStory.addBeforeSteps(context.lifecycleSteps(story.getLifecycle(), storyMeta, Stage.BEFORE, Scope.STORY));
 
             // determine if before and after scenario steps should be run
             boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
@@ -111,6 +113,7 @@ public class PerformableTree {
                         storyParameters));
             }
 
+            performableStory.addAfterSteps(context.lifecycleSteps(story.getLifecycle(), storyMeta, Stage.AFTER, Scope.STORY));
             performableStory.addAfterSteps(context.beforeOrAfterStorySteps(story, Stage.AFTER));
 
         }
@@ -555,8 +558,12 @@ public class PerformableTree {
         }
 
         public PerformableSteps lifecycleSteps(Lifecycle lifecycle, Meta meta, Stage stage) {
+            return lifecycleSteps(lifecycle, meta, stage, Scope.SCENARIO);
+        }
+
+        public PerformableSteps lifecycleSteps(Lifecycle lifecycle, Meta meta, Stage stage, Scope scope) {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
-            List<Step> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, meta, stage);
+            List<Step> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, meta, stage, scope);
             return new PerformableSteps(steps, monitor.matched());
         }
 

@@ -54,6 +54,7 @@
         </givenStories>
         <lifecycle>
           <before>
+            <scope>SCENARIO</scope>
             <steps class="java.util.Arrays$ArrayList">
               <a class="string-array"/>
             </steps>

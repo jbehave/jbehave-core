@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.StoryRunner.State;
@@ -966,7 +967,7 @@ public class StoryRunnerBehaviour {
 
     private void givenLifecycleStep(Stage stage, StepCollector collector, CandidateSteps mySteps) {
         Step beforeStep = mockSuccessfulStep(lifecycleStepNameFor(stage));
-        when(collector.collectLifecycleSteps(eq(asList(mySteps)), eq(Lifecycle.EMPTY), any(Meta.class), eq(stage))).thenReturn(asList(beforeStep));
+        when(collector.collectLifecycleSteps(eq(asList(mySteps)), eq(Lifecycle.EMPTY), any(Meta.class), eq(stage), eq(Scope.SCENARIO))).thenReturn(asList(beforeStep));
     }
 
     private String lifecycleStepNameFor(Stage stage) {

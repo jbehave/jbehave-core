@@ -3,13 +3,7 @@ package org.jbehave.core.steps;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.annotations.AfterScenario;
-import org.jbehave.core.annotations.AfterStories;
-import org.jbehave.core.annotations.AfterStory;
-import org.jbehave.core.annotations.BeforeScenario;
-import org.jbehave.core.annotations.BeforeStories;
-import org.jbehave.core.annotations.BeforeStory;
-import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.annotations.*;
 import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
@@ -58,15 +52,27 @@ public interface StepCollector {
     List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage, ScenarioType type);
 
     /**
-     * Collects all lifecycle steps to execute
+     * Collects all lifecycle steps to execute for default scope
      * 
      * @param candidateSteps the {@link CandidateSteps}.
      * @param lifecycle the {@link Lifecycle}
-     * @param storyAndScenarioMeta the story and scenario {@link org.jbehave.core.model.Meta} parameters
+     * @param storyAndScenarioMeta the story and scenario {@link Meta} parameters
      * @param stage the {@link Stage} of execution
-     * @return A List of executable {@link Step}s 
+     * @return A List of executable {@link Step}s
      */
     List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage);
+
+    /**
+     * Collects all lifecycle steps to execute
+     *
+     * @param candidateSteps the {@link CandidateSteps}.
+     * @param lifecycle the {@link Lifecycle}
+     * @param storyAndScenarioMeta the story and scenario {@link Meta} parameters
+     * @param stage the {@link Stage} of execution
+     * @param scope the {@link Scope} of the lifecycle steps
+     * @return A List of executable {@link Step}s
+     */
+    List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage, Scope scope);
 
     /**
      * Collects all of the {@link Step}s to execute for a scenario.

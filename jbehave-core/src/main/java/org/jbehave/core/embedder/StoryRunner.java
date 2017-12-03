@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jbehave.core.annotations.ScenarioType;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.FailureStrategy;
@@ -689,7 +690,7 @@ public class StoryRunner {
         }
 
         public List<Step> collectLifecycleSteps(Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage) {
-            return configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, storyAndScenarioMeta, stage);
+            return configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, storyAndScenarioMeta, stage, Scope.SCENARIO);
         }
 
         public List<Step> collectScenarioSteps(Scenario scenario, Map<String, String> parameters) {

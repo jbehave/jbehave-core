@@ -69,6 +69,7 @@
         },
         "lifecycle": {
           "before": {
+            "scope": "SCENARIO",
             "steps": [
               []
             ]

@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.embedder.MetaFilter;
 
 public class Lifecycle {
@@ -30,14 +31,22 @@ public class Lifecycle {
     }
 
     public List<String> getBeforeSteps() {
-        return before.steps;
+        return getBeforeSteps(Scope.SCENARIO);
+    }
+
+    public List<String> getBeforeSteps(Scope scope) {
+        return stepsByScope(before, scope);
     }
 
     public List<String> getAfterSteps() {
-    	List<String> afterSteps = new ArrayList<String>();
-    	for (Steps steps : after) {
-			afterSteps.addAll(steps.steps);
-		}
+        return getAfterSteps(Scope.SCENARIO);
+    }
+
+    public List<String> getAfterSteps(Scope scope) {
+        List<String> afterSteps = new ArrayList<String>();
+        for (Steps steps : after) {
+            afterSteps.addAll(stepsByScope(steps, scope));
+        }
         return afterSteps;
     }
 
@@ -63,23 +72,38 @@ public class Lifecycle {
     }
 
 	public List<String> getAfterSteps(Outcome outcome, Meta meta) {
-		MetaFilter filter = getMetaFilter(outcome);
-    	List<String> afterSteps = new ArrayList<String>();
-    	for (Steps steps : after) {
-    		if ( outcome.equals(steps.outcome) ) {
-    			if ( meta.equals(Meta.EMPTY) ){
-        			afterSteps.addAll(steps.steps);
-    			} else {
-    				if ( filter.allow(meta) ){
-            			afterSteps.addAll(steps.steps);    					
-    				}
-    			}
-    		}
-		}
+        return getAfterSteps(Scope.SCENARIO, outcome, meta);
+    }
+
+    public List<String> getAfterSteps(Scope scope, Outcome outcome, Meta meta) {
+        MetaFilter filter = getMetaFilter(outcome);
+        List<String> afterSteps = new ArrayList<String>();
+        for (Steps steps : after) {
+            if ( outcome.equals(steps.outcome) ) {
+                if ( meta.equals(Meta.EMPTY) ){
+                    afterSteps.addAll(stepsByScope(steps, scope));
+                } else {
+                    if ( filter.allow(meta) ){
+                        afterSteps.addAll(stepsByScope(steps, scope));
+                    }
+                }
+            }
+        }
         return afterSteps;
     }
 
-	public boolean isEmpty() {
+    private List<String> stepsByScope(Steps steps, Scope scope) {
+        if ( steps.scope  == Scope.SCENARIO ) {
+            return steps.steps;
+        }
+        if ( steps.scope == scope ) {
+            return steps.steps;
+        }
+        return Steps.EMPTY.steps;
+    }
+
+
+    public boolean isEmpty() {
         return EMPTY == this;
     }
 
@@ -91,20 +115,30 @@ public class Lifecycle {
     public static class Steps {
     	
     	public static Steps EMPTY = new Steps(Arrays.<String>asList());
-    	
+
+        private Scope scope;
     	private Outcome outcome;
 		private String metaFilter;
     	private List<String> steps;
     	
 		public Steps(List<String> steps) {
-			this(null, steps);
+			this(Scope.SCENARIO, steps);
 		}
-		
-		public Steps(Outcome outcome, List<String> steps) {
+
+        public Steps(Scope scope, List<String> steps) {
+            this(scope, null, null, steps);
+        }
+
+        public Steps(Outcome outcome, List<String> steps) {
 			this(outcome, null, steps);
 		}
 
 		public Steps(Outcome outcome, String metaFilter, List<String> steps) {
+		    this(Scope.SCENARIO, outcome, metaFilter, steps);
+		}
+
+		public Steps(Scope scope, Outcome outcome, String metaFilter, List<String> steps) {
+		    this.scope = scope;
 			this.outcome = outcome;
 			this.metaFilter = metaFilter;
 			this.steps = steps;

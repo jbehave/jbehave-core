@@ -19,13 +19,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.hamcrest.Matchers;
-import org.jbehave.core.annotations.AfterScenario;
+import org.jbehave.core.annotations.*;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
-import org.jbehave.core.annotations.AfterStory;
-import org.jbehave.core.annotations.BeforeScenario;
-import org.jbehave.core.annotations.BeforeStory;
-import org.jbehave.core.annotations.Named;
-import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Lifecycle;
@@ -126,7 +121,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 new org.jbehave.core.model.Lifecycle.Steps(Outcome.FAILURE, asList(myFailureStep)));
 
         // When
-        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Stage.AFTER);
+        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Stage.AFTER, Scope.SCENARIO);
 
         // Then
         assertThat(executableSteps.size(), equalTo(3));
