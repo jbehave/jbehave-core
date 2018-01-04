@@ -87,6 +87,16 @@ public abstract class Format {
         }
     };
 
+    public static final Format JSON = new Format("JSON") {
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+                StoryReporterBuilder storyReporterBuilder) {
+            factory.useConfiguration(storyReporterBuilder.fileConfiguration("json"));
+            return configureReporting(storyReporterBuilder,
+                    new JsonOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
+        }
+    };
+
     /**
      * STATS is not just about output formats, it is needed by the final
      * reports.html summary page.
