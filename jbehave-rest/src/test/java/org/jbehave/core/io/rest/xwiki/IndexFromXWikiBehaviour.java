@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -26,7 +27,7 @@ public class IndexFromXWikiBehaviour {
 
     private String read(String path) {
         try {
-            return IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(path));
+            return IOUtils.toString(getClass().getClassLoader().getResource(path), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
