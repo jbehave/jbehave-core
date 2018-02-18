@@ -742,12 +742,9 @@ public class PerformableTree {
         if (performableGivenStories.size() > 0) {
             context.reporter().beforeGivenStories();
             context.reporter().givenStories(givenStories);
-            final boolean parentGivenStory = context.givenStory;
             for (PerformableStory story : performableGivenStories) {
-                context.givenStory = story.givenStory();
                 story.perform(context);
             }
-            context.givenStory = parentGivenStory;
             context.reporter().afterGivenStories();
         }
     }
@@ -821,7 +818,7 @@ public class PerformableTree {
                 this.status = Status.NOT_ALLOWED;
             }
             context.stepsContext().resetStory();
-            context.reporter().beforeStory(story, context.givenStory);
+            context.reporter().beforeStory(story, givenStory);
             context.reporter().narrative(story.getNarrative());
             context.reporter().lifecyle(story.getLifecycle());
             State state = context.state();
@@ -841,7 +838,7 @@ public class PerformableTree {
             if (context.restartStory()) {
                 context.reporter().afterStory(true);
             } else {
-                context.reporter().afterStory(context.givenStory);
+                context.reporter().afterStory(givenStory);
             }
             this.status = context.status(state);
         }
