@@ -317,8 +317,8 @@
           "examplePerformableScenarios": []
         }
       ],
-      "beforeSteps": {},
-      "afterSteps": {},
+      "beforeSteps": [],
+      "afterSteps": [],
       "timing": {
         "durationInMillis": 0,
         "start": 0,
@@ -557,5 +557,5 @@
       },
       "examplePerformableScenarios": []
     }
-  ]}
-}
+  ]
+}}

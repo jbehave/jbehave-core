@@ -21,6 +21,7 @@ import java.util.Properties;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.*;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Lifecycle;
@@ -122,6 +123,48 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // When
         List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Stage.AFTER, Scope.SCENARIO);
+
+        // Then
+        assertThat(executableSteps.size(), equalTo(3));
+        assertThat(executableSteps.get(0), equalTo(anyStep));
+        assertThat(executableSteps.get(1), equalTo(successStep));
+        assertThat(executableSteps.get(2), equalTo(failureStep));
+    }
+
+    @Test
+    public void shouldCreateExecutableStepsUponOutcomeAndScope() {
+        // Given
+        StepCandidate anyCandidate = mock(StepCandidate.class, "anyCandidate");
+        StepCandidate successCandidate = mock(StepCandidate.class, "successCandidate");
+        StepCandidate failureCandidate = mock(StepCandidate.class, "failureCandidate");
+        Step anyStep = mock(Step.class, "anyStep");
+        Step successStep = mock(Step.class, "successStep");
+        Step failureStep = mock(Step.class, "failureStep");
+
+        String myAnyStep = "my any step";
+        when(anyCandidate.matches(myAnyStep)).thenReturn(true);
+        when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Outcome.ANY)).thenReturn(anyStep);
+        when(successCandidate.isAndStep(myAnyStep)).thenReturn(false);
+        String mySuccessStep = "my success step";
+        when(successCandidate.matches(mySuccessStep)).thenReturn(true);
+        when(successCandidate.isAndStep(mySuccessStep)).thenReturn(false);
+        when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Outcome.SUCCESS)).thenReturn(successStep);
+        String myFailureStep = "my failure step";
+        when(successCandidate.matches(myFailureStep)).thenReturn(true);
+        when(successCandidate.isAndStep(myFailureStep)).thenReturn(false);
+        when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Outcome.FAILURE)).thenReturn(failureStep);
+
+        List<CandidateSteps> steps = mockCandidateSteps(anyCandidate, successCandidate, failureCandidate);
+
+        Scope scope = Scope.STORY;
+        Lifecycle lifecycle = new Lifecycle(
+                org.jbehave.core.model.Lifecycle.Steps.EMPTY,
+                new org.jbehave.core.model.Lifecycle.Steps(scope, Outcome.ANY, asList(myAnyStep)),
+                new org.jbehave.core.model.Lifecycle.Steps(scope, Outcome.SUCCESS, asList(mySuccessStep)),
+                new org.jbehave.core.model.Lifecycle.Steps(scope, Outcome.FAILURE, asList(myFailureStep)));
+
+        // When
+        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Stage.AFTER, scope);
 
         // Then
         assertThat(executableSteps.size(), equalTo(3));

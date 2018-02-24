@@ -137,7 +137,11 @@ public class Lifecycle {
 		    this(Scope.SCENARIO, outcome, metaFilter, steps);
 		}
 
-		public Steps(Scope scope, Outcome outcome, String metaFilter, List<String> steps) {
+        public Steps(Scope scope, Outcome outcome, List<String> steps) {
+            this(scope, outcome, null, steps);
+        }
+
+        public Steps(Scope scope, Outcome outcome, String metaFilter, List<String> steps) {
 		    this.scope = scope;
 			this.outcome = outcome;
 			this.metaFilter = metaFilter;

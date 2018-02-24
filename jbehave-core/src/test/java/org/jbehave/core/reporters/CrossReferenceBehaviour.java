@@ -49,7 +49,7 @@ public class CrossReferenceBehaviour {
 
         String expectedJson = resource("xref.json");
         String actualJson = output(outputDirectory, "xref.json");
-        
+
         assertEquals(expectedXml, actualXml);
         assertEquals(expectedJson, actualJson);
     }

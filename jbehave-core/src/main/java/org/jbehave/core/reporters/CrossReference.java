@@ -12,6 +12,7 @@ import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.NormalPerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
 import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
+import org.jbehave.core.embedder.PerformableTree.PerformableSteps;
 import org.jbehave.core.embedder.PerformableTree.PerformableStory;
 import org.jbehave.core.embedder.PerformableTree.Status;
 import org.jbehave.core.failures.PendingStepStrategy;
@@ -108,6 +109,7 @@ public class CrossReference {
 		xstream.alias(name.toLowerCase(), PerformableRoot.class);
 		xstream.alias("performableStory", PerformableStory.class);
 		xstream.alias("performableScenario", PerformableScenario.class);
+		xstream.alias("performableSteps", PerformableSteps.class);
 		xstream.alias("normalPerformableScenario", NormalPerformableScenario.class);
 		xstream.alias("examplePerformableScenario", ExamplePerformableScenario.class);
 		xstream.alias("status", Status.class);

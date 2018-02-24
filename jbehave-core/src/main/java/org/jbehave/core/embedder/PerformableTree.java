@@ -760,8 +760,8 @@ public class PerformableTree {
         private Status status;
         private List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
         private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
-        private PerformableSteps beforeSteps = new PerformableSteps();
-        private PerformableSteps afterSteps = new PerformableSteps();
+        private List<PerformableSteps> beforeSteps = new ArrayList<PerformableSteps>();
+        private List<PerformableSteps> afterSteps = new ArrayList<PerformableSteps>();
         private Timing timing = new Timing();
         private boolean givenStory;
 
@@ -792,11 +792,11 @@ public class PerformableTree {
         }
 
         public void addBeforeSteps(PerformableSteps beforeSteps) {
-            this.beforeSteps = beforeSteps;
+            this.beforeSteps.add(beforeSteps);
         }
 
         public void addAfterSteps(PerformableSteps afterSteps) {
-            this.afterSteps = afterSteps;
+            this.afterSteps.add(afterSteps);
         }
 
         public void add(PerformableScenario performableScenario) {
@@ -827,10 +827,14 @@ public class PerformableTree {
             State state = context.state();
             Timer timer = new Timer().start();
             try {
-                beforeSteps.perform(context);
+                for ( PerformableSteps steps : beforeSteps ) {
+                    steps.perform(context);
+                }
                 performGivenStories(context, givenStories, story.getGivenStories());
                 performScenarios(context);
-                afterSteps.perform(context);
+                for ( PerformableSteps steps : afterSteps ) {
+                    steps.perform(context);
+                }
             } finally {
                 timing.setTimings(timer.stop());
             }
