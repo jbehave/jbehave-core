@@ -3,6 +3,7 @@ package org.jbehave.core.parsers.gherkin;
 import java.io.IOException;
 import java.util.List;
 
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -129,7 +130,7 @@ public class GherkinStoryParserBehaviour {
                     + "Then I can drive it.\n";
         Story story = storyParser.parseStory(storyAsText);
         assertThat(story.getDescription().asString(), equalTo("Hello Car"));
-        assertThat(story.getLifecycle().getBeforeSteps(), hasItem("Given I have a license"));
+        assertThat(story.getLifecycle().getBeforeSteps(Scope.SCENARIO), hasItem("Given I have a license"));
         assertThat(story.getScenarios().get(0).getSteps().size(), equalTo(2));
     }
 

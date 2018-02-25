@@ -63,6 +63,11 @@ public class BankAccountSteps {
         }
     }
 
+    @When("my balance is printed")
+    public void whenBalanceIsPrinted() {
+        System.out.println("My balance is "+account.getBalance());
+    }
+
     @Then("my balance is printed")
     public void thenBalanceIsPrinted() {
         System.out.println("My balance is "+account.getBalance());

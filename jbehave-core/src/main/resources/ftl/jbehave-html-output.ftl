@@ -32,30 +32,44 @@
 </#list>
 </div>
 </#macro>
+<#macro renderScope scope><#if scope == 'SCENARIO'>${keywords.scopeScenario}<#elseif scope == 'STORY'>${keywords.scopeStory}</#if></#macro>
 <#macro renderLifecycle lifecycle>
 <div class="lifecycle"><h2>${keywords.lifecycle}</h2>
-<#if !lifecycle.getBeforeSteps().isEmpty()>
+<#if lifecycle.hasBeforeSteps()>
 <div class="before"><h3>${keywords.before}</h3>
-<#list lifecycle.getBeforeSteps() as step>
-<div class="step">${step?html}</div>   
-</#list>
-</div>
-</#if>
-<#if !lifecycle.getAfterSteps().isEmpty()>
+<#list lifecycle.getScopes() as scope>
+<#assign stepsByScope=lifecycle.getBeforeSteps(scope)>
+<#if !stepsByScope.isEmpty()>
+<div class="scope"><h3>${keywords.scope} <@renderScope scope/></h3>
+<#list stepsByScope as step>
+<div class="step">${step?html}</div>
+</#list> <!-- step -->
+</div> <!-- scope -->
+</#if> <!-- stepsByScope -->
+</#list> <!-- scope -->
+</div> <!-- before -->
+</#if> <!-- hasBeforeSteps -->
+<#if lifecycle.hasAfterSteps()>
 <div class="after"><h3>${keywords.after}</h3>
+<#list lifecycle.getScopes() as scope>
+<#assign stepsByScope=lifecycle.getAfterSteps(scope)>
+<#if !stepsByScope.isEmpty()>
+<div class="scope"><h3>${keywords.scope} <@renderScope scope/></h3>
 <#list lifecycle.getOutcomes() as outcome>
 <div class="outcome">
 ${keywords.outcome} ${outcome}
 <#assign metaFilter=lifecycle.getMetaFilter(outcome)>
 <#if !metaFilter.isEmpty()><#assign metaFilterAsString=metaFilter.asString()><div class="metaFilter step">${keywords.metaFilter} ${metaFilterAsString}</div></#if>
-<#list lifecycle.getAfterSteps(outcome) as step>
-<div class="step">${step?html}</div>   
-</#list>
+<#list lifecycle.getAfterSteps(scope, outcome) as step>
+<div class="step">${step?html}</div>
+</#list> <!-- step -->
 </div>
-</#list>
+</#list> <!-- outcome -->
 </div>
-</#if>
-</div>
+</#if> <!-- stepsByScope -->
+</#list> <!-- scope -->
+</div> <!-- after -->
+</#if> <!-- hasAfterSteps -->
 </#macro>
 <#macro renderTable table>
 <#assign rows=table.getRows()>
@@ -120,13 +134,13 @@ ${keywords.outcome} ${outcome}
 <#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
 <#assign scenarios = story.getScenarios()>
 <#list scenarios as scenario>
-<div class="scenario"><h2>${keywords.scenario} <@renderMultiline scenario.getTitle()/></h2>   
+<div class="scenario"><h2>${keywords.scenario} <@renderMultiline scenario.getTitle()/></h2>
 <#if scenario.getMeta()??><@renderMeta scenario.getMeta()/></#if>
 <#if scenario.getGivenStories()??><@renderGivenStories scenario.getGivenStories()/></#if>
 <#if scenario.getExamplesTable()??>
 <div class="examples"><h3>${keywords.examplesTable}</h3>
 <#list scenario.getExamplesSteps() as step>
-<div class="step">${step?html}</div>   
+<div class="step">${step?html}</div>
 </#list>
 <@renderTable scenario.getExamplesTable()/>
 </div>  <!-- end examples -->

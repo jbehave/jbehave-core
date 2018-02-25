@@ -58,17 +58,18 @@
           </examplesTable>
         </givenStories>
         <lifecycle>
-          <before>
-            <scope>SCENARIO</scope>
-            <steps class="java.util.Arrays$ArrayList">
-              <a class="string-array"/>
-            </steps>
+          <before class="java.util.Arrays$ArrayList">
+            <a class="lifecycleSteps-array"/>
           </before>
-          <after/>
+          <after class="java.util.Arrays$ArrayList">
+            <a class="lifecycleSteps-array"/>
+          </after>
         </lifecycle>
         <scenarios/>
       </story>
-      <localizedNarrative>In order to renovate my houseAs a customerI want to get a loan</localizedNarrative>
+      <localizedNarrative>In order to renovate my house
+As a customer
+I want to get a loan</localizedNarrative>
       <allowed>false</allowed>
       <givenStories/>
       <scenarios>

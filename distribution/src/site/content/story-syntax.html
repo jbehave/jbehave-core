@@ -26,14 +26,25 @@ I want to use Behaviour-Driven Development
 
 Lifecycle: 
 Before:
-Given a step that is executed before each scenario 
+Scope: STORY
+Given a step that is executed before each story
+Scope: SCENARIO
+Given a step that is executed before each scenario
 After:
-Outcome: ANY    
+Scope: SCENARIO
+Outcome: ANY
 Given a step that is executed after each scenario regardless of outcome
 Outcome: SUCCESS 
 Given a step that is executed after each successful scenario
 Outcome: FAILURE 
 Given a step that is executed after each failed scenario
+Scope: STORY
+Outcome: ANY
+Given a step that is executed after each story regardless of outcome
+Outcome: SUCCESS
+Given a step that is executed after each successful story
+Outcome: FAILURE
+Given a step that is executed after each failed story
 
 Scenario:  A scenario is a collection of executable steps of different type
 
@@ -93,8 +104,8 @@ Examples:
 <p>The Gherkin syntax is supported via <a href="story-transformers.html">story transformers</a>, that use
 the Gherkin parser to transform the syntax to JBehave's.</p>
 
-<span class="followup">Note that Gherkin's Background element corresponds to the JBehave Lifecycle Before element. 
-JBehave also supports a Lifecycle After element which is not currently available in Gherkin.</span>
+<span class="followup">Note that Gherkin's Background element corresponds to the JBehave Lifecycle Before scenario-scoped element.
+JBehave also supports Lifecycle story-scoped elements and After element which are not currently available in Gherkin.</span>
 
 <div class="clear">
 <hr />

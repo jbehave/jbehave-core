@@ -63,7 +63,8 @@ public class XmlOutput extends PrintStreamOutput {
         patterns.setProperty("lifecycleBeforeStart", "<before keyword=\"{0}\">\n");
         patterns.setProperty("lifecycleBeforeEnd", "</before>\n");        
         patterns.setProperty("lifecycleAfterStart", "<after keyword=\"{0}\">\n");
-        patterns.setProperty("lifecycleAfterEnd", "</after>\n");  
+        patterns.setProperty("lifecycleAfterEnd", "</after>\n");
+        patterns.setProperty("lifecycleScope", "<scope>{0} {1}</scope>\n");
         patterns.setProperty("lifecycleOutcome", "<outcome>{0} {1}</outcome>\n");
         patterns.setProperty("lifecycleMetaFilter", "<metaFilter>{0} {1}</metaFilter>");
         patterns.setProperty("lifecycleStep", "<step>{0}</step>\n");          

@@ -56,6 +56,16 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("metaEnd", "\n");
         patterns.setProperty("filter", "{0}\n");
         patterns.setProperty("narrative", "{0}\n{1} {2}\n{3} {4}\n{5} {6}\n");
+        patterns.setProperty("lifecycleStart", "{0}\n");
+        patterns.setProperty("lifecycleEnd", "\n");
+        patterns.setProperty("lifecycleBeforeStart", "{0}\n");
+        patterns.setProperty("lifecycleBeforeEnd", "\n");
+        patterns.setProperty("lifecycleAfterStart", "{0}\n");
+        patterns.setProperty("lifecycleAfterEnd", "\n");
+        patterns.setProperty("lifecycleScope", "{0} {1}\n");
+        patterns.setProperty("lifecycleOutcome", "{0} {1}\n");
+        patterns.setProperty("lifecycleMetaFilter", "{0} {1}\n");
+        patterns.setProperty("lifecycleStep", "{0}\n");
         patterns.setProperty("beforeScenario", "{0} {1}\n");
         patterns.setProperty("afterScenario", "\n");
         patterns.setProperty("afterScenarioWithFailure", "\n{0}\n");

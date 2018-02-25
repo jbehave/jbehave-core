@@ -11,19 +11,12 @@ import java.util.Date;
 import java.util.Properties;
 
 import org.hamcrest.core.IsEqual;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.RestartingStoryFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.model.Description;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.model.*;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.steps.StepCreator;
 
@@ -34,8 +27,13 @@ class StoryNarrator {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
+        Lifecycle.Steps beforeScenarioSteps = new Lifecycle.Steps(Scope.SCENARIO, asList("Given a scenario step"));
+        Lifecycle.Steps beforeStorySteps = new Lifecycle.Steps(Scope.STORY, asList("Given a story step"));
+        Lifecycle.Steps afterScenarioSteps = new Lifecycle.Steps(Scope.SCENARIO, asList("Given a scenario step"));
+        Lifecycle.Steps afterStorySteps = new Lifecycle.Steps(Scope.STORY, asList("Given a story step"));
+        Lifecycle lifecycle = new Lifecycle(asList(beforeScenarioSteps, beforeStorySteps), asList(afterScenarioSteps, afterStorySteps));
         Story story = new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
-                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
+                new Narrative("renovate my house", "customer", "get a loan"), GivenStories.EMPTY, lifecycle, new ArrayList<Scenario>());
         boolean givenStory = false;
         reporter.beforeStory(story, givenStory);
         reporter.dryRun();

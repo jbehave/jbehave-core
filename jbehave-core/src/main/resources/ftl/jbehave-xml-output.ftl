@@ -30,30 +30,47 @@
 </#list>
 </givenStories>
 </#macro>
+<#macro renderScope scope><#if scope == 'SCENARIO'>${keywords.scopeScenario}<#elseif scope == 'STORY'>${keywords.scopeStory}</#if></#macro>
 <#macro renderLifecycle lifecycle>
 <lifecycle keyword="${keywords.lifecycle}">
-<#if !lifecycle.getBeforeSteps().isEmpty()>
+<#if lifecycle.hasBeforeSteps()>
 <before keyword="${keywords.before}">
-<#list lifecycle.getBeforeSteps() as step>
-<step>${step?xml}</step> 
+<#list lifecycle.getScopes() as scope>
+<#assign stepsByScope=lifecycle.getBeforeSteps(scope)>
+<#if !stepsByScope.isEmpty()>
+<scope keyword="${keywords.scope}">
+<value><@renderScope scope/></value>
+<#list stepsByScope as step>
+<step>${step?xml}</step>
+</#list>
+</scope>
+</#if>
 </#list>
 </before>
 </#if>
-<#if !lifecycle.getAfterSteps().isEmpty()>
+<#if lifecycle.hasAfterSteps()>
 <after keyword="${keywords.after}">
+<#list lifecycle.getScopes() as scope>
+<#assign stepsByScope=lifecycle.getAfterSteps(scope)>
+<#if !stepsByScope.isEmpty()>
+<scope keyword="${keywords.scope}">
+<value><@renderScope scope/></value>
 <#list lifecycle.getOutcomes() as outcome>
-<div class="outcome">
 <outcome keyword="${keywords.outcome}">
 <value>${outcome}</value>
 <#assign metaFilter=lifecycle.getMetaFilter(outcome)>
 <#if !metaFilter.isEmpty()><#assign metaFilterAsString=metaFilter.asString()><metaFilter keyword="${keywords.metaFilter}">${metaFilterAsString}</metaFilter></#if>
-<#list lifecycle.getAfterSteps(outcome) as step>
+<#list lifecycle.getAfterSteps(scope, outcome) as step>
 <step>${step?xml}</step> 
 </#list>
 </outcome>
-</#list>
+</#list><!-- outcome -->
+</scope>
+</#if><!-- stepsByScope -->
+</scope>
+</#list><!-- scope -->
 </after>
-</#if>
+</#if><!-- hasAfterSteps -->
 </lifecycle>
 </#macro>
 <#macro renderTable table>
@@ -107,13 +124,13 @@ ${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()
 <#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
 <#assign scenarios = story.getScenarios()>
 <#list scenarios as scenario>
-<scenario keyword="${keywords.scenario}" title="${scenario.title?xml}">   
+<scenario keyword="${keywords.scenario}" title="${scenario.title?xml}">
 <#if scenario.getMeta()??><@renderMeta scenario.getMeta()/></#if>
 <#if scenario.getGivenStories()??><@renderGivenStories scenario.getGivenStories()/></#if>
 <#if scenario.getExamplesTable()??>
 <examples keyword="${keywords.examplesTable}">
 <#list scenario.getExamplesSteps() as step>
-<step>${step?xml}</step>   
+<step>${step?xml}</step>
 </#list>
 <@renderTable scenario.getExamplesTable()/>
 </examples>
@@ -132,7 +149,7 @@ ${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()
 <@renderStep step/>
 </#list>
 </#if>
-</scenario> 
+</scenario>
 </#list>
 <#if story.isCancelled()?string == 'true'>
 <cancelled keyword="${keywords.storyCancelled}" durationKeyword="${keywords.duration}" durationInSecs="${story.storyDuration.durationInSecs}"/>

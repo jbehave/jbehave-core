@@ -142,6 +142,7 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("lifecycleBeforeEnd", "}");
         patterns.setProperty("lifecycleAfterStart", "\"after\": '{'\"keyword\": \"{0}\"}");
         patterns.setProperty("lifecycleAfterEnd", "}");
+        patterns.setProperty("lifecycleScope", "\"scope\": \"{0} {1}\"");
         patterns.setProperty("lifecycleOutcome", "\"outcome\": \"{0} {1}\"");
         patterns.setProperty("lifecycleMetaFilter", "\"metaFilter\": \"{0} {1}\"");
         patterns.setProperty("lifecycleStep", "\"step\": \"{0}\"");

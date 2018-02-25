@@ -18,6 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.failures.KnownFailure;
@@ -277,25 +278,53 @@ public abstract class PrintStreamOutput implements StoryReporter {
     public void lifecyle(Lifecycle lifecycle) {
         if (!lifecycle.isEmpty()) {
             print(format("lifecycleStart", "{0}\n", keywords.lifecycle()));
-            if (!lifecycle.getBeforeSteps().isEmpty()) {
+            if (lifecycle.hasBeforeSteps()) {
                 print(format("lifecycleBeforeStart", "{0}\n", keywords.before()));
-                print(lifecycle.getBeforeSteps());
+                for (Scope scope : lifecycle.getScopes() ){
+                    printWithScope(lifecycle.getBeforeSteps(scope), scope);
+                }
                 print(format("lifecycleBeforeEnd", EMPTY));
             }
-            if (!lifecycle.getAfterSteps().isEmpty()) {
+            if (lifecycle.hasAfterSteps()) {
                 print(format("lifecycleAfterStart", "{0}\n", keywords.after()));
-                for ( org.jbehave.core.annotations.AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
-                    print(format("lifecycleOutcome", "{0} {1}\n", keywords.outcome(), i18n(outcome)));
-                    MetaFilter metaFilter = lifecycle.getMetaFilter(outcome);
-                    if ( !metaFilter.isEmpty() ){
-                        print(format("lifecycleMetaFilter", "{0} {1}\n", keywords.metaFilter(), metaFilter.asString()));
-                    }
-                    print(lifecycle.getAfterSteps(outcome));
+                for (Scope scope : lifecycle.getScopes() ){
+                    printOutcomes(lifecycle, scope);
                 }
                 print(format("lifecycleAfterEnd", EMPTY));
             }
             print(format("lifecycleEnd", "\n"));
         }
+    }
+
+    private void printOutcomes(Lifecycle lifecycle, Scope scope) {
+        for ( org.jbehave.core.annotations.AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
+            List<String> afterSteps = lifecycle.getAfterSteps(scope, outcome);
+            if ( !afterSteps.isEmpty() ) {
+                print(format("lifecycleScope", "{0} {1}\n", keywords.scope(), formatScope(scope)));
+                print(format("lifecycleOutcome", "{0} {1}\n", keywords.outcome(), i18n(outcome)));
+                MetaFilter metaFilter = lifecycle.getMetaFilter(outcome);
+                if (!metaFilter.isEmpty()) {
+                    print(format("lifecycleMetaFilter", "{0} {1}\n", keywords.metaFilter(), metaFilter.asString()));
+                }
+                print(afterSteps);
+            }
+        }
+    }
+
+    private void printWithScope(List<String> steps, Scope scope) {
+        if ( !steps.isEmpty()) {
+            print(format("lifecycleScope", "{0} {1}\n", keywords.scope(), formatScope(scope)));
+            print(steps);
+        }
+    }
+
+    private String formatScope(Scope scope) {
+        if ( scope == Scope.SCENARIO ) {
+            return keywords.scopeScenario();
+        } else if ( scope == Scope.STORY ){
+            return keywords.scopeStory();
+        }
+        return EMPTY;
     }
 
     private String i18n(org.jbehave.core.annotations.AfterScenario.Outcome outcome) {

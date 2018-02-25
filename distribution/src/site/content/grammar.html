@@ -54,11 +54,14 @@ Lifecycle:= "Lifecycle:" LifecycleBefore? LifecycleAfter?
 
 ; The before lifecyle element identified by keyword "Before:" (or equivalent in I18n-ed locale), 
 ; followed by one or more steps
-LifecycleBefore:= "Before:" Step+
+LifecycleBefore:= "Before:" (Scope? Step+)+
 
 ; The after lifecyle element identified by keyword "After:" (or equivalent in I18n-ed locale), 
-; followed by one or more sets of outcome, meta filter and steps
-LifecycleAfter:= "After:" (Outcome? MetaFilter? Step+)+
+; followed by one or more sets of scope, outcome, meta filter and steps
+LifecycleAfter:= "After:" (Scope? Outcome? MetaFilter? Step+)+
+
+; The scope element identified by keyword "Scope:" (or equivalent in I18n-ed locale),
+Scope:= "Scope:" "SCENARIO" | "STORY"
 
 ; The outcome element identified by keyword "Outcome:" (or equivalent in I18n-ed locale), 
 Outcome:= "Outcome:" "ANY" | "SUCCESS" | "FAILURE";

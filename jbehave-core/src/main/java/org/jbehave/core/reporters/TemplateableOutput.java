@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.model.ExamplesTable;
@@ -254,6 +255,18 @@ public class TemplateableOutput extends NullStoryReporter {
             return keywords.lifecycle();
         }
 
+        public String getScope(){
+            return keywords.scope();
+        }
+
+        public String getScopeScenario(){
+            return keywords.scopeScenario();
+        }
+
+        public String getScopeStory(){
+            return keywords.scopeStory();
+        }
+
         public String getBefore(){
             return keywords.before();
         }
@@ -486,12 +499,30 @@ public class TemplateableOutput extends NullStoryReporter {
             this.lifecycle = lifecycle;
         }
 
+        public Set<Scope> getScopes() { return lifecycle.getScopes(); };
+
+        public boolean hasBeforeSteps() { return lifecycle.hasBeforeSteps(); }
+
         public List<String> getBeforeSteps(){
             return lifecycle.getBeforeSteps();
         }
 
+        public List<String> getBeforeSteps(Scope scope){
+            return lifecycle.getBeforeSteps(scope);
+        }
+
+        public boolean hasAfterSteps() { return lifecycle.hasAfterSteps(); }
+
         public List<String> getAfterSteps(){
             return lifecycle.getAfterSteps();
+        }
+
+        public List<String> getAfterSteps(Scope scope){
+            return lifecycle.getAfterSteps(scope);
+        }
+
+        public List<String> getAfterSteps(Scope scope, Outcome outcome){
+            return lifecycle.getAfterSteps(scope, outcome);
         }
 
         public Set<Outcome> getOutcomes(){

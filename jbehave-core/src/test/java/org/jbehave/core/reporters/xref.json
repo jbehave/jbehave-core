@@ -73,13 +73,12 @@
           }
         },
         "lifecycle": {
-          "before": {
-            "scope": "SCENARIO",
-            "steps": [
-              []
-            ]
-          },
-          "after": []
+          "before": [
+            []
+          ],
+          "after": [
+            []
+          ]
         },
         "scenarios": []
       },

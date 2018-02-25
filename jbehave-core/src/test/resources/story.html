@@ -13,7 +13,7 @@
 <div class="element asA"><span class="keyword asA">As a</span> customer</div>
 <div class="element iWantTo"><span class="keyword iWantTo">I want to</span> get a loan</div>
 </div>
-<div class="scenario"><h2>Scenario: I ask for a loan</h2>   
+<div class="scenario"><h2>Scenario: I ask for a loan</h2>
 <div class="givenStories">
 <div class="keyword">GivenStories:</div>
 <div class="givenStory">/given/story1</div>
@@ -44,7 +44,7 @@
 
 <div class="step failed">Then I should have a balance of $30 <span class="keyword failed">(FAILED)</span></div>
 <pre class="failure">java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:63)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:61)
 	at org.jbehave.core.reporters.OutputBehaviour.shouldReportEventsToHtmlOutput(OutputBehaviour.java:26)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
@@ -54,7 +54,7 @@
 <div class="step failed">Then I don't return loan <span class="keyword failed">(FAILED)</span></div>
 <pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:74)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:72)
 	at org.jbehave.core.reporters.OutputBehaviour.shouldReportEventsToHtmlOutput(OutputBehaviour.java:26)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
@@ -80,17 +80,17 @@
 
 <pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:74)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:72)
 	at org.jbehave.core.reporters.OutputBehaviour.shouldReportEventsToHtmlOutput(OutputBehaviour.java:26)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
 ...</pre>
 </div>
 </div> <!-- end scenario -->
-<div class="scenario"><h2>Scenario: Parametrised Scenario</h2>   
+<div class="scenario"><h2>Scenario: Parametrised Scenario</h2>
 <div class="examples"><h3>Examples:</h3>
-<div class="step">Given money &lt;money&gt;</div>   
-<div class="step">Then I give it to &lt;to&gt;</div>   
+<div class="step">Given money &lt;money&gt;</div>
+<div class="step">Then I give it to &lt;to&gt;</div>
 <table>
 <thead><tr>
 <th>money</th>
@@ -120,7 +120,7 @@
 
 <div class="step failed">Then I should have a balance of $30 <span class="keyword failed">(FAILED)</span></div>
 <pre class="failure">java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:89)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:87)
 	at org.jbehave.core.reporters.OutputBehaviour.shouldReportEventsToHtmlOutput(OutputBehaviour.java:26)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)

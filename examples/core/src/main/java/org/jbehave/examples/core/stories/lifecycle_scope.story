@@ -7,6 +7,10 @@ Scope: STORY
 Given I have a bank account
 And my balance is 100
 
+Scope: SCENARIO
+
+When my balance is printed
+
 After:
 Scope: STORY
 Outcome: ANY

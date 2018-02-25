@@ -11,12 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.*;
@@ -115,11 +110,10 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         List<CandidateSteps> steps = mockCandidateSteps(anyCandidate, successCandidate, failureCandidate);
 
-        Lifecycle lifecycle = new Lifecycle(
-                org.jbehave.core.model.Lifecycle.Steps.EMPTY,
-                new org.jbehave.core.model.Lifecycle.Steps(Outcome.ANY, asList(myAnyStep)),
-                new org.jbehave.core.model.Lifecycle.Steps(Outcome.SUCCESS, asList(mySuccessStep)),
-                new org.jbehave.core.model.Lifecycle.Steps(Outcome.FAILURE, asList(myFailureStep)));
+        Lifecycle lifecycle = new Lifecycle(Arrays.<Lifecycle.Steps>asList(),
+                asList(new Lifecycle.Steps(Outcome.ANY, asList(myAnyStep)),
+                new Lifecycle.Steps(Outcome.SUCCESS, asList(mySuccessStep)),
+                new Lifecycle.Steps(Outcome.FAILURE, asList(myFailureStep))));
 
         // When
         List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Stage.AFTER, Scope.SCENARIO);
@@ -157,11 +151,10 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         List<CandidateSteps> steps = mockCandidateSteps(anyCandidate, successCandidate, failureCandidate);
 
         Scope scope = Scope.STORY;
-        Lifecycle lifecycle = new Lifecycle(
-                org.jbehave.core.model.Lifecycle.Steps.EMPTY,
-                new org.jbehave.core.model.Lifecycle.Steps(scope, Outcome.ANY, asList(myAnyStep)),
-                new org.jbehave.core.model.Lifecycle.Steps(scope, Outcome.SUCCESS, asList(mySuccessStep)),
-                new org.jbehave.core.model.Lifecycle.Steps(scope, Outcome.FAILURE, asList(myFailureStep)));
+        Lifecycle lifecycle = new Lifecycle(Arrays.<Lifecycle.Steps>asList(),
+                asList(new Lifecycle.Steps(scope, Outcome.ANY, asList(myAnyStep)),
+                new Lifecycle.Steps(scope, Outcome.SUCCESS, asList(mySuccessStep)),
+                new Lifecycle.Steps(scope, Outcome.FAILURE, asList(myFailureStep))));
 
         // When
         List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Stage.AFTER, scope);

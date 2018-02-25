@@ -9,7 +9,7 @@
 <asA keyword="As a">customer</asA>
 <iWantTo keyword="I want to">get a loan</iWantTo>
 </narrative>
-<scenario keyword="Scenario:" title="I ask for a loan">   
+<scenario keyword="Scenario:" title="I ask for a loan">
 <givenStories keyword="GivenStories:">
 <givenStory>/given/story1</givenStory>
 <givenStory>/given/story2</givenStory>
@@ -50,7 +50,7 @@ Then I should... - try again
 <step outcome="failed">
 Then I should have a balance of $30
  <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:63)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:61)
 	at org.jbehave.core.reporters.OutputBehaviour.shouldReportEventsToXmlOutput(OutputBehaviour.java:40)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
@@ -62,7 +62,7 @@ Then I should have $20
 Then I don&apos;t return loan
  <failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:74)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:72)
 	at org.jbehave.core.reporters.OutputBehaviour.shouldReportEventsToXmlOutput(OutputBehaviour.java:40)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
@@ -83,11 +83,11 @@ Then I don&apos;t return loan
 </outcome>
 </outcomes>
 </step>
-</scenario> 
-<scenario keyword="Scenario:" title="Parametrised Scenario">   
+</scenario>
+<scenario keyword="Scenario:" title="Parametrised Scenario">
 <examples keyword="Examples:">
-<step>Given money &lt;money&gt;</step>   
-<step>Then I give it to &lt;to&gt;</step>   
+<step>Given money &lt;money&gt;</step>
+<step>Then I give it to &lt;to&gt;</step>
 <table>
 <headers>
 <header>money</header>
@@ -120,12 +120,12 @@ Then I give it to Paul
 <step outcome="failed">
 Then I should have a balance of $30
  <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
-	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:89)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:87)
 	at org.jbehave.core.reporters.OutputBehaviour.shouldReportEventsToXmlOutput(OutputBehaviour.java:40)
 	(reflection-invoke)
 	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
 ...</failure></step>
-</scenario> 
+</scenario>
 <cancelled keyword="STORY CANCELLED" durationKeyword="DURATION" durationInSecs="2"/>
 <pendingMethod>@When(&quot;something \&quot;$param\&quot;&quot;)
 @Pending

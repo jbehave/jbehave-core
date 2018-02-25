@@ -18,26 +18,47 @@ public class Lifecycle {
 
     public static final Lifecycle EMPTY = new Lifecycle();
 
-    private Steps before;
-    private Steps[] after;
+    private List<Steps> before;
+    private List<Steps> after;
     
     public Lifecycle() {
-        this(Steps.EMPTY);
+        this(Arrays.<Steps>asList(), Arrays.<Steps>asList());
     }
 
-    public Lifecycle(Steps before, Steps... after) {
+    public Lifecycle(List<Steps> before, List<Steps> after) {
         this.before = before;
         this.after = after;
     }
 
+    public Set<Scope> getScopes() {
+        Set<Scope> scopes = new LinkedHashSet<>();
+        scopes.add(Scope.SCENARIO);
+        scopes.add(Scope.STORY);
+        return scopes;
+    }
+
+    public boolean hasBeforeSteps() {
+        return !getBeforeSteps(Scope.SCENARIO).isEmpty() || !getBeforeSteps(Scope.STORY).isEmpty() ;
+    }
+
+    /** @deprecated Use #getBeforeSteps(Scope) */
     public List<String> getBeforeSteps() {
         return getBeforeSteps(Scope.SCENARIO);
     }
 
     public List<String> getBeforeSteps(Scope scope) {
-        return stepsByScope(before, scope);
+        List<String> beforeSteps = new ArrayList<String>();
+        for (Steps steps : before) {
+            beforeSteps.addAll(stepsByScope(steps, scope));
+        }
+        return beforeSteps;
     }
 
+    public boolean hasAfterSteps() {
+        return !getAfterSteps(Scope.SCENARIO).isEmpty() || !getAfterSteps(Scope.STORY).isEmpty() ;
+    }
+
+    /** @deprecated Use #getAfterSteps(Scope) */
     public List<String> getAfterSteps() {
         return getAfterSteps(Scope.SCENARIO);
     }
@@ -75,6 +96,10 @@ public class Lifecycle {
         return getAfterSteps(Scope.SCENARIO, outcome, meta);
     }
 
+    public List<String> getAfterSteps(Scope scope, Outcome outcome) {
+        return getAfterSteps(scope, outcome, Meta.EMPTY);
+    }
+
     public List<String> getAfterSteps(Scope scope, Outcome outcome, Meta meta) {
         MetaFilter filter = getMetaFilter(outcome);
         List<String> afterSteps = new ArrayList<String>();
@@ -93,9 +118,6 @@ public class Lifecycle {
     }
 
     private List<String> stepsByScope(Steps steps, Scope scope) {
-        if ( steps.scope  == Scope.SCENARIO ) {
-            return steps.steps;
-        }
         if ( steps.scope == scope ) {
             return steps.steps;
         }

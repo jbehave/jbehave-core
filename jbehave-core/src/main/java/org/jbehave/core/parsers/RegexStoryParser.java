@@ -1,11 +1,13 @@
 package org.jbehave.core.parsers;
 
+import static java.util.Arrays.asList;
 import static java.util.regex.Pattern.DOTALL;
 import static java.util.regex.Pattern.compile;
 import static org.apache.commons.lang3.StringUtils.removeStart;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -160,22 +162,22 @@ public class RegexStoryParser implements StoryParser {
         Matcher findingBeforeAndAfter = compile(".*" + keywords.before() + "(.*)\\s*" + keywords.after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBeforeAndAfter.matches() ){
             String beforeLifecycle = findingBeforeAndAfter.group(1).trim();
-            Steps beforeSteps = parseBeforeLifecycle(beforeLifecycle);
+            List<Steps> beforeSteps = parseBeforeLifecycle(beforeLifecycle);
             String afterLifecycle = findingBeforeAndAfter.group(2).trim();
-            Steps[] afterSteps = parseAfterLifecycle(afterLifecycle);
+            List<Steps> afterSteps = parseAfterLifecycle(afterLifecycle);
             return new Lifecycle(beforeSteps, afterSteps);
         }
         Matcher findingBefore = compile(".*" + keywords.before() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBefore.matches() ){
             String beforeLifecycle = findingBefore.group(1).trim();
-            Steps beforeSteps = parseBeforeLifecycle(beforeLifecycle);
-            return new Lifecycle(beforeSteps, new Steps(new ArrayList<String>()));
+            List<Steps>  beforeSteps = parseBeforeLifecycle(beforeLifecycle);
+            return new Lifecycle(beforeSteps, Arrays.<Steps>asList());
         }
         Matcher findingAfter = compile(".*" + keywords.after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingAfter.matches() ){
-            Steps beforeSteps = Steps.EMPTY;
+            List<Steps> beforeSteps = asList();
             String afterLifecycle = findingAfter.group(1).trim();
-            Steps[] afterSteps = parseAfterLifecycle(afterLifecycle);
+            List<Steps>  afterSteps = parseAfterLifecycle(afterLifecycle);
             return new Lifecycle(beforeSteps, afterSteps);
         }
         return Lifecycle.EMPTY;
@@ -189,23 +191,34 @@ public class RegexStoryParser implements StoryParser {
                         + keywords.examplesTable() + ")", DOTALL);
     }
 
-    private Steps parseBeforeLifecycle(String lifecycleAsText) {
-        Scope scope = parseScope(findScope(lifecycleAsText));
-        return new Steps(scope, findSteps(startingWithNL(lifecycleAsText)));
+    private List<Steps> parseBeforeLifecycle(String lifecycleAsText) {
+        List<Steps> list = new ArrayList<>();
+        for (String byScope : lifecycleAsText.split(keywords.scope()) ){
+            byScope = byScope.trim();
+            if ( byScope.isEmpty() ) continue;
+            Scope scope = parseScope(findScope(keywords.scope()+byScope));
+            Steps steps = new Steps(scope, findSteps(startingWithNL(byScope)));
+            list.add(steps);
+        }
+        return list;
     }
 
-    private Steps[] parseAfterLifecycle(String lifecycleAsText) {
-        Scope scope = parseScope(findScope(lifecycleAsText));
+    private List<Steps> parseAfterLifecycle(String lifecycleAsText) {
         List<Steps> list = new ArrayList<Steps>();
-        for (String byOutcome : lifecycleAsText.split(keywords.outcome()) ){ 
-            byOutcome = byOutcome.trim();
-            if ( byOutcome.isEmpty() ) continue;
-            String outcomeAsText = findOutcome(byOutcome);
-            String filtersAsText = findFilters(removeStart(byOutcome, outcomeAsText));
-            List<String> steps = findSteps(startingWithNL(removeStart(byOutcome, filtersAsText)));
-            list.add(new Steps(scope, parseOutcome(outcomeAsText), parseFilters(filtersAsText), steps));
+        for (String byScope : lifecycleAsText.split(keywords.scope()) ) {
+            byScope = byScope.trim();
+            if ( byScope.isEmpty() ) continue;
+            Scope scope = parseScope(findScope(keywords.scope()+byScope));
+            for (String byOutcome : byScope.split(keywords.outcome())) {
+                byOutcome = byOutcome.trim();
+                if (byOutcome.isEmpty()) continue;
+                String outcomeAsText = findOutcome(byOutcome);
+                String filtersAsText = findFilters(removeStart(byOutcome, outcomeAsText));
+                List<String> steps = findSteps(startingWithNL(removeStart(byOutcome, filtersAsText)));
+                list.add(new Steps(scope, parseOutcome(outcomeAsText), parseFilters(filtersAsText), steps));
+            }
         }
-        return list.toArray(new Steps[list.size()]);
+        return list;
     }
 
     private String findScope(String lifecycleAsText) {
@@ -217,9 +230,9 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Scope parseScope(String scopeAsText) {
-        if ( scopeAsText.equals(keywords.scopeScenario()) ){
+        if ( scopeAsText.trim().equals(keywords.scopeScenario()) ){
             return Scope.SCENARIO;
-        } else if ( scopeAsText.equals(keywords.scopeStory()) ){
+        } else if ( scopeAsText.trim().equals(keywords.scopeStory()) ){
             return Scope.STORY;
         }
         return Scope.SCENARIO;
