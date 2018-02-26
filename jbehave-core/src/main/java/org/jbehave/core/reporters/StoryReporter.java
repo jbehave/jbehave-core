@@ -35,8 +35,22 @@ public interface StoryReporter {
 
     void scenarioNotAllowed(Scenario scenario, String filter);
 
+    void beforeScenario(Scenario scenario);
+
+    /**
+     * @deprecated use {@link #beforeScenario(Scenario)}
+     *
+     * @param scenarioTitle Scenario title
+     */
+    @Deprecated
     void beforeScenario(String scenarioTitle);
-    
+
+    /**
+     * @deprecated use {@link #beforeScenario(Scenario)}
+     *
+     * @param meta Scenario meta
+     */
+    @Deprecated
     void scenarioMeta(Meta meta);
 
     void afterScenario();

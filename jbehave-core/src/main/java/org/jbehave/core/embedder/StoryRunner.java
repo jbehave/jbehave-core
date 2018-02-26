@@ -314,6 +314,7 @@ public class StoryRunner {
                 if (failureOccurred(context) && context.configuration().storyControls().skipScenariosAfterFailure()) {
                     continue;
                 }
+                reporter.get().beforeScenario(scenario);
                 reporter.get().beforeScenario(scenario.getTitle());
                 reporter.get().scenarioMeta(scenario.getMeta());
 

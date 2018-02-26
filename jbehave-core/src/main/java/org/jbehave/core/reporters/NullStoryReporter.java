@@ -99,6 +99,10 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeScenario(Scenario scenario) {
+    }
+
+    @Override
     public void scenarioNotAllowed(Scenario scenario, String filter) {
     }
 

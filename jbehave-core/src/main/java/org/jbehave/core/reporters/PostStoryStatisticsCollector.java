@@ -156,7 +156,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
     }
 
     @Override
-    public void beforeScenario(String title) {
+    public void beforeScenario(Scenario scenario) {
         cause = null;
         outcomesFailed = null;
         currentScenarioNotAllowed = false;

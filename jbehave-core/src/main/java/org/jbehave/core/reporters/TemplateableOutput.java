@@ -101,12 +101,18 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     @Override
-    public void beforeScenario(String title) {
+    public void beforeScenario(Scenario scenario)
+    {
         if (this.outputScenario.currentExample == null) {
             this.outputScenario = new OutputScenario();
         }
-        this.outputScenario.title = title;
+        this.outputScenario.title = scenario.getTitle();
         this.scope = Scope.SCENARIO;
+
+        Meta meta = scenario.getMeta();
+        if (!meta.isEmpty()) {
+            this.outputScenario.meta = new OutputMeta(meta);
+        }
     }
 
     private void addStep(OutputStep outputStep) {
@@ -169,13 +175,6 @@ public class TemplateableOutput extends NullStoryReporter {
     @Override
     public void givenStories(List<String> storyPaths) {
         givenStories(new GivenStories(StringUtils.join(storyPaths, ",")));
-    }
-
-    @Override
-    public void scenarioMeta(Meta meta) {
-        if (!meta.isEmpty()) {
-            this.outputScenario.meta = new OutputMeta(meta);
-        }
     }
 
     @Override

@@ -7,7 +7,9 @@ import org.hamcrest.MatcherAssert;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.GivenStories;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,7 +50,8 @@ public class StepFailureDecoratorBehaviour {
         // When
         decorator.dryRun();
         decorator.beforeStory(story, givenStory);
-        decorator.beforeScenario("My core 1");
+        Scenario scenario = new Scenario("My core 1", Meta.EMPTY);
+        decorator.beforeScenario(scenario);
         GivenStories givenStories = new GivenStories("/path1,/path2");
         decorator.givenStories(givenStories);
         decorator.ignorable("!-- Then ignore me");
@@ -66,7 +69,7 @@ public class StepFailureDecoratorBehaviour {
         InOrder inOrder = inOrder(delegate);
 
         inOrder.verify(delegate).beforeStory(story, givenStory);
-        inOrder.verify(delegate).beforeScenario("My core 1");
+        inOrder.verify(delegate).beforeScenario(scenario);
         inOrder.verify(delegate).givenStories(givenStories);
         inOrder.verify(delegate).ignorable("!-- Then ignore me");
         inOrder.verify(delegate).comment("!-- A comment");

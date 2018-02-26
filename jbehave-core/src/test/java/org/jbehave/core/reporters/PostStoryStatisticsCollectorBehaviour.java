@@ -117,23 +117,22 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.beforeStory(story, false);
 
         // 1st scenario
-        reporter.beforeScenario("I ask for a loan");
-        reporter.scenarioMeta(Meta.EMPTY);
+        reporter.beforeScenario(new Scenario("I ask for a loan", Meta.EMPTY));
         reporter.givenStories(asList("path/to/story1", "path/to/story2"));
 
         // 1st given story
         reporter.beforeStory(story, true);
-        reporter.beforeScenario("a scenario without steps");
+        reporter.beforeScenario(new Scenario("a scenario without steps", Meta.EMPTY));
         reporter.afterScenario();
         reporter.afterStory(true);
 
         // 2nd given story
         reporter.beforeStory(story, true);
-        reporter.beforeScenario("the bank has $300 to loan");
+        reporter.beforeScenario(new Scenario("the bank has $300 to loan", Meta.EMPTY));
         reporter.givenStories(asList("path/to/nested/story1"));
 
         reporter.beforeStory(story, true);
-        reporter.beforeScenario("initialise static");
+        reporter.beforeScenario(new Scenario("initialise static", Meta.EMPTY));
         reporter.successful("the bank has customers");
         reporter.afterScenario();
         reporter.afterStory(true);
@@ -149,7 +148,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.afterScenario();
 
         // 2nd scenario
-        reporter.beforeScenario("A failing scenario");
+        reporter.beforeScenario(new Scenario("A failing scenario", Meta.EMPTY));
         OutcomesTable outcomesTable = new OutcomesTable();
         outcomesTable.addOutcome("I don't return all", 100.0, equalTo(50.));
         try {
@@ -166,7 +165,7 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.afterScenario();
 
         // 3rd scenario
-        reporter.beforeScenario("A pending scenario");
+        reporter.beforeScenario(new Scenario("A pending scenario", Meta.EMPTY));
         reporter.pending("When I have some money");
         reporter.notPerformed("Then I should have $20");
         reporter.afterScenario();        

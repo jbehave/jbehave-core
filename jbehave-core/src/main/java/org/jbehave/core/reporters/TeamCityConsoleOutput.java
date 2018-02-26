@@ -8,6 +8,7 @@ import java.util.Date;
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.model.Scenario;
 
 /**
  * Decorates console output to allow TeamCity build script interaction:
@@ -37,10 +38,10 @@ public class TeamCityConsoleOutput extends ConsoleOutput {
 	}
 
 	@Override
-	public void beforeScenario(String title) {
-		this.eventName = keywords.scenario() + scenarioTitle(title);
+	public void beforeScenario(Scenario scenario) {
+		this.eventName = keywords.scenario() + scenarioTitle(scenario);
 		print(format("testStarted", eventName));
-		super.beforeScenario(title);
+		super.beforeScenario(scenario);
 	}
 
 	@Override
@@ -71,8 +72,8 @@ public class TeamCityConsoleOutput extends ConsoleOutput {
 				message);
 	}
 
-	private String scenarioTitle(String title) {
-		String scenarioTitle = title;
+	private String scenarioTitle(Scenario scenario) {
+		String scenarioTitle = scenario.getTitle();
 		if (StringUtils.isEmpty(scenarioTitle)) {
 			scenarioTitle = "scenario-" + DATE_FORMAT.format(new Date());
 		}

@@ -26,8 +26,10 @@ import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
+import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
+import org.jbehave.core.model.Scenario;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -251,7 +253,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 new LocalizedKeywords(), true);
 
         // When
-        reporter.beforeScenario("A title");
+        reporter.beforeScenario(new Scenario("A title", Meta.EMPTY));
         reporter.successful("Given I have a balance of $50");
         reporter.successful("When I request $20");
         reporter.failed("When I ask Liz for a loan of $100", exception);
@@ -261,8 +263,8 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         // Then
         String expected = "Scenario: A title\n" 
-        		+ "Given I have a balance of $50\n" 
-        		+ "When I request $20\n"
+                + "Given I have a balance of $50\n"
+                + "When I request $20\n"
                 + "When I ask Liz for a loan of $100 (FAILED)\n"
                 + "(java.lang.RuntimeException: Leave my money alone!)\n"
                 + "Then I should have a balance of $30 (PENDING)\n"
@@ -278,7 +280,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter = new TxtOutput(new PrintStream(out));
 
         // When
-        reporter.beforeScenario("A title");
+        reporter.beforeScenario(new Scenario("A title", Meta.EMPTY));
         reporter.successful("Given I have a balance of $50");
         reporter.successful("When I request $20");
         reporter.failed("When I ask Liz for a loan of $100", exception);
@@ -316,7 +318,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
         // Then
         String expected = "Dato che ho un saldo di $50\n" 
-        		+ "Quando richiedo $20\n"
+                + "Quando richiedo $20\n"
                 + "Quando chiedo a Liz un prestito di $100 (FALLITO)\n"
                 + "(java.lang.RuntimeException: Lasciate in pace i miei soldi!)\n"
                 + "Allora dovrei avere un saldo di $30 (IN SOSPESO)\n"
@@ -351,7 +353,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         final String storyPath = storyPath(MyStory.class);
         File outputDirectory = new File("target/output");
         StoryReporter reporter = new StoryReporterBuilder().withRelativeDirectory(outputDirectory.getName())
-        		.withFormats(HTML, TXT)
+                .withFormats(HTML, TXT)
                 .build(storyPath);
 
         // When

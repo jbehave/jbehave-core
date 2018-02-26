@@ -39,6 +39,7 @@ public class DelegatingStoryReporterBehaviour {
         
         delegator.beforeStory(story, givenStory);        
         delegator.storyNotAllowed(story, filter);
+        delegator.beforeScenario(scenario);
         delegator.beforeScenario("My scenario 1");
         delegator.scenarioNotAllowed(scenario, filter);
         delegator.scenarioMeta(Meta.EMPTY);
@@ -71,7 +72,8 @@ public class DelegatingStoryReporterBehaviour {
 
         inOrder.verify(delegate).beforeStory(story, givenStory);
         inOrder.verify(delegate).storyNotAllowed(story, filter);
-        
+
+        inOrder.verify(delegate).beforeScenario(scenario);
         inOrder.verify(delegate).beforeScenario("My scenario 1");
         inOrder.verify(delegate).scenarioNotAllowed(scenario, filter);
         inOrder.verify(delegate).scenarioMeta(Meta.EMPTY);

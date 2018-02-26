@@ -32,6 +32,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method lifecycle;
     private static Method scenarioNotAllowed;
     private static Method beforeScenario;
+    private static Method beforeScenarioDeprecated;
     private static Method scenarioMeta;
     private static Method afterScenario;
     private static Method beforeGivenStories;
@@ -63,7 +64,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
             narrative = StoryReporter.class.getMethod("narrative", Narrative.class);
             lifecycle = StoryReporter.class.getMethod("lifecyle", Lifecycle.class);
             scenarioNotAllowed = StoryReporter.class.getMethod("scenarioNotAllowed", Scenario.class, String.class);
-            beforeScenario = StoryReporter.class.getMethod("beforeScenario", String.class);
+            beforeScenario = StoryReporter.class.getMethod("beforeScenario", Scenario.class);
+            beforeScenarioDeprecated = StoryReporter.class.getMethod("beforeScenario", String.class);
             scenarioMeta = StoryReporter.class.getMethod("scenarioMeta", Meta.class);
             afterScenario = StoryReporter.class.getMethod("afterScenario");
             beforeGivenStories = StoryReporter.class.getMethod("beforeGivenStories");
@@ -163,10 +165,20 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeScenario(Scenario scenario) {
+        crossReferencing.beforeScenario(scenario);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(beforeScenario, scenario));
+        } else {
+            delegate.beforeScenario(scenario);
+        }
+    }
+
+    @Override
     public void beforeScenario(String scenarioTitle) {
         crossReferencing.beforeScenario(scenarioTitle);
         if (multiThreading) {
-            delayedMethods.add(new DelayedMethod(beforeScenario, scenarioTitle));
+            delayedMethods.add(new DelayedMethod(beforeScenarioDeprecated, scenarioTitle));
         } else {
             delegate.beforeScenario(scenarioTitle);
         }

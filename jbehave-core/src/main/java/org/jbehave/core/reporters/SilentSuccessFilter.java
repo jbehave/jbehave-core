@@ -190,6 +190,17 @@ public class SilentSuccessFilter extends NullStoryReporter {
     }
 
     @Override
+    public void beforeScenario(final Scenario scenario) {
+        scenarioTodos = new ArrayList<Todo>();
+        scenarioTodos.add(new Todo() {
+            @Override
+            public void doNow() {
+                delegate.beforeScenario(scenario);
+            }
+        });
+    }
+
+    @Override
     public void beforeScenario(final String scenarioTitle) {
         scenarioTodos = new ArrayList<Todo>();
         scenarioTodos.add(new Todo() {

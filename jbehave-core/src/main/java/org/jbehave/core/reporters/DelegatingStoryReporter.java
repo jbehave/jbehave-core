@@ -53,6 +53,12 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeScenario(Scenario scenario) {
+        for (StoryReporter reporter : delegates) {
+            reporter.beforeScenario(scenario);
+        }
+    }
+
     public void beforeScenario(String scenarioTitle) {
         for (StoryReporter reporter : delegates) {
             reporter.beforeScenario(scenarioTitle);
