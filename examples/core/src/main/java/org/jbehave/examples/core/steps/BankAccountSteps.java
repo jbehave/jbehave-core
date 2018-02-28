@@ -12,7 +12,10 @@ import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.model.ExamplesTable;
-import org.junit.Assert;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 
 public class BankAccountSteps {
 
@@ -37,7 +40,7 @@ public class BankAccountSteps {
     @Then("my bank account balance should be $balance")
     @Alias("my bank account balance should be <balance>")
     public void thenBalanceShouldBe(@Named("balance")int balance){
-        Assert.assertEquals(balance, account.getBalance());
+        assertThat(account.getBalance(), equalTo(balance));
     }
 
     @When("I add $value")
@@ -63,14 +66,9 @@ public class BankAccountSteps {
         }
     }
 
-    @When("my balance is printed")
-    public void whenBalanceIsPrinted() {
-        System.out.println("My balance is "+account.getBalance());
-    }
-
-    @Then("my balance is printed")
-    public void thenBalanceIsPrinted() {
-        System.out.println("My balance is "+account.getBalance());
+    @Then("my balance is in credit")
+    public void thenBalanceInCredit() {
+        assertThat(account.getBalance(), greaterThan(0));
     }
 
     @Then("my balance is archived")
@@ -81,6 +79,13 @@ public class BankAccountSteps {
     @Then("my balance is not archived")
     public void thenBalanceIsNotArchived() {
     }
+
+    @Then("my balance is printed")
+    public void thenBalanceIsPrinted() {
+
+        System.out.println(account.getBalance());
+    }
+
 
     public static class BankAccount {
         private int balance;

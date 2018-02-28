@@ -116,8 +116,9 @@ public class TemplateableOutput extends NullStoryReporter {
             } else {
                 this.outputStory.addAfterStep(outputStep);
             }
+        } else {
+            this.outputScenario.addStep(outputStep);
         }
-        this.outputScenario.addStep(outputStep);
     }
 
     @Override

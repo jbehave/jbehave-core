@@ -1,4 +1,4 @@
-Story:  Showing lifecycle behaviour
+Story:  Showing scenario lifecycle behaviour
 
 Lifecycle:
 Before:
