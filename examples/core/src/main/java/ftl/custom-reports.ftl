@@ -19,6 +19,7 @@
 
 <h2>Story Reports</h2>
 
+<#if reports.getViewType().name() = "LIST">
 <table id="mainTable">
 <colgroup span="2" class="stories"></colgroup>
 <colgroup span="5" class="scenarios"></colgroup>
@@ -55,10 +56,10 @@
     <th>Duration (hh:mm:ss.SSS)</th>
     <th>View</th>
 </tr>
-<#assign reportNames = reportsTable.getReportNames()>
+<#assign reportNames = reports.getReportNames()>
 <#assign totalReports = reportNames.size() - 1>
 <#list reportNames as name>
-<#assign report = reportsTable.getReport(name)>
+<#assign report = reports.getReport(name)>
 <#if name != "Totals">
 <tr>
 <#assign stats = report.getStats()>
@@ -78,13 +79,13 @@
 <@renderStat stats "notAllowed" "failed"/>
 </td>
 <td>
-<@renderStat stats "scenarios"/> 
+<@renderStat stats "scenarios"/>
 </td>
 <td>
-<@renderStat stats "scenariosSuccessful" "successful"/> 
+<@renderStat stats "scenariosSuccessful" "successful"/>
 </td>
 <td>
-<@renderStat stats "scenariosPending" "pending"/> 
+<@renderStat stats "scenariosPending" "pending"/>
 </td>
 <td>
 <@renderStat stats "scenariosFailed" "failed"/>
@@ -93,13 +94,13 @@
 <@renderStat stats "scenariosNotAllowed" "failed"/>
 </td>
 <td>
-<@renderStat stats "givenStoryScenarios"/> 
+<@renderStat stats "givenStoryScenarios"/>
 </td>
 <td>
-<@renderStat stats "givenStoryScenariosSuccessful" "successful"/> 
+<@renderStat stats "givenStoryScenariosSuccessful" "successful"/>
 </td>
 <td>
-<@renderStat stats "givenStoryScenariosPending" "pending"/> 
+<@renderStat stats "givenStoryScenariosPending" "pending"/>
 </td>
 <td>
 <@renderStat stats "givenStoryScenariosFailed" "failed"/>
@@ -138,18 +139,18 @@
 </#list>
 <tr class="totals">
 <td>${totalReports}</td>
-<#assign stats = reportsTable.getReport("Totals").getStats()>
+<#assign stats = reports.getReport("Totals").getStats()>
 <td>
 <@renderStat stats "notAllowed" "failed"/>
 </td>
 <td>
-<@renderStat stats "scenarios"/> 
+<@renderStat stats "scenarios"/>
 </td>
 <td>
-<@renderStat stats "scenariosSuccessful" "successful"/> 
+<@renderStat stats "scenariosSuccessful" "successful"/>
 </td>
 <td>
-<@renderStat stats "scenariosPending" "pending"/> 
+<@renderStat stats "scenariosPending" "pending"/>
 </td>
 <td>
 <@renderStat stats "scenariosFailed" "failed"/>
@@ -158,13 +159,13 @@
 <@renderStat stats "scenariosNotAllowed" "failed"/>
 </td>
 <td>
-<@renderStat stats "givenStoryScenarios"/> 
+<@renderStat stats "givenStoryScenarios"/>
 </td>
 <td>
-<@renderStat stats "givenStoryScenariosSuccessful" "successful"/> 
+<@renderStat stats "givenStoryScenariosSuccessful" "successful"/>
 </td>
 <td>
-<@renderStat stats "givenStoryScenariosPending" "pending"/> 
+<@renderStat stats "givenStoryScenariosPending" "pending"/>
 </td>
 <td>
 <@renderStat stats "givenStoryScenariosFailed" "failed"/>
@@ -197,8 +198,23 @@
 Totals
 </td>
 </tr>
+
+<#assign threads = storyDurations.get('threads')!1>
+<#if (threads != 1) >
+<tr class="totals">
+<td colspan="18"/>
+<td>
+<@renderTime storyDurations.get('threadAverage')!0/>
+</td>
+<td>
+${threads}-Thread Average
+</td>
+</tr>
+</#if>
+
 </table>
 <br />
+</#if>
 </div>
 
 <div class="clear"></div>
@@ -208,12 +224,12 @@ Totals
 <div class="clear"></div>
 </div>
 
-<script type="text/javascript" language="javascript" src="TableFilter/tablefilter.js"></script>  
-    <script language="javascript" type="text/javascript">  
-    
-    var mainTable_Props = {
+<script type="text/javascript" language="javascript" src="TableFilter/tablefilter.js"></script>
+    <script language="javascript" type="text/javascript">
+
+	var mainTable_Props = {
         filters_row_index: 2,
-        btn_reset: true
+		btn_reset: true
     };
     var tableFilter = setFilterGrid("mainTable", mainTable_Props, 2);
 </script>

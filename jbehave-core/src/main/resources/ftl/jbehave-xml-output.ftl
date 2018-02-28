@@ -38,8 +38,7 @@
 <#list lifecycle.getScopes() as scope>
 <#assign stepsByScope=lifecycle.getBeforeSteps(scope)>
 <#if !stepsByScope.isEmpty()>
-<scope keyword="${keywords.scope}">
-<value><@renderScope scope/></value>
+<scope keyword="${keywords.scope}" value="<@renderScope scope/>">
 <#list stepsByScope as step>
 <step>${step?xml}</step>
 </#list>
@@ -53,21 +52,18 @@
 <#list lifecycle.getScopes() as scope>
 <#assign stepsByScope=lifecycle.getAfterSteps(scope)>
 <#if !stepsByScope.isEmpty()>
-<scope keyword="${keywords.scope}">
-<value><@renderScope scope/></value>
+<scope keyword="${keywords.scope}" value="<@renderScope scope/>">
 <#list lifecycle.getOutcomes() as outcome>
-<outcome keyword="${keywords.outcome}">
-<value>${outcome}</value>
+<outcome keyword="${keywords.outcome}" value="${outcome}">
 <#assign metaFilter=lifecycle.getMetaFilter(outcome)>
 <#if !metaFilter.isEmpty()><#assign metaFilterAsString=metaFilter.asString()><metaFilter keyword="${keywords.metaFilter}">${metaFilterAsString}</metaFilter></#if>
 <#list lifecycle.getAfterSteps(scope, outcome) as step>
-<step>${step?xml}</step> 
+<step>${step?xml}</step>
 </#list>
 </outcome>
 </#list><!-- outcome -->
 </scope>
 </#if>
-</scope>
 </#list><!-- scope -->
 </after>
 </#if>

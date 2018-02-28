@@ -1,0 +1,178 @@
+
+<html>
+<body>
+<div class="story"><h1>An interesting story &amp; special chars</h1>
+<div class="path">/path/to/story</div>
+<div class="meta">
+<div class="keyword">Meta:</div>
+<div class="property">@author Mauro</div>
+<div class="property">@theme testing</div>
+</div>
+<div class="narrative"><h2>Narrative:</h2>
+<div class="element inOrderTo"><span class="keyword inOrderTo">In order to</span> renovate my house</div>
+<div class="element asA"><span class="keyword asA">As a</span> customer</div>
+<div class="element iWantTo"><span class="keyword iWantTo">I want to</span> get a loan</div>
+</div>
+<div class="lifecycle"><h2>Lifecycle:</h2>
+<div class="before"><h3>Before:</h3>
+<div class="scope"><h3>Scope: SCENARIO</h3>
+<div class="step">Given a scenario step</div>
+ <!-- step -->
+</div> <!-- scope -->
+<div class="scope"><h3>Scope: STORY</h3>
+<div class="step">Given a story step</div>
+ <!-- step -->
+</div> <!-- scope -->
+ <!-- scope -->
+</div> <!-- before -->
+<div class="after"><h3>After:</h3>
+<div class="scope"><h3>Scope: SCENARIO</h3>
+<div class="outcome">
+Outcome: ANY
+
+<div class="step">Given a scenario step</div>
+ <!-- step -->
+</div>
+ <!-- outcome -->
+</div>
+<div class="scope"><h3>Scope: STORY</h3>
+<div class="outcome">
+Outcome: ANY
+
+<div class="step">Given a story step</div>
+ <!-- step -->
+</div>
+ <!-- outcome -->
+</div>
+ <!-- scope -->
+</div> <!-- after -->
+<div class="scenario"><h2>Scenario: I ask for a loan</h2>
+<div class="givenStories">
+<div class="keyword">GivenStories:</div>
+<div class="givenStory">/given/story1</div>
+<div class="givenStory">/given/story2</div>
+</div>
+ <!-- normal scenario steps -->
+<div class="step successful">Given I have a balance of $50 </div>
+
+<div class="step ignorable">!-- Then ignore me </div>
+
+<div class="step comment">!-- A comment </div>
+
+<div class="step successful">When I request $20 </div>
+
+<div class="step successful">When I ask Liz for a loan of $100 </div>
+
+<div class="step successful">When I ask Liz for a loan of $<span class="step parameter">99</span> </div>
+
+<div class="step successful">When I write special chars &lt;&gt;&amp;&quot; </div>
+
+<div class="step successful">When I write special chars in parameter <span class="step parameter">&lt;&gt;&amp;&quot;</span> </div>
+
+<div class="step successful">When I write two parameters <span class="step parameter">,,,</span> and <span class="step parameter">&amp;&amp;&amp;</span> </div>
+
+<div class="step hi">Then I should... - try again </div>
+
+<div class="step Restarted Story">/path/to/story </div>
+
+<div class="step failed">Then I should have a balance of $30 <span class="keyword failed">(FAILED)</span></div>
+<pre class="failure">java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:62)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtml(TemplateOutputBehaviour.java:26)
+	(reflection-invoke)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+...</pre>
+<div class="step notPerformed">Then I should have $20 <span class="keyword notPerformed">(NOT PERFORMED)</span></div>
+
+<div class="step failed">Then I don't return loan <span class="keyword failed">(FAILED)</span></div>
+<pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
+	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:73)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtml(TemplateOutputBehaviour.java:26)
+	(reflection-invoke)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+...</pre>
+<div class="outcomes"><table>
+<thead><tr>
+<th>Description</th>
+<th>Value</th>
+<th>Matcher</th>
+<th>Verified</th>
+</tr></thead>
+<tbody>
+
+<tr class="notVerified">
+<td>I don't return all</td><td>100</td><td>&lt;50.0&gt;</td><td>No</td>
+</tr>
+
+<tr class="notVerified">
+<td>A wrong date</td><td>01/01/2011</td><td>&quot;02/01/2011&quot;</td><td>No</td>
+</tr>
+</tbody>
+</table>
+
+<pre class="failure">org.jbehave.core.model.OutcomesTable$OutcomesFailed
+	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:73)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtml(TemplateOutputBehaviour.java:26)
+	(reflection-invoke)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+...</pre>
+</div>
+</div> <!-- end scenario -->
+<div class="scenario"><h2>Scenario: Parametrised Scenario</h2>
+<div class="examples"><h3>Examples:</h3>
+<div class="step">Given money &lt;money&gt;</div>
+<div class="step">Then I give it to &lt;to&gt;</div>
+<table>
+<thead><tr>
+<th>money</th>
+<th>to</th>
+</tr></thead>
+<tbody>
+<tr>
+<td>$30</td>
+<td>Mauro</td>
+</tr>
+<tr>
+<td>$50</td>
+<td>Paul</td>
+</tr>
+</tbody>
+</table>
+</div>  <!-- end examples -->
+<h3 class="example">Example: {money=$30, to=Mauro}</h3>
+<div class="step successful">Given money $30 </div>
+
+<div class="step successful">Then I give it to Mauro </div>
+
+<h3 class="example">Example: {money=$50, to=Paul}</h3>
+<div class="step successful">Given money $50 </div>
+
+<div class="step successful">Then I give it to Paul </div>
+
+<div class="step failed">Then I should have a balance of $30 <span class="keyword failed">(FAILED)</span></div>
+<pre class="failure">java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
+	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:88)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToHtml(TemplateOutputBehaviour.java:26)
+	(reflection-invoke)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+...</pre>
+</div> <!-- end scenario -->
+<div class="cancelled">STORY CANCELLED (DURATION 2 s)</div>
+<div><pre class="pending">@When(&quot;something \&quot;$param\&quot;&quot;)
+@Pending
+public void whenSomething() {
+  // PENDING
+}
+</pre></div>
+<div><pre class="pending">@Then(&quot;something is &lt;param1&gt;&quot;)
+@Pending
+public void thenSomethingIsParam1() {
+  // PENDING
+}
+</pre></div>
+</div> <!-- end story -->
+</body>
+</html>
+

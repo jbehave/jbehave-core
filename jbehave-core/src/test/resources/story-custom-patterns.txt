@@ -1,0 +1,89 @@
+An interesting story & special chars
+(/path/to/story)
+Meta:
+@author Mauro
+@theme testing
+
+DRY RUN
+Narrative:
+In order to renovate my house
+As a customer
+I want to get a loan
+Lifecycle:
+Before:
+Scope: SCENARIO
+Given a scenario step
+
+Scope: STORY
+Given a story step
+
+
+After:
+Scope: SCENARIO
+Outcome: ANY
+Given a scenario step
+
+
+Scope: STORY
+Outcome: ANY
+Given a story step
+
+
+
+
+Scenario: I ask for a loan
+GivenStories:
+/given/story1
+/given/story2
+
+Given I have a balance of $50
+!-- Then ignore me
+!-- A comment
+When I request $20
+When I ask Liz for a loan of $100
+When I ask Liz for a loan of $99
+When I write special chars <>&"
+When I write special chars in parameter <>&"
+When I write two parameters ,,, and &&&
+Then I should... - try again (hi)
+/path/to/story (Restarted Story)
+STORY CANCELLED (DURATION 2 s)
+Then I should have a balance of $30 <<< FAILED
+Then I should have $20 : NOT PERFORMED (because of previous pending)
+Then I don't return loan <<< FAILED
+|Description|Value|Matcher|Verified|
+|I don't return all|100|<50.0>|No|
+|A wrong date|01/01/2011|"02/01/2011"|No|
+
+Scenario: Parametrised Scenario
+Examples:
+Given money <money>
+Then I give it to <to>
+
+|money|to|
+|$30|Mauro|
+|$50|Paul|
+
+Example: {money=$30, to=Mauro}
+Given money $30
+Then I give it to Mauro
+
+Example: {money=$50, to=Paul}
+Given money $50
+Then I give it to Paul
+Then I should have a balance of $30 <<< FAILED
+
+
+@When("something \"$param\"")
+@Pending
+public void whenSomething() {
+  // PENDING
+}
+
+@Then("something is <param1>")
+@Pending
+public void thenSomethingIsParam1() {
+  // PENDING
+}
+
+

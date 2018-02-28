@@ -11,17 +11,13 @@ import static org.jbehave.core.reporters.Format.TXT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
@@ -35,451 +31,176 @@ import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
-import org.jbehave.core.reporters.TemplateableViewGenerator.ViewGenerationFailedForTemplate;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-public class PrintStreamOutputBehaviour {
+public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
     @Test
-    public void shouldReportEventsToTxtOutput() {
+    public void shouldOutputStoryToTxt() throws IOException {
         // Given
-        OutputStream out = new ByteArrayOutputStream();
-        StoryReporter reporter = new TxtOutput(new PrintStream(out));
+        File file = newFile("target/story.txt");
+        StoryReporter reporter = new TxtOutput(createPrintStream(file));
 
         // When
-        StoryNarrator.narrateAnInterestingStory(reporter, false);
+        StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        String expected = "An interesting story & special chars\n"
-                + "(/path/to/story)\n"
-                + "Meta:\n"
-                + "@author Mauro\n"
-                + "@theme testing\n"
-                + "\n"
-                + "DRY RUN\n"
-                + "Narrative:\n"
-                + "In order to renovate my house\n"
-                + "As a customer\n"
-                + "I want to get a loan\n"
-                + "Scenario: I ask for a loan\n"
-                + "GivenStories:\n"
-                + "/given/story1 \n"
-                + "/given/story2 \n"
-                + "\n"
-                + "Given I have a balance of $50\n"
-                + "!-- Then ignore me\n"
-                + "!-- A comment\n"
-                + "When I request $20\n"
-                + "When I ask Liz for a loan of $100\n"
-                + "When I ask Liz for a loan of $99\n"
-                + "When I write special chars <>&\"\n"
-                + "When I write special chars in parameter <>&\"\n"
-                + "When I write two parameters ,,, and &&&\n"
-                + "Then I should... - try again (hi)\n"
-                + "/path/to/story (Restarted Story)\n"
-                + "STORY CANCELLED (DURATION 2 s)\n"
-                + "Then I should have a balance of $30 (PENDING)\n"
-                + "Then I should have $20 (NOT PERFORMED)\n"
-                + "Then I don't return loan (FAILED)\n"
-                + "(org.jbehave.core.model.OutcomesTable$OutcomesFailed)\n"
-                + "|Description|Value|Matcher|Verified|\n"
-                + "|I don't return all|100|<50.0>|No|\n"
-                + "|A wrong date|01/01/2011|\"02/01/2011\"|No|\n"
-                + "\n"
-                + "Scenario: Parametrised Scenario\n"
-                + "Examples:\n"
-                + "Given money <money>\n"
-                + "Then I give it to <to>\n"
-                + "\n"
-                + "|money|to|\n" + "|$30|Mauro|\n"
-                + "|$50|Paul|\n" // Examples table
-                + "\nExample: {money=$30, to=Mauro}\n"
-                + "Given money $30\n"
-                + "Then I give it to Mauro\n"
-                + "\nExample: {money=$50, to=Paul}\n"
-                + "Given money $50\n"
-                + "Then I give it to Paul\n"
-                + "Then I should have a balance of $30 (PENDING)\n"
-                + "\n" // end of examples
-                + "\n" // end of scenario
-                // pending methods
-                + "@When(\"something \\\"$param\\\"\")\n"
-                + "@Pending\n"
-                + "public void whenSomething() {\n"
-                + "  // PENDING\n"
-                + "}\n"
-                + "\n"
-                + "@Then(\"something is <param1>\")\n"
-                + "@Pending\n"
-                + "public void thenSomethingIsParam1() {\n"
-                + "  // PENDING\n"
-                + "}\n\n"
-                + "\n"; // end of story
-        assertThatOutputIs(out, expected);
+        String out = IOUtils.toString(new FileReader(file), true);
+        assertThatOutputIs(out, "/story.txt");
     }
 
+
     @Test
-    public void shouldReportEventsToTxtOutputWhenNotAllowedByFilter() {
+    public void shouldOutputStoryToTxtWhenNotAllowedByFilter() throws IOException {
         // Given
-        OutputStream out = new ByteArrayOutputStream();
-        StoryReporter reporter = new TxtOutput(new PrintStream(out));
+        File file = newFile("target/story-not-allowed.txt");
+        StoryReporter reporter = new TxtOutput(createPrintStream(file));
 
         // When
         StoryNarrator
                 .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
 
         // Then
-        String expected = "An interesting story\n"
-                +"(/path/to/story)\n"
-                +"Meta:\n"
-                +"@author Mauro\n"
-                +"@theme testing\n\n"
-                +"Scenario: A scenario\n"
-                +"-theme testing\n\n\n";
-        assertThatOutputIs(out, expected);
+        String out = IOUtils.toString(new FileReader(file), true);
+        assertThatOutputIs(out, "/story-not-allowed.txt");
     }
 
     @Test
-    public void shouldReportEventsToHtmlOutput() {
+    public void shouldOutputStoryToTxtUsingCustomPatterns() throws IOException {
         // Given
-        final OutputStream out = new ByteArrayOutputStream();
-        PrintStreamFactory factory = new PrintStreamFactory() {
+        File file = newFile("target/story-custom-patterns.txt");
+        Properties patterns = new Properties();
+        patterns.setProperty("pending", "{0} - {1} - need to implement me\n");
+        patterns.setProperty("failed", "{0} <<< {1}\n");
+        patterns.setProperty("notPerformed", "{0} : {1} (because of previous pending)\n");
+        StoryReporter reporter = new TxtOutput(createPrintStream(file), patterns);
 
-            public PrintStream createPrintStream() {
-                return new PrintStream(out);
-            }
-        };
-        StoryReporter reporter = new HtmlOutput(factory.createPrintStream());
+        // When
+        StoryNarrator.narrateAnInterestingStory(reporter, true);
+
+        // Then
+        String out = IOUtils.toString(new FileReader(file), true);
+        assertThatOutputIs(out, "/story-custom-patterns.txt");
+
+    }
+
+    @Test
+    public void shouldOutputStoryToHtml() throws IOException {
+        // Given
+        File file = newFile("target/story.html");
+        StoryReporter reporter = new HtmlOutput(createPrintStream(file));
 
         // When
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String expected = "<div class=\"story\">\n"
-                + "<h1>An interesting story &amp; special chars</h1>\n"
-                + "<div class=\"path\">/path/to/story</div>\n"
-                + "<div class=\"meta\">\n"
-                + "<div class=\"keyword\">Meta:</div>\n"
-                + "<div class=\"property\">@author Mauro</div>\n"
-                + "<div class=\"property\">@theme testing</div>\n"
-                + "</div>\n"
-                + "<div class=\"dryRun\">DRY RUN</div>\n"
-                + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
-                + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
-                + "<div class=\"element asA\"><span class=\"keyword asA\">As a</span> customer</div>\n"
-                + "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">I want to</span> get a loan</div>\n"
-                + "</div>\n"
-                + "<div class=\"scenario\">\n"
-                + "<h2>Scenario: I ask for a loan</h2>\n"
-                + "<div class=\"givenStories\">GivenStories:\n"
-                + "<div class=\"givenStory\">/given/story1 </div>\n"
-                + "<div class=\"givenStory\">/given/story2 </div>\n"
-                + "</div>\n"
-                + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
-                + "<div class=\"step ignorable\">!-- Then ignore me</div>\n"
-                + "<div class=\"comment\">!-- A comment</div>\n"
-                + "<div class=\"step successful\">When I request $20</div>\n"
-                + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
-                + "<div class=\"step successful\">When I ask Liz for a loan of $<span class=\"step parameter\">99</span></div>\n"
-                + "<div class=\"step successful\">When I write special chars &lt;&gt;&amp;&quot;</div>\n"
-                + "<div class=\"step successful\">When I write special chars in parameter <span class=\"step parameter\">&lt;&gt;&amp;&quot;</span></div>\n"
-                + "<div class=\"step successful\">When I write two parameters <span class=\"step parameter\">,,,</span> and <span class=\"step parameter\">&amp;&amp;&amp;</span></div>\n"
-                + "<div class=\"step restarted\">Then I should... - try again <span class=\"message restarted\">hi</span></div>\n"
-                + "<div class=\"story restarted\">/path/to/story <span class=\"message restarted\">Restarted Story</span></div>\n"
-                + "<div class=\"cancelled\">STORY CANCELLED (DURATION 2 s)</div>\n"
-                + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
-                + "<div class=\"step notPerformed\">Then I should have $20 <span class=\"keyword notPerformed\">(NOT PERFORMED)</span></div>\n"
-                + "<div class=\"step failed\">Then I don't return loan <span class=\"keyword failed\">(FAILED)</span><br/><span class=\"message failed\">org.jbehave.core.model.OutcomesTable$OutcomesFailed</span></div>\n"
-                + "<div class=\"outcomes\"><table>\n"
-                + "<thead>\n"
-                + "<tr>\n"
-                + "<th>Description</th><th>Value</th><th>Matcher</th><th>Verified</th></tr>\n"
-                + "</thead>\n"
-                + "<tbody>\n"
-                + "<tr class=\"notVerified\">\n"
-                + "<td>I don't return all</td><td>100.0</td><td>&lt;50.0&gt;</td><td>No</td></tr>\n"
-                + "<tr class=\"notVerified\">\n"
-                + "<td>A wrong date</td><td>01/01/2011</td><td>&quot;02/01/2011&quot;</td><td>No</td></tr>\n"
-                + "</tbody>\n"
-                + "</table></div>\n"
-                + "</div>\n"
-                + "<div class=\"scenario\">\n"
-                + "<h2>Scenario: Parametrised Scenario</h2>\n"
-                + "<div class=\"examples\">\n"
-                + "<h3>Examples:</h3>\n"
-                + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
-                + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
-                + "<table>\n"
-                + "<thead>\n"
-                + "<tr>\n"
-                + "<th>money</th><th>to</th></tr>\n"
-                + "</thead>\n"
-                + "<tbody>\n"
-                + "<tr>\n"
-                + "<td>$30</td><td>Mauro</td></tr>\n"
-                + "<tr>\n"
-                + "<td>$50</td><td>Paul</td></tr>\n"
-                + "</tbody>\n"
-                + "</table>\n"
-                + "\n"
-                + "<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
-                + "<div class=\"step successful\">Given money $30</div>\n"
-                + "<div class=\"step successful\">Then I give it to Mauro</div>\n"
-                + "\n"
-                + "<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n"
-                + "<div class=\"step successful\">Given money $50</div>\n"
-                + "<div class=\"step successful\">Then I give it to Paul</div>\n"
-                + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
-                + "</div>\n"
-                + "</div>\n"
-                + "<div><pre class=\"pending\">@When(&quot;something \\&quot;$param\\&quot;&quot;)\n"
-                + "@Pending\n"
-                + "public void whenSomething() {\n"
-                + "  // PENDING\n"
-                + "}\n"
-                + "</pre></div>\n"
-                + "<div><pre class=\"pending\">@Then(&quot;something is &lt;param1&gt;&quot;)\n"
-                + "@Pending\n"
-                + "public void thenSomethingIsParam1() {\n"
-                + "  // PENDING\n"
-                + "}\n"
-                + "</pre></div>\n"
-                + "</div>\n"; // end of story
-        assertThatOutputIs(out, expected);
+        String out = IOUtils.toString(new FileReader(file), true);
+        assertThatOutputIs(out, "/story.html");
+
     }
 
     @Test
-    public void shouldReportEventsToHtmlOutputWhenNotAllowedByFilter() {
+    public void shouldOutputStoryToHtmlWhenNotAllowedByFilter() throws IOException {
         // Given
-        OutputStream out = new ByteArrayOutputStream();
-        StoryReporter reporter = new HtmlOutput(new PrintStream(out));
+        File file = newFile("target/story-not-allowed.html");
+        StoryReporter reporter = new HtmlOutput(createPrintStream(file));
 
         // When
         StoryNarrator
                 .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
 
         // Then
-        String expected ="<div class=\"story\">\n"
-                + "<h1>An interesting story</h1>\n"
-                + "<div class=\"path\">/path/to/story</div>\n"
-                + "<div class=\"meta\">\n"
-                + "<div class=\"keyword\">Meta:</div>\n"
-                + "<div class=\"property\">@author Mauro</div>\n"
-                + "<div class=\"property\">@theme testing</div>\n"
-                + "</div>\n"
-                + "<div class=\"scenario\">\n"
-                + "<h2>Scenario: A scenario</h2>\n"
-                + "<div class=\"filter\">-theme testing</div>\n"
-                + "</div>\n"
-                + "</div>\n";
-        assertThatOutputIs(out, expected);
+        String out = IOUtils.toString(new FileReader(file), true);
+        assertThatOutputIs(out, "/story-not-allowed.html");
     }
-    
-    @Test
-    public void shouldReportEventsToHtmlOutputUsingCustomPatterns() {
-        // Given
-        final OutputStream out = new ByteArrayOutputStream();
-        PrintStreamFactory factory = new PrintStreamFactory() {
 
-            public PrintStream createPrintStream() {
-                return new PrintStream(out);
-            }
-        };
+    @Test
+    public void shouldOutputStoryToHtmlUsingCustomPatterns() throws IOException {
+        // Given
+        File file = newFile("target/story-custom-patterns.html");
         Properties patterns = new Properties();
         patterns.setProperty("afterStory", "</div><!-- after story -->\n");
         patterns.setProperty("afterScenario", "</div><!-- after scenario -->\n");
         patterns.setProperty("afterExamples", "</div><!-- after examples -->\n");
-        StoryReporter reporter = new HtmlOutput(factory.createPrintStream(), patterns);
+        StoryReporter reporter = new HtmlOutput(createPrintStream(file), patterns);
 
         // When
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String expected =  "<div class=\"story\">\n"
-                + "<h1>An interesting story &amp; special chars</h1>\n"
-                + "<div class=\"path\">/path/to/story</div>\n"
-                + "<div class=\"meta\">\n"
-                + "<div class=\"keyword\">Meta:</div>\n"
-                + "<div class=\"property\">@author Mauro</div>\n"
-                + "<div class=\"property\">@theme testing</div>\n"
-                + "</div>\n"
-                + "<div class=\"dryRun\">DRY RUN</div>\n"
-                + "<div class=\"narrative\"><h2>Narrative:</h2>\n"
-                + "<div class=\"element inOrderTo\"><span class=\"keyword inOrderTo\">In order to</span> renovate my house</div>\n"
-                + "<div class=\"element asA\"><span class=\"keyword asA\">As a</span> customer</div>\n"
-                + "<div class=\"element iWantTo\"><span class=\"keyword iWantTo\">I want to</span> get a loan</div>\n"
-                + "</div>\n"
-                + "<div class=\"scenario\">\n"
-                + "<h2>Scenario: I ask for a loan</h2>\n"
-                + "<div class=\"givenStories\">GivenStories:\n"
-                + "<div class=\"givenStory\">/given/story1 </div>\n"
-                + "<div class=\"givenStory\">/given/story2 </div>\n"
-                + "</div>\n"
-                + "<div class=\"step successful\">Given I have a balance of $50</div>\n"
-                + "<div class=\"step ignorable\">!-- Then ignore me</div>\n"
-                + "<div class=\"comment\">!-- A comment</div>\n"
-                + "<div class=\"step successful\">When I request $20</div>\n"
-                + "<div class=\"step successful\">When I ask Liz for a loan of $100</div>\n"
-                + "<div class=\"step successful\">When I ask Liz for a loan of $<span class=\"step parameter\">99</span></div>\n"
-                + "<div class=\"step successful\">When I write special chars &lt;&gt;&amp;&quot;</div>\n"
-                + "<div class=\"step successful\">When I write special chars in parameter <span class=\"step parameter\">&lt;&gt;&amp;&quot;</span></div>\n"
-                + "<div class=\"step successful\">When I write two parameters <span class=\"step parameter\">,,,</span> and <span class=\"step parameter\">&amp;&amp;&amp;</span></div>\n"
-                + "<div class=\"step restarted\">Then I should... - try again <span class=\"message restarted\">hi</span></div>\n"
-                + "<div class=\"story restarted\">/path/to/story <span class=\"message restarted\">Restarted Story</span></div>\n"
-                + "<div class=\"cancelled\">STORY CANCELLED (DURATION 2 s)</div>\n"
-                + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
-                + "<div class=\"step notPerformed\">Then I should have $20 <span class=\"keyword notPerformed\">(NOT PERFORMED)</span></div>\n"
-                + "<div class=\"step failed\">Then I don't return loan <span class=\"keyword failed\">(FAILED)</span><br/><span class=\"message failed\">org.jbehave.core.model.OutcomesTable$OutcomesFailed</span></div>\n"
-                + "<div class=\"outcomes\"><table>\n"
-                + "<thead>\n"
-                + "<tr>\n"
-                + "<th>Description</th><th>Value</th><th>Matcher</th><th>Verified</th></tr>\n"
-                + "</thead>\n"
-                + "<tbody>\n"
-                + "<tr class=\"notVerified\">\n"
-                + "<td>I don't return all</td><td>100.0</td><td>&lt;50.0&gt;</td><td>No</td></tr>\n"
-                + "<tr class=\"notVerified\">\n"
-                + "<td>A wrong date</td><td>01/01/2011</td><td>&quot;02/01/2011&quot;</td><td>No</td></tr>\n"
-                + "</tbody>\n"
-                + "</table></div>\n"
-                + "</div><!-- after scenario -->\n"
-                + "<div class=\"scenario\">\n"
-                + "<h2>Scenario: Parametrised Scenario</h2>\n"
-                + "<div class=\"examples\">\n"
-                + "<h3>Examples:</h3>\n"
-                + "<div class=\"step\">Given money &lt;money&gt;</div>\n"
-                + "<div class=\"step\">Then I give it to &lt;to&gt;</div>\n"
-                + "<table>\n"
-                + "<thead>\n"
-                + "<tr>\n"
-                + "<th>money</th><th>to</th></tr>\n"
-                + "</thead>\n"
-                + "<tbody>\n"
-                + "<tr>\n"
-                + "<td>$30</td><td>Mauro</td></tr>\n"
-                + "<tr>\n"
-                + "<td>$50</td><td>Paul</td></tr>\n"
-                + "</tbody>\n"
-                + "</table>\n"
-                + "\n"
-                + "<h3 class=\"example\">Example: {money=$30, to=Mauro}</h3>\n"
-                + "<div class=\"step successful\">Given money $30</div>\n"
-                + "<div class=\"step successful\">Then I give it to Mauro</div>\n"
-                + "\n"
-                + "<h3 class=\"example\">Example: {money=$50, to=Paul}</h3>\n"
-                + "<div class=\"step successful\">Given money $50</div>\n"
-                + "<div class=\"step successful\">Then I give it to Paul</div>\n"
-                + "<div class=\"step pending\">Then I should have a balance of $30 <span class=\"keyword pending\">(PENDING)</span></div>\n"
-                + "</div><!-- after examples -->\n"
-                + "</div><!-- after scenario -->\n"
-                // pending methods
-                + "<div><pre class=\"pending\">@When(&quot;something \\&quot;$param\\&quot;&quot;)\n"
-                + "@Pending\n"
-                + "public void whenSomething() {\n"
-                + "  // PENDING\n"
-                + "}\n"
-                + "</pre></div>\n"
-                + "<div><pre class=\"pending\">@Then(&quot;something is &lt;param1&gt;&quot;)\n"
-                + "@Pending\n"
-                + "public void thenSomethingIsParam1() {\n"
-                + "  // PENDING\n"
-                + "}\n"
-                + "</pre></div>\n"
-                + "</div><!-- after story -->\n";
-        assertThatOutputIs(out, expected);
+        String out = IOUtils.toString(new FileReader(file), true);
+        assertThatOutputIs(out, "/story-custom-patterns.html");
     }
 
     @Test
-    public void shouldReportEventsToXmlOutput() throws SAXException, IOException {
+    public void shouldOutputStoryToXml() throws IOException, SAXException {
         // Given
-        final OutputStream out = new ByteArrayOutputStream();
-        PrintStreamFactory factory = new PrintStreamFactory() {
-
-            public PrintStream createPrintStream() {
-                return new PrintStream(out);
-            }
-        };
-        StoryReporter reporter = new XmlOutput(factory.createPrintStream());
+        File file = newFile("target/story.xml");
+        StoryReporter reporter = new XmlOutput(createPrintStream(file));
 
         // When
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String expected = "<story path=\"/path/to/story\" title=\"An interesting story &amp; special chars\">\n"
-                + "<meta>\n"
-                + "<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
-                + "<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"
-                + "</meta>\n"
-                + "<dryRun>DRY RUN</dryRun>\n"
-                + "<narrative keyword=\"Narrative:\">\n"
-                + "  <inOrderTo keyword=\"In order to\">renovate my house</inOrderTo>\n"
-                + "  <asA keyword=\"As a\">customer</asA>\n"
-                + "  <iWantTo keyword=\"I want to\">get a loan</iWantTo>\n"
-                + "</narrative>\n"
-                + "<scenario keyword=\"Scenario:\" title=\"I ask for a loan\">\n"
-                + "<givenStories keyword=\"GivenStories:\">\n"
-                + "<givenStory parameters=\"\">/given/story1</givenStory>\n"
-                + "<givenStory parameters=\"\">/given/story2</givenStory>\n"
-                + "</givenStories>\n"
-                + "<step outcome=\"successful\">Given I have a balance of $50</step>\n"
-                + "<step outcome=\"ignorable\">!-- Then ignore me</step>\n"
-                + "<step outcome=\"comment\">!-- A comment</step>\n"
-                + "<step outcome=\"successful\">When I request $20</step>\n"
-                + "<step outcome=\"successful\">When I ask Liz for a loan of $100</step>\n"
-                + "<step outcome=\"successful\">When I ask Liz for a loan of $<parameter>99</parameter></step>\n"
-                + "<step outcome=\"successful\">When I write special chars &lt;&gt;&amp;&quot;</step>\n"
-                + "<step outcome=\"successful\">When I write special chars in parameter <parameter>&lt;&gt;&amp;&quot;</parameter></step>\n"
-                + "<step outcome=\"successful\">When I write two parameters <parameter>,,,</parameter> and <parameter>&amp;&amp;&amp;</parameter></step>\n"
-                + "<step outcome=\"restarted\">Then I should... - try again<reason>hi</reason></step>\n"
-                + "<story outcome=\"restartedStory\">/path/to/story<reason>Restarted Story</reason></story>\n"
-                + "<cancelled keyword=\"STORY CANCELLED\" durationKeyword=\"DURATION\" durationInSecs=\"2\"/>\n"
-                + "<step outcome=\"pending\" keyword=\"PENDING\">Then I should have a balance of $30</step>\n"
-                + "<step outcome=\"notPerformed\" keyword=\"NOT PERFORMED\">Then I should have $20</step>\n"
-                + "<step outcome=\"failed\" keyword=\"FAILED\">Then I don&apos;t return loan<failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed</failure></step>\n"
-                + "<outcomes>\n"
-                + "<fields><field>Description</field><field>Value</field><field>Matcher</field><field>Verified</field></fields>\n"
-                + "<outcome><value>I don&apos;t return all</value><value>100.0</value><value>&lt;50.0&gt;</value><value>No</value></outcome>\n"
-                + "<outcome><value>A wrong date</value><value>01/01/2011</value><value>&quot;02/01/2011&quot;</value><value>No</value></outcome>\n"
-                + "</outcomes>\n"
-                + "</scenario>\n"
-                + "<scenario keyword=\"Scenario:\" title=\"Parametrised Scenario\">\n"
-                + "<examples keyword=\"Examples:\">\n"
-                + "<step>Given money &lt;money&gt;</step>\n"
-                + "<step>Then I give it to &lt;to&gt;</step>\n"
-                + "<parameters>\n"
-                + "<names><name>money</name><name>to</name></names>\n"
-                + "<values><value>$30</value><value>Mauro</value></values>\n"
-                + "<values><value>$50</value><value>Paul</value></values>\n"
-                + "</parameters>\n"
-                + "\n"
-                + "<example keyword=\"Example:\">{money=$30, to=Mauro}</example>\n"
-                + "<step outcome=\"successful\">Given money $30</step>\n"
-                + "<step outcome=\"successful\">Then I give it to Mauro</step>\n"
-                + "\n"
-                + "<example keyword=\"Example:\">{money=$50, to=Paul}</example>\n"
-                + "<step outcome=\"successful\">Given money $50</step>\n"
-                + "<step outcome=\"successful\">Then I give it to Paul</step>\n"
-                + "<step outcome=\"pending\" keyword=\"PENDING\">Then I should have a balance of $30</step>\n"
-                + "</examples>\n"
-                + "</scenario>\n"
-                // pending methods
-                + "<pendingMethod>@When(&quot;something \\&quot;$param\\&quot;&quot;)\n"
-                + "@Pending\n"
-                + "public void whenSomething() {\n"
-                + "  // PENDING\n"
-                + "}\n"
-                + "</pendingMethod>\n"
-                + "<pendingMethod>@Then(&quot;something is &lt;param1&gt;&quot;)\n"
-                + "@Pending\n"
-                + "public void thenSomethingIsParam1() {\n"
-                + "  // PENDING\n"
-                + "}\n"
-                + "</pendingMethod>\n"
-                + "</story>\n";
-        String xmlDocument=out.toString();
-        XMLUnit.buildTestDocument(xmlDocument);
-        assertEquals(expected, xmlDocument);
+        String out = IOUtils.toString(new FileReader(file), true);
+        XMLUnit.buildTestDocument(out);
+        assertThatOutputIs(out, "/story.xml");
+
+    }
+
+    @Test
+    public void shouldOutputStoryToXmlWhenNotAllowedByFilter() throws IOException {
+        // Given
+        File file = newFile("target/story-not-allowed.xml");
+        StoryReporter reporter = new XmlOutput(createPrintStream(file));
+
+        // When
+        StoryNarrator
+                .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
+
+        // Then
+        String out = IOUtils.toString(new FileReader(file), true);
+        assertThatOutputIs(out, "/story-not-allowed.xml");
+    }
+
+    @Test
+    public void shouldOutputStoryToXmlUsingCustomPatterns() throws IOException {
+        // Given
+        File file = newFile("target/story-custom-patterns.xml");
+        Properties patterns = new Properties();
+        patterns.setProperty("afterStory", "</story><!-- after story -->\n");
+        patterns.setProperty("afterScenario", "</scenario><!-- after scenario -->\n");
+        patterns.setProperty("afterExamples", "</examples><!-- after examples -->\n");
+        StoryReporter reporter = new XmlOutput(createPrintStream(file), patterns);
+
+        // When
+        StoryNarrator.narrateAnInterestingStory(reporter, false);
+
+        // Then
+        String out = IOUtils.toString(new FileReader(file), true);
+        assertThatOutputIs(out, "/story-custom-patterns.xml");
+    }
+
+    @Test
+    public void shouldOutputStoryJson() throws IOException, SAXException {
+        // Given
+        File file = new File("target/story.json");
+        StoryReporter reporter = new JsonOutput(new FilePrintStreamFactory.FilePrintStream(file, false),
+                new LocalizedKeywords());
+
+        // When
+        StoryNarrator.narrateAnInterestingStory(reporter, false);
+
+        // Then
+        String out = IOUtils.toString(new FileReader(file), true);
+
+        // will not throw JsonSyntaxException if the JSON file is not valid
+        Gson gson = new Gson();
+        JsonReader jsonReader = new JsonReader(new StringReader(out));
+        jsonReader.setLenient(false);
+        gson.fromJson(jsonReader, Object.class);
+        assertThatOutputIs(out, "/story.json");
     }
 
     @Test
@@ -526,41 +247,6 @@ public class PrintStreamOutputBehaviour {
         assertThatOutputIs(out, "Then I should have a balance of $30 (FAILED)\n" +
                 "(org.jbehave.core.reporters.PrintStreamOutputBehaviour$MyKnownFailure)\n\n" +
                 "");
-    }
-
-    @Test
-    public void shouldReportEventsToXmlOutputWhenNotAllowedByFilter() {
-        // Given
-        OutputStream out = new ByteArrayOutputStream();
-        StoryReporter reporter = new XmlOutput(new PrintStream(out));
-
-        // When
-        StoryNarrator
-                .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
-
-        // Then
-        String expected = "<story path=\"/path/to/story\" title=\"An interesting story\">\n"
-                + "<meta>\n"
-                + "<property keyword=\"@\" name=\"author\" value=\"Mauro\"/>\n"
-                + "<property keyword=\"@\" name=\"theme\" value=\"testing\"/>\n"
-                + "</meta>\n"
-                + "<scenario keyword=\"Scenario:\" title=\"A scenario\">\n"
-                + "<filter>-theme testing</filter>\n"
-                + "</scenario>\n"
-                + "</story>\n";
-        assertThatOutputIs(out, expected);
-    }
-
-    private void assertThatOutputIs(OutputStream out, String expected) {
-        assertEquals(expected, dos2unix(out.toString()));
-    }
-
-    private void assertThatOutputStartsWith(OutputStream out, String expected) {
-        assertTrue(dos2unix(out.toString()).startsWith(expected));
-    }
-
-    private String dos2unix(String string) {
-        return string.replace("\r\n", "\n");
     }
 
     @Test
@@ -613,35 +299,6 @@ public class PrintStreamOutputBehaviour {
         assertThat(out.toString().contains(stackTrace.toString()), is(false));
     }
 
-    @Test
-    public void shouldReportEventsToTxtOutputWithCustomPatterns() {
-        // Given
-        UUIDExceptionWrapper exception = new UUIDExceptionWrapper(new RuntimeException("Leave my money alone!"));
-        OutputStream out = new ByteArrayOutputStream();
-        Properties patterns = new Properties();
-        patterns.setProperty("pending", "{0} - {1} - need to implement me\n");
-        patterns.setProperty("failed", "{0} <<< {1}\n");
-        patterns.setProperty("notPerformed", "{0} : {1} (because of previous pending)\n");
-        StoryReporter reporter = new TxtOutput(new PrintStream(out), patterns, new LocalizedKeywords(),
-                true);
-
-        // When
-        reporter.successful("Given I have a balance of $50");
-        reporter.successful("When I request $20");
-        reporter.failed("When I ask Liz for a loan of $100", exception);
-        reporter.pending("Then I should have a balance of $30");
-        reporter.notPerformed("Then I should have $20");
-
-        // Then
-        String expected = "Given I have a balance of $50\n" + "When I request $20\n"
-                + "When I ask Liz for a loan of $100 <<< FAILED\n"
-                + "Then I should have a balance of $30 - PENDING - need to implement me\n"
-                + "Then I should have $20 : NOT PERFORMED (because of previous pending)\n";
-
-        assertThatOutputIs(out, expected);
-
-    }
-    
     @Test
     public void shouldReportEventsToIdeOnlyConsoleOutput() {
         // When
@@ -770,18 +427,6 @@ public class PrintStreamOutputBehaviour {
         assertThat(IOUtils.toString(new FileReader(file), true).length(), greaterThan(0));
     }
 
-    @Test(expected = ViewGenerationFailedForTemplate.class)
-    public void shouldFailGeneratingViewWithInexistentTemplates() throws IOException {
-        // Given
-        Properties templates = new Properties();
-        templates.setProperty("reports", "target/inexistent");
-        ViewGenerator viewGenerator = new FreemarkerViewGenerator();
-        // When
-        File outputDirectory = new File("target");
-        viewGenerator.generateReportsView(outputDirectory, asList("html"), templates);
-        // Then ... fail as expected
-    }
-
     private String storyPath(Class<MyStory> storyClass) {
         StoryPathResolver resolver = new UnderscoredCamelCaseResolver(".story");
         return resolver.resolve(storyClass);
@@ -819,4 +464,24 @@ public class PrintStreamOutputBehaviour {
     private abstract class MyStory extends JUnitStory {
 
     }
+
+    private File newFile(String path) {
+        File file = new File(path);
+        file.delete();
+        return file;
+    }
+
+    private PrintStream createPrintStream(File file) throws FileNotFoundException {
+        return new PrintStream(new FilePrintStreamFactory.FilePrintStream(file,true));
+    }
+
+    private void assertThatOutputIs(OutputStream out, String expected) {
+        assertEquals(expected, dos2unix(out.toString()));
+    }
+
+    private void assertThatOutputStartsWith(OutputStream out, String expected) {
+        assertTrue(dos2unix(out.toString()).startsWith(expected));
+    }
+
+
 }

@@ -1,0 +1,10 @@
+An interesting story
+(/path/to/story)
+Meta:
+@author Mauro
+@theme testing
+
+Scenario: A scenario
+-theme testing
+
+

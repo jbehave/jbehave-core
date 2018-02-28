@@ -138,12 +138,14 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("narrative", "\"narrative\": '{'\"keyword\": \"{0}\",  \"inOrderTo\": '{'\"keyword\": \"{1}\", \"value\": \"{2}\"}, \"asA\": '{'\"keyword\": \"{3}\", \"value\": \"{4}\"}, \"iWantTo\": '{'\"keyword\": \"{5}\", \"value\": \"{6}\"}}");
         patterns.setProperty("lifecycleStart", "\"lifecycle\": '{'\"keyword\": \"{0}\"");
         patterns.setProperty("lifecycleEnd", "}");
-        patterns.setProperty("lifecycleBeforeStart", "\"before\": '{'\"keyword\": \"{0}\"}");
+        patterns.setProperty("lifecycleBeforeStart", "\"before\": '{'\"keyword\": \"{0}\"");
         patterns.setProperty("lifecycleBeforeEnd", "}");
-        patterns.setProperty("lifecycleAfterStart", "\"after\": '{'\"keyword\": \"{0}\"}");
+        patterns.setProperty("lifecycleAfterStart", "\"after\": '{'\"keyword\": \"{0}\"");
         patterns.setProperty("lifecycleAfterEnd", "}");
-        patterns.setProperty("lifecycleScope", "\"scope\": \"{0} {1}\"");
-        patterns.setProperty("lifecycleOutcome", "\"outcome\": \"{0} {1}\"");
+        patterns.setProperty("lifecycleScopeStart", "\"scope\": '{'\"keyword\": \"{0}\", \"value\": \"{1}\"");
+        patterns.setProperty("lifecycleScopeEnd", "}");
+        patterns.setProperty("lifecycleOutcomeStart", "\"outcome\": '{'\"keyword\": \"{0}\", \"value\": \"{1}\"");
+        patterns.setProperty("lifecycleOutcomeEnd", "}");
         patterns.setProperty("lifecycleMetaFilter", "\"metaFilter\": \"{0} {1}\"");
         patterns.setProperty("lifecycleStep", "\"step\": \"{0}\"");
         patterns.setProperty("beforeScenario","'{'\"keyword\": \"{0}\", \"title\": \"{1}\"");

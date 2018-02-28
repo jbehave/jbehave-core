@@ -148,7 +148,7 @@ public class Lifecycle {
 		}
 
         public Steps(Scope scope, List<String> steps) {
-            this(scope, null, null, steps);
+            this(scope, Outcome.ANY, null, steps);
         }
 
         public Steps(Outcome outcome, List<String> steps) {

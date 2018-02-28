@@ -62,8 +62,10 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("lifecycleBeforeEnd", "\n");
         patterns.setProperty("lifecycleAfterStart", "{0}\n");
         patterns.setProperty("lifecycleAfterEnd", "\n");
-        patterns.setProperty("lifecycleScope", "{0} {1}\n");
-        patterns.setProperty("lifecycleOutcome", "{0} {1}\n");
+        patterns.setProperty("lifecycleScopeStart", "{0} {1}\n");
+        patterns.setProperty("lifecycleScopeEnd", "\n");
+        patterns.setProperty("lifecycleOutcomeStart", "{0} {1}\n");
+        patterns.setProperty("lifecycleOutcomeEnd", "\n");
         patterns.setProperty("lifecycleMetaFilter", "{0} {1}\n");
         patterns.setProperty("lifecycleStep", "{0}\n");
         patterns.setProperty("beforeScenario", "{0} {1}\n");
@@ -71,7 +73,7 @@ public class TxtOutput extends PrintStreamOutput {
         patterns.setProperty("afterScenarioWithFailure", "\n{0}\n");
         patterns.setProperty("givenStories", "{0} {1}\n");
         patterns.setProperty("givenStoriesStart", "{0}\n");
-        patterns.setProperty("givenStory", "{0} {1}\n");
+        patterns.setProperty("givenStory", "{0}{1}\n");
         patterns.setProperty("givenStoriesEnd", "\n");
         patterns.setProperty("successful", "{0}\n");
         patterns.setProperty("ignorable", "{0}\n");

@@ -38,6 +38,7 @@ class StoryNarrator {
         reporter.beforeStory(story, givenStory);
         reporter.dryRun();
         reporter.narrative(story.getNarrative());
+        reporter.lifecyle(lifecycle);
         reporter.beforeScenario("I ask for a loan");
         reporter.beforeGivenStories();
         reporter.givenStories(asList("/given/story1", "/given/story2"));
@@ -58,7 +59,7 @@ class StoryNarrator {
         reporter.restartedStory(story, new RestartingStoryFailure("Restarted Story"));
         reporter.storyCancelled(story, new StoryDuration(1).setDurationInSecs(2));
         if (withFailure) {
-            reporter.failed("Then I should have a balance of $30", new Exception("Expected <30> got <25>"));
+            reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new Exception("Expected <30> got <25>")));
         } else {
             reporter.pending("Then I should have a balance of $30");
         }
@@ -84,7 +85,7 @@ class StoryNarrator {
         reporter.successful("Given money $50");
         reporter.successful("Then I give it to Paul");
         if (withFailure) {
-            reporter.failed("Then I should have a balance of $30", new Exception("Expected <30> got <25>"));
+            reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new Exception("Expected <30> got <25>")));
         } else {
             reporter.pending("Then I should have a balance of $30");
         }

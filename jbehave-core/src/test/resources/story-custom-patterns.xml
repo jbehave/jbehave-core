@@ -56,7 +56,7 @@
 <outcome><value>I don&apos;t return all</value><value>100.0</value><value>&lt;50.0&gt;</value><value>No</value></outcome>
 <outcome><value>A wrong date</value><value>01/01/2011</value><value>&quot;02/01/2011&quot;</value><value>No</value></outcome>
 </outcomes>
-</scenario>
+</scenario><!-- after scenario -->
 <scenario keyword="Scenario:" title="Parametrised Scenario">
 <examples keyword="Examples:">
 <step>Given money &lt;money&gt;</step>
@@ -75,8 +75,8 @@
 <step outcome="successful">Given money $50</step>
 <step outcome="successful">Then I give it to Paul</step>
 <step outcome="pending" keyword="PENDING">Then I should have a balance of $30</step>
-</examples>
-</scenario>
+</examples><!-- after examples -->
+</scenario><!-- after scenario -->
 <pendingMethod>@When(&quot;something \&quot;$param\&quot;&quot;)
 @Pending
 public void whenSomething() {
@@ -89,4 +89,4 @@ public void thenSomethingIsParam1() {
   // PENDING
 }
 </pendingMethod>
-</story>
+</story><!-- after story -->

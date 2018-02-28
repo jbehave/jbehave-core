@@ -54,7 +54,7 @@ import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
  * <ul>
  * <li>custom output patterns, providing only the patterns that differ from
  * default</li>
- * <li>keywords localised for different languages, providing the i18n Locale</li>
+ * <li>keywords localised for different languages, providing the formatOutcome Locale</li>
  * <li>flag to report failure trace</li>
  * </ul>
  * </p>
@@ -91,6 +91,7 @@ import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 public abstract class PrintStreamOutput implements StoryReporter {
 
     private static final String EMPTY = "";
+    public static final String NL = "\n";
 
     public enum Format {
         TXT {
@@ -212,13 +213,13 @@ public abstract class PrintStreamOutput implements StoryReporter {
     }
 
     private void print(OutcomesTable table) {
-        print(format("outcomesTableStart", "\n"));
+        print(format("outcomesTableStart", NL));
         List<Outcome<?>> rows = table.getOutcomes();
         print(format("outcomesTableHeadStart", "|"));
         for (String field : table.getOutcomeFields()) {
             print(format("outcomesTableHeadCell", "{0}|", field));
         }
-        print(format("outcomesTableHeadEnd", "\n"));
+        print(format("outcomesTableHeadEnd", NL));
         print(format("outcomesTableBodyStart", EMPTY));
         for (Outcome<?> outcome : rows) {
             print(format("outcomesTableRowStart", "|", outcome.isVerified() ? "verified" : "notVerified"));
@@ -226,10 +227,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
             print(format("outcomesTableCell", "{0}|", renderOutcomeValue(outcome.getValue(), table.getDateFormat())));
             print(format("outcomesTableCell", "{0}|", outcome.getMatcher()));
             print(format("outcomesTableCell", "{0}|", (outcome.isVerified() ? keywords.yes() : keywords.no())));
-            print(format("outcomesTableRowEnd", "\n"));
+            print(format("outcomesTableRowEnd", NL));
         }
-        print(format("outcomesTableBodyEnd", "\n"));
-        print(format("outcomesTableEnd", "\n"));
+        print(format("outcomesTableBodyEnd", NL));
+        print(format("outcomesTableEnd", NL));
     }
 
     private Object renderOutcomeValue(Object value, String dateFormat) {
@@ -283,16 +284,16 @@ public abstract class PrintStreamOutput implements StoryReporter {
                 for (Scope scope : lifecycle.getScopes() ){
                     printWithScope(lifecycle.getBeforeSteps(scope), scope);
                 }
-                print(format("lifecycleBeforeEnd", EMPTY));
+                print(format("lifecycleBeforeEnd", NL));
             }
             if (lifecycle.hasAfterSteps()) {
                 print(format("lifecycleAfterStart", "{0}\n", keywords.after()));
                 for (Scope scope : lifecycle.getScopes() ){
                     printOutcomes(lifecycle, scope);
                 }
-                print(format("lifecycleAfterEnd", EMPTY));
+                print(format("lifecycleAfterEnd", NL));
             }
-            print(format("lifecycleEnd", "\n"));
+            print(format("lifecycleEnd", NL));
         }
     }
 
@@ -300,34 +301,36 @@ public abstract class PrintStreamOutput implements StoryReporter {
         for ( org.jbehave.core.annotations.AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
             List<String> afterSteps = lifecycle.getAfterSteps(scope, outcome);
             if ( !afterSteps.isEmpty() ) {
-                print(format("lifecycleScope", "{0} {1}\n", keywords.scope(), formatScope(scope)));
-                print(format("lifecycleOutcome", "{0} {1}\n", keywords.outcome(), i18n(outcome)));
+                print(format("lifecycleScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
+                print(format("lifecycleOutcomeStart", "{0} {1}\n", keywords.outcome(), formatOutcome(outcome)));
                 MetaFilter metaFilter = lifecycle.getMetaFilter(outcome);
                 if (!metaFilter.isEmpty()) {
                     print(format("lifecycleMetaFilter", "{0} {1}\n", keywords.metaFilter(), metaFilter.asString()));
                 }
                 print(afterSteps);
+                print(format("lifecycleOutcomeEnd", "\n"));
+                print(format("lifecycleScopeEnd", "\n"));
             }
         }
     }
 
     private void printWithScope(List<String> steps, Scope scope) {
         if ( !steps.isEmpty()) {
-            print(format("lifecycleScope", "{0} {1}\n", keywords.scope(), formatScope(scope)));
+            print(format("lifecycleScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
             print(steps);
+            print(format("lifecycleScopeEnd", "\n"));
         }
     }
 
     private String formatScope(Scope scope) {
-        if ( scope == Scope.SCENARIO ) {
-            return keywords.scopeScenario();
-        } else if ( scope == Scope.STORY ){
-            return keywords.scopeStory();
+        switch ( scope ){
+            case SCENARIO: return keywords.scopeScenario();
+            case STORY: return keywords.scopeStory();
+            default: return scope.name();
         }
-        return EMPTY;
     }
 
-    private String i18n(org.jbehave.core.annotations.AfterScenario.Outcome outcome) {
+    private String formatOutcome(org.jbehave.core.annotations.AfterScenario.Outcome outcome) {
         switch ( outcome ){
         case ANY: return keywords.outcomeAny();
         case SUCCESS: return keywords.outcomeSuccess();
@@ -347,12 +350,12 @@ public abstract class PrintStreamOutput implements StoryReporter {
         for (String name : meta.getPropertyNames()) {
             print(format("metaProperty", "{0}{1} {2}", keywords.metaProperty(), name, meta.getProperty(name)));
         }
-        print(format("metaEnd", "\n"));
+        print(format("metaEnd", NL));
     }
 
     @Override
     public void afterStory(boolean givenOrRestartingStory) {
-        print(format("afterStory", "\n"));
+        print(format("afterStory", NL));
         // take care not to close System.out
         // which is used for ConsoleOutput
         if (!givenOrRestartingStory && output != System.out) {
@@ -369,10 +372,10 @@ public abstract class PrintStreamOutput implements StoryReporter {
     public void givenStories(GivenStories givenStories) {
         print(format("givenStoriesStart", "{0}\n", keywords.givenStories()));
         for (GivenStory givenStory : givenStories.getStories()) {
-            print(format("givenStory", "{0} {1}\n", givenStory.asString(),
+            print(format("givenStory", "{0}{1}\n", givenStory.asString(),
                     (givenStory.hasAnchor() ? givenStory.getParameters() : "")));
         }
-        print(format("givenStoriesEnd", "\n"));
+        print(format("givenStoriesEnd", NL));
     }
 
     @Override
@@ -409,7 +412,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
             print(format("afterScenarioWithFailure", "\n{0}\n",
                     new StackTraceFormatter(compressFailureTrace()).stackTrace(cause.get())));
         } else {
-            print(format("afterScenario", "\n"));
+            print(format("afterScenario", NL));
         }
     }
 
@@ -431,7 +434,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
 
     @Override
     public void afterExamples() {
-        print(format("afterExamples", "\n"));
+        print(format("afterExamples", NL));
     }
 
     @Override
@@ -477,21 +480,21 @@ public abstract class PrintStreamOutput implements StoryReporter {
     protected String formatTable(ExamplesTable table) {
         OutputStream formatted = new ByteArrayOutputStream();
         PrintStream out = new PrintStream(formatted);
-        print(out, format("examplesTableStart", "\n"));
+        print(out, format("examplesTableStart", NL));
         List<Map<String, String>> rows = table.getRows();
         List<String> headers = table.getHeaders();
         print(out, format("examplesTableHeadStart", "|"));
         for (String header : headers) {
             print(out, format("examplesTableHeadCell", "{0}|", header));
         }
-        print(out, format("examplesTableHeadEnd", "\n"));
+        print(out, format("examplesTableHeadEnd", NL));
         print(out, format("examplesTableBodyStart", EMPTY));
         for (Map<String, String> row : rows) {
             print(out, format("examplesTableRowStart", "|"));
             for (String header : headers) {
                 print(out, format("examplesTableCell", "{0}|", row.get(header)));
             }
-            print(out, format("examplesTableRowEnd", "\n"));
+            print(out, format("examplesTableRowEnd", NL));
         }
         print(out, format("examplesTableBodyEnd", EMPTY));
         print(out, format("examplesTableEnd", EMPTY));
@@ -585,7 +588,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
         print(output, textToPrint
                 .replace(format(PARAMETER_VALUE_START, PARAMETER_VALUE_START), format("parameterValueStart", EMPTY))
                 .replace(format(PARAMETER_VALUE_END, PARAMETER_VALUE_END), format("parameterValueEnd", EMPTY))
-                .replace(format(PARAMETER_VALUE_NEWLINE, PARAMETER_VALUE_NEWLINE), format("parameterValueNewline", "\n")));
+                .replace(format(PARAMETER_VALUE_NEWLINE, PARAMETER_VALUE_NEWLINE), format("parameterValueNewline", NL)));
     }
 
     protected String transformPrintingTable(String text, String tableStart, String tableEnd) {
