@@ -36,6 +36,7 @@ import org.jbehave.core.model.StoryDuration;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModelException;
+import org.jbehave.core.steps.StepCollector;
 
 /**
  * <p>
@@ -51,6 +52,8 @@ public class TemplateableOutput extends NullStoryReporter {
     private OutputStory outputStory = new OutputStory();
     private OutputScenario outputScenario = new OutputScenario();
     private OutputStep failedStep;
+    private Scope scope;
+    private StepCollector.Stage stage;
 
     public TemplateableOutput(File file, Keywords keywords, TemplateProcessor processor, String templatePath) {
         this.file = file;
@@ -70,6 +73,8 @@ public class TemplateableOutput extends NullStoryReporter {
             this.outputStory = new OutputStory();
             this.outputStory.description = story.getDescription().asString();
             this.outputStory.path = story.getPath();
+            this.scope = Scope.STORY;
+            this.stage = StepCollector.Stage.BEFORE;
         }
         if (!story.getMeta().isEmpty()) {
             this.outputStory.meta = new OutputMeta(story.getMeta());
@@ -101,38 +106,50 @@ public class TemplateableOutput extends NullStoryReporter {
             this.outputScenario = new OutputScenario();
         }
         this.outputScenario.title = title;
+        this.scope = Scope.SCENARIO;
+    }
+
+    private void addStep(OutputStep outputStep) {
+        if ( scope == Scope.STORY){
+            if ( stage == StepCollector.Stage.BEFORE ){
+                this.outputStory.addBeforeStep(outputStep);
+            } else {
+                this.outputStory.addAfterStep(outputStep);
+            }
+        }
+        this.outputScenario.addStep(outputStep);
     }
 
     @Override
     public void successful(String step) {
-        this.outputScenario.addStep(new OutputStep(step, "successful"));
+        addStep(new OutputStep(step, "successful"));
     }
 
     @Override
     public void ignorable(String step) {
-        this.outputScenario.addStep(new OutputStep(step, "ignorable"));
+        addStep(new OutputStep(step, "ignorable"));
     }
 
     @Override
     public void comment(String step) {
-        this.outputScenario.addStep(new OutputStep(step, "comment"));
+        addStep(new OutputStep(step, "comment"));
     }
 
     @Override
     public void pending(String step) {
-        this.outputScenario.addStep(new OutputStep(step, "pending"));
+        addStep(new OutputStep(step, "pending"));
     }
 
     @Override
     public void notPerformed(String step) {
-        this.outputScenario.addStep(new OutputStep(step, "notPerformed"));
+        addStep(new OutputStep(step, "notPerformed"));
     }
 
     @Override
     public void failed(String step, Throwable storyFailure) {
         this.failedStep = new OutputStep(step, "failed");
         failedStep.failure = storyFailure;
-        this.outputScenario.addStep(failedStep);
+        addStep(failedStep);
     }
 
     @Override
@@ -182,6 +199,8 @@ public class TemplateableOutput extends NullStoryReporter {
         if (this.outputScenario.currentExample == null) {
             this.outputStory.scenarios.add(outputScenario);
         }
+        this.scope = Scope.STORY;
+        this.stage = StepCollector.Stage.AFTER;
     }
 
     @Override
@@ -191,12 +210,12 @@ public class TemplateableOutput extends NullStoryReporter {
 
     @Override
     public void restarted(String step, Throwable cause) {
-        this.outputScenario.addStep(new OutputRestart(step, cause.getMessage()));
+        addStep(new OutputRestart(step, cause.getMessage()));
     }
     
     @Override
     public void restartedStory(Story story, Throwable cause) {
-    	this.outputScenario.addStep(new OutputRestart(story.getName(), cause.getMessage()));
+        addStep(new OutputRestart(story.getName(), cause.getMessage()));
     }
 
     @Override
@@ -212,8 +231,7 @@ public class TemplateableOutput extends NullStoryReporter {
             model.put("story", outputStory);
             model.put("keywords", new OutputKeywords(keywords));
 
-            BeansWrapper wrapper = BeansWrapper.getDefaultInstance();
-            TemplateHashModel enumModels = wrapper.getEnumModels();
+            TemplateHashModel enumModels = BeansWrapper.getDefaultInstance().getEnumModels();
             TemplateHashModel escapeEnums;
             try {
                 String escapeModeEnum = EscapeMode.class.getCanonicalName();
@@ -400,6 +418,8 @@ public class TemplateableOutput extends NullStoryReporter {
         private OutputLifecycle lifecycle;
         private String notAllowedBy;
         private List<String> pendingMethods;
+        private List<OutputStep> beforeSteps = new ArrayList<OutputStep>();
+        private List<OutputStep> afterSteps = new ArrayList<OutputStep>();
         private List<OutputScenario> scenarios = new ArrayList<OutputScenario>();
         private boolean cancelled;
         private StoryDuration storyDuration;
@@ -427,6 +447,22 @@ public class TemplateableOutput extends NullStoryReporter {
         public String getNotAllowedBy() {
             return notAllowedBy;
         }
+
+        public void addBeforeStep(OutputStep outputStep) {
+            this.beforeSteps.add(outputStep);
+        }
+
+        public void addAfterStep(OutputStep outputStep) {
+            this.afterSteps.add(outputStep);
+        }
+
+        public List<OutputStep> getBeforeSteps() {
+            return beforeSteps;
+        }
+        public List<OutputStep> getAfterSteps() {
+            return afterSteps;
+        }
+
 
         public List<String> getPendingMethods() {
             return pendingMethods;

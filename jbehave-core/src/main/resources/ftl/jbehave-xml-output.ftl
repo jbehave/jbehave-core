@@ -66,11 +66,11 @@
 </outcome>
 </#list><!-- outcome -->
 </scope>
-</#if><!-- stepsByScope -->
+</#if>
 </scope>
 </#list><!-- scope -->
 </after>
-</#if><!-- hasAfterSteps -->
+</#if>
 </lifecycle>
 </#macro>
 <#macro renderTable table>
@@ -122,6 +122,13 @@ ${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()
 <#if story.getMeta()??><@renderMeta story.getMeta()/></#if>
 <#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
 <#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
+<#if !story.getBeforeSteps().isEmpty()>
+<before keyword="${keywords.before}">
+<#list story.getBeforeSteps() as step>
+<@renderStep step/>
+</#list>
+</before>
+</#if>
 <#assign scenarios = story.getScenarios()>
 <#list scenarios as scenario>
 <scenario keyword="${keywords.scenario}" title="${scenario.title?xml}">
@@ -151,6 +158,13 @@ ${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()
 </#if>
 </scenario>
 </#list>
+<#if !story.getAfterSteps().isEmpty()>
+<after keyword="${keywords.after}">
+<#list story.getAfterSteps() as step>
+<@renderStep step/>
+</#list>
+</after>
+</#if>
 <#if story.isCancelled()?string == 'true'>
 <cancelled keyword="${keywords.storyCancelled}" durationKeyword="${keywords.duration}" durationInSecs="${story.storyDuration.durationInSecs}"/>
 </#if>

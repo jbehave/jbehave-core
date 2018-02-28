@@ -45,10 +45,10 @@
 <div class="step">${step?html}</div>
 </#list> <!-- step -->
 </div> <!-- scope -->
-</#if> <!-- stepsByScope -->
+</#if>
 </#list> <!-- scope -->
 </div> <!-- before -->
-</#if> <!-- hasBeforeSteps -->
+</#if>
 <#if lifecycle.hasAfterSteps()>
 <div class="after"><h3>${keywords.after}</h3>
 <#list lifecycle.getScopes() as scope>
@@ -66,10 +66,10 @@ ${keywords.outcome} ${outcome}
 </div>
 </#list> <!-- outcome -->
 </div>
-</#if> <!-- stepsByScope -->
+</#if>
 </#list> <!-- scope -->
 </div> <!-- after -->
-</#if> <!-- hasAfterSteps -->
+</#if>
 </#macro>
 <#macro renderTable table>
 <#assign rows=table.getRows()>
@@ -132,6 +132,14 @@ ${keywords.outcome} ${outcome}
 <#if story.getMeta()??><@renderMeta story.getMeta()/></#if>
 <#if story.getNarrative()??><@renderNarrative story.getNarrative()/></#if>
 <#if story.getLifecycle()??><@renderLifecycle story.getLifecycle()/></#if>
+<#if !story.getBeforeSteps().isEmpty()>
+<div class="before">
+<h3>${keywords.before}</h3>
+<#list story.getBeforeSteps() as step>
+<@renderStep step/>
+</#list>
+</div> <!-- before -->
+</#if>
 <#assign scenarios = story.getScenarios()>
 <#list scenarios as scenario>
 <div class="scenario"><h2>${keywords.scenario} <@renderMultiline scenario.getTitle()/></h2>
@@ -161,15 +169,23 @@ ${keywords.outcome} ${outcome}
 </#if>
 </div> <!-- end scenario -->
 </#list>
+<#if !story.getAfterSteps().isEmpty()>
+<div class="after">
+<h3>${keywords.after}</h3>
+<#list story.getAfterSteps() as step>
+<@renderStep step/>
+</#list>
+</div> <!-- after -->
+</#if>
 <#if story.isCancelled()?string == 'true'>
 <div class="cancelled">${keywords.storyCancelled} (${keywords.duration} ${story.storyDuration.durationInSecs} s)</div>
 </#if>
-</div> <!-- end story -->
 <#if story.getPendingMethods()??>
 <#list story.getPendingMethods() as method>
 <div><pre class="pending">${method?html}</pre></div>
 </#list>
 </#if>
+</div> <!-- end story -->
 </body>
 </html>
 
