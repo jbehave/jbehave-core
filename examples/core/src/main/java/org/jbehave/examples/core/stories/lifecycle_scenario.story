@@ -26,7 +26,7 @@ Then my bank account balance should be 90
 Scenario: Scenario with Examples
 Meta: @examples
 
-When I add <value>
+When I deposit <value>
 Then my bank account balance should be <balance>
 
 Examples:

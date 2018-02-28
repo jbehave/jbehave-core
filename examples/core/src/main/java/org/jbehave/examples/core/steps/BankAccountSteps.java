@@ -43,10 +43,10 @@ public class BankAccountSteps {
         assertThat(account.getBalance(), equalTo(balance));
     }
 
-    @When("I add $value")
-    @Alias("I add <value>")
-    public void whenIAdd(@Named("value")int value) {
-        account.add(value);
+    @When("I deposit $value")
+    @Alias("I deposit <value>")
+    public void whenIDeposit(@Named("value")int value) {
+        account.deposit(value);
     }
 
     @Given("these people have bank accounts with balances: $accountInfos")
@@ -62,7 +62,7 @@ public class BankAccountSteps {
     @When("I take all their money")
     public void whenIAddUp() {
         for(BankAccount bankAccount : accounts) {
-            account.add(bankAccount.balance);
+            account.deposit(bankAccount.balance);
         }
     }
 
@@ -73,7 +73,9 @@ public class BankAccountSteps {
 
     @Then("my balance is archived")
     public void thenBalanceIsArchived() {
-    	account.archive();
+    	Date now = new Date();
+        account.archive(now);
+        assertThat(account.getArchived(now), equalTo(account.getBalance()));
     }
 
     @Then("my balance is not archived")
@@ -82,7 +84,6 @@ public class BankAccountSteps {
 
     @Then("my balance is printed")
     public void thenBalanceIsPrinted() {
-
         System.out.println(account.getBalance());
     }
 
@@ -96,9 +97,13 @@ public class BankAccountSteps {
             this.name = name;
         }
 
-        public void archive() {
-        	archive.put(new Date(), balance);
+        public void archive(Date date) {
+        	archive.put(date, balance);
 		}
+
+		public int getArchived(Date date){
+            return archive.get(date);
+        }
 
 		public String getName(){
         	return name;
@@ -112,7 +117,7 @@ public class BankAccountSteps {
             this.balance = balance;
         }
 
-        public void add(int v) {
+        public void deposit(int v) {
             this.balance += v;
         }
 
