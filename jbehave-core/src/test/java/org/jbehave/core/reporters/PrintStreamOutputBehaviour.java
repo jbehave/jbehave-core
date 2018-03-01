@@ -1,6 +1,7 @@
 package org.jbehave.core.reporters;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -16,9 +17,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonReader;
-import org.custommonkey.xmlunit.XMLUnit;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
@@ -39,22 +37,23 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     @Test
     public void shouldOutputStoryToTxt() throws IOException {
         // Given
-        File file = newFile("target/story.txt");
+        String name = "stream-story.txt";
+        File file = newFile("target/" +name);
         StoryReporter reporter = new TxtOutput(createPrintStream(file));
 
         // When
         StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-        assertThatOutputIs(out, "/story.txt");
+        assertFileOutputIsSameAs(file, name);
     }
 
 
     @Test
     public void shouldOutputStoryToTxtWhenNotAllowedByFilter() throws IOException {
         // Given
-        File file = newFile("target/story-not-allowed.txt");
+        String name = "stream-story-not-allowed.txt";
+        File file = newFile("target/"+ name);
         StoryReporter reporter = new TxtOutput(createPrintStream(file));
 
         // When
@@ -62,14 +61,14 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-        assertThatOutputIs(out, "/story-not-allowed.txt");
+        assertFileOutputIsSameAs(file, name);
     }
 
     @Test
     public void shouldOutputStoryToTxtUsingCustomPatterns() throws IOException {
         // Given
-        File file = newFile("target/story-custom-patterns.txt");
+        String name = "stream-story-custom-patterns.txt";
+        File file = newFile("target/"+ name);
         Properties patterns = new Properties();
         patterns.setProperty("pending", "{0} - {1} - need to implement me\n");
         patterns.setProperty("failed", "{0} <<< {1}\n");
@@ -80,30 +79,29 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, true);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-        assertThatOutputIs(out, "/story-custom-patterns.txt");
+        assertFileOutputIsSameAs(file, name);
 
     }
 
     @Test
     public void shouldOutputStoryToHtml() throws IOException {
         // Given
-        File file = newFile("target/story.html");
+        String name = "stream-story.html";
+        File file = newFile("target/" + name);
         StoryReporter reporter = new HtmlOutput(createPrintStream(file));
 
         // When
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-        assertThatOutputIs(out, "/story.html");
-
+        assertFileOutputIsSameAs(file, name);
     }
 
     @Test
     public void shouldOutputStoryToHtmlWhenNotAllowedByFilter() throws IOException {
         // Given
-        File file = newFile("target/story-not-allowed.html");
+        String name = "stream-story-not-allowed.html";
+        File file = newFile("target/" + name);
         StoryReporter reporter = new HtmlOutput(createPrintStream(file));
 
         // When
@@ -111,14 +109,14 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-        assertThatOutputIs(out, "/story-not-allowed.html");
+        assertFileOutputIsSameAs(file, name);
     }
 
     @Test
     public void shouldOutputStoryToHtmlUsingCustomPatterns() throws IOException {
         // Given
-        File file = newFile("target/story-custom-patterns.html");
+        String name = "stream-story-custom-patterns.html";
+        File file = newFile("target/" + name);
         Properties patterns = new Properties();
         patterns.setProperty("afterStory", "</div><!-- after story -->\n");
         patterns.setProperty("afterScenario", "</div><!-- after scenario -->\n");
@@ -129,30 +127,29 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-        assertThatOutputIs(out, "/story-custom-patterns.html");
+        assertFileOutputIsSameAs(file, name);
     }
 
     @Test
     public void shouldOutputStoryToXml() throws IOException, SAXException {
         // Given
-        File file = newFile("target/story.xml");
+        String name = "stream-story.xml";
+        File file = newFile("target/" + name);
         StoryReporter reporter = new XmlOutput(createPrintStream(file));
 
         // When
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-        XMLUnit.buildTestDocument(out);
-        assertThatOutputIs(out, "/story.xml");
-
+        assertFileOutputIsSameAs(file, name);
+        validateFileOutput(file);
     }
 
     @Test
     public void shouldOutputStoryToXmlWhenNotAllowedByFilter() throws IOException {
         // Given
-        File file = newFile("target/story-not-allowed.xml");
+        String name = "stream-story-not-allowed.xml";
+        File file = newFile("target/" + name);
         StoryReporter reporter = new XmlOutput(createPrintStream(file));
 
         // When
@@ -160,14 +157,14 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 .narrateAnInterestingStoryNotAllowedByFilter(reporter, false);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-        assertThatOutputIs(out, "/story-not-allowed.xml");
+        assertFileOutputIsSameAs(file, name);
     }
 
     @Test
     public void shouldOutputStoryToXmlUsingCustomPatterns() throws IOException {
         // Given
-        File file = newFile("target/story-custom-patterns.xml");
+        String name = "stream-story-custom-patterns.xml";
+        File file = newFile("target/" + name);
         Properties patterns = new Properties();
         patterns.setProperty("afterStory", "</story><!-- after story -->\n");
         patterns.setProperty("afterScenario", "</scenario><!-- after scenario -->\n");
@@ -178,14 +175,14 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-        assertThatOutputIs(out, "/story-custom-patterns.xml");
+        assertFileOutputIsSameAs(file, name);
     }
 
     @Test
     public void shouldOutputStoryJson() throws IOException, SAXException {
         // Given
-        File file = new File("target/story.json");
+        String name = "stream-story.json";
+        File file = new File("target/" + name);
         StoryReporter reporter = new JsonOutput(new FilePrintStreamFactory.FilePrintStream(file, false),
                 new LocalizedKeywords());
 
@@ -193,14 +190,8 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String out = IOUtils.toString(new FileReader(file), true);
-
-        // will not throw JsonSyntaxException if the JSON file is not valid
-        Gson gson = new Gson();
-        JsonReader jsonReader = new JsonReader(new StringReader(out));
-        jsonReader.setLenient(false);
-        gson.fromJson(jsonReader, Object.class);
-        assertThatOutputIs(out, "/story.json");
+        assertFileOutputIsSameAs(file, name);
+        validateFileOutput(file);
     }
 
     @Test
@@ -220,11 +211,11 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new NullPointerException()));
         reporter.afterScenario();
 
-        assertThatOutputStartsWith(out, "Then I should have a balance of $30 (FAILED)\n" +
+        assertThat(dos2unix(out.toString()), startsWith("Then I should have a balance of $30 (FAILED)\n" +
                 "(java.lang.NullPointerException)\n" +
                 "\n" +
                 "java.lang.NullPointerException\n" +
-                "\tat "); // there is a whole stack trace but we're skipping that for the sake of an assertion
+                "\tat "));
 
     }
 
@@ -244,9 +235,9 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         reporter.failed("Then I should have a balance of $30", new UUIDExceptionWrapper(new MyKnownFailure()));
         reporter.afterScenario();
 
-        assertThatOutputIs(out, "Then I should have a balance of $30 (FAILED)\n" +
+        assertThat(dos2unix(out.toString()), equalTo("Then I should have a balance of $30 (FAILED)\n" +
                 "(org.jbehave.core.reporters.PrintStreamOutputBehaviour$MyKnownFailure)\n\n" +
-                "");
+                ""));
     }
 
     @Test
@@ -331,7 +322,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "Allora dovrei avere un saldo di $30 (IN SOSPESO)\n"
                 + "Allora dovrei avere $20 (NON ESEGUITO)\n";
 
-        assertThatOutputIs(out, expected);
+        assertThat(dos2unix(out.toString()), equalTo(expected));
 
     }
 
@@ -433,7 +424,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldUseDateConversionPattern() {
+    public void shouldUseCustomDateFormatInOutcomesTable() {
         // Given
         OutputStream out = new ByteArrayOutputStream();
         StoryReporter reporter = new TxtOutput(new PrintStream(out));
@@ -454,7 +445,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "(org.jbehave.core.model.OutcomesTable$OutcomesFailed)\n" 
                 + "|Description|Value|Matcher|Verified|\n"
                 + "|A wrong date|01/01/2011|\"02/01/2011\"|No|\n";
-        assertThatOutputIs(out, expected);
+        assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
     @SuppressWarnings("serial")
@@ -465,22 +456,8 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 
     }
 
-    private File newFile(String path) {
-        File file = new File(path);
-        file.delete();
-        return file;
-    }
-
     private PrintStream createPrintStream(File file) throws FileNotFoundException {
         return new PrintStream(new FilePrintStreamFactory.FilePrintStream(file,true));
-    }
-
-    private void assertThatOutputIs(OutputStream out, String expected) {
-        assertEquals(expected, dos2unix(out.toString()));
-    }
-
-    private void assertThatOutputStartsWith(OutputStream out, String expected) {
-        assertTrue(dos2unix(out.toString()).startsWith(expected));
     }
 
 
