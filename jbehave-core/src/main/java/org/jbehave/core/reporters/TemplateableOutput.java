@@ -727,7 +727,7 @@ public class TemplateableOutput extends NullStoryReporter {
             // note that escaping the stepPattern string only works
             // because placeholders for parameters do not contain
             // special chars (the placeholder is {0} etc)
-            String escapedStep = escapeString(outputFormat, stepPattern);
+            String escapedStep = outputFormat.escapeString(stepPattern);
             if (!parameters.isEmpty()) {
                 try {
                     return MessageFormat.format(escapedStep, formatParameters(outputFormat, parameterPattern));
@@ -738,20 +738,10 @@ public class TemplateableOutput extends NullStoryReporter {
             return escapedStep;
         }
 
-        private String escapeString(EscapeMode outputFormat, String string) {
-            if(outputFormat==EscapeMode.HTML) {
-                return StringEscapeUtils.escapeHtml4(string);
-            } else if(outputFormat==EscapeMode.XML) {
-                return StringEscapeUtils.escapeXml(string);
-            } else {
-                return string;
-            }
-        }
-
         private Object[] formatParameters(EscapeMode outputFormat, String parameterPattern) {
             Object[] arguments = new Object[parameters.size()];
             for (int a = 0; a < parameters.size(); a++) {
-                arguments[a] = MessageFormat.format(parameterPattern, escapeString(outputFormat, parameters.get(a).getValue()));
+                arguments[a] = MessageFormat.format(parameterPattern, outputFormat.escapeString(parameters.get(a).getValue()));
             }
             return arguments;
         }

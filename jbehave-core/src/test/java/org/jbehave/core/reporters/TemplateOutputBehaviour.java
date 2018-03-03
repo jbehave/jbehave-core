@@ -28,6 +28,21 @@ public class TemplateOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
+    public void shouldOutputStoryToJson() throws IOException, SAXException {
+        // Given
+        String name = "template-story.json";
+        File file = newFile("target/" + name);
+        StoryReporter reporter = new JsonTemplateOutput(file, new LocalizedKeywords());
+
+        // When
+        StoryNarrator.narrateAnInterestingStory(reporter, true);
+
+        // Then
+        assertFileOutputIsSameAs(file, name);
+        //validateFileOutput(file);
+    }
+
+    @Test
     public void shouldOutputStoryToXml() throws IOException, SAXException {
         // Given
         String name = "template-story.xml";

@@ -155,7 +155,7 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("givenStories", "\"givenStories\": '{'\"keyword\": \"{0}\", \"paths\": \"{1}\"}");
         patterns.setProperty("beforeGivenStories", "\"givenStories\": '{'");
         patterns.setProperty("givenStoriesStart", "\"keyword\": \"{0}\", \"givenStories\":[");
-        patterns.setProperty("givenStory", "'{'\"parameters\": \"{1}\", \"value\": \"{0}\"}");
+        patterns.setProperty("givenStory", "'{'\"parameters\": \"{1}\", \"path\": \"{0}\"}");
         patterns.setProperty("givenStoriesEnd", "]");
         patterns.setProperty("afterGivenStories", "}");
         patterns.setProperty("successful", "'{'\"outcome\": \"successful\", \"value\": \"{0}\"}");

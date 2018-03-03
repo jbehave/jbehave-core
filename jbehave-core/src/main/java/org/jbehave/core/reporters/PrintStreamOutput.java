@@ -103,19 +103,17 @@ public abstract class PrintStreamOutput implements StoryReporter {
         HTML {
             @Override
             public Object escapeValue(Object object) {
-                return escapeHtml4(asString(object));
+                return EscapeMode.HTML.escapeString(asString(object));
             }
         },
         XML {
             @Override
-            public Object escapeValue(Object object) {
-                return escapeXml(asString(object));
-            }
+            public Object escapeValue(Object object) { return EscapeMode.XML.escapeString(asString(object)); }
         },
         JSON {
             @Override
             public Object escapeValue(Object object) {
-                return escapeJson(asString(object));
+                return EscapeMode.JSON.escapeString(asString(object));
             }
         };
 
@@ -517,7 +515,7 @@ public abstract class PrintStreamOutput implements StoryReporter {
      * @return The cloned and escaped array of args
      */
     protected Object[] escape(final Format format, Object... args) {
-        // Transformer that escapes HTML and XML strings
+        // Transformer that escapes HTML,XML,JSON strings
         Transformer<Object, Object> escapingTransformer = new Transformer<Object, Object>() {
             @Override
             public Object transform(Object object) {

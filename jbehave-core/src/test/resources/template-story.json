@@ -1,0 +1,149 @@
+{
+"path": "/path/to/story",
+"title": "An interesting story & special chars"
+,"meta":
+[
+{"keyword": "@", "name": "author", "value": "Mauro"},
+
+{"keyword": "@", "name": "theme", "value": "testing"}
+]
+
+, "narrative": {
+"keyword": "Narrative:",
+"inOrderTo":  {"keyword": "In order to", "value": "renovate my house"},
+"asA":  {"keyword": "As a", "value": "customer"},
+"iWantTo":  {"keyword": "I want to", "value": "get a loan"}
+}
+
+, "lifecycle": { "keyword": "Lifecycle:"
+,"before": {
+"keyword": "Before:"
+, "scope": {"keyword": "Scope:", "value": "SCENARIO",
+"step": "Given a scenario step"
+}
+, "scope": {"keyword": "Scope:", "value": "STORY",
+"step": "Given a story step"
+}
+}
+,"after": {
+"keyword": "After:"
+,"scope": { "keyword": "Scope:", "value": "SCENARIO"
+,"outcome": { "keyword": "Outcome:", "value": "ANY",
+
+"step" : "Given a scenario step"
+}
+}
+,"scope": { "keyword": "Scope:", "value": "STORY"
+,"outcome": { "keyword": "Outcome:", "value": "ANY",
+
+"step" : "Given a story step"
+}
+}
+}
+}
+
+,"scenarios": [
+{"keyword": "Scenario:", "title": "I ask for a loan"
+
+, "givenStories": {
+"keyword": "GivenStories:",
+"givenStories": [
+{ "path": "/given/story1"},
+{ "path": "/given/story2"}
+]
+}
+
+,"steps": [
+{"outcome": "successful", "step": "Given I have a balance of $50"}
+,
+{"outcome": "ignorable", "step": "!-- Then ignore me"}
+,
+{"outcome": "comment", "step": "!-- A comment"}
+,
+{"outcome": "successful", "step": "When I request $20"}
+,
+{"outcome": "successful", "step": "When I ask Liz for a loan of $100"}
+,
+{"outcome": "successful", "step": "When I ask Liz for a loan of $((99))"}
+,
+{"outcome": "successful", "step": "When I write special chars <>&\""}
+,
+{"outcome": "successful", "step": "When I write special chars in parameter ((<>&\"))"}
+,
+{"outcome": "successful", "step": "When I write two parameters ((,,,)) and ((&&&))"}
+,
+{"outcome": "hi", "step": "Then I should... - try again"}
+,
+{"outcome": "Restarted Story", "step": "\/path\/to\/story"}
+,
+{"outcome": "failed", "step": "Then I should have a balance of $30", "failure": "java.lang.Exception: Expected <30> got <25>\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:62)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:38)\n\t(reflection-invoke)\n\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)\n..."}
+,
+{"outcome": "notPerformed", "step": "Then I should have $20"}
+,
+{"outcome": "failed", "step": "Then I don't return loan", "failure": "org.jbehave.core.model.OutcomesTable$OutcomesFailed\n\tat org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:73)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:38)\n\t(reflection-invoke)\n\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)\n...","outcomes": {
+"fields":
+[
+"Description",
+"Value",
+"Matcher",
+"Verified"
+],
+"outcomes": [
+
+{"description": "I don't return all", "value": "100", "matcher": "<50.0>", "verified": "No"},
+
+{"description": "A wrong date", "value": "01/01/2011", "matcher": "\"02/01/2011\"", "verified": "No"}
+]
+}
+}
+
+]
+},
+{"keyword": "Scenario:", "title": "Parametrised Scenario"
+
+
+, "examples": {"keyword": "Examples:",
+"step": "Given money <money>",
+"step": "Then I give it to <to>"
+, "parameters": {
+"names":
+[
+"money",
+"to"
+]
+,"values":
+[
+["$30","Mauro"],
+["$50","Paul"]
+]
+}
+
+}
+, "examples": [
+{"keyword": "Example:", "value": "{money=$30, to=Mauro}"
+,"steps": [
+{"outcome": "successful", "step": "Given money $30"}
+,
+{"outcome": "successful", "step": "Then I give it to Mauro"}
+
+]
+},
+{"keyword": "Example:", "value": "{money=$50, to=Paul}"
+,"steps": [
+{"outcome": "successful", "step": "Given money $50"}
+,
+{"outcome": "successful", "step": "Then I give it to Paul"}
+,
+{"outcome": "failed", "step": "Then I should have a balance of $30", "failure": "java.lang.Exception: Expected <30> got <25>\n\tat org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:88)\n\tat org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToJson(TemplateOutputBehaviour.java:38)\n\t(reflection-invoke)\n\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)\n..."}
+
+]
+}
+]
+}
+]
+,"cancelled": {"keyword": "STORY CANCELLED", "durationKeyword": "DURATION", "durationInSecs": "2"}
+,"pendingMethods": [
+"@When(\"something \\\"$param\\\"\")\n@Pending\npublic void whenSomething() {\n  // PENDING\n}\n",
+"@Then(\"something is <param1>\")\n@Pending\npublic void thenSomethingIsParam1() {\n  // PENDING\n}\n"
+]
+}
