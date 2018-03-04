@@ -46,23 +46,46 @@ public class LocalizedKeywordsBehaviour {
     }
 
     @Test
-    public void shouldDefaultToEnglishIfKeywordIsNotFound() throws IOException {
-        ensureKeywordsAreLocalisedFor(new Locale("mk"), null);
+    public void shouldUseEnglishAsBaseLocaleIfKeywordIsNotFound() throws IOException {
+        ensureKeywordsAreLocalisedFor(new Locale("mk"));
+    }
+
+    @Test
+    public void shouldUseConfiguredBaseLocaleIfKeywordIsNotFound() throws IOException {
+        ensureKeywordsAreLocalisedFor(new Locale("mk"),  Locale.ENGLISH);
+    }
+
+    @Test
+    public void shouldAllowSynonymsToOverrideABaseLocale() throws IOException {
+        Keywords keywords = new LocalizedKeywords(new Locale("sy"), Locale.ENGLISH);
+        assertThat(keywords.given(), equalTo("Given|Giveth"));
+        assertThat(keywords.and(), equalTo("And|With"));
+    }
+
+    @Test
+    public void shouldAllowSynonymsToOverrideABaseBundleForSameLocale() throws IOException {
+        Keywords keywords = new LocalizedKeywords(new Locale("en"), "i18n/synonyms", "i18n/keywords" );
+        assertThat(keywords.given(), equalTo("Given|Giveth"));
+        assertThat(keywords.and(), equalTo("And|With"));
     }
 
     @Test
     public void shouldAllowKeywordsInDifferentLocales() throws IOException {
         ensureKeywordsAreLocalisedFor(new Locale("de"));
         ensureKeywordsAreLocalisedFor(new Locale("en"));
+        ensureKeywordsAreLocalisedFor(new Locale("es"));
         ensureKeywordsAreLocalisedFor(new Locale("fr"));
         ensureKeywordsAreLocalisedFor(new Locale("fi"));
+        ensureKeywordsAreLocalisedFor(new Locale("hu"));
         ensureKeywordsAreLocalisedFor(new Locale("it"));
         ensureKeywordsAreLocalisedFor(new Locale("no"));
+        ensureKeywordsAreLocalisedFor(new Locale("pl"));
         ensureKeywordsAreLocalisedFor(new Locale("pt"));
         ensureKeywordsAreLocalisedFor(new Locale("ru"));
         ensureKeywordsAreLocalisedFor(new Locale("ru_sbt"));
         ensureKeywordsAreLocalisedFor(new Locale("sv"));
         ensureKeywordsAreLocalisedFor(new Locale("tr"));
+        ensureKeywordsAreLocalisedFor(new Locale("zh_CN"));
         ensureKeywordsAreLocalisedFor(new Locale("zh_TW"));
     }
 
@@ -98,11 +121,19 @@ public class LocalizedKeywordsBehaviour {
     }
 
     private void ensureKeywordsAreLocalisedFor(Locale locale) throws IOException {
-        ensureKeywordsAreLocalisedFor(locale, null);
+        ensureKeywordsAreLocalisedFor(locale, (String)null);
     }
-    
+
+    private void ensureKeywordsAreLocalisedFor(Locale locale, Locale baseLocale) throws IOException {
+        ensureKeywordsAreLocalisedFor(locale, baseLocale, null);
+    }
+
     private void ensureKeywordsAreLocalisedFor(Locale locale, String bundleName) throws IOException {
-        Keywords keywords = keywordsFor(locale, bundleName, null);
+        ensureKeywordsAreLocalisedFor(locale, null, bundleName);
+    }
+
+    private void ensureKeywordsAreLocalisedFor(Locale locale, Locale baseLocale, String bundleName) throws IOException {
+        Keywords keywords = keywordsFor(locale, baseLocale, bundleName, null);
         Properties properties = bundleFor(locale);
         ensureKeywordIs(properties, META, keywords.meta());
         ensureKeywordIs(properties, META_PROPERTY, keywords.metaProperty());
@@ -132,11 +163,15 @@ public class LocalizedKeywordsBehaviour {
     }
         
     private LocalizedKeywords keywordsFor(Locale locale, String bundleName, ClassLoader classLoader) {
+        return keywordsFor(locale, null, bundleName, classLoader);
+    }
+
+    private LocalizedKeywords keywordsFor(Locale locale, Locale baseLocale, String bundleName, ClassLoader classLoader) {
         LocalizedKeywords keywords;
         if (bundleName == null) {
             keywords = (locale == null ? new LocalizedKeywords() : new LocalizedKeywords(locale));
         } else {
-            keywords = new LocalizedKeywords(locale, bundleName, classLoader);
+            keywords = (baseLocale == null ? new LocalizedKeywords(locale, bundleName, classLoader) : new LocalizedKeywords(locale, baseLocale, bundleName, classLoader));
         }
         if ( locale != null ){
             assertThat(keywords.getLocale(), equalTo(locale));
