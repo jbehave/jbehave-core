@@ -29,6 +29,7 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 
 import com.thoughtworks.paranamer.NullParanamer;
 import com.thoughtworks.paranamer.Paranamer;
@@ -649,7 +650,8 @@ public class StepCreator {
             return perform(storyFailureIfItHappened);
         }
 
-        private class UUIDExceptionWrapperInjector implements ParameterConverters.ParameterConverter {
+        private class UUIDExceptionWrapperInjector implements ParameterConverter<UUIDExceptionWrapper>
+        {
             private final UUIDExceptionWrapper storyFailureIfItHappened;
 
             public UUIDExceptionWrapperInjector(UUIDExceptionWrapper storyFailureIfItHappened) {
@@ -660,7 +662,7 @@ public class StepCreator {
                 return UUIDExceptionWrapper.class == type;
             }
 
-            public Object convertValue(String value, Type type) {
+            public UUIDExceptionWrapper convertValue(String value, Type type) {
                 return storyFailureIfItHappened;
             }
         }

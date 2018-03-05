@@ -49,6 +49,7 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.Steps;
+import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.guice.GuiceStepsFactoryBehaviour.FooSteps;
@@ -287,13 +288,9 @@ public class GuiceAnnotationBuilderBehaviour {
 
     }
 
-    public static class CustomConverter implements ParameterConverter {
+    public static class CustomConverter extends AbstractParameterConverter<CustomObject> {
 
-        public boolean accept(Type type) {
-            return ((Class<?>) type).isAssignableFrom(CustomObject.class);
-        }
-
-        public Object convertValue(String value, Type type) {
+        public CustomObject convertValue(String value, Type type) {
             return new CustomObject(value);
         }
     }

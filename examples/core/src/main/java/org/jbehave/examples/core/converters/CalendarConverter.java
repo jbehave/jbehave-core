@@ -6,9 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import org.apache.commons.lang3.StringUtils;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 
-public class CalendarConverter implements ParameterConverter {
+public class CalendarConverter extends AbstractParameterConverter<Calendar> {
     
     private final SimpleDateFormat dateFormat;
  
@@ -16,14 +16,8 @@ public class CalendarConverter implements ParameterConverter {
         this.dateFormat = new SimpleDateFormat(dateFormat);
     }
  
-    public boolean accept(Type type) {
-        if (type instanceof Class<?>) {
-            return Calendar.class.isAssignableFrom((Class<?>) type);
-        }
-        return false;
-    }
- 
-    public Object convertValue(String value, Type type) {
+    @Override
+    public Calendar convertValue(String value, Type type) {
         try {
             if (StringUtils.isBlank(value) || "none".equals(value)) return null;
             Calendar calendar = Calendar.getInstance();

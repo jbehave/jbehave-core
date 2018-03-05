@@ -25,6 +25,7 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
+import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanListConverter;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
@@ -553,12 +554,8 @@ public class ParameterConvertersBehaviour {
     private class Bar {
     }
 
-    private class FooToBarParameterConverter implements ParameterConverter {
-        public boolean accept(Type type) {
-            return type == Bar.class;
-        }
-
-        public Object convertValue(String value, Type type) {
+    private class FooToBarParameterConverter extends AbstractParameterConverter<Bar> {
+        public Bar convertValue(String value, Type type) {
             return new Bar();
         }
     }

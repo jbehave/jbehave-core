@@ -30,7 +30,7 @@ import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooStepsWithDependency;
@@ -248,13 +248,9 @@ public class NeedleAnnotationBuilderBehaviour {
 
     }
 
-    public static class CustomConverter implements ParameterConverter {
+    public static class CustomConverter extends AbstractParameterConverter<CustomObject> {
 
-        public boolean accept(final Type type) {
-            return ((Class<?>) type).isAssignableFrom(CustomObject.class);
-        }
-
-        public Object convertValue(final String value, final Type type) {
+        public CustomObject convertValue(final String value, final Type type) {
             return new CustomObject(value);
         }
     }
@@ -268,8 +264,7 @@ public class NeedleAnnotationBuilderBehaviour {
 
     }
 
-    public static class MyDateConverter extends
-            ParameterConverters.DateConverter {
+    public static class MyDateConverter extends ParameterConverters.DateConverter {
 
         public MyDateConverter() {
             super(new SimpleDateFormat("yyyy-MM-dd"));

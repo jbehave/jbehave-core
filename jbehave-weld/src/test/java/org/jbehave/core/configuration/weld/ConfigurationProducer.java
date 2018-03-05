@@ -24,8 +24,7 @@ import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
-
+import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 
 @ApplicationScoped
 public class ConfigurationProducer
@@ -60,13 +59,9 @@ public class ConfigurationProducer
                     
     }
     
-    public static class CustomConverter implements ParameterConverter {
+    public static class CustomConverter extends AbstractParameterConverter<CustomObject> {
 
-        public boolean accept(Type type) {
-            return ((Class<?>) type).isAssignableFrom(CustomObject.class);
-        }
-
-        public Object convertValue(String value, Type type) {
+        public CustomObject convertValue(String value, Type type) {
             return new CustomObject(value);
         }
     }

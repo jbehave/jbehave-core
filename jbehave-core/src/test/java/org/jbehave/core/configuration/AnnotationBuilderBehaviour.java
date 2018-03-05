@@ -211,13 +211,13 @@ public class AnnotationBuilderBehaviour {
 
     }
 
-    static class MyParameterConverter implements ParameterConverter {
+    static class MyParameterConverter implements ParameterConverter<String> {
 
         public boolean accept(Type type) {
             return true;
         }
 
-        public Object convertValue(String value, Type type) {
+        public String convertValue(String value, Type type) {
             return value + "Converted";
         }
 

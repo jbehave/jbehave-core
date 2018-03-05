@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -221,12 +222,11 @@ public class ParameterConverters {
         return new ParameterConverters(monitor, convertersForNewInstance, threadSafe);
     }
 
-    public static interface ParameterConverter {
+    public interface ParameterConverter<T> {
 
         boolean accept(Type type);
 
-        Object convertValue(String value, Type type);
-
+        T convertValue(String value, Type type);
     }
 
     @SuppressWarnings("serial")
@@ -238,6 +238,63 @@ public class ParameterConverters {
 
         public ParameterConvertionFailed(String message, Throwable cause) {
             super(message, cause);
+        }
+    }
+
+    public static abstract class AbstractParameterConverter<T> implements ParameterConverter<T> {
+
+        private final Class<T> acceptedType;
+
+        @SuppressWarnings("unchecked")
+        public AbstractParameterConverter() {
+            this.acceptedType = (Class<T>) getParameterizedType(getClass()).getActualTypeArguments()[0];
+        }
+
+        private ParameterizedType getParameterizedType(Class<?> clazz) {
+            Type genericSuperclass = clazz.getGenericSuperclass();
+            return genericSuperclass instanceof ParameterizedType ? (ParameterizedType) genericSuperclass
+                    : getParameterizedType(clazz.getSuperclass());
+        }
+
+        @Override
+        public boolean accept(Type type) {
+            return type instanceof Class<?> && acceptedType.isAssignableFrom((Class<?>) type);
+        }
+    }
+
+    public static abstract class AbstractListParameterConverter<T> implements ParameterConverter<List<T>> {
+
+        private final String valueSeparator;
+        private final ParameterConverter<T> elementConverter;
+
+        public AbstractListParameterConverter(String valueSeparator, ParameterConverter<T> elementConverter) {
+            this.valueSeparator = valueSeparator;
+            this.elementConverter = elementConverter;
+        }
+
+        @Override
+        public boolean accept(Type type) {
+            return type instanceof ParameterizedType && List.class.isAssignableFrom(rawClass(type))
+                    && elementConverter.accept(argumentType(type));
+        }
+
+        @Override
+        public List<T> convertValue(String value, Type type) {
+            Type argumentType = argumentType(type);
+            List<T> convertedValues = new ArrayList<>();
+            for (String elementValue : value.split(valueSeparator)) {
+                T convertedValue = elementConverter.convertValue(elementValue.trim(), argumentType);
+                convertedValues.add(convertedValue);
+            }
+            return convertedValues;
+        }
+
+        private Class<?> rawClass(Type type) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        }
+
+        private Type argumentType(Type type) {
+            return ((ParameterizedType) type).getActualTypeArguments()[0];
         }
     }
 
@@ -264,7 +321,7 @@ public class ParameterConverters {
      * used to convert numbers in specific locales.
      * </p>
      */
-    public static class NumberConverter implements ParameterConverter {
+    public static class NumberConverter extends AbstractParameterConverter<Number> {
         private static List<Class<?>> primitiveTypes = asList(new Class<?>[] { byte.class, short.class, int.class,
                 float.class, long.class, double.class });
 
@@ -282,14 +339,13 @@ public class ParameterConverters {
             }
         }
 
+        @Override
         public boolean accept(Type type) {
-            if (type instanceof Class<?>) {
-                return Number.class.isAssignableFrom((Class<?>) type) || primitiveTypes.contains(type);
-            }
-            return false;
+            return super.accept(type) || primitiveTypes.contains(type);
         }
 
-        public Object convertValue(String value, Type type) {
+        @Override
+        public Number convertValue(String value, Type type) {
             try {
                 Number n = numberFormat().parse(value);
                 if (type == Byte.class || type == byte.class) {
@@ -315,9 +371,7 @@ public class ParameterConverters {
                 } else {
                     return n;
                 }
-            } catch (NumberFormatException e) {
-                throw new ParameterConvertionFailed(value, e);
-            } catch (ParseException e) {
+            } catch (NumberFormatException | ParseException e) {
                 throw new ParameterConvertionFailed(value, e);
             }
         }
@@ -394,10 +448,7 @@ public class ParameterConverters {
      * provided (defaulting to {@link NumberFormat#getInstance(Locale.ENGLISH)}
      * ).
      */
-    public static class NumberListConverter implements ParameterConverter {
-
-        private final NumberConverter numberConverter;
-        private final String valueSeparator;
+    public static class NumberListConverter extends AbstractListParameterConverter<Number> {
 
         public NumberListConverter() {
             this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL), DEFAULT_LIST_SEPARATOR);
@@ -408,39 +459,8 @@ public class ParameterConverters {
          * @param valueSeparator A regexp to use as list separate
          */
         public NumberListConverter(NumberFormat numberFormat, String valueSeparator) {
-            this.numberConverter = new NumberConverter(numberFormat);
-            this.valueSeparator = valueSeparator;
+            super(valueSeparator, new NumberConverter(numberFormat));
         }
-
-        public boolean accept(Type type) {
-            if (type instanceof ParameterizedType) {
-                Type rawType = rawType(type);
-                Type argumentType = argumentType(type);
-                return List.class.isAssignableFrom((Class<?>) rawType)
-                        && Number.class.isAssignableFrom((Class<?>) argumentType);
-            }
-            return false;
-        }
-
-        private Type rawType(Type type) {
-            return ((ParameterizedType) type).getRawType();
-        }
-
-        private Type argumentType(Type type) {
-            return ((ParameterizedType) type).getActualTypeArguments()[0];
-        }
-
-        @SuppressWarnings("unchecked")
-        public Object convertValue(String value, Type type) {
-            Class<? extends Number> argumentType = (Class<? extends Number>) argumentType(type);
-            List<String> values = trim(asList(value.split(valueSeparator)));
-            List<Number> numbers = new ArrayList<Number>();
-            for (String numberValue : values) {
-                numbers.add((Number) numberConverter.convertValue(numberValue, argumentType));
-            }
-            return numbers;
-        }
-
     }
 
     /**
@@ -448,42 +468,43 @@ public class ParameterConverters {
      * injectable value separator (defaults to ",") and trimming each element of
      * the list.
      */
-    public static class StringListConverter implements ParameterConverter {
-
-        private String valueSeparator;
+    public static class StringListConverter extends AbstractListParameterConverter<String> {
 
         public StringListConverter() {
             this(DEFAULT_LIST_SEPARATOR);
         }
 
         /**
-         * @param valueSeparator A regexp to use as list separate
+         * @param valueSeparator A regexp to use as list separator
          */
         public StringListConverter(String valueSeparator) {
-            this.valueSeparator = valueSeparator;
+            super(valueSeparator, new AbstractParameterConverter<String>() {
+                @Override
+                public String convertValue(String value, Type type)
+                {
+                    return value;
+                }
+            });
         }
 
-        public boolean accept(Type type) {
-            if (type instanceof ParameterizedType) {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-                Type rawType = parameterizedType.getRawType();
-                Type argumentType = parameterizedType.getActualTypeArguments()[0];
-                return List.class.isAssignableFrom((Class<?>) rawType)
-                        && String.class.isAssignableFrom((Class<?>) argumentType);
+        @Override
+        public List<String> convertValue(String value, Type type)
+        {
+            if (value.trim().isEmpty()) {
+                return Collections.emptyList();
             }
-            return false;
+            return super.convertValue(value, type);
         }
-
-        public Object convertValue(String value, Type type) {
-            if (value.trim().length() == 0)
-                return asList();
-            return trim(asList(value.split(valueSeparator)));
-        }
-
     }
 
+    /**
+     * Use #AbstractListParameterConverter
+     * @param values values to trim
+     * @return trimmed values
+     */
+    @Deprecated
     public static List<String> trim(List<String> values) {
-        List<String> trimmed = new ArrayList<String>();
+        List<String> trimmed = new ArrayList<>();
         for (String value : values) {
             trimmed.add(value.trim());
         }
@@ -494,7 +515,7 @@ public class ParameterConverters {
      * Parses value to a {@link Date} using an injectable {@link DateFormat}
      * (defaults to <b>new SimpleDateFormat("dd/MM/yyyy")</b>)
      */
-    public static class DateConverter implements ParameterConverter {
+    public static class DateConverter extends AbstractParameterConverter<Date> {
 
         public static final DateFormat DEFAULT_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -508,20 +529,12 @@ public class ParameterConverters {
             this.dateFormat = dateFormat;
         }
 
-        public boolean accept(Type type) {
-            if (type instanceof Class<?>) {
-                return Date.class.isAssignableFrom((Class<?>) type);
-            }
-            return false;
-        }
-
-        public Object convertValue(String value, Type type) {
+        @Override
+        public Date convertValue(String value, Type type) {
             try {
                 return dateFormat.parse(value);
             } catch (ParseException e) {
-                throw new ParameterConvertionFailed("Failed to convert value "
-                        + value
-                        + " with date format "
+                throw new ParameterConvertionFailed("Failed to convert value " + value + " with date format "
                         + (dateFormat instanceof SimpleDateFormat ? ((SimpleDateFormat) dateFormat).toPattern()
                                 : dateFormat), e);
             }
@@ -529,7 +542,7 @@ public class ParameterConverters {
 
     }
 
-    public static class BooleanConverter implements ParameterConverter {
+    public static class BooleanConverter extends AbstractParameterConverter<Boolean> {
         private String trueValue;
         private String falseValue;
 
@@ -542,14 +555,13 @@ public class ParameterConverters {
             this.falseValue = falseValue;
         }
 
+        @Override
         public boolean accept(Type type) {
-            if (type instanceof Class<?>) {
-                return Boolean.class.isAssignableFrom((Class<?>) type) || Boolean.TYPE.isAssignableFrom((Class<?>) type);
-            }
-            return false;
+            return super.accept(type) || (type instanceof Class<?> && Boolean.TYPE.isAssignableFrom((Class<?>) type));
         }
 
-        public Object convertValue(String value, Type type) {
+        @Override
+        public Boolean convertValue(String value, Type type) {
             try {
                 return BooleanUtils.toBoolean(value, trueValue, falseValue);
             } catch (IllegalArgumentException e) {
@@ -558,9 +570,7 @@ public class ParameterConverters {
         }
     }
 
-    public static class BooleanListConverter implements ParameterConverter {
-        private final BooleanConverter booleanConverter;
-        private String valueSeparator;
+    public static class BooleanListConverter extends AbstractListParameterConverter<Boolean> {
 
         public BooleanListConverter() {
             this(DEFAULT_LIST_SEPARATOR, DEFAULT_TRUE_VALUE, DEFAULT_FALSE_VALUE);
@@ -571,59 +581,29 @@ public class ParameterConverters {
         }
 
         public BooleanListConverter(String valueSeparator, String trueValue, String falseValue) {
-            this.valueSeparator = valueSeparator;
-            booleanConverter = new BooleanConverter(trueValue, falseValue);
-        }
-
-        public boolean accept(Type type) {
-            if (type instanceof ParameterizedType) {
-                Type rawType = rawType(type);
-                Type argumentType = argumentType(type);
-                return List.class.isAssignableFrom((Class<?>) rawType)
-                        && Boolean.class.isAssignableFrom((Class<?>) argumentType);
-            }
-            return false;
-        }
-
-        public Object convertValue(String value, Type type) {
-            List<String> values = trim(asList(value.split(valueSeparator)));
-            List<Boolean> booleans = new ArrayList<Boolean>();
-
-            for (String booleanValue : values) {
-                booleans.add((Boolean) booleanConverter.convertValue(booleanValue, type));
-            }
-            return booleans;
-        }
-
-        private Type rawType(Type type) {
-            return ((ParameterizedType) type).getRawType();
-        }
-
-        private Type argumentType(Type type) {
-            return ((ParameterizedType) type).getActualTypeArguments()[0];
+            super(valueSeparator, new BooleanConverter(trueValue, falseValue));
         }
     }
 
     /**
      * Parses value to any {@link Enum}
      */
-    public static class EnumConverter implements ParameterConverter {
+    public static class EnumConverter implements ParameterConverter<Enum<?>> {
 
+        @Override
         public boolean accept(Type type) {
-            if (type instanceof Class<?>) {
-                return ((Class<?>) type).isEnum();
-            }
-            return false;
+            return type instanceof Class<?> && ((Class<?>) type).isEnum();
         }
 
-        public Object convertValue(String value, Type type) {
+        @Override
+        public Enum<?> convertValue(String value, Type type) {
             String typeClass = ((Class<?>) type).getName();
             Class<?> enumClass = (Class<?>) type;
             Method valueOfMethod = null;
             try {
-                valueOfMethod = enumClass.getMethod("valueOf", new Class[] { String.class });
+                valueOfMethod = enumClass.getMethod("valueOf", String.class);
                 valueOfMethod.setAccessible(true);
-                return valueOfMethod.invoke(enumClass, new Object[] { value });
+                return (Enum<?>) valueOfMethod.invoke(enumClass, new Object[] { value });
             } catch (Exception e) {
                 throw new ParameterConvertionFailed("Failed to convert " + value + " for Enum " + typeClass, e);
             }
@@ -655,7 +635,7 @@ public class ParameterConverters {
     public static class FluentEnumConverter extends EnumConverter {
 
         @Override
-        public Object convertValue(String value, Type type) {
+        public Enum<?> convertValue(String value, Type type) {
             return super.convertValue(value.replaceAll("\\W", "_").toUpperCase(), type);
         }
     }
@@ -664,44 +644,14 @@ public class ParameterConverters {
      * Parses value to list of the same {@link Enum}, using an injectable value
      * separator (defaults to ",") and trimming each element of the list.
      */
-    public static class EnumListConverter implements ParameterConverter {
-        private final EnumConverter enumConverter;
-        private String valueSeparator;
+    public static class EnumListConverter extends AbstractListParameterConverter<Enum<?>> {
 
         public EnumListConverter() {
             this(DEFAULT_LIST_SEPARATOR);
         }
 
         public EnumListConverter(String valueSeparator) {
-            this.enumConverter = new EnumConverter();
-            this.valueSeparator = valueSeparator;
-        }
-
-        public boolean accept(Type type) {
-            if (type instanceof ParameterizedType) {
-                Type rawType = rawType(type);
-                Type argumentType = argumentType(type);
-                return List.class.isAssignableFrom((Class<?>) rawType) && enumConverter.accept(argumentType);
-            }
-            return false;
-        }
-
-        public Object convertValue(String value, Type type) {
-            Type argumentType = argumentType(type);
-            List<String> values = trim(asList(value.split(valueSeparator)));
-            List<Enum<?>> enums = new ArrayList<Enum<?>>();
-            for (String string : values) {
-                enums.add((Enum<?>) enumConverter.convertValue(string, argumentType));
-            }
-            return enums;
-        }
-
-        private Type rawType(Type type) {
-            return ((ParameterizedType) type).getRawType();
-        }
-
-        private Type argumentType(Type type) {
-            return ((ParameterizedType) type).getActualTypeArguments()[0];
+            super(valueSeparator, new EnumConverter());
         }
     }
 
@@ -709,7 +659,7 @@ public class ParameterConverters {
      * Converts value to {@link ExamplesTable} using a
      * {@link ExamplesTableFactory}.
      */
-    public static class ExamplesTableConverter implements ParameterConverter {
+    public static class ExamplesTableConverter extends AbstractParameterConverter<ExamplesTable> {
 
         private final ExamplesTableFactory factory;
 
@@ -718,15 +668,7 @@ public class ParameterConverters {
         }
 
         @Override
-        public boolean accept(Type type) {
-            if (type instanceof Class<?>) {
-                return ExamplesTable.class.isAssignableFrom((Class<?>) type);
-            }
-            return false;
-        }
-
-        @Override
-        public Object convertValue(String value, Type type) {
+        public ExamplesTable convertValue(String value, Type type) {
             return factory.createExamplesTable(value);
         }
 
@@ -736,7 +678,7 @@ public class ParameterConverters {
      * Converts ExamplesTable to list of parameters, mapped to annotated custom
      * types.
      */
-    public static class ExamplesTableParametersConverter implements ParameterConverter {
+    public static class ExamplesTableParametersConverter implements ParameterConverter<Object> {
 
         private final ExamplesTableFactory factory;
 
@@ -747,16 +689,10 @@ public class ParameterConverters {
         @Override
         public boolean accept(Type type) {
             if (type instanceof ParameterizedType) {
-                Class<?> rawClass = rawClass(type);
-                Class<?> argumentClass = argumentClass(type);
-                if (rawClass.isAnnotationPresent(AsParameters.class)
-                        || argumentClass.isAnnotationPresent(AsParameters.class)) {
-                    return true;
-                }
-            } else if (type instanceof Class) {
-                return ((Class<?>) type).isAnnotationPresent(AsParameters.class);
+                return rawClass(type).isAnnotationPresent(AsParameters.class) || argumentClass(type)
+                        .isAnnotationPresent(AsParameters.class);
             }
-            return false;
+            return type instanceof Class && ((Class<?>) type).isAnnotationPresent(AsParameters.class);
         }
 
         private Class<?> rawClass(Type type) {
@@ -782,7 +718,7 @@ public class ParameterConverters {
 
     }
 
-    public static class JsonConverter implements ParameterConverter {
+    public static class JsonConverter implements ParameterConverter<Object> {
 
         private final JsonFactory factory;
 
@@ -794,19 +730,16 @@ public class ParameterConverters {
             this.factory = factory;
         }
 
+        @Override
         public boolean accept(final Type type) {
             if (type instanceof ParameterizedType) {
-                Class<?> rawClass = rawClass(type);
-                Class<?> argumentClass = argumentClass(type);
-                if (rawClass.isAnnotationPresent(AsJson.class) || argumentClass.isAnnotationPresent(AsJson.class)) {
-                    return true;
-                }
-            } else if (type instanceof Class) {
-                return ((Class<?>) type).isAnnotationPresent(AsJson.class);
+                return rawClass(type).isAnnotationPresent(AsJson.class) || argumentClass(type).isAnnotationPresent(
+                        AsJson.class);
             }
-            return false;
+            return type instanceof Class && ((Class<?>) type).isAnnotationPresent(AsJson.class);
         }
 
+        @Override
         public Object convertValue(final String value, final Type type) {
             return factory.createJson(value, type);
         }
@@ -828,15 +761,13 @@ public class ParameterConverters {
     /**
      * Invokes method on instance to return value.
      */
-    public static class MethodReturningConverter implements ParameterConverter {
+    public static class MethodReturningConverter implements ParameterConverter<Object> {
         private Method method;
         private Class<?> stepsType;
         private InjectableStepsFactory stepsFactory;
 
         public MethodReturningConverter(Method method, Object instance) {
-            this.method = method;
-            this.stepsType = instance.getClass();
-            this.stepsFactory = new InstanceStepsFactory(new MostUsefulConfiguration(), instance);
+            this(method, instance.getClass(), new InstanceStepsFactory(new MostUsefulConfiguration(), instance));
         }
 
         public MethodReturningConverter(Method method, Class<?> stepsType, InjectableStepsFactory stepsFactory) {
@@ -845,13 +776,12 @@ public class ParameterConverters {
             this.stepsFactory = stepsFactory;
         }
 
+        @Override
         public boolean accept(Type type) {
-            if (type instanceof Class<?>) {
-                return method.getReturnType().isAssignableFrom((Class<?>) type);
-            }
-            return false;
+            return type instanceof Class<?> && method.getReturnType().isAssignableFrom((Class<?>) type);
         }
 
+        @Override
         public Object convertValue(String value, Type type) {
             try {
                 Object instance = instance();

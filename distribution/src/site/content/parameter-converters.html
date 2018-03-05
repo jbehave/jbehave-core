@@ -110,10 +110,12 @@ instances will take precedence over the default ones:</p>
 
 <h3>Defining parameter converters</h3>
 
-<p>Users can define their own custom parameter converters by
-implementing the <a
+<p>Users can define their own custom parameter converters by implementing the <a
     href="javadoc/core/org/jbehave/core/steps/ParameterConverters.ParameterConverter.html">ParameterConverter</a>
-interface.</p>
+interface or by extending the class <a
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.AbstractParameterConverter.html">AbstractParameterConverter</a>
+or the class <a
+    href="javadoc/core/org/jbehave/core/steps/ParameterConverters.AbstractListParameterConverter.html">AbstractListParameterConverter</a>.</p>
 <p>Let's consider the use case where we have persistable objects
 accessible via persister interface from a String identifier. Then a
 custom parameter converter may come in very handy so that the lookup of
@@ -121,18 +123,12 @@ the persistable object is done behind the scenes and does not get in the
 way of the step implementation. E.g. given the converter:</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-    public class TraderConverter implements ParameterConverter {
+    public class TraderConverter extends AbstractParameterConverter<Trader> {
         private TraderPersister traderPersister = ... // inject persister in converter
 
-        public boolean accept(Type type) {
-            if (type instanceof Class<?>) {
-                return Trader.class.isAssignableFrom((Class<?>) type);
-            }
-            return false;
-        }
-
-        public Object convertValue(String value, Type type) {
-            return traderPersister.retrieveTrader(value);
+        @Override
+        public Trader convertValue(String value, Type type) {
+            return persister.retrieveTrader(value);
         }
     }
 ]]>
