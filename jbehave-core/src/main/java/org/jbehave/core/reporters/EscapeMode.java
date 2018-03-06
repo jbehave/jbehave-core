@@ -1,6 +1,6 @@
 package org.jbehave.core.reporters;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public enum EscapeMode {
     HTML{
@@ -18,7 +18,7 @@ public enum EscapeMode {
     XML{
         @Override
         public String escapeString(String string) {
-            return StringEscapeUtils.escapeXml(string);
+            return StringEscapeUtils.escapeXml11(string);
         }
     },
     NONE{
