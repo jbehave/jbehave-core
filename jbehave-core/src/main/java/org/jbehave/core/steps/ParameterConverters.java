@@ -12,10 +12,16 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.NavigableSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -43,7 +49,6 @@ import static java.util.Arrays.asList;
  * Converters for several Java types are provided out-of-the-box:
  * <ul>
  * <li>{@link ParameterConverters.NumberConverter NumberConverter}</li>
- * <li>{@link ParameterConverters.NumberListConverter NumberListConverter}</li>
  * <li>{@link ParameterConverters.StringListConverter StringListConverter}</li>
  * <li>{@link ParameterConverters.DateConverter DateConverter}</li>
  * <li>{@link ParameterConverters.ExamplesTableConverter ExamplesTableConverter}
@@ -59,7 +64,14 @@ public class ParameterConverters {
 
     public static final StepMonitor DEFAULT_STEP_MONITOR = new SilentStepMonitor();
     public static final Locale DEFAULT_NUMBER_FORMAT_LOCAL = Locale.ENGLISH;
-    public static final String DEFAULT_LIST_SEPARATOR = ",";
+    public static final String DEFAULT_COLLECTION_SEPARATOR = ",";
+
+    /**
+     * Use {@link #DEFAULT_COLLECTION_SEPARATOR}
+     */
+    @Deprecated
+    public static final String DEFAULT_LIST_SEPARATOR = DEFAULT_COLLECTION_SEPARATOR;
+
     public static final boolean DEFAULT_THREAD_SAFETY = true;
 
     private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
@@ -70,11 +82,12 @@ public class ParameterConverters {
     private final StepMonitor monitor;
     private final List<ParameterConverter> converters;
     private final boolean threadSafe;
+    private String escapedCollectionSeparator;
 
 
     /**
      * Creates a ParameterConverters using the default resource loader and table transformers,
-     * a SilentStepMonitor, English as Locale and "," as list separator.
+     * a SilentStepMonitor, English as Locale and "," as collection separator.
      */
     public ParameterConverters() {
         this(new LoadFromClasspath(), new TableTransformers());
@@ -100,7 +113,7 @@ public class ParameterConverters {
 
     /**
      * Creates a ParameterConverters given resource loader and table transformers.
-     * 
+     *
      * @param resourceLoader the resource loader
      * @param tableTransformers the table transformers
      */
@@ -110,7 +123,7 @@ public class ParameterConverters {
 
     /**
      * Creates a ParameterConverters using given StepMonitor, resource loader and table transformers.
-     * 
+     *
      * @param monitor the StepMonitor to use
      * @param resourceLoader the resource loader
      * @param parameterControls the parameter controls
@@ -119,12 +132,12 @@ public class ParameterConverters {
     public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader, ParameterControls parameterControls,
             TableTransformers tableTransformers) {
         this(monitor, resourceLoader, parameterControls, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL,
-                DEFAULT_LIST_SEPARATOR, DEFAULT_THREAD_SAFETY);
+                DEFAULT_COLLECTION_SEPARATOR, DEFAULT_THREAD_SAFETY);
     }
 
     /**
      * Create a ParameterConverters with given thread-safety
-     * 
+     *
      * @param resourceLoader the resource loader
      * @param parameterControls the parameter controls
      * @param tableTransformers the table transformers
@@ -134,50 +147,52 @@ public class ParameterConverters {
     public ParameterConverters(ResourceLoader resourceLoader, ParameterControls parameterControls,
             TableTransformers tableTransformers, boolean threadSafe) {
         this(DEFAULT_STEP_MONITOR, resourceLoader, parameterControls, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL,
-                DEFAULT_LIST_SEPARATOR, threadSafe);
+                DEFAULT_COLLECTION_SEPARATOR, threadSafe);
     }
 
     /**
      * Creates a ParameterConverters for the given StepMonitor, Locale, list
-     * separator and thread-safety. When selecting a listSeparator, please make
+     * separator and thread-safety. When selecting a collectionSeparator, please make
      * sure that this character doesn't have a special meaning in your Locale
      * (for instance "," is used as decimal separator in some Locale)
-     * 
+     *
      * @param monitor the StepMonitor reporting the conversions
      * @param resourceLoader the resource loader
      * @param parameterControls the parameter controls
      * @param tableTransformers the table transformers
      * @param locale the Locale to use when reading numbers
-     * @param listSeparator the String to use as list separator
+     * @param collectionSeparator the String to use as collection separator
      * @param threadSafe the boolean flag to determine if modification of
      * {@link ParameterConverter} should be thread-safe
      */
     public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader, ParameterControls parameterControls,
-            TableTransformers tableTransformers, Locale locale, String listSeparator, boolean threadSafe) {
+            TableTransformers tableTransformers, Locale locale, String collectionSeparator, boolean threadSafe) {
         this(monitor, new ArrayList<ParameterConverter>(), threadSafe);
         this.addConverters(
-                defaultConverters(resourceLoader, parameterControls, tableTransformers, locale, listSeparator));
+                defaultConverters(resourceLoader, parameterControls, tableTransformers, locale, collectionSeparator));
     }
 
     private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters, boolean threadSafe) {
         this.monitor = monitor;
         this.threadSafe = threadSafe;
-        this.converters = threadSafe ? new CopyOnWriteArrayList<ParameterConverter>(converters)
-                : new ArrayList<ParameterConverter>(converters);
+        this.converters = threadSafe ? new CopyOnWriteArrayList<>(converters)
+                : new ArrayList<>(converters);
     }
 
     protected ParameterConverter[] defaultConverters(ResourceLoader resourceLoader, ParameterControls parameterControls,
-            TableTransformers tableTransformers, Locale locale, String listSeparator) {
-        String escapedListSeparator = escapeRegexPunctuation(listSeparator);
+            TableTransformers tableTransformers, Locale locale, String collectionSeparator) {
+        this.escapedCollectionSeparator = escapeRegexPunctuation(collectionSeparator);
         ExamplesTableFactory tableFactory = new ExamplesTableFactory(resourceLoader, this, parameterControls,
                 tableTransformers);
         JsonFactory jsonFactory = new JsonFactory();
         return new ParameterConverter[] { new BooleanConverter(),
                 new NumberConverter(NumberFormat.getInstance(locale)),
-                new NumberListConverter(NumberFormat.getInstance(locale), escapedListSeparator),
-                new StringListConverter(escapedListSeparator), new DateConverter(), new EnumConverter(),
-                new EnumListConverter(), new ExamplesTableConverter(tableFactory),
-                new ExamplesTableParametersConverter(tableFactory), new JsonConverter(jsonFactory) };
+                new StringListConverter(escapedCollectionSeparator),
+                new DateConverter(),
+                new EnumConverter(),
+                new ExamplesTableConverter(tableFactory),
+                new ExamplesTableParametersConverter(tableFactory),
+                new JsonConverter(jsonFactory) };
     }
 
     // TODO : This is a duplicate from RegExpPrefixCapturing
@@ -194,22 +209,82 @@ public class ParameterConverters {
         return this;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object convert(String value, Type type) {
 
-        // check if any converters accepts type
-        for (ParameterConverter converter : converters) {
-            if (converter.accept(type)) {
-                Object converted = converter.convertValue(value, type);
-                monitor.convertedValueOfType(value, type, converted, converter.getClass());
-                return converted;
-            }
+        ParameterConverter<?> converter = findConverter(type);
+        if (converter != null) {
+            Object converted = converter.convertValue(value, type);
+            monitor.convertedValueOfType(value, type, converted, converter.getClass());
+            return converted;
         }
 
         if (type == String.class) {
             return replaceNewlinesWithSystemNewlines(value);
         }
 
+        if (isAssignableFromRawType(Collection.class, type)) {
+            Type elementType = argumentType(type);
+            ParameterConverter elementConverter = findConverter(elementType);
+            Collection collection = createCollection(rawClass(type));
+            if (elementConverter != null && collection != null) {
+                fillCollection(value, escapedCollectionSeparator, elementConverter, elementType, collection);
+                return collection;
+            }
+        }
+
         throw new ParameterConvertionFailed("No parameter converter for " + type);
+    }
+
+    private ParameterConverter<?> findConverter(Type type) {
+        for (ParameterConverter<?> converter : converters) {
+            if (converter.accept(type)) {
+                return converter;
+            }
+        }
+        return null;
+    }
+
+    private static boolean isAssignableFromRawType(Class<?> clazz, Type type) {
+        return type instanceof ParameterizedType && clazz.isAssignableFrom(rawClass(type));
+    }
+
+    private static Class<?> rawClass(Type type) {
+        return (Class<?>) ((ParameterizedType) type).getRawType();
+    }
+
+    private static Type argumentType(Type type) {
+        return ((ParameterizedType) type).getActualTypeArguments()[0];
+    }
+
+    private static <T> void fillCollection(String value, String valueSeparator, ParameterConverter<T> elementConverter,
+            Type elementType, Collection<T> convertedValues) {
+        for (String elementValue : value.split(valueSeparator)) {
+            T convertedValue = elementConverter.convertValue(elementValue.trim(), elementType);
+            convertedValues.add(convertedValue);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <E> Collection<E> createCollection(Class<?> collectionType) {
+        if (collectionType.isInterface()) {
+            if (Set.class == collectionType) {
+                return new HashSet<>();
+            }
+            else if (List.class == collectionType) {
+                return new ArrayList<>();
+            }
+            else if (SortedSet.class == collectionType || NavigableSet.class == collectionType) {
+                return new TreeSet<>();
+            }
+        }
+        try {
+            return (Collection<E>) collectionType.getConstructor().newInstance();
+        }
+        catch (@SuppressWarnings("unused") Throwable t) {
+            // Could not instantiate Collection type, swallowing exception quietly
+        }
+        return null;
     }
 
     private Object replaceNewlinesWithSystemNewlines(String value) {
@@ -217,7 +292,7 @@ public class ParameterConverters {
     }
 
     public ParameterConverters newInstanceAdding(ParameterConverter converter) {
-        List<ParameterConverter> convertersForNewInstance = new ArrayList<ParameterConverter>(converters);
+        List<ParameterConverter> convertersForNewInstance = new ArrayList<>(converters);
         convertersForNewInstance.add(converter);
         return new ParameterConverters(monitor, convertersForNewInstance, threadSafe);
     }
@@ -274,27 +349,15 @@ public class ParameterConverters {
 
         @Override
         public boolean accept(Type type) {
-            return type instanceof ParameterizedType && List.class.isAssignableFrom(rawClass(type))
-                    && elementConverter.accept(argumentType(type));
+            return isAssignableFromRawType(List.class, type) && elementConverter.accept(argumentType(type));
         }
 
         @Override
         public List<T> convertValue(String value, Type type) {
-            Type argumentType = argumentType(type);
+            Type elementType = argumentType(type);
             List<T> convertedValues = new ArrayList<>();
-            for (String elementValue : value.split(valueSeparator)) {
-                T convertedValue = elementConverter.convertValue(elementValue.trim(), argumentType);
-                convertedValues.add(convertedValue);
-            }
+            fillCollection(value, valueSeparator, elementConverter, elementType, convertedValues);
             return convertedValues;
-        }
-
-        private Class<?> rawClass(Type type) {
-            return (Class<?>) ((ParameterizedType) type).getRawType();
-        }
-
-        private Type argumentType(Type type) {
-            return ((ParameterizedType) type).getActualTypeArguments()[0];
         }
     }
 
@@ -311,8 +374,8 @@ public class ParameterConverters {
      * <li>Float, float: {@link Number#floatValue()}</li>
      * <li>Long, long: {@link Number#longValue()}</li>
      * <li>Double, double: {@link Number#doubleValue()}</li>
-     * <li>BigInteger: {@link BigInteger#valueOf(Long)}</li>
-     * <li>BigDecimal: {@link BigDecimal#valueOf(Double)}</li>
+     * <li>BigInteger: {@link BigInteger#valueOf(long)}</li>
+     * <li>BigDecimal: {@link BigDecimal#valueOf(double)}</li>
      * </ul>
      * If no number format is provided, it defaults to
      * {@link NumberFormat#getInstance(Locale.ENGLISH)}.
@@ -326,7 +389,7 @@ public class ParameterConverters {
                 float.class, long.class, double.class });
 
         private final NumberFormat numberFormat;
-        private ThreadLocal<NumberFormat> threadLocalNumberFormat = new ThreadLocal<NumberFormat>();
+        private ThreadLocal<NumberFormat> threadLocalNumberFormat = new ThreadLocal<>();
 
         public NumberConverter() {
             this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL));
@@ -378,7 +441,7 @@ public class ParameterConverters {
 
         /**
          * Return NumberFormat instance with preferred locale threadsafe
-         * 
+         *
          * @return A threadlocal version of original NumberFormat instance
          */
         private NumberFormat numberFormat() {
@@ -394,7 +457,7 @@ public class ParameterConverters {
          * Canonicalize a number representation to a format suitable for the
          * {@link BigDecimal(String)} constructor, taking into account the
          * settings of the currently configured DecimalFormat.
-         * 
+         *
          * @param value a localized number value
          * @return A canonicalized string value suitable for consumption by
          * BigDecimal
@@ -451,7 +514,7 @@ public class ParameterConverters {
     public static class NumberListConverter extends AbstractListParameterConverter<Number> {
 
         public NumberListConverter() {
-            this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL), DEFAULT_LIST_SEPARATOR);
+            this(NumberFormat.getInstance(DEFAULT_NUMBER_FORMAT_LOCAL), DEFAULT_COLLECTION_SEPARATOR);
         }
 
         /**
@@ -471,7 +534,7 @@ public class ParameterConverters {
     public static class StringListConverter extends AbstractListParameterConverter<String> {
 
         public StringListConverter() {
-            this(DEFAULT_LIST_SEPARATOR);
+            this(DEFAULT_COLLECTION_SEPARATOR);
         }
 
         /**
@@ -543,8 +606,8 @@ public class ParameterConverters {
     }
 
     public static class BooleanConverter extends AbstractParameterConverter<Boolean> {
-        private String trueValue;
-        private String falseValue;
+        private final String trueValue;
+        private final String falseValue;
 
         public BooleanConverter() {
             this(DEFAULT_TRUE_VALUE, DEFAULT_FALSE_VALUE);
@@ -557,7 +620,7 @@ public class ParameterConverters {
 
         @Override
         public boolean accept(Type type) {
-            return super.accept(type) || (type instanceof Class<?> && Boolean.TYPE.isAssignableFrom((Class<?>) type));
+            return super.accept(type) || type instanceof Class<?> && Boolean.TYPE.isAssignableFrom((Class<?>) type);
         }
 
         @Override
@@ -573,7 +636,7 @@ public class ParameterConverters {
     public static class BooleanListConverter extends AbstractListParameterConverter<Boolean> {
 
         public BooleanListConverter() {
-            this(DEFAULT_LIST_SEPARATOR, DEFAULT_TRUE_VALUE, DEFAULT_FALSE_VALUE);
+            this(DEFAULT_COLLECTION_SEPARATOR, DEFAULT_TRUE_VALUE, DEFAULT_FALSE_VALUE);
         }
 
         public BooleanListConverter(String valueSeparator) {
@@ -647,7 +710,7 @@ public class ParameterConverters {
     public static class EnumListConverter extends AbstractListParameterConverter<Enum<?>> {
 
         public EnumListConverter() {
-            this(DEFAULT_LIST_SEPARATOR);
+            this(DEFAULT_COLLECTION_SEPARATOR);
         }
 
         public EnumListConverter(String valueSeparator) {
@@ -695,10 +758,6 @@ public class ParameterConverters {
             return type instanceof Class && ((Class<?>) type).isAnnotationPresent(AsParameters.class);
         }
 
-        private Class<?> rawClass(Type type) {
-            return (Class<?>) ((ParameterizedType) type).getRawType();
-        }
-
         private Class<?> argumentClass(Type type) {
             if (type instanceof ParameterizedType) {
                 return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
@@ -742,10 +801,6 @@ public class ParameterConverters {
         @Override
         public Object convertValue(final String value, final Type type) {
             return factory.createJson(value, type);
-        }
-
-        private Class<?> rawClass(final Type type) {
-            return (Class<?>) ((ParameterizedType) type).getRawType();
         }
 
         private Class<?> argumentClass(final Type type) {

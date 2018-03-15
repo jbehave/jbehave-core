@@ -14,6 +14,7 @@ import static org.jbehave.core.steps.StepType.GIVEN;
 import static org.jbehave.core.steps.StepType.IGNORABLE;
 import static org.jbehave.core.steps.StepType.THEN;
 import static org.jbehave.core.steps.StepType.WHEN;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,7 @@ import com.thoughtworks.paranamer.Paranamer;
 
 public class StepCandidateBehaviour {
 
-    private Map<String, String> namedParameters = new HashMap<String, String>();
+    private Map<String, String> namedParameters = new HashMap<>();
     private Paranamer paranamer = new CachingParanamer(new BytecodeReadingParanamer());
     private Keywords keywords = new LocalizedKeywords();
 
@@ -112,7 +113,7 @@ public class StepCandidateBehaviour {
         step.perform(null);
         Object args = someSteps.args;
         assertThat(args, instanceOf(String.class));
-        assertThat(((String)args), Matchers.equalTo(""));
+        assertThat(((String)args), equalTo(""));
     }
 
     @Test
@@ -218,43 +219,35 @@ public class StepCandidateBehaviour {
 
     @Test
     public void shouldConvertParameterToNumber() throws Exception {
-        assertThatNumberIsConverted("I should live in no. $no", int.class, new Integer(14));
-        assertThatNumberIsConverted("I should live in no. $no", long.class, new Long(14L));
-        assertThatNumberIsConverted("I should live in no. $no", float.class, new Float(14f));
-        assertThatNumberIsConverted("I should live in no. $no", double.class, new Double(14d));
+        assertThatNumberIsConverted(int.class, 14);
+        assertThatNumberIsConverted(long.class, 14L);
+        assertThatNumberIsConverted(float.class, 14f);
+        assertThatNumberIsConverted(double.class, 14d);
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> void assertThatNumberIsConverted(String patternAsString, Class<T> type, T number) throws Exception {
+    private <T> void assertThatNumberIsConverted(Class<T> type, T number) throws Exception {
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.class.getMethod("aMethodWith", type);
-        StepCandidate candidate = candidateWith(patternAsString, THEN, method, someSteps);
+        StepCandidate candidate = candidateWith("I should live in no. $no", THEN, method, someSteps);
         candidate.createMatchedStep("Then I should live in no. 14", namedParameters).perform(null);
-        assertThat((T) someSteps.args, equalTo(number));
+        assertEquals(number, someSteps.args);
     }
 
     @Test
     public void shouldConvertParameterToListOfNumbersOrStrings() throws Exception {
-        assertThatListIsConverted("windows on the $nth floors", "aMethodWithListOfIntegers", int.class, "1,2,3",
-                asList(1, 2, 3));
-        assertThatListIsConverted("windows on the $nth floors", "aMethodWithListOfLongs", long.class, "1,2,3", asList(
-                1L, 2L, 3L));
-        assertThatListIsConverted("windows on the $nth floors", "aMethodWithListOfFloats", float.class, "1.1,2.2,3.3",
-                asList(1.1f, 2.2f, 3.3f));
-        assertThatListIsConverted("windows on the $nth floors", "aMethodWithListOfDoubles", double.class,
-                "1.1,2.2,3.3", asList(1.1d, 2.2d, 3.3d));
-        assertThatListIsConverted("windows on the $nth floors", "aMethodWithListOfStrings", String.class, "1,2,3",
-                asList("1", "2", "3"));
+        assertThatListIsConverted("aMethodWithListOfIntegers", "1,2,3", asList(1, 2, 3));
+        assertThatListIsConverted("aMethodWithListOfLongs", "1,2,3", asList(1L, 2L, 3L));
+        assertThatListIsConverted("aMethodWithListOfFloats", "1.1,2.2,3.3", asList(1.1f, 2.2f, 3.3f));
+        assertThatListIsConverted("aMethodWithListOfDoubles", "1.1,2.2,3.3", asList(1.1d, 2.2d, 3.3d));
+        assertThatListIsConverted("aMethodWithListOfStrings", "1,2,3", asList("1", "2", "3"));
     }
 
-    @SuppressWarnings("unchecked")
-    private <T> void assertThatListIsConverted(String patternAsString, String methodName, Class<T> type, String csv,
-            List<T> numbers) throws Exception {
+    private void assertThatListIsConverted(String methodName, String csv, List<?> numbers) throws Exception {
         SomeSteps someSteps = new SomeSteps();
         Method method = SomeSteps.methodFor(methodName);
-        StepCandidate candidate = candidateWith(patternAsString, WHEN, method, someSteps);
+        StepCandidate candidate = candidateWith("windows on the $nth floors", WHEN, method, someSteps);
         candidate.createMatchedStep("When windows on the " + csv + " floors", namedParameters).perform(null);
-        assertThat((List<T>) someSteps.args, equalTo(numbers));
+        assertEquals(numbers, someSteps.args);
     }
 
     @Test

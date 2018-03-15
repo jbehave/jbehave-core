@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.BeforeScenario;
@@ -81,24 +81,8 @@ public class SomeSteps extends Steps {
     public void aMethodWithListOfFloats(List<Float> args) {
         this.args = args;
     }
-    
-    public void aMethodWithListOfNumbers(List<Number> args) {
-        this.args = args;
-    }
-    
-    public void aMethodWithSetOfStrings(Set<String> args) {
-        this.args = args;
-    }
-
-    public void aMethodWithSetOfNumbers(Set<Number> args) {
-        this.args = args;
-    }
 
     public void aMethodWithDate(Date args) {
-        this.args = args;
-    }
-
-    public void aMethodWithExamplesTable(ExamplesTable args) {
         this.args = args;
     }
 
@@ -106,43 +90,18 @@ public class SomeSteps extends Steps {
     	return new ExamplesTable(value);
     }
 
-    public void aMethodWithExamplesTableParameter(MyParameters args) {
-        this.args = args;
-    }
-
-    public void aMethodWithExamplesTableParameters(List<MyParameters> args) {
-        this.args = args;
-    }
-
     @AsParameters
     public static class MyParameters {
         String col1;
         String col2;
-        
     }
 
     public ExamplesTable aFailingMethodReturningExamplesTable(String value){
         throw new RuntimeException(value);
     }
     
-    public void aMethodWithEnum(SomeEnum value) {
-        this.args = value;
-    }
-
-    public void aMethodWithEnumList(List<SomeEnum> value) {
-        this.args = value;
-    }
-
-    public void aMethodWithBoolean(Boolean value) {
-        this.args = value;
-    }
-
-    public void aMethodWithBooleanList(List<Boolean> value) {
-        this.args = value;
-    }
-
     public void aMethodWithANamedParameter(@Named("theme") String theme, @Named("variant") String variant) {
-        HashMap<String, Object> namedArgs = new HashMap<String, Object>();
+        Map<String, Object> namedArgs = new HashMap<>();
         namedArgs.put("theme", theme);
         namedArgs.put("variant", variant);
         this.args = namedArgs;
@@ -150,6 +109,13 @@ public class SomeSteps extends Steps {
 
     public void aMethodWithoutNamedAnnotation(String theme) {
         this.args = theme;
+    }
+
+    public void aMultipleParamMethodWithoutNamedAnnotation(String theme, String variant) {
+        HashMap<String, Object> multipleArgs = new HashMap<>();
+        multipleArgs.put("theme", theme);
+        multipleArgs.put("variant", variant);
+        this.args = multipleArgs;
     }
 
     public void aMethodThatExpectsUUIDExceptionWrapper(UUIDExceptionWrapper exception) {
