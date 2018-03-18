@@ -5,11 +5,7 @@ import java.io.FileNotFoundException;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -184,7 +180,7 @@ public class ReportTransformBehaviour {
     }
 
     private Document tranformReport(String path) throws TransformerFactoryConfigurationError,
-            TransformerConfigurationException, TransformerException {
+            TransformerException {
 
         File report = new File(cd, "/target/jbehave/" + path);
         Source xml = new StreamSource(report);
