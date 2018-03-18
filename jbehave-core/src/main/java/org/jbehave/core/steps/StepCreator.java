@@ -115,7 +115,7 @@ public class StepCreator {
 
     public Map<String, String> matchedParameters(final Method method, final String stepAsString,
             final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
-        Map<String, String> matchedParameters = new HashMap<String, String>(); 
+        Map<String, String> matchedParameters = new HashMap<>();
         if (stepMatcher.find(stepWithoutStartingWord)) { 
             // we've found a match, populate map
             ParameterName[] parameterNames = parameterNames(method);
@@ -497,7 +497,7 @@ public class StepCreator {
     }
 
     private List<String> delimitedNameFor(String parameter) {
-        List<String> delimitedNames = new ArrayList<String>();
+        List<String> delimitedNames = new ArrayList<>();
         if (parameterControls.delimiterNamedParameters()) {
             Matcher matcher = delimitedNamePattern.matcher(parameter);
             while(matcher.find()) {

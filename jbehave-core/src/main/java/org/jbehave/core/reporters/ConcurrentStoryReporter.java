@@ -92,7 +92,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
         }
     }
 
-    private List<DelayedMethod> delayedMethods = new ArrayList<DelayedMethod>();
+    private List<DelayedMethod> delayedMethods = new ArrayList<>();
     private final StoryReporter crossReferencing;
     private final StoryReporter delegate;
     private final boolean multiThreading;

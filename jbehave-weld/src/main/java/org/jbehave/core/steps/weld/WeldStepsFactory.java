@@ -39,7 +39,7 @@ public class WeldStepsFactory extends AbstractStepsFactory {
 
     @Override
     protected List<Class<?>> stepsTypes() {
-        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<Class<?>> types = new ArrayList<>();
         for (Object o : instances) {
             types.add(o.getClass());
         }

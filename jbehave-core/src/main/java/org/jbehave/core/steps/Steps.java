@@ -158,7 +158,7 @@ public class Steps implements CandidateSteps {
     }
 
     public List<StepCandidate> listCandidates() {
-        List<StepCandidate> candidates = new ArrayList<StepCandidate>();
+        List<StepCandidate> candidates = new ArrayList<>();
         for (Method method : allMethods()) {
             if (method.isAnnotationPresent(Given.class)) {
                 Given annotation = method.getAnnotation(Given.class);
@@ -233,21 +233,21 @@ public class Steps implements CandidateSteps {
     }
 
     public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
-        List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+        List<BeforeOrAfterStep> steps = new ArrayList<>();
         steps.addAll(stepsHaving(Stage.BEFORE, BeforeStories.class));
         steps.addAll(stepsHaving(Stage.AFTER, AfterStories.class));
         return steps;
     }
 
     public List<BeforeOrAfterStep> listBeforeOrAfterStory(boolean givenStory) {
-        List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+        List<BeforeOrAfterStep> steps = new ArrayList<>();
         steps.addAll(stepsHaving(Stage.BEFORE, BeforeStory.class, givenStory));
         steps.addAll(stepsHaving(Stage.AFTER, AfterStory.class, givenStory));
         return steps;
     }
 
     public List<BeforeOrAfterStep> listBeforeOrAfterScenario(ScenarioType type) {
-        List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+        List<BeforeOrAfterStep> steps = new ArrayList<>();
         steps.addAll(scenarioStepsHaving(type, Stage.BEFORE, BeforeScenario.class));
         steps.addAll(scenarioStepsHaving(type, Stage.AFTER, AfterScenario.class, ANY, SUCCESS, FAILURE));
         return steps;
@@ -268,7 +268,7 @@ public class Steps implements CandidateSteps {
     }
 
     private List<BeforeOrAfterStep> stepsHaving(Stage stage, Class<? extends Annotation> annotationClass) {
-        List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+        List<BeforeOrAfterStep> steps = new ArrayList<>();
         for (Method method : methodsAnnotatedWith(annotationClass)) {
             steps.add(createBeforeOrAfterStep(stage, method));
         }
@@ -277,7 +277,7 @@ public class Steps implements CandidateSteps {
 
     private List<BeforeOrAfterStep> stepsHaving(Stage stage, Class<? extends Annotation> annotationClass,
             boolean givenStory) {
-        List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+        List<BeforeOrAfterStep> steps = new ArrayList<>();
         for (final Method method : methodsAnnotatedWith(annotationClass)) {
             if (runnableStoryStep(method.getAnnotation(annotationClass), givenStory)) {
                 steps.add(createBeforeOrAfterStep(stage, method));
@@ -288,7 +288,7 @@ public class Steps implements CandidateSteps {
 
     private List<BeforeOrAfterStep> scenarioStepsHaving(ScenarioType type, Stage stage,
             Class<? extends Annotation> annotationClass, Outcome... outcomes) {
-        List<BeforeOrAfterStep> steps = new ArrayList<BeforeOrAfterStep>();
+        List<BeforeOrAfterStep> steps = new ArrayList<>();
         for (Method method : methodsAnnotatedWith(annotationClass)) {
             ScenarioType scenarioType = scenarioType(method, annotationClass);
             if (type == scenarioType) {
@@ -339,7 +339,7 @@ public class Steps implements CandidateSteps {
     }
 
     private List<Method> methodsAnnotatedWith(Class<? extends Annotation> annotationClass) {
-        List<Method> annotated = new ArrayList<Method>();
+        List<Method> annotated = new ArrayList<>();
         for (Method method : allMethods()) {
             if (method.isAnnotationPresent(annotationClass)) {
                 annotated.add(method);

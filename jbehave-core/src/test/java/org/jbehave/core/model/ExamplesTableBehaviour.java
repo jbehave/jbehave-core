@@ -251,7 +251,7 @@ public class ExamplesTableBehaviour {
     }
 
     private void ensureRowContentIs(List<Map<String, String>> rows, int row, List<String> expected) {
-        assertThat(new ArrayList<String>(rows.get(row).values()), equalTo(expected));
+        assertThat(new ArrayList<>(rows.get(row).values()), equalTo(expected));
     }
 
     private void ensureCellContentIs(ExamplesTable table, int row, String header, String value) {
@@ -321,7 +321,7 @@ public class ExamplesTableBehaviour {
 
         // When
         String tableAsString = "|Name|Value|\n|name1|<value>|";
-        Map<String, String> namedParameters = new HashMap<String, String>();
+        Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("value", "value1");
         ExamplesTable table = factory.createExamplesTable(tableAsString).withNamedParameters(namedParameters);
 
@@ -339,7 +339,7 @@ public class ExamplesTableBehaviour {
 
         // When
         String tableAsString = "|Name|Value|\n|name1|foo-<value>-bar|";
-        Map<String, String> namedParameters = new HashMap<String, String>();
+        Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("value", "value1");
         ExamplesTable table = factory.createExamplesTable(tableAsString).withNamedParameters(namedParameters);
 
@@ -363,7 +363,7 @@ public class ExamplesTableBehaviour {
 
         // When
         String tableAsString = "|Name|Value|\n|name|<value>|";
-        Map<String, String> namedParameters = new HashMap<String, String>();
+        Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("value", problematicNamedParameterValueCharacters);
         ExamplesTable table = factory.createExamplesTable(tableAsString).withNamedParameters(namedParameters);
 
@@ -402,7 +402,7 @@ public class ExamplesTableBehaviour {
         String tableAsString = "|aString|anInteger|aStringList|anIntegerList|\n|11|22|1,1|2,2|";
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
 
-        Map<String, String> nameMapping = new HashMap<String, String>();
+        Map<String, String> nameMapping = new HashMap<>();
         nameMapping.put("aString", "string");
         nameMapping.put("anInteger", "integer");
         nameMapping.put("aStringList", "stringList");
@@ -470,11 +470,11 @@ public class ExamplesTableBehaviour {
         // When
         String tableAsString = "|one|two|\n|11|12|\n|21|22|";
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
-        Map<String, String> values = new HashMap<String, String>();
+        Map<String, String> values = new HashMap<>();
         values.put("one", "111");
         values.put("three", "333");
         examplesTable.withRowValues(0, values);
-        Map<String, String> otherValues = new HashMap<String, String>();
+        Map<String, String> otherValues = new HashMap<>();
         otherValues.put("two", "222");
         examplesTable.withRowValues(1, otherValues);
 

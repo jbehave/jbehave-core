@@ -16,7 +16,7 @@ public class PendingStepsFound extends UUIDExceptionWrapper {
     }
 
     private static String asString(List<PendingStep> steps) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         for (PendingStep step : steps) {
             list.add(step.stepAsString());
         }

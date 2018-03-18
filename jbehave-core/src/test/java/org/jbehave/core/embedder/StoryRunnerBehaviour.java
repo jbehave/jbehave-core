@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 
 public class StoryRunnerBehaviour {
 
-    private Map<String, String> parameters = new HashMap<String, String>();
+    private Map<String, String> parameters = new HashMap<>();
 
     @Test
     public void shouldRunStepsBeforeAndAfterStories() throws Throwable {

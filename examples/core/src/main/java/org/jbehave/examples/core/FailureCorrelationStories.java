@@ -21,7 +21,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 public class FailureCorrelationStories extends CoreStories {
 
-    private List<String> failures = new ArrayList<String>();
+    private List<String> failures = new ArrayList<>();
 
     public FailureCorrelationStories() {
         configuredEmbedder().embedderControls()

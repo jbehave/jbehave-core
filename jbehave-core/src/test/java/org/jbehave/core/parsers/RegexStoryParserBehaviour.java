@@ -479,7 +479,7 @@ public class RegexStoryParserBehaviour {
         assertThat(afterSteps.get(0), equalTo("Given a step after any scenario"));
         assertThat(afterSteps.get(1), equalTo("Given a step after successful scenario"));
         assertThat(afterSteps.get(2), equalTo("Given a step after failed scenario"));
-        assertThat(new ArrayList<Outcome>(lifecycle.getOutcomes()), equalTo(Arrays.asList(Outcome.ANY, Outcome.SUCCESS, Outcome.FAILURE)));
+        assertThat(new ArrayList<>(lifecycle.getOutcomes()), equalTo(Arrays.asList(Outcome.ANY, Outcome.SUCCESS, Outcome.FAILURE)));
         assertThat(lifecycle.getAfterSteps(Outcome.ANY).size(), equalTo(1));
         assertThat(lifecycle.getAfterSteps(Outcome.ANY).get(0), equalTo("Given a step after any scenario"));
         assertThat(lifecycle.getAfterSteps(Outcome.SUCCESS).size(), equalTo(1));

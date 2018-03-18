@@ -25,7 +25,7 @@ public class SilentSuccessFilter extends NullStoryReporter {
     private State beforeStoryState = State.SILENT;
     private State afterStoryState = State.SILENT;
     private State scenarioState = State.SILENT;
-    private List<Todo> scenarioTodos = new ArrayList<Todo>();
+    private List<Todo> scenarioTodos = new ArrayList<>();
     private boolean givenStory;
 
     public SilentSuccessFilter(StoryReporter delegate) {
@@ -191,7 +191,7 @@ public class SilentSuccessFilter extends NullStoryReporter {
 
     @Override
     public void beforeScenario(final Scenario scenario) {
-        scenarioTodos = new ArrayList<Todo>();
+        scenarioTodos = new ArrayList<>();
         scenarioTodos.add(new Todo() {
             @Override
             public void doNow() {
@@ -202,7 +202,7 @@ public class SilentSuccessFilter extends NullStoryReporter {
 
     @Override
     public void beforeScenario(final String scenarioTitle) {
-        scenarioTodos = new ArrayList<Todo>();
+        scenarioTodos = new ArrayList<>();
         scenarioTodos.add(new Todo() {
             @Override
             public void doNow() {
@@ -224,7 +224,7 @@ public class SilentSuccessFilter extends NullStoryReporter {
 
     @Override
     public void scenarioMeta(final Meta meta) {
-        scenarioTodos = new ArrayList<Todo>();
+        scenarioTodos = new ArrayList<>();
         scenarioTodos.add(new Todo() {
             @Override
             public void doNow() {

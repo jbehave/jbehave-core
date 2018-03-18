@@ -38,7 +38,7 @@ public class IndexFromXWiki extends IndexWithBreadcrumbs {
 
 	protected Map<String, Resource> createIndexFromEntity(String rootURI, String entity) {
 		Collection<Page> pages = parse(entity);
-		Map<String, Resource> index = new HashMap<String, Resource>();
+		Map<String, Resource> index = new HashMap<>();
 		for (Page page : pages) {
 			String parentName = (page.parent != null ? resolveName(page.parent) : null);
 			String uri = format(PAGE_URI, rootURI, page.name);

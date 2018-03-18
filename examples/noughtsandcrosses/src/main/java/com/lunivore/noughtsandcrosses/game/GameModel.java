@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class GameModel implements Game {
 
-    private Map<Coord, Player> map = new HashMap<Coord, Player>();
+    private Map<Coord, Player> map = new HashMap<>();
     private Player currentPlayer = Player.X;
-    private List<GameObserver> observers = new ArrayList<GameObserver>();
+    private List<GameObserver> observers = new ArrayList<>();
 
     public void addObserver(GameObserver observer) {
         observers.add(observer);

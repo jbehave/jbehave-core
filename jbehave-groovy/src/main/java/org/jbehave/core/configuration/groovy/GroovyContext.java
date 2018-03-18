@@ -79,7 +79,7 @@ public class GroovyContext {
     }
 
     private List<Object> createGroovyInstances() {
-        List<Object> instances = new ArrayList<Object>();
+        List<Object> instances = new ArrayList<>();
         for (String resource : resources) {
             instances.add(newInstance(resource));
         }

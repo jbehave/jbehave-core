@@ -143,7 +143,7 @@ public class MetaFilterBehaviour {
     @Test
     public void shouldFilterUsingCustomMetaMatcher() {
         String filterAsString = "custom: anything goes";
-		Map<String, MetaMatcher> metaMatchers = new HashMap<String, MetaMatcher>();
+		Map<String, MetaMatcher> metaMatchers = new HashMap<>();
 		metaMatchers.put("custom:", new AnythingGoesMetaMatcher());
 		MetaFilter filter = new MetaFilter(filterAsString, new SilentEmbedderMonitor(System.out), metaMatchers);
 		assertThat(filter.metaMatcher(), instanceOf(AnythingGoesMetaMatcher.class));

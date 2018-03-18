@@ -31,7 +31,7 @@ import static java.util.Arrays.asList;
 public class PostStoryStatisticsCollector extends NullStoryReporter {
 
     private final OutputStream output;
-    private final Map<String, Integer> data = new HashMap<String, Integer>();
+    private final Map<String, Integer> data = new HashMap<>();
     private final List<String> events = asList("notAllowed", "pending", "scenariosNotAllowed",
             "givenStoryScenariosNotAllowed", "steps", "stepsSuccessful", "stepsIgnorable", "comments", "stepsPending",
             "stepsNotPerformed", "stepsFailed", "currentScenarioSteps", "currentScenarioStepsPending", "scenarios",

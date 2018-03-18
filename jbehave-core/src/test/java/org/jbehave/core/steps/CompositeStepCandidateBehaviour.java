@@ -24,8 +24,8 @@ public class CompositeStepCandidateBehaviour {
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "Given $customer has previously bought a $product");
         assertThat(candidate.isComposite(), is(true));
-        Map<String, String> noNamedParameters = new HashMap<String, String>();
-        List<Step> composedSteps = new ArrayList<Step>();
+        Map<String, String> noNamedParameters = new HashMap<>();
+        List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Given Mr Jones has previously bought a ticket", noNamedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
@@ -65,10 +65,10 @@ public class CompositeStepCandidateBehaviour {
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "Given <customer> has previously bough a <product>");
         assertThat(candidate.isComposite(), is(true));
-        Map<String, String> namedParameters = new HashMap<String, String>();
+        Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("customer", "Mr Jones");
         namedParameters.put("product", "ticket");
-        List<Step> composedSteps = new ArrayList<Step>();
+        List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
@@ -109,10 +109,10 @@ public class CompositeStepCandidateBehaviour {
         StepCandidate candidate = candidates.get(0);
         candidate.useParanamer(new BytecodeReadingParanamer());
         assertThat(candidate.isComposite(), is(true));
-        Map<String, String> namedParameters = new HashMap<String, String>();
+        Map<String, String> namedParameters = new HashMap<>();
         namedParameters.put("customer", "Mr Jones");
         namedParameters.put("product", "ticket");
-        List<Step> composedSteps = new ArrayList<Step>();
+        List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Given <customer> has previously bought a <product>", namedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
@@ -159,8 +159,8 @@ public class CompositeStepCandidateBehaviour {
         }
         assertThat(candidate, is(notNullValue()));
         assertThat(candidate.isComposite(), is(true));
-        Map<String, String> noNamedParameters = new HashMap<String, String>();
-        List<Step> composedSteps = new ArrayList<Step>();
+        Map<String, String> noNamedParameters = new HashMap<>();
+        List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Then all buttons are enabled", noNamedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(6));
         for (Step step : composedSteps) {
@@ -228,8 +228,8 @@ public class CompositeStepCandidateBehaviour {
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "When I login");
         assertThat(candidate.isComposite(), is(true));
-        Map<String, String> noNamedParameters = new HashMap<String, String>();
-        List<Step> composedSteps = new ArrayList<Step>();
+        Map<String, String> noNamedParameters = new HashMap<>();
+        List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "When I login", noNamedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(1));
         for (Step step : composedSteps) {
@@ -260,8 +260,8 @@ public class CompositeStepCandidateBehaviour {
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "Given I am logged in as " + userName);
         assertThat(candidate.isComposite(), is(true));
-        Map<String, String> noNamedParameters = new HashMap<String, String>();
-        List<Step> composedSteps = new ArrayList<Step>();
+        Map<String, String> noNamedParameters = new HashMap<>();
+        List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Given I am logged in as someUserName", noNamedParameters, candidates);
         for (Step step : composedSteps) {
             step.perform(null);

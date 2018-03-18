@@ -13,7 +13,7 @@ public class Trader implements Comparable<Trader>{
 
     private final String name;
     private String rank = "";
-    private List<Stock> stocks = new ArrayList<Stock>();
+    private List<Stock> stocks = new ArrayList<>();
 
     public Trader(String name, String rank) {
         this.name = name;

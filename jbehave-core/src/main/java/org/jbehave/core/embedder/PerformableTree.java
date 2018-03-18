@@ -60,7 +60,7 @@ import org.jbehave.core.steps.Timer;
  */
 public class PerformableTree {
 
-    private static final Map<String, String> NO_PARAMETERS = new HashMap<String, String>();
+    private static final Map<String, String> NO_PARAMETERS = new HashMap<>();
 
     private PerformableRoot root = new PerformableRoot();
 
@@ -100,7 +100,7 @@ public class PerformableTree {
 
 
             for (Scenario scenario : story.getScenarios()) {
-                Map<String, String> scenarioParameters = new HashMap<String, String>(storyParameters);
+                Map<String, String> scenarioParameters = new HashMap<>(storyParameters);
                 PerformableScenario performableScenario = performableScenario(context, story, scenarioParameters, filteredStory, storyMeta,
                         runBeforeAndAfterScenarioSteps, scenario);
                 if (performableScenario.isNormalPerformableScenario() || performableScenario.hasExamples()) {
@@ -230,7 +230,7 @@ public class PerformableTree {
 
     private List<PerformableStory> performableGivenStories(RunContext context, GivenStories givenStories,
             Map<String, String> parameters) {
-        List<PerformableStory> stories = new ArrayList<PerformableStory>();
+        List<PerformableStory> stories = new ArrayList<>();
         if (givenStories.getPaths().size() > 0) {
             for (GivenStory givenStory : givenStories.getStories()) {
                 RunContext childContext = context.childContextFor(givenStory);
@@ -248,7 +248,7 @@ public class PerformableTree {
 
     private Story storyWithMatchingScenarios(Story story, Map<String,String> parameters) {
         if ( parameters.isEmpty() ) return story;
-        List<Scenario> scenarios = new ArrayList<Scenario>();
+        List<Scenario> scenarios = new ArrayList<>();
         for ( Scenario scenario : story.getScenarios() ){
             if ( matchesParameters(scenario, parameters) ){
                 scenarios.add(scenario);
@@ -317,7 +317,7 @@ public class PerformableTree {
     }
 
     static void generatePendingStepMethods(RunContext context, List<Step> steps) {
-        List<PendingStep> pendingSteps = new ArrayList<PendingStep>();
+        List<PendingStep> pendingSteps = new ArrayList<>();
         for (Step step : steps) {
             if (step instanceof PendingStep) {
                 pendingSteps.add((PendingStep) step);
@@ -325,7 +325,7 @@ public class PerformableTree {
         }
         if (!pendingSteps.isEmpty()) {
             PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration().keywords());
-            List<String> methods = new ArrayList<String>();
+            List<String> methods = new ArrayList<>();
             for (PendingStep pendingStep : pendingSteps) {
                 if (!pendingStep.annotated()) {
                     methods.add(generator.generateMethod(pendingStep));
@@ -472,9 +472,9 @@ public class PerformableTree {
         private final MetaFilter filter;
         private final BatchFailures failures;
 		private final StepsContext stepsContext;
-        private Map<Story, StoryDuration> cancelledStories = new HashMap<Story, StoryDuration>();
-        private Map<String, List<PendingStep>> pendingStories = new HashMap<String, List<PendingStep>>();
-        private final ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
+        private Map<Story, StoryDuration> cancelledStories = new HashMap<>();
+        private Map<String, List<PendingStep>> pendingStories = new HashMap<>();
+        private final ThreadLocal<StoryReporter> reporter = new ThreadLocal<>();
         private String path;
         private boolean givenStory;
         private State state;
@@ -704,7 +704,7 @@ public class PerformableTree {
     public static class PerformableRoot {
 
         private PerformableSteps beforeSteps = new PerformableSteps();
-        private Map<String, PerformableStory> stories = new LinkedHashMap<String, PerformableStory>();
+        private Map<String, PerformableStory> stories = new LinkedHashMap<>();
         private PerformableSteps afterSteps = new PerformableSteps();
 
         public void addBeforeSteps(PerformableSteps beforeSteps) {
@@ -728,7 +728,7 @@ public class PerformableTree {
         }
 
         public List<PerformableStory> getStories() {
-            return new ArrayList<PerformableStory>(stories.values());
+            return new ArrayList<>(stories.values());
         }
 
     }
@@ -755,10 +755,10 @@ public class PerformableTree {
         private String localizedNarrative;
         private boolean allowed;
         private Status status;
-        private List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
-        private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
-        private List<PerformableSteps> beforeSteps = new ArrayList<PerformableSteps>();
-        private List<PerformableSteps> afterSteps = new ArrayList<PerformableSteps>();
+        private List<PerformableStory> givenStories = new ArrayList<>();
+        private List<PerformableScenario> scenarios = new ArrayList<>();
+        private List<PerformableSteps> beforeSteps = new ArrayList<>();
+        private List<PerformableSteps> afterSteps = new ArrayList<>();
         private Timing timing = new Timing();
         private boolean givenStory;
 
@@ -861,7 +861,7 @@ public class PerformableTree {
         private final String storyPath;
         private boolean allowed;
 		private NormalPerformableScenario normalPerformableScenario;
-        private List<ExamplePerformableScenario> examplePerformableScenarios = new ArrayList<ExamplePerformableScenario>();
+        private List<ExamplePerformableScenario> examplePerformableScenarios = new ArrayList<>();
         @SuppressWarnings("unused")
 		private Status status;
 
@@ -936,7 +936,7 @@ public class PerformableTree {
     public static abstract class AbstractPerformableScenario implements Performable {
 
         protected final Map<String, String> parameters;
-        protected final List<PerformableStory> givenStories = new ArrayList<PerformableStory>();
+        protected final List<PerformableStory> givenStories = new ArrayList<>();
         protected final PerformableSteps beforeSteps = new PerformableSteps();
         protected final PerformableSteps steps = new PerformableSteps();
         protected final PerformableSteps afterSteps = new PerformableSteps();
@@ -1074,7 +1074,7 @@ public class PerformableTree {
             this.pendingSteps.addAll(performableSteps.pendingSteps);
             if ( performableSteps.matches != null ){
                 if ( this.matches == null ){
-                    this.matches = new ArrayList<StepMatch>();
+                    this.matches = new ArrayList<>();
                 }
                 this.matches.addAll(performableSteps.matches);
             }
@@ -1087,7 +1087,7 @@ public class PerformableTree {
 		    Keywords keywords = context.configuration().keywords();
             State state = context.state();
             StoryReporter reporter = context.reporter();
-            results = new ArrayList<StepResult>();
+            results = new ArrayList<>();
             boolean ignoring = false;
             for (Step step : steps) {
                 try {
@@ -1111,7 +1111,7 @@ public class PerformableTree {
         }
 
         private List<PendingStep> pendingSteps() {
-            List<PendingStep> pending = new ArrayList<PendingStep>();
+            List<PendingStep> pending = new ArrayList<>();
             for (Step step : steps) {
                 if (step instanceof PendingStep) {
                     pending.add((PendingStep) step);
@@ -1124,7 +1124,7 @@ public class PerformableTree {
             if (!pendingSteps.isEmpty()) {
                 PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration()
                         .keywords());
-                List<String> methods = new ArrayList<String>();
+                List<String> methods = new ArrayList<>();
                 for (PendingStep pendingStep : pendingSteps) {
                     if (!pendingStep.annotated()) {
                         methods.add(generator.generateMethod(pendingStep));

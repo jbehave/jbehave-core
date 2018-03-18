@@ -145,7 +145,7 @@ public class AnnotationBuilder {
      * @return A {@link InjectableStepsFactory}
      */
     public InjectableStepsFactory buildStepsFactory(Configuration configuration) {
-        List<Object> stepsInstances = new ArrayList<Object>();
+        List<Object> stepsInstances = new ArrayList<>();
         InjectableStepsFactory factory = null;
         if (finder.isAnnotationPresent(UsingSteps.class)) {
             List<Class<Object>> stepsClasses = finder.getAnnotatedClasses(
@@ -246,7 +246,7 @@ public class AnnotationBuilder {
     
     public List<String> findPaths() {
         if (!finder.isAnnotationPresent(UsingPaths.class)) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
 
         String searchIn = finder.getAnnotatedValue(UsingPaths.class, String.class, "searchIn");

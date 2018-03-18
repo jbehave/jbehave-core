@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.greaterThan;
 public class BankAccountSteps {
 
     private BankAccount account;
-    private List<BankAccount> accounts = new ArrayList<BankAccount>();
+    private List<BankAccount> accounts = new ArrayList<>();
 
     @Given("I have a bank account")
     public void givenIHaveABankAccount(){
@@ -91,7 +91,7 @@ public class BankAccountSteps {
     public static class BankAccount {
         private int balance;
         private final String name;
-        private Map<Date,Integer> archive = new HashMap<Date, Integer>(); 
+        private Map<Date,Integer> archive = new HashMap<>();
 
         public BankAccount(String name) {
             this.name = name;

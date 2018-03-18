@@ -23,7 +23,7 @@ public class ChainedRow implements Row {
      */
     @Override
     public Map<String, String> values() {
-        Map<String, String> values = new LinkedHashMap<String, String>();
+        Map<String, String> values = new LinkedHashMap<>();
         for (Row each : delegates) {
             for (Entry<String, String> entry : each.values().entrySet()) {
                 String name = entry.getKey();

@@ -90,7 +90,7 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 	}
 
 	private String[] parameterNames(List<Parameter> parameters) {
-		List<String> names = new ArrayList<String>();
+		List<String> names = new ArrayList<>();
 		for (Parameter parameter : parameters) {
 			names.add(parameter.name);
 		}
@@ -98,7 +98,7 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 	}
 
 	private List<Parameter> findParameters(String pattern) {
-		List<Parameter> parameters = new ArrayList<Parameter>();
+		List<Parameter> parameters = new ArrayList<>();
 		Matcher findingAllParameterNames = findingAllParameterNames().matcher(
 				pattern);
 		while (findingAllParameterNames.find()) {

@@ -204,7 +204,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private List<Steps> parseAfterLifecycle(String lifecycleAsText) {
-        List<Steps> list = new ArrayList<Steps>();
+        List<Steps> list = new ArrayList<>();
         for (String byScope : lifecycleAsText.split(keywords.scope()) ) {
             byScope = byScope.trim();
             if ( byScope.isEmpty() ) continue;
@@ -268,7 +268,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private List<Scenario> parseScenariosFrom(String storyAsText) {
-        List<Scenario> parsed = new ArrayList<Scenario>();
+        List<Scenario> parsed = new ArrayList<>();
         for (String scenarioAsText : splitScenarios(storyAsText)) {
             parsed.add(parseScenario(scenarioAsText));
         }
@@ -276,7 +276,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private List<String> splitScenarios(String storyAsText) {
-        List<String> scenarios = new ArrayList<String>();
+        List<String> scenarios = new ArrayList<>();
         String scenarioKeyword = keywords.scenario();
 
         // use text after scenario keyword, if found
@@ -343,7 +343,7 @@ public class RegexStoryParser implements StoryParser {
 
     private List<String> findSteps(String stepsAsText) {
         Matcher matcher = findingSteps().matcher(stepsAsText);
-        List<String> steps = new ArrayList<String>();
+        List<String> steps = new ArrayList<>();
         int startAt = 0;
         while (matcher.find(startAt)) {
             steps.add(StringUtils.substringAfter(matcher.group(1), "\n"));

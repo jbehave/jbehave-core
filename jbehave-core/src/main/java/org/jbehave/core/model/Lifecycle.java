@@ -47,7 +47,7 @@ public class Lifecycle {
     }
 
     public List<String> getBeforeSteps(Scope scope) {
-        List<String> beforeSteps = new ArrayList<String>();
+        List<String> beforeSteps = new ArrayList<>();
         for (Steps steps : before) {
             beforeSteps.addAll(stepsByScope(steps, scope));
         }
@@ -64,7 +64,7 @@ public class Lifecycle {
     }
 
     public List<String> getAfterSteps(Scope scope) {
-        List<String> afterSteps = new ArrayList<String>();
+        List<String> afterSteps = new ArrayList<>();
         for (Steps steps : after) {
             afterSteps.addAll(stepsByScope(steps, scope));
         }
@@ -72,7 +72,7 @@ public class Lifecycle {
     }
 
     public Set<Outcome> getOutcomes(){
-    	Set<Outcome> outcomes = new LinkedHashSet<Outcome>();
+    	Set<Outcome> outcomes = new LinkedHashSet<>();
     	for ( Steps steps : after ){
     		outcomes.add(steps.outcome);
     	}
@@ -102,7 +102,7 @@ public class Lifecycle {
 
     public List<String> getAfterSteps(Scope scope, Outcome outcome, Meta meta) {
         MetaFilter filter = getMetaFilter(outcome);
-        List<String> afterSteps = new ArrayList<String>();
+        List<String> afterSteps = new ArrayList<>();
         for (Steps steps : after) {
             if ( outcome.equals(steps.outcome) ) {
                 if ( meta.equals(Meta.EMPTY) ){
