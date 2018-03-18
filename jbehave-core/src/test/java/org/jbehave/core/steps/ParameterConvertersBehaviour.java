@@ -1,10 +1,7 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.mock;
 
 import java.beans.IntrospectionException;
@@ -26,6 +23,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.hamcrest.CoreMatchers;
+import org.hamcrest.Matchers;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
@@ -106,12 +104,12 @@ public class ParameterConvertersBehaviour {
     private void assertConverterForLocale(ParameterConverter<Number> converter, Locale locale) {
         assertThatAllNumberTypesAreAccepted(converter);
         assertThatAllNumbersAreConverted(converter, locale);
-        assertThatNumberIs(converter.convertValue("100,000", Integer.class), 100000);
-        assertThatNumberIs(converter.convertValue("100,000", Long.class), 100000L);
-        assertThatNumberIs(converter.convertValue("100,000.01", Float.class), 100000.01f);
-        assertThatNumberIs(converter.convertValue("100,000.01", Double.class), 100000.01d);
-        assertThatNumberIs(converter.convertValue("1,00,000.01", Double.class), 100000.01d); //Hindi style
-        assertThatNumberIs(converter.convertValue("1,000,000.01", BigDecimal.class), new BigDecimal("1000000.01"));
+        assertThat(converter.convertValue("100,000", Integer.class), is((Number) 100000));
+        assertThat(converter.convertValue("100,000", Long.class), is((Number) 100000L));
+        assertThat(converter.convertValue("100,000.01", Float.class), is((Number) 100000.01f));
+        assertThat(converter.convertValue("100,000.01", Double.class), is((Number) 100000.01d));
+        assertThat(converter.convertValue("1,00,000.01", Double.class), is((Number) 100000.01d));
+        assertThat(converter.convertValue("1,000,000.01", BigDecimal.class), is((Number) new BigDecimal("1000000.01")));
     }
 
     @Test
@@ -161,8 +159,8 @@ public class ParameterConvertersBehaviour {
         ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         assertThatAllNumberTypesAreAccepted(converter);
         assertThatAllNumbersAreConverted(converter, locale);
-        assertThatNumberIs(converter.convertValue("100000,01", Float.class), 100000.01f);
-        assertThatNumberIs(converter.convertValue("100000,01", Double.class), 100000.01d);
+        assertThat(converter.convertValue("100000,01", Float.class), is((Number) 100000.01f));
+        assertThat(converter.convertValue("100000,01", Double.class), is((Number) 100000.01d));
     }
 
     @Test
@@ -171,7 +169,7 @@ public class ParameterConvertersBehaviour {
         ParameterConverter<Number> converter = new NumberConverter(NumberFormat.getInstance(locale));
         assertThatAllNumberTypesAreAccepted(converter);
         assertThatAllNumbersAreConverted(converter, locale);
-        assertThatNumberIs(converter.convertValue("1.000.000,01", BigDecimal.class), new BigDecimal("1000000.01"));
+        assertThat(converter.convertValue("1.000.000,01", BigDecimal.class), is((Number) new BigDecimal("1000000.01")));
     }
 
     private void assertThatAllNumberTypesAreAccepted(ParameterConverter<Number> converter) {
@@ -201,27 +199,27 @@ public class ParameterConvertersBehaviour {
         DecimalFormatSymbols format = new DecimalFormatSymbols(locale);
         char dot = format.getDecimalSeparator();
         char minus = format.getMinusSign();
-        assertThatNumberIs(converter.convertValue("127", Byte.class), Byte.MAX_VALUE);
-        assertThatNumberIs(converter.convertValue(minus + "128", byte.class), Byte.MIN_VALUE);
-        assertThatNumberIs(converter.convertValue("32767", Short.class), Short.MAX_VALUE);
-        assertThatNumberIs(converter.convertValue(minus + "32768", short.class), Short.MIN_VALUE);
-        assertThatNumberIs(converter.convertValue("3", Integer.class), 3);
-        assertThatNumberIs(converter.convertValue("3", int.class), 3);
-        assertThatNumberIs(converter.convertValue("3" + dot + "0", Float.class), 3.0f);
-        assertThatNumberIs(converter.convertValue("3" + dot + "0", float.class), 3.0f);
-        assertThatNumberIs(converter.convertValue("3", Long.class), 3L);
-        assertThatNumberIs(converter.convertValue("3", long.class), 3L);
-        assertThatNumberIs(converter.convertValue("3" + dot + "0", Double.class), 3.0d);
-        assertThatNumberIs(converter.convertValue("3" + dot + "0", double.class), 3.0d);
-        assertThatNumberIs(converter.convertValue("3", BigInteger.class), new BigInteger("3"));
-        assertThatNumberIs(converter.convertValue("3" + dot + "0", BigDecimal.class), new BigDecimal("3.0"));
-        assertThatNumberIs(converter.convertValue("3" + dot + "00", BigDecimal.class), new BigDecimal("3.00")); // currency
-        assertThatNumberIs(converter.convertValue("30000000", BigDecimal.class), new BigDecimal(30000000)); // 7 or more digits
-        assertThatNumberIs(converter.convertValue("3" + dot + "000", BigDecimal.class), new BigDecimal("3.000"));  // something else!
-        assertThatNumberIs(converter.convertValue("-3", BigDecimal.class), new BigDecimal("-3")); // negative
-        assertThatNumberIs(converter.convertValue("3", AtomicInteger.class).intValue(), 3);
-        assertThatNumberIs(converter.convertValue("3", AtomicLong.class).longValue(), 3L);
-        assertThatNumberIs(converter.convertValue("3", Number.class), 3L);
+        assertThat(converter.convertValue("127", Byte.class), is((Number) Byte.MAX_VALUE));
+        assertThat(converter.convertValue(minus + "128", byte.class), is((Number) Byte.MIN_VALUE));
+        assertThat(converter.convertValue("32767", Short.class), is((Number) Short.MAX_VALUE));
+        assertThat(converter.convertValue(minus + "32768", short.class), is((Number) Short.MIN_VALUE));
+        assertThat(converter.convertValue("3", Integer.class), is((Number) 3));
+        assertThat(converter.convertValue("3", int.class), is((Number) 3));
+        assertThat(converter.convertValue("3" + dot + "0", Float.class), is((Number) 3.0f));
+        assertThat(converter.convertValue("3" + dot + "0", float.class), is((Number) 3.0f));
+        assertThat(converter.convertValue("3", Long.class), is((Number) 3L));
+        assertThat(converter.convertValue("3", long.class), is((Number) 3L));
+        assertThat(converter.convertValue("3" + dot + "0", Double.class), is((Number) 3.0d));
+        assertThat(converter.convertValue("3" + dot + "0", double.class), is((Number) 3.0d));
+        assertThat(converter.convertValue("3", BigInteger.class), is((Number) new BigInteger("3")));
+        assertThat(converter.convertValue("3" + dot + "0", BigDecimal.class), is((Number) new BigDecimal("3.0")));
+        assertThat(converter.convertValue("3" + dot + "00", BigDecimal.class), is((Number) new BigDecimal("3.00")));
+        assertThat(converter.convertValue("30000000", BigDecimal.class), is((Number) new BigDecimal(30000000)));
+        assertThat(converter.convertValue("3" + dot + "000", BigDecimal.class), is((Number) new BigDecimal("3.000")));
+        assertThat(converter.convertValue("-3", BigDecimal.class), is((Number) new BigDecimal("-3")));
+        assertThat(converter.convertValue("3", AtomicInteger.class).intValue(), is((Number) 3));
+        assertThat(converter.convertValue("3", AtomicLong.class).longValue(), is((Number) 3L));
+        assertThat(converter.convertValue("3", Number.class), is((Number) 3L));
     }
 
     @Test
@@ -241,12 +239,12 @@ public class ParameterConvertersBehaviour {
     @Test
     public void shouldConvertNaNAndInfinityValuesToNumbers() {
         ParameterConverter<Number> converter = new NumberConverter();
-        assertThatNumberIs(converter.convertValue(NAN, Float.class), Float.NaN);
-        assertThatNumberIs(converter.convertValue(POSITIVE_INFINITY, Float.class), Float.POSITIVE_INFINITY);
-        assertThatNumberIs(converter.convertValue(NEGATIVE_INFINITY, Float.class), Float.NEGATIVE_INFINITY);
-        assertThatNumberIs(converter.convertValue(NAN, Double.class), Double.NaN);
-        assertThatNumberIs(converter.convertValue(POSITIVE_INFINITY, Double.class), Double.POSITIVE_INFINITY);
-        assertThatNumberIs(converter.convertValue(NEGATIVE_INFINITY, Double.class), Double.NEGATIVE_INFINITY);
+        assertThat(converter.convertValue(NAN, Float.class), is((Number) Float.NaN));
+        assertThat(converter.convertValue(POSITIVE_INFINITY, Float.class), is((Number) Float.POSITIVE_INFINITY));
+        assertThat(converter.convertValue(NEGATIVE_INFINITY, Float.class), is((Number) Float.NEGATIVE_INFINITY));
+        assertThat(converter.convertValue(NAN, Double.class), is((Number) Double.NaN));
+        assertThat(converter.convertValue(POSITIVE_INFINITY, Double.class), is((Number) Double.POSITIVE_INFINITY));
+        assertThat(converter.convertValue(NEGATIVE_INFINITY, Double.class), is((Number) Double.NEGATIVE_INFINITY));
     }
 
     @Test
@@ -257,15 +255,15 @@ public class ParameterConvertersBehaviour {
         assertThat(converter.accept(listOfNumbers), is(true));
         assertThat(converter.accept(setOfNumbers), is(false));
         List<Number> list = converter.convertValue("3, 0.5, 6.1f, 8.00", listOfNumbers);
-        assertThatNumberCollectionIs(list, asList(3L, 0.5, 6.1, 8L));
+        assertThatCollectionIs(list, 3L, 0.5, 6.1, 8L);
     }
 
     @Test
     public void shouldConvertCommaSeparatedValuesToSetOfNumbersWithDefaultFormat() {
         ParameterConverters parameterConverters = new ParameterConverters();
         Type setOfNumbers = new TypeLiteral<Set<Number>>(){}.getType();
-        assertThatNumberCollectionIs((Set<Number>)parameterConverters.convert("3, 0.5, 6.1f, 8.00", setOfNumbers), new HashSet<>(asList(3L, 0.5, 6.1, 8L))
-        );
+        Set<Number> set = (Set<Number>)parameterConverters.convert("3, 0.5, 6.1, 8.00", setOfNumbers);
+        assertThatCollectionIs(set, 3L, 0.5, 6.1d, 8L);
     }
 
     @Test
@@ -273,31 +271,31 @@ public class ParameterConvertersBehaviour {
         ParameterConverter<List<Number>> converter = new NumberListConverter(new DecimalFormat("#,####"), " ");
         Type type = new TypeLiteral<List<Number>>(){}.getType();
         List<Number> list = converter.convertValue("3,000 0.5 6.1f 8.00", type);
-        assertThatNumberCollectionIs(list, asList(3000L, 0.5, 6.1, 8L));
+        assertThatCollectionIs(list, 3000L, 0.5, 6.1, 8L);
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void shouldConvertCommaSeparatedValuesOfSpecificNumberTypes() {
         ParameterConverter converter = new NumberListConverter();
-        Type doublesType = new TypeLiteral<List<Double>>(){}.getType();
 
+        Type doubleType = new TypeLiteral<List<Double>>(){}.getType();
         List<Double> doubles = (List<Double>) converter.convertValue(
-                "3, 0.5, 0.0, 8.00, " + NAN + ", " + POSITIVE_INFINITY, doublesType);
-        assertThatNumberCollectionIs(doubles, asList(3.0, 0.5, 0.0, 8.0, Double.NaN, Double.POSITIVE_INFINITY));
+                "3, 0.5, 0.0, 8.00, " + NAN + ", " + POSITIVE_INFINITY, doubleType);
+        assertThatCollectionIs(doubles, 3.0, 0.5, 0.0, 8.0, Double.NaN, Double.POSITIVE_INFINITY);
 
-        Type floatsType = new TypeLiteral<List<Float>>(){}.getType();
+        Type floatType = new TypeLiteral<List<Float>>(){}.getType();
         List<Float> floats = (List<Float>) converter.convertValue(
-                "3, 0.5, 0.0, 8.00, " + NAN + ", " + NEGATIVE_INFINITY, floatsType);
-        assertThatNumberCollectionIs(floats, asList(3.0f, 0.5f, 0.0f, 8.0f, Float.NaN, Float.NEGATIVE_INFINITY));
+                "3, 0.5, 0.0, 8.00, " + NAN + ", " + NEGATIVE_INFINITY, floatType);
+        assertThatCollectionIs(floats, 3.0f, 0.5f, 0.0f, 8.0f, Float.NaN, Float.NEGATIVE_INFINITY);
 
-        Type longsType = new TypeLiteral<List<Long>>(){}.getType();
-        List<Long> longs = (List<Long>) converter.convertValue("3, 0, 8", longsType);
-        assertThatNumberCollectionIs(longs, asList(3L, 0L, 8L));
+        Type longType = new TypeLiteral<List<Long>>(){}.getType();
+        List<Long> longs = (List<Long>) converter.convertValue("3, 0, 8", longType);
+        assertThatCollectionIs(longs, 3L, 0L, 8L);
 
-        Type intsType = new TypeLiteral<List<Integer>>(){}.getType();
-        List<Integer> ints = (List<Integer>) converter.convertValue("3, 0, 8", intsType);
-        assertThatNumberCollectionIs(ints, asList(3, 0, 8));
+        Type intType = new TypeLiteral<List<Integer>>(){}.getType();
+        List<Integer> ints = (List<Integer>) converter.convertValue("3, 0, 8", intType);
+        assertThatCollectionIs(ints, 3, 0, 8);
     }
 
     @Test
@@ -315,8 +313,8 @@ public class ParameterConvertersBehaviour {
         assertThat(converter.accept(listOfStrings), is(true));
         assertThat(converter.accept(listOfNumbers), is(false));
         assertThat(converter.accept(setOfNumbers), is(false));
-        assertThatStringCollectionIs(converter.convertValue("a, string ", listOfStrings), asList("a", "string"));
-        assertThatStringCollectionIs(converter.convertValue(" ", listOfStrings), Arrays.asList(new String[]{}));
+        assertThatCollectionIs(converter.convertValue("a, string ", listOfStrings), "a", "string");
+        assertThatCollectionIs(converter.convertValue(" ", listOfStrings), new String[]{});
     }
 
     @Test
@@ -325,7 +323,7 @@ public class ParameterConvertersBehaviour {
         Type type = Date.class;
         assertThatTypesAreAccepted(converter, type);
         String date = "01/01/2010";
-        assertThat(converter.convertValue(date, type), equalTo(DateConverter.DEFAULT_FORMAT.parse(date)));
+        assertThat(converter.convertValue(date, type), is(DateConverter.DEFAULT_FORMAT.parse(date)));
     }
 
     @Test
@@ -335,7 +333,7 @@ public class ParameterConvertersBehaviour {
         Type type = Date.class;
         assertThatTypesAreAccepted(converter, type);
         String date = "2010-01-01";
-        assertThat(converter.convertValue(date, type), equalTo(customFormat.parse(date)));
+        assertThat(converter.convertValue(date, type), is(customFormat.parse(date)));
     }
 
     @Test
@@ -352,13 +350,13 @@ public class ParameterConvertersBehaviour {
         assertThatTypesAreAccepted(converter, type);
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
         ExamplesTable table = converter.convertValue(value, type);
-        assertThat(table.getRowCount(), equalTo(2));
+        assertThat(table.getRowCount(), is(2));
         Map<String, String> row1 = table.getRow(0);
-        assertThat(row1.get("col1"), equalTo("row11"));
-        assertThat(row1.get("col2"), equalTo("row12"));
+        assertThat(row1.get("col1"), is("row11"));
+        assertThat(row1.get("col2"), is("row12"));
         Map<String, String> row2 = table.getRow(1);
-        assertThat(row2.get("col1"), equalTo("row21"));
-        assertThat(row2.get("col2"), equalTo("row22"));
+        assertThat(row2.get("col1"), is("row21"));
+        assertThat(row2.get("col2"), is("row22"));
     }
 
     @Test
@@ -370,13 +368,13 @@ public class ParameterConvertersBehaviour {
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
         @SuppressWarnings("unchecked")
         List<MyParameters> parameters = (List<MyParameters>) converter.convertValue(value, type);
-        assertThat(parameters.size(), equalTo(2));
+        assertThat(parameters.size(), is(2));
         MyParameters row1 = parameters.get(0);
-        assertThat(row1.col1, equalTo("row11"));
-        assertThat(row1.col2, equalTo("row12"));
+        assertThat(row1.col1, is("row11"));
+        assertThat(row1.col2, is("row12"));
         MyParameters row2 = parameters.get(1);
-        assertThat(row2.col1, equalTo("row21"));
-        assertThat(row2.col2, equalTo("row22"));
+        assertThat(row2.col1, is("row21"));
+        assertThat(row2.col2, is("row22"));
     }
 
     @Test
@@ -387,8 +385,8 @@ public class ParameterConvertersBehaviour {
         assertThatTypesAreAccepted(converter, type);
         String value = "|col1|col2|\n|row11|row12|\n";
         MyParameters parameters = (MyParameters) converter.convertValue(value, type);
-        assertThat(parameters.col1, equalTo("row11"));
-        assertThat(parameters.col2, equalTo("row12"));
+        assertThat(parameters.col1, is("row11"));
+        assertThat(parameters.col2, is("row12"));
     }
 
     @Test
@@ -398,13 +396,13 @@ public class ParameterConvertersBehaviour {
         assertThatTypesAreAccepted(converter, method.getReturnType());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
         ExamplesTable table = (ExamplesTable) converter.convertValue(value, ExamplesTable.class);
-        assertThat(table.getRowCount(), equalTo(2));
+        assertThat(table.getRowCount(), is(2));
         Map<String, String> row1 = table.getRow(0);
-        assertThat(row1.get("col1"), equalTo("row11"));
-        assertThat(row1.get("col2"), equalTo("row12"));
+        assertThat(row1.get("col1"), is("row11"));
+        assertThat(row1.get("col2"), is("row12"));
         Map<String, String> row2 = table.getRow(1);
-        assertThat(row2.get("col1"), equalTo("row21"));
-        assertThat(row2.get("col2"), equalTo("row22"));
+        assertThat(row2.get("col1"), is("row21"));
+        assertThat(row2.get("col2"), is("row22"));
     }
 
     @Test
@@ -427,7 +425,7 @@ public class ParameterConvertersBehaviour {
         ParameterConverter<Enum<?>> converter = new EnumConverter();
         Type type = SomeEnum.class;
         assertThatTypesAreAccepted(converter, type);
-        assertThat(converter.convertValue("ONE", type), equalTo((Enum)SomeEnum.ONE));
+        assertThat(converter.convertValue("ONE", type), is((Enum)SomeEnum.ONE));
     }
 
     @Test
@@ -435,7 +433,7 @@ public class ParameterConvertersBehaviour {
         ParameterConverter<Enum<?>> converter = new FluentEnumConverter();
         Type type = SomeEnum.class;
         assertThat(converter.accept(type), is(true));
-        assertThat(converter.convertValue("multiple words and 1 number", type), equalTo((Enum)SomeEnum.MULTIPLE_WORDS_AND_1_NUMBER));
+        assertThat(converter.convertValue("multiple words and 1 number", type), is((Enum)SomeEnum.MULTIPLE_WORDS_AND_1_NUMBER));
     }
 
     @Test
@@ -450,7 +448,8 @@ public class ParameterConvertersBehaviour {
         Type type = new TypeLiteral<List<SomeEnum>>(){}.getType();
 
         assertThat(converter.accept(type), is(true));
-        assertThatEnumCollectionIs((List<Enum>)converter.convertValue("ONE,TWO,THREE", type), asList(SomeEnum.ONE, SomeEnum.TWO, SomeEnum.THREE));
+        List<Enum> list = (List<Enum>)converter.convertValue("ONE,TWO,THREE", type);
+        assertThatCollectionIs(list, SomeEnum.ONE, SomeEnum.TWO, SomeEnum.THREE);
     }
 
     @Test
@@ -479,7 +478,7 @@ public class ParameterConvertersBehaviour {
         Type type = new TypeLiteral<List<Boolean>>(){}.getType();
         assertThat(converter.accept(type), is(true));
         List<Boolean> list = converter.convertValue("true,false,true", type);
-        assertThatBooleanCollectionIs(list, asList(true, false, true));
+        assertThatCollectionIs(list, true, false, true);
     }
 
     @Test
@@ -494,7 +493,7 @@ public class ParameterConvertersBehaviour {
     public void shouldConvertToCustomObjectUsingCustomConverter() {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
-        assertThat((Bar)parameterConverters.convert("foo", Bar.class), equalTo(new Bar()));
+        assertThat((Bar)parameterConverters.convert("foo", Bar.class), is(Bar.INSTANCE));
     }
 
     @Test
@@ -502,7 +501,8 @@ public class ParameterConvertersBehaviour {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<List<Bar>>(){}.getType();
-        assertThatCustomCollectionIs((List<Bar>)parameterConverters.convert("foo", type), singletonList(new Bar()));
+        List<Bar> list = (List<Bar>)parameterConverters.convert("foo", type);
+        assertThatCollectionIs(list, Bar.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")
@@ -511,8 +511,7 @@ public class ParameterConvertersBehaviour {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<LinkedList<Bar>>(){}.getType();
-        LinkedList<Bar> foo = (LinkedList<Bar>) parameterConverters.convert("foo", type);
-        assertThatCustomCollectionIs(foo, singletonList(new Bar()));
+        assertThatCollectionIs((LinkedList<Bar>) parameterConverters.convert("foo", type), Bar.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")
@@ -521,8 +520,8 @@ public class ParameterConvertersBehaviour {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<SortedSet<Bar>>(){}.getType();
-        TreeSet<Bar> foo  = (TreeSet<Bar>) parameterConverters.convert("foo", type);
-        assertThatCustomCollectionIs(foo, new TreeSet<>(singletonList(new Bar())));
+        Set<Bar> set  = (Set<Bar>) parameterConverters.convert("foo", type);
+        assertThatCollectionIs(set, Bar.INSTANCE);
     }
 
     @SuppressWarnings("unchecked")
@@ -531,8 +530,8 @@ public class ParameterConvertersBehaviour {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<NavigableSet<Bar>>(){}.getType();
-        TreeSet<Bar> foo  = (TreeSet<Bar>) parameterConverters.convert("foo", type);
-        assertThatCustomCollectionIs(foo, new TreeSet<>(singletonList(new Bar())));
+        Set<Bar> set  = (Set<Bar>) parameterConverters.convert("foo", type);
+        assertThatCollectionIs(set, Bar.INSTANCE);
     }
 
     @Test
@@ -556,28 +555,12 @@ public class ParameterConvertersBehaviour {
         parameterConverters.convert("foo", type);
     }
 
-    private void assertThatNumberIs(Number number, Number expected) {
-        assertThat(number, equalTo(expected));
-    }
-
-    private void assertThatNumberCollectionIs(Collection<? extends Number> collection, Collection<? extends Number> expected) {
-        org.junit.Assert.assertEquals(expected, collection);
-    }
-
-    private void assertThatStringCollectionIs(Collection<String> collection, Collection<String> expected) {
-        org.junit.Assert.assertEquals(expected, collection);
-    }
-
-    private void assertThatBooleanCollectionIs(Collection<Boolean> collection, List<Boolean> expected) {
-        org.junit.Assert.assertEquals(expected, collection);
-    }
-
-    private void assertThatEnumCollectionIs(Collection<Enum> collection, Collection<SomeEnum> expected) {
-        org.junit.Assert.assertEquals(expected, collection);
-    }
-
-    private void assertThatCustomCollectionIs(Collection<Bar> collection, Collection<Bar> expected) {
-        org.junit.Assert.assertEquals(expected, collection);
+    private <T> void assertThatCollectionIs(Collection<T> collection, T... expected) {
+        if ( expected.length > 0 ) {
+            assertThat(collection, containsInAnyOrder(expected));
+        } else {
+            assertThat(collection, Matchers.<T>empty());
+        }
     }
 
     private static void assertThatTypesAreAccepted(ParameterConverter<?> converter, Type... types) {
@@ -591,7 +574,10 @@ public class ParameterConvertersBehaviour {
     static class WrongType {
     }
 
-    private class Bar implements Comparable<Bar> {
+    static class Bar implements Comparable<Bar> {
+
+        private static Bar INSTANCE = new Bar();
+
         @Override
         public boolean equals(Object obj) {
             return obj instanceof Bar;
