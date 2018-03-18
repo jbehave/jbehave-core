@@ -69,7 +69,7 @@ public class FreemarkerViewGeneratorBehaviour {
     @Test
     public void shouldHandleInvalidReportFile(){
         // Given
-        Map<String, File> filesByFormat = new HashMap<>();
+        Map<String, File> filesByFormat = new HashMap<String, File>();
         filesByFormat.put("format", null);
         Report report = new Report("name", filesByFormat);
 
@@ -88,7 +88,7 @@ public class FreemarkerViewGeneratorBehaviour {
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
 
         // When
-        Map<String, List<File>> files = new HashMap<>();
+        Map<String, List<File>> files = new HashMap<String, List<File>>();
         files.put("name", asList((File)null));
         generator.createReports(files);
 

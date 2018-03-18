@@ -29,7 +29,7 @@ public class OdfUtils {
     }
 
     public static String parseOdt(TextDocument document) {
-        List<String> lines = new ArrayList<>();
+        List<String> lines = new ArrayList<String>();
 
         try {
             NodeList list = document.getContentRoot().getChildNodes();
@@ -49,7 +49,7 @@ public class OdfUtils {
     }
 
     private static Collection<String> parseTable(Node item) {
-        ArrayList<String> lines = new ArrayList<>();
+        ArrayList<String> lines = new ArrayList<String>();
         Table table = Table.getInstance((TableTableElement) item);
         for (Row row : table.getRowList()) {
             lines.add(parseTableRow(row));

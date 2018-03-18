@@ -168,11 +168,11 @@ public class ExamplesTable {
     private final ParameterConverters parameterConverters;
     private final TableTransformers tableTransformers;
     private final Row defaults;
-    private final List<String> headers = new ArrayList<>();
-    private final List<Map<String, String>> data = new ArrayList<>();
+    private final List<String> headers = new ArrayList<String>();
+    private final List<Map<String, String>> data = new ArrayList<Map<String, String>>();
     private ExamplesTableProperties properties;
     private String propertiesAsString = "";
-    private Map<String, String> namedParameters = new HashMap<>();
+    private Map<String, String> namedParameters = new HashMap<String, String>();
     private ParameterControls parameterControls;
 
     public ExamplesTable(String tableAsString) {
@@ -245,7 +245,7 @@ public class ExamplesTable {
                 headers.addAll(TableUtils.parseRow(rowAsString, true, properties));
             } else {
                 List<String> columns = TableUtils.parseRow(rowAsString, false, properties);
-                Map<String, String> map = new LinkedHashMap<>();
+                Map<String, String> map = new LinkedHashMap<String, String>();
                 for (int column = 0; column < columns.size(); column++) {
                     if (column < headers.size()) {
                         map.put(headers.get(column), columns.get(column));
@@ -316,7 +316,7 @@ public class ExamplesTable {
     }
 
     private Map<String, String> replaceNamedParameters(Map<String, String> row) {
-        Map<String, String> replaced = new LinkedHashMap<>();
+        Map<String, String> replaced = new LinkedHashMap<String, String>();
         for (Entry<String, String> rowEntry : row.entrySet()) {
             String replacedValue = rowEntry.getValue();
             for (Entry<String, String> namedParameter : namedParameters.entrySet()) {
@@ -337,7 +337,7 @@ public class ExamplesTable {
     }
 
     public List<Map<String, String>> getRows() {
-        List<Map<String, String>> rows = new ArrayList<>();
+        List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
         for (int row = 0; row < getRowCount(); row++) {
             rows.add(getRow(row));
         }
@@ -349,7 +349,7 @@ public class ExamplesTable {
     }
 
     public List<Parameters> getRowsAsParameters(boolean replaceNamedParameters) {
-        List<Parameters> rows = new ArrayList<>();
+        List<Parameters> rows = new ArrayList<Parameters>();
 
         for (int row = 0; row < getRowCount(); row++) {
             rows.add(getRowAsParameters(row, replaceNamedParameters));
@@ -363,7 +363,7 @@ public class ExamplesTable {
     }
 
     public <T> List<T> getRowsAs(Class<T> type, Map<String, String> fieldNameMapping) {
-        List<T> rows = new ArrayList<>();
+        List<T> rows = new ArrayList<T>();
 
         for (Parameters parameters : getRowsAsParameters()) {
             rows.add(mapToType(parameters, type, fieldNameMapping));

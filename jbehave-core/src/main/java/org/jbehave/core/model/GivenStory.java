@@ -17,7 +17,7 @@ public class GivenStory {
     private static final String PATH_REGEX = "(.*)\\#\\{(.*?)\\}";
     private static final String PARAMETERS_REGEX = ".*(\\:|\\;).*";
     private final String givenStoryAsString;
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<String, String> parameters = new HashMap<String, String>();
     private String path;
     private String anchor;
 
@@ -55,7 +55,7 @@ public class GivenStory {
     }
 
     public Map<String, String> getAnchorParameters() {
-        Map<String,String> parameters = new HashMap<>();
+        Map<String,String> parameters = new HashMap<String, String>();
         for ( String pair : anchor.trim().split(";") ){
             String[] split = pair.split(":");
             if ( split.length > 1 ){

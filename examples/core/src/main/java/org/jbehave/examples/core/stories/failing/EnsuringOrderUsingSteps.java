@@ -42,7 +42,7 @@ public class EnsuringOrderUsingSteps implements Embeddable {
         embedder.runStoriesAsPaths(Arrays.asList("org/jbehave/examples/core/stories/failing/ensuring_order_using_steps.story"));
     }
 
-    private static final List<String> ORDER = new LinkedList<>();
+    private static final List<String> ORDER = new LinkedList<String>();
 
     @AfterScenario
     public void clearOrder() {

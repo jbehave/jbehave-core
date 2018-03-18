@@ -112,8 +112,8 @@ public class EmbedderBehaviour {
         Configuration configuration = embedder.configuration();
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
         StoryPathResolver resolver = configuration.storyPathResolver();
-        List<String> storyPaths = new ArrayList<>();
-        Map<String, Story> stories = new HashMap<>();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
@@ -123,7 +123,7 @@ public class EmbedderBehaviour {
         }
 
         // When
-        List<StoryMap> maps = asList(new StoryMap("filter", new HashSet<>(stories.values())));
+        List<StoryMap> maps = asList(new StoryMap("filter", new HashSet<Story>(stories.values())));
         StoryMaps storyMaps = new StoryMaps(maps);
         when(mapper.getStoryMaps()).thenReturn(storyMaps);
         embedder.mapStoriesAsPaths(storyPaths);
@@ -430,8 +430,8 @@ public class EmbedderBehaviour {
         embedder.useConfiguration(configuration);
         StoryPathResolver resolver = configuration.storyPathResolver();
 
-        List<String> storyPaths = new ArrayList<>();
-        Map<String, Story> stories = new HashMap<>();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
@@ -479,8 +479,8 @@ public class EmbedderBehaviour {
         embedder.useConfiguration(configuration);
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        List<String> storyPaths = new ArrayList<>();
-        Map<String, Story> stories = new HashMap<>();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
         Meta meta = mock(Meta.class);
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
@@ -558,8 +558,8 @@ public class EmbedderBehaviour {
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        List<String> storyPaths = new ArrayList<>();
-        Map<String, Story> stories = new HashMap<>();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
@@ -601,8 +601,8 @@ public class EmbedderBehaviour {
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        List<String> storyPaths = new ArrayList<>();
-        Map<String, Story> stories = new HashMap<>();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
@@ -648,8 +648,8 @@ public class EmbedderBehaviour {
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        List<String> storyPaths = new ArrayList<>();
-        Map<String, Story> stories = new HashMap<>();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
@@ -692,8 +692,8 @@ public class EmbedderBehaviour {
         InjectableStepsFactory stepsFactory = embedder.stepsFactory();
         MetaFilter filter = embedder.metaFilter();
         StoryPathResolver resolver = configuration.storyPathResolver();
-        List<String> storyPaths = new ArrayList<>();
-        Map<String, Story> stories = new HashMap<>();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
@@ -742,8 +742,8 @@ public class EmbedderBehaviour {
         MetaFilter filter = embedder.metaFilter();
 
         StoryPathResolver resolver = configuration.storyPathResolver();
-        List<String> storyPaths = new ArrayList<>();
-        Map<String, Story> stories = new HashMap<>();
+        List<String> storyPaths = new ArrayList<String>();
+        Map<String, Story> stories = new HashMap<String, Story>();
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);

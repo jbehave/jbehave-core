@@ -47,7 +47,7 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
 
 	protected Map<String, Resource> createIndexFromPaths(String rootURI,
 			String rootPath, String syntax, String includes) {
-		Map<String, Resource> index = new HashMap<>();
+		Map<String, Resource> index = new HashMap<String, Resource>();
 		List<String> paths = new StoryFinder().findPaths(
 				codeLocationFromPath(rootPath), includes, EMPTY);
 		for (String path : paths) {
@@ -99,7 +99,7 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
 
 	protected void addBreadcrumbs(Map<String, Resource> index) {
 		for (Resource resource : index.values()) {
-			List<String> breadcrumbs = new ArrayList<>();
+			List<String> breadcrumbs = new ArrayList<String>();
 			collectBreadcrumbs(breadcrumbs, resource, index);
 			resource.setBreadcrumbs(breadcrumbs);
 		}

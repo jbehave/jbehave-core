@@ -32,7 +32,7 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
 	
 	public List<CandidateSteps> createCandidateSteps() {
 		List<Class<?>> types = stepsTypes();
-		List<CandidateSteps> steps = new ArrayList<>();
+		List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
 		for (Class<?> type : types) {
 			configuration.parameterConverters().addConverters(
 					methodReturningConverters(type));
@@ -47,7 +47,7 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
 	 * Create parameter converters from methods annotated with @AsParameterConverter
 	 */
 	private List<ParameterConverter> methodReturningConverters(Class<?> type) {
-		List<ParameterConverter> converters = new ArrayList<>();
+		List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
 
 		for (Method method : type.getMethods()) {
 			if (method.isAnnotationPresent(AsParameterConverter.class)) {

@@ -9,7 +9,7 @@ public class Game {
     private final int width;
     private final int height;
     private GameObserver observer;
-    private Set<Cell> cells = new HashSet<>();
+    private Set<Cell> cells = new HashSet<Cell>();
 
     public Game(int width, int height) {
         this.width = width;

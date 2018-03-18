@@ -29,7 +29,7 @@ public class TableTransformers {
     public static final String FORMATTING = "FORMATTING";
     public static final String REPLACING = "REPLACING";
 
-    private final Map<String, TableTransformer> transformers = new HashMap<>();
+    private final Map<String, TableTransformer> transformers = new HashMap<String, TableTransformer>();
 
     public TableTransformers() {
         useTransformer(FROM_LANDSCAPE, new FromLandscape());
@@ -57,14 +57,14 @@ public class TableTransformers {
 
         @Override
         public String transform(String tableAsString, ExamplesTableProperties properties) {
-            Map<String, List<String>> data = new LinkedHashMap<>();
+            Map<String, List<String>> data = new LinkedHashMap<String, List<String>>();
             for (String rowAsString : tableAsString.split(properties.getRowSeparator())) {
                 if (ignoreRow(rowAsString, properties.getIgnorableSeparator())) {
                     continue;
                 }
                 List<String> values = TableUtils.parseRow(rowAsString, false, properties);
                 String header = values.get(0);
-                List<String> rowValues = new ArrayList<>(values);
+                List<String> rowValues = new ArrayList<String>(values);
                 rowValues.remove(0);
                 data.put(header, rowValues);
             }
@@ -97,7 +97,7 @@ public class TableTransformers {
 
         @Override
         public String transform(String tableAsString, ExamplesTableProperties properties) {
-            List<List<String>> data = new ArrayList<>();
+            List<List<String>> data = new ArrayList<List<String>>();
             for (String rowAsString : tableAsString.split(properties.getRowSeparator())) {
                 if (ignoreRow(rowAsString, properties.getIgnorableSeparator())) {
                     continue;
@@ -122,7 +122,7 @@ public class TableTransformers {
         }
 
         private Map<Integer, Integer> maxWidth(List<List<String>> data) {
-            Map<Integer, Integer> maxWidths = new HashMap<>();
+            Map<Integer, Integer> maxWidths = new HashMap<Integer, Integer>();
             for (List<String> row : data) {
                 for (int c = 0; c < row.size(); c++) {
                     String cell = row.get(c).trim();

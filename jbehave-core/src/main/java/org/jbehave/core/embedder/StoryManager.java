@@ -38,8 +38,8 @@ public class StoryManager {
 	private final ExecutorService executorService;
 	private final InjectableStepsFactory stepsFactory;
 	private final PerformableTree performableTree;
-	private final Map<String, RunningStory> runningStories = new HashMap<>();
-	private final Map<MetaFilter, List<Story>> excludedStories = new HashMap<>();
+	private final Map<String, RunningStory> runningStories = new HashMap<String, RunningStory>();
+	private final Map<MetaFilter, List<Story>> excludedStories = new HashMap<MetaFilter, List<Story>>();
 	private RunContext context;
 	private StoryTimeouts timeouts;
 	
@@ -74,7 +74,7 @@ public class StoryManager {
 	}
 
 	public List<StoryOutcome> outcomes() {
-		List<StoryOutcome> outcomes = new ArrayList<>();
+		List<StoryOutcome> outcomes = new ArrayList<StoryOutcome>();
 		for (RunningStory story : runningStories.values()) {
 			outcomes.add(new StoryOutcome(story));
 		}
@@ -87,7 +87,7 @@ public class StoryManager {
 	}
 
 	private List<Story> storiesOf(List<String> storyPaths) {
-		List<Story> stories = new ArrayList<>();
+		List<Story> stories = new ArrayList<Story>();
 		for (String storyPath : storyPaths) {
 			stories.add(storyOfPath(storyPath));
 		}
@@ -150,7 +150,7 @@ public class StoryManager {
 	public List<Story> notAllowedBy(MetaFilter filter) {
 		List<Story> stories = excludedStories.get(filter);
 		if (stories == null) {
-			stories = new ArrayList<>();
+			stories = new ArrayList<Story>();
 			excludedStories.put(filter, stories);
 		}
 		return stories;

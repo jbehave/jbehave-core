@@ -28,8 +28,8 @@ import org.needle4j.injection.InjectionProviderInstancesSupplier;
  */
 public class NeedleAnnotationBuilder extends AnnotationBuilder {
 
-	private final Set<InjectionProvider<?>> provider = new HashSet<>();
-	private final Set<Class<?>> stepsClasses = new HashSet<>();
+	private final Set<InjectionProvider<?>> provider = new HashSet<InjectionProvider<?>>();
+	private final Set<Class<?>> stepsClasses = new HashSet<Class<?>>();
 	private NeedleStepsFactory factory;
 
 	public NeedleAnnotationBuilder(Class<?> annotatedClass, AnnotationMonitor annotationMonitor) {

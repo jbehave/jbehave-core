@@ -19,7 +19,7 @@ public enum ReadInjectionProviderClassNames {
 	private static final String CUSTOM_INJECTION_PROVIDER_CLASSES = "custom.injection.provider.classes";
 
 	public final Set<String> apply(final ResourceBundle resourceBundle) {
-		final LinkedHashSet<String> result = new LinkedHashSet<>();
+		final LinkedHashSet<String> result = new LinkedHashSet<String>();
 
 		if (resourceBundle != null && resourceBundle.containsKey(CUSTOM_INJECTION_PROVIDER_CLASSES)) {
 			final String csvProperty = resourceBundle.getString(CUSTOM_INJECTION_PROVIDER_CLASSES);

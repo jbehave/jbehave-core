@@ -114,11 +114,11 @@ public class Keywords {
     private final String metaFilter;
     private final String yes;
     private final String no;
-    private final Map<StepType, String> startingWordsByType = new HashMap<>();
+    private final Map<StepType, String> startingWordsByType = new HashMap<StepType, String>();
 
 
     public static Map<String, String> defaultKeywords() {
-        Map<String, String> keywords = new HashMap<>();
+        Map<String, String> keywords = new HashMap<String, String>();
         keywords.put(META, "Meta:");
         keywords.put(META_PROPERTY, "@");
         keywords.put(NARRATIVE, "Narrative:");
@@ -391,7 +391,7 @@ public class Keywords {
     }
 
     public String[] startingWords() {
-        List<String> words = new ArrayList<>();
+        List<String> words = new ArrayList<String>();
         for (String word : startingWordsByType().values()) {
             words.addAll(asList(synonymsOf(word)));
         }

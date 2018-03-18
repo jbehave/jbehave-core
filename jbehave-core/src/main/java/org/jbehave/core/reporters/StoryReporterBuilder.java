@@ -142,7 +142,7 @@ public class StoryReporterBuilder {
 
     }
 
-    private List<org.jbehave.core.reporters.Format> formats = new ArrayList<>();
+    private List<org.jbehave.core.reporters.Format> formats = new ArrayList<org.jbehave.core.reporters.Format>();
     protected String relativeDirectory;
     protected FilePathResolver pathResolver;
     protected URL codeLocation;
@@ -196,7 +196,7 @@ public class StoryReporterBuilder {
         if (keywords instanceof LocalizedKeywords) {
             locale = ((LocalizedKeywords) keywords).getLocale();
         }
-        List<String> names = new ArrayList<>();
+        List<String> names = new ArrayList<String>();
         for (org.jbehave.core.reporters.Format format : formats) {
             String name = format.name();
             if (toLowerCase) {
@@ -280,7 +280,7 @@ public class StoryReporterBuilder {
      */
     @Deprecated
     public StoryReporterBuilder withFormats(Format... formats) {
-        List<org.jbehave.core.reporters.Format> formatz = new ArrayList<>();
+        List<org.jbehave.core.reporters.Format> formatz = new ArrayList<org.jbehave.core.reporters.Format>();
         for (Format format : formats) {
             formatz.add(format.realFormat);
         }
@@ -328,7 +328,7 @@ public class StoryReporterBuilder {
     }
 
     public StoryReporter build(String storyPath) {
-        Map<org.jbehave.core.reporters.Format, StoryReporter> delegates = new HashMap<>();
+        Map<org.jbehave.core.reporters.Format, StoryReporter> delegates = new HashMap<org.jbehave.core.reporters.Format, StoryReporter>();
         for (org.jbehave.core.reporters.Format format : formats) {
             delegates.put(format, reporterFor(storyPath, format));
         }
@@ -340,7 +340,7 @@ public class StoryReporterBuilder {
     }
 
     public Map<String, StoryReporter> build(List<String> storyPaths) {
-        Map<String, StoryReporter> reporters = new HashMap<>();
+        Map<String, StoryReporter> reporters = new HashMap<String, StoryReporter>();
         for (String storyPath : storyPaths) {
             reporters.put(storyPath, build(storyPath));
         }

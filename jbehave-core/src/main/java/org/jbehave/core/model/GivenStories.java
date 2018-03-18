@@ -14,7 +14,7 @@ public class GivenStories {
 
     public static final GivenStories EMPTY = new GivenStories("");
 
-    private final List<GivenStory> givenStories = new ArrayList<>();
+    private final List<GivenStory> givenStories = new ArrayList<GivenStory>();
     private final String givenStoriesAsString;
     private ExamplesTable examplesTable = ExamplesTable.EMPTY;
 
@@ -48,13 +48,13 @@ public class GivenStories {
              parameters = examplesTable.getRow(examplesRow);
         }
         if ( parameters == null ){
-            return new HashMap<>();
+            return new HashMap<String, String>();
         }
         return parameters;
     }
 
     public List<String> getPaths() {
-        List<String> paths = new ArrayList<>();
+        List<String> paths = new ArrayList<String>();
         for (GivenStory story : givenStories) {
             paths.add(story.asString().trim());
         }

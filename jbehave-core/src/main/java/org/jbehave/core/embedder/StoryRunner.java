@@ -48,15 +48,15 @@ import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
  */
 public class StoryRunner {
 
-    private ThreadLocal<FailureStrategy> currentStrategy = new ThreadLocal<>();
-    private ThreadLocal<FailureStrategy> failureStrategy = new ThreadLocal<>();
-    private ThreadLocal<PendingStepStrategy> pendingStepStrategy = new ThreadLocal<>();
-    private ThreadLocal<UUIDExceptionWrapper> storyFailure = new ThreadLocal<>();
-    private ThreadLocal<StoryReporter> reporter = new ThreadLocal<>();
-    private ThreadLocal<String> reporterStoryPath = new ThreadLocal<>();
-    private ThreadLocal<State> storiesState = new ThreadLocal<>();
+    private ThreadLocal<FailureStrategy> currentStrategy = new ThreadLocal<FailureStrategy>();
+    private ThreadLocal<FailureStrategy> failureStrategy = new ThreadLocal<FailureStrategy>();
+    private ThreadLocal<PendingStepStrategy> pendingStepStrategy = new ThreadLocal<PendingStepStrategy>();
+    private ThreadLocal<UUIDExceptionWrapper> storyFailure = new ThreadLocal<UUIDExceptionWrapper>();
+    private ThreadLocal<StoryReporter> reporter = new ThreadLocal<StoryReporter>();
+    private ThreadLocal<String> reporterStoryPath = new ThreadLocal<String>();
+    private ThreadLocal<State> storiesState = new ThreadLocal<State>();
     // should this be volatile?
-    private Map<Story, StoryDuration> cancelledStories = new HashMap<>();
+    private Map<Story, StoryDuration> cancelledStories = new HashMap<Story, StoryDuration>();
 
     /**
      * Run steps before or after a collection of stories. Steps are execute only
@@ -180,7 +180,7 @@ public class StoryRunner {
         if (beforeStories != null) {
             context.stateIs(beforeStories);
         }
-        Map<String, String> storyParameters = new HashMap<>();
+        Map<String, String> storyParameters = new HashMap<String, String>();
         run(context, story, storyParameters);
     }
 
@@ -427,7 +427,7 @@ public class StoryRunner {
 
     private Story storyWithMatchingScenarios(Story story, Map<String,String> parameters) {
         if ( parameters.isEmpty() ) return story;
-        List<Scenario> scenarios = new ArrayList<>();
+        List<Scenario> scenarios = new ArrayList<Scenario>();
         for ( Scenario scenario : story.getScenarios() ){
             if ( matchesParameters(scenario, parameters) ){
                 scenarios.add(scenario);
@@ -520,7 +520,7 @@ public class StoryRunner {
     }
 
     private void generatePendingStepMethods(RunContext context, List<Step> steps) {
-        List<PendingStep> pendingSteps = new ArrayList<>();
+        List<PendingStep> pendingSteps = new ArrayList<PendingStep>();
         for (Step step : steps) {
             if (step instanceof PendingStep) {
                 pendingSteps.add((PendingStep) step);
@@ -528,7 +528,7 @@ public class StoryRunner {
         }
         if (!pendingSteps.isEmpty()) {
             PendingStepMethodGenerator generator = new PendingStepMethodGenerator(context.configuration().keywords());
-            List<String> methods = new ArrayList<>();
+            List<String> methods = new ArrayList<String>();
             for (PendingStep pendingStep : pendingSteps) {
                 if (!pendingStep.annotated()) {
                     methods.add(generator.generateMethod(pendingStep));

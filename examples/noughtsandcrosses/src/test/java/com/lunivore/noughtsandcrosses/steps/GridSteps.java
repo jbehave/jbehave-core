@@ -41,8 +41,8 @@ public class GridSteps extends Steps {
     @Given("a grid that looks like $grid")
     public void givenThatTheGridLooksLike(String grid) throws Exception {
         givenTheGameIsRunning();
-        List<String> oTurns = new ArrayList<>();
-        List<String> xTurns = new ArrayList<>();
+        List<String> oTurns = new ArrayList<String>();
+        List<String> xTurns = new ArrayList<String>();
         
         captureMoves(oTurns, xTurns, grid);    
         performMoves(oTurns, xTurns);

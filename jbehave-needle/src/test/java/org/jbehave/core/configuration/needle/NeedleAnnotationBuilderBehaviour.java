@@ -191,7 +191,7 @@ public class NeedleAnnotationBuilderBehaviour {
         assertThat(candidateSteps.size(), equalTo(stepsClasses.length));
 
         // transform candidateSteps to Set of classes
-        final Set<Class<?>> candidateStepClasses = new HashSet<>();
+        final Set<Class<?>> candidateStepClasses = new HashSet<Class<?>>();
         for (final CandidateSteps step : candidateSteps) {
             candidateStepClasses.add(((Steps) step).instance().getClass());
         }

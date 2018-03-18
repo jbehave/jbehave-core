@@ -64,13 +64,13 @@ public abstract class AbstractEmbedderTask extends Task {
      * Include filters, relative to the root source directory determined by the
      * scope
      */
-    private List<String> includes = new ArrayList<>();
+    private List<String> includes = new ArrayList<String>();
 
     /**
      * Exclude filters, relative to the root source directory determined by the
      * scope
      */
-    private List<String> excludes = new ArrayList<>();
+    private List<String> excludes = new ArrayList<String>();
 
     /**
      * The boolean flag to skip running stories

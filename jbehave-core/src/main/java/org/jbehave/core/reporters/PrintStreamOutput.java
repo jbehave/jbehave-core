@@ -128,9 +128,9 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     private final PrintStream output;
     private final Properties outputPatterns;
     private final Keywords keywords;
-    private ThreadLocal<Boolean> reportFailureTrace = new ThreadLocal<>();
-    private ThreadLocal<Boolean> compressFailureTrace = new ThreadLocal<>();
-    private ThreadLocal<Throwable> cause = new ThreadLocal<>();
+    private ThreadLocal<Boolean> reportFailureTrace = new ThreadLocal<Boolean>();
+    private ThreadLocal<Boolean> compressFailureTrace = new ThreadLocal<Boolean>();
+    private ThreadLocal<Throwable> cause = new ThreadLocal<Throwable>();
 
     protected PrintStreamOutput(Format format, PrintStream output, Properties defaultPatterns,
             Properties outputPatterns, Keywords keywords) {

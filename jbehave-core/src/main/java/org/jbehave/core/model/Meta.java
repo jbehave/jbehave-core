@@ -35,14 +35,14 @@ public class Meta {
     }
 
     private void parse(List<String> propertiesAsString) {
-        for (String propertyAsString : new HashSet<>(propertiesAsString)) {
+        for (String propertyAsString : new HashSet<String>(propertiesAsString)) {
             Property property = new Property(propertyAsString);
             this.properties.setProperty(property.getName(), property.getValue());
         }
     }
 
     public Set<String> getPropertyNames() {
-        Set<String> names = new TreeSet<>();
+        Set<String> names = new TreeSet<String>();
         for (Object key : properties.keySet()) {
             names.add((String) key);
         }
@@ -66,7 +66,7 @@ public class Meta {
     }
 
     private Meta inherit(Meta child, Meta parent) {
-        Set<String> names = new HashSet<>(child.getPropertyNames());
+        Set<String> names = new HashSet<String>(child.getPropertyNames());
         // only names that are not already present in the child are added
         names.addAll(parent.getPropertyNames());
         Properties inherited = new Properties();
@@ -125,7 +125,7 @@ public class Meta {
     }
 
     public static Meta createMeta(String meta, Keywords keywords) {
-        List<String> properties = new ArrayList<>();
+        List<String> properties = new ArrayList<String>();
         for (String property : meta.split(keywords.metaProperty())) {
             if (StringUtils.isNotBlank(property)) {
                 String beforeIgnorable = StringUtils.substringBefore(property,keywords.ignorable());

@@ -59,7 +59,7 @@ public class WeldBootstrap extends Weld {
         private Map<Class<?>, WeldAnnotationBuilder> builders = null;
 
         public void build() {
-            builders = new HashMap<>();
+            builders = new HashMap<Class<?>, WeldAnnotationBuilder>();
             for (Object o : instances) {
                 Class<?> instanceClass = o.getClass();
                 WeldAnnotationBuilder builder = new WeldAnnotationBuilder(instanceClass, configuration, stepsFactory);

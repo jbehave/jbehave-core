@@ -52,7 +52,7 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
         if (finder.isAnnotationPresent(UsingGuice.class)) {
             @SuppressWarnings("rawtypes")
             List<Class> moduleClasses = finder.getAnnotatedValues(UsingGuice.class, Class.class, "modules");
-            List<Module> modules = new ArrayList<>();
+            List<Module> modules = new ArrayList<Module>();
             for (Class<Module> moduleClass : moduleClasses) {
                 try {
                     modules.add(moduleClass.newInstance());
@@ -104,7 +104,7 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
         if (bindingsByType.isEmpty() && injector.getParent() != null) {
             return findConverters(injector.getParent());
         }
-        List<ParameterConverter> converters = new ArrayList<>();
+        List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
         for (Binding<ParameterConverter> binding : bindingsByType) {
             converters.add(binding.getProvider().get());
         }

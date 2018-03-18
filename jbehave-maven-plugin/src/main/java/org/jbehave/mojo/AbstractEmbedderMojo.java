@@ -366,7 +366,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
         }
         embedder.useEmbedderMonitor(embedderMonitor());
         if (isNotEmpty(metaFilters)) {
-            List<String> filters = new ArrayList<>();
+            List<String> filters = new ArrayList<String>();
             for (String filter : metaFilters) {
                 if (filter != null) {
                     filters.add(filter);

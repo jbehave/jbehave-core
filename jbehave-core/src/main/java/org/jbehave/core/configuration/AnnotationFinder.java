@@ -46,9 +46,9 @@ public class AnnotationFinder {
     @SuppressWarnings("unchecked")
     public <T, A extends Annotation> List<T> getAnnotatedValues(Class<A> annotationClass, Class<T> type,
             String memberName) {
-        Set<T> set = new LinkedHashSet<>();
+        Set<T> set = new LinkedHashSet<T>();
         if (!isAnnotationPresent(annotationClass)) {
-            return new ArrayList<>(set);
+            return new ArrayList<T>(set);
         }
         Object[] values = getAnnotatedValue(annotationClass, Object[].class, memberName);
         for (Object value : values) {
@@ -65,7 +65,7 @@ public class AnnotationFinder {
                 set.addAll(new AnnotationFinder(superClass).getAnnotatedValues(annotationClass, type, memberName));
             }
         }
-        return new ArrayList<>(set);
+        return new ArrayList<T>(set);
     }
 
     /**

@@ -135,7 +135,7 @@ public class PatternVariantBuilder {
      */
     private Set<String> variantsFor(String input) {
         // Store current invocation's results
-        Set<String> variants = new HashSet<>();
+        Set<String> variants = new HashSet<String>();
 
         Matcher m = regex.matcher(input);
         boolean matches = m.matches();
@@ -159,7 +159,7 @@ public class PatternVariantBuilder {
 
         // split the pattern into its options and add an empty
         // string if it ends with a separator
-        List<String> patternParts = new ArrayList<>();
+        List<String> patternParts = new ArrayList<String>();
         patternParts.addAll(asList(patternGroup.split("\\|")));
         if (patternGroup.endsWith("|")) {
             patternParts.add("");
@@ -215,9 +215,9 @@ public class PatternVariantBuilder {
      */
     public Set<String> allVariants(boolean compressWhitespace) {
         if (!compressWhitespace) {
-            return new HashSet<>(variants);
+            return new HashSet<String>(variants);
         }
-        Set<String> compressed = new HashSet<>();
+        Set<String> compressed = new HashSet<String>();
         for (String variant : variants) {
             compressed.add(variant.replaceAll("\\s{2,}", " "));
         }

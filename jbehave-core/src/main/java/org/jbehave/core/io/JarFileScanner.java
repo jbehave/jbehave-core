@@ -53,7 +53,7 @@ public class JarFileScanner {
         try {
             JarFile jar = new JarFile(jarURL.getFile());
             try {
-                List<String> result = new ArrayList<>();
+                List<String> result = new ArrayList<String>();
                 Enumeration<JarEntry> en = jar.entries();
                 while (en.hasMoreElements()) {
                     JarEntry entry = en.nextElement();
@@ -89,7 +89,7 @@ public class JarFileScanner {
     }
 
     private List<String> toLocalPath(List<String> patternList) {
-        List<String> transformed = new ArrayList<>(patternList);
+        List<String> transformed = new ArrayList<String>(patternList);
         CollectionUtils.transform(transformed, new Transformer<String, String>() {
             public String transform(String pattern) {
                 return pattern!=null ? pattern.replace('/', File.separatorChar) : null;

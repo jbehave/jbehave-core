@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class BytecodeGroovyClassLoader extends GroovyClassLoader {
 
-    private Map<String, byte[]> classBytes = new HashMap<>();
+    private Map<String, byte[]> classBytes = new HashMap<String, byte[]>();
 
     @Override
     public InputStream getResourceAsStream(String name) {

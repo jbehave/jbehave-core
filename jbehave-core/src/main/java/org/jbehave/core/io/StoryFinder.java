@@ -171,7 +171,7 @@ public class StoryFinder {
     }
 
     protected List<String> normalise(List<String> paths) {
-        List<String> transformed = new ArrayList<>(paths);
+        List<String> transformed = new ArrayList<String>(paths);
         CollectionUtils.transform(transformed, new Transformer<String, String>() {
             public String transform(String path) {
                 return path.replace('\\', '/');
@@ -184,7 +184,7 @@ public class StoryFinder {
         if (StringUtils.isBlank(prefixWith)) {
             return paths;
         }
-        List<String> transformed = new ArrayList<>(paths);
+        List<String> transformed = new ArrayList<String>(paths);
         CollectionUtils.transform(transformed, new Transformer<String, String>() {
             public String transform(String path) {
                 return prefixWith + path;
@@ -194,7 +194,7 @@ public class StoryFinder {
     }
 
     protected List<String> classNames(List<String> paths) {
-        List<String> trasformed = new ArrayList<>(paths);
+        List<String> trasformed = new ArrayList<String>(paths);
         CollectionUtils.transform(trasformed, new Transformer<String, String>() {
             public String transform(String path) {
                 if (!StringUtils.endsWithIgnoreCase(path, classNameExtension())) {
@@ -211,7 +211,7 @@ public class StoryFinder {
     }
 
     protected List<String> sort(List<String> input) {
-        List<String> sorted = new ArrayList<>(input);
+        List<String> sorted = new ArrayList<String>(input);
         Collections.sort(sorted, sortingComparator());
         return sorted;
     }
@@ -246,7 +246,7 @@ public class StoryFinder {
     private List<String> scanDirectory(String basedir, List<String> includes, List<String> excludes) {
         DirectoryScanner scanner = new DirectoryScanner();
         if (!new File(basedir).exists()) {
-            return new ArrayList<>();
+            return new ArrayList<String>();
         }
         scanner.setBasedir(basedir);
         if (includes != null) {

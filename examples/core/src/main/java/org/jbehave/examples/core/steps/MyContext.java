@@ -5,6 +5,6 @@ import java.util.Map;
 
 public class MyContext {
 
-	Map<String,Object> variables = new HashMap<>();
+	Map<String,Object> variables = new HashMap<String, Object>();
 	
 }

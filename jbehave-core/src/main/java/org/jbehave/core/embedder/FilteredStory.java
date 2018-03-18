@@ -25,7 +25,7 @@ public class FilteredStory {
         String scenarioMetaPrefix = storyControls.scenarioMetaPrefix();
         Meta storyMeta = story.getMeta().inheritFrom(story.asMeta(storyMetaPrefix));
         storyAllowed = filter.allow(storyMeta);
-        scenariosAllowed = new HashMap<>();
+        scenariosAllowed = new HashMap<Scenario, Boolean>();
         for (Scenario scenario : story.getScenarios()) {
             boolean scenarioAllowed;
             if (scenario.getExamplesTable().getRowCount() > 0 && metaByRow(scenario, storyControls)) {

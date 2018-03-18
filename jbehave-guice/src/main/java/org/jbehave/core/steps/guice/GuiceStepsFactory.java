@@ -32,7 +32,7 @@ public class GuiceStepsFactory extends AbstractStepsFactory {
 
     @Override
     protected List<Class<?>> stepsTypes() {
-        List<Class<?>> types = new ArrayList<>();
+        List<Class<?>> types = new ArrayList<Class<?>>();
         addTypes(injector, types);
         return types;
     }
@@ -57,7 +57,7 @@ public class GuiceStepsFactory extends AbstractStepsFactory {
     }
 
     public Object createInstanceOfType(Class<?> type) {
-        List<Object> instances = new ArrayList<>();
+        List<Object> instances = new ArrayList<Object>();
         addInstances(injector, type, instances);
         if ( !instances.isEmpty() ){
             return instances.iterator().next();

@@ -13,7 +13,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  */
 public class StoryMaps {
     
-    private Map<String, StoryMap> indexed = new LinkedHashMap<>();
+    private Map<String, StoryMap> indexed = new LinkedHashMap<String, StoryMap>();
 
     public StoryMaps(List<StoryMap> maps) {
         index(maps);
@@ -26,7 +26,7 @@ public class StoryMaps {
     }
 
     public List<String> getMetaFilters() {
-        return new ArrayList<>(indexed.keySet());
+        return new ArrayList<String>(indexed.keySet());
     }
 
     public StoryMap getMap(String metaFilter) {
@@ -34,7 +34,7 @@ public class StoryMaps {
     }
 
     public List<StoryMap> getMaps() {
-        return new ArrayList<>(indexed.values());
+        return new ArrayList<StoryMap>(indexed.values());
     }
 
     @Override

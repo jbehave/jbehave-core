@@ -14,7 +14,7 @@ public class OrganizationManager {
 
   @PostConstruct
   public void init() {
-    organizations = new ThreadLocal<>();
+    organizations = new ThreadLocal<Organization>();
   }
 
   @PreDestroy

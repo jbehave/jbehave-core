@@ -204,7 +204,7 @@ public class StepCreatorBehaviour {
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = new RegexStepMatcher(StepType.WHEN, "I use parameters $theme and $variant", Pattern.compile("When I use parameters (.*) and (.*)"), new String[]{"theme", "variant"});
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls());
-        Map<String, String> parameters = new HashMap<>();
+        Map<String, String> parameters = new HashMap<String, String>();
 
         // When
         StepResult stepResult = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"),
@@ -231,7 +231,7 @@ public class StepCreatorBehaviour {
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, new ParameterControls().useDelimiterNamedParameters(false));
-        Map<String, String> parameters = new HashMap<>();
+        Map<String, String> parameters = new HashMap<String, String>();
         parameters.put("theme", firstParameterValue);
         parameters.put("variant", secondParameterValue);
 
@@ -498,7 +498,7 @@ public class StepCreatorBehaviour {
         StepMatcher stepMatcher = mock(StepMatcher.class);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<String, String>();
         params.put("t", "distinct theme");
         params.put("v", "distinct variant");
         when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
@@ -528,7 +528,7 @@ public class StepCreatorBehaviour {
         StepMatcher stepMatcher = mock(StepMatcher.class);
         ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(false);
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
-        Map<String, String> params = new HashMap<>();
+        Map<String, String> params = new HashMap<String, String>();
         params.put("theme", "a theme");
         params.put("variant", "a variant");
         when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));

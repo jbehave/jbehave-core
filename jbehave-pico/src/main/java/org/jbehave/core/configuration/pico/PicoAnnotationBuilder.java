@@ -44,7 +44,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
         if (finder.isAnnotationPresent(UsingPico.class)) {
             @SuppressWarnings("rawtypes")
             List<Class> moduleClasses = finder.getAnnotatedValues(UsingPico.class, Class.class, "modules");
-            List<PicoModule> modules = new ArrayList<>();
+            List<PicoModule> modules = new ArrayList<PicoModule>();
             for (Class<PicoModule> moduleClass : moduleClasses) {
                 try {
                     modules.add(moduleClass.newInstance());

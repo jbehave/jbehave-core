@@ -25,13 +25,13 @@ public class StoryMapsBehaviour {
         String storyPath3 = "/path/to/story_three.story";
         // story paths in non-natural order to verify ordering
         List<String> storyPaths = asList(storyPath2, storyPath1);
-        Map<String, Story> storiesByPath = new HashMap<>();
+        Map<String, Story> storiesByPath = new HashMap<String, Story>();
         for (String storyPath : storyPaths ) {
             storiesByPath.put(storyPath, new Story(storyPath));
         }
         
         // When
-        StoryMaps storyMaps = new StoryMaps(asList(new StoryMap("filter", new HashSet<>(storiesByPath.values()))));
+        StoryMaps storyMaps = new StoryMaps(asList(new StoryMap("filter", new HashSet<Story>(storiesByPath.values()))));
         StoryLanes storyLanes = new StoryLanes(storyMaps, new UnderscoredToCapitalized());
         
         // Then

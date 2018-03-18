@@ -20,7 +20,7 @@ import org.jbehave.core.model.StoryMaps;
  */
 public class StoryMapper {
 
-    private Map<String, Set<Story>> map = new HashMap<>();
+    private Map<String, Set<Story>> map = new HashMap<String, Set<Story>>();
 
     /**
      * Maps a story if it is allowed by the meta filter
@@ -52,7 +52,7 @@ public class StoryMapper {
     }
 
     public StoryMaps getStoryMaps() {
-        List<StoryMap> maps = new ArrayList<>();
+        List<StoryMap> maps = new ArrayList<StoryMap>();
         for (String filter : map.keySet()) {
             maps.add(getStoryMap(filter));
         }
@@ -66,7 +66,7 @@ public class StoryMapper {
     private Set<Story> storiesFor(String filter) {
         Set<Story> stories = map.get(filter);
         if (stories == null) {
-            stories = new HashSet<>();
+            stories = new HashSet<Story>();
             map.put(filter, stories);
         }
         return stories;

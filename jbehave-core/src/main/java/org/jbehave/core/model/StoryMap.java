@@ -25,11 +25,11 @@ public class StoryMap {
     }
     
     public List<Story> getStories(){
-        return new ArrayList<>(stories);
+        return new ArrayList<Story>(stories);
     }
     
     public List<String> getStoryPaths() {
-        List<String> paths = new ArrayList<>();
+        List<String> paths = new ArrayList<String>();
         for (Story story : stories) {
             paths.add(story.getPath());
         }

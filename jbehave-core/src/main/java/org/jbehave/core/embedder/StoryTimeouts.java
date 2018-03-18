@@ -21,7 +21,7 @@ public class StoryTimeouts {
 	private static final String COMMA = ",";
 	private EmbedderControls embedderControls;
 	private EmbedderMonitor embedderMonitor;
-	private List<TimeoutParser> parsers = new ArrayList<>();
+	private List<TimeoutParser> parsers = new ArrayList<TimeoutParser>();
 
 	public StoryTimeouts(EmbedderControls embedderControls,
 			EmbedderMonitor embedderMonitor) {
@@ -68,7 +68,7 @@ public class StoryTimeouts {
 	}
 
 	private Map<String, StoryTimeout> asMap(String timeoutsAsString) {
-		Map<String, StoryTimeout> timeouts = new HashMap<>();
+		Map<String, StoryTimeout> timeouts = new HashMap<String, StoryTimeout>();
 		if (StringUtils.isBlank(timeoutsAsString)) {
 			return timeouts;
 		}		
@@ -162,7 +162,7 @@ public class StoryTimeouts {
 		private static final String UNIT_PATTERN = "[a-zA-Z]+";
 		private static final Pattern TIMEOUT_PATTERN = compile("(\\d+)\\s*("
 				+ UNIT_PATTERN + ")");
-		private Map<String, Long> units = new HashMap<>();
+		private Map<String, Long> units = new HashMap<String, Long>();
 
 		public SimpleTimeoutParser() {
 			addUnit("d", 24 * 3600).addUnit("h", 3600).addUnit("m", 60)

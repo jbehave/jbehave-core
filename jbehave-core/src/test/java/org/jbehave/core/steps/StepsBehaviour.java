@@ -29,7 +29,7 @@ import static org.hamcrest.Matchers.is;
 
 public class StepsBehaviour {
 
-    private Map<String, String> tableRow = new HashMap<>();
+    private Map<String, String> tableRow = new HashMap<String, String>();
 
     @Test
     public void shouldListCandidateStepsFromAnnotatedMethodsWithSingleAlias() {

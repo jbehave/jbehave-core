@@ -38,7 +38,7 @@ public class IndexFromRedmine extends IndexWithBreadcrumbs {
 
     protected Map<String, Resource> createIndexFromEntity(String rootURI, String entity) {
     	Collection<Page> pages = parse(entity);
-        Map<String, Resource> index = new HashMap<>();
+        Map<String, Resource> index = new HashMap<String, Resource>();
         for (Page page : pages) {
             String parentName = (page.parent != null ? resolveName(page.parent.title) : null);
             String uri = format(PAGE_URI, rootURI, page.title);

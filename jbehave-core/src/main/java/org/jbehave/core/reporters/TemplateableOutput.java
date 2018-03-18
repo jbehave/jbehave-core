@@ -258,7 +258,7 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     private Map<String, Object> newDataModel() {
-        return new HashMap<>();
+        return new HashMap<String, Object>();
     }
 
     public static class OutputKeywords {
@@ -418,9 +418,9 @@ public class TemplateableOutput extends NullStoryReporter {
         private OutputLifecycle lifecycle;
         private String notAllowedBy;
         private List<String> pendingMethods;
-        private List<OutputStep> beforeSteps = new ArrayList<>();
-        private List<OutputStep> afterSteps = new ArrayList<>();
-        private List<OutputScenario> scenarios = new ArrayList<>();
+        private List<OutputStep> beforeSteps = new ArrayList<OutputStep>();
+        private List<OutputStep> afterSteps = new ArrayList<OutputStep>();
+        private List<OutputScenario> scenarios = new ArrayList<OutputScenario>();
         private boolean cancelled;
         private StoryDuration storyDuration;
 
@@ -490,7 +490,7 @@ public class TemplateableOutput extends NullStoryReporter {
         }
 
         public Map<String, String> getProperties() {
-            Map<String, String> properties = new HashMap<>();
+            Map<String, String> properties = new HashMap<String, String>();
             for (String name : meta.getPropertyNames()) {
                 properties.put(name, meta.getProperty(name));
             }
@@ -581,15 +581,15 @@ public class TemplateableOutput extends NullStoryReporter {
 
     public static class OutputScenario {
         private String title;
-        private List<OutputStep> steps = new ArrayList<>();
+        private List<OutputStep> steps = new ArrayList<OutputStep>();
         private OutputMeta meta;
         private GivenStories givenStories;
         private String notAllowedBy;
         private List<String> examplesSteps;
         private ExamplesTable examplesTable;
         private Map<String, String> currentExample;
-        private List<Map<String, String>> examples = new ArrayList<>();
-        private Map<Map<String, String>, List<OutputStep>> stepsByExample = new HashMap<>();
+        private List<Map<String, String>> examples = new ArrayList<Map<String, String>>();
+        private Map<Map<String, String>, List<OutputStep>> stepsByExample = new HashMap<Map<String, String>, List<OutputStep>>();
 
         public String getTitle() {
             return title;
@@ -601,7 +601,7 @@ public class TemplateableOutput extends NullStoryReporter {
             } else {
                 List<OutputStep> currentExampleSteps = stepsByExample.get(currentExample);
                 if (currentExampleSteps == null) {
-                    currentExampleSteps = new ArrayList<>();
+                    currentExampleSteps = new ArrayList<OutputStep>();
                     stepsByExample.put(currentExample, currentExampleSteps);
                 }
                 currentExampleSteps.add(outputStep);
@@ -615,7 +615,7 @@ public class TemplateableOutput extends NullStoryReporter {
         public List<OutputStep> getStepsByExample(Map<String, String> example) {
             List<OutputStep> steps = stepsByExample.get(example);
             if (steps == null) {
-                return new ArrayList<>();
+                return new ArrayList<OutputStep>();
             }
             return steps;
         }
@@ -756,7 +756,7 @@ public class TemplateableOutput extends NullStoryReporter {
         }
 
         private List<OutputParameter> findParameters(String start, String end) {
-            List<OutputParameter> parameters = new ArrayList<>();
+            List<OutputParameter> parameters = new ArrayList<OutputParameter>();
             Matcher matcher = Pattern.compile("(" + start + ".*?" + end + ")(\\W|\\Z)",
                     Pattern.DOTALL).matcher(step);
             while (matcher.find()) {

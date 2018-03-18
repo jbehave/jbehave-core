@@ -192,7 +192,7 @@ public class MetaFilter {
 
         private Set<String> found(String prefix) {
             Matcher matcher = findAllPrefixed(prefix).matcher(filterAsString);
-            Set<String> found = new HashSet<>();
+            Set<String> found = new HashSet<String>();
             while (matcher.find()) {
                 found.add(matcher.group().trim());
             }
@@ -204,7 +204,7 @@ public class MetaFilter {
         }
 
         private Properties merge(Properties include, Properties exclude) {
-            Set<Object> in = new HashSet<>(include.keySet());
+            Set<Object> in = new HashSet<Object>(include.keySet());
             in.addAll(exclude.keySet());
             Properties merged = new Properties();
             for (Object key : in) {

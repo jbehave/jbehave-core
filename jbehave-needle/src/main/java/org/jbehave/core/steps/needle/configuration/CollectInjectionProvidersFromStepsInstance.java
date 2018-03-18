@@ -30,7 +30,7 @@ public enum CollectInjectionProvidersFromStepsInstance {
 	 * @return collected injection providers.
 	 */
 	public final <T> InjectionProvider<?>[] apply(final T instance) {
-		final Set<InjectionProvider<?>> providers = new LinkedHashSet<>();
+		final Set<InjectionProvider<?>> providers = new LinkedHashSet<InjectionProvider<?>>();
 		for (final Field field : ReflectionUtil.getAllFieldsWithAnnotation(instance, NeedleInjectionProvider.class)) {
 			field.setAccessible(true);
 			try {

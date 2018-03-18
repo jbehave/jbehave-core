@@ -23,7 +23,7 @@ public class JBehaveNeedleConfiguration {
 	private final ReadInjectionProviderClassNames readInjectionProviderClassNames = ReadInjectionProviderClassNames.INSTANCE;
 	private final CreateInstanceByDefaultConstructor createInstance = CreateInstanceByDefaultConstructor.INSTANCE;
 
-	private final Set<InjectionProvider<?>> injectionProviders = new HashSet<>();
+	private final Set<InjectionProvider<?>> injectionProviders = new HashSet<InjectionProvider<?>>();
 
 	/**
 	 * Creates new instance from default resource {@link #RESOURCE_JBEHAVE_NEEDLE}.

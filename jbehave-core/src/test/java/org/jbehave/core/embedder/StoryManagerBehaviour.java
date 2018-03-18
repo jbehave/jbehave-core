@@ -33,7 +33,7 @@ public class StoryManagerBehaviour {
 		FileUtils.deleteDirectory(outputDirectory); 
 		assertThat(outputDirectory.exists(), is(false));
 		StoryManager manager = new StoryManager(configuration, stepsFactory, embedderControls, embedderMonitor, executorService, performableTree);
-		Collection<RunningStory> runningStories = new ArrayList<>();
+		Collection<RunningStory> runningStories = new ArrayList<RunningStory>();
 		manager.writeStoryDurations(runningStories);
 		assertThat(outputDirectory.exists(), is(true));
 	}

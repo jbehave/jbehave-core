@@ -49,7 +49,7 @@ public class ScalaContext {
     }
 
     private List<Object> createInstances() {
-        List<Object> instances = new ArrayList<>();
+        List<Object> instances = new ArrayList<Object>();
         for (String className : classNames) {
             instances.add(newInstance(className));
         }

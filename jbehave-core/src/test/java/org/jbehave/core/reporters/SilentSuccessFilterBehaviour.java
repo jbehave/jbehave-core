@@ -63,7 +63,7 @@ public class SilentSuccessFilterBehaviour {
 
         filter.beforeScenario("My scenario 3");
         filter.beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
-        Map<String, String> tableRow = new HashMap<>();
+        Map<String, String> tableRow = new HashMap<String, String>();
         filter.example(tableRow);
         filter.successful("Given step 3.1");
         filter.successful("When step 3.2");
@@ -158,7 +158,7 @@ public class SilentSuccessFilterBehaviour {
         Scenario scenario3 = new Scenario("My scenario 3", Meta.EMPTY);
         filter.beforeScenario(scenario3);
         filter.beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
-        Map<String, String> tableRow = new HashMap<>();
+        Map<String, String> tableRow = new HashMap<String, String>();
         filter.example(tableRow);
         filter.successful("Given step 3.1");
         filter.successful("When step 3.2");

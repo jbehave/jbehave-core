@@ -39,8 +39,8 @@ public class LolCatzSteps  {
     @Given("game like $grid")
     public void givenThatTheGridLooksLike(String grid) throws Exception {
         givenTheGameIsRunning();
-        ArrayList<String> oTurns = new ArrayList<>();
-        ArrayList<String> xTurns = new ArrayList<>();
+        ArrayList<String> oTurns = new ArrayList<String>();
+        ArrayList<String> xTurns = new ArrayList<String>();
         
         captureMoves(oTurns, xTurns, grid);    
         performMoves(oTurns, xTurns);

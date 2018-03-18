@@ -34,7 +34,7 @@ import org.reflections.scanners.MethodAnnotationsScanner;
  */
 public class ScanningStepsFactory extends AbstractStepsFactory {
 
-	private final Set<Class<?>> types = new HashSet<>();
+	private final Set<Class<?>> types = new HashSet<Class<?>>();
 	private String matchingRegex = ".*";
 	private String notMatchingRegex = "";
 
@@ -63,7 +63,7 @@ public class ScanningStepsFactory extends AbstractStepsFactory {
 	private Set<Class<?>> scanTypes(String packageName) {
 		Reflections reflections = new Reflections(packageName,
 				new MethodAnnotationsScanner());
-		Set<Class<?>> types = new HashSet<>();
+		Set<Class<?>> types = new HashSet<Class<?>>();
 		types.addAll(typesAnnotatedWith(reflections, Given.class));
 		types.addAll(typesAnnotatedWith(reflections, When.class));
 		types.addAll(typesAnnotatedWith(reflections, Then.class));
@@ -80,7 +80,7 @@ public class ScanningStepsFactory extends AbstractStepsFactory {
 
 	private Set<Class<?>> typesAnnotatedWith(Reflections reflections,
 			Class<? extends Annotation> annotation) {
-		Set<Class<?>> types = new HashSet<>();
+		Set<Class<?>> types = new HashSet<Class<?>>();
 		Set<Method> methodsAnnotatedWith = reflections
 				.getMethodsAnnotatedWith(annotation);
 		for (Method method : methodsAnnotatedWith) {
@@ -91,7 +91,7 @@ public class ScanningStepsFactory extends AbstractStepsFactory {
 
 	@Override
 	protected List<Class<?>> stepsTypes() {
-		List<Class<?>> matchingTypes = new ArrayList<>();
+		List<Class<?>> matchingTypes = new ArrayList<Class<?>>();
 		for (Class<?> type : types) {
 			String name = type.getName();
 			if (name.matches(matchingRegex) && !name.matches(notMatchingRegex)) {

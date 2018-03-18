@@ -21,10 +21,10 @@ public class MatchingStepMonitor extends DelegatingStepMonitor {
 		super(delegate);
 	}
 
-	private Map<String, StepMatch> matched = new HashMap<>();
+	private Map<String, StepMatch> matched = new HashMap<String, StepMatch>();
 
     public List<StepMatch> matched() {
-        return new ArrayList<>(matched.values());
+        return new ArrayList<StepMatch>(matched.values());
     }
 
     public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method,

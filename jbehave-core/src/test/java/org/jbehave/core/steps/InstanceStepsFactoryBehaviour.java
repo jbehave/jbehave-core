@@ -36,7 +36,7 @@ public class InstanceStepsFactoryBehaviour {
 
 	@Test
 	public void shouldAllowGenericList() {
-		List<? super MyInterface> list = new ArrayList<>();
+		List<? super MyInterface> list = new ArrayList<MyInterface>();
 		list.add(new MyStepsAWithInterface());
 		list.add(new MyStepsBWithInterface());
 		InstanceStepsFactory factory = new InstanceStepsFactory(
