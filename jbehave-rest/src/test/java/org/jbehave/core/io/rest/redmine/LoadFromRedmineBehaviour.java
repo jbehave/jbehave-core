@@ -2,7 +2,6 @@ package org.jbehave.core.io.rest.redmine;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.io.rest.RESTClient.Type;
@@ -50,7 +49,7 @@ public class LoadFromRedmineBehaviour {
 
 	private String read(String path) {
 		try {
-			return IOUtils.toString(getClass().getClassLoader().getResource(path), StandardCharsets.UTF_8);
+			return IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream(path));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

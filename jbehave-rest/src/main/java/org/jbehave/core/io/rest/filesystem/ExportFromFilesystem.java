@@ -4,7 +4,6 @@ import static org.jbehave.core.io.rest.filesystem.FilesystemUtils.asFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -66,7 +65,7 @@ public class ExportFromFilesystem implements ResourceExporter {
 	private void readResource(Resource resource, File file) {
 		if ( file.isDirectory() || !file.exists() ) return;
 		try {
-			String text = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+			String text = FileUtils.readFileToString(file);
 			resource.setContent(text);
 		} catch (IOException e) {
 			throw new RuntimeException("Failed to read resource " + resource

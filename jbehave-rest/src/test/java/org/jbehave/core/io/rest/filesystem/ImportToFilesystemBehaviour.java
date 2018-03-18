@@ -2,7 +2,6 @@ package org.jbehave.core.io.rest.filesystem;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,10 +48,10 @@ public class ImportToFilesystemBehaviour {
         // Then
         File file1 = new File(targetPath + "/one" + targetExt);
         assertThat(file1.exists(), equalTo(true));
-        assertThat(readFileToString(file1, StandardCharsets.UTF_8), equalTo(text1));
+        assertThat(readFileToString(file1), equalTo(text1));
         File file2 = new File(targetPath + "/two" + targetExt);
         assertThat(file2.exists(), equalTo(true));
-        assertThat(readFileToString(file2, StandardCharsets.UTF_8), equalTo(text2));
+        assertThat(readFileToString(file2), equalTo(text2));
 
     }
 
