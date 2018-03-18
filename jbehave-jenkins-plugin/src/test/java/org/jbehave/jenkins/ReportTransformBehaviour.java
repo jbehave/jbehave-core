@@ -34,8 +34,10 @@ import org.junit.Test;
 import org.w3c.dom.Document;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 public class ReportTransformBehaviour {
     private static final String TESTCASE_COUNT = "count(//testcase)";
@@ -55,16 +57,16 @@ public class ReportTransformBehaviour {
     public void transformSuccessfulStoryReport() throws Throwable {
         runStories("all_successful.story");
         Document document = tranformReport("all_successful.xml");
-        assertEquals("0", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
-        assertEquals("3", engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document));
-        assertEquals("0", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
+        assertThat(engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document), equalTo("3"));
+        assertThat(engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document), equalTo("0"));
     }
 
     @Test
     public void transformStoryReportWithNoTitle() throws Throwable {
         runStories("all_successful.story");
         Document document = tranformReport("all_successful.xml");
-        assertFalse("Test suite name is empty", engine.evaluate(TESTSUITE_NAME_ATTRIBUTE, document).isEmpty());
+        assertThat(engine.evaluate(TESTSUITE_NAME_ATTRIBUTE, document).length(), is(not(0)));
     }
 
     @Test
@@ -72,9 +74,9 @@ public class ReportTransformBehaviour {
         runStories("all_failed.story");
         Document document = tranformReport("all_failed.xml");
 
-        assertEquals("1", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
-        assertEquals("1", engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document));
-        assertEquals("0", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
+        assertThat(engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document), equalTo("1"));
+        assertThat(engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document), equalTo("1"));
+        assertThat(engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document), equalTo("0"));
     }
 
     @Test
@@ -82,12 +84,12 @@ public class ReportTransformBehaviour {
         runStories("examples_table_with_failure.story");
         Document document = tranformReport("examples_table_with_failure.xml");
 
-        assertEquals("6", engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document));
-        assertEquals("3", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
-        assertEquals("1", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
-        assertEquals("6", engine.evaluate(TESTCASE_COUNT, document));
-        assertEquals("3", engine.evaluate(TESTCASE_FAILURE, document));
-        assertEquals("1", engine.evaluate(TESTCASE_IGNORED, document));
+        assertThat(engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document), equalTo("6"));
+        assertThat(engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document), equalTo("3"));
+        assertThat(engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document), equalTo("1"));
+        assertThat(engine.evaluate(TESTCASE_COUNT, document), equalTo("6"));
+        assertThat(engine.evaluate(TESTCASE_FAILURE, document), equalTo("3"));
+        assertThat(engine.evaluate(TESTCASE_IGNORED, document), equalTo("1"));
     }
 
     @Test
@@ -95,10 +97,10 @@ public class ReportTransformBehaviour {
         runStories("given_story.story");
         Document document = tranformReport("given_story.xml");
 
-        assertEquals("0", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
-        assertEquals("1", engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document));
-        assertEquals("0", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
-        assertEquals("1", engine.evaluate(TESTCASE_COUNT, document));
+        assertThat(engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document), equalTo("1"));
+        assertThat(engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTCASE_COUNT, document), equalTo("1"));
     }
 
     @Test
@@ -106,11 +108,11 @@ public class ReportTransformBehaviour {
         runStories("given_failing_story.story");
         Document document = tranformReport("given_failing_story.xml");
 
-        assertEquals("1", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
-        assertEquals("1", engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document));
-        assertEquals("0", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
-        assertEquals("1", engine.evaluate(TESTCASE_COUNT, document));
-        assertEquals("1", engine.evaluate(TESTCASE_FAILURE, document));
+        assertThat(engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document), equalTo("1"));
+        assertThat(engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document), equalTo("1"));
+        assertThat(engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTCASE_COUNT, document), equalTo("1"));
+        assertThat(engine.evaluate(TESTCASE_FAILURE, document), equalTo("1"));
     }
 
     @Test
@@ -118,11 +120,11 @@ public class ReportTransformBehaviour {
         runStories("failure_followed_by_given_story.story");
         Document document = tranformReport("failure_followed_by_given_story.xml");
 
-        assertEquals("1", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
-        assertEquals("2", engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document));
-        assertEquals("0", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
-        assertEquals("2", engine.evaluate(TESTCASE_COUNT, document));
-        assertEquals("1", engine.evaluate(TESTCASE_FAILURE, document));
+        assertThat(engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document), equalTo("1"));
+        assertThat(engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document), equalTo("2"));
+        assertThat(engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTCASE_COUNT, document), equalTo("2"));
+        assertThat(engine.evaluate(TESTCASE_FAILURE, document), equalTo("1"));
     }
 
     @Test
@@ -131,11 +133,11 @@ public class ReportTransformBehaviour {
         runStories("filter_scenario.story");
         Document document = tranformReport("filter_scenario.xml");
 
-        assertEquals("1", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
-        assertEquals("2", engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document));
-        assertEquals("0", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
-        assertEquals("2", engine.evaluate(TESTCASE_COUNT, document));
-        assertEquals("1", engine.evaluate(TESTCASE_FAILURE, document));
+        assertThat(engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document), equalTo("1"));
+        assertThat(engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document), equalTo("2"));
+        assertThat(engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTCASE_COUNT, document), equalTo("2"));
+        assertThat(engine.evaluate(TESTCASE_FAILURE, document), equalTo("1"));
     }
 
     @Test
@@ -144,18 +146,18 @@ public class ReportTransformBehaviour {
         runStories("filter_story.story");
         Document document = tranformReport("filter_story.xml");
 
-        assertEquals("0", engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document));
-        assertEquals("0", engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document));
-        assertEquals("0", engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document));
-        assertEquals("0", engine.evaluate(TESTCASE_COUNT, document));
-        assertEquals("0", engine.evaluate(TESTCASE_FAILURE, document));
+        assertThat(engine.evaluate(TESTSUITE_FAILURES_ATTRIBUTE, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTSUITE_TESTS_ATTRIBUTE, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTSUITE_SKIPPED_ATTRIBUTE, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTCASE_COUNT, document), equalTo("0"));
+        assertThat(engine.evaluate(TESTCASE_FAILURE, document), equalTo("0"));
     }
 
     @Test
     public void testsuiteNameTitle() throws FileNotFoundException, Throwable {
         runStories("title.story");
         Document document = tranformReport("title.xml");
-        assertEquals("title.story", engine.evaluate(TESTSUITE_NAME_ATTRIBUTE, document));
+        assertThat(engine.evaluate(TESTSUITE_NAME_ATTRIBUTE, document), equalTo("title.story"));
     }
 
     private void runStories(String... storyPaths) {

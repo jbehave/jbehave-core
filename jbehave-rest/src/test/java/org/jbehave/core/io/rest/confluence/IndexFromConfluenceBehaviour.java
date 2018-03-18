@@ -1,6 +1,7 @@
 package org.jbehave.core.io.rest.confluence;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +23,7 @@ public class IndexFromConfluenceBehaviour {
         Map<String, Resource> index = indexer.indexResources("https://demo.confluence.com/display/JBEV/jBehave");
 
         // then
-        assertEquals(2, index.size());
+        assertThat(index.size(), equalTo(2));
     }
 
     private static class MockRESTClient extends RESTClient {

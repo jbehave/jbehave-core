@@ -1,13 +1,13 @@
 package org.jbehave.core.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.util.Properties;
 
-import org.junit.Test;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Valery Yatsynovich
@@ -19,26 +19,26 @@ public class ExamplesTablePropertiesBehaviour {
         ExamplesTableProperties properties = new ExamplesTableProperties("ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,"
                 + "commentSeparator=#,trim=false,metaByRow=true,transformer=CUSTOM_TRANSFORMER", "|", "|",
                 "|--");
-        assertEquals("\n", properties.getRowSeparator());
-        assertEquals("!", properties.getHeaderSeparator());
-        assertEquals("!", properties.getValueSeparator());
-        assertEquals("!--", properties.getIgnorableSeparator());
-        assertEquals("#", properties.getCommentSeparator());
-        assertFalse(properties.isTrim());
-        assertTrue(properties.isMetaByRow());
-        assertEquals("CUSTOM_TRANSFORMER", properties.getTransformer());
+        assertThat(properties.getRowSeparator(), equalTo("\n"));
+        assertThat(properties.getHeaderSeparator(), equalTo("!"));
+        assertThat(properties.getValueSeparator(), equalTo("!"));
+        assertThat(properties.getIgnorableSeparator(), equalTo("!--"));
+        assertThat(properties.getCommentSeparator(), equalTo("#"));
+        assertThat(properties.isTrim(), is(false));
+        assertThat(properties.isMetaByRow(), is(true));
+        assertThat(properties.getTransformer(), equalTo("CUSTOM_TRANSFORMER"));
     }
 
     @Test
     public void canGetDefaultProperties() {
         ExamplesTableProperties properties = new ExamplesTableProperties(new Properties());
-        assertEquals("|", properties.getHeaderSeparator());
-        assertEquals("|", properties.getValueSeparator());
-        assertEquals("|--", properties.getIgnorableSeparator());
-        assertEquals("#", properties.getCommentSeparator());
-        assertTrue(properties.isTrim());
-        assertFalse(properties.isMetaByRow());
-        assertNull(properties.getTransformer());
+        assertThat(properties.getHeaderSeparator(), equalTo("|"));
+        assertThat(properties.getValueSeparator(), equalTo("|"));
+        assertThat(properties.getIgnorableSeparator(), equalTo("|--"));
+        assertThat(properties.getCommentSeparator(), equalTo("#"));
+        assertThat(properties.isTrim(), is(true));
+        assertThat(properties.isMetaByRow(), is(false));
+        assertThat(properties.getTransformer(), is(nullValue()));
     }
 
     @Test
@@ -46,6 +46,6 @@ public class ExamplesTablePropertiesBehaviour {
         Properties properties = new Properties();
         properties.setProperty("key", "value");
         ExamplesTableProperties tableProperties = new ExamplesTableProperties(properties);
-        assertTrue(tableProperties.getProperties().containsKey("key"));
+        assertThat(tableProperties.getProperties().containsKey("key"), is(true));
     }
 }

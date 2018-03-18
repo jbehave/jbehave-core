@@ -1,11 +1,12 @@
 package org.jbehave.examples.core.needle.steps;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 import javax.inject.Inject;
 
+import org.hamcrest.Matchers;
 import org.jbehave.examples.core.service.TradingService;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class NeedleTraderStepsTest {
 
     @Test
     public void shouldCreateNewInstanceViaConstructorInjectionWithMockedService() {
-        assertNotNull(needleTraderSteps);
+        assertThat(needleTraderSteps, Matchers.is(notNullValue()));
         assertThat(needleTraderSteps.getService(), is(tradingServiceMock));
     }
 

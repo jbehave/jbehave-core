@@ -1,9 +1,9 @@
 package org.jbehave.core.steps.spring;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -43,8 +43,8 @@ public class SpringStepsFactoryAOPBehaviour {
 
 	private void assertAOPFooStepsFound(List<CandidateSteps> steps) {
 		// // Only one returned, the IFooSteps will not be detected
-		assertEquals(1, steps.size());
-		assertThat(steps, hasItem(isCandidateStepInstanceOf(FooSteps.class)));
+        assertThat(steps.size(), equalTo(1));
+        assertThat(steps, hasItem(isCandidateStepInstanceOf(FooSteps.class)));
 		// Make it explicit that the steps bean with the annotation in the
 		// interface is not provided
 		assertThat(steps,

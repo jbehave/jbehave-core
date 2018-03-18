@@ -1,12 +1,7 @@
 package org.jbehave.core.configuration.needle;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
 
 import java.lang.reflect.Type;
 import java.text.DateFormat;
@@ -35,7 +30,6 @@ import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooStepsWithDependency;
 import org.jbehave.core.steps.needle.ValueGetter;
-import org.junit.Assert;
 import org.junit.Test;
 
 public class NeedleAnnotationBuilderBehaviour {
@@ -68,7 +62,7 @@ public class NeedleAnnotationBuilderBehaviour {
             assertThat((Date) parameterConverters.convert(date, Date.class),
                     equalTo(dateFormat.parse(date)));
         } catch (final ParseException e) {
-            Assert.fail();
+            throw new AssertionError();
         }
     }
 
@@ -120,8 +114,8 @@ public class NeedleAnnotationBuilderBehaviour {
                 AnnotatedUsingNeedle.class);
         final Configuration configuration = builderAnnotated
                 .buildConfiguration();
-        assertTrue(builderAnnotated.buildCandidateSteps(configuration)
-                .isEmpty());
+        assertThat(builderAnnotated.buildCandidateSteps(configuration)
+                .isEmpty(), is(true));
     }
 
     @Test
@@ -173,7 +167,8 @@ public class NeedleAnnotationBuilderBehaviour {
         final NeedleAnnotationBuilder builderAnnotated = new NeedleAnnotationBuilder(
                 AnnotatedUsingStepsAndNeedle.class);
         builderAnnotated.buildConfiguration();
-        assertTrue(!builderAnnotated.getProvider().isEmpty());
+        boolean actual = !builderAnnotated.getProvider().isEmpty();
+        assertThat(actual, is(true));
     }
 
     @Test
@@ -186,7 +181,7 @@ public class NeedleAnnotationBuilderBehaviour {
                 FooStepsWithDependency.class);
         final ValueGetter getter = ((FooStepsWithDependency) ((Steps) buildCandidateSteps
                 .get(0)).instance()).getGetter();
-        assertNotNull(getter);
+        assertThat(getter, is(notNullValue()));
         assertThat((String) getter.getValue(), is(ValueGetter.VALUE));
     }
 

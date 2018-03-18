@@ -4,7 +4,9 @@ import org.jbehave.core.annotations.FromContext;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.ToContext;
-import org.junit.Assert;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 
 public class StepsContextSteps {
@@ -17,7 +19,7 @@ public class StepsContextSteps {
 
 	@Then("the steps context includes the value $value")
 	public void thenTheContextIncludes(@FromContext("myVariable") String contextValue, String expectedValue){
-		Assert.assertEquals(contextValue, expectedValue);
-	}
+        assertThat(expectedValue, equalTo(contextValue));
+    }
 
 }

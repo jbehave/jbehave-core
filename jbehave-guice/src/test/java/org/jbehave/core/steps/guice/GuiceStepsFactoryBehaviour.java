@@ -16,8 +16,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Scopes;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 public class GuiceStepsFactoryBehaviour {
 
@@ -54,14 +55,16 @@ public class GuiceStepsFactoryBehaviour {
         List<CandidateSteps> steps = factory.createCandidateSteps();
         // Then
         assertFooStepsFound(steps);
-        assertEquals(42, (int) ((FooStepsWithDependency) stepsInstance(steps.get(0))).integer);
+        assertThat((int) ((FooStepsWithDependency) stepsInstance(steps.get(0))).integer, equalTo(42));
     }
 
     private void assertFooStepsFound(List<CandidateSteps> steps) throws NoSuchFieldException, IllegalAccessException {
-        assertEquals(1, steps.size());
-        assertTrue(steps.get(0) instanceof CandidateSteps);
+        assertThat(steps.size(), equalTo(1));
+        boolean actual1 = steps.get(0) instanceof CandidateSteps;
+        assertThat(actual1, is(true));
         Object instance = stepsInstance(steps.get(0));
-        assertTrue(instance instanceof FooSteps);
+        boolean actual = instance instanceof FooSteps;
+        assertThat(actual, is(true));
     }
 
     private Object stepsInstance(CandidateSteps candidateSteps) {

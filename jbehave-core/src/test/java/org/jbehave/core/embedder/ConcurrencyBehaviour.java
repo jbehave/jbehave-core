@@ -1,25 +1,5 @@
 package org.jbehave.core.embedder;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.JSON;
-import static org.jbehave.core.reporters.Format.XML;
-import static org.junit.Assert.fail;
-
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
@@ -33,16 +13,24 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.junit.JUnitStory;
-import org.jbehave.core.reporters.CrossReference;
-import org.jbehave.core.reporters.DelegatingStoryReporter;
-import org.jbehave.core.reporters.Format;
-import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.reporters.TxtOutput;
-import org.jbehave.core.reporters.XmlOutput;
+import org.jbehave.core.reporters.*;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static org.jbehave.core.reporters.Format.*;
 
 public class ConcurrencyBehaviour {
 
@@ -52,7 +40,7 @@ public class ConcurrencyBehaviour {
         embedder.embedderControls().useStoryTimeouts("1");
         try {
             embedder.runAsEmbeddables(asList(XmlFormat.class.getName()));
-            fail("Exception was not thrown");
+            throw new AssertionError("Exception was not thrown");
         } catch (RunningEmbeddablesFailed e) {
             String xmlOutput = XmlFormat.xmlOut.toString();
             assertThat(xmlOutput, containsString("</scenario>"));
@@ -103,7 +91,7 @@ public class ConcurrencyBehaviour {
                 .doFailOnStoryTimeout(true);
         try {
             embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-            fail("Exception was not thrown");
+            throw new AssertionError("Exception was not thrown");
         } catch (RunningEmbeddablesFailed e) {
             assertThat(e.getCause(), instanceOf(StoryExecutionFailed.class));
             assertThat(e.getCause().getCause(), instanceOf(StoryTimedOut.class));
@@ -116,7 +104,7 @@ public class ConcurrencyBehaviour {
          embedder.embedderControls().useStoryTimeouts("**/*.story:1").doFailOnStoryTimeout(true);
          try {
              embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-             fail("Exception was not thrown");
+             throw new AssertionError("Exception was not thrown");
          } catch (RunningEmbeddablesFailed e) {
             assertThat(e.getCause(), instanceOf(StoryExecutionFailed.class));
             assertThat(e.getCause().getCause(), instanceOf(StoryTimedOut.class));
@@ -140,7 +128,7 @@ public class ConcurrencyBehaviour {
          try {
              embedder.embedderControls().useStoryTimeouts("**/another_long.story:1").doFailOnStoryTimeout(true);
              embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-             fail("Exception was not thrown");
+             throw new AssertionError("Exception was not thrown");
          } catch (RunningEmbeddablesFailed e) {
              assertThat(out.toString(), containsString("Using timeout for story a_short.story of 300"));
              assertThat(out.toString(), containsString("Using timeout for story a_long.story of 300"));
@@ -155,7 +143,7 @@ public class ConcurrencyBehaviour {
          try {
              embedder.embedderControls().useStoryTimeouts("10,**/a_short.story:1,**/another_long.story:2").doFailOnStoryTimeout(true);
              embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-             fail("Exception was not thrown");
+             throw new AssertionError("Exception was not thrown");
          } catch (RunningEmbeddablesFailed e) {
              assertThat(out.toString(), containsString("Using timeout for story a_short.story of 1"));
              assertThat(out.toString(), containsString("Using timeout for story a_long.story of 10"));
@@ -223,7 +211,7 @@ public class ConcurrencyBehaviour {
             embedder.embedderControls().useStoryTimeouts(storyTimeouts)
                     .doFailOnStoryTimeout(true);
             embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-            fail("Exception was not thrown");
+            throw new AssertionError("Exception was not thrown");
         } catch (RunningEmbeddablesFailed e) {
             assertThat(e.getCause(), instanceOf(TimeoutFormatException.class));
         }

@@ -1,6 +1,7 @@
 package org.jbehave.examples.core.steps;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
@@ -21,7 +22,7 @@ public class RestartingSteps {
 	
 	@Then("scenario has been executed two times")
     public void scenarioTwoTimesExecuted() {
-        assertEquals(1, restartingScenario);
+        assertThat(restartingScenario, equalTo(1));
     }
 
 	@When("I restart story")
@@ -34,7 +35,7 @@ public class RestartingSteps {
 	
     @Then("story has been executed two times")
     public void storyTwoTimesExecuted() {
-        assertEquals(1, restartingStory);
+        assertThat(restartingStory, equalTo(1));
     }
 		
 }

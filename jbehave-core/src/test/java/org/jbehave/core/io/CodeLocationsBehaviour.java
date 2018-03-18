@@ -1,22 +1,16 @@
 package org.jbehave.core.io;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertTrue;
+import org.jbehave.core.io.CodeLocations.InvalidCodeLocation;
+import org.junit.Test;
+import org.junit.runner.JUnitCore;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.jbehave.core.io.CodeLocations.InvalidCodeLocation;
-import org.junit.Test;
-import org.junit.runner.JUnitCore;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class CodeLocationsBehaviour {
 
@@ -44,7 +38,7 @@ public class CodeLocationsBehaviour {
         assertThat(filename, not(containsString("/file:")));
         assertThat(filename, not(containsString("/jar:")));
         assertThat(filename, not(endsWith("!")));
-        assertTrue(new File(filename).exists());
+        assertThat(new File(filename).exists(), is(true));
     }
 
     @Test(expected = InvalidCodeLocation.class)

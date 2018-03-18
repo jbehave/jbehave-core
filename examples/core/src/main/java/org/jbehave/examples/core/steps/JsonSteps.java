@@ -1,16 +1,16 @@
 package org.jbehave.examples.core.steps;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AsJson;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
-import org.junit.Assert;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public class JsonSteps {
 
@@ -35,42 +35,42 @@ public class JsonSteps {
 
     @Then("the String value is $value")
     public void thenStringValueIs(final String value) {
-        Assert.assertEquals(this.aJsonDto.getString(), value);
+        assertThat(value, equalTo(this.aJsonDto.getString()));
     }
 
     @Then("the Double value is $value")
     public void thenDoubleValueIs(final Double value) {
-        Assert.assertEquals(this.anotherJsonDto.getDouble(), value);
+        assertThat(value, equalTo(this.anotherJsonDto.getDouble()));
     }
 
     @Then("the $index{-st|-nd} String value in list is $value")
     public void checkStringValueInList(final int index, final String value) {
-        Assert.assertEquals(listOfJsonDtos.get(index - 1).getString(), value);
+        assertThat(value, equalTo(listOfJsonDtos.get(index - 1).getString()));
     }
 
     @Then("the Integer value is $value")
     public void checkIntegerValue(final Integer value) {
-        Assert.assertEquals(this.aJsonDto.getInteger(), value);
+        assertThat(value, equalTo(this.aJsonDto.getInteger()));
     }
 
     @Then("the Boolean value is $value")
     public void checkBooleanValue(final Boolean value) {
-        Assert.assertEquals(this.anotherJsonDto.getBoolean(), value);
+        assertThat(value, equalTo(this.anotherJsonDto.getBoolean()));
     }
 
     @Then("the $index{-st|-nd} Integer value in list is $value")
     public void checkIntegerValueInList(final int index, final Integer value) {
-        Assert.assertEquals(listOfJsonDtos.get(index - 1).getInteger(), value);
+        assertThat(value, equalTo(listOfJsonDtos.get(index - 1).getInteger()));
     }
 
     @Then("the BigDecimal value is $value")
     public void checkBigDecimalValue(final BigDecimal value) {
-        Assert.assertEquals(this.aJsonDto.getBigDecimal(), value);
+        assertThat(value, equalTo(this.aJsonDto.getBigDecimal()));
     }
 
     @Then("the $index{-st|-nd} BigDecimal value in list is $value")
     public void checkBigDecimalValueInList(final int index, final BigDecimal value) {
-        Assert.assertEquals(listOfJsonDtos.get(index - 1).getBigDecimal(), value);
+        assertThat(value, equalTo(listOfJsonDtos.get(index - 1).getBigDecimal()));
     }
 
     @AsJson

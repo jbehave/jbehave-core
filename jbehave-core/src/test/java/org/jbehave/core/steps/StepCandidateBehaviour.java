@@ -1,34 +1,8 @@
 package org.jbehave.core.steps;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.Matchers.nullValue;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
-import static org.jbehave.core.steps.StepType.GIVEN;
-import static org.jbehave.core.steps.StepType.IGNORABLE;
-import static org.jbehave.core.steps.StepType.THEN;
-import static org.jbehave.core.steps.StepType.WHEN;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.MethodDescriptor;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.hamcrest.Matchers;
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+import com.thoughtworks.paranamer.Paranamer;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Pending;
 import org.jbehave.core.annotations.When;
@@ -41,17 +15,31 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
+import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
 import org.jbehave.core.steps.context.StepsContext;
 import org.junit.Test;
 
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import com.thoughtworks.paranamer.CachingParanamer;
-import com.thoughtworks.paranamer.Paranamer;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.MethodDescriptor;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.jbehave.core.steps.StepType.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class StepCandidateBehaviour {
 
@@ -230,7 +218,7 @@ public class StepCandidateBehaviour {
         Method method = SomeSteps.class.getMethod("aMethodWith", type);
         StepCandidate candidate = candidateWith("I should live in no. $no", THEN, method, someSteps);
         candidate.createMatchedStep("Then I should live in no. 14", namedParameters).perform(null);
-        assertEquals(number, someSteps.args);
+        assertThat((T)someSteps.args, equalTo(number));
     }
 
     @Test
@@ -247,7 +235,7 @@ public class StepCandidateBehaviour {
         Method method = SomeSteps.methodFor(methodName);
         StepCandidate candidate = candidateWith("windows on the $nth floors", WHEN, method, someSteps);
         candidate.createMatchedStep("When windows on the " + csv + " floors", namedParameters).perform(null);
-        assertEquals(numbers, someSteps.args);
+        assertThat(someSteps.args, equalTo((Object)numbers));
     }
 
     @Test
@@ -449,7 +437,7 @@ public class StepCandidateBehaviour {
         assertThat(candidates.size(), equalTo(1));
         try {
             candidates.get(0).createMatchedStep("When blah Bar blah", namedParameters).perform(null);
-            fail("should have barfed");
+            throw new AssertionError("should have barfed");
         } catch (RestartingScenarioFailure e) {
             assertThat(e.getMessage(), is(equalTo("Bar restarting")));
         }

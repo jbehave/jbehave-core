@@ -4,7 +4,8 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 public class MetaParametrisationSteps {
 
@@ -29,7 +30,7 @@ public class MetaParametrisationSteps {
 
     @Then("the theme is '$theme' with variant '$variant'")
     public void thenTheThemeAndVariantAre(String theme, String variant) {
-        assertEquals(theme, this.theme);
-        assertEquals(variant, this.variant);
+        assertThat(this.theme, equalTo(theme));
+        assertThat(this.variant, equalTo(variant));
     }
 }

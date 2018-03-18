@@ -1,7 +1,5 @@
 package org.jbehave.examples.core.steps;
 
-import junit.framework.Assert;
-
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.steps.Steps;
@@ -14,7 +12,7 @@ public class SandpitSteps extends Steps {
 
 	@Then("I fail")
 	public void doFail() {
-		Assert.fail("I failed!");
+		throw new AssertionError("I failed!");
 	}
 
 	@Then("I pass")

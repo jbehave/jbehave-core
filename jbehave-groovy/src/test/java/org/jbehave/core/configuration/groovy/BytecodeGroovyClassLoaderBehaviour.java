@@ -1,6 +1,9 @@
 package org.jbehave.core.configuration.groovy;
 
-import static junit.framework.Assert.assertNotNull;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+
 import groovy.lang.GroovyClassLoader;
 
 import java.io.IOException;
@@ -13,9 +16,9 @@ public class BytecodeGroovyClassLoaderBehaviour {
     @Test
     public void shouldCacheBytes() throws IOException {
         GroovyClassLoader classLoader = new BytecodeGroovyClassLoader();
-        assertNotNull((Class<?>) classLoader.parseClass("class Hello { }"));
+        assertThat((Class<?>) classLoader.parseClass("class Hello { }"), is(notNullValue()));
         InputStream bytecode = classLoader.getResourceAsStream("Hello.class");
-        assertNotNull(bytecode);
+        assertThat(bytecode, is(notNullValue()));
         bytecode.close();
     }
 

@@ -2,9 +2,9 @@ package org.jbehave.core.failures;
 
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.junit.Assert.assertThat;
 
 public class StepFailureBehaviour {
 	
@@ -21,7 +21,7 @@ public class StepFailureBehaviour {
 
 		// Then
 		assertThat(message, equalTo("'"
-				+ stepAsString + "': "+cause.getMessage()));
+                + stepAsString + "': "+cause.getMessage()));
 	}
 
 	@Test

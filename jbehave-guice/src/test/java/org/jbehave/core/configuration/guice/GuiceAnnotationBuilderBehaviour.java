@@ -54,7 +54,6 @@ import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.guice.GuiceStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.guice.GuiceStepsFactoryBehaviour.FooStepsWithDependency;
-import org.junit.Assert;
 import org.junit.Test;
 
 import com.google.inject.AbstractModule;
@@ -125,7 +124,7 @@ public class GuiceAnnotationBuilderBehaviour {
         try {
             assertThat((Date) parameterConverters.convert(date, Date.class), equalTo(dateFormat.parse(date)));
         } catch (ParseException e) {
-            Assert.fail();
+            throw new AssertionError();
         }
     }
 

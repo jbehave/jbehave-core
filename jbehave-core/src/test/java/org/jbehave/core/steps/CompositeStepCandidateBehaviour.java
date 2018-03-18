@@ -1,28 +1,20 @@
 package org.jbehave.core.steps;
 
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import org.jbehave.core.annotations.*;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.annotations.Composite;
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.Named;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.When;
-import org.junit.Ignore;
-import org.junit.Test;
-
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-
+import static org.hamcrest.Matchers.notNullValue;
 import static org.jbehave.core.steps.StepCandidateBehaviour.candidateMatchingStep;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 public class CompositeStepCandidateBehaviour {
 
@@ -165,7 +157,7 @@ public class CompositeStepCandidateBehaviour {
                 break;
             }
         }
-        assertNotNull(candidate);
+        assertThat(candidate, is(notNullValue()));
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<String, String>();
         List<Step> composedSteps = new ArrayList<Step>();
@@ -275,7 +267,7 @@ public class CompositeStepCandidateBehaviour {
             step.perform(null);
         }
         assertThat("Was unable to set the username", steps.username, equalTo(userName));
-        assertTrue("Didn't reach the login step", steps.isLoggedIn);
+        assertThat("Didn't reach the login step", steps.isLoggedIn, is(true));
     }
     
     static class CompositeStepParametersWithMissingParameters extends Steps {

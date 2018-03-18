@@ -1,30 +1,9 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.*;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Properties;
-
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.CodeLocations;
-import org.jbehave.core.io.IOUtils;
-import org.jbehave.core.io.StoryLocation;
-import org.jbehave.core.io.StoryPathResolver;
-import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.io.*;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.OutcomesTable;
@@ -33,6 +12,18 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 import org.junit.Test;
 import org.xml.sax.SAXException;
+
+import java.io.*;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Properties;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jbehave.core.reporters.Format.HTML;
+import static org.jbehave.core.reporters.Format.TXT;
 
 public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
 

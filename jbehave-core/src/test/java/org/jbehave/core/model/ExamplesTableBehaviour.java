@@ -1,21 +1,5 @@
 package org.jbehave.core.model;
 
-import java.beans.BeanInfo;
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.MethodDescriptor;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.lang.reflect.Method;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -32,16 +16,21 @@ import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.Parameters;
 import org.junit.Test;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.MethodDescriptor;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import static java.util.Arrays.asList;
 import static org.codehaus.plexus.util.StringUtils.isBlank;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.fail;
+import static org.hamcrest.Matchers.*;
 
 public class ExamplesTableBehaviour {
 
@@ -460,13 +449,13 @@ public class ExamplesTableBehaviour {
         assertThat(integers.<Integer>valueAs("one", Integer.class), equalTo(11));
         try {
             integers.valueAs("unknown", Integer.class);
-            fail("Exception was not thrown");
+            throw new AssertionError("Exception was not thrown");
         } catch (ValueNotFound e) {
             assertThat(e.getMessage(), equalTo("unknown"));
         }
         try {
             examplesTable.getRowAsParameters(1);
-            fail("Exception was not thrown");
+            throw new AssertionError("Exception was not thrown");
         } catch (RowNotFound e) {
             assertThat(e.getMessage(), equalTo("1"));
         }

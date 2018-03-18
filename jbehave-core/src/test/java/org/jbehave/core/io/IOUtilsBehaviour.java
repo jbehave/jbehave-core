@@ -1,42 +1,32 @@
 package org.jbehave.core.io;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.isA;
-
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.StringReader;
-
 import org.junit.Test;
+
+import java.io.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.*;
 
 public class IOUtilsBehaviour {
 
     @Test
     public void shouldProcessReader() throws IOException {
-        assertEquals("", IOUtils.toString(new StringReader(""), true));
-        assertEquals("a", IOUtils.toString(new StringReader("a"), true));
-        assertEquals("asdf", IOUtils.toString(new StringReader("asdf"), true));
-        assertEquals("äöü", IOUtils.toString(new StringReader("äöü"), true));
+        assertThat(IOUtils.toString(new StringReader(""), true), equalTo(""));
+        assertThat(IOUtils.toString(new StringReader("a"), true), equalTo("a"));
+        assertThat(IOUtils.toString(new StringReader("asdf"), true), equalTo("asdf"));
+        assertThat(IOUtils.toString(new StringReader("äöü"), true), equalTo("äöü"));
 
         // close() can be called more than once, a more elaborate test is below 
         Reader reader=new StringReader("hello");
-        assertEquals("hello", IOUtils.toString(reader, false));
+        assertThat(IOUtils.toString(reader, false), equalTo("hello"));
         reader.close();
 
         String longString=createLongString();
-        assertEquals(longString, IOUtils.toString(new StringReader(longString), true));
+        assertThat(IOUtils.toString(new StringReader(longString), true), equalTo(longString));
 
         // read an actual file
-        assertEquals("##########", IOUtils.toString(new FileReader("src/test/resources/testfile"), true));
+        assertThat(IOUtils.toString(new FileReader("src/test/resources/testfile"), true), equalTo("##########"));
 
     }
 
@@ -77,19 +67,19 @@ public class IOUtilsBehaviour {
     // same for InputStream
     @Test
     public void shouldProcessInputStream() throws IOException {
-        assertEquals("", IOUtils.toString(new ByteArrayInputStream("".getBytes("UTF-8")), true));
-        assertEquals("a", IOUtils.toString(new ByteArrayInputStream("a".getBytes("UTF-8")), true));
-        assertEquals("asdf", IOUtils.toString(new ByteArrayInputStream("asdf".getBytes("UTF-8")), true));
-        assertEquals("äöü", IOUtils.toString(new ByteArrayInputStream("äöü".getBytes("UTF-8")), true));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("".getBytes("UTF-8")), true), equalTo(""));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("a".getBytes("UTF-8")), true), equalTo("a"));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("asdf".getBytes("UTF-8")), true), equalTo("asdf"));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("äöü".getBytes("UTF-8")), true), equalTo("äöü"));
 
         ByteArrayInputStream input = new ByteArrayInputStream("asdf".getBytes("UTF-8"));
-        assertEquals("asdf", IOUtils.toString(input, false));
+        assertThat(IOUtils.toString(input, false), equalTo("asdf"));
         input.close();
 
         String longString=createLongString();
-        assertEquals(longString, IOUtils.toString(new ByteArrayInputStream(longString.getBytes("UTF-8")), true));
+        assertThat(IOUtils.toString(new ByteArrayInputStream(longString.getBytes("UTF-8")), true), equalTo(longString));
 
-        assertEquals("##########", IOUtils.toString(new FileInputStream("src/test/resources/testfile"), true));
+        assertThat(IOUtils.toString(new FileInputStream("src/test/resources/testfile"), true), equalTo("##########"));
 
     }
 

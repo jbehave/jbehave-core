@@ -13,10 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 @Component("authenticationSteps")
 public class AuthenticationSteps {
@@ -47,23 +45,23 @@ public class AuthenticationSteps {
 
   @Then("user should be authenticated")
   public void assertAuthenticationIsValid() {
-    assertNotNull(auth);
-    assertNull(authException);
-    assertTrue(auth.isAuthenticated());
+      assertThat(auth, is(notNullValue()));
+      assertThat(authException, is(nullValue()));
+    assertThat(auth.isAuthenticated(), is(true));
   }
 
   @Then("user should not be authenticated")
   public void assertAuthenticationIsNotValid() {
-    assertNull(auth);
-    assertNotNull(authException);
+      assertThat(auth, is(nullValue()));
+      assertThat(authException, is(notNullValue()));
   }
 
   @Then("authentication failure is <failure>")
   @Alias("authentication failure is $failure")
   public void assertAuthenticationClassIs(@Named("failure") String failure) {
-    assertNotNull(authException);
-    String expectedClassName = failure + "Exception";
+      assertThat(authException, is(notNullValue()));
+      String expectedClassName = failure + "Exception";
     String actualClassName = ClassUtils.getShortClassName(authException.getClass());
-    assertEquals(expectedClassName, actualClassName);
+    assertThat(actualClassName, equalTo(expectedClassName));
   }
 }

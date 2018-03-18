@@ -6,10 +6,12 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.odf.OdfUtils.OdfDocumentLoadingFailed;
 import org.jbehave.core.io.odf.OdfUtils.OdfDocumentParsingFailed;
-import org.junit.Assert;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class OdtLoaderBehaviour {
 
@@ -63,12 +65,12 @@ public class OdtLoaderBehaviour {
 
     @Test
     public void shouldKeepCoberturaHappy() {
-        Assert.assertNotNull(new OdfUtils());
+        assertThat(new OdfUtils(), is(notNullValue()));
     }
 
     // copied from core/TemplatableOutputBehaviour
     private void assertThatOutputIs(String out, String expected) {
-        assertEquals(dos2unix(expected), dos2unix(out));
+        assertThat(dos2unix(out), equalTo(dos2unix(expected)));
     }
 
     private String dos2unix(String string) {

@@ -1,8 +1,9 @@
 package org.jbehave.core.steps.needle;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 
 import java.util.List;
 
@@ -27,10 +28,12 @@ public class NeedleStepsFactoryBehaviour {
 		// When
 		List<CandidateSteps> steps = factory.createCandidateSteps();
 		// Then
-		assertEquals(1, steps.size());
-		assertTrue(steps.get(0) instanceof CandidateSteps);
+		assertThat(steps.size(), equalTo(1));
+		boolean actual1 = steps.get(0) instanceof CandidateSteps;
+		assertThat(actual1, is(true));
 		Object instance = stepsInstance(steps.get(0));
-		assertTrue(instance instanceof FooSteps);
+		boolean actual = instance instanceof FooSteps;
+		assertThat(actual, is(true));
 	}
 
 	@Test
@@ -41,13 +44,15 @@ public class NeedleStepsFactoryBehaviour {
 		// When
 		List<CandidateSteps> steps = factory.createCandidateSteps();
 		// Then
-		assertEquals(1, steps.size());
-		assertTrue(steps.get(0) instanceof CandidateSteps);
+		assertThat(steps.size(), equalTo(1));
+		boolean actual1 = steps.get(0) instanceof CandidateSteps;
+		assertThat(actual1, is(true));
 		Object instance = stepsInstance(steps.get(0));
-		assertTrue(instance instanceof FooStepsWithDependency);
+		boolean actual = instance instanceof FooStepsWithDependency;
+		assertThat(actual, is(true));
 		FooStepsWithDependency withDependency = (FooStepsWithDependency) instance;
-		assertNotNull(withDependency.getter);
-		assertEquals(ValueGetter.VALUE, withDependency.getter.getValue());
+        assertThat(withDependency.getter, is(notNullValue()));
+		assertThat((String)withDependency.getter.getValue(), equalTo(ValueGetter.VALUE));
 	}
 
 	private Object stepsInstance(CandidateSteps candidateSteps) {

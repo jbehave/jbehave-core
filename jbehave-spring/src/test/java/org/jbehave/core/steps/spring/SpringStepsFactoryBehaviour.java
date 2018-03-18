@@ -19,7 +19,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -63,10 +62,8 @@ public class SpringStepsFactoryBehaviour {
 		List<CandidateSteps> steps = factory.createCandidateSteps();
 		// Then
 		assertFooStepsFound(steps);
-		assertEquals(
-				42,
-				(int) findInstanceOfType(steps, FooStepsWithDependency.class).integer);
-	}
+        assertThat((int) findInstanceOfType(steps, FooStepsWithDependency.class).integer, equalTo(42));
+    }
 
 	@Test
 	public void annotationStepsWithDependenciesCanBeCreated() {
@@ -79,14 +76,12 @@ public class SpringStepsFactoryBehaviour {
 		List<CandidateSteps> steps = factory.createCandidateSteps();
 		// Then
 		assertFooStepsFound(steps);
-		assertEquals(
-				42,
-				(int) findInstanceOfType(steps, FooStepsWithDependency.class).integer);
-	}
+        assertThat((int) findInstanceOfType(steps, FooStepsWithDependency.class).integer, equalTo(42));
+    }
 
 	private void assertFooStepsFound(List<CandidateSteps> steps) {
-		assertEquals(1, steps.size());
-		assertThat(firstStepsInstance(steps), instanceOf(FooSteps.class));
+        assertThat(steps.size(), equalTo(1));
+        assertThat(firstStepsInstance(steps), instanceOf(FooSteps.class));
 	}
 
 	private Object firstStepsInstance(List<CandidateSteps> steps) {

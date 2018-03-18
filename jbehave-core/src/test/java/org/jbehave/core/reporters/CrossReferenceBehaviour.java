@@ -1,6 +1,12 @@
 package org.jbehave.core.reporters;
 
-import static org.junit.Assert.assertEquals;
+import org.apache.commons.io.IOUtils;
+import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
+import org.jbehave.core.embedder.PerformableTree.*;
+import org.jbehave.core.i18n.LocalizedKeywords;
+import org.jbehave.core.model.*;
+import org.jbehave.core.steps.StepType;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,22 +17,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.io.IOUtils;
-import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
-import org.jbehave.core.embedder.PerformableTree.NormalPerformableScenario;
-import org.jbehave.core.embedder.PerformableTree.PerformableRoot;
-import org.jbehave.core.embedder.PerformableTree.PerformableScenario;
-import org.jbehave.core.embedder.PerformableTree.PerformableSteps;
-import org.jbehave.core.embedder.PerformableTree.PerformableStory;
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.model.Description;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.StepPattern;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.StepType;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 
 public class CrossReferenceBehaviour {
@@ -50,8 +42,8 @@ public class CrossReferenceBehaviour {
         String expectedJson = resource("xref.json");
         String actualJson = output(outputDirectory, "xref.json");
 
-        assertEquals(expectedXml, actualXml);
-        assertEquals(expectedJson, actualJson);
+        assertThat(actualXml, equalTo(expectedXml));
+        assertThat(actualJson, equalTo(expectedJson));
     }
 
     private String resource(String name) throws IOException {

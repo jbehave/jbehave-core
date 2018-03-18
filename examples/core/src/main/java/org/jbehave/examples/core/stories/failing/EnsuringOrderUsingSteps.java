@@ -22,7 +22,8 @@ import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.MyStory
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 @RunWith(AnnotatedEmbedderRunner.class)
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = false, ignoreFailureInView = true)
@@ -84,6 +85,6 @@ public class EnsuringOrderUsingSteps implements Embeddable {
         int leftIndex = ORDER.indexOf(left);
         int rightIndex = ORDER.indexOf(right);
 
-        assertTrue(left + " was not called before " + right, leftIndex < rightIndex);
+        assertThat(leftIndex < rightIndex, is(true));
     }
 }

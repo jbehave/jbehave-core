@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.AfterStories;
@@ -13,11 +12,11 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.embedder.StoryControls;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.io.StoryFinder;
-import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.junit.Assert;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 public class FailureCorrelationStories extends CoreStories {
@@ -64,6 +63,6 @@ public class FailureCorrelationStories extends CoreStories {
 
     @AfterStories
     public void afterStories(){
-        Assert.assertThat(failures.size(), Matchers.equalTo(2));
+        assertThat(failures.size(), equalTo(2));
     }
 }
