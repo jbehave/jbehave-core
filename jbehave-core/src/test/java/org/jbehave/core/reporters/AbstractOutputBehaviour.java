@@ -11,13 +11,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 
-import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractOutputBehaviour {
 
     protected void assertThatOutputIs(String out, String pathToExpected) throws IOException {
         String expected = IOUtils.toString(getClass().getResourceAsStream(pathToExpected), true);
-        assertEquals(dos2unix(expected), dos2unix(out));
+        org.junit.Assert.assertEquals(dos2unix(expected), dos2unix(out));
     }
 
     protected String dos2unix(String string) {

@@ -1,13 +1,11 @@
 package org.jbehave.core.reporters;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
 
 import java.io.*;
 import java.util.Properties;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.IOUtils;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 

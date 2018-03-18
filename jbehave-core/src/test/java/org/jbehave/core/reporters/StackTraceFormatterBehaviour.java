@@ -5,13 +5,13 @@ import java.io.IOException;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class StackTraceFormatterBehaviour {
 
     @Test
     public void stackTracesShouldBeCompressible() throws IOException {
+
+        StackTraceFormatter formatter = new StackTraceFormatter(true);
 
         String start = "java.lang.AssertionError: cart should have contained 68467780\n" +
                 "Expected: is <true>\n" +
@@ -71,28 +71,28 @@ public class StackTraceFormatterBehaviour {
                 "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)\n" +
                 "\tat org.jbehave.core.embedder.StoryRunner.runStepsWhileKeepingState(StoryRunner.java:457)\n";
 
-        StackTraceFormatter formatter = new StackTraceFormatter(true);
+        String trace = formatter.stackTrace(start);
 
-        assertEquals(
-                "java.lang.AssertionError: cart should have contained 68467780\n" +
-                        "Expected: is <true>\n" +
-                        "     got: <false>\n" +
-                        "\t(groovy-call)\n" +
-                        "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
-                        "\t(groovy-call)\n" +
-                        "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
-                        "\t(reflection-construct)\n" +
-                        "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
-                        "\t(groovy-static-method-invoke)\n" +
-                        "\tat com.github.tanob.groobe.AssertionSupport.assertWithFailureMessage(AssertionSupport.groovy:32)\n" +
-                        "\t(groovy-instance-method-invoke)\n" +
-                        "\tat com.github.tanob.groobe.AssertionSupport$_assertTransformedDelegateAndOneParam_closure3.doCall(AssertionSupport.groovy:20)\n" +
-                        "\t(groovy-closure-invoke)\n" +
-                        "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
-                        "\t(groovy-call)\n" +
-                        "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n" +
-                        "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)\n" +
-                        "...", formatter.stackTrace(start));
+        String expected = "java.lang.AssertionError: cart should have contained 68467780\n" +
+                "Expected: is <true>\n" +
+                "     got: <false>\n" +
+                "\t(groovy-call)\n" +
+                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
+                "\t(groovy-call)\n" +
+                "\tat EtsyDotComSteps.anItemInTheEtsyCart(EtsyDotComSteps.groovy:51)\n" +
+                "\t(reflection-construct)\n" +
+                "\tat org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:21)\n" +
+                "\t(groovy-static-method-invoke)\n" +
+                "\tat com.github.tanob.groobe.AssertionSupport.assertWithFailureMessage(AssertionSupport.groovy:32)\n" +
+                "\t(groovy-instance-method-invoke)\n" +
+                "\tat com.github.tanob.groobe.AssertionSupport$_assertTransformedDelegateAndOneParam_closure3.doCall(AssertionSupport.groovy:20)\n" +
+                "\t(groovy-closure-invoke)\n" +
+                "\tat EtsyDotComSteps.cartHasThatItem(EtsyDotComSteps.groovy:112)\n" +
+                "\t(groovy-call)\n" +
+                "\tat org.jbehave.core.steps.StepCreator$ParameterisedStep.perform(StepCreator.java:430)\n" +
+                "\tat org.jbehave.core.embedder.StoryRunner$FineSoFar.run(StoryRunner.java:261)\n" +
+                "...";
+        assertThatTraceIs(trace, expected);
     }
 
     @Test
@@ -101,23 +101,31 @@ public class StackTraceFormatterBehaviour {
         StackTraceFormatter formatter = new StackTraceFormatter(true);
 
         // When I format an Exception
-        String trace=formatter.stackTrace(new Exception("some cause"));
+        String trace = formatter.stackTrace(new Exception("some cause"));
 
         // Then it looks like
-        assertEquals("java.lang.Exception: some cause\n"
+        String expected = "java.lang.Exception: some cause\n"
                 + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:104)\n"
                 + "\t(reflection-invoke)\n"
                 + "\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)\n"
-                + "...", trace);
+                + "...";
+        assertThatTraceIs(trace, expected);
     }
 
     @Test
     public void UUIDExecptionShouldBeUnwrapped() {
+        StackTraceFormatter formatter = new StackTraceFormatter(false);
         Exception ex=new Exception();
         Exception wrapEx=new UUIDExceptionWrapper(ex);
 
-        StackTraceFormatter formatter = new StackTraceFormatter(false);
-        assertTrue("UUIDException is not unwrapped", formatter.stackTrace(wrapEx).equals(formatter.stackTrace(ex)));
+        String trace = formatter.stackTrace(ex);
+        String expected = formatter.stackTrace(wrapEx);
+        assertThatTraceIs(trace, expected);
+    }
+
+    private void assertThatTraceIs(String trace, String expected) {
+        // JUnit assertEquals used for comparing Strings
+        org.junit.Assert.assertEquals(expected, trace);
     }
 
 }
