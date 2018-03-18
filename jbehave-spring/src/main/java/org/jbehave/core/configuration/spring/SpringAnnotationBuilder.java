@@ -82,7 +82,7 @@ public class SpringAnnotationBuilder extends AnnotationBuilder {
 
     private List<ParameterConverter> getBeansOfType(ApplicationContext context, Class<ParameterConverter> type) {
         Map<String, ParameterConverter> beansOfType = context.getBeansOfType(type);
-        List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
+        List<ParameterConverter> converters = new ArrayList<>();
         for (ParameterConverter converter : beansOfType.values()) {
             converters.add(converter);
         }

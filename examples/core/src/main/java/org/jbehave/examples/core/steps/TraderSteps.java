@@ -40,9 +40,9 @@ import static org.hamcrest.Matchers.equalTo;
 public class TraderSteps {
 
 	private TradingService service;
-	private ThreadLocal<Stock> stock = new ThreadLocal<Stock>();
+	private ThreadLocal<Stock> stock = new ThreadLocal<>();
 	private Trader trader;
-	private List<Trader> traders = new ArrayList<Trader>();
+	private List<Trader> traders = new ArrayList<>();
 	private List<Trader> searchedTraders;
 	private Date date;
 	private ExamplesTable ranksTable;
@@ -96,7 +96,7 @@ public class TraderSteps {
 	@When("traders are subset to \"$regex\" by name")
 	@Alias("traders are filtered by \"$regex\"")
 	public void subsetTradersByName(String regex) {
-		searchedTraders = new ArrayList<Trader>();
+		searchedTraders = new ArrayList<>();
 		for (Trader trader : traders) {
 			if (trader.getName().matches(regex)) {
 				searchedTraders.add(trader);
@@ -123,7 +123,7 @@ public class TraderSteps {
 	}
 
 	private List<Trader> toTraders(ExamplesTable table) {
-		List<Trader> traders = new ArrayList<Trader>();
+		List<Trader> traders = new ArrayList<>();
 		List<Map<String, String>> rows = table.getRows();
 		for (Map<String, String> row : rows) {
 			String name = row.get("name");
@@ -204,7 +204,7 @@ public class TraderSteps {
 
     @Then("the list of trade types is $types")
     public void thenTheListTradeTypesIs(List<TradeType> types) {
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         for (TradeType type : TradeType.values()) {
             values.add(type.name());
         }

@@ -34,7 +34,7 @@ public class ExportFromFilesystemBehaviour {
         write(text1, file1);
         File file2 = new File(sourcePath + "/Another_story" + sourceExt);
         write(text2, file2);
-        Map<String, Resource> index = new HashMap<String, Resource>();
+        Map<String, Resource> index = new HashMap<>();
         Resource aResource = new Resource(rootURI + "/A_story");
 		index.put("A_story", aResource);
         Resource anotherResource = new Resource(rootURI + "/Another_story");

@@ -18,7 +18,7 @@ public class TableUtils
         for (char c : separator.toCharArray()) {
             regex.append("\\").append(c);
         }
-        List<String> values = new ArrayList<String>();
+        List<String> values = new ArrayList<>();
         for (String value : rowAsString.split(regex.toString(), -1)) {
             String stripped = StringUtils.substringBefore(value, commentSeparator);
             String trimmed = trimValues ? stripped.trim() : stripped;

@@ -58,7 +58,7 @@ public class LocalizedKeywords extends Keywords {
                                                 String baseBundleName, ClassLoader classLoader) {
         ResourceBundle bundle = findBunde(bundleName, locale, classLoader);
         ResourceBundle baseBundle = findBunde(baseBundleName, baseLocale, classLoader);
-        Map<String, String> keywords = new HashMap<String, String>();
+        Map<String, String> keywords = new HashMap<>();
         for (String key : KEYWORDS) {
             try {
                 keywords.put(key, bundle.getString(key));

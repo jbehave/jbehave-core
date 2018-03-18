@@ -21,7 +21,7 @@ public class BeforeOrAfterFailed extends RuntimeException {
     }
 
     private static String toAnnotationNames(Annotation[] annotations) {
-        List<String> names = new ArrayList<String>();
+        List<String> names = new ArrayList<>();
         for (Annotation annotation : annotations) {
             names.add("@"+annotation.annotationType().getSimpleName());
         }

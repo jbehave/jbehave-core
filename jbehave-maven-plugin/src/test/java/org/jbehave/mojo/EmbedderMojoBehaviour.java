@@ -728,7 +728,7 @@ public class EmbedderMojoBehaviour {
         when(siteResources.getType()).thenReturn("zip");
         when(siteResources.getFile()).thenReturn(siteFile);
 
-        Set<Artifact> allArtifacts = new HashSet<Artifact>();
+        Set<Artifact> allArtifacts = new HashSet<>();
         allArtifacts.add(coreResources);
         allArtifacts.add(siteResources);
 
@@ -782,7 +782,7 @@ public class EmbedderMojoBehaviour {
         when(someResources.getType()).thenReturn("jar");
         when(someResources.getFile()).thenReturn(resourcesFile);
 
-        Set<Artifact> allArtifacts = new HashSet<Artifact>();
+        Set<Artifact> allArtifacts = new HashSet<>();
         allArtifacts.add(someResources);
 
         String buildDirectory = "target";
@@ -828,7 +828,7 @@ public class EmbedderMojoBehaviour {
         when(siteResources.getType()).thenReturn("zip");
         when(siteResources.getFile()).thenReturn(siteFile);
 
-        Set<Artifact> allArtifacts = new HashSet<Artifact>();
+        Set<Artifact> allArtifacts = new HashSet<>();
         allArtifacts.add(coreResources);
         allArtifacts.add(siteResources);
 

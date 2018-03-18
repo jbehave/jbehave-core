@@ -15,10 +15,10 @@ public class StepsContext {
     private static final String OBJECT_ALREADY_STORED_MESSAGE = "Object key '%s' has been already stored before.";
     private static final String OBJECT_NOT_STORED_MESSAGE = "Object key '%s' has not been stored";
 
-	private static final ThreadLocal<Map<String, Object>> exampleObjects = new ThreadLocal<Map<String, Object>>();
-    private static final ThreadLocal<Map<String, Object>> scenarioObjects = new ThreadLocal<Map<String, Object>>();
-    private static final ThreadLocal<Map<String, Object>> storyObjects = new ThreadLocal<Map<String, Object>>();
-    private static final ThreadLocal<Set<String>> keysStored = new ThreadLocal<Set<String>>();
+	private static final ThreadLocal<Map<String, Object>> exampleObjects = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, Object>> scenarioObjects = new ThreadLocal<>();
+    private static final ThreadLocal<Map<String, Object>> storyObjects = new ThreadLocal<>();
+    private static final ThreadLocal<Set<String>> keysStored = new ThreadLocal<>();
 
     public void put(String key, Object object, ToContext.RetentionLevel retentionLevel) {
         checkForDuplicate(key);
@@ -61,7 +61,7 @@ public class StepsContext {
     private Map<String, Object> getExampleObjects() {
         Map<String, Object> objects = exampleObjects.get();
         if (objects == null) {
-            objects = new HashMap<String, Object>();
+            objects = new HashMap<>();
             exampleObjects.set(objects);
         }
         return objects;
@@ -70,7 +70,7 @@ public class StepsContext {
     private Map<String, Object> getScenarioObjects() {
         Map<String, Object> objects = scenarioObjects.get();
         if (objects == null) {
-            objects = new HashMap<String, Object>();
+            objects = new HashMap<>();
             scenarioObjects.set(objects);
         }
         return objects;
@@ -79,7 +79,7 @@ public class StepsContext {
     private Map<String, Object> getStoryObjects() {
         Map<String, Object> objects = storyObjects.get();
         if (objects == null) {
-            objects = new HashMap<String, Object>();
+            objects = new HashMap<>();
             storyObjects.set(objects);
         }
         return objects;
@@ -88,7 +88,7 @@ public class StepsContext {
     private Set<String> getKeys() {
         Set<String> keys = keysStored.get();
         if (keys == null) {
-            keys = new HashSet<String>();
+            keys = new HashSet<>();
             keysStored.set(keys);
         }
         return keys;

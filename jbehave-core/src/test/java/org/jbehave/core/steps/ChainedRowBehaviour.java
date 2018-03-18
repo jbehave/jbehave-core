@@ -15,9 +15,9 @@ public class ChainedRowBehaviour {
 
     @Test
     public void shouldChainRowValuesWithoutOverwritingAlreadyExisting() throws Exception {
-        Map<String,String> map1 = new HashMap<String, String>();
+        Map<String,String> map1 = new HashMap<>();
         map1.put("one", "11");
-        Map<String,String> map2 = new HashMap<String, String>();
+        Map<String,String> map2 = new HashMap<>();
         map2.put("one", "21");
         map2.put("two", "22");
 

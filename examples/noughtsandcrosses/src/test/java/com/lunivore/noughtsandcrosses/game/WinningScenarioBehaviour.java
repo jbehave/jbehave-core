@@ -13,7 +13,7 @@ public class WinningScenarioBehaviour {
 
     @Test
     public void shouldFindWinningGameWhenCoordsAreAllTheSamePlayer() {
-        Map<Coord, Player> game = new HashMap<Coord, Player>();
+        Map<Coord, Player> game = new HashMap<>();
         game.put(new Coord(0,0), Player.X);
         game.put(new Coord(1,0), Player.X);
         game.put(new Coord(1,1), Player.O);

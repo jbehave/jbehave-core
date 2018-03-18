@@ -240,7 +240,7 @@ public class CrossReference {
 
 	public static class XRef {
 		private List<PerformableStory> stories;
-		private List<PerformableScenario> scenarios = new ArrayList<PerformableScenario>();
+		private List<PerformableScenario> scenarios = new ArrayList<>();
 
 		public XRef(PerformableRoot root) {
 			stories = root.getStories();

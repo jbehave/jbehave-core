@@ -15,7 +15,7 @@ public class Stock {
 	private String symbol;
     private double alertPrice;
     private AlertStatus status = OFF;
-    private List<Double> prices = new ArrayList<Double>();
+    private List<Double> prices = new ArrayList<>();
 
     public Stock(String symbol, double alertPrice) {
         this.symbol = symbol;

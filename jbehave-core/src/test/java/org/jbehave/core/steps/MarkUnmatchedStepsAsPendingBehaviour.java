@@ -36,7 +36,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
     private MarkUnmatchedStepsAsPending stepCollector = new MarkUnmatchedStepsAsPending();
 
-    private Map<String, String> parameters = new HashMap<String, String>();
+    private Map<String, String> parameters = new HashMap<>();
 
     @Test
     public void shouldCreateExecutableStepsWhenCandidatesAreMatched() {
@@ -491,7 +491,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
     @Test
     public void afterScenarioStepsShouldBeInReverseOrder() throws Throwable {
-        List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
+        List<CandidateSteps> steps = new ArrayList<>();
         steps.add(new ClassWithMethodsAandB());
         steps.add(new ClassWithMethodsCandD());
         String stepsAsString = steps.toString(); // includes object ID numbers

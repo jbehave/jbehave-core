@@ -127,7 +127,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
 		} catch (IOException e) {
 			// story durations file not found - carry on
 		}
-		Map<String,Long> durations = new HashMap<String, Long>();
+		Map<String,Long> durations = new HashMap<>();
 		for ( Object key : p.keySet() ){
 			durations.put(toReportPath(key), toMillis(p.get(key)));
 		}
@@ -187,7 +187,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
     }
 
     private List<String> mergeFormatsWithDefaults(List<String> formats) {
-        List<String> merged = new ArrayList<String>();
+        List<String> merged = new ArrayList<>();
         merged.addAll(asList(templateResource("defaultFormats").split(",")));
         merged.addAll(formats);
         return merged;
@@ -199,9 +199,9 @@ public class TemplateableViewGenerator implements ViewGenerator {
             String nonDecoratedTemplate = templateResource("nonDecorated");
             String viewDirectory = templateResource("viewDirectory");
             boolean decorateNonHtml = Boolean.valueOf(templateResource("decorateNonHtml"));
-            List<Report> reports = new ArrayList<Report>();
+            List<Report> reports = new ArrayList<>();
             for (String name : reportFiles.keySet()) {
-                Map<String, File> filesByFormat = new HashMap<String, File>();
+                Map<String, File> filesByFormat = new HashMap<>();
                 for (File file : reportFiles.get(name)) {
                     String fileName = file.getName();
                     String format = FilenameUtils.getExtension(fileName);
@@ -232,7 +232,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
 
     SortedMap<String, List<File>> readReportFiles(File outputDirectory, final String outputName,
             final List<String> formats) {
-        SortedMap<String, List<File>> reportFiles = new TreeMap<String, List<File>>();
+        SortedMap<String, List<File>> reportFiles = new TreeMap<>();
         if (outputDirectory == null || !outputDirectory.exists()) {
             return reportFiles;
         }
@@ -254,7 +254,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
             String name = FilenameUtils.getBaseName(fileName);
             List<File> filesByName = reportFiles.get(name);
             if (filesByName == null) {
-                filesByName = new ArrayList<File>();
+                filesByName = new ArrayList<>();
                 reportFiles.put(name, filesByName);
             }
             filesByName.add(new File(outputDirectory, fileName));
@@ -280,7 +280,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
     }
 
     private Map<String, Object> newDataModel() {
-        return new HashMap<String, Object>();
+        return new HashMap<>();
     }
 
     @SuppressWarnings("serial")
@@ -303,7 +303,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
     public static class Reports {
     	public enum ViewType { LIST };
     	
-        private final Map<String, Report> reports = new HashMap<String, Report>();
+        private final Map<String, Report> reports = new HashMap<>();
         private final StoryNameResolver nameResolver;
 		private ViewType viewType = ViewType.LIST;
 
@@ -322,13 +322,13 @@ public class TemplateableViewGenerator implements ViewGenerator {
         }
         
         public List<Report> getReports() {
-            List<Report> list = new ArrayList<Report>(reports.values());
+            List<Report> list = new ArrayList<>(reports.values());
             Collections.sort(list);
             return list;
         }
 
         public List<String> getReportNames() {
-            List<String> list = new ArrayList<String>(reports.keySet());
+            List<String> list = new ArrayList<>(reports.keySet());
             Collections.sort(list);
             return list;
         }
@@ -351,7 +351,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         }
 
         private Report totals(Collection<Report> values) {
-            Map<String, Integer> totals = new HashMap<String, Integer>();
+            Map<String, Integer> totals = new HashMap<>();
             for (Report report : values) {
                 Map<String, Integer> stats = report.getStats();
                 for (String key : stats.keySet()) {
@@ -417,7 +417,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         public Map<String, Integer> getStats() {
             if (stats == null) {
                 Properties p = asProperties("stats");
-                stats = new HashMap<String, Integer>();
+                stats = new HashMap<>();
                 for (Enumeration<?> e = p.propertyNames(); e.hasMoreElements();) {
                     String key = (String) e.nextElement();
                     stats.put(key, valueOf(key, p));

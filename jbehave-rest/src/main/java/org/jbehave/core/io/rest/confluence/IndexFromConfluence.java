@@ -53,7 +53,7 @@ public class IndexFromConfluence implements ResourceIndexer {
     }
 
     private Map<String, Resource> createResourceMap(String baseUrl, String spaceKey, String pageName, String pattern) {
-        Map<String, Resource> result = new HashMap<String, Resource>();
+        Map<String, Resource> result = new HashMap<>();
         Page rootPage = confluence.loadRootPage(baseUrl, spaceKey, pageName);
         addPage(result, rootPage.getSelfReference(), pattern);
         return result;

@@ -33,7 +33,7 @@ import org.needle4j.reflection.ReflectionUtil;
  */
 public class NeedleStepsFactory extends NeedleTestcase implements InjectableStepsFactory {
 
-    private final Map<Class<?>, Object> cachedTypeInstances = new LinkedHashMap<Class<?>, Object>();
+    private final Map<Class<?>, Object> cachedTypeInstances = new LinkedHashMap<>();
 
     private Configuration configuration;
     private Class<?>[] steps;
@@ -75,7 +75,7 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
      * {@inheritDoc}
      */
     public List<CandidateSteps> createCandidateSteps() {
-        final List<CandidateSteps> result = new ArrayList<CandidateSteps>();
+        final List<CandidateSteps> result = new ArrayList<>();
         for (final Class<?> type : steps) {
             if (hasAnnotatedMethods(type)) {
                 configuration.parameterConverters().addConverters(methodReturningConverters(type));
@@ -133,7 +133,7 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
      * @see {@link AbstractStepsFactory}
      */
     private List<ParameterConverter> methodReturningConverters(final Class<?> type) {
-        final List<ParameterConverter> converters = new ArrayList<ParameterConverter>();
+        final List<ParameterConverter> converters = new ArrayList<>();
         for (final Method method : type.getMethods()) {
             if (method.isAnnotationPresent(AsParameterConverter.class)) {
                 converters.add(new MethodReturningConverter(method, type, this));

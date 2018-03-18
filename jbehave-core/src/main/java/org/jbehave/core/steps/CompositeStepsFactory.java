@@ -18,7 +18,7 @@ public class CompositeStepsFactory implements InjectableStepsFactory {
     }
 
     public List<CandidateSteps> createCandidateSteps() {
-        List<CandidateSteps> steps = new ArrayList<CandidateSteps>();
+        List<CandidateSteps> steps = new ArrayList<>();
         for (InjectableStepsFactory factory : stepsFactories) {
             steps.addAll(factory.createCandidateSteps());
         }

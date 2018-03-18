@@ -162,7 +162,7 @@ public class Embedder {
     }
 
     private List<Embeddable> embeddables(List<String> classNames, EmbedderClassLoader classLoader) {
-        List<Embeddable> embeddables = new ArrayList<Embeddable>();
+        List<Embeddable> embeddables = new ArrayList<>();
         for (String className : classNames) {
             if (!classLoader.isAbstract(className)) {
                 embeddables.add(classLoader.newInstance(Embeddable.class, className));
@@ -361,7 +361,7 @@ public class Embedder {
 
     public List<CandidateSteps> candidateSteps() {
         if (candidateSteps == null) {
-            candidateSteps = new ArrayList<CandidateSteps>();
+            candidateSteps = new ArrayList<>();
         }
         return candidateSteps;
     }
@@ -447,14 +447,14 @@ public class Embedder {
 
     public List<String> metaFilters() {
         if (metaFilters == null) {
-            metaFilters = new ArrayList<String>();
+            metaFilters = new ArrayList<>();
         }
         return metaFilters;
     }
 
     public Map<String,MetaMatcher> metaMatchers(){
     	if (metaMatchers == null){
-    		metaMatchers = new HashMap<String, MetaMatcher>();
+    		metaMatchers = new HashMap<>();
     	}
     	return metaMatchers;
     }

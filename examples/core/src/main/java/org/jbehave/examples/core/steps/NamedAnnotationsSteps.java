@@ -20,7 +20,7 @@ public class NamedAnnotationsSteps {
     private static final String NOT_SUPPORTED = "notSupported";
     private static final String SUPPORTED = "supported";
 
-    private List<SimpleMessage> messages = new LinkedList<SimpleMessage>();
+    private List<SimpleMessage> messages = new LinkedList<>();
 
     @Given("a message with <actionSupportability> action and <eventTypeSupportability> event")
     public void given(@Named("actionSupportability") String actionSupportability,
@@ -29,7 +29,7 @@ public class NamedAnnotationsSteps {
             @Named("supportedEventTypes") String supportedEventTypes,
             @Named("notSupportedActions") String notSupportedActions,
             @Named("notSupportedEventTypes") String notSupportedEventTypes) {
-        List<String> actions = new LinkedList<String>();
+        List<String> actions = new LinkedList<>();
         if (actionSupportability.equals(SUPPORTED)) {
             actions.addAll(asList(supportedActions.split(",")));
         } else if (actionSupportability.equals(NOT_SUPPORTED)) {
@@ -37,7 +37,7 @@ public class NamedAnnotationsSteps {
         } else {
             throw new IllegalStateException("wrong action supportability parameter: " + actionSupportability);
         }
-        List<String> eventTypes = new LinkedList<String>();
+        List<String> eventTypes = new LinkedList<>();
         if (eventTypeSupportability.equals(SUPPORTED)) {
             eventTypes.addAll(asList(supportedEventTypes.split(",")));
         } else if (eventTypeSupportability.equals(NOT_SUPPORTED)) {

@@ -89,7 +89,7 @@ public abstract class ConfigurableEmbedder implements Embeddable {
 	 */
 	public void addSteps(List<CandidateSteps> steps) {
 		if ( candidateSteps == null ){
-			this.candidateSteps = new ArrayList<CandidateSteps>();
+			this.candidateSteps = new ArrayList<>();
 		}
 		this.candidateSteps.addAll(steps);
 	}

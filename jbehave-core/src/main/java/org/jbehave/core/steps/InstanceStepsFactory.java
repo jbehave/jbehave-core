@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
  */
 public class InstanceStepsFactory extends AbstractStepsFactory {
 
-    private final Map<Class<?>,Object> stepsInstances = new LinkedHashMap<Class<?>, Object>();
+    private final Map<Class<?>,Object> stepsInstances = new LinkedHashMap<>();
 
     public InstanceStepsFactory(Configuration configuration, Object... stepsInstances) {
         this(configuration, asList(stepsInstances));
@@ -29,7 +29,7 @@ public class InstanceStepsFactory extends AbstractStepsFactory {
 
     @Override
     protected List<Class<?>> stepsTypes() {
-        return new ArrayList<Class<?>>(stepsInstances.keySet());
+        return new ArrayList<>(stepsInstances.keySet());
     }
 
     public Object createInstanceOfType(Class<?> type) {

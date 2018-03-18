@@ -34,7 +34,7 @@ public class CoreStoriesUsingNeedle extends CoreStories {
     final Class<?>[] steps = new Class<?>[] { NeedleTraderSteps.class, BeforeAfterSteps.class, AndSteps.class, CalendarSteps.class, PendingSteps.class,
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class };
 
-    final Set<InjectionProvider<?>> providers = new HashSet<InjectionProvider<?>>();
+    final Set<InjectionProvider<?>> providers = new HashSet<>();
     providers.add(InjectionProviders.providerForInstance(new TradingService()));
 
     return new NeedleStepsFactory(configuration(), providers, steps);
