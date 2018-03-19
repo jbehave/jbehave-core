@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Lifecycle</title>
+</head>
+
+<body>
+
+<h2>Lifecycle</h2>
+
+<p>JBehave supports two main ways to control the lifecyle of a story:</p>
+
+<ul>
+    <li>Programmatically via <a href="annotations.html">annotations</a>.
+    </li>
+    <li>Declaratively via the <b>Lifecycle</b> element of the <a
+        href="story-syntax.html">story syntax</a>.
+    </li>
+</ul>
+
+<h3>Programmatic Lifecycle</h3>
+
+<p>The programmatic lifecycle controls are code-centric and are best suited for technical - rather than functional - controls. </p>
+
+<p>The <b>@BeforeScenario</b> and <b>@AfterScenario</b> annotations allow
+the corresponding methods to be executed before and after each scenario.  Optionally, the <a
+    href="javadoc/core/org/jbehave/core/annotations/ScenarioType.html">ScenarioType</a> can be specified 
+    to execute only upon that type, e.g. for <a href="parametrised-scenarios.html">scenarios parametrised by examples</a>.
+In addition, <b>@AfterScenario</b> allows the setting of an optional <a
+    href="javadoc/core/org/jbehave/core/annotations/AfterScenario.Outcome.html">Outcome</a>
+value, which specifies whether the method should be executed depending
+on the outcome of the scenario.</p>
+
+<p>Similarly, the <b>@BeforeStory</b> and <b>@AfterStory</b> annotations allow
+the corresponding methods to be executed before and after each story, either a GivenStory or not:</p>
+
+<p>Finally, the <b>@BeforeStories</b> and <b>@AfterStories</b> annotations allow
+the corresponding methods to be executed before and after a collection of stories:</p>
+
+<h3>Declarative Lifecycle</h3>
+
+<p>The declarative lifecycle controls are story-centric and best suited for describing functional behaviour that needs to be repeated before
+and after scenarios and stories.</p>
+
+<p>The declarative controls mirror the <a href="annotations.html">annotations</a>-based ones.</p>
+
+<p>To define steos that need to be executed before or after each scenario:</p>
+<pre class="brush: bdd">
+Lifecycle:
+Before:
+Scope: SCENARIO
+[steps to be executed before each scenario]
+After:
+Scope: SCENARIO
+[steps to be executed after each scenario]
+</pre>
+
+<p>Similarly, to define steos that need to be executed before or after each story:</p>
+<pre class="brush: bdd">
+Lifecycle:
+Before:
+Scope: STORY
+[steps to be executed before each story]
+After:
+Scope: STORY
+[steps to be executed after each story]
+</pre>
+
+<p>Scopes can also be mixed and matched:</p>
+<p>Similarly, to define steos that need to be executed before or after each story:</p>
+<pre class="brush: bdd">
+Lifecycle:
+Before:
+Scope: STORY
+[steps to be executed before each story]
+Scope: SCENARIO
+[steps to be executed before each scenario]
+After:
+Scope: SCENARIO
+[steps to be executed after each scenario]
+Scope: STORY
+[steps to be executed after each story]
+</pre>
+
+<p>After steps also allow for outcome-based controls.</p>
+
+<pre class="brush: bdd">
+Lifecycle:
+After:
+Scope: SCENARIO|STORY
+Outcome: ANY
+[steps to executed after any scenario or story]
+Outcome: SUCCESS
+[steps to executed after a successful scenario or story]
+Outcome: FAILURE
+[steps to executed after a failed scenario or story]
+</pre>
+
+<p>Lifecycle scopes and outcomes are <a href="stories-in-your-language.html">keywords</a> that can be specified in any configured locale.</p>
+
+<div class="clear">
+<hr />
+</div>
+
+</body>
+</html>
