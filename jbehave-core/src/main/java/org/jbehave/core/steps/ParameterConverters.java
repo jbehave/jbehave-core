@@ -49,6 +49,7 @@ import static java.util.Arrays.asList;
  * Converters for several Java types are provided out-of-the-box:
  * <ul>
  * <li>{@link ParameterConverters.NumberConverter NumberConverter}</li>
+ * <li>{@link ParameterConverters.StringConverter StringConverter}</li>
  * <li>{@link ParameterConverters.StringListConverter StringListConverter}</li>
  * <li>{@link ParameterConverters.DateConverter DateConverter}</li>
  * <li>{@link ParameterConverters.ExamplesTableConverter ExamplesTableConverter}
@@ -74,8 +75,6 @@ public class ParameterConverters {
 
     public static final boolean DEFAULT_THREAD_SAFETY = true;
 
-    private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
-    private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
     private static final String DEFAULT_TRUE_VALUE = "true";
     private static final String DEFAULT_FALSE_VALUE = "false";
 
@@ -187,6 +186,7 @@ public class ParameterConverters {
         JsonFactory jsonFactory = new JsonFactory();
         return new ParameterConverter[] { new BooleanConverter(),
                 new NumberConverter(NumberFormat.getInstance(locale)),
+                new StringConverter(),
                 new StringListConverter(escapedCollectionSeparator),
                 new DateConverter(),
                 new EnumConverter(),
@@ -217,10 +217,6 @@ public class ParameterConverters {
             Object converted = converter.convertValue(value, type);
             monitor.convertedValueOfType(value, type, converted, converter.getClass());
             return converted;
-        }
-
-        if (type == String.class) {
-            return replaceNewlinesWithSystemNewlines(value);
         }
 
         if (isAssignableFromRawType(Collection.class, type)) {
@@ -285,10 +281,6 @@ public class ParameterConverters {
             // Could not instantiate Collection type, swallowing exception quietly
         }
         return null;
-    }
-
-    private Object replaceNewlinesWithSystemNewlines(String value) {
-        return value.replaceAll(NEWLINES_PATTERN, SYSTEM_NEWLINE);
     }
 
     public ParameterConverters newInstanceAdding(ParameterConverter converter) {
@@ -526,6 +518,15 @@ public class ParameterConverters {
         }
     }
 
+    public static class StringConverter extends AbstractParameterConverter<String> {
+        private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
+        private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
+
+        public String convertValue(String value, Type type) {
+            return value.replaceAll(NEWLINES_PATTERN, SYSTEM_NEWLINE);
+        }
+    }
+
     /**
      * Converts value to list of String. Splits value to a list, using an
      * injectable value separator (defaults to ",") and trimming each element of
@@ -541,13 +542,7 @@ public class ParameterConverters {
          * @param valueSeparator A regexp to use as list separator
          */
         public StringListConverter(String valueSeparator) {
-            super(valueSeparator, new AbstractParameterConverter<String>() {
-                @Override
-                public String convertValue(String value, Type type)
-                {
-                    return value;
-                }
-            });
+            super(valueSeparator, new StringConverter());
         }
 
         @Override
