@@ -255,9 +255,11 @@ public class ParameterConverters {
 
     private static <T> void fillCollection(String value, String valueSeparator, ParameterConverter<T> elementConverter,
             Type elementType, Collection<T> convertedValues) {
-        for (String elementValue : value.split(valueSeparator)) {
-            T convertedValue = elementConverter.convertValue(elementValue.trim(), elementType);
-            convertedValues.add(convertedValue);
+        if (!value.trim().isEmpty()) {
+            for (String elementValue : value.split(valueSeparator)) {
+                T convertedValue = elementConverter.convertValue(elementValue.trim(), elementType);
+                convertedValues.add(convertedValue);
+            }
         }
     }
 

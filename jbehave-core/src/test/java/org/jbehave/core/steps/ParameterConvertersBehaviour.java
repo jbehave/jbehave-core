@@ -555,6 +555,24 @@ public class ParameterConvertersBehaviour {
         parameterConverters.convert("foo", type);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldConvertEmptyStringToEmptyCollection() {
+        ParameterConverters parameterConverters = new ParameterConverters();
+        Type type = new TypeLiteral<List<Boolean>>(){}.getType();
+        List<Boolean> list = (List<Boolean>) parameterConverters.convert("", type);
+        assertThatCollectionIs(list);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldConvertBlankStringToEmptyCollection() {
+        ParameterConverters parameterConverters = new ParameterConverters();
+        Type type = new TypeLiteral<Set<Number>>(){}.getType();
+        Set<Number> set = (Set<Number>) parameterConverters.convert(" \t\n\r", type);
+        assertThatCollectionIs(set);
+    }
+
     private <T> void assertThatCollectionIs(Collection<T> collection, T... expected) {
         if ( expected.length > 0 ) {
             assertThat(collection, containsInAnyOrder(expected));
