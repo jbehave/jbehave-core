@@ -30,7 +30,8 @@ JDK version required:
 
 ### Maven 
 
-[Maven](http://maven.apache.org) version required to build: 3.0 or above.
+[Maven](http://maven.apache.org) version required to build: 3.5 or above 
+(while tested with 3.5.x it may also work with previous 3.x versions)
 
 ### Encoding
 
