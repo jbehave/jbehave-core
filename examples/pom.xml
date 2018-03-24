@@ -66,12 +66,6 @@
   </dependencies>
 
   <build>
-    <resources>
-      <resource>
-        <directory>${basedir}/src/main/java</directory>
-        <filtering>false</filtering>
-      </resource>
-    </resources>
     <pluginManagement>
       <plugins>
         <plugin>
