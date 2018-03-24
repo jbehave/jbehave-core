@@ -39,11 +39,17 @@ import org.jbehave.core.model.TableTransformers;
 public class RegexStoryParser implements StoryParser {
 
     private static final String NONE = "";
+    public static final ResourceLoader DEFAULT_RESOURCE_LOADER = new LoadFromClasspath();
+    public static final TableTransformers DEFAULT_TABLE_TRANSFORMERS = new TableTransformers();
     private final Keywords keywords;
     private final ExamplesTableFactory tableFactory;
 
     public RegexStoryParser() {
-        this(new LoadFromClasspath(), new TableTransformers());
+        this(new LocalizedKeywords());
+    }
+
+    public RegexStoryParser(Keywords keywords) {
+        this(keywords, DEFAULT_RESOURCE_LOADER, DEFAULT_TABLE_TRANSFORMERS);
     }
 
     public RegexStoryParser(ResourceLoader resourceLoader, TableTransformers tableTransformers) {

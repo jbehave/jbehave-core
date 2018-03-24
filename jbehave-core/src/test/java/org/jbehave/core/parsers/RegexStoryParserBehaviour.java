@@ -37,8 +37,7 @@ import org.junit.Test;
 public class RegexStoryParserBehaviour {
 
     private static final String NL = "\n";
-    private StoryParser parser = new RegexStoryParser(new LocalizedKeywords(), new LoadFromClasspath(),
-            new TableTransformers());
+    private StoryParser parser = new RegexStoryParser();
     private String storyPath = "path/to/my.story";
 
     @Test
@@ -226,8 +225,7 @@ public class RegexStoryParserBehaviour {
 
     @Test
     public void shouldParseStoryWithSynonymsOfStartingWords() {
-        StoryParser parser = new RegexStoryParser(new LocalizedKeywords(new Locale("sy")), new LoadFromClasspath(),
-                new TableTransformers());
+        StoryParser parser = new RegexStoryParser(new LocalizedKeywords(new Locale("sy")));
 
         String wholeStory = "Given a scenario" + NL +
                 "When I parse it" + NL +
