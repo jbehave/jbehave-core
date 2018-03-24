@@ -2,12 +2,14 @@ package org.jbehave.core.i18n;
 
 import static java.util.ResourceBundle.getBundle;
 
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 
 /**
@@ -92,10 +94,19 @@ public class LocalizedKeywords extends Keywords {
     @SuppressWarnings("serial")
     public static class ResourceBundleNotFound extends RuntimeException {
 
+        public static final String PATH_SEPARATOR = ";";
+
         public ResourceBundleNotFound(String bundleName, Locale locale, ClassLoader classLoader,
                                       MissingResourceException cause) {
             super("Resource bundle " + bundleName + " not found for locale " + locale + " in classLoader "
-                    + classLoader, cause);
+                    + asString(classLoader), cause);
+        }
+
+        private static String asString(ClassLoader classLoader) {
+            if ( classLoader instanceof URLClassLoader ){
+                return StringUtils.join(((URLClassLoader)classLoader).getURLs(), PATH_SEPARATOR);
+            }
+            return classLoader.toString();
         }
 
     }

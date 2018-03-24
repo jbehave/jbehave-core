@@ -370,6 +370,22 @@ public class Keywords {
         return outcomeFailure;
     }
 
+    public String outcomeDescription(){
+        return outcomeDescription;
+    }
+
+    public String outcomeValue(){
+        return outcomeValue;
+    }
+
+    public String outcomeMatcher(){
+        return outcomeMatcher;
+    }
+
+    public String outcomeVerified(){
+        return outcomeVerified;
+    }
+
     public List<String> outcomeFields() {
         return asList(outcomeDescription, outcomeValue, outcomeMatcher, outcomeVerified);
     }
