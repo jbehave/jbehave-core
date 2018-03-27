@@ -3,6 +3,7 @@ package org.jbehave.hudson;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;
@@ -179,12 +180,11 @@ public class ReportTransformBehaviour {
         }
     }
 
-    private Document tranformReport(String path) throws TransformerFactoryConfigurationError,
-            TransformerConfigurationException, TransformerException {
+    private Document tranformReport(String path) throws TransformerFactoryConfigurationError, TransformerException {
 
         File report = new File(cd, "/target/jbehave/" + path);
         try {
-			String out = FileUtils.readFileToString(report);
+			String out = FileUtils.readFileToString(report, StandardCharsets.UTF_8);
 			System.out.println(out);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

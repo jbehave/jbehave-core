@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,7 +47,7 @@ public class CrossReferenceBehaviour {
     }
 
     private String resource(String name) throws IOException {
-        return IOUtils.toString(this.getClass().getResourceAsStream(name)).replaceAll("(?:\\n|\\r)", "");
+        return IOUtils.toString(getClass().getResource(name), StandardCharsets.UTF_8).replaceAll("(?:\\n|\\r)", "");
     }
 
     private String output(File outputDirectory, String name) throws IOException, FileNotFoundException {
