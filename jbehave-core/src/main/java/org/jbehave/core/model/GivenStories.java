@@ -14,24 +14,24 @@ public class GivenStories {
 
     public static final GivenStories EMPTY = new GivenStories("");
 
-    private final List<GivenStory> givenStories = new ArrayList<>();
-    private final String givenStoriesAsString;
-    private ExamplesTable examplesTable = ExamplesTable.EMPTY;
+    private final List<GivenStory> stories = new ArrayList<>();
+    private final String asString;
+    private ExamplesTable examplesTable;
 
-    public GivenStories(String givenStoriesAsString) {
-        this.givenStoriesAsString = givenStoriesAsString;
-        for (String storyPath : givenStoriesAsString.split(",")) {
-            if (StringUtils.isNotBlank(storyPath)) {
-                givenStories.add(new GivenStory(storyPath));
+    public GivenStories(String asString) {
+        this.asString = asString;
+        for (String path : asString.split(",")) {
+            if (StringUtils.isNotBlank(path)) {
+                stories.add(new GivenStory(path));
             }
         }
     }
 
     public List<GivenStory> getStories() {
-        for (GivenStory givenStory : givenStories) {
-            givenStory.useParameters(parametersByAnchor(givenStory.getAnchor()));
+        for (GivenStory story : stories) {
+            story.useParameters(parametersByAnchor(story.getAnchor()));
         }
-        return givenStories;
+        return stories;
     }
 
     private Map<String, String> parametersByAnchor(String anchor) {
@@ -44,7 +44,7 @@ public class GivenStories {
             }
         }
         Map<String, String> parameters = null;
-        if ( examplesRow > -1 && examplesRow < examplesTable.getRowCount() ){
+        if ( examplesRow > -1 && examplesTable != null && examplesRow < examplesTable.getRowCount() ){
              parameters = examplesTable.getRow(examplesRow);
         }
         if ( parameters == null ){
@@ -55,15 +55,15 @@ public class GivenStories {
 
     public List<String> getPaths() {
         List<String> paths = new ArrayList<>();
-        for (GivenStory story : givenStories) {
+        for (GivenStory story : stories) {
             paths.add(story.asString().trim());
         }
         return Collections.unmodifiableList(paths);
     }
 
     public boolean requireParameters() {
-        for (GivenStory givenStory : givenStories) {
-            if ( givenStory.hasAnchor() ){
+        for (GivenStory story : stories) {
+            if ( story.hasAnchor() ){
                 return true;
             }
         }
@@ -75,7 +75,7 @@ public class GivenStories {
     }
     
     public String asString() {
-        return givenStoriesAsString;
+        return asString;
     }
 
     @Override
