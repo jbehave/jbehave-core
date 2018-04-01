@@ -20,6 +20,7 @@ import org.jbehave.core.model.*;
 import org.jbehave.core.model.TableTransformers.Formatting;
 import org.jbehave.core.model.TableTransformers.FromLandscape;
 import org.jbehave.core.model.TableTransformers.Replacing;
+import org.jbehave.core.steps.AbstractStepResult.Comment;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.AbstractStepResult.Ignorable;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
@@ -32,6 +33,7 @@ import org.jbehave.core.steps.StepMonitor;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import org.jbehave.core.steps.Timing;
 
 public class CrossReference {
 
@@ -114,6 +116,7 @@ public class CrossReference {
 		xstream.alias("scenario", Scenario.class);
 		xstream.alias("lifecycleSteps", Lifecycle.Steps.class);
 		xstream.alias("givenStory", GivenStory.class);
+		xstream.alias("comment", Comment.class);
 		xstream.alias("failed", Failed.class);
 		xstream.alias("pending", Pending.class);
 		xstream.alias("notPerformed", NotPerformed.class);
@@ -125,6 +128,7 @@ public class CrossReference {
 		xstream.alias("formatting", Formatting.class);
 		xstream.alias("replacing", Replacing.class);
 		xstream.alias("stepMatch", StepMatch.class);
+		xstream.alias("timing", Timing.class);
 		xstream.omitField(ExamplesTable.class, "parameterConverters");
 		xstream.omitField(ExamplesTable.class, "tableTrasformers");
 		xstream.omitField(ExamplesTable.class, "defaults");

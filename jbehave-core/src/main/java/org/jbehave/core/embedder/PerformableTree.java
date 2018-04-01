@@ -33,16 +33,11 @@ import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.reporters.ConcurrentStoryReporter;
 import org.jbehave.core.reporters.DelegatingStoryReporter;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.context.StepsContext;
-import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.PendingStepMethodGenerator;
-import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
-import org.jbehave.core.steps.StepResult;
-import org.jbehave.core.steps.Timer;
 
 /**
  * Creates a tree of {@link Performable} objects for a set of stories, grouping
@@ -103,7 +98,7 @@ public class PerformableTree {
                 Map<String, String> scenarioParameters = new HashMap<>(storyParameters);
                 PerformableScenario performableScenario = performableScenario(context, story, scenarioParameters, filteredStory, storyMeta,
                         runBeforeAndAfterScenarioSteps, scenario);
-                if (performableScenario.isNormalPerformableScenario() || performableScenario.hasExamples()) {
+                if (performableScenario.hasNormalScenario() || performableScenario.hasExamples()) {
                     performableStory.add(performableScenario);
                 }
             }
@@ -752,15 +747,15 @@ public class PerformableTree {
     public static class PerformableStory implements Performable {
 
         private final Story story;
-        private String localizedNarrative;
         private boolean allowed;
         private Status status;
-        private List<PerformableStory> givenStories = new ArrayList<>();
-        private List<PerformableScenario> scenarios = new ArrayList<>();
-        private List<PerformableSteps> beforeSteps = new ArrayList<>();
-        private List<PerformableSteps> afterSteps = new ArrayList<>();
         private Timing timing = new Timing();
         private boolean givenStory;
+        private String localizedNarrative;
+        private List<PerformableStory> givenStories = new ArrayList<>();
+        private List<PerformableSteps> beforeSteps = new ArrayList<>();
+        private List<PerformableScenario> scenarios = new ArrayList<>();
+        private List<PerformableSteps> afterSteps = new ArrayList<>();
 
         public PerformableStory(Story story, Keywords keywords, boolean givenStory) {
             this.story = story;
@@ -817,13 +812,13 @@ public class PerformableTree {
                 context.reporter().storyNotAllowed(story, context.filter.asString());
                 this.status = Status.NOT_ALLOWED;
             }
-            context.stepsContext().resetStory();
-            context.reporter().beforeStory(story, givenStory);
-            context.reporter().narrative(story.getNarrative());
-            context.reporter().lifecyle(story.getLifecycle());
-            State state = context.state();
             Timer timer = new Timer().start();
             try {
+                context.stepsContext().resetStory();
+                context.reporter().beforeStory(story, givenStory);
+                context.reporter().narrative(story.getNarrative());
+                context.reporter().lifecyle(story.getLifecycle());
+                State state = context.state();
                 for ( PerformableSteps steps : beforeSteps ) {
                     steps.perform(context);
                 }
@@ -832,15 +827,15 @@ public class PerformableTree {
                 for ( PerformableSteps steps : afterSteps ) {
                     steps.perform(context);
                 }
+                if (context.restartStory()) {
+                    context.reporter().afterStory(true);
+                } else {
+                    context.reporter().afterStory(givenStory);
+                }
+                this.status = context.status(state);
             } finally {
                 timing.setTimings(timer.stop());
             }
-            if (context.restartStory()) {
-                context.reporter().afterStory(true);
-            } else {
-                context.reporter().afterStory(givenStory);
-            }
-            this.status = context.status(state);
         }
 
         private void performScenarios(RunContext context) throws InterruptedException {
@@ -860,10 +855,11 @@ public class PerformableTree {
         private final Scenario scenario;
         private final String storyPath;
         private boolean allowed;
-		private NormalPerformableScenario normalPerformableScenario;
-        private List<ExamplePerformableScenario> examplePerformableScenarios = new ArrayList<>();
         @SuppressWarnings("unused")
-		private Status status;
+        private Status status;
+        private Timing timing = new Timing();
+		private NormalPerformableScenario normalScenario;
+        private List<ExamplePerformableScenario> exampleScenarios;
 
         public PerformableScenario(Scenario scenario, String storyPath) {
             this.scenario = scenario;
@@ -871,11 +867,14 @@ public class PerformableTree {
         }
 
         public void useNormalScenario(NormalPerformableScenario normalScenario) {
-            this.normalPerformableScenario = normalScenario;
+            this.normalScenario = normalScenario;
         }
 
         public void addExampleScenario(ExamplePerformableScenario exampleScenario) {
-            this.examplePerformableScenarios.add(exampleScenario);
+            if ( exampleScenarios == null ){
+                exampleScenarios = new ArrayList<>();
+            }
+            exampleScenarios.add(exampleScenario);
         }
 
         public void allowed(boolean allowed) {
@@ -894,41 +893,42 @@ public class PerformableTree {
             return storyPath;
         }
 
-        public boolean hasExamples() {
-            return examplePerformableScenarios.size() > 0;
+        public boolean hasNormalScenario() {
+            return normalScenario != null;
         }
 
-        public List<ExamplePerformableScenario> getExamples() {
-            return examplePerformableScenarios;
-        }
-        
-        public boolean isNormalPerformableScenario() {
-            return normalPerformableScenario != null;
+        public boolean hasExamples() {
+            return exampleScenarios != null && exampleScenarios.size() > 0;
         }
 
         public void perform(RunContext context) throws InterruptedException {
-        	if ( !isAllowed() ) {
-        		context.embedderMonitor().scenarioNotAllowed(scenario, context.filter());
-        		return;
-        	}
-        	context.stepsContext().resetScenario();
-            context.reporter().beforeScenario(scenario);
-        	context.reporter().beforeScenario(scenario.getTitle());
-        	context.reporter().scenarioMeta(scenario.getMeta());
-            State state = context.state();
-			if (!examplePerformableScenarios.isEmpty()) {
-				context.reporter().beforeExamples(scenario.getSteps(),
-						scenario.getExamplesTable());
-				for (ExamplePerformableScenario exampleScenario : examplePerformableScenarios) {
-					exampleScenario.perform(context);
-				}
-				context.reporter().afterExamples();
-			} else {
-			    context.stepsContext().resetExample();
-				normalPerformableScenario.perform(context);
-			}
-			this.status = context.status(state);
-			context.reporter().afterScenario();
+            if (!isAllowed()) {
+                context.embedderMonitor().scenarioNotAllowed(scenario, context.filter());
+                return;
+            }
+            Timer timer = new Timer().start();
+            try {
+                context.stepsContext().resetScenario();
+                context.reporter().beforeScenario(scenario);
+                context.reporter().beforeScenario(scenario.getTitle());
+                context.reporter().scenarioMeta(scenario.getMeta());
+                State state = context.state();
+                if ( hasExamples() ) {
+                    context.reporter().beforeExamples(scenario.getSteps(),
+                            scenario.getExamplesTable());
+                    for (ExamplePerformableScenario exampleScenario : exampleScenarios) {
+                        exampleScenario.perform(context);
+                    }
+                    context.reporter().afterExamples();
+                } else {
+                    context.stepsContext().resetExample();
+                    normalScenario.perform(context);
+                }
+                this.status = context.status(state);
+                context.reporter().afterScenario();
+            } finally {
+                timing.setTimings(timer.stop());
+            }
         }
 
     }
@@ -995,7 +995,7 @@ public class PerformableTree {
 
     public static class NormalPerformableScenario extends AbstractPerformableScenario {
 
-        private Scenario scenario;
+        private transient Scenario scenario;
 
 		public NormalPerformableScenario(Scenario scenario) {
 			this.scenario = scenario;
@@ -1015,7 +1015,7 @@ public class PerformableTree {
 
     public static class ExamplePerformableScenario extends AbstractPerformableScenario {
 
-        private Scenario scenario;
+        private transient Scenario scenario;
 
 		public ExamplePerformableScenario(Scenario scenario, Map<String, String> exampleParameters) {
         	super(exampleParameters);
@@ -1142,22 +1142,6 @@ public class PerformableTree {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
         }
 
-    }
-
-    public static class Timing {
-        private long durationInMillis;
-        private long start;
-        private long end;
-
-        public long getDurationInMillis() {
-            return durationInMillis;
-        }
-
-        public void setTimings(Timer timer) {
-            this.start = timer.getStart();
-            this.end = timer.getEnd();
-            this.durationInMillis = timer.getDuration();
-        }
     }
 
     public RunContext newRunContext(Configuration configuration, InjectableStepsFactory stepsFactory,

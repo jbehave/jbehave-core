@@ -128,10 +128,8 @@ public abstract class AbstractStepResult implements StepResult {
     protected final String step;
     protected final Type type;
     protected final UUIDExceptionWrapper throwable;
+    private final Timing timing = new Timing();
     private String parametrisedStep;
-    private long durationInMillis;
-    private long start;
-    private long end;
 
     public AbstractStepResult(Type type, String step) {
         this(step, type, null);
@@ -152,14 +150,12 @@ public abstract class AbstractStepResult implements StepResult {
         return this;
     }
 
-    public long durationInMillis(){
-        return durationInMillis;
+    public Timing getTiming(){
+        return timing;
     }
     
     public StepResult setTimings(Timer timer) {
-        this.start = timer.getStart();
-        this.end = timer.getEnd();
-        this.durationInMillis = timer.getDuration();
+        this.timing.setTimings(timer);
         return this;
     }
     
@@ -169,7 +165,7 @@ public abstract class AbstractStepResult implements StepResult {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(parametrisedStep()).append(durationInMillis()).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append(parametrisedStep()).append(getTiming()).toString();
     }
 
     public static StepResult successful(String step) {

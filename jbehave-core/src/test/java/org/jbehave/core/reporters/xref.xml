@@ -67,11 +67,18 @@
         </lifecycle>
         <scenarios/>
       </story>
+      <allowed>false</allowed>
+      <timing>
+        <durationInMillis>0</durationInMillis>
+        <start>0</start>
+        <end>0</end>
+      </timing>
+      <givenStory>false</givenStory>
       <localizedNarrative>In order to renovate my house
 As a customer
 I want to get a loan</localizedNarrative>
-      <allowed>false</allowed>
       <givenStories/>
+      <beforeSteps/>
       <scenarios>
         <performableScenario>
           <scenario>
@@ -161,7 +168,12 @@ I want to get a loan</localizedNarrative>
           </scenario>
           <storyPath>/path/to/story</storyPath>
           <allowed>false</allowed>
-          <normalPerformableScenario>
+          <timing>
+            <durationInMillis>0</durationInMillis>
+            <start>0</start>
+            <end>0</end>
+          </timing>
+          <normalScenario>
             <parameters/>
             <givenStories/>
             <beforeSteps/>
@@ -178,103 +190,10 @@ I want to get a loan</localizedNarrative>
             <storyAndScenarioMeta>
               <properties/>
             </storyAndScenarioMeta>
-            <scenario>
-              <title></title>
-              <meta>
-                <properties/>
-              </meta>
-              <givenStories>
-                <givenStories/>
-                <givenStoriesAsString></givenStoriesAsString>
-                <examplesTable>
-                  <tableAsString></tableAsString>
-                  <tableTransformers>
-                    <transformers>
-                      <entry>
-                        <string>FORMATTING</string>
-                        <formatting/>
-                      </entry>
-                      <entry>
-                        <string>REPLACING</string>
-                        <replacing/>
-                      </entry>
-                      <entry>
-                        <string>FROM_LANDSCAPE</string>
-                        <fromLandscape/>
-                      </entry>
-                    </transformers>
-                  </tableTransformers>
-                  <headers/>
-                  <data/>
-                  <properties>
-                    <properties>
-                      <property name="headerSeparator" value="|"/>
-                      <property name="valueSeparator" value="|"/>
-                      <property name="ignorableSeparator" value="|--"/>
-                    </properties>
-                  </properties>
-                  <propertiesAsString></propertiesAsString>
-                  <namedParameters/>
-                  <parameterControls>
-                    <nameDelimiterLeft>&lt;</nameDelimiterLeft>
-                    <nameDelimiterRight>&gt;</nameDelimiterRight>
-                    <delimiterNamedParameters>true</delimiterNamedParameters>
-                  </parameterControls>
-                </examplesTable>
-              </givenStories>
-              <examplesTable>
-                <tableAsString></tableAsString>
-                <tableTransformers>
-                  <transformers>
-                    <entry>
-                      <string>FORMATTING</string>
-                      <formatting/>
-                    </entry>
-                    <entry>
-                      <string>REPLACING</string>
-                      <replacing/>
-                    </entry>
-                    <entry>
-                      <string>FROM_LANDSCAPE</string>
-                      <fromLandscape/>
-                    </entry>
-                  </transformers>
-                </tableTransformers>
-                <headers/>
-                <data/>
-                <properties>
-                  <properties>
-                    <property name="headerSeparator" value="|"/>
-                    <property name="valueSeparator" value="|"/>
-                    <property name="ignorableSeparator" value="|--"/>
-                  </properties>
-                </properties>
-                <propertiesAsString></propertiesAsString>
-                <namedParameters/>
-                <parameterControls>
-                  <nameDelimiterLeft>&lt;</nameDelimiterLeft>
-                  <nameDelimiterRight>&gt;</nameDelimiterRight>
-                  <delimiterNamedParameters>true</delimiterNamedParameters>
-                </parameterControls>
-              </examplesTable>
-              <steps class="java.util.Arrays$ArrayList">
-                <a class="string-array">
-                  <string></string>
-                </a>
-              </steps>
-            </scenario>
-          </normalPerformableScenario>
-          <examplePerformableScenarios/>
+          </normalScenario>
         </performableScenario>
       </scenarios>
-      <beforeSteps/>
       <afterSteps/>
-      <timing>
-        <durationInMillis>0</durationInMillis>
-        <start>0</start>
-        <end>0</end>
-      </timing>
-      <givenStory>false</givenStory>
     </performableStory>
   </stories>
   <scenarios>
@@ -366,7 +285,12 @@ I want to get a loan</localizedNarrative>
       </scenario>
       <storyPath>/path/to/story</storyPath>
       <allowed>false</allowed>
-      <normalPerformableScenario>
+      <timing>
+        <durationInMillis>0</durationInMillis>
+        <start>0</start>
+        <end>0</end>
+      </timing>
+      <normalScenario>
         <parameters/>
         <givenStories/>
         <beforeSteps/>
@@ -383,93 +307,7 @@ I want to get a loan</localizedNarrative>
         <storyAndScenarioMeta>
           <properties/>
         </storyAndScenarioMeta>
-        <scenario>
-          <title></title>
-          <meta>
-            <properties/>
-          </meta>
-          <givenStories>
-            <givenStories/>
-            <givenStoriesAsString></givenStoriesAsString>
-            <examplesTable>
-              <tableAsString></tableAsString>
-              <tableTransformers>
-                <transformers>
-                  <entry>
-                    <string>FORMATTING</string>
-                    <formatting/>
-                  </entry>
-                  <entry>
-                    <string>REPLACING</string>
-                    <replacing/>
-                  </entry>
-                  <entry>
-                    <string>FROM_LANDSCAPE</string>
-                    <fromLandscape/>
-                  </entry>
-                </transformers>
-              </tableTransformers>
-              <headers/>
-              <data/>
-              <properties>
-                <properties>
-                  <property name="headerSeparator" value="|"/>
-                  <property name="valueSeparator" value="|"/>
-                  <property name="ignorableSeparator" value="|--"/>
-                </properties>
-              </properties>
-              <propertiesAsString></propertiesAsString>
-              <namedParameters/>
-              <parameterControls>
-                <nameDelimiterLeft>&lt;</nameDelimiterLeft>
-                <nameDelimiterRight>&gt;</nameDelimiterRight>
-                <delimiterNamedParameters>true</delimiterNamedParameters>
-              </parameterControls>
-            </examplesTable>
-          </givenStories>
-          <examplesTable>
-            <tableAsString></tableAsString>
-            <tableTransformers>
-              <transformers>
-                <entry>
-                  <string>FORMATTING</string>
-                  <formatting/>
-                </entry>
-                <entry>
-                  <string>REPLACING</string>
-                  <replacing/>
-                </entry>
-                <entry>
-                  <string>FROM_LANDSCAPE</string>
-                  <fromLandscape/>
-                </entry>
-              </transformers>
-            </tableTransformers>
-            <headers/>
-            <data/>
-            <properties>
-              <properties>
-                <property name="headerSeparator" value="|"/>
-                <property name="valueSeparator" value="|"/>
-                <property name="ignorableSeparator" value="|--"/>
-              </properties>
-            </properties>
-            <propertiesAsString></propertiesAsString>
-            <namedParameters/>
-            <parameterControls>
-              <nameDelimiterLeft>&lt;</nameDelimiterLeft>
-              <nameDelimiterRight>&gt;</nameDelimiterRight>
-              <delimiterNamedParameters>true</delimiterNamedParameters>
-            </parameterControls>
-          </examplesTable>
-          <steps class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string></string>
-            </a>
-          </steps>
-        </scenario>
-      </normalPerformableScenario>
-      <examplePerformableScenarios/>
+      </normalScenario>
     </performableScenario>
   </scenarios>
 </xref>
