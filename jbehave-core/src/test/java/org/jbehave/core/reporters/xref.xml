@@ -18,18 +18,6 @@
             <property name="+theme" value="testing"/>
           </properties>
         </meta>
-        <givenStories>
-          <stories/>
-          <asString></asString>
-        </givenStories>
-        <lifecycle>
-          <before class="java.util.Arrays$ArrayList">
-            <a class="lifecycleSteps-array"/>
-          </before>
-          <after class="java.util.Arrays$ArrayList">
-            <a class="lifecycleSteps-array"/>
-          </after>
-        </lifecycle>
         <scenarios/>
       </story>
       <allowed>false</allowed>
@@ -47,49 +35,6 @@ I want to get a loan</localizedNarrative>
       <scenarios>
         <performableScenario>
           <scenario>
-            <title></title>
-            <meta>
-              <properties/>
-            </meta>
-            <givenStories>
-              <stories/>
-              <asString></asString>
-            </givenStories>
-            <examplesTable>
-              <tableAsString></tableAsString>
-              <tableTransformers>
-                <transformers>
-                  <entry>
-                    <string>FORMATTING</string>
-                    <formatting/>
-                  </entry>
-                  <entry>
-                    <string>REPLACING</string>
-                    <replacing/>
-                  </entry>
-                  <entry>
-                    <string>FROM_LANDSCAPE</string>
-                    <fromLandscape/>
-                  </entry>
-                </transformers>
-              </tableTransformers>
-              <headers/>
-              <data/>
-              <properties>
-                <properties>
-                  <property name="headerSeparator" value="|"/>
-                  <property name="valueSeparator" value="|"/>
-                  <property name="ignorableSeparator" value="|--"/>
-                </properties>
-              </properties>
-              <propertiesAsString></propertiesAsString>
-              <namedParameters/>
-              <parameterControls>
-                <nameDelimiterLeft>&lt;</nameDelimiterLeft>
-                <nameDelimiterRight>&gt;</nameDelimiterRight>
-                <delimiterNamedParameters>true</delimiterNamedParameters>
-              </parameterControls>
-            </examplesTable>
             <steps class="java.util.Arrays$ArrayList">
               <a class="string-array">
                 <string></string>
@@ -129,49 +74,6 @@ I want to get a loan</localizedNarrative>
   <scenarios>
     <performableScenario>
       <scenario>
-        <title></title>
-        <meta>
-          <properties/>
-        </meta>
-        <givenStories>
-          <stories/>
-          <asString></asString>
-        </givenStories>
-        <examplesTable>
-          <tableAsString></tableAsString>
-          <tableTransformers>
-            <transformers>
-              <entry>
-                <string>FORMATTING</string>
-                <formatting/>
-              </entry>
-              <entry>
-                <string>REPLACING</string>
-                <replacing/>
-              </entry>
-              <entry>
-                <string>FROM_LANDSCAPE</string>
-                <fromLandscape/>
-              </entry>
-            </transformers>
-          </tableTransformers>
-          <headers/>
-          <data/>
-          <properties>
-            <properties>
-              <property name="headerSeparator" value="|"/>
-              <property name="valueSeparator" value="|"/>
-              <property name="ignorableSeparator" value="|--"/>
-            </properties>
-          </properties>
-          <propertiesAsString></propertiesAsString>
-          <namedParameters/>
-          <parameterControls>
-            <nameDelimiterLeft>&lt;</nameDelimiterLeft>
-            <nameDelimiterRight>&gt;</nameDelimiterRight>
-            <delimiterNamedParameters>true</delimiterNamedParameters>
-          </parameterControls>
-        </examplesTable>
         <steps class="java.util.Arrays$ArrayList">
           <a class="string-array">
             <string></string>

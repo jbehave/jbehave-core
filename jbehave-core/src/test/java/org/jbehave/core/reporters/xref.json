@@ -24,18 +24,6 @@
             }
           ]
         },
-        "givenStories": {
-          "stories": [],
-          "asString": ""
-        },
-        "lifecycle": {
-          "before": [
-            []
-          ],
-          "after": [
-            []
-          ]
-        },
         "scenarios": []
       },
       "allowed": false,
@@ -51,58 +39,6 @@
       "scenarios": [
         {
           "scenario": {
-            "title": "",
-            "meta": {
-              "properties": []
-            },
-            "givenStories": {
-              "stories": [],
-              "asString": ""
-            },
-            "examplesTable": {
-              "tableAsString": "",
-              "tableTransformers": {
-                "transformers": [
-                  [
-                    "FORMATTING",
-                    {}
-                  ],
-                  [
-                    "REPLACING",
-                    {}
-                  ],
-                  [
-                    "FROM_LANDSCAPE",
-                    {}
-                  ]
-                ]
-              },
-              "headers": [],
-              "data": [],
-              "properties": {
-                "properties": [
-                  {
-                    "@name": "headerSeparator",
-                    "@value": "|"
-                  },
-                  {
-                    "@name": "valueSeparator",
-                    "@value": "|"
-                  },
-                  {
-                    "@name": "ignorableSeparator",
-                    "@value": "|--"
-                  }
-                ]
-              },
-              "propertiesAsString": "",
-              "namedParameters": [],
-              "parameterControls": {
-                "nameDelimiterLeft": "<",
-                "nameDelimiterRight": ">",
-                "delimiterNamedParameters": true
-              }
-            },
             "steps": [
               [
                 ""
@@ -142,58 +78,6 @@
   "scenarios": [
     {
       "scenario": {
-        "title": "",
-        "meta": {
-          "properties": []
-        },
-        "givenStories": {
-          "stories": [],
-          "asString": ""
-        },
-        "examplesTable": {
-          "tableAsString": "",
-          "tableTransformers": {
-            "transformers": [
-              [
-                "FORMATTING",
-                {}
-              ],
-              [
-                "REPLACING",
-                {}
-              ],
-              [
-                "FROM_LANDSCAPE",
-                {}
-              ]
-            ]
-          },
-          "headers": [],
-          "data": [],
-          "properties": {
-            "properties": [
-              {
-                "@name": "headerSeparator",
-                "@value": "|"
-              },
-              {
-                "@name": "valueSeparator",
-                "@value": "|"
-              },
-              {
-                "@name": "ignorableSeparator",
-                "@value": "|--"
-              }
-            ]
-          },
-          "propertiesAsString": "",
-          "namedParameters": [],
-          "parameterControls": {
-            "nameDelimiterLeft": "<",
-            "nameDelimiterRight": ">",
-            "delimiterNamedParameters": true
-          }
-        },
         "steps": [
           [
             ""

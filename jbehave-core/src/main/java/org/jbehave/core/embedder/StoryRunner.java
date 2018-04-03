@@ -433,7 +433,7 @@ public class StoryRunner {
                 scenarios.add(scenario);
             }
         }
-        return new Story(story.getPath(), story.getDescription(), story.getMeta(), story.getNarrative(), scenarios); 
+        return story.cloneWithScenarios(scenarios);
     }
 
     private boolean matchesParameters(Scenario scenario, Map<String, String> parameters) {

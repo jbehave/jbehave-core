@@ -1,6 +1,7 @@
 package org.jbehave.core.parsers;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -42,16 +43,16 @@ public class RegexStoryParserBehaviour {
 
     @Test
     public void shouldParseStoryAndProvideNameFromPath() {
-        Story story = parser.parseStory("", storyPath);
+        Story story = parser.parseStory(EMPTY, storyPath);
         assertThat(story.getPath(), equalTo(storyPath));
         assertThat(story.getName(), equalTo(new File(storyPath).getName()));
     }
 
     @Test
     public void shouldParseStoryAndProvideEmptyNameWhenPathIsNull() {
-        Story story = parser.parseStory("", null);
-        assertThat(story.getPath(), equalTo(""));
-        assertThat(story.getName(), equalTo(story.getPath()));
+        Story story = parser.parseStory(EMPTY, null);
+        assertThat(story.getPath(), equalTo(EMPTY));
+        assertThat(story.getName(), equalTo(EMPTY));
     }
 
     @Test
@@ -69,8 +70,8 @@ public class RegexStoryParserBehaviour {
         assertThat(story.getPath(), equalTo(storyPath));
         Meta storyMeta = story.getMeta();
         assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
-        assertThat(storyMeta.getProperty("skip"), equalTo(""));
-        assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
+        assertThat(storyMeta.getProperty("skip"), equalTo(EMPTY));
+        assertThat(storyMeta.getProperty("unknown"), equalTo(EMPTY));
         assertThat(story.getGivenStories().getPaths(), equalTo(asList("path1", "path2")));
         List<Scenario> scenarios = story.getScenarios();
         assertThat(scenarios.get(0).getTitle(), equalTo("A scenario"));
@@ -97,8 +98,8 @@ public class RegexStoryParserBehaviour {
         assertThat(story.getPath(), equalTo(storyPath));
         Meta storyMeta = story.getMeta();
         assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
-        assertThat(storyMeta.getProperty("skip"), equalTo(""));
-        assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
+        assertThat(storyMeta.getProperty("skip"), equalTo(EMPTY));
+        assertThat(storyMeta.getProperty("unknown"), equalTo(EMPTY));
         Lifecycle lifecycle = story.getLifecycle();
         assertThat(lifecycle.getBeforeSteps().size(), equalTo(2));
         List<Scenario> scenarios = story.getScenarios();
@@ -126,8 +127,8 @@ public class RegexStoryParserBehaviour {
         assertThat(story.getPath(), equalTo(storyPath));
         Meta storyMeta = story.getMeta();
         assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
-        assertThat(storyMeta.getProperty("skip"), equalTo(""));
-        assertThat(storyMeta.getProperty("unknown"), equalTo(""));        
+        assertThat(storyMeta.getProperty("skip"), equalTo(EMPTY));
+        assertThat(storyMeta.getProperty("unknown"), equalTo(EMPTY));
         Narrative narrative = story.getNarrative();
         assertThat(narrative.isEmpty(), not(true));
         List<Scenario> scenarios = story.getScenarios();
@@ -167,7 +168,7 @@ public class RegexStoryParserBehaviour {
         assertThat(story.getPath(), equalTo(storyPath));
         Meta storyMeta = story.getMeta();
         assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
-        assertThat(storyMeta.getProperty("skip"), equalTo(""));
+        assertThat(storyMeta.getProperty("skip"), equalTo(EMPTY));
         assertThat(story.getScenarios().get(0).getMeta().getProperty("authors"), equalTo("Mauro Paul"));
     }
 
@@ -184,7 +185,7 @@ public class RegexStoryParserBehaviour {
         assertThat(story.getPath(), equalTo(storyPath));
         Meta storyMeta = story.getMeta();
         assertThat(storyMeta.getProperty("theme"), equalTo("parsing"));
-        assertThat(storyMeta.getProperty("skip"), equalTo(""));
+        assertThat(storyMeta.getProperty("skip"), equalTo(EMPTY));
         assertThat(story.getScenarios().get(0).getMeta().getProperty("authors"), equalTo("Mauro Paul"));
     }
 
@@ -564,7 +565,7 @@ public class RegexStoryParserBehaviour {
                 equalTo("!-- Examples:" + NL +
                         "|Comment|Me|Out|" + NL +
                         "|yes|we|can|"));
-        assertThat(scenario.getExamplesTable().asString(), equalTo(""));
+        assertThat(scenario.getExamplesTable().asString(), equalTo(EMPTY));
     }
     
     @Test
@@ -911,7 +912,7 @@ public class RegexStoryParserBehaviour {
         assertThat(givenStory4.getParameters().size(), equalTo(0));
         GivenStory givenStory5 = givenStories.getStories().get(4);
         assertThat(givenStory5.hasAnchor(), equalTo(false));
-        assertThat(givenStory5.getAnchor(), equalTo(""));
+        assertThat(givenStory5.getAnchor(), equalTo(EMPTY));
         assertThat(givenStory5.getPath(), equalTo("path/to/five"));
         assertThat(givenStory5.getParameters().size(), equalTo(0));
     }
@@ -936,7 +937,7 @@ public class RegexStoryParserBehaviour {
 
         Story story = parser.parseStory(wholeStory);
 
-        assertThat(story.getPath(), equalTo(""));
+        assertThat(story.getPath(), equalTo(EMPTY));
         Scenario scenario = story.getScenarios().get(0);
         assertThat(scenario.getSteps(), equalTo(asList(
                 "Given a step",

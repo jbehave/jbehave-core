@@ -39,6 +39,8 @@ import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 /**
  * Creates a tree of {@link Performable} objects for a set of stories, grouping
  * sets of performable steps for each story and scenario, and adding before and
@@ -107,8 +109,10 @@ public class PerformableTree {
             if (!performableStory.getScenarios().isEmpty()) {
                 Map<String, String> givenStoryParameters = new HashMap<>(storyParameters);
                 addMetaParameters(givenStoryParameters, storyMeta);
-                performableStory.addGivenStories(performableGivenStories(context, story.getGivenStories(),
-                        givenStoryParameters));
+                if ( story.hasGivenStories() ) {
+                    performableStory.addGivenStories(performableGivenStories(context, story.getGivenStories(),
+                            givenStoryParameters));
+                }
             }
 
             performableStory.addAfterSteps(context.lifecycleSteps(story.getLifecycle(), storyMeta, Stage.AFTER, Scope.STORY));
@@ -249,7 +253,7 @@ public class PerformableTree {
                 scenarios.add(scenario);
             }
         }
-        return new Story(story.getPath(), story.getDescription(), story.getMeta(), story.getNarrative(), scenarios); 
+        return story.cloneWithScenarios(scenarios);
     }
 
     private boolean matchesParameters(Scenario scenario, Map<String, String> parameters) {
@@ -760,7 +764,7 @@ public class PerformableTree {
         public PerformableStory(Story story, Keywords keywords, boolean givenStory) {
             this.story = story;
             this.givenStory = givenStory;
-            this.localizedNarrative = story.getNarrative().asString(keywords);
+            this.localizedNarrative = ( story.hasNarrative() ? story.getNarrative().asString(keywords) : null );
         }
 
         public void allowed(boolean allowed) {
@@ -800,7 +804,7 @@ public class PerformableTree {
         }
 
         public String getLocalisedNarrative() {
-            return localizedNarrative;
+            return localizedNarrative != null ? localizedNarrative : EMPTY;
         }
 
         public Timing getTiming() {
