@@ -1,8 +1,10 @@
 package org.jbehave.core.steps;
 
+import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.Method;
@@ -21,10 +23,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.google.gson.Gson;
 import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
+import org.jbehave.core.annotations.AsJson;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
@@ -53,6 +58,9 @@ public class ParameterConvertersBehaviour {
     private static String NAN = new DecimalFormatSymbols().getNaN();
     private static String POSITIVE_INFINITY = new DecimalFormatSymbols().getInfinity();
     private static String NEGATIVE_INFINITY = "-" + POSITIVE_INFINITY;
+
+    private static final String JSON_AS_STRING = "{\"string\":\"String1\",\"integer\":2,\"stringList\":[\"String2\",\"String3\"],"
+            + "\"integerList\":[3,4]}";
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -573,6 +581,164 @@ public class ParameterConvertersBehaviour {
         assertThatCollectionIs(set);
     }
 
+    @Test
+    public void shouldCreateJsonFromStringInput() {
+        // Given
+        ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
+
+        // When
+        MyJsonDto json = (MyJsonDto) factory.createJson(JSON_AS_STRING, MyJsonDto.class);
+
+        // Then
+        assertThat(new Gson().toJson(json), equalTo(JSON_AS_STRING));
+    }
+
+    @Test
+    public void shouldCreateJsonFromResourceInput() {
+        // Given
+        ResourceLoader resourceLoader = mock(ResourceLoader.class);
+        ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory(resourceLoader);
+
+        // When
+        String resourcePath = "/path/to/json";
+        when(resourceLoader.loadResourceAsText(resourcePath)).thenReturn(JSON_AS_STRING);
+        MyJsonDto json = (MyJsonDto) factory.createJson(resourcePath, MyJsonDto.class);
+
+        // Then
+        assertThat(new Gson().toJson(json), equalTo(JSON_AS_STRING));
+    }
+
+    @Test
+    public void shouldMapJsonToType() throws Exception {
+        // Given
+        ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
+
+        // When
+        String jsonAsString = "{\"string\":\"11\",\"integer\":22,\"stringList\":[\"1\",\"1\"],\"integerList\":[2,2]}";
+        MyJsonDto jsonDto = (MyJsonDto) factory.createJson(jsonAsString, MyJsonDto.class);
+
+        // Then
+        assertThat(jsonDto.string, equalTo("11"));
+        assertThat(jsonDto.integer, equalTo(22));
+        assertThat(jsonDto.stringList, equalTo(asList("1", "1")));
+        assertThat(jsonDto.integerList, equalTo(asList(2, 2)));
+    }
+
+    @Test
+    public void shouldMapListOfJsonsToType() throws Exception {
+        // Given
+        ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
+
+        // When
+        String jsonAsString = "{\"string\":\"11\",\"integer\":22,\"stringList\":[\"1\",\"1\"],\"integerList\":[2,2]}";
+        String listOfJsonsAsString = String.format("[%s, %s]", jsonAsString, jsonAsString);
+        MyJsonDto[] jsonList = (MyJsonDto[]) factory.createJson(listOfJsonsAsString, MyJsonDto[].class);
+
+        // Then
+        for (MyJsonDto jsonDto : jsonList) {
+            assertThat(jsonDto.string, equalTo("11"));
+            assertThat(jsonDto.integer, equalTo(22));
+            assertThat(jsonDto.stringList, equalTo(asList("1", "1")));
+            assertThat(jsonDto.integerList, equalTo(asList(2, 2)));
+        }
+    }
+
+    @Test
+    public void shouldPutNullsIfValuesOfObjectNotFoundInJson() throws Exception {
+        // Given
+        ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
+
+        // When
+        String jsonAsString = "{\"integer\":22,\"stringList\":[\"1\",\"1\"]}";
+        MyJsonDto jsonDto = (MyJsonDto) factory.createJson(jsonAsString, MyJsonDto.class);
+
+        // Then
+        assertThat(jsonDto.string, equalTo(null));
+        assertThat(jsonDto.integer, equalTo(22));
+        assertThat(jsonDto.stringList, equalTo(asList("1", "1")));
+        assertThat(jsonDto.integerList, equalTo(null));
+    }
+
+    @Test
+    public void shouldPutAllNullsIfNoJsonArgumentsMatched() {
+        // Given
+        ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
+
+        // When
+        String jsonAsString = "{\"string2\":\"11\",\"integer2\":22,\"stringList2\":[\"1\",\"1\"],\"integerList2\":[2,2]}";
+        MyJsonDto jsonDto = (MyJsonDto) factory.createJson(jsonAsString, MyJsonDto.class);
+
+        // Then
+        assertThat(jsonDto.string, equalTo(null));
+        assertThat(jsonDto.integer, equalTo(null));
+        assertThat(jsonDto.stringList, equalTo(null));
+        assertThat(jsonDto.integerList, equalTo(null));
+    }
+
+    @Test
+    public void shouldNotBeEqualJsonWithWhitespaces() {
+        // Given
+        ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
+
+        // When
+        String jsonAsString = "{ \"string\" : \"11\" , \"integer\" : 22 , \"stringList\" : [ \"1\" , \"1\" ] , "
+                + "\"integerList\" : [ 2 , 2 ] }";
+        MyJsonDto jsonDto = (MyJsonDto) factory.createJson(jsonAsString, MyJsonDto.class);
+
+        // Then
+        assertThat(new Gson().toJson(jsonDto), not(equalTo(jsonAsString)));
+    }
+
+    @Test
+    public void shouldBeEqualDtosConvertedFromJsonWithWhitespaces() {
+        // Given
+        ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
+
+        // When
+        String jsonAsString = "{ \"string\" : \"11\" , \"integer\" : 22 , \"stringList\" : [ \"1\" , \"1\" ] , "
+                + "\"integerList\" : [ 2 , 2 ] }";
+        MyJsonDto convertedJsonDto = (MyJsonDto) factory.createJson(jsonAsString, MyJsonDto.class);
+        MyJsonDto createdJsonDto = new MyJsonDto("11", 22, asList("1", "1"), asList(2, 2));
+
+        // Then
+        assertThat(createdJsonDto.getString(), equalTo(convertedJsonDto.getString()));
+        assertThat(createdJsonDto.getInteger(), equalTo(convertedJsonDto.getInteger()));
+        assertThat(createdJsonDto.getStringList(), equalTo(convertedJsonDto.getStringList()));
+        assertThat(createdJsonDto.getIntegerList(), equalTo(convertedJsonDto.getIntegerList()));
+    }
+
+    @AsJson
+    public static class MyJsonDto {
+
+        private String string;
+        private Integer integer;
+        private List<String> stringList;
+        private List<Integer> integerList;
+
+        public String getString() {
+            return string;
+        }
+
+        public Integer getInteger() {
+            return integer;
+        }
+
+        public List<String> getStringList() {
+            return stringList;
+        }
+
+        public List<Integer> getIntegerList() {
+            return integerList;
+        }
+
+        public MyJsonDto(String string, Integer integer, List<String> stringList, List<Integer> integerList) {
+            this.string = string;
+            this.integer = integer;
+            this.stringList = stringList;
+            this.integerList = integerList;
+        }
+    }
+
     private <T> void assertThatCollectionIs(Collection<T> collection, T... expected) {
         if ( expected.length > 0 ) {
             assertThat(collection, containsInAnyOrder(expected));
@@ -613,4 +779,5 @@ public class ParameterConvertersBehaviour {
             return new Bar();
         }
     }
+
 }

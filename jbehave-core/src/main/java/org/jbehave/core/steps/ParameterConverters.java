@@ -26,18 +26,22 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.google.gson.Gson;
 import org.apache.commons.lang3.BooleanUtils;
 import org.jbehave.core.annotations.AsJson;
 import org.jbehave.core.annotations.AsParameters;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
-import org.jbehave.core.model.JsonFactory;
 import org.jbehave.core.model.TableTransformers;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * <p>
@@ -810,6 +814,56 @@ public class ParameterConverters {
 
     }
 
+    public static class JsonFactory {
+
+        private Keywords keywords;
+        private final ResourceLoader resourceLoader;
+
+        public JsonFactory() {
+            this(new LocalizedKeywords());
+        }
+
+        public JsonFactory(final Keywords keywords) {
+            this(keywords, new LoadFromClasspath());
+        }
+
+        public JsonFactory(final ResourceLoader resourceLoader) {
+            this(new LocalizedKeywords(), resourceLoader);
+        }
+
+        public JsonFactory(final Keywords keywords, final ResourceLoader resourceLoader) {
+            this.keywords = keywords;
+            this.resourceLoader = resourceLoader;
+        }
+
+        public JsonFactory(final Configuration configuration) {
+            this.keywords = configuration.keywords();
+            this.resourceLoader = configuration.storyLoader();
+        }
+
+        public Object createJson(final String input, final Type type) {
+            String jsonAsString;
+            if (isBlank(input) || isJson(input)) {
+                jsonAsString = input;
+            } else {
+                jsonAsString = resourceLoader.loadResourceAsText(input);
+            }
+            return new Gson().fromJson(jsonAsString, type);
+        }
+
+        protected boolean isJson(final String input) {
+            return (input.startsWith("[") && input.endsWith("]")) || (input.startsWith("{") && input.endsWith("}"));
+        }
+
+        public void useKeywords(final Keywords keywords) {
+            this.keywords = keywords;
+        }
+
+        public Keywords keywords() {
+            return this.keywords;
+        }
+    }
+
     /**
      * Invokes method on instance to return value.
      */
@@ -849,4 +903,5 @@ public class ParameterConverters {
         }
 
     }
+
 }
