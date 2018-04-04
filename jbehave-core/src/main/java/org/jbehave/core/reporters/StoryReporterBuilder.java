@@ -151,6 +151,7 @@ public class StoryReporterBuilder {
     protected boolean compressFailureTrace = false;
     protected Keywords keywords;
     protected CrossReference crossReference;
+    protected SurefireReporter surefireReporter;
     protected boolean multiThreading;
     protected Configuration configuration;
     private FileConfiguration defaultFileConfiguration = new FileConfiguration();
@@ -267,6 +268,19 @@ public class StoryReporterBuilder {
 
     public StoryReporterBuilder withCrossReference(CrossReference crossReference) {
         this.crossReference = crossReference;
+        return this;
+    }
+
+    public SurefireReporter surefireReporter() {
+        return surefireReporter;
+    }
+
+    public boolean hasSurefireReporter() {
+        return surefireReporter != null;
+    }
+
+    public StoryReporterBuilder withSurefireReporter(SurefireReporter surefireReporter) {
+        this.surefireReporter = surefireReporter;
         return this;
     }
 

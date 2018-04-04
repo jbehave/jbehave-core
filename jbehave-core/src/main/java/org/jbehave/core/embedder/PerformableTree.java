@@ -889,6 +889,10 @@ public class PerformableTree {
             return allowed;
         }
 
+        public Status getStatus() { return status; }
+
+        public Timing getTiming() { return timing; }
+
         public Scenario getScenario() {
             return scenario;
         }

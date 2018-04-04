@@ -23,10 +23,7 @@ import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.reporters.ContextOutput;
-import org.jbehave.core.reporters.CrossReference;
-import org.jbehave.core.reporters.Format;
-import org.jbehave.core.reporters.StoryReporterBuilder;
+import org.jbehave.core.reporters.*;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.ParameterControls;
@@ -88,7 +85,8 @@ public class CoreStories extends JUnitStories {
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withViewResources(viewResources)
                                 .withFormats(contextFormat, CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
-                                .withFailureTraceCompression(true).withCrossReference(xref))
+                                .withFailureTraceCompression(true).withCrossReference(xref)
+                                .withSurefireReporter(new SurefireReporter("surefire.xml", embeddableClass)))
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls)
                 .useTableTransformers(tableTransformers);

@@ -288,6 +288,13 @@ public class Embedder {
         }
     }
 
+    public void generateSurefireReport() {
+        StoryReporterBuilder builder = configuration().storyReporterBuilder();
+        if (builder.hasSurefireReporter()) {
+            builder.surefireReporter().generate(storyManager().performableRoot(), builder.outputDirectory());
+        }
+    }
+
     public void reportStepdocs() {
         reportStepdocs(configuration(), candidateSteps());
     }
