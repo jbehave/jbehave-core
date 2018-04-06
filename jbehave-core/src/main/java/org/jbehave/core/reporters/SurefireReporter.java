@@ -15,33 +15,40 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SurefireReporter {
 
     private static final String SUREFIRE_FTL = "ftl/surefire.ftl";
-    private static final String SUREFIRE_XSD = "xsd/surefire-test-report.xsd" ;
+    private static final String SUREFIRE_XSD = "xsd/surefire-test-report.xsd";
+    private static final String XML = ".xml";
 
     private final Class<?> embeddableClass;
     private final String reportName;
+    private final boolean reportByStory;
     private final boolean includeProperties;
+
 
     private TemplateProcessor processor = new FreemarkerProcessor();
 
     public static class Options {
-        public static final String DEFAULT_REPORT_NAME="jbehave-surefire.xml";
-        public static final boolean DEFAULT_INCLUDE_PROPERTIES=true;
+        public static final String DEFAULT_REPORT_NAME = "jbehave-surefire";
+        public static final boolean DEFAULT_INCLUDE_PROPERTIES = true;
+        public static final boolean DEFAULT_REPORT_BY_STORY = false;
 
         private String reportName;
         private boolean includeProperties;
+        private boolean reportByStory;
 
         public Options() {
-            this(DEFAULT_REPORT_NAME, DEFAULT_INCLUDE_PROPERTIES);
+            this(DEFAULT_REPORT_NAME, DEFAULT_REPORT_BY_STORY, DEFAULT_INCLUDE_PROPERTIES);
         }
 
-        public Options(String reportName, boolean includeProperties) {
+        public Options(String reportName, boolean reportByStory, boolean includeProperties) {
             this.reportName = reportName;
             this.includeProperties = includeProperties;
+            this.reportByStory = reportByStory;
         }
 
         public Options useReportName(String reportName) {
@@ -49,31 +56,51 @@ public class SurefireReporter {
             return this;
         }
 
+        public Options doReportByStory(boolean reportByStory) {
+            this.reportByStory = reportByStory;
+            return this;
+        }
+
         public Options doIncludeProperties(boolean includeProperties) {
             this.includeProperties = includeProperties;
             return this;
         }
+
     }
 
-	public SurefireReporter(Class<?> embeddableClass) {
+    public SurefireReporter(Class<?> embeddableClass) {
         this(embeddableClass, new Options());
     }
 
     public SurefireReporter(Class<?> embeddableClass, Options options) {
         this.embeddableClass = embeddableClass;
         this.reportName = options.reportName;
+        this.reportByStory = options.reportByStory;
         this.includeProperties = options.includeProperties;
     }
 
     public synchronized void generate(PerformableRoot root,
-			File outputDirectory) {
+                                      File outputDirectory) {
+        List<PerformableStory> stories = root.getStories();
+        if ( reportByStory ){
+            for ( PerformableStory story : stories ){
+                String name = reportName+"-"+new File(story.getStory().getPath()).getName();
+                File file = outputFile(outputDirectory, name);
+                generateReport(asList(story), file);
+            }
+        } else {
+            File file = outputFile(outputDirectory, reportName);
+            generateReport(stories, file);
+        }
+    }
+
+    private void generateReport(List<PerformableStory> stories, File file) {
         try {
             Map<String, Object> dataModel = new HashMap<>();
-            dataModel.put("testsuite", new TestSuite(root.getStories(), embeddableClass, includeProperties));
-            File file = outputFile(outputDirectory, reportName);
+            dataModel.put("testsuite", new TestSuite(stories, embeddableClass, includeProperties));
             processor.process(SUREFIRE_FTL, dataModel, new FileWriter(file));
             validateOutput(file, SUREFIRE_XSD);
-        } catch (IOException|SAXException e) {
+        } catch (IOException | SAXException e) {
             throw new RuntimeException("Failed to generate surefire report", e);
         }
     }
@@ -81,6 +108,9 @@ public class SurefireReporter {
     private File outputFile(File outputDirectory, String name) {
         File outputDir = new File(outputDirectory, "view");
         outputDir.mkdirs();
+        if (!name.endsWith(XML)) {
+            name = name + XML;
+        }
         return new File(outputDir, name);
     }
 
@@ -107,14 +137,14 @@ public class SurefireReporter {
 
         private TestCounts collectTestCounts(List<PerformableStory> stories) {
             TestCounts counts = new TestCounts();
-            for (PerformableStory story : stories ){
-                for ( PerformableScenario scenario : story.getScenarios() ){
+            for (PerformableStory story : stories) {
+                for (PerformableScenario scenario : story.getScenarios()) {
                     Status status = scenario.getStatus();
-                    if ( status == null ){
+                    if (status == null) {
                         counts.addSkipped();
                         continue;
                     }
-                    switch ( status ){
+                    switch (status) {
                         case FAILED:
                             counts.addFailure();
                             break;
@@ -134,7 +164,7 @@ public class SurefireReporter {
 
         private long totalTime(List<TestCase> testCases) {
             long total = 0;
-            for ( TestCase tc : testCases ){
+            for (TestCase tc : testCases) {
                 total += tc.getTime();
             }
             return total;
@@ -143,15 +173,15 @@ public class SurefireReporter {
         private List<TestCase> collectTestCases(List<PerformableStory> stories) {
             List<TestCase> testCases = new ArrayList<>();
             int count = 1;
-            for (PerformableStory story : stories ){
-                for ( PerformableScenario scenario : story.getScenarios() ){
+            for (PerformableStory story : stories) {
+                for (PerformableScenario scenario : story.getScenarios()) {
                     String title = scenario.getScenario().getTitle();
-                    if ( title.equals(EMPTY) ){
-                        title="No title "+count++;
+                    if (title.equals(EMPTY)) {
+                        title = "No title " + count++;
                     }
                     long time = scenario.getTiming().getDurationInMillis();
                     TestCase tc = new TestCase(title, embeddableClass, time);
-                    if ( scenario.getStatus() == Status.FAILED ){
+                    if (scenario.getStatus() == Status.FAILED) {
                         tc.setFailure(new TestFailure(scenario.getFailure()));
                     }
                     testCases.add(tc);
@@ -160,35 +190,35 @@ public class SurefireReporter {
             return testCases;
         }
 
-        public String getName(){
+        public String getName() {
             return embeddableClass.getName();
         }
 
-        public long getTime(){
+        public long getTime() {
             return totalTime(testCases);
         }
 
-        public int getTests(){
+        public int getTests() {
             return testCounts.getTests();
         }
 
-        public int getSkipped(){
+        public int getSkipped() {
             return testCounts.getSkipped();
         }
 
-        public int getErrors(){
+        public int getErrors() {
             return testCounts.getErrors();
         }
 
-        public int getFailures(){
+        public int getFailures() {
             return testCounts.getFailures();
         }
 
-        public Properties getProperties(){
+        public Properties getProperties() {
             return includeProperties ? System.getProperties() : new Properties();
         }
 
-        public List<TestCase> getTestCases(){
+        public List<TestCase> getTestCases() {
             return testCases;
         }
 
@@ -199,7 +229,7 @@ public class SurefireReporter {
     }
 
     public static class TestCase {
-	    private final String name;
+        private final String name;
         private final Class<?> embeddableClass;
         private long time;
         private TestFailure failure;
@@ -210,23 +240,23 @@ public class SurefireReporter {
             this.time = time;
         }
 
-        public String getName(){
+        public String getName() {
             return name;
         }
 
-        public String getClassname(){
+        public String getClassname() {
             return embeddableClass.getName();
         }
 
-        public long getTime(){
+        public long getTime() {
             return time;
         }
 
-        public boolean hasFailure(){
+        public boolean hasFailure() {
             return failure != null;
         }
 
-        public TestFailure getFailure(){
+        public TestFailure getFailure() {
             return failure;
         }
 
@@ -249,27 +279,28 @@ public class SurefireReporter {
             this.failure = failure;
         }
 
-        public boolean hasFailure(){
+        public boolean hasFailure() {
             return failure != null;
         }
 
-        public String getMessage(){
-            if ( hasFailure() ) {
-                return failure.getMessage();
+        public String getMessage() {
+            if (hasFailure()) {
+                return EscapeMode.XML.escapeString(failure.getMessage());
             }
             return EMPTY;
         }
 
-        public String getType(){
-            if ( hasFailure() ) {
+        public String getType() {
+            if (hasFailure()) {
                 return failure.getClass().getName();
             }
             return EMPTY;
         }
 
-        public String getStackTrace(){
-            if ( hasFailure() ){
-                return new StackTraceFormatter(true).stackTrace(failure);
+        public String getStackTrace() {
+            if (hasFailure()) {
+                String stackTrace = new StackTraceFormatter(true).stackTrace(failure);
+                return EscapeMode.XML.escapeString(stackTrace);
             }
             return EMPTY;
         }
@@ -286,15 +317,15 @@ public class SurefireReporter {
             return tests;
         }
 
-        public int getSkipped(){
+        public int getSkipped() {
             return skipped;
         }
 
-        public int getErrors(){
+        public int getErrors() {
             return errors;
         }
 
-        public int getFailures(){
+        public int getFailures() {
             return failures;
         }
 

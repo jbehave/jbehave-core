@@ -27,7 +27,7 @@ public class SurefireReporterBehaviour {
     public void shouldProduceXmlReport() throws Exception {
 
         // Give
-        String reportName = "surefire.xml";
+        String reportName = "surefire";
         SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(false);
         SurefireReporter reporter = new SurefireReporter(this.getClass(), options);
 
@@ -38,7 +38,8 @@ public class SurefireReporterBehaviour {
         
 
         // Then
-        assertThat(output(outputDirectory, reportName), equalTo(resource(reportName)));
+        String outputPath = reportName + ".xml";
+        assertThat(output(outputDirectory, outputPath), equalTo(resource(outputPath)));
     }
 
     private String resource(String name) throws IOException {

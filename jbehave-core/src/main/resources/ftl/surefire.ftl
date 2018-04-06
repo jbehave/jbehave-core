@@ -12,6 +12,6 @@
 </#list>
 </properties>
 <#list testsuite.getTestCases() as testcase>
-<testcase name="${testcase.name}" classname="${testcase.classname}" time="${testcase.time}"><#if testcase.hasFailure()><#assign failure = testcase.getFailure()><failure message="${failure.message}" type="${failure.type}"><![CDATA[${failure.stackTrace}]]></failure></#if></testcase>
+<testcase name="${testcase.name}" classname="${testcase.classname}" time="${testcase.time}"><#if testcase.hasFailure()><#assign failure = testcase.getFailure()><failure message="${failure.message}" type="${failure.type}">${failure.stackTrace}</failure></#if></testcase>
 </#list>
 </testsuite>
