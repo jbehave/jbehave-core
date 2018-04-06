@@ -20,7 +20,7 @@ import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 public class SurefireReporter {
 
-    private static final String SUREFIRE_FTL = "ftl/surefire.ftl";
+    private static final String SUREFIRE_FTL = "ftl/surefire-xml-report.ftl";
     private static final String SUREFIRE_XSD = "xsd/surefire-test-report.xsd";
     private static final String XML = ".xml";
 
