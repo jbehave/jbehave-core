@@ -26,8 +26,10 @@ public class SurefireReporterBehaviour {
     @Test
     public void shouldProduceXmlReport() throws Exception {
 
-        // Given
-        SurefireReporter reporter = new SurefireReporter("surefire.xml", this.getClass(), false);
+        // Give
+        String reportName = "surefire.xml";
+        SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(false);
+        SurefireReporter reporter = new SurefireReporter(this.getClass(), options);
 
         // When
         PerformableRoot root = performableRoot();
@@ -36,10 +38,7 @@ public class SurefireReporterBehaviour {
         
 
         // Then
-        String expectedXml = resource("surefire.xml");
-        String actualXml = output(outputDirectory, "surefire.xml");
-
-        assertThat(actualXml, equalTo(expectedXml));
+        assertThat(output(outputDirectory, reportName), equalTo(resource(reportName)));
     }
 
     private String resource(String name) throws IOException {
