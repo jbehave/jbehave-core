@@ -17,19 +17,21 @@ public class SurefireReporter {
     private static final String SUREFIRE_FTL = "ftl/surefire.ftl";
     private final String reportName;
     private final Class<?> embeddableClass;
+    private final boolean includeProperties;
 
     private TemplateProcessor processor = new FreemarkerProcessor();
 
-	public SurefireReporter(String reportName, Class<?> embeddableClass) {
+	public SurefireReporter(String reportName, Class<?> embeddableClass, boolean includeProperties) {
         this.reportName = reportName;
         this.embeddableClass = embeddableClass;
+        this.includeProperties = includeProperties;
     }
 
 	public synchronized void generate(PerformableRoot root,
 			File outputDirectory) {
         try {
             Map<String, Object> dataModel = new HashMap<>();
-            dataModel.put("testsuite", new TestSuite(root, embeddableClass));
+            dataModel.put("testsuite", new TestSuite(root.getStories(), embeddableClass, includeProperties));
             Writer writer = writer(outputDirectory, reportName);
             processor.process(SUREFIRE_FTL, dataModel, writer);
         } catch (IOException e) {
@@ -47,24 +49,26 @@ public class SurefireReporter {
 	public static class TestSuite {
 
         private Class<?> embeddableClass;
-        private String name;
-        private Map<String, Long> times;
-        private TestCounts counts;
-        private long time;
+        private TestCounts testCounts;
+        private List<TestCase> testCases;
+        private final boolean includeProperties;
 
-        public TestSuite(PerformableRoot root, Class<?> embeddableClass) {
+        public TestSuite(List<PerformableStory> stories, Class<?> embeddableClass, boolean includeProperties) {
             this.embeddableClass = embeddableClass;
-            counts = countTests(root);
-            times = collectTimes(root);
-            name = embeddableClass.getName();
-            time = total(times);
+            testCounts = collectTestCounts(stories);
+            testCases = collectTestCases(stories);
+            this.includeProperties = includeProperties;
         }
 
-        private TestCounts countTests(PerformableRoot root) {
+        private TestCounts collectTestCounts(List<PerformableStory> stories) {
             TestCounts counts = new TestCounts();
-            for (PerformableStory story : root.getStories() ){
+            for (PerformableStory story : stories ){
                 for ( PerformableScenario scenario : story.getScenarios() ){
                     Status status = scenario.getStatus();
+                    if ( status == null ){
+                        counts.addSkipped();
+                        continue;
+                    }
                     switch ( status ){
                         case FAILED:
                             counts.addFailure();
@@ -83,63 +87,64 @@ public class SurefireReporter {
             return counts;
         }
 
-        private long total(Map<String, Long> times) {
+        private long totalTime(List<TestCase> testCases) {
             long total = 0;
-            for ( long value : times.values() ){
-                total += value;
+            for ( TestCase tc : testCases ){
+                total += tc.getTime();
             }
             return total;
         }
 
-        private Map<String, Long> collectTimes(PerformableRoot root) {
-            Map<String,Long> times = new HashMap<>();
-            int count = 0;
-            for (PerformableStory story : root.getStories() ){
+        private List<TestCase> collectTestCases(List<PerformableStory> stories) {
+            List<TestCase> testCases = new ArrayList<>();
+            int count = 1;
+            for (PerformableStory story : stories ){
                 for ( PerformableScenario scenario : story.getScenarios() ){
                     String title = scenario.getScenario().getTitle();
                     if ( title.equals(EMPTY) ){
                         title="No title "+count++;
                     }
-                    times.put(title, scenario.getTiming().getDurationInMillis());
+                    long time = scenario.getTiming().getDurationInMillis();
+                    TestCase tc = new TestCase(title, embeddableClass, time);
+                    if ( scenario.getStatus() == Status.FAILED ){
+                        tc.setFailure(new TestFailure(scenario.getFailure()));
+                    }
+                    testCases.add(tc);
                 }
             }
-            return times;
+            return testCases;
         }
 
         public String getName(){
-            return name;
+            return embeddableClass.getName();
         }
 
         public long getTime(){
-            return time;
+            return totalTime(testCases);
         }
 
         public int getTests(){
-            return counts.getTests();
+            return testCounts.getTests();
         }
 
         public int getSkipped(){
-            return counts.getSkipped();
+            return testCounts.getSkipped();
         }
 
         public int getErrors(){
-            return counts.getErrors();
+            return testCounts.getErrors();
         }
 
         public int getFailures(){
-            return counts.getFailures();
+            return testCounts.getFailures();
         }
 
         public Properties getProperties(){
-            return System.getProperties();
+            return includeProperties ? System.getProperties() : new Properties();
         }
 
         public List<TestCase> getTestCases(){
-            List<TestCase> list = new ArrayList<>();
-            for ( String name : times.keySet() ){
-                list.add(new TestCase(name, embeddableClass, times.get(name)));
-            }
-            return list;
+            return testCases;
         }
 
         @Override
@@ -152,6 +157,7 @@ public class SurefireReporter {
 	    private final String name;
         private final Class<?> embeddableClass;
         private long time;
+        private TestFailure failure;
 
         public TestCase(String name, Class<?> embeddableClass, long time) {
             this.name = name;
@@ -171,9 +177,56 @@ public class SurefireReporter {
             return time;
         }
 
+        public boolean hasFailure(){
+            return failure != null;
+        }
+
+        public TestFailure getFailure(){
+            return failure;
+        }
+
+        public void setFailure(TestFailure failure) {
+            this.failure = failure;
+        }
+
         @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
+        }
+
+    }
+
+    public static class TestFailure {
+
+        private final Throwable failure;
+
+        public TestFailure(Throwable failure) {
+            this.failure = failure;
+        }
+
+        public boolean hasFailure(){
+            return failure != null;
+        }
+
+        public String getMessage(){
+            if ( hasFailure() ) {
+                return failure.getMessage();
+            }
+            return EMPTY;
+        }
+
+        public String getType(){
+            if ( hasFailure() ) {
+                return failure.getClass().getName();
+            }
+            return EMPTY;
+        }
+
+        public String getStackTrace(){
+            if ( hasFailure() ){
+                return new StackTraceFormatter(true).stackTrace(failure);
+            }
+            return EMPTY;
         }
     }
 

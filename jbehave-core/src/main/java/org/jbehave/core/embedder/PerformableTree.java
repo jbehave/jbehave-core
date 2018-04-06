@@ -694,9 +694,24 @@ public class PerformableTree {
 
     }
 
+    public static class FailureContext {
+
+        List<Throwable> failures = new ArrayList<>();
+
+        public void addFailure(Throwable failure) {
+            failures.add(failure);
+        }
+
+        public List<Throwable> getFailures(){
+            return failures;
+        }
+
+    }
+    
     public static interface Performable {
 
         void perform(RunContext context) throws InterruptedException;
+        void reportFailures(FailureContext context);
 
     }
 
@@ -842,6 +857,13 @@ public class PerformableTree {
             }
         }
 
+        @Override
+        public void reportFailures(FailureContext context) {
+            for (PerformableScenario scenario : scenarios) {
+                scenario.reportFailures(context);
+            }
+        }
+
         private void performScenarios(RunContext context) throws InterruptedException {
             for (PerformableScenario scenario : scenarios) {
                 scenario.perform(context);
@@ -901,6 +923,16 @@ public class PerformableTree {
             return storyPath;
         }
 
+        public Throwable getFailure() {
+            FailureContext context = new FailureContext();
+            reportFailures(context);
+            List<Throwable> failures = context.getFailures();
+            if ( failures.size() > 0 ){
+                return failures.get(0);
+            }
+            return null;
+        }
+
         public boolean hasNormalScenario() {
             return normalScenario != null;
         }
@@ -936,6 +968,17 @@ public class PerformableTree {
                 context.reporter().afterScenario();
             } finally {
                 timing.setTimings(timer.stop());
+            }
+        }
+
+        @Override
+        public void reportFailures(FailureContext context) {
+            if ( hasExamples() ){
+                for (ExamplePerformableScenario exampleScenario : exampleScenarios) {
+                    exampleScenario.reportFailures(context);
+                }
+            } else {
+                normalScenario.reportFailures(context);
             }
         }
 
@@ -1019,6 +1062,13 @@ public class PerformableTree {
             afterSteps.perform(context);
         }
 
+        @Override
+        public void reportFailures(FailureContext context) {
+            beforeSteps.reportFailures(context);
+            steps.reportFailures(context);
+            afterSteps.reportFailures(context);
+        }
+
     }
 
     public static class ExamplePerformableScenario extends AbstractPerformableScenario {
@@ -1044,6 +1094,13 @@ public class PerformableTree {
             performGivenStories(context, givenStories, scenario.getGivenStories());
             performRestartableSteps(context);
             afterSteps.perform(context);
+        }
+
+        @Override
+        public void reportFailures(FailureContext context) {
+            beforeSteps.reportFailures(context);
+            steps.reportFailures(context);
+            afterSteps.reportFailures(context);
         }
 
         private Meta parameterMeta(Keywords keywords, Map<String, String> parameters) {
@@ -1116,6 +1173,15 @@ public class PerformableTree {
             context.stateIs(state);
             context.pendingSteps(pendingSteps);
             generatePendingStepMethods(context, pendingSteps);
+        }
+
+        @Override
+        public void reportFailures(FailureContext context) {
+            for ( StepResult result : results ){
+                if ( result instanceof AbstractStepResult.Failed ){
+                    context.addFailure(result.getFailure());
+                }
+            }
         }
 
         private List<PendingStep> pendingSteps() {

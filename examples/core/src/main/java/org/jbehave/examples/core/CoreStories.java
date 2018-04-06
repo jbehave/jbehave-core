@@ -86,7 +86,7 @@ public class CoreStories extends JUnitStories {
                                 .withDefaultFormats().withViewResources(viewResources)
                                 .withFormats(contextFormat, CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
                                 .withFailureTraceCompression(true).withCrossReference(xref)
-                                .withSurefireReporter(new SurefireReporter("surefire.xml", embeddableClass)))
+                                .withSurefireReporter(new SurefireReporter("surefire.xml", embeddableClass, true)))
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls)
                 .useTableTransformers(tableTransformers);
