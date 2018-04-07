@@ -707,6 +707,20 @@ public class ParameterConvertersBehaviour {
         assertThat(createdJsonDto.getIntegerList(), equalTo(convertedJsonDto.getIntegerList()));
     }
 
+    @Test
+    public void shouldAceeptParameterizedTypesAutomatically () {
+        ParameterConverter<Set<Bar>> parameterizedTypeConverter = new AbstractParameterConverter<Set<Bar>>() {
+            @Override
+            public Set<Bar> convertValue(String value, Type type) {
+                throw new IllegalStateException("Not implemented");
+            }
+        };
+        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set<Bar>>(){}.getType()), is(true));
+        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set<Number>>(){}.getType()), is(false));
+        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set>(){}.getType()), is(false));
+        assertThat(parameterizedTypeConverter.accept(new TypeLiteral<List<Bar>>(){}.getType()), is(false));
+    }
+
     @AsJson
     public static class MyJsonDto {
 

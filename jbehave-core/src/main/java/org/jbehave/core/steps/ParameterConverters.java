@@ -245,8 +245,12 @@ public class ParameterConverters {
         return null;
     }
 
+    private static boolean isAssignableFrom(Class<?> clazz, Type type) {
+        return type instanceof Class<?> && clazz.isAssignableFrom((Class<?>) type);
+    }
+
     private static boolean isAssignableFromRawType(Class<?> clazz, Type type) {
-        return type instanceof ParameterizedType && clazz.isAssignableFrom(rawClass(type));
+        return type instanceof ParameterizedType && isAssignableFrom(clazz, ((ParameterizedType) type).getRawType());
     }
 
     private static Class<?> rawClass(Type type) {
@@ -316,11 +320,10 @@ public class ParameterConverters {
 
     public static abstract class AbstractParameterConverter<T> implements ParameterConverter<T> {
 
-        private final Class<T> acceptedType;
+        private final Type acceptedType;
 
-        @SuppressWarnings("unchecked")
         public AbstractParameterConverter() {
-            this.acceptedType = (Class<T>) getParameterizedType(getClass()).getActualTypeArguments()[0];
+            this.acceptedType = getParameterizedType(getClass()).getActualTypeArguments()[0];
         }
 
         private ParameterizedType getParameterizedType(Class<?> clazz) {
@@ -331,7 +334,10 @@ public class ParameterConverters {
 
         @Override
         public boolean accept(Type type) {
-            return type instanceof Class<?> && acceptedType.isAssignableFrom((Class<?>) type);
+            if (acceptedType instanceof Class<?>) {
+                return isAssignableFrom((Class<?>) acceptedType, type);
+            }
+            return acceptedType.equals(type);
         }
     }
 
@@ -621,7 +627,7 @@ public class ParameterConverters {
 
         @Override
         public boolean accept(Type type) {
-            return super.accept(type) || type instanceof Class<?> && Boolean.TYPE.isAssignableFrom((Class<?>) type);
+            return super.accept(type) || isAssignableFrom(Boolean.TYPE, type);
         }
 
         @Override
@@ -884,7 +890,7 @@ public class ParameterConverters {
 
         @Override
         public boolean accept(Type type) {
-            return type instanceof Class<?> && method.getReturnType().isAssignableFrom((Class<?>) type);
+            return isAssignableFrom(method.getReturnType(), type);
         }
 
         @Override
