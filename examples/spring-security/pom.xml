@@ -10,7 +10,7 @@
   <artifactId>jbehave-spring-security-example</artifactId>
   <name>JBehave Spring Security Example</name>
   <properties>
-    <spring.version>3.2.16.RELEASE</spring.version>
+    <spring.version>4.3.15.RELEASE</spring.version>
   </properties>
   <dependencies>
     <dependency>
@@ -24,9 +24,9 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>persistence-api</artifactId>
-      <version>1.0.2</version>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <version>1.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.dbunit</groupId>
@@ -46,7 +46,7 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>3.2.9.RELEASE</version>
+      <version>4.2.5.RELEASE</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
@@ -78,7 +78,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>3.6.9.Final</version>
+      <version>4.3.11.Final</version>
       <exclusions>
         <exclusion>
           <groupId>net.sf.ehcache</groupId>
@@ -96,9 +96,9 @@
       <version>3.20.0-GA</version>
     </dependency>
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-annotations</artifactId>
-      <version>3.5.6-Final</version>
+      <groupId>org.hibernate.common</groupId>
+      <artifactId>hibernate-commons-annotations</artifactId>
+      <version>4.0.5.Final</version>
     </dependency>
     <dependency>
       <groupId>commons-dbcp</groupId>
