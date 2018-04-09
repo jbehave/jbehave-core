@@ -1129,7 +1129,7 @@ public class PerformableTree {
         }
 
         public PerformableSteps(List<Step> steps, List<StepMatch> stepMatches) {
-            this.steps =  ( steps == null ? new ArrayList<Step>() : steps );
+            this.steps =  ( steps != null ? steps : new ArrayList<Step>() );
             this.pendingSteps = pendingSteps();
             this.matches = stepMatches;
         }
@@ -1177,6 +1177,8 @@ public class PerformableTree {
 
         @Override
         public void reportFailures(FailureContext context) {
+            // Results can be null if the steps are not executed
+            if ( results == null ) return;
             for ( StepResult result : results ){
                 if ( result instanceof AbstractStepResult.Failed ){
                     context.addFailure(result.getFailure());
