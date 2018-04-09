@@ -1,4 +1,8 @@
 language: java
+sudo: false
+cache:
+  directories:
+    - $HOME/.m2
 install: mvn install -s settings.xml -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode -e --quiet
 jdk:
   - oraclejdk8
