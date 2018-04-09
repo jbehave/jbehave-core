@@ -59,4 +59,13 @@
     </plugins>
   </build>
 
+  <profiles>
+    <profile>
+      <id>failing</id>
+      <properties>
+        <embeddables>**/FailingCoreStories.java</embeddables>
+      </properties>
+    </profile>
+  </profiles>
+
 </project>
