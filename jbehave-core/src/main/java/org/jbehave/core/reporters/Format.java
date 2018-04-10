@@ -18,7 +18,7 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return configureReporting(storyReporterBuilder, new ConsoleOutput(storyReporterBuilder.keywords()));
+            return configureFailureTraces(storyReporterBuilder, new ConsoleOutput(storyReporterBuilder.keywords()));
         }
     };
 
@@ -26,7 +26,7 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return configureReporting(storyReporterBuilder, new ANSIConsoleOutput(storyReporterBuilder.keywords()));
+            return configureFailureTraces(storyReporterBuilder, new ANSIConsoleOutput(storyReporterBuilder.keywords()));
         }
     };
 
@@ -34,7 +34,15 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return configureReporting(storyReporterBuilder, new IdeOnlyConsoleOutput(storyReporterBuilder.keywords()));
+            return configureFailureTraces(storyReporterBuilder, new IdeOnlyConsoleOutput(storyReporterBuilder.keywords()));
+        }
+    };
+
+    public static final Format TEAMCITY_CONSOLE = new Format("TEAMCITY_CONSOLE") {
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+                                                 StoryReporterBuilder storyReporterBuilder) {
+            return configureFailureTraces(storyReporterBuilder, new TeamCityConsoleOutput(storyReporterBuilder.keywords()));
         }
     };
 
@@ -43,7 +51,7 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("txt"));
-            return configureReporting(storyReporterBuilder,
+            return configureFailureTraces(storyReporterBuilder,
                     new TxtOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
         }
     };
@@ -54,8 +62,28 @@ public abstract class Format {
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("html"));
-            return configureReporting(storyReporterBuilder,
+            return configureFailureTraces(storyReporterBuilder,
                     new HtmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
+        }
+    };
+
+    public static final Format XML = new Format("XML") {
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+                                                 StoryReporterBuilder storyReporterBuilder) {
+            factory.useConfiguration(storyReporterBuilder.fileConfiguration("xml"));
+            return configureFailureTraces(storyReporterBuilder,
+                    new XmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
+        }
+    };
+
+    public static final Format JSON = new Format("JSON") {
+        @Override
+        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+                                                 StoryReporterBuilder storyReporterBuilder) {
+            factory.useConfiguration(storyReporterBuilder.fileConfiguration("json"));
+            return configureFailureTraces(storyReporterBuilder,
+                    new JsonOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
         }
     };
 
@@ -68,32 +96,12 @@ public abstract class Format {
         }
     };
 
-    public static final Format XML = new Format("XML") {
-        @Override
-        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
-                StoryReporterBuilder storyReporterBuilder) {
-            factory.useConfiguration(storyReporterBuilder.fileConfiguration("xml"));
-            return configureReporting(storyReporterBuilder,
-                    new XmlOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
-        }
-    };
-
     public static final Format XML_TEMPLATE = new Format("XML") {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
             factory.useConfiguration(storyReporterBuilder.fileConfiguration("xml"));
             return new XmlTemplateOutput(factory.getOutputFile(), storyReporterBuilder.keywords());
-        }
-    };
-
-    public static final Format JSON = new Format("JSON") {
-        @Override
-        public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
-                StoryReporterBuilder storyReporterBuilder) {
-            factory.useConfiguration(storyReporterBuilder.fileConfiguration("json"));
-            return configureReporting(storyReporterBuilder,
-                    new JsonOutput(factory.createPrintStream(), storyReporterBuilder.keywords()));
         }
     };
 
@@ -107,8 +115,7 @@ public abstract class Format {
     };
 
     /**
-     * STATS is not just about output formats, it is needed by the final
-     * reports.html summary page.
+     * STATS is needed by the final reports.html summary page.
      */
     public static final Format STATS = new Format("STATS") {
         @Override
@@ -141,8 +148,8 @@ public abstract class Format {
         return name;
     }
 
-    private static PrintStreamOutput configureReporting(StoryReporterBuilder storyReporterBuilder,
-            PrintStreamOutput output) {
+    private static PrintStreamOutput configureFailureTraces(StoryReporterBuilder storyReporterBuilder,
+                                                            PrintStreamOutput output) {
         return output
                 .doReportFailureTrace(storyReporterBuilder.reportFailureTrace())
                 .doCompressFailureTrace(storyReporterBuilder.compressFailureTrace());
