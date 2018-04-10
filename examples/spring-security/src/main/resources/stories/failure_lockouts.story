@@ -12,11 +12,11 @@ Scenario: Authentication failures within lockout limit
 Given an organization named HP
 And authentication policy for HP:
 |lockoutEnabled|lockoutCount|
-|true|3|
+|true          |3           |
 And the users for HP:
-|username|passwordCleartext|loginFailureCount|
-|carlyfiorina|password|4|
-|markhurd|password|1|
+|username    |passwordCleartext |loginFailureCount|
+|carlyfiorina|password          |4                |
+|markhurd    |password          |1                |
 When current organization is HP
 And user markhurd authenticates with password password
 Then user should be authenticated

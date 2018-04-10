@@ -146,8 +146,8 @@
               <includes>
                 <include>**/*Stories.java</include>
               </includes>
-              <ignoreFailureInStories>true</ignoreFailureInStories>
-              <ignoreFailureInView>true</ignoreFailureInView>
+              <ignoreFailureInStories>false</ignoreFailureInStories>
+              <ignoreFailureInView>false</ignoreFailureInView>
             </configuration>
             <goals>
               <goal>run-stories-as-embeddables</goal>

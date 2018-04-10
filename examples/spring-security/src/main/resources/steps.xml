@@ -17,10 +17,18 @@
 
   <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
     <constructor-arg ref="authenticationProvider"/>
+    <property name="authenticationEventPublisher">
+      <bean class="org.springframework.security.authentication.DefaultAuthenticationEventPublisher" />
+    </property>
   </bean>
 
   <bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
     <property name="passwordEncoder" ref="shaPasswordEncoder"/>
+    <property name="saltSource">
+      <bean class="org.springframework.security.authentication.dao.SystemWideSaltSource">
+        <property name="systemWideSalt" value="jb3h4v3"/>
+      </bean>
+    </property>
     <property name="userDetailsService" ref="userDetailsService"/>
   </bean>
 

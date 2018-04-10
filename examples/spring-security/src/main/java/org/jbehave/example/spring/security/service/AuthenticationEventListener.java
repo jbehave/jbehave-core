@@ -4,14 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.jbehave.example.spring.security.dao.UserDao;
 import org.jbehave.example.spring.security.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
 import org.springframework.security.authentication.event.AbstractAuthenticationFailureEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
-public class AuthenticationEventListener implements ApplicationListener {
+public class AuthenticationEventListener implements ApplicationListener<AbstractAuthenticationEvent> {
 
   @Autowired
   private UserDao userDao;
@@ -19,7 +18,7 @@ public class AuthenticationEventListener implements ApplicationListener {
   @Autowired
   private OrganizationManager organizationManager;
 
-  public void onApplicationEvent(ApplicationEvent event) {
+  public void onApplicationEvent(AbstractAuthenticationEvent event) {
     if (event instanceof AbstractAuthenticationFailureEvent) {
       onAuthenticationFailure((AbstractAuthenticationFailureEvent) event);
     }
