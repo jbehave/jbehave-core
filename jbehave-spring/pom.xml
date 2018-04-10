@@ -10,7 +10,7 @@
     <description>Extension of JBehave Core that supports Spring dependency injection</description>
 
     <properties>
-        <spring.version>3.2.16.RELEASE</spring.version>
+        <spring.version>4.3.14.RELEASE</spring.version>
         <aspectj.version>1.8.9</aspectj.version>
     </properties>
 
@@ -36,13 +36,6 @@
                 </exclusion>
             </exclusions>
         </dependency>  
-        <!-- CGLib is required when using Spring's Annotation Configuration -->      
-        <dependency>
-            <groupId>cglib</groupId>
-            <artifactId>cglib</artifactId>
-            <version>3.2.2</version>
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>

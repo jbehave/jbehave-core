@@ -9,25 +9,6 @@
   <artifactId>jbehave-spring-example</artifactId>
   <name>JBehave Spring Example</name>
 
-  <properties>
-    <spring.version>3.2.16.RELEASE</spring.version>
-  </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-context</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>spring-test</artifactId>
-        <version>${spring.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>org.jbehave</groupId>
@@ -38,11 +19,6 @@
       <groupId>org.jbehave</groupId>
       <artifactId>jbehave-spring</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>cglib</groupId>
-      <artifactId>cglib</artifactId>
-      <version>3.2.2</version>
     </dependency>
   </dependencies>
 
