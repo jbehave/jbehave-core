@@ -1,5 +1,6 @@
 package org.jbehave.core.reporters;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.embedder.PerformableTree.*;
@@ -84,7 +85,7 @@ public class SurefireReporter {
         List<PerformableStory> stories = root.getStories();
         if ( reportByStory ){
             for ( PerformableStory story : stories ){
-                String name = reportName+"-"+new File(story.getStory().getPath()).getName();
+                String name = reportName+"-"+ name(story);
                 File file = outputFile(outputDirectory, name);
                 generateReport(asList(story), file);
             }
@@ -92,6 +93,10 @@ public class SurefireReporter {
             File file = outputFile(outputDirectory, reportName);
             generateReport(stories, file);
         }
+    }
+
+    private static String name(PerformableStory story) {
+        return StringUtils.substringBefore(new File(story.getStory().getPath()).getName(), ".story");
     }
 
     private void generateReport(List<PerformableStory> stories, File file) {
@@ -123,15 +128,16 @@ public class SurefireReporter {
 
     public static class TestSuite {
 
-        private Class<?> embeddableClass;
-        private TestCounts testCounts;
-        private List<TestCase> testCases;
+        public static final String DOT = ".";
+        private final Class<?> embeddableClass;
+        private final TestCounts testCounts;
+        private final List<TestCase> testCases;
         private final boolean includeProperties;
 
         public TestSuite(List<PerformableStory> stories, Class<?> embeddableClass, boolean includeProperties) {
             this.embeddableClass = embeddableClass;
-            testCounts = collectTestCounts(stories);
-            testCases = collectTestCases(stories);
+            this.testCounts = collectTestCounts(stories);
+            this.testCases = collectTestCases(stories);
             this.includeProperties = includeProperties;
         }
 
@@ -172,15 +178,11 @@ public class SurefireReporter {
 
         private List<TestCase> collectTestCases(List<PerformableStory> stories) {
             List<TestCase> testCases = new ArrayList<>();
-            int count = 1;
             for (PerformableStory story : stories) {
                 for (PerformableScenario scenario : story.getScenarios()) {
-                    String title = scenario.getScenario().getTitle();
-                    if (title.equals(EMPTY)) {
-                        title = "No title " + count++;
-                    }
+                    String name = testCaseName(story, scenario);
                     long time = scenario.getTiming().getDurationInMillis();
-                    TestCase tc = new TestCase(title, embeddableClass, time);
+                    TestCase tc = new TestCase(embeddableClass, name, time);
                     if (scenario.getStatus() == Status.FAILED) {
                         tc.setFailure(new TestFailure(scenario.getFailure()));
                     }
@@ -188,6 +190,10 @@ public class SurefireReporter {
                 }
             }
             return testCases;
+        }
+
+        private String testCaseName(PerformableStory story, PerformableScenario scenario) {
+            return name(story)+ DOT +story.getKeywords().scenario()+ scenario.getScenario().getTitle();
         }
 
         public String getName() {
@@ -229,14 +235,14 @@ public class SurefireReporter {
     }
 
     public static class TestCase {
-        private final String name;
         private final Class<?> embeddableClass;
+        private final String name;
         private long time;
         private TestFailure failure;
 
-        public TestCase(String name, Class<?> embeddableClass, long time) {
-            this.name = name;
+        public TestCase(Class<?> embeddableClass, String name, long time) {
             this.embeddableClass = embeddableClass;
+            this.name = name;
             this.time = time;
         }
 

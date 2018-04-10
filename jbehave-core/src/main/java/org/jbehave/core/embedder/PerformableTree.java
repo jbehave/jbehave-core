@@ -766,11 +766,11 @@ public class PerformableTree {
     public static class PerformableStory implements Performable {
 
         private final Story story;
+        private final transient Keywords keywords;
+        private final boolean givenStory;
         private boolean allowed;
         private Status status;
         private Timing timing = new Timing();
-        private boolean givenStory;
-        private String localizedNarrative;
         private List<PerformableStory> givenStories = new ArrayList<>();
         private List<PerformableSteps> beforeSteps = new ArrayList<>();
         private List<PerformableScenario> scenarios = new ArrayList<>();
@@ -778,8 +778,8 @@ public class PerformableTree {
 
         public PerformableStory(Story story, Keywords keywords, boolean givenStory) {
             this.story = story;
+            this.keywords = keywords;
             this.givenStory = givenStory;
-            this.localizedNarrative = ( story.hasNarrative() ? story.getNarrative().asString(keywords) : null );
         }
 
         public void allowed(boolean allowed) {
@@ -790,12 +790,24 @@ public class PerformableTree {
             return allowed;
         }
 
+        public Story getStory() {
+            return story;
+        }
+
+        public Keywords getKeywords(){
+            return keywords;
+        }
+
         public boolean givenStory() {
             return givenStory;
         }
 
         public Status getStatus() {
             return status;
+        }
+
+        public Timing getTiming() {
+            return timing;
         }
 
         public void addGivenStories(List<PerformableStory> performableGivenStories) {
@@ -812,18 +824,6 @@ public class PerformableTree {
 
         public void add(PerformableScenario performableScenario) {
             scenarios.add(performableScenario);
-        }
-
-        public Story getStory() {
-            return story;
-        }
-
-        public String getLocalisedNarrative() {
-            return localizedNarrative != null ? localizedNarrative : EMPTY;
-        }
-
-        public Timing getTiming() {
-            return timing;
         }
 
         public void perform(RunContext context) throws InterruptedException {

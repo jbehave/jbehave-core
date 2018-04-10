@@ -26,14 +26,13 @@
         },
         "scenarios": []
       },
+      "givenStory": false,
       "allowed": false,
       "timing": {
         "durationInMillis": 0,
         "start": 0,
         "end": 0
       },
-      "givenStory": false,
-      "localizedNarrative": "In order to renovate my house\nAs a customer\nI want to get a loan",
       "givenStories": [],
       "beforeSteps": [],
       "scenarios": [

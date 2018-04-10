@@ -52,7 +52,7 @@ public class SurefireReporterBehaviour {
 
     private PerformableRoot performableRoot() {
         PerformableRoot root = new PerformableRoot();
-        Story story = new Story("/path/to/story", new Description("An interesting story"), new Meta(Arrays.asList("+theme testing", "+author Mauro")), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
+        Story story = new Story("/path/to/an_interesting.story", new Description("An interesting story"), new Meta(Arrays.asList("+theme testing", "+author Mauro")), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
         PerformableStory performableStory = new PerformableStory(story, new LocalizedKeywords(), false);
         root.add(performableStory);
         Scenario scenario = new Scenario(Arrays.asList(""));

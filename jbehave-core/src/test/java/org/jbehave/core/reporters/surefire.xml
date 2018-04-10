@@ -5,5 +5,5 @@
           tests="1" errors="0" skipped="1" failures="0">
 <properties>
 </properties>
-<testcase name="No title 1" classname="org.jbehave.core.reporters.SurefireReporterBehaviour" time="0"></testcase>
+<testcase name="an_interesting.Scenario:" classname="org.jbehave.core.reporters.SurefireReporterBehaviour" time="0"></testcase>
 </testsuite>

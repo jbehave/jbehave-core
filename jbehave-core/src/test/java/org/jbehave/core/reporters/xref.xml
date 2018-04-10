@@ -20,16 +20,13 @@
         </meta>
         <scenarios/>
       </story>
+      <givenStory>false</givenStory>
       <allowed>false</allowed>
       <timing>
         <durationInMillis>0</durationInMillis>
         <start>0</start>
         <end>0</end>
       </timing>
-      <givenStory>false</givenStory>
-      <localizedNarrative>In order to renovate my house
-As a customer
-I want to get a loan</localizedNarrative>
       <givenStories/>
       <beforeSteps/>
       <scenarios>
