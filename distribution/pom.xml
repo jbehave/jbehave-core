@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave</artifactId>
-    <version>4.3-beta-3</version>
+    <version>4.3-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-distribution</artifactId>
   <packaging>pom</packaging>
@@ -15,67 +15,67 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-core</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-gherkin</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-groovy</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-scala</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-guice</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-pico</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-spring</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-weld</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-odf</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-google</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-rest</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-ant</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-core</artifactId>
-      <version>4.3-beta-3</version>
+      <version>4.3-SNAPSHOT</version>
       <classifier>resources</classifier>
       <type>zip</type>
     </dependency>
