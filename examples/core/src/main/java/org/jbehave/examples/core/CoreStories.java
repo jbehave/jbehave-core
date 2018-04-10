@@ -1,10 +1,7 @@
 package org.jbehave.examples.core;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML_TEMPLATE;
+import static org.jbehave.core.reporters.Format.*;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -84,7 +81,7 @@ public class CoreStories extends JUnitStories {
                         new StoryReporterBuilder()
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withViewResources(viewResources)
-                                .withFormats(contextFormat, CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
+                                .withFormats(contextFormat, ANSI_CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
                                 .withFailureTraceCompression(true).withCrossReference(xref)
                                 .withSurefireReporter(new SurefireReporter(embeddableClass)))
                 .useParameterConverters(parameterConverters)
