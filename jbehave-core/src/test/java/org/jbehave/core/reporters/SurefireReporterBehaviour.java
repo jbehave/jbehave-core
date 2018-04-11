@@ -55,7 +55,7 @@ public class SurefireReporterBehaviour {
         Story story = new Story("/path/to/an_interesting.story", new Description("An interesting story"), new Meta(Arrays.asList("+theme testing", "+author Mauro")), new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
         PerformableStory performableStory = new PerformableStory(story, new LocalizedKeywords(), false);
         root.add(performableStory);
-        Scenario scenario = new Scenario(Arrays.asList(""));
+        Scenario scenario = new Scenario("title", Arrays.asList(""));
         PerformableScenario performableScenario = new PerformableScenario(scenario, story.getPath());
         performableStory.add(performableScenario);
         List<StepMatch> stepMatches = new ArrayList<>();

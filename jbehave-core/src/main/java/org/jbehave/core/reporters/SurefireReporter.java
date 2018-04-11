@@ -24,6 +24,8 @@ public class SurefireReporter {
     private static final String SUREFIRE_FTL = "ftl/surefire-xml-report.ftl";
     private static final String SUREFIRE_XSD = "xsd/surefire-test-report.xsd";
     private static final String XML = ".xml";
+    private static final String DOT = ".";
+    private static final String HYPHEN = "-";
 
     private final Class<?> embeddableClass;
     private final String reportName;
@@ -85,7 +87,7 @@ public class SurefireReporter {
         List<PerformableStory> stories = root.getStories();
         if ( reportByStory ){
             for ( PerformableStory story : stories ){
-                String name = reportName+"-"+ name(story);
+                String name = reportName+ HYPHEN + StringUtils.substringBefore(story.getStory().getPath(), DOT);
                 File file = outputFile(outputDirectory, name);
                 generateReport(asList(story), file);
             }
@@ -93,10 +95,6 @@ public class SurefireReporter {
             File file = outputFile(outputDirectory, reportName);
             generateReport(stories, file);
         }
-    }
-
-    private static String name(PerformableStory story) {
-        return StringUtils.substringBefore(new File(story.getStory().getPath()).getName(), ".story");
     }
 
     private void generateReport(List<PerformableStory> stories, File file) {
@@ -128,7 +126,11 @@ public class SurefireReporter {
 
     public static class TestSuite {
 
-        public static final String DOT = ".";
+        private static final String BREADCRUMB = " > ";
+        private static final String COLON = ":";
+        private static final String SPACE = " ";
+        private static final String UNDERSCORE = "_";
+
         private final Class<?> embeddableClass;
         private final TestCounts testCounts;
         private final List<TestCase> testCases;
@@ -193,7 +195,23 @@ public class SurefireReporter {
         }
 
         private String testCaseName(PerformableStory story, PerformableScenario scenario) {
-            return name(story)+ DOT +story.getKeywords().scenario()+ scenario.getScenario().getTitle();
+            String path = story.getStory().getPath();
+            File file = new File(path);
+            List<String> parentNames = new ArrayList<>();
+            collectParentNames(file, parentNames);
+            String parentPath = StringUtils.join(parentNames, BREADCRUMB);
+            String name = StringUtils.replaceAll(StringUtils.substringBefore(file.getName(), DOT), UNDERSCORE, SPACE);
+            return parentPath + BREADCRUMB + name + COLON + SPACE + scenario.getScenario().getTitle();
+        }
+
+        private void collectParentNames(File file, List<String> parents) {
+            if ( file.getParent() != null ){
+                String name = file.getParentFile().getName();
+                if ( !StringUtils.isBlank(name) ) {
+                    parents.add(0, name);
+                }
+                collectParentNames(file.getParentFile(), parents);
+            }
         }
 
         public String getName() {
