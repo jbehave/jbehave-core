@@ -56,7 +56,7 @@ import static java.util.Arrays.asList;
  * </p>
  * <p>
  * The builder configures the file-based reporters to output to the default file
- * directory {@link FileConfiguration#DIRECTORY} as relative to the code
+ * directory {@link FileConfiguration#RELATIVE_DIRECTORY} as relative to the code
  * location. In some case, e.g. with Ant class loader, the code source location
  * from class may not be properly set. In this case, we may specify it from a
  * file:
@@ -150,6 +150,7 @@ public class StoryReporterBuilder {
     protected boolean reportFailureTrace = false;
     protected boolean compressFailureTrace = false;
     protected Keywords keywords;
+    protected SGRCodes codes;
     protected CrossReference crossReference;
     protected SurefireReporter surefireReporter;
     protected boolean multiThreading;
@@ -216,6 +217,13 @@ public class StoryReporterBuilder {
             keywords = new LocalizedKeywords();
         }
         return keywords;
+    }
+
+    public SGRCodes codes(){
+        if ( codes == null ){
+            return new SGRCodes();
+        }
+        return codes;
     }
 
     public boolean multiThreading() {
@@ -289,7 +297,7 @@ public class StoryReporterBuilder {
     }
 
     /**
-     * @deprecated Use {@link withFormats(org.jbehave.core.reporters.Format...
+     * @deprecated Use {@link #withFormats(org.jbehave.core.reporters.Format...
      *             formats)}
      */
     @Deprecated
@@ -328,6 +336,11 @@ public class StoryReporterBuilder {
 
     public StoryReporterBuilder withKeywords(Keywords keywords) {
         this.keywords = keywords;
+        return this;
+    }
+
+    public StoryReporterBuilder withCodes(SGRCodes codes) {
+        this.codes = codes;
         return this;
     }
 

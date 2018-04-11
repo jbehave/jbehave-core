@@ -1,12 +1,10 @@
 package org.jbehave.core.reporters;
 
 import org.hamcrest.Matchers;
-import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.jbehave.core.reporters.ANSIConsoleOutput.SGRCode.MAGENTA;
+import static org.jbehave.core.reporters.SGRCodes.SGRCode.MAGENTA;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 
@@ -25,9 +23,9 @@ public class ANSIConsoleOutputBehaviour {
     }
 
     @Test
-    public void shouldCodeInCyanScenarioTitle() throws Exception {
+    public void shouldCodeInBrightMagentaScenarioTitle() throws Exception {
         output.overwritePattern("beforeScenario", "{0}");
-        assertThat(output.format("beforeScenario", "", "scenario"), Matchers.is("\033[36mscenario\033[0m"));
+        assertThat(output.format("beforeScenario", "", "scenario"), Matchers.is("\033[95mscenario\033[0m"));
     }
 
     @Test

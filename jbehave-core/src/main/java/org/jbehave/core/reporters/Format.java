@@ -26,7 +26,8 @@ public abstract class Format {
         @Override
         public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
                 StoryReporterBuilder storyReporterBuilder) {
-            return configureFailureTraces(storyReporterBuilder, new ANSIConsoleOutput(storyReporterBuilder.keywords()));
+            return configureFailureTraces(storyReporterBuilder,
+                    new ANSIConsoleOutput(storyReporterBuilder.keywords()).withCodes(storyReporterBuilder.codes()));
         }
     };
 
