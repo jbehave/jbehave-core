@@ -3,7 +3,10 @@ package org.jbehave.core.reporters;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.*;
+import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -26,36 +29,45 @@ public class SurefireReporter {
     private static final String XML = ".xml";
     private static final String DOT = ".";
     private static final String HYPHEN = "-";
+    public static final String SLASH = "/";
 
     private final Class<?> embeddableClass;
+    private final TestCaseNamingStrategy namingStrategy;
+    private final boolean includeProperties;
     private final String reportName;
     private final boolean reportByStory;
-    private final boolean includeProperties;
-
 
     private TemplateProcessor processor = new FreemarkerProcessor();
 
     public static class Options {
         public static final String DEFAULT_REPORT_NAME = "jbehave-surefire";
+        public static final TestCaseNamingStrategy DEFAULT_NAMING_STRATEGY = new SimpleNamingStrategy();
         public static final boolean DEFAULT_INCLUDE_PROPERTIES = true;
         public static final boolean DEFAULT_REPORT_BY_STORY = false;
 
         private String reportName;
+        private TestCaseNamingStrategy namingStrategy;
         private boolean includeProperties;
         private boolean reportByStory;
 
         public Options() {
-            this(DEFAULT_REPORT_NAME, DEFAULT_REPORT_BY_STORY, DEFAULT_INCLUDE_PROPERTIES);
+            this(DEFAULT_REPORT_NAME, DEFAULT_NAMING_STRATEGY, DEFAULT_REPORT_BY_STORY, DEFAULT_INCLUDE_PROPERTIES);
         }
 
-        public Options(String reportName, boolean reportByStory, boolean includeProperties) {
+        public Options(String reportName, TestCaseNamingStrategy namingStrategy, boolean reportByStory, boolean includeProperties) {
             this.reportName = reportName;
+            this.namingStrategy = namingStrategy;
             this.includeProperties = includeProperties;
             this.reportByStory = reportByStory;
         }
 
         public Options useReportName(String reportName) {
             this.reportName = reportName;
+            return this;
+        }
+
+        public Options withNamingStrategy(TestCaseNamingStrategy strategy){
+            this.namingStrategy = strategy;
             return this;
         }
 
@@ -77,9 +89,10 @@ public class SurefireReporter {
 
     public SurefireReporter(Class<?> embeddableClass, Options options) {
         this.embeddableClass = embeddableClass;
+        this.namingStrategy = options.namingStrategy;
+        this.includeProperties = options.includeProperties;
         this.reportName = options.reportName;
         this.reportByStory = options.reportByStory;
-        this.includeProperties = options.includeProperties;
     }
 
     public synchronized void generate(PerformableRoot root,
@@ -87,7 +100,7 @@ public class SurefireReporter {
         List<PerformableStory> stories = root.getStories();
         if ( reportByStory ){
             for ( PerformableStory story : stories ){
-                String name = reportName+ HYPHEN + StringUtils.substringBefore(story.getStory().getPath(), DOT);
+                String name = reportName(story.getStory().getPath());
                 File file = outputFile(outputDirectory, name);
                 generateReport(asList(story), file);
             }
@@ -97,10 +110,14 @@ public class SurefireReporter {
         }
     }
 
+    private String reportName(String path) {
+        return reportName + HYPHEN + StringUtils.replaceAll(StringUtils.substringBefore(path, DOT), SLASH, DOT);
+    }
+
     private void generateReport(List<PerformableStory> stories, File file) {
         try {
             Map<String, Object> dataModel = new HashMap<>();
-            dataModel.put("testsuite", new TestSuite(stories, embeddableClass, includeProperties));
+            dataModel.put("testsuite", new TestSuite(embeddableClass, namingStrategy, stories, includeProperties));
             processor.process(SUREFIRE_FTL, dataModel, new FileWriter(file));
             validateOutput(file, SUREFIRE_XSD);
         } catch (IOException | SAXException e) {
@@ -126,18 +143,15 @@ public class SurefireReporter {
 
     public static class TestSuite {
 
-        private static final String BREADCRUMB = " > ";
-        private static final String COLON = ":";
-        private static final String SPACE = " ";
-        private static final String UNDERSCORE = "_";
-
         private final Class<?> embeddableClass;
+        private final TestCaseNamingStrategy namingStrategy;
         private final TestCounts testCounts;
         private final List<TestCase> testCases;
         private final boolean includeProperties;
 
-        public TestSuite(List<PerformableStory> stories, Class<?> embeddableClass, boolean includeProperties) {
+        public TestSuite(Class<?> embeddableClass, TestCaseNamingStrategy namingStrategy, List<PerformableStory> stories, boolean includeProperties) {
             this.embeddableClass = embeddableClass;
+            this.namingStrategy = namingStrategy;
             this.testCounts = collectTestCounts(stories);
             this.testCases = collectTestCases(stories);
             this.includeProperties = includeProperties;
@@ -182,7 +196,7 @@ public class SurefireReporter {
             List<TestCase> testCases = new ArrayList<>();
             for (PerformableStory story : stories) {
                 for (PerformableScenario scenario : story.getScenarios()) {
-                    String name = testCaseName(story, scenario);
+                    String name = namingStrategy.resolveName(story.getStory(), scenario.getScenario());
                     long time = scenario.getTiming().getDurationInMillis();
                     TestCase tc = new TestCase(embeddableClass, name, time);
                     if (scenario.getStatus() == Status.FAILED) {
@@ -192,26 +206,6 @@ public class SurefireReporter {
                 }
             }
             return testCases;
-        }
-
-        private String testCaseName(PerformableStory story, PerformableScenario scenario) {
-            String path = story.getStory().getPath();
-            File file = new File(path);
-            List<String> parentNames = new ArrayList<>();
-            collectParentNames(file, parentNames);
-            String parentPath = StringUtils.join(parentNames, BREADCRUMB);
-            String name = StringUtils.replaceAll(StringUtils.substringBefore(file.getName(), DOT), UNDERSCORE, SPACE);
-            return parentPath + BREADCRUMB + name + COLON + SPACE + scenario.getScenario().getTitle();
-        }
-
-        private void collectParentNames(File file, List<String> parents) {
-            if ( file.getParent() != null ){
-                String name = file.getParentFile().getName();
-                if ( !StringUtils.isBlank(name) ) {
-                    parents.add(0, name);
-                }
-                collectParentNames(file.getParentFile(), parents);
-            }
         }
 
         public String getName() {
@@ -292,6 +286,52 @@ public class SurefireReporter {
         public String toString() {
             return ToStringBuilder.reflectionToString(this, ToStringStyle.SIMPLE_STYLE);
         }
+
+    }
+
+    public interface TestCaseNamingStrategy {
+
+        String resolveName(Story story, Scenario scenario);
+
+    }
+
+    public static class SimpleNamingStrategy implements TestCaseNamingStrategy {
+
+        @Override
+        public String resolveName(Story story, Scenario scenario) {
+            String path = story.getPath();
+            File file = new File(path);
+            String name = StringUtils.substringBefore(file.getName(), DOT);
+            return name + DOT + scenario.getTitle();
+        }
+
+    }
+
+    public static class BreadcrumbedNamingStrategy implements TestCaseNamingStrategy {
+
+        private static final String BREADCRUMB = " > ";
+
+        @Override
+        public String resolveName(Story story, Scenario scenario) {
+            String path = story.getPath();
+            File file = new File(path);
+            List<String> parentNames = new ArrayList<>();
+            collectParentNames(file, parentNames);
+            String parentPath = StringUtils.join(parentNames, BREADCRUMB);
+            String name = StringUtils.substringBefore(file.getName(), DOT);
+            return parentPath + BREADCRUMB + name + DOT + scenario.getTitle();
+        }
+
+        private void collectParentNames(File file, List<String> parents) {
+            if ( file.getParent() != null ){
+                String name = file.getParentFile().getName();
+                if ( !StringUtils.isBlank(name) ) {
+                    parents.add(0, name);
+                }
+                collectParentNames(file.getParentFile(), parents);
+            }
+        }
+
 
     }
 

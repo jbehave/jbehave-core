@@ -24,10 +24,10 @@ import static org.hamcrest.Matchers.equalTo;
 public class SurefireReporterBehaviour {
 
     @Test
-    public void shouldProduceXmlReport() throws Exception {
+    public void shouldProduceXmlReportWithSimpleNamingStrategy() throws Exception {
 
         // Give
-        String reportName = "surefire";
+        String reportName = "surefire-simple";
         SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(false);
         SurefireReporter reporter = new SurefireReporter(this.getClass(), options);
 
@@ -36,6 +36,25 @@ public class SurefireReporterBehaviour {
         File outputDirectory = new File("target");
         reporter.generate(root, outputDirectory);
         
+
+        // Then
+        String outputPath = reportName + ".xml";
+        assertThat(output(outputDirectory, outputPath), equalTo(resource(outputPath)));
+    }
+
+    @Test
+    public void shouldProduceXmlReportWithBreadcrumbNamingStrategy() throws Exception {
+
+        // Give
+        String reportName = "surefire-breadcrumb";
+        SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(false).withNamingStrategy(new SurefireReporter.BreadcrumbedNamingStrategy());
+        SurefireReporter reporter = new SurefireReporter(this.getClass(), options);
+
+        // When
+        PerformableRoot root = performableRoot();
+        File outputDirectory = new File("target");
+        reporter.generate(root, outputDirectory);
+
 
         // Then
         String outputPath = reportName + ".xml";

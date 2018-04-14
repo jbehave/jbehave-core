@@ -66,8 +66,9 @@
     <page>story-mapping.html</page>
     <page>story-timeouts.html</page>
     <page>story-transformers.html</page>
-    <page>cross-reference.html</page>    
-    <page>context-view.html</page>    
+    <page>cross-reference.html</page>
+    <page>surefire-reporter.html</page>
+    <page>context-view.html</page>
     <page>multi-threading.html</page>    
     <page>using-rest.html</page>    
     <page>using-groovy.html</page>    

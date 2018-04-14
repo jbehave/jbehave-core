@@ -74,6 +74,9 @@ public class CoreStories extends JUnitStories {
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
+        SurefireReporter.Options options = new SurefireReporter.Options().useReportName("surefire")
+                .withNamingStrategy(new SurefireReporter.BreadcrumbedNamingStrategy()).doReportByStory(true);
+        SurefireReporter surefireReporter = new SurefireReporter(embeddableClass, options);
         return new MostUsefulConfiguration()                
                 .useStoryLoader(resourceLoader)
                 .useStoryParser(new RegexStoryParser(examplesTableFactory))
@@ -83,7 +86,7 @@ public class CoreStories extends JUnitStories {
                                 .withDefaultFormats().withViewResources(viewResources)
                                 .withFormats(contextFormat, ANSI_CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
                                 .withFailureTraceCompression(true).withCrossReference(xref)
-                                .withSurefireReporter(new SurefireReporter(embeddableClass)))
+                                .withSurefireReporter(surefireReporter))
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls)
                 .useTableTransformers(tableTransformers);

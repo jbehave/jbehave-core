@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<title>Surefire Reporter</title>
+</head>
+<body>
+<h2>Surefire Reporter</h2>
+
+<p>The <a
+    href="javadoc/core/org/jbehave/core/reporters/SurefireReporter.html">SurefireReporter</a>
+is a special report <a
+    href="javadoc/core/org/jbehave/core/reporters/Format.html">Format</a>
+that build a Surefire XML report of stories being executed during the run.
+</p>
+
+<p>The report can then be used by any tool (typically a continuous build server) that supports the
+    <a href="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd">Surefire Test Report</a> format.
+</p>
+
+<h2>Configuration</h2>
+
+<p>The SurefireReporter instance needs to configured in the <a
+    href="javadoc/core/org/jbehave/core/reporters/StoryReporterBuilder.html">StoryReporterBuilder</a>:</p>
+<pre class="brush: java">
+public class CoreStories extends JUnitStories {
+    
+    @Override
+    public Configuration configuration() {
+        SurefireReporter surefireReporter = new SurefireReporter();
+        return new MostUsefulConfiguration()
+            .useStoryReporterBuilder(new StoryReporterBuilder()
+                .withSurefireReporter(surefireReporter));
+    }
+}
+</pre>
+
+<p>If the SurefireReporter is configured, the XML
+report is generated automatically in the JBehave report view
+directory (<b>target/jbehave/view</b> by default) by the JUnit-based
+ConfigurableEmbedder, i.e. JUnitStory and JUnitStories. In other case, you
+may generate them on demand via the Embedder method <b>generateSurefireReport()</b>.</p>
+
+<p>Optionally, SurefireReporter can be configured to create a file output for each story or change the test case naming strategy
+    via the <a
+            href="javadoc/core/org/jbehave/core/reporters/SurefireReporter.Options.html">SurefireReporter.Options</a>.
+</p>
+
+<h2>Examples</h2>
+
+<p>Examples of configuration of SurefireReporter can be found in <a href="running-examples.html">core example</a>.</p>
+
+</body>
+</html>
