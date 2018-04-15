@@ -142,7 +142,7 @@
                 <failOnError>false</failOnError>              
                 <additionalparam>-Xdoclint:none</additionalparam>
                 <links>
-                  <link>http://docs.oracle.com/javase/6/docs/api</link>
+                  <link>http://docs.oracle.com/javase/7/docs/api</link>
                 </links>
               </configuration>
             </execution>
