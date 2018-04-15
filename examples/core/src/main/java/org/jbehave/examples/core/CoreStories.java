@@ -75,7 +75,7 @@ public class CoreStories extends JUnitStories {
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));
         SurefireReporter.Options options = new SurefireReporter.Options().useReportName("surefire")
-                .withNamingStrategy(new SurefireReporter.BreadcrumbedNamingStrategy()).doReportByStory(true);
+                .withNamingStrategy(new SurefireReporter.BreadcrumbNamingStrategy()).doReportByStory(true);
         SurefireReporter surefireReporter = new SurefireReporter(embeddableClass, options);
         return new MostUsefulConfiguration()                
                 .useStoryLoader(resourceLoader)

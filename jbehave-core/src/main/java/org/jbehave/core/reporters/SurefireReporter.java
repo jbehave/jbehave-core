@@ -3,7 +3,6 @@ package org.jbehave.core.reporters;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.jbehave.core.embedder.PerformableTree;
 import org.jbehave.core.embedder.PerformableTree.*;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
@@ -29,7 +28,7 @@ public class SurefireReporter {
     private static final String XML = ".xml";
     private static final String DOT = ".";
     private static final String HYPHEN = "-";
-    public static final String SLASH = "/";
+    private static final String SLASH = "/";
 
     private final Class<?> embeddableClass;
     private final TestCaseNamingStrategy namingStrategy;
@@ -295,6 +294,9 @@ public class SurefireReporter {
 
     }
 
+    /**
+     * A simple naming strategy:  [story name].[scenario title]
+     */
     public static class SimpleNamingStrategy implements TestCaseNamingStrategy {
 
         @Override
@@ -307,9 +309,22 @@ public class SurefireReporter {
 
     }
 
-    public static class BreadcrumbedNamingStrategy implements TestCaseNamingStrategy {
+    /**
+     * A breadcrumb-based naming strategy:  [story path with breadcrumbs].[story name].[scenario title]
+     */
+    public static class BreadcrumbNamingStrategy implements TestCaseNamingStrategy {
 
-        private static final String BREADCRUMB = " > ";
+        private static final String DEFAULT_BREADCRUMB = " > ";
+
+        private final String breadcrumb;
+
+        public BreadcrumbNamingStrategy() {
+            this(DEFAULT_BREADCRUMB);
+        }
+
+        public BreadcrumbNamingStrategy(String breadcrumb) {
+            this.breadcrumb = breadcrumb;
+        }
 
         @Override
         public String resolveName(Story story, Scenario scenario) {
@@ -317,9 +332,9 @@ public class SurefireReporter {
             File file = new File(path);
             List<String> parentNames = new ArrayList<>();
             collectParentNames(file, parentNames);
-            String parentPath = StringUtils.join(parentNames, BREADCRUMB);
+            String parentPath = StringUtils.join(parentNames, breadcrumb);
             String name = StringUtils.substringBefore(file.getName(), DOT);
-            return parentPath + BREADCRUMB + name + DOT + scenario.getTitle();
+            return parentPath + breadcrumb + name + DOT + scenario.getTitle();
         }
 
         private void collectParentNames(File file, List<String> parents) {

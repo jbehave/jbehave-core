@@ -26,7 +26,7 @@ public class SurefireReporterBehaviour {
     @Test
     public void shouldProduceXmlReportWithSimpleNamingStrategy() throws Exception {
 
-        // Give
+        // Given
         String reportName = "surefire-simple";
         SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(false);
         SurefireReporter reporter = new SurefireReporter(this.getClass(), options);
@@ -45,9 +45,9 @@ public class SurefireReporterBehaviour {
     @Test
     public void shouldProduceXmlReportWithBreadcrumbNamingStrategy() throws Exception {
 
-        // Give
+        // Given
         String reportName = "surefire-breadcrumb";
-        SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(false).withNamingStrategy(new SurefireReporter.BreadcrumbedNamingStrategy());
+        SurefireReporter.Options options = new SurefireReporter.Options().useReportName(reportName).doIncludeProperties(false).withNamingStrategy(new SurefireReporter.BreadcrumbNamingStrategy());
         SurefireReporter reporter = new SurefireReporter(this.getClass(), options);
 
         // When
