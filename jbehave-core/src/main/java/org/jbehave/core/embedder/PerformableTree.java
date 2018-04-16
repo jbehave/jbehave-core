@@ -941,6 +941,10 @@ public class PerformableTree {
             return exampleScenarios != null && exampleScenarios.size() > 0;
         }
 
+        public List<ExamplePerformableScenario> getExamples() {
+            return exampleScenarios;
+        }
+
         public void perform(RunContext context) throws InterruptedException {
             if (!isAllowed()) {
                 context.embedderMonitor().scenarioNotAllowed(scenario, context.filter());
