@@ -5,8 +5,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -105,7 +107,7 @@ import static java.util.regex.Pattern.DOTALL;
  * <p>
  * The table allows the retrieval of row values as converted parameters. Use
  * {@link #getRowAsParameters(int)} and invoke
- * {@link Parameters#valueAs(String, Class)} specifying the header and the class
+ * {@link Parameters#valueAs(String, Type)} specifying the header and the class
  * type of the parameter.
  * </p>
  * 
@@ -170,8 +172,8 @@ public class ExamplesTable {
     private final Row defaults;
     private final List<String> headers = new ArrayList<>();
     private final List<Map<String, String>> data = new ArrayList<>();
-    private ExamplesTableProperties properties;
-    private String propertiesAsString = "";
+    private Deque<ExamplesTableProperties> properties = new LinkedList<>();
+
     private Map<String, String> namedParameters = new HashMap<>();
     private ParameterControls parameterControls;
 
@@ -196,13 +198,9 @@ public class ExamplesTable {
         this.parameterControls = parameterControls;
         this.tableTransformers = tableTransformers;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
-        parse(headerSeparator, valueSeparator, ignorableSeparator);
-    }
-
-    private void parse(String headerSeparator, String valueSeparator, String ignorableSeparator) {
-        String tableWithoutProperties = stripProperties(tableAsString.trim());
-        properties = new ExamplesTableProperties(propertiesAsString, headerSeparator, valueSeparator, ignorableSeparator);
-        parseTable(tableWithoutProperties);
+        String tableWithoutProperties = stripProperties(headerSeparator, valueSeparator, ignorableSeparator);
+        String transformedTable = applyTransformers(tableWithoutProperties);
+        parseByRows(transformedTable);
     }
 
     private ExamplesTable(ExamplesTable other, Row defaults) {
@@ -215,36 +213,42 @@ public class ExamplesTable {
         this.defaults = defaults;
     }
 
-    private String stripProperties(String tableAsString) {
-        Matcher matcher = INLINED_PROPERTIES_PATTERN.matcher(tableAsString);
-        if (matcher.matches()) {
-            propertiesAsString = matcher.group(1);
-            return matcher.group(2);
+    private String stripProperties(String headerSeparator, String valueSeparator, String ignorableSeparator) {
+        String  tableWithoutProperties = tableAsString.trim();
+        Matcher matcher = INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
+        while (matcher.matches()) {
+            String propertiesAsString = matcher.group(1);
+            properties.add(new ExamplesTableProperties(propertiesAsString, headerSeparator, valueSeparator, ignorableSeparator));
+            tableWithoutProperties = matcher.group(2).trim();
+            matcher = INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
         }
-        return tableAsString;
+        if (properties.isEmpty()) {
+            properties.add(new ExamplesTableProperties("", headerSeparator, valueSeparator, ignorableSeparator));
+        }
+        return tableWithoutProperties;
     }
 
-    private void parseTable(String tableAsString) {
-        headers.clear();
-        data.clear();
-        String transformer = properties.getTransformer();
-        if (transformer != null) {
-            tableAsString = tableTransformers.transform(transformer, tableAsString, properties);
+    private String applyTransformers(String tableAsString) {
+        String transformedTable = tableAsString;
+        for (ExamplesTableProperties props : properties) {
+            String transformer = props.getTransformer();
+            if (transformer != null) {
+                transformedTable = tableTransformers.transform(transformer, transformedTable, props);
+            }
         }
-        parseByRows(headers, data, tableAsString);
+        return transformedTable;
     }
 
-    private void parseByRows(List<String> headers, List<Map<String, String>> data, String tableAsString) {
+    private void parseByRows(String tableAsString) {
         String[] rows = tableAsString.split(ROW_SEPARATOR_PATTERN);
-        for (int row = 0; row < rows.length; row++) {
-            String rowAsString = rows[row];
-            if (rowAsString.startsWith(properties.getIgnorableSeparator()) || rowAsString.length() == 0) {
+        for (String row : rows) {
+            if (row.startsWith(getExampleTableProperties().getIgnorableSeparator()) || row.isEmpty()) {
                 // skip ignorable or empty lines
                 continue;
             } else if (headers.isEmpty()) {
-                headers.addAll(TableUtils.parseRow(rowAsString, true, properties));
+                headers.addAll(TableUtils.parseRow(row, true, getExampleTableProperties()));
             } else {
-                List<String> columns = TableUtils.parseRow(rowAsString, false, properties);
+                List<String> columns = TableUtils.parseRow(row, false, getExampleTableProperties());
                 Map<String, String> map = new LinkedHashMap<>();
                 for (int column = 0; column < columns.size(); column++) {
                     if (column < headers.size()) {
@@ -284,7 +288,11 @@ public class ExamplesTable {
     }
 
     public Properties getProperties() {
-        return properties.getProperties();
+        return getExampleTableProperties().getProperties();
+    }
+
+    private ExamplesTableProperties getExampleTableProperties() {
+        return properties.getLast();
     }
 
     public List<String> getHeaders() {
@@ -333,7 +341,7 @@ public class ExamplesTable {
     }
 
     public boolean metaByRow(){
-        return properties.isMetaByRow();
+        return getExampleTableProperties().isMetaByRow();
     }
 
     public List<Map<String, String>> getRows() {
@@ -415,11 +423,11 @@ public class ExamplesTable {
     }
 
     public String getHeaderSeparator() {
-        return properties.getHeaderSeparator();
+        return getExampleTableProperties().getHeaderSeparator();
     }
 
     public String getValueSeparator() {
-        return properties.getValueSeparator();
+        return getExampleTableProperties().getValueSeparator();
     }
 
     public String asString() {
@@ -435,18 +443,21 @@ public class ExamplesTable {
 
     private String format() {
         StringBuilder sb = new StringBuilder();
-        if (!propertiesAsString.isEmpty()){
-            sb.append("{").append(propertiesAsString).append("}").append(properties.getRowSeparator());
+        for (ExamplesTableProperties props : properties) {
+            String propertiesAsString = props.getPropertiesAsString();
+            if (!propertiesAsString.isEmpty()) {
+                sb.append("{").append(propertiesAsString).append("}").append(getExampleTableProperties().getRowSeparator());
+            }
         }
         for (String header : headers) {
             sb.append(getHeaderSeparator()).append(header);
         }
-        sb.append(getHeaderSeparator()).append(properties.getRowSeparator());
+        sb.append(getHeaderSeparator()).append(getExampleTableProperties().getRowSeparator());
         for (Map<String, String> row : getRows()) {
             for (String header : headers) {
                 sb.append(getValueSeparator()).append(row.get(header));
             }
-            sb.append(getValueSeparator()).append(properties.getRowSeparator());
+            sb.append(getValueSeparator()).append(getExampleTableProperties().getRowSeparator());
         }
         return sb.toString();
     }

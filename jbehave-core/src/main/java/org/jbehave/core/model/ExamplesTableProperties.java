@@ -4,6 +4,7 @@ import static java.lang.Boolean.parseBoolean;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 
 public final class ExamplesTableProperties {
@@ -21,6 +22,7 @@ public final class ExamplesTableProperties {
     private static final String ROW_SEPARATOR = "\n";
 
     private final Properties properties = new Properties();
+    private final String propertiesAsString;
 
     public ExamplesTableProperties(Properties properties){
         this.properties.putAll(properties);
@@ -36,6 +38,11 @@ public final class ExamplesTableProperties {
         if ( !this.properties.containsKey(COMMENT_SEPARATOR_KEY) ){
             this.properties.setProperty(COMMENT_SEPARATOR_KEY, COMMENT_SEPARATOR);
         }
+        StringBuilder propertiesAsStringBuilder = new StringBuilder();
+        for (Map.Entry<Object, Object> property : this.properties.entrySet()) {
+            propertiesAsStringBuilder.append(property.getKey()).append('=').append(property.getValue()).append(',');
+        }
+        propertiesAsString = propertiesAsStringBuilder.substring(0, propertiesAsStringBuilder.length() - 1);
     }
 
     public ExamplesTableProperties(String propertiesAsString, String defaultHeaderSeparator, String defaultValueSeparator,
@@ -48,6 +55,7 @@ public final class ExamplesTableProperties {
         } catch (IOException e) {
             // carry on
         }
+        this.propertiesAsString = propertiesAsString;
     }
 
     public String getRowSeparator() {
@@ -84,5 +92,9 @@ public final class ExamplesTableProperties {
 
     public Properties getProperties() {
         return properties;
+    }
+
+    public String getPropertiesAsString() {
+        return propertiesAsString;
     }
 }

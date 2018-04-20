@@ -236,6 +236,12 @@ Or one can define our own custom transformer
 {transformer=FROM_MY_FORMAT}
 ...
 </pre>
+Also chain of transformers can be defined. In this case the transformers are applied sequentially from top to bottom.
+<pre class="brush: plain">
+{transformer=FROM_LANDSCAPE}
+{transformer=FROM_MY_FORMAT}
+...
+</pre>
 In this case the custom transformer needs to be registered by name with the <a
     href="javadoc/core/org/jbehave/core/model/TableTransformers.html">TableTransformers</a> via the <a
     href="javadoc/core/org/jbehave/core/model/ExamplesTableFactory.html">ExamplesTableFactory</a>:

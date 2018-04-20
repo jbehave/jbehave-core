@@ -224,6 +224,18 @@ public class ExamplesTableBehaviour {
         ensureWhitespaceIsPreserved(table);
     }
 
+    @Test
+    public void shouldParseTableWithSequenceOfTransformers() {
+        String tableWithProperties =
+                "{transformer=REPLACING, replacing=33, replacement=22}\n{transformer=FROM_LANDSCAPE}\n"
+                        + landscapeTableAsString.replace("22", "33");
+        ExamplesTableFactory factory = createFactory();
+        ExamplesTable table = factory.createExamplesTable(tableWithProperties);
+        Properties properties = table.getProperties();
+        assertThat(properties.getProperty("transformer"), equalTo("FROM_LANDSCAPE"));
+        ensureColumnOrderIsPreserved(table);
+    }
+
     private void ensureColumnOrderIsPreserved(ExamplesTable table) {
         assertThat(table.getHeaders(), equalTo(asList("one", "two")));
         List<Map<String, String>> rows = table.getRows();
