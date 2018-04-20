@@ -113,17 +113,18 @@ import static java.util.regex.Pattern.DOTALL;
  * 
  * <p>
  * The table allows the transformation of its string representation via the
- * "transformer" inlined property:
+ * "transformer" inlined property (multiple transformers will be applied in chain-mode):
  * 
  * <pre>
  * {transformer=myTransformerName}
+ * {transformer=myOtherTransformerName}
  * |header 1|header 2| .... |header n|
  * |value 11|value 12| .... |value 1n|
  * ...
  * |value m1|value m2| .... |value mn|
  * </pre>
  * 
- * The transformer needs to be registered by name via the
+ * The transformers need to be registered by name via the
  * {@link TableTransformers#useTransformer(String, TableTransformer)}. A few
  * transformers are already registered by default in {@link TableTransformers}.
  * </p>
@@ -172,7 +173,7 @@ public class ExamplesTable {
     private final Row defaults;
     private final List<String> headers = new ArrayList<>();
     private final List<Map<String, String>> data = new ArrayList<>();
-    private Deque<ExamplesTableProperties> properties = new LinkedList<>();
+    private final Deque<ExamplesTableProperties> propertiesList = new LinkedList<>();
 
     private Map<String, String> namedParameters = new HashMap<>();
     private ParameterControls parameterControls;
@@ -209,7 +210,7 @@ public class ExamplesTable {
         this.parameterConverters = other.parameterConverters;
         this.tableTransformers = other.tableTransformers;
         this.headers.addAll(other.headers);
-        this.properties = other.properties;
+        this.propertiesList.addAll(other.propertiesList);
         this.defaults = defaults;
     }
 
@@ -218,22 +219,22 @@ public class ExamplesTable {
         Matcher matcher = INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
         while (matcher.matches()) {
             String propertiesAsString = matcher.group(1);
-            properties.add(new ExamplesTableProperties(propertiesAsString, headerSeparator, valueSeparator, ignorableSeparator));
+            propertiesList.add(new ExamplesTableProperties(propertiesAsString, headerSeparator, valueSeparator, ignorableSeparator));
             tableWithoutProperties = matcher.group(2).trim();
             matcher = INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
         }
-        if (properties.isEmpty()) {
-            properties.add(new ExamplesTableProperties("", headerSeparator, valueSeparator, ignorableSeparator));
+        if (propertiesList.isEmpty()) {
+            propertiesList.add(new ExamplesTableProperties("", headerSeparator, valueSeparator, ignorableSeparator));
         }
         return tableWithoutProperties;
     }
 
     private String applyTransformers(String tableAsString) {
         String transformedTable = tableAsString;
-        for (ExamplesTableProperties props : properties) {
-            String transformer = props.getTransformer();
+        for (ExamplesTableProperties properties : propertiesList) {
+            String transformer = properties.getTransformer();
             if (transformer != null) {
-                transformedTable = tableTransformers.transform(transformer, transformedTable, props);
+                transformedTable = tableTransformers.transform(transformer, transformedTable, properties);
             }
         }
         return transformedTable;
@@ -292,7 +293,7 @@ public class ExamplesTable {
     }
 
     private ExamplesTableProperties getExampleTableProperties() {
-        return properties.getLast();
+        return propertiesList.getLast();
     }
 
     public List<String> getHeaders() {
@@ -443,8 +444,8 @@ public class ExamplesTable {
 
     private String format() {
         StringBuilder sb = new StringBuilder();
-        for (ExamplesTableProperties props : properties) {
-            String propertiesAsString = props.getPropertiesAsString();
+        for (ExamplesTableProperties properties : propertiesList) {
+            String propertiesAsString = properties.getPropertiesAsString();
             if (!propertiesAsString.isEmpty()) {
                 sb.append("{").append(propertiesAsString).append("}").append(getExampleTableProperties().getRowSeparator());
             }
