@@ -465,7 +465,6 @@ public class PerformableTree {
      */
     public static class RunContext {
         private final Configuration configuration;
-        private final InjectableStepsFactory stepsFactory;
         private final List<CandidateSteps> candidateSteps;
 		private final EmbedderMonitor embedderMonitor;
         private final MetaFilter filter;
@@ -478,12 +477,11 @@ public class PerformableTree {
         private boolean givenStory;
         private State state;
 
-        public RunContext(Configuration configuration, InjectableStepsFactory stepsFactory, EmbedderMonitor embedderMonitor,
+        public RunContext(Configuration configuration, List<CandidateSteps> candidateSteps, EmbedderMonitor embedderMonitor,
                 MetaFilter filter, BatchFailures failures) {
             this.configuration = configuration;
-            this.stepsFactory = stepsFactory;
-			this.embedderMonitor = embedderMonitor;
-            this.candidateSteps = stepsFactory.createCandidateSteps();
+            this.candidateSteps = candidateSteps;
+            this.embedderMonitor = embedderMonitor;
             this.filter = filter;
             this.failures = failures;
             this.stepsContext = configuration.stepsContext();
@@ -586,7 +584,7 @@ public class PerformableTree {
         }
 
         public RunContext childContextFor(GivenStory givenStory) {
-            RunContext child = new RunContext(configuration, stepsFactory, embedderMonitor, filter, failures);
+            RunContext child = new RunContext(configuration, candidateSteps, embedderMonitor, filter, failures);
             child.path = configuration.pathCalculator().calculate(path, givenStory.getPath());
             child.givenStory = true;
             return child;
@@ -1224,9 +1222,9 @@ public class PerformableTree {
 
     }
 
-    public RunContext newRunContext(Configuration configuration, InjectableStepsFactory stepsFactory,
+    public RunContext newRunContext(Configuration configuration, List<CandidateSteps> candidateSteps,
             EmbedderMonitor embedderMonitor, MetaFilter filter, BatchFailures failures) {
-        return new RunContext(configuration, stepsFactory, embedderMonitor, filter, failures);
+        return new RunContext(configuration, candidateSteps, embedderMonitor, filter, failures);
     }
 
 }

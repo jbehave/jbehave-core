@@ -8,6 +8,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.sameInstance;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
@@ -130,7 +131,7 @@ public class EmbedderBehaviour {
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(mapper).map(Matchers.eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
+            verify(mapper).map(eq(stories.get(storyPath)), Matchers.any(MetaFilter.class));
             assertThat(out.toString(), containsString("Mapping story " + storyPath));
         }
         assertThatMapsViewGenerated(out);
@@ -412,7 +413,6 @@ public class EmbedderBehaviour {
         // Given
         PerformableTree performableTree = mock(PerformableTree.class);
         EmbedderControls embedderControls = new EmbedderControls();
-        EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
         OutputStream out = new ByteArrayOutputStream();
         EmbedderMonitor monitor = new PrintStreamEmbedderMonitor(new PrintStream(out));
         List<? extends Class<? extends Embeddable>> embeddables = asList(MyStory.class, MyOtherEmbeddable.class);
@@ -441,17 +441,17 @@ public class EmbedderBehaviour {
             when(story.getPath()).thenReturn(storyPath);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
-		RunContext runContext = new RunContext(configuration, stepsFactory, embedderMonitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
+        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
+                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
 
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
         for (String storyPath : storyPaths) {
-            verify(performableTree).perform(Matchers.isA(RunContext.class), Matchers.eq(stories.get(storyPath)));
+            verify(performableTree).perform(isA(RunContext.class), eq(stories.get(storyPath)));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
         assertThatReportsViewGenerated(out);
@@ -496,11 +496,10 @@ public class EmbedderBehaviour {
         // When
         MetaFilter filter = mock(MetaFilter.class);
         when(filter.allow(meta)).thenReturn(false);
-        RunContext runContext = new RunContext(configuration, stepsFactory, monitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
-                runContext);
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
+        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
+                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
@@ -568,11 +567,10 @@ public class EmbedderBehaviour {
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
             when(story.getPath()).thenReturn(storyPath);
         }
-        RunContext runContext = new RunContext(configuration, stepsFactory, monitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
-                runContext);
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
+        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
+                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
 
         // When
         embedder.runStoriesAsPaths(storyPaths);
@@ -611,11 +609,10 @@ public class EmbedderBehaviour {
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
             when(story.getPath()).thenReturn(storyPath);
         }
-        RunContext runContext = new RunContext(configuration, stepsFactory, monitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
-                runContext);
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
+        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
+                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
 
         for (String storyPath : storyPaths) {
             doThrow(new RuntimeException(storyPath + " failed")).when(performableTree).perform(runContext, stories.get(storyPath));
@@ -658,11 +655,10 @@ public class EmbedderBehaviour {
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
             when(story.getPath()).thenReturn(storyPath);
         }
-        RunContext runContext = new RunContext(configuration, stepsFactory, monitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
-                runContext);
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
+        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
+                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
 
         for (String storyPath : storyPaths) {
             doNothing().when(performableTree).perform(runContext, stories.get(storyPath));
@@ -702,11 +698,10 @@ public class EmbedderBehaviour {
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
             when(story.getPath()).thenReturn(storyPath);
         }
-        RunContext runContext = new RunContext(configuration, stepsFactory, monitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
-                runContext);
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
+        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
+                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
 
         BatchFailures failures = new BatchFailures();
         for (String storyPath : storyPaths) {
@@ -752,11 +747,10 @@ public class EmbedderBehaviour {
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
             when(story.getPath()).thenReturn(storyPath);
         }
-        RunContext runContext = new RunContext(configuration, stepsFactory, monitor, filter, new BatchFailures());
-        when(
-                performableTree.newRunContext(isA(Configuration.class), isA(InjectableStepsFactory.class), isA(EmbedderMonitor.class),
-                        isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(
-                runContext);
+        List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
+        RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
+        when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
+                isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
 
         // When
         embedder.runStoriesAsPaths(storyPaths);
