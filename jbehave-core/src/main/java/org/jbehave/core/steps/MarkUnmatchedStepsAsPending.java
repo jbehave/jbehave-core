@@ -45,6 +45,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         this.keywords = keywords;
     }
 
+     @Override
      public List<Step> collectBeforeOrAfterStoriesSteps(List<CandidateSteps> candidateSteps, Stage stage) {
         List<Step> steps = new ArrayList<>();
         for (CandidateSteps candidates : candidateSteps) {
@@ -53,6 +54,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         return steps;
     }
 
+    @Override
     public List<Step> collectBeforeOrAfterStorySteps(List<CandidateSteps> candidateSteps, Story story, Stage stage,
             boolean givenStory) {
         List<Step> steps = new ArrayList<>();
@@ -62,6 +64,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         return steps;
     }
 
+    @Override
     public List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage, ScenarioType type) {
         List<Step> steps = new ArrayList<>();
         for (CandidateSteps candidates : candidateSteps) {
@@ -75,10 +78,12 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         return steps;
     }
 
+    @Override
     public List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage) {
         return collectLifecycleSteps(candidateSteps, lifecycle, storyAndScenarioMeta, stage, Scope.SCENARIO);
     }
 
+    @Override
     public List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage, Scope scope) {
         List<StepCandidate> allCandidates = stepFinder.collectCandidates(candidateSteps);
         List<Step> steps = new ArrayList<>();
@@ -95,11 +100,13 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         return steps;
     }
 
+    @Override
     public List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario,
             Map<String, String> parameters) {
         return collectScenarioSteps(candidateSteps, scenario, parameters, DEFAULT_STEP_MONITOR);
     }
 
+    @Override
     public List<Step> collectScenarioSteps(List<CandidateSteps> candidateSteps, Scenario scenario,
             Map<String, String> parameters, StepMonitor stepMonitor) {
         List<Step> steps = new ArrayList<>();
