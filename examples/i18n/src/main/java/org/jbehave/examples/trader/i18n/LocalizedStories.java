@@ -2,7 +2,6 @@ package org.jbehave.examples.trader.i18n;
 
 import java.net.URL;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
@@ -23,7 +22,6 @@ import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
@@ -63,7 +61,6 @@ public abstract class LocalizedStories extends JUnitStories {
                 tableTransformers, true).addConverters(customConverters(keywords, resourceLoader, tableTransformers));
         return new MostUsefulConfiguration()
                 .useKeywords(keywords)
-                .useStepCollector(new MarkUnmatchedStepsAsPending(keywords))
                 .useStoryParser(new RegexStoryParser(keywords, resourceLoader, tableTransformers))
                 .useStoryLoader(resourceLoader)
                 .useStoryReporterBuilder(new StoryReporterBuilder()

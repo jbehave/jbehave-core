@@ -11,7 +11,6 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.FreemarkerViewGenerator;
 import org.jbehave.core.reporters.StoryReporterBuilder;
-import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
@@ -30,7 +29,6 @@ public class CustomCoreStories extends CoreStories {
                 .withFormats(CustomHtmlOutput.FORMAT);
         return configuration
                 .useKeywords(keywords)
-                .useStepCollector(new MarkUnmatchedStepsAsPending(keywords))
                 .useStoryParser(new RegexStoryParser(keywords))
                 .useStoryReporterBuilder(reporterBuilder);
     }

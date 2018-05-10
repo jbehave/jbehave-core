@@ -263,7 +263,7 @@ public abstract class Configuration {
 
     public StepCollector stepCollector() {
         if (stepCollector == null) {
-            stepCollector = new MarkUnmatchedStepsAsPending();
+            stepCollector = new MarkUnmatchedStepsAsPending(stepFinder(), keywords());
         }
         return stepCollector;
     }
