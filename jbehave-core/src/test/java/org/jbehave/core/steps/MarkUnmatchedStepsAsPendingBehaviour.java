@@ -45,7 +45,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step executableStep = mock(Step.class);
 
         String stepAsString = "my step";
-        when(candidate.matches(stepAsString)).thenReturn(true);
+        when(candidate.matches(stepAsString, null)).thenReturn(true);
         when(candidate.createMatchedStep(stepAsString, parameters)).thenReturn(executableStep);
         List<CandidateSteps> steps = mockCandidateSteps(candidate);
 
@@ -96,15 +96,15 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step failureStep = mock(Step.class, "failureStep");
 
         String myAnyStep = "my any step";
-        when(anyCandidate.matches(myAnyStep)).thenReturn(true);
+        when(anyCandidate.matches(myAnyStep, null)).thenReturn(true);
         when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Outcome.ANY)).thenReturn(anyStep);
         when(successCandidate.isAndStep(myAnyStep)).thenReturn(false);
         String mySuccessStep = "my success step";
-        when(successCandidate.matches(mySuccessStep)).thenReturn(true);
+        when(successCandidate.matches(mySuccessStep, null)).thenReturn(true);
         when(successCandidate.isAndStep(mySuccessStep)).thenReturn(false);
         when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Outcome.SUCCESS)).thenReturn(successStep);
         String myFailureStep = "my failure step";
-        when(successCandidate.matches(myFailureStep)).thenReturn(true);
+        when(successCandidate.matches(myFailureStep, null)).thenReturn(true);
         when(successCandidate.isAndStep(myFailureStep)).thenReturn(false);
         when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Outcome.FAILURE)).thenReturn(failureStep);
 
@@ -136,15 +136,15 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         Step failureStep = mock(Step.class, "failureStep");
 
         String myAnyStep = "my any step";
-        when(anyCandidate.matches(myAnyStep)).thenReturn(true);
+        when(anyCandidate.matches(myAnyStep, null)).thenReturn(true);
         when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Outcome.ANY)).thenReturn(anyStep);
         when(successCandidate.isAndStep(myAnyStep)).thenReturn(false);
         String mySuccessStep = "my success step";
-        when(successCandidate.matches(mySuccessStep)).thenReturn(true);
+        when(successCandidate.matches(mySuccessStep, null)).thenReturn(true);
         when(successCandidate.isAndStep(mySuccessStep)).thenReturn(false);
         when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Outcome.SUCCESS)).thenReturn(successStep);
         String myFailureStep = "my failure step";
-        when(successCandidate.matches(myFailureStep)).thenReturn(true);
+        when(successCandidate.matches(myFailureStep, null)).thenReturn(true);
         when(successCandidate.isAndStep(myFailureStep)).thenReturn(false);
         when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Outcome.FAILURE)).thenReturn(failureStep);
 
@@ -176,7 +176,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         List<CandidateSteps> steps = mockCandidateSteps(compositeCandidate, composedCandidate1, composedCandidate2);
         String compositeStepAsString = "my composite step";
-        when(compositeCandidate.matches(compositeStepAsString)).thenReturn(true);
+        when(compositeCandidate.matches(compositeStepAsString, null)).thenReturn(true);
         when(compositeCandidate.isComposite()).thenReturn(true);
         when(compositeCandidate.createMatchedStep(compositeStepAsString, parameters)).thenReturn(
                 executableCompositeStep);
@@ -429,10 +429,10 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // all matching the same step string with different priorities
         String stepAsString = "Given a step";
-        when(candidate1.matches(stepAsString)).thenReturn(true);
-        when(candidate2.matches(stepAsString)).thenReturn(true);
-        when(candidate3.matches(stepAsString)).thenReturn(true);
-        when(candidate4.matches(stepAsString)).thenReturn(true);
+        when(candidate1.matches(stepAsString, null)).thenReturn(true);
+        when(candidate2.matches(stepAsString, null)).thenReturn(true);
+        when(candidate3.matches(stepAsString, null)).thenReturn(true);
+        when(candidate4.matches(stepAsString, null)).thenReturn(true);
         when(candidate1.getPriority()).thenReturn(1);
         when(candidate2.getPriority()).thenReturn(2);
         when(candidate3.getPriority()).thenReturn(3);
@@ -469,10 +469,10 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
 
         // all matching the same step string with different priorities
         String stepAsString = "Given a step";
-        when(candidate1.matches(stepAsString)).thenReturn(true);
-        when(candidate2.matches(stepAsString)).thenReturn(true);
-        when(candidate3.matches(stepAsString)).thenReturn(true);
-        when(candidate4.matches(stepAsString)).thenReturn(true);
+        when(candidate1.matches(stepAsString, null)).thenReturn(true);
+        when(candidate2.matches(stepAsString, null)).thenReturn(true);
+        when(candidate3.matches(stepAsString, null)).thenReturn(true);
+        when(candidate4.matches(stepAsString, null)).thenReturn(true);
         when(candidate1.getPatternAsString()).thenReturn("Given I do something");
         when(candidate2.getPatternAsString()).thenReturn("When I do something ");
         when(candidate3.getPatternAsString()).thenReturn("Then I do something");
