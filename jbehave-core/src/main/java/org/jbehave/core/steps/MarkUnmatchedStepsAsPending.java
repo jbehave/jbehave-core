@@ -40,7 +40,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         this(new StepFinder(), keywords);
     }
 
-   public MarkUnmatchedStepsAsPending(StepFinder stepFinder, Keywords keywords) {
+    public MarkUnmatchedStepsAsPending(StepFinder stepFinder, Keywords keywords) {
         this.stepFinder = stepFinder;
         this.keywords = keywords;
     }
@@ -153,7 +153,7 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
                     step = StepCreator.createComment(stepAsString);
                     break;
                 }
-                if (matchesCandidate(stepAsString, previousNonAndStep, candidate)) {
+                if (candidate.matches(stepAsString, previousNonAndStep)) {
                     // step matches candidate
                     if (candidate.isPending()) {
                         ((PendingStep) step).annotatedOn(candidate.getMethod());
@@ -181,12 +181,4 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
             steps.addAll(composedSteps);
         }
     }
-
-    private boolean matchesCandidate(String step, String previousNonAndStep, StepCandidate candidate) {
-        if (previousNonAndStep != null) {
-            return candidate.matches(step, previousNonAndStep);
-        }
-        return candidate.matches(step);
-    }
-
 }
