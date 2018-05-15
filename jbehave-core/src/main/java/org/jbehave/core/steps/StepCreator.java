@@ -102,15 +102,8 @@ public class StepCreator {
     }
 
     public Step createAfterStepUponOutcome(final Method method, final Outcome outcome, Meta storyAndScenarioMeta) {
-        switch (outcome) {
-        case ANY:
-        default:
-            return new BeforeOrAfterStep(method, storyAndScenarioMeta);
-        case SUCCESS:
-            return new UponSuccessStep(method, storyAndScenarioMeta);
-        case FAILURE:
-            return new UponFailureStep(method, storyAndScenarioMeta);
-        }
+        Step beforeOrAfterStep = createBeforeOrAfterStep(method, storyAndScenarioMeta);
+        return wrapStepUponOutcome(outcome, beforeOrAfterStep);
     }
 
     public Map<String, String> matchedParameters(final Method method, final String stepAsString,
@@ -259,15 +252,20 @@ public class StepCreator {
 
     public Step createParametrisedStepUponOutcome(final Method method, final String stepAsString,
             final String stepWithoutStartingWord, final Map<String, String> namedParameters, Outcome outcome) {
+        Step parametrisedStep = createParametrisedStep(method, stepAsString, stepWithoutStartingWord, namedParameters);
+        return wrapStepUponOutcome(outcome, parametrisedStep);
+    }
+
+    private Step wrapStepUponOutcome(Outcome outcome, Step step) {
         switch (outcome) {
-        case ANY:
-            return new UponAnyParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
-        case SUCCESS:
-            return new UponSuccessParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
-        case FAILURE:
-            return new UponFailureParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
-        default:
-            return new ParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
+            case ANY:
+                return new UponAnyStep(step);
+            case SUCCESS:
+                return new UponSuccessStep(step);
+            case FAILURE:
+                return new UponFailureStep(step);
+            default:
+                return step;
         }
     }
 
@@ -615,6 +613,29 @@ public class StepCreator {
 
     }
 
+    static class DelegatingStep extends AbstractStep {
+        private final Step step;
+
+        DelegatingStep(Step step){
+            this.step = step;
+        }
+
+        @Override
+        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return step.perform(storyFailureIfItHappened);
+        }
+
+        @Override
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return step.doNotPerform(storyFailureIfItHappened);
+        }
+
+        @Override
+        public String asString(Keywords keywords) {
+            return step.asString(keywords);
+        }
+    }
+
     private class BeforeOrAfterStep extends AbstractStep {
         private final Method method;
         private final Meta meta;
@@ -672,48 +693,47 @@ public class StepCreator {
         }
     }
 
-    public class UponSuccessStep extends AbstractStep {
-        private BeforeOrAfterStep beforeOrAfterStep;
+    class UponAnyStep extends DelegatingStep {
 
-        public UponSuccessStep(Method method, Meta storyAndScenarioMeta) {
-            this.beforeOrAfterStep = new BeforeOrAfterStep(method, storyAndScenarioMeta);
+        UponAnyStep(Step step){
+            super(step);
         }
 
+        @Override
+        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
+            return perform(storyFailureIfItHappened);
+        }
+    }
+
+    class UponSuccessStep extends DelegatingStep {
+
+        UponSuccessStep(Step step) {
+            super(step);
+        }
+
+        @Override
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return skipped();
         }
-
-        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return beforeOrAfterStep.perform(storyFailureIfItHappened);
-        }
-
-        public String asString(Keywords keywords) {
-            return beforeOrAfterStep.asString(keywords);
-        }
-
     }
 
-    public class UponFailureStep extends AbstractStep {
-        private final BeforeOrAfterStep beforeOrAfterStep;
+    class UponFailureStep extends DelegatingStep {
 
-        public UponFailureStep(Method method, Meta storyAndScenarioMeta) {
-            this.beforeOrAfterStep = new BeforeOrAfterStep(method, storyAndScenarioMeta);
+        UponFailureStep(Step step) {
+            super(step);
         }
 
+        @Override
         public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return beforeOrAfterStep.perform(storyFailureIfItHappened);
+            return super.perform(storyFailureIfItHappened);
         }
 
+        @Override
         public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
             return skipped();
         }
-
-        public String asString(Keywords keywords) {
-            return beforeOrAfterStep.asString(keywords);
-        }
-    
     }
-    
+
     public class ParametrisedStep extends AbstractStep {
         private Object[] convertedParameters;
         private String parametrisedStep;
@@ -801,72 +821,6 @@ public class StepCreator {
                 }
             }
         }
-    }
-
-    public class UponAnyParametrisedStep extends AbstractStep {
-        private ParametrisedStep parametrisedStep;
-
-        public UponAnyParametrisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
-                Map<String, String> namedParameters){
-            this.parametrisedStep = new ParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
-        }
-
-        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return perform(storyFailureIfItHappened);
-        }
-
-        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return parametrisedStep.perform(storyFailureIfItHappened);
-        }
-
-        public String asString(Keywords keywords) {
-            return parametrisedStep.asString(keywords);
-        }
-
-    }
-
-    public class UponSuccessParametrisedStep extends AbstractStep {
-        private ParametrisedStep parametrisedStep;
-
-        public UponSuccessParametrisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
-                Map<String, String> namedParameters){
-            this.parametrisedStep = new ParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
-        }
-
-        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return skipped();
-        }
-
-        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return parametrisedStep.perform(storyFailureIfItHappened);
-        }
-
-        public String asString(Keywords keywords) {
-            return parametrisedStep.asString(keywords);
-        }
-
-    }
-
-    public class UponFailureParametrisedStep extends AbstractStep {
-        private ParametrisedStep parametrisedStep;
-
-        public UponFailureParametrisedStep(String stepAsString, Method method, String stepWithoutStartingWord,
-                Map<String, String> namedParameters){
-            this.parametrisedStep = new ParametrisedStep(stepAsString, method, stepWithoutStartingWord, namedParameters);
-        }
-
-        public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return parametrisedStep.perform(storyFailureIfItHappened);
-        }
-
-        public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
-            return skipped();
-        }
-
-        public String asString(Keywords keywords) {
-            return parametrisedStep.asString(keywords);
-        }
-    
     }
 
     public static class PendingStep extends AbstractStep {
