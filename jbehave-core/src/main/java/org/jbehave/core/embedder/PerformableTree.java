@@ -335,37 +335,26 @@ public class PerformableTree {
 
     public interface State {
         
-        State run(Step step, List<StepResult> results, StoryReporter reporter,
-                UUIDExceptionWrapper storyFailureIfItHappened);
+        State run(Step step, List<StepResult> results, StoryReporter reporter);
 
         UUIDExceptionWrapper getFailure();
     }
 
     private final static class FineSoFar implements State {
 
-        public State run(Step step, List<StepResult> results, StoryReporter reporter,
-                UUIDExceptionWrapper storyFailureIfItHappened) {
+        @Override
+        public State run(Step step, List<StepResult> results, StoryReporter reporter) {
             if (step instanceof ParametrisedStep) {
                 ((ParametrisedStep) step).describeTo(reporter);
             }
-            StepResult result = step.perform(storyFailureIfItHappened);
+            StepResult result = step.perform(getFailure());
             results.add(result);
             result.describeTo(reporter);
             UUIDExceptionWrapper stepFailure = result.getFailure();
-            if (stepFailure == null) {
-                return this;
-            }
-
-            mostImportantOf(storyFailureIfItHappened, stepFailure);
-            return new SomethingHappened(stepFailure);
+            return stepFailure == null ? this : new SomethingHappened(stepFailure);
         }
 
-        private UUIDExceptionWrapper mostImportantOf(UUIDExceptionWrapper failure1, UUIDExceptionWrapper failure2) {
-            return failure1 == null ? failure2
-                    : failure1.getCause() instanceof PendingStepFound ? (failure2 == null ? failure1 : failure2)
-                            : failure1;
-        }
-
+        @Override
         public UUIDExceptionWrapper getFailure() {
             return null;
         }
@@ -379,13 +368,15 @@ public class PerformableTree {
             this.failure = failure;
         }
 
-        public State run(Step step, List<StepResult> results, StoryReporter reporter, UUIDExceptionWrapper storyFailure) {
-            StepResult result = step.doNotPerform(storyFailure);
+        @Override
+        public State run(Step step, List<StepResult> results, StoryReporter reporter) {
+            StepResult result = step.doNotPerform(getFailure());
             results.add(result);
             result.describeTo(reporter);
             return this;
         }
 
+        @Override
         public UUIDExceptionWrapper getFailure() {
             return failure;
         }
@@ -1162,7 +1153,7 @@ public class PerformableTree {
 					if (ignoring) {
 						reporter.ignorable(step.asString(keywords));
 					} else {
-					    state = state.run(step, results, reporter, state.getFailure());
+					    state = state.run(step, results, reporter);
 					}
 				} catch (IgnoringStepsFailure e) {
 					reporter.ignorable(step.asString(keywords));
