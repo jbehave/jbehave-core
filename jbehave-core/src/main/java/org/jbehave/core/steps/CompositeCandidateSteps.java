@@ -7,40 +7,39 @@ import java.util.List;
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.io.ResourceLoader;
-import org.jbehave.core.model.CompositeStep;
-import org.jbehave.core.parsers.CompositeStepsParser;
-import org.jbehave.core.parsers.RegexCompositeStepsParser;
+import org.jbehave.core.model.Composite;
+import org.jbehave.core.parsers.CompositeParser;
+import org.jbehave.core.parsers.RegexCompositeParser;
 
 /**
  * @author Valery Yatsynovich
  */
-public class CompositeSteps extends AbstractCandidateSteps {
+public class CompositeCandidateSteps extends AbstractCandidateSteps {
 
-    private final List<String> compositeStepsDefinitionPaths;
+    private final List<String> compositePaths;
 
-    public CompositeSteps(Configuration configuration, List<String> compositeStepsDefinitionPaths) {
+    public CompositeCandidateSteps(Configuration configuration, List<String> compositePaths) {
         super(configuration);
-        this.compositeStepsDefinitionPaths = compositeStepsDefinitionPaths;
+        this.compositePaths = compositePaths;
     }
 
     @Override
     public List<StepCandidate> listCandidates() {
-        CompositeStepsParser parser = new RegexCompositeStepsParser(configuration().keywords());
+        CompositeParser parser = new RegexCompositeParser(configuration().keywords());
         ResourceLoader resourceLoader = configuration().storyLoader();
         List<StepCandidate> candidates = new ArrayList<>();
-        for (String compositeStepsDefinitionPath : compositeStepsDefinitionPaths) {
-            String compositeStepsDefinition = resourceLoader.loadResourceAsText(compositeStepsDefinitionPath);
-            List<CompositeStep> compositeSteps = parser.parseCompositeSteps(compositeStepsDefinition);
-            addCandidatesFromCompositeSteps(candidates, compositeSteps);
+        for (String compositePath : compositePaths) {
+            List<Composite> composites = parser.parseComposites(resourceLoader.loadResourceAsText(compositePath));
+            addCandidatesFromComposites(candidates, composites);
         }
         return candidates;
     }
 
-    private void addCandidatesFromCompositeSteps(List<StepCandidate> candidates, List<CompositeStep> compositeSteps) {
-        for (CompositeStep compositeStep : compositeSteps) {
-            String[] steps = compositeStep.getSteps().toArray(new String[0]);
-            addCandidatesFromVariants(candidates, compositeStep.getStepType(),
-                    compositeStep.getStepWithoutStartingWord(), steps);
+    private void addCandidatesFromComposites(List<StepCandidate> candidates, List<Composite> composites) {
+        for (Composite composite : composites) {
+            String[] steps = composite.getSteps().toArray(new String[0]);
+            addCandidatesFromVariants(candidates, composite.getStepType(),
+                    composite.getStepWithoutStartingWord(), steps);
         }
     }
 

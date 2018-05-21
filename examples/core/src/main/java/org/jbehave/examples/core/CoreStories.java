@@ -89,7 +89,7 @@ public class CoreStories extends JUnitStories {
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls)
                 .useTableTransformers(tableTransformers)
-                .useCompositeStepsDefinitionPaths(findPaths("**/*.steps", null));
+                .useCompositePaths(findPaths("**/*.steps", null));
     }
 
     @Override

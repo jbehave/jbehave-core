@@ -18,26 +18,26 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.jbehave.core.steps.StepCandidateBehaviour.candidateMatchingStep;
 
-public class CompositeStepCandidateBehaviour {
+public class CompositeCandidateStepsBehaviour {
 
     @Test
-    public void shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters() {
+    public void shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters() {
         CandidateSteps compositeSteps = new SimpleCompositeSteps();
-        shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
+        shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
     }
 
     @Test
-    public void shouldMatchCompositeStepsFromFileDefinitionAndCreateComposedStepsUsingMatchedParameters() {
-        CandidateSteps compositeSteps = new CompositeSteps(new MostUsefulConfiguration(),
+    public void shouldMatchCompositesFromFileAndCreateComposedStepsUsingMatchedParameters() {
+        CandidateSteps compositeSteps = new CompositeCandidateSteps(new MostUsefulConfiguration(),
                 Collections.singletonList("composite.steps"));
-        shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
+        shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
     }
 
-    private void shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters(CandidateSteps compositeSteps) {
+    private void shouldMatchCompositesAndCreateComposedStepsUsingMatchedParameters(CandidateSteps candidateSteps) {
         SimpleSteps steps = new SimpleSteps();
         List<StepCandidate> candidates = new ArrayList<>();
         candidates.addAll(steps.listCandidates());
-        candidates.addAll(compositeSteps.listCandidates());
+        candidates.addAll(candidateSteps.listCandidates());
         StepCandidate candidate = candidateMatchingStep(candidates, "Given $customer has previously bought a $product");
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<>();
@@ -80,7 +80,7 @@ public class CompositeStepCandidateBehaviour {
 
 
     @Test
-    public void shouldMatchCompositeStepsAndCreateComposedStepsUsingNamedParameters() {
+    public void shouldMatchCompositesAndCreateComposedStepsUsingNamedParameters() {
         CompositeStepsUsingNamedParameters steps = new CompositeStepsUsingNamedParameters();
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "Given <customer> has previously bough a <product>");
@@ -123,7 +123,7 @@ public class CompositeStepCandidateBehaviour {
 
     @Test
     @Ignore("fails as perhaps Paranamer not peer of @named in respect of @composite")
-    public void shouldMatchCompositeStepsAndCreateComposedStepsUsingParanamerNamedParameters() {
+    public void shouldMatchCompositesAndCreateComposedStepsUsingParanamerNamedParameters() {
         CompositeStepsWithoutNamedAnnotation steps = new CompositeStepsWithoutNamedAnnotation();
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidates.get(0);
@@ -166,8 +166,8 @@ public class CompositeStepCandidateBehaviour {
     }
     
     @Test
-    public void shouldMatchCompositeStepsAndCreateComposedNestedSteps() {
-        CompositeNestedSteps steps = new CompositeNestedSteps();
+    public void shouldMatchCompositesAndCreateComposedNestedSteps() {
+        NestedCompositeSteps steps = new NestedCompositeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         // find main step
         StepCandidate candidate = null;
@@ -189,7 +189,7 @@ public class CompositeStepCandidateBehaviour {
         assertThat(steps.trail.toString(), equalTo("l>l1>l2>t>t1>t2>"));
     }
 
-    static class CompositeNestedSteps extends Steps {
+    static class NestedCompositeSteps extends Steps {
 
         private StringBuffer trail = new StringBuffer();
         
@@ -243,8 +243,8 @@ public class CompositeStepCandidateBehaviour {
     }
 
     @Test
-    public void shouldMatchCompositeStepsWhenStepParameterIsProvided(){
-        CompositeStepsParameterMatching steps = new CompositeStepsParameterMatching();
+    public void shouldMatchCompositesWhenStepParameterIsProvided(){
+        CompositeStepsWithParameterMatching steps = new CompositeStepsWithParameterMatching();
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "When I login");
         assertThat(candidate.isComposite(), is(true));
@@ -258,7 +258,7 @@ public class CompositeStepCandidateBehaviour {
         assertThat(steps.button, equalTo("Login"));
     }
     
-    static class CompositeStepsParameterMatching extends Steps {
+    static class CompositeStepsWithParameterMatching extends Steps {
         private String button;
         
 
@@ -274,9 +274,9 @@ public class CompositeStepCandidateBehaviour {
     }
     
     @Test
-    public void recursiveCompositeStepsShouldWorkWithSomeMissingParameters(){
+    public void recursiveCompositesShouldWorkWithSomeMissingParameters(){
         String userName = "someUserName";
-        CompositeStepParametersWithMissingParameters steps = new CompositeStepParametersWithMissingParameters();
+        CompositeStepsWithParameterMissing steps = new CompositeStepsWithParameterMissing();
         List<StepCandidate> candidates = steps.listCandidates();
         StepCandidate candidate = candidateMatchingStep(candidates, "Given I am logged in as " + userName);
         assertThat(candidate.isComposite(), is(true));
@@ -290,7 +290,7 @@ public class CompositeStepCandidateBehaviour {
         assertThat("Didn't reach the login step", steps.isLoggedIn, is(true));
     }
     
-    static class CompositeStepParametersWithMissingParameters extends Steps {
+    static class CompositeStepsWithParameterMissing extends Steps {
         private String username;
         private boolean isLoggedIn;
         

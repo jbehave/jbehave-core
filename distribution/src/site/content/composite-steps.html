@@ -43,7 +43,11 @@ Given Mr Jones previously bought a ticket
 </pre>
 
 <p>where <b>Mr Jones</b> and <b>ticket</b> are parameter values for
-<b>customer</b> and <b>product</b>. To this end, we define a new method
+<b>customer</b> and <b>product</b>.
+
+<h3>Annotation-based definition</h3>
+
+We can define a new method
 and annotated as per usual, e.g. with the <b>@Given</b> annotation:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
@@ -89,10 +93,10 @@ important to note that the composite step method needs to define named
 parameters (even if it uses matched parameters), as these are then used
 by the composed steps.</p>
 
-<h3>Composite steps definition files</h3>
+<h3>Textual-based definition</h3>
 
-<p>In case if composite step does not require any implementation, it can be
-declared in a separate composite steps definition file:<p>
+<p>When a composite step does not require any implementation, it can be
+declared in a separate textual composite file:<p>
 
 <pre class="brush: bdd">
 Composite: Given $customer has previously bought a $product
@@ -103,12 +107,12 @@ When a &lt;product&gt; is added to the cart
 <p>where</p>
 <ul>
     <li><b>Composite:</b> is a keyword;</li>
-    <li><b>Given $customer has previously bought a $product</b> is a composite step definition with parameters;</li>
+    <li><b>Given $customer has previously bought a $product</b> is a composite step pattern with parameters;</li>
     <li><b>Given &lt;customer&gt; is logged in</b> and <b>When a &lt;product&gt; is added to the cart</b> are
         composed steps</li>
 </ul>
 
-<p>Single steps file can contain multiple definitions:</p>
+<p>Composite files can contain multiple definitions:</p>
 
 <pre class="brush: bdd">
 Composite: Given composite step
@@ -121,10 +125,10 @@ When composed step using parameter &lt;param&gt;
 Then one more composed step
 </pre>
 
-<p>Paths to steps definition files should be set in the configuration:</p>
+<p>Paths to composite files should be set in the configuration:</p>
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-    new MostUsefulConfiguration().useCompositeStepsDefinitionPaths(Collections.singletonList("composite.steps"))
+    new MostUsefulConfiguration().useCompositePaths(Collections.singletonList("composite.steps"))
 ]]>
 </script>
 

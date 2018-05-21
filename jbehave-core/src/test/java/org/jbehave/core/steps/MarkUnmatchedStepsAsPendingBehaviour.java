@@ -158,26 +158,26 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldAddComposedStepsWhenACompositeStepIsMatched() {
+    public void shouldAddComposedStepsWhenACompositeIsMatched() {
         // Given
         StepCandidate compositeCandidate = mock(StepCandidate.class, "compositeCandidate");
         StepCandidate composedCandidate1 = mock(StepCandidate.class, "composedCandidate1");
         StepCandidate composedCandidate2 = mock(StepCandidate.class, "composedCandidate2");
-        Step executableCompositeStep = mock(Step.class, "composite");
+        Step executableComposite = mock(Step.class, "composite");
 
         List<CandidateSteps> steps = mockCandidateSteps(compositeCandidate, composedCandidate1, composedCandidate2);
-        String compositeStepAsString = "my composite step";
-        when(compositeCandidate.matches(compositeStepAsString, null)).thenReturn(true);
+        String compositeAsText = "my composite step";
+        when(compositeCandidate.matches(compositeAsText, null)).thenReturn(true);
         when(compositeCandidate.isComposite()).thenReturn(true);
-        when(compositeCandidate.createMatchedStep(compositeStepAsString, parameters)).thenReturn(
-                executableCompositeStep);
+        when(compositeCandidate.createMatchedStep(compositeAsText, parameters)).thenReturn(
+                executableComposite);
 
         // When
-        stepCollector.collectScenarioSteps(steps, createScenario(compositeStepAsString), parameters);
+        stepCollector.collectScenarioSteps(steps, createScenario(compositeAsText), parameters);
 
         // Then
         verify(compositeCandidate, times(1)).
-                addComposedSteps(new ArrayList<Step>(), compositeStepAsString, parameters,
+                addComposedSteps(new ArrayList<Step>(), compositeAsText, parameters,
                         asList(compositeCandidate, composedCandidate1, composedCandidate2));
     }
 

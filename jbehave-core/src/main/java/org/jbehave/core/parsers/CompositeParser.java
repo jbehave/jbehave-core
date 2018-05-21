@@ -2,7 +2,7 @@ package org.jbehave.core.parsers;
 
 import java.util.List;
 
-import org.jbehave.core.model.CompositeStep;
+import org.jbehave.core.model.Composite;
 
 /**
  * <p>
@@ -10,13 +10,13 @@ import org.jbehave.core.model.CompositeStep;
  * </p>
  * @author Valery Yatsynovich
  */
-public interface CompositeStepsParser {
+public interface CompositeParser {
 
     /**
      * Parses composite steps from their textual representation
      *
-     * @param compositeStepsAsText the textual representation
-     * @return The CompositeStep
+     * @param compositesAsText the textual representation
+     * @return The List of Composite
      */
-    List<CompositeStep> parseCompositeSteps(String compositeStepsAsText);
+    List<Composite> parseComposites(String compositesAsText);
 }

@@ -7,15 +7,21 @@ import static java.util.Collections.unmodifiableList;
 import org.jbehave.core.steps.StepType;
 
 /**
+ * <p>
+ * Represents a composite step, which can be declared both programmatically, via the
+ * {@link org.jbehave.core.annotations.Composite @Composite} annotation, or via a textual representation.
+ * </p>
+ *
+ * @author Mauro Talevi
  * @author Valery Yatsynovich
  */
-public class CompositeStep {
+public class Composite {
 
     private StepType stepType;
     private String stepWithoutStartingWord;
     private List<String> steps;
 
-    public CompositeStep(StepType stepType, String stepWithoutStartingWord, List<String> steps) {
+    public Composite(StepType stepType, String stepWithoutStartingWord, List<String> steps) {
         this.stepType = stepType;
         this.stepWithoutStartingWord = stepWithoutStartingWord;
         this.steps = steps;

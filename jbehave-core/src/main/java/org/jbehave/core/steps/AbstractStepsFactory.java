@@ -38,9 +38,9 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
                     methodReturningConverters(type));
             steps.add(new Steps(configuration, type, this));
         }
-        List<String> compositeStepsDefinitionPaths = configuration.compositeStepsDefinitionPaths();
-        if (!compositeStepsDefinitionPaths.isEmpty()) {
-            steps.add(new CompositeSteps(configuration, compositeStepsDefinitionPaths));
+        List<String> compositePaths = configuration.compositePaths();
+        if (!compositePaths.isEmpty()) {
+            steps.add(new CompositeCandidateSteps(configuration, compositePaths));
         }
         return steps;
     }

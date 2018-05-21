@@ -182,7 +182,7 @@ public abstract class Configuration {
     /**
      * Paths to resources containing composite steps definitions
      */
-    protected List<String> compositeStepsDefinitionPaths;
+    protected List<String> compositePaths;
 
     public Configuration() {
     }
@@ -346,11 +346,11 @@ public abstract class Configuration {
         return pathCalculator;
     }
 
-    public List<String> compositeStepsDefinitionPaths() {
-        if (compositeStepsDefinitionPaths == null) {
-            compositeStepsDefinitionPaths = Collections.emptyList();
+    public List<String> compositePaths() {
+        if (compositePaths == null) {
+            compositePaths = Collections.emptyList();
         }
-        return compositeStepsDefinitionPaths;
+        return compositePaths;
     }
 
     public Configuration useKeywords(Keywords keywords) {
@@ -458,8 +458,8 @@ public abstract class Configuration {
         return this;
     }
 
-    public Configuration useCompositeStepsDefinitionPaths(List<String> compositeStepsDefinitionPaths) {
-        this.compositeStepsDefinitionPaths = compositeStepsDefinitionPaths;
+    public Configuration useCompositePaths(List<String> compositePaths) {
+        this.compositePaths = compositePaths;
         return this;
     }
 }

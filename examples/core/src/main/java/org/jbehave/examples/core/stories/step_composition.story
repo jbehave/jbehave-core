@@ -18,7 +18,7 @@ Scenario: Using a composite step with normal parameter matching
 !-- @Composite(steps = { "Given <customer> is logged in", 
 !--                      "Given <customer> has a cart", 
 !--                      "When a <product> is added to the cart" }) 
-!-- public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters 
+!-- public void aComposite(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters
 !-- }
 
 Given Mr Jones has previously bought a ticket
@@ -30,7 +30,7 @@ Scenario: Using a composite step in a parameterised scenario
 !-- @Composite(steps = { "Given <customer> is logged in", 
 !--                      "Given <customer> has a cart", 
 !--                      "When a <product> is added to the cart" })
-!-- public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters 
+!-- public void aComposite(@Named("customer") String customer, @Named("product") String product) { // composed steps use these named parameters
 !-- }
 
 Given <customer> has previously bought a <product>
