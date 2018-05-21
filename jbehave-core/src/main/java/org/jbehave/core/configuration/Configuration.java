@@ -1,5 +1,8 @@
 package org.jbehave.core.configuration;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.StoryControls;
@@ -176,6 +179,11 @@ public abstract class Configuration {
      */
     protected PathCalculator pathCalculator;
 
+    /**
+     * Paths to resources containing composite steps definitions
+     */
+    protected List<String> compositeStepsDefinitionPaths;
+
     public Configuration() {
     }
 
@@ -338,6 +346,13 @@ public abstract class Configuration {
         return pathCalculator;
     }
 
+    public List<String> compositeStepsDefinitionPaths() {
+        if (compositeStepsDefinitionPaths == null) {
+            compositeStepsDefinitionPaths = Collections.emptyList();
+        }
+        return compositeStepsDefinitionPaths;
+    }
+
     public Configuration useKeywords(Keywords keywords) {
         this.keywords = keywords;
         return this;
@@ -440,6 +455,11 @@ public abstract class Configuration {
 
     public Configuration usePathCalculator(PathCalculator pathCalculator) {
         this.pathCalculator = pathCalculator;
+        return this;
+    }
+
+    public Configuration useCompositeStepsDefinitionPaths(List<String> compositeStepsDefinitionPaths) {
+        this.compositeStepsDefinitionPaths = compositeStepsDefinitionPaths;
         return this;
     }
 }

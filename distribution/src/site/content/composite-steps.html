@@ -48,7 +48,7 @@ and annotated as per usual, e.g. with the <b>@Given</b> annotation:</p>
 
 <script type="syntaxhighlighter" class="brush: java">
 <![CDATA[
-    @Given("%customer has previously bought a %product") // used in normal parameter matching
+    @Given("$customer has previously bought a $product") // used in normal parameter matching
     @Alias("<customer> has previously bought a <product>") // used in parameterised scenarios
     @Composite(steps = { "Given <customer> is logged in", 
                          "Given <customer> has a cart", 
@@ -88,6 +88,46 @@ primary scope is to provide the compostion to other steps. It is also
 important to note that the composite step method needs to define named
 parameters (even if it uses matched parameters), as these are then used
 by the composed steps.</p>
+
+<h3>Composite steps definition files</h3>
+
+<p>In case if composite step does not require any implementation, it can be
+declared in a separate composite steps definition file:<p>
+
+<pre class="brush: bdd">
+Composite: Given $customer has previously bought a $product
+Given &lt;customer&gt; is logged in
+When a &lt;product&gt; is added to the cart
+</pre>
+
+<p>where</p>
+<ul>
+    <li><b>Composite:</b> is a keyword;</li>
+    <li><b>Given $customer has previously bought a $product</b> is a composite step definition with parameters;</li>
+    <li><b>Given &lt;customer&gt; is logged in</b> and <b>When a &lt;product&gt; is added to the cart</b> are
+        composed steps</li>
+</ul>
+
+<p>Single steps file can contain multiple definitions:</p>
+
+<pre class="brush: bdd">
+Composite: Given composite step
+Given composed step
+And another composed step
+
+Composite: Then composite step with parameter $param
+Given composed step
+When composed step using parameter &lt;param&gt;
+Then one more composed step
+</pre>
+
+<p>Paths to steps definition files should be set in the configuration:</p>
+<script type="syntaxhighlighter" class="brush: java">
+<![CDATA[
+    new MostUsefulConfiguration().useCompositeStepsDefinitionPaths(Collections.singletonList("composite.steps"))
+]]>
+</script>
+
 
 <div class="clear">
 <hr />

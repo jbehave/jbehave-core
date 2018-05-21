@@ -6,26 +6,38 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jbehave.core.annotations.AsParameterConverter;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.junit.Test;
 
 public class InstanceStepsFactoryBehaviour {
-    
+
     @Test
     public void shouldCreateCandidateSteps() {
         InjectableStepsFactory factory = new InstanceStepsFactory(new MostUsefulConfiguration(), new MySteps());
         List<CandidateSteps> candidateSteps = factory.createCandidateSteps();
         assertThat(candidateSteps.size(), equalTo(1));
         assertThat(candidateSteps.get(0), instanceOf(Steps.class));
-        ParameterConverters converters = ((Steps)candidateSteps.get(0)).configuration().parameterConverters();
+        ParameterConverters converters = candidateSteps.get(0).configuration().parameterConverters();
         assertThat((String)converters.convert("value", String.class), equalTo("valueConverted"));
-    }    
+    }
+
+    @Test
+    public void shouldCreateCompositeCandidateSteps() {
+        Configuration configuration = new MostUsefulConfiguration();
+        configuration.useCompositeStepsDefinitionPaths(Collections.singletonList("composite.steps"));
+        InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
+        List<CandidateSteps> candidateSteps = factory.createCandidateSteps();
+        assertThat(candidateSteps.size(), equalTo(1));
+        assertThat(candidateSteps.get(0), instanceOf(CompositeSteps.class));
+    }
 
     @Test
     public void shouldDetermineIfStepsInstanceHasAnnotatedMethods() {
@@ -34,27 +46,27 @@ public class InstanceStepsFactoryBehaviour {
         assertThat(factory.hasAnnotatedMethods(NoAnnotatedMethods.class), is(false));
     } 
 
-	@Test
-	public void shouldAllowGenericList() {
-		List<? super MyInterface> list = new ArrayList<>();
-		list.add(new MyStepsAWithInterface());
-		list.add(new MyStepsBWithInterface());
-		InstanceStepsFactory factory = new InstanceStepsFactory(
-		        new MostUsefulConfiguration(), list);
-		List<CandidateSteps> candidateSteps = factory.createCandidateSteps();		
-		assertThat(candidateSteps.size(), equalTo(2));
+    @Test
+    public void shouldAllowGenericList() {
+        List<? super MyInterface> list = new ArrayList<>();
+        list.add(new MyStepsAWithInterface());
+        list.add(new MyStepsBWithInterface());
+        InstanceStepsFactory factory = new InstanceStepsFactory(
+                new MostUsefulConfiguration(), list);
+        List<CandidateSteps> candidateSteps = factory.createCandidateSteps();
+        assertThat(candidateSteps.size(), equalTo(2));
 
-	}
+    }
 
-	static interface MyInterface {
+    static interface MyInterface {
 
-	}
+    }
 
-	static class MyStepsAWithInterface implements MyInterface {
-	}
+    static class MyStepsAWithInterface implements MyInterface {
+    }
 
-	static class MyStepsBWithInterface implements MyInterface {
-	}
+    static class MyStepsBWithInterface implements MyInterface {
+    }
 
     static class MySteps  {
 

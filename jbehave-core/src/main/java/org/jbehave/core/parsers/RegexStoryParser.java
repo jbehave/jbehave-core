@@ -36,12 +36,10 @@ import org.jbehave.core.model.TableTransformers;
  * Pattern-based story parser, which uses the keywords provided to parse the
  * textual story into a {@link Story}.
  */
-public class RegexStoryParser implements StoryParser {
+public class RegexStoryParser extends AbstractRegexParser implements StoryParser {
 
-    private static final String NONE = "";
     public static final ResourceLoader DEFAULT_RESOURCE_LOADER = new LoadFromClasspath();
     public static final TableTransformers DEFAULT_TABLE_TRANSFORMERS = new TableTransformers();
-    private final Keywords keywords;
     private final ExamplesTableFactory tableFactory;
 
     public RegexStoryParser() {
@@ -65,14 +63,14 @@ public class RegexStoryParser implements StoryParser {
     }
 
     public RegexStoryParser(Keywords keywords, ExamplesTableFactory tableFactory) {
-        this.keywords = keywords;
+        super(keywords);
         this.tableFactory = tableFactory;
         // must ensure that both are using same keywords
         this.tableFactory.useKeywords(keywords);
     }
 
     public RegexStoryParser(Configuration configuration) {
-        this.keywords = configuration.keywords();
+        super(configuration.keywords());
         this.tableFactory = new ExamplesTableFactory(configuration);
     }
     
@@ -106,13 +104,13 @@ public class RegexStoryParser implements StoryParser {
         Matcher findingMeta = findingStoryMeta().matcher(preScenarioText(storyAsText));
         if (findingMeta.matches()) {
             String meta = findingMeta.group(1).trim();
-            return Meta.createMeta(meta, keywords);
+            return Meta.createMeta(meta, keywords());
         }
         return Meta.EMPTY;
     }
 
     private String preScenarioText(String storyAsText) {
-        String[] split = storyAsText.split(keywords.scenario());
+        String[] split = storyAsText.split(keywords().scenario());
         return split.length > 0 ? split[0] : storyAsText;
     }
 
@@ -144,7 +142,7 @@ public class RegexStoryParser implements StoryParser {
     }
     
     private GivenStories parseGivenStories(String storyAsText) {
-        String scenarioKeyword = keywords.scenario();
+        String scenarioKeyword = keywords().scenario();
         // use text before scenario keyword, if found
         String beforeScenario = "";
         if (StringUtils.contains(storyAsText, scenarioKeyword)) {
@@ -156,7 +154,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Lifecycle parseLifecycle(String storyAsText) {
-        String scenarioKeyword = keywords.scenario();
+        String scenarioKeyword = keywords().scenario();
         // use text before scenario keyword, if found
         String beforeScenario = "";
         if (StringUtils.contains(storyAsText, scenarioKeyword)) {
@@ -165,7 +163,7 @@ public class RegexStoryParser implements StoryParser {
         Matcher findingLifecycle = findingLifecycle().matcher(beforeScenario);
         String lifecycle = findingLifecycle.find() ? findingLifecycle.group(1).trim() : NONE;
 
-        Matcher findingBeforeAndAfter = compile(".*" + keywords.before() + "(.*)\\s*" + keywords.after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
+        Matcher findingBeforeAndAfter = compile(".*" + keywords().before() + "(.*)\\s*" + keywords().after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBeforeAndAfter.matches() ){
             String beforeLifecycle = findingBeforeAndAfter.group(1).trim();
             List<Steps> beforeSteps = parseBeforeLifecycle(beforeLifecycle);
@@ -173,13 +171,13 @@ public class RegexStoryParser implements StoryParser {
             List<Steps> afterSteps = parseAfterLifecycle(afterLifecycle);
             return new Lifecycle(beforeSteps, afterSteps);
         }
-        Matcher findingBefore = compile(".*" + keywords.before() + "(.*)\\s*", DOTALL).matcher(lifecycle);
+        Matcher findingBefore = compile(".*" + keywords().before() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBefore.matches() ){
             String beforeLifecycle = findingBefore.group(1).trim();
             List<Steps>  beforeSteps = parseBeforeLifecycle(beforeLifecycle);
             return new Lifecycle(beforeSteps, Arrays.<Steps>asList());
         }
-        Matcher findingAfter = compile(".*" + keywords.after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
+        Matcher findingAfter = compile(".*" + keywords().after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingAfter.matches() ){
             List<Steps> beforeSteps = asList();
             String afterLifecycle = findingAfter.group(1).trim();
@@ -190,19 +188,19 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Pattern findingBeforeAndAfterSteps() {
-        String initialStartingWords = concatenateWithOr("\\n", "", keywords.before(), keywords.after());
-        String followingStartingWords = concatenateWithOr("\\n", "\\s", keywords.startingWords());
+        String initialStartingWords = concatenateWithOr("\\n", "", keywords().before(), keywords().after());
+        String followingStartingWords = concatenateFollowingStartingWords();
         return compile(
                 "((" + initialStartingWords + ")\\s(.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"
-                        + keywords.examplesTable() + ")", DOTALL);
+                        + keywords().examplesTable() + ")", DOTALL);
     }
 
     private List<Steps> parseBeforeLifecycle(String lifecycleAsText) {
         List<Steps> list = new ArrayList<>();
-        for (String byScope : lifecycleAsText.split(keywords.scope()) ){
+        for (String byScope : lifecycleAsText.split(keywords().scope()) ){
             byScope = byScope.trim();
             if ( byScope.isEmpty() ) continue;
-            Scope scope = parseScope(findScope(keywords.scope()+byScope));
+            Scope scope = parseScope(findScope(keywords().scope()+byScope));
             Steps steps = new Steps(scope, findSteps(startingWithNL(byScope)));
             list.add(steps);
         }
@@ -211,11 +209,11 @@ public class RegexStoryParser implements StoryParser {
 
     private List<Steps> parseAfterLifecycle(String lifecycleAsText) {
         List<Steps> list = new ArrayList<>();
-        for (String byScope : lifecycleAsText.split(keywords.scope()) ) {
+        for (String byScope : lifecycleAsText.split(keywords().scope()) ) {
             byScope = byScope.trim();
             if ( byScope.isEmpty() ) continue;
-            Scope scope = parseScope(findScope(keywords.scope()+byScope));
-            for (String byOutcome : byScope.split(keywords.outcome())) {
+            Scope scope = parseScope(findScope(keywords().scope()+byScope));
+            for (String byOutcome : byScope.split(keywords().outcome())) {
                 byOutcome = byOutcome.trim();
                 if (byOutcome.isEmpty()) continue;
                 String outcomeAsText = findOutcome(byOutcome);
@@ -236,9 +234,9 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private Scope parseScope(String scopeAsText) {
-        if ( scopeAsText.trim().equals(keywords.scopeScenario()) ){
+        if ( scopeAsText.trim().equals(keywords().scopeScenario()) ){
             return Scope.SCENARIO;
-        } else if ( scopeAsText.trim().equals(keywords.scopeStory()) ){
+        } else if ( scopeAsText.trim().equals(keywords().scopeStory()) ){
             return Scope.STORY;
         }
         return Scope.SCENARIO;
@@ -249,13 +247,13 @@ public class RegexStoryParser implements StoryParser {
         if ( findingOutcome.matches() ){
             return findingOutcome.group(1).trim();
         }
-        return keywords.outcomeAny();
+        return keywords().outcomeAny();
     }
 
     private Outcome parseOutcome(String outcomeAsText) {
-        if ( outcomeAsText.equals(keywords.outcomeSuccess()) ){
+        if ( outcomeAsText.equals(keywords().outcomeSuccess()) ){
             return Outcome.SUCCESS;
-        } else if ( outcomeAsText.equals(keywords.outcomeFailure()) ){
+        } else if ( outcomeAsText.equals(keywords().outcomeFailure()) ){
             return Outcome.FAILURE;
         }
         return Outcome.ANY;
@@ -270,7 +268,7 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private String parseFilters(String filtersAsText) {
-        return removeStart(filtersAsText, keywords.metaFilter()).trim();
+        return removeStart(filtersAsText, keywords().metaFilter()).trim();
     }
 
     private List<Scenario> parseScenariosFrom(String storyAsText) {
@@ -282,26 +280,19 @@ public class RegexStoryParser implements StoryParser {
     }
 
     private List<String> splitScenarios(String storyAsText) {
-        List<String> scenarios = new ArrayList<>();
-        String scenarioKeyword = keywords.scenario();
+        String scenarioKeyword = keywords().scenario();
 
         // use text after scenario keyword, if found
         if (StringUtils.contains(storyAsText, scenarioKeyword)) {
             storyAsText = StringUtils.substringAfter(storyAsText, scenarioKeyword);
         }
 
-        for (String scenarioAsText : storyAsText.split(scenarioKeyword)) {
-            if (scenarioAsText.trim().length() > 0) {
-                scenarios.add(scenarioKeyword + "\n" + scenarioAsText);
-            }
-        }
-        
-        return scenarios;
+        return splitElements(storyAsText, scenarioKeyword);
     }
 
     private Scenario parseScenario(String scenarioAsText) {
         String title = findScenarioTitle(scenarioAsText);
-        String scenarioWithoutKeyword = removeStart(scenarioAsText, keywords.scenario()).trim();
+        String scenarioWithoutKeyword = removeStart(scenarioAsText, keywords().scenario()).trim();
         String scenarioWithoutTitle = removeStart(scenarioWithoutKeyword, title);
         scenarioWithoutTitle = startingWithNL(scenarioWithoutTitle);
         Meta meta = findScenarioMeta(scenarioWithoutTitle);
@@ -314,13 +305,6 @@ public class RegexStoryParser implements StoryParser {
         return new Scenario(title, meta, givenStories, examplesTable, steps);
     }
 
-    private String startingWithNL(String text) {
-        if ( !text.startsWith("\n") ){ // always ensure starts with newline
-            return "\n" + text;
-        }
-        return text;
-    }
-
     private String findScenarioTitle(String scenarioAsText) {
         Matcher findingTitle = findingScenarioTitle().matcher(scenarioAsText);
         return findingTitle.find() ? findingTitle.group(1).trim() : NONE;
@@ -330,7 +314,7 @@ public class RegexStoryParser implements StoryParser {
         Matcher findingMeta = findingScenarioMeta().matcher(scenarioAsText);
         if (findingMeta.matches()) {
             String meta = findingMeta.group(1).trim();
-            return Meta.createMeta(meta, keywords);
+            return Meta.createMeta(meta, keywords());
         }
         return Meta.EMPTY;
     }
@@ -347,110 +331,76 @@ public class RegexStoryParser implements StoryParser {
         return new GivenStories(givenStories);
     }
 
-    private List<String> findSteps(String stepsAsText) {
-        Matcher matcher = findingSteps().matcher(stepsAsText);
-        List<String> steps = new ArrayList<>();
-        int startAt = 0;
-        while (matcher.find(startAt)) {
-            steps.add(StringUtils.substringAfter(matcher.group(1), "\n"));
-            startAt = matcher.start(4);
-        }
-        return steps;
-    }
-
     // Regex Patterns
 
     private Pattern findingDescription() {
-        String metaOrNarrativeOrLifecycleOrScenario = concatenateWithOr(keywords.meta(), keywords.narrative(), keywords.lifecycle(), keywords.scenario());
+        String metaOrNarrativeOrLifecycleOrScenario = concatenateWithOr(keywords().meta(), keywords().narrative(), keywords().lifecycle(), keywords().scenario());
         return compile("(.*?)(" + metaOrNarrativeOrLifecycleOrScenario + ").*", DOTALL);
     }
 
     private Pattern findingStoryMeta() {
-        String narrativeOrLifecycleOrGivenStories = concatenateWithOr(keywords.narrative(), keywords.lifecycle(), keywords.givenStories());
-        return compile(".*" + keywords.meta() + "(.*?)\\s*(\\Z|" + narrativeOrLifecycleOrGivenStories + ").*", DOTALL);
+        String narrativeOrLifecycleOrGivenStories = concatenateWithOr(keywords().narrative(), keywords().lifecycle(), keywords().givenStories());
+        return compile(".*" + keywords().meta() + "(.*?)\\s*(\\Z|" + narrativeOrLifecycleOrGivenStories + ").*", DOTALL);
     }
 
     private Pattern findingNarrative() {
-        String givenStoriesOrLifecycleOrScenario = concatenateWithOr(keywords.givenStories(), keywords.lifecycle(), keywords.scenario());
-        return compile(".*" + keywords.narrative() + "(.*?)\\s*(" + givenStoriesOrLifecycleOrScenario + ").*", DOTALL);
+        String givenStoriesOrLifecycleOrScenario = concatenateWithOr(keywords().givenStories(), keywords().lifecycle(), keywords().scenario());
+        return compile(".*" + keywords().narrative() + "(.*?)\\s*(" + givenStoriesOrLifecycleOrScenario + ").*", DOTALL);
     }
 
     private Pattern findingNarrativeElements() {
-        return compile(".*" + keywords.inOrderTo() + "(.*)\\s*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo()
+        return compile(".*" + keywords().inOrderTo() + "(.*)\\s*" + keywords().asA() + "(.*)\\s*" + keywords().iWantTo()
                 + "(.*)", DOTALL);
     }
 
     private Pattern findingAlternativeNarrativeElements() {
-        return compile(".*" + keywords.asA() + "(.*)\\s*" + keywords.iWantTo() + "(.*)\\s*" + keywords.soThat()
+        return compile(".*" + keywords().asA() + "(.*)\\s*" + keywords().iWantTo() + "(.*)\\s*" + keywords().soThat()
                 + "(.*)", DOTALL);
     }
     
     private Pattern findingStoryGivenStories() {
-        String lifecycleOrScenario = concatenateWithOr(keywords.lifecycle(), keywords.scenario());
-        return compile(".*" + keywords.givenStories() + "(.*?)\\s*(\\Z|" + lifecycleOrScenario + ").*", DOTALL);
+        String lifecycleOrScenario = concatenateWithOr(keywords().lifecycle(), keywords().scenario());
+        return compile(".*" + keywords().givenStories() + "(.*?)\\s*(\\Z|" + lifecycleOrScenario + ").*", DOTALL);
     }
     
     private Pattern findingLifecycle() {
-        return compile(".*" + keywords.lifecycle() + "\\s*(.*)", DOTALL);
+        return compile(".*" + keywords().lifecycle() + "\\s*(.*)", DOTALL);
     }
 
     private Pattern findingLifecycleScope() {
-        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(keywords.scope() + "((.)*?)\\s*(" + keywords.outcome() + "|" + keywords.metaFilter() + "|" + startingWords + ").*", DOTALL);
+        String startingWords = concatenateInitialStartingWords();
+        return compile(keywords().scope() + "((.)*?)\\s*(" + keywords().outcome() + "|" + keywords().metaFilter() + "|" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingLifecycleOutcome() {
-        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        String outcomes = concatenateWithOr(keywords.outcomeAny(), keywords.outcomeSuccess(), keywords.outcomeFailure());
-        return compile("\\s*("+ outcomes +")\\s*(" + keywords.metaFilter() + "|" + startingWords + ").*", DOTALL);
+        String startingWords = concatenateInitialStartingWords();
+        String outcomes = concatenateWithOr(keywords().outcomeAny(), keywords().outcomeSuccess(), keywords().outcomeFailure());
+        return compile("\\s*("+ outcomes +")\\s*(" + keywords().metaFilter() + "|" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingLifecycleFilters() {
-        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        String filters = concatenateWithOr(keywords.metaFilter());
+        String startingWords = concatenateInitialStartingWords();
+        String filters = concatenateWithOr(keywords().metaFilter());
         return compile("\\s*("+ filters +"[\\w\\+\\-\\_\\s]*)(" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingScenarioTitle() {
-        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(keywords.scenario() + "((.)*?)\\s*(" + keywords.meta() + "|" + startingWords + ").*", DOTALL);
+        String startingWords = concatenateInitialStartingWords();
+        return compile(keywords().scenario() + "((.)*?)\\s*(" + keywords().meta() + "|" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingScenarioMeta() {
-        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile(".*" + keywords.meta() + "(.*?)\\s*(" + keywords.givenStories() + "|" + startingWords + ").*",
+        String startingWords = concatenateInitialStartingWords();
+        return compile(".*" + keywords().meta() + "(.*?)\\s*(" + keywords().givenStories() + "|" + startingWords + ").*",
                 DOTALL);
     }
 
     private Pattern findingScenarioGivenStories() {
-        String startingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        return compile("\\n" + keywords.givenStories() + "((.|\\n)*?)\\s*(" + startingWords + ").*", DOTALL);
-    }
-
-    private Pattern findingSteps() {
-        String initialStartingWords = concatenateWithOr("\\n", "", keywords.startingWords());
-        String followingStartingWords = concatenateWithOr("\\n", "\\s", keywords.startingWords());
-        return compile(
-                "((" + initialStartingWords + ")\\s(.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"
-                        + keywords.examplesTable() + ")", DOTALL);
+        String startingWords = concatenateInitialStartingWords();
+        return compile("\\n" + keywords().givenStories() + "((.|\\n)*?)\\s*(" + startingWords + ").*", DOTALL);
     }
 
     private Pattern findingExamplesTable() {
-        return compile("\\n" + keywords.examplesTable() + "\\s*(.*)", DOTALL);
+        return compile("\\n" + keywords().examplesTable() + "\\s*(.*)", DOTALL);
     }
-
-    private String concatenateWithOr(String... keywords) {
-        return concatenateWithOr(null, null, keywords);
-    }
-
-    private String concatenateWithOr(String beforeKeyword, String afterKeyword, String[] keywords) {
-        StringBuilder builder = new StringBuilder();
-        String before = beforeKeyword != null ? beforeKeyword : NONE;
-        String after = afterKeyword != null ? afterKeyword : NONE;
-        for (String keyword : keywords) {
-            builder.append(before).append(keyword).append(after).append("|");
-        }
-        return StringUtils.removeEnd(builder.toString(), "|"); // remove last "|"
-    }
-
 }

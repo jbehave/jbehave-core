@@ -91,9 +91,8 @@ import org.jbehave.core.steps.StepCollector.Stage;
  * creating them in "dry run" mode.
  * </p>
  */
-public class Steps implements CandidateSteps {
+public class Steps extends AbstractCandidateSteps {
 
-    private final Configuration configuration;
     private Class<?> type;
     private InjectableStepsFactory stepsFactory;
 
@@ -112,7 +111,7 @@ public class Steps implements CandidateSteps {
      * @param configuration the Configuration
      */
     public Steps(Configuration configuration) {
-        this.configuration = configuration;
+        super(configuration);
         this.type = this.getClass();
         this.stepsFactory = new InstanceStepsFactory(configuration, this);
     }
@@ -125,7 +124,7 @@ public class Steps implements CandidateSteps {
      * @param instance the steps instance
      */
     public Steps(Configuration configuration, Object instance) {
-        this.configuration = configuration;
+        super(configuration);
         this.type = instance.getClass();
         this.stepsFactory = new InstanceStepsFactory(configuration, instance);
     }
@@ -140,7 +139,7 @@ public class Steps implements CandidateSteps {
      * @param stepsFactory the {@link InjectableStepsFactory}
      */
     public Steps(Configuration configuration, Class<?> type, InjectableStepsFactory stepsFactory) {
-        this.configuration = configuration;
+        super(configuration);
         this.type = type;
         this.stepsFactory = stepsFactory;
     }
@@ -151,10 +150,6 @@ public class Steps implements CandidateSteps {
 
     public Object instance() {
         return stepsFactory.createInstanceOfType(type);
-    }
-
-    public Configuration configuration() {
-        return configuration;
     }
 
     public List<StepCandidate> listCandidates() {
@@ -208,28 +203,11 @@ public class Steps implements CandidateSteps {
     private void addCandidate(List<StepCandidate> candidates, Method method, StepType stepType,
             String stepPatternAsString, int priority) {
         checkForDuplicateCandidates(candidates, stepType, stepPatternAsString);
-        StepCandidate candidate = createCandidate(method, stepType, stepPatternAsString, priority, configuration);
-        candidate.useStepMonitor(configuration.stepMonitor());
-        candidate.useParanamer(configuration.paranamer());
-        candidate.doDryRun(configuration.storyControls().dryRun());
+        StepCandidate candidate = createCandidate(stepPatternAsString, priority, stepType, method, type, stepsFactory);
         if (method.isAnnotationPresent(Composite.class)) {
             candidate.composedOf(method.getAnnotation(Composite.class).steps());
         }
         candidates.add(candidate);
-    }
-
-    private void checkForDuplicateCandidates(List<StepCandidate> candidates, StepType stepType, String patternAsString) {
-        for (StepCandidate candidate : candidates) {
-            if (candidate.getStepType() == stepType && candidate.getPatternAsString().equals(patternAsString)) {
-                throw new DuplicateCandidateFound(stepType, patternAsString);
-            }
-        }
-    }
-
-    private StepCandidate createCandidate(Method method, StepType stepType, String stepPatternAsString, int priority,
-            Configuration configuration) {
-        return new StepCandidate(stepPatternAsString, priority, stepType, method, type, stepsFactory,
-                configuration.stepsContext(), configuration.keywords(), configuration.stepPatternParser(), configuration.parameterConverters(), configuration.parameterControls());
     }
 
     public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
@@ -331,7 +309,7 @@ public class Steps implements CandidateSteps {
 
     private BeforeOrAfterStep createBeforeOrAfterStep(Stage stage, Method method, Outcome outcome) {
         return new BeforeOrAfterStep(stage, method, outcome, new StepCreator(type, stepsFactory,
-                configuration.stepsContext(), configuration.parameterConverters(), configuration.parameterControls(), null, configuration.stepMonitor()));
+                configuration().stepsContext(), configuration().parameterConverters(), configuration().parameterControls(), null, configuration().stepMonitor()));
     }
 
     private List<Method> allMethods() {
@@ -346,15 +324,6 @@ public class Steps implements CandidateSteps {
             }
         }
         return annotated;
-    }
-
-    @SuppressWarnings("serial")
-    public static class DuplicateCandidateFound extends RuntimeException {
-
-        public DuplicateCandidateFound(StepType stepType, String patternAsString) {
-            super(stepType + " " + patternAsString);
-        }
-
     }
 
     @Override

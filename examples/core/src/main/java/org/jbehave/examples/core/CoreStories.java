@@ -13,7 +13,6 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.context.Context;
 import org.jbehave.core.embedder.PropertyBasedEmbedderControls;
 import org.jbehave.core.i18n.LocalizedKeywords;
-import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
@@ -82,14 +81,15 @@ public class CoreStories extends JUnitStories {
                 .useStoryParser(new RegexStoryParser(examplesTableFactory))
                 .useStoryReporterBuilder(
                         new StoryReporterBuilder()
-                                .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
+                                .withCodeLocation(codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withViewResources(viewResources)
                                 .withFormats(contextFormat, ANSI_CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
                                 .withFailureTraceCompression(true).withCrossReference(xref)
                                 .withSurefireReporter(surefireReporter))
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls)
-                .useTableTransformers(tableTransformers);
+                .useTableTransformers(tableTransformers)
+                .useCompositeStepsDefinitionPaths(findPaths("**/*.steps", null));
     }
 
     @Override
@@ -110,6 +110,10 @@ public class CoreStories extends JUnitStories {
     @Override
     protected List<String> storyPaths() {
         String filter = System.getProperty("story.filter", "**/*.story");
-        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), filter, "**/custom/*.story,**/failing/*.story,**/given/*.story,**/pending/*.story");
+        return findPaths(filter, "**/custom/*.story,**/failing/*.story,**/given/*.story,**/pending/*.story");
+    }
+
+    private List<String> findPaths(String include, String exclude) {
+        return new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), include, exclude);
     }
 }

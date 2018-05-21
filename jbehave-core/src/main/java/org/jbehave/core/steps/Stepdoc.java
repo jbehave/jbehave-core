@@ -58,8 +58,11 @@ public class Stepdoc implements Comparable<Stepdoc> {
      * @return The method signature in String format
      */
     public String getMethodSignature() {
-        String methodSignature = method.toString();
-        return methodSignature.replaceFirst("public void ", "");
+        if (method != null) {
+            String methodSignature = method.toString();
+            return methodSignature.replaceFirst("public void ", "");
+        }
+        return null;
     }
 
     @Override

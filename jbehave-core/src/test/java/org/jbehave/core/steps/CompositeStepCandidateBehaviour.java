@@ -2,10 +2,12 @@ package org.jbehave.core.steps;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import org.jbehave.core.annotations.*;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +22,22 @@ public class CompositeStepCandidateBehaviour {
 
     @Test
     public void shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters() {
-        CompositeSteps steps = new CompositeSteps();
-        List<StepCandidate> candidates = steps.listCandidates();
+        CandidateSteps compositeSteps = new SimpleCompositeSteps();
+        shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
+    }
+
+    @Test
+    public void shouldMatchCompositeStepsFromFileDefinitionAndCreateComposedStepsUsingMatchedParameters() {
+        CandidateSteps compositeSteps = new CompositeSteps(new MostUsefulConfiguration(),
+                Collections.singletonList("composite.steps"));
+        shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters(compositeSteps);
+    }
+
+    private void shouldMatchCompositeStepsAndCreateComposedStepsUsingMatchedParameters(CandidateSteps compositeSteps) {
+        SimpleSteps steps = new SimpleSteps();
+        List<StepCandidate> candidates = new ArrayList<>();
+        candidates.addAll(steps.listCandidates());
+        candidates.addAll(compositeSteps.listCandidates());
         StepCandidate candidate = candidateMatchingStep(candidates, "Given $customer has previously bought a $product");
         assertThat(candidate.isComposite(), is(true));
         Map<String, String> noNamedParameters = new HashMap<>();
@@ -35,16 +51,10 @@ public class CompositeStepCandidateBehaviour {
         assertThat(steps.added, equalTo("ticket"));
     }
 
-    static class CompositeSteps extends Steps {
+    static class SimpleSteps extends Steps {
 
         private String loggedIn;
         private String added;
-
-        @Given("$customer has previously bought a $product")
-        @Composite(steps = { "Given <customer> is logged in",
-                             "When a <product> is added to the cart" })
-        public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
-        }
 
         @Given("<customer> is logged in")
         public void aCustomerIsLoggedIn(@Named("customer") String customer) {
@@ -54,6 +64,16 @@ public class CompositeStepCandidateBehaviour {
         @When("a <product> is added to the cart")
         public void aProductIsAddedToCart(@Named("product") String product) {
             added = product;
+        }
+
+    }
+
+    static class SimpleCompositeSteps extends Steps {
+
+        @Given("$customer has previously bought a $product")
+        @Composite(steps = { "Given <customer> is logged in",
+                "When a <product> is added to the cart" })
+        public void aCompositeStep(@Named("customer") String customer, @Named("product") String product) {
         }
 
     }

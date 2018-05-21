@@ -1,0 +1,7 @@
+Composite: Given I have a bank account with balance $balance
+Given I have a bank account
+Given my balance is <balance>
+
+Composite: Given I have a balance $balance and withdraw $value
+Given I have a bank account with balance <balance>
+When I withdraw <value>

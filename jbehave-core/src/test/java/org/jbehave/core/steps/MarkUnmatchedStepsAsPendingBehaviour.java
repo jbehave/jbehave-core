@@ -16,7 +16,6 @@ import java.util.*;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.*;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
-import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Lifecycle;
@@ -69,10 +68,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         String myStep = "my step";
         when(candidate.matches(myStep)).thenReturn(true);
         when(candidate.createMatchedStep(myStep, parameters)).thenReturn(step);
-        when(andCandidate.isAndStep(myStep)).thenReturn(false);
-        String myAndStep = "my And step";
+        String myAndStep = "And my step";
         when(andCandidate.matches(myAndStep)).thenReturn(true);
-        when(andCandidate.isAndStep(myAndStep)).thenReturn(true);
         when(andCandidate.createMatchedStep(myAndStep, parameters)).thenReturn(andStep);
 
         List<CandidateSteps> steps = mockCandidateSteps(candidate, andCandidate);
@@ -98,14 +95,11 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         String myAnyStep = "my any step";
         when(anyCandidate.matches(myAnyStep, null)).thenReturn(true);
         when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Outcome.ANY)).thenReturn(anyStep);
-        when(successCandidate.isAndStep(myAnyStep)).thenReturn(false);
         String mySuccessStep = "my success step";
         when(successCandidate.matches(mySuccessStep, null)).thenReturn(true);
-        when(successCandidate.isAndStep(mySuccessStep)).thenReturn(false);
         when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Outcome.SUCCESS)).thenReturn(successStep);
         String myFailureStep = "my failure step";
         when(successCandidate.matches(myFailureStep, null)).thenReturn(true);
-        when(successCandidate.isAndStep(myFailureStep)).thenReturn(false);
         when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Outcome.FAILURE)).thenReturn(failureStep);
 
         List<CandidateSteps> steps = mockCandidateSteps(anyCandidate, successCandidate, failureCandidate);
@@ -138,14 +132,11 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         String myAnyStep = "my any step";
         when(anyCandidate.matches(myAnyStep, null)).thenReturn(true);
         when(anyCandidate.createMatchedStepUponOutcome(myAnyStep, parameters, Outcome.ANY)).thenReturn(anyStep);
-        when(successCandidate.isAndStep(myAnyStep)).thenReturn(false);
         String mySuccessStep = "my success step";
         when(successCandidate.matches(mySuccessStep, null)).thenReturn(true);
-        when(successCandidate.isAndStep(mySuccessStep)).thenReturn(false);
         when(successCandidate.createMatchedStepUponOutcome(mySuccessStep, parameters, Outcome.SUCCESS)).thenReturn(successStep);
         String myFailureStep = "my failure step";
         when(successCandidate.matches(myFailureStep, null)).thenReturn(true);
-        when(successCandidate.isAndStep(myFailureStep)).thenReturn(false);
         when(successCandidate.createMatchedStepUponOutcome(myFailureStep, parameters, Outcome.FAILURE)).thenReturn(failureStep);
 
         List<CandidateSteps> steps = mockCandidateSteps(anyCandidate, successCandidate, failureCandidate);
@@ -220,16 +211,12 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         String andWhenPendingStep = "And a when pending step";
         StepCandidate firstCandidate = mock(StepCandidate.class, "firstCandidate");
         when(firstCandidate.matches(givenPendingStep)).thenReturn(false);
-        when(firstCandidate.isAndStep(givenPendingStep)).thenReturn(false);
         StepCandidate secondCandidate = mock(StepCandidate.class, "secondCandidate");
         when(secondCandidate.matches(andGivenPendingStep)).thenReturn(false);
-        when(secondCandidate.isAndStep(andGivenPendingStep)).thenReturn(true);
         StepCandidate thirdCandidate = mock(StepCandidate.class, "thirdCandidate");
         when(thirdCandidate.matches(whenPendingStep)).thenReturn(false);
-        when(thirdCandidate.isAndStep(whenPendingStep)).thenReturn(false);
         StepCandidate fourthCandidate = mock(StepCandidate.class, "fourthCandidate");
         when(fourthCandidate.matches(andWhenPendingStep)).thenReturn(false);
-        when(fourthCandidate.isAndStep(andWhenPendingStep)).thenReturn(true);
         List<CandidateSteps> steps = mockCandidateSteps(firstCandidate, secondCandidate, thirdCandidate, fourthCandidate);
 
         // When

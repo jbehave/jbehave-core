@@ -106,16 +106,15 @@ public class StepCreator {
         return wrapStepUponOutcome(outcome, beforeOrAfterStep);
     }
 
-    public Map<String, String> matchedParameters(final Method method, final String stepAsString,
-            final String stepWithoutStartingWord, final Map<String, String> namedParameters) {
+    public Map<String, String> matchedParameters(final Method method, final String stepWithoutStartingWord,
+            final Map<String, String> namedParameters) {
         Map<String, String> matchedParameters = new HashMap<>();
-        if (stepMatcher.find(stepWithoutStartingWord)) { 
+        if (stepMatcher.find(stepWithoutStartingWord)) {
             // we've found a match, populate map
             ParameterName[] parameterNames = parameterNames(method);
-            Type[] types = method.getGenericParameterTypes();
+            Type[] types = parameterTypes(method, parameterNames);
+
             String[] values = parameterValuesForStep(namedParameters, types, parameterNames);
-    
-            
             for (int i = 0; i < parameterNames.length; i++) {
                 String name = parameterNames[i].name;
                 if (name == null) {
@@ -137,13 +136,22 @@ public class StepCreator {
      * @return The array of {@link ParameterName}s
      */
     private ParameterName[] parameterNames(Method method) {
-        String[] annotatedNames = annotatedParameterNames(method);
-        String[] paranamerNames = paranamerParameterNames(method);
-        String[] contextNames = contextParameterNames(method);
+        ParameterName[] parameterNames;
+        if (method != null) {
+            String[] annotatedNames = annotatedParameterNames(method);
+            String[] paranamerNames = paranamerParameterNames(method);
+            String[] contextNames = contextParameterNames(method);
 
-        ParameterName[] parameterNames = new ParameterName[annotatedNames.length];
-        for (int i = 0; i < annotatedNames.length; i++) {
-            parameterNames[i] = parameterName(annotatedNames, paranamerNames, contextNames, i);
+            parameterNames = new ParameterName[annotatedNames.length];
+            for (int i = 0; i < annotatedNames.length; i++) {
+                parameterNames[i] = parameterName(annotatedNames, paranamerNames, contextNames, i);
+            }
+        } else {
+            String[] stepMatcherParameterNames = stepMatcher.parameterNames();
+            parameterNames = new ParameterName[stepMatcherParameterNames.length];
+            for (int i = 0; i < stepMatcherParameterNames.length; i++) {
+                parameterNames[i] = new ParameterName(stepMatcherParameterNames[i], false, false);
+            }
         }
         return parameterNames;
     }
@@ -243,6 +251,17 @@ public class StepCreator {
      */
     private String[] paranamerParameterNames(Method method) {
         return paranamer.lookupParameterNames(method, false);
+    }
+
+    private Type[] parameterTypes(Method method, ParameterName[] parameterNames) {
+        if (method != null) {
+            return method.getGenericParameterTypes();
+        }
+        Type[] types = new Type[parameterNames.length];
+        for (int i = 0; i < types.length; i++) {
+            types[i] = String.class;
+        }
+        return types;
     }
 
     public Step createParametrisedStep(final Method method, final String stepAsString,
@@ -759,7 +778,7 @@ public class StepCreator {
             try {
                 parametriseStep();
                 stepMonitor.performing(parametrisedStep, dryRun);
-                if (!dryRun) {
+                if (!dryRun && method != null) {
                     Object outputObject = method.invoke(stepsInstance(), convertedParameters);
                     storeOutput(outputObject, method);
                 }
@@ -807,7 +826,7 @@ public class StepCreator {
         private void parametriseStep() {
             stepMatcher.find(stepWithoutStartingWord);
             ParameterName[] names = parameterNames(method);
-            Type[] types = method.getGenericParameterTypes();
+            Type[] types = parameterTypes(method, names);
             String[] parameterValues = parameterValuesForStep(namedParameters, types, names);
             convertedParameters = convertParameterValues(parameterValues, types, names);
             addNamedParametersToExamplesTables();

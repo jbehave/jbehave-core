@@ -1,8 +1,12 @@
 package org.jbehave.core.steps;
 
 import java.io.PrintStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.List;
+
 import org.jbehave.core.model.StepPattern;
 import org.jbehave.core.reporters.Format;
 
@@ -44,16 +48,14 @@ public class PrintStreamStepMonitor implements StepMonitor {
 	public void stepMatchesType(String step, String previous, boolean matches,
 			StepType stepType, Method method, Object stepsInstance) {
 		String message = format(STEP_MATCHES_TYPE, step, previous,
-				(matches ? MATCHES : DOES_NOT_MATCH), stepType, method,
-				asList(method.getAnnotations()), stepsInstance);
+				(matches ? MATCHES : DOES_NOT_MATCH), stepType, method, getAnnotations(method), stepsInstance);
 		print(output, message);
 	}
 
 	public void stepMatchesPattern(String step, boolean matches,
 			StepPattern stepPattern, Method method, Object stepsInstance) {
 		String message = format(STEP_MATCHES_PATTERN, step, (matches ? MATCHES
-				: DOES_NOT_MATCH), stepPattern, method, asList(method
-				.getAnnotations()), stepsInstance);
+				: DOES_NOT_MATCH), stepPattern, method, getAnnotations(method), stepsInstance);
 		print(output, message);
 	}
 
@@ -101,4 +103,8 @@ public class PrintStreamStepMonitor implements StepMonitor {
         Format.println(output, message);
 	}
 
+
+	private List<Annotation> getAnnotations(Method method) {
+		return method != null ? asList(method.getAnnotations()) : Collections.<Annotation>emptyList();
+	}
 }

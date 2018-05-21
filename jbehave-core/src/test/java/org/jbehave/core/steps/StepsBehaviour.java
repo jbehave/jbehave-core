@@ -17,7 +17,7 @@ import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.Steps.DuplicateCandidateFound;
+import org.jbehave.core.steps.AbstractCandidateSteps.DuplicateCandidateFound;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.equalTo;
