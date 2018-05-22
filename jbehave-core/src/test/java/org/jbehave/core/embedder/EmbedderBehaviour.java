@@ -7,6 +7,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
@@ -508,7 +509,7 @@ public class EmbedderBehaviour {
         }
         assertThatReportsViewGenerated(out);
         assertThat(embedder.hasExecutorService(), is(false));
-
+        assertThat(embedder.storyManager, nullValue());
     }
 
     @Test

@@ -225,6 +225,8 @@ public class Embedder {
             } finally {
                 // shutdown regardless of failures in reports view
                 shutdownExecutorService();
+                // reset story manager as executor service is shutdown
+                storyManager = null;
             }
 
         }
