@@ -7,16 +7,16 @@ import java.io.PrintStream;
  */
 public class SilentEmbedderMonitor extends PrintStreamEmbedderMonitor {
 
-	public SilentEmbedderMonitor(PrintStream output) {
-	    super(output);
+    public SilentEmbedderMonitor(PrintStream output) {
+        super(output);
     }
 
     @Override
-    protected void print(String message) {
-	}
+    protected void print(String format, Object... args) {
+    }
 
     @Override
-	protected void printStackTrace(Throwable e) {
-	}
+    protected void printStackTrace(Throwable e) {
+    }
 
 }

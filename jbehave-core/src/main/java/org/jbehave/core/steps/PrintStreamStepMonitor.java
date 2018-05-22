@@ -10,101 +10,111 @@ import java.util.List;
 import org.jbehave.core.model.StepPattern;
 import org.jbehave.core.reporters.Format;
 
-import static java.text.MessageFormat.format;
 import static java.util.Arrays.asList;
 
 /**
  * StepMonitor that prints to a {@link PrintStream}, defaulting to
- * {@link System.out}.
+ * {@link System#out}.
  */
 public class PrintStreamStepMonitor implements StepMonitor {
 
-	private static final String CONVERTED_VALUE_OF_TYPE = "Converted value ''{0}'' of type ''{1}'' to ''{2}'' with converter ''{3}''";
-	private static final String STEP_MATCHES_TYPE = "Step ''{0}'' (with previous step ''{1}'') ''{2}'' type ''{3}'' for method ''{4}'' with annotations ''{5}'' in steps instance ''{6}''";
-	private static final String STEP_MATCHES_PATTERN = "Step ''{0}'' {1} pattern ''{2}'' for method ''{3}'' with annotations ''{4}'' in steps instance ''{5}''";
-	private static final String PERFORMING = "Performing step ''{0}'' {1}";
-	private static final String DRY_RUN = "(DRY RUN)";
-	private static final String MATCHES = "matches";
-	private static final String DOES_NOT_MATCH = "does not match";
-	private static final String USING_NAME_FOR_PARAMETER = "Using {0} name ''{1}'' for parameter position {2}";
-	private static final String ANNOTATED = "annotated";
-	private static final String PARAMETER = "parameter";
-	private static final String TABLE_ANNOTATED = "table annotated";
-	private static final String TABLE_PARAMETER = "table parameter";
-	private static final String USING_NATURAL_ORDER_FOR_PARAMETER = "Using natural order for parameter position {0}";
-	private static final String FOUND_PARAMETER = "Found parameter ''{0}'' for position {1}";
-	private static final String STEPS_CONTEXT_PARAMETER = "Found parameter ''{0}'' from Steps Context";
+    private static final String CONVERTED_VALUE_OF_TYPE = "Converted value '%s' of type '%s' to '%s' with converter '%s'";
+    private static final String STEP_MATCHES_TYPE = "Step '%s' (with previous step '%s') %s type '%s' for method '%s' with annotations '%s' in steps instance '%s'";
+    private static final String STEP_MATCHES_PATTERN = "Step '%s' %s pattern '%s' for method '%s' with annotations '%s' in steps instance '%s'";
+    private static final String PERFORMING = "Performing step '%s'%s";
+    private static final String DRY_RUN = " (DRY RUN)";
+    private static final String MATCHES = "matches";
+    private static final String DOES_NOT_MATCH = "does not match";
+    private static final String USING_NAME_FOR_PARAMETER = "Using %s name '%s' for parameter position %d";
+    private static final String ANNOTATED = "annotated";
+    private static final String PARAMETER = "parameter";
+    private static final String TABLE_ANNOTATED = "table annotated";
+    private static final String TABLE_PARAMETER = "table parameter";
+    private static final String USING_NATURAL_ORDER_FOR_PARAMETER = "Using natural order for parameter position %d";
+    private static final String FOUND_PARAMETER = "Found parameter '%s' for position %d";
+    private static final String STEPS_CONTEXT_PARAMETER = "Found parameter '%s' from Steps Context";
 
-	private final PrintStream output;
+    private final PrintStream output;
 
-	public PrintStreamStepMonitor() {
-		this(System.out);
-	}
+    public PrintStreamStepMonitor() {
+        this(System.out);
+    }
 
-	public PrintStreamStepMonitor(PrintStream output) {
-		this.output = output;
-	}
+    public PrintStreamStepMonitor(PrintStream output) {
+        this.output = output;
+    }
 
-	public void stepMatchesType(String step, String previous, boolean matches,
-			StepType stepType, Method method, Object stepsInstance) {
-		String message = format(STEP_MATCHES_TYPE, step, previous,
-				(matches ? MATCHES : DOES_NOT_MATCH), stepType, method, getAnnotations(method), stepsInstance);
-		print(output, message);
-	}
+    @Override
+    public void stepMatchesType(String step, String previous, boolean matches, StepType stepType, Method method,
+            Object stepsInstance) {
+        print(STEP_MATCHES_TYPE, step, previous, matches(matches), stepType, method, getAnnotations(method),
+                stepsInstance);
+    }
 
-	public void stepMatchesPattern(String step, boolean matches,
-			StepPattern stepPattern, Method method, Object stepsInstance) {
-		String message = format(STEP_MATCHES_PATTERN, step, (matches ? MATCHES
-				: DOES_NOT_MATCH), stepPattern, method, getAnnotations(method), stepsInstance);
-		print(output, message);
-	}
+    @Override
+    public void stepMatchesPattern(String step, boolean matches, StepPattern stepPattern, Method method,
+            Object stepsInstance) {
+        print(STEP_MATCHES_PATTERN, step, matches(matches), stepPattern, method, getAnnotations(method), stepsInstance);
+    }
 
-	public void convertedValueOfType(String value, Type type, Object converted,
-			Class<?> converterClass) {
-		print(output, format(CONVERTED_VALUE_OF_TYPE, value, type,
-				converted, converterClass));
-	}
+    @Override
+    public void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass) {
+        print(CONVERTED_VALUE_OF_TYPE, value, type, converted, converterClass);
+    }
 
-	public void performing(String step, boolean dryRun) {
-		print(output, format(PERFORMING, step, (dryRun ? DRY_RUN : "")));
-	}
+    @Override
+    public void performing(String step, boolean dryRun) {
+        print(PERFORMING, step, dryRun ? DRY_RUN : "");
+    }
 
-	public void usingAnnotatedNameForParameter(String name, int position) {
-		print(output, format(USING_NAME_FOR_PARAMETER, ANNOTATED, name, position));
-	}
+    @Override
+    public void usingAnnotatedNameForParameter(String name, int position) {
+        print(USING_NAME_FOR_PARAMETER, ANNOTATED, name, position);
+    }
 
-	public void usingParameterNameForParameter(String name, int position) {
-		print(output, format(USING_NAME_FOR_PARAMETER, PARAMETER, name, position));
-	}
+    @Override
+    public void usingParameterNameForParameter(String name, int position) {
+        print(USING_NAME_FOR_PARAMETER, PARAMETER, name, position);
+    }
 
-	public void usingTableAnnotatedNameForParameter(String name, int position) {
-		print(output, format(USING_NAME_FOR_PARAMETER, TABLE_ANNOTATED, name,
-				position));
-	}
+    @Override
+    public void usingTableAnnotatedNameForParameter(String name, int position) {
+        print(USING_NAME_FOR_PARAMETER, TABLE_ANNOTATED, name, position);
+    }
 
-	public void usingTableParameterNameForParameter(String name, int position) {
-		print(output, format(USING_NAME_FOR_PARAMETER, TABLE_PARAMETER, name,
-				position));
-	}
+    @Override
+    public void usingTableParameterNameForParameter(String name, int position) {
+        print(USING_NAME_FOR_PARAMETER, TABLE_PARAMETER, name, position);
+    }
 
-	public void usingNaturalOrderForParameter(int position) {
-		print(output, format(USING_NATURAL_ORDER_FOR_PARAMETER, position));
-	}
+    @Override
+    public void usingNaturalOrderForParameter(int position) {
+        print(USING_NATURAL_ORDER_FOR_PARAMETER, position);
+    }
 
-	public void foundParameter(String parameter, int position) {
-		print(output, format(FOUND_PARAMETER, parameter, position));
-	}
+    @Override
+    public void foundParameter(String parameter, int position) {
+        print(FOUND_PARAMETER, parameter, position);
+    }
 
-	public void usingStepsContextParameter(String parameter) {
-		print(output, format(STEPS_CONTEXT_PARAMETER, parameter));
-	}
+    @Override
+    public void usingStepsContextParameter(String parameter) {
+        print(STEPS_CONTEXT_PARAMETER, parameter);
+    }
 
-	protected void print(PrintStream output, String message) {
-        Format.println(output, message);
-	}
+    protected void print(String format, Object... args) {
+        print(output, format, args);
+    }
 
+    protected void print(PrintStream output, String format, Object... args) {
+        Format.println(output, format, args);
+    }
 
-	private List<Annotation> getAnnotations(Method method) {
-		return method != null ? asList(method.getAnnotations()) : Collections.<Annotation>emptyList();
-	}
+    private List<Annotation> getAnnotations(Method method) {
+        return method != null ? asList(method.getAnnotations()) : Collections.<Annotation>emptyList();
+    }
+
+    private String matches(boolean matches) {
+        return matches ? MATCHES : DOES_NOT_MATCH;
+    }
 }

@@ -140,8 +140,8 @@ public abstract class Format {
     public abstract StoryReporter createStoryReporter(FilePrintStreamFactory factory,
             StoryReporterBuilder storyReporterBuilder);
 
-    public static void println(PrintStream writer, Object what) {
-        writer.println(what);
+    public static void println(PrintStream writer, String format, Object... args) {
+        writer.printf(format + "%n", args);
     }
 
     @Override

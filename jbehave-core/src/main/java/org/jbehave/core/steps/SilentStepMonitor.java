@@ -7,7 +7,8 @@ import java.io.PrintStream;
  */
 public class SilentStepMonitor extends PrintStreamStepMonitor {
 
-    protected void print(PrintStream output, String message) {
+    @Override
+    protected void print(PrintStream output, String format, Object... args) {
         // print nothing
     }
 

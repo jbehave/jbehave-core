@@ -17,13 +17,22 @@ public class PrintStreamAnnotationMonitor extends NullAnnotationMonitor {
         this.output = output;
     }
 
+    @Override
     public void elementCreationFailed(Class<?> elementClass, Exception cause) {
-        Format.println(output, "Element creation failed: " + elementClass);
-        cause.printStackTrace(output);
+        print("Element creation failed: %s", elementClass);
+        printStackTrace(cause);
     }
 
+    @Override
     public void annotationNotFound(Class<? extends Annotation> annotation, Object annotatedInstance) {
-        Format.println(output, "Annotation " + annotation + " not found in " + annotatedInstance);
+        print("Annotation %s not found in %s", annotation, annotatedInstance);
     }
 
+    private void print(String format, Object... args) {
+        Format.println(output, format, args);
+    }
+
+    private void printStackTrace(Throwable e) {
+        e.printStackTrace(output);
+    }
 }
