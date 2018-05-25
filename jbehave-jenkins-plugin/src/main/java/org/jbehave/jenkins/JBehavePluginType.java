@@ -9,14 +9,10 @@ import org.kohsuke.stapler.DataBoundConstructor;
 @SuppressWarnings("serial")
 public class JBehavePluginType extends TestType {
 
-    // @DataBoundConstructor
-    public JBehavePluginType(final String pattern, final boolean failedIfNotNew, final boolean deleteOutputFiles) {
-        this(pattern, failedIfNotNew, deleteOutputFiles, true);
-    }
-
     @DataBoundConstructor
-    public JBehavePluginType(final String pattern, final boolean failedIfNotNew, final boolean deleteOutputFiles, final boolean stopProcessingIfError) {
-        super(pattern, failedIfNotNew, deleteOutputFiles, stopProcessingIfError);
+    public JBehavePluginType(final String pattern, final boolean skipNoTestFiles, final boolean failIfNotNew,
+            final boolean deleteOutputFiles, final boolean stopProcessingIfError) {
+        super(pattern, skipNoTestFiles, failIfNotNew, deleteOutputFiles, stopProcessingIfError);
     }
 
     @Override

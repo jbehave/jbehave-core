@@ -17,7 +17,8 @@ public class JBehaveType extends JUnitType {
 
     @Override
     public Object readResolve() {
-        return new JBehavePluginType(this.getPattern(), this.isFailIfNotNew(), this.isDeleteOutputFiles(), this.isStopProcessingIfError());
+        return new JBehavePluginType(this.getPattern(), this.isSkipNoTestFiles(), this.isFailIfNotNew(),
+                this.isDeleteOutputFiles(), this.isStopProcessingIfError());
     }
 
 }
