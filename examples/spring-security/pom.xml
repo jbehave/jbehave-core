@@ -10,7 +10,7 @@
   <artifactId>jbehave-spring-security-example</artifactId>
   <name>JBehave Spring Security Example</name>
   <properties>
-    <spring.version>4.3.15.RELEASE</spring.version>
+    <spring.version>4.3.17.RELEASE</spring.version>
   </properties>
   <dependencies>
     <dependency>
@@ -46,7 +46,7 @@
     <dependency>
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-core</artifactId>
-      <version>4.2.5.RELEASE</version>
+      <version>4.2.6.RELEASE</version>
       <exclusions>
         <exclusion>
           <groupId>org.springframework</groupId>
@@ -118,7 +118,7 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-      <version>1.7.21</version>
+      <version>1.7.25</version>
     </dependency>
   </dependencies>
   <build>
