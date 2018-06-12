@@ -30,6 +30,12 @@ public class ExamplesTablePropertiesBehaviour {
     }
 
     @Test
+    public void canSetPropertiesWithBackwardSlash() {
+        ExamplesTableProperties properties = new ExamplesTableProperties("custom=\\", "|", "|", "|--");
+        assertThat(properties.getProperties().getProperty("custom"), equalTo("\\"));
+    }
+
+    @Test
     public void canGetDefaultProperties() {
         ExamplesTableProperties properties = new ExamplesTableProperties(new Properties());
         assertThat(properties.getHeaderSeparator(), equalTo("|"));

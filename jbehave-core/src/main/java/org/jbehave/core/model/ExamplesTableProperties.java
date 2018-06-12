@@ -2,10 +2,11 @@ package org.jbehave.core.model;
 
 import static java.lang.Boolean.parseBoolean;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
 
 public final class ExamplesTableProperties {
 
@@ -50,12 +51,17 @@ public final class ExamplesTableProperties {
         properties.setProperty(HEADER_SEPARATOR_KEY, defaultHeaderSeparator);
         properties.setProperty(VALUE_SEPARATOR_KEY, defaultValueSeparator);
         properties.setProperty(IGNORABLE_SEPARATOR_KEY, defaultIgnorableSeparator);
-        try {
-            properties.load(new ByteArrayInputStream(propertiesAsString.replace(",", System.lineSeparator()).getBytes()));
-        } catch (IOException e) {
-            // carry on
-        }
+        properties.putAll(parseProperties(propertiesAsString));
         this.propertiesAsString = propertiesAsString;
+    }
+
+    private Map<String, String> parseProperties(String propertiesAsString) {
+        Map<String, String> result = new LinkedHashMap<>();
+        for (String propertyAsString : StringUtils.split(propertiesAsString, ',')) {
+            String[] property = StringUtils.split(propertyAsString, "=", 2);
+            result.put(property[0].trim(), property[1].trim());
+        }
+        return result;
     }
 
     public String getRowSeparator() {
