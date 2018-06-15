@@ -100,13 +100,13 @@ public class PerformableTree {
                 Map<String, String> scenarioParameters = new HashMap<>(storyParameters);
                 PerformableScenario performableScenario = performableScenario(context, story, scenarioParameters, filteredStory, storyMeta,
                         runBeforeAndAfterScenarioSteps, scenario);
-                if (performableScenario.hasNormalScenario() || performableScenario.hasExamples()) {
+                if (performableScenario.isPerformable()) {
                     performableStory.add(performableScenario);
                 }
             }
 
-            // Add Given stories only if story contains scenarios
-            if (!performableStory.getScenarios().isEmpty()) {
+            // Add Given stories only if story contains allowed scenarios
+            if (performableStory.hasAllowedScenarios()) {
                 Map<String, String> givenStoryParameters = new HashMap<>(storyParameters);
                 addMetaParameters(givenStoryParameters, storyMeta);
                 if ( story.hasGivenStories() ) {
@@ -863,6 +863,14 @@ public class PerformableTree {
             return scenarios;
         }
 
+        public boolean hasAllowedScenarios() {
+            for (PerformableScenario scenario : getScenarios()) {
+                if (scenario.isAllowed()) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
     public static class PerformableScenario implements Performable {
@@ -928,6 +936,10 @@ public class PerformableTree {
 
         public boolean hasExamples() {
             return exampleScenarios != null && exampleScenarios.size() > 0;
+        }
+
+        public boolean isPerformable() {
+            return hasNormalScenario() || hasExamples() || !isAllowed();
         }
 
         public List<ExamplePerformableScenario> getExamples() {
