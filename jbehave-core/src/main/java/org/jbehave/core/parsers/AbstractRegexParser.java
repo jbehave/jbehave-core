@@ -85,12 +85,15 @@ abstract class AbstractRegexParser {
     }
 
     private String concatenateWithOr(String beforeKeyword, String afterKeyword, String[] keywords) {
-        StringBuilder builder = new StringBuilder();
         String before = beforeKeyword != null ? beforeKeyword : NONE;
         String after = afterKeyword != null ? afterKeyword : NONE;
+        StringBuilder builder = new StringBuilder(before).append("(?:");
         for (String keyword : keywords) {
-            builder.append(before).append(keyword).append(after).append("|");
+            builder.append(keyword).append('|');
         }
-        return StringUtils.removeEnd(builder.toString(), "|"); // remove last "|"
+        if (keywords.length > 0) {
+            builder.deleteCharAt(builder.length() - 1); // remove last "|"
+        }
+        return builder.append(')').append(after).toString();
     }
 }
