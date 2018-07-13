@@ -67,4 +67,16 @@ public class ExamplesTableFactoryBehaviour {
         // Then
         assertThat(examplesTable.asString(), equalTo(FILTERED_TABLE_WITH_INLINED_SEPARATTORS));
     }
+
+    @Test
+    public void shouldCreateExamplesTableFromTableInputWithInlinedSeparatorsHavingSpacesAtStart() {
+        // Given
+        ExamplesTableFactory factory = new ExamplesTableFactory(new LoadFromClasspath(), new TableTransformers());
+
+        // When
+        ExamplesTable examplesTable = factory.createExamplesTable(" " + TABLE_WITH_INLINED_SEPARATTORS);
+
+        // Then
+        assertThat(examplesTable.asString(), equalTo(FILTERED_TABLE_WITH_INLINED_SEPARATTORS));
+    }
 }

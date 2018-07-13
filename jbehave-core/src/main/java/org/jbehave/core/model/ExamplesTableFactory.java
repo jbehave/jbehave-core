@@ -81,8 +81,9 @@ public class ExamplesTableFactory {
     }
 
     protected boolean isTable(String input) {
-        return input.trim().startsWith(keywords.examplesTableHeaderSeparator())
-                || ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(input).matches();
+        String trimmedInput = input.trim();
+        return trimmedInput.startsWith(keywords.examplesTableHeaderSeparator())
+                || ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(trimmedInput).matches();
     }
 
     public void useKeywords(Keywords keywords){
