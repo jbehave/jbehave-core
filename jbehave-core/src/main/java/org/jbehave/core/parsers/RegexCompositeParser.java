@@ -40,24 +40,29 @@ public class RegexCompositeParser extends AbstractRegexParser implements Composi
     }
 
     private Composite parseComposite(String compositeAsText) {
-        String compositePattern = findCompositePattern(compositeAsText);
+        Matcher findingCompositeMatcher = findingCompositePattern().matcher(compositeAsText);
+        String compositePattern = NONE;
+        int priority = 0;
+        if (findingCompositeMatcher.find()) {
+            compositePattern = findingCompositeMatcher.group(1).trim();
+            String priorityGroup = findingCompositeMatcher.group(2);
+            if (priorityGroup != null) {
+                priority = Integer.parseInt(priorityGroup);
+            }
+        }
         String compositeWithoutKeyword = removeStart(compositeAsText, keywords().composite()).trim();
         String compositeWithoutName = removeStart(compositeWithoutKeyword, compositePattern);
         compositeWithoutName = startingWithNL(compositeWithoutName);
         List<String> steps = findSteps(compositeWithoutName);
         StepType stepType = keywords().stepTypeFor(compositePattern);
         String stepWithoutStartingWord = keywords().stepWithoutStartingWord(compositePattern, stepType);
-        return new Composite(stepType, stepWithoutStartingWord, steps);
-    }
-
-    private String findCompositePattern(String compositeAsText) {
-        Matcher findingPattern = findingCompositePattern().matcher(compositeAsText);
-        return findingPattern.find() ? findingPattern.group(1).trim() : NONE;
+        return new Composite(stepType, stepWithoutStartingWord, priority, steps);
     }
 
     // Regex Patterns
     private Pattern findingCompositePattern() {
         String startingWords = concatenateInitialStartingWords();
-        return compile(keywords().composite() + "((.)*?)\\s*(" + startingWords + ").*", DOTALL);
+        return compile(keywords().composite() + "(.*?)\\s*(?:\n\\s*" + keywords().priority() + "\\s*(\\d+)\\s*)?"
+                + startingWords + ".*", DOTALL);
     }
 }

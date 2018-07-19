@@ -45,6 +45,7 @@ public class Keywords {
     public static final String AND = "And";
     public static final String IGNORABLE = "Ignorable";
     public static final String COMPOSITE = "Composite";
+    public static final String PRIORITY = "Priority";
     public static final String PENDING = "Pending";
     public static final String NOT_PERFORMED = "NotPerformed";
     public static final String FAILED = "Failed";
@@ -68,7 +69,7 @@ public class Keywords {
 
     public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SO_THAT,
             SCENARIO, GIVEN_STORIES, LIFECYCLE, BEFORE, AFTER, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
-            EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE, COMPOSITE,
+            EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE, COMPOSITE, PRIORITY,
             PENDING, NOT_PERFORMED, FAILED, DRY_RUN, STORY_CANCELLED, DURATION, SCOPE, SCOPE_SCENARIO, SCOPE_STORY, OUTCOME, OUTCOME_ANY, OUTCOME_SUCCESS, OUTCOME_FAILURE,
             OUTCOME_DESCRIPTION, OUTCOME_VALUE, OUTCOME_MATCHER, OUTCOME_VERIFIED, META_FILTER, YES, NO);
 
@@ -96,6 +97,7 @@ public class Keywords {
     private final String and;
     private final String ignorable;
     private final String composite;
+    private final String priority;
     private final String pending;
     private final String notPerformed;
     private final String failed;
@@ -144,6 +146,7 @@ public class Keywords {
         keywords.put(AND, "And");
         keywords.put(IGNORABLE, "!--");
         keywords.put(COMPOSITE, "Composite:");
+        keywords.put(PRIORITY, "Priority:");
         keywords.put(PENDING, "PENDING");
         keywords.put(NOT_PERFORMED, "NOT PERFORMED");
         keywords.put(FAILED, "FAILED");
@@ -203,6 +206,7 @@ public class Keywords {
         this.and = keyword(AND, keywords);
         this.ignorable = keyword(IGNORABLE, keywords);
         this.composite = keyword(COMPOSITE, keywords);
+        this.priority = keyword(PRIORITY, keywords);
         this.pending = keyword(PENDING, keywords);
         this.notPerformed = keyword(NOT_PERFORMED, keywords);
         this.failed = keyword(FAILED, keywords);
@@ -330,6 +334,10 @@ public class Keywords {
 
     public String composite() {
         return composite;
+    }
+
+    public String priority() {
+        return priority;
     }
 
     public String pending() {

@@ -36,7 +36,19 @@ public class RegexCompositeParserBehaviour {
                 "Then another step";
         List<Composite> composites = parser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(1));
-        assertCompositeStep(composites.get(0), StepType.GIVEN, "a composite step",
+        assertCompositeStep(composites.get(0), StepType.GIVEN, "a composite step", 0,
+                Arrays.asList("Given a step", "Then another step"));
+    }
+
+    @Test
+    public void shouldParseCompositeStepWithPriority() {
+        String compositeStepsAsText = "Composite: Given a composite step" + NL+
+                "Priority: 1" + NL +
+                "Given a step" + NL +
+                "Then another step";
+        List<Composite> composites = parser.parseComposites(compositeStepsAsText);
+        assertThat(composites.size(), equalTo(1));
+        assertCompositeStep(composites.get(0), StepType.GIVEN, "a composite step", 1,
                 Arrays.asList("Given a step", "Then another step"));
     }
 
@@ -48,9 +60,9 @@ public class RegexCompositeParserBehaviour {
                 "Then another step" + NL;
         List<Composite> composites = parser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(2));
-        assertCompositeStep(composites.get(0), StepType.GIVEN, "the first composite step",
+        assertCompositeStep(composites.get(0), StepType.GIVEN, "the first composite step", 0,
                 Collections.singletonList("Given a step"));
-        assertCompositeStep(composites.get(1), StepType.WHEN, "the second composite step",
+        assertCompositeStep(composites.get(1), StepType.WHEN, "the second composite step", 0,
                 Collections.singletonList("Then another step"));
     }
 
@@ -61,14 +73,15 @@ public class RegexCompositeParserBehaviour {
         CompositeParser localizedParser = new RegexCompositeParser(new LocalizedKeywords(new Locale("ru")));
         List<Composite> composites = localizedParser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(1));
-        assertCompositeStep(composites.get(0), StepType.GIVEN, "композитный шаг",
+        assertCompositeStep(composites.get(0), StepType.GIVEN, "композитный шаг", 0,
                 Collections.singletonList("Дано шаг"));
     }
 
     private void assertCompositeStep(Composite composite, StepType stepType, String stepWithoutStartingWord,
-                                     List<String> steps) {
+            int priority, List<String> steps) {
         assertThat(composite.getStepType(), equalTo(stepType));
         assertThat(composite.getStepWithoutStartingWord(), equalTo(stepWithoutStartingWord));
+        assertThat(composite.getPriority(), equalTo(priority));
         assertThat(composite.getSteps(), equalTo(steps));
     }
 }

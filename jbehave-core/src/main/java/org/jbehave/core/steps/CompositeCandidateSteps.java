@@ -38,16 +38,17 @@ public class CompositeCandidateSteps extends AbstractCandidateSteps {
     private void addCandidatesFromComposites(List<StepCandidate> candidates, List<Composite> composites) {
         for (Composite composite : composites) {
             String[] steps = composite.getSteps().toArray(new String[0]);
-            addCandidatesFromVariants(candidates, composite.getStepType(),
-                    composite.getStepWithoutStartingWord(), steps);
+            addCandidatesFromVariants(candidates, composite.getStepType(), composite.getStepWithoutStartingWord(),
+                    composite.getPriority(), steps);
         }
     }
 
-    private void addCandidatesFromVariants(List<StepCandidate> candidates, StepType stepType, String value, String[] steps) {
+    private void addCandidatesFromVariants(List<StepCandidate> candidates, StepType stepType, String value,
+            int priority, String[] steps) {
         PatternVariantBuilder b = new PatternVariantBuilder(value);
         for (String variant : b.allVariants()) {
             checkForDuplicateCandidates(candidates, stepType, variant);
-            StepCandidate candidate = createCandidate(variant, 0, stepType, null, null, null);
+            StepCandidate candidate = createCandidate(variant, priority, stepType, null, null, null);
             candidate.composedOf(steps);
             candidates.add(candidate);
         }

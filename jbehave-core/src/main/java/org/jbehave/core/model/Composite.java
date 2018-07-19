@@ -19,11 +19,13 @@ public class Composite {
 
     private StepType stepType;
     private String stepWithoutStartingWord;
+    private int priority;
     private List<String> steps;
 
-    public Composite(StepType stepType, String stepWithoutStartingWord, List<String> steps) {
+    public Composite(StepType stepType, String stepWithoutStartingWord, int priority, List<String> steps) {
         this.stepType = stepType;
         this.stepWithoutStartingWord = stepWithoutStartingWord;
+        this.priority = priority;
         this.steps = steps;
     }
 
@@ -33,6 +35,10 @@ public class Composite {
 
     public String getStepWithoutStartingWord() {
         return stepWithoutStartingWord;
+    }
+
+    public int getPriority() {
+        return priority;
     }
 
     public List<String> getSteps() {
