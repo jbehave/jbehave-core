@@ -92,7 +92,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
         }
     }
 
-    private List<DelayedMethod> delayedMethods = new ArrayList<>();
+    private final List<DelayedMethod> delayedMethods;
     private final StoryReporter crossReferencing;
     private final StoryReporter delegate;
     private final boolean multiThreading;
@@ -100,8 +100,9 @@ public class ConcurrentStoryReporter implements StoryReporter {
 
     public ConcurrentStoryReporter(StoryReporter crossReferencing, StoryReporter delegate, boolean multiThreading) {
         this.crossReferencing = crossReferencing;
-        this.multiThreading = multiThreading;
         this.delegate = delegate;
+        this.multiThreading = multiThreading;
+        delayedMethods = multiThreading ? Collections.synchronizedList(new ArrayList<DelayedMethod>()) : null;
     }
 
     @Override
