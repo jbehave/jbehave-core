@@ -61,6 +61,14 @@ public class StoryManager {
 		return performableTree.storyOfPath(configuration, storyPath);
 	}
 
+	public List<Story> storiesOfPaths(List<String> storyPaths) {
+		List<Story> stories = new ArrayList<>(storyPaths.size());
+		for (String storyPath : storyPaths) {
+			stories.add(storyOfPath(storyPath));
+		}
+		return stories;
+	}
+
 	public Story storyOfText(String storyAsText, String storyId) {
 		return performableTree.storyOfText(configuration, storyAsText, storyId);
 	}
@@ -83,17 +91,9 @@ public class StoryManager {
 
 	public void runStoriesAsPaths(List<String> storyPaths, MetaFilter filter,
 			BatchFailures failures) {
-		runStories(storiesOf(storyPaths), filter, failures);
+		runStories(storiesOfPaths(storyPaths), filter, failures);
 	}
 
-	private List<Story> storiesOf(List<String> storyPaths) {
-		List<Story> stories = new ArrayList<>();
-		for (String storyPath : storyPaths) {
-			stories.add(storyOfPath(storyPath));
-		}
-		return stories;
-	}
-	
 	public void runStories(List<Story> stories, MetaFilter filter,
 			BatchFailures failures) {
 		// create new run context
