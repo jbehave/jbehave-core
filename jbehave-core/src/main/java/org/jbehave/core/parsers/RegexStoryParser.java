@@ -386,12 +386,12 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
 
     private Pattern findingScenarioTitle() {
         String startingWords = concatenateInitialStartingWords();
-        return compile(keywords().scenario() + "((.)*?)\\s*(" + keywords().meta() + "|" + startingWords + ").*", DOTALL);
+        return compile(keywords().scenario() + "(.*?)\\s*(" + keywords().meta() + "|" + startingWords + "|$).*", DOTALL);
     }
 
     private Pattern findingScenarioMeta() {
         String startingWords = concatenateInitialStartingWords();
-        return compile(".*" + keywords().meta() + "(.*?)\\s*(" + keywords().givenStories() + "|" + startingWords + ").*",
+        return compile(".*" + keywords().meta() + "(.*?)\\s*(" + keywords().givenStories() + "|" + startingWords + "|$).*",
                 DOTALL);
     }
 
