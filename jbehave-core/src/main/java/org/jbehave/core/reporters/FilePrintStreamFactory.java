@@ -105,7 +105,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
     public static class ResolveToPackagedName extends AbstractPathResolver {
 
         public String resolveName(StoryLocation storyLocation, String extension) {
-            String name = storyLocation.getPath().replace('/', '.');
+            String name = storyLocation.getPath().replaceAll(":?/", ".");
             if (name.startsWith(".")) {
                 name = name.substring(1);
             }

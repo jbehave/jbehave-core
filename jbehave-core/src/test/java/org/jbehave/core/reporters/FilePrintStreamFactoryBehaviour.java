@@ -67,6 +67,8 @@ public class FilePrintStreamFactoryBehaviour {
                 "org.jbehave.examples.trader.stories.my_given.ext", null);
         assertThatOutputNameIs("my_given.story", "my_given.ext", null);
         assertThatOutputNameIs("my_given", "my_given.ext", null);
+        assertThatOutputNameIs("c:/org/jbehave/examples/trader/stories/my_given.story",
+                "c.org.jbehave.examples.trader.stories.my_given.ext", null);
     }
 
     @Test
