@@ -6,9 +6,6 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Named;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-import org.jbehave.core.steps.InjectableStepsFactory;
-import org.jbehave.core.steps.InstanceStepsFactory;
-import org.jbehave.examples.core.CoreStory;
 
 import java.util.LinkedList;
 import java.util.List;

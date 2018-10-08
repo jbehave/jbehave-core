@@ -19,7 +19,6 @@ import org.jbehave.core.embedder.EmbedderControls;
 import org.jbehave.core.embedder.EmbedderMonitor;
 import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.embedder.NullEmbedderMonitor;
-import org.jbehave.core.embedder.StoryTimeouts;
 import org.jbehave.core.embedder.UnmodifiableEmbedderControls;
 import org.jbehave.core.embedder.executors.ExecutorServiceFactory;
 import org.jbehave.core.failures.BatchFailures;

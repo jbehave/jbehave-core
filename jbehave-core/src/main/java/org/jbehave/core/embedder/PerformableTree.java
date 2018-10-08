@@ -17,7 +17,6 @@ import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
 import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.IgnoringStepsFailure;
-import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.PendingStepsFound;
 import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.RestartingStoryFailure;
@@ -38,8 +37,6 @@ import org.jbehave.core.steps.context.StepsContext;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
-
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 /**
  * Creates a tree of {@link Performable} objects for a set of stories, grouping

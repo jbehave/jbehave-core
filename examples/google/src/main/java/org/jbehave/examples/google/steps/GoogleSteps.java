@@ -1,7 +1,5 @@
 package org.jbehave.examples.google.steps;
 
-import java.io.IOException;
-
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Given;

@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import org.hibernate.SessionFactory;
 import org.jbehave.example.spring.security.domain.Organization;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.stereotype.Repository;
 
 

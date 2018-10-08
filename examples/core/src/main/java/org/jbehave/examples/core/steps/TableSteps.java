@@ -1,7 +1,5 @@
 package org.jbehave.examples.core.steps;
 
-import java.util.Properties;
-
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.Given;

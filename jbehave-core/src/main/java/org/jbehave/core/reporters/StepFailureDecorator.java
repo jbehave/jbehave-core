@@ -4,9 +4,6 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.failures.StepFailed;
 import org.jbehave.core.model.*;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * <p>
  * When a step fails, the {@link Throwable} that caused the failure is wrapped

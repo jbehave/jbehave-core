@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;

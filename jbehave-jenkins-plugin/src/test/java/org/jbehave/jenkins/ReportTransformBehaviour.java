@@ -3,8 +3,6 @@ package org.jbehave.jenkins;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.stream.StreamResult;
