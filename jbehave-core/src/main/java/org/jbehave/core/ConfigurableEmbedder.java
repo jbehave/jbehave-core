@@ -81,14 +81,16 @@ public abstract class ConfigurableEmbedder implements Embeddable {
 	/**
 	 * @deprecated Use {@link #useStepsFactory(InjectableStepsFactory)}
 	 */
-	public void addSteps(CandidateSteps... steps) {
+	@Deprecated
+    public void addSteps(CandidateSteps... steps) {
 		addSteps(asList(steps));
 	}
 
 	/**
 	 * @deprecated Use {@link #useStepsFactory(InjectableStepsFactory)}
 	 */
-	public void addSteps(List<CandidateSteps> steps) {
+	@Deprecated
+    public void addSteps(List<CandidateSteps> steps) {
 		if ( candidateSteps == null ){
 			this.candidateSteps = new ArrayList<>();
 		}
@@ -98,7 +100,8 @@ public abstract class ConfigurableEmbedder implements Embeddable {
 	/**
 	 * @deprecated Use {@link #stepsFactory()}
 	 */
-	public List<CandidateSteps> candidateSteps() {
+	@Deprecated
+    public List<CandidateSteps> candidateSteps() {
 		return candidateSteps;
 	}
 

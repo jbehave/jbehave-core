@@ -141,21 +141,24 @@ public class CrossReference {
 	/**
 	 * @deprecated
 	 */
-	public synchronized void outputToFiles(
+	@Deprecated
+    public synchronized void outputToFiles(
 			StoryReporterBuilder storyReporterBuilder) {
 	}
 
 	/**
 	 * @deprecated
 	 */
-	public CrossReference withMetaFilter(String metaFilter) {
+	@Deprecated
+    public CrossReference withMetaFilter(String metaFilter) {
 		return this;
 	}
 
 	/**
 	 * @deprecated
 	 */
-	public CrossReference withPendingStepStrategy(
+	@Deprecated
+    public CrossReference withPendingStepStrategy(
 			PendingStepStrategy pendingStepStrategy) {
 		return this;
 	}
@@ -163,21 +166,24 @@ public class CrossReference {
 	/**
 	 * @deprecated
 	 */
-	public CrossReference withOutputAfterEachStory(boolean outputAfterEachStory) {
+	@Deprecated
+    public CrossReference withOutputAfterEachStory(boolean outputAfterEachStory) {
 		return this;
 	}
 
 	/**
 	 * @deprecated
 	 */
-	public CrossReference withThreadSafeDelegateFormat(Format format) {
+	@Deprecated
+    public CrossReference withThreadSafeDelegateFormat(Format format) {
 		return this;
 	}
 
 	/**
 	 * @deprecated
 	 */
-	public CrossReference excludingStoriesWithNoExecutedScenarios(
+	@Deprecated
+    public CrossReference excludingStoriesWithNoExecutedScenarios(
 			boolean exclude) {
 		return this;
 	}
@@ -185,47 +191,54 @@ public class CrossReference {
 	/**
 	 * @deprecated
 	 */
-	public String getMetaFilter() {
+	@Deprecated
+    public String getMetaFilter() {
 		return "";
 	}
 
 	/**
 	 * @deprecated
 	 */
-	public StepMonitor getStepMonitor() {
+	@Deprecated
+    public StepMonitor getStepMonitor() {
 		return new NullStepMonitor();
 	}
 
 	/**
 	 * @deprecated
 	 */
-	protected XRefRoot newXRefRoot() {
+	@Deprecated
+    protected XRefRoot newXRefRoot() {
 		return new XRefRoot();
 	}
 
 	/**
 	 * @deprecated
 	 */
-	protected Writer makeWriter(File file) throws IOException {
+	@Deprecated
+    protected Writer makeWriter(File file) throws IOException {
 		return new FileWriter(file);
 	}
 
 	/**
 	 * @deprecated
 	 */
-	protected void aliasForXRefStory(XStream xstream) {
+	@Deprecated
+    protected void aliasForXRefStory(XStream xstream) {
 	}
 
 	/**
 	 * @deprecated
 	 */
-	protected void aliasForXRefRoot(XStream xstream) {
+	@Deprecated
+    protected void aliasForXRefRoot(XStream xstream) {
 	}
 
 	/**
 	 * @deprecated
 	 */
-	public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
+	@Deprecated
+    public StoryReporter createStoryReporter(FilePrintStreamFactory factory,
 			final StoryReporterBuilder storyReporterBuilder) {
 		return new NullStoryReporter();
 	}
@@ -233,13 +246,15 @@ public class CrossReference {
 	/**
 	 * @deprecated
 	 */
-	public static class XRefRoot {
+	@Deprecated
+    public static class XRefRoot {
 	}
 
 	/**
 	 * @deprecated
 	 */
-	public static class XRefStory {
+	@Deprecated
+    public static class XRefStory {
 	}
 
 	public static class XRef {

@@ -168,6 +168,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @parameter
      * @deprecated Use storyTimeouts
      */
+    @Deprecated
     long storyTimeoutInSecs;
     
     /**
@@ -176,6 +177,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @parameter
      * @deprecated Use storyTimeouts
      */
+    @Deprecated
     String storyTimeoutInSecsByPath;
 
     /**
@@ -219,6 +221,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
      * @parameter default-value="org.jbehave.core.junit.AnnotatedEmbedderRunner"
      * @deprecated Obsolete
      */
+    @Deprecated
     String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
 
     /**

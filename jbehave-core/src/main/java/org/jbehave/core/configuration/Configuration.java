@@ -257,6 +257,7 @@ public abstract class Configuration {
     /**
      * @deprecated Use {@link StoryReporterBuilder}
      */
+    @Deprecated
     public StoryReporter defaultStoryReporter() {
         if (defaultStoryReporter == null) {
             defaultStoryReporter = new ConsoleOutput();

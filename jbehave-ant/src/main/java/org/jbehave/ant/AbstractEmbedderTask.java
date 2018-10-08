@@ -115,12 +115,14 @@ public abstract class AbstractEmbedderTask extends Task {
      * The story timeout in secs
      * @deprecated Use storyTimeouts
      */
+    @Deprecated
     long storyTimeoutInSecs;
     
     /**
      * The story timeout in secs by path
      * @deprecated Use storyTimeouts
      */
+    @Deprecated
     String storyTimeoutInSecsByPath;
 
     /**
@@ -153,6 +155,7 @@ public abstract class AbstractEmbedderTask extends Task {
      * 
      * @deprecated Obsolete
      */
+    @Deprecated
     String annotatedEmbedderRunnerClass = AnnotatedEmbedderRunner.class.getName();
 
     /**

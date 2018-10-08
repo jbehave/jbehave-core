@@ -42,6 +42,7 @@ public class Lifecycle {
     }
 
     /** @deprecated Use #getBeforeSteps(Scope) */
+    @Deprecated
     public List<String> getBeforeSteps() {
         return getBeforeSteps(Scope.SCENARIO);
     }
@@ -59,6 +60,7 @@ public class Lifecycle {
     }
 
     /** @deprecated Use #getAfterSteps(Scope) */
+    @Deprecated
     public List<String> getAfterSteps() {
         return getAfterSteps(Scope.SCENARIO);
     }

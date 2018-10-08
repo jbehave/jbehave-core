@@ -29,7 +29,8 @@ public class PropertyBasedConfiguration extends MostUsefulConfiguration {
 	 * </p>
 	 * @deprecated Use StoryReporterBuilder()
 	 */
-	@Override
+	@Deprecated
+    @Override
     public StoryReporter defaultStoryReporter() {
 		StoryReporter storyReporter = super.defaultStoryReporter();
 		if (System.getProperty(SILENT_SUCCESS) == null) {

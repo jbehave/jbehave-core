@@ -46,6 +46,7 @@ import static org.codehaus.plexus.util.StringUtils.capitalizeFirstLetter;
  * @author Paul Hammant
  * @deprecated Replaced by {@link PerformableTree}.  Kept only to facilitate the comparison with 3.x.
  */
+@Deprecated
 public class StoryRunner {
 
     private ThreadLocal<FailureStrategy> currentStrategy = new ThreadLocal<>();

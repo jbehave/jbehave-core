@@ -99,6 +99,6 @@ public @interface Configure {
     /**
      * @deprecated Use storyReporterBuilder()
      */
-    Class<? extends StoryReporter> defaultStoryReporter() default ConsoleOutput.class;
+    @Deprecated Class<? extends StoryReporter> defaultStoryReporter() default ConsoleOutput.class;
 
 }

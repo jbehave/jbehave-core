@@ -35,6 +35,7 @@ public class UnmodifiableConfiguration extends Configuration {
     /**
      * @deprecated Use {@link StoryReporterBuilder}
      */
+    @Deprecated
     @Override
     public StoryReporter defaultStoryReporter() {
         return delegate.defaultStoryReporter();
