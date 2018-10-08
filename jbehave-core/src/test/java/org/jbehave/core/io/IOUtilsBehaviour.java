@@ -3,6 +3,7 @@ package org.jbehave.core.io;
 import org.junit.Test;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -67,17 +68,17 @@ public class IOUtilsBehaviour {
     // same for InputStream
     @Test
     public void shouldProcessInputStream() throws IOException {
-        assertThat(IOUtils.toString(new ByteArrayInputStream("".getBytes("UTF-8")), true), equalTo(""));
-        assertThat(IOUtils.toString(new ByteArrayInputStream("a".getBytes("UTF-8")), true), equalTo("a"));
-        assertThat(IOUtils.toString(new ByteArrayInputStream("asdf".getBytes("UTF-8")), true), equalTo("asdf"));
-        assertThat(IOUtils.toString(new ByteArrayInputStream("äöü".getBytes("UTF-8")), true), equalTo("äöü"));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8)), true), equalTo(""));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("a".getBytes(StandardCharsets.UTF_8)), true), equalTo("a"));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("asdf".getBytes(StandardCharsets.UTF_8)), true), equalTo("asdf"));
+        assertThat(IOUtils.toString(new ByteArrayInputStream("äöü".getBytes(StandardCharsets.UTF_8)), true), equalTo("äöü"));
 
-        ByteArrayInputStream input = new ByteArrayInputStream("asdf".getBytes("UTF-8"));
+        ByteArrayInputStream input = new ByteArrayInputStream("asdf".getBytes(StandardCharsets.UTF_8));
         assertThat(IOUtils.toString(input, false), equalTo("asdf"));
         input.close();
 
         String longString=createLongString();
-        assertThat(IOUtils.toString(new ByteArrayInputStream(longString.getBytes("UTF-8")), true), equalTo(longString));
+        assertThat(IOUtils.toString(new ByteArrayInputStream(longString.getBytes(StandardCharsets.UTF_8)), true), equalTo(longString));
 
         assertThat(IOUtils.toString(new FileInputStream("src/test/resources/testfile"), true), equalTo("##########"));
 
