@@ -24,6 +24,7 @@ public class WeldAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
         this.annotationBuilder = container.findAnnotationBuilder(testClass());
     }
 
+    @Override
     public AnnotationBuilder annotationBuilder() {
         return annotationBuilder;
     }

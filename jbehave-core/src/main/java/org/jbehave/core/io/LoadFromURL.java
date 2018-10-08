@@ -9,6 +9,7 @@ import java.net.URL;
  */
 public class LoadFromURL implements ResourceLoader, StoryLoader {
 
+    @Override
     public String loadResourceAsText(String resourcePath) {
         try {
             return IOUtils.toString(resourceAsStream(resourcePath), true);
@@ -17,6 +18,7 @@ public class LoadFromURL implements ResourceLoader, StoryLoader {
         }
     }
 
+    @Override
     public String loadStoryAsText(String storyPath) {
         return loadResourceAsText(storyPath);
     }

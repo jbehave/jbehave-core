@@ -101,7 +101,8 @@ public class ScanningStepsFactory extends AbstractStepsFactory {
 		return matchingTypes;
 	}
 
-	public Object createInstanceOfType(Class<?> type) {
+	@Override
+    public Object createInstanceOfType(Class<?> type) {
 		Object instance;
 		try {
 			instance = type.newInstance();

@@ -1188,18 +1188,22 @@ public class EmbedderBehaviour {
 
     private class MyEmbeddable implements Embeddable {
 
+        @Override
         public void useEmbedder(Embedder embedder) {
         }
 
+        @Override
         public void run() throws Throwable {
         }
     }
 
     private class MyOtherEmbeddable implements Embeddable {
 
+        @Override
         public void useEmbedder(Embedder embedder) {
         }
 
+        @Override
         public void run() throws Throwable {
         }
     }
@@ -1225,6 +1229,7 @@ public class EmbedderBehaviour {
 
         static boolean hasRun;
 
+        @Override
         @Test
         public void run() {
             hasRun = true;
@@ -1236,6 +1241,7 @@ public class EmbedderBehaviour {
     @UsingEmbedder()
     public static class FailingWithAnnotatedEmbedderRunner extends InjectableEmbedder {
 
+        @Override
         @Test
         public void run() {
             throw new RuntimeException();

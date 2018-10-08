@@ -33,6 +33,7 @@ public abstract class AbstractStepResult implements StepResult {
             super(asString(method), Type.FAILED, throwable);
         }
 
+        @Override
         public void describeTo(StoryReporter reporter) {
             if (throwable.getCause() instanceof OutcomesFailed) {
                 reporter.failedOutcomes(parametrisedStep(), ((OutcomesFailed) throwable.getCause()).outcomesTable());
@@ -48,6 +49,7 @@ public abstract class AbstractStepResult implements StepResult {
             super(Type.NOT_PERFORMED, step);
         }
 
+        @Override
         public void describeTo(StoryReporter reporter) {
             reporter.notPerformed(parametrisedStep());
         }
@@ -62,6 +64,7 @@ public abstract class AbstractStepResult implements StepResult {
             super(step, Type.PENDING, e);
         }
 
+        @Override
         public void describeTo(StoryReporter reporter) {
             reporter.pending(parametrisedStep());
         }
@@ -77,6 +80,7 @@ public abstract class AbstractStepResult implements StepResult {
             super(Type.SUCCESSFUL, asString(method));
         }
 
+        @Override
         public void describeTo(StoryReporter reporter) {
             reporter.successful(parametrisedStep());
         }
@@ -89,6 +93,7 @@ public abstract class AbstractStepResult implements StepResult {
             super(method);
         }
 
+        @Override
         public void describeTo(StoryReporter reporter) {
             // do not report
         }
@@ -99,6 +104,7 @@ public abstract class AbstractStepResult implements StepResult {
             super(Type.IGNORABLE, step);
         }
 
+        @Override
         public void describeTo(StoryReporter reporter) {
             reporter.ignorable(step);
         }
@@ -109,6 +115,7 @@ public abstract class AbstractStepResult implements StepResult {
             super(Type.COMMENT, step);
         }
 
+        @Override
         public void describeTo(StoryReporter reporter) {
             reporter.comment(step);
         }
@@ -120,6 +127,7 @@ public abstract class AbstractStepResult implements StepResult {
             super(Type.SKIPPED, "");
         }
 
+        @Override
         public void describeTo(StoryReporter reporter) {
             // do not report
         }
@@ -141,10 +149,12 @@ public abstract class AbstractStepResult implements StepResult {
         this.throwable = throwable;
     }
 
+    @Override
     public String parametrisedStep() {
         return parametrisedStep != null ? parametrisedStep : step;
     }
 
+    @Override
     public StepResult withParameterValues(String parametrisedStep) {
         this.parametrisedStep = parametrisedStep;
         return this;
@@ -154,11 +164,13 @@ public abstract class AbstractStepResult implements StepResult {
         return timing;
     }
     
+    @Override
     public StepResult setTimings(Timer timer) {
         this.timing.setTimings(timer);
         return this;
     }
     
+    @Override
     public UUIDExceptionWrapper getFailure() {
         return throwable;
     }

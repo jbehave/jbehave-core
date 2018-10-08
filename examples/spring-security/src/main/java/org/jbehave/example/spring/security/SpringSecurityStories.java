@@ -37,6 +37,7 @@ public class SpringSecurityStories extends JUnitStories {
         return configuration;
     }
 
+    @Override
     public InjectableStepsFactory stepsFactory() {
         return new SpringStepsFactory(configuration(), context());
     }

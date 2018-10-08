@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
  */
 public class CoreStoriesUsingSpringWithAnnotationConfiguration extends CoreStoriesUsingSpring {
 
+    @Override
     protected ApplicationContext createContext() {
         return new SpringApplicationContextFactory("org.jbehave.examples.core.spring.SpringAnnotationConfiguration")
                 .createApplicationContext();

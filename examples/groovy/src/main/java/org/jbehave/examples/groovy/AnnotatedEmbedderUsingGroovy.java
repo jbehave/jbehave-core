@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 @UsingGroovy()
 public class AnnotatedEmbedderUsingGroovy extends InjectableEmbedder {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

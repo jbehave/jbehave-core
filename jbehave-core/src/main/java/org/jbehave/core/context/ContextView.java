@@ -10,9 +10,11 @@ public interface ContextView {
     void close();
     
     public static class NULL implements ContextView {
+        @Override
         public void show(String story, String scenario, String step) {
         }
 
+        @Override
         public void close() {
         }
     }

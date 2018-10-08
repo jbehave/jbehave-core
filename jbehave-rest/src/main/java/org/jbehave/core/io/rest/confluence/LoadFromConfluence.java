@@ -31,6 +31,7 @@ public class LoadFromConfluence implements ResourceLoader {
         this.confluence = new Confluence(client);
     }
 
+    @Override
     public String loadResourceAsText(String resourcePath) {
         Page page = confluence.loadPage(resourcePath, false);
         Document doc = Jsoup.parse(page.getBody());

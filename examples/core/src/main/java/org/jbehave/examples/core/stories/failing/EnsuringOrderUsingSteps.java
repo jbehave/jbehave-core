@@ -33,10 +33,12 @@ public class EnsuringOrderUsingSteps implements Embeddable {
 
     private Embedder embedder;
 
+    @Override
     public void useEmbedder(Embedder embedder) {
         this.embedder = embedder;
     }
 
+    @Override
     @Test
     public void run() {
         embedder.runStoriesAsPaths(Arrays.asList("org/jbehave/examples/core/stories/failing/ensuring_order_using_steps.story"));

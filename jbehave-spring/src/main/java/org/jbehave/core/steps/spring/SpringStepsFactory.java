@@ -57,7 +57,8 @@ public class SpringStepsFactory extends AbstractStepsFactory {
 		return type != null && !Modifier.isAbstract(type.getModifiers());
 	}
 
-	public Object createInstanceOfType(Class<?> type) {
+	@Override
+    public Object createInstanceOfType(Class<?> type) {
 		for (String name : context.getBeanDefinitionNames()) {
 			Class<?> beanType = beanType(name);
 			if (type.equals(beanType)) {

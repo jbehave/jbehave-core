@@ -16,7 +16,8 @@ public class GivenStoriesFilteredByMeta extends CoreStory {
 		configuredEmbedder().useMetaFilters(Arrays.asList("+run"));
 	}
 
-	public Configuration configuration() {
+	@Override
+    public Configuration configuration() {
 		return super.configuration().useStoryControls(
 				new StoryControls().doIgnoreMetaFiltersIfGivenStory(true));
 	}

@@ -35,10 +35,12 @@ public class UnmodifiableConfiguration extends Configuration {
     /**
      * @deprecated Use {@link StoryReporterBuilder}
      */
+    @Override
     public StoryReporter defaultStoryReporter() {
         return delegate.defaultStoryReporter();
     }
 
+    @Override
     public StoryParser storyParser() {
         return delegate.storyParser();
     }
@@ -52,62 +54,77 @@ public class UnmodifiableConfiguration extends Configuration {
         return delegate.pendingStepStrategy();
     }
 
+    @Override
     public StepCollector stepCollector() {
         return delegate.stepCollector();
     }
 
+    @Override
     public FailureStrategy failureStrategy() {
         return delegate.failureStrategy();
     }
 
+    @Override
     public Keywords keywords() {
         return delegate.keywords();
     }
 
+    @Override
     public ParameterConverters parameterConverters() {
         return delegate.parameterConverters();
     }
 
+    @Override
     public ParameterControls parameterControls(){
         return delegate.parameterControls();
     }
     
+    @Override
     public Paranamer paranamer() {
         return delegate.paranamer();
     }
 
+    @Override
     public ViewGenerator viewGenerator() {
         return delegate.viewGenerator();
     }
 
+    @Override
     public StepMonitor stepMonitor() {
         return delegate.stepMonitor();
     }
 
+    @Override
     public StepPatternParser stepPatternParser() {
         return delegate.stepPatternParser();
     }
 
+    @Override
     public boolean dryRun() {
         return delegate.dryRun();
     }
 
+    @Override
     public StoryControls storyControls() {
         return delegate.storyControls();
     }
 
+    @Override
     public StoryLoader storyLoader() {
         return delegate.storyLoader();
     }
 
+    @Override
     public StoryPathResolver storyPathResolver() {
         return delegate.storyPathResolver();
     }
 
+    @Override
     public StoryReporter storyReporter(String storyPath) {
         return delegate.storyReporter(storyPath);
     }
 
+    @Override
     public StoryReporterBuilder storyReporterBuilder() {
         return delegate.storyReporterBuilder();
     }

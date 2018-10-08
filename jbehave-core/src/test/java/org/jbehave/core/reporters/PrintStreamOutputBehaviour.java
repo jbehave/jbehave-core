@@ -194,6 +194,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         final OutputStream out = new ByteArrayOutputStream();
         PrintStreamFactory factory = new PrintStreamFactory() {
 
+            @Override
             public PrintStream createPrintStream() {
                 return new PrintStream(out);
             }
@@ -218,6 +219,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         final OutputStream out = new ByteArrayOutputStream();
         PrintStreamFactory factory = new PrintStreamFactory() {
 
+            @Override
             public PrintStream createPrintStream() {
                 return new PrintStream(out);
             }

@@ -17,6 +17,7 @@ public class SpringAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
         annotationBuilder = new SpringAnnotationBuilder(testClass());
     }
 
+    @Override
     public AnnotationBuilder annotationBuilder() {
         return annotationBuilder;
     }

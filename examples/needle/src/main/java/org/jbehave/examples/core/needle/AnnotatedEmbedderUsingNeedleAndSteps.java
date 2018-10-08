@@ -35,7 +35,8 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 @UsingNeedle
 public class AnnotatedEmbedderUsingNeedleAndSteps extends InjectableEmbedder {
 
-	@Test
+	@Override
+    @Test
 	public void run() {
 		injectedEmbedder().runStoriesAsPaths(storyPaths());
 	}

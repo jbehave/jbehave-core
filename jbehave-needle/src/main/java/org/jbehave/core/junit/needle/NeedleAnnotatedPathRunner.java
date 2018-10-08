@@ -14,7 +14,8 @@ public class NeedleAnnotatedPathRunner extends AnnotatedPathRunner {
 		super(testClass);
 	}
 
-	public AnnotationBuilder annotationBuilder() {
+	@Override
+    public AnnotationBuilder annotationBuilder() {
 		return new NeedleAnnotationBuilder(testClass());
 	}
 

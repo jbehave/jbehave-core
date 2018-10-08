@@ -27,6 +27,7 @@ public class GuiceAnnotatedEmbedderRunnerBehaviour {
 
         static boolean hasRun;
 
+        @Override
         @Test
         public void run() {
             hasRun = true;

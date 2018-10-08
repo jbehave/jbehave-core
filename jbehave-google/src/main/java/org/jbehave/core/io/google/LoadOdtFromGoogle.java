@@ -42,6 +42,7 @@ public class LoadOdtFromGoogle extends LoadOdtFromURL {
         }
     }
 
+    @Override
     protected InputStream resourceAsStream(String title) throws IOException, MalformedURLException {
         try {
             return documentAsStream(exportURL(title));

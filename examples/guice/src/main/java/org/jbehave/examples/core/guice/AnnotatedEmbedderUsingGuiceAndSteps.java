@@ -37,6 +37,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 @UsingGuice(modules = { ConfigurationModule.class })
 public class AnnotatedEmbedderUsingGuiceAndSteps extends InjectableEmbedder {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

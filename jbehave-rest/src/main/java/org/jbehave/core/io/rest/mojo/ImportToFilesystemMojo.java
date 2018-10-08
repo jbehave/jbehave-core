@@ -15,7 +15,8 @@ import org.jbehave.core.io.rest.filesystem.ImportToFilesystem;
  */
 public class ImportToFilesystemMojo extends AbstractFilesystemMojo {
 
-	public void execute() throws MojoExecutionException, MojoFailureException {
+	@Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			getLog().info(
 					"Importing to filesystem resources from REST root URI "

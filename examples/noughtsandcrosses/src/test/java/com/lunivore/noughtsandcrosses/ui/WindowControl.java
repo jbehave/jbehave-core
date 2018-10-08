@@ -18,12 +18,14 @@ public class WindowControl implements UISpecAdapter {
         reset();
     }
 
+    @Override
     public Window getMainWindow() {
         return window;
     }
 
     public void reset() {
         window = WindowInterceptor.run(new Trigger() {
+            @Override
             public void run() {
                 NoughtsAndCrosses.main(new String[0]);
             }

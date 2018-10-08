@@ -25,6 +25,7 @@ public class InjectableEmbedderBehaviour {
 
     private class StoriesAsPaths extends InjectableEmbedder {
 
+        @Override
         public void run() throws Throwable {
             injectedEmbedder().runStoriesAsPaths(asList("org/jbehave/core/story1", "org/jbehave/core/story2"));
         }

@@ -74,6 +74,7 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
     /**
      * {@inheritDoc}
      */
+    @Override
     public List<CandidateSteps> createCandidateSteps() {
         final List<CandidateSteps> result = new ArrayList<>();
         for (final Class<?> type : steps) {
@@ -85,6 +86,7 @@ public class NeedleStepsFactory extends NeedleTestcase implements InjectableStep
         return result;
     }
 
+    @Override
     public Object createInstanceOfType(final Class<?> type) {
         final Object instance = cachedTypeInstances.get(type);
         if (instance == null) {

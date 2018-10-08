@@ -14,6 +14,7 @@ import org.junit.runner.RunWith;
  */
 public class RunStoriesWithAnnotatedEmbedderRunner extends AbstractEmbedderMojo {
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
         getLog().info("Running stories with annotated embedder runner");

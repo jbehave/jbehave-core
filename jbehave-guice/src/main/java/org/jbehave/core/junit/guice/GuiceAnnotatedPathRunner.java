@@ -14,6 +14,7 @@ public class GuiceAnnotatedPathRunner extends AnnotatedPathRunner {
         super(testClass);
     }
 
+    @Override
     public AnnotationBuilder annotationBuilder() {
         return new GuiceAnnotationBuilder(testClass());
     }

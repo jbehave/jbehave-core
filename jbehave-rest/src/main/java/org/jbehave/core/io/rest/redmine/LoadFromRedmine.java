@@ -24,11 +24,13 @@ public class LoadFromRedmine extends LoadFromREST {
 		super(type, username, password);
 	}
 
-	protected String uri(String resourcePath, Type type) {
+	@Override
+    protected String uri(String resourcePath, Type type) {
 		return format(REDMINE_URI, resourcePath, type.name().toLowerCase());
 	}
 
-	protected String text(String entity, Type type) {
+	@Override
+    protected String text(String entity, Type type) {
 		switch (type) {
 		case JSON:
 			Gson gson = new Gson();

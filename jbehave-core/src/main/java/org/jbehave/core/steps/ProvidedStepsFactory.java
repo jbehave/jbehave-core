@@ -16,10 +16,12 @@ public class ProvidedStepsFactory implements InjectableStepsFactory {
         this.candidateSteps = candidateSteps;
     }
 
+    @Override
     public List<CandidateSteps> createCandidateSteps() {
         return candidateSteps;
     }
 
+    @Override
     public Object createInstanceOfType(Class<?> type) {
         Object instance = null;
         for (CandidateSteps steps : candidateSteps) {

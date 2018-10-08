@@ -19,17 +19,20 @@ public class RegexStepMatcher implements StepMatcher {
         this.stepPattern = new StepPattern(stepType, annotatedPattern, regexPattern.pattern());
     }
 	
-	public boolean matches(String stepWithoutStartingWord){
+	@Override
+    public boolean matches(String stepWithoutStartingWord){
 		matcher(stepWithoutStartingWord);
 		return matcher.matches();
 	}
 
-	public boolean find(String stepWithoutStartingWord){
+	@Override
+    public boolean find(String stepWithoutStartingWord){
 		matcher(stepWithoutStartingWord);
 		return matcher.find();
 	}
 	
-	public String parameter(int matchedPosition) {
+	@Override
+    public String parameter(int matchedPosition) {
 		return matcher.group(matchedPosition);
 	}
 
@@ -37,10 +40,12 @@ public class RegexStepMatcher implements StepMatcher {
 		matcher = regexPattern.matcher(patternToMatch);
 	}
 
-	public String[] parameterNames(){
+	@Override
+    public String[] parameterNames(){
 		return parameterNames;
 	}
 
+    @Override
     public StepPattern pattern() {
         return stepPattern;
     }

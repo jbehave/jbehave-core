@@ -33,6 +33,7 @@ public class ImportToFilesystem implements ResourceImporter {
         this.targetExt = targetExt;
     }
 
+    @Override
     public void importResources(String rootURI) {
         Map<String, Resource> index = indexer.indexResources(rootURI);
         loadResources(index);

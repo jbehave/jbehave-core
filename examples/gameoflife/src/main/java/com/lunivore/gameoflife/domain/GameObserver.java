@@ -4,6 +4,7 @@ public interface GameObserver {
 
     GameObserver NULL = new GameObserver() {
 
+        @Override
         public void gridChanged(Grid grid) {}
         
     };

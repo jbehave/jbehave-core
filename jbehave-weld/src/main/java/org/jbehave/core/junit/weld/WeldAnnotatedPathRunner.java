@@ -20,6 +20,7 @@ public class WeldAnnotatedPathRunner extends AnnotatedPathRunner {
 
     }
 
+    @Override
     public AnnotationBuilder annotationBuilder() {
         if (container == null) {
             container = new WeldBootstrap();

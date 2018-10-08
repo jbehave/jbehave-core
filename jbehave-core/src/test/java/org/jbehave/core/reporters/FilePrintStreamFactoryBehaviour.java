@@ -100,6 +100,7 @@ public class FilePrintStreamFactoryBehaviour {
         String storyPath = "org/jbehave/examples/trader/stories/my_given.story";
         FileConfiguration configuration = new FileConfiguration("ext");
         FilePrintStreamFactory factory = new FilePrintStreamFactory(new StoryLocation(codeLocation, storyPath), configuration){
+            @Override
             protected File outputDirectory() {
                 return new File((String)null);
             }

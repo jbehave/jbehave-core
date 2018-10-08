@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
  */
 public class RunStoriesWithAnnotatedEmbedderRunner extends AbstractEmbedderTask {
 
+    @Override
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
         log("Running stories with annotated embedder runner", MSG_INFO);

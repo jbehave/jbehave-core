@@ -22,6 +22,7 @@ public class UploadToREST implements ResourceUploader {
         this.client = client;
     }
     
+    @Override
     public void uploadResource(Resource resource) {
         try {
             Type type = client.getType();

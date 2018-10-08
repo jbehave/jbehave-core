@@ -17,7 +17,8 @@ public class NeedleAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
 		this.annotationBuilder = new NeedleAnnotationBuilder(testClass());
 	}
 
-	public AnnotationBuilder annotationBuilder() {
+	@Override
+    public AnnotationBuilder annotationBuilder() {
 		return annotationBuilder;
 	}
 

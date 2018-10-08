@@ -331,10 +331,12 @@ public class ConcurrencyBehaviour {
 
         public static class MyStoryLoader implements StoryLoader {
 
+            @Override
             public String loadStoryAsText(String storyPath) {
                 return "Scenario: \nGiven something too long";
             }
 
+            @Override
             public String loadResourceAsText(String resourcePath) {
                 return null;
             }

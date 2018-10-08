@@ -9,9 +9,11 @@ import java.lang.annotation.Annotation;
  */
 public class NullAnnotationMonitor implements AnnotationMonitor {
 
+    @Override
     public void elementCreationFailed(Class<?> elementClass, Exception cause) {
     }
 
+    @Override
     public void annotationNotFound(Class<? extends Annotation> annotation, Object annotatedInstance) {
     }
 

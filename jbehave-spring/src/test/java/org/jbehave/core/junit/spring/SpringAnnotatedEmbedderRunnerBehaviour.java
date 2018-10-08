@@ -27,6 +27,7 @@ public class SpringAnnotatedEmbedderRunnerBehaviour {
 
         static boolean hasRun;
 
+        @Override
         @Test
         public void run() {
             hasRun = true;

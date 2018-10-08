@@ -121,6 +121,7 @@ public class SpringStepsFactoryBehaviour {
 				new String[] { "fooSteps", "undefined", "blowUp" });
 		doAnswer(new Answer<Class<FooSteps>>() {
 
+			@Override
 			public Class<FooSteps> answer(InvocationOnMock invocation)
 					throws Throwable {
 
@@ -130,6 +131,7 @@ public class SpringStepsFactoryBehaviour {
 		when(context.getType("undefined")).thenReturn(null);
 		doAnswer(new Answer<Class<BlowUp>>() {
 
+			@Override
 			public Class<BlowUp> answer(InvocationOnMock invocation)
 					throws Throwable {
 

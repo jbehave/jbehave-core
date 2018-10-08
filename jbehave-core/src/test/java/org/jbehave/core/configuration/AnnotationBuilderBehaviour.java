@@ -207,10 +207,12 @@ public class AnnotationBuilderBehaviour {
 
     static class MyParameterConverter implements ParameterConverter<String> {
 
+        @Override
         public boolean accept(Type type) {
             return true;
         }
 
+        @Override
         public String convertValue(String value, Type type) {
             return value + "Converted";
         }
@@ -268,6 +270,7 @@ public class AnnotationBuilderBehaviour {
     @Configure(using = MyConfiguration.class)
     static class AnnotatedCustomConfiguration extends InjectableEmbedder {
 
+        @Override
         public void run() throws Throwable {
         }
 
@@ -282,7 +285,8 @@ public class AnnotationBuilderBehaviour {
 	@UsingSteps(instances = { MySteps.class })
 	static class AnnotedEmbedderControls extends InjectableEmbedder {
 
-		public void run() throws Throwable {
+		@Override
+        public void run() throws Throwable {
 		}
 
 	}
@@ -292,6 +296,7 @@ public class AnnotationBuilderBehaviour {
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedInjectable extends InjectableEmbedder {
 
+        @Override
         public void run() throws Throwable {
         }
 
@@ -302,6 +307,7 @@ public class AnnotationBuilderBehaviour {
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedInjectableWithoutStepsFactory extends InjectableEmbedder {
 
+        @Override
         public void run() throws Throwable {
         }
 
@@ -312,6 +318,7 @@ public class AnnotationBuilderBehaviour {
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedConfigurable extends ConfigurableEmbedder {
 
+        @Override
         public void run() throws Throwable {
         }
 
@@ -322,6 +329,7 @@ public class AnnotationBuilderBehaviour {
     @UsingSteps(instances = { MySteps.class })
     static class AnnotedConfigurableWithoutStepsFactory extends ConfigurableEmbedder {
 
+        @Override
         public void run() throws Throwable {
         }
 
@@ -336,6 +344,7 @@ public class AnnotationBuilderBehaviour {
     @UsingSteps(instances = { MySteps.class })
     private static class AnnotatedPrivate extends ConfigurableEmbedder {
 
+        @Override
         public void run() throws Throwable {
         }
 

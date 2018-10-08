@@ -23,6 +23,7 @@ public class LoadFromREST implements ResourceLoader {
         this.client = client;
     }
     
+    @Override
     public String loadResourceAsText(String resourcePath) {
 		try {
 			Type type = client.getType();

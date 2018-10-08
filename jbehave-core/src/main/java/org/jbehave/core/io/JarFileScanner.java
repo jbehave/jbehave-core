@@ -91,6 +91,7 @@ public class JarFileScanner {
     private List<String> toLocalPath(List<String> patternList) {
         List<String> transformed = new ArrayList<>(patternList);
         CollectionUtils.transform(transformed, new Transformer<String, String>() {
+            @Override
             public String transform(String pattern) {
                 return pattern!=null ? pattern.replace('/', File.separatorChar) : null;
             }

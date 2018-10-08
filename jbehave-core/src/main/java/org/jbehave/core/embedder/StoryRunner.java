@@ -561,6 +561,7 @@ public class StoryRunner {
 
     private final class FineSoFar implements State {
 
+        @Override
         public State run(Step step) {
             if ( step instanceof ParametrisedStep ){
                 ((ParametrisedStep)step).describeTo(reporter.get());
@@ -600,6 +601,7 @@ public class StoryRunner {
             this.failure = failure;
         }
 
+        @Override
         public State run(Step step) {
             StepResult result = step.doNotPerform(failure);
             result.describeTo(reporter.get());

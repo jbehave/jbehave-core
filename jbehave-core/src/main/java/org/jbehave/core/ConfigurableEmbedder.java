@@ -61,7 +61,8 @@ public abstract class ConfigurableEmbedder implements Embeddable {
 	private InjectableStepsFactory stepsFactory;
 	private List<CandidateSteps> candidateSteps;
 
-	public void useEmbedder(Embedder embedder) {
+	@Override
+    public void useEmbedder(Embedder embedder) {
 		this.embedder = embedder;
 	}
 

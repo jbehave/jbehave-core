@@ -41,6 +41,7 @@ public class BytecodeGroovyClassLoader extends GroovyClassLoader {
         // These six lines copied from Groovy itself, with the intention to
         // return a subclass
         InnerLoader loader = AccessController.doPrivileged(new PrivilegedAction<InnerLoader>() {
+            @Override
             public InnerLoader run() {
                 return new InnerLoader(BytecodeGroovyClassLoader.this);
             }

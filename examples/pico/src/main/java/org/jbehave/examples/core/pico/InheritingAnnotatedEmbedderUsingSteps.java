@@ -20,11 +20,13 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingPico {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());
     }
 
+    @Override
     protected List<String> storyPaths() {
         return new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"), "**/*.story", "");
     }

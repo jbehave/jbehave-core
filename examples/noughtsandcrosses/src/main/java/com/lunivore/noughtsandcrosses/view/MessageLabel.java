@@ -17,10 +17,12 @@ public class MessageLabel extends JLabel implements GameObserver {
         game.addObserver(this);
     }
 
+    @Override
     public void gameChanged(Game game) {
         setText(game.currentPlayer().asString() + "'s turn");
     }
     
+    @Override
     public void gameWon(Game game) {
         setText(game.currentPlayer().asString() + " wins!");
     }

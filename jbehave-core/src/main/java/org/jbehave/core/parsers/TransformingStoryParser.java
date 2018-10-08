@@ -12,11 +12,13 @@ public class TransformingStoryParser implements StoryParser {
 		this.transformers = transformers;
 	}
 
-	public Story parseStory(String storyAsText) {
+	@Override
+    public Story parseStory(String storyAsText) {
 		return delegate.parseStory(transform(storyAsText));
 	}
 
-	public Story parseStory(String storyAsText, String storyPath) {
+	@Override
+    public Story parseStory(String storyAsText, String storyPath) {
 		return delegate.parseStory(transform(storyAsText), storyPath);
 	}
 

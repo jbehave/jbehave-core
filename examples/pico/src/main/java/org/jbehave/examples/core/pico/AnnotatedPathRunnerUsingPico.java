@@ -52,6 +52,7 @@ public class AnnotatedPathRunnerUsingPico {
 
     public static class ConfigurationModule implements PicoModule {
 
+        @Override
         public void configure(MutablePicoContainer container) {
             container.addComponent(StoryControls.class, new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
             container.addComponent(StoryLoader.class, new LoadFromClasspath(this.getClass().getClassLoader()));
@@ -64,6 +65,7 @@ public class AnnotatedPathRunnerUsingPico {
 
     public static class StepsModule implements PicoModule {
 
+        @Override
         public void configure(MutablePicoContainer container) {
             container.addComponent(TradingService.class);
             container.addComponent(TraderSteps.class);

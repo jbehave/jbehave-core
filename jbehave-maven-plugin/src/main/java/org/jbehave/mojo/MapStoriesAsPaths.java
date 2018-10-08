@@ -11,6 +11,7 @@ import org.jbehave.core.embedder.Embedder;
  */
 public class MapStoriesAsPaths extends AbstractEmbedderMojo {
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
         getLog().info("Mapping stories as paths using embedder " + embedder);

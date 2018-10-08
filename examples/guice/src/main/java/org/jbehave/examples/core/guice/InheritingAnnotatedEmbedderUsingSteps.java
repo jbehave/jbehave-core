@@ -22,6 +22,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
         PriorityMatchingSteps.class, SandpitSteps.class })
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingGuice {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

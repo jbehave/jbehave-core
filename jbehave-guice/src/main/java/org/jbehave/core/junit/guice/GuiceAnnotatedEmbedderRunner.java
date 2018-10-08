@@ -17,6 +17,7 @@ public class GuiceAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
         this.annotationBuilder = new GuiceAnnotationBuilder(testClass());
     }
 
+    @Override
     public AnnotationBuilder annotationBuilder() {
         return annotationBuilder;
     }

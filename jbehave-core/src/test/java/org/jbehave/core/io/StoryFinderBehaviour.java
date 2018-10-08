@@ -113,6 +113,7 @@ public class StoryFinderBehaviour {
     public void shouldFindAndSortClassNamesWithCustomComparator() {
         // comparator that sorts in reversed natural order
         final Comparator<String> comparator = new Comparator<String>() {
+            @Override
             public int compare(String o1, String o2) {
                 return -1 * o1.compareTo(o2);
             }

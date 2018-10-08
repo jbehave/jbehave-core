@@ -61,6 +61,7 @@ public class ConfigurationProducer
     
     public static class CustomConverter extends AbstractParameterConverter<CustomObject> {
 
+        @Override
         public CustomObject convertValue(String value, Type type) {
             return new CustomObject(value);
         }

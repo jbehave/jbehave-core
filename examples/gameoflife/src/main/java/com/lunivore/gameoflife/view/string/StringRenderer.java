@@ -19,6 +19,7 @@ public class StringRenderer implements GameObserver {
         return builder.toString();
     }
 
+    @Override
     public void gridChanged(Grid grid) {
         this.grid = grid;
     }

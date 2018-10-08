@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 @UsingPico(modules = { ConfigurationModule.class })
 public abstract class ParentAnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

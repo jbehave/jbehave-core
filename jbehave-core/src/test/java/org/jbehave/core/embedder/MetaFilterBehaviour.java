@@ -152,10 +152,12 @@ public class MetaFilterBehaviour {
 
     public class AnythingGoesMetaMatcher implements MetaMatcher {
 
-		public void parse(String filterAsString) {
+		@Override
+        public void parse(String filterAsString) {
 		}
 
-		public boolean match(Meta meta) {
+		@Override
+        public boolean match(Meta meta) {
 			return true;
 		}
 

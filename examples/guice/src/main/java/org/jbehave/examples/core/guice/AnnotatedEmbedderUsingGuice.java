@@ -53,6 +53,7 @@ import static org.jbehave.core.reporters.Format.XML;
 @UsingGuice(modules = { ConfigurationModule.class, StepsModule.class })
 public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

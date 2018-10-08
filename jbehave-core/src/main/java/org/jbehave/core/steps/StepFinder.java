@@ -142,8 +142,10 @@ public class StepFinder {
      */
     public static class ByPriorityField implements PrioritisingStrategy {
 
+        @Override
         public List<StepCandidate> prioritise(String stepAsText, List<StepCandidate> candidates) {
             Collections.sort(candidates, new Comparator<StepCandidate>() {
+                @Override
                 public int compare(StepCandidate o1, StepCandidate o2) {
                     return o2.getPriority().compareTo(o1.getPriority());
                 }
@@ -161,8 +163,10 @@ public class StepFinder {
 
         private LevenshteinDistance ld = new LevenshteinDistance();
 
+        @Override
         public List<StepCandidate> prioritise(final String stepAsText, List<StepCandidate> candidates) {
             Collections.sort(candidates, new Comparator<StepCandidate>() {
+                @Override
                 public int compare(StepCandidate o1, StepCandidate o2) {
                     String scoringPattern1 = scoringPattern(o1);
                     String scoringPattern2 = scoringPattern(o2);

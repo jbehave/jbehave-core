@@ -18,6 +18,7 @@ public class AuthenticationEventListener implements ApplicationListener<Abstract
   @Autowired
   private OrganizationManager organizationManager;
 
+  @Override
   public void onApplicationEvent(AbstractAuthenticationEvent event) {
     if (event instanceof AbstractAuthenticationFailureEvent) {
       onAuthenticationFailure((AbstractAuthenticationFailureEvent) event);

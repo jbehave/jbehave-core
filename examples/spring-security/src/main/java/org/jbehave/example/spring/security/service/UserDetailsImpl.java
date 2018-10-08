@@ -30,26 +30,32 @@ public class UserDetailsImpl implements UserDetails {
     this.passwordExpired = determinePasswordExpired(user, policy);
   }
 
+  @Override
   public String getUsername() {
     return username;
   }
 
+  @Override
   public String getPassword() {
     return password;
   }
 
+  @Override
   public boolean isEnabled() {
     return accountEnabled;
   }
 
+  @Override
   public boolean isAccountNonExpired() {
     return !accountExpired;
   }
 
+  @Override
   public boolean isAccountNonLocked() {
     return !accountLocked;
   }
 
+  @Override
   public boolean isCredentialsNonExpired() {
     return !passwordExpired;
   }
@@ -88,6 +94,7 @@ public class UserDetailsImpl implements UserDetails {
     }
   }
 
+@Override
 public Collection<? extends GrantedAuthority> getAuthorities() {
     // TODO Auto-generated method stub
     return null;

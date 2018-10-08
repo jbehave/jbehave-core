@@ -182,11 +182,13 @@ public class StoryTimeouts {
 			return this;
 		}
 
-		public boolean isValid(String timeout) {
+		@Override
+        public boolean isValid(String timeout) {
 			return TIMEOUT_PATTERN.matcher(timeout).find();
 		}
 
-		public long asSeconds(String timeout) {
+		@Override
+        public long asSeconds(String timeout) {
 			long total = 0;
 			Matcher matcher = TIMEOUT_PATTERN.matcher(timeout);
 			while (matcher.find()) {
@@ -210,11 +212,13 @@ public class StoryTimeouts {
 
 		private static final Pattern TIMEOUT_PATTERN = compile("(\\d+)");
 
-		public boolean isValid(String timeout) {
+		@Override
+        public boolean isValid(String timeout) {
 			return TIMEOUT_PATTERN.matcher(timeout).find();
 		}
 
-		public long asSeconds(String timeout) {
+		@Override
+        public long asSeconds(String timeout) {
 			return Long.parseLong(timeout);
 		}
 

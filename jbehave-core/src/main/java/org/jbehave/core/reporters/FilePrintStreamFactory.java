@@ -31,6 +31,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
         this.configuration = configuration;
     }
 
+    @Override
     public PrintStream createPrintStream() {
         try {
             outputFile = outputFile();
@@ -92,6 +93,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
      */
     public static abstract class AbstractPathResolver implements FilePathResolver {
 
+        @Override
         public String resolveDirectory(StoryLocation storyLocation, String relativeDirectory) {
             File parent = new File(CodeLocations.getPathFromURL(storyLocation.getCodeLocation())).getParentFile();
             return parent.getPath().replace('\\', '/') + "/" + relativeDirectory;
@@ -104,6 +106,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
      */
     public static class ResolveToPackagedName extends AbstractPathResolver {
 
+        @Override
         public String resolveName(StoryLocation storyLocation, String extension) {
             String name = storyLocation.getPath().replaceAll(":?/", ".");
             if (name.startsWith(".")) {
@@ -119,6 +122,7 @@ public class FilePrintStreamFactory implements PrintStreamFactory {
      */
     public static class ResolveToSimpleName extends AbstractPathResolver {
 
+        @Override
         public String resolveName(StoryLocation storyLocation, String extension) {
             String name = storyLocation.getPath();
             if ( StringUtils.contains(name, '/') ){

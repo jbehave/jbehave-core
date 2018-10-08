@@ -17,17 +17,20 @@ public class OrganizationDaoImpl implements OrganizationDao {
   @Autowired
   private SessionFactory sessionFactory;
 
+  @Override
   @Transactional
   public Organization load(Long id) {
     return (Organization) sessionFactory.getCurrentSession().load(Organization.class, id);
   }
 
+  @Override
   @Transactional
   public Organization persist(Organization organization) {
     sessionFactory.getCurrentSession().saveOrUpdate(organization);
     return organization;
   }
 
+  @Override
   @SuppressWarnings("unchecked")
   @Transactional
   public Organization findByName(String orgName) {

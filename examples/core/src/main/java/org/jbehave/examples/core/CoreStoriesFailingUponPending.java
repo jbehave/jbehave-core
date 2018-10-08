@@ -12,7 +12,8 @@ import org.jbehave.core.io.StoryFinder;
  */
 public class CoreStoriesFailingUponPending extends CoreStories {
 
-	public Configuration configuration() {
+	@Override
+    public Configuration configuration() {
 		return super.configuration()       		
 					.usePendingStepStrategy(new FailingUponPendingStep());
 	}

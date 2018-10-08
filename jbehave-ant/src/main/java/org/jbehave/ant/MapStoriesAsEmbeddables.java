@@ -10,6 +10,7 @@ import org.jbehave.core.embedder.Embedder;
  */
 public class MapStoriesAsEmbeddables extends AbstractEmbedderTask {
     
+    @Override
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
         log("Mapping stories as embeddables using embedder "+embedder, MSG_INFO);

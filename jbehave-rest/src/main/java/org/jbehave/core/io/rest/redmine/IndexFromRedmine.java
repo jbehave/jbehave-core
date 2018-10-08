@@ -36,6 +36,7 @@ public class IndexFromRedmine extends IndexWithBreadcrumbs {
         super(new RESTClient(Type.JSON, username, password), nameResolver);
     }
 
+    @Override
     protected Map<String, Resource> createIndexFromEntity(String rootURI, String entity) {
     	Collection<Page> pages = parse(entity);
         Map<String, Resource> index = new HashMap<>();
@@ -48,7 +49,8 @@ public class IndexFromRedmine extends IndexWithBreadcrumbs {
         return index;
     }
 
-	protected String uri(String rootPath) {
+	@Override
+    protected String uri(String rootPath) {
 		return format(INDEX_URI, rootPath);
 	}
 

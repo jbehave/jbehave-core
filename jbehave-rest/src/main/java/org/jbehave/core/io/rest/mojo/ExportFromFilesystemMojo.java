@@ -31,7 +31,8 @@ public class ExportFromFilesystemMojo extends AbstractFilesystemMojo {
 	 */
 	String resourcesSyntax;
 
-	public void execute() throws MojoExecutionException, MojoFailureException {
+	@Override
+    public void execute() throws MojoExecutionException, MojoFailureException {
 		try {
 			getLog().info(
 					"Exporting from filesystem resources to REST root URI "

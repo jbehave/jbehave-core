@@ -40,7 +40,8 @@ public class NeedleAnnotatedEmbedderRunnerBehaviour {
 	@UsingNeedle
 	public static class RunningWithAnnotatedEmbedderRunner extends InjectableEmbedder {
 
-		@Test
+		@Override
+        @Test
 		public void run() {
             assertThat(true, is(true));
         }

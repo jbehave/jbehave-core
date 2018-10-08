@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 @UsingSpring(resources = { "org/jbehave/examples/core/spring/configuration.xml" })
 public class AnnotatedEmbedderUsingSpringAndSteps extends InjectableEmbedder {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

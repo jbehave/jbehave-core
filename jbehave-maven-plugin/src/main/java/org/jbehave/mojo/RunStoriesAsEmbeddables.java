@@ -11,6 +11,7 @@ import org.jbehave.core.embedder.Embedder;
  */
 public class RunStoriesAsEmbeddables extends AbstractEmbedderMojo {
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
         getLog().info("Running stories as embeddables using embedder " + embedder);

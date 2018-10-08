@@ -17,6 +17,7 @@ public class GroovyAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
         annotationBuilder = new GroovyAnnotationBuilder(testClass());
     }
 
+    @Override
     public AnnotationBuilder annotationBuilder() {
         return annotationBuilder;
     }

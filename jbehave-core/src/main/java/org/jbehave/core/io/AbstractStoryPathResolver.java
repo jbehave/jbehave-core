@@ -16,7 +16,8 @@ public abstract class AbstractStoryPathResolver implements
 		this.extension = extension;
 	}
 
-	public String resolve(Class<? extends Embeddable> embeddableClass) {
+	@Override
+    public String resolve(Class<? extends Embeddable> embeddableClass) {
         return formatPath(resolveDirectory(embeddableClass), resolveName(embeddableClass), extension);
 	}
 

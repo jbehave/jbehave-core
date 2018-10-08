@@ -10,6 +10,7 @@ import org.jbehave.core.embedder.Embedder;
  */
 public class RunStoriesAsEmbeddables extends AbstractEmbedderTask {
 
+    @Override
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
 		log("Running stories as Embeddables using embedder "+embedder, MSG_INFO);

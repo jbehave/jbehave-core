@@ -173,6 +173,7 @@ public class StoryFinder {
     protected List<String> normalise(List<String> paths) {
         List<String> transformed = new ArrayList<>(paths);
         CollectionUtils.transform(transformed, new Transformer<String, String>() {
+            @Override
             public String transform(String path) {
                 return path.replace('\\', '/');
             }
@@ -186,6 +187,7 @@ public class StoryFinder {
         }
         List<String> transformed = new ArrayList<>(paths);
         CollectionUtils.transform(transformed, new Transformer<String, String>() {
+            @Override
             public String transform(String path) {
                 return prefixWith + path;
             }
@@ -196,6 +198,7 @@ public class StoryFinder {
     protected List<String> classNames(List<String> paths) {
         List<String> trasformed = new ArrayList<>(paths);
         CollectionUtils.transform(trasformed, new Transformer<String, String>() {
+            @Override
             public String transform(String path) {
                 if (!StringUtils.endsWithIgnoreCase(path, classNameExtension())) {
                     return path;

@@ -10,7 +10,8 @@ import org.jbehave.core.embedder.Embedder;
  */
 public class ReportStepdocs extends AbstractEmbedderTask {
 
-	public void execute() throws BuildException {
+	@Override
+    public void execute() throws BuildException {
 		Embedder embedder = newEmbedder();
 		log("Reporting stepdocs using embedder " + embedder, MSG_INFO);
 		embedder.reportStepdocs();

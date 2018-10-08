@@ -13,6 +13,7 @@ import org.junit.Test;
  */
 public abstract class JUnitStoryMaps extends ConfigurableEmbedder {
 
+    @Override
     @Test
     public void run() throws Throwable {
         configuredEmbedder().mapStoriesAsPaths(storyPaths());

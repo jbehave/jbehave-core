@@ -28,10 +28,12 @@ public class IndexFromConfluence implements ResourceIndexer {
         this.confluence = new Confluence(client);
     }
 
+    @Override
     public Map<String, Resource> indexResources(String rootURI) {
         return indexResources(rootURI, null);
     }
 
+    @Override
     public Map<String, Resource> indexResources(String rootURI, String rootPath, String syntax, String includes) {
         return indexResources(rootURI, includes);
     }

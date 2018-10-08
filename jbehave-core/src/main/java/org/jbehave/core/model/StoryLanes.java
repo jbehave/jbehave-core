@@ -24,6 +24,7 @@ public class StoryLanes {
     public List<Story> getStories() {
         List<Story> stories = new ArrayList<>(laneStories("")); // returns all stories
         Collections.sort(stories, new Comparator<Story>() {
+            @Override
             public int compare(Story o1, Story o2) {
                 return o1.getName().compareTo(o2.getName());
             }

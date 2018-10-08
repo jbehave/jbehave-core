@@ -39,6 +39,7 @@ public class PicoAnnotationBuilder extends AnnotationBuilder {
         super(annotatedClass, annotationMonitor);
     }
 
+    @Override
     public Configuration buildConfiguration() throws AnnotationRequired {
         AnnotationFinder finder = annotationFinder();
         if (finder.isAnnotationPresent(UsingPico.class)) {

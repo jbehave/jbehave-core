@@ -11,6 +11,7 @@ import org.jbehave.core.embedder.Embedder;
  */
 public class ReportStepdocs extends AbstractEmbedderMojo {
 
+    @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         Embedder embedder = newEmbedder();
         getLog().info("Reporting stepdocs using embedder " + embedder);

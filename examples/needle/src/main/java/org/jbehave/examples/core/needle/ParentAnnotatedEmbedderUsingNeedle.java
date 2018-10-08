@@ -35,14 +35,17 @@ public abstract class ParentAnnotatedEmbedderUsingNeedle extends InjectableEmbed
     public TradingServiceInjectionProvider() {
     }
 
+    @Override
     public Object getKey(final InjectionTargetInformation injectionTargetInformation) {
       return injectionTargetInformation.getType();
     }
 
+    @Override
     public boolean verify(final InjectionTargetInformation injectionTargetInformation) {
       return isTargetAssignable(injectionTargetInformation);
     }
 
+    @Override
     public TradingService getInjectedObject(Class<?> injectionPointType) {
       return instance;
     }

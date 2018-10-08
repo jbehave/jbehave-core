@@ -30,6 +30,7 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
         this.configuration = configuration;
     }
 
+    @Override
     public List<CandidateSteps> createCandidateSteps() {
         List<Class<?>> types = stepsTypes();
         List<CandidateSteps> steps = new ArrayList<>();

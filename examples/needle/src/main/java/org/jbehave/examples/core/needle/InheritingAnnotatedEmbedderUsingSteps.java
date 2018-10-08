@@ -22,7 +22,8 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 		PendingSteps.class, PriorityMatchingSteps.class, SandpitSteps.class })
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingNeedle {
 
-	@Test
+	@Override
+    @Test
 	public void run() {
 		injectedEmbedder().runStoriesAsPaths(storyPaths());
 	}

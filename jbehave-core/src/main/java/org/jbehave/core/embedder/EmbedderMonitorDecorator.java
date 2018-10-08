@@ -25,141 +25,175 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
         this.delegate = delegate;
     }
 
+    @Override
     public void runningEmbeddable(String name) {
         delegate.runningEmbeddable(name);
     }
 
+    @Override
     public void embeddableFailed(String name, Throwable cause) {
         delegate.embeddableFailed(name, cause);
     }
 
+    @Override
     public void embeddableNotConfigurable(String name) {
         delegate.embeddableNotConfigurable(name);
     }
 
+    @Override
     public void embeddablesSkipped(List<String> classNames) {
         delegate.embeddablesSkipped(classNames);
     }
 
+    @Override
     public void metaNotAllowed(Meta meta, MetaFilter filter) {
         delegate.metaNotAllowed(meta, filter);
     }
 
+    @Override
     public void runningStory(String path) {
         delegate.runningStory(path);
     }
 
+    @Override
     public void storyFailed(String path, Throwable cause) {
         delegate.storyFailed(path, cause);
     }
 
+    @Override
     public void storiesSkipped(List<String> storyPaths) {
         delegate.storiesSkipped(storyPaths);
     }
 
+    @Override
     public void storiesNotAllowed(List<Story> notAllowed, MetaFilter filter) {
         delegate.storiesNotAllowed(notAllowed, filter);
     }
 
+    @Override
     public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
         delegate.storiesNotAllowed(stories, filter, verbose);
      }
 
-	public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
+	@Override
+    public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
 		delegate.scenarioNotAllowed(scenario, filter);
 	}
 
+    @Override
     public void batchFailed(BatchFailures failures) {
         delegate.batchFailed(failures);
     }
     
+    @Override
     public void beforeOrAfterStoriesFailed() {
         delegate.beforeOrAfterStoriesFailed();
     }
 
+    @Override
     public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
         delegate.generatingReportsView(outputDirectory, formats, viewProperties);
     }
 
+    @Override
     public void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
             Throwable cause) {
         delegate.reportsViewGenerationFailed(outputDirectory, formats, viewProperties, cause);
     }
 
+    @Override
     public void reportsViewGenerated(ReportsCount count) {
         delegate.reportsViewGenerated(count);
     }
 
+    @Override
     public void reportsViewFailures(ReportsCount count) {
         delegate.reportsViewFailures(count);
     }
 
+    @Override
     public void reportsViewNotGenerated() {
         delegate.reportsViewNotGenerated();
     }
     
+    @Override
     public void runningWithAnnotatedEmbedderRunner(String className) {
         delegate.runningWithAnnotatedEmbedderRunner(className);
     }
 
+    @Override
     public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
         delegate.annotatedInstanceNotOfType(annotatedInstance, type);
     }
 
+    @Override
     public void mappingStory(String storyPath, List<String> metaFilters) {
         delegate.mappingStory(storyPath, metaFilters);
     }
 
+    @Override
     public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
         delegate.generatingMapsView(outputDirectory, storyMaps, viewProperties);
     }
 
+    @Override
     public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
             Throwable cause) {
         delegate.mapsViewGenerationFailed(outputDirectory, storyMaps, viewProperties, cause);
     }
 
+    @Override
     public void generatingNavigatorView(File outputDirectory, Properties viewResources) {
         delegate.generatingNavigatorView(outputDirectory, viewResources);
     }
 
+    @Override
     public void navigatorViewGenerationFailed(File outputDirectory, Properties viewResources, Throwable cause) {
         delegate.navigatorViewGenerationFailed(outputDirectory, viewResources, cause);
     }
 
+    @Override
     public void navigatorViewNotGenerated() {
         delegate.navigatorViewNotGenerated();        
     }
 
+    @Override
     public void processingSystemProperties(Properties properties) {
         delegate.processingSystemProperties(properties);
     }
 
+    @Override
     public void systemPropertySet(String name, String value) {
         delegate.systemPropertySet(name, value);
     }
     
+    @Override
     public void storyTimeout(Story story, StoryDuration storyDuration) {
         delegate.storyTimeout(story, storyDuration);
     }
 
+    @Override
     public void usingThreads(int threads) {
         delegate.usingThreads(threads);
     }
 
+    @Override
     public void usingExecutorService(ExecutorService executorService) {
         delegate.usingExecutorService(executorService);
     }
 
+    @Override
     public void usingControls(EmbedderControls embedderControls) {
         delegate.usingControls(embedderControls);        
     }
 
-	public void invalidTimeoutFormat(String path) {
+	@Override
+    public void invalidTimeoutFormat(String path) {
 		delegate.invalidTimeoutFormat(path);
 	}
 
-	public void usingTimeout(String path, long timeout) {
+	@Override
+    public void usingTimeout(String path, long timeout) {
 		delegate.usingTimeout(path, timeout);
 	}
 

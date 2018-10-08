@@ -19,6 +19,7 @@ import org.junit.Test;
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingSpring {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

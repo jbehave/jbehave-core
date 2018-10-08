@@ -34,10 +34,12 @@ public class ConvertedParameters implements Parameters {
         this.parameterConverters = parameterConverters;
     }
 
+    @Override
     public <T> T valueAs(String name, Type type) {
         return convert(valueFor(name), type);
     }
 
+    @Override
     public <T> T valueAs(String name, Type type, T defaultValue) {
         if (values.containsKey(name)) {
             return valueAs(name, type);
@@ -57,6 +59,7 @@ public class ConvertedParameters implements Parameters {
         return values.get(name);
     }
 
+    @Override
     public Map<String, String> values() {
         return values;
     }

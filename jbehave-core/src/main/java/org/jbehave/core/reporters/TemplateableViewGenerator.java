@@ -72,6 +72,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         this.processor = processor;
     }
 
+    @Override
     public Properties defaultViewProperties() {
         Properties properties = new Properties();
         properties.setProperty("encoding", "ISO-8859-1");
@@ -93,6 +94,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         dataModel.put("encoding", this.viewProperties.getProperty("encoding"));
 	}
 
+    @Override
     public void generateMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
         String outputName = templateResource("viewDirectory") + "/maps.html";
@@ -104,6 +106,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         generateViewsIndex(outputDirectory);
     }
 
+    @Override
     public void generateReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
         this.viewProperties = mergeWithDefault(viewProperties);
         String outputName = templateResource("viewDirectory") + "/reports.html";
@@ -150,7 +153,8 @@ public class TemplateableViewGenerator implements ViewGenerator {
         write(outputDirectory, outputName, viewsTemplate, dataModel);
     }
 
-	public ReportsCount getReportsCount() {
+	@Override
+    public ReportsCount getReportsCount() {
         int stories = countStoriesWithScenarios();
         int storiesNotAllowed = count("notAllowed", reports);
         int storiesPending = count("pending", reports);
@@ -237,6 +241,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
             return reportFiles;
         }
         String[] fileNames = outputDirectory.list(new FilenameFilter() {
+            @Override
             public boolean accept(File dir, String name) {
                 return !name.equals(outputName) && hasFormats(name, formats);
             }
@@ -434,6 +439,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
             }
         }
 
+        @Override
         public int compareTo(Report that) {
             return CompareToBuilder.reflectionCompare(this.getName(), that.getName());
         }

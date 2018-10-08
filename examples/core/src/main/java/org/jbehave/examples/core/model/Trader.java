@@ -50,6 +50,7 @@ public class Trader implements Comparable<Trader>{
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
 
+    @Override
     public int compareTo(Trader o) {
         return CompareToBuilder.reflectionCompare(this, o);
     }

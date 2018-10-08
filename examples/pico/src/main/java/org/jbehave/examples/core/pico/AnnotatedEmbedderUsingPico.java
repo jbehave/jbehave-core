@@ -53,6 +53,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 @UsingPico(modules = { ConfigurationModule.class, StepsModule.class })
 public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());
@@ -64,6 +65,7 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
     public static class ConfigurationModule implements PicoModule {
 
+        @Override
         public void configure(MutablePicoContainer container) {
             container.addComponent(StoryControls.class, new StoryControls().doDryRun(false).doSkipScenariosAfterFailure(false));
             container.addComponent(StoryLoader.class, new LoadFromClasspath(this.getClass().getClassLoader()));
@@ -76,6 +78,7 @@ public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
     public static class StepsModule implements PicoModule {
 
+        @Override
         public void configure(MutablePicoContainer container) {
             container.addComponent(TradingService.class);
             container.addComponent(TraderSteps.class);

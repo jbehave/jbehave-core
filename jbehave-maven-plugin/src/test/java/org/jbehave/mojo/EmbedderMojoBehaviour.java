@@ -55,6 +55,7 @@ public class EmbedderMojoBehaviour {
     public void shouldCreateNewEmbedderWithDefaultControls() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -77,6 +78,7 @@ public class EmbedderMojoBehaviour {
     public void shouldCreateNewEmbedderWithGivenControls() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -105,6 +107,7 @@ public class EmbedderMojoBehaviour {
     public void shouldCreateNewEmbedderWithExecutors() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -119,6 +122,7 @@ public class EmbedderMojoBehaviour {
     public void shouldCreateNewEmbedderWithMetaFilters() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -133,6 +137,7 @@ public class EmbedderMojoBehaviour {
     public void shouldCreateNewEmbedderIgnoringNullMetaFilters() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -148,6 +153,7 @@ public class EmbedderMojoBehaviour {
         // Given
         Log log = mock(Log.class);
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -230,6 +236,7 @@ public class EmbedderMojoBehaviour {
     public void shouldCreateNewEmbedderWithSystemProperties() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -247,6 +254,7 @@ public class EmbedderMojoBehaviour {
     public void shouldAllowTestScopedSearchDirectory() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -261,6 +269,7 @@ public class EmbedderMojoBehaviour {
     public void shouldAllowTestScopedClasspathElements() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -276,6 +285,7 @@ public class EmbedderMojoBehaviour {
     public void shouldAllowSpecificationOfEmbedderClass() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -294,6 +304,7 @@ public class EmbedderMojoBehaviour {
     public void shouldAllowSpecificationOfInjectableEmbedderClass() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -310,6 +321,7 @@ public class EmbedderMojoBehaviour {
             useEmbedder(new MyEmbedder());
         }
 
+        @Override
         public void run() throws Throwable {
         }
 
@@ -319,6 +331,7 @@ public class EmbedderMojoBehaviour {
     public void shouldAllowSpecificationOfStoryFinderClass() {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
+            @Override
             public void execute() throws MojoExecutionException, MojoFailureException {
             }
         };
@@ -857,6 +870,7 @@ public class EmbedderMojoBehaviour {
 
     public static class MyExecutors implements ExecutorServiceFactory {
 
+        @Override
         public ExecutorService create(EmbedderControls controls) {
             return EXECUTOR_SERVICE;
         }

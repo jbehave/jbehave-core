@@ -29,6 +29,7 @@ public class WeldAnnotatedEmbedderRunnerBehaviour {
         
         static boolean hasRun;
 
+        @Override
         @Test
         public void run() {
             hasRun = true;

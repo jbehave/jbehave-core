@@ -27,6 +27,7 @@ import org.junit.runner.RunWith;
 @UsingWeld
 public class AnnotatedEmbedderUsingWeld extends InjectableEmbedder {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

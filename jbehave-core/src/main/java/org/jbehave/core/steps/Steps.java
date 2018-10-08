@@ -152,6 +152,7 @@ public class Steps extends AbstractCandidateSteps {
         return stepsFactory.createInstanceOfType(type);
     }
 
+    @Override
     public List<StepCandidate> listCandidates() {
         List<StepCandidate> candidates = new ArrayList<>();
         for (Method method : allMethods()) {
@@ -210,6 +211,7 @@ public class Steps extends AbstractCandidateSteps {
         candidates.add(candidate);
     }
 
+    @Override
     public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
         List<BeforeOrAfterStep> steps = new ArrayList<>();
         steps.addAll(stepsHaving(Stage.BEFORE, BeforeStories.class));
@@ -217,6 +219,7 @@ public class Steps extends AbstractCandidateSteps {
         return steps;
     }
 
+    @Override
     public List<BeforeOrAfterStep> listBeforeOrAfterStory(boolean givenStory) {
         List<BeforeOrAfterStep> steps = new ArrayList<>();
         steps.addAll(stepsHaving(Stage.BEFORE, BeforeStory.class, givenStory));
@@ -224,6 +227,7 @@ public class Steps extends AbstractCandidateSteps {
         return steps;
     }
 
+    @Override
     public List<BeforeOrAfterStep> listBeforeOrAfterScenario(ScenarioType type) {
         List<BeforeOrAfterStep> steps = new ArrayList<>();
         steps.addAll(scenarioStepsHaving(type, Stage.BEFORE, BeforeScenario.class));

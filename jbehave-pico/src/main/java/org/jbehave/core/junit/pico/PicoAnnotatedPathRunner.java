@@ -14,6 +14,7 @@ public class PicoAnnotatedPathRunner extends AnnotatedPathRunner {
         super(testClass);
     }
 
+    @Override
     public AnnotationBuilder annotationBuilder() {
         return new PicoAnnotationBuilder(testClass());
     }

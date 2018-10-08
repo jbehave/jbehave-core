@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class DirectExecutorService implements ExecutorServiceFactory {
 
+    @Override
     public ExecutorService create(EmbedderControls controls) {
         return MoreExecutors.newDirectExecutorService();
     }

@@ -70,6 +70,7 @@ public class Stepdoc implements Comparable<Stepdoc> {
         return ToStringBuilder.reflectionToString(this).toString();
     }
 
+    @Override
     public int compareTo(Stepdoc that) {
         return CompareToBuilder.reflectionCompare(this, that);
     }

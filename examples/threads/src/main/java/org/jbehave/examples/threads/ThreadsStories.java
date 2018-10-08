@@ -57,11 +57,13 @@ public class ThreadsStories extends JUnitStories {
     
     public static class CustomTimeoutParser implements TimeoutParser {
 
-    	public boolean isValid(String timeout) {
+    	@Override
+        public boolean isValid(String timeout) {
     		return timeout.matches("(\\d+)secs");
     	}
 
-    	public long asSeconds(String timeout) {
+    	@Override
+        public long asSeconds(String timeout) {
     		return Long.parseLong(StringUtils.substringBefore(timeout, "secs"));
     	}
 

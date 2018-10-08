@@ -41,6 +41,7 @@ public class GridPanel extends JPanel implements GameObserver {
             for (final OXButton button : row) {
                 add(button);
                 button.addActionListener(new ActionListener(){
+                    @Override
                     public void actionPerformed(ActionEvent e) {
                         game.playerActsAt(button.column, button.row);
                     }
@@ -67,6 +68,7 @@ public class GridPanel extends JPanel implements GameObserver {
         return button.getText() == "" ? "." : button.getText();
     }
 
+    @Override
     public void gameChanged(Game game) {
         for (OXButton[] row : gridButtons) {
             for (OXButton button : row) {
@@ -75,6 +77,7 @@ public class GridPanel extends JPanel implements GameObserver {
         }
     }
 
+    @Override
     public void gameWon(Game game) {
         gameChanged(game);
     }

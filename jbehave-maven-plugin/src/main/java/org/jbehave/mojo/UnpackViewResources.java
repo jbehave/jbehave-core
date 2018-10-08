@@ -63,6 +63,7 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
      */
     File viewDirectory;
 
+    @Override
     public void execute() throws MojoExecutionException {
         File destination = viewDirectory();
         for (Artifact artifact : resourceArtifacts()) {
@@ -84,6 +85,7 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
     private Set<Artifact> resourceArtifacts() {
         Set<Artifact> artifacts = allArtifacts();
         CollectionUtils.filter(artifacts, new Predicate<Artifact>() {
+            @Override
             public boolean evaluate(Artifact artifact) {
                 return allowedBy("artifactId", artifact.getArtifactId(), resourceArtifactIds)
                         && allowedBy("type", artifact.getType(), resourceTypes);

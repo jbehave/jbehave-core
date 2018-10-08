@@ -15,7 +15,8 @@ import static java.util.Arrays.asList;
  */
 public abstract class JUnitStory extends ConfigurableEmbedder {
     
-	@Test
+	@Override
+    @Test
     public void run() throws Throwable {        
         Embedder embedder = configuredEmbedder();
         StoryPathResolver pathResolver = embedder.configuration().storyPathResolver();

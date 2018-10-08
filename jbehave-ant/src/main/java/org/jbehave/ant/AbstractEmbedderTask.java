@@ -321,42 +321,52 @@ public abstract class AbstractEmbedderTask extends Task {
     }
 
     protected class AntEmbedderMonitor extends NullEmbedderMonitor {
+        @Override
         public void batchFailed(BatchFailures failures) {
             log("Failed to run batch " + failures, MSG_WARN);
         }
 
+        @Override
         public void beforeOrAfterStoriesFailed() {
             log("Failed to run before or after stories steps", MSG_WARN);
         }
 
+        @Override
         public void embeddableFailed(String name, Throwable cause) {
             log("Failed to run embeddable " + name, cause, MSG_WARN);
         }
 
+        @Override
         public void embeddableNotConfigurable(String name) {
             log("Embeddable " + name + " must be an instance of " + ConfigurableEmbedder.class, MSG_WARN);
         }
 
+        @Override
         public void embeddablesSkipped(List<String> classNames) {
             log("Skipped embeddables " + classNames, MSG_INFO);
         }
 
+        @Override
         public void metaNotAllowed(Meta meta, MetaFilter filter) {
             log(meta + " excluded by filter '" + filter.asString() + "'", MSG_DEBUG);
         }
 
+        @Override
         public void runningEmbeddable(String name) {
             log("Running embeddable " + name, MSG_INFO);
         }
 
+        @Override
         public void storyFailed(String path, Throwable cause) {
             log("Failed to run story " + path, cause, MSG_WARN);
         }
 
+        @Override
         public void storiesSkipped(List<String> storyPaths) {
             log("Skipped stories " + storyPaths, MSG_INFO);
         }
 
+        @Override
         public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
             StringBuffer sb = new StringBuffer();
             sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
@@ -368,35 +378,42 @@ public abstract class AbstractEmbedderTask extends Task {
             log(sb.toString(), MSG_INFO);
         }
         
-    	public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
+    	@Override
+        public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
             StringBuffer sb = new StringBuffer();
             sb.append("Scenario "+scenario.getTitle()+" excluded by filter: " + filter.asString() + "\n");
             log(sb.toString(), MSG_INFO);
     	}
 
+        @Override
         public void runningStory(String path) {
             log("Running story " + path, MSG_INFO);
         }
 
+        @Override
         public void runningWithAnnotatedEmbedderRunner(String className) {
             log("Running with AnnotatedEmbedderRunner '" + className + "'", MSG_INFO);
         }
 
+        @Override
         public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
             log("Annotated instance " + annotatedInstance + " not of type " + type, MSG_WARN);
         }
 
+        @Override
         public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
             log("Generating reports view to '" + outputDirectory + "' using formats '" + formats + "'"
                     + " and view properties '" + viewProperties + "'", MSG_INFO);
         }
 
+        @Override
         public void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
                 Throwable cause) {
             log("Failed to generate reports view to '" + outputDirectory + "' using formats '" + formats + "'"
                     + " and view properties '" + viewProperties + "'", cause, MSG_WARN);
         }
 
+        @Override
         public void reportsViewGenerated(ReportsCount count) {
             log("Reports view generated with " + count.getStories() + " stories (of which " + count.getStoriesPending()
                     + " pending) containing " + count.getScenarios() + " scenarios (of which "
@@ -407,75 +424,91 @@ public abstract class AbstractEmbedderTask extends Task {
             }
         }
 
+        @Override
         public void reportsViewFailures(ReportsCount count) {
             log("Failures in reports view: " + count.getScenariosFailed() + " scenarios failed", MSG_WARN);
         }
 
+        @Override
         public void reportsViewNotGenerated() {
             log("Reports view not generated", MSG_INFO);
         }
 
+        @Override
         public void mappingStory(String storyPath, List<String> metaFilters) {
             log("Mapping story " + storyPath + " with meta filters " + metaFilters, MSG_INFO);
         }
 
+        @Override
         public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
             log("Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
                     + " and view properties '" + viewProperties + "'", MSG_INFO);
         }
 
+        @Override
         public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
                 Throwable cause) {
             log("Failed to generate maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
                     + " and view properties '" + viewProperties + "'", cause, MSG_WARN);
         }
 
+        @Override
         public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
             log("Generating navigator view to '" + outputDirectory + "' using  properties '" + viewProperties + "'",
                     MSG_INFO);
         }
 
+        @Override
         public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
             log("Failed to generating navigator view to '" + outputDirectory + "' using  properties '" + viewProperties
                     + "'", cause, MSG_WARN);
         }
 
+        @Override
         public void navigatorViewNotGenerated() {
             log("Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder",
                     MSG_WARN);
         }
 
+        @Override
         public void processingSystemProperties(Properties properties) {
             log("Processing system properties " + properties, MSG_INFO);
         }
 
+        @Override
         public void systemPropertySet(String name, String value) {
             log("System property '" + name + "' set to '" + value + "'", MSG_INFO);
         }
 
+        @Override
         public void storyTimeout(Story story, StoryDuration storyDuration) {
             log("Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs()
                     + " seconds has exceeded timeout of " + storyDuration.getTimeoutInSecs() + " seconds", MSG_INFO);
         }
 
+        @Override
         public void usingThreads(int threads) {
             log("Using " + threads + " threads", MSG_INFO);
         }
 
+        @Override
         public void usingExecutorService(ExecutorService executorService) {
             log("Using executor service " + executorService, MSG_INFO);
         }
 
+        @Override
         public void usingControls(EmbedderControls embedderControls) {
             log("Using controls " + embedderControls, MSG_INFO);
         }
                 
+        @Override
         public void invalidTimeoutFormat(String path) {
         	log("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format", MSG_WARN);
         	log("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"", MSG_WARN);
     	}
         
-    	public void usingTimeout(String path, long timeout) {
+    	@Override
+        public void usingTimeout(String path, long timeout) {
         	log("Using timeout for story " + path + " of "+timeout+" secs.", MSG_INFO);
     	}
 

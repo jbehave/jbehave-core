@@ -10,6 +10,7 @@ import org.jbehave.core.embedder.Embedder;
  */
 public class GenerateStoriesView extends AbstractEmbedderTask {
 
+    @Override
     public void execute() throws BuildException {
         Embedder embedder = newEmbedder();
 		log("Generating stories view using embedder " + embedder, MSG_INFO);

@@ -64,6 +64,7 @@ public class GameFrame extends JFrame implements GameObserver {
         nextStep = new JButton("Next Step");
         nextStep.setName("next.step");
         nextStep.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent event) {
                 game.nextGeneration();
             }
@@ -71,6 +72,7 @@ public class GameFrame extends JFrame implements GameObserver {
         this.add(nextStep, BorderLayout.SOUTH);
     }
 
+    @Override
     public void gridChanged(Grid grid) {
         delegateListener.gridChanged(grid);
     }

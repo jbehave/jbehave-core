@@ -14,6 +14,7 @@ public class SpringAnnotatedPathRunner extends AnnotatedPathRunner {
         super(testClass);
     }
 
+    @Override
     public AnnotationBuilder annotationBuilder() {
         return new SpringAnnotationBuilder(testClass());
     }

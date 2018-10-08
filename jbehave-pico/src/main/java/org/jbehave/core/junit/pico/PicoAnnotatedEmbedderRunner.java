@@ -17,6 +17,7 @@ public class PicoAnnotatedEmbedderRunner extends AnnotatedEmbedderRunner {
         annotationBuilder = new PicoAnnotationBuilder(testClass());
     }
 
+    @Override
     public AnnotationBuilder annotationBuilder() {
         return annotationBuilder;
     }

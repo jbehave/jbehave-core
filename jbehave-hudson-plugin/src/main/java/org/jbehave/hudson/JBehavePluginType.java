@@ -15,6 +15,7 @@ public class JBehavePluginType extends TestType {
         super(pattern, failedIfNotNew, deleteOutputFiles);
     }
 
+    @Override
     public TestTypeDescriptor<?> getDescriptor() {
         return new JBehavePluginType.DescriptorImpl();
     }
@@ -26,6 +27,7 @@ public class JBehavePluginType extends TestType {
             super(JBehavePluginType.class, JBehaveInputMetric.class);
         }
 
+        @Override
         public String getId() {
             return JBehavePluginType.class.getCanonicalName();
         }

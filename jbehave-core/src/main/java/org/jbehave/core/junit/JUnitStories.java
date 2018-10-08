@@ -13,6 +13,7 @@ import org.junit.Test;
  */
 public abstract class JUnitStories extends ConfigurableEmbedder {
 
+    @Override
     @Test
     public void run() throws Throwable {
         Embedder embedder = configuredEmbedder();

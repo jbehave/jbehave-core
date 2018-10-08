@@ -67,9 +67,11 @@ public class GameModelBehaviour {
 
         private Game game;
 
+        @Override
         public void gameChanged(Game game) {
         }
 
+        @Override
         public void gameWon(Game game) {
             this.game = game;
         }

@@ -284,7 +284,8 @@ public class StoryManager {
 			this.timeouts = timeouts;
 		}
 
-		public ThrowableStory call() throws Exception {
+		@Override
+        public ThrowableStory call() throws Exception {
 		    startedAtMillis = System.currentTimeMillis();
 			String storyPath = story.getPath();
 			try {

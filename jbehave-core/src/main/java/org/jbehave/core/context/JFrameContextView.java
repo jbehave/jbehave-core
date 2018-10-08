@@ -57,7 +57,8 @@ public class JFrameContextView implements ContextView {
 		return this;
 	}
 
-	public synchronized void show(String story, String scenario, String step) {
+	@Override
+    public synchronized void show(String story, String scenario, String step) {
 		if (frame == null) {
 			initialize();
 		}
@@ -81,7 +82,8 @@ public class JFrameContextView implements ContextView {
 		return 250;
 	}
 
-	public synchronized void close() {
+	@Override
+    public synchronized void close() {
 		if (frame != null) {
 			frame.setVisible(false);
 			frame.dispose();
@@ -107,17 +109,20 @@ public class JFrameContextView implements ContextView {
 			private Point mousePressedScreenCoords;
 			private Point mousePressedCompCoords;
 
-			public void mouseReleased(MouseEvent e) {
+			@Override
+            public void mouseReleased(MouseEvent e) {
 				mousePressedScreenCoords = null;
 				mousePressedCompCoords = null;
 			}
 
-			public void mousePressed(MouseEvent e) {
+			@Override
+            public void mousePressed(MouseEvent e) {
 				mousePressedScreenCoords = e.getLocationOnScreen();
 				mousePressedCompCoords = e.getPoint();
 			}
 
-			public void mouseDragged(MouseEvent e) {
+			@Override
+            public void mouseDragged(MouseEvent e) {
 				Point currCoords = e.getLocationOnScreen();
 				x = mousePressedScreenCoords.x
 						+ (currCoords.x - mousePressedScreenCoords.x)

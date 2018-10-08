@@ -10,6 +10,7 @@ import org.jbehave.core.embedder.EmbedderControls;
  */
 public class FixedThreadExecutors implements ExecutorServiceFactory {
 
+    @Override
     public ExecutorService create(EmbedderControls controls) {
         return Executors.newFixedThreadPool(controls.threads());
     }

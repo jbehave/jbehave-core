@@ -12,6 +12,7 @@ import com.google.common.util.concurrent.MoreExecutors;
  */
 public class SameThreadExecutors implements ExecutorServiceFactory {
 
+    @Override
     public ExecutorService create(EmbedderControls controls) {
         return MoreExecutors.sameThreadExecutor();
     }

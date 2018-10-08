@@ -534,6 +534,7 @@ public class ParameterConverters {
         private static final String NEWLINES_PATTERN = "(\n)|(\r\n)";
         private static final String SYSTEM_NEWLINE = System.getProperty("line.separator");
 
+        @Override
         public String convertValue(String value, Type type) {
             return value.replaceAll(NEWLINES_PATTERN, SYSTEM_NEWLINE);
         }

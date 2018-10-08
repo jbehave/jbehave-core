@@ -32,6 +32,7 @@ public class InstanceStepsFactory extends AbstractStepsFactory {
         return new ArrayList<>(stepsInstances.keySet());
     }
 
+    @Override
     public Object createInstanceOfType(Class<?> type) {
         Object instance = stepsInstances.get(type);
         if ( instance == null ){

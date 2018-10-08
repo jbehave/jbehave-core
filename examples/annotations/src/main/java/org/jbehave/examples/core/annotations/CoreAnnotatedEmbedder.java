@@ -45,6 +45,7 @@ import static org.jbehave.core.reporters.Format.XML;
         PriorityMatchingSteps.class, SandpitSteps.class, SearchSteps.class })
 public class CoreAnnotatedEmbedder extends InjectableEmbedder {
 
+    @Override
     @Test
     public void run() {
         List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"),

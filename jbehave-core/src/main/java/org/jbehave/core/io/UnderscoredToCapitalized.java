@@ -17,6 +17,7 @@ public class UnderscoredToCapitalized implements StoryNameResolver {
         this.extension = extension;
     }
 
+    @Override
     public String resolveName(String path) {
         String name = path;
         if (contains(name, extension)) {

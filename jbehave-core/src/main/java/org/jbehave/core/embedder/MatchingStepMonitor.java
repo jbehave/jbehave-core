@@ -27,6 +27,7 @@ public class MatchingStepMonitor extends DelegatingStepMonitor {
         return new ArrayList<>(matched.values());
     }
 
+    @Override
     public void stepMatchesPattern(String step, boolean matches, StepPattern pattern, Method method,
             Object stepsInstance) {
     	super.stepMatchesPattern(step, matches, pattern, method, stepsInstance);

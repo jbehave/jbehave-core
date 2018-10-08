@@ -12,6 +12,7 @@ public abstract class InjectableEmbedder implements Embeddable {
 
     private Embedder embedder = new Embedder();
 
+    @Override
     public void useEmbedder(Embedder embedder) {
         this.embedder = embedder;
     }

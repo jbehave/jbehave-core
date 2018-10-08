@@ -56,6 +56,7 @@ public class GuiceStepsFactory extends AbstractStepsFactory {
         }
     }
 
+    @Override
     public Object createInstanceOfType(Class<?> type) {
         List<Object> instances = new ArrayList<>();
         addInstances(injector, type, instances);

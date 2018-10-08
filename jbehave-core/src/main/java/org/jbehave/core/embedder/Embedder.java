@@ -558,10 +558,12 @@ public class Embedder {
 
     public static class ThrowingRunningStoriesFailed implements EmbedderFailureStrategy {
 
+        @Override
         public void handleFailures(BatchFailures failures) {
             throw new RunningStoriesFailed(failures);
         }
 
+        @Override
         public void handleFailures(ReportsCount count) {
             throw new RunningStoriesFailed(count);
         }

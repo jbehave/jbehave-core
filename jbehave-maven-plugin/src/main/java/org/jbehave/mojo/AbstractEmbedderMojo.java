@@ -404,46 +404,57 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
     protected class MavenEmbedderMonitor extends NullEmbedderMonitor {
 
+        @Override
         public void batchFailed(BatchFailures failures) {
             getLog().warn("Failed to run batch " + failures);
         }
 
+        @Override
         public void beforeOrAfterStoriesFailed() {
             getLog().warn("Failed to run before or after stories steps");
         }
 
+        @Override
         public void embeddableFailed(String name, Throwable cause) {
             getLog().warn("Failed to run embeddable " + name, cause);
         }
 
+        @Override
         public void embeddableNotConfigurable(String name) {
             getLog().warn("Embeddable " + name + " must be an instance of " + ConfigurableEmbedder.class);
         }
 
+        @Override
         public void embeddablesSkipped(List<String> classNames) {
             getLog().info("Skipped embeddables " + classNames);
         }
 
+        @Override
         public void metaNotAllowed(Meta meta, MetaFilter filter) {
             getLog().debug(meta + " excluded by filter '" + filter.asString() + "'");
         }
 
+        @Override
         public void runningEmbeddable(String name) {
             getLog().info("Running embeddable " + name);
         }
 
+        @Override
         public void runningStory(String path) {
             getLog().info("Running story " + path);
         }
 
+        @Override
         public void storyFailed(String path, Throwable cause) {
             getLog().warn("Failed to run story " + path, cause);
         }
 
+        @Override
         public void storiesSkipped(List<String> storyPaths) {
             getLog().info("Skipped stories " + storyPaths);
         }
 
+        @Override
         public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
             StringBuffer sb = new StringBuffer();
             sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
@@ -455,26 +466,31 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().info(sb.toString());
         }
 
-    	public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
+    	@Override
+        public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
             StringBuffer sb = new StringBuffer();
             sb.append("Scenario '"+scenario.getTitle()+"' excluded by filter: " + filter.asString() + "\n");
             getLog().info(sb.toString());
     	}
 
+        @Override
         public void runningWithAnnotatedEmbedderRunner(String className) {
             getLog().info("Running with AnnotatedEmbedderRunner '" + className + "'");
         }
 
+        @Override
         public void annotatedInstanceNotOfType(Object annotatedInstance, Class<?> type) {
             getLog().warn("Annotated instance " + annotatedInstance + " not of type " + type);
         }
 
+        @Override
         public void generatingReportsView(File outputDirectory, List<String> formats, Properties viewProperties) {
             getLog().info(
                     "Generating reports view to '" + outputDirectory + "' using formats '" + formats + "'"
                             + " and view properties '" + viewProperties + "'");
         }
 
+        @Override
         public void reportsViewGenerationFailed(File outputDirectory, List<String> formats, Properties viewProperties,
                 Throwable cause) {
             String message = "Failed to generate reports view to '" + outputDirectory + "' using formats '" + formats
@@ -482,6 +498,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             getLog().warn(message, cause);
         }
 
+        @Override
         public void reportsViewGenerated(ReportsCount count) {
             getLog().info(
                     "Reports view generated with " + count.getStories() + " stories (of which "
@@ -494,24 +511,29 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
             }
         }
 
+        @Override
         public void reportsViewFailures(ReportsCount count) {
             getLog().warn("Failures in reports view: " + count.getScenariosFailed() + " scenarios failed");
         }
 
+        @Override
         public void reportsViewNotGenerated() {
             getLog().info("Reports view not generated");
         }
 
+        @Override
         public void mappingStory(String storyPath, List<String> metaFilters) {
             getLog().info("Mapping story " + storyPath + " with meta filters " + metaFilters);
         }
 
+        @Override
         public void generatingMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
             getLog().info(
                     "Generating maps view to '" + outputDirectory + "' using story maps '" + storyMaps + "'"
                             + " and view properties '" + viewProperties + "'");
         }
 
+        @Override
         public void mapsViewGenerationFailed(File outputDirectory, StoryMaps storyMaps, Properties viewProperties,
                 Throwable cause) {
             getLog().warn(
@@ -519,55 +541,66 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
                             + " and view properties '" + viewProperties + "'", cause);
         }
 
+        @Override
         public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
             getLog().info(
                     "Generating navigator view to '" + outputDirectory + "' using view properties '" + viewProperties
                             + "'");
         }
 
+        @Override
         public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
             getLog().warn(
                     "Failed to generate navigator view to '" + outputDirectory + "' using view properties '"
                             + viewProperties + "'", cause);
         }
 
+        @Override
         public void navigatorViewNotGenerated() {
             getLog().warn(
                     "Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder");
         }
 
+        @Override
         public void processingSystemProperties(Properties properties) {
             getLog().info("Processing system properties " + properties);
         }
 
+        @Override
         public void systemPropertySet(String name, String value) {
             getLog().info("System property '" + name + "' set to '" + value + "'");
         }
 
+        @Override
         public void storyTimeout(Story story, StoryDuration storyDuration) {
             getLog().warn(
                     "Story " + story.getPath() + " duration of " + storyDuration.getDurationInSecs()
                             + " seconds has exceeded timeout of " + storyDuration.getTimeoutInSecs() + " seconds");
         }
 
+        @Override
         public void usingThreads(int threads) {
             getLog().info("Using " + threads + " threads");
         }
 
+        @Override
         public void usingExecutorService(ExecutorService executorService) {
             getLog().info("Using executor service " + executorService);
         }
 
+        @Override
         public void usingControls(EmbedderControls embedderControls) {
             getLog().info("Using controls " + embedderControls);
         }
         
+        @Override
         public void invalidTimeoutFormat(String path) {
         	getLog().warn("Failed to set specific story timeout for story " + path + " because 'storyTimeoutInSecsByPath' has incorrect format");
         	getLog().warn("'storyTimeoutInSecsByPath' must be a CSV of regex expressions matching story paths. E.g. \"*/long/*.story:5000,*/short/*.story:200\"");
     	}
 
-    	public void usingTimeout(String path, long timeout) {
+    	@Override
+        public void usingTimeout(String path, long timeout) {
         	getLog().info("Using timeout for story " + path + " of "+timeout+" secs.");
     	}
 

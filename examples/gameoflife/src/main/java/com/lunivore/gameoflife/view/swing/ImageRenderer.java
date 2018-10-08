@@ -35,9 +35,11 @@ public class ImageRenderer extends JPanel implements GameObserver {
         this.scale = scale;
     }
 
+    @Override
     public void gridChanged(Grid grid) {
         this.cells = grid;
         SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 ImageRenderer.this.repaint();
                 piggyBack.gridChanged(ImageRenderer.this.cells);

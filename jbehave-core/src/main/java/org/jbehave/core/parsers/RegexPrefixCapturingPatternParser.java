@@ -75,7 +75,8 @@ public class RegexPrefixCapturingPatternParser implements StepPatternParser {
 		return prefix;
 	}
 
-	public StepMatcher parseStep(StepType stepType, String stepPattern) {
+	@Override
+    public StepMatcher parseStep(StepType stepType, String stepPattern) {
 		String escapingPunctuation = escapingPunctuation(stepPattern);
 		List<Parameter> parameters = findParameters(escapingPunctuation);
 		Pattern regexPattern = buildPattern(escapingPunctuation, parameters);

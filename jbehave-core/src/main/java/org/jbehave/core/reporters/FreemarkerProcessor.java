@@ -17,6 +17,7 @@ public class FreemarkerProcessor implements TemplateProcessor {
         this.templateLoadingFrom = templateLoadingFrom;
     }
 
+    @Override
     public void process(String resource, Map<String, Object> dataModel, Writer writer) {
         Configuration configuration = configuration();
         try {

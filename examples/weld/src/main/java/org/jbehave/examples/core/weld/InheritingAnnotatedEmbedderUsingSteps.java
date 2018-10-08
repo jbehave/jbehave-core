@@ -21,6 +21,7 @@ import org.junit.Test;
         PriorityMatchingSteps.class, SandpitSteps.class })
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingWeld {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

@@ -19,7 +19,8 @@ public class ContextStepMonitor extends DelegatingStepMonitor {
 		this.view = view;
 	}
 
-	public void performing(String step, boolean dryRun) {
+	@Override
+    public void performing(String step, boolean dryRun) {
 		String currentStory = context.getCurrentStory();
 		String currentScenario = context.getCurrentScenario();
 		view.show(currentStory, currentScenario, step);

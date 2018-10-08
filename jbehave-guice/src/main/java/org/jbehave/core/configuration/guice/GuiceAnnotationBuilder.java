@@ -46,6 +46,7 @@ public class GuiceAnnotationBuilder extends AnnotationBuilder {
         super(annotatedClass, annotationMonitor);
     }
 
+    @Override
     public Configuration buildConfiguration() throws AnnotationRequired {
 
         AnnotationFinder finder = annotationFinder();

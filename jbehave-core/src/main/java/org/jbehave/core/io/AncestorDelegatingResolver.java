@@ -28,7 +28,8 @@ public class AncestorDelegatingResolver implements StoryNameResolver {
 		this.delegate = delegate;
 	}
 
-	public String resolveName(String path) {
+	@Override
+    public String resolveName(String path) {
 		List<String> reversed = Arrays.asList(path.split(SEPARATOR));
 		Collections.reverse(reversed);
 		List<String> names = new ArrayList<>();

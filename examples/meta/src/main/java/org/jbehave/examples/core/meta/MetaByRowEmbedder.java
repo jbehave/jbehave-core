@@ -16,7 +16,8 @@ import org.junit.runner.RunWith;
 @UsingSpring(resources = { "org.jbehave.examples.core.meta.StepsScanner" })
 public final class MetaByRowEmbedder extends InjectableEmbedder {
 
-	@Test
+	@Override
+    @Test
 	public void run() {
 		injectedEmbedder().metaFilters().add("+smoke");
 		injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(

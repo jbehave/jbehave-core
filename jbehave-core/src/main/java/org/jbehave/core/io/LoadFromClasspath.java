@@ -61,6 +61,7 @@ public class LoadFromClasspath implements StoryLoader {
         this.charset = charset;
     }
 
+    @Override
     public String loadResourceAsText(String resourcePath) {
         InputStream stream = resourceAsStream(resourcePath);
         try {
@@ -70,6 +71,7 @@ public class LoadFromClasspath implements StoryLoader {
         }
     }
 
+    @Override
     public String loadStoryAsText(String storyPath) {
         return loadResourceAsText(storyPath);
     }

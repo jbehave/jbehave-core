@@ -15,6 +15,7 @@ public abstract class AbstractCandidateSteps implements CandidateSteps {
         this.configuration = configuration;
     }
 
+    @Override
     public Configuration configuration() {
         return configuration;
     }

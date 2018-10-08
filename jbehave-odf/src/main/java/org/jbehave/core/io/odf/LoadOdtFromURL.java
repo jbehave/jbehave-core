@@ -11,6 +11,7 @@ import static org.jbehave.core.io.odf.OdfUtils.parseOdt;
  */
 public class LoadOdtFromURL extends LoadFromURL {
 
+    @Override
     public String loadResourceAsText(String resourcePath) {
         try {
             return parseOdt(loadOdt(resourceAsStream(resourcePath)));

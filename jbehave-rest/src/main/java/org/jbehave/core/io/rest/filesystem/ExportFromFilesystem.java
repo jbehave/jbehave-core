@@ -41,7 +41,8 @@ public class ExportFromFilesystem implements ResourceExporter {
 		this.includes = includes;
 	}
 
-	public void exportResources(String rootURI) {
+	@Override
+    public void exportResources(String rootURI) {
 		Map<String, Resource> index = indexer.indexResources(rootURI,
 				sourcePath, syntax, includes);
 		readResources(index, sourcePath, sourceExt);

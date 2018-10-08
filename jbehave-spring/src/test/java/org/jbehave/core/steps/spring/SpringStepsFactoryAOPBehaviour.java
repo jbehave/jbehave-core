@@ -104,7 +104,8 @@ public class SpringStepsFactoryAOPBehaviour {
 
 	public static class FooStepsImpl implements IFooSteps {
 
-		public void aStepWithAParam(String param) {
+		@Override
+        public void aStepWithAParam(String param) {
 
 		}
 
@@ -124,7 +125,8 @@ public class SpringStepsFactoryAOPBehaviour {
 			this.target = target;
 		}
 
-		public boolean matches(Object item) {
+		@Override
+        public boolean matches(Object item) {
 			if (item instanceof CandidateSteps) {
 				Object instance = ((Steps) item).instance();
 				boolean result = target.isAssignableFrom(instance.getClass());
@@ -133,7 +135,8 @@ public class SpringStepsFactoryAOPBehaviour {
 			return false;
 		}
 
-		public void describeTo(Description description) {
+		@Override
+        public void describeTo(Description description) {
 			description
 					.appendText("Step class instantiated from this CandidateStep is of type "
 							+ target.getName());

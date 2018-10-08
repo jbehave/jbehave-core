@@ -45,15 +45,18 @@ public class GherkinStoryParser extends TransformingStoryParser {
 			this.keywords = keywords;
 		}
 
-		public String transform(String storyAsText) {
+		@Override
+        public String transform(String storyAsText) {
 			final StringBuffer out = new StringBuffer();
 
 			Formatter formatter = new Formatter(){
-				public void uri(String uri) {
+				@Override
+                public void uri(String uri) {
 					out.append(uri).append("\n");
 				}
 
-				public void feature(Feature feature) {
+				@Override
+                public void feature(Feature feature) {
 					out.append(feature.getName()).append("\n\n");
 					writeNarrative(feature.getDescription());
 					writeMeta(feature.getTags());
@@ -120,42 +123,51 @@ public class GherkinStoryParser extends TransformingStoryParser {
                     return matches;
                 }
 
-				public void background(Background background) {
+				@Override
+                public void background(Background background) {
                     out.append(keywords.lifecycle()+background.getName()).append("\n")
                        .append(keywords.before()+"\n");
 				}
 
-				public void scenario(Scenario scenario) {
+				@Override
+                public void scenario(Scenario scenario) {
 					out.append("\n").append(keywords.scenario()+scenario.getName()).append("\n\n");
 	                writeMeta(scenario.getTags());
 				}
 
-				public void scenarioOutline(ScenarioOutline scenarioOutline) {
+				@Override
+                public void scenarioOutline(ScenarioOutline scenarioOutline) {
 					out.append("\n").append(keywords.scenario()+scenarioOutline.getName()).append("\n\n");
                     writeMeta(scenarioOutline.getTags());
 				}
 
-				public void examples(Examples examples) {
+				@Override
+                public void examples(Examples examples) {
 					out.append("\n").append(keywords.examplesTable()+examples.getName()).append("\n");
 					writeRows(examples.getRows());
 				}
 
-				public void step(Step step) {
+				@Override
+                public void step(Step step) {
 					out.append(step.getKeyword()+step.getName()).append("\n");
 					writeRows(step.getRows());
 				}
 
-				public void eof() {
+				@Override
+                public void eof() {
 				}
 
-				public void syntaxError(String state, String event,
+				@Override
+                public void syntaxError(String state, String event,
 						List<String> legalEvents, String uri, Integer line) {
 				}
 
-				public void done() {
+				@Override
+                public void done() {
 				}
 
-				public void close() {
+				@Override
+                public void close() {
 				}
 				
 				private void writeRows(List<? extends Row> rows) {

@@ -17,6 +17,7 @@ public class CompositeStepsFactory implements InjectableStepsFactory {
         this.stepsFactories = stepsFactories;
     }
 
+    @Override
     public List<CandidateSteps> createCandidateSteps() {
         List<CandidateSteps> steps = new ArrayList<>();
         for (InjectableStepsFactory factory : stepsFactories) {
@@ -25,6 +26,7 @@ public class CompositeStepsFactory implements InjectableStepsFactory {
         return steps;
     }
 
+    @Override
     public Object createInstanceOfType(Class<?> type) {
         Object instance = null;
         for (InjectableStepsFactory factory : stepsFactories) {

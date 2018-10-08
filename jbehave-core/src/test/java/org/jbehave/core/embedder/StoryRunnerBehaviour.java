@@ -271,6 +271,7 @@ public class StoryRunnerBehaviour {
         final RestartingScenarioFailure hi = new RestartingScenarioFailure("hi");
         Step restartStep = new AbstractStep() {
             private int count = 0;
+            @Override
             public StepResult perform(UUIDExceptionWrapper storyFailureIfItHappened) {
                 if (count == 0) {
                     count++;
@@ -279,6 +280,7 @@ public class StoryRunnerBehaviour {
                 return new AbstractStepResult.Successful("When happened on second attempt");
             }
 
+            @Override
             public StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened) {
                 return null;
             }

@@ -38,6 +38,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 @UsingPico(modules = { ConfigurationModule.class })
 public class AnnotatedEmbedderUsingPicoAndSteps extends InjectableEmbedder {
 
+    @Override
     @Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());

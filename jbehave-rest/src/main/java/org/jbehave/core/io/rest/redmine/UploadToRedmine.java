@@ -23,11 +23,13 @@ public class UploadToRedmine extends UploadToREST {
 		super(type, username, password);
 	}
 
-	protected String uri(String resourcePath, Type type) {
+	@Override
+    protected String uri(String resourcePath, Type type) {
 		return format(REDMINE_URI, resourcePath, type.name().toLowerCase());
 	}
 
-	protected String entity(Resource resource, Type type) {
+	@Override
+    protected String entity(Resource resource, Type type) {
 		Page page = new Page();
 		page.title = resource.getName();
 		page.text = resource.getContent();

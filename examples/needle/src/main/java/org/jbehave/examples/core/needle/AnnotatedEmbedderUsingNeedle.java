@@ -25,7 +25,8 @@ import org.junit.runner.RunWith;
 @UsingEmbedder(embedder = Embedder.class, generateViewAfterStories = true, ignoreFailureInStories = true, ignoreFailureInView = true)
 public class AnnotatedEmbedderUsingNeedle extends InjectableEmbedder {
 
-	@Test
+	@Override
+    @Test
 	public void run() {
 		injectedEmbedder().runStoriesAsPaths(storyPaths());
 	}

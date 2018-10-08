@@ -19,11 +19,13 @@ public enum LoadResourceBundle {
 		public Enumeration<String> getKeys() {
 			return new Enumeration<String>() {
 
-				public boolean hasMoreElements() {
+				@Override
+                public boolean hasMoreElements() {
 					return false;
 				}
 
-				public String nextElement() {
+				@Override
+                public String nextElement() {
 					return null;
 				}
 			};

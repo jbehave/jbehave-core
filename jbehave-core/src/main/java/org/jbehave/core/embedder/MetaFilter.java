@@ -163,11 +163,13 @@ public class MetaFilter {
             return exclude;
         }
 
+        @Override
         public void parse(String filterAsString) {
             parse(include, "+");
             parse(exclude, "-");
         }
 
+        @Override
         public boolean match(Meta meta) {
             boolean matched;
             if (!include.isEmpty() && exclude.isEmpty()) {
@@ -248,6 +250,7 @@ public class MetaFilter {
         private Field metaField;
         private Method match;
 
+        @Override
         public void parse(String filterAsString) {
             String groovyString = "public class GroovyMatcher {\n" +
                     "public org.jbehave.core.model.Meta meta\n" +
@@ -278,6 +281,7 @@ public class MetaFilter {
             }
         }
 
+        @Override
         public boolean match(Meta meta) {
             try {
                 Object matcher = groovyClass.newInstance();

@@ -74,10 +74,12 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         this.tableFactory = new ExamplesTableFactory(configuration);
     }
     
+    @Override
     public Story parseStory(String storyAsText) {
         return parseStory(storyAsText, null);
     }
 
+    @Override
     public Story parseStory(String storyAsText, String storyPath) {
         Description description = parseDescriptionFrom(storyAsText);
         Meta meta = parseStoryMetaFrom(storyAsText);

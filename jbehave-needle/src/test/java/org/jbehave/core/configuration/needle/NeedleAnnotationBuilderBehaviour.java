@@ -245,6 +245,7 @@ public class NeedleAnnotationBuilderBehaviour {
 
     public static class CustomConverter extends AbstractParameterConverter<CustomObject> {
 
+        @Override
         public CustomObject convertValue(final String value, final Type type) {
             return new CustomObject(value);
         }

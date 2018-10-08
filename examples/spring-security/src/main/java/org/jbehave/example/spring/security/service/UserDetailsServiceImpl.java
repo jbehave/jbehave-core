@@ -20,6 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Autowired
   private OrganizationManager organizationManager;
 
+  @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, DataAccessException {
     Organization org = organizationManager.getOrganization();
     User user = userDao.findUserByOrganizationAndUsername(org.getId(), username);

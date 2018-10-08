@@ -30,14 +30,16 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
 		this.nameResolver = nameResolver;
 	}
 
-	public Map<String, Resource> indexResources(String rootURI) {
+	@Override
+    public Map<String, Resource> indexResources(String rootURI) {
 		String entity = get(uri(rootURI));
 		Map<String, Resource> index = createIndexFromEntity(rootURI, entity);
 		addBreadcrumbs(index);
 		return index;
 	}
 
-	public Map<String, Resource> indexResources(String rootURI,
+	@Override
+    public Map<String, Resource> indexResources(String rootURI,
 			String rootPath, String syntax, String includes) {
 		Map<String, Resource> index = createIndexFromPaths(rootURI, rootPath,
 				syntax, includes);
@@ -132,7 +134,8 @@ public abstract class IndexWithBreadcrumbs implements ResourceIndexer {
 	
 	public static class ToLowerCase implements ResourceNameResolver {
 
-		public String resolve(String input) {
+		@Override
+        public String resolve(String input) {
 			return input.toLowerCase();
 		}
 

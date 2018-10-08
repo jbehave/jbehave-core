@@ -27,6 +27,7 @@ public class ScalaStepsFactory extends AbstractStepsFactory {
         return types;
     }
 
+    @Override
     public Object createInstanceOfType(Class<?> type) {
         return context.getInstanceOfType(type);
     }
