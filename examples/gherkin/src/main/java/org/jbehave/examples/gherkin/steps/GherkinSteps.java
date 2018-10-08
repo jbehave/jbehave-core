@@ -34,11 +34,8 @@ public class GherkinSteps {
 	private static class Car {
 
 		public boolean canDriveWith(int wheels) {
-			if ( wheels == 4 ) {
-				return true;
-			}
-			return false;
-		}
+            return wheels == 4;
+        }
 		
 	}
 
