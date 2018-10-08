@@ -56,7 +56,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -79,7 +79,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -108,7 +108,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -123,7 +123,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -138,7 +138,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -154,7 +154,7 @@ public class EmbedderMojoBehaviour {
         Log log = mock(Log.class);
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         mojo.setLog(log);
@@ -237,7 +237,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -255,7 +255,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -270,7 +270,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -286,7 +286,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -305,7 +305,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -322,7 +322,7 @@ public class EmbedderMojoBehaviour {
         }
 
         @Override
-        public void run() throws Throwable {
+        public void run() {
         }
 
     }
@@ -332,7 +332,7 @@ public class EmbedderMojoBehaviour {
         // Given
         AbstractEmbedderMojo mojo = new AbstractEmbedderMojo() {
             @Override
-            public void execute() throws MojoExecutionException, MojoFailureException {
+            public void execute() {
             }
         };
         // When
@@ -347,7 +347,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldMapStoriesAsEmbeddables() throws MojoExecutionException, MojoFailureException {
+    public void shouldMapStoriesAsEmbeddables() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         MapStoriesAsEmbeddables mojo = new MapStoriesAsEmbeddables() {
@@ -378,7 +378,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test(expected = MojoFailureException.class)
-    public void shouldReportFailuresInMappingStoriesAsEmbeddables() throws MojoExecutionException, MojoFailureException {
+    public void shouldReportFailuresInMappingStoriesAsEmbeddables() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         MapStoriesAsEmbeddables mojo = new MapStoriesAsEmbeddables() {
@@ -409,7 +409,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldMapStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
+    public void shouldMapStoriesAsPaths() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         MapStoriesAsPaths mojo = new MapStoriesAsPaths() {
@@ -442,7 +442,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test(expected = MojoFailureException.class)
-    public void shouldReportFailuresInMappingStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
+    public void shouldReportFailuresInMappingStoriesAsPaths() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         MapStoriesAsPaths mojo = new MapStoriesAsPaths() {
@@ -474,7 +474,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldGenerateStoriesView() throws MojoExecutionException, MojoFailureException {
+    public void shouldGenerateStoriesView() throws MojoFailureException {
         // Given
         GenerateStoriesView mojo = new GenerateStoriesView() {
             @Override
@@ -491,7 +491,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldReportStepdocs() throws MojoExecutionException, MojoFailureException {
+    public void shouldReportStepdocs() throws MojoFailureException {
         // Given
         ReportStepdocs mojo = new ReportStepdocs() {
             @Override
@@ -508,7 +508,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test(expected = MojoFailureException.class)
-    public void shouldReportFailuresWhenReportingStepdocs() throws MojoExecutionException, MojoFailureException {
+    public void shouldReportFailuresWhenReportingStepdocs() throws MojoFailureException {
         // Given
         ReportStepdocs mojo = new ReportStepdocs() {
             @Override
@@ -526,7 +526,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldRunStoriesAsEmbeddables() throws MojoExecutionException, MojoFailureException {
+    public void shouldRunStoriesAsEmbeddables() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         RunStoriesAsEmbeddables mojo = new RunStoriesAsEmbeddables() {
@@ -557,7 +557,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test(expected = MojoFailureException.class)
-    public void shouldReportFailuresInRunningStoriesAsEmbeddables() throws MojoExecutionException, MojoFailureException {
+    public void shouldReportFailuresInRunningStoriesAsEmbeddables() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         RunStoriesAsEmbeddables mojo = new RunStoriesAsEmbeddables() {
@@ -589,7 +589,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldRunStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
+    public void shouldRunStoriesAsPaths() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         RunStoriesAsPaths mojo = new RunStoriesAsPaths() {
@@ -620,7 +620,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test(expected = MojoFailureException.class)
-    public void shouldReportFailuresInRunningStoriesAsPaths() throws MojoExecutionException, MojoFailureException {
+    public void shouldReportFailuresInRunningStoriesAsPaths() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         RunStoriesAsPaths mojo = new RunStoriesAsPaths() {
@@ -652,7 +652,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldRunStoriesWithAnnotatedEmbedderRunner() throws MojoExecutionException, MojoFailureException {
+    public void shouldRunStoriesWithAnnotatedEmbedderRunner() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         RunStoriesWithAnnotatedEmbedderRunner mojo = new RunStoriesWithAnnotatedEmbedderRunner() {
@@ -683,8 +683,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test(expected = MojoFailureException.class)
-    public void shouldReportFailuresInRunningStoriesWithAnnotatedEmbedderRunner() throws MojoExecutionException,
-            MojoFailureException {
+    public void shouldReportFailuresInRunningStoriesWithAnnotatedEmbedderRunner() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
         RunStoriesWithAnnotatedEmbedderRunner mojo = new RunStoriesWithAnnotatedEmbedderRunner() {
@@ -717,8 +716,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    public void shouldUnpackViewResources() throws MojoExecutionException, MojoFailureException,
-            NoSuchArchiverException, ArchiverException {
+    public void shouldUnpackViewResources() throws MojoExecutionException, NoSuchArchiverException, ArchiverException {
         // Given
         UnpackViewResources mojo = new UnpackViewResources() {
             @Override
@@ -777,7 +775,7 @@ public class EmbedderMojoBehaviour {
 
     @Test
     public void shouldNotUnpackViewResourcesThatDoNotMatchTheFilters() throws MojoExecutionException,
-            MojoFailureException, NoSuchArchiverException, ArchiverException {
+            NoSuchArchiverException {
         // Given
         UnpackViewResources mojo = new UnpackViewResources() {
             @Override
@@ -817,8 +815,7 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test(expected = MojoExecutionException.class)
-    public void shouldNotIgnoreFailureInUnpackingViewResources() throws MojoExecutionException, MojoFailureException,
-            NoSuchArchiverException, ArchiverException {
+    public void shouldNotIgnoreFailureInUnpackingViewResources() throws MojoExecutionException, NoSuchArchiverException, ArchiverException {
         // Given
         UnpackViewResources mojo = new UnpackViewResources() {
             @Override

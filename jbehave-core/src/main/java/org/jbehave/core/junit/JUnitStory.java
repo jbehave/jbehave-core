@@ -17,7 +17,7 @@ public abstract class JUnitStory extends ConfigurableEmbedder {
     
 	@Override
     @Test
-    public void run() throws Throwable {        
+    public void run() {
         Embedder embedder = configuredEmbedder();
         StoryPathResolver pathResolver = embedder.configuration().storyPathResolver();
         String storyPath = pathResolver.resolve(this.getClass());

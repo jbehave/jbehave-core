@@ -1,7 +1,5 @@
 package org.jbehave.core.reporters;
 
-import java.io.IOException;
-
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.Test;
 
@@ -9,7 +7,7 @@ import org.junit.Test;
 public class StackTraceFormatterBehaviour {
 
     @Test
-    public void stackTracesShouldBeCompressible() throws IOException {
+    public void stackTracesShouldBeCompressible() {
 
         StackTraceFormatter formatter = new StackTraceFormatter(true);
 
@@ -96,7 +94,7 @@ public class StackTraceFormatterBehaviour {
     }
 
     @Test
-    public void exceptionShouldBeCompressible() throws IOException {
+    public void exceptionShouldBeCompressible() {
         // Given a compressing formatter
         StackTraceFormatter formatter = new StackTraceFormatter(true);
 
@@ -105,7 +103,7 @@ public class StackTraceFormatterBehaviour {
 
         // Then it looks like
         String expected = "java.lang.Exception: some cause\n"
-                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:104)\n"
+                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:102)\n"
                 + "\t(reflection-invoke)\n"
                 + "\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)\n"
                 + "...";

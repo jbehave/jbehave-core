@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.is;
 public class EmbedderControlsBehaviour {
         
     @Test
-    public void shouldAllowPropertyBasedControls() throws Throwable {
+    public void shouldAllowPropertyBasedControls() {
         EmbedderControls embedderControls = new PropertyBasedEmbedderControls();
 
         assertThat(embedderControls.toString(), containsString(PropertyBasedEmbedderControls.class.getSimpleName()));

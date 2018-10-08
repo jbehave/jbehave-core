@@ -50,7 +50,7 @@ public class BankAccountSteps {
     }
 
     @Given("these people have bank accounts with balances: $accountInfos")
-    public void givenPeopleHaveBankAccounts(@Named("accountInfos")ExamplesTable accountInfos) throws Throwable {
+    public void givenPeopleHaveBankAccounts(@Named("accountInfos")ExamplesTable accountInfos) {
         for(Map<String, String> info : accountInfos.getRows()) {
             final BankAccount account = new BankAccount(info.get("Name"));
             final int balance = Integer.parseInt(info.get("balance"));

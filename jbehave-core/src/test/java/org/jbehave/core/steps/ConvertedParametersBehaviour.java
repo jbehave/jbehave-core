@@ -65,7 +65,7 @@ public class ConvertedParametersBehaviour {
     }
 
     @Test
-    public void shouldReturnValuesAsMap() throws Exception {
+    public void shouldReturnValuesAsMap() {
         assertThat(parameters.values(), is(map));
     }
 

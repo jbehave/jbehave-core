@@ -22,7 +22,7 @@ public class CoreStoriesUsingTestNG extends CoreStories {
 
     @Override
     @org.testng.annotations.Test
-    public void run() throws Throwable {
+    public void run() {
         super.run();
     }
 

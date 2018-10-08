@@ -5,7 +5,7 @@ import org.jbehave.core.embedder.Embedder;
 public class DefaultPackageEmbeddable implements Embeddable {
 
     @Override
-    public void run() throws Throwable {
+    public void run() {
     }
 
     @Override

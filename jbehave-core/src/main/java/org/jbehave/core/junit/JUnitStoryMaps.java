@@ -15,7 +15,7 @@ public abstract class JUnitStoryMaps extends ConfigurableEmbedder {
 
     @Override
     @Test
-    public void run() throws Throwable {
+    public void run() {
         configuredEmbedder().mapStoriesAsPaths(storyPaths());
     }
 

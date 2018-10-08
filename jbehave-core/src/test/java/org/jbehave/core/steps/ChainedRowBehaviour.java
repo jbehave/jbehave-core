@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class ChainedRowBehaviour {
 
     @Test
-    public void shouldChainRowValuesWithoutOverwritingAlreadyExisting() throws Exception {
+    public void shouldChainRowValuesWithoutOverwritingAlreadyExisting() {
         Map<String,String> map1 = new HashMap<>();
         map1.put("one", "11");
         Map<String,String> map2 = new HashMap<>();

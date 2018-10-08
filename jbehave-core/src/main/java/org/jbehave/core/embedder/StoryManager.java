@@ -285,7 +285,7 @@ public class StoryManager {
 		}
 
 		@Override
-        public ThrowableStory call() throws Exception {
+        public ThrowableStory call() {
 		    startedAtMillis = System.currentTimeMillis();
 			String storyPath = story.getPath();
 			try {

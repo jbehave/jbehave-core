@@ -5,7 +5,7 @@ import org.junit.Test;
 public class FailureStrategyBehaviour {
 
     @Test
-    public void shouldAllowFailuresToBeAbsorbed() throws Throwable {
+    public void shouldAllowFailuresToBeAbsorbed() {
         new SilentlyAbsorbingFailure().handleFailure(new IllegalStateException());
     }
 

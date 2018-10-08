@@ -27,7 +27,7 @@ public class GoogleSteps {
     }
 
     @Then("content is same as $storyPath")
-    public void thenContentIsSameAs(String storyPath) throws IOException {
+    public void thenContentIsSameAs(String storyPath) {
         String expected = new LoadFromClasspath(this.getClass()).loadResourceAsText(storyPath).trim();
         MatcherAssert.assertThat(storyAsText, Matchers.equalTo(expected));
     }

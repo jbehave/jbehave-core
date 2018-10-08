@@ -84,7 +84,7 @@ public class MyStories extends JUnitStories {
                 "**/*.story", "");
     }
 
-    public static void main(String[] args) throws Throwable {
+    public static void main(String[] args) {
         new MyStories().run();
     }
 }

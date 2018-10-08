@@ -2,7 +2,6 @@ package org.jbehave.core.io.google;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -44,7 +43,7 @@ public class GoogleOdtLoaderBehaviour {
         LoadOdtFromGoogle storyLoader = new LoadOdtFromGoogle("user", "password", "https://docs.google.com/feeds/default/private/full/", service){
 
             @Override
-            DocumentQuery documentQuery(String title) throws MalformedURLException {
+            DocumentQuery documentQuery(String title) {
                 return query;
             }
 

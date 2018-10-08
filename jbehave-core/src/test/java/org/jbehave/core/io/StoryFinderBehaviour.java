@@ -1,6 +1,5 @@
 package org.jbehave.core.io;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -76,14 +75,14 @@ public class StoryFinderBehaviour {
     }
 
     @Test
-    public void shouldFindPathsFromJarPath() throws IOException {
+    public void shouldFindPathsFromJarPath() {
         String jarPath = "src/test/resources/stories.jar";
         assertThat(finder.findPaths(jarPath, "**/*.story", "**/*_search.story"),
                 equalTo((asList("etsy_browse.story", "etsy_cart.story"))));
     }
 
     @Test
-    public void shouldFindPathsFromJarURL() throws IOException {
+    public void shouldFindPathsFromJarURL() {
         URL jarURL = CodeLocations.codeLocationFromPath("src/test/resources/stories.jar");
         assertThat(finder.findPaths(jarURL, "**/*.story", "**/*_search.story"),
                 equalTo((asList("etsy_browse.story", "etsy_cart.story"))));

@@ -43,7 +43,7 @@ public class LoadOdtFromGoogle extends LoadOdtFromURL {
     }
 
     @Override
-    protected InputStream resourceAsStream(String title) throws IOException, MalformedURLException {
+    protected InputStream resourceAsStream(String title) throws IOException {
         try {
             return documentAsStream(exportURL(title));
         } catch (ServiceException e) {
@@ -51,7 +51,7 @@ public class LoadOdtFromGoogle extends LoadOdtFromURL {
         }
     }
 
-    private String exportURL(String title) throws IOException, ServiceException, MalformedURLException {
+    private String exportURL(String title) throws IOException, ServiceException {
         DocumentQuery query = documentQuery(title);
         List<DocumentListEntry> entries = service.getFeed(query, DocumentListFeed.class).getEntries();
         if (entries.isEmpty()) {
@@ -68,7 +68,7 @@ public class LoadOdtFromGoogle extends LoadOdtFromURL {
         return query;
     }
 
-    private InputStream documentAsStream(String url) throws IOException, MalformedURLException {
+    private InputStream documentAsStream(String url) throws IOException {
         try {
             MediaSource ms = service.getMedia(mediaContent(url));
             return ms.getInputStream();

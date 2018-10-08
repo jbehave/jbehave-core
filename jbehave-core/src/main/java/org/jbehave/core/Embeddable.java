@@ -28,6 +28,6 @@ public interface Embeddable {
 
 	void useEmbedder(Embedder embedder);
 
-    void run() throws Throwable;
+    void run();
 
 }

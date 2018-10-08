@@ -37,7 +37,7 @@ public class LolCatzSteps  {
     }
     
     @Given("game like $grid")
-    public void givenThatTheGridLooksLike(String grid) throws Exception {
+    public void givenThatTheGridLooksLike(String grid) {
         givenTheGameIsRunning();
         ArrayList<String> oTurns = new ArrayList<>();
         ArrayList<String> xTurns = new ArrayList<>();
@@ -47,21 +47,21 @@ public class LolCatzSteps  {
     }
     
     @Then("message sez \"$message\"")
-    public void thenTheMessageShouldRead(String message) throws Exception {
+    public void thenTheMessageShouldRead(String message) {
         assertThat(windowControl.findComponent(MessageLabel.class, ComponentNames.MESSAGE).getText(), equalTo(message));
     }
 
     @Then("I haz grid $grid")
-    public void thenTheGridShouldLookLike(String grid) throws Exception {
+    public void thenTheGridShouldLookLike(String grid) {
         assertThat(windowControl.findComponent(GridPanel.class, ComponentNames.GRID).toString(), equalTo(grid));
     }
     
     @When("I clicks $space")
-    public void whenPlayerClicksInSpace(String space) throws Exception {
+    public void whenPlayerClicksInSpace(String space) {
         windowControl.getMainWindow().getButton(space).click();
     }
     
-    private void performMoves(List<String> oTurns, List<String> xTurns) throws Exception {
+    private void performMoves(List<String> oTurns, List<String> xTurns) {
         while (xTurns.size() > 0) {
             whenPlayerClicksInSpace(xTurns.remove(0));
             if (oTurns.size() >0) {

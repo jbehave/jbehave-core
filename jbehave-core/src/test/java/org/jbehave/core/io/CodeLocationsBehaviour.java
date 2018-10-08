@@ -6,7 +6,6 @@ import org.junit.runner.JUnitCore;
 
 import java.io.File;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -57,7 +56,7 @@ public class CodeLocationsBehaviour {
     }
 
     @Test
-    public void shouldHandleSpacesAndSpecialChars() throws MalformedURLException, URISyntaxException {
+    public void shouldHandleSpacesAndSpecialChars() throws MalformedURLException {
         assertThat(CodeLocations.getPathFromURL(CodeLocations.codeLocationFromPath("some Path")), not(containsString("%20")));
         assertThat(CodeLocations.getPathFromURL(pathToURL("c:/a b c+++/")), endsWith("/c:/a b c+++"));
         assertThat(CodeLocations.getPathFromURL(pathToURL("/home/user/foo bar/+++/")), endsWith("/home/user/foo bar/+++"));

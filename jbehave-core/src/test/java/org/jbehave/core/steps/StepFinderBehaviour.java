@@ -21,7 +21,7 @@ public class StepFinderBehaviour {
     private StepFinder finder = new StepFinder();
     
     @Test
-    public void shouldFindStepdocs() throws Exception {
+    public void shouldFindStepdocs() {
         MySteps mySteps = new MySteps();
         List<Stepdoc> stepdocs = finder.stepdocs(new InstanceStepsFactory(new MostUsefulConfiguration(), mySteps).createCandidateSteps());
         Collections.sort(stepdocs);

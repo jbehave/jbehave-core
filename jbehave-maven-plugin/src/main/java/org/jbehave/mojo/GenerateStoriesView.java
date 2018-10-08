@@ -1,6 +1,5 @@
 package org.jbehave.mojo;
 
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.jbehave.core.embedder.Embedder;
 
@@ -12,7 +11,7 @@ import org.jbehave.core.embedder.Embedder;
 public class GenerateStoriesView extends AbstractEmbedderMojo {
 
     @Override
-    public void execute() throws MojoExecutionException, MojoFailureException {
+    public void execute() throws MojoFailureException {
         Embedder embedder = newEmbedder();
         getLog().info("Generating stories view using embedder " + embedder);
         try {

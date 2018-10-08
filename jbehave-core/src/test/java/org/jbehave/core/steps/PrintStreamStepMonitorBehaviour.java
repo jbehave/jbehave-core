@@ -18,7 +18,7 @@ public class PrintStreamStepMonitorBehaviour {
     private final StepMonitor monitor = new PrintStreamStepMonitor(new PrintStream(out));
 
     @Test
-    public void shouldReportStepMatchesType() throws NoSuchMethodException {
+    public void shouldReportStepMatchesType() {
         // When
         monitor.stepMatchesType("When another step", "Given my step", false, StepType.GIVEN, null, null);
 

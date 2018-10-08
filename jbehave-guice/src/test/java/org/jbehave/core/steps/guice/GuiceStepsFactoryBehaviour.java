@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.is;
 public class GuiceStepsFactoryBehaviour {
 
     @Test
-    public void assertThatStepsCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsCanBeCreated() {
         // Given
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
@@ -41,7 +41,7 @@ public class GuiceStepsFactoryBehaviour {
 
 
     @Test
-    public void assertThatStepsWithStepsWithDependencyCanBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsWithStepsWithDependencyCanBeCreated() {
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {
@@ -58,7 +58,7 @@ public class GuiceStepsFactoryBehaviour {
         assertThat((int) ((FooStepsWithDependency) stepsInstance(steps.get(0))).integer, equalTo(42));
     }
 
-    private void assertFooStepsFound(List<CandidateSteps> steps) throws NoSuchFieldException, IllegalAccessException {
+    private void assertFooStepsFound(List<CandidateSteps> steps) {
         assertThat(steps.size(), equalTo(1));
         boolean actual1 = steps.get(0) instanceof CandidateSteps;
         assertThat(actual1, is(true));
@@ -72,7 +72,7 @@ public class GuiceStepsFactoryBehaviour {
     }
 
     @Test(expected=CreationException.class)
-    public void assertThatStepsWithMissingDependenciesCannotBeCreated() throws NoSuchFieldException, IllegalAccessException {
+    public void assertThatStepsWithMissingDependenciesCannotBeCreated() {
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
             protected void configure() {

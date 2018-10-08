@@ -1,7 +1,5 @@
 package org.jbehave.core.steps;
 
-import java.beans.IntrospectionException;
-
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.junit.Test;
@@ -18,7 +16,7 @@ public class PendingStepMethodGeneratorBehaviour {
     private PendingStepMethodGenerator generator = new PendingStepMethodGenerator(new LocalizedKeywords());
 
     @Test
-    public void shouldGenerateMethodForNonAndPendingStep() throws IntrospectionException {
+    public void shouldGenerateMethodForNonAndPendingStep() {
         // When
         PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("When I am pending", null);
 
@@ -33,7 +31,7 @@ public class PendingStepMethodGeneratorBehaviour {
     }
 
     @Test
-    public void shouldGenerateMethodForAndPendingStepWithPreviousNonAndStep() throws IntrospectionException {
+    public void shouldGenerateMethodForAndPendingStepWithPreviousNonAndStep() {
 
         // When
         PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("And I am pending", "Given I was pending");
@@ -49,7 +47,7 @@ public class PendingStepMethodGeneratorBehaviour {
     }
 
     @Test
-    public void shouldNormaliseStepPatternToJavaCompatibleMethodNameAndString() throws IntrospectionException {
+    public void shouldNormaliseStepPatternToJavaCompatibleMethodNameAndString() {
         // When
         String pattern = "I'm searching for \".*\", and for others chars such as :;!|, and I look for <this>: $ \\ / () {} [] ";
         PendingStep pendingStep = (PendingStep) StepCreator.createPendingStep("When "+pattern, null);

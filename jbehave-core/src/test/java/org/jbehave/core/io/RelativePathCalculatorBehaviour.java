@@ -12,12 +12,12 @@ public class RelativePathCalculatorBehaviour {
     private RelativePathCalculator calculator;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         calculator = new RelativePathCalculator();
     }
 
     @Test
-    public void shouldReturnAbsolutePaths() throws Exception {
+    public void shouldReturnAbsolutePaths() {
         assertThat(calculator.calculate("", "/file.story"), is("file.story"));
         assertThat(calculator.calculate("a/path/", "/file.story"), is("file.story"));
         assertThat(calculator.calculate("/", "/file.story"), is("file.story"));
@@ -25,7 +25,7 @@ public class RelativePathCalculatorBehaviour {
     }
 
     @Test
-    public void shouldReturnPathsRelativeToFiles() throws Exception {
+    public void shouldReturnPathsRelativeToFiles() {
         assertThat(calculator.calculate("a.txt", "file.story"), is("file.story"));
         assertThat(calculator.calculate("a/path/a.txt", "file.story"), is("a/path/file.story"));
     }

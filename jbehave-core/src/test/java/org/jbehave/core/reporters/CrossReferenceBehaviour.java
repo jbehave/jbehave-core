@@ -9,7 +9,6 @@ import org.jbehave.core.steps.StepType;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -50,7 +49,7 @@ public class CrossReferenceBehaviour {
         return IOUtils.toString(getClass().getResource(name), StandardCharsets.UTF_8).replaceAll("(?:\\n|\\r)", "");
     }
 
-    private String output(File outputDirectory, String name) throws IOException, FileNotFoundException {
+    private String output(File outputDirectory, String name) throws IOException {
         return IOUtils.toString(new FileReader(new File(outputDirectory, "view/"+name))).replaceAll("(?:\\n|\\r)", "");
     }
 

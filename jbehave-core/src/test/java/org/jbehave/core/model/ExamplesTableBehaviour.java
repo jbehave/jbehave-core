@@ -327,7 +327,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldReplaceNamedParameterValues() throws Exception {
+    public void shouldReplaceNamedParameterValues() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -345,7 +345,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldReplaceNamedParameterValuesInValuePart() throws Exception {
+    public void shouldReplaceNamedParameterValuesInValuePart() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -368,7 +368,7 @@ public class ExamplesTableBehaviour {
      * @see {@link String#replaceAll(String, String)} to see why are not present in values the '\' and '$' characters.
      */
     @Test
-    public void shouldKeepExactValueInReplacedNamedParameterValues() throws Exception {
+    public void shouldKeepExactValueInReplacedNamedParameterValues() {
         // Given
         ExamplesTableFactory factory = createFactory();
         String problematicNamedParameterValueCharacters = "value having the \\ backslash and the $ dollar character";
@@ -388,7 +388,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldMapParametersToType() throws Exception {
+    public void shouldMapParametersToType() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -406,7 +406,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldMapParametersToTypeWithFieldMappings() throws Exception {
+    public void shouldMapParametersToTypeWithFieldMappings() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -430,7 +430,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldMapParametersToTypeWithAnnotatedFields() throws Exception {
+    public void shouldMapParametersToTypeWithAnnotatedFields() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -448,7 +448,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldThrowExceptionIfValuesOrRowsAreNotFound() throws Exception {
+    public void shouldThrowExceptionIfValuesOrRowsAreNotFound() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -475,7 +475,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldAllowAdditionAndModificationOfRowValues() throws Exception {
+    public void shouldAllowAdditionAndModificationOfRowValues() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -503,7 +503,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldAllowBuildingOfTableFromContent() throws Exception {
+    public void shouldAllowBuildingOfTableFromContent() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -520,7 +520,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldAllowOutputToPrintStream() throws Exception {
+    public void shouldAllowOutputToPrintStream() {
         // Given
         ExamplesTableFactory factory = createFactory();
 
@@ -536,7 +536,7 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
-    public void shouldIgnoreEmptyLines() throws Exception {
+    public void shouldIgnoreEmptyLines() {
         // ignore blank line
         String tableWithEmptyLine = "|one|two|\n|a|b|\n\n|c|d|\n";
         ExamplesTable table = new ExamplesTable(tableWithEmptyLine);

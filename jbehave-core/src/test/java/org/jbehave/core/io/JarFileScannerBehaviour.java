@@ -1,6 +1,5 @@
 package org.jbehave.core.io;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.Test;
@@ -14,7 +13,7 @@ import static org.hamcrest.Matchers.not;
 public class JarFileScannerBehaviour {
 
     @Test
-    public void shouldScanJarFromPath() throws IOException {
+    public void shouldScanJarFromPath() {
         List<String> paths = scan("src/test/resources/stories.jar", "**/*.story", "**/*_search.story");
         assertThat(paths.size(), equalTo(2));
         assertThat(paths, hasItems("etsy_browse.story", "etsy_cart.story"));
@@ -22,7 +21,7 @@ public class JarFileScannerBehaviour {
     }
 
     @Test
-    public void shouldScanJarFromPathWithNoExcludes() throws IOException {
+    public void shouldScanJarFromPathWithNoExcludes() {
         List<String> emptyExcludes = scan("src/test/resources/stories.jar", "**/*.story", "");
         assertThat(emptyExcludes, hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story"));
         assertThat(emptyExcludes, not(hasItems("etsy_steps.xml")));
@@ -32,7 +31,7 @@ public class JarFileScannerBehaviour {
     }
 
     @Test
-    public void shouldScanJarFromPathWithNoIncludes() throws IOException {
+    public void shouldScanJarFromPathWithNoIncludes() {
         List<String> emptyIncludes = scan("src/test/resources/stories.jar", "", "**/*.story");
         assertThat(emptyIncludes, not(hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy_steps.xml")));
         List<String> nullIncludes = scan("src/test/resources/stories.jar", null, "**/*.story");
@@ -40,7 +39,7 @@ public class JarFileScannerBehaviour {
     }
 
     @Test
-    public void shouldScanJarFromPathWithNullIncludesNorExcludes() throws IOException {
+    public void shouldScanJarFromPathWithNullIncludesNorExcludes() {
         List<String> nullIncludesAndExcludes = scan("src/test/resources/stories.jar", (List<String>) null,
                 (List<String>) null);
         assertThat(nullIncludesAndExcludes,

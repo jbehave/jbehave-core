@@ -5,8 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-
 import org.jbehave.core.embedder.StoryTimeouts.TimeoutParser;
 import org.jbehave.core.model.Story;
 import org.junit.Test;
@@ -76,7 +74,7 @@ public class StoryTimeoutsBehaviour {
 	}
 	
 	@Test
-	public void shouldAllowCustomTimeoutParser() throws IOException{
+	public void shouldAllowCustomTimeoutParser() {
 		TimeoutParser timeoutParser = mock(TimeoutParser.class);
 		when(timeoutParser.isValid(Mockito.anyString())).thenReturn(true);
 		when(timeoutParser.asSeconds(Mockito.anyString())).thenReturn(1L);

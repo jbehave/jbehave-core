@@ -408,7 +408,7 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         ensureFileExists(outputFile);
     }
 
-    private void ensureFileExists(File file) throws IOException, FileNotFoundException {
+    private void ensureFileExists(File file) throws IOException {
         assertThat(file.exists(), is(true));
         assertThat(IOUtils.toString(new FileReader(file), true).length(), greaterThan(0));
     }

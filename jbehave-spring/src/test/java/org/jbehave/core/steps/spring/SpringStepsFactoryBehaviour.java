@@ -40,7 +40,7 @@ public class SpringStepsFactoryBehaviour {
 	}
 
 	@Test
-	public void annotationStepsCanBeCreated() throws Exception {
+	public void annotationStepsCanBeCreated() {
 		// Given
 		ApplicationContext context = createApplicationContext(StepsAnnotationConfiguration.class
 				.getName());
@@ -122,8 +122,7 @@ public class SpringStepsFactoryBehaviour {
 		doAnswer(new Answer<Class<FooSteps>>() {
 
 			@Override
-			public Class<FooSteps> answer(InvocationOnMock invocation)
-					throws Throwable {
+			public Class<FooSteps> answer(InvocationOnMock invocation) {
 
 				return FooSteps.class;
 			}
@@ -132,8 +131,7 @@ public class SpringStepsFactoryBehaviour {
 		doAnswer(new Answer<Class<BlowUp>>() {
 
 			@Override
-			public Class<BlowUp> answer(InvocationOnMock invocation)
-					throws Throwable {
+			public Class<BlowUp> answer(InvocationOnMock invocation) {
 
 				return BlowUp.class;
 			}

@@ -1,7 +1,6 @@
 package org.jbehave.jenkins;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMResult;
@@ -64,7 +63,7 @@ public class ReportTransformBehaviour {
     }
 
     @Test
-    public void transformFailedStoryReport() throws FileNotFoundException, Throwable {
+    public void transformFailedStoryReport() throws Throwable {
         runStories("all_failed.story");
         Document document = tranformReport("all_failed.xml");
 
@@ -74,7 +73,7 @@ public class ReportTransformBehaviour {
     }
 
     @Test
-    public void transformStoryWithExamplesReport() throws FileNotFoundException, Throwable {
+    public void transformStoryWithExamplesReport() throws Throwable {
         runStories("examples_table_with_failure.story");
         Document document = tranformReport("examples_table_with_failure.xml");
 
@@ -87,7 +86,7 @@ public class ReportTransformBehaviour {
     }
 
     @Test
-    public void transformGivenStoryReport() throws FileNotFoundException, Throwable {
+    public void transformGivenStoryReport() throws Throwable {
         runStories("given_story.story");
         Document document = tranformReport("given_story.xml");
 
@@ -98,7 +97,7 @@ public class ReportTransformBehaviour {
     }
 
     @Test
-    public void transformFailedGivenStoryReport() throws FileNotFoundException, Throwable {
+    public void transformFailedGivenStoryReport() throws Throwable {
         runStories("given_failing_story.story");
         Document document = tranformReport("given_failing_story.xml");
 
@@ -110,7 +109,7 @@ public class ReportTransformBehaviour {
     }
 
     @Test
-    public void transformFailureFollowedByGivenStoryReport() throws FileNotFoundException, Throwable {
+    public void transformFailureFollowedByGivenStoryReport() throws Throwable {
         runStories("failure_followed_by_given_story.story");
         Document document = tranformReport("failure_followed_by_given_story.xml");
 
@@ -123,7 +122,7 @@ public class ReportTransformBehaviour {
 
     @Test
     @Ignore("Filtered stories not run anymore")
-    public void transformFilterScenarioReport() throws FileNotFoundException, Throwable {
+    public void transformFilterScenarioReport() throws Throwable {
         runStories("filter_scenario.story");
         Document document = tranformReport("filter_scenario.xml");
 
@@ -136,7 +135,7 @@ public class ReportTransformBehaviour {
 
     @Test
     @Ignore("Filtered stories not run anymore")
-    public void transformFilterStoryReport() throws FileNotFoundException, Throwable {
+    public void transformFilterStoryReport() throws Throwable {
         runStories("filter_story.story");
         Document document = tranformReport("filter_story.xml");
 
@@ -148,7 +147,7 @@ public class ReportTransformBehaviour {
     }
 
     @Test
-    public void testsuiteNameTitle() throws FileNotFoundException, Throwable {
+    public void testsuiteNameTitle() throws Throwable {
         runStories("title.story");
         Document document = tranformReport("title.xml");
         assertThat(engine.evaluate(TESTSUITE_NAME_ATTRIBUTE, document), equalTo("title.story"));

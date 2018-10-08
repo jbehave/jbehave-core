@@ -58,7 +58,7 @@ public class StepCreatorBehaviour {
     private StepsContext stepsContext = new StepsContext();
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(parameterConverters.convert("shopping cart", String.class)).thenReturn("shopping cart");
         when(parameterConverters.convert("book", String.class)).thenReturn("book");
         when(parameterConverters.newInstanceAdding(Matchers.<ParameterConverters.ParameterConverter> anyObject()))

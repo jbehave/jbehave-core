@@ -37,7 +37,7 @@ public class StoryRunnerBehaviour {
     private Map<String, String> parameters = new HashMap<>();
 
     @Test
-    public void shouldRunStepsBeforeAndAfterStories() throws Throwable {
+    public void shouldRunStepsBeforeAndAfterStories() {
         // Given
         Step beforeStep = mock(Step.class, "beforeStep");
         StepResult beforeResult = mock(StepResult.class);
@@ -63,7 +63,7 @@ public class StoryRunnerBehaviour {
     }
 
     @Test
-    public void shouldReportFailuresInStepsBeforeAndAfterStories() throws Throwable {
+    public void shouldReportFailuresInStepsBeforeAndAfterStories() {
         // Given
         Step beforeStep = mock(Step.class, "beforeStep");
         StepResult beforeResult = mock(StepResult.class, "beforeStep");
@@ -194,8 +194,7 @@ public class StoryRunnerBehaviour {
 
     
     @Test
-	public void shouldIgnoreMetaFilteringInGivenStoriesIfConfigured()
-			throws Throwable {
+	public void shouldIgnoreMetaFilteringInGivenStoriesIfConfigured() {
 		// Given
 		Scenario scenario = new Scenario("scenario", new Meta(
 				asList("run false")), new GivenStories("/path/to/given/story"),

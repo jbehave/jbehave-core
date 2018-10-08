@@ -480,7 +480,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void afterScenarioStepsShouldBeInReverseOrder() throws Throwable {
+    public void afterScenarioStepsShouldBeInReverseOrder() {
         List<CandidateSteps> steps = new ArrayList<>();
         steps.add(new ClassWithMethodsAandB());
         steps.add(new ClassWithMethodsCandD());
@@ -511,7 +511,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterScenarioWithParameter() throws Exception {
+    public void shouldInvokeBeforeOrAfterScenarioWithParameter() {
         BeforeOrAfterScenarioWithParameterSteps steps = new BeforeOrAfterScenarioWithParameterSteps();
         Meta meta = beforeAndAfterMeta();
 
@@ -528,7 +528,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterScenarioWithParameterAndException() throws Exception {
+    public void shouldInvokeBeforeOrAfterScenarioWithParameterAndException() {
         BeforeOrAfterScenarioWithParameterAndExceptionSteps steps = new BeforeOrAfterScenarioWithParameterAndExceptionSteps();
         Meta meta = beforeAndAfterMeta();
 
@@ -550,7 +550,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterStoryWithParameter() throws Exception {
+    public void shouldInvokeBeforeOrAfterStoryWithParameter() {
         BeforeOrAfterStoryWithParameter steps = new BeforeOrAfterStoryWithParameter();
         Story story = mock(Story.class);
         when(story.getMeta()).thenReturn(beforeAndAfterMeta());
@@ -567,7 +567,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldInvokeBeforeOrAfterStoryWithParameterAndException() throws Exception {
+    public void shouldInvokeBeforeOrAfterStoryWithParameterAndException() {
         BeforeOrAfterStoryWithParameterAndExceptionSteps steps = new BeforeOrAfterStoryWithParameterAndExceptionSteps();
         Story story = mock(Story.class);
         when(story.getMeta()).thenReturn(beforeAndAfterMeta());

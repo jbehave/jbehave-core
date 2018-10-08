@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.ResourceIndexer;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.when;
 public class ImportToFilesystemMojoBehaviour {
 
     @Test
-    public void canImportToFilesystem() throws IOException, MojoExecutionException, MojoFailureException {
+    public void canImportToFilesystem() throws IOException, MojoExecutionException {
 
         // Given
         final ResourceIndexer indexer = mock(ResourceIndexer.class);

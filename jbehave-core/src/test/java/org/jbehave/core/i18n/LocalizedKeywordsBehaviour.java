@@ -36,14 +36,14 @@ public class LocalizedKeywordsBehaviour {
     }
 
     @Test
-    public void shouldAllowSynonymsToOverrideABaseLocale() throws IOException {
+    public void shouldAllowSynonymsToOverrideABaseLocale() {
         Keywords keywords = new LocalizedKeywords(new Locale("sy"), Locale.ENGLISH);
         assertThat(keywords.given(), equalTo("Given|Giveth"));
         assertThat(keywords.and(), equalTo("And|With"));
     }
 
     @Test
-    public void shouldAllowSynonymsToOverrideABaseBundleForSameLocale() throws IOException {
+    public void shouldAllowSynonymsToOverrideABaseBundleForSameLocale() {
         Keywords keywords = new LocalizedKeywords(new Locale("en"), "i18n/synonyms", "i18n/keywords" );
         assertThat(keywords.given(), equalTo("Given|Giveth"));
         assertThat(keywords.and(), equalTo("And|With"));
@@ -70,7 +70,7 @@ public class LocalizedKeywordsBehaviour {
     }
 
     @Test
-    public void shouldShowKeywordsInToStringRepresentations() throws IOException {
+    public void shouldShowKeywordsInToStringRepresentations() {
         LocalizedKeywords it = keywordsFor(new Locale("it"));
         LocalizedKeywords pt = keywordsFor(new Locale("pt"));
         assertThat(it.toString(), not(equalTo(pt.toString())));

@@ -1,6 +1,5 @@
 package org.jbehave.core.parsers.gherkin;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.hamcrest.Matchers;
@@ -20,7 +19,7 @@ public class GherkinStoryParserBehaviour {
 	private StoryParser storyParser = new GherkinStoryParser();
 	
 	@Test
-	public void shouldParseStoryWithTabularParameter() throws IOException{
+	public void shouldParseStoryWithTabularParameter() {
 		String storyAsText = "Feature: Hello Car\n"
 					+ "Scenario: Car can drive\n"
 					+ "Given I have a car\n"
@@ -48,7 +47,7 @@ public class GherkinStoryParserBehaviour {
     }
 
 	@Test
-	public void shouldParseStoryWithExamples() throws IOException{
+	public void shouldParseStoryWithExamples() {
 		String storyAsText = "Feature: Hello Car\n"
 		            + "@scenarioOutline\n"
 					+ "Scenario Outline: Car can drive\n"
@@ -83,7 +82,7 @@ public class GherkinStoryParserBehaviour {
     }
 	
 	@Test
-	public void shouldParseStoryWithNarrative() throws IOException{
+	public void shouldParseStoryWithNarrative() {
 		String storyAsText = "Feature: Hello Car\n"
 				    + "Narrative:\n"
 				    + "In order to feel safer\n"
@@ -101,7 +100,7 @@ public class GherkinStoryParserBehaviour {
     }
 
 	@Test
-	public void shouldParseStoryWithAlternativeNarrative() throws IOException{
+	public void shouldParseStoryWithAlternativeNarrative() {
 		String storyAsText = "Feature: Hello Car\n"
 				    + "Narrative:\n"
 				    + "As a car driver\n"
@@ -119,7 +118,7 @@ public class GherkinStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryWithBackground() throws IOException{
+    public void shouldParseStoryWithBackground() {
         String storyAsText = "Feature: Hello Car\n\n"
                     + "Background:\n"
                     + "Given I have a license\n\n"
@@ -133,7 +132,7 @@ public class GherkinStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryWithTags() throws IOException{
+    public void shouldParseStoryWithTags() {
         String storyAsText = "@feature\n"
                     + "Feature: Hello Car\n\n"
                     + "Background:\n"

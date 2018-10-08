@@ -271,7 +271,7 @@ public class AnnotationBuilderBehaviour {
     static class AnnotatedCustomConfiguration extends InjectableEmbedder {
 
         @Override
-        public void run() throws Throwable {
+        public void run() {
         }
 
     }
@@ -286,7 +286,7 @@ public class AnnotationBuilderBehaviour {
 	static class AnnotedEmbedderControls extends InjectableEmbedder {
 
 		@Override
-        public void run() throws Throwable {
+        public void run() {
 		}
 
 	}
@@ -297,7 +297,7 @@ public class AnnotationBuilderBehaviour {
     static class AnnotedInjectable extends InjectableEmbedder {
 
         @Override
-        public void run() throws Throwable {
+        public void run() {
         }
 
     }
@@ -308,7 +308,7 @@ public class AnnotationBuilderBehaviour {
     static class AnnotedInjectableWithoutStepsFactory extends InjectableEmbedder {
 
         @Override
-        public void run() throws Throwable {
+        public void run() {
         }
 
     }
@@ -319,7 +319,7 @@ public class AnnotationBuilderBehaviour {
     static class AnnotedConfigurable extends ConfigurableEmbedder {
 
         @Override
-        public void run() throws Throwable {
+        public void run() {
         }
 
     }
@@ -330,7 +330,7 @@ public class AnnotationBuilderBehaviour {
     static class AnnotedConfigurableWithoutStepsFactory extends ConfigurableEmbedder {
 
         @Override
-        public void run() throws Throwable {
+        public void run() {
         }
 
     }
@@ -345,7 +345,7 @@ public class AnnotationBuilderBehaviour {
     private static class AnnotatedPrivate extends ConfigurableEmbedder {
 
         @Override
-        public void run() throws Throwable {
+        public void run() {
         }
 
     }

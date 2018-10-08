@@ -10,7 +10,7 @@ import org.junit.Test;
 public class InjectableEmbedderBehaviour {
 
 	@Test
-    public void shouldRunStoriesAsPathsUsingInjected() throws Throwable {
+    public void shouldRunStoriesAsPathsUsingInjected() {
         // Given
         Embedder embedder = mock(Embedder.class);
 
@@ -26,7 +26,7 @@ public class InjectableEmbedderBehaviour {
     private class StoriesAsPaths extends InjectableEmbedder {
 
         @Override
-        public void run() throws Throwable {
+        public void run() {
             injectedEmbedder().runStoriesAsPaths(asList("org/jbehave/core/story1", "org/jbehave/core/story2"));
         }
 

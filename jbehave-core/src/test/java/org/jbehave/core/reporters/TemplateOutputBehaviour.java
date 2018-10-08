@@ -26,7 +26,7 @@ public class TemplateOutputBehaviour extends AbstractOutputBehaviour {
     }
 
     @Test
-    public void shouldOutputStoryToJson() throws IOException, SAXException {
+    public void shouldOutputStoryToJson() throws IOException {
         // Given
         String name = "template-story.json";
         File file = newFile("target/" + name);
@@ -57,7 +57,7 @@ public class TemplateOutputBehaviour extends AbstractOutputBehaviour {
 
 
     @Test(expected = TemplateableViewGenerator.ViewGenerationFailedForTemplate.class)
-    public void shouldNotGenerateViewWithInexistentTemplates() throws IOException {
+    public void shouldNotGenerateViewWithInexistentTemplates() {
         // Given
         Properties templates = new Properties();
         templates.setProperty("reports", "target/inexistent");

@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 
 public class StoryMapsBehaviour {
     @Test
-    public void shouldMapStoriesByFilterInLanes() throws Throwable {
+    public void shouldMapStoriesByFilterInLanes() {
         // Given
         String storyPath1 = "/path/to/story_one.story"; 
         String storyPath2 = "/path/to/story_two.story";

@@ -3,7 +3,6 @@ package org.jbehave.core.configuration;
 import org.jbehave.core.configuration.Keywords.KeywordNotFound;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -12,7 +11,7 @@ import static org.hamcrest.Matchers.equalTo;
 public class KeywordsBehaviour {
 
     @Test
-    public void shouldHaveAllKeywordsSetByDefault() throws IOException {
+    public void shouldHaveAllKeywordsSetByDefault() {
         Keywords keywords = new Keywords();
         assertThat(keywords.narrative(), equalTo("Narrative:"));
         assertThat(keywords.scenario(), equalTo("Scenario:"));
@@ -34,7 +33,7 @@ public class KeywordsBehaviour {
     }
 
     @Test(expected = KeywordNotFound.class)
-    public void shouldFailIfSomeKeywordIsMissingInMapConstructor() throws IOException {
+    public void shouldFailIfSomeKeywordIsMissingInMapConstructor() {
         new Keywords(new HashMap<String, String>());
     }
 

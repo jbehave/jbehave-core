@@ -26,7 +26,7 @@ import org.mockito.Mockito;
 public class ConfigurableEmbedderBehaviour {
 
     @Test
-    public void shouldRunASingleStory() throws Throwable {
+    public void shouldRunASingleStory() {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);
@@ -51,7 +51,7 @@ public class ConfigurableEmbedderBehaviour {
 
 
     @Test
-    public void shouldRunMultipleStories() throws Throwable {
+    public void shouldRunMultipleStories() {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);
@@ -67,7 +67,7 @@ public class ConfigurableEmbedderBehaviour {
     }
 
 	@Test
-    public void shouldAllowOverrideOfDefaultConfiguration() throws Throwable {
+    public void shouldAllowOverrideOfDefaultConfiguration() {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);
@@ -94,7 +94,7 @@ public class ConfigurableEmbedderBehaviour {
     }
 
 	@Test
-    public void shouldAllowAdditionOfSteps() throws Throwable {
+    public void shouldAllowAdditionOfSteps() {
         // Given
         Embedder embedder = mock(Embedder.class);
         Configuration configuration = mock(Configuration.class);

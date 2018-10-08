@@ -254,7 +254,7 @@ public class EmbedderTaskBehaviour {
         }
 
         @Override
-        public void run() throws Throwable {
+        public void run() {
         }
 
     }

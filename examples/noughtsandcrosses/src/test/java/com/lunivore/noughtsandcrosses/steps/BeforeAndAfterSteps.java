@@ -15,12 +15,12 @@ public class BeforeAndAfterSteps extends Steps {
     }
 
     @BeforeScenario
-    public void beforeScenarios() throws Exception {
+    public void beforeScenarios() {
     	windowControl.reset();
     }
     
     @AfterScenario
-    public void afterScenarios() throws Exception {
+    public void afterScenarios() {
     	windowControl.destroy();
     }
 }

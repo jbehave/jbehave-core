@@ -609,7 +609,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldMapJsonToType() throws Exception {
+    public void shouldMapJsonToType() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
@@ -625,7 +625,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldMapListOfJsonsToType() throws Exception {
+    public void shouldMapListOfJsonsToType() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 
@@ -644,7 +644,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldPutNullsIfValuesOfObjectNotFoundInJson() throws Exception {
+    public void shouldPutNullsIfValuesOfObjectNotFoundInJson() {
         // Given
         ParameterConverters.JsonFactory factory = new ParameterConverters.JsonFactory();
 

@@ -15,7 +15,7 @@ public abstract class JUnitStories extends ConfigurableEmbedder {
 
     @Override
     @Test
-    public void run() throws Throwable {
+    public void run() {
         Embedder embedder = configuredEmbedder();
         try {
             embedder.runStoriesAsPaths(storyPaths());

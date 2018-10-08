@@ -30,7 +30,7 @@ public class PostStoryStatisticsCollectorBehaviour {
     private PostStoryStatisticsCollector reporter;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         out = new ByteArrayOutputStream();
         printStream = new PrintStream(out);
         reporter = new PostStoryStatisticsCollector(printStream);
