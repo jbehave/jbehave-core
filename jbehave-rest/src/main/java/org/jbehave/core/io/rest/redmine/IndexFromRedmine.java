@@ -56,7 +56,7 @@ public class IndexFromRedmine extends IndexWithBreadcrumbs {
 
     private Collection<Page> parse(String entity) {
         Gson gson = new Gson();
-        return gson.<Collection<Page>> fromJson(jsonMember(entity, "wiki_pages"),
+        return gson.fromJson(jsonMember(entity, "wiki_pages"),
                 new TypeToken<Collection<Page>>() {
                 }.getType());
     }

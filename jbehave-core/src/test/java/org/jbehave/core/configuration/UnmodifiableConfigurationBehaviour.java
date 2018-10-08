@@ -40,7 +40,7 @@ public class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.storyParser(), is(delegate.storyParser()));
         assertThat(unmodifiable.storyPathResolver(), is(delegate.storyPathResolver()));
         assertThat(unmodifiable.defaultStoryReporter(), is(delegate.defaultStoryReporter()));
-        assertThat(unmodifiable.storyReporter(storyPath), is(Matchers.<Object>notNullValue(Object.class)));
+        assertThat(unmodifiable.storyReporter(storyPath), is(Matchers.notNullValue(Object.class)));
         assertThat(unmodifiable.storyReporterBuilder(), is(delegate.storyReporterBuilder()));
         assertThat(unmodifiable.failureStrategy(), is(delegate.failureStrategy()));
         assertThat(unmodifiable.pendingStepStrategy(), is(delegate.pendingStepStrategy()));

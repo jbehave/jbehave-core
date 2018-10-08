@@ -54,11 +54,11 @@ public class ConvertedParametersBehaviour {
         assertThat(parameters.valueAs("XX", String.class, "3"), is("3"));
         assertThat(parameters.values().containsKey("XXX"), is(false));
         assertThat(parameters.valueAs("XXX", Integer.class, 3), is(3));
-        assertThat(parameters.<List<String>>valueAs("XX",
+        assertThat(parameters.valueAs("XX",
                 ConvertedParametersBehaviour.class.getDeclaredField("stringList").getGenericType(),
                 Collections.singletonList("3")),
                 is(Collections.singletonList("3")));
-        assertThat(parameters.<List<Integer>>valueAs("XXX",
+        assertThat(parameters.valueAs("XXX",
                 ConvertedParametersBehaviour.class.getDeclaredField("integerList").getGenericType(),
                 Collections.singletonList(3)),
                 is(Collections.singletonList(3)));

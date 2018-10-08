@@ -56,7 +56,7 @@ public class IndexFromXWiki extends IndexWithBreadcrumbs {
 
 	private Collection<Page> parse(String entity) {
 		Gson gson = new Gson();
-		return gson.<Collection<Page>> fromJson(
+		return gson.fromJson(
 				jsonMember(entity, "pageSummaries"),
 				new TypeToken<Collection<Page>>() {
 				}.getType());
