@@ -91,7 +91,7 @@ public class AnnotationFinder {
 
     protected Object getAnnotationValue(Annotation annotation, String attributeName) {
         try {
-            Method method = annotation.annotationType().getDeclaredMethod(attributeName, new Class[0]);
+            Method method = annotation.annotationType().getDeclaredMethod(attributeName);
             return method.invoke(annotation);
         } catch (Exception e) {
             return null;

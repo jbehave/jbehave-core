@@ -299,7 +299,7 @@ public class AnnotationBuilder {
             // by classloader constructor
             try {
                 Constructor<V> constructor =
-                        ofClass.getConstructor(new Class<?>[]{ClassLoader.class});
+                        ofClass.getConstructor(ClassLoader.class);
                 return constructor.newInstance(annotatedClass.getClassLoader());
             }
             catch(NoSuchMethodException ns){
@@ -307,7 +307,7 @@ public class AnnotationBuilder {
             // by class constructor
             try {
                 Constructor<V> constructor =
-                        ofClass.getConstructor(new Class<?>[]{Class.class});
+                        ofClass.getConstructor(Class.class);
                 return constructor.newInstance(annotatedClass);
             }
             catch(NoSuchMethodException ns){

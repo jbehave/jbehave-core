@@ -322,7 +322,7 @@ public class ParameterConvertersBehaviour {
         assertThat(converter.accept(listOfNumbers), is(false));
         assertThat(converter.accept(setOfNumbers), is(false));
         assertThatCollectionIs(converter.convertValue("a, string ", listOfStrings), "a", "string");
-        assertThatCollectionIs(converter.convertValue(" ", listOfStrings), new String[]{});
+        assertThatCollectionIs(converter.convertValue(" ", listOfStrings));
     }
 
     @Test
