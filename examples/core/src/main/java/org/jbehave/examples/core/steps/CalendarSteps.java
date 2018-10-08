@@ -22,7 +22,7 @@ public class CalendarSteps {
 	
 	@AsParameterConverter
 	public Calendar calendarDate(String value){
-	    return (Calendar) new CalendarConverter("dd/MM/yyyy").convertValue(value, Calendar.class);
+	    return new CalendarConverter("dd/MM/yyyy").convertValue(value, Calendar.class);
 	}
 
 }

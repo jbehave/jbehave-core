@@ -40,8 +40,7 @@ public class JarFileScannerBehaviour {
 
     @Test
     public void shouldScanJarFromPathWithNullIncludesNorExcludes() {
-        List<String> nullIncludesAndExcludes = scan("src/test/resources/stories.jar", (List<String>) null,
-                (List<String>) null);
+        List<String> nullIncludesAndExcludes = scan("src/test/resources/stories.jar", (List<String>) null, null);
         assertThat(nullIncludesAndExcludes,
                 hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy-steps.xml"));
     }

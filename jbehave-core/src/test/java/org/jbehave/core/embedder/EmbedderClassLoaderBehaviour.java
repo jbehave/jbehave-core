@@ -51,7 +51,7 @@ public class EmbedderClassLoaderBehaviour {
 
     @Test(expected=InvalidClasspathElement.class)
     public void shouldNotIgnoreAnIndividualClasspathElementThatIsNull(){
-        List<String> elements = asList("target/classes", (String)null);
+        List<String> elements = asList("target/classes", null);
         EmbedderClassLoader classLoader = new EmbedderClassLoader(elements);
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }

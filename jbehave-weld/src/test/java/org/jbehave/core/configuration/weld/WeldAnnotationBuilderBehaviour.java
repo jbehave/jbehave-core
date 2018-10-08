@@ -148,7 +148,7 @@ public class WeldAnnotationBuilderBehaviour {
     }
     
     private void assertThatCustomObjectIsConverted(ParameterConverters parameterConverters) {
-        assertThat(((CustomObject) parameterConverters.convert("value", CustomObject.class)).toString(),
+        assertThat(parameterConverters.convert("value", CustomObject.class).toString(),
                 equalTo(new CustomObject("value").toString()));
     }
 

@@ -47,7 +47,7 @@ public class PicoStepsFactoryBehaviour {
         List<CandidateSteps> steps = factory.createCandidateSteps();
         // Then
         assertFooStepsFound(steps);
-        assertThat((int) ((FooStepsWithDependency) stepsInstance(steps.get(0))).integer, equalTo(42));
+        assertThat(((FooStepsWithDependency) stepsInstance(steps.get(0))).integer, equalTo(42));
     }
 
     private void assertFooStepsFound(List<CandidateSteps> steps) {

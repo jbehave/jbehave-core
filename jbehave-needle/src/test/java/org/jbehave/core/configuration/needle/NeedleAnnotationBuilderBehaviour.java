@@ -49,8 +49,8 @@ public class NeedleAnnotationBuilderBehaviour {
 
     private void assertThatCustomObjectIsConverted(
             final ParameterConverters parameterConverters) {
-        assertThat(((CustomObject) parameterConverters.convert("value",
-                CustomObject.class)).toString(), equalTo(new CustomObject(
+        assertThat(parameterConverters.convert("value",
+                CustomObject.class).toString(), equalTo(new CustomObject(
                 "value").toString()));
     }
 

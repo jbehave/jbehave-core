@@ -62,7 +62,7 @@ public class SpringStepsFactoryBehaviour {
 		List<CandidateSteps> steps = factory.createCandidateSteps();
 		// Then
 		assertFooStepsFound(steps);
-        assertThat((int) findInstanceOfType(steps, FooStepsWithDependency.class).integer, equalTo(42));
+        assertThat(findInstanceOfType(steps, FooStepsWithDependency.class).integer, equalTo(42));
     }
 
 	@Test
@@ -76,7 +76,7 @@ public class SpringStepsFactoryBehaviour {
 		List<CandidateSteps> steps = factory.createCandidateSteps();
 		// Then
 		assertFooStepsFound(steps);
-        assertThat((int) findInstanceOfType(steps, FooStepsWithDependency.class).integer, equalTo(42));
+        assertThat(findInstanceOfType(steps, FooStepsWithDependency.class).integer, equalTo(42));
     }
 
 	private void assertFooStepsFound(List<CandidateSteps> steps) {

@@ -26,7 +26,7 @@ public class StoryFinderBehaviour {
 
     @Test
     public void shouldFindNoPaths() {
-        List<String> storyPaths = new ArrayList<>(finder.findPaths("src/test/java", (String) null, (String) null));
+        List<String> storyPaths = new ArrayList<>(finder.findPaths("src/test/java", (String) null, null));
         assertThat(storyPaths.size(), equalTo(0));
     }
 
@@ -145,7 +145,7 @@ public class StoryFinderBehaviour {
 
     @Test
     public void shouldIgnoreNullFiltersWhenFindingPaths() {
-        assertThat(finder.findPaths("src/test/java", (List<String>)null, (List<String>)null).size(), greaterThan(0));
+        assertThat(finder.findPaths("src/test/java", (List<String>) null, null).size(), greaterThan(0));
     }
 
     @Test
