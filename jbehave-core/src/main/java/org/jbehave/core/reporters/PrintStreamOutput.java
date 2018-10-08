@@ -18,6 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MetaFilter;
@@ -290,7 +291,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     private void printOutcomes(Lifecycle lifecycle, Scope scope) {
-        for ( org.jbehave.core.annotations.AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
+        for ( AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
             List<String> afterSteps = lifecycle.getAfterSteps(scope, outcome);
             if ( !afterSteps.isEmpty() ) {
                 print(format("lifecycleScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
@@ -322,7 +323,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         }
     }
 
-    private String formatOutcome(org.jbehave.core.annotations.AfterScenario.Outcome outcome) {
+    private String formatOutcome(AfterScenario.Outcome outcome) {
         switch ( outcome ){
         case ANY: return keywords.outcomeAny();
         case SUCCESS: return keywords.outcomeSuccess();

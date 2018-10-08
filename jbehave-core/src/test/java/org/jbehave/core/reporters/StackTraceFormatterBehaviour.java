@@ -1,6 +1,7 @@
 package org.jbehave.core.reporters;
 
 import org.jbehave.core.failures.UUIDExceptionWrapper;
+import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -103,7 +104,7 @@ public class StackTraceFormatterBehaviour {
 
         // Then it looks like
         String expected = "java.lang.Exception: some cause\n"
-                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:102)\n"
+                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:103)\n"
                 + "\t(reflection-invoke)\n"
                 + "\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)\n"
                 + "...";
@@ -123,7 +124,7 @@ public class StackTraceFormatterBehaviour {
 
     private void assertThatTraceIs(String trace, String expected) {
         // JUnit assertEquals used for comparing Strings
-        org.junit.Assert.assertEquals(expected, trace);
+        Assert.assertEquals(expected, trace);
     }
 
 }

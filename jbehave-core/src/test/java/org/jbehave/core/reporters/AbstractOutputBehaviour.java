@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.jbehave.core.io.IOUtils;
+import org.junit.Assert;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -16,7 +17,7 @@ public abstract class AbstractOutputBehaviour {
 
     protected void assertThatOutputIs(String out, String pathToExpected) throws IOException {
         String expected = IOUtils.toString(getClass().getResourceAsStream(pathToExpected), true);
-        org.junit.Assert.assertEquals(dos2unix(expected), dos2unix(out));
+        Assert.assertEquals(dos2unix(expected), dos2unix(out));
     }
 
     protected String dos2unix(String string) {

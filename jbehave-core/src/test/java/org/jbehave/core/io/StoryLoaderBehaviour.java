@@ -8,10 +8,12 @@ import static org.jbehave.core.io.LoadFromRelativeFile.intellijProjectTestStoryF
 import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleStoryFilePath;
 import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleTestStoryFilePath;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.io.LoadFromRelativeFile.StoryFilePath;
@@ -184,9 +186,9 @@ public class StoryLoaderBehaviour {
         // Given
         String storyPath = "MyPendingStory.txt";
         String storyAsText = "Given my step";
-        java.net.URL url = CodeLocations.codeLocationFromClass(MyPendingStory.class);
-        java.io.File folderWithSpacesInName = new java.io.File(url.toURI().getPath() + path);
-        java.net.URL urlThatHasEscapedSpaces = folderWithSpacesInName.toURI().toURL();
+        URL url = CodeLocations.codeLocationFromClass(MyPendingStory.class);
+        File folderWithSpacesInName = new File(url.toURI().getPath() + path);
+        URL urlThatHasEscapedSpaces = folderWithSpacesInName.toURI().toURL();
         assertThat(folderWithSpacesInName.exists(), is(true));
 
         // When

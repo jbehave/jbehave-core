@@ -45,7 +45,7 @@ public interface StepCollector {
      * 
      *
      * @param candidateSteps the {@link CandidateSteps}.
-     * @param storyAndScenarioMeta the story and scenario {@link org.jbehave.core.model.Meta} parameters
+     * @param storyAndScenarioMeta the story and scenario {@link Meta} parameters
      * @param type the ScenarioType
      * @return A List of executable {@link Step}s 
      */

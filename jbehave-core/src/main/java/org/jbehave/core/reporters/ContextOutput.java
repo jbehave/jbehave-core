@@ -2,7 +2,7 @@ package org.jbehave.core.reporters;
 
 import org.jbehave.core.context.Context;
 
-public class ContextOutput extends org.jbehave.core.reporters.Format {
+public class ContextOutput extends Format {
 	private final Context context;
 
 	public ContextOutput(Context context) {
