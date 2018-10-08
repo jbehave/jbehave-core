@@ -67,7 +67,7 @@ public class Stepdoc implements Comparable<Stepdoc> {
 
     @Override
     public String toString() {
-        return ToStringBuilder.reflectionToString(this).toString();
+        return ToStringBuilder.reflectionToString(this);
     }
 
     @Override

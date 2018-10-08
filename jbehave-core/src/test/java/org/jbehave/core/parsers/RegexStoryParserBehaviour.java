@@ -632,9 +632,9 @@ public class RegexStoryParserBehaviour {
         assertThat(description.asString(), equalTo("Story: This is free-text description"));
         Narrative narrative = story.getNarrative();
         assertThat(narrative.isEmpty(), not(true));
-        assertThat(narrative.inOrderTo().toString(), equalTo("renovate my house"));
-        assertThat(narrative.asA().toString(), equalTo("customer"));
-        assertThat(narrative.iWantTo().toString(), equalTo("get a loan"));
+        assertThat(narrative.inOrderTo(), equalTo("renovate my house"));
+        assertThat(narrative.asA(), equalTo("customer"));
+        assertThat(narrative.iWantTo(), equalTo("get a loan"));
     }
 
     @Test
@@ -651,9 +651,9 @@ public class RegexStoryParserBehaviour {
         assertThat(description.asString(), equalTo("Story: This is free-text description"));
         Narrative narrative = story.getNarrative();
         assertThat(narrative.isEmpty(), not(true));
-        assertThat(narrative.asA().toString(), equalTo("customer"));
-        assertThat(narrative.iWantTo().toString(), equalTo("get a loan"));
-        assertThat(narrative.soThat().toString(), equalTo("I can renovate my house"));
+        assertThat(narrative.asA(), equalTo("customer"));
+        assertThat(narrative.iWantTo(), equalTo("get a loan"));
+        assertThat(narrative.soThat(), equalTo("I can renovate my house"));
     }
 
     @Test
