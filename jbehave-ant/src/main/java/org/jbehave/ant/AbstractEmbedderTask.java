@@ -367,7 +367,7 @@ public abstract class AbstractEmbedderTask extends Task {
 
         @Override
         public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
             if (verbose) {
                 for (Story story : stories) {
@@ -379,7 +379,7 @@ public abstract class AbstractEmbedderTask extends Task {
         
     	@Override
         public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append("Scenario "+scenario.getTitle()+" excluded by filter: " + filter.asString() + "\n");
             log(sb.toString(), MSG_INFO);
     	}

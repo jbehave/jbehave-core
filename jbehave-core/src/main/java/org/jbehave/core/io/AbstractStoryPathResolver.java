@@ -23,7 +23,7 @@ public abstract class AbstractStoryPathResolver implements
 
 	private String formatPath(String directory, String name,
 			String extension) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (directory.length() > 0) {
 			sb.append(directory).append(SLASH);
 		}

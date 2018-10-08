@@ -456,7 +456,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
         @Override
         public void storiesNotAllowed(List<Story> stories, MetaFilter filter, boolean verbose) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append(stories.size() + " stories excluded by filter: " + filter.asString() + "\n");
             if (verbose) {
                 for (Story story : stories) {
@@ -468,7 +468,7 @@ public abstract class AbstractEmbedderMojo extends AbstractMojo {
 
     	@Override
         public void scenarioNotAllowed(Scenario scenario, MetaFilter filter) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             sb.append("Scenario '"+scenario.getTitle()+"' excluded by filter: " + filter.asString() + "\n");
             getLog().info(sb.toString());
     	}

@@ -52,7 +52,7 @@ public class Narrative {
     }
 
     public String asString(Keywords keywords) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (isAlternative()) {
 			sb.append(keywords.asA()).append(SPACE).append(asA).append(NL);
 			sb.append(keywords.iWantTo()).append(SPACE).append(iWantTo)

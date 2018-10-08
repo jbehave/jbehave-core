@@ -796,7 +796,7 @@ public class RegexStoryParserBehaviour {
                 "When I run it" + NL +
                 "Then I should seen an output" + NL;
 
-        StringBuffer aScenario = new StringBuffer();
+        StringBuilder aScenario = new StringBuilder();
 
         aScenario.append("Scenario: A long scenario").append(NL);
         int numberOfGivenWhenThensPerScenario = 50;
@@ -805,7 +805,7 @@ public class RegexStoryParserBehaviour {
         }
 
         int numberOfScenarios = 100;
-        StringBuffer wholeStory = new StringBuffer();
+        StringBuilder wholeStory = new StringBuilder();
         wholeStory.append("Story: A very long story").append(NL);
         for (int i = 0; i < numberOfScenarios; i++) {
             wholeStory.append(aScenario).append(NL);

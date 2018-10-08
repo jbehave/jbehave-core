@@ -85,7 +85,7 @@ public class Meta {
     }
     
 	public String asString(Keywords keywords) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (String name : getPropertyNames()) {
 			sb.append(keywords.metaProperty()).append(name).append(SPACE)
 					.append(getProperty(name)).append(SPACE);
