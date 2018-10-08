@@ -31,8 +31,7 @@ public class Confluence {
         String pattern = expanded ? EXPAND_PAGE : REGULAR_PAGE;
         String content = client.get(format(pattern, pageUrl));
         XStream parse = configureXStream();
-        Page page = (Page) parse.fromXML(content);
-        return page;
+        return (Page) parse.fromXML(content);
     }
 
     protected XStream configureXStream() {

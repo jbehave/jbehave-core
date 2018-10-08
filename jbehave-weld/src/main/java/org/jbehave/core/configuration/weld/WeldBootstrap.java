@@ -27,8 +27,7 @@ public class WeldBootstrap extends Weld {
 
     @Override
     protected Deployment createDeployment(ResourceLoader resourceLoader, Bootstrap bootstrap) {
-        Deployment deployment = super.createDeployment(resourceLoader, bootstrap);
-        return deployment;
+        return super.createDeployment(resourceLoader, bootstrap);
     }
 
     @Override

@@ -30,8 +30,7 @@ public class UploadToXWiki extends UploadToREST {
 		switch (type) {
 		case JSON:
 			Gson gson = new Gson();
-			String json = gson.toJson(page);
-			return json;
+            return gson.toJson(page);
 		case XML:
 			page.xmlns = "http://www.xwiki.org";
 			XStream xstream = new XStream();
@@ -39,8 +38,7 @@ public class UploadToXWiki extends UploadToREST {
 			xstream.useAttributeFor(Page.class, "xmlns");
             xstream.aliasField("xmlns", Page.class, "xmlns");
             xstream.ignoreUnknownElements();
-			String xml = xstream.toXML(page);
-			return xml;
+            return xstream.toXML(page);
 		default:
 			return resource.getContent();
 		}

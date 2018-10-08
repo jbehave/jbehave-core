@@ -129,8 +129,7 @@ public class SpringStepsFactoryAOPBehaviour {
         public boolean matches(Object item) {
 			if (item instanceof CandidateSteps) {
 				Object instance = ((Steps) item).instance();
-				boolean result = target.isAssignableFrom(instance.getClass());
-				return result;
+                return target.isAssignableFrom(instance.getClass());
 			}
 			return false;
 		}
