@@ -158,14 +158,17 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
     }
 
     @Test
-    public void shouldAddComposedStepsWhenACompositeIsMatched() {
+    public void shouldAddPrioritizedComposedStepsWhenACompositeIsMatched() {
         // Given
         StepCandidate compositeCandidate = mock(StepCandidate.class, "compositeCandidate");
         StepCandidate composedCandidate1 = mock(StepCandidate.class, "composedCandidate1");
         StepCandidate composedCandidate2 = mock(StepCandidate.class, "composedCandidate2");
+        when(compositeCandidate.getPriority()).thenReturn(3);
+        when(composedCandidate1.getPriority()).thenReturn(2);
+        when(composedCandidate2.getPriority()).thenReturn(1);
         Step executableComposite = mock(Step.class, "composite");
 
-        List<CandidateSteps> steps = mockCandidateSteps(compositeCandidate, composedCandidate1, composedCandidate2);
+        List<CandidateSteps> steps = mockCandidateSteps(compositeCandidate, composedCandidate2, composedCandidate1);
         String compositeAsText = "my composite step";
         when(compositeCandidate.matches(compositeAsText, null)).thenReturn(true);
         when(compositeCandidate.isComposite()).thenReturn(true);
