@@ -7,6 +7,7 @@ import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.parsers.CompositeParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
 import org.jbehave.core.reporters.StoryReporter;
@@ -40,6 +41,11 @@ public class UnmodifiableConfiguration extends Configuration {
 
     public StoryParser storyParser() {
         return delegate.storyParser();
+    }
+
+    @Override
+    public CompositeParser compositeParser() {
+        return delegate.compositeParser();
     }
 
     public PendingStepStrategy pendingStepStrategy() {
@@ -138,6 +144,11 @@ public class UnmodifiableConfiguration extends Configuration {
 
     @Override
     public Configuration useStoryParser(StoryParser storyParser) {
+        throw notAllowed();
+    }
+
+    @Override
+    public Configuration useCompositeParser(CompositeParser compositeParser) {
         throw notAllowed();
     }
 

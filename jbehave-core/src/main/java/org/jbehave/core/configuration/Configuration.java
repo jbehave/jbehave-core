@@ -20,6 +20,8 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.model.TableTransformers;
+import org.jbehave.core.parsers.CompositeParser;
+import org.jbehave.core.parsers.RegexCompositeParser;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.parsers.StepPatternParser;
@@ -80,6 +82,11 @@ public abstract class Configuration {
      * Parses the textual representation via pattern matching of keywords
      */
     protected StoryParser storyParser;
+
+    /**
+     * Parses composite steps from their textual representation
+     */
+    protected CompositeParser compositeParser;
 
     /**
      * Loads story content from classpath
@@ -210,6 +217,13 @@ public abstract class Configuration {
             storyParser = new RegexStoryParser(storyLoader(), tableTransformers());
         }
         return storyParser;
+    }
+
+    public CompositeParser compositeParser() {
+        if (compositeParser == null) {
+            compositeParser = new RegexCompositeParser(keywords());
+        }
+        return compositeParser;
     }
 
     public StoryLoader storyLoader() {
@@ -380,6 +394,11 @@ public abstract class Configuration {
 
     public Configuration useStoryParser(StoryParser storyParser) {
         this.storyParser = storyParser;
+        return this;
+    }
+
+    public Configuration useCompositeParser(CompositeParser compositeParser) {
+        this.compositeParser = compositeParser;
         return this;
     }
 

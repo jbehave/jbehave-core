@@ -9,7 +9,6 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.Composite;
 import org.jbehave.core.parsers.CompositeParser;
-import org.jbehave.core.parsers.RegexCompositeParser;
 
 /**
  * @author Valery Yatsynovich
@@ -25,7 +24,7 @@ public class CompositeCandidateSteps extends AbstractCandidateSteps {
 
     @Override
     public List<StepCandidate> listCandidates() {
-        CompositeParser parser = new RegexCompositeParser(configuration().keywords());
+        CompositeParser parser = configuration().compositeParser();
         ResourceLoader resourceLoader = configuration().storyLoader();
         List<StepCandidate> candidates = new ArrayList<>();
         for (String compositePath : compositePaths) {
