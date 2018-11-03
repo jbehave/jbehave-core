@@ -137,7 +137,7 @@ public class MetaFilterBehaviour {
     }
         
     private MetaFilter filter(String filterAsString) {
-        return new MetaFilter(filterAsString, new SilentEmbedderMonitor(System.out));
+        return new MetaFilter(filterAsString, new SilentEmbedderMonitor());
     }
 
     @Test
@@ -145,7 +145,7 @@ public class MetaFilterBehaviour {
         String filterAsString = "custom: anything goes";
 		Map<String, MetaMatcher> metaMatchers = new HashMap<>();
 		metaMatchers.put("custom:", new AnythingGoesMetaMatcher());
-		MetaFilter filter = new MetaFilter(filterAsString, new SilentEmbedderMonitor(System.out), metaMatchers);
+		MetaFilter filter = new MetaFilter(filterAsString, new SilentEmbedderMonitor(), metaMatchers);
 		assertThat(filter.metaMatcher(), instanceOf(AnythingGoesMetaMatcher.class));
         assertThat(filter.allow(metaBuilder.clear().d("anything").build()), is(true));
     }

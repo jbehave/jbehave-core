@@ -1,15 +1,9 @@
 package org.jbehave.core.embedder;
 
-import java.io.PrintStream;
-
 /**
  *  Monitor that reports nothing
  */
-public class SilentEmbedderMonitor extends PrintStreamEmbedderMonitor {
-
-    public SilentEmbedderMonitor(PrintStream output) {
-        super(output);
-    }
+public class SilentEmbedderMonitor extends PrintingEmbedderMonitor {
 
     @Override
     protected void print(String format, Object... args) {
@@ -18,5 +12,4 @@ public class SilentEmbedderMonitor extends PrintStreamEmbedderMonitor {
     @Override
     protected void printStackTrace(Throwable e) {
     }
-
 }

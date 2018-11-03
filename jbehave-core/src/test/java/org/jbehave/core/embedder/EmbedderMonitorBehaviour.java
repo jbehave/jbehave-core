@@ -33,7 +33,7 @@ public class EmbedderMonitorBehaviour {
     @Test
     public void shouldNotPrintWithSilentMonitor() throws Throwable {
         OutputStream out = new ByteArrayOutputStream();
-        SilentEmbedderMonitor monitor = new SilentEmbedderMonitor(new PrintStream(out));
+        SilentEmbedderMonitor monitor = new SilentEmbedderMonitor();
         monitor.print("a message");
         monitor.printStackTrace(new RuntimeException());
         assertThat(out.toString(), is(""));
