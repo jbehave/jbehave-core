@@ -13,8 +13,8 @@ public class ContextStepMonitor extends DelegatingStepMonitor {
 	private final ContextView view;
 
 	public ContextStepMonitor(Context context, ContextView view,
-			StepMonitor delegate) {
-		super(delegate);
+			StepMonitor... delegates) {
+		super(delegates);
 		this.context = context;
 		this.view = view;
 	}

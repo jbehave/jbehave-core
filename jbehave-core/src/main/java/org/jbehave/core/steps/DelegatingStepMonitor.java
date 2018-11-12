@@ -1,71 +1,114 @@
 package org.jbehave.core.steps;
 
+import static java.util.Arrays.asList;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.List;
 
 import org.jbehave.core.model.StepPattern;
+import org.jbehave.core.reporters.StoryReporter;
 
+/**
+ * Monitor which collects other {@link StepMonitor}s and delegates all invocations to the collected monitors.
+ */
 public class DelegatingStepMonitor implements StepMonitor {
 
-    protected final StepMonitor delegate;
+    private final Collection<StepMonitor> delegates;
 
-    public DelegatingStepMonitor(StepMonitor delegate) {
-        this.delegate = delegate;
+    /**
+     * Creates DelegatingStepMonitor with a given collections of delegates
+     *
+     * @param delegates the StepMonitor-s to delegate to
+     */
+    public DelegatingStepMonitor(Collection<StepMonitor> delegates) {
+        this.delegates = delegates;
+    }
+
+    /**
+     * Creates DelegatingStepMonitor with a given varargs of delegates
+     *
+     * @param delegates the StepMonitor-s to delegate to
+     */
+    public DelegatingStepMonitor(StepMonitor... delegates) {
+        this(asList(delegates));
     }
 
     @Override
     public void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass) {
-    	delegate.convertedValueOfType(value, type, converted, converterClass);
+        for (StepMonitor monitor : delegates) {
+            monitor.convertedValueOfType(value, type, converted, converterClass);
+        }
     }
 
     @Override
     public void stepMatchesType(String stepAsString, String previousAsString, boolean matchesType, StepType stepType, Method method, Object stepsInstance) {
-    	delegate.stepMatchesType(stepAsString, previousAsString, matchesType, stepType, method, stepsInstance);
+        for (StepMonitor monitor : delegates) {
+            monitor.stepMatchesType(stepAsString, previousAsString, matchesType, stepType, method, stepsInstance);
+        }
     }
 
     @Override
     public void stepMatchesPattern(String step, boolean matches, StepPattern stepPattern, Method method, Object stepsInstance) {
-    	delegate.stepMatchesPattern(step, matches, stepPattern, method, stepsInstance);
+        for (StepMonitor monitor : delegates) {
+            monitor.stepMatchesPattern(step, matches, stepPattern, method, stepsInstance);
+        }
     }
 
     @Override
     public void foundParameter(String parameter, int position) {
-    	delegate.foundParameter(parameter, position);
+        for (StepMonitor monitor : delegates) {
+            monitor.foundParameter(parameter, position);
+        }
     }
 
     @Override
     public void performing(String step, boolean dryRun) {
-        delegate.performing(step, dryRun);
+        for (StepMonitor monitor : delegates) {
+            monitor.performing(step, dryRun);
+        }
     }
 
     @Override
     public void usingAnnotatedNameForParameter(String name, int position) {
-    	delegate.usingAnnotatedNameForParameter(name, position);
+        for (StepMonitor monitor : delegates) {
+            monitor.usingAnnotatedNameForParameter(name, position);
+        }
     }
 
     @Override
     public void usingNaturalOrderForParameter(int position) {
-    	delegate.usingNaturalOrderForParameter(position);
+        for (StepMonitor monitor : delegates) {
+            monitor.usingNaturalOrderForParameter(position);
+        }
     }
 
     @Override
     public void usingParameterNameForParameter(String name, int position) {
-    	delegate.usingParameterNameForParameter(name, position);
+        for (StepMonitor monitor : delegates) {
+            monitor.usingParameterNameForParameter(name, position);
+        }
     }
 
     @Override
     public void usingTableAnnotatedNameForParameter(String name, int position) {
-    	delegate.usingTableAnnotatedNameForParameter(name, position);
+        for (StepMonitor monitor : delegates) {
+            monitor.usingTableAnnotatedNameForParameter(name, position);
+        }
     }
 
     @Override
     public void usingTableParameterNameForParameter(String name, int position) {
-    	delegate.usingTableParameterNameForParameter(name, position);
+        for (StepMonitor monitor : delegates) {
+            monitor.usingTableParameterNameForParameter(name, position);
+        }
     }
 
     @Override
     public void usingStepsContextParameter(String parameter) {
-        delegate.usingStepsContextParameter(parameter);
+        for (StepMonitor monitor : delegates) {
+            monitor.usingStepsContextParameter(parameter);
+        }
     }
-
 }

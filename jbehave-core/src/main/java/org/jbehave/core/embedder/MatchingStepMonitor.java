@@ -17,8 +17,8 @@ import org.jbehave.core.steps.StepType;
 
 public class MatchingStepMonitor extends DelegatingStepMonitor {
 
-    public MatchingStepMonitor(StepMonitor delegate) {
-		super(delegate);
+    public MatchingStepMonitor(StepMonitor... delegates) {
+		super(delegates);
 	}
 
 	private Map<String, StepMatch> matched = new HashMap<>();
