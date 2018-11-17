@@ -7,6 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.beans.IntrospectionException;
+import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
@@ -22,8 +23,10 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
+
 import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -36,17 +39,20 @@ import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanListConverter;
+import org.jbehave.core.steps.ParameterConverters.CurrencyConverter;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.EnumConverter;
 import org.jbehave.core.steps.ParameterConverters.EnumListConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableParametersConverter;
+import org.jbehave.core.steps.ParameterConverters.FileConverter;
 import org.jbehave.core.steps.ParameterConverters.FluentEnumConverter;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConvertionFailed;
+import org.jbehave.core.steps.ParameterConverters.PatternConverter;
 import org.jbehave.core.steps.ParameterConverters.StringListConverter;
 import org.jbehave.core.steps.SomeSteps.MyParameters;
 import org.junit.Rule;
@@ -76,7 +82,13 @@ public class ParameterConvertersBehaviour {
         ParameterConverter<?>[] defaultConverters = converters.defaultConverters(resourceLoader, parameterControls,
                 tableTransformers, Locale.ENGLISH, ",");
         assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,
-                StringListConverter.class, DateConverter.class, EnumConverter.class, ExamplesTableConverter.class,
+                StringListConverter.class,
+                DateConverter.class,
+                CurrencyConverter.class,
+                PatternConverter.class,
+                FileConverter.class,
+                EnumConverter.class,
+                ExamplesTableConverter.class,
                 ExamplesTableParametersConverter.class);
     }
 
@@ -348,6 +360,30 @@ public class ParameterConvertersBehaviour {
     public void shouldFailToConvertDateWithInvalidFormat() {
         expectedException.expect(ParameterConvertionFailed.class);
         new DateConverter().convertValue("dd+MM+yyyy", Date.class);
+    }
+
+    @Test
+    public void shouldConvertCurrency() {
+        CurrencyConverter converter = new CurrencyConverter();
+        Type type = Currency.class;
+        assertThatTypesAreAccepted(converter, type);
+        assertThat(converter.convertValue("USD", type), is(Currency.getInstance("USD")));
+    }
+
+    @Test
+    public void shouldConvertPattern() {
+        PatternConverter converter = new PatternConverter();
+        Type type = Pattern.class;
+        assertThatTypesAreAccepted(converter, type);
+        assertThat(converter.convertValue(".*", type).pattern(), is(Pattern.compile(".*").pattern()));
+    }
+
+    @Test
+    public void shouldConvertFile() {
+        FileConverter converter = new FileConverter();
+        Type type = File.class;
+        assertThatTypesAreAccepted(converter, type);
+        assertThat(converter.convertValue(".", type), is(new File(".")));
     }
 
     @Test

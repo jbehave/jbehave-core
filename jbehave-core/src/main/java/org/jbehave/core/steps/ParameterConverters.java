@@ -1,5 +1,6 @@
 package org.jbehave.core.steps;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -14,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Currency;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
 import org.apache.commons.lang3.BooleanUtils;
@@ -193,6 +196,9 @@ public class ParameterConverters {
                 new StringConverter(),
                 new StringListConverter(escapedCollectionSeparator),
                 new DateConverter(),
+                new CurrencyConverter(),
+                new PatternConverter(),
+                new FileConverter(),
                 new EnumConverter(),
                 new ExamplesTableConverter(tableFactory),
                 new ExamplesTableParametersConverter(tableFactory),
@@ -610,7 +616,27 @@ public class ParameterConverters {
                                 : dateFormat), e);
             }
         }
+    }
 
+    public static class CurrencyConverter extends AbstractParameterConverter<Currency> {
+        @Override
+        public Currency convertValue(String value, Type type) {
+            return Currency.getInstance(value);
+        }
+    }
+
+    public static class PatternConverter extends AbstractParameterConverter<Pattern> {
+        @Override
+        public Pattern convertValue(String value, Type type) {
+            return Pattern.compile(value);
+        }
+    }
+
+    public static class FileConverter extends AbstractParameterConverter<File> {
+        @Override
+        public File convertValue(String value, Type type) {
+            return new File(value);
+        }
     }
 
     public static class BooleanConverter extends AbstractParameterConverter<Boolean> {
