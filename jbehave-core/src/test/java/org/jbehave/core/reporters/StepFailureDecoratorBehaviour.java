@@ -50,7 +50,7 @@ public class StepFailureDecoratorBehaviour {
         decorator.pending("When step 1.2");
         decorator.notPerformed("Then step 1.3");
         decorator.beforeExamples(steps, table);
-        decorator.example(tableRow);
+        decorator.example(tableRow, 0);
         decorator.afterExamples();
         decorator.afterScenario();
         decorator.afterStory(givenStory);
@@ -67,7 +67,7 @@ public class StepFailureDecoratorBehaviour {
         inOrder.verify(delegate).pending("When step 1.2");
         inOrder.verify(delegate).notPerformed("Then step 1.3");
         inOrder.verify(delegate).beforeExamples(steps, table);
-        inOrder.verify(delegate).example(tableRow);
+        inOrder.verify(delegate).example(tableRow, 0);
         inOrder.verify(delegate).afterExamples();
         inOrder.verify(delegate).afterScenario();
         inOrder.verify(delegate).afterStory(givenStory);

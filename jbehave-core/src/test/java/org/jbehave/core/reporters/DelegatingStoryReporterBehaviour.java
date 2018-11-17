@@ -51,7 +51,7 @@ public class DelegatingStoryReporterBehaviour {
         delegator.pending("When step 1.2");
         delegator.notPerformed("Then step 1.3");
         delegator.beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
-        delegator.example(examplesTable.getRow(0));
+        delegator.example(examplesTable.getRow(0), 0);
         delegator.afterExamples();
         delegator.afterScenario();
        
@@ -85,7 +85,7 @@ public class DelegatingStoryReporterBehaviour {
         inOrder.verify(delegate).pending("When step 1.2");
         inOrder.verify(delegate).notPerformed("Then step 1.3");
         inOrder.verify(delegate).beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
-        inOrder.verify(delegate).example(examplesTable.getRow(0));
+        inOrder.verify(delegate).example(examplesTable.getRow(0), 0);
         inOrder.verify(delegate).afterExamples();
         inOrder.verify(delegate).afterScenario();
         

@@ -64,7 +64,7 @@ public class SilentSuccessFilterBehaviour {
         filter.beforeScenario("My scenario 3");
         filter.beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
         Map<String, String> tableRow = new HashMap<>();
-        filter.example(tableRow);
+        filter.example(tableRow, 0);
         filter.successful("Given step 3.1");
         filter.successful("When step 3.2");
         filter.ignorable("!-- Then ignore me too");
@@ -111,7 +111,7 @@ public class SilentSuccessFilterBehaviour {
 
         inOrder.verify(delegate).beforeScenario("My scenario 3");
         inOrder.verify(delegate).beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
-        inOrder.verify(delegate).example(tableRow);
+        inOrder.verify(delegate).example(tableRow, 0);
         inOrder.verify(delegate).successful("Given step 3.1");
         inOrder.verify(delegate).successful("When step 3.2");
         inOrder.verify(delegate).ignorable("!-- Then ignore me too");
@@ -159,7 +159,7 @@ public class SilentSuccessFilterBehaviour {
         filter.beforeScenario(scenario3);
         filter.beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
         Map<String, String> tableRow = new HashMap<>();
-        filter.example(tableRow);
+        filter.example(tableRow, 0);
         filter.successful("Given step 3.1");
         filter.successful("When step 3.2");
         filter.ignorable("!-- Then ignore me too");
@@ -207,7 +207,7 @@ public class SilentSuccessFilterBehaviour {
 
         inOrder.verify(delegate).beforeScenario(scenario3);
         inOrder.verify(delegate).beforeExamples(asList("Given step <one>", "Then step <two>"), examplesTable);
-        inOrder.verify(delegate).example(tableRow);
+        inOrder.verify(delegate).example(tableRow, 0);
         inOrder.verify(delegate).successful("Given step 3.1");
         inOrder.verify(delegate).successful("When step 3.2");
         inOrder.verify(delegate).ignorable("!-- Then ignore me too");

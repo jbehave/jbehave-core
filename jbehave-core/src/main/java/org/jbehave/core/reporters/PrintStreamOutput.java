@@ -417,7 +417,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     }
 
     @Override
-    public void example(Map<String, String> tableRow) {
+    public void example(Map<String, String> tableRow, int exampleIndex) {
         print(format("example", "\n{0} {1}\n", keywords.examplesTableRow(), tableRow));
     }
 

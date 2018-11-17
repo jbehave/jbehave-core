@@ -198,7 +198,7 @@ public class PostStoryStatisticsCollector extends NullStoryReporter {
     }
 
     @Override
-    public void example(Map<String, String> tableRow) {
+    public void example(Map<String, String> tableRow, int exampleIndex) {
         add("examples");
     }
 

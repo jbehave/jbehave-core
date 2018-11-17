@@ -109,6 +109,13 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void example(Map<String, String> tableRow, int exampleIndex) {
+        for (StoryReporter reporter : delegates) {
+            reporter.example(tableRow, exampleIndex);
+        }
+    }
+
+    @Override
     public void afterExamples() {
         for (StoryReporter reporter : delegates) {
             reporter.afterExamples();

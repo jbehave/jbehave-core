@@ -123,6 +123,10 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void example(Map<String, String> tableRow, int exampleIndex) {
+    }
+
+    @Override
     public void afterExamples() {
     }
 

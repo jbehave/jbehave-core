@@ -183,7 +183,7 @@ public class TemplateableOutput extends NullStoryReporter {
     }
 
     @Override
-    public void example(Map<String, String> parameters) {
+    public void example(Map<String, String> parameters, int exampleIndex) {
         this.outputScenario.examples.add(parameters);
         this.outputScenario.currentExample = parameters;
     }

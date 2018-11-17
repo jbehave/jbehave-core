@@ -159,8 +159,8 @@ public class PostStoryStatisticsCollectorBehaviour {
         reporter.notPerformed("Then I should have $20");
         ExamplesTable table = new ExamplesTable("|money|to|\n|$30|Mauro|\n|$50|Paul|\n");
         reporter.beforeExamples(asList("Given money <money>", "Then I give it to <to>"), table);
-        reporter.example(table.getRow(0));
-        reporter.example(table.getRow(1));
+        reporter.example(table.getRow(0), 0);
+        reporter.example(table.getRow(1), 1);
         reporter.afterExamples();
         reporter.afterScenario();
 

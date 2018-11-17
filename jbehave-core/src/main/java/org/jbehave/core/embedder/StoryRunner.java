@@ -456,12 +456,15 @@ public class StoryRunner {
         ExamplesTable table = scenario.getExamplesTable();
         reporter.get().beforeExamples(scenario.getSteps(), table);
     	Keywords keywords = context.configuration().keywords();
-        for (Map<String, String> scenarioParameters : table.getRows()) {
+        List<Map<String, String>> rows = table.getRows();
+        for (int exampleIndex = 0; exampleIndex < rows.size(); exampleIndex++) {
+            Map<String, String> scenarioParameters = rows.get(exampleIndex);
 			Meta parameterMeta = parameterMeta(keywords, scenarioParameters);
 			if ( !parameterMeta.isEmpty() && !context.filter.allow(parameterMeta) ){
 				continue;
 			}
             reporter.get().example(scenarioParameters);
+            reporter.get().example(scenarioParameters, exampleIndex);
             if (context.configuration().storyControls().resetStateBeforeScenario()) {
                 context.resetState();
             }

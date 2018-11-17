@@ -65,7 +65,15 @@ public interface StoryReporter {
 
     void beforeExamples(List<String> steps, ExamplesTable table);
 
+    /**
+     * @deprecated use {@link #example(Map, int)}
+     *
+     * @param tableRow Example table row
+     */
+    @Deprecated
     void example(Map<String, String> tableRow);
+
+    void example(Map<String, String> tableRow, int exampleIndex);
 
     void afterExamples();
 

@@ -263,11 +263,11 @@ public class SilentSuccessFilter extends NullStoryReporter {
     }
 
     @Override
-    public void example(final Map<String, String> tableRow) {
+    public void example(final Map<String, String> tableRow, final int exampleIndex) {
         scenarioTodos.add(new Todo() {
             @Override
             public void doNow() {
-                delegate.example(tableRow);
+                delegate.example(tableRow, exampleIndex);
             }
         });
     }

@@ -152,14 +152,16 @@ public class PerformableTree {
             
 			if (isParameterisedByExamples(scenario)) {
                 ExamplesTable table = scenario.getExamplesTable();
-                for (Map<String, String> scenarioParameters : table.getRows()) {
+                List<Map<String, String>> tableRows = table.getRows();
+                for (int exampleIndex = 0; exampleIndex < tableRows.size(); exampleIndex++) {
+                    Map<String, String> scenarioParameters = tableRows.get(exampleIndex);
                     Meta exampleScenarioMeta = parameterMeta(context, scenarioParameters).inheritFrom(storyAndScenarioMeta);
                     boolean exampleScenarioAllowed = context.filter().allow(exampleScenarioMeta);
 
                     if (exampleScenarioAllowed) {
                         ExamplePerformableScenario exampleScenario = exampleScenario(
                                 context, lifecycle, scenario, storyAndScenarioMeta,
-                                scenarioParameters);
+                                scenarioParameters, exampleIndex);
                         performableScenario.addExampleScenario(exampleScenario);
                     }
                 }
@@ -187,10 +189,10 @@ public class PerformableTree {
 		return normalScenario;
 	}
 
-	private ExamplePerformableScenario exampleScenario(RunContext context,
-			Lifecycle lifecycle, Scenario scenario, Meta storyAndScenarioMeta,
-			Map<String, String> parameters) {
-	    ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(scenario, parameters);
+    private ExamplePerformableScenario exampleScenario(RunContext context,
+            Lifecycle lifecycle, Scenario scenario, Meta storyAndScenarioMeta,
+            Map<String, String> parameters, int exampleIndex) {
+	    ExamplePerformableScenario exampleScenario = new ExamplePerformableScenario(scenario, parameters, exampleIndex);
 	    exampleScenario.setStoryAndScenarioMeta(storyAndScenarioMeta);
         exampleScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
                 ScenarioType.EXAMPLE));
@@ -1081,10 +1083,12 @@ public class PerformableTree {
     public static class ExamplePerformableScenario extends AbstractPerformableScenario {
 
         private transient Scenario scenario;
+        private final int exampleIndex;
 
-		public ExamplePerformableScenario(Scenario scenario, Map<String, String> exampleParameters) {
+		public ExamplePerformableScenario(Scenario scenario, Map<String, String> exampleParameters, int exampleIndex) {
         	super(exampleParameters);
 			this.scenario = scenario;
+			this.exampleIndex = exampleIndex;
         }
 
         @Override
@@ -1098,6 +1102,7 @@ public class PerformableTree {
             }
             context.stepsContext().resetExample();
             context.reporter().example(parameters);
+            context.reporter().example(parameters, exampleIndex);
             beforeSteps.perform(context);
             performGivenStories(context, givenStories, scenario.getGivenStories());
             performRestartableSteps(context);

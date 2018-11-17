@@ -40,6 +40,7 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method givenStoriesPaths;
     private static Method afterGivenStories;
     private static Method beforeExamples;
+    private static Method exampleDeprecated;
     private static Method example;
     private static Method afterExamples;
     private static Method beforeStep;
@@ -73,7 +74,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
             givenStoriesPaths = StoryReporter.class.getMethod("givenStories", List.class);
             afterGivenStories = StoryReporter.class.getMethod("afterGivenStories");
             beforeExamples = StoryReporter.class.getMethod("beforeExamples", List.class, ExamplesTable.class);
-            example = StoryReporter.class.getMethod("example", Map.class);
+            exampleDeprecated = StoryReporter.class.getMethod("example", Map.class);
+            example = StoryReporter.class.getMethod("example", Map.class, int.class);
             afterExamples = StoryReporter.class.getMethod("afterExamples");
             beforeStep = StoryReporter.class.getMethod("beforeStep", String.class);
             successful = StoryReporter.class.getMethod("successful", String.class);
@@ -259,9 +261,19 @@ public class ConcurrentStoryReporter implements StoryReporter {
     public void example(Map<String, String> tableRow) {
         crossReferencing.example(tableRow);
         if (multiThreading) {
-            delayedMethods.add(new DelayedMethod(example, tableRow));
+            delayedMethods.add(new DelayedMethod(exampleDeprecated, tableRow));
         } else {
             delegate.example(tableRow);
+        }
+    }
+
+    @Override
+    public void example(Map<String, String> tableRow, int exampleIndex) {
+        crossReferencing.example(tableRow, exampleIndex);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(example, tableRow, exampleIndex));
+        } else {
+            delegate.example(tableRow, exampleIndex);
         }
     }
 
