@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jbehave.core.annotations.ScenarioType;
 import org.jbehave.core.configuration.Configuration;
@@ -15,9 +16,9 @@ import org.jbehave.core.parsers.CompositeParser;
  */
 public class CompositeCandidateSteps extends AbstractCandidateSteps {
 
-    private final List<String> compositePaths;
+    private final Set<String> compositePaths;
 
-    public CompositeCandidateSteps(Configuration configuration, List<String> compositePaths) {
+    public CompositeCandidateSteps(Configuration configuration, Set<String> compositePaths) {
         super(configuration);
         this.compositePaths = compositePaths;
     }

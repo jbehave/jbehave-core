@@ -2,6 +2,7 @@ package org.jbehave.core.configuration;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.Embedder;
@@ -189,7 +190,7 @@ public abstract class Configuration {
     /**
      * Paths to resources containing composite steps definitions
      */
-    protected List<String> compositePaths;
+    protected Set<String> compositePaths;
 
     public Configuration() {
     }
@@ -361,9 +362,9 @@ public abstract class Configuration {
         return pathCalculator;
     }
 
-    public List<String> compositePaths() {
+    public Set<String> compositePaths() {
         if (compositePaths == null) {
-            compositePaths = Collections.emptyList();
+            compositePaths = Collections.emptySet();
         }
         return compositePaths;
     }
@@ -478,7 +479,7 @@ public abstract class Configuration {
         return this;
     }
 
-    public Configuration useCompositePaths(List<String> compositePaths) {
+    public Configuration useCompositePaths(Set<String> compositePaths) {
         this.compositePaths = compositePaths;
         return this;
     }

@@ -4,6 +4,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.*;
 
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 
@@ -89,7 +90,7 @@ public class CoreStories extends JUnitStories {
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls)
                 .useTableTransformers(tableTransformers)
-                .useCompositePaths(findPaths("**/*.steps", null));
+                .useCompositePaths(new HashSet<>(findPaths("**/*.steps", null)));
     }
 
     @Override

@@ -32,7 +32,7 @@ public class InstanceStepsFactoryBehaviour {
     @Test
     public void shouldCreateCompositeCandidateSteps() {
         Configuration configuration = new MostUsefulConfiguration();
-        configuration.useCompositePaths(Collections.singletonList("composite.steps"));
+        configuration.useCompositePaths(Collections.singleton("composite.steps"));
         InjectableStepsFactory factory = new InstanceStepsFactory(configuration);
         List<CandidateSteps> candidateSteps = factory.createCandidateSteps();
         assertThat(candidateSteps.size(), equalTo(1));

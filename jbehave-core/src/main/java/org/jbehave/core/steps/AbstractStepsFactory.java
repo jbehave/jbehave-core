@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.jbehave.core.annotations.AsParameterConverter;
 import org.jbehave.core.configuration.Configuration;
@@ -39,7 +40,7 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
                     methodReturningConverters(type));
             steps.add(new Steps(configuration, type, this));
         }
-        List<String> compositePaths = configuration.compositePaths();
+        Set<String> compositePaths = configuration.compositePaths();
         if (!compositePaths.isEmpty()) {
             steps.add(new CompositeCandidateSteps(configuration, compositePaths));
         }
@@ -90,6 +91,6 @@ public abstract class AbstractStepsFactory implements InjectableStepsFactory {
         public StepsInstanceNotFound(Class<?> type, InjectableStepsFactory stepsFactory) {
             super("Steps instance not found for type "+type+" in factory "+stepsFactory);
         }
-        
+
     }
 }
