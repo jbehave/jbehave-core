@@ -25,7 +25,16 @@ public class NullStepMonitor implements StepMonitor {
     }
 
     @Override
+    @Deprecated
     public void performing(String step, boolean dryRun) {
+    }
+
+    @Override
+    public void beforePerforming(String step, boolean dryRun, Method method) {
+    }
+
+    @Override
+    public void afterPerforming(String step, boolean dryRun, Method method) {
     }
 
     @Override

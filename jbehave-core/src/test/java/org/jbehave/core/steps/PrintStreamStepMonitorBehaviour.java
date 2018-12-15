@@ -53,12 +53,21 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     @Test
-    public void shouldReportPerformingStep() {
+    public void shouldReportBeforePerformingStep() {
         // When
-        monitor.performing("a step", false);
+        monitor.beforePerforming("a step", false, null);
 
         // Then
         assertIsOutputEqualTo("Performing step 'a step'");
+    }
+
+    @Test
+    public void shouldReportNothingAfterBeforePerformingStep() {
+        // When
+        monitor.afterPerforming("a step", false, null);
+
+        // Then
+        assertThat(out.toString(), equalTo(""));
     }
 
     @Test

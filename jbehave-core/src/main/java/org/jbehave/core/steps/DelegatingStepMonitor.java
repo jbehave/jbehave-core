@@ -64,9 +64,24 @@ public class DelegatingStepMonitor implements StepMonitor {
     }
 
     @Override
+    @Deprecated
     public void performing(String step, boolean dryRun) {
         for (StepMonitor monitor : delegates) {
             monitor.performing(step, dryRun);
+        }
+    }
+
+    @Override
+    public void beforePerforming(String step, boolean dryRun, Method method) {
+        for (StepMonitor monitor : delegates) {
+            monitor.beforePerforming(step, dryRun, method);
+        }
+    }
+
+    @Override
+    public void afterPerforming(String step, boolean dryRun, Method method) {
+        for (StepMonitor monitor : delegates) {
+            monitor.afterPerforming(step, dryRun, method);
         }
     }
 

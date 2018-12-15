@@ -49,9 +49,22 @@ public abstract class PrintingStepMonitor implements StepMonitor {
         print(CONVERTED_VALUE_OF_TYPE, value, type, converted, converterClass);
     }
 
+    /**
+     * @deprecated Use {@link #beforePerforming(String, boolean, Method)} and
+     * {@link #afterPerforming(String, boolean, Method)}
+     */
     @Override
+    @Deprecated
     public void performing(String step, boolean dryRun) {
+    }
+
+    @Override
+    public void beforePerforming(String step, boolean dryRun, Method method) {
         print(PERFORMING, step, dryRun ? DRY_RUN : "");
+    }
+
+    @Override
+    public void afterPerforming(String step, boolean dryRun, Method method) {
     }
 
     @Override

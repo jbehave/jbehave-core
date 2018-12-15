@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import java.lang.reflect.Method;
+
 import org.jbehave.core.context.ContextView;
 import org.jbehave.core.context.Context;
 
@@ -20,11 +22,11 @@ public class ContextStepMonitor extends DelegatingStepMonitor {
 	}
 
 	@Override
-    public void performing(String step, boolean dryRun) {
+    public void beforePerforming(String step, boolean dryRun, Method method) {
 		String currentStory = context.getCurrentStory();
 		String currentScenario = context.getCurrentScenario();
 		view.show(currentStory, currentScenario, step);
-		super.performing(step, dryRun);
+		super.beforePerforming(step, dryRun, method);
 	}
 
 }

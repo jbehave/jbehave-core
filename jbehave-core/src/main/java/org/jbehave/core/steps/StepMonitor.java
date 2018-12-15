@@ -17,7 +17,16 @@ public interface StepMonitor {
 
     void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass);
 
+    /**
+     * @deprecated Use {@link #beforePerforming(String, boolean, Method)} and
+     * {@link #afterPerforming(String, boolean, Method)}
+     */
+    @Deprecated
     void performing(String step, boolean dryRun);
+
+    void beforePerforming(String step, boolean dryRun, Method method);
+
+    void afterPerforming(String step, boolean dryRun, Method method);
 
     void usingAnnotatedNameForParameter(String name, int position);
 

@@ -785,6 +785,7 @@ public class StepCreator {
             try {
                 parametriseStep();
                 stepMonitor.performing(parametrisedStep, dryRun);
+                stepMonitor.beforePerforming(parametrisedStep, dryRun, method);
                 if (!dryRun && method != null) {
                     Object outputObject = method.invoke(stepsInstance(), convertedParameters);
                     storeOutput(outputObject, method);
@@ -810,6 +811,9 @@ public class StepCreator {
             } catch (Throwable t) {
                 return failed(stepAsString, new UUIDExceptionWrapper(stepAsString, t)).withParameterValues(
                         parametrisedStep).setTimings(timer.stop());
+            }
+            finally {
+                stepMonitor.afterPerforming(parametrisedStep, dryRun, method);
             }
         }
 
