@@ -193,7 +193,7 @@ public class CompositeCandidateStepsBehaviour {
 
         private StringBuffer trail = new StringBuffer();
         
-        @Then("all buttons are enabled")
+        @When("all buttons are enabled")
         @Composite(steps = {
             "Then all left buttons are enabled",
             "Then all top buttons are enabled" }

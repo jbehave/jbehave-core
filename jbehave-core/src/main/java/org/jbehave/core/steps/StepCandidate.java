@@ -183,8 +183,8 @@ public class StepCandidate {
 
     private void addComposedStepsRecursively(List<Step> steps, String stepAsString,
             Map<String, String> namedParameters, List<StepCandidate> allCandidates, String[] composedSteps) {
-        Map<String, String> matchedParameters = stepCreator.matchedParameters(method, stripStartingWord(stepAsString),
-                namedParameters);
+        Map<String, String> matchedParameters = stepCreator.matchedParameters(method,
+                keywords.stepWithoutStartingWord(stepAsString), namedParameters);
         matchedParameters.putAll(namedParameters);
         String previousNonAndStep = null;
         for (String composedStep : composedSteps) {

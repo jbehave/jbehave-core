@@ -454,8 +454,12 @@ public class Keywords {
 
     public String stepWithoutStartingWord(String stepAsString, StepType stepType) {
         String startingWord = startingWord(stepAsString, stepType);
-        return stepAsString.substring(startingWord.length() + 1); // 1 for the
-                                                                  // space after
+        return stepAsString.substring(startingWord.length() + 1); // 1 for the space after
+    }
+
+    public String stepWithoutStartingWord(String stepAsString) {
+        StepType stepType = stepTypeFor(stepAsString);
+        return stepWithoutStartingWord(stepAsString, stepType);
     }
 
     public String startingWord(String stepAsString, StepType stepType) throws StartingWordNotFound {
