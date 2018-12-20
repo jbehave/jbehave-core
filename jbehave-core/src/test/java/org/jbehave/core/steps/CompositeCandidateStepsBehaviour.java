@@ -186,13 +186,13 @@ public class CompositeCandidateStepsBehaviour {
         for (Step step : composedSteps) {
             step.perform(null);
         }
-        assertThat(steps.trail.toString(), equalTo("l>l1>l2>t>t1>t2>"));
+        assertThat(steps.trail.toString(), equalTo("left>left_first>left_second>top>top_first>top_second>"));
     }
 
     static class NestedCompositeSteps extends Steps {
 
-        private StringBuffer trail = new StringBuffer();
-        
+        private final StringBuilder trail = new StringBuilder();
+
         @When("all buttons are enabled")
         @Composite(steps = {
             "Then all left buttons are enabled",
@@ -202,44 +202,19 @@ public class CompositeCandidateStepsBehaviour {
             trail.append("a>");
         }
 
-        @Then("all left buttons are enabled")
+        @Then("all $location buttons are enabled")
         @Composite(steps = {
-            "Then first left button is enabled",
-            "Then second left button is enabled" }
+            "Then first <location> button is enabled",
+            "Then second <location> button is enabled" }
         )
-        public void leftAll() {
-            trail.append("l>");
+        public void topAll(String location) {
+            trail.append(location).append('>');
         }
 
-        @Then("first left button is enabled")
-        public void leftOne(){
-            trail.append("l1>");
+        @Then("$order $location button is enabled")
+        public void topOne(String order, String location) {
+            trail.append(location).append('_').append(order).append('>');
         }
-
-        @Then("second left button is enabled")
-        public void leftTwo(){
-            trail.append("l2>");
-        }
-
-        @Then("all top buttons are enabled")
-        @Composite(steps = {
-            "Then first top button is enabled",
-            "Then second top button is enabled" }
-        )
-        public void topAll() {
-            trail.append("t>");
-        }
-
-        @Then("first top button is enabled")
-        public void topOne() {
-            trail.append("t1>");
-        }
-
-        @Then("second top button is enabled")
-        public void topTwo() {
-            trail.append("t2>");
-        }
-
     }
 
     @Test
