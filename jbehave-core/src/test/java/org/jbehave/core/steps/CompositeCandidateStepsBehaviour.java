@@ -40,9 +40,10 @@ public class CompositeCandidateStepsBehaviour {
         candidates.addAll(candidateSteps.listCandidates());
         StepCandidate candidate = candidateMatchingStep(candidates, "Given $customer has previously bought a $product");
         assertThat(candidate.isComposite(), is(true));
-        Map<String, String> noNamedParameters = new HashMap<>();
+        Map<String, String> namedParameters = new HashMap<>();
+        namedParameters.put("customer", "Ms Smith");
         List<Step> composedSteps = new ArrayList<>();
-        candidate.addComposedSteps(composedSteps, "Given Mr Jones has previously bought a ticket", noNamedParameters, candidates);
+        candidate.addComposedSteps(composedSteps, "Given Mr Jones has previously bought a ticket", namedParameters, candidates);
         assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(null);

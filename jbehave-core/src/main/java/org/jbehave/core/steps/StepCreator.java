@@ -114,7 +114,7 @@ public class StepCreator {
             ParameterName[] parameterNames = parameterNames(method);
             Type[] types = parameterTypes(method, parameterNames);
 
-            String[] values = parameterValuesForStep(namedParameters, types, parameterNames);
+            String[] values = parameterValuesForStep(namedParameters, types, parameterNames, false);
             for (int i = 0; i < parameterNames.length; i++) {
                 String name = parameterNames[i].name;
                 if (name == null) {
@@ -407,10 +407,11 @@ public class StepCreator {
         return result;
     }
 
-    private String[] parameterValuesForStep(Map<String, String> namedParameters, Type[] types, ParameterName[] names) {
+    private String[] parameterValuesForStep(Map<String, String> namedParameters, Type[] types, ParameterName[] names,
+            boolean overrideWithTableParameters) {
         final String[] parameters = new String[types.length];
         for (int position = 0; position < types.length; position++) {
-            parameters[position] = parameterForPosition(position, names, namedParameters);
+            parameters[position] = parameterForPosition(position, names, namedParameters, overrideWithTableParameters);
         }
         return parameters;
     }
@@ -427,7 +428,8 @@ public class StepCreator {
         return parameters;
     }
 
-    private String parameterForPosition(int position, ParameterName[] names, Map<String, String> namedParameters) {
+    private String parameterForPosition(int position, ParameterName[] names, Map<String, String> namedParameters,
+            boolean overrideWithTableParameters) {
         int namePosition = parameterPosition(names, position);
         String parameter = null;
 
@@ -454,7 +456,7 @@ public class StepCreator {
                             namedParameter(namedParameters, delimitedName));
                 }
             }
-            else if (isTableName(namedParameters, name)) {
+            else if (overrideWithTableParameters && isTableName(namedParameters, name)) {
                 parameter = namedParameter(namedParameters, name);
                 if (parameter != null) {
                     monitorUsingTableNameForParameter(name, position, annotated); 
@@ -859,7 +861,7 @@ public class StepCreator {
             stepMatcher.find(stepWithoutStartingWord);
             ParameterName[] names = parameterNames(method);
             Type[] types = parameterTypes(method, names);
-            String[] parameterValues = parameterValuesForStep(namedParameters, types, names);
+            String[] parameterValues = parameterValuesForStep(namedParameters, types, names, true);
             convertedParameters = convertParameterValues(parameterValues, types, names);
             addNamedParametersToExamplesTables();
             parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, parameterValues);
