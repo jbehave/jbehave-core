@@ -69,6 +69,7 @@ public class SpringAnnotationBuilderBehaviour {
 				.getProperty("decorateNonHtml"), equalTo("true"));
 		assertThat(configuration.storyReporterBuilder().reportFailureTrace(),
 				is(true));
+		assertThat(configuration.storyControls().skipStoryIfGivenStoryFailed(), is(false));
 	}
 
 	private void assertThatDateIsConvertedWithFormat(

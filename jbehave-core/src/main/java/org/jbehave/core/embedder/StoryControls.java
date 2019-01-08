@@ -17,6 +17,7 @@ public class StoryControls {
 	private boolean metaByRow = false;
     private String storyMetaPrefix = "";
     private String scenarioMetaPrefix = "";
+    private boolean skipStoryIfGivenStoryFailed = false;
 
     public StoryControls() {
     }
@@ -55,6 +56,10 @@ public class StoryControls {
 
     public String scenarioMetaPrefix() {
         return scenarioMetaPrefix;
+    }
+
+    public boolean skipStoryIfGivenStoryFailed() {
+        return skipStoryIfGivenStoryFailed;
     }
 
     public StoryControls doDryRun(boolean dryRun) {
@@ -102,7 +107,12 @@ public class StoryControls {
         this.scenarioMetaPrefix = scenarioMetaPrefix;
         return this;        
     }
-    
+
+    public StoryControls doSkipStoryIfGivenStoryFailed(boolean skipStoryIfGivenStoryFailed) {
+        this.skipStoryIfGivenStoryFailed = skipStoryIfGivenStoryFailed;
+        return this;
+    }
+
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

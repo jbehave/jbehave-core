@@ -29,6 +29,7 @@
   <bean class="org.jbehave.core.configuration.spring.SpringStoryControls">
     <property name="dryRun" value="true" />
     <property name="skipScenariosAfterFailure" value="true" />
+    <property name="skipStoryIfGivenStoryFailed" value="false" />
   </bean>
 
   <bean
