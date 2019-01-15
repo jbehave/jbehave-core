@@ -37,13 +37,13 @@ IWantTo:= "I want to" NarrativeElementContent ;
 SoThat:= "So that" NarrativeElementContent ;
 
 ; The narrative element content is any sequence of characters that do not match a narrative starting word
-NarrativeElementContent := ? Any sequence of NarrativeCharacter that does not match NarrativeStartingWord ? ; 
+NarrativeElementContent := ? Any sequence of NarrativeCharacter that does not match NarrativeStartingWord ? ;
 
 ; All characters are allowed in a narrative content, including newlines
 NarrativeCharacter := ? Any Unicode character ? ;
 
 ; The narrative starting words (or equivalent in I18n-ed locale)
-NarrativeStartingWord :== ("In order to" | "As a" | "I want to" | "So that") ;
+NarrativeStartingWord := ("In order to" | "As a" | "I want to" | "So that") ;
 
 ; The comma-separated list of story resources that specify the stories to be run before a story or a scenario
 GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
@@ -52,32 +52,32 @@ GivenStories:= "GivenStories:" (StoryPath ','?)+ ;
 ; It is followed by the lifecycle elements
 Lifecycle:= "Lifecycle:" LifecycleBefore? LifecycleAfter?
 
-; The before lifecyle element identified by keyword "Before:" (or equivalent in I18n-ed locale), 
+; The before lifecyle element identified by keyword "Before:" (or equivalent in I18n-ed locale),
 ; followed by one or more steps
 LifecycleBefore:= "Before:" (Scope? Step+)+
 
-; The after lifecyle element identified by keyword "After:" (or equivalent in I18n-ed locale), 
+; The after lifecyle element identified by keyword "After:" (or equivalent in I18n-ed locale),
 ; followed by one or more sets of scope, outcome, meta filter and steps
 LifecycleAfter:= "After:" (Scope? Outcome? MetaFilter? Step+)+
 
 ; The scope element identified by keyword "Scope:" (or equivalent in I18n-ed locale),
 Scope:= "Scope:" "SCENARIO" | "STORY"
 
-; The outcome element identified by keyword "Outcome:" (or equivalent in I18n-ed locale), 
-Outcome:= "Outcome:" "ANY" | "SUCCESS" | "FAILURE";
+; The outcome element identified by keyword "Outcome:" (or equivalent in I18n-ed locale),
+Outcome:= "Outcome:" "ANY" | "SUCCESS" | "FAILURE" ;
 
-; The meta filter element identified by keyword "MetaFilter:" (or equivalent in I18n-ed locale), 
+; The meta filter element identified by keyword "MetaFilter:" (or equivalent in I18n-ed locale),
 MetaFilter:= "MetaFilter:" (Word Space?)*
 
 ; The scenario is identified by keyword "Scenario:" (or equivalent in I18n-ed locale),
-; which is optional in the case of a single scenario.  
+; which is optional in the case of a single scenario.
 ; It can optionally be followed by a title, which is expressed by any sequence of words
 ; that must not contain any keywords at start of lines.
-; It is followed by one or more Steps. 
+; It is followed by one or more Steps.
 ; Finally the optional Examples table, which if present will execute the scenario for as many table rows present
 Scenario := "Scenario:"? Title? Meta? GivenStories? Step+ Examples? ;
 
-; The free-text description 
+; The free-text description
 Title := (Word Space?)* ;
 
 ; The word is any sequence of non-space characters that does not match a KeyWord
@@ -90,9 +90,9 @@ Space := ? Unicode space character ? ;
 NonSpaceCharacter := ? Any Unicode character except Space ? ;
 
 ; The keywords which are reserved (or equivalent in I18n-ed locale)
-KeyWord := "Scenario:" | "GivenStories:" | "Given" | "When" | "Then" | "And" | "!--";
+KeyWord := "Scenario:" | "GivenStories:" | "Given" | "When" | "Then" | "And" | "!--" ;
 
-; The story resource path  
+; The story resource path
 StoryPath := PathCharacter+ ;
 
 ; The characters allowed in a resource path
@@ -108,10 +108,10 @@ Digit := ? Any Unicode digit character ? ;
 Step := StepStartingWord StepContent ;
 
 ; The step starting words (or equivalent in I18n-ed locale)
-StepStartingWord :== ("Given" | "When" | "Then" | "And" | "!--" ) ;
+StepStartingWord := ("Given" | "When" | "Then" | "And" | "!--" ) ;
 
 ; The step content is any sequence of characters that do not match a step starting word
-StepContent := ? Any sequence of StepCharacter that does not match StepStartingWord ? ; 
+StepContent := ? Any sequence of StepCharacter that does not match StepStartingWord ? ;
 
 ; All characters are allowed in a scenario step content, including newlines
 StepCharacter := ? Any Unicode character ? ;
@@ -123,10 +123,10 @@ Examples := "Examples:" ExamplesTable ;
 ExamplesTable := ExamplesTableHeader ExamplesTableRow+ ;
 
 ; The examples table header contains the column names, separated by ExamplesTableColumnSeparator
-ExamplesTableHeader := ((ExamplesTableColumnSeparator ExamplesTableCharacter+)+ ExamplesTableColumnSeparator  Newline ;
+ExamplesTableHeader := (ExamplesTableColumnSeparator ExamplesTableCharacter+)+ ExamplesTableColumnSeparator  Newline ;
 
 ; The examples table row contains the column values, separated by ExamplesTableColumnSeparator
-ExamplesTableRow := ((ExamplesTableColumnSeparator ExamplesTableCharacter+)+ ExamplesTableColumnSeparator  Newline ;
+ExamplesTableRow := (ExamplesTableColumnSeparator ExamplesTableCharacter+)+ ExamplesTableColumnSeparator  Newline ;
 
 ; The examples table character can be any character, expect for ExamplesTableColumnSeparator and Newline
 ExamplesTableCharacter := ? Any Unicode character except ExamplesTableColumnSeparator and Newline ? ;
