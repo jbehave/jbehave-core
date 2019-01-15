@@ -30,14 +30,37 @@ abstract class AbstractRegexParser {
         return keywords;
     }
 
-    protected static List<String> splitElements(String text, String keyword) {
+    protected List<String> splitElements(String text, String keyword) {
         List<String> elements = new ArrayList<>();
-        for (String elementAsText : text.split(keyword)) {
-            if (elementAsText.trim().length() > 0) {
-                elements.add(keyword + "\n" + elementAsText);
+        StringBuilder element = new StringBuilder();
+        String[] elementsAsText = text.split(keyword);
+        for (int i = 0; i < elementsAsText.length; i++)
+        {
+            String elementAsText = elementsAsText[i];
+            element.append(elementAsText);
+            if (isLastLineNotComment(elementAsText)) {
+                addNonEmptyElement(element.toString(), elements, keyword);
+                element = new StringBuilder();
+            } else {
+                if (i == elementsAsText.length - 1) {
+                    addNonEmptyElement(element.toString(), elements, keyword);
+                } else {
+                    element.append(keyword);
+                }
             }
         }
         return elements;
+    }
+
+    private static void addNonEmptyElement(String elementToAdd, List<String> elements, String keyword) {
+        if (elementToAdd.trim().length() > 0) {
+            elements.add(keyword + "\n" + elementToAdd);
+        }
+    }
+
+    private boolean isLastLineNotComment(String elementAsText) {
+        String[] elementLines = elementAsText.split("\\r?\\n", -1);
+        return !elementLines[elementLines.length - 1].startsWith(keywords.ignorable());
     }
 
     protected String startingWithNL(String text) {

@@ -766,7 +766,49 @@ public class RegexStoryParserBehaviour {
                 "And I should see this in the output"
         )));
     }
-    
+
+    @Test
+    public void shouldParseStoryWithScenarioKeywordInComments() {
+        String wholeStory = "Scenario: with Scenario keyword in comments" + NL +
+                "!-- 1 This is a comment" + NL +
+                "!-- 2 Scenario: this should not be parsed as a separate scenario" + NL +
+                "Given 1st step" + NL +
+                "!-- 3 One more comment";
+
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<Scenario> scenarios = story.getScenarios();
+        assertThat(scenarios.size(), equalTo(1));
+        Scenario scenario = scenarios.get(0);
+        assertThat(scenario.getTitle(), equalTo("with Scenario keyword in comments"));
+        assertThat(scenario.getSteps(), equalTo(asList(
+                "!-- 1 This is a comment",
+                "!-- 2 Scenario: this should not be parsed as a separate scenario",
+                "Given 1st step",
+                "!-- 3 One more comment")));
+    }
+
+    @Test
+    public void shouldParseStoryWithoutScenarioKeywordInComments(){
+        String wholeStory = "Scenario: with no Scenario keyword in comments" + NL +
+                "Given 1st step" + NL +
+                "!-- This is a comment" + NL +
+                "Scenario: this should be parsed as a separate scenario" + NL +
+                "Given 1st step";
+
+        Story story = parser.parseStory(wholeStory, storyPath);
+        List<Scenario> scenarios = story.getScenarios();
+        assertThat(scenarios.size(), equalTo(2));
+        Scenario scenario = scenarios.get(0);
+        assertThat(scenario.getTitle(), equalTo("with no Scenario keyword in comments"));
+        assertThat(scenario.getSteps(), equalTo(asList(
+                "Given 1st step",
+                "!-- This is a comment")));
+        Scenario scenario2 = scenarios.get(1);
+        assertThat(scenario2.getTitle(), equalTo("this should be parsed as a separate scenario"));
+        assertThat(scenario2.getSteps(), equalTo(asList(
+                "Given 1st step")));
+    }
+
     public void shouldParseStoryWithVeryLongStep() {
         String scenario = aScenarioWithAVeryLongGivenStep();
         ensureThatScenarioCanBeParsed(scenario);
