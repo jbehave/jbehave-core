@@ -323,11 +323,11 @@ public class StepCreator {
 
     private String markParsedParameterValue(String stepText, Type type, String value, boolean hasTable) {
         if (value != null) {
-            if (isTable(type)) {
-                return stepText.replace(value, markedTable(value));
-            }
             // only mark non-empty string as parameter (JBEHAVE-656)
             if (value.trim().length() != 0) {
+                if (isTable(type)) {
+                    return stepText.replace(value, markedTable(value));
+                }
                 String markedValue = markedValue(value);
                 // identify parameter values to mark as padded by spaces to avoid duplicated replacements of overlapping values (JBEHAVE-837)
                 String leftPad = SPACE;

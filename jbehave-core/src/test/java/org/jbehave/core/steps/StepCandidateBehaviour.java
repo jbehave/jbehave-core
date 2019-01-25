@@ -14,6 +14,7 @@ import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
+import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.TableTransformers;
@@ -102,6 +103,19 @@ public class StepCandidateBehaviour {
         Object args = someSteps.args;
         assertThat(args, instanceOf(String.class));
         assertThat(((String)args), equalTo(""));
+    }
+
+    @Test
+    public void shouldMatchStepWithEmptyExamplesTableParameter() throws Exception {
+        Method method = SomeSteps.class.getMethod("aMethodWithExamplesTable", ExamplesTable.class);
+        SomeSteps someSteps = new SomeSteps();
+        StepCandidate candidate = candidateWith("windows attributes:$attrs", WHEN, method, someSteps);
+        String stepAsString = "When windows attributes:";
+        assertThat(candidate.matches(stepAsString), is(true));
+        performStep(candidate, stepAsString);
+        Object args = someSteps.args;
+        assertThat(args, instanceOf(ExamplesTable.class));
+        assertThat(((ExamplesTable)args).asString(), equalTo(""));
     }
 
     @Test

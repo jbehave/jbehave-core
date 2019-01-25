@@ -86,6 +86,10 @@ public class SomeSteps extends Steps {
         this.args = args;
     }
 
+    public void aMethodWithExamplesTable(ExamplesTable args) {
+        this.args = args;
+    }
+
     public ExamplesTable aMethodReturningExamplesTable(String value){
     	return new ExamplesTable(value);
     }
