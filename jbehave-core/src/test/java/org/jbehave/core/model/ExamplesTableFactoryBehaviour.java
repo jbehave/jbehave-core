@@ -15,6 +15,8 @@ public class ExamplesTableFactoryBehaviour {
 
     private static final String TABLE_AS_STRING = "|one|two|\n|11|22|\n";
 
+    private static final String RESOURCE_PATH = "/path/to/table";
+
     private static final String TABLE_WITH_INLINED_SEPARATTORS =
             "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,commentSeparator=#}\n"
             + "!header 1!header 2! .... !header n!\n"
@@ -48,9 +50,22 @@ public class ExamplesTableFactoryBehaviour {
         ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
         
         // When
-        String resourcePath = "/path/to/table";
-        when(resourceLoader.loadResourceAsText(resourcePath)).thenReturn(TABLE_AS_STRING);
-        ExamplesTable examplesTable = factory.createExamplesTable(resourcePath);
+        when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(TABLE_AS_STRING);
+        ExamplesTable examplesTable = factory.createExamplesTable(RESOURCE_PATH);
+        
+        // Then
+        assertThat(examplesTable.asString(), equalTo(TABLE_AS_STRING));
+    }
+
+    @Test
+    public void shouldCreateExamplesTableFromResourceInputWithPreceedingLineBreaks() {
+        // Given
+        ResourceLoader resourceLoader = mock(ResourceLoader.class);
+        ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
+        
+        // When
+        when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(TABLE_AS_STRING);
+        ExamplesTable examplesTable = factory.createExamplesTable("\n\n\n/path/to/table");
         
         // Then
         assertThat(examplesTable.asString(), equalTo(TABLE_AS_STRING));

@@ -73,7 +73,7 @@ public class ExamplesTableFactory {
         if (isBlank(input) || isTable(input)) {
             tableAsString = input;
         } else {
-            tableAsString = resourceLoader.loadResourceAsText(input);
+            tableAsString = resourceLoader.loadResourceAsText(input.trim());
         }
         return new ExamplesTable(tableAsString, keywords.examplesTableHeaderSeparator(),
                 keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(),
