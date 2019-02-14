@@ -87,11 +87,11 @@ Note:  profiles are additive and the default profile is always active.
 
 See also: 
 
-- [jbehave-pom](jbehave-pom) JBehave POM
-- [jbehave-web](jbehave-web) web extensions to JBehave
-- [jbehave-osgi](jbehave-osgi) OSGi extensions to JBehave
-- [jbehave-eclipse](jbehave-eclipse) Eclipse integration for JBehave
-- [jbehave-tutorial](jbehave-tutorial) for an example of JBehave testing of a real web application.
+- [jbehave-pom](https://github.com/jbehave/jbehave-pom) JBehave POM
+- [jbehave-web](https://github.com/jbehave/jbehave-web) web extensions to JBehave
+- [jbehave-osgi](https://github.com/jbehave/jbehave-osgi) OSGi extensions to JBehave
+- [jbehave-eclipse](https://github.com/jbehave/jbehave-eclipse) Eclipse integration for JBehave
+- [jbehave-tutorial](https://github.com/jbehave/jbehave-tutorial) for an example of JBehave testing of a real web application.
 
 ## License
 
