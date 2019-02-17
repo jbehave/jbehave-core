@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-examples</artifactId>
-    <version>4.4-SNAPSHOT</version>
+    <version>4.5-SNAPSHOT</version>
   </parent>
   <artifactId>jbehave-spring-example</artifactId>
   <name>JBehave Spring Example</name>
