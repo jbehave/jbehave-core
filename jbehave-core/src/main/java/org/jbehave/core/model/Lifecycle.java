@@ -32,13 +32,14 @@ public class Lifecycle {
 
     public Set<Scope> getScopes() {
         Set<Scope> scopes = new LinkedHashSet<>();
+        scopes.add(Scope.STEP);
         scopes.add(Scope.SCENARIO);
         scopes.add(Scope.STORY);
         return scopes;
     }
 
     public boolean hasBeforeSteps() {
-        return !getBeforeSteps(Scope.SCENARIO).isEmpty() || !getBeforeSteps(Scope.STORY).isEmpty() ;
+        return !unwrap(before).isEmpty();
     }
 
     /** @deprecated Use #getBeforeSteps(Scope) */
@@ -48,15 +49,11 @@ public class Lifecycle {
     }
 
     public List<String> getBeforeSteps(Scope scope) {
-        List<String> beforeSteps = new ArrayList<>();
-        for (Steps steps : before) {
-            beforeSteps.addAll(stepsByScope(steps, scope));
-        }
-        return beforeSteps;
+        return unwrap(filter(this.before, scope));
     }
 
     public boolean hasAfterSteps() {
-        return !getAfterSteps(Scope.SCENARIO).isEmpty() || !getAfterSteps(Scope.STORY).isEmpty() ;
+        return !unwrap(this.after).isEmpty();
     }
 
     /** @deprecated Use #getAfterSteps(Scope) */
@@ -66,35 +63,31 @@ public class Lifecycle {
     }
 
     public List<String> getAfterSteps(Scope scope) {
-        List<String> afterSteps = new ArrayList<>();
-        for (Steps steps : after) {
-            afterSteps.addAll(stepsByScope(steps, scope));
-        }
-        return afterSteps;
+        return unwrap(filter(this.after, scope));
     }
 
     public Set<Outcome> getOutcomes(){
-    	Set<Outcome> outcomes = new LinkedHashSet<>();
-    	for ( Steps steps : after ){
-    		outcomes.add(steps.outcome);
-    	}
-    	return outcomes;
+        Set<Outcome> outcomes = new LinkedHashSet<>();
+        for ( Steps steps : after ){
+            outcomes.add(steps.outcome);
+        }
+        return outcomes;
     }
 
     public MetaFilter getMetaFilter(Outcome outcome){
-    	for ( Steps steps : after ){
-			if ( outcome.equals(steps.outcome) && isNotBlank(steps.metaFilter) ){
-    			return new MetaFilter(steps.metaFilter);
-    		}
-    	}
-    	return MetaFilter.EMPTY;
+        for ( Steps steps : after ){
+            if ( outcome.equals(steps.outcome) && isNotBlank(steps.metaFilter) ){
+                return new MetaFilter(steps.metaFilter);
+            }
+        }
+        return MetaFilter.EMPTY;
     }
 
-	public List<String> getAfterSteps(Outcome outcome) {
-		return getAfterSteps(outcome, Meta.EMPTY);
+    public List<String> getAfterSteps(Outcome outcome) {
+        return getAfterSteps(outcome, Meta.EMPTY);
     }
 
-	public List<String> getAfterSteps(Outcome outcome, Meta meta) {
+    public List<String> getAfterSteps(Outcome outcome, Meta meta) {
         return getAfterSteps(Scope.SCENARIO, outcome, meta);
     }
 
@@ -104,28 +97,34 @@ public class Lifecycle {
 
     public List<String> getAfterSteps(Scope scope, Outcome outcome, Meta meta) {
         MetaFilter filter = getMetaFilter(outcome);
-        List<String> afterSteps = new ArrayList<>();
+        List<Steps> afterSteps = new ArrayList<>();
         for (Steps steps : after) {
-            if ( outcome.equals(steps.outcome) ) {
-                if ( meta.equals(Meta.EMPTY) ){
-                    afterSteps.addAll(stepsByScope(steps, scope));
-                } else {
-                    if ( filter.allow(meta) ){
-                        afterSteps.addAll(stepsByScope(steps, scope));
-                    }
-                }
+            if (outcome == steps.outcome && (meta.equals(Meta.EMPTY) || filter.allow(meta))) {
+                afterSteps.add(stepsByScope(steps, scope));
             }
         }
-        return afterSteps;
+        return unwrap(afterSteps);
     }
 
-    private List<String> stepsByScope(Steps steps, Scope scope) {
-        if ( steps.scope == scope ) {
-            return steps.steps;
+    private List<String> unwrap(List<Steps> stepsCollection) {
+        List<String> allSteps = new ArrayList<>();
+        for (Steps steps : stepsCollection) {
+            allSteps.addAll(steps.steps);
         }
-        return Steps.EMPTY.steps;
+        return allSteps;
     }
 
+    private List<Steps> filter(List<Steps> stepsCollection, Scope scope) {
+        List<Steps> filteredSteps = new ArrayList<>();
+        for (Steps steps : stepsCollection) {
+            filteredSteps.add(stepsByScope(steps, scope));
+        }
+        return filteredSteps;
+    }
+
+    private Steps stepsByScope(Steps steps, Scope scope) {
+        return steps.scope == scope ? steps : Steps.EMPTY;
+    }
 
     public boolean isEmpty() {
         return EMPTY == this;
@@ -137,46 +136,46 @@ public class Lifecycle {
     }
 
     public static class Steps {
-    	
-    	public static Steps EMPTY = new Steps(Arrays.<String>asList());
+
+        public static Steps EMPTY = new Steps(Arrays.<String>asList());
 
         private Scope scope;
-    	private Outcome outcome;
-		private String metaFilter;
-    	private List<String> steps;
-    	
-		public Steps(List<String> steps) {
-			this(Scope.SCENARIO, steps);
-		}
+        private Outcome outcome;
+        private String metaFilter;
+        private List<String> steps;
+
+        public Steps(List<String> steps) {
+            this(Scope.SCENARIO, steps);
+        }
 
         public Steps(Scope scope, List<String> steps) {
             this(scope, Outcome.ANY, null, steps);
         }
 
         public Steps(Outcome outcome, List<String> steps) {
-			this(outcome, null, steps);
-		}
+            this(outcome, null, steps);
+        }
 
-		public Steps(Outcome outcome, String metaFilter, List<String> steps) {
-		    this(Scope.SCENARIO, outcome, metaFilter, steps);
-		}
+        public Steps(Outcome outcome, String metaFilter, List<String> steps) {
+            this(Scope.SCENARIO, outcome, metaFilter, steps);
+        }
 
         public Steps(Scope scope, Outcome outcome, List<String> steps) {
             this(scope, outcome, null, steps);
         }
 
         public Steps(Scope scope, Outcome outcome, String metaFilter, List<String> steps) {
-		    this.scope = scope;
-			this.outcome = outcome;
-			this.metaFilter = metaFilter;
-			this.steps = steps;
-		}
+            this.scope = scope;
+            this.outcome = outcome;
+            this.metaFilter = metaFilter;
+            this.steps = steps;
+        }
 
-		@Override
-		public String toString() {
-			return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
-		}
-    	
+        @Override
+        public String toString() {
+            return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+        }
+
     }
-    
+
 }

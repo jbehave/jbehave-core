@@ -1,8 +1,10 @@
 package org.jbehave.core.embedder;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -86,8 +88,11 @@ public class PerformableTree {
 
         if (storyAllowed) {
 
+            Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(story.getLifecycle(), storyMeta,
+                    Scope.STORY);
+
             performableStory.addBeforeSteps(context.beforeOrAfterStorySteps(story, Stage.BEFORE));
-            performableStory.addBeforeSteps(context.lifecycleSteps(story.getLifecycle(), storyMeta, Stage.BEFORE, Scope.STORY));
+            performableStory.addBeforeSteps(lifecycleSteps.get(Stage.BEFORE));
 
             // determine if before and after scenario steps should be run
             boolean runBeforeAndAfterScenarioSteps = shouldRunBeforeOrAfterScenarioSteps(context);
@@ -112,7 +117,7 @@ public class PerformableTree {
                 }
             }
 
-            performableStory.addAfterSteps(context.lifecycleSteps(story.getLifecycle(), storyMeta, Stage.AFTER, Scope.STORY));
+            performableStory.addAfterSteps(lifecycleSteps.get(Stage.AFTER));
             performableStory.addAfterSteps(context.beforeOrAfterStorySteps(story, Stage.AFTER));
 
         }
@@ -214,14 +219,16 @@ public class PerformableTree {
 
 	private void addStepsWithLifecycle(AbstractPerformableScenario performableScenario, RunContext context,
 			Lifecycle lifecycle, Map<String, String> parameters, Scenario scenario, Meta storyAndScenarioMeta) {
-		performableScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
+        Map<Stage, PerformableSteps> lifecycleSteps = context.lifecycleSteps(lifecycle, storyAndScenarioMeta,
+                Scope.SCENARIO);
+
+        performableScenario.addBeforeSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.BEFORE,
                 ScenarioType.ANY));
-		performableScenario.addBeforeSteps(context.lifecycleSteps(lifecycle, storyAndScenarioMeta, Stage.BEFORE));
+        performableScenario.addBeforeSteps(lifecycleSteps.get(Stage.BEFORE));
 		addMetaParameters(parameters, storyAndScenarioMeta);
-		performableScenario.addGivenStories(performableGivenStories(context, scenario.getGivenStories(),
-		        parameters));
-		performableScenario.addSteps(context.scenarioSteps(scenario, parameters));
-		performableScenario.addAfterSteps(context.lifecycleSteps(lifecycle, storyAndScenarioMeta, Stage.AFTER));
+        performableScenario.addGivenStories(performableGivenStories(context, scenario.getGivenStories(), parameters));
+        performableScenario.addSteps(context.scenarioSteps(lifecycle, storyAndScenarioMeta, scenario, parameters));
+        performableScenario.addAfterSteps(lifecycleSteps.get(Stage.AFTER));
 		performableScenario.addAfterSteps(context.beforeOrAfterScenarioSteps(storyAndScenarioMeta, Stage.AFTER,
                 ScenarioType.ANY));
 	}
@@ -563,16 +570,45 @@ public class PerformableTree {
                     storyAndScenarioMeta, stage, type));
         }
 
+        @Deprecated
         public PerformableSteps lifecycleSteps(Lifecycle lifecycle, Meta meta, Stage stage) {
             return lifecycleSteps(lifecycle, meta, stage, Scope.SCENARIO);
         }
 
+        @Deprecated
         public PerformableSteps lifecycleSteps(Lifecycle lifecycle, Meta meta, Stage stage, Scope scope) {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             List<Step> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, meta, stage, scope);
             return new PerformableSteps(steps, monitor.matched());
         }
 
+        private Map<Stage, PerformableSteps> lifecycleSteps(Lifecycle lifecycle, Meta meta, Scope scope) {
+            MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
+            Map<Stage, List<Step>> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps,
+                    lifecycle, meta, scope);
+            Map<Stage, PerformableSteps> performableSteps = new EnumMap<>(Stage.class);
+            for (Map.Entry<Stage, List<Step>> entry : steps.entrySet()) {
+                performableSteps.put(entry.getKey(), new PerformableSteps(entry.getValue(), monitor.matched()));
+            }
+            return performableSteps;
+        }
+
+        private PerformableSteps scenarioSteps(Lifecycle lifecycle, Meta meta, Scenario scenario,
+                Map<String, String> parameters) {
+            MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
+            StepCollector stepCollector = configuration.stepCollector();
+            Map<Stage, List<Step>> beforeOrAfterStepSteps = stepCollector.collectLifecycleSteps(candidateSteps,
+                    lifecycle, meta, Scope.STEP);
+            List<Step> steps = new LinkedList<>();
+            for (Step step : stepCollector.collectScenarioSteps(candidateSteps, scenario, parameters, monitor)) {
+                steps.addAll(beforeOrAfterStepSteps.get(Stage.BEFORE));
+                steps.add(step);
+                steps.addAll(beforeOrAfterStepSteps.get(Stage.AFTER));
+            }
+            return new PerformableSteps(steps, monitor.matched());
+        }
+
+        @Deprecated
         public PerformableSteps scenarioSteps(Scenario scenario, Map<String, String> parameters) {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             List<Step> steps = configuration.stepCollector().collectScenarioSteps(candidateSteps, scenario, parameters,

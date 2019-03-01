@@ -1,6 +1,7 @@
 package org.jbehave.core.steps;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,24 +80,35 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
     }
 
     @Override
+    @Deprecated
     public List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage) {
         return collectLifecycleSteps(candidateSteps, lifecycle, storyAndScenarioMeta, stage, Scope.SCENARIO);
     }
 
     @Override
+    @Deprecated
     public List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage, Scope scope) {
         List<StepCandidate> allCandidates = stepFinder.collectCandidates(candidateSteps);
         List<Step> steps = new ArrayList<>();
         Map<String, String> namedParameters = new HashMap<>();
         if (stage == Stage.BEFORE) {
-            addMatchedSteps(lifecycle.getBeforeSteps(scope), steps, namedParameters, allCandidates, null,
-                    DEFAULT_STEP_MONITOR);
-        } else {
-            for (Outcome outcome : Outcome.values()){
-                addMatchedSteps(lifecycle.getAfterSteps(scope, outcome, storyAndScenarioMeta), steps, namedParameters,
-                        allCandidates, outcome, DEFAULT_STEP_MONITOR);
-            }
+            steps.addAll(collectLifecycleBeforeSteps(allCandidates, lifecycle, scope, namedParameters));
         }
+        else {
+            steps.addAll(
+                    collectLifecycleAfterSteps(allCandidates, lifecycle, storyAndScenarioMeta, scope, namedParameters));
+        }
+        return steps;
+    }
+
+    @Override
+    public Map<Stage, List<Step>> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Scope scope) {
+        List<StepCandidate> allCandidates = stepFinder.collectCandidates(candidateSteps);
+        Map<String, String> namedParameters = new HashMap<>();
+        Map<Stage, List<Step>> steps = new EnumMap<>(Stage.class);
+        steps.put(Stage.BEFORE, collectLifecycleBeforeSteps(allCandidates, lifecycle, scope, namedParameters));
+        steps.put(Stage.AFTER,
+                collectLifecycleAfterSteps(allCandidates, lifecycle, storyAndScenarioMeta, scope, namedParameters));
         return steps;
     }
 
@@ -137,6 +149,28 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
             }
         }
         return steps;
+    }
+
+    private List<Step> collectLifecycleBeforeSteps(List<StepCandidate> allCandidates, Lifecycle lifecycle, Scope scope,
+            Map<String, String> namedParameters) {
+        List<Step> beforeSteps = new ArrayList<>();
+        addMatchedSteps(lifecycle.getBeforeSteps(scope), beforeSteps, namedParameters, allCandidates, null);
+        return beforeSteps;
+    }
+
+    private List<Step> collectLifecycleAfterSteps(List<StepCandidate> allCandidates, Lifecycle lifecycle,
+            Meta storyAndScenarioMeta, Scope scope, Map<String, String> namedParameters) {
+        List<Step> afterSteps = new ArrayList<>();
+        for (Outcome outcome : Outcome.values()) {
+            addMatchedSteps(lifecycle.getAfterSteps(scope, outcome, storyAndScenarioMeta), afterSteps, namedParameters,
+                    allCandidates, outcome);
+        }
+        return afterSteps;
+    }
+
+    private void addMatchedSteps(List<String> stepsAsString, List<Step> steps, Map<String, String> namedParameters,
+            List<StepCandidate> allCandidates, Outcome outcome) {
+        addMatchedSteps(stepsAsString, steps, namedParameters, allCandidates, outcome, DEFAULT_STEP_MONITOR);
     }
 
     private void addMatchedSteps(List<String> stepsAsString, List<Step> steps, Map<String, String> namedParameters,

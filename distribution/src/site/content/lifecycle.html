@@ -44,7 +44,18 @@ and after scenarios and stories.</p>
 
 <p>The declarative controls mirror the <a href="annotations.html">annotations</a>-based ones.</p>
 
-<p>To define steos that need to be executed before or after each scenario:</p>
+<p>To define steps that need to be executed before or after each scenario step:</p>
+<pre class="brush: bdd">
+Lifecycle:
+Before:
+Scope: STEP
+[steps to be executed before each scenario step]
+After:
+Scope: STEP
+[steps to be executed after each scenario step]
+</pre>
+
+<p>Similarly, to define steps that need to be executed before or after each scenario:</p>
 <pre class="brush: bdd">
 Lifecycle:
 Before:
@@ -55,7 +66,7 @@ Scope: SCENARIO
 [steps to be executed after each scenario]
 </pre>
 
-<p>Similarly, to define steos that need to be executed before or after each story:</p>
+<p>Similarly, to define steps that need to be executed before or after each story:</p>
 <pre class="brush: bdd">
 Lifecycle:
 Before:
@@ -67,7 +78,6 @@ Scope: STORY
 </pre>
 
 <p>Scopes can also be mixed and matched:</p>
-<p>Similarly, to define steos that need to be executed before or after each story:</p>
 <pre class="brush: bdd">
 Lifecycle:
 Before:
@@ -75,14 +85,18 @@ Scope: STORY
 [steps to be executed before each story]
 Scope: SCENARIO
 [steps to be executed before each scenario]
+Scope: STEP
+[steps to be executed before each scenario step]
 After:
+Scope: STEP
+[steps to be executed after each scenario step]
 Scope: SCENARIO
 [steps to be executed after each scenario]
 Scope: STORY
 [steps to be executed after each story]
 </pre>
 
-<p>After steps also allow for outcome-based controls.</p>
+<p>After story and scenario steps also allow for outcome-based controls.</p>
 
 <pre class="brush: bdd">
 Lifecycle:

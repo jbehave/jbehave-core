@@ -61,12 +61,10 @@ public class PerformableTreeBehaviour {
 
         InOrder ordered = inOrder(stepCollector);
         ordered.verify(stepCollector).collectBeforeOrAfterStoriesSteps(candidateSteps, StepCollector.Stage.BEFORE);
+        ordered.verify(stepCollector).collectLifecycleSteps(eq(candidateSteps), eq(story.getLifecycle()),
+                any(Meta.class), eq(Scope.STORY));
         ordered.verify(stepCollector).collectBeforeOrAfterStorySteps(candidateSteps, story, StepCollector.Stage.BEFORE,
                 false);
-        ordered.verify(stepCollector).collectLifecycleSteps(eq(candidateSteps), eq(story.getLifecycle()),
-                any(Meta.class), eq(StepCollector.Stage.BEFORE), eq(Scope.STORY));
-        ordered.verify(stepCollector).collectLifecycleSteps(eq(candidateSteps), eq(story.getLifecycle()),
-                any(Meta.class), eq(StepCollector.Stage.AFTER), eq(Scope.STORY));
         ordered.verify(stepCollector).collectBeforeOrAfterStorySteps(candidateSteps, story, StepCollector.Stage.AFTER,
                 false);
         ordered.verify(stepCollector).collectBeforeOrAfterStoriesSteps(candidateSteps, StepCollector.Stage.AFTER);

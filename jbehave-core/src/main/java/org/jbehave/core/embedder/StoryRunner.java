@@ -475,13 +475,17 @@ public class StoryRunner {
         reporter.get().afterExamples();
     }
 
-    private void runStepsWithLifecycle(RunContext context, Lifecycle lifecycle, Map<String, String> parameters, Scenario scenario, Meta storyAndScenarioMeta) throws Throwable {
+    private void runStepsWithLifecycle(RunContext context, Lifecycle lifecycle, Map<String, String> parameters,
+            Scenario scenario, Meta storyAndScenarioMeta) throws Throwable {
+        Map<Stage, List<Step>> lifecycleSteps = context.configuration.stepCollector().collectLifecycleSteps(
+                context.candidateSteps, lifecycle, storyAndScenarioMeta, Scope.SCENARIO);
+
         runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.BEFORE, ScenarioType.ANY);
-        runLifecycleSteps(context, lifecycle, Stage.BEFORE, storyAndScenarioMeta);
+        runStepsWhileKeepingState(context, lifecycleSteps.get(Stage.BEFORE));
         addMetaParameters(parameters, storyAndScenarioMeta);
         runGivenStories(scenario.getGivenStories(), parameters, context);
         runScenarioSteps(context, scenario, parameters);
-        runLifecycleSteps(context, lifecycle, Stage.AFTER, storyAndScenarioMeta);
+        runStepsWhileKeepingState(context, lifecycleSteps.get(Stage.AFTER));
         runBeforeOrAfterScenarioSteps(context, scenario, storyAndScenarioMeta, Stage.AFTER, ScenarioType.ANY);
     }
 
@@ -501,10 +505,6 @@ public class StoryRunner {
     private void runBeforeOrAfterScenarioSteps(RunContext context, Scenario scenario, Meta storyAndScenarioMeta,
             Stage stage, ScenarioType type) throws InterruptedException {
         runStepsWhileKeepingState(context, context.collectBeforeOrAfterScenarioSteps(storyAndScenarioMeta, stage, type));
-    }
-
-    private void runLifecycleSteps(RunContext context, Lifecycle lifecycle, Stage stage, Meta storyAndScenarioMeta) throws InterruptedException {
-        runStepsWhileKeepingState(context, context.collectLifecycleSteps(lifecycle, storyAndScenarioMeta, stage));        
     }
 
     private void runScenarioSteps(RunContext context, Scenario scenario, Map<String, String> scenarioParameters)
@@ -696,6 +696,7 @@ public class StoryRunner {
                     storyAndScenarioMeta, stage, type);
         }
 
+        @Deprecated
         public List<Step> collectLifecycleSteps(Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage) {
             return configuration.stepCollector().collectLifecycleSteps(candidateSteps, lifecycle, storyAndScenarioMeta, stage, Scope.SCENARIO);
         }

@@ -110,7 +110,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 new Lifecycle.Steps(Outcome.FAILURE, asList(myFailureStep))));
 
         // When
-        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Stage.AFTER, Scope.SCENARIO);
+        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Scope.SCENARIO)
+                .get(Stage.AFTER);
 
         // Then
         assertThat(executableSteps.size(), equalTo(3));
@@ -148,7 +149,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 new Lifecycle.Steps(scope, Outcome.FAILURE, asList(myFailureStep))));
 
         // When
-        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Stage.AFTER, scope);
+        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, scope).get(
+                Stage.AFTER);
 
         // Then
         assertThat(executableSteps.size(), equalTo(3));
@@ -322,7 +324,7 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
         assertThat(afterSteps, equalTo(asList(stepAfter1, stepAfter2)));
     }
 
-    
+
     @Test
     public void shouldCollectBeforeAndAfterStoryAnnotatedSteps() {
         // Given some candidate steps classes with before and after story

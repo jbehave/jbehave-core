@@ -53,6 +53,7 @@ public class Keywords {
     public static final String STORY_CANCELLED = "StoryCancelled";
     public static final String DURATION = "Duration";
     public static final String SCOPE = "Scope";
+    public static final String SCOPE_STEP = "ScopeStep";
     public static final String SCOPE_SCENARIO = "ScopeScenario";
     public static final String SCOPE_STORY = "ScopeStory";
     public static final String OUTCOME = "Outcome";
@@ -70,8 +71,9 @@ public class Keywords {
     public static final List<String> KEYWORDS = asList(META, META_PROPERTY, NARRATIVE, IN_ORDER_TO, AS_A, I_WANT_TO, SO_THAT,
             SCENARIO, GIVEN_STORIES, LIFECYCLE, BEFORE, AFTER, EXAMPLES_TABLE, EXAMPLES_TABLE_ROW, EXAMPLES_TABLE_HEADER_SEPARATOR,
             EXAMPLES_TABLE_VALUE_SEPARATOR, EXAMPLES_TABLE_IGNORABLE_SEPARATOR, GIVEN, WHEN, THEN, AND, IGNORABLE, COMPOSITE, PRIORITY,
-            PENDING, NOT_PERFORMED, FAILED, DRY_RUN, STORY_CANCELLED, DURATION, SCOPE, SCOPE_SCENARIO, SCOPE_STORY, OUTCOME, OUTCOME_ANY, OUTCOME_SUCCESS, OUTCOME_FAILURE,
-            OUTCOME_DESCRIPTION, OUTCOME_VALUE, OUTCOME_MATCHER, OUTCOME_VERIFIED, META_FILTER, YES, NO);
+            PENDING, NOT_PERFORMED, FAILED, DRY_RUN, STORY_CANCELLED, DURATION, SCOPE, SCOPE_STEP, SCOPE_SCENARIO, SCOPE_STORY,
+            OUTCOME, OUTCOME_ANY, OUTCOME_SUCCESS, OUTCOME_FAILURE, OUTCOME_DESCRIPTION, OUTCOME_VALUE, OUTCOME_MATCHER,
+            OUTCOME_VERIFIED, META_FILTER, YES, NO);
 
 
     private final String meta;
@@ -105,6 +107,7 @@ public class Keywords {
     private final String storyCancelled;
     private final String duration;
     private final String scope;
+    private final String scopeStep;
     private final String scopeScenario;
     private final String scopeStory;
     private final String outcome;
@@ -154,6 +157,7 @@ public class Keywords {
         keywords.put(STORY_CANCELLED, "STORY CANCELLED");
         keywords.put(DURATION, "DURATION");
         keywords.put(SCOPE, "Scope:");
+        keywords.put(SCOPE_STEP, "STEP");
         keywords.put(SCOPE_SCENARIO, "SCENARIO");
         keywords.put(SCOPE_STORY, "STORY");
         keywords.put(OUTCOME, "Outcome:");
@@ -214,6 +218,7 @@ public class Keywords {
         this.storyCancelled = keyword(STORY_CANCELLED, keywords);
         this.duration = keyword(DURATION, keywords);
         this.scope = keyword(SCOPE, keywords);
+        this.scopeStep = keyword(SCOPE_STEP, keywords);
         this.scopeScenario = keyword(SCOPE_SCENARIO, keywords);
         this.scopeStory = keyword(SCOPE_STORY, keywords);
         this.outcome = keyword(OUTCOME, keywords);
@@ -365,6 +370,8 @@ public class Keywords {
     }
 
     public String scope() { return scope; }
+
+    public String scopeStep() { return scopeStep; }
 
     public String scopeScenario() { return scopeScenario; }
 

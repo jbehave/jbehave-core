@@ -61,7 +61,7 @@ LifecycleBefore:= "Before:" (Scope? Step+)+
 LifecycleAfter:= "After:" (Scope? Outcome? MetaFilter? Step+)+
 
 ; The scope element identified by keyword "Scope:" (or equivalent in I18n-ed locale),
-Scope:= "Scope:" "SCENARIO" | "STORY"
+Scope:= "Scope:" "STEP" | "SCENARIO" | "STORY"
 
 ; The outcome element identified by keyword "Outcome:" (or equivalent in I18n-ed locale),
 Outcome:= "Outcome:" "ANY" | "SUCCESS" | "FAILURE" ;

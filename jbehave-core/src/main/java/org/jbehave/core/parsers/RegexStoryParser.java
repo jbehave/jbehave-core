@@ -176,14 +176,14 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         Matcher findingBefore = compile(".*" + keywords().before() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBefore.matches() ){
             String beforeLifecycle = findingBefore.group(1).trim();
-            List<Steps>  beforeSteps = parseBeforeLifecycle(beforeLifecycle);
+            List<Steps> beforeSteps = parseBeforeLifecycle(beforeLifecycle);
             return new Lifecycle(beforeSteps, Arrays.<Steps>asList());
         }
         Matcher findingAfter = compile(".*" + keywords().after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingAfter.matches() ){
             List<Steps> beforeSteps = asList();
             String afterLifecycle = findingAfter.group(1).trim();
-            List<Steps>  afterSteps = parseAfterLifecycle(afterLifecycle);
+            List<Steps> afterSteps = parseAfterLifecycle(afterLifecycle);
             return new Lifecycle(beforeSteps, afterSteps);
         }
         return Lifecycle.EMPTY;
@@ -236,7 +236,9 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
     }
 
     private Scope parseScope(String scopeAsText) {
-        if ( scopeAsText.trim().equals(keywords().scopeScenario()) ){
+        if ( scopeAsText.trim().equals(keywords().scopeStep()) ){
+            return Scope.STEP;
+        } else if ( scopeAsText.trim().equals(keywords().scopeScenario()) ){
             return Scope.SCENARIO;
         } else if ( scopeAsText.trim().equals(keywords().scopeStory()) ){
             return Scope.STORY;
