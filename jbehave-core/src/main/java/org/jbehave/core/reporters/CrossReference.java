@@ -130,7 +130,7 @@ public class CrossReference {
 		xstream.alias("stepMatch", StepMatch.class);
 		xstream.alias("timing", Timing.class);
 		xstream.omitField(ExamplesTable.class, "parameterConverters");
-		xstream.omitField(ExamplesTable.class, "tableTrasformers");
+		xstream.omitField(ExamplesTable.class, "tableTransformers");
 		xstream.omitField(ExamplesTable.class, "defaults");
 	}
 
