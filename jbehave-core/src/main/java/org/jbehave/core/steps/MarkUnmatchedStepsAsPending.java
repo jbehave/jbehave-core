@@ -145,7 +145,6 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
         for (String stepAsString : stepsAsString) {
             // pending is default step, overridden below
             Step step = StepCreator.createPendingStep(stepAsString, previousNonAndStep);
-            List<Step> composedSteps = new ArrayList<>();
             List<StepCandidate> prioritisedCandidates = stepFinder.prioritise(stepAsString,
                     new ArrayList<>(allCandidates));
             for (StepCandidate candidate : prioritisedCandidates) {
@@ -165,13 +164,15 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
                     if (candidate.isPending()) {
                         ((PendingStep) step).annotatedOn(candidate.getMethod());
                     } else {
-                        if ( outcome != null ){
-                            step = candidate.createMatchedStepUponOutcome(stepAsString, namedParameters, outcome);
-                        } else {
-                            step = candidate.createMatchedStep(stepAsString, namedParameters);
-                        }
+                        List<Step> composedSteps = new ArrayList<>();
                         if ( candidate.isComposite() ){
                             candidate.addComposedSteps(composedSteps, stepAsString, namedParameters, prioritisedCandidates);
+                        }
+                        if ( outcome != null ){
+                            step = candidate.createMatchedStepUponOutcome(stepAsString, namedParameters, composedSteps,
+                                    outcome);
+                        } else {
+                            step = candidate.createMatchedStep(stepAsString, namedParameters, composedSteps);
                         }
                     }
                     if (!(keywords.isAndStep(stepAsString) || keywords.isIgnorableStep(stepAsString))) {
@@ -185,7 +186,6 @@ public class MarkUnmatchedStepsAsPending implements StepCollector {
                 previousNonAndStep = stepAsString;
             }
             steps.add(step);
-            steps.addAll(composedSteps);
         }
     }
 }

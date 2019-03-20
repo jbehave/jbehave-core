@@ -1,5 +1,6 @@
 package org.jbehave.core.steps;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -47,12 +48,12 @@ public class StepsBehaviour {
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(6));
 
-        findCandidate(candidates, "GIVEN a given").createMatchedStep("Given a given", tableRow).perform(null);
-        findCandidate(candidates, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow).perform(null);
-        findCandidate(candidates, "WHEN a when").createMatchedStep("When a when", tableRow).perform(null);
-        findCandidate(candidates, "WHEN a when alias").createMatchedStep("When a when alias", tableRow).perform(null);
-        findCandidate(candidates, "THEN a then").createMatchedStep("Then a then", tableRow).perform(null);
-        findCandidate(candidates, "THEN a then alias").createMatchedStep("Then a then alias", tableRow).perform(null);
+        findCandidate(candidates, "GIVEN a given").createMatchedStep("Given a given", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "WHEN a when").createMatchedStep("When a when", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "WHEN a when alias").createMatchedStep("When a when alias", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "THEN a then").createMatchedStep("Then a then", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "THEN a then alias").createMatchedStep("Then a then alias", tableRow, Collections.<Step>emptyList()).perform(null);
         
         assertThat(steps.givens, equalTo(2));
         assertThat(steps.whens, equalTo(2));
@@ -65,15 +66,15 @@ public class StepsBehaviour {
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(9));
         
-        findCandidate(candidates, "GIVEN a given").createMatchedStep("Given a given", tableRow).perform(null);
-        findCandidate(candidates, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow).perform(null);
-        findCandidate(candidates, "GIVEN another given alias").createMatchedStep("Given another given alias", tableRow).perform(null);
-        findCandidate(candidates, "WHEN a when").createMatchedStep("When a when", tableRow).perform(null);
-        findCandidate(candidates, "WHEN a when alias").createMatchedStep("When a when alias", tableRow).perform(null);
-        findCandidate(candidates, "WHEN another when alias").createMatchedStep("When another when alias", tableRow).perform(null);
-        findCandidate(candidates, "THEN a then").createMatchedStep("Then a then", tableRow).perform(null);
-        findCandidate(candidates, "THEN a then alias").createMatchedStep("Then a then alias", tableRow).perform(null);
-        findCandidate(candidates, "THEN another then alias").createMatchedStep("Then another then alias", tableRow).perform(null);
+        findCandidate(candidates, "GIVEN a given").createMatchedStep("Given a given", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "GIVEN another given alias").createMatchedStep("Given another given alias", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "WHEN a when").createMatchedStep("When a when", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "WHEN a when alias").createMatchedStep("When a when alias", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "WHEN another when alias").createMatchedStep("When another when alias", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "THEN a then").createMatchedStep("Then a then", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "THEN a then alias").createMatchedStep("Then a then alias", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "THEN another then alias").createMatchedStep("Then another then alias", tableRow, Collections.<Step>emptyList()).perform(null);
 
         assertThat(steps.givens, equalTo(3));
         assertThat(steps.whens, equalTo(3));
@@ -87,12 +88,12 @@ public class StepsBehaviour {
 		List<StepCandidate> candidates = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0).listCandidates();
         assertThat(candidates.size(), equalTo(6));
 
-        findCandidate(candidates, "GIVEN a given").createMatchedStep("Given a given", tableRow).perform(null);
-        findCandidate(candidates, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow).perform(null);
-        findCandidate(candidates, "WHEN a when").createMatchedStep("When a when", tableRow).perform(null);
-        findCandidate(candidates, "WHEN a when alias").createMatchedStep("When a when alias", tableRow).perform(null);
-        findCandidate(candidates, "THEN a then").createMatchedStep("Then a then", tableRow).perform(null);
-        findCandidate(candidates, "THEN a then alias").createMatchedStep("Then a then alias", tableRow).perform(null);
+        findCandidate(candidates, "GIVEN a given").createMatchedStep("Given a given", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "GIVEN a given alias").createMatchedStep("Given a given alias", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "WHEN a when").createMatchedStep("When a when", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "WHEN a when alias").createMatchedStep("When a when alias", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "THEN a then").createMatchedStep("Then a then", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "THEN a then alias").createMatchedStep("Then a then alias", tableRow, Collections.<Step>emptyList()).perform(null);
         
         assertThat(steps.givens, equalTo(2));
         assertThat(steps.whens, equalTo(2));
@@ -270,9 +271,9 @@ public class StepsBehaviour {
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(3));
 
-        findCandidate(candidates, "GIVEN un dato che").createMatchedStep("Dato che un dato che", tableRow).perform(null);
-        findCandidate(candidates, "WHEN un quando").createMatchedStep("Quando un quando", tableRow).perform(null);
-        findCandidate(candidates, "THEN un allora").createMatchedStep("Allora un allora", tableRow).perform(null);
+        findCandidate(candidates, "GIVEN un dato che").createMatchedStep("Dato che un dato che", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "WHEN un quando").createMatchedStep("Quando un quando", tableRow, Collections.<Step>emptyList()).perform(null);
+        findCandidate(candidates, "THEN un allora").createMatchedStep("Allora un allora", tableRow, Collections.<Step>emptyList()).perform(null);
 
         assertThat(steps.givens, equalTo(1));
         assertThat(steps.whens, equalTo(1));
@@ -303,7 +304,7 @@ public class StepsBehaviour {
         DuplicateSteps steps = new DuplicateSteps();
         List<StepCandidate> candidates = steps.listCandidates();
         assertThat(candidates.size(), equalTo(2));
-        candidates.get(0).createMatchedStep("Given a given", tableRow).perform(null);
+        candidates.get(0).createMatchedStep("Given a given", tableRow, Collections.<Step>emptyList()).perform(null);
 
     }
 
@@ -316,7 +317,7 @@ public class StepsBehaviour {
         assertThat(candidates.size(), equalTo(3));
 
         // misspelled starting word 
-        candidates.get(0).createMatchedStep("Dado che un dato che", tableRow); 
+        candidates.get(0).createMatchedStep("Dado che un dato che", tableRow, Collections.<Step>emptyList());
         
     }
     

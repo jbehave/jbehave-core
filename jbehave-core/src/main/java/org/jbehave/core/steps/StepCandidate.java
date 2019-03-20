@@ -1,6 +1,7 @@
 package org.jbehave.core.steps;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -166,14 +167,15 @@ public class StepCandidate {
         }
     }
 
-    public Step createMatchedStep(String stepAsString, Map<String, String> namedParameters) {
+    public Step createMatchedStep(String stepAsString, Map<String, String> namedParameters, List<Step> composedSteps) {
         return stepCreator.createParametrisedStep(method, stepAsString, stripStartingWord(stepAsString),
-                namedParameters);
+                namedParameters, composedSteps);
     }
 
-    public Step createMatchedStepUponOutcome(String stepAsString, Map<String, String> namedParameters, Outcome outcome) {
+    public Step createMatchedStepUponOutcome(String stepAsString, Map<String, String> namedParameters,
+            List<Step> composedSteps, Outcome outcome) {
         return stepCreator.createParametrisedStepUponOutcome(method, stepAsString, stripStartingWord(stepAsString),
-                namedParameters, outcome);
+                namedParameters, composedSteps, outcome);
     }
 
     public void addComposedSteps(List<Step> steps, String stepAsString, Map<String, String> namedParameters,
@@ -195,11 +197,12 @@ public class StepCandidate {
             Map<String, String> matchedParameters, List<StepCandidate> allCandidates) {
         StepCandidate candidate = findComposedCandidate(composedStep, previousNonAndStep, allCandidates);
         if (candidate != null) {
-            steps.add(candidate.createMatchedStep(composedStep, matchedParameters));
+            List<Step> composedSteps = new ArrayList<>();
             if (candidate.isComposite()) {
                 // candidate is itself composite: recursively add composed steps
-                candidate.addComposedSteps(steps, composedStep, matchedParameters, allCandidates);
+                candidate.addComposedSteps(composedSteps, composedStep, matchedParameters, allCandidates);
             }
+            steps.add(candidate.createMatchedStep(composedStep, matchedParameters, composedSteps));
         } else {
             steps.add(StepCreator.createPendingStep(composedStep, previousNonAndStep));
         }

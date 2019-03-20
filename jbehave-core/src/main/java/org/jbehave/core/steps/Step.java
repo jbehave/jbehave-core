@@ -1,5 +1,7 @@
 package org.jbehave.core.steps;
 
+import java.util.List;
+
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 
@@ -13,5 +15,6 @@ public interface Step {
     StepResult doNotPerform(UUIDExceptionWrapper storyFailureIfItHappened);
 
     String asString(Keywords keywords);
-    
+
+    List<Step> getComposedSteps();
 }

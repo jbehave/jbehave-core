@@ -182,9 +182,14 @@ public class CompositeCandidateStepsBehaviour {
         Map<String, String> noNamedParameters = new HashMap<>();
         List<Step> composedSteps = new ArrayList<>();
         candidate.addComposedSteps(composedSteps, "Then all buttons are enabled", noNamedParameters, candidates);
-        assertThat(composedSteps.size(), equalTo(6));
+        assertThat(composedSteps.size(), equalTo(2));
         for (Step step : composedSteps) {
             step.perform(null);
+            List<Step> nestedComposedSteps = ((StepCreator.ParametrisedStep) step).getComposedSteps();
+            assertThat(nestedComposedSteps.size(), equalTo(2));
+            for (Step nestedComposedStep : nestedComposedSteps) {
+                nestedComposedStep.perform(null);
+            }
         }
         assertThat(steps.trail.toString(), equalTo("left>left_first>left_second>top>top_first>top_second>"));
     }

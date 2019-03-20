@@ -348,9 +348,16 @@ public class PerformableTree {
             }
             StepResult result = step.perform(getFailure());
             results.add(result);
-            result.describeTo(reporter);
+
             UUIDExceptionWrapper stepFailure = result.getFailure();
-            return stepFailure == null ? this : new SomethingHappened(stepFailure);
+            State state = stepFailure == null ? this : new SomethingHappened(stepFailure);
+
+            for (Step composedStep : step.getComposedSteps()) {
+                state = state.run(composedStep, results, reporter);
+            }
+
+            result.describeTo(reporter);
+            return state;
         }
 
         @Override
