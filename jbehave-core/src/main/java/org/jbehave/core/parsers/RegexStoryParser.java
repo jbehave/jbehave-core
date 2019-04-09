@@ -298,12 +298,19 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         String scenarioWithoutTitle = removeStart(scenarioWithoutKeyword, title);
         scenarioWithoutTitle = startingWithNL(scenarioWithoutTitle);
         Meta meta = findScenarioMeta(scenarioWithoutTitle);
-        ExamplesTable examplesTable = findExamplesTable(scenarioWithoutTitle);
+        String examplesTableAsString = findExamplesTable(scenarioWithoutTitle);
+        ExamplesTable examplesTable = parseExamplesTable(examplesTableAsString);
         GivenStories givenStories = findScenarioGivenStories(scenarioWithoutTitle);
         if (givenStories.requireParameters()) {
             givenStories.useExamplesTable(examplesTable);
         }
-        List<String> steps = findSteps(scenarioWithoutTitle);
+        List<String> steps = new ArrayList<>();
+        if(examplesTableAsString.trim().isEmpty()) {
+            steps.addAll(findSteps(scenarioWithoutTitle));
+        } else {
+            int afterExampleIndex = scenarioWithoutTitle.indexOf(examplesTableAsString) + examplesTableAsString.length();
+            steps.addAll(findSteps(scenarioWithoutTitle.substring(0, afterExampleIndex)));
+        }
         return new Scenario(title, meta, givenStories, examplesTable, steps);
     }
 
@@ -321,9 +328,12 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         return Meta.EMPTY;
     }
 
-    private ExamplesTable findExamplesTable(String scenarioAsText) {
+    private String findExamplesTable(String scenarioAsText) {
         Matcher findingTable = findingExamplesTable().matcher(scenarioAsText);
-        String tableInput = findingTable.find() ? findingTable.group(1).trim() : NONE;
+        return findingTable.find() ? findingTable.group(1).trim() : NONE;
+    }
+
+    private ExamplesTable parseExamplesTable(String tableInput) {
         return tableFactory.createExamplesTable(tableInput);
     }
 
@@ -403,6 +413,6 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
     }
 
     private Pattern findingExamplesTable() {
-        return compile("\\n" + keywords().examplesTable() + "\\s*(.*)", DOTALL);
+        return compile("\\n" + keywords().examplesTable() + "\\s*(.*?)(?:\\n" + keywords().ignorable() + ".*)?$", DOTALL);
     }
 }

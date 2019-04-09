@@ -74,8 +74,8 @@ MetaFilter:= "MetaFilter:" (Word Space?)*
 ; It can optionally be followed by a title, which is expressed by any sequence of words
 ; that must not contain any keywords at start of lines.
 ; It is followed by one or more Steps.
-; Finally the optional Examples table, which if present will execute the scenario for as many table rows present
-Scenario := "Scenario:"? Title? Meta? GivenStories? Step+ Examples? ;
+; Scenarios can optionally contain comments (which are not part of the scenarios) after examples using "!--" keyword
+Scenario := "Scenario:"? Title? Meta? GivenStories? Step+ Examples? (Examples Comment+)? ;
 
 ; The free-text description
 Title := (Word Space?)* ;
@@ -133,6 +133,9 @@ ExamplesTableCharacter := ? Any Unicode character except ExamplesTableColumnSepa
 
 ; The examples table column separator
 ExamplesTableColumnSeparator := "|" ;
+
+; The comment
+Comment := Any sequence of characters starting from "!--" keyword
 
 ; The new line character
 Newline := ? Unicode newline character ? ;

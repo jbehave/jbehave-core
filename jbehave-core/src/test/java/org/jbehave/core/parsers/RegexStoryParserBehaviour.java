@@ -961,6 +961,40 @@ public class RegexStoryParserBehaviour {
         assertThat(givenStory5.getParameters().size(), equalTo(0));
     }
 
+    @Test
+    public void shouldParseStoryWithScenarioContainingExamplesTableAndEndingWithComments() {
+        String wholeStory = "Scenario: A scenario with examples table and comment" + NL + NL +
+                "Given a step with a <one>" + NL +
+                "Examples:" + NL +
+                "|one|two|three|" + NL +
+                "|11|12|13|" + NL +
+                "|21|22|23|" + NL + NL + NL +
+                "!-- Some remark" + NL + NL;
+
+        Story story = parser.parseStory(wholeStory, storyPath);
+
+        Scenario scenario = story.getScenarios().get(0);
+        assertThat(scenario.getTitle(), equalTo("A scenario with examples table and comment"));
+        assertThat(scenario.getGivenStories().getPaths().size(), equalTo(0));
+        assertThat(scenario.getSteps(), equalTo(asList(
+                "Given a step with a <one>"
+        )));
+        ExamplesTable table = scenario.getExamplesTable();
+        assertThat(table.asString(), equalTo(
+                "|one|two|three|" + NL +
+                        "|11|12|13|" + NL +
+                        "|21|22|23|" + NL));
+        assertThat(table.getRowCount(), equalTo(2));
+        assertThat(table.getRow(0), not(nullValue()));
+        assertThat(table.getRow(0).get("one"), equalTo("11"));
+        assertThat(table.getRow(0).get("two"), equalTo("12"));
+        assertThat(table.getRow(0).get("three"), equalTo("13"));
+        assertThat(table.getRow(1), not(nullValue()));
+        assertThat(table.getRow(1).get("one"), equalTo("21"));
+        assertThat(table.getRow(1).get("two"), equalTo("22"));
+        assertThat(table.getRow(1).get("three"), equalTo("23"));
+    }
+
     private void parseStoryWithGivenStories(String wholeStory) {
         Story story = parser.parseStory(wholeStory, storyPath);
 
