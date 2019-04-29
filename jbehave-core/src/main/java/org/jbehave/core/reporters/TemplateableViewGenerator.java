@@ -5,11 +5,13 @@ import static java.util.Arrays.asList;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -64,18 +66,24 @@ public class TemplateableViewGenerator implements ViewGenerator {
 
     private final StoryNameResolver nameResolver;
     private final TemplateProcessor processor;
+    private final Charset charset;
     private Properties viewProperties;
     private Reports reports;
 
     public TemplateableViewGenerator(StoryNameResolver nameResolver, TemplateProcessor processor) {
+        this(nameResolver, processor, StandardCharsets.ISO_8859_1);
+    }
+
+    public TemplateableViewGenerator(StoryNameResolver nameResolver, TemplateProcessor processor, Charset charset) {
         this.nameResolver = nameResolver;
         this.processor = processor;
+        this.charset = charset;
     }
 
     @Override
     public Properties defaultViewProperties() {
         Properties properties = new Properties();
-        properties.setProperty("encoding", "ISO-8859-1");
+        properties.setProperty("encoding", charset.displayName());
         properties.setProperty("decorateNonHtml", "true");
         properties.setProperty("defaultFormats", "stats");
         properties.setProperty("reportsViewType", Reports.ViewType.LIST.name());        
@@ -89,10 +97,10 @@ public class TemplateableViewGenerator implements ViewGenerator {
         return merged;
     }
 
-	private void addDateAndEncoding(Map<String, Object> dataModel) {
-		dataModel.put("date", new Date());
+    private void addDateAndEncoding(Map<String, Object> dataModel) {
+        dataModel.put("date", new Date());
         dataModel.put("encoding", this.viewProperties.getProperty("encoding"));
-	}
+    }
 
     @Override
     public void generateMapsView(File outputDirectory, StoryMaps storyMaps, Properties viewProperties) {
@@ -123,29 +131,29 @@ public class TemplateableViewGenerator implements ViewGenerator {
         generateViewsIndex(outputDirectory);
     }
 
-	private Map<String,Long> storyDurations(File outputDirectory) {
-		Properties p = new Properties();
-		try {
-			p.load(new FileReader(new File(outputDirectory, "storyDurations.props")));
-		} catch (IOException e) {
-			// story durations file not found - carry on
-		}
-		Map<String,Long> durations = new HashMap<>();
-		for ( Object key : p.keySet() ){
-			durations.put(toReportPath(key), toMillis(p.get(key)));
-		}
-		return durations;
-	}
+    private Map<String,Long> storyDurations(File outputDirectory) {
+        Properties p = new Properties();
+        try {
+            p.load(new FileReader(new File(outputDirectory, "storyDurations.props")));
+        } catch (IOException e) {
+            // story durations file not found - carry on
+        }
+        Map<String,Long> durations = new HashMap<>();
+        for ( Object key : p.keySet() ){
+            durations.put(toReportPath(key), toMillis(p.get(key)));
+        }
+        return durations;
+    }
 
-	private long toMillis(Object value) {
-		return Long.parseLong((String)value);
-	}
+    private long toMillis(Object value) {
+        return Long.parseLong((String)value);
+    }
 
-	private String toReportPath(Object key) {
-		return FilenameUtils.getBaseName(((String)key).replace("/", "."));
-	}
+    private String toReportPath(Object key) {
+        return FilenameUtils.getBaseName(((String)key).replace("/", "."));
+    }
 
-	private void generateViewsIndex(File outputDirectory) {
+    private void generateViewsIndex(File outputDirectory) {
         String outputName = templateResource("viewDirectory") + "/index.html";
         String viewsTemplate = templateResource("views");
         Map<String, Object> dataModel = newDataModel();
@@ -153,7 +161,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         write(outputDirectory, outputName, viewsTemplate, dataModel);
     }
 
-	@Override
+    @Override
     public ReportsCount getReportsCount() {
         int stories = countStoriesWithScenarios();
         int storiesNotAllowed = count("notAllowed", reports);
@@ -271,9 +279,9 @@ public class TemplateableViewGenerator implements ViewGenerator {
         try {
             File file = new File(outputDirectory, outputName);
             file.getParentFile().mkdirs();
-            Writer writer = new FileWriter(file);
-            processor.process(resource, dataModel, writer);
-            writer.close();
+            try (Writer writer = Files.newBufferedWriter(file.toPath(), charset)) {
+                processor.process(resource, dataModel, writer);
+            }
             return file;
         } catch (Exception e) {
             throw new ViewGenerationFailedForTemplate(resource, e);
@@ -306,11 +314,11 @@ public class TemplateableViewGenerator implements ViewGenerator {
     }
 
     public static class Reports {
-    	public enum ViewType { LIST };
-    	
+        public enum ViewType { LIST };
+
         private final Map<String, Report> reports = new HashMap<>();
         private final StoryNameResolver nameResolver;
-		private ViewType viewType = ViewType.LIST;
+        private ViewType viewType = ViewType.LIST;
 
         public Reports(List<Report> reports, StoryNameResolver nameResolver) {
             this.nameResolver = nameResolver;
@@ -319,11 +327,11 @@ public class TemplateableViewGenerator implements ViewGenerator {
         }
         
         public ViewType getViewType(){
-        	return viewType;        	
+            return viewType;
         }
         
         public void viewAs(ViewType viewType){
-        	this.viewType = viewType;
+            this.viewType = viewType;
         }
         
         public List<Report> getReports() {

@@ -1,5 +1,6 @@
 package org.jbehave.core.reporters;
 
+import java.nio.charset.Charset;
 import java.util.Properties;
 
 import org.jbehave.core.io.StoryNameResolver;
@@ -52,6 +53,10 @@ public class FreemarkerViewGenerator extends TemplateableViewGenerator {
 
     public FreemarkerViewGenerator(StoryNameResolver nameResolver, Class<?> templateLoadingFrom) {
         super(nameResolver, new FreemarkerProcessor(templateLoadingFrom));
+    }
+
+    public FreemarkerViewGenerator(StoryNameResolver nameResolver, Class<?> templateLoadingFrom, Charset charset) {
+        super(nameResolver, new FreemarkerProcessor(templateLoadingFrom), charset);
     }
 
     @Override
