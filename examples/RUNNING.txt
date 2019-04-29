@@ -1,6 +1,6 @@
 Running JBehave examples.
 
-JDK required: 1.7+
+JDK required: 1.8+
 Maven (http://maven.apache.org) required: 3.0+
 
 By default, the examples are meant to be run as part of the JBehave build, as the examples use the latest version of the JBehave code:
@@ -74,4 +74,3 @@ Once you've cached the parent POM, you can run the examples using a fixed versio
 
 mvn clean install -Djbehave.version=3.9
 
- 
