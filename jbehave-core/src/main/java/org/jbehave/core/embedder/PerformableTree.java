@@ -38,7 +38,6 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.context.StepsContext;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 
 /**
@@ -351,10 +350,7 @@ public class PerformableTree {
 
         @Override
         public State run(Step step, List<StepResult> results, StoryReporter reporter) {
-            if (step instanceof ParametrisedStep) {
-                ((ParametrisedStep) step).describeTo(reporter);
-            }
-            StepResult result = step.perform(getFailure());
+            StepResult result = step.perform(reporter, getFailure());
             results.add(result);
 
             UUIDExceptionWrapper stepFailure = result.getFailure();
@@ -384,7 +380,7 @@ public class PerformableTree {
 
         @Override
         public State run(Step step, List<StepResult> results, StoryReporter reporter) {
-            StepResult result = step.doNotPerform(getFailure());
+            StepResult result = step.doNotPerform(reporter, getFailure());
             results.add(result);
             result.describeTo(reporter);
             return this;

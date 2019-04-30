@@ -31,7 +31,6 @@ import org.jbehave.core.steps.PendingStepMethodGenerator;
 import org.jbehave.core.steps.ProvidedStepsFactory;
 import org.jbehave.core.steps.Step;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.StepCreator.ParametrisedStep;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepResult;
 
@@ -567,11 +566,8 @@ public class StoryRunner {
 
         @Override
         public State run(Step step) {
-            if ( step instanceof ParametrisedStep ){
-                ((ParametrisedStep)step).describeTo(reporter.get());
-            }
             UUIDExceptionWrapper storyFailureIfItHappened = storyFailure.get(); 
-            StepResult result = step.perform(storyFailureIfItHappened);
+            StepResult result = step.perform(reporter.get(), storyFailureIfItHappened);
             result.describeTo(reporter.get());
             UUIDExceptionWrapper stepFailure = result.getFailure();
             if (stepFailure == null) {
@@ -607,7 +603,7 @@ public class StoryRunner {
 
         @Override
         public State run(Step step) {
-            StepResult result = step.doNotPerform(failure);
+            StepResult result = step.doNotPerform(reporter.get(), failure);
             result.describeTo(reporter.get());
             return this;
         }
