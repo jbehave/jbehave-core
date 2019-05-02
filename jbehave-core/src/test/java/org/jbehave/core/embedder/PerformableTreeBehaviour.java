@@ -9,6 +9,7 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +25,11 @@ import org.jbehave.core.model.GivenStories;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
+import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.steps.context.StepsContext;
 import org.junit.Test;
 import org.mockito.InOrder;
 
@@ -113,5 +117,32 @@ public class PerformableTreeBehaviour {
         performableTree.addStories(runContext, Collections.singletonList(story));
         performableTree.perform(runContext, story);
         return runContext;
+    }
+
+    @Test
+    public void performStoryIfDryRunTrue() {
+        Scenario scenario = new Scenario("scenario title", Meta.EMPTY);
+        Story story = new Story(STORY_PATH, null, null, null, null,
+                Collections.singletonList(scenario));
+        Configuration configuration = mock(Configuration.class);
+        when(configuration.stepCollector()).thenReturn(new MarkUnmatchedStepsAsPending());
+        when(configuration.storyControls()).thenReturn(new StoryControls());
+        when(configuration.stepsContext()).thenReturn(new StepsContext());
+        when(configuration.dryRun()).thenReturn(true);
+        StoryLoader storyLoader = mock(StoryLoader.class);
+        configuration.useStoryLoader(storyLoader);
+        StoryReporter storyReporter = mock(StoryReporter.class);
+        when(configuration.storyReporter(STORY_PATH)).thenReturn(storyReporter);
+        List<CandidateSteps> candidateSteps = Collections.emptyList();
+        EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
+        BatchFailures failures = mock(BatchFailures.class);
+
+        PerformableTree performableTree = new PerformableTree();
+        RunContext runContext = performableTree.newRunContext(configuration, candidateSteps,
+                embedderMonitor, new MetaFilter(), failures);
+        performableTree.addStories(runContext, Collections.singletonList(story));
+        performableTree.perform(runContext, story);
+
+        verify(storyReporter).dryRun();
     }
 }
