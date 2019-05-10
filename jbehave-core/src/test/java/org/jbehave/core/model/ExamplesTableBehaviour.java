@@ -225,6 +225,27 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
+    public void shouldParseTableWithCustomNestedTransformers() {
+        String tableWithProperties = "{transformer=myTransformer, trim=false, " +
+                "table=\\{transformer=NESTED_TRANSFORMER\\, parameter=value\\}}\n" + tableWithCommentsAsString;
+        TableTransformers tableTransformers = new TableTransformers();
+        tableTransformers.useTransformer("myTransformer", new TableTransformer() {
+
+            @Override
+            public String transform(String tableAsString, ExamplesTableProperties properties) {
+                return tableWithSpacesAsString;
+            }
+
+        });
+        ExamplesTable table = new ExamplesTableFactory(new LoadFromClasspath(), tableTransformers)
+                .createExamplesTable(tableWithProperties);
+        Properties properties = table.getProperties();
+        assertThat(properties.getProperty("transformer"), equalTo("myTransformer"));
+        assertThat(properties.getProperty("table"), equalTo("{transformer=NESTED_TRANSFORMER, parameter=value}"));
+        ensureWhitespaceIsPreserved(table);
+    }
+
+    @Test
     public void shouldParseTableWithSequenceOfTransformers() {
         String tableWithProperties =
                 "{transformer=REPLACING, replacing=33, replacement=22}\n{transformer=FROM_LANDSCAPE}\n"

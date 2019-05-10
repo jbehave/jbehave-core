@@ -1,6 +1,7 @@
 package org.jbehave.core.model;
 
 import static java.lang.Boolean.parseBoolean;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -57,9 +58,11 @@ public final class ExamplesTableProperties {
 
     private Map<String, String> parseProperties(String propertiesAsString) {
         Map<String, String> result = new LinkedHashMap<>();
-        for (String propertyAsString : StringUtils.split(propertiesAsString, ',')) {
-            String[] property = StringUtils.split(propertyAsString, "=", 2);
-            result.put(property[0].trim(), property[1].trim());
+        if (!isEmpty(propertiesAsString)) {
+            for (String propertyAsString : propertiesAsString.split("(?<!\\\\),")) {
+                String[] property = StringUtils.split(propertyAsString, "=", 2);
+                result.put(property[0].trim(), StringUtils.replace(property[1], "\\,", ",").trim());
+             }
         }
         return result;
     }

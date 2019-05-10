@@ -54,4 +54,20 @@ public class ExamplesTablePropertiesBehaviour {
         ExamplesTableProperties tableProperties = new ExamplesTableProperties(properties);
         assertThat(tableProperties.getProperties().containsKey("key"), is(true));
     }
+
+    @Test
+    public void canGetPropertiesWithNestedTransformersWithoutEscaping() {
+        ExamplesTableProperties properties = new ExamplesTableProperties("transformer=CUSTOM_TRANSFORMER, " +
+                "tables={transformer=CUSTOM_TRANSFORMER\\, parameter1=value1}", "|", "|",
+                "|--");
+        assertThat(properties.getRowSeparator(), equalTo("\n"));
+        assertThat(properties.getHeaderSeparator(), equalTo("|"));
+        assertThat(properties.getValueSeparator(), equalTo("|"));
+        assertThat(properties.getIgnorableSeparator(), equalTo("|--"));
+        assertThat(properties.isTrim(), is(true));
+        assertThat(properties.isMetaByRow(), is(false));
+        assertThat(properties.getTransformer(), equalTo("CUSTOM_TRANSFORMER"));
+        assertThat(properties.getProperties().getProperty("tables"),
+                equalTo("{transformer=CUSTOM_TRANSFORMER, parameter1=value1}"));
+    }
 }

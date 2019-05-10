@@ -16,6 +16,7 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.Parameter;
@@ -159,7 +160,7 @@ public class ExamplesTable {
     private static final Map<String, String> EMPTY_MAP = Collections.emptyMap();
     private static final String EMPTY_VALUE = "";
 
-    public static final Pattern INLINED_PROPERTIES_PATTERN = Pattern.compile("\\{(.*?)\\}\\s*(.*)", DOTALL);
+    public static final Pattern INLINED_PROPERTIES_PATTERN = Pattern.compile("\\{(.*?[^\\\\])\\}\\s*(.*)", DOTALL);
     public static final ExamplesTable EMPTY = new ExamplesTable("");
 
     private static final String ROW_SEPARATOR_PATTERN = "\r?\n";
@@ -219,7 +220,10 @@ public class ExamplesTable {
         Matcher matcher = INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
         while (matcher.matches()) {
             String propertiesAsString = matcher.group(1);
-            propertiesList.add(new ExamplesTableProperties(propertiesAsString, headerSeparator, valueSeparator, ignorableSeparator));
+            propertiesAsString = StringUtils.replace(propertiesAsString, "\\{", "{");
+            propertiesAsString = StringUtils.replace(propertiesAsString, "\\}", "}");
+            propertiesList.add(new ExamplesTableProperties(propertiesAsString, headerSeparator,
+                    valueSeparator, ignorableSeparator));
             tableWithoutProperties = matcher.group(2).trim();
             matcher = INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
         }

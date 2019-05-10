@@ -267,6 +267,10 @@ In this case the custom transformer needs to be registered by name with the <a
                 .useStoryParser(new RegexStoryParser(tableFactory))
 ]]>
 </script>
+In addition, there is the possibility to escape commas and braces in transformer properties:
+<pre class="brush: plain">
+{propertyKey=\{innerKey1=innerValue1\, innerKey2=innerValue2\}}
+</pre>
 
 <h2>Loading tabular parameter from an external resource</h2>
 
