@@ -9,9 +9,8 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Transformer;
 import org.codehaus.plexus.util.SelectorUtils;
 
 import static java.util.Arrays.asList;
@@ -89,14 +88,9 @@ public class JarFileScanner {
     }
 
     private List<String> toLocalPath(List<String> patternList) {
-        List<String> transformed = new ArrayList<>(patternList);
-        CollectionUtils.transform(transformed, new Transformer<String, String>() {
-            @Override
-            public String transform(String pattern) {
-                return pattern!=null ? pattern.replace('/', File.separatorChar) : null;
-            }
-        });
-        return transformed;
+        return patternList.stream()
+                .map(pattern -> pattern != null ? pattern.replace('/', File.separatorChar) : null)
+                .collect(Collectors.toList());
     }
 
     private boolean patternMatches(String pattern, String path) {

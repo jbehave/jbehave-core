@@ -5,15 +5,13 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Stream;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -507,15 +505,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
      */
     protected Object[] escape(final Format format, Object... args) {
         // Transformer that escapes HTML,XML,JSON strings
-        Transformer<Object, Object> escapingTransformer = new Transformer<Object, Object>() {
-            @Override
-            public Object transform(Object object) {
-                return format.escapeValue(object);
-            }
-        };
-        List<Object> list = Arrays.asList(ArrayUtils.clone(args));
-        CollectionUtils.transform(list, escapingTransformer);
-        return list.toArray();
+        return Stream.of(args).map(format::escapeValue).toArray();
     }
 
     /**

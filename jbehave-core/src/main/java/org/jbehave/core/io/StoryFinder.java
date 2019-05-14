@@ -6,9 +6,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
 
@@ -171,42 +170,23 @@ public class StoryFinder {
     }
 
     protected List<String> normalise(List<String> paths) {
-        List<String> transformed = new ArrayList<>(paths);
-        CollectionUtils.transform(transformed, new Transformer<String, String>() {
-            @Override
-            public String transform(String path) {
-                return path.replace('\\', '/');
-            }
-        });
-        return transformed;
+        return paths.stream().map(path -> path.replace('\\', '/')).collect(Collectors.toList());
     }
 
     protected List<String> prefix(final String prefixWith, List<String> paths) {
         if (StringUtils.isBlank(prefixWith)) {
             return paths;
         }
-        List<String> transformed = new ArrayList<>(paths);
-        CollectionUtils.transform(transformed, new Transformer<String, String>() {
-            @Override
-            public String transform(String path) {
-                return prefixWith + path;
-            }
-        });
-        return transformed;
+        return paths.stream().map(prefixWith::concat).collect(Collectors.toList());
     }
 
     protected List<String> classNames(List<String> paths) {
-        List<String> trasformed = new ArrayList<>(paths);
-        CollectionUtils.transform(trasformed, new Transformer<String, String>() {
-            @Override
-            public String transform(String path) {
-                if (!StringUtils.endsWithIgnoreCase(path, classNameExtension())) {
-                    return path;
-                }
-                return StringUtils.removeEndIgnoreCase(path, classNameExtension()).replace('/', '.');
+        return paths.stream().map(path -> {
+            if (!StringUtils.endsWithIgnoreCase(path, classNameExtension())) {
+                return path;
             }
-        });
-        return trasformed;
+            return StringUtils.removeEndIgnoreCase(path, classNameExtension()).replace('/', '.');
+        }).collect(Collectors.toList());
     }
 
     protected String classNameExtension() {

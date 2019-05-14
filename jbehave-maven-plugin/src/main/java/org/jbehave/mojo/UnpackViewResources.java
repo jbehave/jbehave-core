@@ -4,9 +4,8 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
@@ -83,15 +82,10 @@ public class UnpackViewResources extends AbstractEmbedderMojo {
     }
 
     private Set<Artifact> resourceArtifacts() {
-        Set<Artifact> artifacts = allArtifacts();
-        CollectionUtils.filter(artifacts, new Predicate<Artifact>() {
-            @Override
-            public boolean evaluate(Artifact artifact) {
-                return allowedBy("artifactId", artifact.getArtifactId(), resourceArtifactIds)
-                        && allowedBy("type", artifact.getType(), resourceTypes);
-            }
-        });
-        return artifacts;
+        return allArtifacts().stream()
+                .filter(artifact -> allowedBy("artifactId", artifact.getArtifactId(), resourceArtifactIds)
+                        && allowedBy("type", artifact.getType(), resourceTypes))
+                .collect(Collectors.toSet());
     }
 
     private boolean allowedBy(String name, String property, String[] values) {
