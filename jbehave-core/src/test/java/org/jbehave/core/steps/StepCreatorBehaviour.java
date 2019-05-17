@@ -488,6 +488,29 @@ public class StepCreatorBehaviour {
 
     }
 
+    @Test
+    public void shouldMatchParametersByDelimitedNameInKebabCase() throws Exception {
+
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        parameterConverters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
+        StepMatcher stepMatcher = mock(StepMatcher.class);
+        ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
+        Map<String, String> params = Collections.singletonMap("pa-ram", "value");
+        when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
+        when(stepMatcher.parameter(1)).thenReturn("<pa-ram>");
+
+        // When
+        String stepAsString = "When a parameter <pa-ram> is set";
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithoutNamedAnnotation"),
+                stepAsString, "a parameter <pa-ram> is set", params, Collections.emptyList());
+        step.perform(null);
+
+        // Then
+        assertThat((String) stepsInstance.args, equalTo("value"));
+    }
+
     @SuppressWarnings("unchecked")
     @Test
     public void shouldMatchParametersByDelimitedNameWithDistinctNamedAnnotations() throws Exception {
