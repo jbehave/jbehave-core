@@ -8,14 +8,30 @@ import org.jbehave.core.embedder.StoryControls;
  */
 public class SpringStoryControls extends StoryControls {
 
-    public boolean getDryRun(){
+    public boolean getDryRun() {
         return dryRun();
     }
-    
-    public void setDryRun(boolean dryRun){
+
+    public void setDryRun(boolean dryRun) {
         doDryRun(dryRun);
     }
-    
+
+    public boolean isResetStateBeforeStory() {
+        return resetStateBeforeStory();
+    }
+
+    public void setResetStateBeforeStory(boolean resetStateBeforeStory) {
+        doResetStateBeforeStory(resetStateBeforeStory);
+    }
+
+    public boolean isResetStateBeforeScenario() {
+        return resetStateBeforeScenario();
+    }
+
+    public void setResetStateBeforeScenario(boolean resetStateBeforeScenario) {
+        doResetStateBeforeScenario(resetStateBeforeScenario);
+    }
+
     public boolean isSkipScenariosAfterFailure() {
         return skipScenariosAfterFailure();
     }
@@ -30,6 +46,38 @@ public class SpringStoryControls extends StoryControls {
 
     public void setSkipBeforeAndAfterScenarioStepsIfGivenStory(boolean skipBeforeAndAfterScenarioStepsIfGivenStory) {
         doSkipBeforeAndAfterScenarioStepsIfGivenStory(skipBeforeAndAfterScenarioStepsIfGivenStory);
+    }
+
+    public boolean isIgnoreMetaFiltersIfGivenStory() {
+        return ignoreMetaFiltersIfGivenStory();
+    }
+
+    public void setIgnoreMetaFiltersIfGivenStory(boolean ignoreMetaFiltersIfGivenStory) {
+        doIgnoreMetaFiltersIfGivenStory(ignoreMetaFiltersIfGivenStory);
+    }
+
+    public boolean isMetaByRow() {
+        return metaByRow();
+    }
+
+    public void setMetaByRow(boolean metaByRow) {
+        doMetaByRow(metaByRow);
+    }
+
+    public String getStoryMetaPrefix() {
+        return storyMetaPrefix();
+    }
+
+    public void setStoryMetaPrefix(String storyMetaPrefix) {
+        useStoryMetaPrefix(storyMetaPrefix);
+    }
+
+    public String getScenarioMetaPrefix() {
+        return scenarioMetaPrefix();
+    }
+
+    public void setScenarioMetaPrefix(String scenarioMetaPrefix) {
+        useScenarioMetaPrefix(scenarioMetaPrefix);
     }
 
     public boolean isSkipStoryIfGivenStoryFailed() {
