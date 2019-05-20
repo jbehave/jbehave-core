@@ -42,6 +42,7 @@ import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
+import org.jbehave.core.model.Verbatim;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -65,6 +66,8 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
  * ExamplesTableParametersConverter}</li>
  * <li>{@link ParameterConverters.MethodReturningConverter
  * MethodReturningConverter}</li>
+ * <li>{@link ParameterConverters.VerbatimConverter
+ * VerbatimConverter}</li>
  * </ul>
  * </p>
  */
@@ -202,6 +205,7 @@ public class ParameterConverters {
                 new EnumConverter(),
                 new ExamplesTableConverter(tableFactory),
                 new ExamplesTableParametersConverter(tableFactory),
+                new VerbatimConverter(),
                 new JsonConverter(jsonFactory) };
     }
 
@@ -935,6 +939,13 @@ public class ParameterConverters {
             return stepsFactory.createInstanceOfType(stepsType);
         }
 
+    }
+
+    public static class VerbatimConverter extends AbstractParameterConverter<Verbatim> {
+        @Override
+        public Verbatim convertValue(String value, Type type) {
+            return new Verbatim(value);
+        }
     }
 
 }

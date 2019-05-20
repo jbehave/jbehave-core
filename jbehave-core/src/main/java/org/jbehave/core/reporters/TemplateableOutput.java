@@ -1,10 +1,5 @@
 package org.jbehave.core.reporters;
 
-import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
@@ -22,20 +17,14 @@ import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MetaFilter;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.model.*;
 
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.TemplateHashModel;
 import freemarker.template.TemplateModelException;
 import org.jbehave.core.steps.StepCollector;
+
+import static org.jbehave.core.steps.StepCreator.*;
 
 /**
  * <p>
@@ -661,11 +650,14 @@ public class TemplateableOutput extends NullStoryReporter {
         private String stepPattern;
         private String tableAsString;
         private ExamplesTable table;
+        private String verbatimAsString;
+        private Verbatim verbatim;
 
         public OutputStep(String step, String outcome) {
             this.step = step;
             this.outcome = outcome;
             parseTableAsString();
+            parseVerbatimAsString();
             parseParameters();
             createStepPattern();
         }
@@ -699,6 +691,10 @@ public class TemplateableOutput extends NullStoryReporter {
 
         public ExamplesTable getTable() {
             return table;
+        }
+
+        public Verbatim getVerbatim() {
+            return verbatim;
         }
 
         public OutcomesTable getOutcomes() {
@@ -771,11 +767,22 @@ public class TemplateableOutput extends NullStoryReporter {
             }
         }
 
+        private void parseVerbatimAsString() {
+            if (step.contains(PARAMETER_VERBATIM_START) && step.contains(PARAMETER_VERBATIM_END)) {
+                verbatimAsString = StringUtils.substringBetween(step, PARAMETER_VERBATIM_START, PARAMETER_VERBATIM_END);
+                verbatim = new Verbatim(verbatimAsString);
+            }
+        }
+
         private void createStepPattern() {
             this.stepPattern = step;
             if (tableAsString != null) {
                 this.stepPattern = StringUtils.replaceOnce(stepPattern, PARAMETER_TABLE_START + tableAsString
                         + PARAMETER_TABLE_END, "");
+            }
+            if (verbatimAsString != null) {
+                this.stepPattern = StringUtils.replaceOnce(stepPattern, PARAMETER_VERBATIM_START + verbatimAsString
+                        + PARAMETER_VERBATIM_END, "");
             }
             for (int count = 0; count < parameters.size(); count++) {
                 String value = parameters.get(count).toString();

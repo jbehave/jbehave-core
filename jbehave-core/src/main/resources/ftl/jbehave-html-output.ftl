@@ -112,10 +112,13 @@ ${keywords.outcome} ${outcome}
 </tbody>
 </table>
 </#macro>
+<#macro renderVerbatim verbatim>
+<pre>${verbatim.content}</pre>
+</#macro>
 <#macro renderOutcomeValue value dateFormat><#if value?is_date>${value?string(dateFormat)}<#elseif value?is_boolean>${value?c}<#else>${value?html}</#if></#macro>
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep(EscapeMode.HTML, "<span class=\"step parameter\">{0}</span>")>
-<div class="step ${step.outcome}">${formattedStep}<#if step.getTable()??> <span class="step parameter"><@renderTable step.getTable()/></span></#if> <@renderStepOutcome step.getOutcome()/></div>
+<div class="step ${step.outcome}">${formattedStep}<#if step.getTable()??> <span class="step parameter"><@renderTable step.getTable()/></span></#if><#if step.getVerbatim()??> <span class="step parameter"><@renderVerbatim step.getVerbatim()/></span></#if><@renderStepOutcome step.getOutcome()/></div>
 <#if step.getFailure()??><pre class="failure">${step.failureCause?html}</pre></#if>
 <#if step.getOutcomes()??>
 <div class="outcomes"><@renderOutcomes step.getOutcomes()/>

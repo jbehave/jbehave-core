@@ -107,9 +107,14 @@
 ]
 }
 </#macro>
+<#macro renderVerbatim verbatim>
+"verbatim": {
+"content": "${verbatim.content}"
+}
+</#macro>
 <#macro renderOutcomeValue value dateFormat><#if value?is_date>${value?string(dateFormat)}<#else>${value?json_string}</#if></#macro>
 <#macro renderStep step><#assign formattedStep = step.getFormattedStep(EscapeMode.JSON, "(({0}))")>
-{"outcome": "${step.outcome}", "step": "${formattedStep}"<#if step.getTable()??>, "parameter": <@renderTable step.getTable()/></#if><#if step.getFailure()??>, "failure": "${step.failureCause?json_string}"</#if><#if step.getOutcomes()??>,<@renderOutcomes step.getOutcomes()/></#if>}
+{"outcome": "${step.outcome}", "step": "${formattedStep}"<#if step.getTable()??>, "parameter": <@renderTable step.getTable()/></#if><#if step.getVerbatim()??>, "parameter": <@renderVerbatim step.getVerbatim()/></#if><#if step.getFailure()??>, "failure": "${step.failureCause?json_string}"</#if><#if step.getOutcomes()??>,<@renderOutcomes step.getOutcomes()/></#if>}
 </#macro>
 {
 "path": "${story.path}",

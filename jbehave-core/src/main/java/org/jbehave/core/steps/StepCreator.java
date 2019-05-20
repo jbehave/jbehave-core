@@ -27,6 +27,7 @@ import org.jbehave.core.failures.RestartingScenarioFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Verbatim;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
@@ -49,6 +50,8 @@ public class StepCreator {
 
     public static final String PARAMETER_TABLE_START = "\uff3b";
     public static final String PARAMETER_TABLE_END = "\uff3d";
+    public static final String PARAMETER_VERBATIM_START = "\u301a";
+    public static final String PARAMETER_VERBATIM_END = "\u301b";
     public static final String PARAMETER_VALUE_START = "\uFF5F";
     public static final String PARAMETER_VALUE_END = "\uFF60";
     public static final String PARAMETER_VALUE_NEWLINE = "\u2424";
@@ -331,6 +334,9 @@ public class StepCreator {
                 if (isTable(type)) {
                     return stepText.replace(value, markedTable(value));
                 }
+                if (isVerbatim(type)) {
+                    return stepText.replace(value, markedVerbatim(value));
+                }
                 String markedValue = markedValue(value);
                 // identify parameter values to mark as padded by spaces to avoid duplicated replacements of overlapping values (JBEHAVE-837)
                 String leftPad = SPACE;
@@ -348,6 +354,10 @@ public class StepCreator {
         return pad(value, PARAMETER_TABLE_START, PARAMETER_TABLE_END);
     }
 
+    private String markedVerbatim(String value) {
+        return pad(value, PARAMETER_VERBATIM_START, PARAMETER_VERBATIM_END);
+    }
+
     private String markedValue(String value) {
         return pad(value, PARAMETER_VALUE_START, PARAMETER_VALUE_END);
     }
@@ -358,6 +368,10 @@ public class StepCreator {
 
     private boolean isTable(Type type) {
         return isExamplesTable(type) || isExamplesTableParameters(type);
+    }
+
+    private boolean isVerbatim(Type type) {
+        return type instanceof Class && Verbatim.class.isAssignableFrom((Class<?>) type);
     }
 
     private boolean isExamplesTable(Type type) {

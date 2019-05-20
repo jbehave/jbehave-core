@@ -104,7 +104,7 @@ public class CoreStories extends JUnitStories {
                 new ParameterDelimitersSteps(), new ParametrisationByDelimitedNameSteps(), new ParametrisedSteps(),
                 new PendingSteps(), new PriorityMatchingSteps(),
                 new RestartingSteps(), new SandpitSteps(), new SearchSteps(),
-                new TableSteps(), new TraderSteps(new TradingService())
+                new TableSteps(), new TraderSteps(new TradingService()), new VerbatimSteps()
         );
     }
 

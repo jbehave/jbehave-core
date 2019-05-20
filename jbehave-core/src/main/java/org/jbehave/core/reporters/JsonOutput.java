@@ -1,11 +1,7 @@
 package org.jbehave.core.reporters;
 
 import static org.jbehave.core.reporters.PrintStreamOutput.Format.JSON;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_NEWLINE;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.jbehave.core.steps.StepCreator.*;
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -36,9 +32,9 @@ public class JsonOutput extends PrintStreamOutput {
     private static final String[] STEP_KEYS = { "successful", "ignorable", "comment", "pending", "notPerformed",
             "failed", "restarted" };
 
-    private static final String[] PARAMETER_KEYS = { PARAMETER_TABLE_START, PARAMETER_TABLE_END, PARAMETER_VALUE_START,
-            PARAMETER_VALUE_END, PARAMETER_VALUE_NEWLINE, "parameterValueStart", "parameterValueEnd",
-            "parameterValueNewline" };
+    private static final String[] PARAMETER_KEYS = { PARAMETER_TABLE_START, PARAMETER_TABLE_END,
+            PARAMETER_VERBATIM_START, PARAMETER_VERBATIM_END, PARAMETER_VALUE_START, PARAMETER_VALUE_END,
+            PARAMETER_VALUE_NEWLINE, "parameterValueStart", "parameterValueEnd", "parameterValueNewline" };
 
     private char lastChar = JSON_DOCUMENT_START;
 
@@ -192,6 +188,8 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("examplesTableBodyEnd", "]");
         patterns.setProperty("examplesTableEnd", "}, \"examples\": [");
         patterns.setProperty("example", "'{'\"keyword\": \"{0}\", \"value\": \"{1}\"");
+        patterns.setProperty("parameterVerbatimStart", "[[");
+        patterns.setProperty("parameterVerbatimEnd", "]]");
         patterns.setProperty("parameterValueStart", "((");
         patterns.setProperty("parameterValueEnd", "))");
         patterns.setProperty("parameterValueNewline", "\\n");

@@ -88,6 +88,10 @@
 </#list>
 </table>
 </#macro>
+<#macro renderVerbatim verbatim>
+<#assign content=verbatim.getContent()>
+<verbatim>${content?xml}</verbatim>
+</#macro>
 <#macro renderOutcomes table>
 <#assign outcomes=table.getOutcomes()>
 <#assign fields=table.getOutcomeFields()>
@@ -110,7 +114,7 @@
 <#macro renderStep step>
 <#assign formattedStep = step.getFormattedStep(EscapeMode.XML, "<parameter>{0}</parameter>")>
 <step outcome="${step.outcome}">
-${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()/></parameter></#if>
+${formattedStep}<#if step.getTable()??> <parameter><@renderTable step.getTable()/></parameter></#if><#if step.getVerbatim()??> <parameter><@renderVerbatim step.getVerbatim()/></parameter></#if>
 <#if step.getFailure()??> <failure>${step.failureCause?xml}</failure></#if><#if step.getOutcomes()??><@renderOutcomes step.getOutcomes()/></#if></step>
 </#macro>
 

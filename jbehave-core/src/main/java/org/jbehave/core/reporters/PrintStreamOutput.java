@@ -22,24 +22,11 @@ import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.embedder.MetaFilter;
 import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.GivenStory;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.OutcomesTable;
+import org.jbehave.core.model.*;
 import org.jbehave.core.model.OutcomesTable.Outcome;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.model.StoryDuration;
 
 import static org.apache.commons.lang3.StringUtils.substringBetween;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_TABLE_START;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_NEWLINE;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.jbehave.core.steps.StepCreator.*;
 
 /**
  * <p>
@@ -488,6 +475,15 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         return formatted.toString();
     }
 
+    protected String formatVerbatim(Verbatim verbatim) {
+        OutputStream formatted = new ByteArrayOutputStream();
+        PrintStream out = new PrintStream(formatted);
+        print(out, format("verbatimStart", NL));
+        print(out, verbatim.getContent());
+        print(out, format("verbatimEnd", NL));
+        return formatted.toString();
+    }
+
     private String escape(String defaultPattern) {
         return (String) escapeAll(defaultPattern)[0];
     }
@@ -563,7 +559,17 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         String tableStart = format(PARAMETER_TABLE_START, PARAMETER_TABLE_START);
         String tableEnd = format(PARAMETER_TABLE_END, PARAMETER_TABLE_END);
         boolean containsTable = text.contains(tableStart) && text.contains(tableEnd);
-        String textToPrint = containsTable ? transformPrintingTable(text, tableStart, tableEnd) : text;
+        String verbatimStart = format(PARAMETER_VERBATIM_START, PARAMETER_VERBATIM_START);
+        String verbatimEnd = format(PARAMETER_VERBATIM_END, PARAMETER_VERBATIM_END);
+        boolean containsVerbatim = text.contains(verbatimStart) && text.contains(verbatimEnd);
+        String textToPrint;
+        if ( containsTable ) {
+            textToPrint = transformPrintingTable(text, tableStart, tableEnd);
+        } else if ( containsVerbatim ){
+            textToPrint = transformPrintingVerbatim(text, verbatimStart, verbatimEnd);
+        } else {
+            textToPrint = text;
+        }
         print(output, textToPrint
                 .replace(format(PARAMETER_VALUE_START, PARAMETER_VALUE_START), format("parameterValueStart", EMPTY))
                 .replace(format(PARAMETER_VALUE_END, PARAMETER_VALUE_END), format("parameterValueEnd", EMPTY))
@@ -576,6 +582,14 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
                 .replace(tableAsString, formatTable(new ExamplesTable(tableAsString)))
                 .replace(tableStart, format("parameterValueStart", EMPTY))
                 .replace(tableEnd, format("parameterValueEnd", EMPTY));
+    }
+
+    protected String  transformPrintingVerbatim(String text, String verbatimStart, String verbatimEnd) {
+        String verbatimAsString = substringBetween(text, verbatimStart, verbatimEnd);
+        return text
+                .replace(verbatimAsString, formatVerbatim(new Verbatim(verbatimAsString)))
+                .replace(verbatimStart, format("parameterValueStart", EMPTY))
+                .replace(verbatimEnd, format("parameterValueEnd", EMPTY));
     }
 
     protected void print(PrintStream output, String text) {
