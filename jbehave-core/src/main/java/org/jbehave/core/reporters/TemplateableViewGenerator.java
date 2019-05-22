@@ -86,9 +86,18 @@ public class TemplateableViewGenerator implements ViewGenerator {
         properties.setProperty("encoding", charset.displayName());
         properties.setProperty("decorateNonHtml", "true");
         properties.setProperty("defaultFormats", "stats");
-        properties.setProperty("reportsViewType", Reports.ViewType.LIST.name());        
+        properties.setProperty("version", jbehaveVersion());
+        properties.setProperty("reportsViewType", Reports.ViewType.LIST.name());
         properties.setProperty("viewDirectory", "view");
         return properties;
+    }
+
+    private String jbehaveVersion() {
+        try {
+            return IOUtils.toString(this.getClass().getClassLoader().getResourceAsStream("jbehave.version"), true);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read JBehave version", e);
+        }
     }
 
     private Properties mergeWithDefault(Properties properties) {
@@ -97,9 +106,10 @@ public class TemplateableViewGenerator implements ViewGenerator {
         return merged;
     }
 
-    private void addDateAndEncoding(Map<String, Object> dataModel) {
+    private void addViewProperties(Map<String, Object> dataModel) {
         dataModel.put("date", new Date());
         dataModel.put("encoding", this.viewProperties.getProperty("encoding"));
+        dataModel.put("version", this.viewProperties.getProperty("version"));
     }
 
     @Override
@@ -108,7 +118,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         String outputName = templateResource("viewDirectory") + "/maps.html";
         String mapsTemplate = templateResource("maps");
         Map<String, Object> dataModel = newDataModel();
-        addDateAndEncoding(dataModel);
+        addViewProperties(dataModel);
         dataModel.put("storyLanes", new StoryLanes(storyMaps, nameResolver));
         write(outputDirectory, outputName, mapsTemplate, dataModel);
         generateViewsIndex(outputDirectory);
@@ -123,7 +133,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         reports = createReports(readReportFiles(outputDirectory, outputName, mergedFormats));
         reports.viewAs(ViewType.valueOf(viewProperties.getProperty("reportsViewType", Reports.ViewType.LIST.name())));
         Map<String, Object> dataModel = newDataModel();
-        addDateAndEncoding(dataModel);
+        addViewProperties(dataModel);
         dataModel.put("timeFormatter", new TimeFormatter());
         dataModel.put("reports", reports);
         dataModel.put("storyDurations", storyDurations(outputDirectory));
@@ -157,7 +167,7 @@ public class TemplateableViewGenerator implements ViewGenerator {
         String outputName = templateResource("viewDirectory") + "/index.html";
         String viewsTemplate = templateResource("views");
         Map<String, Object> dataModel = newDataModel();
-        addDateAndEncoding(dataModel);
+        addViewProperties(dataModel);
         write(outputDirectory, outputName, viewsTemplate, dataModel);
     }
 

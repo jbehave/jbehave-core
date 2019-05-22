@@ -220,7 +220,7 @@ ${threads}-Thread Average
 <div class="clear"></div>
 <div id="footer">
 <div class="left">Generated on ${date?string("dd/MM/yyyy HH:mm:ss")}</div>
-<div class="right">JBehave &#169; 2003-2015</div>
+<div class="right">JBehave <#if version??>${version}</#if>  &#169; 2003-${date?string("yyyy")}</div>
 <div class="clear"></div>
 </div>
 
