@@ -140,9 +140,8 @@
               </goals>
               <configuration>
                 <failOnError>false</failOnError>              
-                <additionalparam>-Xdoclint:none</additionalparam>
                 <links>
-                  <link>http://docs.oracle.com/javase/7/docs/api</link>
+                  <link>http://docs.oracle.com/javase/8/docs/api</link>
                 </links>
               </configuration>
             </execution>
@@ -261,7 +260,7 @@
       </build>
     </profile>
     <profile>
-      <!-- reporting profile: requires mvn 3 -->
+      <!-- Reporting profile -->
       <id>reporting</id>
       <build>
         <plugins>
