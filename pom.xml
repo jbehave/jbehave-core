@@ -139,8 +139,8 @@
                 <goal>jar</goal>
               </goals>
               <configuration>
-                <doclint>none</doclint>
-                <failOnError>false</failOnError>              
+                <additionalJOption>-Xdoclint:none</additionalJOption>
+                <failOnError>false</failOnError>
                 <links>
                   <link>http://docs.oracle.com/javase/8/docs/api</link>
                 </links>
