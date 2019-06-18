@@ -5,7 +5,6 @@ import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
 
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.Properties;
@@ -24,7 +23,6 @@ import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 
 @ApplicationScoped
 public class ConfigurationProducer
@@ -54,19 +52,12 @@ public class ConfigurationProducer
                             .withRelativeDirectory("my-output-directory")
                             .withViewResources(viewResources).withFailureTrace(true))
                     .useParameterConverters(new ParameterConverters(resourceLoader, tableTransformers)
-                            .addConverters(new CustomConverter(),new MyDateConverter()))
+                            .addConverters(new MyDateConverter())
+                            .addConverterFromFunction(CustomObject.class, CustomObject::new))
                     .useTableTransformers(tableTransformers);
                     
     }
-    
-    public static class CustomConverter extends AbstractParameterConverter<CustomObject> {
 
-        @Override
-        public CustomObject convertValue(String value, Type type) {
-            return new CustomObject(value);
-        }
-    }
-    
     public static class MyDateConverter extends ParameterConverters.DateConverter {
 
         public MyDateConverter() {

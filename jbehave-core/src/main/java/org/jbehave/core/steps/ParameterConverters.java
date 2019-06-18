@@ -27,6 +27,7 @@ import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import com.google.gson.Gson;
@@ -176,7 +177,7 @@ public class ParameterConverters {
      */
     public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader, ParameterControls parameterControls,
             TableTransformers tableTransformers, Locale locale, String collectionSeparator, boolean threadSafe) {
-        this(monitor, new ArrayList<ParameterConverter>(), threadSafe);
+        this(monitor, new ArrayList<>(), threadSafe);
         this.addConverters(
                 defaultConverters(resourceLoader, parameterControls, tableTransformers, locale, collectionSeparator));
     }
@@ -221,6 +222,10 @@ public class ParameterConverters {
     public ParameterConverters addConverters(List<ParameterConverter> converters) {
         this.converters.addAll(0, converters);
         return this;
+    }
+
+    public <T> ParameterConverters addConverterFromFunction(Class<T> acceptedType, Function<String, T> converter) {
+        return addConverters(new FunctionalParameterConverter<>(acceptedType, converter));
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -336,6 +341,10 @@ public class ParameterConverters {
             this.acceptedType = getParameterizedType(getClass()).getActualTypeArguments()[0];
         }
 
+        public AbstractParameterConverter(Type acceptedType) {
+            this.acceptedType = acceptedType;
+        }
+
         private ParameterizedType getParameterizedType(Class<?> clazz) {
             Type genericSuperclass = clazz.getGenericSuperclass();
             return genericSuperclass instanceof ParameterizedType ? (ParameterizedType) genericSuperclass
@@ -348,6 +357,25 @@ public class ParameterConverters {
                 return isAssignableFrom((Class<?>) acceptedType, type);
             }
             return acceptedType.equals(type);
+        }
+    }
+
+    public static class FunctionalParameterConverter<T> extends AbstractParameterConverter<T> {
+
+        private Function<String, T> converterFunction;
+
+        public FunctionalParameterConverter(Class<T> acceptedType, Function<String, T> converterFunction) {
+            super(acceptedType);
+            this.converterFunction = converterFunction;
+        }
+
+        protected FunctionalParameterConverter(Function<String, T> converterFunction) {
+            this.converterFunction = converterFunction;
+        }
+
+        @Override
+        public T convertValue(String value, Type type) {
+            return converterFunction.apply(value);
         }
     }
 
@@ -622,24 +650,24 @@ public class ParameterConverters {
         }
     }
 
-    public static class CurrencyConverter extends AbstractParameterConverter<Currency> {
-        @Override
-        public Currency convertValue(String value, Type type) {
-            return Currency.getInstance(value);
+    public static class CurrencyConverter extends FunctionalParameterConverter<Currency> {
+
+        public CurrencyConverter() {
+            super(Currency::getInstance);
         }
     }
 
-    public static class PatternConverter extends AbstractParameterConverter<Pattern> {
-        @Override
-        public Pattern convertValue(String value, Type type) {
-            return Pattern.compile(value);
+    public static class PatternConverter extends FunctionalParameterConverter<Pattern> {
+
+        public PatternConverter() {
+            super(Pattern::compile);
         }
     }
 
-    public static class FileConverter extends AbstractParameterConverter<File> {
-        @Override
-        public File convertValue(String value, Type type) {
-            return new File(value);
+    public static class FileConverter extends FunctionalParameterConverter<File> {
+
+        public FileConverter() {
+            super(File::new);
         }
     }
 
@@ -760,19 +788,11 @@ public class ParameterConverters {
      * Converts value to {@link ExamplesTable} using a
      * {@link ExamplesTableFactory}.
      */
-    public static class ExamplesTableConverter extends AbstractParameterConverter<ExamplesTable> {
-
-        private final ExamplesTableFactory factory;
+    public static class ExamplesTableConverter extends FunctionalParameterConverter<ExamplesTable> {
 
         public ExamplesTableConverter(ExamplesTableFactory factory) {
-            this.factory = factory;
+            super(factory::createExamplesTable);
         }
-
-        @Override
-        public ExamplesTable convertValue(String value, Type type) {
-            return factory.createExamplesTable(value);
-        }
-
     }
 
     /**
@@ -941,10 +961,10 @@ public class ParameterConverters {
 
     }
 
-    public static class VerbatimConverter extends AbstractParameterConverter<Verbatim> {
-        @Override
-        public Verbatim convertValue(String value, Type type) {
-            return new Verbatim(value);
+    public static class VerbatimConverter extends FunctionalParameterConverter<Verbatim> {
+
+        public VerbatimConverter() {
+            super(Verbatim::new);
         }
     }
 

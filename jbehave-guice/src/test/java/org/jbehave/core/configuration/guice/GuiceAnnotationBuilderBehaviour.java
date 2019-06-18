@@ -15,7 +15,6 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -48,9 +47,9 @@ import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.Steps;
-import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
+import org.jbehave.core.steps.ParameterConverters.FunctionalParameterConverter;
+import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.guice.GuiceStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.guice.GuiceStepsFactoryBehaviour.FooStepsWithDependency;
@@ -281,18 +280,11 @@ public class GuiceAnnotationBuilderBehaviour {
                             new LocalizedKeywords(Locale.ITALIAN)).withRelativeDirectory("my-output-directory")
                             .withViewResources(viewResources).withFailureTrace(true));
             Multibinder<ParameterConverter> multiBinder = Multibinder.newSetBinder(binder(), ParameterConverter.class);
-            multiBinder.addBinding().toInstance(new CustomConverter());
+            multiBinder.addBinding().toInstance(
+                    new FunctionalParameterConverter<>(CustomObject.class, CustomObject::new));
             multiBinder.addBinding().toInstance(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")));
         }
 
-    }
-
-    public static class CustomConverter extends AbstractParameterConverter<CustomObject> {
-
-        @Override
-        public CustomObject convertValue(String value, Type type) {
-            return new CustomObject(value);
-        }
     }
 
     public static class MyExampleTableConverter extends ParameterConverters.ExamplesTableConverter {

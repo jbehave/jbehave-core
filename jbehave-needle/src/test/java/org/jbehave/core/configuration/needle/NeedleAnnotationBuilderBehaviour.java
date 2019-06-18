@@ -3,7 +3,6 @@ package org.jbehave.core.configuration.needle;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,7 +24,7 @@ import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.FunctionalParameterConverter;
 import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooStepsWithDependency;
@@ -243,11 +242,10 @@ public class NeedleAnnotationBuilderBehaviour {
 
     }
 
-    public static class CustomConverter extends AbstractParameterConverter<CustomObject> {
+    public static class CustomConverter extends FunctionalParameterConverter<CustomObject> {
 
-        @Override
-        public CustomObject convertValue(final String value, final Type type) {
-            return new CustomObject(value);
+        public CustomConverter() {
+            super(CustomObject::new);
         }
     }
 
