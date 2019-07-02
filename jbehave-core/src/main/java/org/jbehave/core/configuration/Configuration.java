@@ -336,7 +336,8 @@ public abstract class Configuration {
 
     public ParameterConverters parameterConverters() {
         if (parameterConverters == null) {
-            parameterConverters = new ParameterConverters(storyLoader(), tableTransformers());
+            parameterConverters = new ParameterConverters(stepMonitor(), keywords(), storyLoader(), parameterControls(),
+                    tableTransformers());
         }
         return parameterConverters;
     }

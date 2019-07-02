@@ -45,6 +45,8 @@ import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.AsJson;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.ExamplesTable;
@@ -88,12 +90,13 @@ public class ParameterConvertersBehaviour {
     @SuppressWarnings("unchecked")
     @Test
     public void shouldDefineDefaultConverters() {
+        Keywords keywords = new LocalizedKeywords();
         LoadFromClasspath resourceLoader = new LoadFromClasspath();
         TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters converters = new ParameterConverters(resourceLoader, parameterControls, tableTransformers,
                 true);
-        ParameterConverter<?>[] defaultConverters = converters.defaultConverters(resourceLoader, parameterControls,
+        ParameterConverter<?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
                 tableTransformers, Locale.ENGLISH, ",");
         assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,
                 StringListConverter.class,

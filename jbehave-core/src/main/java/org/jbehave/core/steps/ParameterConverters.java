@@ -158,6 +158,21 @@ public class ParameterConverters {
         this(monitor, resourceLoader, parameterControls, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL,
                 DEFAULT_COLLECTION_SEPARATOR, DEFAULT_THREAD_SAFETY);
     }
+    
+    /**
+     * Creates a ParameterConverters using given StepMonitor, keywords, resource loader and table transformers.
+     *
+     * @param monitor the StepMonitor to use
+     * @param keywords the keywords to use
+     * @param resourceLoader the resource loader
+     * @param parameterControls the parameter controls
+     * @param tableTransformers the table transformers
+     */
+    public ParameterConverters(StepMonitor monitor, Keywords keywords, ResourceLoader resourceLoader,
+            ParameterControls parameterControls, TableTransformers tableTransformers) {
+        this(monitor, keywords, resourceLoader, parameterControls, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL,
+                DEFAULT_COLLECTION_SEPARATOR, DEFAULT_THREAD_SAFETY);
+    }
 
     /**
      * Create a ParameterConverters with given thread-safety
@@ -191,9 +206,33 @@ public class ParameterConverters {
      */
     public ParameterConverters(StepMonitor monitor, ResourceLoader resourceLoader, ParameterControls parameterControls,
             TableTransformers tableTransformers, Locale locale, String collectionSeparator, boolean threadSafe) {
+        this(monitor, new LocalizedKeywords(), resourceLoader, parameterControls, tableTransformers, locale,
+                collectionSeparator, threadSafe);
+
+    }
+
+    /**
+     * Creates a ParameterConverters for the given StepMonitor, keywords, Locale, list
+     * separator and thread-safety. When selecting a collectionSeparator, please make
+     * sure that this character doesn't have a special meaning in your Locale
+     * (for instance "," is used as decimal separator in some Locale)
+     *
+     * @param monitor the StepMonitor reporting the conversions
+     * @param resourceLoader the resource loader
+     * @param keywords the keywords
+     * @param parameterControls the parameter controls
+     * @param tableTransformers the table transformers
+     * @param locale the Locale to use when reading numbers
+     * @param collectionSeparator the String to use as collection separator
+     * @param threadSafe the boolean flag to determine if modification of
+     * {@link ParameterConverter} should be thread-safe
+     */
+    public ParameterConverters(StepMonitor monitor, Keywords keywords, ResourceLoader resourceLoader,
+            ParameterControls parameterControls, TableTransformers tableTransformers, Locale locale,
+            String collectionSeparator, boolean threadSafe) {
         this(monitor, new ArrayList<>(), threadSafe);
-        this.addConverters(
-                defaultConverters(resourceLoader, parameterControls, tableTransformers, locale, collectionSeparator));
+        this.addConverters(defaultConverters(keywords, resourceLoader, parameterControls, tableTransformers, locale,
+                collectionSeparator));
     }
 
     private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters, boolean threadSafe) {
@@ -203,10 +242,11 @@ public class ParameterConverters {
                 : new ArrayList<>(converters);
     }
 
-    protected ParameterConverter[] defaultConverters(ResourceLoader resourceLoader, ParameterControls parameterControls,
-            TableTransformers tableTransformers, Locale locale, String collectionSeparator) {
+    protected ParameterConverter[] defaultConverters(Keywords keywords, ResourceLoader resourceLoader,
+            ParameterControls parameterControls, TableTransformers tableTransformers, Locale locale,
+            String collectionSeparator) {
         this.escapedCollectionSeparator = escapeRegexPunctuation(collectionSeparator);
-        ExamplesTableFactory tableFactory = new ExamplesTableFactory(resourceLoader, this, parameterControls,
+        ExamplesTableFactory tableFactory = new ExamplesTableFactory(keywords, resourceLoader, this, parameterControls,
                 tableTransformers);
         JsonFactory jsonFactory = new JsonFactory();
         return new ParameterConverter[] { new BooleanConverter(),
