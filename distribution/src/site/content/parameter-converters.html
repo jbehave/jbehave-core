@@ -82,6 +82,24 @@ implementations of this interface. Specifically:</p>
     <li><a
         href="javadoc/core/org/jbehave/core/steps/ParameterConverters.JsonConverter.html">JsonConverter</a></li>
 </ul>
+<p>Built-in conversion for the following Java 8 Date/Time types is implemented using generic
+<a href="javadoc/core/org/jbehave/core/steps/ParameterConverters.FunctionalParameterConverter.html">FunctionalParameterConverter</a>:</p>
+<ul>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html">java.time.Duration</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Instant.html">java.time.Instant</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/LocalDate.html">java.time.LocalDate</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/LocalDateTime.html">java.time.LocalDateTime</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/LocalTime.html">java.time.LocalTime</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/MonthDay.html">java.time.MonthDay</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/OffsetDateTime.html">java.time.OffsetDateTime</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/OffsetTime.html">java.time.OffsetTime</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Period.html">java.time.Period</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/Year.html">java.time.Year</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/YearMonth.html">java.time.YearMonth</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneId.html">java.time.ZoneId</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZoneOffset.html">java.time.ZoneOffset</a></li>
+    <li><a href="https://docs.oracle.com/javase/8/docs/api/java/time/ZonedDateTime.html">java.time.ZonedDateTime</a></li>
+</ul>
 <p>JBehave supports automatic conversion to collections if corresponding element type converter is present. For example,
  having <a href="javadoc/core/org/jbehave/core/steps/ParameterConverters.NumberConverter.html">NumberConverter</a>
  conversion to List&lt;Number&gt; is performed automatically without specifying extra converters. By default

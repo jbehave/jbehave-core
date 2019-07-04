@@ -18,6 +18,20 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -755,6 +769,82 @@ public class ParameterConvertersBehaviour {
         assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set<Number>>(){}.getType()), is(false));
         assertThat(parameterizedTypeConverter.accept(new TypeLiteral<Set>(){}.getType()), is(false));
         assertThat(parameterizedTypeConverter.accept(new TypeLiteral<List<Bar>>(){}.getType()), is(false));
+    }
+
+    @Test
+    public void shouldConvertDuration() {
+        assertThat(new ParameterConverters().convert("PT1S", Duration.class), is(Duration.ofSeconds(1)));
+    }
+
+    @Test
+    public void shouldConvertInstant() {
+        assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.00Z", Instant.class),
+                is(Instant.ofEpochSecond(1562277035)));
+    }
+
+    @Test
+    public void shouldConvertLocalDateTime() {
+        assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.123", LocalDateTime.class),
+                is(LocalDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000)));
+    }
+
+    @Test
+    public void shouldConvertLocalDate() {
+        assertThat(new ParameterConverters().convert("2019-07-04", LocalDate.class), is(LocalDate.of(2019, 7, 4)));
+    }
+
+    @Test
+    public void shouldConvertLocalTime() {
+        assertThat(new ParameterConverters().convert("21:50:35.123", LocalTime.class),
+                is(LocalTime.of(21, 50, 35, 123_000_000)));
+    }
+
+    @Test
+    public void shouldConvertMonthDay() {
+        assertThat(new ParameterConverters().convert("--07-04", MonthDay.class), is(MonthDay.of(7, 4)));
+    }
+
+    @Test
+    public void shouldConvertOffsetDateTime() {
+        assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.123Z", OffsetDateTime.class),
+                is(OffsetDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000, ZoneOffset.UTC)));
+    }
+
+    @Test
+    public void shouldConvertOffsetTime() {
+        assertThat(new ParameterConverters().convert("21:50:35.123Z", OffsetTime.class),
+                is(OffsetTime.of(21, 50, 35, 123_000_000, ZoneOffset.UTC)));
+    }
+
+    @Test
+    public void shouldConvertPeriod() {
+        assertThat(new ParameterConverters().convert("P1Y2M3D", Period.class), is(Period.of(1, 2, 3)));
+    }
+
+    @Test
+    public void shouldConvertYearMonth() {
+        assertThat(new ParameterConverters().convert("2019-07", YearMonth.class), is(YearMonth.of(2019, 7)));
+    }
+
+    @Test
+    public void shouldConvertYear() {
+        assertThat(new ParameterConverters().convert("2019", Year.class), is(Year.of(2019)));
+    }
+
+    @Test
+    public void shouldConvertZonedDateTime() {
+        assertThat(new ParameterConverters().convert("2019-07-04T21:50:35.123Z", ZonedDateTime.class),
+                is(ZonedDateTime.of(2019, 7, 4, 21, 50, 35, 123_000_000, ZoneOffset.UTC)));
+    }
+
+    @Test
+    public void shouldConvertZoneId() {
+        assertThat(new ParameterConverters().convert("Europe/Minsk", ZoneId.class), is(ZoneId.of("Europe/Minsk")));
+    }
+
+    @Test
+    public void shouldConvertZoneOffset() {
+        assertThat(new ParameterConverters().convert("+03:00", ZoneOffset.class), is(ZoneOffset.ofHours(3)));
     }
 
     @AsJson

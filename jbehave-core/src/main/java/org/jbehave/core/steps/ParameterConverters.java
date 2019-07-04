@@ -12,6 +12,20 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
+import java.time.Period;
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -207,7 +221,24 @@ public class ParameterConverters {
                 new ExamplesTableConverter(tableFactory),
                 new ExamplesTableParametersConverter(tableFactory),
                 new VerbatimConverter(),
-                new JsonConverter(jsonFactory) };
+                new JsonConverter(jsonFactory),
+
+                // java.time.* converters
+                new FunctionalParameterConverter<>(Duration.class, Duration::parse),
+                new FunctionalParameterConverter<>(Instant.class, Instant::parse),
+                new FunctionalParameterConverter<>(LocalDate.class, LocalDate::parse),
+                new FunctionalParameterConverter<>(LocalDateTime.class, LocalDateTime::parse),
+                new FunctionalParameterConverter<>(LocalTime.class, LocalTime::parse),
+                new FunctionalParameterConverter<>(MonthDay.class, MonthDay::parse),
+                new FunctionalParameterConverter<>(OffsetDateTime.class, OffsetDateTime::parse),
+                new FunctionalParameterConverter<>(OffsetTime.class, OffsetTime::parse),
+                new FunctionalParameterConverter<>(Period.class, Period::parse),
+                new FunctionalParameterConverter<>(Year.class, Year::parse),
+                new FunctionalParameterConverter<>(YearMonth.class, YearMonth::parse),
+                new FunctionalParameterConverter<>(ZonedDateTime.class, ZonedDateTime::parse),
+                new FunctionalParameterConverter<>(ZoneId.class, ZoneId::of),
+                new FunctionalParameterConverter<>(ZoneOffset.class, ZoneOffset::of)
+        };
     }
 
     // TODO : This is a duplicate from RegExpPrefixCapturing
