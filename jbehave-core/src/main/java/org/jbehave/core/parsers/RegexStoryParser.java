@@ -305,14 +305,14 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         if (givenStories.requireParameters()) {
             givenStories.useExamplesTable(examplesTable);
         }
-        List<String> steps = new ArrayList<>();
+        List<String> rawSteps = new ArrayList<>();
         if(examplesTableAsString.trim().isEmpty()) {
-            steps.addAll(findSteps(scenarioWithoutTitle));
+            rawSteps.addAll(findSteps(scenarioWithoutTitle));
         } else {
             int afterExampleIndex = scenarioWithoutTitle.indexOf(examplesTableAsString) + examplesTableAsString.length();
-            steps.addAll(findSteps(scenarioWithoutTitle.substring(0, afterExampleIndex)));
+            rawSteps.addAll(findSteps(scenarioWithoutTitle.substring(0, afterExampleIndex)));
         }
-        return new Scenario(title, meta, givenStories, examplesTable, steps);
+        return new Scenario(title, meta, givenStories, examplesTable, rawSteps);
     }
 
     private String findScenarioTitle(String scenarioAsText) {

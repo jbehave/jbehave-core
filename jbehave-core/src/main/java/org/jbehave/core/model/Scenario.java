@@ -4,8 +4,10 @@ import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -17,6 +19,7 @@ public class Scenario {
     private final GivenStories givenStories;
     private final ExamplesTable examplesTable;
     private final List<String> steps;
+    private final List<String> trimmedSteps;
 
     public Scenario() {
         this(Arrays.<String>asList());
@@ -40,8 +43,11 @@ public class Scenario {
         this.givenStories = givenStories;
         this.examplesTable = examplesTable;
         this.steps = steps;
+        this.trimmedSteps = steps.stream()
+                .map(String::trim)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
-    
+
     public String getTitle() {
         if ( title == null ){
             return EMPTY;
@@ -91,7 +97,11 @@ public class Scenario {
     }
 
     public List<String> getSteps() {
-        return unmodifiableList(steps);
+        return trimmedSteps;
+    }
+
+    public List<String> getSteps(boolean raw) {
+        return raw ? unmodifiableList(steps) : getSteps();
     }
 
     @Override

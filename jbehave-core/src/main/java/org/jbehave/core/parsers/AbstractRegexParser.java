@@ -87,7 +87,7 @@ abstract class AbstractRegexParser {
         String initialStartingWords = concatenateInitialStartingWords();
         String followingStartingWords = concatenateFollowingStartingWords();
         return compile(
-                "((" + initialStartingWords + ")\\s(.)*?)\\s*(\\Z|" + followingStartingWords + "|\\n"
+                "((" + initialStartingWords + ")\\s(.*?))(\\Z|" + followingStartingWords + "|\\n"
                         + keywords().examplesTable() + ")", DOTALL);
     }
 

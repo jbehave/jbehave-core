@@ -37,6 +37,14 @@
                 <string></string>
               </a>
             </steps>
+            <trimmedSteps class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+              <c class="list">
+                <string></string>
+              </c>
+              <list>
+                <string></string>
+              </list>
+            </trimmedSteps>
           </scenario>
           <storyPath>/path/to/story</storyPath>
           <allowed>false</allowed>
@@ -76,6 +84,14 @@
             <string></string>
           </a>
         </steps>
+        <trimmedSteps class="java.util.Collections$UnmodifiableRandomAccessList" resolves-to="java.util.Collections$UnmodifiableList">
+          <c class="list">
+            <string></string>
+          </c>
+          <list>
+            <string></string>
+          </list>
+        </trimmedSteps>
       </scenario>
       <storyPath>/path/to/story</storyPath>
       <allowed>false</allowed>
