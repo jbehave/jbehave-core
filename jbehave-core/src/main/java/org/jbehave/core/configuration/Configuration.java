@@ -503,4 +503,9 @@ public abstract class Configuration {
         this.compositePaths = compositePaths;
         return this;
     }
+
+    public Configuration useStepsContext(StepsContext stepsContext) {
+        this.stepsContext = stepsContext;
+        return this;
+    }
 }
