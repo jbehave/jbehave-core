@@ -20,6 +20,7 @@ import org.jbehave.core.io.PathCalculator;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
+import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.CompositeParser;
 import org.jbehave.core.parsers.RegexCompositeParser;
@@ -192,6 +193,11 @@ public abstract class Configuration {
      */
     protected Set<String> compositePaths;
 
+    /**
+     * The examples table factory
+     */
+    protected ExamplesTableFactory examplesTableFactory;
+
     public Configuration() {
     }
 
@@ -232,6 +238,14 @@ public abstract class Configuration {
             storyLoader = new LoadFromClasspath();
         }
         return storyLoader;
+    }
+
+    public ExamplesTableFactory examplesTableFactory() {
+        if (examplesTableFactory == null) {
+            examplesTableFactory = new ExamplesTableFactory(keywords(), storyLoader(), parameterConverters(),
+                    parameterControls(), tableTransformers());
+        }
+        return examplesTableFactory;
     }
 
     public StoryPathResolver storyPathResolver() {
@@ -407,6 +421,11 @@ public abstract class Configuration {
 
     public Configuration useStoryLoader(StoryLoader storyLoader) {
         this.storyLoader = storyLoader;
+        return this;
+    }
+
+    public Configuration useExamplesTableFactory(ExamplesTableFactory examplesTableFactory) {
+        this.examplesTableFactory = examplesTableFactory;
         return this;
     }
 

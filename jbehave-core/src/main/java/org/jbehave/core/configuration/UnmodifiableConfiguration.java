@@ -7,6 +7,7 @@ import org.jbehave.core.failures.FailureStrategy;
 import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
+import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.parsers.CompositeParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
@@ -88,6 +89,11 @@ public class UnmodifiableConfiguration extends Configuration {
     @Override
     public ViewGenerator viewGenerator() {
         return delegate.viewGenerator();
+    }
+
+    @Override
+    public ExamplesTableFactory examplesTableFactory() {
+        return delegate.examplesTableFactory();
     }
 
     @Override
@@ -207,6 +213,11 @@ public class UnmodifiableConfiguration extends Configuration {
 
     @Override
     public Configuration useStoryLoader(StoryLoader storyLoader) {
+        throw notAllowed();
+    }
+
+    @Override
+    public Configuration useExamplesTableFactory(ExamplesTableFactory examplesTableFactory) {
         throw notAllowed();
     }
 

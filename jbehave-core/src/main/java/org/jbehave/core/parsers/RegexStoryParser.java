@@ -70,8 +70,7 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
     }
 
     public RegexStoryParser(Configuration configuration) {
-        super(configuration.keywords());
-        this.tableFactory = new ExamplesTableFactory(configuration);
+        this(configuration.keywords(), configuration.examplesTableFactory());
     }
     
     @Override
