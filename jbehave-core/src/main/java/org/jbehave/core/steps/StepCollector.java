@@ -16,7 +16,7 @@ import org.jbehave.core.model.Story;
  */
 public interface StepCollector {
 
-    enum Stage {
+    public enum Stage {
         BEFORE, AFTER
     }
 

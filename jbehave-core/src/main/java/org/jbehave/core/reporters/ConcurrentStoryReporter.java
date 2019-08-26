@@ -16,6 +16,7 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * When running a multithreading mode, reports cannot be written concurrently but should 
@@ -30,6 +31,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method afterStory;
     private static Method narrative;
     private static Method lifecycle;
+    private static Method beforeScenarioSteps;
+    private static Method afterScenarioSteps;
     private static Method scenarioNotAllowed;
     private static Method beforeScenario;
     private static Method beforeScenarioDeprecated;
@@ -64,6 +67,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
             afterStory = StoryReporter.class.getMethod("afterStory", Boolean.TYPE);
             narrative = StoryReporter.class.getMethod("narrative", Narrative.class);
             lifecycle = StoryReporter.class.getMethod("lifecyle", Lifecycle.class);
+            beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class);
+            afterScenarioSteps = StoryReporter.class.getMethod("afterScenarioSteps", Stage.class);
             scenarioNotAllowed = StoryReporter.class.getMethod("scenarioNotAllowed", Scenario.class, String.class);
             beforeScenario = StoryReporter.class.getMethod("beforeScenario", Scenario.class);
             beforeScenarioDeprecated = StoryReporter.class.getMethod("beforeScenario", String.class);
@@ -158,6 +163,25 @@ public class ConcurrentStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeScenarioSteps(Stage stage) {
+        crossReferencing.beforeScenarioSteps(stage);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(beforeScenarioSteps, stage));
+        } else {
+            delegate.beforeScenarioSteps(stage);
+        }
+    }
+
+    @Override
+    public void afterScenarioSteps(Stage stage) {
+        crossReferencing.afterScenarioSteps(stage);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(afterScenarioSteps, stage));
+        } else {
+            delegate.afterScenarioSteps(stage);
+        }
+    }
+
     public void scenarioNotAllowed(Scenario scenario, String filter) {
         crossReferencing.scenarioNotAllowed(scenario, filter);
         if (multiThreading) {

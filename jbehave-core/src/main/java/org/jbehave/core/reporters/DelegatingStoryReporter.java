@@ -3,6 +3,7 @@ package org.jbehave.core.reporters;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.model.*;
+import org.jbehave.core.steps.StepCollector.Stage;
 
 import java.util.Collection;
 import java.util.List;
@@ -91,6 +92,20 @@ public class DelegatingStoryReporter implements StoryReporter {
     public void lifecyle(Lifecycle lifecycle) {
         for (StoryReporter reporter : delegates) {
             reporter.lifecyle(lifecycle);
+        }
+    }
+
+    @Override
+    public void beforeScenarioSteps(Stage stage) {
+        for (StoryReporter reporter : delegates) {
+            reporter.beforeScenarioSteps(stage);
+        }
+    }
+
+    @Override
+    public void afterScenarioSteps(Stage stage) {
+        for (StoryReporter reporter : delegates) {
+            reporter.afterScenarioSteps(stage);
         }
     }
 

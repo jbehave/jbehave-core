@@ -12,6 +12,7 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryDuration;
+import org.jbehave.core.steps.StepCollector.Stage;
 
 /**
  * <p>
@@ -76,6 +77,14 @@ public class NullStoryReporter implements StoryReporter {
 
     @Override
     public void lifecyle(Lifecycle lifecycle) {
+    }
+
+    @Override
+    public void beforeScenarioSteps(Stage stage) {
+    }
+
+    @Override
+    public void afterScenarioSteps(Stage stage) {
     }
 
     @Override
