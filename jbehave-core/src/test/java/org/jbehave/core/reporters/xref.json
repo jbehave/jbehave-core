@@ -42,14 +42,6 @@
               [
                 ""
               ]
-            ],
-            "trimmedSteps": [
-              [
-                ""
-              ],
-              [
-                ""
-              ]
             ]
           },
           "storyPath": "/path/to/story",
@@ -86,14 +78,6 @@
     {
       "scenario": {
         "steps": [
-          [
-            ""
-          ]
-        ],
-        "trimmedSteps": [
-          [
-            ""
-          ],
           [
             ""
           ]

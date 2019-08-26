@@ -19,7 +19,6 @@ public class Scenario {
     private final GivenStories givenStories;
     private final ExamplesTable examplesTable;
     private final List<String> steps;
-    private final List<String> trimmedSteps;
 
     public Scenario() {
         this(Arrays.<String>asList());
@@ -43,9 +42,6 @@ public class Scenario {
         this.givenStories = givenStories;
         this.examplesTable = examplesTable;
         this.steps = steps;
-        this.trimmedSteps = steps.stream()
-                .map(String::trim)
-                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
     }
 
     public String getTitle() {
@@ -97,13 +93,19 @@ public class Scenario {
     }
 
     public List<String> getSteps() {
-        return trimmedSteps;
+        return getSteps(true);
     }
 
-    public List<String> getSteps(boolean raw) {
-        return raw ? unmodifiableList(steps) : getSteps();
+    public List<String> getSteps(boolean trim) {
+        return trim ? trim(steps) : steps;
     }
 
+    private List<String> trim(List<String> steps){
+        return steps.stream()
+                .map(String::trim)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+    }
+    
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

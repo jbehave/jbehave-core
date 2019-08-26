@@ -1094,7 +1094,7 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
-    public void shouldParseStoryAndSaveRawSteps() {
+    public void shouldParseStoryWithUntrimmedSteps() {
         String wholeStory = 
                 "Scenario: A scenario" + NL +
                 "Given step " + NL + NL + NL +
@@ -1106,18 +1106,18 @@ public class RegexStoryParserBehaviour {
         assertThat(scenarios.size(), equalTo(1));
         Scenario scenario = scenarios.get(0);
         assertThat(scenario.getTitle(), equalTo("A scenario"));
-        List<String> trimmedSteps1 = scenario.getSteps();
-        assertThat(trimmedSteps1.get(0), equalTo("Given step"));
-        assertThat(trimmedSteps1.get(1), equalTo("When step"));
-        assertThat(trimmedSteps1.get(2), equalTo("Then step"));
-        List<String> trimmedSteps2 = scenario.getSteps(false);
-        assertThat(trimmedSteps2.get(0), equalTo("Given step"));
-        assertThat(trimmedSteps2.get(1), equalTo("When step"));
-        assertThat(trimmedSteps2.get(2), equalTo("Then step"));
-        List<String> rawSteps = scenario.getSteps(true);
-        assertThat(rawSteps.get(0), equalTo("Given step " + NL + NL));
-        assertThat(rawSteps.get(1), equalTo("When step " + NL));
-        assertThat(rawSteps.get(2), equalTo("Then step"));
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given step"));
+        assertThat(steps.get(1), equalTo("When step"));
+        assertThat(steps.get(2), equalTo("Then step"));
+        List<String> trimmedSteps = scenario.getSteps(true);
+        assertThat(trimmedSteps.get(0), equalTo("Given step"));
+        assertThat(trimmedSteps.get(1), equalTo("When step"));
+        assertThat(trimmedSteps.get(2), equalTo("Then step"));
+        List<String> untrimmedSteps = scenario.getSteps(false);
+        assertThat(untrimmedSteps.get(0), equalTo("Given step " + NL + NL));
+        assertThat(untrimmedSteps.get(1), equalTo("When step " + NL));
+        assertThat(untrimmedSteps.get(2), equalTo("Then step"));
     }
 
     private String aScenarioWithAVeryLongTitle(int numberOfLines) {
