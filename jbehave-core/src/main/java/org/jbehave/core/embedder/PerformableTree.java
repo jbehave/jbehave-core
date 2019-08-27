@@ -1096,7 +1096,7 @@ public class PerformableTree {
                 r -> r.afterScenarioSteps(Stage.BEFORE));
             performGivenStories(context, givenStories, stories);
             performRestartableSteps(context);
-            perform(beforeSteps, context, r -> r.beforeScenarioSteps(Stage.AFTER),
+            perform(afterSteps, context, r -> r.beforeScenarioSteps(Stage.AFTER),
                 r -> r.afterScenarioSteps(Stage.AFTER));
         }
 
