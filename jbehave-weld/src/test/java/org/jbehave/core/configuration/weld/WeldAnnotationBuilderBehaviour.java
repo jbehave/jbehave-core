@@ -121,7 +121,7 @@ public class WeldAnnotationBuilderBehaviour {
         WeldBootstrap bootstrap = new WeldBootstrap();
         bootstrap.initialize();
         AnnotationBuilder builder = bootstrap.findAnnotationBuilder(type);
-        assertThat(builder, is(AnnotationBuilder.class));
+        assertThat(builder, is(instanceOf(AnnotationBuilder.class)));
         return builder;
     }
     
