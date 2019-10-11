@@ -23,22 +23,10 @@
   </bean>
 
   <bean id="authenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
-    <property name="passwordEncoder" ref="shaPasswordEncoder"/>
-    <property name="saltSource">
-      <bean class="org.springframework.security.authentication.dao.SystemWideSaltSource">
-        <property name="systemWideSalt" value="jb3h4v3"/>
-      </bean>
-    </property>
     <property name="userDetailsService" ref="userDetailsService"/>
   </bean>
 
-  <bean id="shaPasswordEncoder"
-    class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
-    <constructor-arg value="256" />
-  </bean>
-
-  <bean id="authenticationEventListener"
-    class="org.jbehave.example.spring.security.service.AuthenticationEventListener" />
+  <bean id="authenticationEventListener" class="org.jbehave.example.spring.security.service.AuthenticationEventListener" />
 
   <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
     <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
@@ -49,12 +37,12 @@
     <property name="password" value="" />
   </bean>
 
-  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-    <property name="dataSource" ref="dataSource"/>
+  <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+	  <property name="dataSource" ref="dataSource"/>
+	  <property name="sessionFactory" ref="sessionFactory"/>
   </bean>
 
-  <bean id="sessionFactory"
-    class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+  <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
     <property name="dataSource" ref="dataSource" />
     <property name="hibernateProperties">
       <props>

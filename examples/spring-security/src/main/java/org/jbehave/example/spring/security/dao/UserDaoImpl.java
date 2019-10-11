@@ -34,9 +34,9 @@ public class UserDaoImpl implements UserDao {
   @Transactional
   public User findUserByOrganizationAndUsername(Long organizationId, String username) {
     List<User> query = sessionFactory.getCurrentSession()
-            .createQuery("from User where organization.id = ? and username = ?")
-            .setParameter(0, organizationId)
-            .setParameter(1, username)
+            .createQuery("from User where organization.id = :organizationId and username = :username")
+            .setParameter("organizationId", organizationId)
+            .setParameter("username", username)
             .list();
     if (query.size() == 1) {
       return query.get(0);

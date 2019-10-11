@@ -134,7 +134,7 @@ public class PrintStreamStepMonitorBehaviour {
     }
 
     private void assertIsOutputEqualTo(String message) {
-        assertThat(out.toString(), equalTo(message + "\n"));
+        assertThat(out.toString(), equalTo(message + System.lineSeparator()));
     }
 
     static class MySteps  {
