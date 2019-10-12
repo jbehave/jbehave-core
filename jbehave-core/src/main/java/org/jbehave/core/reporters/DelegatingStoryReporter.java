@@ -110,6 +110,20 @@ public class DelegatingStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeStorySteps(Stage stage) {
+        for (StoryReporter reporter : delegates) {
+            reporter.beforeStorySteps(stage);
+        }
+    }
+
+    @Override
+    public void afterStorySteps(Stage stage) {
+        for (StoryReporter reporter : delegates) {
+            reporter.afterStorySteps(stage);
+        }
+    }
+
+    @Override
     public void beforeExamples(List<String> steps, ExamplesTable table) {
         for (StoryReporter reporter : delegates) {
             reporter.beforeExamples(steps, table);

@@ -871,16 +871,12 @@ public class PerformableTree {
                 context.reporter().narrative(story.getNarrative());
                 context.reporter().lifecyle(story.getLifecycle());
                 State state = context.state();
-                for ( PerformableSteps steps : beforeSteps ) {
-                    steps.perform(context);
-                }
+                performStorySteps(context, beforeSteps, Stage.BEFORE);
                 performGivenStories(context, givenStories, story.getGivenStories());
                 if (!context.failureOccurred() || !context.configuration().storyControls().skipStoryIfGivenStoryFailed()) {
                     performScenarios(context);
                 }
-                for ( PerformableSteps steps : afterSteps ) {
-                    steps.perform(context);
-                }
+                performStorySteps(context, afterSteps, Stage.AFTER);
                 if (context.restartStory()) {
                     context.reporter().afterStory(true);
                 } else {
@@ -897,6 +893,15 @@ public class PerformableTree {
             for (PerformableScenario scenario : scenarios) {
                 scenario.reportFailures(context);
             }
+        }
+
+        private void performStorySteps(RunContext context, List<PerformableSteps> storySteps, Stage stage)
+                throws InterruptedException {
+            context.reporter().beforeStorySteps(stage);
+            for (PerformableSteps steps : storySteps) {
+                steps.perform(context);
+            }
+            context.reporter().afterStorySteps(stage);
         }
 
         private void performScenarios(RunContext context) throws InterruptedException {

@@ -80,6 +80,14 @@ public class NullStoryReporter implements StoryReporter {
     }
 
     @Override
+    public void beforeStorySteps(Stage stage) {
+    }
+
+    @Override
+    public void afterStorySteps(Stage stage) {
+    }
+
+    @Override
     public void beforeScenarioSteps(Stage stage) {
     }
 

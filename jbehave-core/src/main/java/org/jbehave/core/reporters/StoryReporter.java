@@ -34,6 +34,10 @@ public interface StoryReporter {
 
     void lifecyle(Lifecycle lifecycle);
 
+    void beforeStorySteps(Stage stage);
+
+    void afterStorySteps(Stage stage);
+
     void beforeScenarioSteps(Stage stage);
 
     void afterScenarioSteps(Stage stage);

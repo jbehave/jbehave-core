@@ -31,6 +31,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
     private static Method afterStory;
     private static Method narrative;
     private static Method lifecycle;
+    private static Method beforeStorySteps;
+    private static Method afterStorySteps;
     private static Method beforeScenarioSteps;
     private static Method afterScenarioSteps;
     private static Method scenarioNotAllowed;
@@ -67,6 +69,8 @@ public class ConcurrentStoryReporter implements StoryReporter {
             afterStory = StoryReporter.class.getMethod("afterStory", Boolean.TYPE);
             narrative = StoryReporter.class.getMethod("narrative", Narrative.class);
             lifecycle = StoryReporter.class.getMethod("lifecyle", Lifecycle.class);
+            beforeStorySteps = StoryReporter.class.getMethod("beforeStorySteps", Stage.class);
+            afterStorySteps = StoryReporter.class.getMethod("afterStorySteps", Stage.class);
             beforeScenarioSteps = StoryReporter.class.getMethod("beforeScenarioSteps", Stage.class);
             afterScenarioSteps = StoryReporter.class.getMethod("afterScenarioSteps", Stage.class);
             scenarioNotAllowed = StoryReporter.class.getMethod("scenarioNotAllowed", Scenario.class, String.class);
@@ -159,6 +163,26 @@ public class ConcurrentStoryReporter implements StoryReporter {
             delayedMethods.add(new DelayedMethod(lifecycle, aLifecycle));
         } else {
             delegate.lifecyle(aLifecycle);
+        }
+    }
+
+    @Override
+    public void beforeStorySteps(Stage stage) {
+        crossReferencing.beforeStorySteps(stage);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(beforeStorySteps, stage));
+        } else {
+            delegate.beforeStorySteps(stage);
+        }
+    }
+
+    @Override
+    public void afterStorySteps(Stage stage) {
+        crossReferencing.afterStorySteps(stage);
+        if (multiThreading) {
+            delayedMethods.add(new DelayedMethod(afterStorySteps, stage));
+        } else {
+            delegate.afterStorySteps(stage);
         }
     }
 
