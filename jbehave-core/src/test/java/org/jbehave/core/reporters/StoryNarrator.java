@@ -35,8 +35,8 @@ class StoryNarrator {
         Story story = new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
                 new Narrative("renovate my house", "customer", "get a loan"), GivenStories.EMPTY, lifecycle, new ArrayList<Scenario>());
         boolean givenStory = false;
-        reporter.beforeStory(story, givenStory);
         reporter.dryRun();
+        reporter.beforeStory(story, givenStory);
         reporter.narrative(story.getNarrative());
         reporter.lifecyle(lifecycle);
         reporter.beforeScenario(new Scenario("I ask for a loan", Meta.EMPTY));

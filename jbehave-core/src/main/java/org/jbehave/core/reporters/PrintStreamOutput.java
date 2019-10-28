@@ -114,6 +114,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     private ThreadLocal<Boolean> reportFailureTrace = new ThreadLocal<>();
     private ThreadLocal<Boolean> compressFailureTrace = new ThreadLocal<>();
     private ThreadLocal<Throwable> cause = new ThreadLocal<>();
+    private ThreadLocal<Boolean> dryRun = ThreadLocal.withInitial(() -> false);
 
     protected PrintStreamOutput(Format format, PrintStream output, Properties defaultPatterns,
             Properties outputPatterns, Keywords keywords) {
@@ -236,6 +237,9 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     @Override
     public void beforeStory(Story story, boolean givenStory) {
         print(format("beforeStory", "{0}\n({1})\n", story.getDescription().asString(), story.getPath()));
+        if (dryRun.get()) {
+            print(format("dryRun", "{0}\n", keywords.dryRun()));
+        }
         print(story.getMeta());
     }
 
@@ -413,7 +417,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     @Override
     public void dryRun() {
-        print(format("dryRun", "{0}\n", keywords.dryRun()));
+        dryRun.set(true);
     }
 
     @Override

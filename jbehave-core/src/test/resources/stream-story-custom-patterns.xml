@@ -1,9 +1,9 @@
 <story path="/path/to/story" title="An interesting story &amp; special chars">
+<dryRun>DRY RUN</dryRun>
 <meta>
 <property keyword="@" name="author" value="Mauro"/>
 <property keyword="@" name="theme" value="testing"/>
 </meta>
-<dryRun>DRY RUN</dryRun>
 <narrative keyword="Narrative:">
   <inOrderTo keyword="In order to">renovate my house</inOrderTo>
   <asA keyword="As a">customer</asA>

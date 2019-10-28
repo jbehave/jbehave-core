@@ -1,10 +1,10 @@
 An interesting story & special chars
 (/path/to/story)
+DRY RUN
 Meta:
 @author Mauro
 @theme testing
 
-DRY RUN
 Narrative:
 In order to renovate my house
 As a customer
