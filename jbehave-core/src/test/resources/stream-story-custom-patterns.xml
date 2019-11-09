@@ -15,7 +15,7 @@
 <step>Given a scenario step</step>
 </scope>
 <scope keyword="Scope:" value="STORY">
-<step>Given a story step</step>
+<step>Given a before story step</step>
 </scope>
 </before>
 <after keyword="After:">
@@ -26,11 +26,14 @@
 </scope>
 <scope keyword="Scope:" value="STORY">
 <outcome keyword="Outcome:" value="ANY">
-<step>Given a story step</step>
+<step>Given an after story step</step>
 </outcome>
 </scope>
 </after>
 </lifecycle>
+<beforeStorySteps>
+<step outcome="successful">Given a before story step</step>
+</beforeStorySteps>
 <scenario keyword="Scenario:" title="I ask for a loan">
 <givenStories keyword="GivenStories:">
 <givenStory parameters="">/given/story1</givenStory>
@@ -77,6 +80,9 @@
 <step outcome="pending" keyword="PENDING">Then I should have a balance of $30</step>
 </examples><!-- after examples -->
 </scenario><!-- after scenario -->
+<afterStorySteps>
+<step outcome="successful">Given an after story step</step>
+</afterStorySteps>
 <pendingMethod>@When(&quot;something \&quot;$param\&quot;&quot;)
 @Pending
 public void whenSomething() {

@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.apache.commons.text.CaseUtils;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Keywords;
@@ -24,6 +24,7 @@ import org.jbehave.core.failures.KnownFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.*;
 import org.jbehave.core.model.OutcomesTable.Outcome;
+import org.jbehave.core.steps.StepCollector.Stage;
 
 import static org.apache.commons.lang3.StringUtils.substringBetween;
 import static org.jbehave.core.steps.StepCreator.*;
@@ -283,7 +284,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         for ( AfterScenario.Outcome outcome : lifecycle.getOutcomes() ){
             List<String> afterSteps = lifecycle.getAfterSteps(scope, outcome);
             if ( !afterSteps.isEmpty() ) {
-                print(format("lifecycleScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
+                print(format("lifecycleAfterScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
                 print(format("lifecycleOutcomeStart", "{0} {1}\n", keywords.outcome(), formatOutcome(outcome)));
                 MetaFilter metaFilter = lifecycle.getMetaFilter(outcome);
                 if (!metaFilter.isEmpty()) {
@@ -291,16 +292,16 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
                 }
                 print(afterSteps);
                 print(format("lifecycleOutcomeEnd", "\n"));
-                print(format("lifecycleScopeEnd", "\n"));
+                print(format("lifecycleAfterScopeEnd", "\n"));
             }
         }
     }
 
     private void printWithScope(List<String> steps, Scope scope) {
         if ( !steps.isEmpty()) {
-            print(format("lifecycleScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
+            print(format("lifecycleBeforeScopeStart", "{0} {1}\n", keywords.scope(), formatScope(scope)));
             print(steps);
-            print(format("lifecycleScopeEnd", "\n"));
+            print(format("lifecycleBeforeScopeEnd", "\n"));
         }
     }
 
@@ -335,6 +336,21 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
             }
             print(format("metaEnd", NL));
         }
+    }
+
+    @Override
+    public void beforeStorySteps(Stage stage) {
+        printStorySteps("before", stage);
+    }
+
+    @Override
+    public void afterStorySteps(Stage stage) {
+        printStorySteps("after", stage);
+    }
+
+    private void printStorySteps(String stepsStage, Stage storyStage) {
+        String storyStageName = CaseUtils.toCamelCase(storyStage.name(), true);
+        print(format(stepsStage + storyStageName + "StorySteps", ""));
     }
 
     @Override

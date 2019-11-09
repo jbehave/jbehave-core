@@ -35,38 +35,38 @@
 "lifecycle": { "keyword": "${keywords.lifecycle}"
 <#if lifecycle.hasBeforeSteps()>
 ,"before": {
-"keyword": "${keywords.before}"
+"keyword": "${keywords.before}", "scopes": [
 <#list lifecycle.getScopes() as scope>
 <#assign stepsByScope=lifecycle.getBeforeSteps(scope)>
-<#if !stepsByScope.isEmpty()>, "scope": {"keyword": "${keywords.scope}", "value": "<@renderScope scope/>",
+<#if !stepsByScope.isEmpty()>{"keyword": "${keywords.scope}", "value": "<@renderScope scope/>", "steps": [
 <#list stepsByScope as step>
-"step": "${step?json_string}"<#if step_has_next>, </#if>
+"${step?json_string}"<#if step_has_next>, </#if>
 </#list>
-}
+]}<#if scope_has_next>,</#if>
 </#if>
 </#list>
-}
+]}
 </#if>
 <#if lifecycle.hasAfterSteps()>
 ,"after": {
-"keyword": "${keywords.after}"
+"keyword": "${keywords.after}", "scopes": [
 <#list lifecycle.getScopes() as scope>
 <#assign stepsByScope=lifecycle.getAfterSteps(scope)>
-<#if !stepsByScope.isEmpty()>
-,"scope": { "keyword": "${keywords.scope}", "value": "<@renderScope scope/>"
+<#if !stepsByScope.isEmpty()>{ "keyword": "${keywords.scope}", "value": "<@renderScope scope/>", "outcomes": [
 <#list lifecycle.getOutcomes() as outcome>
-,"outcome": { "keyword": "${keywords.outcome}", "value": "${outcome}",
+{ "keyword": "${keywords.outcome}", "value": "${outcome}",
 <#assign metaFilter=lifecycle.getMetaFilter(outcome)>
 <#if !metaFilter.isEmpty()><#assign metaFilterAsString=metaFilter.asString()>"metaFilter": "keyword": "${keywords.metaFilter}", "value": "${metaFilterAsString}"</#if>
+"steps": [
 <#list lifecycle.getAfterSteps(scope, outcome) as step>
-"step" : "${step?json_string}"<#if step_has_next>, </#if>
+"${step?json_string}"<#if step_has_next>, </#if>
 </#list>
-}
+]}<#if outcome_has_next>, </#if>
 </#list>
-}
+]}<#if scope_has_next>,</#if>
 </#if>
 </#list>
-}
+]}
 </#if>
 }
 </#macro>
@@ -123,7 +123,7 @@
 <#if story.getNarrative()??>, <@renderNarrative story.getNarrative()/></#if>
 <#if story.getLifecycle()??>, <@renderLifecycle story.getLifecycle()/></#if>
 <#if !story.getBeforeSteps().isEmpty()>
-,"before": {"keyword": "${keywords.before}",
+,"before": {"keyword": "${keywords.before}", "steps":
 [<#list story.getBeforeSteps() as step>
 <@renderStep step/><#if step_has_next>,</#if>
 </#list>
@@ -164,7 +164,7 @@
 </#list>
 ]
 <#if !story.getAfterSteps().isEmpty()>
-,"after": {"keyword": "${keywords.after}",
+,"after": {"keyword": "${keywords.after}", "steps":
 <#list story.getAfterSteps() as step>
 <@renderStep step/><#if step_has_next>,</#if>
 </#list>

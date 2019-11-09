@@ -91,6 +91,9 @@ public class JsonOutput extends PrintStreamOutput {
                 stepPublishing = false;
                 scenarioCompleted = true;
             }
+            else if ("afterBeforeStorySteps".equals(key) || "afterAfterStorySteps".equals(key)){
+                stepPublishing = false;
+            }
         } else if (ArrayUtils.contains(STEP_KEYS, key)) {
             // Starting "steps"
             print("\"steps\": [");
@@ -109,6 +112,9 @@ public class JsonOutput extends PrintStreamOutput {
             // Closing "scenarios"
             scenarioPublishingPerLevels.put(storyPublishingLevel, Boolean.FALSE);
             print("]");
+        }
+        if ("beforeBeforeStorySteps".equals(key) || "beforeAfterStorySteps".equals(key)) {
+            stepPublishing = true;
         }
         return super.format(key, defaultPattern, args);
     }
@@ -134,16 +140,22 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("narrative", "\"narrative\": '{'\"keyword\": \"{0}\",  \"inOrderTo\": '{'\"keyword\": \"{1}\", \"value\": \"{2}\"}, \"asA\": '{'\"keyword\": \"{3}\", \"value\": \"{4}\"}, \"iWantTo\": '{'\"keyword\": \"{5}\", \"value\": \"{6}\"}}");
         patterns.setProperty("lifecycleStart", "\"lifecycle\": '{'\"keyword\": \"{0}\"");
         patterns.setProperty("lifecycleEnd", "}");
-        patterns.setProperty("lifecycleBeforeStart", "\"before\": '{'\"keyword\": \"{0}\"");
-        patterns.setProperty("lifecycleBeforeEnd", "}");
-        patterns.setProperty("lifecycleAfterStart", "\"after\": '{'\"keyword\": \"{0}\"");
-        patterns.setProperty("lifecycleAfterEnd", "}");
-        patterns.setProperty("lifecycleScopeStart", "\"scope\": '{'\"keyword\": \"{0}\", \"value\": \"{1}\"");
-        patterns.setProperty("lifecycleScopeEnd", "}");
-        patterns.setProperty("lifecycleOutcomeStart", "\"outcome\": '{'\"keyword\": \"{0}\", \"value\": \"{1}\"");
-        patterns.setProperty("lifecycleOutcomeEnd", "}");
+        patterns.setProperty("lifecycleBeforeStart", "\"before\": '{'\"keyword\": \"{0}\", \"scopes\": [");
+        patterns.setProperty("lifecycleBeforeEnd", "]}");
+        patterns.setProperty("lifecycleAfterStart", "\"after\": '{'\"keyword\": \"{0}\", \"scopes\": [");
+        patterns.setProperty("lifecycleAfterEnd", "]}");
+        patterns.setProperty("lifecycleBeforeScopeStart", "'{'\"keyword\": \"{0}\", \"value\": \"{1}\", \"steps\": [");
+        patterns.setProperty("lifecycleBeforeScopeEnd", "]}");
+        patterns.setProperty("lifecycleAfterScopeStart", "'{'\"keyword\": \"{0}\", \"value\": \"{1}\", \"outcomes\": [");
+        patterns.setProperty("lifecycleAfterScopeEnd", "]}");
+        patterns.setProperty("lifecycleOutcomeStart", "'{'\"keyword\": \"{0}\", \"value\": \"{1}\", \"steps\": [");
+        patterns.setProperty("lifecycleOutcomeEnd", "]}");
         patterns.setProperty("lifecycleMetaFilter", "\"metaFilter\": \"{0} {1}\"");
-        patterns.setProperty("lifecycleStep", "\"step\": \"{0}\"");
+        patterns.setProperty("lifecycleStep", "\"{0}\"");
+        patterns.setProperty("beforeBeforeStorySteps", "\"beforeStorySteps\": [");
+        patterns.setProperty("afterBeforeStorySteps", "]");
+        patterns.setProperty("beforeAfterStorySteps", "\"afterStorySteps\": [");
+        patterns.setProperty("afterAfterStorySteps", "]");
         patterns.setProperty("beforeScenario","'{'\"keyword\": \"{0}\", \"title\": \"{1}\"");
         patterns.setProperty("scenarioNotAllowed", "\"notAllowed\": '{'\"pattern\": \"{0}\"}");
         patterns.setProperty("afterScenario", "}");

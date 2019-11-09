@@ -17,20 +17,23 @@ import org.jbehave.core.failures.RestartingStoryFailure;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.*;
+import org.jbehave.core.model.Lifecycle.Steps;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator;
 
 class StoryNarrator {
 
-    static void narrateAnInterestingStory(StoryReporter reporter,
-            boolean withFailure) {
+    static void narrateAnInterestingStory(StoryReporter reporter, boolean withFailure) {
         Properties meta = new Properties();
         meta.setProperty("theme", "testing");
         meta.setProperty("author", "Mauro");
-        Lifecycle.Steps beforeScenarioSteps = new Lifecycle.Steps(Scope.SCENARIO, asList("Given a scenario step"));
-        Lifecycle.Steps beforeStorySteps = new Lifecycle.Steps(Scope.STORY, asList("Given a story step"));
-        Lifecycle.Steps afterScenarioSteps = new Lifecycle.Steps(Scope.SCENARIO, asList("Given a scenario step"));
-        Lifecycle.Steps afterStorySteps = new Lifecycle.Steps(Scope.STORY, asList("Given a story step"));
+        String beforeStoryStep = "Given a before story step";
+        String afterStoryStep = "Given an after story step";
+        Steps beforeScenarioSteps = new Steps(Scope.SCENARIO, asList("Given a scenario step"));
+        Steps beforeStorySteps = new Steps(Scope.STORY, asList(beforeStoryStep));
+        Steps afterScenarioSteps = new Steps(Scope.SCENARIO, asList("Given a scenario step"));
+        Steps afterStorySteps = new Steps(Scope.STORY, asList(afterStoryStep));
         Lifecycle lifecycle = new Lifecycle(asList(beforeScenarioSteps, beforeStorySteps), asList(afterScenarioSteps, afterStorySteps));
         Story story = new Story("/path/to/story", new Description("An interesting story & special chars"), new Meta(meta),
                 new Narrative("renovate my house", "customer", "get a loan"), GivenStories.EMPTY, lifecycle, new ArrayList<Scenario>());
@@ -39,6 +42,12 @@ class StoryNarrator {
         reporter.beforeStory(story, givenStory);
         reporter.narrative(story.getNarrative());
         reporter.lifecyle(lifecycle);
+
+        reporter.beforeStorySteps(Stage.BEFORE);
+        reporter.beforeStep(beforeStoryStep);
+        reporter.successful(beforeStoryStep);
+        reporter.afterStorySteps(Stage.BEFORE);
+
         reporter.beforeScenario(new Scenario("I ask for a loan", Meta.EMPTY));
         reporter.beforeGivenStories();
         reporter.givenStories(asList("/given/story1", "/given/story2"));
@@ -91,6 +100,12 @@ class StoryNarrator {
         }
         reporter.afterExamples();
         reporter.afterScenario();
+
+        reporter.beforeStorySteps(Stage.AFTER);
+        reporter.beforeStep(afterStoryStep);
+        reporter.successful(afterStoryStep);
+        reporter.afterStorySteps(Stage.AFTER);
+
         String method1="@When(\"something \\\"$param\\\"\")\n"
                 + "@Pending\n"
                 + "public void whenSomething() {\n"

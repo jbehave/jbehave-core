@@ -15,7 +15,7 @@ Scope: SCENARIO
 Given a scenario step
 
 Scope: STORY
-Given a story step
+Given a before story step
 
 
 After:
@@ -26,10 +26,13 @@ Given a scenario step
 
 Scope: STORY
 Outcome: ANY
-Given a story step
+Given an after story step
 
 
 
+
+
+Given a before story step
 
 Scenario: I ask for a loan
 GivenStories:
@@ -76,6 +79,9 @@ Then I give it to Paul
 Then I should have a balance of $30 (FAILED)
 (java.lang.Exception: Expected <30> got <25>)
 
+
+
+Given an after story step
 
 @When("something \"$param\"")
 @Pending
