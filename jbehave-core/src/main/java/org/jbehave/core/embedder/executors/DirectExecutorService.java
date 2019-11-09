@@ -6,7 +6,7 @@ import org.jbehave.core.embedder.EmbedderControls;
 import java.util.concurrent.ExecutorService;
 
 /**
- *  Creates instances of {@link MoreExecutors#sameThreadExecutor()}.
+ *  Creates instances of {@link MoreExecutors#newDirectExecutorService()}.
  */
 public class DirectExecutorService implements ExecutorServiceFactory {
 
