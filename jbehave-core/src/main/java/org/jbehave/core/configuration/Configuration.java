@@ -221,7 +221,7 @@ public abstract class Configuration {
 
     public StoryParser storyParser() {
         if (storyParser == null) {
-            storyParser = new RegexStoryParser(storyLoader(), tableTransformers());
+            storyParser = new RegexStoryParser(keywords(), examplesTableFactory());
         }
         return storyParser;
     }

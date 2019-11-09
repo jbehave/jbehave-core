@@ -54,7 +54,8 @@ public class MostUsefulConfiguration extends Configuration {
         useKeywords(new LocalizedKeywords());
         useStoryControls(new StoryControls());
         useStoryLoader(new LoadFromClasspath());
-        useStoryParser(new RegexStoryParser(keywords(), storyLoader(), tableTransformers()));
+        useParameterControls(new ParameterControls());
+        useStoryParser(new RegexStoryParser(keywords(), examplesTableFactory()));
         useFailureStrategy(new RethrowingFailure());
         usePendingStepStrategy(new PassingUponPendingStep());
         useStepFinder(new StepFinder());
@@ -63,7 +64,6 @@ public class MostUsefulConfiguration extends Configuration {
         useStepMonitor(new SilentStepMonitor());
         useStepdocReporter(new PrintStreamStepdocReporter());
         useParanamer(new NullParanamer());
-        useParameterControls(new ParameterControls());
         useViewGenerator(new FreemarkerViewGenerator());
     }
 
