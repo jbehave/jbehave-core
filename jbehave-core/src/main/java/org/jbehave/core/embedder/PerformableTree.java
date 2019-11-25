@@ -586,7 +586,7 @@ public class PerformableTree {
         private Map<Stage, PerformableSteps> lifecycleSteps(Lifecycle lifecycle, Meta meta, Scope scope) {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             Map<Stage, List<Step>> steps = configuration.stepCollector().collectLifecycleSteps(candidateSteps,
-                    lifecycle, meta, scope);
+                    lifecycle, meta, scope, monitor);
             Map<Stage, PerformableSteps> performableSteps = new EnumMap<>(Stage.class);
             for (Map.Entry<Stage, List<Step>> entry : steps.entrySet()) {
                 performableSteps.put(entry.getKey(), new PerformableSteps(entry.getValue(), monitor.matched()));
@@ -599,7 +599,7 @@ public class PerformableTree {
             MatchingStepMonitor monitor = new MatchingStepMonitor(configuration.stepMonitor());
             StepCollector stepCollector = configuration.stepCollector();
             Map<Stage, List<Step>> beforeOrAfterStepSteps = stepCollector.collectLifecycleSteps(candidateSteps,
-                    lifecycle, meta, Scope.STEP);
+                    lifecycle, meta, Scope.STEP, monitor);
             List<Step> steps = new LinkedList<>();
             for (Step step : stepCollector.collectScenarioSteps(candidateSteps, scenario, parameters, monitor)) {
                 steps.addAll(beforeOrAfterStepSteps.get(Stage.BEFORE));

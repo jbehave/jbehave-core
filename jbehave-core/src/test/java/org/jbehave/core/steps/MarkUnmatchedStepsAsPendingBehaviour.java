@@ -16,6 +16,7 @@ import java.util.*;
 import org.hamcrest.Matchers;
 import org.jbehave.core.annotations.*;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
+import org.jbehave.core.embedder.MatchingStepMonitor;
 import org.jbehave.core.failures.PendingStepFound;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.Lifecycle;
@@ -110,8 +111,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 new Lifecycle.Steps(Outcome.FAILURE, asList(myFailureStep))));
 
         // When
-        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Scope.SCENARIO)
-                .get(Stage.AFTER);
+        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, Scope.SCENARIO,
+                new MatchingStepMonitor()).get(Stage.AFTER);
 
         // Then
         assertThat(executableSteps.size(), equalTo(3));
@@ -149,8 +150,8 @@ public class MarkUnmatchedStepsAsPendingBehaviour {
                 new Lifecycle.Steps(scope, Outcome.FAILURE, asList(myFailureStep))));
 
         // When
-        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, scope).get(
-                Stage.AFTER);
+        List<Step> executableSteps = stepCollector.collectLifecycleSteps(steps, lifecycle, Meta.EMPTY, scope,
+                new MatchingStepMonitor()).get(Stage.AFTER);
 
         // Then
         assertThat(executableSteps.size(), equalTo(3));

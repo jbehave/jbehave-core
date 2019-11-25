@@ -52,7 +52,7 @@ public interface StepCollector {
     List<Step> collectBeforeOrAfterScenarioSteps(List<CandidateSteps> candidateSteps, Meta storyAndScenarioMeta, Stage stage, ScenarioType type);
 
     /**
-     * @deprecated Use {@link #collectLifecycleSteps(List, Lifecycle, Meta, Scope)}
+     * @deprecated Use {@link #collectLifecycleSteps(List, Lifecycle, Meta, Scope, StepMonitor)}
      *
      * Collects all lifecycle steps to execute for default scope
      *
@@ -66,7 +66,7 @@ public interface StepCollector {
     List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage);
 
     /**
-     * @deprecated Use {@link #collectLifecycleSteps(List, Lifecycle, Meta, Scope)}
+     * @deprecated Use {@link #collectLifecycleSteps(List, Lifecycle, Meta, Scope, StepMonitor)}
      *
      * Collects all lifecycle steps to execute
      *
@@ -81,6 +81,8 @@ public interface StepCollector {
     List<Step> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Stage stage, Scope scope);
 
     /**
+     * @deprecated Use {@link #collectLifecycleSteps(List, Lifecycle, Meta, Scope, StepMonitor)}
+     *
      * Collects all lifecycle steps to execute per {@link Stage} of execution
      *
      * @param candidateSteps the {@link CandidateSteps}.
@@ -89,7 +91,21 @@ public interface StepCollector {
      * @param scope the {@link Scope} of the lifecycle steps
      * @return A List of executable {@link Step}s
      */
+    @Deprecated
     Map<Stage, List<Step>> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle, Meta storyAndScenarioMeta, Scope scope);
+
+    /**
+     * Collects all lifecycle steps to execute per {@link Stage} of execution
+     *
+     * @param candidateSteps the {@link CandidateSteps}.
+     * @param lifecycle the {@link Lifecycle}
+     * @param storyAndScenarioMeta the story and scenario {@link Meta} parameters
+     * @param scope the {@link Scope} of the lifecycle steps
+     * @param stepMonitor the {@link StepMonitor}.
+     * @return A List of executable {@link Step}s
+     */
+    Map<Stage, List<Step>> collectLifecycleSteps(List<CandidateSteps> candidateSteps, Lifecycle lifecycle,
+            Meta storyAndScenarioMeta, Scope scope, StepMonitor stepMonitor);
 
     /**
      * Collects all of the {@link Step}s to execute for a scenario.
