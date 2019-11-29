@@ -1,6 +1,7 @@
 package org.jbehave.core.steps;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -27,6 +28,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Currency;
@@ -158,7 +160,7 @@ public class ParameterConverters {
         this(monitor, resourceLoader, parameterControls, tableTransformers, DEFAULT_NUMBER_FORMAT_LOCAL,
                 DEFAULT_COLLECTION_SEPARATOR, DEFAULT_THREAD_SAFETY);
     }
-    
+
     /**
      * Creates a ParameterConverters using given StepMonitor, keywords, resource loader and table transformers.
      *
@@ -319,6 +321,21 @@ public class ParameterConverters {
             }
         }
 
+        if (type instanceof Class) {
+            Class clazz = (Class) type;
+            if (clazz.isArray()) {
+                String[] elements = parseElements(value, escapedCollectionSeparator);
+                Class elementType = clazz.getComponentType();
+                ParameterConverter elementConverter = findConverter(elementType);
+                Object array = createArray(elementType, elements.length);
+
+                if (elementConverter != null && array != null) {
+                    fillArray(elements, elementConverter, elementType, array);
+                    return array;
+                }                
+            }
+        }
+
         throw new ParameterConvertionFailed("No parameter converter for " + type);
     }
 
@@ -347,13 +364,25 @@ public class ParameterConverters {
         return ((ParameterizedType) type).getActualTypeArguments()[0];
     }
 
-    private static <T> void fillCollection(String value, String valueSeparator, ParameterConverter<T> elementConverter,
+    private static String[] parseElements(String value, String elementSeparator) {
+        String[] elements = value.trim().isEmpty() ? new String[0] : value.split(elementSeparator);
+        Arrays.setAll(elements, i -> elements[i].trim());
+        return elements;
+    }
+
+    private static <T> void fillCollection(String value, String elementSeparator, ParameterConverter<T> elementConverter,
             Type elementType, Collection<T> convertedValues) {
-        if (!value.trim().isEmpty()) {
-            for (String elementValue : value.split(valueSeparator)) {
-                T convertedValue = elementConverter.convertValue(elementValue.trim(), elementType);
-                convertedValues.add(convertedValue);
-            }
+        for (String element : parseElements(value, elementSeparator)) {
+            T convertedValue = elementConverter.convertValue(element, elementType);
+            convertedValues.add(convertedValue);
+        }
+    }
+
+    private static <T> void fillArray(String[] elements, ParameterConverter<T> elementConverter,
+            Type elementType, Object convertedValues) {
+        for (int i = 0; i < elements.length; i++) {
+            T convertedValue = elementConverter.convertValue(elements[i], elementType);
+            Array.set(convertedValues, i, convertedValue);
         }
     }
 
@@ -376,6 +405,16 @@ public class ParameterConverters {
         catch (@SuppressWarnings("unused") Throwable t) {
             // Could not instantiate Collection type, swallowing exception quietly
         }
+        return null;
+    }
+
+    private static Object createArray(Class<?> elementType, int length) {
+        try {
+            return Array.newInstance(elementType, length);
+        } catch (Throwable e) {
+            // Could not instantiate array, swallowing exception quietly
+        }
+
         return null;
     }
 
