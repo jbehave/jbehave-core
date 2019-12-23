@@ -3,6 +3,8 @@ package org.jbehave.core.embedder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertNull;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.inOrder;
@@ -11,8 +13,14 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.function.Supplier;
 
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
@@ -40,6 +48,8 @@ public class PerformableTreeBehaviour {
 
     private static final String GIVEN_SCENARIO_FAIL = "Scenario: given scenario title\nWhen I fail";
     private static final String STORY_PATH = "path";
+    private static final Story EMPTY_STORY = new Story(STORY_PATH, null, null, null, null, Collections.emptyList());
+    private static final ExecutorService EXECUTOR = Executors.newSingleThreadExecutor();
 
     @Test
     public void shouldAddNotAllowedPerformableScenariosToPerformableStory() {
@@ -144,5 +154,53 @@ public class PerformableTreeBehaviour {
         performableTree.perform(runContext, story);
 
         verify(storyReporter).dryRun();
+    }
+
+    @Test
+    public void shouldNotShareStoryStateBetweenThreads() throws Throwable {
+        RunContext context = runStoryInContext(EMPTY_STORY);
+        assertThat(context.state().getClass().getSimpleName(), is("FineSoFar"));
+        assertReturnsNullInAnotherThread(context::state);
+    }
+
+    @Test
+    public void shouldNotShareStoryPathBetweenThreads() throws Throwable {
+        RunContext context = runStoryInContext(EMPTY_STORY);
+        assertThat(context.path(), is(STORY_PATH));
+        assertReturnsNullInAnotherThread(context::path);
+    }
+
+    @Test
+    public void shouldNotShareStoryReporterBetweenThreads() throws Throwable {
+        RunContext context = runStoryInContext(EMPTY_STORY);
+        assertThat(context.reporter(), instanceOf(StoryReporter.class));
+        assertReturnsNullInAnotherThread(context::reporter);
+    }
+
+    private RunContext runStoryInContext(Story story) {
+        Configuration configuration = new MostUsefulConfiguration();
+        configuration.useStoryLoader(mock(StoryLoader.class));
+        PerformableTree performableTree = new PerformableTree();
+        RunContext runContext = performableTree.newRunContext(configuration, Collections.emptyList(),
+                mock(EmbedderMonitor.class), new MetaFilter(), mock(BatchFailures.class));
+        performableTree.addStories(runContext, Arrays.asList(story));
+        performableTree.perform(runContext, story);
+        return runContext;
+    }
+
+    private void assertReturnsNullInAnotherThread(Supplier<Object> supplier) throws Throwable {
+        Callable<Void> task = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                assertNull(supplier.get());
+                return null;
+            }
+        };
+
+        try {
+            EXECUTOR.submit(task).get();
+        } catch (ExecutionException e) {
+            throw e.getCause();
+        }
     }
 }
