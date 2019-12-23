@@ -18,48 +18,73 @@ public class StoryControls {
     private String storyMetaPrefix = "";
     private String scenarioMetaPrefix = "";
     private boolean skipStoryIfGivenStoryFailed = false;
+    private final ThreadLocal<StoryControls> currentStoryControls = ThreadLocal
+            .withInitial(() -> new StoryControls(this));
+
+    public StoryControls(StoryControls storyControls) {
+        dryRun = storyControls.dryRun;
+        resetStateBeforeStory = storyControls.resetStateBeforeStory;
+        resetStateBeforeScenario = storyControls.resetStateBeforeScenario;
+        skipScenariosAfterFailure = storyControls.skipScenariosAfterFailure;
+        skipBeforeAndAfterScenarioStepsIfGivenStory = storyControls.skipBeforeAndAfterScenarioStepsIfGivenStory;
+        ignoreMetaFiltersIfGivenStory = storyControls.ignoreMetaFiltersIfGivenStory;
+        metaByRow = storyControls.metaByRow;
+        storyMetaPrefix = storyControls.storyMetaPrefix;
+        scenarioMetaPrefix = storyControls.scenarioMetaPrefix;
+        skipStoryIfGivenStoryFailed = storyControls.skipStoryIfGivenStoryFailed;
+        // should not be used
+        currentStoryControls.set(null);
+    }
 
     public StoryControls() {
     }
+    
+    public StoryControls getCurrentStoryControls() {
+        return currentStoryControls.get();
+    }
 
     public boolean dryRun() {
-        return dryRun;
+        return getCurrentStoryControls().dryRun;
     }
 
     public boolean resetStateBeforeStory() {
-        return resetStateBeforeStory;
+        return getCurrentStoryControls().resetStateBeforeStory;
     }
 
     public boolean resetStateBeforeScenario() {
-        return resetStateBeforeScenario;
+        return getCurrentStoryControls().resetStateBeforeScenario;
+    }
+    
+    public void resetCurrentStoryControls() {
+        currentStoryControls.set(new StoryControls(this));
     }
 
     public boolean skipScenariosAfterFailure() {
-        return skipScenariosAfterFailure;
+        return getCurrentStoryControls().skipScenariosAfterFailure;
     }
 
     public boolean skipBeforeAndAfterScenarioStepsIfGivenStory() {
-        return skipBeforeAndAfterScenarioStepsIfGivenStory;
+        return getCurrentStoryControls().skipBeforeAndAfterScenarioStepsIfGivenStory;
     }
 
     public boolean ignoreMetaFiltersIfGivenStory() {
-		return ignoreMetaFiltersIfGivenStory;
+		return getCurrentStoryControls().ignoreMetaFiltersIfGivenStory;
 	}
 
     public boolean metaByRow() {
-        return metaByRow;
+        return getCurrentStoryControls().metaByRow;
     }
 
     public String storyMetaPrefix() {
-        return storyMetaPrefix;
+        return getCurrentStoryControls().storyMetaPrefix;
     }
 
     public String scenarioMetaPrefix() {
-        return scenarioMetaPrefix;
+        return getCurrentStoryControls().scenarioMetaPrefix;
     }
 
     public boolean skipStoryIfGivenStoryFailed() {
-        return skipStoryIfGivenStoryFailed;
+        return getCurrentStoryControls().skipStoryIfGivenStoryFailed;
     }
 
     public StoryControls doDryRun(boolean dryRun) {
@@ -67,11 +92,11 @@ public class StoryControls {
         return this;
     }
 
-	public StoryControls doResetStateBeforeScenario(boolean resetStateBeforeScenario) {
+    public StoryControls doResetStateBeforeScenario(boolean resetStateBeforeScenario) {
         this.resetStateBeforeScenario = resetStateBeforeScenario;
         return this;
     }
-    
+
     public StoryControls doResetStateBeforeStory(boolean resetStateBeforeStory) {
         this.resetStateBeforeStory = resetStateBeforeStory;
         return this;
