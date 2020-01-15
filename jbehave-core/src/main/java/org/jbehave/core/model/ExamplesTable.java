@@ -419,7 +419,19 @@ public class ExamplesTable {
             }
         }
         // Default to field matching given name
-        return type.getDeclaredField(fieldName);
+        return findField(type, fieldName);
+    }
+
+    private Field findField(Class<?> type, String fieldName) throws NoSuchFieldException {
+        for (Field field : type.getDeclaredFields()) {
+            if (field.getName().equals(fieldName)) {
+                return field;
+            }
+        }
+        if (type.getSuperclass() != null) {
+            return findField(type.getSuperclass(), fieldName);
+        }
+        throw new NoSuchFieldException(fieldName);
     }
 
     private Parameters createParameters(Map<String, String> values) {

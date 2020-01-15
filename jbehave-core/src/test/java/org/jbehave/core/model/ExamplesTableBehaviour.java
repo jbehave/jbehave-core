@@ -414,7 +414,8 @@ public class ExamplesTableBehaviour {
         ExamplesTableFactory factory = createFactory();
 
         // When
-        String tableAsString = "|string|integer|stringList|integerList|\n|11|22|1,1|2,2|";
+        String tableAsString = "|string|integer|stringList|integerList|parentString|rootParentString|\n"
+                + "|11|22|1,1|2,2|value1|value2|";
         ExamplesTable examplesTable = factory.createExamplesTable(tableAsString);
 
         // Then
@@ -423,6 +424,8 @@ public class ExamplesTableBehaviour {
             assertThat(parameters.integer, equalTo(22));
             assertThat(parameters.stringList, equalTo(asList("1", "1")));
             assertThat(parameters.integerList, equalTo(asList(2, 2)));
+            assertThat(parameters.getParentString(), equalTo("value1"));
+            assertThat(parameters.getRootParentString(), equalTo("value2"));
         }
     }
 
@@ -607,8 +610,24 @@ public class ExamplesTableBehaviour {
         return null;
     }
 
+    public static abstract class AbstractRootMyParameters {
+        private String rootParentString;
+
+        public String getRootParentString() {
+            return rootParentString;
+        }
+    }
+
+    public static abstract class AbstractMyParameters extends AbstractRootMyParameters {
+        private String parentString;
+
+        public String getParentString() {
+            return parentString;
+        }
+    }
+
     @AsParameters
-    public static class MyParameters {
+    public static class MyParameters extends AbstractMyParameters {
 
         private String string;
         private Integer integer;
