@@ -39,20 +39,20 @@ public class StoryControls {
     public StoryControls() {
     }
     
-    public StoryControls getCurrentStoryControls() {
+    StoryControls currentStoryControls() {
         return currentStoryControls.get();
     }
 
     public boolean dryRun() {
-        return getCurrentStoryControls().dryRun;
+        return currentStoryControls().dryRun;
     }
 
     public boolean resetStateBeforeStory() {
-        return getCurrentStoryControls().resetStateBeforeStory;
+        return currentStoryControls().resetStateBeforeStory;
     }
 
     public boolean resetStateBeforeScenario() {
-        return getCurrentStoryControls().resetStateBeforeScenario;
+        return currentStoryControls().resetStateBeforeScenario;
     }
     
     public void resetCurrentStoryControls() {
@@ -60,31 +60,31 @@ public class StoryControls {
     }
 
     public boolean skipScenariosAfterFailure() {
-        return getCurrentStoryControls().skipScenariosAfterFailure;
+        return currentStoryControls().skipScenariosAfterFailure;
     }
 
     public boolean skipBeforeAndAfterScenarioStepsIfGivenStory() {
-        return getCurrentStoryControls().skipBeforeAndAfterScenarioStepsIfGivenStory;
+        return currentStoryControls().skipBeforeAndAfterScenarioStepsIfGivenStory;
     }
 
     public boolean ignoreMetaFiltersIfGivenStory() {
-		return getCurrentStoryControls().ignoreMetaFiltersIfGivenStory;
+		return currentStoryControls().ignoreMetaFiltersIfGivenStory;
 	}
 
     public boolean metaByRow() {
-        return getCurrentStoryControls().metaByRow;
+        return currentStoryControls().metaByRow;
     }
 
     public String storyMetaPrefix() {
-        return getCurrentStoryControls().storyMetaPrefix;
+        return currentStoryControls().storyMetaPrefix;
     }
 
     public String scenarioMetaPrefix() {
-        return getCurrentStoryControls().scenarioMetaPrefix;
+        return currentStoryControls().scenarioMetaPrefix;
     }
 
     public boolean skipStoryIfGivenStoryFailed() {
-        return getCurrentStoryControls().skipStoryIfGivenStoryFailed;
+        return currentStoryControls().skipStoryIfGivenStoryFailed;
     }
 
     public StoryControls doDryRun(boolean dryRun) {

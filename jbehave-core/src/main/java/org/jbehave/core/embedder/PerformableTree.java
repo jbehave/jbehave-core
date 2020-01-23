@@ -518,8 +518,8 @@ public class PerformableTree {
     	}
 
 		public void currentPath(String path) {
-            getStoryRunContext().pathIs(path);
-            getStoryRunContext().reporterIs(configuration.storyReporter(path));
+            currentRunContext().pathIs(path);
+            currentRunContext().reporterIs(configuration.storyReporter(path));
         }
 
         public void interruptIfCancelled() throws InterruptedException {
@@ -543,7 +543,7 @@ public class PerformableTree {
         }
 
         public String path() {
-            return getStoryRunContext().path();
+            return currentRunContext().path();
         }
 
         public FilteredStory filter(Story story) {
@@ -617,7 +617,7 @@ public class PerformableTree {
 
         public RunContext childContextFor(GivenStory givenStory) {
             RunContext child = new RunContext(configuration, candidateSteps, embedderMonitor, filter, failures);
-            child.getStoryRunContext().pathIs(configuration.pathCalculator().calculate(path(), givenStory.getPath()));
+            child.currentRunContext().pathIs(configuration.pathCalculator().calculate(path(), givenStory.getPath()));
             child.givenStory = true;
             return child;
         }
@@ -635,11 +635,11 @@ public class PerformableTree {
         }
 
         public State state() {
-            return getStoryRunContext().state();
+            return currentRunContext().state();
         }
 
         public void stateIs(State state) {
-            getStoryRunContext().stateIs(state);
+            currentRunContext().stateIs(state);
         }
 
         public boolean failureOccurred() {
@@ -647,7 +647,7 @@ public class PerformableTree {
         }
 
         public void resetState() {
-            getStoryRunContext().resetState();
+            currentRunContext().resetState();
         }
 
         public void resetFailures() {
@@ -655,7 +655,7 @@ public class PerformableTree {
         }
 
         public StoryReporter reporter() {
-            return getStoryRunContext().reporter();
+            return currentRunContext().reporter();
         }
 
         public boolean failed(State state) {
@@ -722,7 +722,7 @@ public class PerformableTree {
         	return embedderMonitor;
         }
 
-        private StoryRunContext getStoryRunContext() {
+        private StoryRunContext currentRunContext() {
             return storyRunContext.get();
         }
     }

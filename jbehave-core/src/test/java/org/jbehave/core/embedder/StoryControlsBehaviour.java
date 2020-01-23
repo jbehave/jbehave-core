@@ -65,7 +65,7 @@ public class StoryControlsBehaviour {
             @Override
             public Void call() throws Exception {
                 assertThat(getter.apply(storyControls), is(defaultValue));
-                setter.apply(storyControls.getCurrentStoryControls(), threadLocalValue);
+                setter.apply(storyControls.currentStoryControls(), threadLocalValue);
                 assertThat(getter.apply(storyControls), is(threadLocalValue));
                 return null;
             }
@@ -84,7 +84,7 @@ public class StoryControlsBehaviour {
         Callable<Void> task = new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-                setter.apply(storyControls.getCurrentStoryControls(), threadLocalValue);
+                setter.apply(storyControls.currentStoryControls(), threadLocalValue);
                 assertThat(getter.apply(storyControls), is(threadLocalValue));
                 storyControls.resetCurrentStoryControls();
                 assertThat(getter.apply(storyControls), is(defaultValue));
