@@ -873,7 +873,8 @@ public class StepCreator {
             ParameterName[] names = parameterNames(method);
             Type[] types = parameterTypes(method, names);
             String[] parameterValues = parameterValuesForStep(namedParameters, types, names, true);
-            convertedParameters = convertParameterValues(parameterValues, types, names);
+            convertedParameters = method == null ? parameterValues
+                    : convertParameterValues(parameterValues, types, names);
             addNamedParametersToExamplesTables();
             parametrisedStep = parametrisedStep(stepAsString, namedParameters, types, parameterValues);
         }

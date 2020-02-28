@@ -486,6 +486,27 @@ public class StepCreatorBehaviour {
     }
 
     @Test
+    public void shouldNotResolveParametersForCompositeStepe() {
+        SomeSteps stepsInstance = new SomeSteps();
+        StepMatcher stepMatcher = mock(StepMatcher.class);
+        when(stepMatcher.parameterNames()).thenReturn(new String[] {"name", "num"});
+        when(stepMatcher.parameter(1)).thenReturn("value");
+        when(stepMatcher.parameter(2)).thenReturn("1");
+        ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
+        String stepAsString = "Given a composite step with parameter $name and number $num";
+        String stepWithoutStartingWord = "a composite step with parameter $name and number $num";
+        Step compositeStep = stepCreator.createParametrisedStep(null, stepAsString, stepWithoutStartingWord,
+                Collections.emptyMap(), Collections.emptyList());
+        StepResult result = compositeStep.perform(storyReporter, null);
+
+        assertThat(result.parametrisedStep(), equalTo(stepAsString));
+        verify(storyReporter).beforeStep(stepAsString);
+    }
+
+    @Test
     public void shouldMatchParametersByDelimitedNameInKebabCase() throws Exception {
 
         // Given
