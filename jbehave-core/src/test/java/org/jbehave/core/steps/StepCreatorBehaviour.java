@@ -486,7 +486,8 @@ public class StepCreatorBehaviour {
     }
 
     @Test
-    public void shouldNotResolveParametersForCompositeStepe() {
+    public void shouldNotConvertParametersForCompositeSteps() {
+        // Given
         SomeSteps stepsInstance = new SomeSteps();
         StepMatcher stepMatcher = mock(StepMatcher.class);
         when(stepMatcher.parameterNames()).thenReturn(new String[] {"name", "num"});
@@ -496,12 +497,14 @@ public class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
         StoryReporter storyReporter = mock(StoryReporter.class);
 
+        // When
         String stepAsString = "Given a composite step with parameter $name and number $num";
         String stepWithoutStartingWord = "a composite step with parameter $name and number $num";
         Step compositeStep = stepCreator.createParametrisedStep(null, stepAsString, stepWithoutStartingWord,
                 Collections.emptyMap(), Collections.emptyList());
         StepResult result = compositeStep.perform(storyReporter, null);
 
+        // Then
         assertThat(result.parametrisedStep(), equalTo(stepAsString));
         verify(storyReporter).beforeStep(stepAsString);
     }
