@@ -336,22 +336,19 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertCommaSeparatedValuesToArrayWithDefaultFormat()
-    {
+    public void shouldConvertCommaSeparatedValuesToArrayWithDefaultFormat() {
         ParameterConverters converters = new ParameterConverters();
         assertThat(converters.convert("1,2,3", int[].class), is(new int[] {1, 2, 3}));
     }
 
     @Test
-    public void shouldConvertEmptyStringToEmptyArray()
-    {
+    public void shouldConvertEmptyStringToEmptyArray() {
         ParameterConverters converters = new ParameterConverters();
         assertThat(converters.convert("", int[].class), is(new int[0]));
     }
 
     @Test
-    public void shouldFailToConvertToArrayOfCustomOjects()
-    {
+    public void shouldFailToConvertToArrayOfCustomObjectsIfNoConverterFound() {
         expectedException.expect(ParameterConvertionFailed.class);
         expectedException.expectMessage(
                 "No parameter converter for class [Lorg.jbehave.core.steps.ParameterConvertersBehaviour$Bar");
