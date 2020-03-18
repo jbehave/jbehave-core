@@ -6,19 +6,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import com.google.common.collect.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.model.ExamplesTable.ExamplesTableData;
 import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
 
-public class TableUtils
-{
-    static ExamplesTableData parseData(String tableAsString, Keywords keywords) {
+public class TableParsers {
+
+    public TableParsers(){}
+
+    public ExamplesTableData parseData(String tableAsString, Keywords keywords) {
         return parseData(tableAsString, keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator(),
                 keywords.examplesTableIgnorableSeparator());
     }
 
-    static ExamplesTableData parseData(String tableAsString, String headerSeparator, String valueSeparator,
+    public ExamplesTableData parseData(String tableAsString, String headerSeparator, String valueSeparator,
             String ignorableSeparator) {
         Deque<ExamplesTableProperties> properties = new LinkedList<>();
         String tableWithoutProperties = tableAsString.trim();
@@ -38,12 +41,12 @@ public class TableUtils
         return new ExamplesTableData(tableWithoutProperties, properties);
     }
 
-    public static List<String> parseRow(String rowAsString, boolean header, ExamplesTableProperties properties) {
+    public List<String> parseRow(String rowAsString, boolean header, ExamplesTableProperties properties) {
         String separator = header ? properties.getHeaderSeparator() : properties.getValueSeparator();
         return parseRow(rowAsString, separator, properties.getCommentSeparator(), properties.isTrim());
     }
 
-    private static List<String> parseRow(String rowAsString, String separator, String commentSeparator,
+    private List<String> parseRow(String rowAsString, String separator, String commentSeparator,
             boolean trimValues) {
         StringBuilder regex = new StringBuilder();
         for (char c : separator.toCharArray()) {

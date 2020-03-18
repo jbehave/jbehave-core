@@ -6,7 +6,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.Parameter;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
 import org.jbehave.core.model.ExamplesTable.RowNotFound;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.jbehave.core.steps.ConvertedParameters.ValueNotFound;
@@ -63,7 +62,7 @@ public class ExamplesTableBehaviour {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath(), parameterControls,
                 tableTransformers, true);
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator,
-                parameterConverters, parameterControls, tableTransformers);
+                parameterConverters, parameterControls, new TableParsers(), tableTransformers);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
         ensureColumnOrderIsPreserved(table);
@@ -80,7 +79,7 @@ public class ExamplesTableBehaviour {
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath(), parameterControls,
                 tableTransformers, true);
         ExamplesTable table = new ExamplesTable(tableWithCustomSeparator, headerSeparator, valueSeparator,
-                parameterConverters, parameterControls, tableTransformers);
+                parameterConverters, parameterControls, new TableParsers(), tableTransformers);
         assertThat(table.getHeaderSeparator(), equalTo(headerSeparator));
         assertThat(table.getValueSeparator(), equalTo(valueSeparator));
         ensureColumnOrderIsPreserved(table);
@@ -213,7 +212,7 @@ public class ExamplesTableBehaviour {
         tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 
             @Override
-            public String transform(String tableAsString, ExamplesTableProperties properties) {
+            public String transform(String tableAsString, TableParsers tableParsers, ExamplesTable.ExamplesTableProperties properties) {
                 return tableWithSpacesAsString;
             }
 
@@ -233,7 +232,7 @@ public class ExamplesTableBehaviour {
         tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 
             @Override
-            public String transform(String tableAsString, ExamplesTableProperties properties) {
+            public String transform(String tableAsString, TableParsers tableParsers, ExamplesTable.ExamplesTableProperties properties) {
                 return tableWithSpacesAsString;
             }
 
@@ -585,12 +584,13 @@ public class ExamplesTableBehaviour {
 
     private ExamplesTableFactory createFactory(ParameterConverter... converters) {
         LoadFromClasspath resourceLoader = new LoadFromClasspath();
+        TableParsers tableParsers = new TableParsers();
         TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, parameterControls,
                 tableTransformers, true);
         parameterConverters.addConverters(converters);
-        return new ExamplesTableFactory(resourceLoader, parameterConverters, parameterControls, tableTransformers);
+        return new ExamplesTableFactory(resourceLoader, parameterConverters, parameterControls, tableParsers, tableTransformers);
     }
 
     private void assertTableAsString(String tableAsString, String expectedTableAsString) {

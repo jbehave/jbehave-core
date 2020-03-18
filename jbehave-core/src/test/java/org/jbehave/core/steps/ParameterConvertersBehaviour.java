@@ -51,6 +51,7 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanConverter;
@@ -92,12 +93,13 @@ public class ParameterConvertersBehaviour {
     public void shouldDefineDefaultConverters() {
         Keywords keywords = new LocalizedKeywords();
         LoadFromClasspath resourceLoader = new LoadFromClasspath();
+        TableParsers tableParsers = new TableParsers();
         TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters converters = new ParameterConverters(resourceLoader, parameterControls, tableTransformers,
                 true);
         ParameterConverter<?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
-                tableTransformers, Locale.ENGLISH, ",");
+                tableParsers, tableTransformers, Locale.ENGLISH, ",");
         assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,
                 StringListConverter.class,
                 DateConverter.class,

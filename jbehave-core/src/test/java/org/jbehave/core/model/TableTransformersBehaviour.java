@@ -11,6 +11,8 @@ public class TableTransformersBehaviour {
 
     private static final ExamplesTableProperties PROPERTIES = createExamplesTableProperties();
 
+    private TableParsers tableParsers = new TableParsers();
+
     private String tableAsString = "|one|two|\n" + "|11|12|\n" + "|21|22|\n";
 
     private String landscapeTableAsString = "|one|11|21|\n" + "|two|12|22|\n";
@@ -28,7 +30,7 @@ public class TableTransformersBehaviour {
     @Test
     public void shouldNotTransformTableIfTransformerNotFound() {
         TableTransformers tableTransformers = new TableTransformers();
-        String transformed = tableTransformers.transform("inexistentTransformer", tableAsString, PROPERTIES);
+        String transformed = tableTransformers.transform("inexistentTransformer", tableAsString, tableParsers, PROPERTIES);
         assertThat(transformed, equalTo(tableAsString));
     }
 
@@ -36,7 +38,7 @@ public class TableTransformersBehaviour {
     public void shouldTransformTableFromLandscape() {
         TableTransformers tableTransformers = new TableTransformers();
         String transformed = tableTransformers.transform(TableTransformers.FROM_LANDSCAPE, landscapeTableAsString,
-                PROPERTIES);
+                tableParsers, PROPERTIES);
         assertThat(transformed, equalTo(tableAsString));
     }
 
@@ -45,7 +47,7 @@ public class TableTransformersBehaviour {
     public void shouldTransformTableByFormatting() {
         TableTransformers tableTransformers = new TableTransformers();
         String transformed = tableTransformers.transform(TableTransformers.FORMATTING, unformattedTableAsString,
-                PROPERTIES);
+                tableParsers, PROPERTIES);
         assertThat(transformed, equalTo(formattedTableAsString));
     }
 
@@ -55,14 +57,14 @@ public class TableTransformersBehaviour {
         ExamplesTableProperties properties = createExamplesTableProperties();
         properties.getProperties().setProperty("replacing", "|");
         properties.getProperties().setProperty("replacement", "\t");
-        String transformed = tableTransformers.transform(TableTransformers.REPLACING, tableAsString, properties);
+        String transformed = tableTransformers.transform(TableTransformers.REPLACING, tableAsString, tableParsers, properties);
         assertThat(transformed, equalTo(tableAsString.replace("|", "\t")));
     }
 
     @Test
     public void shouldTransformNotTableByReplacementIfPropertiesNotFound() {
         TableTransformers tableTransformers = new TableTransformers();
-        String transformed = tableTransformers.transform(TableTransformers.REPLACING, tableAsString, PROPERTIES);
+        String transformed = tableTransformers.transform(TableTransformers.REPLACING, tableAsString, tableParsers, PROPERTIES);
         assertThat(transformed, equalTo(tableAsString));
     }
 
@@ -72,12 +74,12 @@ public class TableTransformersBehaviour {
         tableTransformers.useTransformer("myTransformer", new TableTransformer(){
 
             @Override
-            public String transform(String tableAsString, ExamplesTableProperties properties) {
+            public String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
                 return myTransformedTableAsString;
             }
             
         });
-        String transformed = tableTransformers.transform("myTransformer", tableAsString, PROPERTIES);
+        String transformed = tableTransformers.transform("myTransformer", tableAsString, tableParsers, PROPERTIES);
         assertThat(transformed, equalTo(myTransformedTableAsString));
     }
 }

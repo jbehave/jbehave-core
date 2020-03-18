@@ -34,29 +34,31 @@ public class ExamplesTableFactory {
     private final ResourceLoader resourceLoader;
     private final ParameterConverters parameterConverters;
     private final ParameterControls parameterControls;
+    private final TableParsers tableParsers;
     private final TableTransformers tableTransformers;
 
     public ExamplesTableFactory(ResourceLoader resourceLoader, TableTransformers tableTransformers) {
-        this(new LocalizedKeywords(), resourceLoader, tableTransformers);
+        this(new LocalizedKeywords(), resourceLoader, new TableParsers(), tableTransformers);
     }
 
-    public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader, TableTransformers tableTransformers) {
+    public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader, TableParsers tableParsers, TableTransformers tableTransformers) {
         this(keywords, resourceLoader, new ParameterConverters(resourceLoader, tableTransformers),
-                new ParameterControls(), tableTransformers);
+                new ParameterControls(), tableParsers, tableTransformers);
     }
 
     public ExamplesTableFactory(ResourceLoader resourceLoader, ParameterConverters parameterConverters,
-            ParameterControls parameterControls, TableTransformers tableTransformers) {
-        this(new LocalizedKeywords(), resourceLoader, parameterConverters, parameterControls, tableTransformers);
+                                ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers) {
+        this(new LocalizedKeywords(), resourceLoader, parameterConverters, parameterControls, tableParsers, tableTransformers);
     }
 
     public ExamplesTableFactory(Keywords keywords, ResourceLoader resourceLoader,
-            ParameterConverters parameterConverters, ParameterControls parameterControls,
-            TableTransformers tableTransformers) {
+                                ParameterConverters parameterConverters, ParameterControls parameterControls,
+                                TableParsers tableParsers, TableTransformers tableTransformers) {
         this.keywords = keywords;
         this.resourceLoader = resourceLoader;
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
+        this.tableParsers = tableParsers;
         this.tableTransformers = tableTransformers;
     }
     
@@ -65,6 +67,7 @@ public class ExamplesTableFactory {
         this.resourceLoader = configuration.storyLoader();
         this.parameterConverters = configuration.parameterConverters();
         this.parameterControls = configuration.parameterControls();
+        this.tableParsers = configuration.tableParsers();
         this.tableTransformers = configuration.tableTransformers();
     }
 
@@ -82,7 +85,7 @@ public class ExamplesTableFactory {
 
         return new ExamplesTable(data, keywords.examplesTableHeaderSeparator(),
                 keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(),
-                parameterConverters, parameterControls, tableTransformers);
+                parameterConverters, parameterControls, new TableParsers(), tableTransformers);
     }
 
     protected boolean isTable(String table, ExamplesTableProperties properties) {
@@ -92,7 +95,7 @@ public class ExamplesTableFactory {
     }
 
     private ExamplesTableData getExamplesTableData(String input) {
-        return TableUtils.parseData(input, keywords);
+        return tableParsers.parseData(input, keywords);
     }
 
     public void useKeywords(Keywords keywords){

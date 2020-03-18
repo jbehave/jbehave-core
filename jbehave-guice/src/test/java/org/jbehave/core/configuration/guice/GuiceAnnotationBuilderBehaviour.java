@@ -40,6 +40,7 @@ import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.parsers.StepPatternParser;
@@ -291,7 +292,7 @@ public class GuiceAnnotationBuilderBehaviour {
 
         public MyExampleTableConverter() {
             super(new ExamplesTableFactory(new LoadFromClasspath(), new ParameterConverters(), new ParameterControls(),
-                    new TableTransformers()));
+                    new TableParsers(), new TableTransformers()));
         }
 
     }

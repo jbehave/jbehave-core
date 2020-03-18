@@ -170,6 +170,7 @@ public class ExamplesTable {
     private static final String IGNORABLE_SEPARATOR = "|--";
 
     private final ParameterConverters parameterConverters;
+    private final TableParsers tableParsers;
     private final TableTransformers tableTransformers;
     private final Row defaults;
     private final List<String> headers = new ArrayList<>();
@@ -182,28 +183,36 @@ public class ExamplesTable {
     public ExamplesTable(String tableAsString) {
         this(tableAsString, HEADER_SEPARATOR, VALUE_SEPARATOR,
                 new ParameterConverters(new LoadFromClasspath(), new TableTransformers()), new ParameterControls(),
-                new TableTransformers());
+                new TableParsers(), new TableTransformers());
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-            ParameterConverters parameterConverters, ParameterControls parameterControls,
-            TableTransformers tableTransformers) {
+                         ParameterConverters parameterConverters, ParameterControls parameterControls,
+                         TableParsers tableParsers, TableTransformers tableTransformers) {
         this(tableAsString, headerSeparator, valueSeparator, IGNORABLE_SEPARATOR, parameterConverters,
-                parameterControls, tableTransformers);
+                parameterControls, tableParsers, tableTransformers);
     }
 
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
-            String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
-            TableTransformers tableTransformers) {
-        this(TableUtils.parseData(tableAsString, headerSeparator, valueSeparator, ignorableSeparator), headerSeparator,
-                valueSeparator, ignorableSeparator, parameterConverters, parameterControls, tableTransformers);
+                         String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
+                         TableParsers tableParsers, TableTransformers tableTransformers) {
+        this.parameterConverters = parameterConverters;
+        this.parameterControls = parameterControls;
+        this.tableParsers = tableParsers;
+        this.tableTransformers = tableTransformers;
+        this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
+        ExamplesTableData data = tableParsers.parseData(tableAsString, headerSeparator, valueSeparator, ignorableSeparator);
+        this.propertiesList.addAll(data.getProperties());
+        String transformedTable = applyTransformers(data.getTable());
+        parseByRows(transformedTable);
     }
 
     ExamplesTable(ExamplesTableData examplesTableData, String headerSeparator, String valueSeparator,
-            String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
-            TableTransformers tableTransformers) {
+                  String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
+                  TableParsers tableParsers, TableTransformers tableTransformers) {
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
+        this.tableParsers = tableParsers;
         this.tableTransformers = tableTransformers;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
         this.propertiesList.addAll(examplesTableData.getProperties());
@@ -214,6 +223,7 @@ public class ExamplesTable {
     private ExamplesTable(ExamplesTable other, Row defaults) {
         this.data.addAll(other.data);
         this.parameterConverters = other.parameterConverters;
+        this.tableParsers = other.tableParsers;
         this.tableTransformers = other.tableTransformers;
         this.headers.addAll(other.headers);
         this.propertiesList.addAll(other.propertiesList);
@@ -225,7 +235,7 @@ public class ExamplesTable {
         for (ExamplesTableProperties properties : propertiesList) {
             String transformer = properties.getTransformer();
             if (transformer != null) {
-                transformedTable = tableTransformers.transform(transformer, transformedTable, properties);
+                transformedTable = tableTransformers.transform(transformer, transformedTable, tableParsers, properties);
             }
         }
         return transformedTable;
@@ -238,9 +248,9 @@ public class ExamplesTable {
                 // skip ignorable or empty lines
                 continue;
             } else if (headers.isEmpty()) {
-                headers.addAll(TableUtils.parseRow(row, true, getExampleTableProperties()));
+                headers.addAll(tableParsers.parseRow(row, true, getExampleTableProperties()));
             } else {
-                List<String> columns = TableUtils.parseRow(row, false, getExampleTableProperties());
+                List<String> columns = tableParsers.parseRow(row, false, getExampleTableProperties());
                 Map<String, String> map = new LinkedHashMap<>();
                 for (int column = 0; column < columns.size(); column++) {
                     if (column < headers.size()) {

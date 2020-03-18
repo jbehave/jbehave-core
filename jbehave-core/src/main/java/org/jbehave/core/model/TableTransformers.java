@@ -39,10 +39,10 @@ public class TableTransformers {
         useTransformer(REPLACING, new Replacing());
     }
 
-    public String transform(String transformerName, String tableAsString, ExamplesTableProperties properties) {
+    public String transform(String transformerName, String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
         TableTransformer transformer = transformers.get(transformerName);
         if (transformer != null) {
-            return transformer.transform(tableAsString, properties);
+            return transformer.transform(tableAsString, tableParsers, properties);
         }
         return tableAsString;
     }
@@ -52,19 +52,19 @@ public class TableTransformers {
     }
 
     public interface TableTransformer {
-        String transform(String tableAsString, ExamplesTableProperties properties);
+        String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties);
     }
 
     public static class FromLandscape implements TableTransformer {
 
         @Override
-        public String transform(String tableAsString, ExamplesTableProperties properties) {
+        public String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
             Map<String, List<String>> data = new LinkedHashMap<>();
             for (String rowAsString : tableAsString.split(properties.getRowSeparator())) {
                 if (ignoreRow(rowAsString, properties.getIgnorableSeparator())) {
                     continue;
                 }
-                List<String> values = TableUtils.parseRow(rowAsString, false, properties);
+                List<String> values = tableParsers.parseRow(rowAsString, false, properties);
                 String header = values.get(0);
                 List<String> rowValues = new ArrayList<>(values);
                 rowValues.remove(0);
@@ -98,13 +98,13 @@ public class TableTransformers {
     public static class Formatting implements TableTransformer {
 
         @Override
-        public String transform(String tableAsString, ExamplesTableProperties properties) {
+        public String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
             List<List<String>> data = new ArrayList<>();
             for (String rowAsString : tableAsString.split(properties.getRowSeparator())) {
                 if (ignoreRow(rowAsString, properties.getIgnorableSeparator())) {
                     continue;
                 }
-                data.add(TableUtils.parseRow(rowAsString, rowAsString.contains(properties.getHeaderSeparator()),
+                data.add(tableParsers.parseRow(rowAsString, rowAsString.contains(properties.getHeaderSeparator()),
                         properties));
             }
 
@@ -171,7 +171,7 @@ public class TableTransformers {
     public static class Replacing implements TableTransformer {
 
         @Override
-        public String transform(String tableAsString, ExamplesTableProperties properties) {
+        public String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
             String replacing = properties.getProperties().getProperty("replacing");
             String replacement = properties.getProperties().getProperty("replacement");
             if ( replacing == null || replacement == null ) {

@@ -20,6 +20,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.ParameterControls;
@@ -253,7 +254,7 @@ public class NeedleAnnotationBuilderBehaviour {
 
         public MyExampleTableConverter() {
             super(new ExamplesTableFactory(new LoadFromClasspath(), new ParameterConverters(), new ParameterControls(),
-                    new TableTransformers()));
+                    new TableParsers(), new TableTransformers()));
         }
 
     }

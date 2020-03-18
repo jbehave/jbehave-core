@@ -16,6 +16,7 @@ import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.JUnitStories;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
@@ -55,10 +56,12 @@ public abstract class LocalizedStories extends JUnitStories {
         properties.setProperty("reports", "ftl/jbehave-reports.ftl");
         properties.setProperty("encoding", "UTF-8");
         LoadFromClasspath resourceLoader = new LoadFromClasspath(classLoader);
+        TableParsers tableParsers = new TableParsers();
         TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, parameterControls,
-                tableTransformers, true).addConverters(customConverters(keywords, resourceLoader, tableTransformers));
+                tableTransformers, true)
+                .addConverters(customConverters(keywords, resourceLoader, tableParsers, tableTransformers));
         return new MostUsefulConfiguration()
                 .useKeywords(keywords)
                 .useStoryParser(new RegexStoryParser(keywords, resourceLoader, tableTransformers))
@@ -77,9 +80,9 @@ public abstract class LocalizedStories extends JUnitStories {
     }
     
     private ParameterConverter[] customConverters(Keywords keywords, ResourceLoader resourceLoader,
-            TableTransformers tableTransformers) {
+                                                  TableParsers tableParsers, TableTransformers tableTransformers) {
         return new ParameterConverter[] { new NumberConverter(NumberFormat.getInstance(locale())),
-                new ExamplesTableConverter(new ExamplesTableFactory(keywords, resourceLoader, tableTransformers)) };
+                new ExamplesTableConverter(new ExamplesTableFactory(keywords, resourceLoader, tableParsers, tableTransformers)) };
     }
 
     @Override

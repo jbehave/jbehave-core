@@ -18,6 +18,7 @@ import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
 import org.jbehave.core.reporters.CrossReference;
@@ -44,8 +45,8 @@ import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
  * </p>
  * <p>
  * Users wanting to run multiple stories via the same Java class (new to JBehave
- * 3) should look at {@link TraderStories}, {@link CoreStoryRunner} or
- * {@link TraderAnnotatedEmbedderRunner}
+ * 3) should look at {@link org.jbehave.examples.core.CoreStories}, {@link CoreStoryRunner} or
+ * {@link org.jbehave.core.junit.AnnotatedEmbedderRunner}
  * </p>
  */
 public abstract class CoreStory extends JUnitStory {
@@ -63,6 +64,7 @@ public abstract class CoreStory extends JUnitStory {
         Properties viewResources = new Properties();
         viewResources.put("decorateNonHtml", "true");
         LoadFromClasspath resourceLoader = new LoadFromClasspath(embeddableClass);
+        TableParsers tableParsers = new TableParsers();
         TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         // Start from default ParameterConverters instance
@@ -70,7 +72,7 @@ public abstract class CoreStory extends JUnitStory {
         // factory to allow parameter conversion and loading from external
         // resources (used by StoryParser too)
         ExamplesTableFactory examplesTableFactory = new ExamplesTableFactory(new LocalizedKeywords(), resourceLoader,
-                parameterConverters, parameterControls, tableTransformers);
+                parameterConverters, parameterControls, tableParsers, tableTransformers);
         // add custom converters
         parameterConverters.addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")),
                 new ExamplesTableConverter(examplesTableFactory));

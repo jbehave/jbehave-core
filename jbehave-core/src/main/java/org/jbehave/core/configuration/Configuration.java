@@ -1,7 +1,6 @@
 package org.jbehave.core.configuration;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import org.jbehave.core.Embeddable;
@@ -21,6 +20,7 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.CompositeParser;
 import org.jbehave.core.parsers.RegexCompositeParser;
@@ -174,6 +174,11 @@ public abstract class Configuration {
     protected ParameterConverters parameterConverters;
 
     /**
+     * Use default built-in ExamplesTable parsers
+     */
+    protected TableParsers tableParsers;
+
+    /**
      * Use default built-in ExamplesTable transformers
      */
     protected TableTransformers tableTransformers;
@@ -243,7 +248,7 @@ public abstract class Configuration {
     public ExamplesTableFactory examplesTableFactory() {
         if (examplesTableFactory == null) {
             examplesTableFactory = new ExamplesTableFactory(keywords(), storyLoader(), parameterConverters(),
-                    parameterControls(), tableTransformers());
+                    parameterControls(), tableParsers(), tableTransformers());
         }
         return examplesTableFactory;
     }
@@ -354,6 +359,13 @@ public abstract class Configuration {
                     tableTransformers());
         }
         return parameterConverters;
+    }
+
+    public TableParsers tableParsers() {
+        if (tableParsers == null) {
+            tableParsers = new TableParsers();
+        }
+        return tableParsers;
     }
 
     public TableTransformers tableTransformers() {

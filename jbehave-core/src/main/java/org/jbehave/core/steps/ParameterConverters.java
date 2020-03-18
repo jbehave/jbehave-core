@@ -56,10 +56,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.ResourceLoader;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.ExamplesTableFactory;
-import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.model.Verbatim;
+import org.jbehave.core.model.*;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -233,7 +230,32 @@ public class ParameterConverters {
             ParameterControls parameterControls, TableTransformers tableTransformers, Locale locale,
             String collectionSeparator, boolean threadSafe) {
         this(monitor, new ArrayList<>(), threadSafe);
-        this.addConverters(defaultConverters(keywords, resourceLoader, parameterControls, tableTransformers, locale,
+        this.addConverters(defaultConverters(keywords, resourceLoader, parameterControls, new TableParsers(), tableTransformers, locale,
+                collectionSeparator));
+    }
+
+    /**
+     * Creates a ParameterConverters for the given StepMonitor, keywords, Locale, list
+     * separator and thread-safety. When selecting a collectionSeparator, please make
+     * sure that this character doesn't have a special meaning in your Locale
+     * (for instance "," is used as decimal separator in some Locale)
+     *
+     * @param monitor the StepMonitor reporting the conversions
+     * @param resourceLoader the resource loader
+     * @param keywords the keywords
+     * @param parameterControls the parameter controls
+     * @param tableParsers the table parsers
+     * @param tableTransformers the table transformers
+     * @param locale the Locale to use when reading numbers
+     * @param collectionSeparator the String to use as collection separator
+     * @param threadSafe the boolean flag to determine if modification of
+     * {@link ParameterConverter} should be thread-safe
+     */
+    public ParameterConverters(StepMonitor monitor, Keywords keywords, ResourceLoader resourceLoader,
+                               ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers, Locale locale,
+                               String collectionSeparator, boolean threadSafe) {
+        this(monitor, new ArrayList<>(), threadSafe);
+        this.addConverters(defaultConverters(keywords, resourceLoader, parameterControls, tableParsers, tableTransformers, locale,
                 collectionSeparator));
     }
 
@@ -245,11 +267,11 @@ public class ParameterConverters {
     }
 
     protected ParameterConverter[] defaultConverters(Keywords keywords, ResourceLoader resourceLoader,
-            ParameterControls parameterControls, TableTransformers tableTransformers, Locale locale,
-            String collectionSeparator) {
+                                                     ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers, Locale locale,
+                                                     String collectionSeparator) {
         this.escapedCollectionSeparator = escapeRegexPunctuation(collectionSeparator);
         ExamplesTableFactory tableFactory = new ExamplesTableFactory(keywords, resourceLoader, this, parameterControls,
-                tableTransformers);
+                tableParsers, tableTransformers);
         JsonFactory jsonFactory = new JsonFactory();
         return new ParameterConverter[] { new BooleanConverter(),
                 new NumberConverter(NumberFormat.getInstance(locale)),
@@ -530,7 +552,7 @@ public class ParameterConverters {
      * <li>BigDecimal: {@link BigDecimal#valueOf(double)}</li>
      * </ul>
      * If no number format is provided, it defaults to
-     * {@link NumberFormat#getInstance(Locale.ENGLISH)}.
+     * {@link NumberFormat#getInstance()}.
      * <p>
      * The localized instance {@link NumberFormat#getInstance(Locale)} can be
      * used to convert numbers in specific locales.
@@ -660,7 +682,7 @@ public class ParameterConverters {
      * Converts value to list of numbers. Splits value to a list, using an
      * injectable value separator (defaulting to ",") and converts each element
      * of list via the {@link NumberConverter}, using the {@link NumberFormat}
-     * provided (defaulting to {@link NumberFormat#getInstance(Locale.ENGLISH)}
+     * provided (defaulting to {@link NumberFormat#getInstance()}
      * ).
      */
     public static class NumberListConverter extends AbstractListParameterConverter<Number> {
