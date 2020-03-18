@@ -1,0 +1,4 @@
+!symbol   !STK1!STK1!STK1!
+!threshold!15.0!15.0!15.0!
+!price    !5.0 !11.0!16.0!
+!status   !OFF !OFF !ON  !

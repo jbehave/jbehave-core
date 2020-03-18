@@ -1,5 +1,6 @@
 package org.jbehave.core.model;
 
+import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
 import org.junit.Test;
 
 import java.util.Properties;

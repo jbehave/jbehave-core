@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
@@ -29,7 +28,9 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.Parameters;
 import org.jbehave.core.steps.Row;
 
+import static java.lang.Boolean.parseBoolean;
 import static java.util.regex.Pattern.DOTALL;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 /**
  * <p>
@@ -168,7 +169,6 @@ public class ExamplesTable {
     private static final String VALUE_SEPARATOR = "|";
     private static final String IGNORABLE_SEPARATOR = "|--";
 
-    private final String tableAsString;
     private final ParameterConverters parameterConverters;
     private final TableTransformers tableTransformers;
     private final Row defaults;
@@ -195,42 +195,29 @@ public class ExamplesTable {
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
             String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
             TableTransformers tableTransformers) {
-        this.tableAsString = tableAsString;
+        this(TableUtils.parseData(tableAsString, headerSeparator, valueSeparator, ignorableSeparator), headerSeparator,
+                valueSeparator, ignorableSeparator, parameterConverters, parameterControls, tableTransformers);
+    }
+
+    ExamplesTable(ExamplesTableData examplesTableData, String headerSeparator, String valueSeparator,
+            String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
+            TableTransformers tableTransformers) {
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
         this.tableTransformers = tableTransformers;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
-        String tableWithoutProperties = stripProperties(headerSeparator, valueSeparator, ignorableSeparator);
-        String transformedTable = applyTransformers(tableWithoutProperties);
+        this.propertiesList.addAll(examplesTableData.getProperties());
+        String transformedTable = applyTransformers(examplesTableData.getTable());
         parseByRows(transformedTable);
     }
 
     private ExamplesTable(ExamplesTable other, Row defaults) {
         this.data.addAll(other.data);
-        this.tableAsString = other.tableAsString;
         this.parameterConverters = other.parameterConverters;
         this.tableTransformers = other.tableTransformers;
         this.headers.addAll(other.headers);
         this.propertiesList.addAll(other.propertiesList);
         this.defaults = defaults;
-    }
-
-    private String stripProperties(String headerSeparator, String valueSeparator, String ignorableSeparator) {
-        String  tableWithoutProperties = tableAsString.trim();
-        Matcher matcher = INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
-        while (matcher.matches()) {
-            String propertiesAsString = matcher.group(1);
-            propertiesAsString = StringUtils.replace(propertiesAsString, "\\{", "{");
-            propertiesAsString = StringUtils.replace(propertiesAsString, "\\}", "}");
-            propertiesList.add(new ExamplesTableProperties(propertiesAsString, headerSeparator,
-                    valueSeparator, ignorableSeparator));
-            tableWithoutProperties = matcher.group(2).trim();
-            matcher = INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
-        }
-        if (propertiesList.isEmpty()) {
-            propertiesList.add(new ExamplesTableProperties("", headerSeparator, valueSeparator, ignorableSeparator));
-        }
-        return tableWithoutProperties;
     }
 
     private String applyTransformers(String tableAsString) {
@@ -495,6 +482,123 @@ public class ExamplesTable {
     public static class ParametersNotMappableToType extends RuntimeException {
         public ParametersNotMappableToType(Parameters parameters, Class<?> type, Exception e) {
             super(parameters.values() + " not mappable to type " + type, e);
+        }
+    }
+
+    public static final class ExamplesTableProperties {
+
+        private static final String HEADER_SEPARATOR = "|";
+        private static final String VALUE_SEPARATOR = "|";
+        private static final String IGNORABLE_SEPARATOR = "|--";
+        private static final String COMMENT_SEPARATOR = "#";
+
+        private static final String HEADER_SEPARATOR_KEY = "headerSeparator";
+        private static final String VALUE_SEPARATOR_KEY = "valueSeparator";
+        private static final String IGNORABLE_SEPARATOR_KEY = "ignorableSeparator";
+        private static final String COMMENT_SEPARATOR_KEY = "commentSeparator";
+
+        private static final String ROW_SEPARATOR = "\n";
+
+        private final Properties properties = new Properties();
+        private final String propertiesAsString;
+
+        public ExamplesTableProperties(Properties properties){
+            this.properties.putAll(properties);
+            if ( !this.properties.containsKey(HEADER_SEPARATOR_KEY) ){
+                this.properties.setProperty(HEADER_SEPARATOR_KEY, HEADER_SEPARATOR);
+            }
+            if ( !this.properties.containsKey(VALUE_SEPARATOR_KEY) ){
+                this.properties.setProperty(VALUE_SEPARATOR_KEY, VALUE_SEPARATOR);
+            }
+            if ( !this.properties.containsKey(IGNORABLE_SEPARATOR_KEY) ){
+                this.properties.setProperty(IGNORABLE_SEPARATOR_KEY, IGNORABLE_SEPARATOR);
+            }
+            if ( !this.properties.containsKey(COMMENT_SEPARATOR_KEY) ){
+                this.properties.setProperty(COMMENT_SEPARATOR_KEY, COMMENT_SEPARATOR);
+            }
+            StringBuilder propertiesAsStringBuilder = new StringBuilder();
+            for (Map.Entry<Object, Object> property : this.properties.entrySet()) {
+                propertiesAsStringBuilder.append(property.getKey()).append('=').append(property.getValue()).append(',');
+            }
+            propertiesAsString = propertiesAsStringBuilder.substring(0, propertiesAsStringBuilder.length() - 1);
+        }
+
+        public ExamplesTableProperties(String propertiesAsString, String defaultHeaderSeparator, String defaultValueSeparator,
+                String defaultIgnorableSeparator) {
+            properties.setProperty(HEADER_SEPARATOR_KEY, defaultHeaderSeparator);
+            properties.setProperty(VALUE_SEPARATOR_KEY, defaultValueSeparator);
+            properties.setProperty(IGNORABLE_SEPARATOR_KEY, defaultIgnorableSeparator);
+            properties.putAll(parseProperties(propertiesAsString));
+            this.propertiesAsString = propertiesAsString;
+        }
+
+        private Map<String, String> parseProperties(String propertiesAsString) {
+            Map<String, String> result = new LinkedHashMap<>();
+            if (!isEmpty(propertiesAsString)) {
+                for (String propertyAsString : propertiesAsString.split("(?<!\\\\),")) {
+                    String[] property = StringUtils.split(propertyAsString, "=", 2);
+                    result.put(property[0].trim(), StringUtils.replace(property[1], "\\,", ",").trim());
+                 }
+            }
+            return result;
+        }
+
+        public String getRowSeparator() {
+            return ROW_SEPARATOR;
+        }
+
+        public String getHeaderSeparator() {
+            return properties.getProperty(HEADER_SEPARATOR_KEY);
+        }
+
+        public String getValueSeparator() {
+            return properties.getProperty(VALUE_SEPARATOR_KEY);
+        }
+
+        public String getIgnorableSeparator() {
+            return properties.getProperty(IGNORABLE_SEPARATOR_KEY);
+        }
+
+        public String getCommentSeparator() {
+            return properties.getProperty(COMMENT_SEPARATOR_KEY);
+        }
+
+        public boolean isTrim() {
+            return parseBoolean(properties.getProperty("trim", "true"));
+        }
+
+        public boolean isMetaByRow(){
+            return parseBoolean(properties.getProperty("metaByRow", "false"));
+        }
+
+        public String getTransformer() {
+            return properties.getProperty("transformer");
+        }
+
+        public Properties getProperties() {
+            return properties;
+        }
+
+        public String getPropertiesAsString() {
+            return propertiesAsString;
+        }
+    }
+
+    static final class ExamplesTableData {
+        private final String table;
+        private final Deque<ExamplesTableProperties> properties;
+
+        ExamplesTableData(String table, Deque<ExamplesTableProperties> properties) {
+            this.table = table;
+            this.properties = properties;
+        }
+
+        String getTable() {
+            return table;
+        }
+
+        Deque<ExamplesTableProperties> getProperties() {
+            return properties;
         }
     }
 }

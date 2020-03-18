@@ -282,6 +282,17 @@ Given the traders: org/jbehave/examples/trader/stories/traders.table
 ]]>
 </script>
 
+<p>Inlined properties can be applied to the tabular parameter loaded from an external
+resource</p>
+<script type="syntaxhighlighter" class="brush: bdd">
+<![CDATA[
+Given that Larry has done <trades> trades
+Examples:
+{headerSeparator=!,valueSeparator=!}
+org/jbehave/examples/trader/stories/traders.table
+]]>
+</script>
+
 <p>We need to enable theExamplesTable parameter converter to find
 the resource with the appropriate resource loader configured via the <a
     href="javadoc/core/org/jbehave/core/model/ExamplesTableFactory.html">ExamplesTableFactory</a></p>:

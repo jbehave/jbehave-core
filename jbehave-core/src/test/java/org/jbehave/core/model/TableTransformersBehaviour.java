@@ -3,6 +3,7 @@ package org.jbehave.core.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.junit.Test;
 

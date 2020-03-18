@@ -22,3 +22,13 @@ Then the trader is alerted with <status>
 
 Examples:
 org/jbehave/examples/core/stories/trades.table
+
+Scenario: Parameters table loaded from a classpath resource and apply landscape transformer
+
+Given a stock of <symbol> and a <threshold>
+When the stock is traded with <price>
+Then the trader is alerted with <status>
+
+Examples:
+{transfomer=LANDSCAPE, headerSeparator=!, valueSeparator=!}
+org/jbehave/examples/core/stories/trades_transposed.table

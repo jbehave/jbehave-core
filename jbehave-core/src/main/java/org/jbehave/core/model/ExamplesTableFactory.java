@@ -4,10 +4,10 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.ResourceLoader;
+import org.jbehave.core.model.ExamplesTable.ExamplesTableData;
+import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  * Factory that creates instances of ExamplesTable from different type of
@@ -69,21 +69,30 @@ public class ExamplesTableFactory {
     }
 
     public ExamplesTable createExamplesTable(String input) {
-        String tableAsString;
-        if (isBlank(input) || isTable(input)) {
-            tableAsString = input;
-        } else {
-            tableAsString = resourceLoader.loadResourceAsText(input.trim());
+        ExamplesTableData data = getExamplesTableData(input);
+
+        String tableAsString = data.getTable().trim();
+        ExamplesTableProperties properties = data.getProperties().peekLast();
+
+        if (!isTable(tableAsString, properties) && !tableAsString.isEmpty()) {
+            String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
+            data = getExamplesTableData(loadedTable);
+            data.getProperties().addFirst(properties);
         }
-        return new ExamplesTable(tableAsString, keywords.examplesTableHeaderSeparator(),
+
+        return new ExamplesTable(data, keywords.examplesTableHeaderSeparator(),
                 keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(),
                 parameterConverters, parameterControls, tableTransformers);
     }
 
-    protected boolean isTable(String input) {
-        String trimmedInput = input.trim();
-        return trimmedInput.startsWith(keywords.examplesTableHeaderSeparator())
-                || ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(trimmedInput).matches();
+    protected boolean isTable(String table, ExamplesTableProperties properties) {
+        String headerSeparator = properties == null ? keywords.examplesTableHeaderSeparator()
+                : properties.getHeaderSeparator();
+        return table.startsWith(headerSeparator);
+    }
+
+    private ExamplesTableData getExamplesTableData(String input) {
+        return TableUtils.parseData(input, keywords);
     }
 
     public void useKeywords(Keywords keywords){

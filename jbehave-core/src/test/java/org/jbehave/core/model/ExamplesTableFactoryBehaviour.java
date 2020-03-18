@@ -17,16 +17,16 @@ public class ExamplesTableFactoryBehaviour {
 
     private static final String RESOURCE_PATH = "/path/to/table";
 
-    private static final String TABLE_WITH_INLINED_SEPARATTORS =
-            "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,commentSeparator=#}\n"
+    private static final String PROPERTIES = "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,commentSeparator=#}\n";
+
+    private static final String TABLE_WITH_INLINED_SEPARATTORS = PROPERTIES
             + "!header 1!header 2! .... !header n!\n"
             + "!-- An ignored row --!\n"
             + "!value 11#comment in value!value 12! .... !value 1n!\n"
             + "!-- Another ignored row --!\n"
             + "!value m1!value m2! .... !value mn!\n";
 
-    private static final String FILTERED_TABLE_WITH_INLINED_SEPARATTORS =
-            "{ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,commentSeparator=#}\n"
+    private static final String FILTERED_TABLE_WITH_INLINED_SEPARATTORS = PROPERTIES
             + "!header 1!header 2!....!header n!\n"
             + "!value 11!value 12!....!value 1n!\n"
             + "!value m1!value m2!....!value mn!\n";
@@ -55,6 +55,20 @@ public class ExamplesTableFactoryBehaviour {
         
         // Then
         assertThat(examplesTable.asString(), equalTo(TABLE_AS_STRING));
+    }
+
+    @Test
+    public void shouldCreateExamplesTableWithParametersFromResourceInput() {
+        // Given
+        ResourceLoader resourceLoader = mock(ResourceLoader.class);
+        ExamplesTableFactory factory = new ExamplesTableFactory(resourceLoader, new TableTransformers());
+
+        // When
+        when(resourceLoader.loadResourceAsText(RESOURCE_PATH)).thenReturn(TABLE_AS_STRING);
+        ExamplesTable examplesTable = factory.createExamplesTable(PROPERTIES + RESOURCE_PATH);
+
+        // Then
+        assertThat(examplesTable.asString(), equalTo(PROPERTIES + TABLE_AS_STRING));
     }
 
     @Test
