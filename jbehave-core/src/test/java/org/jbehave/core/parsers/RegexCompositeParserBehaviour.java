@@ -20,6 +20,7 @@ import org.junit.Test;
 public class RegexCompositeParserBehaviour {
 
     private static final String NL = "\n";
+    private static final String CRLF = "\r\n";
 
     private CompositeParser parser = new RegexCompositeParser();
 
@@ -58,6 +59,20 @@ public class RegexCompositeParserBehaviour {
                 "Given a step" + NL +
                 "Composite: When the second composite step" + NL+
                 "Then another step" + NL;
+        List<Composite> composites = parser.parseComposites(compositeStepsAsText);
+        assertThat(composites.size(), equalTo(2));
+        assertCompositeStep(composites.get(0), StepType.GIVEN, "the first composite step", 0,
+                Collections.singletonList("Given a step"));
+        assertCompositeStep(composites.get(1), StepType.WHEN, "the second composite step", 0,
+                Collections.singletonList("Then another step"));
+    }
+
+    @Test
+    public void shouldParseTwoCompositeStepWithCRLF() {
+        String compositeStepsAsText = "Composite: Given the first composite step" + CRLF+
+                "Given a step" + CRLF +
+                "Composite: When the second composite step" + CRLF+
+                "Then another step" + CRLF;
         List<Composite> composites = parser.parseComposites(compositeStepsAsText);
         assertThat(composites.size(), equalTo(2));
         assertCompositeStep(composites.get(0), StepType.GIVEN, "the first composite step", 0,

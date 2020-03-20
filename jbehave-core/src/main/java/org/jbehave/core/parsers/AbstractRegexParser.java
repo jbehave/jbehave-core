@@ -15,6 +15,7 @@ import static java.util.regex.Pattern.compile;
 abstract class AbstractRegexParser {
 
     protected static final String NONE = "";
+    private static final String CRLF = "\\r?\\n";
 
     private final Keywords keywords;
 
@@ -59,7 +60,7 @@ abstract class AbstractRegexParser {
     }
 
     private boolean isLastLineNotComment(String elementAsText) {
-        String[] elementLines = elementAsText.split("\\r?\\n", -1);
+        String[] elementLines = elementAsText.split(CRLF, -1);
         return !elementLines[elementLines.length - 1].startsWith(keywords.ignorable());
     }
 
@@ -100,7 +101,7 @@ abstract class AbstractRegexParser {
     }
 
     private String concatenateStartingWords(String afterKeyword) {
-        return concatenateWithOr("\\n", afterKeyword, keywords().startingWords());
+        return concatenateWithOr(CRLF, afterKeyword, keywords().startingWords());
     }
 
     protected String concatenateWithOr(String... keywords) {
