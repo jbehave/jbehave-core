@@ -20,12 +20,15 @@ public abstract class AbstractCandidateSteps implements CandidateSteps {
         return configuration;
     }
 
-    protected void checkForDuplicateCandidates(List<StepCandidate> candidates, StepType stepType, String patternAsString) {
-        for (StepCandidate candidate : candidates) {
-            if (candidate.getStepType() == stepType && candidate.getPatternAsString().equals(patternAsString)) {
-                throw new DuplicateCandidateFound(stepType, patternAsString);
-            }
+    protected void checkForDuplicateCandidates(List<StepCandidate> candidates, StepCandidate candidate) {
+        String candidateName = candidateName(candidate);
+        if (candidates.stream().anyMatch(c -> c.matches(candidateName) && candidate.matches(candidateName(c)))) {
+            throw new DuplicateCandidateFound(candidate.getStepType(), candidate.getPatternAsString());
         }
+    }
+
+    private String candidateName(StepCandidate candidate) {
+        return candidate.getStartingWord() + " " + candidate.getPatternAsString();
     }
 
     protected StepCandidate createCandidate(String stepPatternAsString, int priority, StepType stepType, Method method,

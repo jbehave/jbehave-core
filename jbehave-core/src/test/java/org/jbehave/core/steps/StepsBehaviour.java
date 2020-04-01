@@ -312,10 +312,26 @@ public class StepsBehaviour {
     @Test(expected=DuplicateCandidateFound.class)
     public void shouldFailIfDuplicateStepsAreEncountered() {
         DuplicateSteps steps = new DuplicateSteps();
-        List<StepCandidate> candidates = steps.listCandidates();
-        assertThat(candidates.size(), equalTo(2));
-        candidates.get(0).createMatchedStep("Given a given", tableRow, Collections.<Step>emptyList()).perform(null, null);
+        steps.listCandidates();
+    }
 
+    @Test(expected=DuplicateCandidateFound.class)
+    public void shouldFailIfDuplicateStepsWithDifferentParamsNamesAreEncountered() {
+        DuplicateStepsWithParameters steps = new DuplicateStepsWithParameters();
+        steps.listCandidates();
+    }
+
+    @Test
+    public void shouldNotFailWithDuplicateCandidateFoundExceptionIfStepsWordingsDoNotMatchEachOther() {
+        StepsWithParameters steps = new StepsWithParameters();
+        Configuration configuration = new MostUsefulConfiguration();
+        List<StepCandidate> candidates = new InstanceStepsFactory(configuration, steps).createCandidateSteps().get(0).listCandidates();
+        assertThat(candidates.size(), equalTo(2));
+
+        performMatchedStep(candidates, "GIVEN a given param '$someParameterName'",
+                "Given a given param '$someParameterName'");
+        performMatchedStep(candidates, "GIVEN a given param '$givenParameter' and '$secondParam'",
+                "Given a given param '$givenParameter' and '$secondParam'");
     }
 
     @Test(expected=StartingWordNotFound.class)
@@ -523,6 +539,28 @@ public class StepsBehaviour {
         public void duplicateGiven() {
         }
                 
+    }
+
+    static class DuplicateStepsWithParameters extends Steps {
+        
+        @Given("a given param '$someParameterName'")
+        public void given(String someParameterName) {
+        }
+
+        @Given("a given param '$givenParameter'")
+        public void duplicateGiven(String givenParameter) {
+        }
+    }
+
+    static class StepsWithParameters extends Steps {
+        
+        @Given("a given param '$someParameterName'")
+        public void given(String someParameterName) {
+        }
+
+        @Given("a given param '$givenParameter' and '$secondParam'")
+        public void duplicateGiven(String givenParameter, String secondParam) {
+        }
     }
 
     static class LocalizedSteps extends Steps {

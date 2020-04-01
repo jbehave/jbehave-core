@@ -47,8 +47,8 @@ public class CompositeCandidateSteps extends AbstractCandidateSteps {
             int priority, String[] steps) {
         PatternVariantBuilder b = new PatternVariantBuilder(value);
         for (String variant : b.allVariants()) {
-            checkForDuplicateCandidates(candidates, stepType, variant);
             StepCandidate candidate = createCandidate(variant, priority, stepType, null, null, null);
+            checkForDuplicateCandidates(candidates, candidate);
             candidate.composedOf(steps);
             candidates.add(candidate);
         }
