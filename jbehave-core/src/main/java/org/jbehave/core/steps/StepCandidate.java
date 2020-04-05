@@ -20,15 +20,19 @@ import org.jbehave.core.steps.context.StepsContext;
 
 import com.thoughtworks.paranamer.Paranamer;
 
+import static java.text.MessageFormat.format;
+
 /**
  * A StepCandidate is associated to a Java method annotated with {@link Given},
  * {@link When}, {@link Then} in a steps instance class. The StepCandidate is
  * responsible for matching the textual step against the pattern contained in
  * the method annotation via the {@link StepMatcher} and for the creation of the
- * matched executable step via the {@link StepCreator}.
+ * matched executable step via the {@link StepCreator}.  The name of a StepCandidate
+ * is the combination of its starting word and its pattern.
  */
 public class StepCandidate {
 
+    public static final String NAME_FORMAT = "{0} {1}";
     private final String patternAsString;
     private final Integer priority;
     private final StepType stepType;
@@ -58,6 +62,10 @@ public class StepCandidate {
 
     public Method getMethod() {
         return method;
+    }
+
+    public String getName() {
+        return format(NAME_FORMAT, getStartingWord(), getPatternAsString());
     }
 
     public Integer getPriority() {
