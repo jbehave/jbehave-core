@@ -53,6 +53,7 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
+import org.jbehave.core.steps.ParameterConverters.AbstractGenericParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanListConverter;
@@ -64,6 +65,7 @@ import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableParametersConverter;
 import org.jbehave.core.steps.ParameterConverters.FileConverter;
 import org.jbehave.core.steps.ParameterConverters.FluentEnumConverter;
+import org.jbehave.core.steps.ParameterConverters.GenericParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
@@ -98,7 +100,7 @@ public class ParameterConvertersBehaviour {
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters converters = new ParameterConverters(resourceLoader, parameterControls, tableTransformers,
                 true);
-        ParameterConverter<?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
+        GenericParameterConverter<?, ?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
                 tableParsers, tableTransformers, Locale.ENGLISH, ",");
         assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,
                 StringListConverter.class,
@@ -111,11 +113,11 @@ public class ParameterConvertersBehaviour {
                 ExamplesTableParametersConverter.class);
     }
 
-    private void assertThatDefaultConvertersInclude(ParameterConverter<?>[] defaultConverters,
+    private void assertThatDefaultConvertersInclude(GenericParameterConverter<?, ?>[] defaultConverters,
             Class<? extends ParameterConverter<?>>... converterTypes) {
         for (Class<? extends ParameterConverter<?>> type : converterTypes) {
             boolean found = false;
-            for (ParameterConverter<?> converter : defaultConverters) {
+            for (GenericParameterConverter<?, ?> converter : defaultConverters) {
                 if (converter.getClass().isAssignableFrom(type)) {
                     found = true;
                 }
@@ -872,6 +874,29 @@ public class ParameterConvertersBehaviour {
         assertThat(new ParameterConverters().convert("+03:00", ZoneOffset.class), is(ZoneOffset.ofHours(3)));
     }
 
+    @Test
+    public void shouldConvertStringThroughtChainOfConverters() {
+        ParameterConverters converters = new ParameterConverters();
+        converters.addConverters(new FirstParameterConverter(), new SecondParameterConverter(),
+                new ThirdParameterConverter());
+        String input = "|key|\n|value|";
+        Object convertedValue = converters.convert(input, ThirdConverterOutput.class);
+        assertThat(convertedValue, instanceOf(ThirdConverterOutput.class));
+        ThirdConverterOutput output = (ThirdConverterOutput) convertedValue;
+        assertThat(output.getOutput(), is(input + "\nfirstsecondthird"));
+    }
+
+    @Test
+    public void shouldConvertFromStringUsingGenericParameterConverterIfDefaultDoesNotExist() {
+        ParameterConverters converters = new ParameterConverters();
+        converters.addConverters(new StringContainerConverter());
+        String inputValue = "string value";
+        Object convertedValue = converters.convert(inputValue, StringContainer.class);
+        assertThat(convertedValue, instanceOf(StringContainer.class));
+        StringContainer output = (StringContainer) convertedValue;
+        assertThat(output.getOutput(), is(inputValue));
+    }
+
     @AsJson
     public static class MyJsonDto {
 
@@ -945,4 +970,61 @@ public class ParameterConvertersBehaviour {
         }
     }
 
+    private class FirstParameterConverter extends AbstractGenericParameterConverter<FirstConverterOutput, ExamplesTable> {
+        @Override
+        public FirstConverterOutput convertValue(ExamplesTable value, Type type) {
+            return new FirstConverterOutput(value.asString() + "first");
+        }
+    }
+
+    private class FirstConverterOutput extends StringContainer {
+        private FirstConverterOutput(String output) {
+            super(output);
+        }
+    }
+
+    private class SecondParameterConverter extends AbstractGenericParameterConverter<SecongConverterOutput, FirstConverterOutput> {
+        @Override
+        public SecongConverterOutput convertValue(FirstConverterOutput value, Type type) {
+            return new SecongConverterOutput(value.getOutput() + "second");
+        }
+    }
+
+    private class SecongConverterOutput extends StringContainer {
+        private SecongConverterOutput(String output) {
+            super(output);
+        }
+    }
+
+    private class ThirdParameterConverter extends AbstractGenericParameterConverter<ThirdConverterOutput, SecongConverterOutput> {
+        @Override
+        public ThirdConverterOutput convertValue(SecongConverterOutput value, Type type) {
+            return new ThirdConverterOutput(value.getOutput() + "third");
+        }
+    }
+
+    private class ThirdConverterOutput extends StringContainer {
+        private ThirdConverterOutput(String output) {
+            super(output);
+        }
+    }
+
+    private class StringContainer {
+        private final String output;
+
+        private StringContainer(String output) {
+            this.output = output;
+        }
+
+        String getOutput() {
+            return output;
+        }
+    }
+
+    private class StringContainerConverter extends AbstractGenericParameterConverter<StringContainer, String> {
+        @Override
+        public StringContainer convertValue(String value, Type type) {
+            return new StringContainer(value);
+        }
+    }
 }

@@ -7,6 +7,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
+import java.util.stream.Collectors;
 
 import org.jbehave.core.model.StepPattern;
 
@@ -15,7 +17,7 @@ import org.jbehave.core.model.StepPattern;
  */
 public abstract class PrintingStepMonitor implements StepMonitor {
 
-    private static final String CONVERTED_VALUE_OF_TYPE = "Converted value '%s' of type '%s' to '%s' with converter '%s'";
+    private static final String CONVERTED_VALUE_OF_TYPE = "Converted value '%s' of type '%s' to '%s' with %s '%s'";
     private static final String STEP_MATCHES_TYPE = "Step '%s' (with previous step '%s') %s type '%s' for method '%s' with annotations '%s' in steps instance '%s'";
     private static final String STEP_MATCHES_PATTERN = "Step '%s' %s pattern '%s' for method '%s' with annotations '%s' in steps instance '%s'";
     private static final String PERFORMING = "Performing step '%s'%s";
@@ -44,9 +46,18 @@ public abstract class PrintingStepMonitor implements StepMonitor {
         print(STEP_MATCHES_PATTERN, step, matches(matches), stepPattern, method, getAnnotations(method), stepsInstance);
     }
 
+    /**
+     * @deprecated Use {@link #convertedValueOfType(String, Type, Object, Queue)}
+     */
     @Override
     public void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass) {
-        print(CONVERTED_VALUE_OF_TYPE, value, type, converted, converterClass);
+        print(CONVERTED_VALUE_OF_TYPE, value, type, converted, "converter", converterClass);
+    }
+
+    @Override
+    public void convertedValueOfType(String value, Type type, Object converted, Queue<Class<?>> converterClasses) {
+        String classes = converterClasses.stream().map(Class::getName).collect(Collectors.joining(" -> "));
+        print(CONVERTED_VALUE_OF_TYPE, value, type, converted, "converters", classes);
     }
 
     /**

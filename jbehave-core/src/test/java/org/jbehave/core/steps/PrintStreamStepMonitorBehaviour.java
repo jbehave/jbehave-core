@@ -7,6 +7,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.model.StepPattern;
@@ -50,6 +53,20 @@ public class PrintStreamStepMonitorBehaviour {
         // Then
         assertIsOutputEqualTo("Converted value '1' of type 'int' to '1' with converter "
                 + "'class org.jbehave.core.steps.ParameterConverters$NumberConverter'");
+    }
+
+    @Test
+    public void shouldReportConvertedValueOfTypeWithConverters() {
+        // When
+        Queue<Class<?>> convertersQueue = new LinkedList<>(Arrays.asList(ParameterConverters.NumberConverter.class,
+                ParameterConverters.ExamplesTableConverter.class, ParameterConverters.EnumListConverter.class));
+        monitor.convertedValueOfType("1", int.class, 1, convertersQueue);
+
+        // Then
+        assertIsOutputEqualTo("Converted value '1' of type 'int' to '1' with converters "
+                + "'org.jbehave.core.steps.ParameterConverters$NumberConverter "
+                + "-> org.jbehave.core.steps.ParameterConverters$ExamplesTableConverter "
+                + "-> org.jbehave.core.steps.ParameterConverters$EnumListConverter'");
     }
 
     @Test

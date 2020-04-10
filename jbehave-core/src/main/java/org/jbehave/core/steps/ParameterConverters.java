@@ -34,9 +34,11 @@ import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NavigableSet;
+import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -45,6 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import org.apache.commons.lang3.BooleanUtils;
@@ -103,7 +106,7 @@ public class ParameterConverters {
     private static final String DEFAULT_FALSE_VALUE = "false";
 
     private final StepMonitor monitor;
-    private final List<ParameterConverter> converters;
+    private final List<GenericParameterConverter> converters;
     private final boolean threadSafe;
     private String escapedCollectionSeparator;
 
@@ -259,16 +262,16 @@ public class ParameterConverters {
                 collectionSeparator));
     }
 
-    private ParameterConverters(StepMonitor monitor, List<ParameterConverter> converters, boolean threadSafe) {
+    private ParameterConverters(StepMonitor monitor, List<GenericParameterConverter> converters, boolean threadSafe) {
         this.monitor = monitor;
         this.threadSafe = threadSafe;
         this.converters = threadSafe ? new CopyOnWriteArrayList<>(converters)
                 : new ArrayList<>(converters);
     }
 
-    protected ParameterConverter[] defaultConverters(Keywords keywords, ResourceLoader resourceLoader,
-                                                     ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers, Locale locale,
-                                                     String collectionSeparator) {
+    protected GenericParameterConverter[] defaultConverters(Keywords keywords, ResourceLoader resourceLoader,
+            ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers, Locale locale,
+            String collectionSeparator) {
         this.escapedCollectionSeparator = escapeRegexPunctuation(collectionSeparator);
         ExamplesTableFactory tableFactory = new ExamplesTableFactory(keywords, resourceLoader, this, parameterControls,
                 tableParsers, tableTransformers);
@@ -310,11 +313,11 @@ public class ParameterConverters {
         return matchThis.replaceAll("([\\[\\]\\{\\}\\?\\^\\.\\*\\(\\)\\+\\\\])", "\\\\$1");
     }
 
-    public ParameterConverters addConverters(ParameterConverter... converters) {
+    public ParameterConverters addConverters(GenericParameterConverter... converters) {
         return addConverters(asList(converters));
     }
 
-    public ParameterConverters addConverters(List<ParameterConverter> converters) {
+    public ParameterConverters addConverters(List<? extends GenericParameterConverter> converters) {
         this.converters.addAll(0, converters);
         return this;
     }
@@ -323,19 +326,34 @@ public class ParameterConverters {
         return addConverters(new FunctionalParameterConverter<>(acceptedType, converter));
     }
 
+    private static boolean isChainComplete(Queue<GenericParameterConverter> convertersChain) {
+        if (convertersChain.isEmpty()) {
+            return false;
+        }
+        Type[] typeArguments = getTypeArguments(convertersChain.peek().getClass());
+        return typeArguments.length <= 1 || typeArguments[1].equals(String.class);
+    }
+
+    private static Object applyConverters(Object value, Type basicType, Queue<GenericParameterConverter> convertersChain) {
+        Object identity = convertersChain.peek().convertValue(value, basicType);
+        return convertersChain.stream().skip(1).reduce(identity,
+                (v, c) -> c.convertValue(v, getTypeArguments(c.getClass())[0]), (l, r) -> l);
+    }
+
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object convert(String value, Type type) {
-
-        ParameterConverter<?> converter = findConverter(type);
-        if (converter != null) {
-            Object converted = converter.convertValue(value, type);
-            monitor.convertedValueOfType(value, type, converted, converter.getClass());
+        Queue<GenericParameterConverter> converters = findConverters(type);
+        if (isChainComplete(converters)) {
+            Object converted = applyConverters(value, type, converters);
+            Queue<Class<?>> classes = converters.stream().map(GenericParameterConverter::getClass)
+                    .collect(Collectors.toCollection(LinkedList::new));
+            monitor.convertedValueOfType(value, type, converted, classes);
             return converted;
         }
 
         if (isAssignableFromRawType(Collection.class, type)) {
             Type elementType = argumentType(type);
-            ParameterConverter elementConverter = findConverter(elementType);
+            GenericParameterConverter elementConverter = findConverter(elementType);
             Collection collection = createCollection(rawClass(type));
             if (elementConverter != null && collection != null) {
                 fillCollection(value, escapedCollectionSeparator, elementConverter, elementType, collection);
@@ -348,7 +366,7 @@ public class ParameterConverters {
             if (clazz.isArray()) {
                 String[] elements = parseElements(value, escapedCollectionSeparator);
                 Class elementType = clazz.getComponentType();
-                ParameterConverter elementConverter = findConverter(elementType);
+                GenericParameterConverter elementConverter = findConverter(elementType);
                 Object array = createArray(elementType, elements.length);
 
                 if (elementConverter != null && array != null) {
@@ -361,13 +379,45 @@ public class ParameterConverters {
         throw new ParameterConvertionFailed("No parameter converter for " + type);
     }
 
-    private ParameterConverter<?> findConverter(Type type) {
-        for (ParameterConverter<?> converter : converters) {
+    private GenericParameterConverter findConverter(Type type) {
+        for (GenericParameterConverter converter : converters) {
             if (converter.accept(type)) {
                 return converter;
             }
         }
         return null;
+    }
+
+    private Queue<GenericParameterConverter> findConverters(Type type) {
+        LinkedList<GenericParameterConverter> convertersChain = new LinkedList<>();
+        putConverters(type, convertersChain);
+        return convertersChain;
+    }
+
+    private void putConverters(Type type, LinkedList<GenericParameterConverter> container) {
+        for (GenericParameterConverter converter : converters) {
+            if (converter.accept(type)) {
+                container.addFirst(converter);
+                Type[] types = getTypeArguments(converter.getClass());
+                if (types.length > 1) {
+                    putConverters(types[1], container);
+                }
+                break;
+            }
+        }
+    }
+
+    private static Type[] getTypeArguments(Class<?> clazz) {
+        if (clazz.getGenericSuperclass().equals(Object.class)) {
+            return new Type [] {};
+        }
+        return getParameterizedType(clazz).getActualTypeArguments();
+    }
+
+    private static ParameterizedType getParameterizedType(Class<?> clazz) {
+        Type genericSuperclass = clazz.getGenericSuperclass();
+        return genericSuperclass instanceof ParameterizedType ? (ParameterizedType) genericSuperclass
+                : getParameterizedType(clazz.getSuperclass());
     }
 
     private static boolean isAssignableFrom(Class<?> clazz, Type type) {
@@ -392,7 +442,7 @@ public class ParameterConverters {
         return elements;
     }
 
-    private static <T> void fillCollection(String value, String elementSeparator, ParameterConverter<T> elementConverter,
+    private static <T> void fillCollection(String value, String elementSeparator, GenericParameterConverter<T, String> elementConverter,
             Type elementType, Collection<T> convertedValues) {
         for (String element : parseElements(value, elementSeparator)) {
             T convertedValue = elementConverter.convertValue(element, elementType);
@@ -400,7 +450,7 @@ public class ParameterConverters {
         }
     }
 
-    private static <T> void fillArray(String[] elements, ParameterConverter<T> elementConverter,
+    private static <T> void fillArray(String[] elements, GenericParameterConverter<T, String> elementConverter,
             Type elementType, Object convertedValues) {
         for (int i = 0; i < elements.length; i++) {
             T convertedValue = elementConverter.convertValue(elements[i], elementType);
@@ -440,17 +490,20 @@ public class ParameterConverters {
         return null;
     }
 
-    public ParameterConverters newInstanceAdding(ParameterConverter converter) {
-        List<ParameterConverter> convertersForNewInstance = new ArrayList<>(converters);
+    public ParameterConverters newInstanceAdding(GenericParameterConverter converter) {
+        List<GenericParameterConverter> convertersForNewInstance = new ArrayList<>(converters);
         convertersForNewInstance.add(converter);
         return new ParameterConverters(monitor, convertersForNewInstance, threadSafe);
     }
 
-    public interface ParameterConverter<T> {
+    public interface ParameterConverter<T> extends GenericParameterConverter<T, String> {
+    }
+
+    public interface GenericParameterConverter<T, S> {
 
         boolean accept(Type type);
 
-        T convertValue(String value, Type type);
+        T convertValue(S value, Type type);
     }
 
     @SuppressWarnings("serial")
@@ -465,22 +518,25 @@ public class ParameterConverters {
         }
     }
 
-    public static abstract class AbstractParameterConverter<T> implements ParameterConverter<T> {
-
-        private final Type acceptedType;
-
+    public static abstract class AbstractParameterConverter<T> extends AbstractGenericParameterConverter<T, String> implements ParameterConverter<T> {
         public AbstractParameterConverter() {
-            this.acceptedType = getParameterizedType(getClass()).getActualTypeArguments()[0];
         }
 
         public AbstractParameterConverter(Type acceptedType) {
-            this.acceptedType = acceptedType;
+            super(acceptedType);
+        }
+    }
+
+    public static abstract class AbstractGenericParameterConverter<T, S> implements GenericParameterConverter<T, S> {
+
+        private final Type acceptedType;
+
+        public AbstractGenericParameterConverter() {
+            this.acceptedType = getParameterizedType(getClass()).getActualTypeArguments()[0];
         }
 
-        private ParameterizedType getParameterizedType(Class<?> clazz) {
-            Type genericSuperclass = clazz.getGenericSuperclass();
-            return genericSuperclass instanceof ParameterizedType ? (ParameterizedType) genericSuperclass
-                    : getParameterizedType(clazz.getSuperclass());
+        public AbstractGenericParameterConverter(Type acceptedType) {
+            this.acceptedType = acceptedType;
         }
 
         @Override

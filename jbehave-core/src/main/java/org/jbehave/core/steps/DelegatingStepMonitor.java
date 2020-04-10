@@ -5,10 +5,9 @@ import static java.util.Arrays.asList;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.List;
+import java.util.Queue;
 
 import org.jbehave.core.model.StepPattern;
-import org.jbehave.core.reporters.StoryReporter;
 
 /**
  * Monitor which collects other {@link StepMonitor}s and delegates all invocations to the collected monitors.
@@ -35,10 +34,20 @@ public class DelegatingStepMonitor implements StepMonitor {
         this(asList(delegates));
     }
 
+    /**
+     * @deprecated Use {@link #convertedValueOfType(String, Type, Object, Queue)}
+     */
     @Override
     public void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass) {
         for (StepMonitor monitor : delegates) {
             monitor.convertedValueOfType(value, type, converted, converterClass);
+        }
+    }
+
+    @Override
+    public void convertedValueOfType(String value, Type type, Object converted, Queue<Class<?>> converterClasses) {
+        for (StepMonitor monitor : delegates) {
+            monitor.convertedValueOfType(value, type, converted, converterClasses);
         }
     }
 

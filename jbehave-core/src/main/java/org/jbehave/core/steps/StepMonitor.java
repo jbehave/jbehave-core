@@ -2,6 +2,7 @@ package org.jbehave.core.steps;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.Queue;
 
 import org.jbehave.core.model.StepPattern;
 
@@ -15,7 +16,12 @@ public interface StepMonitor {
 
     void stepMatchesPattern(String step, boolean matches, StepPattern stepPattern, Method method, Object stepsInstance);
 
+    /**
+     * @deprecated Use {@link #convertedValueOfType(String, Type, Object, Queue)}
+     */
     void convertedValueOfType(String value, Type type, Object converted, Class<?> converterClass);
+
+    void convertedValueOfType(String value, Type type, Object converted, Queue<Class<?>> converterClasses);
 
     /**
      * @deprecated Use {@link #beforePerforming(String, boolean, Method)} and
