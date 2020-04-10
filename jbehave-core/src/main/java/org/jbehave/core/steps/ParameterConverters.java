@@ -106,7 +106,7 @@ public class ParameterConverters {
     private static final String DEFAULT_FALSE_VALUE = "false";
 
     private final StepMonitor monitor;
-    private final List<GenericParameterConverter> converters;
+    private final List<ChainableParameterConverter> converters;
     private final boolean threadSafe;
     private String escapedCollectionSeparator;
 
@@ -262,16 +262,16 @@ public class ParameterConverters {
                 collectionSeparator));
     }
 
-    private ParameterConverters(StepMonitor monitor, List<GenericParameterConverter> converters, boolean threadSafe) {
+    private ParameterConverters(StepMonitor monitor, List<ChainableParameterConverter> converters, boolean threadSafe) {
         this.monitor = monitor;
         this.threadSafe = threadSafe;
         this.converters = threadSafe ? new CopyOnWriteArrayList<>(converters)
                 : new ArrayList<>(converters);
     }
 
-    protected GenericParameterConverter[] defaultConverters(Keywords keywords, ResourceLoader resourceLoader,
-            ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers, Locale locale,
-            String collectionSeparator) {
+    protected ChainableParameterConverter[] defaultConverters(Keywords keywords, ResourceLoader resourceLoader,
+                                                              ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers, Locale locale,
+                                                              String collectionSeparator) {
         this.escapedCollectionSeparator = escapeRegexPunctuation(collectionSeparator);
         ExamplesTableFactory tableFactory = new ExamplesTableFactory(keywords, resourceLoader, this, parameterControls,
                 tableParsers, tableTransformers);
@@ -313,11 +313,11 @@ public class ParameterConverters {
         return matchThis.replaceAll("([\\[\\]\\{\\}\\?\\^\\.\\*\\(\\)\\+\\\\])", "\\\\$1");
     }
 
-    public ParameterConverters addConverters(GenericParameterConverter... converters) {
+    public ParameterConverters addConverters(ChainableParameterConverter... converters) {
         return addConverters(asList(converters));
     }
 
-    public ParameterConverters addConverters(List<? extends GenericParameterConverter> converters) {
+    public ParameterConverters addConverters(List<? extends ChainableParameterConverter> converters) {
         this.converters.addAll(0, converters);
         return this;
     }
@@ -326,7 +326,7 @@ public class ParameterConverters {
         return addConverters(new FunctionalParameterConverter<>(acceptedType, converter));
     }
 
-    private static boolean isChainComplete(Queue<GenericParameterConverter> convertersChain) {
+    private static boolean isChainComplete(Queue<ChainableParameterConverter> convertersChain) {
         if (convertersChain.isEmpty()) {
             return false;
         }
@@ -334,7 +334,7 @@ public class ParameterConverters {
         return typeArguments.length <= 1 || typeArguments[1].equals(String.class);
     }
 
-    private static Object applyConverters(Object value, Type basicType, Queue<GenericParameterConverter> convertersChain) {
+    private static Object applyConverters(Object value, Type basicType, Queue<ChainableParameterConverter> convertersChain) {
         Object identity = convertersChain.peek().convertValue(value, basicType);
         return convertersChain.stream().skip(1).reduce(identity,
                 (v, c) -> c.convertValue(v, getTypeArguments(c.getClass())[0]), (l, r) -> l);
@@ -342,10 +342,10 @@ public class ParameterConverters {
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public Object convert(String value, Type type) {
-        Queue<GenericParameterConverter> converters = findConverters(type);
+        Queue<ChainableParameterConverter> converters = findConverters(type);
         if (isChainComplete(converters)) {
             Object converted = applyConverters(value, type, converters);
-            Queue<Class<?>> classes = converters.stream().map(GenericParameterConverter::getClass)
+            Queue<Class<?>> classes = converters.stream().map(ChainableParameterConverter::getClass)
                     .collect(Collectors.toCollection(LinkedList::new));
             monitor.convertedValueOfType(value, type, converted, classes);
             return converted;
@@ -353,7 +353,7 @@ public class ParameterConverters {
 
         if (isAssignableFromRawType(Collection.class, type)) {
             Type elementType = argumentType(type);
-            GenericParameterConverter elementConverter = findConverter(elementType);
+            ChainableParameterConverter elementConverter = findConverter(elementType);
             Collection collection = createCollection(rawClass(type));
             if (elementConverter != null && collection != null) {
                 fillCollection(value, escapedCollectionSeparator, elementConverter, elementType, collection);
@@ -366,7 +366,7 @@ public class ParameterConverters {
             if (clazz.isArray()) {
                 String[] elements = parseElements(value, escapedCollectionSeparator);
                 Class elementType = clazz.getComponentType();
-                GenericParameterConverter elementConverter = findConverter(elementType);
+                ChainableParameterConverter elementConverter = findConverter(elementType);
                 Object array = createArray(elementType, elements.length);
 
                 if (elementConverter != null && array != null) {
@@ -379,8 +379,8 @@ public class ParameterConverters {
         throw new ParameterConvertionFailed("No parameter converter for " + type);
     }
 
-    private GenericParameterConverter findConverter(Type type) {
-        for (GenericParameterConverter converter : converters) {
+    private ChainableParameterConverter findConverter(Type type) {
+        for (ChainableParameterConverter converter : converters) {
             if (converter.accept(type)) {
                 return converter;
             }
@@ -388,14 +388,14 @@ public class ParameterConverters {
         return null;
     }
 
-    private Queue<GenericParameterConverter> findConverters(Type type) {
-        LinkedList<GenericParameterConverter> convertersChain = new LinkedList<>();
+    private Queue<ChainableParameterConverter> findConverters(Type type) {
+        LinkedList<ChainableParameterConverter> convertersChain = new LinkedList<>();
         putConverters(type, convertersChain);
         return convertersChain;
     }
 
-    private void putConverters(Type type, LinkedList<GenericParameterConverter> container) {
-        for (GenericParameterConverter converter : converters) {
+    private void putConverters(Type type, LinkedList<ChainableParameterConverter> container) {
+        for (ChainableParameterConverter converter : converters) {
             if (converter.accept(type)) {
                 container.addFirst(converter);
                 Type[] types = getTypeArguments(converter.getClass());
@@ -442,7 +442,7 @@ public class ParameterConverters {
         return elements;
     }
 
-    private static <T> void fillCollection(String value, String elementSeparator, GenericParameterConverter<T, String> elementConverter,
+    private static <T> void fillCollection(String value, String elementSeparator, ChainableParameterConverter<T, String> elementConverter,
             Type elementType, Collection<T> convertedValues) {
         for (String element : parseElements(value, elementSeparator)) {
             T convertedValue = elementConverter.convertValue(element, elementType);
@@ -450,7 +450,7 @@ public class ParameterConverters {
         }
     }
 
-    private static <T> void fillArray(String[] elements, GenericParameterConverter<T, String> elementConverter,
+    private static <T> void fillArray(String[] elements, ChainableParameterConverter<T, String> elementConverter,
             Type elementType, Object convertedValues) {
         for (int i = 0; i < elements.length; i++) {
             T convertedValue = elementConverter.convertValue(elements[i], elementType);
@@ -490,20 +490,33 @@ public class ParameterConverters {
         return null;
     }
 
-    public ParameterConverters newInstanceAdding(GenericParameterConverter converter) {
-        List<GenericParameterConverter> convertersForNewInstance = new ArrayList<>(converters);
+    public ParameterConverters newInstanceAdding(ChainableParameterConverter converter) {
+        List<ChainableParameterConverter> convertersForNewInstance = new ArrayList<>(converters);
         convertersForNewInstance.add(converter);
         return new ParameterConverters(monitor, convertersForNewInstance, threadSafe);
     }
 
-    public interface ParameterConverter<T> extends GenericParameterConverter<T, String> {
-    }
-
-    public interface GenericParameterConverter<T, S> {
+    /**
+     * A parameter converter for generic type of input and output.
+     * The converters can be chained to allow for the output of one converter
+     * can be used as the input for another.
+     *
+     * @param <T> the converted output
+     * @param <S> the input value
+     */
+    public interface ChainableParameterConverter<T, S> {
 
         boolean accept(Type type);
 
         T convertValue(S value, Type type);
+    }
+
+    /**
+     * A parameter converter for String input values
+     *
+     * @param <T> the converted output
+     */
+    public interface ParameterConverter<T> extends ChainableParameterConverter<T, String> {
     }
 
     @SuppressWarnings("serial")
@@ -518,7 +531,7 @@ public class ParameterConverters {
         }
     }
 
-    public static abstract class AbstractParameterConverter<T> extends AbstractGenericParameterConverter<T, String> implements ParameterConverter<T> {
+    public static abstract class AbstractParameterConverter<T> extends AbstractChainableParameterConverter<T, String> implements ParameterConverter<T> {
         public AbstractParameterConverter() {
         }
 
@@ -527,15 +540,15 @@ public class ParameterConverters {
         }
     }
 
-    public static abstract class AbstractGenericParameterConverter<T, S> implements GenericParameterConverter<T, S> {
+    public static abstract class AbstractChainableParameterConverter<T, S> implements ChainableParameterConverter<T, S> {
 
         private final Type acceptedType;
 
-        public AbstractGenericParameterConverter() {
+        public AbstractChainableParameterConverter() {
             this.acceptedType = getParameterizedType(getClass()).getActualTypeArguments()[0];
         }
 
-        public AbstractGenericParameterConverter(Type acceptedType) {
+        public AbstractChainableParameterConverter(Type acceptedType) {
             this.acceptedType = acceptedType;
         }
 

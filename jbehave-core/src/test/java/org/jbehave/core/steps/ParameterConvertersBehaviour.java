@@ -53,7 +53,7 @@ import org.jbehave.core.model.ExamplesTable;
 import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
-import org.jbehave.core.steps.ParameterConverters.AbstractGenericParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.AbstractChainableParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.AbstractParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanConverter;
 import org.jbehave.core.steps.ParameterConverters.BooleanListConverter;
@@ -65,7 +65,7 @@ import org.jbehave.core.steps.ParameterConverters.ExamplesTableConverter;
 import org.jbehave.core.steps.ParameterConverters.ExamplesTableParametersConverter;
 import org.jbehave.core.steps.ParameterConverters.FileConverter;
 import org.jbehave.core.steps.ParameterConverters.FluentEnumConverter;
-import org.jbehave.core.steps.ParameterConverters.GenericParameterConverter;
+import org.jbehave.core.steps.ParameterConverters.ChainableParameterConverter;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
@@ -100,7 +100,7 @@ public class ParameterConvertersBehaviour {
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters converters = new ParameterConverters(resourceLoader, parameterControls, tableTransformers,
                 true);
-        GenericParameterConverter<?, ?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
+        ChainableParameterConverter<?, ?>[] defaultConverters = converters.defaultConverters(keywords, resourceLoader, parameterControls,
                 tableParsers, tableTransformers, Locale.ENGLISH, ",");
         assertThatDefaultConvertersInclude(defaultConverters, BooleanConverter.class, NumberConverter.class,
                 StringListConverter.class,
@@ -113,11 +113,11 @@ public class ParameterConvertersBehaviour {
                 ExamplesTableParametersConverter.class);
     }
 
-    private void assertThatDefaultConvertersInclude(GenericParameterConverter<?, ?>[] defaultConverters,
-            Class<? extends ParameterConverter<?>>... converterTypes) {
+    private void assertThatDefaultConvertersInclude(ChainableParameterConverter<?, ?>[] defaultConverters,
+                                                    Class<? extends ParameterConverter<?>>... converterTypes) {
         for (Class<? extends ParameterConverter<?>> type : converterTypes) {
             boolean found = false;
-            for (GenericParameterConverter<?, ?> converter : defaultConverters) {
+            for (ChainableParameterConverter<?, ?> converter : defaultConverters) {
                 if (converter.getClass().isAssignableFrom(type)) {
                     found = true;
                 }
@@ -970,7 +970,7 @@ public class ParameterConvertersBehaviour {
         }
     }
 
-    private class FirstParameterConverter extends AbstractGenericParameterConverter<FirstConverterOutput, ExamplesTable> {
+    private class FirstParameterConverter extends AbstractChainableParameterConverter<FirstConverterOutput, ExamplesTable> {
         @Override
         public FirstConverterOutput convertValue(ExamplesTable value, Type type) {
             return new FirstConverterOutput(value.asString() + "first");
@@ -983,7 +983,7 @@ public class ParameterConvertersBehaviour {
         }
     }
 
-    private class SecondParameterConverter extends AbstractGenericParameterConverter<SecongConverterOutput, FirstConverterOutput> {
+    private class SecondParameterConverter extends AbstractChainableParameterConverter<SecongConverterOutput, FirstConverterOutput> {
         @Override
         public SecongConverterOutput convertValue(FirstConverterOutput value, Type type) {
             return new SecongConverterOutput(value.getOutput() + "second");
@@ -996,7 +996,7 @@ public class ParameterConvertersBehaviour {
         }
     }
 
-    private class ThirdParameterConverter extends AbstractGenericParameterConverter<ThirdConverterOutput, SecongConverterOutput> {
+    private class ThirdParameterConverter extends AbstractChainableParameterConverter<ThirdConverterOutput, SecongConverterOutput> {
         @Override
         public ThirdConverterOutput convertValue(SecongConverterOutput value, Type type) {
             return new ThirdConverterOutput(value.getOutput() + "third");
@@ -1021,7 +1021,7 @@ public class ParameterConvertersBehaviour {
         }
     }
 
-    private class StringContainerConverter extends AbstractGenericParameterConverter<StringContainer, String> {
+    private class StringContainerConverter extends AbstractChainableParameterConverter<StringContainer, String> {
         @Override
         public StringContainer convertValue(String value, Type type) {
             return new StringContainer(value);
