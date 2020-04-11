@@ -875,7 +875,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertStringThroughtChainOfConverters() {
+    public void shouldConvertStringViaChainOfConverters() {
         ParameterConverters converters = new ParameterConverters();
         converters.addConverters(new FirstParameterConverter(), new SecondParameterConverter(),
                 new ThirdParameterConverter());
@@ -887,7 +887,7 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
-    public void shouldConvertFromStringUsingGenericParameterConverterIfDefaultDoesNotExist() {
+    public void shouldConvertFromStringUsingChainableParameterConverterIfDefaultDoesNotExist() {
         ParameterConverters converters = new ParameterConverters();
         converters.addConverters(new StringContainerConverter());
         String inputValue = "string value";
