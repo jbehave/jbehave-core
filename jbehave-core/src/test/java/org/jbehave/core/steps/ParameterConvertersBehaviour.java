@@ -976,7 +976,7 @@ public class ParameterConvertersBehaviour {
         }
     }
 
-    private class FirstParameterConverter extends AbstractChainableParameterConverter<FirstConverterOutput, ExamplesTable> {
+    private class FirstParameterConverter extends AbstractChainableParameterConverter<ExamplesTable, FirstConverterOutput> {
         @Override
         public FirstConverterOutput convertValue(ExamplesTable value, Type type) {
             return new FirstConverterOutput(value.asString() + "first");
@@ -989,7 +989,7 @@ public class ParameterConvertersBehaviour {
         }
     }
 
-    private class SecondParameterConverter extends AbstractChainableParameterConverter<SecongConverterOutput, FirstConverterOutput> {
+    private class SecondParameterConverter extends AbstractChainableParameterConverter<FirstConverterOutput, SecongConverterOutput> {
         @Override
         public SecongConverterOutput convertValue(FirstConverterOutput value, Type type) {
             return new SecongConverterOutput(value.getOutput() + "second");
@@ -1002,7 +1002,7 @@ public class ParameterConvertersBehaviour {
         }
     }
 
-    private class ThirdParameterConverter extends AbstractChainableParameterConverter<ThirdConverterOutput, SecongConverterOutput> {
+    private class ThirdParameterConverter extends AbstractChainableParameterConverter<SecongConverterOutput, ThirdConverterOutput> {
         @Override
         public ThirdConverterOutput convertValue(SecongConverterOutput value, Type type) {
             return new ThirdConverterOutput(value.getOutput() + "third");
@@ -1027,7 +1027,7 @@ public class ParameterConvertersBehaviour {
         }
     }
 
-    private class StringContainerConverter extends AbstractChainableParameterConverter<StringContainer, String> {
+    private class StringContainerConverter extends AbstractChainableParameterConverter<String, StringContainer> {
         @Override
         public StringContainer convertValue(String value, Type type) {
             return new StringContainer(value);

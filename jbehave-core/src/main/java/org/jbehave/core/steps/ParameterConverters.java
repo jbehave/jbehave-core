@@ -333,13 +333,13 @@ public class ParameterConverters {
             return false;
         }
         Type[] typeArguments = getTypeArguments(convertersChain.peek().getClass());
-        return typeArguments.length <= 1 || typeArguments[1].equals(String.class);
+        return typeArguments.length <= 1 || typeArguments[0].equals(String.class);
     }
 
     private static Object applyConverters(Object value, Type basicType, Queue<ChainableParameterConverter> convertersChain) {
         Object identity = convertersChain.peek().convertValue(value, basicType);
         return convertersChain.stream().skip(1).reduce(identity,
-                (v, c) -> c.convertValue(v, getTypeArguments(c.getClass())[0]), (l, r) -> l);
+                (v, c) -> c.convertValue(v, getTargetType(c.getClass())), (l, r) -> l);
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -402,7 +402,7 @@ public class ParameterConverters {
                 container.addFirst(converter);
                 Type[] types = getTypeArguments(converter.getClass());
                 if (types.length > 1) {
-                    putConverters(types[1], container);
+                    putConverters(types[0], container);
                 }
                 break;
             }
@@ -413,6 +413,14 @@ public class ParameterConverters {
         return getParameterizedType(clazz)
                 .map(ParameterizedType::getActualTypeArguments)
                 .orElse(new Type [] {});
+    }
+
+    private static Type getTargetType(Class<? extends ChainableParameterConverter> clazz) {
+        Type[] types = getTypeArguments(clazz);
+        if (types.length > 0) {
+            return types.length == 1 ? types[0] : types[1];
+        }
+        return null;
     }
 
     private static Optional<ParameterizedType> getParameterizedType(Class<?> clazz) {
@@ -454,7 +462,7 @@ public class ParameterConverters {
         return elements;
     }
 
-    private static <T> void fillCollection(String value, String elementSeparator, ChainableParameterConverter<T, String> elementConverter,
+    private static <T> void fillCollection(String value, String elementSeparator, ChainableParameterConverter<String, T> elementConverter,
             Type elementType, Collection<T> convertedValues) {
         for (String element : parseElements(value, elementSeparator)) {
             T convertedValue = elementConverter.convertValue(element, elementType);
@@ -462,7 +470,7 @@ public class ParameterConverters {
         }
     }
 
-    private static <T> void fillArray(String[] elements, ChainableParameterConverter<T, String> elementConverter,
+    private static <T> void fillArray(String[] elements, ChainableParameterConverter<String, T> elementConverter,
             Type elementType, Object convertedValues) {
         for (int i = 0; i < elements.length; i++) {
             T convertedValue = elementConverter.convertValue(elements[i], elementType);
@@ -516,7 +524,7 @@ public class ParameterConverters {
      * @param <T> the converted output
      * @param <S> the input value
      */
-    public interface ChainableParameterConverter<T, S> {
+    public interface ChainableParameterConverter<S, T> {
 
         boolean accept(Type type);
 
@@ -528,7 +536,7 @@ public class ParameterConverters {
      *
      * @param <T> the converted output
      */
-    public interface ParameterConverter<T> extends ChainableParameterConverter<T, String> {
+    public interface ParameterConverter<T> extends ChainableParameterConverter<String, T> {
     }
 
     @SuppressWarnings("serial")
@@ -543,7 +551,7 @@ public class ParameterConverters {
         }
     }
 
-    public static abstract class AbstractParameterConverter<T> extends AbstractChainableParameterConverter<T, String> implements ParameterConverter<T> {
+    public static abstract class AbstractParameterConverter<T> extends AbstractChainableParameterConverter<String, T> implements ParameterConverter<T> {
         public AbstractParameterConverter() {
         }
 
@@ -557,7 +565,7 @@ public class ParameterConverters {
         private final Type acceptedType;
 
         public AbstractChainableParameterConverter() {
-            this.acceptedType = getTypeArguments(getClass())[0];
+            this.acceptedType = getTargetType(getClass());
         }
 
         public AbstractChainableParameterConverter(Type acceptedType) {
