@@ -38,6 +38,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.NavigableSet;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 import java.util.SortedSet;
@@ -51,6 +52,7 @@ import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
 import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.reflect.TypeUtils;
 import org.jbehave.core.annotations.AsJson;
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.configuration.Configuration;
@@ -408,15 +410,25 @@ public class ParameterConverters {
     }
 
     private static Type[] getTypeArguments(Class<?> clazz) {
-        if (clazz.getGenericSuperclass().equals(Object.class)) {
-            return new Type [] {};
-        }
-        return getParameterizedType(clazz).getActualTypeArguments();
+        return getParameterizedType(clazz)
+                .map(ParameterizedType::getActualTypeArguments)
+                .orElse(new Type [] {});
     }
 
-    private static ParameterizedType getParameterizedType(Class<?> clazz) {
+    private static Optional<ParameterizedType> getParameterizedType(Class<?> clazz) {
+        Optional<ParameterizedType> parametrizedType = Arrays.stream(clazz.getGenericInterfaces())
+                .filter(t -> TypeUtils.isAssignable(t, ChainableParameterConverter.class))
+                .filter(t -> t instanceof ParameterizedType)
+                .map(ParameterizedType.class::cast)
+                .findFirst();
+        if (parametrizedType.isPresent()) {
+            return parametrizedType;
+        }
         Type genericSuperclass = clazz.getGenericSuperclass();
-        return genericSuperclass instanceof ParameterizedType ? (ParameterizedType) genericSuperclass
+        if (genericSuperclass.equals(Object.class)) {
+            return Optional.empty();
+        }
+        return genericSuperclass instanceof ParameterizedType ? Optional.of((ParameterizedType) genericSuperclass)
                 : getParameterizedType(clazz.getSuperclass());
     }
 
@@ -545,7 +557,7 @@ public class ParameterConverters {
         private final Type acceptedType;
 
         public AbstractChainableParameterConverter() {
-            this.acceptedType = getParameterizedType(getClass()).getActualTypeArguments()[0];
+            this.acceptedType = getTypeArguments(getClass())[0];
         }
 
         public AbstractChainableParameterConverter(Type acceptedType) {

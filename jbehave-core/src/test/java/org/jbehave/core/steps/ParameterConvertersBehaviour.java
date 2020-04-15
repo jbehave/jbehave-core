@@ -875,6 +875,12 @@ public class ParameterConvertersBehaviour {
     }
 
     @Test
+    public void shouldConvertEnumWithFluentEnumConverter() {
+        ParameterConverters converters = new ParameterConverters().addConverters(new FluentEnumConverter());
+        assertThat(converters.convert("ONE", SomeEnum.class), is(SomeEnum.ONE));
+    }
+
+    @Test
     public void shouldConvertStringViaChainOfConverters() {
         ParameterConverters converters = new ParameterConverters();
         converters.addConverters(new FirstParameterConverter(), new SecondParameterConverter(),
