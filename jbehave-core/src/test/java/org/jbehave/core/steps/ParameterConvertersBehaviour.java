@@ -989,22 +989,22 @@ public class ParameterConvertersBehaviour {
         }
     }
 
-    private class SecondParameterConverter extends AbstractChainableParameterConverter<FirstConverterOutput, SecongConverterOutput> {
+    private class SecondParameterConverter extends AbstractChainableParameterConverter<FirstConverterOutput, SecondConverterOutput> {
         @Override
-        public SecongConverterOutput convertValue(FirstConverterOutput value, Type type) {
-            return new SecongConverterOutput(value.getOutput() + "second");
+        public SecondConverterOutput convertValue(FirstConverterOutput value, Type type) {
+            return new SecondConverterOutput(value.getOutput() + "second");
         }
     }
 
-    private class SecongConverterOutput extends StringContainer {
-        private SecongConverterOutput(String output) {
+    private class SecondConverterOutput extends StringContainer {
+        private SecondConverterOutput(String output) {
             super(output);
         }
     }
 
-    private class ThirdParameterConverter extends AbstractChainableParameterConverter<SecongConverterOutput, ThirdConverterOutput> {
+    private class ThirdParameterConverter extends AbstractChainableParameterConverter<SecondConverterOutput, ThirdConverterOutput> {
         @Override
-        public ThirdConverterOutput convertValue(SecongConverterOutput value, Type type) {
+        public ThirdConverterOutput convertValue(SecondConverterOutput value, Type type) {
             return new ThirdConverterOutput(value.getOutput() + "third");
         }
     }

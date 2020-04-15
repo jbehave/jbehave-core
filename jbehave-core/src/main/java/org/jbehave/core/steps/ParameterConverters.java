@@ -517,12 +517,12 @@ public class ParameterConverters {
     }
 
     /**
-     * A parameter converter for generic type of input and output.
-     * The converters can be chained to allow for the output of one converter
-     * can be used as the input for another.
+     * A parameter converter for generic type of source input and target output.
+     * The converters can be chained to allow for the target of one converter
+     * can be used as the source for another.
      *
-     * @param <T> the converted output
-     * @param <S> the input value
+     * @param <T> the target converted output
+     * @param <S> the source input value
      */
     public interface ChainableParameterConverter<S, T> {
 
@@ -534,7 +534,7 @@ public class ParameterConverters {
     /**
      * A parameter converter for String input values
      *
-     * @param <T> the converted output
+     * @param <T> the target converted output
      */
     public interface ParameterConverter<T> extends ChainableParameterConverter<String, T> {
     }
