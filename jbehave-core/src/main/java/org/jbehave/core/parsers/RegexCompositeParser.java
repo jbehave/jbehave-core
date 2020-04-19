@@ -63,6 +63,6 @@ public class RegexCompositeParser extends AbstractRegexParser implements Composi
     private Pattern findingCompositePattern() {
         String startingWords = concatenateInitialStartingWords();
         return compile(keywords().composite() + "(.*?)\\s*(?:\n\\s*" + keywords().priority() + "\\s*(\\d+)\\s*)?"
-                + startingWords + ".*", DOTALL);
+                + "(" + startingWords + ".*|\\s*$)", DOTALL);
     }
 }

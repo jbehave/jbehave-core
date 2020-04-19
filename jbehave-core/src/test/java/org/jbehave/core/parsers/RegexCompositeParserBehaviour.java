@@ -31,6 +31,30 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
+    public void shouldParseCompositeStepWithEmptyComposedSteps() {
+        String compositesAsText = "Composite: Given an empty composite step";
+        List<Composite> composites = parser.parseComposites(compositesAsText);
+        assertThat(composites.size(), equalTo(1));
+        assertCompositeStep(composites.get(0), StepType.GIVEN, "an empty composite step", 0, Collections.emptyList());
+    }
+
+    @Test
+    public void shouldParseCompositeStepWithEmptyComposedStepsEndingWithLineBreak() {
+        String compositesAsText = "Composite: Given an empty composite step" + NL;
+        List<Composite> composites = parser.parseComposites(compositesAsText);
+        assertThat(composites.size(), equalTo(1));
+        assertCompositeStep(composites.get(0), StepType.GIVEN, "an empty composite step", 0, Collections.emptyList());
+    }
+
+    @Test
+    public void shouldParseCompositeStepWithEmptyComposedStepsEndingWithSpaceAndLineBreaks() {
+        String compositesAsText = "Composite: Given an empty composite step " + NL + " " + NL;
+        List<Composite> composites = parser.parseComposites(compositesAsText);
+        assertThat(composites.size(), equalTo(1));
+        assertCompositeStep(composites.get(0), StepType.GIVEN, "an empty composite step", 0, Collections.emptyList());
+    }
+
+    @Test
     public void shouldParseSingleCompositeStep() {
         String compositeStepsAsText = "Composite: Given a composite step" + NL+
                 "Given a step" + NL +
