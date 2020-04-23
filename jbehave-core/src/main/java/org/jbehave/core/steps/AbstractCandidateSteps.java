@@ -2,7 +2,9 @@ package org.jbehave.core.steps;
 
 import java.lang.reflect.Method;
 import java.util.List;
+import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Configuration;
 
 import static java.text.MessageFormat.format;
@@ -24,9 +26,17 @@ public abstract class AbstractCandidateSteps implements CandidateSteps {
 
     protected void checkForDuplicateCandidates(List<StepCandidate> candidates, StepCandidate candidate) {
         String candidateName = candidate.getName();
-        if (candidates.stream().anyMatch(c -> c.matches(candidateName) && candidate.matches(c.getName()))) {
+        String parameterPrefix = configuration.stepPatternParser().getPrefix();
+        if (candidates.stream().anyMatch(isDuplicate(candidate, candidateName, parameterPrefix))) {
             throw new DuplicateCandidateFound(candidate);
         }
+    }
+
+    private Predicate<StepCandidate> isDuplicate(StepCandidate candidate, String candidateName, String parameterPrefix) {
+        return c ->
+               candidateName.startsWith(StringUtils.substringBefore(c.getName(), parameterPrefix))
+            && c.matches(candidateName)
+            && candidate.matches(c.getName());
     }
 
     protected StepCandidate createCandidate(String stepPatternAsString, int priority, StepType stepType, Method method,

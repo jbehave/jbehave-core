@@ -35,4 +35,10 @@ public interface StepPatternParser {
 	 */
 	StepMatcher parseStep(StepType stepType, String stepPattern);
 
+	/**
+	 * Returns current parameter prefix
+	 * 
+	 * @return parameter prefix, e.g. <b>$</b>
+	 */
+	String getPrefix();
 }
