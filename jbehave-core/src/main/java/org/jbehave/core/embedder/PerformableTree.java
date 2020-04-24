@@ -1078,6 +1078,7 @@ public class PerformableTree {
 
     public static abstract class AbstractPerformableScenario implements Performable {
 
+        private transient Scenario scenario;
         protected final Map<String, String> parameters;
         protected final List<PerformableStory> givenStories = new ArrayList<>();
         protected final PerformableSteps beforeSteps = new PerformableSteps();
@@ -1085,11 +1086,12 @@ public class PerformableTree {
         protected final PerformableSteps afterSteps = new PerformableSteps();
         private Meta storyAndScenarioMeta = new Meta();
 
-        public AbstractPerformableScenario() {
-            this(new HashMap<String, String>());
+        public AbstractPerformableScenario(Scenario scenario) {
+            this(scenario, new HashMap<String, String>());
         }
 
-        public AbstractPerformableScenario(Map<String, String> parameters) {
+        public AbstractPerformableScenario(Scenario scenario, Map<String, String> parameters) {
+            this.scenario = scenario;
             this.parameters = parameters;
         }
 
@@ -1127,10 +1129,10 @@ public class PerformableTree {
 			}
 		}
 
-        protected void perform(RunContext context, GivenStories stories) throws InterruptedException {
+        protected void performScenario(RunContext context) throws InterruptedException {
             perform(beforeSteps, context, r -> r.beforeScenarioSteps(Stage.BEFORE),
                 r -> r.afterScenarioSteps(Stage.BEFORE));
-            performGivenStories(context, givenStories, stories);
+            performGivenStories(context, givenStories, scenario.getGivenStories());
             performRestartableSteps(context);
             perform(afterSteps, context, r -> r.beforeScenarioSteps(Stage.AFTER),
                 r -> r.afterScenarioSteps(Stage.AFTER));
@@ -1144,6 +1146,13 @@ public class PerformableTree {
             after.accept(reporter);
         }
 
+        @Override
+        public void reportFailures(FailureContext context) {
+            beforeSteps.reportFailures(context);
+            steps.reportFailures(context);
+            afterSteps.reportFailures(context);
+        }
+
 		public Meta getStoryAndScenarioMeta() {
 		    return storyAndScenarioMeta;
 		}
@@ -1155,10 +1164,8 @@ public class PerformableTree {
 
     public static class NormalPerformableScenario extends AbstractPerformableScenario {
 
-        private transient Scenario scenario;
-
-		public NormalPerformableScenario(Scenario scenario) {
-			this.scenario = scenario;
+        public NormalPerformableScenario(Scenario scenario) {
+            super(scenario);
         }
 
         @Override
@@ -1166,27 +1173,17 @@ public class PerformableTree {
             if (context.configuration().storyControls().resetStateBeforeScenario()) {
                 context.resetState();
             }
-            perform(context, scenario.getGivenStories());
+            performScenario(context);
         }
-
-        @Override
-        public void reportFailures(FailureContext context) {
-            beforeSteps.reportFailures(context);
-            steps.reportFailures(context);
-            afterSteps.reportFailures(context);
-        }
-
     }
 
     public static class ExamplePerformableScenario extends AbstractPerformableScenario {
 
-        private transient Scenario scenario;
         private final int exampleIndex;
 
-		public ExamplePerformableScenario(Scenario scenario, Map<String, String> exampleParameters, int exampleIndex) {
-        	super(exampleParameters);
-			this.scenario = scenario;
-			this.exampleIndex = exampleIndex;
+        public ExamplePerformableScenario(Scenario scenario, Map<String, String> exampleParameters, int exampleIndex) {
+            super(scenario, exampleParameters);
+            this.exampleIndex = exampleIndex;
         }
 
         @Override
@@ -1201,14 +1198,7 @@ public class PerformableTree {
             context.stepsContext().resetExample();
             context.reporter().example(parameters);
             context.reporter().example(parameters, exampleIndex);
-            perform(context, scenario.getGivenStories());
-        }
-
-        @Override
-        public void reportFailures(FailureContext context) {
-            beforeSteps.reportFailures(context);
-            steps.reportFailures(context);
-            afterSteps.reportFailures(context);
+            performScenario(context);
         }
 
         private Meta parameterMeta(Keywords keywords, Map<String, String> parameters) {
