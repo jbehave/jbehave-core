@@ -169,8 +169,6 @@ public class ExamplesTable {
     private static final String IGNORABLE_SEPARATOR = "|--";
 
     private final ParameterConverters parameterConverters;
-    private final TableParsers tableParsers;
-    private final TableTransformers tableTransformers;
     private final Row defaults;
     private final TableRows tableRows;
     private final Deque<TableProperties> tablePropertiesQueue = new LinkedList<>();
@@ -196,12 +194,10 @@ public class ExamplesTable {
                          TableParsers tableParsers, TableTransformers tableTransformers) {
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
-        this.tableParsers = tableParsers;
-        this.tableTransformers = tableTransformers;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
         TablePropertiesQueue data = tableParsers.parseProperties(tableAsString, headerSeparator, valueSeparator, ignorableSeparator);
         this.tablePropertiesQueue.addAll(data.getProperties());
-        String transformedTable = applyTransformers(data.getTable());
+        String transformedTable = applyTransformers(tableTransformers, data.getTable(), tableParsers);
         this.tableRows = tableParsers.parseRows(transformedTable, lastTableProperties());
     }
 
@@ -210,11 +206,9 @@ public class ExamplesTable {
                   TableParsers tableParsers, TableTransformers tableTransformers) {
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
-        this.tableParsers = tableParsers;
-        this.tableTransformers = tableTransformers;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
         this.tablePropertiesQueue.addAll(tablePropertiesQueue.getProperties());
-        String transformedTable = applyTransformers(tablePropertiesQueue.getTable());
+        String transformedTable = applyTransformers(tableTransformers, tablePropertiesQueue.getTable(), tableParsers);
         this.tableRows = tableParsers.parseRows(transformedTable, lastTableProperties());
     }
 
@@ -226,13 +220,12 @@ public class ExamplesTable {
         this.tableRows = new TableRows(other.tableRows.getHeaders(),
                 other.tableRows.getRows());
         this.parameterConverters = other.parameterConverters;
-        this.tableParsers = other.tableParsers;
-        this.tableTransformers = other.tableTransformers;
         this.tablePropertiesQueue.addAll(other.tablePropertiesQueue);
         this.defaults = defaults;
     }
 
-    private String applyTransformers(String tableAsString) {
+    private String applyTransformers(TableTransformers tableTransformers, String tableAsString,
+            TableParsers tableParsers) {
         String transformedTable = tableAsString;
         for (TableProperties properties : tablePropertiesQueue) {
             String transformer = properties.getTransformer();
