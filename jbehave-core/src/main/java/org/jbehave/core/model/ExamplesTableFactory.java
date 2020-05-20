@@ -83,9 +83,8 @@ public class ExamplesTableFactory {
             tablePropertiesQueue.getProperties().addFirst(properties);
         }
 
-        return new ExamplesTable(tablePropertiesQueue, keywords.examplesTableHeaderSeparator(),
-                keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(),
-                parameterConverters, parameterControls, new TableParsers(), tableTransformers);
+        return new ExamplesTable(tablePropertiesQueue, parameterConverters, parameterControls, tableParsers,
+                tableTransformers);
     }
 
     protected boolean isTable(String table, TableProperties properties) {

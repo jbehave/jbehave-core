@@ -192,18 +192,12 @@ public class ExamplesTable {
     public ExamplesTable(String tableAsString, String headerSeparator, String valueSeparator,
                          String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
                          TableParsers tableParsers, TableTransformers tableTransformers) {
-        this.parameterConverters = parameterConverters;
-        this.parameterControls = parameterControls;
-        this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
-        TablePropertiesQueue data = tableParsers.parseProperties(tableAsString, headerSeparator, valueSeparator, ignorableSeparator);
-        this.tablePropertiesQueue.addAll(data.getProperties());
-        String transformedTable = applyTransformers(tableTransformers, data.getTable(), tableParsers);
-        this.tableRows = tableParsers.parseRows(transformedTable, lastTableProperties());
+        this(tableParsers.parseProperties(tableAsString, headerSeparator, valueSeparator, ignorableSeparator),
+                parameterConverters, parameterControls, tableParsers, tableTransformers);
     }
 
-    ExamplesTable(TablePropertiesQueue tablePropertiesQueue, String headerSeparator, String valueSeparator,
-                  String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
-                  TableParsers tableParsers, TableTransformers tableTransformers) {
+    ExamplesTable(TablePropertiesQueue tablePropertiesQueue, ParameterConverters parameterConverters,
+            ParameterControls parameterControls, TableParsers tableParsers, TableTransformers tableTransformers) {
         this.parameterConverters = parameterConverters;
         this.parameterControls = parameterControls;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
