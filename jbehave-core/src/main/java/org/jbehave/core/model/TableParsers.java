@@ -8,12 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 
-import com.google.common.collect.Table;
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.model.ExamplesTable.ExamplesTableData;
 import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
-import org.jbehave.core.model.ExamplesTable.ParsedExamplesTableData;
+import org.jbehave.core.model.ExamplesTable.PropertiesData;
+import org.jbehave.core.model.ExamplesTable.RowsData;
 
 public class TableParsers {
 
@@ -21,13 +20,13 @@ public class TableParsers {
 
     public TableParsers(){}
 
-    public ExamplesTableData parseData(String tableAsString, Keywords keywords) {
-        return parseData(tableAsString, keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator(),
+    public PropertiesData parseProperties(String tableAsString, Keywords keywords) {
+        return parseProperties(tableAsString, keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator(),
                 keywords.examplesTableIgnorableSeparator());
     }
 
-    public ExamplesTableData parseData(String tableAsString, String headerSeparator, String valueSeparator,
-            String ignorableSeparator) {
+    public PropertiesData parseProperties(String tableAsString, String headerSeparator, String valueSeparator,
+                                                        String ignorableSeparator) {
         Deque<ExamplesTableProperties> properties = new LinkedList<>();
         String tableWithoutProperties = tableAsString.trim();
         Matcher matcher = ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
@@ -43,10 +42,10 @@ public class TableParsers {
         if (properties.isEmpty()) {
             properties.add(new ExamplesTableProperties("", headerSeparator, valueSeparator, ignorableSeparator));
         }
-        return new ExamplesTableData(tableWithoutProperties, properties);
+        return new ExamplesTable.PropertiesData(tableWithoutProperties, properties);
     }
 
-    public ParsedExamplesTableData parseByRows(String tableAsString, ExamplesTableProperties properties) {
+    public RowsData parseByRows(String tableAsString, ExamplesTableProperties properties) {
         List<String> headers = new ArrayList<>();
         List<Map<String, String>> data = new ArrayList<>();
 
@@ -69,7 +68,7 @@ public class TableParsers {
             }
         }
 
-        return new ParsedExamplesTableData(headers, data);
+        return new RowsData(headers, data);
     }
 
     public List<String> parseRow(String rowAsString, boolean header, ExamplesTableProperties properties) {

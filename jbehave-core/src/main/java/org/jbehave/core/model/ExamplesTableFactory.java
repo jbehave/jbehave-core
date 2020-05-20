@@ -4,8 +4,8 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.ResourceLoader;
-import org.jbehave.core.model.ExamplesTable.ExamplesTableData;
 import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
+import org.jbehave.core.model.ExamplesTable.PropertiesData;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 
@@ -72,18 +72,18 @@ public class ExamplesTableFactory {
     }
 
     public ExamplesTable createExamplesTable(String input) {
-        ExamplesTableData data = getExamplesTableData(input);
+        PropertiesData propertiesData = getPropertiesData(input);
 
-        String tableAsString = data.getTable().trim();
-        ExamplesTableProperties properties = data.getProperties().peekLast();
+        String tableAsString = propertiesData.getTable().trim();
+        ExamplesTableProperties properties = propertiesData.getProperties().peekLast();
 
         if (!isTable(tableAsString, properties) && !tableAsString.isEmpty()) {
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
-            data = getExamplesTableData(loadedTable);
-            data.getProperties().addFirst(properties);
+            propertiesData = getPropertiesData(loadedTable);
+            propertiesData.getProperties().addFirst(properties);
         }
 
-        return new ExamplesTable(data, keywords.examplesTableHeaderSeparator(),
+        return new ExamplesTable(propertiesData, keywords.examplesTableHeaderSeparator(),
                 keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(),
                 parameterConverters, parameterControls, new TableParsers(), tableTransformers);
     }
@@ -94,8 +94,8 @@ public class ExamplesTableFactory {
         return table.startsWith(headerSeparator);
     }
 
-    private ExamplesTableData getExamplesTableData(String input) {
-        return tableParsers.parseData(input, keywords);
+    private PropertiesData getPropertiesData(String input) {
+        return tableParsers.parseProperties(input, keywords);
     }
 
     public void useKeywords(Keywords keywords){

@@ -11,7 +11,7 @@ import java.util.Properties;
 
 import org.junit.Test;
 import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
-import org.jbehave.core.model.ExamplesTable.ParsedExamplesTableData;
+import org.jbehave.core.model.ExamplesTable.RowsData;
 
 public class TableParsersBehaviour {
 
@@ -30,19 +30,19 @@ public class TableParsersBehaviour {
         ExamplesTableProperties tableProperties = new ExamplesTableProperties(properties);
 
         // When
-        ParsedExamplesTableData parsedExamplesTable = tableParsers.parseByRows(table, tableProperties);
+        RowsData rowsData = tableParsers.parseByRows(table, tableProperties);
 
         // Then
-        assertThat(parsedExamplesTable.getHeaders(), equalTo(Arrays.asList("key-1", "key-2")));
-        List<Map<String, String>> data = parsedExamplesTable.getData();
-        assertThat(data, hasSize(2));
+        assertThat(rowsData.getHeaders(), equalTo(Arrays.asList("key-1", "key-2")));
+        List<Map<String, String>> rows = rowsData.getRows();
+        assertThat(rows, hasSize(2));
         Map<String, String> first = new HashMap<>();
         first.put("key-1", "val-1-1");
         first.put("key-2", "val-1-2");
-        assertThat(data.get(0), equalTo(first));
+        assertThat(rows.get(0), equalTo(first));
         Map<String, String> second = new HashMap<>();
         second.put("key-1", "val-2-1");
         second.put("key-2", "val-2-2");
-        assertThat(data.get(1), equalTo(second));
+        assertThat(rows.get(1), equalTo(second));
     }
 }
