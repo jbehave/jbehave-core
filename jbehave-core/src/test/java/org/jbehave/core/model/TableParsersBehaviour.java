@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Test;
-import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
-import org.jbehave.core.model.ExamplesTable.RowsData;
+import org.jbehave.core.model.ExamplesTable.TableProperties;
+import org.jbehave.core.model.ExamplesTable.TableRows;
 
 public class TableParsersBehaviour {
 
@@ -27,14 +27,14 @@ public class TableParsersBehaviour {
         Properties properties = new Properties();
         properties.put("headerSeparator", "!");
         properties.put("valueSeparator", "|");
-        ExamplesTableProperties tableProperties = new ExamplesTableProperties(properties);
+        TableProperties tableProperties = new TableProperties(properties);
 
         // When
-        RowsData rowsData = tableParsers.parseByRows(table, tableProperties);
+        TableRows tableRows = tableParsers.parseRows(table, tableProperties);
 
         // Then
-        assertThat(rowsData.getHeaders(), equalTo(Arrays.asList("key-1", "key-2")));
-        List<Map<String, String>> rows = rowsData.getRows();
+        assertThat(tableRows.getHeaders(), equalTo(Arrays.asList("key-1", "key-2")));
+        List<Map<String, String>> rows = tableRows.getRows();
         assertThat(rows, hasSize(2));
         Map<String, String> first = new HashMap<>();
         first.put("key-1", "val-1-1");

@@ -4,8 +4,8 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.ResourceLoader;
-import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
-import org.jbehave.core.model.ExamplesTable.PropertiesData;
+import org.jbehave.core.model.ExamplesTable.TableProperties;
+import org.jbehave.core.model.ExamplesTable.TablePropertiesQueue;
 import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 
@@ -72,29 +72,29 @@ public class ExamplesTableFactory {
     }
 
     public ExamplesTable createExamplesTable(String input) {
-        PropertiesData propertiesData = getPropertiesData(input);
+        TablePropertiesQueue tablePropertiesQueue = getPropertiesData(input);
 
-        String tableAsString = propertiesData.getTable().trim();
-        ExamplesTableProperties properties = propertiesData.getProperties().peekLast();
+        String tableAsString = tablePropertiesQueue.getTable().trim();
+        TableProperties properties = tablePropertiesQueue.getProperties().peekLast();
 
         if (!isTable(tableAsString, properties) && !tableAsString.isEmpty()) {
             String loadedTable = resourceLoader.loadResourceAsText(tableAsString.trim());
-            propertiesData = getPropertiesData(loadedTable);
-            propertiesData.getProperties().addFirst(properties);
+            tablePropertiesQueue = getPropertiesData(loadedTable);
+            tablePropertiesQueue.getProperties().addFirst(properties);
         }
 
-        return new ExamplesTable(propertiesData, keywords.examplesTableHeaderSeparator(),
+        return new ExamplesTable(tablePropertiesQueue, keywords.examplesTableHeaderSeparator(),
                 keywords.examplesTableValueSeparator(), keywords.examplesTableIgnorableSeparator(),
                 parameterConverters, parameterControls, new TableParsers(), tableTransformers);
     }
 
-    protected boolean isTable(String table, ExamplesTableProperties properties) {
+    protected boolean isTable(String table, TableProperties properties) {
         String headerSeparator = properties == null ? keywords.examplesTableHeaderSeparator()
                 : properties.getHeaderSeparator();
         return table.startsWith(headerSeparator);
     }
 
-    private PropertiesData getPropertiesData(String input) {
+    private TablePropertiesQueue getPropertiesData(String input) {
         return tableParsers.parseProperties(input, keywords);
     }
 

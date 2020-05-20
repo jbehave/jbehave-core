@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
+import org.jbehave.core.model.ExamplesTable.TableProperties;
 
 /**
  * <p>
@@ -39,7 +39,7 @@ public class TableTransformers {
         useTransformer(REPLACING, new Replacing());
     }
 
-    public String transform(String transformerName, String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
+    public String transform(String transformerName, String tableAsString, TableParsers tableParsers, TableProperties properties) {
         TableTransformer transformer = transformers.get(transformerName);
         if (transformer != null) {
             return transformer.transform(tableAsString, tableParsers, properties);
@@ -52,13 +52,13 @@ public class TableTransformers {
     }
 
     public interface TableTransformer {
-        String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties);
+        String transform(String tableAsString, TableParsers tableParsers, TableProperties properties);
     }
 
     public static class FromLandscape implements TableTransformer {
 
         @Override
-        public String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
+        public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
             Map<String, List<String>> data = new LinkedHashMap<>();
             for (String rowAsString : tableAsString.split(properties.getRowSeparator())) {
                 if (ignoreRow(rowAsString, properties.getIgnorableSeparator())) {
@@ -98,7 +98,7 @@ public class TableTransformers {
     public static class Formatting implements TableTransformer {
 
         @Override
-        public String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
+        public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
             List<List<String>> data = new ArrayList<>();
             for (String rowAsString : tableAsString.split(properties.getRowSeparator())) {
                 if (ignoreRow(rowAsString, properties.getIgnorableSeparator())) {
@@ -171,7 +171,7 @@ public class TableTransformers {
     public static class Replacing implements TableTransformer {
 
         @Override
-        public String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
+        public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
             String replacing = properties.getProperties().getProperty("replacing");
             String replacement = properties.getProperties().getProperty("replacement");
             if ( replacing == null || replacement == null ) {

@@ -1,6 +1,6 @@
 package org.jbehave.core.model;
 
-import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
+import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.junit.Test;
 
 import java.util.Properties;
@@ -13,11 +13,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 /**
  * @author Valery Yatsynovich
  */
-public class ExamplesTablePropertiesBehaviour {
+public class TablePropertiesBehaviour {
 
     @Test
     public void canGetCustomProperties() {
-        ExamplesTableProperties properties = new ExamplesTableProperties("ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,"
+        TableProperties properties = new TableProperties("ignorableSeparator=!--,headerSeparator=!,valueSeparator=!,"
                 + "commentSeparator=#,trim=false,metaByRow=true,transformer=CUSTOM_TRANSFORMER", "|", "|",
                 "|--");
         assertThat(properties.getRowSeparator(), equalTo("\n"));
@@ -32,13 +32,13 @@ public class ExamplesTablePropertiesBehaviour {
 
     @Test
     public void canSetPropertiesWithBackwardSlash() {
-        ExamplesTableProperties properties = new ExamplesTableProperties("custom=\\", "|", "|", "|--");
+        TableProperties properties = new TableProperties("custom=\\", "|", "|", "|--");
         assertThat(properties.getProperties().getProperty("custom"), equalTo("\\"));
     }
 
     @Test
     public void canGetDefaultProperties() {
-        ExamplesTableProperties properties = new ExamplesTableProperties(new Properties());
+        TableProperties properties = new TableProperties(new Properties());
         assertThat(properties.getHeaderSeparator(), equalTo("|"));
         assertThat(properties.getValueSeparator(), equalTo("|"));
         assertThat(properties.getIgnorableSeparator(), equalTo("|--"));
@@ -52,13 +52,13 @@ public class ExamplesTablePropertiesBehaviour {
     public void canGetAllProperties() {
         Properties properties = new Properties();
         properties.setProperty("key", "value");
-        ExamplesTableProperties tableProperties = new ExamplesTableProperties(properties);
+        TableProperties tableProperties = new TableProperties(properties);
         assertThat(tableProperties.getProperties().containsKey("key"), is(true));
     }
 
     @Test
     public void canGetPropertiesWithNestedTransformersWithoutEscaping() {
-        ExamplesTableProperties properties = new ExamplesTableProperties("transformer=CUSTOM_TRANSFORMER, " +
+        TableProperties properties = new TableProperties("transformer=CUSTOM_TRANSFORMER, " +
                 "tables={transformer=CUSTOM_TRANSFORMER\\, parameter1=value1}", "|", "|",
                 "|--");
         assertThat(properties.getRowSeparator(), equalTo("\n"));

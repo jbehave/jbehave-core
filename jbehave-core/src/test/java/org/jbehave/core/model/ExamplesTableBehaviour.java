@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jbehave.core.annotations.AsParameters;
 import org.jbehave.core.annotations.Parameter;
 import org.jbehave.core.io.LoadFromClasspath;
-import org.jbehave.core.model.ExamplesTable.RowNotFound;
+import org.jbehave.core.model.ExamplesTable.*;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.jbehave.core.steps.ConvertedParameters.ValueNotFound;
 import org.jbehave.core.steps.ParameterControls;
@@ -212,7 +212,7 @@ public class ExamplesTableBehaviour {
         tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 
             @Override
-            public String transform(String tableAsString, TableParsers tableParsers, ExamplesTable.ExamplesTableProperties properties) {
+            public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
                 return tableWithSpacesAsString;
             }
 
@@ -232,7 +232,7 @@ public class ExamplesTableBehaviour {
         tableTransformers.useTransformer("myTransformer", new TableTransformer() {
 
             @Override
-            public String transform(String tableAsString, TableParsers tableParsers, ExamplesTable.ExamplesTableProperties properties) {
+            public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
                 return tableWithSpacesAsString;
             }
 

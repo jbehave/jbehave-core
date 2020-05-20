@@ -172,8 +172,8 @@ public class ExamplesTable {
     private final TableParsers tableParsers;
     private final TableTransformers tableTransformers;
     private final Row defaults;
-    private final RowsData rowsData;
-    private final Deque<ExamplesTableProperties> propertiesList = new LinkedList<>();
+    private final TableRows tableRows;
+    private final Deque<TableProperties> tablePropertiesQueue = new LinkedList<>();
 
     private Map<String, String> namedParameters = new HashMap<>();
     private ParameterControls parameterControls;
@@ -199,13 +199,13 @@ public class ExamplesTable {
         this.tableParsers = tableParsers;
         this.tableTransformers = tableTransformers;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
-        PropertiesData data = tableParsers.parseProperties(tableAsString, headerSeparator, valueSeparator, ignorableSeparator);
-        this.propertiesList.addAll(data.getProperties());
+        TablePropertiesQueue data = tableParsers.parseProperties(tableAsString, headerSeparator, valueSeparator, ignorableSeparator);
+        this.tablePropertiesQueue.addAll(data.getProperties());
         String transformedTable = applyTransformers(data.getTable());
-        this.rowsData = tableParsers.parseByRows(transformedTable, propertiesList.getLast());
+        this.tableRows = tableParsers.parseRows(transformedTable, lastTableProperties());
     }
 
-    ExamplesTable(PropertiesData propertiesData, String headerSeparator, String valueSeparator,
+    ExamplesTable(TablePropertiesQueue tablePropertiesQueue, String headerSeparator, String valueSeparator,
                   String ignorableSeparator, ParameterConverters parameterConverters, ParameterControls parameterControls,
                   TableParsers tableParsers, TableTransformers tableTransformers) {
         this.parameterConverters = parameterConverters;
@@ -213,24 +213,28 @@ public class ExamplesTable {
         this.tableParsers = tableParsers;
         this.tableTransformers = tableTransformers;
         this.defaults = new ConvertedParameters(EMPTY_MAP, parameterConverters);
-        this.propertiesList.addAll(propertiesData.getProperties());
-        String transformedTable = applyTransformers(propertiesData.getTable());
-        this.rowsData = tableParsers.parseByRows(transformedTable, propertiesList.getLast());
+        this.tablePropertiesQueue.addAll(tablePropertiesQueue.getProperties());
+        String transformedTable = applyTransformers(tablePropertiesQueue.getTable());
+        this.tableRows = tableParsers.parseRows(transformedTable, lastTableProperties());
+    }
+
+    private TableProperties lastTableProperties() {
+        return tablePropertiesQueue.getLast();
     }
 
     private ExamplesTable(ExamplesTable other, Row defaults) {
-        this.rowsData = new RowsData(other.rowsData.getHeaders(),
-                other.rowsData.getRows());
+        this.tableRows = new TableRows(other.tableRows.getHeaders(),
+                other.tableRows.getRows());
         this.parameterConverters = other.parameterConverters;
         this.tableParsers = other.tableParsers;
         this.tableTransformers = other.tableTransformers;
-        this.propertiesList.addAll(other.propertiesList);
+        this.tablePropertiesQueue.addAll(other.tablePropertiesQueue);
         this.defaults = defaults;
     }
 
     private String applyTransformers(String tableAsString) {
         String transformedTable = tableAsString;
-        for (ExamplesTableProperties properties : propertiesList) {
+        for (TableProperties properties : tablePropertiesQueue) {
             String transformer = properties.getTransformer();
             if (transformer != null) {
                 transformedTable = tableTransformers.transform(transformer, transformedTable, tableParsers, properties);
@@ -261,32 +265,24 @@ public class ExamplesTable {
     public ExamplesTable withRows(List<Map<String, String>> values) {
         getHeaders().clear();
         getHeaders().addAll(values.get(0).keySet());
-        getDataRows().clear();
-        getDataRows().addAll(values);
+        tableRows.getRows().clear();
+        tableRows.getRows().addAll(values);
         return this;
     }
 
     public Properties getProperties() {
-        return getExampleTableProperties().getProperties();
-    }
-
-    private ExamplesTableProperties getExampleTableProperties() {
-        return propertiesList.getLast();
-    }
-
-    private List<Map<String, String>> getDataRows() {
-        return rowsData.getRows();
+        return lastTableProperties().getProperties();
     }
 
     public List<String> getHeaders() {
-        return rowsData.getHeaders();
+        return tableRows.getHeaders();
     }
 
     public Map<String, String> getRow(int row) {
-        if (row > getDataRows().size() - 1) {
+        if (row > tableRows.getRows().size() - 1) {
             throw new RowNotFound(row);
         }
-        Map<String, String> values = getDataRows().get(row);
+        Map<String, String> values = tableRows.getRows().get(row);
         if (getHeaders().size() != values.keySet().size()) {
             for (String header : getHeaders()) {
                 if (!values.containsKey(header)) {
@@ -320,11 +316,11 @@ public class ExamplesTable {
     }
 
     public int getRowCount() {
-        return getDataRows().size();
+        return tableRows.getRows().size();
     }
 
     public boolean metaByRow(){
-        return getExampleTableProperties().isMetaByRow();
+        return lastTableProperties().isMetaByRow();
     }
 
     public List<Map<String, String>> getRows() {
@@ -418,15 +414,15 @@ public class ExamplesTable {
     }
 
     public String getHeaderSeparator() {
-        return getExampleTableProperties().getHeaderSeparator();
+        return lastTableProperties().getHeaderSeparator();
     }
 
     public String getValueSeparator() {
-        return getExampleTableProperties().getValueSeparator();
+        return lastTableProperties().getValueSeparator();
     }
 
     public String asString() {
-        if (getDataRows().isEmpty()) {
+        if (tableRows.getRows().isEmpty()) {
             return EMPTY_VALUE;
         }
         return format();
@@ -438,21 +434,21 @@ public class ExamplesTable {
 
     private String format() {
         StringBuilder sb = new StringBuilder();
-        for (ExamplesTableProperties properties : propertiesList) {
+        for (TableProperties properties : tablePropertiesQueue) {
             String propertiesAsString = properties.getPropertiesAsString();
             if (!propertiesAsString.isEmpty()) {
-                sb.append("{").append(propertiesAsString).append("}").append(getExampleTableProperties().getRowSeparator());
+                sb.append("{").append(propertiesAsString).append("}").append(lastTableProperties().getRowSeparator());
             }
         }
         for (String header : getHeaders()) {
             sb.append(getHeaderSeparator()).append(header);
         }
-        sb.append(getHeaderSeparator()).append(getExampleTableProperties().getRowSeparator());
+        sb.append(getHeaderSeparator()).append(lastTableProperties().getRowSeparator());
         for (Map<String, String> row : getRows()) {
             for (String header : getHeaders()) {
                 sb.append(getValueSeparator()).append(row.get(header));
             }
-            sb.append(getValueSeparator()).append(getExampleTableProperties().getRowSeparator());
+            sb.append(getValueSeparator()).append(lastTableProperties().getRowSeparator());
         }
         return sb.toString();
     }
@@ -476,7 +472,7 @@ public class ExamplesTable {
         }
     }
 
-    public static final class ExamplesTableProperties {
+    public static final class TableProperties {
 
         private static final String HEADER_SEPARATOR = "|";
         private static final String VALUE_SEPARATOR = "|";
@@ -493,7 +489,7 @@ public class ExamplesTable {
         private final Properties properties = new Properties();
         private final String propertiesAsString;
 
-        public ExamplesTableProperties(Properties properties){
+        public TableProperties(Properties properties){
             this.properties.putAll(properties);
             if ( !this.properties.containsKey(HEADER_SEPARATOR_KEY) ){
                 this.properties.setProperty(HEADER_SEPARATOR_KEY, HEADER_SEPARATOR);
@@ -514,8 +510,8 @@ public class ExamplesTable {
             propertiesAsString = propertiesAsStringBuilder.substring(0, propertiesAsStringBuilder.length() - 1);
         }
 
-        public ExamplesTableProperties(String propertiesAsString, String defaultHeaderSeparator, String defaultValueSeparator,
-                String defaultIgnorableSeparator) {
+        public TableProperties(String propertiesAsString, String defaultHeaderSeparator, String defaultValueSeparator,
+                               String defaultIgnorableSeparator) {
             properties.setProperty(HEADER_SEPARATOR_KEY, defaultHeaderSeparator);
             properties.setProperty(VALUE_SEPARATOR_KEY, defaultValueSeparator);
             properties.setProperty(IGNORABLE_SEPARATOR_KEY, defaultIgnorableSeparator);
@@ -575,11 +571,11 @@ public class ExamplesTable {
         }
     }
 
-    static final class PropertiesData {
+    static final class TablePropertiesQueue {
         private final String table;
-        private final Deque<ExamplesTableProperties> properties;
+        private final Deque<TableProperties> properties;
 
-        PropertiesData(String table, Deque<ExamplesTableProperties> properties) {
+        TablePropertiesQueue(String table, Deque<TableProperties> properties) {
             this.table = table;
             this.properties = properties;
         }
@@ -588,16 +584,16 @@ public class ExamplesTable {
             return table;
         }
 
-        Deque<ExamplesTableProperties> getProperties() {
+        Deque<TableProperties> getProperties() {
             return properties;
         }
     }
 
-    public static final class RowsData {
+    public static final class TableRows {
         private final List<String> headers;
         private final List<Map<String, String>> rows;
 
-        public RowsData(List<String> headers, List<Map<String, String>> rows) {
+        public TableRows(List<String> headers, List<Map<String, String>> rows) {
             this.headers = headers;
             this.rows = rows;
         }

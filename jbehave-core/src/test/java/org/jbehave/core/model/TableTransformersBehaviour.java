@@ -3,13 +3,13 @@ package org.jbehave.core.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
+import org.jbehave.core.model.ExamplesTable.TableProperties;
 import org.jbehave.core.model.TableTransformers.TableTransformer;
 import org.junit.Test;
 
 public class TableTransformersBehaviour {
 
-    private static final ExamplesTableProperties PROPERTIES = createExamplesTableProperties();
+    private static final TableProperties PROPERTIES = createExamplesTableProperties();
 
     private TableParsers tableParsers = new TableParsers();
 
@@ -23,8 +23,8 @@ public class TableTransformersBehaviour {
 
     private String myTransformedTableAsString = "|one |two | |\n" + "|11 |12 | |\n" + "| 21| 22| |\n";
 
-    private static ExamplesTableProperties createExamplesTableProperties() {
-        return new ExamplesTableProperties("", "|", "|", "!--");
+    private static TableProperties createExamplesTableProperties() {
+        return new TableProperties("", "|", "|", "!--");
     }
 
     @Test
@@ -54,7 +54,7 @@ public class TableTransformersBehaviour {
     @Test
     public void shouldTransformTableByReplacement() {
         TableTransformers tableTransformers = new TableTransformers();
-        ExamplesTableProperties properties = createExamplesTableProperties();
+        TableProperties properties = createExamplesTableProperties();
         properties.getProperties().setProperty("replacing", "|");
         properties.getProperties().setProperty("replacement", "\t");
         String transformed = tableTransformers.transform(TableTransformers.REPLACING, tableAsString, tableParsers, properties);
@@ -74,7 +74,7 @@ public class TableTransformersBehaviour {
         tableTransformers.useTransformer("myTransformer", new TableTransformer(){
 
             @Override
-            public String transform(String tableAsString, TableParsers tableParsers, ExamplesTableProperties properties) {
+            public String transform(String tableAsString, TableParsers tableParsers, TableProperties properties) {
                 return myTransformedTableAsString;
             }
             

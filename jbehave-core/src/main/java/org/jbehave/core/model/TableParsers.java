@@ -10,9 +10,9 @@ import java.util.regex.Matcher;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.model.ExamplesTable.ExamplesTableProperties;
-import org.jbehave.core.model.ExamplesTable.PropertiesData;
-import org.jbehave.core.model.ExamplesTable.RowsData;
+import org.jbehave.core.model.ExamplesTable.TableProperties;
+import org.jbehave.core.model.ExamplesTable.TablePropertiesQueue;
+import org.jbehave.core.model.ExamplesTable.TableRows;
 
 public class TableParsers {
 
@@ -20,32 +20,32 @@ public class TableParsers {
 
     public TableParsers(){}
 
-    public PropertiesData parseProperties(String tableAsString, Keywords keywords) {
+    public TablePropertiesQueue parseProperties(String tableAsString, Keywords keywords) {
         return parseProperties(tableAsString, keywords.examplesTableHeaderSeparator(), keywords.examplesTableValueSeparator(),
                 keywords.examplesTableIgnorableSeparator());
     }
 
-    public PropertiesData parseProperties(String tableAsString, String headerSeparator, String valueSeparator,
-                                                        String ignorableSeparator) {
-        Deque<ExamplesTableProperties> properties = new LinkedList<>();
+    public TablePropertiesQueue parseProperties(String tableAsString, String headerSeparator, String valueSeparator,
+                                                              String ignorableSeparator) {
+        Deque<TableProperties> properties = new LinkedList<>();
         String tableWithoutProperties = tableAsString.trim();
         Matcher matcher = ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
         while (matcher.matches()) {
             String propertiesAsString = matcher.group(1);
             propertiesAsString = StringUtils.replace(propertiesAsString, "\\{", "{");
             propertiesAsString = StringUtils.replace(propertiesAsString, "\\}", "}");
-            properties.add(new ExamplesTableProperties(propertiesAsString, headerSeparator,
+            properties.add(new TableProperties(propertiesAsString, headerSeparator,
                     valueSeparator, ignorableSeparator));
             tableWithoutProperties = matcher.group(2).trim();
             matcher = ExamplesTable.INLINED_PROPERTIES_PATTERN.matcher(tableWithoutProperties);
         }
         if (properties.isEmpty()) {
-            properties.add(new ExamplesTableProperties("", headerSeparator, valueSeparator, ignorableSeparator));
+            properties.add(new TableProperties("", headerSeparator, valueSeparator, ignorableSeparator));
         }
-        return new ExamplesTable.PropertiesData(tableWithoutProperties, properties);
+        return new TablePropertiesQueue(tableWithoutProperties, properties);
     }
 
-    public RowsData parseByRows(String tableAsString, ExamplesTableProperties properties) {
+    public TableRows parseRows(String tableAsString, TableProperties properties) {
         List<String> headers = new ArrayList<>();
         List<Map<String, String>> data = new ArrayList<>();
 
@@ -68,10 +68,10 @@ public class TableParsers {
             }
         }
 
-        return new RowsData(headers, data);
+        return new TableRows(headers, data);
     }
 
-    public List<String> parseRow(String rowAsString, boolean header, ExamplesTableProperties properties) {
+    public List<String> parseRow(String rowAsString, boolean header, TableProperties properties) {
         String separator = header ? properties.getHeaderSeparator() : properties.getValueSeparator();
         return parseRow(rowAsString, separator, properties.getCommentSeparator(), properties.isTrim());
     }
