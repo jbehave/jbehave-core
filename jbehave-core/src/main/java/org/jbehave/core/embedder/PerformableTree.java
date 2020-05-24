@@ -818,19 +818,7 @@ public class PerformableTree {
         SUCCESSFUL, FAILED, PENDING, NOT_PERFORMED, NOT_ALLOWED;
     }
 
-    private static void performGivenStories(RunContext context, List<PerformableStory> performableGivenStories,
-            GivenStories givenStories) throws InterruptedException {
-        if (performableGivenStories.size() > 0) {
-            context.reporter().beforeGivenStories();
-            context.reporter().givenStories(givenStories);
-            for (PerformableStory story : performableGivenStories) {
-                story.perform(context);
-            }
-            context.reporter().afterGivenStories();
-        }
-    }
-
-    public static class PerformableStory implements Performable {
+    public static class PerformableStory extends AbstractPerformableGivenStories {
 
         private final Story story;
         private final transient Keywords keywords;
@@ -1076,7 +1064,23 @@ public class PerformableTree {
 
     }
 
-    public static abstract class AbstractPerformableScenario implements Performable {
+    public static abstract class AbstractPerformableGivenStories implements Performable {
+
+        protected void performGivenStories(RunContext context, List<PerformableStory> performableGivenStories,
+                                                GivenStories givenStories) throws InterruptedException {
+            if (performableGivenStories.size() > 0) {
+                context.reporter().beforeGivenStories();
+                context.reporter().givenStories(givenStories);
+                for (PerformableStory story : performableGivenStories) {
+                    story.perform(context);
+                }
+                context.reporter().afterGivenStories();
+            }
+        }
+
+    }
+
+    public static abstract class AbstractPerformableScenario extends AbstractPerformableGivenStories {
 
         private transient Scenario scenario;
         protected final Map<String, String> parameters;
