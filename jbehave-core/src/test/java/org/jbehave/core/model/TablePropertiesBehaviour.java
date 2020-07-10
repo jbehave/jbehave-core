@@ -83,7 +83,6 @@ public class TablePropertiesBehaviour {
     }
 
     @Test
-    @Ignore("FIXME")
     public void canTrimPropertyValuesByDefault() {
         TableProperties properties = new TableProperties("key1= surroundedWithSpaces , key2= ");
         assertThat(properties.getProperties().getProperty("key1"), equalTo("surroundedWithSpaces"));
@@ -91,7 +90,6 @@ public class TablePropertiesBehaviour {
     }
 
     @Test
-    @Ignore("FIXME")
     public void canApplyChainedDecoratorsToPropertyValues() {
         TableProperties properties = new TableProperties("{key1|uppercase|verbatim}= toUpper , {key2|lowercase|trim}= toLower ");
         assertThat(properties.getProperties().getProperty("key1"), equalTo(" TOUPPER "));

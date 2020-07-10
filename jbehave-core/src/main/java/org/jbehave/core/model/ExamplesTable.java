@@ -469,9 +469,9 @@ public class ExamplesTable {
         private static final String EQUAL = "=";
         private static final String PIPE_REGEX = "\\|";
 
-        private static final String PROPERTIES_REGEX = "((\\s?)\\w+(\\s?)=(\\W+(?=,)|\\w+|\\{.+}|\\{?\\w+|\\\\))|(\\{\\w+" +
-                "\\|(\\w+,?\\w+)+}(\\s?)=((\\s+)?\\S+?(?=,)|(\\s+)?\\S+(\\s+)?))";
-        private static final String DECORATED_PROPERTY_REGEX = "\\{\\w+\\|(\\w+,?\\w+)+}";
+        private static final String PROPERTIES_REGEX = "((\\s*?)\\w+(\\s*?)=(\\s?)(\\W+(?=,)|\\w+|\\{.+}|\\{?\\w+|\\\\|\\s+)(\\s?))|(\\{\\w+" +
+                "\\|(\\w+\\|?\\w+)+}(\\s?)=((\\s+)?\\S+?(?=,)|(\\s+)?\\S+(\\s+)?))";
+        private static final String DECORATED_PROPERTY_REGEX = "\\{\\w+\\|(\\w+\\|?\\w+)+}";
 
         private static final String HEADER_SEPARATOR = "|";
         private static final String VALUE_SEPARATOR = "|";
@@ -533,8 +533,10 @@ public class ExamplesTable {
                         String[] propertyWithDecorators = propertyName.substring(1, propertyName.length() - 1)
                                 .split(PIPE_REGEX);
                         propertyName = propertyWithDecorators[0];
-                        for (String decorator : propertyWithDecorators[1].split(COMMA)) {
-                            propertyValue = decoratePropertyValue(propertyValue, Decorator.valueOf(decorator.toUpperCase()));
+                        for (int i = 1; i < propertyWithDecorators.length; i++)
+                        {
+                            String decorator = propertyWithDecorators[i].toUpperCase();
+                            propertyValue = decoratePropertyValue(propertyValue, Decorator.valueOf(decorator));
                         }
                     } else {
                         propertyValue = propertyValue.trim();
