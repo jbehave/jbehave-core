@@ -71,4 +71,16 @@ public class TablePropertiesBehaviour {
         assertThat(properties.getProperties().getProperty("tables"),
                 equalTo("{transformer=CUSTOM_TRANSFORMER, parameter1=value1}"));
     }
+
+    @Test
+    public void canParseSpacePropertiesWithModifiers() {
+        TableProperties properties = new TableProperties("key= , {key1|verbatrim,UPPERCASE}= surroundedWithSpaces ", "|", "|",
+                "|--");
+        assertThat(properties.getRowSeparator(), equalTo("\n"));
+        assertThat(properties.getHeaderSeparator(), equalTo("|"));
+        assertThat(properties.getValueSeparator(), equalTo("|"));
+        assertThat(properties.getIgnorableSeparator(), equalTo("|--"));
+        assertThat(properties.getProperties().getProperty("key"), equalTo(""));
+        assertThat(properties.getProperties().getProperty("key1"), equalTo(" SURROUNDEDWITHSPACES "));
+    }
 }
