@@ -168,8 +168,6 @@ public class ExamplesTable {
     private static final String HEADER_SEPARATOR = "|";
     private static final String VALUE_SEPARATOR = "|";
     private static final String IGNORABLE_SEPARATOR = "|--";
-    private static final String PROPERTY_PATTERN = "((\\s?)\\w+(\\s?)=(\\W+(?=,)|\\w+|\\{.+}|\\{?\\w+|\\\\))|(\\{\\w+" +
-            "\\|(\\w+,?\\w+)+}(\\s?)=((\\s+)?\\S+?(?=,)|(\\s+)?\\S+(\\s+)?))";
 
     private final ParameterConverters parameterConverters;
     private final Row defaults;
@@ -464,6 +462,17 @@ public class ExamplesTable {
 
     public static final class TableProperties {
 
+        public enum Decorator { LOWERCASE, UPPERCASE, VERBATIM, TRIM };
+
+        private static final String COMMA = ",";
+        private static final String COMMA_REGEX = "\\,";
+        private static final String EQUAL = "=";
+        private static final String PIPE_REGEX = "\\|";
+
+        private static final String PROPERTIES_REGEX = "((\\s?)\\w+(\\s?)=(\\W+(?=,)|\\w+|\\{.+}|\\{?\\w+|\\\\))|(\\{\\w+" +
+                "\\|(\\w+,?\\w+)+}(\\s?)=((\\s+)?\\S+?(?=,)|(\\s+)?\\S+(\\s+)?))";
+        private static final String DECORATED_PROPERTY_REGEX = "\\{\\w+\\|(\\w+,?\\w+)+}";
+
         private static final String HEADER_SEPARATOR = "|";
         private static final String VALUE_SEPARATOR = "|";
         private static final String IGNORABLE_SEPARATOR = "|--";
@@ -500,6 +509,10 @@ public class ExamplesTable {
             propertiesAsString = propertiesAsStringBuilder.substring(0, propertiesAsStringBuilder.length() - 1);
         }
 
+        public TableProperties(String propertiesAsString) {
+            this(propertiesAsString, HEADER_SEPARATOR, VALUE_SEPARATOR, IGNORABLE_SEPARATOR);
+        }
+
         public TableProperties(String propertiesAsString, String defaultHeaderSeparator, String defaultValueSeparator,
                                String defaultIgnorableSeparator) {
             properties.setProperty(HEADER_SEPARATOR_KEY, defaultHeaderSeparator);
@@ -512,44 +525,45 @@ public class ExamplesTable {
         private Map<String, String> parseProperties(String propertiesAsString) {
             Map<String, String> result = new LinkedHashMap<>();
             if (!isEmpty(propertiesAsString)) {
-                List<String> splittedProperties = splitProperties(propertiesAsString);
-                for (String propertyAsString : splittedProperties) {
-                    String[] property = StringUtils.split(propertyAsString, "=", 2);
+                for (String propertyAsString : splitProperties(propertiesAsString)) {
+                    String[] property = StringUtils.split(propertyAsString, EQUAL, 2);
                     String propertyName = property[0];
                     String propertyValue = property[1];
-                    if (propertyName.matches("\\{\\w+\\|(\\w+,?\\w+)+}")) {
-                        String[] propertyWithModifiers = propertyName.substring(1, propertyName.length() - 1)
-                                .split("\\|");
-                        propertyName = propertyWithModifiers[0];
-                        String[] modifiers = propertyWithModifiers[1].split(",");
-                        for (String modifier : modifiers) {
-                            propertyValue = modifyPropertyValue(propertyValue, modifier);
+                    if (propertyName.matches(DECORATED_PROPERTY_REGEX)) {
+                        String[] propertyWithDecorators = propertyName.substring(1, propertyName.length() - 1)
+                                .split(PIPE_REGEX);
+                        propertyName = propertyWithDecorators[0];
+                        for (String decorator : propertyWithDecorators[1].split(COMMA)) {
+                            propertyValue = decoratePropertyValue(propertyValue, Decorator.valueOf(decorator.toUpperCase()));
                         }
                     } else {
                         propertyValue = propertyValue.trim();
                     }
-                    result.put(propertyName.trim(), StringUtils.replace(propertyValue, "\\,", ","));
+                    result.put(propertyName.trim(), StringUtils.replace(propertyValue, COMMA_REGEX, COMMA));
                  }
             }
             return result;
         }
 
         private List<String> splitProperties(String propertiesAsString) {
-            List<String> splittedProperties = new ArrayList<>();
-            Pattern  pattern = Pattern.compile(PROPERTY_PATTERN);
+            List<String> properties = new ArrayList<>();
+            Pattern  pattern = Pattern.compile(PROPERTIES_REGEX);
             Matcher matcher = pattern.matcher(propertiesAsString);
             while (matcher.find()) {
-                splittedProperties.add(matcher.group(0));
+                properties.add(matcher.group(0));
             }
-            return splittedProperties;
+            return properties;
         }
 
-        private String modifyPropertyValue(String value, String modifier) {
-            switch (modifier.toLowerCase()) {
-                case "verbatrim":
+        private String decoratePropertyValue(String value, Decorator decorator) {
+            switch (decorator) {
+                case VERBATIM:
                     return value;
-                case "uppercase":
+                case LOWERCASE:
+                    return value.toLowerCase();
+                case UPPERCASE:
                     return value.toUpperCase();
+                case TRIM:
                 default:
                     return value.trim();
             }
