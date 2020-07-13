@@ -544,6 +544,20 @@ public class ExamplesTableBehaviour {
     }
 
     @Test
+    public void shouldAllowBuildingOfTableFromEmptyContent() {
+        // Given
+        ExamplesTableFactory factory = createFactory();
+
+        // When
+        String tableAsString = "|one|two|\n|11|12|\n|21|22|";
+        ExamplesTable originalTable = factory.createExamplesTable(tableAsString);
+        ExamplesTable updatedTable = originalTable.withRows(Collections.emptyList());
+
+        // Then
+        assertThat(updatedTable.asString(), equalTo(""));
+    }
+
+    @Test
     public void shouldAllowOutputToPrintStream() {
         // Given
         ExamplesTableFactory factory = createFactory();

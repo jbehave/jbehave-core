@@ -252,9 +252,11 @@ public class ExamplesTable {
 
     public ExamplesTable withRows(List<Map<String, String>> values) {
         getHeaders().clear();
-        getHeaders().addAll(values.get(0).keySet());
         tableRows.getRows().clear();
-        tableRows.getRows().addAll(values);
+        if (!values.isEmpty()) {
+            getHeaders().addAll(values.get(0).keySet());
+            tableRows.getRows().addAll(values);
+        }
         return this;
     }
 
