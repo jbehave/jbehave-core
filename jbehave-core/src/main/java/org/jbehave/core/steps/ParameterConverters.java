@@ -378,7 +378,7 @@ public class ParameterConverters {
             }
         }
 
-        throw new ParameterConvertionFailed("No parameter converter for " + type);
+        throw new ParameterConversionFailed("No parameter converter for " + type);
     }
 
     private ChainableParameterConverter findConverter(Type type) {
@@ -540,13 +540,13 @@ public class ParameterConverters {
     }
 
     @SuppressWarnings("serial")
-    public static class ParameterConvertionFailed extends RuntimeException {
+    public static class ParameterConversionFailed extends RuntimeException {
 
-        public ParameterConvertionFailed(String message) {
+        public ParameterConversionFailed(String message) {
             super(message);
         }
 
-        public ParameterConvertionFailed(String message, Throwable cause) {
+        public ParameterConversionFailed(String message, Throwable cause) {
             super(message, cause);
         }
     }
@@ -698,7 +698,7 @@ public class ParameterConverters {
                     return n;
                 }
             } catch (NumberFormatException | ParseException e) {
-                throw new ParameterConvertionFailed(value, e);
+                throw new ParameterConversionFailed(value, e);
             }
         }
 
@@ -864,7 +864,7 @@ public class ParameterConverters {
             try {
                 return dateFormat.parse(value);
             } catch (ParseException e) {
-                throw new ParameterConvertionFailed("Failed to convert value " + value + " with date format "
+                throw new ParameterConversionFailed("Failed to convert value " + value + " with date format "
                         + (dateFormat instanceof SimpleDateFormat ? ((SimpleDateFormat) dateFormat).toPattern()
                                 : dateFormat), e);
             }
@@ -955,7 +955,7 @@ public class ParameterConverters {
                 valueOfMethod.setAccessible(true);
                 return (Enum<?>) valueOfMethod.invoke(enumClass, new Object[] { value });
             } catch (Exception e) {
-                throw new ParameterConvertionFailed("Failed to convert " + value + " for Enum " + typeClass, e);
+                throw new ParameterConversionFailed("Failed to convert " + value + " for Enum " + typeClass, e);
             }
         }
     }
@@ -1171,7 +1171,7 @@ public class ParameterConverters {
                 Object instance = instance();
                 return method.invoke(instance, value);
             } catch (Exception e) {
-                throw new ParameterConvertionFailed("Failed to invoke method " + method + " with value " + value
+                throw new ParameterConversionFailed("Failed to invoke method " + method + " with value " + value
                         + " in " + type, e);
             }
         }

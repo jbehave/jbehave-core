@@ -70,7 +70,7 @@ import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberConverter;
 import org.jbehave.core.steps.ParameterConverters.NumberListConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
-import org.jbehave.core.steps.ParameterConverters.ParameterConvertionFailed;
+import org.jbehave.core.steps.ParameterConverters.ParameterConversionFailed;
 import org.jbehave.core.steps.ParameterConverters.PatternConverter;
 import org.jbehave.core.steps.ParameterConverters.StringListConverter;
 import org.jbehave.core.steps.SomeSteps.MyParameters;
@@ -265,14 +265,14 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertInvalidNumbersWithNumberFormat() {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         expectedException.expectCause(CoreMatchers.<ParseException>instanceOf(ParseException.class));
         new NumberConverter().convertValue("abc", Long.class);
     }
 
     @Test
     public void shouldFailToConvertInvalidNumbersWithNumberFormat2()  {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         expectedException.expectCause(CoreMatchers.<NumberFormatException>instanceOf(NumberFormatException.class));
         new NumberConverter().convertValue("12.34.56", BigDecimal.class);
     }
@@ -353,7 +353,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertToArrayOfCustomObjectsIfNoConverterFound() {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         expectedException.expectMessage(
                 "No parameter converter for class [Lorg.jbehave.core.steps.ParameterConvertersBehaviour$Bar");
         new ParameterConverters().convert("foo", Bar[].class);
@@ -361,7 +361,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertCommaSeparatedValuesOfInvalidNumbers() {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         new NumberListConverter().convertValue("3x, x.5", new TypeLiteral<List<Number>>(){}.getType());
     }
 
@@ -399,7 +399,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertDateWithInvalidFormat() {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         new DateConverter().convertValue("dd+MM+yyyy", Date.class);
     }
 
@@ -492,7 +492,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertParameterFromFailingMethodReturningValue() throws IntrospectionException {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         Method method = SomeSteps.methodFor("aFailingMethodReturningExamplesTable");
         ParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
@@ -501,7 +501,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertToUnknownType() {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         new ParameterConverters(new LoadFromClasspath(), new TableTransformers()).convert("abc", WrongType.class);
     }
 
@@ -523,7 +523,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertEnumForValueNotDefined() {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         new EnumConverter().convertValue("FOUR", SomeEnum.class);
     }
 
@@ -568,7 +568,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldNotModifyListOfConvertersFromOriginalParameterConvertersWhenCreatingNewInstance() {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         ParameterConverters original = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
         original.newInstanceAdding(new FooToBarParameterConverter());
         original.convert("foo", Bar.class);
@@ -621,7 +621,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldNotConvertToAnyCollectionOfCustomObjectsUsingCustomConverter() {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         expectedException.expectMessage(
                 "No parameter converter for java.util.Collection<org.jbehave.core.steps.ParameterConvertersBehaviour$Bar>");
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
@@ -632,7 +632,7 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldNotConvertToListOfCustomObjectsWhenElementConverterIsNotAdded() {
-        expectedException.expect(ParameterConvertionFailed.class);
+        expectedException.expect(ParameterConversionFailed.class);
         expectedException.expectMessage(
                 "No parameter converter for java.util.List<org.jbehave.core.steps.ParameterConvertersBehaviour$Bar>");
         ParameterConverters parameterConverters = new ParameterConverters(new TableTransformers());
