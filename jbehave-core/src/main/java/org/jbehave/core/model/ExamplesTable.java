@@ -502,11 +502,11 @@ public class ExamplesTable {
             if ( !this.properties.containsKey(COMMENT_SEPARATOR_KEY) ){
                 this.properties.setProperty(COMMENT_SEPARATOR_KEY, COMMENT_SEPARATOR);
             }
-            StringBuilder propertiesAsStringBuilder = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
             for (Map.Entry<Object, Object> property : this.properties.entrySet()) {
-                propertiesAsStringBuilder.append(property.getKey()).append('=').append(property.getValue()).append(',');
+                sb.append(property.getKey()).append(EQUAL).append(property.getValue()).append(COMMA);
             }
-            propertiesAsString = propertiesAsStringBuilder.substring(0, propertiesAsStringBuilder.length() - 1);
+            propertiesAsString = sb.substring(0, sb.length() - 1);
         }
 
         public TableProperties(String propertiesAsString) {
@@ -533,8 +533,7 @@ public class ExamplesTable {
                         String[] propertyWithDecorators = propertyName.substring(1, propertyName.length() - 1)
                                 .split(PIPE_REGEX);
                         propertyName = propertyWithDecorators[0];
-                        for (int i = 1; i < propertyWithDecorators.length; i++)
-                        {
+                        for (int i = 1; i < propertyWithDecorators.length; i++){
                             String decorator = propertyWithDecorators[i].toUpperCase();
                             propertyValue = decoratePropertyValue(propertyValue, Decorator.valueOf(decorator));
                         }

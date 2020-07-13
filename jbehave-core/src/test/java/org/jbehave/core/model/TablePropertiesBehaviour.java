@@ -69,7 +69,7 @@ public class TablePropertiesBehaviour {
     }
 
     @Test
-    public void canDecoratePropertyValuesToTrimOrVerbatim() {
+    public void canDecoratePropertyValuesToTrimOrKeepVerbatim() {
         TableProperties properties = new TableProperties("{key1|trim}= surroundedWithSpaces, {key2|verbatim}= surroundedWithSpaces ");
         assertThat(properties.getProperties().getProperty("key1"), equalTo("surroundedWithSpaces"));
         assertThat(properties.getProperties().getProperty("key2"), equalTo(" surroundedWithSpaces "));
@@ -90,7 +90,7 @@ public class TablePropertiesBehaviour {
     }
 
     @Test
-    public void canApplyChainedDecoratorsToPropertyValues() {
+    public void canChainDecoratorsToDecoratePropertyValues() {
         TableProperties properties = new TableProperties("{key1|uppercase|verbatim}= toUpper , {key2|lowercase|trim}= toLower ");
         assertThat(properties.getProperties().getProperty("key1"), equalTo(" TOUPPER "));
         assertThat(properties.getProperties().getProperty("key2"), equalTo("tolower"));
