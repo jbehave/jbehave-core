@@ -471,9 +471,9 @@ public class ExamplesTable {
         private static final String EQUAL = "=";
         private static final String PIPE_REGEX = "\\|";
 
-        private static final String PROPERTIES_REGEX = "((\\s*?)\\w+(\\s*?)=(\\s?)(\\W+(?=(?:,|$))|\\w+|\\{.+}|\\{?\\S+|\\\\|\\s+)(\\s?))|(\\{\\w+" +
-                "\\|(\\w+\\|?\\w+)+}(\\s?)=((\\s+)?\\S+?(?=(?:,|$))|(\\s+)?\\S+(\\s+)?))";
-        private static final String DECORATED_PROPERTY_REGEX = "\\{\\w+\\|(\\w+\\|?\\w+)+}";
+        private static final Pattern PROPERTIES_REGEX = Pattern.compile("((\\s*?)\\w+(\\s*?)=(\\s?)(\\W+(?=(?:,|$))|\\w+|\\{.+}|\\{?\\S+|\\\\|\\s+)(\\s?))|(\\{\\w+" +
+                "\\|(\\w+\\|?\\w+)+}(\\s?)=((\\s+)?\\S+?(?=(?:,|$))|(\\s+)?\\S+(\\s+)?))");
+        private static final Pattern DECORATED_PROPERTY_REGEX = Pattern.compile("\\{\\w+\\|(\\w+\\|?\\w+)+}");
 
         private static final String HEADER_SEPARATOR = "|";
         private static final String VALUE_SEPARATOR = "|";
@@ -531,7 +531,7 @@ public class ExamplesTable {
                     String[] property = StringUtils.split(propertyAsString, EQUAL, 2);
                     String propertyName = property[0];
                     String propertyValue = property[1];
-                    if (propertyName.matches(DECORATED_PROPERTY_REGEX)) {
+                    if (DECORATED_PROPERTY_REGEX.matcher(propertyName).matches()) {
                         String[] propertyWithDecorators = propertyName.substring(1, propertyName.length() - 1)
                                 .split(PIPE_REGEX);
                         propertyName = propertyWithDecorators[0];
@@ -550,8 +550,7 @@ public class ExamplesTable {
 
         private List<String> splitProperties(String propertiesAsString) {
             List<String> properties = new ArrayList<>();
-            Pattern  pattern = Pattern.compile(PROPERTIES_REGEX);
-            Matcher matcher = pattern.matcher(propertiesAsString);
+            Matcher matcher = PROPERTIES_REGEX.matcher(propertiesAsString);
             while (matcher.find()) {
                 properties.add(matcher.group(0));
             }
