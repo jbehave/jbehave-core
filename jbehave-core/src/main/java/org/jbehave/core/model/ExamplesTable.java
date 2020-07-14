@@ -15,6 +15,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -471,9 +473,17 @@ public class ExamplesTable {
         private static final String EQUAL = "=";
         private static final String PIPE_REGEX = "\\|";
 
-        private static final Pattern PROPERTIES_REGEX = Pattern.compile("((\\s*?)\\w+(\\s*?)=(\\s?)(\\W+(?=(?:,|$))|\\w+|\\{.+}|\\{?\\S+|\\\\|\\s+)(\\s?))|(\\{\\w+" +
-                "\\|(\\w+\\|?\\w+)+}(\\s?)=((\\s+)?\\S+?(?=(?:,|$))|(\\s+)?\\S+(\\s+)?))");
-        private static final Pattern DECORATED_PROPERTY_REGEX = Pattern.compile("\\{\\w+\\|(\\w+\\|?\\w+)+}");
+        private static final String PROPERTY_NAME_REGEX = "[^=,\\s]+";
+        private static final String DECORATORS_REGEX = Stream.of(Decorator.values())
+                .map(Decorator::name)
+                .collect(Collectors.joining("|", "(", ")"));
+
+        private static final String DECORATED_PROPERTY_REGEX =
+                "\\s*\\{(" + PROPERTY_NAME_REGEX + "(\\|" + DECORATORS_REGEX + ")*)}\\s*";
+        private static final Pattern DECORATED_PROPERTY_PATTERN = Pattern.compile(DECORATED_PROPERTY_REGEX, Pattern.CASE_INSENSITIVE);
+        private static final Pattern PROPERTIES_PATTERN = Pattern.compile("("
+                + DECORATED_PROPERTY_REGEX + "=(\\s*\\S+?(?=(?:,|$))|\\s*\\S+\\s*))|(\\s*" + PROPERTY_NAME_REGEX
+                + "\\s*=(\\s?)(\\W+(?=(?:,|$))|\\w+|\\{.+}|\\{?\\S+|\\\\|\\s+)(\\s?))", Pattern.CASE_INSENSITIVE);
 
         private static final String HEADER_SEPARATOR = "|";
         private static final String VALUE_SEPARATOR = "|";
@@ -531,9 +541,9 @@ public class ExamplesTable {
                     String[] property = StringUtils.split(propertyAsString, EQUAL, 2);
                     String propertyName = property[0];
                     String propertyValue = property[1];
-                    if (DECORATED_PROPERTY_REGEX.matcher(propertyName).matches()) {
-                        String[] propertyWithDecorators = propertyName.substring(1, propertyName.length() - 1)
-                                .split(PIPE_REGEX);
+                    Matcher decoratedPropertyMatcher = DECORATED_PROPERTY_PATTERN.matcher(propertyName);
+                    if (decoratedPropertyMatcher.matches()) {
+                        String[] propertyWithDecorators = decoratedPropertyMatcher.group(1).split(PIPE_REGEX);
                         propertyName = propertyWithDecorators[0];
                         for (int i = 1; i < propertyWithDecorators.length; i++){
                             String decorator = propertyWithDecorators[i].toUpperCase();
@@ -550,7 +560,7 @@ public class ExamplesTable {
 
         private List<String> splitProperties(String propertiesAsString) {
             List<String> properties = new ArrayList<>();
-            Matcher matcher = PROPERTIES_REGEX.matcher(propertiesAsString);
+            Matcher matcher = PROPERTIES_PATTERN.matcher(propertiesAsString);
             while (matcher.find()) {
                 properties.add(matcher.group(0));
             }
