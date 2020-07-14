@@ -38,6 +38,12 @@ public class TablePropertiesBehaviour {
     }
 
     @Test
+    public void canSetPropertiesWithSpecialChars() {
+        TableProperties properties = new TableProperties("withSpecialChars=/:*$\\", "|", "|", "|--");
+        assertThat(properties.getProperties().getProperty("withSpecialChars"), equalTo("/:*$\\"));
+    }
+
+    @Test
     public void canGetDefaultProperties() {
         TableProperties properties = new TableProperties(new Properties());
         assertThat(properties.getHeaderSeparator(), equalTo("|"));
