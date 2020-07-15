@@ -6,6 +6,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.reporters.StoryReporter;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -312,8 +313,58 @@ public class CompositeCandidateStepsBehaviour {
         
         @Given("When I click the Login button")
         public void clickLogin(){}
-        
-        
     }
 
+    @Test
+    public void shouldIgnoreCompositesIgnorableStep(){
+        CompositeWithIgnorableStep steps = new CompositeWithIgnorableStep();
+        List<StepCandidate> candidates = steps.listCandidates();
+        String compositeName = "When ignore my step";
+        StepCandidate candidate = candidateMatchingStep(candidates, compositeName);
+        assertThat(candidate.isComposite(), is(true));
+        Map<String, String> noNamedParameters = new HashMap<>();
+        List<Step> composedSteps = new ArrayList<>();
+        candidate.addComposedSteps(composedSteps, compositeName, noNamedParameters, candidates);
+        StoryReporter reporter = mock(StoryReporter.class);
+        for (Step step : composedSteps) {
+            StepResult result = step.perform(reporter, null);
+            result.describeTo(reporter);
+        }
+        Mockito.verify(reporter).ignorable("!-- When ignore me");
+    }
+
+    static class CompositeWithIgnorableStep extends Steps {
+
+        @When("ignore my step")
+        @Composite(steps={"!-- When ignore me"})
+        public void whenIgnoreMyStep(){}
+
+        @When("ignore me")
+        public void whenIgnoreMe(){}
+    }
+
+    @Test
+    public void shouldCommentCompositesComment(){
+        CompositeWithComment steps = new CompositeWithComment();
+        List<StepCandidate> candidates = steps.listCandidates();
+        String compositeName = "When comment my comment";
+        StepCandidate candidate = candidateMatchingStep(candidates, compositeName);
+        assertThat(candidate.isComposite(), is(true));
+        Map<String, String> noNamedParameters = new HashMap<>();
+        List<Step> composedSteps = new ArrayList<>();
+        candidate.addComposedSteps(composedSteps, compositeName, noNamedParameters, candidates);
+        StoryReporter reporter = mock(StoryReporter.class);
+        for (Step step : composedSteps) {
+            StepResult result = step.perform(reporter, null);
+            result.describeTo(reporter);
+        }
+        Mockito.verify(reporter).comment("!-- comment");
+    }
+
+    static class CompositeWithComment extends Steps {
+
+        @When("comment my comment")
+        @Composite(steps={"!-- comment"})
+        public void whenIgnoreMyStep(){}
+    }
 }

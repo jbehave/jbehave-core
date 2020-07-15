@@ -198,25 +198,33 @@ public class StepCandidate {
         String previousNonAndStep = null;
         for (String composedStep : composedSteps) {
             addComposedStep(steps, composedStep, previousNonAndStep, mergedParameters, allCandidates);
-            if (!(keywords.isAndStep(stepAsString) || keywords.isIgnorableStep(stepAsString))) {
+            if (!(keywords.isAndStep(composedStep) || keywords.isIgnorableStep(composedStep))) {
                 // only update previous step if not AND or IGNORABLE step
-                previousNonAndStep = stepAsString;
+                previousNonAndStep = composedStep;
             }
         }
     }
 
     private void addComposedStep(List<Step> steps, String composedStep, String previousNonAndStep,
             Map<String, String> matchedParameters, List<StepCandidate> allCandidates) {
-        StepCandidate candidate = findComposedCandidate(composedStep, previousNonAndStep, allCandidates);
-        if (candidate != null) {
-            List<Step> composedSteps = new ArrayList<>();
-            if (candidate.isComposite()) {
-                // candidate is itself composite: recursively add composed steps
-                candidate.addComposedSteps(composedSteps, composedStep, matchedParameters, allCandidates);
-            }
-            steps.add(candidate.createMatchedStep(composedStep, matchedParameters, composedSteps));
+        if (ignore(composedStep)) {
+            // ignorable steps are added so they can be reported
+            steps.add(StepCreator.createIgnorableStep(composedStep));
+        } else if (comment(composedStep)) {
+            // comments are added so they can be reported
+            steps.add(StepCreator.createComment(composedStep));
         } else {
-            steps.add(StepCreator.createPendingStep(composedStep, previousNonAndStep));
+            StepCandidate candidate = findComposedCandidate(composedStep, previousNonAndStep, allCandidates);
+            if (candidate != null) {
+                List<Step> composedSteps = new ArrayList<>();
+                if (candidate.isComposite()) {
+                    // candidate is itself composite: recursively add composed steps
+                    candidate.addComposedSteps(composedSteps, composedStep, matchedParameters, allCandidates);
+                }
+                steps.add(candidate.createMatchedStep(composedStep, matchedParameters, composedSteps));
+            } else {
+                steps.add(StepCreator.createPendingStep(composedStep, previousNonAndStep));
+            }
         }
     }
 
