@@ -42,8 +42,14 @@ public class TablePropertiesBehaviour {
 
     @Test
     public void canSetPropertiesWithSpecialCharsInValues() {
-        TableProperties properties = createTablePropertiesWithDefaultSeparators("withSpecialChars=/:*$\\");
-        assertThat(properties.getProperties().getProperty("withSpecialChars"), equalTo("/:*$\\"));
+        TableProperties properties = createTablePropertiesWithDefaultSeparators("withSpecialChars=value;/:*$\\");
+        assertThat(properties.getProperties().getProperty("withSpecialChars"), equalTo("value;/:*$\\"));
+    }
+
+    @Test
+    public void canSetPropertiesWithMixedCharsInValues() {
+        TableProperties properties = createTablePropertiesWithDefaultSeparators("withMixedChars=value1;value2:*");
+        assertThat(properties.getProperties().getProperty("withMixedChars"), equalTo("value1;value2:*"));
     }
 
     @Test
