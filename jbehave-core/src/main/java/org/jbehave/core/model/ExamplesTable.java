@@ -483,7 +483,7 @@ public class ExamplesTable {
         private static final Pattern DECORATED_PROPERTY_PATTERN = Pattern.compile(DECORATED_PROPERTY_REGEX, Pattern.CASE_INSENSITIVE);
         private static final Pattern PROPERTIES_PATTERN = Pattern.compile("("
                 + DECORATED_PROPERTY_REGEX + "=(\\s*\\S+?(?=(?:,|$))|\\s*\\S+\\s*))|(\\s*" + PROPERTY_NAME_REGEX
-                + "\\s*=(\\s?)(\\W+(?=(?:,|$))|(?!\\{)[^=,\\s]+|\\{.+}|\\{?\\S+|\\\\|\\s+)(\\s?))", Pattern.CASE_INSENSITIVE);
+                + "\\s*=(\\s?)(\\W+(?=(?:,|$))|(?!\\{)[^,\\s]+|\\{.+}|\\{?\\S+|\\\\|\\s+)(\\s?))", Pattern.CASE_INSENSITIVE);
 
         private static final String HEADER_SEPARATOR = "|";
         private static final String VALUE_SEPARATOR = "|";
