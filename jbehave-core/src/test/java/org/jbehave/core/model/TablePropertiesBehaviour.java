@@ -59,6 +59,12 @@ public class TablePropertiesBehaviour {
     }
 
     @Test
+    public void canSetPropertiesStartingWithSpecialCharsAndContainingBracketsInValue() {
+        TableProperties properties = createTablePropertiesWithDefaultSeparators("placeholderKey=${placeholderValue}");
+        assertThat(properties.getProperties().getProperty("placeholderKey"), equalTo("${placeholderValue}"));
+    }
+
+    @Test
     public void canGetDefaultProperties() {
         TableProperties properties = new TableProperties(new Properties());
         assertThat(properties.getHeaderSeparator(), equalTo("|"));
