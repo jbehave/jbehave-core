@@ -47,6 +47,12 @@ public class TablePropertiesBehaviour {
     }
 
     @Test
+    public void canSetPropertiesWithWhitespaceInValue() {
+        TableProperties properties = createTablePropertiesWithDefaultSeparators("withWhitespace=a value");
+        assertThat(properties.getProperties().getProperty("withWhitespace"), equalTo("a value"));
+    }
+
+    @Test
     public void canSetPropertiesWithMixedCharsInValues() {
         TableProperties properties = createTablePropertiesWithDefaultSeparators("withMixedChars=value1;value2:*");
         assertThat(properties.getProperties().getProperty("withMixedChars"), equalTo("value1;value2:*"));
