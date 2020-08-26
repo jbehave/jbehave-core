@@ -418,7 +418,7 @@ public class PerformableTree {
     private void performCancellable(RunContext context, Story story) throws InterruptedException {
         if (context.configuration().storyControls().resetStateBeforeStory()) {
             context.resetState();
-            context.resetFailures();
+            context.resetFailures(story);
         }
 
         if (!story.getPath().equals(context.path())) {
@@ -431,7 +431,7 @@ public class PerformableTree {
 
         root.get(story).perform(context);
         if (context.failureOccurred()) {
-            context.addFailure();
+            context.addFailure(story);
         }
     }
 
@@ -650,8 +650,20 @@ public class PerformableTree {
             currentRunContext().resetState();
         }
 
+        /**
+         * Reset all the existing failures.
+         */
         public void resetFailures() {
             this.failures.clear();
+        }
+
+        /**
+         * Resets only the failures corresponding to the given story.
+         * @param story the story for which we want to remove the failures.
+         */
+        public void resetFailures(Story story) {
+            this.failures.entrySet()
+                    .removeIf(entry -> entry.getKey().equals(toBatchFailuresKey(story, entry.getValue())));
         }
 
         public StoryReporter reporter() {
@@ -669,16 +681,13 @@ public class PerformableTree {
             return null;
         }
 
-        public void addFailure() {
-            Throwable failure = failure(state());
-            if (failure != null) {
-                failures.put(state().toString(), failure);
-            }
+        public void addFailure(Story story) {
+            addFailure(story, failure(state()));
         }
 
-        public void addFailure(String path, Throwable cause) {
+        public void addFailure(Story story, Throwable cause) {
             if (cause != null) {
-                failures.put(path, cause);
+                failures.put(toBatchFailuresKey(story, cause), cause);
             }
         }
 
@@ -724,6 +733,16 @@ public class PerformableTree {
 
         private StoryRunContext currentRunContext() {
             return storyRunContext.get();
+        }
+
+        /**
+         * Converts the given story and failure to the key to use to store the failure.
+         * @param story the story where the failure occurred.
+         * @param cause the failure that occurred.
+         * @return the key to use to store the failure into the {@code BatchFailures}.
+         */
+        private String toBatchFailuresKey(Story story, Throwable cause) {
+            return String.format("%s@%s", story.getPath(), Integer.toHexString(cause.hashCode()));
         }
     }
 

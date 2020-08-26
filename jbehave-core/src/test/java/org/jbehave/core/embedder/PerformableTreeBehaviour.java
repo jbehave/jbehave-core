@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNull;
 import static org.hamcrest.Matchers.instanceOf;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.inOrder;
@@ -23,6 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Supplier;
 
 import org.jbehave.core.annotations.Scope;
+import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -35,6 +37,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.CandidateSteps;
+import org.jbehave.core.steps.InstanceStepsFactory;
 import org.jbehave.core.steps.MarkUnmatchedStepsAsPending;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.context.StepsContext;
@@ -157,6 +160,60 @@ public class PerformableTreeBehaviour {
     }
 
     @Test
+    public void shouldNotResetFailuresBetweenStories() {
+        Scenario scenario = new Scenario("base scenario title", Meta.EMPTY);
+        Story story1 = new Story("path1", null, null, null, new GivenStories("given/path1"),
+                Collections.singletonList(scenario));
+        Story story2 = new Story("path2", null, null, null, new GivenStories("given/path2"),
+                Collections.singletonList(scenario));
+
+        Configuration configuration = new MostUsefulConfiguration()
+                .useStoryControls(new StoryControls().doResetStateBeforeScenario(false));
+        StoryLoader storyLoader = mock(StoryLoader.class);
+        configuration.useStoryLoader(storyLoader);
+        when(storyLoader.loadStoryAsText(anyString())).thenReturn(GIVEN_SCENARIO_FAIL);
+        List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
+                .createCandidateSteps();
+        EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
+        BatchFailures failures = new BatchFailures();
+
+        PerformableTree performableTree = new PerformableTree();
+        RunContext runContext = performableTree.newRunContext(configuration, candidateSteps,
+                embedderMonitor, new MetaFilter(), failures);
+        performableTree.addStories(runContext, Arrays.asList(story1, story2));
+        performableTree.perform(runContext, story1);
+        performableTree.perform(runContext, story2);
+
+        assertThat(failures.size(), is(2));
+    }
+
+    @Test
+    public void shouldResetFailuresOnReRun() {
+        Scenario scenario = new Scenario("base scenario title", Meta.EMPTY);
+        Story story = new Story(STORY_PATH, null, null, null, new GivenStories("given/path"),
+                Collections.singletonList(scenario));
+
+        Configuration configuration = new MostUsefulConfiguration()
+                .useStoryControls(new StoryControls().doResetStateBeforeScenario(false));
+        StoryLoader storyLoader = mock(StoryLoader.class);
+        configuration.useStoryLoader(storyLoader);
+        when(storyLoader.loadStoryAsText(anyString())).thenReturn(GIVEN_SCENARIO_FAIL);
+        List<CandidateSteps> candidateSteps = new InstanceStepsFactory(configuration, new Steps())
+                .createCandidateSteps();
+        EmbedderMonitor embedderMonitor = mock(EmbedderMonitor.class);
+        BatchFailures failures = new BatchFailures();
+
+        PerformableTree performableTree = new PerformableTree();
+        RunContext runContext = performableTree.newRunContext(configuration, candidateSteps,
+                embedderMonitor, new MetaFilter(), failures);
+        performableTree.addStories(runContext, Arrays.asList(story));
+        performableTree.perform(runContext, story);
+        performableTree.perform(runContext, story);
+
+        assertThat(failures.size(), is(1));
+    }
+
+    @Test
     public void shouldNotShareStoryStateBetweenThreads() throws Throwable {
         RunContext context = runStoryInContext(EMPTY_STORY);
         assertThat(context.state().getClass().getSimpleName(), is("FineSoFar"));
@@ -201,6 +258,14 @@ public class PerformableTreeBehaviour {
             EXECUTOR.submit(task).get();
         } catch (ExecutionException e) {
             throw e.getCause();
+        }
+    }
+
+    public static class Steps {
+
+        @When("I fail")
+        public void fail() {
+            throw new RuntimeException();
         }
     }
 }

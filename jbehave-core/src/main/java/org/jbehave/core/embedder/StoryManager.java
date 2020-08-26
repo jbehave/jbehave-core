@@ -193,13 +193,13 @@ public class StoryManager {
 							ThrowableStory throwableStory = future.get();
 							Throwable throwable = throwableStory.getThrowable();
 							if (throwable != null) {
-								context.addFailure(story.getPath(), throwable);
+								context.addFailure(story, throwable);
 								if (!embedderControls.ignoreFailureInStories()) {
 									continue;
 								}
 							}
 						} catch (Throwable e) {
-							context.addFailure(story.getPath(), e);
+							context.addFailure(story, e);
 							if (!embedderControls.ignoreFailureInStories()) {
 								continue;
 							}
