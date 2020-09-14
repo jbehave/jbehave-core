@@ -424,6 +424,9 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
     @Override
     public void example(Map<String, String> tableRow, int exampleIndex) {
         print(format("example", "\n{0} {1}\n", keywords.examplesTableRow(), tableRow));
+        print(output, format("beforeExampleParameters", EMPTY));
+        tableRow.entrySet().forEach(cell -> print(output, format("exampleParameter", EMPTY, cell.getKey(), cell.getValue())));
+        print(output, format("afterExampleParameters", EMPTY));
     }
 
     @Override

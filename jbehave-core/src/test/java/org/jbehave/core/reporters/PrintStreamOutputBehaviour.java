@@ -18,6 +18,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import static java.util.Arrays.asList;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -183,8 +186,11 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        assertFileOutputIsSameAs(file, name);
-        validateFileOutput(file);
+        String expected = IOUtils.toString(getClass().getResourceAsStream("/" + name), true);
+        JsonParser parser = new JsonParser();
+        JsonObject expectedObject = parser.parse(fileContent(file)).getAsJsonObject();
+        JsonObject actualObject = parser.parse(expected).getAsJsonObject();
+        assertThat(expectedObject, is(actualObject));
     }
 
     @Test
