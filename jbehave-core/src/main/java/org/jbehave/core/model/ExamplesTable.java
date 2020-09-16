@@ -224,11 +224,16 @@ public class ExamplesTable {
     private String applyTransformers(TableTransformers tableTransformers, String tableAsString,
             TableParsers tableParsers) {
         String transformedTable = tableAsString;
+        TableProperties previousProperties = null;
         for (TableProperties properties : tablePropertiesQueue) {
             String transformer = properties.getTransformer();
             if (transformer != null) {
+                if (previousProperties != null) {
+                    properties.overrideSeparatorsFrom(previousProperties);
+                }
                 transformedTable = tableTransformers.transform(transformer, transformedTable, tableParsers, properties);
             }
+            previousProperties = properties;
         }
         return transformedTable;
     }
@@ -585,6 +590,16 @@ public class ExamplesTable {
 
         public String getCommentSeparator() {
             return properties.getProperty(COMMENT_SEPARATOR_KEY);
+        }
+
+        void overrideSeparatorsFrom(TableProperties properties) {
+            Stream.of(HEADER_SEPARATOR_KEY, VALUE_SEPARATOR_KEY, IGNORABLE_SEPARATOR_KEY, COMMENT_SEPARATOR_KEY)
+                  .forEach(key -> {
+                      String value = properties.properties.getProperty(key);
+                      if (value != null) {
+                          this.properties.setProperty(key, value);
+                      }
+                  });
         }
 
         public boolean isTrim() {

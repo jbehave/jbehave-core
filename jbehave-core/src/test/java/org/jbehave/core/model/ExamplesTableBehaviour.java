@@ -34,6 +34,10 @@ import static org.hamcrest.Matchers.*;
 
 public class ExamplesTableBehaviour {
 
+    private static final String VALUE_SEPARATOR_KEY = "valueSeparator";
+    private static final String HEADER_SEPARATOR_KEY = "headerSeparator";
+    private static final String IGNORABLE_SEPARATOR_KEY = "ignorableSeparator";
+
     private String tableAsString = "|one|two|\n" + "|11|12|\n" + "|21|22|\n";
 
     private String tableWithSpacesAsString = "|one |two | |\n" + "|11 |12 | |\n" + "| 21| 22| |\n";
@@ -189,9 +193,9 @@ public class ExamplesTableBehaviour {
                 + tableWithCommentsAsString.replace("|", "!");
         ExamplesTable table = new ExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
-        assertThat(properties.getProperty("ignorableSeparator"), equalTo("!--"));
-        assertThat(properties.getProperty("headerSeparator"), equalTo("!"));
-        assertThat(properties.getProperty("valueSeparator"), equalTo("!"));
+        assertThat(properties.getProperty(IGNORABLE_SEPARATOR_KEY), equalTo("!--"));
+        assertThat(properties.getProperty(HEADER_SEPARATOR_KEY), equalTo("!"));
+        assertThat(properties.getProperty(VALUE_SEPARATOR_KEY), equalTo("!"));
         ensureColumnOrderIsPreserved(table);
     }
 
@@ -248,12 +252,22 @@ public class ExamplesTableBehaviour {
     @Test
     public void shouldParseTableWithSequenceOfTransformers() {
         String tableWithProperties =
-                "{transformer=REPLACING, replacing=33, replacement=22}\n{transformer=FROM_LANDSCAPE}\n"
-                        + landscapeTableAsString.replace("22", "33");
-        ExamplesTableFactory factory = createFactory();
+                        "{transformer=REPLACING, replacing=33, replacement=22}\n"
+                      + "{transformer=MODIFYING_PROPERTIES}\n"
+                      + "{transformer=FROM_LANDSCAPE}\n"
+                    + landscapeTableAsString.replace("22", "33");
+        TableTransformers tableTransformers = new TableTransformers();
+        tableTransformers.useTransformer("MODIFYING_PROPERTIES", (tableAsString, tableParsers, properties) -> {
+            properties.getProperties().setProperty("headerSeparator", "!");
+            properties.getProperties().setProperty("valueSeparator", "!");
+            return tableAsString.replace('|', '!');
+        });
+        ExamplesTableFactory factory = createFactory(tableTransformers);
         ExamplesTable table = factory.createExamplesTable(tableWithProperties);
         Properties properties = table.getProperties();
         assertThat(properties.getProperty("transformer"), equalTo("FROM_LANDSCAPE"));
+        assertThat(properties.getProperty("headerSeparator"), equalTo("!"));
+        assertThat(properties.getProperty("valueSeparator"), equalTo("!"));
         ensureColumnOrderIsPreserved(table);
     }
 
@@ -597,14 +611,19 @@ public class ExamplesTableBehaviour {
     }
 
     private ExamplesTableFactory createFactory(ParameterConverter... converters) {
+        TableTransformers tableTransformers = new TableTransformers();
+        return createFactory(tableTransformers, converters);
+    }
+
+    private ExamplesTableFactory createFactory(TableTransformers tableTransformers, ParameterConverter... converters) {
         LoadFromClasspath resourceLoader = new LoadFromClasspath();
         TableParsers tableParsers = new TableParsers();
-        TableTransformers tableTransformers = new TableTransformers();
         ParameterControls parameterControls = new ParameterControls();
         ParameterConverters parameterConverters = new ParameterConverters(resourceLoader, parameterControls,
                 tableTransformers, true);
         parameterConverters.addConverters(converters);
-        return new ExamplesTableFactory(resourceLoader, parameterConverters, parameterControls, tableParsers, tableTransformers);
+        return new ExamplesTableFactory(resourceLoader, parameterConverters, parameterControls, tableParsers,
+                tableTransformers);
     }
 
     private void assertTableAsString(String tableAsString, String expectedTableAsString) {
