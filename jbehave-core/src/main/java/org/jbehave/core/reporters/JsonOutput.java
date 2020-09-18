@@ -168,7 +168,7 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("afterGivenStories", "}");
         patterns.setProperty("successful", "'{'\"outcome\": \"successful\", \"value\": \"{0}\"}");
         patterns.setProperty("ignorable", "'{'\"outcome\": \"ignorable\", \"value\": \"{0}\"}");
-        patterns.setProperty("comment", "'{'\"comment\": \"ignorable\", \"value\": \"{0}\"}");
+        patterns.setProperty("comment", "'{'\"outcome\": \"comment\", \"value\": \"{0}\"}");
         patterns.setProperty("pending", "'{'\"outcome\": \"pending\", \"keyword\": \"{1}\", \"value\": \"{0}\"}");
         patterns.setProperty("notPerformed", "'{'\"outcome\": \"notPerformed\", \"keyword\": \"{1}\", \"value\": \"{0}\"}");
         patterns.setProperty("failed", "'{'\"outcome\": \"failed\", \"keyword\": \"{1}\", \"value\": \"{0}\", \"failure\": \"{2}\"}");

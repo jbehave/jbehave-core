@@ -115,7 +115,7 @@
           "value": "!-- Then ignore me"
         },
         {
-          "comment": "ignorable",
+          "outcome": "comment",
           "value": "!-- A comment"
         },
         {
