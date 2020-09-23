@@ -2,8 +2,6 @@ package org.jbehave.core.model;
 
 import java.util.List;
 
-import static java.util.Collections.unmodifiableList;
-
 import org.jbehave.core.steps.StepType;
 
 /**
@@ -15,18 +13,17 @@ import org.jbehave.core.steps.StepType;
  * @author Mauro Talevi
  * @author Valery Yatsynovich
  */
-public class Composite {
+public class Composite extends StepsContainer {
 
     private StepType stepType;
     private String stepWithoutStartingWord;
     private int priority;
-    private List<String> steps;
 
     public Composite(StepType stepType, String stepWithoutStartingWord, int priority, List<String> steps) {
+        super(steps);
         this.stepType = stepType;
         this.stepWithoutStartingWord = stepWithoutStartingWord;
         this.priority = priority;
-        this.steps = steps;
     }
 
     public StepType getStepType() {
@@ -39,9 +36,5 @@ public class Composite {
 
     public int getPriority() {
         return priority;
-    }
-
-    public List<String> getSteps() {
-        return unmodifiableList(steps);
     }
 }

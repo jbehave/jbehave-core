@@ -1,24 +1,20 @@
 package org.jbehave.core.model;
 
-import static java.util.Collections.unmodifiableList;
 import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-public class Scenario {
+public class Scenario extends StepsContainer {
 
     private final String title;
     private final Meta meta;
     private final GivenStories givenStories;
     private final ExamplesTable examplesTable;
-    private final List<String> steps;
 
     public Scenario() {
         this(Arrays.<String>asList());
@@ -37,11 +33,11 @@ public class Scenario {
     }
 
     public Scenario(String title, Meta meta, GivenStories givenStories, ExamplesTable examplesTable, List<String> steps) {
+        super(steps);
         this.title = title;
         this.meta = meta;
         this.givenStories = givenStories;
         this.examplesTable = examplesTable;
-        this.steps = steps;
     }
 
     public String getTitle() {
@@ -92,20 +88,6 @@ public class Scenario {
         return new Meta(p);
     }
 
-    public List<String> getSteps() {
-        return getSteps(true);
-    }
-
-    public List<String> getSteps(boolean trim) {
-        return trim ? trim(steps) : steps;
-    }
-
-    private List<String> trim(List<String> steps){
-        return steps.stream()
-                .map(String::trim)
-                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
-    }
-    
     @Override
     public String toString() {
         return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

@@ -78,6 +78,22 @@ public class RegexCompositeParserBehaviour {
     }
 
     @Test
+    public void shouldParseCompositeStepWithLineBreaks() {
+        String compositeStepsAsText = "Composite: Given a composite step with UNIX separators" + NL+
+                "Given a step" + NL + NL +
+                "Then another step" + NL +
+                "Composite: Given a composite step with MS-DOS separators" + CRLF+
+                "Given a step" + CRLF + CRLF +
+                "Then another step" + CRLF;
+        List<Composite> composites = parser.parseComposites(compositeStepsAsText);
+        assertThat(composites.size(), equalTo(2));
+        assertCompositeStep(composites.get(0), StepType.GIVEN, "a composite step with UNIX separators", 0,
+                Arrays.asList("Given a step", "Then another step"));
+        assertCompositeStep(composites.get(1), StepType.GIVEN, "a composite step with MS-DOS separators", 0,
+                Arrays.asList("Given a step", "Then another step"));
+    }
+
+    @Test
     public void shouldParseTwoCompositeStep() {
         String compositeStepsAsText = "Composite: Given the first composite step" + NL+
                 "Given a step" + NL +
