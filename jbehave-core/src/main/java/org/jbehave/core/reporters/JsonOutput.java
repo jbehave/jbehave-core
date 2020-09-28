@@ -56,7 +56,7 @@ public class JsonOutput extends PrintStreamOutput {
     protected void print(PrintStream output, String text) {
         if (!text.isEmpty()) {
             boolean doNotAddComma =
-                    ArrayUtils.contains(JSON_START_CHARS, lastChar) || StringUtils.startsWithAny(text, "}", "]");
+                    ArrayUtils.contains(JSON_START_CHARS, lastChar) || StringUtils.startsWithAny(text, "}", "]", ",");
             super.print(output, doNotAddComma ? text : "," + text);
             lastChar = text.charAt(text.length() - 1);
         }
@@ -80,7 +80,7 @@ public class JsonOutput extends PrintStreamOutput {
             storyPublishingLevel ++;
         }
         if (stepPublishing) {
-            if ("example".equals(key) || "afterExamples".equals(key)) {
+            if ("example".equals(key) || "exampleScenariosEnd".equals(key)) {
                 // Closing previous "example"
                 print("]}");
                 stepPublishing = false;
@@ -108,7 +108,9 @@ public class JsonOutput extends PrintStreamOutput {
         } else if ("afterScenario".equals(key) || "afterScenarioWithFailure".equals(key)) {
             // Need to complete scenario with examples
             scenarioCompleted = true;
-        } else if (scenarioPublishingPerLevels.get(storyPublishingLevel) == Boolean.TRUE && scenarioCompleted && !ArrayUtils.contains(PARAMETER_KEYS, key)) {
+        }
+        else if (!"afterExamples".equals(key) && scenarioPublishingPerLevels.get(storyPublishingLevel) == Boolean.TRUE
+                && scenarioCompleted && !ArrayUtils.contains(PARAMETER_KEYS, key)) {
             // Closing "scenarios"
             scenarioPublishingPerLevels.put(storyPublishingLevel, Boolean.FALSE);
             print("]");
@@ -191,7 +193,7 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("examplesStepsStart", "\"steps\": [");
         patterns.setProperty("examplesStep", "\"{0}\"");
         patterns.setProperty("examplesStepsEnd", "]");
-        patterns.setProperty("afterExamples", "]}");
+        patterns.setProperty("afterExamples", "}");
         patterns.setProperty("examplesTableStart", "\"parameters\": '{'");
         patterns.setProperty("examplesTableHeadStart", "\"names\": [");
         patterns.setProperty("examplesTableHeadCell", "\"{0}\"");
@@ -201,7 +203,9 @@ public class JsonOutput extends PrintStreamOutput {
         patterns.setProperty("examplesTableCell", "\"{0}\"");
         patterns.setProperty("examplesTableRowEnd", "]");
         patterns.setProperty("examplesTableBodyEnd", "]");
-        patterns.setProperty("examplesTableEnd", "}, \"examples\": [");
+        patterns.setProperty("examplesTableEnd", "}");
+        patterns.setProperty("exampleScenariosStart", "\"examples\": [");
+        patterns.setProperty("exampleScenariosEnd", "]");
         patterns.setProperty("example", "'{'\"keyword\": \"{0}\"");
         patterns.setProperty("parameterVerbatimStart", "[[");
         patterns.setProperty("parameterVerbatimEnd", "]]");

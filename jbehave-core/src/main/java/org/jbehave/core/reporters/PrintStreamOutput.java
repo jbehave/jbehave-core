@@ -419,6 +419,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
         }
         print(format("examplesStepsEnd", EMPTY));
         print(formatTable(table));
+        print(format("exampleScenariosStart", EMPTY));
     }
 
     @Override
@@ -431,6 +432,7 @@ public abstract class PrintStreamOutput extends NullStoryReporter {
 
     @Override
     public void afterExamples() {
+        print(format("exampleScenariosEnd", EMPTY));
         print(format("afterExamples", NL));
     }
 
