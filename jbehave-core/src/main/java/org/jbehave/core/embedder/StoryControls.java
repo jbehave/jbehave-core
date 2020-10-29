@@ -39,7 +39,7 @@ public class StoryControls {
     public StoryControls() {
     }
     
-    StoryControls currentStoryControls() {
+    public StoryControls currentStoryControls() {
         return currentStoryControls.get();
     }
 
