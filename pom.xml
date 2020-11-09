@@ -13,6 +13,7 @@
 
   <properties>
     <jdk.version>1.8</jdk.version>
+    <junit.version>4.13.1</junit.version>
   </properties>
 
   <modules>
