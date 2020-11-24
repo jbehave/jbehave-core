@@ -949,6 +949,7 @@ public class ParameterConvertersBehaviour {
         }
         assertThat(converter.accept(WrongType.class), is(false));
         assertThat(converter.accept(mock(Type.class)), is(false));
+        assertThat(converter.accept(new TypeLiteral<List<Map<Object, Object>>>(){}.getType()), is(false));
     }
 
     static class WrongType {

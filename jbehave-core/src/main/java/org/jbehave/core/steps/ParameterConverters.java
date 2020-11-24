@@ -452,6 +452,15 @@ public class ParameterConverters {
         return (Class<?>) ((ParameterizedType) type).getRawType();
     }
 
+    private static Class<?> argumentClass(Type type) {
+        if (type instanceof ParameterizedType) {
+            Type typeArgument = ((ParameterizedType) type).getActualTypeArguments()[0];
+            return typeArgument instanceof ParameterizedType ? rawClass(typeArgument) : (Class<?>) typeArgument;
+        } else {
+            return (Class<?>) type;
+        }
+    }
+
     private static Type argumentType(Type type) {
         return ((ParameterizedType) type).getActualTypeArguments()[0];
     }
@@ -1037,14 +1046,6 @@ public class ParameterConverters {
             return type instanceof Class && ((Class<?>) type).isAnnotationPresent(AsParameters.class);
         }
 
-        private Class<?> argumentClass(Type type) {
-            if (type instanceof ParameterizedType) {
-                return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
-            } else {
-                return (Class<?>) type;
-            }
-        }
-
         @Override
         public Object convertValue(String value, Type type) {
             List<?> rows = factory.createExamplesTable(value).getRowsAs(argumentClass(type));
@@ -1081,15 +1082,6 @@ public class ParameterConverters {
         public Object convertValue(final String value, final Type type) {
             return factory.createJson(value, type);
         }
-
-        private Class<?> argumentClass(final Type type) {
-            if (type instanceof ParameterizedType) {
-                return (Class<?>) ((ParameterizedType) type).getActualTypeArguments()[0];
-            } else {
-                return (Class<?>) type;
-            }
-        }
-
     }
 
     public static class JsonFactory {
