@@ -29,6 +29,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>jbehave-io</artifactId>
+      <version>4.9-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>jbehave-scala</artifactId>
       <version>4.9-SNAPSHOT</version>
     </dependency>
