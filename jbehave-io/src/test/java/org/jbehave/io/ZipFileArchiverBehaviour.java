@@ -2,12 +2,17 @@ package org.jbehave.io;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.io.FilenameUtils.separatorsToUnix;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -69,15 +74,20 @@ public class ZipFileArchiverBehaviour {
         assertTrue(archiver.isArchive(zip));
         archiver.unarchive(zip, dir);
         List<File> content = archiver.listContent(new File(dir, "archive"));
-        assertFilesEquals(content, asList("archive", "archive/file1.txt", "archive/subdir1",
+        assertThatPathsMatch(content, Arrays.asList("archive", "archive/file1.txt", "archive/subdir1",
                 "archive/subdir1/subfile1.txt"));
     }
 
-    private void assertFilesEquals(List<File> content, List<String> expectedPaths) {
-        for (int i = 0; i < content.size(); i++) {
-            File file = content.get(i);
-            assertEquals(file, new File(dir, expectedPaths.get(i)));
-        }
+    private void assertThatPathsMatch(List<File> content, List<String> expectedPaths) {
+        List<String> paths = content.stream()
+                .map(file -> file.getPath())
+                .collect(Collectors.toList());
+        Collections.sort(paths);
+        List<String> expected = expectedPaths.stream()
+                .map(path -> new File(dir, path).getPath())
+                .collect(Collectors.toList());
+        Collections.sort(expected);
+        assertThat(paths, equalTo(expected));
     }
 
     private void assertFilesUnarchived(List<String> paths) {
