@@ -12,5 +12,11 @@ import java.lang.annotation.Target;
 public @interface BeforeStory {
 
     boolean uponGivenStory() default false;
-    
+
+    /**
+     * Lifecycle hooks with the higher order will be executed first
+     *
+     * @return order value
+     */
+    int order() default 0;
 }

@@ -1,5 +1,10 @@
 package org.jbehave.examples.core.steps;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.annotations.AfterScenario.Outcome;
 import org.jbehave.core.annotations.AfterStories;
@@ -17,14 +22,32 @@ import org.jbehave.core.annotations.Then;
  */
 public class BeforeAfterSteps {
 
+    private final AtomicInteger invokeCounter = new AtomicInteger();
+    private final ThreadLocal<AtomicInteger> nestedInvokeCounter = ThreadLocal
+            .withInitial(() -> new AtomicInteger(invokeCounter.get()));
+
+    @BeforeStories(order = 1)
+    public void beforeStoriesOrdered() {
+        System.out.println("Before Stories with higher order");
+        assertThat(invokeCounter.incrementAndGet(), equalTo(1));
+    }
+
     @BeforeStories
     public void beforeStories() {
         System.out.println("Before Stories ...");
+        assertThat(invokeCounter.incrementAndGet(), equalTo(2));
     }
 
     @AfterStories
     public void afterStories() {
         System.out.println("After Stories ...");
+        assertThat(invokeCounter.decrementAndGet(), equalTo(1));
+    }
+
+    @AfterStories(order = 1)
+    public void afterStoriesOrdered() {
+        System.out.println("After Stories with higher order");
+        assertThat(invokeCounter.decrementAndGet(), equalTo(0));
     }
 
     @BeforeStory
@@ -34,6 +57,13 @@ public class BeforeAfterSteps {
         } else {
             System.out.println("Before Story ...");
         }
+        assertThat(nestedInvokeCounter.get().incrementAndGet(), equalTo(4));
+    }
+
+    @BeforeStory(order = 1)
+    public void beforeStoryOrdered() {
+        System.out.println("Before Story with higher order");
+        assertThat(nestedInvokeCounter.get().incrementAndGet(), equalTo(3));
     }
 
     @AfterStory
@@ -43,6 +73,13 @@ public class BeforeAfterSteps {
         } else {
             System.out.println("After Story ...");
         }
+        assertThat(nestedInvokeCounter.get().decrementAndGet(), equalTo(3));
+    }
+
+    @AfterStory(order = 1)
+    public void afterStoryOrdered() {
+        System.out.println("After Story with higher order");
+        assertThat(nestedInvokeCounter.get().decrementAndGet(), equalTo(2));
     }
 
     @BeforeStory(uponGivenStory = true)

@@ -10,10 +10,14 @@ import static org.jbehave.core.steps.StepType.WHEN;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -221,49 +225,48 @@ public class Steps extends AbstractCandidateSteps {
     @Override
     public List<BeforeOrAfterStep> listBeforeOrAfterStories() {
         List<BeforeOrAfterStep> steps = new ArrayList<>();
-        for (Method method : methodsAnnotatedWith(BeforeStories.class).keySet()) {
-            steps.add(new BeforeOrAfterStep(Stage.BEFORE, method, stepCreator));
-        }
-        for (Method method : methodsAnnotatedWith(AfterStories.class).keySet()) {
-            steps.add(new BeforeOrAfterStep(Stage.AFTER, method, stepCreator));
-        }
+        steps.addAll(listSteps(BeforeStories.class, Stage.BEFORE, v -> true, BeforeStories::order));
+        steps.addAll(listSteps(AfterStories.class, Stage.AFTER, v -> true, AfterStories::order));
         return steps;
     }
 
     @Override
     public List<BeforeOrAfterStep> listBeforeOrAfterStory(boolean givenStory) {
         List<BeforeOrAfterStep> steps = new ArrayList<>();
-        for (Entry<Method, BeforeStory> entry : methodsAnnotatedWith(BeforeStory.class).entrySet()) {
-            if (entry.getValue().uponGivenStory() == givenStory) {
-                steps.add(new BeforeOrAfterStep(Stage.BEFORE, entry.getKey(), stepCreator));
-            }
-        }
-        for (Entry<Method, AfterStory> entry : methodsAnnotatedWith(AfterStory.class).entrySet()) {
-            if (entry.getValue().uponGivenStory() == givenStory) {
-                steps.add(new BeforeOrAfterStep(Stage.AFTER, entry.getKey(), stepCreator));
-            }
-        }
+        steps.addAll(listSteps(BeforeStory.class, Stage.BEFORE, v -> v.uponGivenStory() == givenStory, BeforeStory::order));
+        steps.addAll(listSteps(AfterStory.class, Stage.AFTER, v -> v.uponGivenStory() == givenStory, AfterStory::order));
         return steps;
     }
 
     @Override
     public List<BeforeOrAfterStep> listBeforeOrAfterScenario(ScenarioType type) {
         List<BeforeOrAfterStep> steps = new ArrayList<>();
-        for (Entry<Method, BeforeScenario> entry : methodsAnnotatedWith(BeforeScenario.class).entrySet()) {
-            if (entry.getValue().uponType() == type) {
-                steps.add(new BeforeOrAfterStep(Stage.BEFORE, entry.getKey(), stepCreator));
-            }
-        }
-        Map<Method, AfterScenario> afterScenarioMethods = methodsAnnotatedWith(AfterScenario.class);
+        steps.addAll(listSteps(BeforeScenario.class, Stage.BEFORE, v -> v.uponType() == type, BeforeScenario::order));
         for (Outcome outcome : new Outcome[] { ANY, SUCCESS, FAILURE }) {
-            for (Entry<Method, AfterScenario> entry : afterScenarioMethods.entrySet()) {
-                AfterScenario annotation = entry.getValue();
-                if (annotation.uponType() == type && annotation.uponOutcome() == outcome) {
-                    steps.add(new BeforeOrAfterStep(Stage.AFTER, entry.getKey(), outcome, stepCreator));
-                }
-            }
+            steps.addAll(listSteps(AfterScenario.class, Stage.AFTER,
+                m -> new BeforeOrAfterStep(Stage.AFTER, m, outcome, stepCreator),
+                v -> v.uponType() == type && v.uponOutcome() == outcome, AfterScenario::order));
         }
         return steps;
+    }
+
+    private <T extends Annotation> List<BeforeOrAfterStep> listSteps(Class<T> type, Stage stage, Predicate<T> predicate,
+            ToIntFunction<T> order) {
+        return listSteps(type, stage, m -> new BeforeOrAfterStep(stage, m, stepCreator), predicate, order);
+    }
+
+    private <T extends Annotation> List<BeforeOrAfterStep> listSteps(Class<T> type, Stage stage,
+            Function<Method, BeforeOrAfterStep> factory, Predicate<T> predicate, ToIntFunction<T> order) {
+        Comparator<Integer> orderComparator = Stage.AFTER == stage ? Comparator.naturalOrder()
+                : Comparator.reverseOrder();
+        return methodsAnnotatedWith(type).entrySet().stream()
+                                                    .filter(e -> predicate.test(e.getValue()))
+                                                    .collect(Collectors.toList())
+                                                    .stream()
+                                                    .sorted(Comparator.comparing(e -> order.applyAsInt(e.getValue()), orderComparator))
+                                                    .map(Map.Entry::getKey)
+                                                    .map(factory)
+                                                    .collect(Collectors.toList());
     }
 
     private Method[] allMethods() {

@@ -346,7 +346,25 @@ public class StepsBehaviour {
         candidates.get(0).createMatchedStep("Dado che un dato che", tableRow, Collections.<Step>emptyList());
         
     }
-    
+
+    @Test
+    public void shouldListBeforeAndAfterStoriesAccordingToTheirOrder() {
+        OrderedSteps steps = new OrderedSteps();
+        List<BeforeOrAfterStep> beforeAfterScenario = steps.listBeforeOrAfterStories();
+        assertThat(beforeAfterScenario.size(), equalTo(6));
+        assertStepName(beforeAfterScenario.get(0), "beforeStoriesOrderTwo");
+        assertStepName(beforeAfterScenario.get(1), "beforeStoriesOrderOne");
+        assertStepName(beforeAfterScenario.get(2), "beforeStoriesOrderDefault");
+        assertStepName(beforeAfterScenario.get(3), "afterStoriesOrderDefault");
+        assertStepName(beforeAfterScenario.get(4), "afterStoriesOrderOne");
+        assertStepName(beforeAfterScenario.get(5), "afterStoriesOrderTwo");
+    }
+
+    private void assertStepName(BeforeOrAfterStep step, String name) {
+        String method = step.getMethod().getName();
+        assertThat(method, equalTo(name));
+    }
+
     static class MultipleAliasesSteps extends Steps {
         
         private int givens;
@@ -586,6 +604,34 @@ public class StepsBehaviour {
         @Then("un allora")
         public void then() {
             thens++;
+        }
+
+    }
+
+    static class OrderedSteps extends Steps {
+
+        @BeforeStories
+        public void beforeStoriesOrderDefault() {
+        }
+
+        @AfterStories
+        public void afterStoriesOrderDefault() {
+        }
+
+        @BeforeStories(order = 1)
+        public void beforeStoriesOrderOne() {
+        }
+
+        @AfterStories(order = 1)
+        public void afterStoriesOrderOne() {
+        }
+
+        @BeforeStories(order = 2)
+        public void beforeStoriesOrderTwo() {
+        }
+
+        @AfterStories(order = 2)
+        public void afterStoriesOrderTwo() {
         }
 
     }
