@@ -8,6 +8,7 @@ import org.jbehave.core.failures.PendingStepStrategy;
 import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.Story;
 import org.jbehave.core.parsers.CompositeParser;
 import org.jbehave.core.parsers.StepPatternParser;
 import org.jbehave.core.parsers.StoryParser;
@@ -18,6 +19,8 @@ import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
+
+import java.util.Comparator;
 
 import com.thoughtworks.paranamer.Paranamer;
 
@@ -137,6 +140,11 @@ public class UnmodifiableConfiguration extends Configuration {
     }
 
     @Override
+    public Comparator<Story> storyExecutionComparator() {
+        return delegate.storyExecutionComparator();
+    }
+
+    @Override
     public Configuration useKeywords(Keywords keywords) {
         throw notAllowed();
     }
@@ -228,6 +236,11 @@ public class UnmodifiableConfiguration extends Configuration {
 
     @Override
     public Configuration useStoryReporterBuilder(StoryReporterBuilder storyReporterBuilder) {
+        throw notAllowed();
+    }
+
+    @Override
+    public Configuration useStoryExecutionComparator(Comparator<Story> storyExecutionComparator) {
         throw notAllowed();
     }
 

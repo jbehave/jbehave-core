@@ -17,12 +17,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.inOrder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -66,8 +69,10 @@ import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.StepFinder;
 import org.jbehave.core.steps.Steps;
+import org.jbehave.core.steps.StepCollector.Stage;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 
@@ -426,6 +431,7 @@ public class EmbedderBehaviour {
             }
         };
         embedder.useConfiguration(configuration);
+        configuration.useStoryExecutionComparator(Comparator.comparing(Story::getPath, Comparator.naturalOrder()));
         StoryPathResolver resolver = configuration.storyPathResolver();
 
         List<String> storyPaths = new ArrayList<>();
@@ -433,10 +439,9 @@ public class EmbedderBehaviour {
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
-            Story story = mockStory(Meta.EMPTY);
+            Story story = mockStory(storyPath, Meta.EMPTY);
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-            when(story.getPath()).thenReturn(storyPath);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
@@ -444,14 +449,19 @@ public class EmbedderBehaviour {
         when(performableTree.newRunContext(eq(configuration), eq(candidateSteps), eq(monitor),
                 isA(MetaFilter.class), isA(BatchFailures.class))).thenReturn(runContext);
 
+        InOrder performOrder = inOrder(performableTree);
+
         // When
         embedder.runStoriesAsPaths(storyPaths);
 
         // Then
-        for (String storyPath : storyPaths) {
-            verify(performableTree).perform(isA(RunContext.class), eq(stories.get(storyPath)));
+        performOrder.verify(performableTree).performBeforeOrAfterStories(isA(RunContext.class), eq(Stage.BEFORE));
+        for (String storyPath : Arrays.asList(resolver.resolve(MyOtherEmbeddable.class), resolver.resolve(MyStory.class))) {
+            performOrder.verify(performableTree).perform(isA(RunContext.class), eq(stories.get(storyPath)));
             assertThat(out.toString(), containsString("Running story " + storyPath));
         }
+        performOrder.verify(performableTree).performBeforeOrAfterStories(isA(RunContext.class), eq(Stage.AFTER));
+        performOrder.verifyNoMoreInteractions();
         assertThatReportsViewGenerated(out);
     }
 
@@ -483,11 +493,9 @@ public class EmbedderBehaviour {
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
-            Story story = mockStory(Meta.EMPTY);
-            when(story.getMeta()).thenReturn(meta);
+            Story story = mockStory(storyPath, meta);
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-            when(story.getPath()).thenReturn(storyPath);
             assertThat(configuration.storyReporter(storyPath), sameInstance(storyReporter));
         }
 
@@ -560,10 +568,9 @@ public class EmbedderBehaviour {
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
-            Story story = mockStory(Meta.EMPTY);
+            Story story = mockStory(storyPath, Meta.EMPTY);
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-            when(story.getPath()).thenReturn(storyPath);
         }
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
@@ -602,10 +609,9 @@ public class EmbedderBehaviour {
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
-            Story story = mockStory(Meta.EMPTY);
+            Story story = mockStory(storyPath, Meta.EMPTY);
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-            when(story.getPath()).thenReturn(storyPath);
         }
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
@@ -648,10 +654,9 @@ public class EmbedderBehaviour {
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
-            Story story = mockStory(Meta.EMPTY);
+            Story story = mockStory(storyPath, Meta.EMPTY);
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-            when(story.getPath()).thenReturn(storyPath);
         }
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
@@ -691,10 +696,9 @@ public class EmbedderBehaviour {
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
-            Story story = mockStory(Meta.EMPTY);
+            Story story = mockStory(storyPath, Meta.EMPTY);
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-            when(story.getPath()).thenReturn(storyPath);
         }
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
@@ -740,10 +744,9 @@ public class EmbedderBehaviour {
         for (Class<? extends Embeddable> embeddable : embeddables) {
             String storyPath = resolver.resolve(embeddable);
             storyPaths.add(storyPath);
-            Story story = mockStory(Meta.EMPTY);
+            Story story = mockStory(storyPath, Meta.EMPTY);
             stories.put(storyPath, story);
             when(performableTree.storyOfPath(configuration, storyPath)).thenReturn(story);
-            when(story.getPath()).thenReturn(storyPath);
         }
         List<CandidateSteps> candidateSteps = stepsFactory.createCandidateSteps();
         RunContext runContext = new RunContext(configuration, candidateSteps, monitor, filter, new BatchFailures());
@@ -1175,9 +1178,9 @@ public class EmbedderBehaviour {
 
     }
 
-    private Story mockStory(Meta meta) {
+    private Story mockStory(String path, Meta meta) {
         Story story = mock(Story.class);
-        when(story.getPath()).thenReturn("/a/path");
+        when(story.getPath()).thenReturn(path);
         when(story.getMeta()).thenReturn(meta);
         when(story.asMeta(Mockito.anyString())).thenReturn(meta);
         return story;

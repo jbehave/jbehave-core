@@ -2,6 +2,7 @@ package org.jbehave.core.configuration;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Comparator;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.embedder.StoryControls;
@@ -53,6 +54,7 @@ public class UnmodifiableConfigurationBehaviour {
         assertThat(unmodifiable.stepPatternParser(), is(delegate.stepPatternParser()));
         assertThat(unmodifiable.viewGenerator(), is(delegate.viewGenerator()));
         assertThat(unmodifiable.examplesTableFactory(), is(delegate.examplesTableFactory()));
+        assertThat(unmodifiable.storyExecutionComparator(), is(delegate.storyExecutionComparator()));
     }
 
     @Test
@@ -79,6 +81,7 @@ public class UnmodifiableConfigurationBehaviour {
         assertThatNotAllowed(unmodifiable, "useViewGenerator", ViewGenerator.class);
         assertThatNotAllowed(unmodifiable, "useStoryPathResolver", StoryPathResolver.class);
         assertThatNotAllowed(unmodifiable, "useExamplesTableFactory", ExamplesTableFactory.class);
+        assertThatNotAllowed(unmodifiable, "useStoryExecutionComparator", Comparator.class);
     }
 
     private void assertThatNotAllowed(Configuration unmodifiable, String methodName, Class<?>... types)

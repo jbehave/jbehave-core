@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
+import org.jbehave.core.configuration.Configuration;
 
 import static java.util.Arrays.asList;
 
@@ -36,10 +37,21 @@ public class StoryFinder {
         this(classNameExtension, null);
     }
 
+    /**
+     * @param sortingComparator comparator to sort stories by path
+     * @deprecated Use {@link Configuration#useStoryExecutionComparator(Comparator)} instead
+     */
+    @Deprecated
     public StoryFinder(Comparator<? super String> sortingComparator) {
         this(JAVA, sortingComparator);
     }
 
+    /**
+     * @param classNameExtension class name extensions to find
+     * @param sortingComparator comparator to sort stories by path
+     * @deprecated Use {@link Configuration#useStoryExecutionComparator(Comparator)} instead
+     */
+    @Deprecated
     private StoryFinder(String classNameExtension, Comparator<? super String> sortingComparator) {
         this.classNameExtension = classNameExtension;
         this.sortingComparator = sortingComparator;

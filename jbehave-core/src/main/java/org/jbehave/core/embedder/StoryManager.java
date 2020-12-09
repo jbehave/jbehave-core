@@ -117,7 +117,7 @@ public class StoryManager {
 		performableTree.performBeforeOrAfterStories(context, Stage.BEFORE);
 
 		// run stories
-		runningStories(context, stories);
+		runStories(context, stories);
 		waitUntilAllDoneOrFailed(context);
 		MetaFilter filter = context.filter();
 		List<Story> notAllowed = notAllowedBy(filter);
@@ -130,13 +130,11 @@ public class StoryManager {
 		performableTree.performBeforeOrAfterStories(context, Stage.AFTER);
 	}
 
-	public Map<String, RunningStory> runningStories(RunContext context,
-			List<Story> stories) {
-		for (Story story : stories) {
-			filterRunning(context, story);
-		}
-		return runningStories;
-	}
+    private void runStories(RunContext context, List<Story> stories) {
+        stories.stream()
+               .sorted(configuration.storyExecutionComparator())
+               .forEach(story -> filterRunning(context, story));
+    }
 
 	private void filterRunning(RunContext context, Story story) {
 		FilteredStory filteredStory = context.filter(story);

@@ -1,6 +1,7 @@
 package org.jbehave.core.configuration;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 
 import org.jbehave.core.Embeddable;
@@ -20,6 +21,7 @@ import org.jbehave.core.io.StoryLoader;
 import org.jbehave.core.io.StoryPathResolver;
 import org.jbehave.core.io.UnderscoredCamelCaseResolver;
 import org.jbehave.core.model.ExamplesTableFactory;
+import org.jbehave.core.model.Story;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.CompositeParser;
@@ -203,6 +205,11 @@ public abstract class Configuration {
      */
     protected ExamplesTableFactory examplesTableFactory;
 
+    /**
+     * The story execution comparator
+     */
+    protected Comparator<Story> storyExecutionComparator;
+
     public Configuration() {
     }
 
@@ -243,6 +250,13 @@ public abstract class Configuration {
             storyLoader = new LoadFromClasspath();
         }
         return storyLoader;
+    }
+
+    public Comparator<Story> storyExecutionComparator() {
+        if (storyExecutionComparator == null) {
+        	storyExecutionComparator = Comparator.comparing(Story::getPath, Comparator.naturalOrder());
+        }
+        return storyExecutionComparator;
     }
 
     public ExamplesTableFactory examplesTableFactory() {
@@ -438,6 +452,11 @@ public abstract class Configuration {
 
     public Configuration useExamplesTableFactory(ExamplesTableFactory examplesTableFactory) {
         this.examplesTableFactory = examplesTableFactory;
+        return this;
+    }
+
+    public Configuration useStoryExecutionComparator(Comparator<Story> storyExecutionComparator) {
+        this.storyExecutionComparator = storyExecutionComparator;
         return this;
     }
 
