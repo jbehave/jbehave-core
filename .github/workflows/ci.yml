@@ -1,0 +1,43 @@
+name: JBehave CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [ ubuntu-latest, macos-latest ]
+      fail-fast: false
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install JDK 8
+        uses: actions/setup-java@v1
+        with:
+          java-version: '8'
+
+      - name: Cache Maven Local repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Install
+        shell: bash
+        run: mvn install -s settings.xml -DskipTests=true -Dmaven.javadoc.skip=true --batch-mode -e --quiet
+
+      - name: Build
+        shell: bash
+        run: mvn install -s settings.xml -P examples --batch-mode -e

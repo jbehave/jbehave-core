@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/jbehave/jbehave-core.png)](https://travis-ci.org/jbehave/jbehave-core)
+[![Build Status](https://github.com/jbehave/jbehave-core/workflows/JBehave%20CI/badge.svg)](https://github.com/jbehave/jbehave-core/actions?query=workflow%3A%22JBehave+CI%22)
+
 
 # JBehave
 
@@ -20,7 +21,7 @@ Canonical information for JBehave:
 Please report issues, feature requests on [JIRA](http://jbehave.org/issue-tracking.html) or discuss them on the
 [dev mailing list](http://jbehave.org/mailing-lists.html).
 
-Keep an eye on the  [Travis CI](http://travis-ci.org/jbehave) server for JBehave builds.
+Keep an eye on the  [Github Actions](https://github.com/jbehave/jbehave-core/actions?query=workflow%3A%22JBehave+CI%22) server for JBehave builds.
 
 ### JDK
 
