@@ -13,6 +13,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
@@ -67,8 +68,11 @@ public class EmbedderClassLoaderBehaviour {
     public void shouldProvideShortJarPathUrlContentAsString() throws MalformedURLException {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.asList("/path/to/one.jar",
                 "/target/classes"));
+        List<String> expectedPaths = classLoader.asShortPaths(new File("one.jar").toURI().toURL(), new File("/target/classes").toURI().toURL());
+        String expected = expectedPaths.stream()
+                .collect(Collectors.joining(",", "{", "}"));
         assertThat(classLoader.toString(),
-                containsString("urls=" + classLoader.asShortPaths(new File("one.jar").toURI().toURL(), new File("/target/classes").toURI().toURL())));
+                containsString("urls=" + expected));
     }
 
     @Test(expected = InstantiationFailed.class)
