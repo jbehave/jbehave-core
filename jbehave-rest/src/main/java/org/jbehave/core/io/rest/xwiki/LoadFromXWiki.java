@@ -2,6 +2,7 @@ package org.jbehave.core.io.rest.xwiki;
 
 import static java.text.MessageFormat.format;
 
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.jbehave.core.io.rest.LoadFromREST;
 import org.jbehave.core.io.rest.RESTClient.Type;
 
@@ -36,6 +37,8 @@ public class LoadFromXWiki extends LoadFromREST {
 			return gson.fromJson(entity, Page.class).content;
 		case XML:
 			XStream xstream = new XStream();
+			XStream.setupDefaultSecurity(xstream);
+			xstream.addPermission(AnyTypePermission.ANY);
 			xstream.alias("page", Page.class);
 			xstream.ignoreUnknownElements();
 			return ((Page) xstream.fromXML(entity)).content;

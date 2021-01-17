@@ -1,5 +1,6 @@
 package org.jbehave.core.io.rest.xwiki;
 
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.jbehave.core.io.rest.RESTClient.Type;
 import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.UploadToREST;
@@ -34,6 +35,8 @@ public class UploadToXWiki extends UploadToREST {
 		case XML:
 			page.xmlns = "http://www.xwiki.org";
 			XStream xstream = new XStream();
+			XStream.setupDefaultSecurity(xstream);
+			xstream.addPermission(AnyTypePermission.ANY);
 			xstream.alias("page", Page.class);
 			xstream.useAttributeFor(Page.class, "xmlns");
             xstream.aliasField("xmlns", Page.class, "xmlns");

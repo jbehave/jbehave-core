@@ -4,6 +4,7 @@ import static java.text.MessageFormat.format;
 
 import java.util.List;
 
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.jbehave.core.io.rest.RESTClient;
 
 import com.thoughtworks.xstream.XStream;
@@ -35,16 +36,18 @@ public class Confluence {
     }
 
     protected XStream configureXStream() {
-        XStream stream = new XStream();
-        stream.addImplicitCollection(Page.class, "link");
-        stream.alias("results", Results.class);
-        stream.alias("result", Page.class);
-        stream.alias("content", Page.class);
-        stream.alias("link", Link.class);
-        stream.useAttributeFor(Link.class, "rel");
-        stream.useAttributeFor(Link.class, "href");
-        stream.ignoreUnknownElements();
-        return stream;
+        XStream xstream = new XStream();
+        XStream.setupDefaultSecurity(xstream);
+        xstream.addPermission(AnyTypePermission.ANY);
+        xstream.addImplicitCollection(Page.class, "link");
+        xstream.alias("results", Results.class);
+        xstream.alias("result", Page.class);
+        xstream.alias("content", Page.class);
+        xstream.alias("link", Link.class);
+        xstream.useAttributeFor(Link.class, "rel");
+        xstream.useAttributeFor(Link.class, "href");
+        xstream.ignoreUnknownElements();
+        return xstream;
     }
 
     public static class Results {

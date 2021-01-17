@@ -7,6 +7,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.jbehave.core.embedder.MatchingStepMonitor.StepMatch;
 import org.jbehave.core.embedder.PerformableTree.ExamplePerformableScenario;
 import org.jbehave.core.embedder.PerformableTree.NormalPerformableScenario;
@@ -103,6 +104,8 @@ public class CrossReference {
 	}
 
 	private void configure(XStream xstream) {
+		XStream.setupDefaultSecurity(xstream);
+		xstream.addPermission(AnyTypePermission.ANY);
 		xstream.setMode(XStream.NO_REFERENCES);
 		xstream.alias("xref", XRef.class);
 		xstream.alias(name.toLowerCase(), PerformableRoot.class);

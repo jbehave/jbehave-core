@@ -1,5 +1,6 @@
 package org.jbehave.core.io.rest.redmine;
 
+import com.thoughtworks.xstream.security.AnyTypePermission;
 import org.jbehave.core.io.rest.LoadFromREST;
 import org.jbehave.core.io.rest.RESTClient.Type;
 
@@ -38,6 +39,8 @@ public class LoadFromRedmine extends LoadFromREST {
 					WikiPage.class).text;
 		case XML:
 			XStream xstream = new XStream();
+			XStream.setupDefaultSecurity(xstream);
+			xstream.addPermission(AnyTypePermission.ANY);
 			xstream.alias("wiki_page", WikiPage.class);
 			xstream.ignoreUnknownElements();
 			return ((WikiPage) xstream.fromXML(entity)).text;
