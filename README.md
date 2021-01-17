@@ -23,16 +23,18 @@ Please report issues, feature requests on [JIRA](http://jbehave.org/issue-tracki
 
 Keep an eye on the  [Github Actions](https://github.com/jbehave/jbehave-core/actions?query=workflow%3A%22JBehave+CI%22) server for JBehave builds.
 
-### JDK
+### JDK Version
 
-JDK version required: 
+JDK 8 is needed to build the JBehave-core modules (tested with Oracle JDK on different platforms). You may have to follow instructions in https://stackoverflow.com/questions/43690435/failure-to-find-org-jenkins-ci-pluginspluginpom2-11-in-https-repo-maven-apa to get the Jeknins module building.
 
-1.8 or above at build and runtime (tested with Oracle JDK on different platforms)
+End users can use JDK 8 or above in theor own projects that use JBehave for testing.
 
 ### Maven 
 
 [Maven](http://maven.apache.org) version required to build: 3.5 or above 
 (while tested with 3.5.x it may also work with previous 3.x versions)
+
+Some additional setup may be required to build the 
 
 ### Encoding
 
