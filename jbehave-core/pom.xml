@@ -14,7 +14,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>${junit.version}</version>
+      <version>4.13.1</version>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
