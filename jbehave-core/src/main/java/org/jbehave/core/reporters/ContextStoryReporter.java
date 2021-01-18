@@ -4,8 +4,6 @@ import org.jbehave.core.context.Context;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 
-import java.util.ArrayList;
-
 public class ContextStoryReporter extends NullStoryReporter {
     private final Context context;
 
@@ -21,6 +19,5 @@ public class ContextStoryReporter extends NullStoryReporter {
     @Override
     public void beforeScenario(Scenario scenario) {
         context.setCurrentScenario(scenario.getTitle());
-        context.setCurrentSteps(new ArrayList<String>(scenario.getSteps()));
     }
 }
