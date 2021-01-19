@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.jbehave</groupId>
     <artifactId>jbehave-pom</artifactId>
-    <version>1</version>
+    <version>4</version>
   </parent>
   <artifactId>jbehave</artifactId>
   <packaging>pom</packaging>
@@ -45,7 +45,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <!-- hack to overcome https://issues.apache.org/jira/browse/MSITE-228-->
+      <!-- hack to overcome https://issues.apache.org/jira/browse/MSITE-228 -->
       <groupId>org.apache.maven.skins</groupId>
       <artifactId>maven-default-skin</artifactId>
       <version>1.0</version>

@@ -1,4 +1,4 @@
-Copyright (c) 2003-2020 jbehave.org
+Copyright (c) 2003-2021 jbehave.org
 
 All rights reserved.
 
