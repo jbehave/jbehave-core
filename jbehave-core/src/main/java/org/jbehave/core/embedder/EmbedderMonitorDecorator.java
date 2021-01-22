@@ -143,21 +143,6 @@ public class EmbedderMonitorDecorator implements EmbedderMonitor {
     }
 
     @Override
-    public void generatingNavigatorView(File outputDirectory, Properties viewResources) {
-        delegate.generatingNavigatorView(outputDirectory, viewResources);
-    }
-
-    @Override
-    public void navigatorViewGenerationFailed(File outputDirectory, Properties viewResources, Throwable cause) {
-        delegate.navigatorViewGenerationFailed(outputDirectory, viewResources, cause);
-    }
-
-    @Override
-    public void navigatorViewNotGenerated() {
-        delegate.navigatorViewNotGenerated();        
-    }
-
-    @Override
     public void processingSystemProperties(Properties properties) {
         delegate.processingSystemProperties(properties);
     }

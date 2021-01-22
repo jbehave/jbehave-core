@@ -152,22 +152,6 @@ public abstract class PrintingEmbedderMonitor extends NullEmbedderMonitor {
     }
 
     @Override
-    public void generatingNavigatorView(File outputDirectory, Properties viewProperties) {
-        print("Generating navigator view to '%s' using view properties '%s'", outputDirectory, viewProperties);
-    }
-
-    @Override
-    public void navigatorViewGenerationFailed(File outputDirectory, Properties viewProperties, Throwable cause) {
-        print("Failed to generating navigator view to '%s' using view properties '%s'", outputDirectory, viewProperties);
-        printStackTrace(cause);
-    }
-
-    @Override
-    public void navigatorViewNotGenerated() {
-        print("Navigator view not generated, as the CrossReference has not been declared in the StoryReporterBuilder");
-    }
-
-    @Override
     public void processingSystemProperties(Properties properties) {
         print("Processing system properties %s", properties);
     }

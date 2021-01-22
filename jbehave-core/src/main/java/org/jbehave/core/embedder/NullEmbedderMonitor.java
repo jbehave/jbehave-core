@@ -116,18 +116,6 @@ public class NullEmbedderMonitor implements EmbedderMonitor {
     }
 
     @Override
-    public void generatingNavigatorView(File outputDirectory, Properties viewResources) {
-    }
-
-    @Override
-    public void navigatorViewGenerationFailed(File outputDirectory, Properties viewResources, Throwable cause) {
-    }
-
-    @Override
-    public void navigatorViewNotGenerated() {
-    }
-
-    @Override
     public void processingSystemProperties(Properties properties) {
     }
 

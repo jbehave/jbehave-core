@@ -83,7 +83,6 @@ public class EmbedderMonitorBehaviour {
         Properties viewProperties = mock(Properties.class);
         monitor.generatingMapsView(outputDirectory, storyMaps, viewProperties);
         Properties viewResources = mock(Properties.class);
-        monitor.generatingNavigatorView(outputDirectory, viewResources);
         List<String> formats = asList("TXT");
         monitor.generatingReportsView(outputDirectory, formats, viewProperties);
         String storyPath = "path";
@@ -93,8 +92,6 @@ public class EmbedderMonitorBehaviour {
         Meta meta = mock(Meta.class);
         MetaFilter filter = mock(MetaFilter.class);
         monitor.metaNotAllowed(meta, filter);
-        monitor.navigatorViewGenerationFailed(outputDirectory, viewResources, cause);
-        monitor.navigatorViewNotGenerated();
         Properties properties = mock(Properties.class);
         monitor.processingSystemProperties(properties);
         ReportsCount count = mock(ReportsCount.class);
@@ -125,13 +122,10 @@ public class EmbedderMonitorBehaviour {
         verify(delegate).embeddableNotConfigurable(name);
         verify(delegate).embeddablesSkipped(names);
         verify(delegate).generatingMapsView(outputDirectory, storyMaps, viewProperties);
-        verify(delegate).generatingNavigatorView(outputDirectory, viewResources);
         verify(delegate).generatingReportsView(outputDirectory, formats, viewProperties);
         verify(delegate).mappingStory(storyPath, metaFilters);
         verify(delegate).mapsViewGenerationFailed(outputDirectory, storyMaps, viewProperties, cause);
         verify(delegate).metaNotAllowed(meta, filter);
-        verify(delegate).navigatorViewGenerationFailed(outputDirectory, viewResources, cause);
-        verify(delegate).navigatorViewNotGenerated();
         verify(delegate).processingSystemProperties(properties);
         verify(delegate).reportsViewGenerated(count);
         verify(delegate).reportsViewGenerationFailed(outputDirectory, formats, viewProperties, cause);
