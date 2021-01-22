@@ -77,11 +77,7 @@ public class ConcurrencyBehaviour {
     public void shouldAllowStoriesToBeTimed() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("10").useThreads(2).doVerboseFailures(true);
-        try {
-            embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
-        } finally {
-            embedder.generateCrossReference();
-        }
+        embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
     }
 
     @Test
@@ -243,8 +239,8 @@ public class ConcurrencyBehaviour {
         public Configuration configuration() {
             return new MostUsefulConfiguration()
                     .useStoryLoader(new LoadFromClasspath(this.getClass()))
-                    .useStoryReporterBuilder(new StoryReporterBuilder().withFormats(CONSOLE, HTML, XML, JSON)
-                            .withCrossReference(new CrossReference()));
+                    .useStoryReporterBuilder(new StoryReporterBuilder()
+                            .withFormats(CONSOLE, HTML, XML, JSON));
         }
 
         @Override

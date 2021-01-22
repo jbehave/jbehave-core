@@ -151,7 +151,6 @@ public class StoryReporterBuilder {
     protected boolean compressFailureTrace = false;
     protected Keywords keywords;
     protected SGRCodes codes;
-    protected CrossReference crossReference;
     protected SurefireReporter surefireReporter;
     protected boolean multiThreading;
     protected Configuration configuration;
@@ -263,19 +262,6 @@ public class StoryReporterBuilder {
 
     public StoryReporterBuilder withCodeLocation(URL codeLocation) {
         this.codeLocation = codeLocation;
-        return this;
-    }
-
-    public CrossReference crossReference() {
-        return crossReference;
-    }
-
-    public boolean hasCrossReference() {
-        return crossReference != null;
-    }
-
-    public StoryReporterBuilder withCrossReference(CrossReference crossReference) {
-        this.crossReference = crossReference;
         return this;
     }
 

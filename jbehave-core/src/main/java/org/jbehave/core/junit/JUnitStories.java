@@ -20,7 +20,6 @@ public abstract class JUnitStories extends ConfigurableEmbedder {
         try {
             embedder.runStoriesAsPaths(storyPaths());
         } finally {
-            embedder.generateCrossReference();
             embedder.generateSurefireReport();
         }
     }

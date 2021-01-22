@@ -59,7 +59,6 @@ import org.jbehave.core.model.Meta;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMap;
 import org.jbehave.core.model.StoryMaps;
-import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.PrintStreamStepdocReporter;
 import org.jbehave.core.reporters.ReportsCount;
 import org.jbehave.core.reporters.StoryReporter;
@@ -1131,26 +1130,6 @@ public class EmbedderBehaviour {
         assertThat(embedderAsString, containsString(MostUsefulConfiguration.class.getSimpleName()));
         assertThat(embedderAsString, containsString(PerformableTree.class.getSimpleName()));
         assertThat(embedderAsString, containsString(PrintStreamEmbedderMonitor.class.getSimpleName()));
-    }
-
-    @Test
-    public void shouldGenerateCrossReferenceWhenAvailable() {
-
-        Embedder embedder = new Embedder();
-        embedder.useConfiguration(new MostUsefulConfiguration().useStoryReporterBuilder(new StoryReporterBuilder()
-                .withCrossReference(new CrossReference())));
-
-        // When
-        embedder.generateCrossReference();
-
-        // Then
-        assertXrefExists(embedder.configuration().storyReporterBuilder(), "json");
-        assertXrefExists(embedder.configuration().storyReporterBuilder(), "xml");
-
-    }
-
-    private void assertXrefExists(StoryReporterBuilder storyReporterBuilder, String ext) {
-        assertThat(new File(storyReporterBuilder.outputDirectory(), "view/xref." + ext).exists(), is(true));
     }
 
     private String dos2unix(String string) {

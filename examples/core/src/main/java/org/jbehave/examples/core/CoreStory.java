@@ -21,7 +21,6 @@ import org.jbehave.core.model.ExamplesTableFactory;
 import org.jbehave.core.model.TableParsers;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStoryParser;
-import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToPackagedName;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
@@ -50,8 +49,6 @@ import static org.jbehave.core.reporters.Format.HTML_TEMPLATE;
  * </p>
  */
 public abstract class CoreStory extends JUnitStory {
-
-    private final CrossReference xref = new CrossReference();
 
     public CoreStory() {
         configuredEmbedder().embedderControls().doGenerateViewAfterStories(true).doIgnoreFailureInStories(false)
@@ -88,7 +85,6 @@ public abstract class CoreStory extends JUnitStory {
                                 .withCodeLocation(CodeLocations.codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withPathResolver(new ResolveToPackagedName())
                                 .withViewResources(viewResources).withFormats(CONSOLE, TXT, HTML_TEMPLATE, XML)
-                                .withCrossReference(xref)
                                 .withFailureTrace(true).withFailureTraceCompression(true))
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls)

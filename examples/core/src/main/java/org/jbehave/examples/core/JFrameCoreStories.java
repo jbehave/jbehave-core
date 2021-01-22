@@ -4,10 +4,8 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.context.Context;
 import org.jbehave.core.context.ContextView;
 import org.jbehave.core.context.JFrameContextView;
-import org.jbehave.core.reporters.ContextOutput;
-import org.jbehave.core.reporters.CrossReference;
-import org.jbehave.core.reporters.Format;
 import org.jbehave.core.steps.ContextStepMonitor;
+import org.jbehave.core.steps.NullStepMonitor;
 
 /**
  * <p>
@@ -16,11 +14,9 @@ import org.jbehave.core.steps.ContextStepMonitor;
  */
 public class JFrameCoreStories extends CoreStories {
 
-    private final CrossReference xref = new CrossReference();
     private Context context = new Context();
-    private Format contextFormat = new ContextOutput(context);
     private ContextView contextView = new JFrameContextView().sized(640, 120);
-    private ContextStepMonitor contextStepMonitor = new ContextStepMonitor(context, contextView, xref.getStepMonitor());
+    private ContextStepMonitor contextStepMonitor = new ContextStepMonitor(context, contextView, new NullStepMonitor());
 
     @Override
     public Configuration configuration() {

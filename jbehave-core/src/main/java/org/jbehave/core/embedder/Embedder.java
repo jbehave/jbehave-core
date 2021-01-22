@@ -283,13 +283,6 @@ public class Embedder {
         }
     }
 
-    public void generateCrossReference() {
-        StoryReporterBuilder builder = configuration().storyReporterBuilder();
-        if (builder.hasCrossReference()) {
-            builder.crossReference().serialise(storyManager().performableRoot(), builder.outputDirectory());
-        }
-    }
-
     public void generateSurefireReport() {
         StoryReporterBuilder builder = configuration().storyReporterBuilder();
         if (builder.hasSurefireReporter()) {

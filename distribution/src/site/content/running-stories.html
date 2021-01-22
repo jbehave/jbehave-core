@@ -105,8 +105,7 @@ public class TraderEmbedder extends Embedder {
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withCodeLocation(CodeLocations.codeLocationFromClass(embedderClass))
                 .withDefaultFormats()
-                .withFormats(CONSOLE, TXT, HTML, XML)
-                .withCrossReference(new CrossReference()))
+                .withFormats(CONSOLE, TXT, HTML, XML))
             .useParameterConverters(new ParameterConverters()
                     .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern
             .useStepPatternParser(new RegexPrefixCapturingPatternParser(

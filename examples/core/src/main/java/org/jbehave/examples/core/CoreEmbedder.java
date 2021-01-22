@@ -10,7 +10,6 @@ import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
-import org.jbehave.core.reporters.CrossReference;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
@@ -47,8 +46,7 @@ public class CoreEmbedder extends Embedder {
             .useStoryReporterBuilder(new StoryReporterBuilder()
                 .withCodeLocation(CodeLocations.codeLocationFromClass(embedderClass))
                 .withDefaultFormats()
-                .withFormats(CONSOLE, TXT, HTML, XML)
-                .withCrossReference(new CrossReference()))
+                .withFormats(CONSOLE, TXT, HTML, XML))
             .useTableTransformers(tableTransformers)
             .useParameterConverters(new ParameterConverters(resourceLoader, tableTransformers)
                     .addConverters(new DateConverter(new SimpleDateFormat("yyyy-MM-dd")))) // use custom date pattern

@@ -42,7 +42,6 @@ import org.jbehave.examples.core.steps.*;
  */
 public class CoreStories extends JUnitStories {
 
-    private final CrossReference xref = new CrossReference();
     private Context context = new Context();
     private Format contextFormat = new ContextOutput(context);
 
@@ -87,7 +86,7 @@ public class CoreStories extends JUnitStories {
                                 .withCodeLocation(codeLocationFromClass(embeddableClass))
                                 .withDefaultFormats().withViewResources(viewResources)
                                 .withFormats(contextFormat, ANSI_CONSOLE, TXT, HTML_TEMPLATE, XML_TEMPLATE).withFailureTrace(true)
-                                .withFailureTraceCompression(true).withCrossReference(xref)
+                                .withFailureTraceCompression(true)
                                 .withSurefireReporter(surefireReporter))
                 .useParameterConverters(parameterConverters)
                 .useParameterControls(parameterControls)
