@@ -20,8 +20,6 @@
     <module>jbehave-io</module>
     <module>jbehave-ant</module>
     <module>jbehave-maven-plugin</module>
-    <module>jbehave-hudson-plugin</module>
-    <module>jbehave-jenkins-plugin</module>
     <module>jbehave-navigator</module>
     <module>jbehave-gherkin</module>
     <module>jbehave-google</module>

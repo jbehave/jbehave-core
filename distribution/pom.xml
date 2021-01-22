@@ -98,46 +98,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-hudson-plugin</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/plugins</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>jbehave-hudson-plugin</artifactId>
-                  <version>${project.version}</version>
-                  <type>hpi</type>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-jenkins-plugin</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/plugins</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>jbehave-jenkins-plugin</artifactId>
-                  <version>${project.version}</version>
-                  <type>hpi</type>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <execution>
             <id>unpack-javadoc-core</id>
             <phase>generate-resources</phase>
             <goals>
@@ -371,46 +331,6 @@
                 <artifactItem>
                   <groupId>${project.groupId}</groupId>
                   <artifactId>jbehave-ant</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>javadoc</classifier>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <execution>
-            <id>unpack-javadoc-hudson-plugin</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/site/javadoc/hudson-plugin</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>jbehave-hudson-plugin</artifactId>
-                  <version>${project.version}</version>
-                  <classifier>javadoc</classifier>
-                </artifactItem>
-              </artifactItems>
-            </configuration>
-          </execution>
-          <execution>
-            <id>unpack-javadoc-jenkins-plugin</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.directory}/site/javadoc/jenkins-plugin</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>${project.groupId}</groupId>
-                  <artifactId>jbehave-jenkins-plugin</artifactId>
                   <version>${project.version}</version>
                   <classifier>javadoc</classifier>
                 </artifactItem>
