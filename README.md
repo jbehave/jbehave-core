@@ -31,8 +31,8 @@ End users can use JDK 8 or above in theor own projects that use JBehave for test
 
 ### Maven 
 
-[Maven](http://maven.apache.org) version required to build: 3.5 or above 
-(while tested with 3.5.x it may also work with previous 3.x versions)
+[Maven](http://maven.apache.org) version required to build: 3.6 or above 
+(while tested with 3.6.x it may also work with previous 3.x versions)
 
 Some additional setup may be required to build the 
 
@@ -43,9 +43,7 @@ Configure Maven by adding "-Dfile.encoding=UTF-8" to $MAVEN_OPTS
 
 ### IDE Integration
 
-Maven is supported in Intellij IDEA out-of-the-box
-Maven is supported in Eclipse via [m2e plugin](http://eclipse.org/m2e), included out-of-the-box in some Eclipse distributions.
-Eclipse users may also want to load the ides/eclipse/lifecycle-mapping-metadata.xml or ignore the m2e lifecycle mappings manually.
+Maven is supported in all major IDEs, including Intellij IDEA and Eclipse.
 
 ### Building
 
