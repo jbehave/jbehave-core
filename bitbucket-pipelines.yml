@@ -1,12 +1,12 @@
-# This is a sample build configuration for Maven.
-# Check our guides at https://confluence.atlassian.com/x/VYk8Lw for more examples.
+# Bitbucket build configuration for Maven.
+# https://support.atlassian.com/bitbucket-cloud/docs/java-with-bitbucket-pipelines/
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: maven:3.3.3
+image: maven:3.6.3
 
 pipelines:
   default:
     - step:
-        script: # Modify the commands below to build your repository.
+        script:
           - mvn clean install -s settings.xml -Pexamples
