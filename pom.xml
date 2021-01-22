@@ -18,7 +18,6 @@
   <modules>
     <module>jbehave-core</module>
     <module>jbehave-io</module>
-    <module>jbehave-ant</module>
     <module>jbehave-maven-plugin</module>
     <module>jbehave-gherkin</module>
     <module>jbehave-google</module>

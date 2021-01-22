@@ -83,22 +83,6 @@ So, once you've built the JBehave parent POM from source or retrieved it from th
 repository, you don't need to do it again, unless you think it needs to be updated.  The same goes for the 
 Examples parent POM.</span>
 
-<h2 id="ant">Running Examples via Ant</h2>
-
-<p>The <b>trader-ant</b> example shows how to use JBehave Ant tasks to run stories.</p>
-
-<p>Ant does not natively support any dependency management.  Ant users can either use 
-<a href="http://maven.apache.org/ant-tasks">Maven Ant Tasks</a> or Apache Ivy or copy all the dependencies to a lib directory. 
-In the trader-ant example we use the Maven Ant Tasks, which needs to be installed in the <b>$ANT_HOME/lib</b> directory 
-in order to retrieve the dependency information from the Maven POM.</p>
-
-<script type="syntaxhighlighter" class="brush: plain">
-<![CDATA[
-cd examples/trader-ant
-ant -Djbehave.version=[version]
-]]>
-</script>
-
 <div class="clear">
 <hr />
 </div>
