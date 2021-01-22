@@ -17,13 +17,8 @@
     </dependency>
     <dependency>
       <groupId>com.google.gdata</groupId>
-      <artifactId>gdata-java-client</artifactId>
-      <version>1.40.0.atlassian-2</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>mail</artifactId>
-      <version>1.4.1</version>
+      <artifactId>core</artifactId>
+      <version>1.47.1</version>
     </dependency>
   </dependencies>
 

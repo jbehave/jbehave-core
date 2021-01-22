@@ -6,75 +6,35 @@
   <profiles>
     <profile>
       <!-- Required for dependencies of JBehave snapshots -->
-      <id>sonatype</id>
+      <id>snapshots</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
       <repositories>
         <repository>
-          <id>sonatype-public-repository-group</id>
-          <name>Sonatype Public Repository Group</name>
-          <url>https://oss.sonatype.org/content/groups/public/</url>
+          <id>sonatype-nexus-oss</id>
+          <name>Sonatype Nexus OSS</name>
+          <url>https://s01.oss.sonatype.org/content/groups/public/</url>
           <layout>default</layout>
           <releases>
             <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
           </releases>
           <snapshots>
             <enabled>true</enabled>
-            <updatePolicy>never</updatePolicy>
           </snapshots>
         </repository>
       </repositories>
       <pluginRepositories>
         <pluginRepository>
-          <id>sonatype-public-repository-group</id>
-          <name>Sonatype Public Repository Group</name>
-          <url>https://oss.sonatype.org/content/groups/public/</url>
+          <id>sonatype-nexus-oss</id>
+          <name>Sonatype Nexus OSS</name>
+          <url>https://s01.oss.sonatype.org/content/groups/public/</url>
           <releases>
             <enabled>true</enabled>
           </releases>
           <snapshots>
             <enabled>true</enabled>
           </snapshots>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-    <profile>
-      <!-- Required for dependencies of Google module -->
-      <id>atlassian</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <repositories>
-        <repository>
-          <id>atlassian</id>
-          <url>https://maven.atlassian.com/content/groups/public/</url>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>atlassian</id>
-          <url>https://maven.atlassian.com/content/groups/public/</url>
-        </pluginRepository>
-      </pluginRepositories>
-    </profile>
-    <profile>
-      <!-- Required for dependencies of Jenkins module -->
-      <id>jenkins</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <repositories>
-        <repository>
-          <id>jenkins</id>
-          <url>https://repo.jenkins-ci.org/public/</url>
-        </repository>
-      </repositories>
-      <pluginRepositories>
-        <pluginRepository>
-          <id>jenkins</id>
-          <url>https://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
       </pluginRepositories>
     </profile>
