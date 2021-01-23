@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jbehave</groupId>
@@ -9,7 +10,9 @@
   <packaging>pom</packaging>
   <version>5.0-SNAPSHOT</version>
   <name>JBehave</name>
-  <description>JBehave Core is a project providing core functionality supporting and facilitating Behaviour-Driven Development.</description>
+  <description>JBehave Core is a project providing core functionality supporting and facilitating Behaviour-Driven
+    Development.
+  </description>
 
   <properties>
     <jdk.version>1.8</jdk.version>
@@ -266,6 +269,19 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-enforcer-plugin</artifactId>
             <executions>
+              <execution>
+                <id>enforce-java</id>
+                <goals>
+                  <goal>enforce</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <requireJavaVersion>
+                      <version>11</version>
+                    </requireJavaVersion>
+                  </rules>
+                </configuration>
+              </execution>
               <execution>
                 <id>enforce-maven</id>
                 <goals>
