@@ -41,7 +41,7 @@ public class PrintStreamStepMonitorBehaviour {
         // Then
         assertIsOutputEqualTo("Step 'Then foo named name' matches pattern '" + stepPattern
                 + "' for method 'public void org.jbehave.core.steps.PrintStreamStepMonitorBehaviour$MySteps.thenFoo(java.lang.String)' "
-                + "with annotations '[@org.jbehave.core.annotations.Then(priority=0, value=foo named $name)]' in steps instance '"
+                + "with annotations '[@org.jbehave.core.annotations.Then(priority=0, value=\"foo named $name\")]' in steps instance '"
                 + steps + "'");
     }
 

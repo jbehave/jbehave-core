@@ -20,9 +20,9 @@
     <module>jbehave-io</module>
     <module>jbehave-maven-plugin</module>
     <module>jbehave-gherkin</module>
-    <module>jbehave-google</module>
     <module>jbehave-groovy</module>
     <module>jbehave-scala</module>
+    <module>jbehave-google</module>
     <module>jbehave-guice</module>
     <module>jbehave-needle</module>
     <module>jbehave-odf</module>

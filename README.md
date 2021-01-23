@@ -3,7 +3,7 @@
 
 # JBehave
 
-JBehave is a BDD framework for Java and all JVM languages (Groovy, Ruby, Scala).
+JBehave is a BDD framework for Java and all JVM languages (Groovy, Kotlin, Ruby, Scala).
 
 <img src="http://jbehave.org/reference/preview/images/jbehave-logo.png" alt="JBehave logo" align="right" />
 
@@ -25,9 +25,9 @@ Keep an eye on the  [Github Actions](https://github.com/jbehave/jbehave-core/act
 
 ### JDK Version
 
-JDK 8 is needed to build the JBehave-core modules (tested with Oracle JDK on different platforms). You may have to follow instructions in https://stackoverflow.com/questions/43690435/failure-to-find-org-jenkins-ci-pluginspluginpom2-11-in-https-repo-maven-apa to get the Jeknins module building.
+At compile-time, JDK 11 is required to build JBehave modules
 
-End users can use JDK 8 or above in theor own projects that use JBehave for testing.
+At runtime, end users can use JDK 8 or above in their own projects that use JBehave for testing.
 
 ### Maven 
 
