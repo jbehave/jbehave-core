@@ -77,18 +77,6 @@ to output to any print stream:</p>
 
 <p>A recurrent use case is to report the steps that are configured in the Embeddables used to run the stories.</p>
 
-<h3>Using Ant Task</h3>
-
-<script type="syntaxhighlighter" class="brush: xml">
-<![CDATA[
-
-    <taskdef name="reportStepdocsAsEmbeddables" classname="org.jbehave.ant.ReportStepdocsAsEmbeddables"
-      classpathref="story.classpath" />
-    <reportStepdocsAsEmbeddables includes="**/stories/*.java"/>
-      
-]]>
-</script>
-
 <h3>Using Maven Goal</h3>
 
 <script type="syntaxhighlighter" class="brush: xml">
