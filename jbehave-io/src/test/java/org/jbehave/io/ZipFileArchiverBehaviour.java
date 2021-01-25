@@ -1,11 +1,7 @@
 package org.jbehave.io;
 
-import static java.util.Arrays.asList;
-import static org.apache.commons.io.FilenameUtils.separatorsToUnix;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +10,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import static java.util.Arrays.asList;
+import static org.apache.commons.io.FilenameUtils.separatorsToUnix;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class ZipFileArchiverBehaviour {
 
@@ -56,13 +54,13 @@ public class ZipFileArchiverBehaviour {
         String unixPath = separatorsToUnix(relativePath);
         File directory = new File(directoryPath);
         File file = new File(directoryPath + "/" + relativePath);
-        assertEquals(new File(unixPath), archiver.relativeTo(file, directory));
+        assertThat(archiver.relativeTo(file, directory), is(new File(unixPath)));
     }
 
     @Test
     public void canUnarchiveZip() throws IOException {
         File zip = resourceFile("archive.zip");
-        assertTrue(archiver.isArchive(zip));
+        assertThat(archiver.isArchive(zip), is(true));
         clearDir(dir);
         archiver.unarchive(zip, dir);
         assertFilesUnarchived(asList("archive", "archive/file1.txt", "archive/subdir1", "archive/subdir1/subfile1.txt"));
@@ -71,7 +69,7 @@ public class ZipFileArchiverBehaviour {
     @Test
     public void canListFileContentOfUnarchiveZip() throws IOException {
         File zip = resourceFile("archive.zip");
-        assertTrue(archiver.isArchive(zip));
+        assertThat(archiver.isArchive(zip), is(true));
         archiver.unarchive(zip, dir);
         List<File> content = archiver.listContent(new File(dir, "archive"));
         assertThatPathsMatch(content, Arrays.asList("archive", "archive/file1.txt", "archive/subdir1",
@@ -94,9 +92,9 @@ public class ZipFileArchiverBehaviour {
         ResourceFinder finder = new ResourceFinder("");
         for (String path : paths) {
             File file = new File(dir, path);
-            assertTrue(file.exists());
+            assertThat(file.exists(), is(true));
             if (!file.isDirectory()) {
-                assertTrue(finder.resourceAsString(file.getPath()).length() > 0);
+                assertThat(finder.resourceAsString(file.getPath()).length(), is(greaterThan(0)));
             }
         }
     }

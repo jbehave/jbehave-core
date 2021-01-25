@@ -1,8 +1,10 @@
 package org.jbehave.core.reporters;
 
 import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 
 public class StackTraceFormatterBehaviour {
@@ -123,8 +125,7 @@ public class StackTraceFormatterBehaviour {
     }
 
     private void assertThatTraceIs(String trace, String expected) {
-        // JUnit assertEquals used for comparing Strings
-        Assert.assertEquals(expected, trace);
+        assertThat(trace, is(expected));
     }
 
 }

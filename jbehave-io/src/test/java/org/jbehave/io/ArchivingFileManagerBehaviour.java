@@ -1,17 +1,12 @@
 package org.jbehave.io;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.io.IOUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,11 +14,10 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.jupiter.api.Test;
+import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.*;
 
 public class ArchivingFileManagerBehaviour {
 
@@ -55,7 +49,7 @@ public class ArchivingFileManagerBehaviour {
 
 	@Test
 	public void canListFilesThatAreNotDirectories() throws IOException {
-		assertEquals(asList(zip, file1, file2), listFiles());
+		assertThat(listFiles(), is(asList(zip, file1, file2)));
 	}
 
 	private List<File> listFiles() {
@@ -69,11 +63,11 @@ public class ArchivingFileManagerBehaviour {
 
 	@Test
 	public void canDeleteFilesAndDirectories() throws IOException {
-		assertEquals(asList(zip, file1, file2), listFiles());
+		assertThat(listFiles(), is(asList(zip, file1, file2)));
 		manager.delete(asList(file1));
-		assertEquals(asList(zip, file2), listFiles());
+		assertThat(listFiles(), is(asList(zip, file2)));
 		manager.delete(asList(zip));
-		assertEquals(asList(file2), listFiles());
+		assertThat(listFiles(), is(asList(file2)));
 	}
 
 	@Test
@@ -89,7 +83,7 @@ public class ArchivingFileManagerBehaviour {
 		file2.delete();
 		dir1.delete();
 		manager.upload(asList(file2FileItem, zipFileItem), errors);
-		assertEquals(0, errors.size());
+		assertThat(errors.size(), is(0));
 	}
 
 	@Test
@@ -108,7 +102,7 @@ public class ArchivingFileManagerBehaviour {
 		zip.delete();
 		List<File> files = manager.upload(asList(file2FileItem, zipFileItem), errors);
 		manager.unarchiveFiles(files, errors);
-		assertEquals(2, errors.size());
+		assertThat(errors.size(), is(2));
 	}
 
 	@Test
@@ -119,7 +113,7 @@ public class ArchivingFileManagerBehaviour {
         when(zipFileItem.getName()).thenReturn("");      
         when(file2FileItem.getName()).thenReturn("");      		
 		manager.upload(asList(file2FileItem, zipFileItem), errors);
-		assertEquals(0, errors.size());
+		assertThat(errors.size(), is(0));
 	}
 
 	@Test
@@ -135,7 +129,7 @@ public class ArchivingFileManagerBehaviour {
 		file2.delete();
 		zip.delete();
 		manager.upload(asList(file2FileItem, zipFileItem), errors);
-		assertEquals(4, errors.size());
+		assertThat(errors.size(), is(4));
 	}
 
 	private File create(String path) throws IOException {

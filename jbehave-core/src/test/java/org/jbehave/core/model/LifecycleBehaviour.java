@@ -1,14 +1,15 @@
 package org.jbehave.core.model;
 
-import static org.junit.Assert.assertTrue;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class LifecycleBehaviour {
 
     @Test
     public void shouldCreateEmptyLifecycleWithDefaultConstructor() {
         Lifecycle lifecycle = new Lifecycle();
-        assertTrue(lifecycle.isEmpty());
+        assertThat(lifecycle.isEmpty(), is(true));
     }
 }

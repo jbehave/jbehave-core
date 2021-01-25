@@ -1,14 +1,15 @@
 package org.jbehave.core.embedder;
 
-import static org.junit.Assert.assertEquals;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Lifecycle;
+import org.jbehave.core.model.Story;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Story;
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class StorySplitterBehaviour {
     private static final String EMPTY = "";
@@ -26,36 +27,36 @@ public class StorySplitterBehaviour {
         List<Story> originStories = getOriginStories((EXAMPLE_TABLE_HEADER
                 + EXAMPLE_TABLE_FIRST_LINE + EXAMPLE_TABLE_SECOND_LINE));
         List<Story> splitStories = StorySplitter.splitStories(originStories);
-        assertEquals(2, splitStories.size());
-        Story storyFirst = splitStories.get(0);
-        Story storySecond = splitStories.get(1);
-        assertEquals(String.format(STORY_PATH_TEMPLATE, INDEX_ZERO), storyFirst.getPath());
-        assertEquals(String.format(STORY_NAME_TEMPLATE, INDEX_ZERO), storyFirst.getName());
-        ExamplesTable examplesTableOfFirstStory = storyFirst.getLifecycle().getExamplesTable();
-        ExamplesTable examplesTableOfSecondStory = storySecond.getLifecycle().getExamplesTable();
-        assertEquals(examplesTableOfFirstStory.asString(), EXAMPLE_TABLE_HEADER + EXAMPLE_TABLE_FIRST_LINE);
-        assertEquals(examplesTableOfSecondStory.asString(), EXAMPLE_TABLE_HEADER + EXAMPLE_TABLE_SECOND_LINE);
-        assertEquals(String.format(STORY_PATH_TEMPLATE, INDEX_FIRST), storySecond.getPath());
-        assertEquals(String.format(STORY_NAME_TEMPLATE, INDEX_FIRST), storySecond.getName());
+        assertThat(splitStories.size(), is(2));
+        Story first = splitStories.get(0);
+        assertThat(first.getPath(), is(String.format(STORY_PATH_TEMPLATE, INDEX_ZERO)));
+        assertThat(first.getName(), is(String.format(STORY_NAME_TEMPLATE, INDEX_ZERO)));
+        ExamplesTable firstExamplesTable = first.getLifecycle().getExamplesTable();
+        assertThat(firstExamplesTable.asString(), is(EXAMPLE_TABLE_HEADER + EXAMPLE_TABLE_FIRST_LINE));
+        Story second = splitStories.get(1);
+        ExamplesTable secondExampleTable = second.getLifecycle().getExamplesTable();
+        assertThat(secondExampleTable.asString(), is(EXAMPLE_TABLE_HEADER + EXAMPLE_TABLE_SECOND_LINE));
+        assertThat(second.getPath(), is(String.format(STORY_PATH_TEMPLATE, INDEX_FIRST)));
+        assertThat(second.getName(), is(String.format(STORY_NAME_TEMPLATE, INDEX_FIRST)));
     }
 
     @Test
     public void testSplitStoriesWithSingleStoryTable() {
         List<Story> originStories = getOriginStories(EXAMPLE_TABLE_HEADER + EXAMPLE_TABLE_SECOND_LINE);
         List<Story> splitStories = StorySplitter.splitStories(originStories);
-        assertEquals(1, splitStories.size());
+        assertThat(splitStories.size(), is(1));
         Story storyFirst = splitStories.get(0);
-        assertEquals(String.format(STORY_PATH_TEMPLATE, EMPTY), storyFirst.getPath());
+        assertThat(storyFirst.getPath(), is(String.format(STORY_PATH_TEMPLATE, EMPTY)));
         ExamplesTable examplesTableOfFirstStory = storyFirst.getLifecycle().getExamplesTable();
-        assertEquals(examplesTableOfFirstStory.asString(), EXAMPLE_TABLE_HEADER + EXAMPLE_TABLE_SECOND_LINE);
+        assertThat(examplesTableOfFirstStory.asString(), is(EXAMPLE_TABLE_HEADER + EXAMPLE_TABLE_SECOND_LINE));
     }
 
     @Test
     public void testSplitStoriesWithEmptyStoryTable() {
         List<Story> originStories = getOriginStories(EXAMPLE_TABLE_HEADER);
         List<Story> splitStories = StorySplitter.splitStories(originStories);
-        assertEquals(1, splitStories.size());
-        assertEquals(originStories.get(0), splitStories.get(0));
+        assertThat(splitStories.size(), is(1));
+        assertThat(splitStories.get(0), is(originStories.get(0)));
     }
 
     @Test
@@ -64,8 +65,8 @@ public class StorySplitterBehaviour {
         List<Story> originStories = new ArrayList<Story>();
         originStories.add(originStory);
         List<Story> splitStories = StorySplitter.splitStories(originStories);
-        assertEquals(1, splitStories.size());
-        assertEquals(originStories.get(0), splitStories.get(0));
+        assertThat(splitStories.size(), is(1));
+        assertThat(splitStories.get(0), is(originStories.get(0)));
     }
 
     private List<Story> getOriginStories(String table) {

@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.jbehave.core.io.IOUtils;
-import org.junit.Assert;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -12,12 +11,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.StringReader;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
 
 public abstract class AbstractOutputBehaviour {
 
     protected void assertThatOutputIs(String out, String pathToExpected) throws IOException {
         String expected = IOUtils.toString(getClass().getResourceAsStream(pathToExpected), true);
-        Assert.assertEquals(dos2unix(expected), dos2unix(out));
+        assertThat(dos2unix(out), is(dos2unix(expected)));
     }
 
     protected String dos2unix(String string) {

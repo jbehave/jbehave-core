@@ -1,40 +1,21 @@
 package org.jbehave.core.embedder;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jbehave.core.annotations.Scope;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.failures.BatchFailures;
-import org.jbehave.core.model.ExamplesTable;
-import org.jbehave.core.model.GivenStories;
-import org.jbehave.core.model.Lifecycle;
-import org.jbehave.core.model.Meta;
-import org.jbehave.core.model.Narrative;
-import org.jbehave.core.model.Scenario;
-import org.jbehave.core.model.Story;
-import org.jbehave.core.steps.CandidateSteps;
-import org.jbehave.core.steps.ParameterControls;
-import org.jbehave.core.steps.ParameterConverters;
-import org.jbehave.core.steps.Step;
-import org.jbehave.core.steps.StepCollector;
+import org.jbehave.core.model.*;
+import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.StepMonitor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import java.lang.reflect.Type;
+import java.util.*;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 public class PerformableTreeConversionBehaviour {
 
@@ -106,29 +87,33 @@ public class PerformableTreeConversionBehaviour {
         List<PerformableTree.PerformableScenario> performableScenarios = performableTree.getRoot().getStories().get(0)
                 .getScenarios();
 
-        assertEquals(scenarioExample.size(), performableScenarios.size());
-        assertEquals(scenarioTitle + " [1]", performableScenarios.get(0).getScenario().getTitle());
+        assertThatAreEqual(scenarioExample.size(), performableScenarios.size());
+        assertThatAreEqual(scenarioTitle + " [1]", performableScenarios.get(0).getScenario().getTitle());
         List<PerformableTree.ExamplePerformableScenario> examplePerformableScenarios = performableScenarios.get(0)
                 .getExamples();
-        assertEquals(scenarioExample.size(), examplePerformableScenarios.size());
-        assertEquals("eE", examplePerformableScenarios.get(0).getParameters().get("var1"));
-        assertEquals("bB", examplePerformableScenarios.get(0).getParameters().get("var2"));
-        assertEquals("bBb#fF", examplePerformableScenarios.get(0).getParameters().get("var3"));
+        assertThatAreEqual(scenarioExample.size(), examplePerformableScenarios.size());
+        assertThatAreEqual("eE", examplePerformableScenarios.get(0).getParameters().get("var1"));
+        assertThatAreEqual("bB", examplePerformableScenarios.get(0).getParameters().get("var2"));
+        assertThatAreEqual("bBb#fF", examplePerformableScenarios.get(0).getParameters().get("var3"));
 
-        assertEquals("gbbGbB", examplePerformableScenarios.get(1).getParameters().get("var1"));
-        assertEquals("bB", examplePerformableScenarios.get(1).getParameters().get("var2"));
-        assertEquals("hH", examplePerformableScenarios.get(1).getParameters().get("var3"));
+        assertThatAreEqual("gbbGbB", examplePerformableScenarios.get(1).getParameters().get("var1"));
+        assertThatAreEqual("bB", examplePerformableScenarios.get(1).getParameters().get("var2"));
+        assertThatAreEqual("hH", examplePerformableScenarios.get(1).getParameters().get("var3"));
 
-        assertEquals(scenarioTitle + " [2]", performableScenarios.get(1).getScenario().getTitle());
+        assertThatAreEqual(scenarioTitle + " [2]", performableScenarios.get(1).getScenario().getTitle());
         examplePerformableScenarios = performableScenarios.get(1).getExamples();
-        assertEquals(scenarioExample.size(), examplePerformableScenarios.size());
-        assertEquals("eE", examplePerformableScenarios.get(0).getParameters().get("var1"));
-        assertEquals("dD", examplePerformableScenarios.get(0).getParameters().get("var2"));
-        assertEquals("dDd#fF", examplePerformableScenarios.get(0).getParameters().get("var3"));
+        assertThatAreEqual(scenarioExample.size(), examplePerformableScenarios.size());
+        assertThatAreEqual("eE", examplePerformableScenarios.get(0).getParameters().get("var1"));
+        assertThatAreEqual("dD", examplePerformableScenarios.get(0).getParameters().get("var2"));
+        assertThatAreEqual("dDd#fF", examplePerformableScenarios.get(0).getParameters().get("var3"));
 
-        assertEquals("gddGdD", examplePerformableScenarios.get(1).getParameters().get("var1"));
-        assertEquals("dD", examplePerformableScenarios.get(1).getParameters().get("var2"));
-        assertEquals("hH", examplePerformableScenarios.get(1).getParameters().get("var3"));
+        assertThatAreEqual("gddGdD", examplePerformableScenarios.get(1).getParameters().get("var1"));
+        assertThatAreEqual("dD", examplePerformableScenarios.get(1).getParameters().get("var2"));
+        assertThatAreEqual("hH", examplePerformableScenarios.get(1).getParameters().get("var3"));
+    }
+
+    private void assertThatAreEqual(Object expected, Object actual) {
+        assertThat(actual, is(expected));
     }
 
     private Meta isEmptyMeta() {
