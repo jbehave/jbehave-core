@@ -6,8 +6,9 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -45,7 +46,6 @@ import org.jbehave.core.steps.context.StepsContext.ObjectNotStoredException;
 import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 
 import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import com.thoughtworks.paranamer.CachingParanamer;
@@ -60,8 +60,7 @@ public class StepCreatorBehaviour {
     public void setUp() {
         when(parameterConverters.convert("shopping cart", String.class)).thenReturn("shopping cart");
         when(parameterConverters.convert("book", String.class)).thenReturn("book");
-        when(parameterConverters.newInstanceAdding(Matchers.<ParameterConverters.ParameterConverter> anyObject()))
-                .thenReturn(parameterConverters);
+        when(parameterConverters.newInstanceAdding(any())).thenReturn(parameterConverters);
     }
 
     @Test

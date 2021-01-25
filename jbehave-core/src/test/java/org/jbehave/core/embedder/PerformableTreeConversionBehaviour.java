@@ -1,9 +1,9 @@
 package org.jbehave.core.embedder;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -35,7 +35,6 @@ import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepMonitor;
 import org.junit.Test;
-import org.mockito.ArgumentMatcher;
 
 public class PerformableTreeConversionBehaviour {
 
@@ -133,13 +132,7 @@ public class PerformableTreeConversionBehaviour {
     }
 
     private Meta isEmptyMeta() {
-        return argThat(new ArgumentMatcher<Meta>() {
-            @Override
-            public boolean matches(Object argument) {
-                Meta meta = (Meta) argument;
-                return meta.getPropertyNames().isEmpty();
-            }
-        });
+        return argThat(meta -> meta.getPropertyNames().isEmpty());
     }
 
     private class SharpParameterConverters extends ParameterConverters {

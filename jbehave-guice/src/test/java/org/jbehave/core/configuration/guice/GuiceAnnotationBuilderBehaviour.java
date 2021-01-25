@@ -11,7 +11,7 @@ import static org.jbehave.core.reporters.Format.HTML;
 import static org.jbehave.core.reporters.Format.STATS;
 import static org.jbehave.core.reporters.Format.TXT;
 import static org.jbehave.core.reporters.Format.XML;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 

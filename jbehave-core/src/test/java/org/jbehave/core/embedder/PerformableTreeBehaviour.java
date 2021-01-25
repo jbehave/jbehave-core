@@ -7,9 +7,9 @@ import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.steps.StepCollector.Stage;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Matchers.argThat;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -57,7 +57,6 @@ import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
 import org.jbehave.core.steps.context.StepsContext;
 import org.junit.Test;
-import org.mockito.ArgumentMatcher;
 import org.mockito.InOrder;
 
 /**
@@ -242,13 +241,7 @@ public class PerformableTreeBehaviour {
     }
 
     private Meta isEmptyMeta() {
-        return argThat(new ArgumentMatcher<Meta>() {
-            @Override
-            public boolean matches(Object argument) {
-                Meta meta = (Meta) argument;
-                return meta.getPropertyNames().isEmpty();
-            }
-        });
+        return argThat(meta -> meta.getPropertyNames().isEmpty());
     }
 
     private class DefaultParameterConverters extends ParameterConverters {
