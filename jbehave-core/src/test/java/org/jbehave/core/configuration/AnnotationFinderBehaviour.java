@@ -1,18 +1,12 @@
 package org.jbehave.core.configuration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.Test;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.util.List;
 
-import org.junit.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class AnnotationFinderBehaviour {
 
@@ -31,10 +25,14 @@ public class AnnotationFinderBehaviour {
         assertThat(notAnnotated.isAnnotationValuePresent(MyAnnotationWithoutMembers.class, "flag"), is(false));        
     }
 
-    @Test(expected=AnnotationRequired.class)
+    @Test
     public void shouldFailIfAnnotationIsNotFound(){
-        AnnotationFinder notAnnotated = new AnnotationFinder(NotAnnotated.class);
-        assertThat(notAnnotated.getAnnotatedValue(MyAnnotationWithMembers.class, boolean.class, "flag"), equalTo(false));        
+        try {
+            AnnotationFinder notAnnotated = new AnnotationFinder(NotAnnotated.class);
+            assertThat(notAnnotated.getAnnotatedValue(MyAnnotationWithMembers.class, boolean.class, "flag"), equalTo(false));
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(AnnotationRequired.class)));
+        }
     }
 
     @Test

@@ -2,7 +2,7 @@ package org.jbehave.core.steps;
 
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.steps.StepCreator.PendingStep;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.commons.lang3.StringEscapeUtils.escapeJava;
 

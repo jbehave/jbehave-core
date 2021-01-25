@@ -1,13 +1,14 @@
 package org.jbehave.core.io;
 
 import org.jbehave.core.io.CodeLocations.InvalidCodeLocation;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.JUnitCore;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -40,14 +41,22 @@ public class CodeLocationsBehaviour {
         assertThat(new File(filename).exists(), is(true));
     }
 
-    @Test(expected = InvalidCodeLocation.class)
+    @Test
     public void shouldNotCreateCodeLocationFromPathIfInvalid() {
-        CodeLocations.codeLocationFromPath(null);
+        try {
+            CodeLocations.codeLocationFromPath(null);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InvalidCodeLocation.class)));
+        }
     }
 
-    @Test(expected = InvalidCodeLocation.class)
+    @Test
     public void shouldNotCreateCodeLocationFromURLIfInvalid() {
-        CodeLocations.codeLocationFromURL("htp://company.com/stories/");
+        try {
+            CodeLocations.codeLocationFromURL("htp://company.com/stories/");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InvalidCodeLocation.class)));
+        }
     }
 
     @Test

@@ -13,7 +13,7 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.spring.SpringStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.spring.SpringStepsFactoryBehaviour.FooStepsWithDependency;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 
 import java.text.DateFormat;

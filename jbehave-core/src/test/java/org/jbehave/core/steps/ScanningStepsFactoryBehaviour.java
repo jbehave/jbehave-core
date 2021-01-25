@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.hamcrest.Matchers;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ScanningStepsFactoryBehaviour {
 

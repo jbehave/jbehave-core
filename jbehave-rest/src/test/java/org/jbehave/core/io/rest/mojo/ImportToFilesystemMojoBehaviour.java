@@ -10,7 +10,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.ResourceIndexer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
 

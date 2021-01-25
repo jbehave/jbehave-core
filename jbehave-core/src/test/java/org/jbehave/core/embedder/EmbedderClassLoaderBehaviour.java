@@ -1,13 +1,9 @@
 package org.jbehave.core.embedder;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
-import static org.hamcrest.Matchers.sameInstance;
+import org.jbehave.core.Embeddable;
+import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
+import org.jbehave.core.junit.JUnitStory;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -15,11 +11,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.jbehave.core.Embeddable;
-import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
-import org.jbehave.core.embedder.EmbedderClassLoader.InvalidClasspathElement;
-import org.jbehave.core.junit.JUnitStory;
-import org.junit.Test;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 public class EmbedderClassLoaderBehaviour {
 
@@ -50,11 +45,15 @@ public class EmbedderClassLoaderBehaviour {
         assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
     }
 
-    @Test(expected=InvalidClasspathElement.class)
+    @Test
     public void shouldNotIgnoreAnIndividualClasspathElementThatIsNull(){
         List<String> elements = asList("target/classes", null);
-        EmbedderClassLoader classLoader = new EmbedderClassLoader(elements);
-        assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
+        try {
+            EmbedderClassLoader classLoader = new EmbedderClassLoader(elements);
+            assertThatIsInstantiated(classLoader, MyStory.class.getName(), MyStory.class);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(EmbedderClassLoader.InvalidClasspathElement.class)));
+        }
     }
 
     private <T> void assertThatIsInstantiated(EmbedderClassLoader classLoader, String className, Class<T> type) {
@@ -75,10 +74,14 @@ public class EmbedderClassLoaderBehaviour {
                 containsString("urls=" + expected));
     }
 
-    @Test(expected = InstantiationFailed.class)
+    @Test
     public void shouldNotInstantiateClassWithInexistentName() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
-        classLoader.newInstance(Embeddable.class, "InexistentClass");
+        try {
+            classLoader.newInstance(Embeddable.class, "InexistentClass");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InstantiationFailed.class)));
+        }
     }
 
     public static class MyEmbedder extends Embedder {

@@ -14,7 +14,7 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StepFinderBehaviour {
 

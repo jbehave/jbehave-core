@@ -1,24 +1,17 @@
 package org.jbehave.core.steps.guice;
 
-import java.util.List;
-
+import com.google.inject.*;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.steps.AbstractStepsFactory;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.CreationException;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-import com.google.inject.Scopes;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class GuiceStepsFactoryBehaviour {
 
@@ -71,7 +64,7 @@ public class GuiceStepsFactoryBehaviour {
         return ((Steps)candidateSteps).instance();
     }
 
-    @Test(expected=CreationException.class)
+    @Test
     public void assertThatStepsWithMissingDependenciesCannotBeCreated() {
         Injector parent = Guice.createInjector(new AbstractModule() {
             @Override
@@ -81,7 +74,11 @@ public class GuiceStepsFactoryBehaviour {
           });
         AbstractStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
         // When
-        factory.createCandidateSteps();
+        try {
+            factory.createCandidateSteps();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(CreationException.class)));
+        }
         // Then ... expected exception is thrown        
     }
 

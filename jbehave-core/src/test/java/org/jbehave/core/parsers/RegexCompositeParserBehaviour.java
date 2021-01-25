@@ -12,7 +12,7 @@ import java.util.Locale;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Composite;
 import org.jbehave.core.steps.StepType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Valery Yatsynovich

@@ -1,15 +1,5 @@
 package org.jbehave.core.io.google;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
-import org.jbehave.core.io.InvalidStoryResource;
-import org.jbehave.core.io.google.LoadOdtFromGoogle;
-import org.jbehave.core.io.google.LoadOdtFromGoogle.GoogleAccessFailed;
-import org.junit.Test;
-
 import com.google.gdata.client.DocumentQuery;
 import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.data.MediaContent;
@@ -17,8 +7,18 @@ import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.data.media.MediaSource;
 import com.google.gdata.util.ServiceException;
+import org.hamcrest.Matchers;
+import org.jbehave.core.io.InvalidStoryResource;
+import org.jbehave.core.io.google.LoadOdtFromGoogle.GoogleAccessFailed;
+import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -54,17 +54,25 @@ public class GoogleOdtLoaderBehaviour {
             
         };
         InputStream resourceStream = storyLoader.resourceAsStream("a_story");
-        MatcherAssert.assertThat(resourceStream, Matchers.equalTo(inputStream));
+        assertThat(resourceStream, Matchers.equalTo(inputStream));
     }
 
-    @Test(expected = InvalidStoryResource.class)
+    @Test
     public void shouldNotLoadInexistingResourceFromGoogleDocs() {
-        new LoadOdtFromGoogle("user", "password", "https://docs.google.com/feeds/default/private/full/", mock(DocsService.class)).loadStoryAsText("an_inexisting_story");
+        try {
+            new LoadOdtFromGoogle("user", "password", "https://docs.google.com/feeds/default/private/full/", mock(DocsService.class)).loadStoryAsText("an_inexisting_story");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
+        }
     }
 
-    @Test(expected = GoogleAccessFailed.class)
+    @Test
     public void shouldNotAllowInvalidAccess() {
-        new LoadOdtFromGoogle("DUMMY", "DUMMY");
+        try {
+            new LoadOdtFromGoogle("DUMMY", "DUMMY");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(GoogleAccessFailed.class)));
+        }
     }
 
 }

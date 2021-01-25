@@ -1,23 +1,21 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.SortedMap;
-
 import org.jbehave.core.reporters.TemplateableViewGenerator.Report;
 import org.jbehave.core.reporters.TemplateableViewGenerator.ReportCreationFailed;
 import org.jbehave.core.reporters.TemplateableViewGenerator.Reports;
 import org.jbehave.core.reporters.TemplateableViewGenerator.TimeFormatter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.util.*;
+
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class FreemarkerViewGeneratorBehaviour {
 
@@ -82,7 +80,7 @@ public class FreemarkerViewGeneratorBehaviour {
     }
 
     
-    @Test(expected = ReportCreationFailed.class)
+    @Test
     public void shouldFailToCreateReportsFromInvalidFiles(){
         // Given
         FreemarkerViewGenerator generator = new FreemarkerViewGenerator();
@@ -90,8 +88,11 @@ public class FreemarkerViewGeneratorBehaviour {
         // When
         Map<String, List<File>> files = new HashMap<>();
         files.put("name", asList((File)null));
-        generator.createReports(files);
-
+        try {
+            generator.createReports(files);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(ReportCreationFailed.class)));
+        }
         // Then .. fail as expected
         
     }

@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.equalTo;
 import java.util.Map;
 
 import org.jbehave.core.io.rest.xwiki.IndexFromXWiki;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IndexWithBreadcrumbsBehaviour {
 

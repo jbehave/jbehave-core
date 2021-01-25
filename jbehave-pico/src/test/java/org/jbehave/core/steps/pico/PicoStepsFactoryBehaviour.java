@@ -1,12 +1,10 @@
 package org.jbehave.core.steps.pico;
 
-import java.util.List;
-
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.picocontainer.Characteristics;
 import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.MutablePicoContainer;
@@ -14,9 +12,10 @@ import org.picocontainer.behaviors.Caching;
 import org.picocontainer.injectors.AbstractInjector;
 import org.picocontainer.injectors.ConstructorInjection;
 
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 public class PicoStepsFactoryBehaviour {
 
@@ -63,13 +62,17 @@ public class PicoStepsFactoryBehaviour {
         return ((Steps)candidateSteps).instance();
     }
 
-    @Test(expected=AbstractInjector.UnsatisfiableDependenciesException.class)
+    @Test
     public void assertThatStepsWithMissingDependenciesCannotBeCreated() {
         MutablePicoContainer parent = createPicoContainer();
         parent.as(Characteristics.USE_NAMES).addComponent(FooStepsWithDependency.class);
         PicoStepsFactory factory = new PicoStepsFactory(new MostUsefulConfiguration(), parent);
         // When
-        factory.createInstanceOfType(FooStepsWithDependency.class);
+        try {
+            factory.createInstanceOfType(FooStepsWithDependency.class);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(AbstractInjector.UnsatisfiableDependenciesException.class)));
+        }
         // Then ... expected exception is thrown        
     }
 

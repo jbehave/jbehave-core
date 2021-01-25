@@ -1,8 +1,12 @@
 package org.jbehave.core.i18n;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
-import static org.jbehave.core.configuration.Keywords.*;
+import org.apache.commons.lang3.StringUtils;
+import org.jbehave.core.configuration.Configuration;
+import org.jbehave.core.configuration.Keywords;
+import org.jbehave.core.configuration.MostUsefulConfiguration;
+import org.jbehave.core.i18n.LocalizedKeywords.ResourceBundleNotFound;
+import org.jbehave.core.steps.StepType;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,13 +14,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
-import org.jbehave.core.configuration.Configuration;
-import org.jbehave.core.configuration.Keywords;
-import org.jbehave.core.configuration.MostUsefulConfiguration;
-import org.jbehave.core.i18n.LocalizedKeywords.ResourceBundleNotFound;
-import org.jbehave.core.steps.StepType;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jbehave.core.configuration.Keywords.*;
 
 public class LocalizedKeywordsBehaviour {
 
@@ -77,9 +78,13 @@ public class LocalizedKeywordsBehaviour {
     }
 
     
-    @Test(expected = ResourceBundleNotFound.class)
+    @Test
     public void shouldFailIfResourceBundleIsNotFound() throws IOException {
-        ensureKeywordsAreLocalisedFor(new Locale("en"), "unknown");
+        try {
+            ensureKeywordsAreLocalisedFor(new Locale("en"), "unknown");
+        } catch (IOException e) {
+            assertThat(e, is(instanceOf(ResourceBundleNotFound.class)));
+        }
     }
 
     @Test

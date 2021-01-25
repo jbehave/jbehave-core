@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.io.rest.RESTClient.Type;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LoadFromXWikiBehaviour {
 

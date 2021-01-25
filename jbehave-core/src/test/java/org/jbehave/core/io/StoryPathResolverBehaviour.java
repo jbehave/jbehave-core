@@ -6,7 +6,7 @@ import static org.jbehave.core.io.UnderscoredCamelCaseResolver.NUMBERS_AS_UPPER_
 
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.junit.JUnitStory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StoryPathResolverBehaviour {
 

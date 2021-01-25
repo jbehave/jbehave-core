@@ -15,7 +15,7 @@ import org.jbehave.core.model.StoryDuration;
 import org.jbehave.core.model.StoryMaps;
 import org.jbehave.core.reporters.PrintStreamOutput.Format;
 import org.jbehave.core.reporters.ReportsCount;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
 

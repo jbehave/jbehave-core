@@ -13,7 +13,7 @@ import java.util.Queue;
 
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.model.StepPattern;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PrintStreamStepMonitorBehaviour {
 

@@ -14,7 +14,7 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class GroovyAnnotationBuilderBehaviour {
 

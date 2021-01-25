@@ -1,14 +1,12 @@
 package org.jbehave.core.io;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.List;
 
-import org.junit.Test;
-
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
 public class JarFileScannerBehaviour {
 
@@ -45,9 +43,13 @@ public class JarFileScannerBehaviour {
                 hasItems("etsy_browse.story", "etsy_cart.story", "etsy_search.story", "etsy-steps.xml"));
     }
 
-    @Test(expected=IllegalStateException.class)
-    public void shouldThrowIllegalArgument() {
-        scan("nonexistent.jar", "", "");
+    @Test
+    public void shouldThrowIllegalStateException() {
+        try {
+            scan("nonexistent.jar", "", "");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(IllegalStateException.class)));
+        }
     }
 
     private List<String> scan(String jarPath, String includes, String excludes) {

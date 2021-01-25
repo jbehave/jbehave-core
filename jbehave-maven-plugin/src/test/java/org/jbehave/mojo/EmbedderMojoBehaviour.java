@@ -1,12 +1,5 @@
 package org.jbehave.mojo;
 
-import java.io.File;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Build;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -27,23 +20,20 @@ import org.jbehave.core.failures.BatchFailures;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.reporters.Format;
 import org.jbehave.core.reporters.ReportsCount;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.io.File;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+
 import static java.util.Arrays.asList;
-
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.sameInstance;
-
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
 
 public class EmbedderMojoBehaviour {
 
@@ -377,7 +367,7 @@ public class EmbedderMojoBehaviour {
         verify(embedder).runAsEmbeddables(classNames);
     }
 
-    @Test(expected = MojoFailureException.class)
+    @Test
     public void shouldReportFailuresInMappingStoriesAsEmbeddables() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
@@ -403,8 +393,11 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).runAsEmbeddables(classNames);
-        mojo.execute();
-
+        try {
+            mojo.execute();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(MojoFailureException.class)));
+        }
         // Then fail as expected
     }
 
@@ -441,7 +434,7 @@ public class EmbedderMojoBehaviour {
         assertThat(mojo.codeLocation().toString(), containsString(mojo.outputDirectory));
     }
 
-    @Test(expected = MojoFailureException.class)
+    @Test
     public void shouldReportFailuresInMappingStoriesAsPaths() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
@@ -468,8 +461,11 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).mapStoriesAsPaths(storyPaths);
-        mojo.execute();
-
+        try {
+            mojo.execute();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(MojoFailureException.class)));
+        }
         // Then fail as expected
     }
 
@@ -507,7 +503,7 @@ public class EmbedderMojoBehaviour {
         verify(embedder).reportStepdocs();
     }
 
-    @Test(expected = MojoFailureException.class)
+    @Test
     public void shouldReportFailuresWhenReportingStepdocs() throws MojoFailureException {
         // Given
         ReportStepdocs mojo = new ReportStepdocs() {
@@ -520,8 +516,11 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).reportStepdocs();
-        mojo.execute();
-
+        try {
+            mojo.execute();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(MojoFailureException.class)));
+        }
         // Then fail as expected
     }
 
@@ -556,7 +555,7 @@ public class EmbedderMojoBehaviour {
         verify(embedder).runAsEmbeddables(classNames);
     }
 
-    @Test(expected = MojoFailureException.class)
+    @Test
     public void shouldReportFailuresInRunningStoriesAsEmbeddables() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
@@ -582,10 +581,12 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).runAsEmbeddables(classNames);
-        mojo.execute();
-
+        try {
+            mojo.execute();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(MojoFailureException.class)));
+        }
         // Then fail as expected
-
     }
 
     @Test
@@ -619,7 +620,7 @@ public class EmbedderMojoBehaviour {
         verify(embedder).runStoriesAsPaths(storyPaths);
     }
 
-    @Test(expected = MojoFailureException.class)
+    @Test
     public void shouldReportFailuresInRunningStoriesAsPaths() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
@@ -645,10 +646,12 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).runStoriesAsPaths(storyPaths);
-        mojo.execute();
-
+        try {
+            mojo.execute();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(MojoFailureException.class)));
+        }
         // Then fail as expected
-
     }
 
     @Test
@@ -682,7 +685,7 @@ public class EmbedderMojoBehaviour {
         verify(embedder).runStoriesWithAnnotatedEmbedderRunner(classNames);
     }
 
-    @Test(expected = MojoFailureException.class)
+    @Test
     public void shouldReportFailuresInRunningStoriesWithAnnotatedEmbedderRunner() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
@@ -710,9 +713,12 @@ public class EmbedderMojoBehaviour {
         doThrow(new RuntimeException()).when(embedder).runStoriesWithAnnotatedEmbedderRunner(classNames);
         mojo.execute();
 
+        try {
+            mojo.execute();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(MojoFailureException.class)));
+        }
         // Then fail as expected
-        mojo.execute();
-
     }
 
     @Test
@@ -814,7 +820,7 @@ public class EmbedderMojoBehaviour {
         verify(archiveManager, Mockito.never()).getUnArchiver(resourcesFile);
     }
 
-    @Test(expected = MojoExecutionException.class)
+    @Test
     public void shouldNotIgnoreFailureInUnpackingViewResources() throws MojoExecutionException, NoSuchArchiverException, ArchiverException {
         // Given
         UnpackViewResources mojo = new UnpackViewResources() {
@@ -858,8 +864,11 @@ public class EmbedderMojoBehaviour {
         when(archiveManager.getUnArchiver(siteFile)).thenReturn(siteArchiver);
         Mockito.doThrow(new ArchiverException("bum")).when(siteArchiver).extract();
 
-        mojo.execute();
-
+        try {
+            mojo.execute();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(MojoExecutionException.class)));
+        }
         // Then
         verify(coreArchiver).extract();
         // and fail as expected ...

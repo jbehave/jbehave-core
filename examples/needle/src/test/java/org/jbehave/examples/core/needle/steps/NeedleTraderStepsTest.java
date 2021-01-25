@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import org.hamcrest.Matchers;
 import org.jbehave.examples.core.service.TradingService;
 import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.needle4j.annotation.ObjectUnderTest;
 import org.needle4j.junit.NeedleRule;
 

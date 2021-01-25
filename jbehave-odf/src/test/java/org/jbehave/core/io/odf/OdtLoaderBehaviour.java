@@ -6,12 +6,10 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.io.LoadFromURL;
 import org.jbehave.core.io.odf.OdfUtils.OdfDocumentLoadingFailed;
 import org.jbehave.core.io.odf.OdfUtils.OdfDocumentParsingFailed;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 
 public class OdtLoaderBehaviour {
 
@@ -24,10 +22,14 @@ public class OdtLoaderBehaviour {
         assertThatOutputIs(resourceFromOdtWithTable.trim(), resourceFromTxt.trim());
     }
 
-    @Test(expected = InvalidStoryResource.class)
+    @Test
     public void shouldNotLoadOdtResourceFromInexistingClasspathResource() {
-        new LoadOdtFromClasspath(this.getClass())
-                .loadResourceAsText("org/jbehave/core/io/odf/stories/an_inexisting_story.odt");
+        try {
+            new LoadOdtFromClasspath(this.getClass())
+                    .loadResourceAsText("org/jbehave/core/io/odf/stories/an_inexisting_story.odt");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
+        }
     }
 
     @Test
@@ -40,27 +42,43 @@ public class OdtLoaderBehaviour {
         assertThatOutputIs(resourceFromOdtWithTable.trim(), resourceFromTxt.trim());
     }
 
-    @Test(expected = InvalidStoryResource.class)
+    @Test
     public void shouldNotLoadOdtResourceFromInvalidURL() {
         // not a URL
-        String location = CodeLocations.codeLocationFromClass(this.getClass()).getFile();
-        new LoadOdtFromURL().loadResourceAsText(location + "org/jbehave/core/io/odf/stories/a_story.odt");
+        try {
+            String location = CodeLocations.codeLocationFromClass(this.getClass()).getFile();
+            new LoadOdtFromURL().loadResourceAsText(location + "org/jbehave/core/io/odf/stories/a_story.odt");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
+        }
     }
 
-    @Test(expected = InvalidStoryResource.class)
+    @Test
     public void shouldNotLoadOdtResourceFromInexistingURL() {
-        String location = CodeLocations.codeLocationFromClass(this.getClass()).toString();
-        new LoadOdtFromURL().loadResourceAsText(location + "org/jbehave/core/io/odf/stories/an_inexisting_story.odt");
+        try {
+            String location = CodeLocations.codeLocationFromClass(this.getClass()).toString();
+            new LoadOdtFromURL().loadResourceAsText(location + "org/jbehave/core/io/odf/stories/an_inexisting_story.odt");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
+        }
     }
 
-    @Test(expected = OdfDocumentLoadingFailed.class)
+    @Test
     public void shouldNotLoadInvalidOdfResources() {
-        OdfUtils.loadOdt(null);
+        try {
+            OdfUtils.loadOdt(null);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(OdfDocumentLoadingFailed.class)));
+        }
     }
 
-    @Test(expected = OdfDocumentParsingFailed.class)
+    @Test
     public void shouldNotParseInvalidOdfResources() {
-        OdfUtils.parseOdt(null);
+        try {
+            OdfUtils.parseOdt(null);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(OdfDocumentParsingFailed.class)));
+        }
     }
 
     @Test

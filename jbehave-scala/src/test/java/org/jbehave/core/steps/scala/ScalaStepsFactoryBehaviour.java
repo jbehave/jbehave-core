@@ -1,17 +1,16 @@
 package org.jbehave.core.steps.scala;
 
-import java.util.List;
-
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.configuration.scala.ScalaContext;
 import org.jbehave.core.configuration.scala.ScalaContext.ScalaInstanceNotFound;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 
 public class ScalaStepsFactoryBehaviour {
 
@@ -26,15 +25,24 @@ public class ScalaStepsFactoryBehaviour {
         assertThat(object.getClass().getName(), equalTo("AnnotatedSteps"));
     }
 
-    @Test(expected = ScalaInstanceNotFound.class)
+    @Test
     public void shouldNotCreateStepsInstancesFromScalaWhenContextInvalid() {
-        new ScalaStepsFactory(new MostUsefulConfiguration(), new ScalaContext("InexistentSteps"));
+        try {
+            new ScalaStepsFactory(new MostUsefulConfiguration(), new ScalaContext("InexistentSteps"));
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(ScalaInstanceNotFound.class)));
+        }
     }
 
-    @Test(expected = ScalaInstanceNotFound.class)
+    @Test
     public void shouldNotCreateStepsInstancesFromScalaWhenNotFound() {
         ScalaStepsFactory factory = new ScalaStepsFactory(new MostUsefulConfiguration(), new ScalaContext());
-        factory.createInstanceOfType(NonScalaType.class);
+        try {
+            factory.createInstanceOfType(NonScalaType.class);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(ScalaInstanceNotFound.class)));
+
+        }
     }
 
     public static class NonScalaType {

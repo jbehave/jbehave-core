@@ -20,7 +20,7 @@ import org.jbehave.core.steps.ParameterControls;
 import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.StepCollector;
 import org.jbehave.core.steps.StepMonitor;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.thoughtworks.paranamer.Paranamer;
 

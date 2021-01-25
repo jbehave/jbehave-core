@@ -17,7 +17,7 @@ import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.scan.GivenOnly;
 import org.jbehave.core.steps.scan.GivenWhen;
 import org.jbehave.core.steps.scan.GivenWhenThen;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;

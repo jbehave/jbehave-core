@@ -19,7 +19,7 @@ import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.A;
 import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.B;
 import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.C;
 import org.jbehave.examples.core.stories.failing.EnsuringOrderUsingSteps.MyStoryReporterBuilder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import static org.hamcrest.MatcherAssert.assertThat;

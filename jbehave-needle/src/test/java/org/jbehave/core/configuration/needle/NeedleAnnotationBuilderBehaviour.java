@@ -30,7 +30,7 @@ import org.jbehave.core.steps.Steps;
 import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.needle.NeedleStepsFactoryBehaviour.FooStepsWithDependency;
 import org.jbehave.core.steps.needle.ValueGetter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class NeedleAnnotationBuilderBehaviour {
 

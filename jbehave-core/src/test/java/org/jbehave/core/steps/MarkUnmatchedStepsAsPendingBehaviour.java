@@ -26,7 +26,7 @@ import org.jbehave.core.steps.AbstractStepResult.Comment;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.PendingStep;
 import org.jbehave.core.steps.StepFinder.ByLevenshteinDistance;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MarkUnmatchedStepsAsPendingBehaviour {
 

@@ -20,7 +20,7 @@ import org.jbehave.core.configuration.needle.ValueGetterProvider;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.needle.ValueGetter;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.InitializationError;
 import org.needle4j.injection.InjectionProvider;

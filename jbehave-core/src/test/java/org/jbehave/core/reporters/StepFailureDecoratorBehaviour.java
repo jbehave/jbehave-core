@@ -3,7 +3,7 @@ package org.jbehave.core.reporters;
 import org.hamcrest.MatcherAssert;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.model.*;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;

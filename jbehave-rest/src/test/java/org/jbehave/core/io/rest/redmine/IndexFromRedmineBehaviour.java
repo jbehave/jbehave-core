@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.jbehave.core.io.rest.Resource;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IndexFromRedmineBehaviour {
 

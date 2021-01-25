@@ -15,7 +15,7 @@ import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.StoryManager.RunningStory;
 import org.jbehave.core.steps.InjectableStepsFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StoryManagerBehaviour {
 

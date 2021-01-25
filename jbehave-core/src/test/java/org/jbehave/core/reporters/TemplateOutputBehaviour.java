@@ -1,13 +1,17 @@
 package org.jbehave.core.reporters;
 
-import static java.util.Arrays.asList;
+import org.jbehave.core.i18n.LocalizedKeywords;
+import org.junit.jupiter.api.Test;
+import org.xml.sax.SAXException;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Properties;
 
-import org.jbehave.core.i18n.LocalizedKeywords;
-import org.junit.Test;
-import org.xml.sax.SAXException;
+import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
 public class TemplateOutputBehaviour extends AbstractOutputBehaviour {
 
@@ -56,7 +60,7 @@ public class TemplateOutputBehaviour extends AbstractOutputBehaviour {
     }
 
 
-    @Test(expected = TemplateableViewGenerator.ViewGenerationFailedForTemplate.class)
+    @Test
     public void shouldNotGenerateViewWithInexistentTemplates() {
         // Given
         Properties templates = new Properties();
@@ -64,7 +68,11 @@ public class TemplateOutputBehaviour extends AbstractOutputBehaviour {
         ViewGenerator viewGenerator = new FreemarkerViewGenerator();
         // When
         File outputDirectory = new File("target");
-        viewGenerator.generateReportsView(outputDirectory, asList("html"), templates);
+        try {
+            viewGenerator.generateReportsView(outputDirectory, asList("html"), templates);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(TemplateableViewGenerator.ViewGenerationFailedForTemplate.class)));
+        }
         // Then ... fail as expected
     }
 

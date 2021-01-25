@@ -12,7 +12,7 @@ import org.jbehave.examples.core.steps.CalendarSteps;
 import org.jbehave.examples.core.steps.PriorityMatchingSteps;
 import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Here we show how configuation annotations can be split across parent-child hierarchies

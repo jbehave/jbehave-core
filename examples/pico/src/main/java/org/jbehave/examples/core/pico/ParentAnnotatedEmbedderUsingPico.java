@@ -12,7 +12,7 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner;
 import org.jbehave.examples.core.pico.AnnotatedEmbedderUsingPico.ConfigurationModule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(PicoAnnotatedEmbedderRunner.class)

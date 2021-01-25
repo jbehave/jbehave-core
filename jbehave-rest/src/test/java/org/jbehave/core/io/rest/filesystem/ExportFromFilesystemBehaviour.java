@@ -14,7 +14,7 @@ import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.ResourceExporter;
 import org.jbehave.core.io.rest.ResourceIndexer;
 import org.jbehave.core.io.rest.ResourceUploader;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class ExportFromFilesystemBehaviour {
 

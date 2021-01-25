@@ -1,6 +1,10 @@
 package org.jbehave.core.failures;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 public class FailureStrategyBehaviour {
 
@@ -9,14 +13,22 @@ public class FailureStrategyBehaviour {
         new SilentlyAbsorbingFailure().handleFailure(new IllegalStateException());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void shouldAllowFailuresToBeRethrown() throws Throwable {
-        new RethrowingFailure().handleFailure(new IllegalStateException());
+        try {
+            new RethrowingFailure().handleFailure(new IllegalStateException());
+        } catch (Throwable throwable) {
+            assertThat(throwable, is(instanceOf(IllegalStateException.class)));
+        }
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void shouldAllowFailuresToBeRethrownWhenWrappedAsUUIDExceptions() throws Throwable {
-        new RethrowingFailure().handleFailure(new UUIDExceptionWrapper(new IllegalStateException()));
+        try {
+            new RethrowingFailure().handleFailure(new UUIDExceptionWrapper(new IllegalStateException()));
+        } catch (Throwable throwable) {
+            assertThat(throwable, is(instanceOf(IllegalStateException.class)));
+        }
     }
 
 }

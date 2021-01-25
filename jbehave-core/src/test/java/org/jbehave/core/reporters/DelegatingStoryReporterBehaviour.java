@@ -8,7 +8,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.failures.UUIDExceptionWrapper;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
 import java.util.List;

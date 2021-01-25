@@ -5,7 +5,7 @@ import org.jbehave.core.annotations.*;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.reporters.StoryReporter;
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;

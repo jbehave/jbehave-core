@@ -6,7 +6,7 @@ import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.SilentSuccessFilter;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 

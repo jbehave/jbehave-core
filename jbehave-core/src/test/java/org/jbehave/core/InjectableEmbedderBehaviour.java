@@ -5,7 +5,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import org.jbehave.core.embedder.Embedder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class InjectableEmbedderBehaviour {
 

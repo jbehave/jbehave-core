@@ -8,8 +8,7 @@ import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.configuration.weld.WeldAnnotationBuilder;
 import org.jbehave.core.junit.AnnotatedEmbedderRunner;
-import org.jbehave.core.junit.weld.WeldAnnotatedEmbedderRunner;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.InitializationError;
 

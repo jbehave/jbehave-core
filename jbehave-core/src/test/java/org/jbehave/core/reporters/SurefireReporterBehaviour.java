@@ -6,7 +6,7 @@ import org.jbehave.core.embedder.PerformableTree.*;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.*;
 import org.jbehave.core.steps.StepType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.FileReader;

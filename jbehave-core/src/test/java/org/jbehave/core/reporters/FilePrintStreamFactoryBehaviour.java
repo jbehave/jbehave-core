@@ -1,20 +1,19 @@
 package org.jbehave.core.reporters;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
-
-import java.io.File;
-import java.net.URL;
-
 import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.io.StoryLocation;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
-import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
 import org.jbehave.core.reporters.FilePrintStreamFactory.PrintStreamCreationFailed;
-import org.junit.Test;
+import org.jbehave.core.reporters.FilePrintStreamFactory.ResolveToSimpleName;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.net.URL;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 
 
 public class FilePrintStreamFactoryBehaviour {
@@ -93,7 +92,7 @@ public class FilePrintStreamFactoryBehaviour {
         assertThat(factory.outputName(), equalTo(outputName));
     }
     
-    @Test(expected=PrintStreamCreationFailed.class)
+    @Test
     public void shouldFailIfPrintStreamCannotBeCreated(){
         // Given
         URL codeLocation = CodeLocations.codeLocationFromClass(this.getClass());
@@ -106,8 +105,11 @@ public class FilePrintStreamFactoryBehaviour {
             }
         };
         // When
-        factory.createPrintStream();
-        
+        try {
+            factory.createPrintStream();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(PrintStreamCreationFailed.class)));
+        }
         // Then fail as expected
     }
 

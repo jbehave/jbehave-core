@@ -6,7 +6,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 
 import org.jbehave.core.steps.StepType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class RegexPrefixCapturingPatternParserBehaviour {
 

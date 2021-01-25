@@ -5,7 +5,7 @@ import org.jbehave.core.embedder.MetaFilter.DefaultMetaMatcher;
 import org.jbehave.core.embedder.MetaFilter.MetaMatcher;
 import org.jbehave.core.model.Meta;
 import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;

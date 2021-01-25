@@ -1,6 +1,6 @@
 package org.jbehave.core.io;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;

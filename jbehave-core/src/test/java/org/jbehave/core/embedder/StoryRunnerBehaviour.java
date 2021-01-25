@@ -15,7 +15,7 @@ import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.*;
 import org.jbehave.core.steps.StepCollector.Stage;
 import org.jbehave.core.steps.StepCreator.AbstractStep;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 
@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.steps.AbstractStepResult.*;
@@ -596,7 +597,7 @@ public class StoryRunnerBehaviour {
         verify(strategy).handleFailure(pendingResult.getFailure());
     }
 
-    @Test(expected = PendingStepFound.class)
+    @Test
     public void shouldFailWithFailingUpongPendingStepsStrategy() throws Throwable {
         // Given
         StoryReporter reporter = mock(StoryReporter.class);
@@ -613,8 +614,12 @@ public class StoryRunnerBehaviour {
 
         // When
         StoryRunner runner = new StoryRunner();
-        runner.run(configurationWithPendingStrategy(collector, reporter,
-                strategy), asList(mySteps), story);
+        try {
+            runner.run(configurationWithPendingStrategy(collector, reporter,
+                    strategy), asList(mySteps), story);
+        } catch (Throwable throwable) {
+            assertThat(throwable, is(instanceOf(PendingStepFound.class)));
+        }
 
         // Then ... fail as expected
     }

@@ -15,7 +15,7 @@ import org.jbehave.core.io.CodeLocations;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FileConfiguration;
 import org.jbehave.core.reporters.FilePrintStreamFactory.FilePathResolver;
 import org.jbehave.core.reporters.Format;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class SpringStoryReporterBuilderBehaviour {
 

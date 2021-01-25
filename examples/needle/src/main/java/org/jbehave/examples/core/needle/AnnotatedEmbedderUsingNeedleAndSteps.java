@@ -17,7 +17,7 @@ import org.jbehave.examples.core.steps.CalendarSteps;
 import org.jbehave.examples.core.steps.PendingSteps;
 import org.jbehave.examples.core.steps.PriorityMatchingSteps;
 import org.jbehave.examples.core.steps.SandpitSteps;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;

@@ -22,7 +22,7 @@ import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporter;
 import org.jbehave.core.steps.AbstractStepResult.NotPerformed;
 import org.jbehave.core.steps.context.StepsContext;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
@@ -35,14 +35,13 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
 import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
 import static org.jbehave.core.steps.StepType.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.*;
 
 public class StepCandidateBehaviour {
 
@@ -507,7 +506,7 @@ public class StepCandidateBehaviour {
         assertThat(nonPending.isPending(), is(false));
     }
 
-	@Test(expected = StartingWordNotFound.class)
+	@Test
     public void shouldNotCreateStepOfWrongType() {
         NamedTypeSteps steps = new NamedTypeSteps();
         List<StepCandidate> candidates = steps.listCandidates();
@@ -521,7 +520,11 @@ public class StepCandidateBehaviour {
         verify(reporter).beforeStep(stepAsString0);
         String stepAsString1 = "Then foo named xyz";
         step.createMatchedStep(stepAsString1, namedParameters, Collections.emptyList()).perform(reporter, null);
-        verify(reporter).beforeStep(stepAsString1);
+        try {
+            verify(reporter).beforeStep(stepAsString1);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(StartingWordNotFound.class)));
+        }
     }
 
     static class NamedTypeSteps extends Steps {

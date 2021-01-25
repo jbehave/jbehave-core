@@ -1,12 +1,12 @@
 package org.jbehave.core.configuration;
 
 import org.jbehave.core.configuration.Keywords.KeywordNotFound;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 
 public class KeywordsBehaviour {
 
@@ -32,9 +32,13 @@ public class KeywordsBehaviour {
         assertThat(keywords.dryRun(), equalTo("DRY RUN"));
     }
 
-    @Test(expected = KeywordNotFound.class)
+    @Test
     public void shouldFailIfSomeKeywordIsMissingInMapConstructor() {
-        new Keywords(new HashMap<String, String>());
+        try {
+            new Keywords(new HashMap<String, String>());
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(KeywordNotFound.class)));
+        }
     }
 
 }

@@ -13,7 +13,7 @@ import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
 import org.jbehave.core.model.StoryMap;
 import org.jbehave.core.model.StoryMaps;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StoryMapperBehaviour {
 

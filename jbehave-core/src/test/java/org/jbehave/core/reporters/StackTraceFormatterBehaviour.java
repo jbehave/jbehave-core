@@ -2,7 +2,7 @@ package org.jbehave.core.reporters;
 
 import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 
 public class StackTraceFormatterBehaviour {

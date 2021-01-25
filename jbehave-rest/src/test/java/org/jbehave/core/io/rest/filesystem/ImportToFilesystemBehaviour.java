@@ -11,7 +11,7 @@ import org.jbehave.core.io.rest.Resource;
 import org.jbehave.core.io.rest.ResourceImporter;
 import org.jbehave.core.io.rest.ResourceIndexer;
 import org.jbehave.core.io.rest.filesystem.ImportToFilesystem;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.apache.commons.io.FileUtils.readFileToString;
 

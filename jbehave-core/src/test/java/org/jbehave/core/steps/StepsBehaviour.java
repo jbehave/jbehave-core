@@ -1,24 +1,8 @@
 package org.jbehave.core.steps;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
-import org.jbehave.core.annotations.AfterScenario;
-import org.jbehave.core.annotations.AfterStories;
-import org.jbehave.core.annotations.AfterStory;
-import org.jbehave.core.annotations.Alias;
-import org.jbehave.core.annotations.Aliases;
-import org.jbehave.core.annotations.BeforeScenario;
-import org.jbehave.core.annotations.BeforeStories;
-import org.jbehave.core.annotations.BeforeStory;
-import org.jbehave.core.annotations.Given;
-import org.jbehave.core.annotations.ScenarioType;
-import org.jbehave.core.annotations.Then;
-import org.jbehave.core.annotations.When;
+import org.jbehave.core.annotations.*;
 import org.jbehave.core.configuration.Configuration;
 import org.jbehave.core.configuration.Keywords.StartingWordNotFound;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -27,16 +11,16 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.model.Meta;
 import org.jbehave.core.reporters.StoryReporter;
+import org.jbehave.core.steps.AbstractCandidateSteps.DuplicateCandidateFound;
 import org.jbehave.core.steps.AbstractStepResult.Failed;
 import org.jbehave.core.steps.StepCollector.Stage;
-import org.jbehave.core.steps.AbstractCandidateSteps.DuplicateCandidateFound;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.equalTo;
+import java.util.*;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -309,16 +293,24 @@ public class StepsBehaviour {
         assertThat(stepResult.getFailure().getCause(), instanceOf(BeforeOrAfterFailed.class));
     }
 
-    @Test(expected=DuplicateCandidateFound.class)
+    @Test
     public void shouldFailIfDuplicateStepsAreEncountered() {
         DuplicateSteps steps = new DuplicateSteps();
-        steps.listCandidates();
+        try {
+            steps.listCandidates();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(DuplicateCandidateFound.class)));
+        }
     }
 
-    @Test(expected=DuplicateCandidateFound.class)
+    @Test
     public void shouldFailIfDuplicateStepsWithDifferentParamsNamesAreEncountered() {
         DuplicateStepsWithParameters steps = new DuplicateStepsWithParameters();
-        steps.listCandidates();
+        try {
+            steps.listCandidates();
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(DuplicateCandidateFound.class)));
+        }
     }
 
     @Test
@@ -334,7 +326,7 @@ public class StepsBehaviour {
                 "Given a given param '$givenParameter' and '$secondParam'");
     }
 
-    @Test(expected=StartingWordNotFound.class)
+    @Test
     public void shouldNotCreateStepIfStartingWordNotFound(){
         Configuration configuration = new MostUsefulConfiguration();
         configuration.useKeywords(new LocalizedKeywords(new Locale("it")));
@@ -343,8 +335,11 @@ public class StepsBehaviour {
         assertThat(candidates.size(), equalTo(3));
 
         // misspelled starting word 
-        candidates.get(0).createMatchedStep("Dado che un dato che", tableRow, Collections.<Step>emptyList());
-        
+        try {
+            candidates.get(0).createMatchedStep("Dado che un dato che", tableRow, Collections.<Step>emptyList());
+        } catch (Exception e) {
+            assertThat(e, is(CoreMatchers.instanceOf(StartingWordNotFound.class)));
+        }
     }
 
     @Test

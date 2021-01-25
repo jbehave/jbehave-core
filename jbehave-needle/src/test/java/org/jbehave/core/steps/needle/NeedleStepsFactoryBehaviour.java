@@ -16,7 +16,7 @@ import org.jbehave.core.configuration.needle.ValueGetterProvider;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.Steps;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.needle4j.injection.InjectionProvider;
 
 public class NeedleStepsFactoryBehaviour {

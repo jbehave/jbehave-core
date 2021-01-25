@@ -2,7 +2,7 @@ package org.jbehave.core.io.rest;
 
 import org.jbehave.core.io.ResourceLoader;
 import org.jbehave.core.io.rest.RESTClient.Type;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 

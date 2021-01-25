@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import org.jbehave.core.embedder.StoryTimeouts.TimeoutParser;
 import org.jbehave.core.model.Story;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 public class StoryTimeoutsBehaviour {

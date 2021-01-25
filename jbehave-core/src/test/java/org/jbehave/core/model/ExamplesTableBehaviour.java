@@ -14,7 +14,7 @@ import org.jbehave.core.steps.ParameterConverters;
 import org.jbehave.core.steps.ParameterConverters.MethodReturningConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.Parameters;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;

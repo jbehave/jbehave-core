@@ -16,7 +16,7 @@ import org.jbehave.core.junit.JUnitStory;
 import org.jbehave.core.reporters.*;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.InstanceStepsFactory;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
@@ -27,8 +27,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.jbehave.core.reporters.Format.*;
 
@@ -59,18 +62,26 @@ public class ConcurrencyBehaviour {
                 equalTo("beforeStory: BeforeStories\nafterStory\nbeforeStory: AfterStories\nafterStory\n"));
     }
 
-    @Test(expected = RunningEmbeddablesFailed.class)
+    @Test
     public void shouldAllowStoriesToBeCancelled() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("1");
-        embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+        try {
+            embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(RunningEmbeddablesFailed.class)));
+        }
     }
 
-    @Test(expected = RunningEmbeddablesFailed.class)
+    @Test
     public void shouldAllowStoriesToBeCancelledByPaths() {
         Embedder embedder = new Embedder();
         embedder.embedderControls().useStoryTimeouts("**/*.story:1");
-        embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+        try {
+            embedder.runAsEmbeddables(asList(ThreadsStories.class.getName()));
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(RunningEmbeddablesFailed.class)));
+        }
     }
 
     @Test

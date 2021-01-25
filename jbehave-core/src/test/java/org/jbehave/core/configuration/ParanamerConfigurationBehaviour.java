@@ -1,6 +1,6 @@
 package org.jbehave.core.configuration;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.thoughtworks.paranamer.CachingParanamer;
 

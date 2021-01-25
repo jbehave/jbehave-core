@@ -1,12 +1,14 @@
 package org.jbehave.core.io;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
 public class IOUtilsBehaviour {
@@ -31,11 +33,15 @@ public class IOUtilsBehaviour {
 
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test
     public void shouldHandleReaderNull() throws IOException {
         // this causes a NPE in the apache-commons code, no point
         // in changing the logic in our implementation, I guess
-        IOUtils.toString((Reader)null, true);
+        try {
+            IOUtils.toString((Reader)null, true);
+        } catch (IOException e) {
+            assertThat(e, is(instanceOf(NullPointerException.class)));
+        }
     }
 
     @Test
@@ -54,12 +60,14 @@ public class IOUtilsBehaviour {
         verify(reader, never()).close();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void shouldCloseReaderException() throws IOException {
         Reader reader = mock(Reader.class);
         when(reader.read(isA(char[].class))).thenThrow(new IOException());
         try {
             IOUtils.toString(reader, true);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(IOException.class)));
         } finally {
             verify(reader).close();
         }
@@ -84,11 +92,15 @@ public class IOUtilsBehaviour {
 
     }
 
-    @Test(expected=NullPointerException.class)
+    @Test
     public void shouldHandleInputStreamNull() throws IOException {
         // this causes a NPE in the apache-commons code, no point
         // in changing the logic in our implementation, I guess
-        IOUtils.toString((InputStream)null, true);
+        try {
+            IOUtils.toString((InputStream)null, true);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(NullPointerException.class)));
+        }
     }
 
     @Test
@@ -107,12 +119,14 @@ public class IOUtilsBehaviour {
         verify(stream, never()).close();
     }
 
-    @Test(expected = IOException.class)
+    @Test
     public void shouldCloseInputStreamException() throws IOException {
         InputStream stream = mock(InputStream.class);
         when(stream.read(isA(byte[].class), anyInt(), anyInt())).thenThrow(new IOException());
         try {
             IOUtils.toString(stream, true);
+        } catch ( Exception e ) {
+            assertThat(e, is(instanceOf(IOException.class)));
         } finally {
             verify(stream).close();
         }

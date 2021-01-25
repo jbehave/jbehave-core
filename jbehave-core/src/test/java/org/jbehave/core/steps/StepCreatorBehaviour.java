@@ -1,27 +1,8 @@
 package org.jbehave.core.steps;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
-import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.beans.IntrospectionException;
-import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.regex.Pattern;
-
+import com.thoughtworks.paranamer.BytecodeReadingParanamer;
+import com.thoughtworks.paranamer.CachingParanamer;
+import org.hamcrest.CoreMatchers;
 import org.jbehave.core.annotations.AfterScenario;
 import org.jbehave.core.configuration.Keywords;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
@@ -33,22 +14,26 @@ import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.parsers.RegexStepMatcher;
 import org.jbehave.core.parsers.StepMatcher;
 import org.jbehave.core.reporters.StoryReporter;
-import org.jbehave.core.steps.AbstractStepResult.Comment;
-import org.jbehave.core.steps.AbstractStepResult.Failed;
-import org.jbehave.core.steps.AbstractStepResult.Ignorable;
-import org.jbehave.core.steps.AbstractStepResult.Pending;
-import org.jbehave.core.steps.AbstractStepResult.Silent;
-import org.jbehave.core.steps.AbstractStepResult.Skipped;
-import org.jbehave.core.steps.AbstractStepResult.Successful;
+import org.jbehave.core.steps.AbstractStepResult.*;
+import org.jbehave.core.steps.StepCreator.ParameterNotFound;
 import org.jbehave.core.steps.context.StepsContext;
 import org.jbehave.core.steps.context.StepsContext.ObjectAlreadyStoredException;
 import org.jbehave.core.steps.context.StepsContext.ObjectNotStoredException;
-import org.jbehave.core.steps.StepCreator.ParameterNotFound;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import com.thoughtworks.paranamer.BytecodeReadingParanamer;
-import com.thoughtworks.paranamer.CachingParanamer;
+import java.beans.IntrospectionException;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_END;
+import static org.jbehave.core.steps.StepCreator.PARAMETER_VALUE_START;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.*;
 
 public class StepCreatorBehaviour {
 
@@ -56,7 +41,7 @@ public class StepCreatorBehaviour {
 
     private StepsContext stepsContext = new StepsContext();
 
-    @Before
+    @BeforeEach
     public void setUp() {
         when(parameterConverters.convert("shopping cart", String.class)).thenReturn("shopping cart");
         when(parameterConverters.convert("book", String.class)).thenReturn("book");
@@ -127,7 +112,7 @@ public class StepCreatorBehaviour {
         verify(storyReporter).beforeStep(stepAsString);
     }
 
-    @Test(expected = ParameterNotFound.class)
+    @Test
     public void shouldFailIfMatchedParametersAreNotFound() {
         // Given
         SomeSteps stepsInstance = new SomeSteps();
@@ -139,8 +124,11 @@ public class StepCreatorBehaviour {
 
         // When
         when(stepMatcher.parameterNames()).thenReturn(new String[] {});
-        stepCreator.matchedParameter("unknown");
-
+        try {
+            stepCreator.matchedParameter("unknown");
+        } catch (Exception e) {
+            assertThat(e, is(CoreMatchers.instanceOf(ParameterNotFound.class)));
+        }
         // Then .. fail as expected
     }
 

@@ -1,12 +1,9 @@
 package org.jbehave.core.io;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.jbehave.core.io.LoadFromRelativeFile.intellijProjectStoryFilePath;
-import static org.jbehave.core.io.LoadFromRelativeFile.intellijProjectTestStoryFilePath;
-import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleStoryFilePath;
-import static org.jbehave.core.io.LoadFromRelativeFile.mavenModuleTestStoryFilePath;
+import org.hamcrest.Matchers;
+import org.jbehave.core.io.LoadFromRelativeFile.*;
+import org.jbehave.core.io.stories.MyPendingStory;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,10 +12,11 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import org.hamcrest.Matchers;
-import org.jbehave.core.io.LoadFromRelativeFile.StoryFilePath;
-import org.jbehave.core.io.stories.MyPendingStory;
-import org.junit.Test;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.jbehave.core.io.LoadFromRelativeFile.*;
 
 public class StoryLoaderBehaviour {
 
@@ -37,21 +35,26 @@ public class StoryLoaderBehaviour {
 
     }
 
-    @Test(expected = StoryResourceNotFound.class)
+    @Test
     public void shouldNotLoadStoryFromClasspathIfNotFound() {
-
         StoryLoader loader = new LoadFromClasspath(StoryLoaderBehaviour.class);
-        loader.loadStoryAsText("inexistent.story");
+        try {
+            loader.loadStoryAsText("inexistent.story");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(StoryResourceNotFound.class)));
 
+        }
     }
 
-    @Test(expected = InvalidStoryResource.class)
-    public void shouldNotLoadStoryFropmClasspathIfClassloaderNotValid() {
-
+    @Test
+    public void shouldNotLoadStoryFromClasspathIfClassloaderNotValid() {
         StoryLoader loader = new LoadFromClasspath(new InvalidClassLoader());
         assertThat(loader.toString(), Matchers.containsString(InvalidClassLoader.class.getName()));
-        loader.loadStoryAsText("inexistent.story");
-
+        try {
+            loader.loadStoryAsText("inexistent.story");
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
+        }
     }
 
     static class InvalidClassLoader extends ClassLoader {
@@ -88,16 +91,20 @@ public class StoryLoaderBehaviour {
 		assertThat(loadedStoryAsText, equalTo(storyAsText));
     }
 
-    @Test(expected = InvalidStoryResource.class)
+    @Test
     public void shouldNotLoadStoryFromURLIfNotFound() {
         String storyPath = CodeLocations.codeLocationFromClass(this.getClass()) + "inexistent_story";
 
         // When
         StoryLoader loader = new LoadFromURL();
-        loader.loadStoryAsText(storyPath);
-        
-        // Then fail as expected
+        try {
+            loader.loadStoryAsText(storyPath);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
 
+        }
+
+        // Then fail as expected
     }
 
     @Test
@@ -132,7 +139,7 @@ public class StoryLoaderBehaviour {
 
     }
     
-    @Test(expected=StoryResourceNotFound.class)
+    @Test
     public void shouldNotLoadStoryFromRelativeFileWhenNoPathsAreProvided() {
         // Given
         String storyPath = "org/jbehave/core/io/stories/MyPendingStory.txt";
@@ -141,11 +148,14 @@ public class StoryLoaderBehaviour {
         StoryLoader loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class), new StoryFilePath[]{});
 
         // Then fail as expected
-        loader.loadStoryAsText(storyPath);
-
+        try {
+            loader.loadStoryAsText(storyPath);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(StoryResourceNotFound.class)));
+        }
     }
     
-    @Test(expected=StoryResourceNotFound.class)
+    @Test
     public void shouldNotLoadStoryFromRelativeFileWhenNotFound() {
         // Given
         String storyPath = "org/jbehave/core/io/stories/MyInexistentStory";
@@ -154,11 +164,15 @@ public class StoryLoaderBehaviour {
         StoryLoader loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class));
 
         // Then fail as expected
-        loader.loadStoryAsText(storyPath);
+        try {
+            loader.loadStoryAsText(storyPath);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(StoryResourceNotFound.class)));
+        }
 
     }
 
-    @Test(expected=InvalidStoryResource.class)
+    @Test
     public void shouldNotLoadStoryFromRelativeFileWhenPathInvalid() {
         // Given
         String storyPath = null;
@@ -167,14 +181,16 @@ public class StoryLoaderBehaviour {
         LoadFromRelativeFile loader = new LoadFromRelativeFile(CodeLocations.codeLocationFromClass(MyPendingStory.class));
 
         // Then fail as expected
-        loader.loadContent(storyPath);
-
+        try {
+            loader.loadContent(storyPath);
+        } catch (Exception e) {
+            assertThat(e, is(instanceOf(InvalidStoryResource.class)));
+        }
     }
 
     @Test
     public void shouldLoadStoryFromRelativeFilePathsWithSpace() throws MalformedURLException, URISyntaxException {
-        shouldWorkForPath("/org/jbehave/core/io/stories/foldername has spaces");
-
+        shouldWorkForPath("/org/jbehave/core/io/stories/folder name has spaces");
     }
 
     @Test

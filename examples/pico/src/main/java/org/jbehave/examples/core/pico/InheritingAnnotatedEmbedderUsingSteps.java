@@ -12,7 +12,7 @@ import org.jbehave.examples.core.steps.PriorityMatchingSteps;
 import org.jbehave.examples.core.steps.SandpitSteps;
 import org.jbehave.examples.core.steps.SearchSteps;
 import org.jbehave.examples.core.steps.TraderSteps;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 

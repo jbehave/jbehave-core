@@ -47,7 +47,7 @@ import org.jbehave.core.steps.ParameterConverters.DateConverter;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.core.steps.pico.PicoStepsFactoryBehaviour.FooSteps;
 import org.jbehave.core.steps.pico.PicoStepsFactoryBehaviour.FooStepsWithDependency;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.PicoContainer;
 
