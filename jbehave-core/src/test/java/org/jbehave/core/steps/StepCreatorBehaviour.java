@@ -546,7 +546,7 @@ public class StepCreatorBehaviour {
         StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
         Map<String, String> params = new HashMap<>();
         params.put("t", "distinct theme");
-        params.put("v", "distinct variant");
+        params.put("v", "distinct variant <with non variable inside>");
         when(stepMatcher.parameterNames()).thenReturn(params.keySet().toArray(new String[params.size()]));
         when(stepMatcher.parameter(1)).thenReturn("<t>");
         when(stepMatcher.parameter(2)).thenReturn("<v>");
@@ -561,10 +561,41 @@ public class StepCreatorBehaviour {
         // Then
         Map<String, String> results = (Map<String, String>) stepsInstance.args;
         assertThat(results.get("theme"), equalTo("distinct theme"));
-        assertThat(results.get("variant"), equalTo("distinct variant"));
+        assertThat(results.get("variant"), equalTo("distinct variant <with non variable inside>"));
         verify(storyReporter).beforeStep(stepAsString);
     }
 
+    @SuppressWarnings("unchecked")
+    @Test
+    public void shouldMatchParametersByDelimitedNameWithDistinctNamedAnnotationsWithStoryExampleVariable() throws Exception {
+
+        // Given
+        SomeSteps stepsInstance = new SomeSteps();
+        parameterConverters = new ParameterConverters();
+        StepMatcher stepMatcher = mock(StepMatcher.class);
+        ParameterControls parameterControls = new ParameterControls().useDelimiterNamedParameters(true);
+        StepCreator stepCreator = stepCreatorUsing(stepsInstance, stepMatcher, parameterControls);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("t", "distinct theme");
+        params.put("v", "distinct variant <with_story_variable_inside>");
+        params.put("with_story_variable_inside", "with story variable value");
+        when(stepMatcher.parameterNames()).thenReturn(new String[]{"theme", "variant"});
+        when(stepMatcher.parameter(1)).thenReturn("<t>");
+        when(stepMatcher.parameter(2)).thenReturn("<v>");
+        StoryReporter storyReporter = mock(StoryReporter.class);
+
+        // When
+        String stepAsString = "When I use parameters <t> and <v>";
+        Step step = stepCreator.createParametrisedStep(SomeSteps.methodFor("aMethodWithANamedParameter"), stepAsString,
+                "I use parameters <t> and <v>", params, Collections.<Step> emptyList());
+        step.perform(storyReporter, null);
+
+        // Then
+        Map<String, String> results = (Map<String, String>) stepsInstance.args;
+        assertThat(results.get("theme"), equalTo("distinct theme"));
+        assertThat(results.get("variant"), equalTo("distinct variant with story variable value"));
+        verify(storyReporter).beforeStep(stepAsString);
+    }
     @SuppressWarnings("unchecked")
     @Test
     public void shouldMatchParametersByNamedAnnotationsIfConfiguredToNotUseDelimiterNamedParamters() throws Exception {

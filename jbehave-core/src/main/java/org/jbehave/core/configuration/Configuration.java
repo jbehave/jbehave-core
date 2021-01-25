@@ -210,6 +210,11 @@ public abstract class Configuration {
      */
     protected Comparator<Story> storyExecutionComparator;
 
+    /**
+     * Enables parallelization of story level examples
+     */
+    private boolean parallelStoryExamplesEnabled;
+
     public Configuration() {
     }
 
@@ -533,6 +538,14 @@ public abstract class Configuration {
     public Configuration useCompositePaths(Set<String> compositePaths) {
         this.compositePaths = compositePaths;
         return this;
+    }
+
+    public boolean isParallelStoryExamplesEnabled() {
+        return parallelStoryExamplesEnabled;
+    }
+
+    public void setParallelStoryExamplesEnabled(boolean parallelStoryExamplesEnabled) {
+        this.parallelStoryExamplesEnabled = parallelStoryExamplesEnabled;
     }
 
     public Configuration useStepsContext(StepsContext stepsContext) {

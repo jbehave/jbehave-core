@@ -63,6 +63,16 @@ public class Story {
         this.scenarios = scenarios;
     }
 
+    public Story(Story story, String path, Lifecycle lifecycle) {
+        this.path = path;
+        this.description = story.description;
+        this.narrative = story.narrative;
+        this.meta = story.meta;
+        this.givenStories = story.givenStories;
+        this.lifecycle = lifecycle;
+        this.scenarios = story.scenarios;
+    }
+
     public String getPath() {
         if ( path == null ){
             return EMPTY;

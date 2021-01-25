@@ -80,6 +80,12 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         Narrative narrative = parseNarrativeFrom(storyAsText);
         GivenStories givenStories = parseGivenStories(storyAsText);
         Lifecycle lifecycle = parseLifecycle(storyAsText);
+        if (lifecycle != null) {
+            ExamplesTable storyExamplesTable = lifecycle.getExamplesTable();
+            if (!storyExamplesTable.isEmpty()) {
+                useExamplesTableForGivenStories(givenStories, storyExamplesTable);
+            }
+        }
         List<Scenario> scenarios = parseScenariosFrom(storyAsText);
         Story story = new Story(storyPath, description, meta, narrative, givenStories, lifecycle, scenarios);
         if (storyPath != null) {
@@ -157,30 +163,39 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
             beforeScenario = StringUtils.substringBefore(storyAsText, scenarioKeyword);
         }
         Matcher findingLifecycle = findingLifecycle().matcher(beforeScenario);
-        String lifecycle = findingLifecycle.find() ? findingLifecycle.group(1).trim() : NONE;
-
+        String lifecycle;
+        ExamplesTable examplesTable;
+        if (findingLifecycle.find()) {
+            lifecycle = findingLifecycle.group(1).trim();
+            String examplesTableAsString = findExamplesTable(findingLifecycle.group(0));
+            examplesTable = parseExamplesTable(examplesTableAsString);
+        }
+        else {
+            lifecycle = NONE;
+            examplesTable = ExamplesTable.EMPTY;
+        }
         Matcher findingBeforeAndAfter = compile(".*" + keywords().before() + "(.*)\\s*" + keywords().after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBeforeAndAfter.matches() ){
             String beforeLifecycle = findingBeforeAndAfter.group(1).trim();
             List<Steps> beforeSteps = parseBeforeLifecycle(beforeLifecycle);
             String afterLifecycle = findingBeforeAndAfter.group(2).trim();
             List<Steps> afterSteps = parseAfterLifecycle(afterLifecycle);
-            return new Lifecycle(beforeSteps, afterSteps);
+            return new Lifecycle(examplesTable, beforeSteps, afterSteps);
         }
         Matcher findingBefore = compile(".*" + keywords().before() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingBefore.matches() ){
             String beforeLifecycle = findingBefore.group(1).trim();
             List<Steps> beforeSteps = parseBeforeLifecycle(beforeLifecycle);
-            return new Lifecycle(beforeSteps, Arrays.<Steps>asList());
+            return new Lifecycle(examplesTable, beforeSteps, Arrays.<Steps>asList());
         }
         Matcher findingAfter = compile(".*" + keywords().after() + "(.*)\\s*", DOTALL).matcher(lifecycle);
         if ( findingAfter.matches() ){
             List<Steps> beforeSteps = asList();
             String afterLifecycle = findingAfter.group(1).trim();
             List<Steps> afterSteps = parseAfterLifecycle(afterLifecycle);
-            return new Lifecycle(beforeSteps, afterSteps);
+            return new Lifecycle(examplesTable, beforeSteps, afterSteps);
         }
-        return Lifecycle.EMPTY;
+        return new Lifecycle(examplesTable);
     }
 
     private Pattern findingBeforeAndAfterSteps() {
@@ -297,9 +312,7 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
         String examplesTableAsString = findExamplesTable(scenarioWithoutTitle);
         ExamplesTable examplesTable = parseExamplesTable(examplesTableAsString);
         GivenStories givenStories = findScenarioGivenStories(scenarioWithoutTitle);
-        if (givenStories.requireParameters()) {
-            givenStories.useExamplesTable(examplesTable);
-        }
+        useExamplesTableForGivenStories(givenStories, examplesTable);
         List<String> rawSteps = new ArrayList<>();
         if(examplesTableAsString.trim().isEmpty()) {
             rawSteps.addAll(findSteps(scenarioWithoutTitle));
@@ -308,6 +321,12 @@ public class RegexStoryParser extends AbstractRegexParser implements StoryParser
             rawSteps.addAll(findSteps(scenarioWithoutTitle.substring(0, afterExampleIndex)));
         }
         return new Scenario(title, meta, givenStories, examplesTable, rawSteps);
+    }
+
+    private void useExamplesTableForGivenStories(GivenStories givenStories, ExamplesTable examplesTable) {
+        if (givenStories.requireParameters()) {
+            givenStories.useExamplesTable(examplesTable);
+        }
     }
 
     private String findScenarioTitle(String scenarioAsText) {

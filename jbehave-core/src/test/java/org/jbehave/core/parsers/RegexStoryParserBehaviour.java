@@ -512,6 +512,26 @@ public class RegexStoryParserBehaviour {
     }
 
     @Test
+    public void shouldParseStoryWithLifecycleExamplesOnly() {
+        String wholeStory = "Lifecycle: " + NL +
+                "Examples:" + NL +
+                "|one|two|three|" + NL +
+                "|11|12|13|" + NL +
+                "|21|22|23|" + NL +
+                "Scenario:"+ NL +
+                "Given a scenario";
+        Story story = parser.parseStory(wholeStory, storyPath);
+        ExamplesTable table = story.getLifecycle().getExamplesTable();
+        assertThat(table.asString(), equalTo(
+                "|one|two|three|" + NL +
+                        "|11|12|13|" + NL +
+                        "|21|22|23|" + NL));
+        Scenario scenario = story.getScenarios().get(0);
+        List<String> steps = scenario.getSteps();
+        assertThat(steps.get(0), equalTo("Given a scenario"));
+    }
+
+    @Test
     public void shouldParseStoryWithLifecycleAfterUponOutcomeInNonEnglishLocale() {    	 
         String wholeStory = "Lebenszyklus: " + NL +
                 "Nach:" + NL + NL +

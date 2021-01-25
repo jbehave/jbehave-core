@@ -425,6 +425,10 @@ public class ExamplesTable {
         return format();
     }
 
+    public boolean isEmpty() {
+        return getHeaders().isEmpty();
+    }
+
     public void outputTo(PrintStream output) {
         output.print(asString());
     }
@@ -536,7 +540,7 @@ public class ExamplesTable {
 
         private Map<String, String> parseProperties(String propertiesAsString) {
             Map<String, String> result = new LinkedHashMap<>();
-            if (!isEmpty(propertiesAsString)) {
+            if (!StringUtils.isEmpty(propertiesAsString)) {
                 for (String propertyAsString : propertiesAsString.split("(?<!\\\\),")) {
                     String[] property = StringUtils.split(propertyAsString, EQUAL, 2);
                     String propertyName = property[0];

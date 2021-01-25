@@ -5,17 +5,26 @@ import org.jbehave.core.failures.UUIDExceptionWrapper;
 import org.jbehave.core.i18n.LocalizedKeywords;
 import org.jbehave.core.io.*;
 import org.jbehave.core.junit.JUnitStory;
+import org.jbehave.core.model.Description;
+import org.jbehave.core.model.ExamplesTable;
+import org.jbehave.core.model.Lifecycle;
 import org.jbehave.core.model.Meta;
+import org.jbehave.core.model.Narrative;
 import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
+import org.jbehave.core.model.Story;
 import org.jbehave.core.reporters.StoryNarrator.IsDateEqual;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Properties;
 
 import com.google.gson.JsonObject;
@@ -186,11 +195,153 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
         StoryNarrator.narrateAnInterestingStory(reporter, false);
 
         // Then
-        String expected = IOUtils.toString(getClass().getResourceAsStream("/" + name), true);
-        JsonParser parser = new JsonParser();
-        JsonObject expectedObject = parser.parse(fileContent(file)).getAsJsonObject();
-        JsonObject actualObject = parser.parse(expected).getAsJsonObject();
-        assertThat(expectedObject, is(actualObject));
+        assertJson(name, fileContent(file));
+    }
+
+    @Test
+    public void shouldReportEventsToJsonOutputScenarioNestedGivenStoriesWithMultipleExamplesAndLifecycles() throws IOException
+    {
+        ExamplesTable examplesTable = new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|");
+        Lifecycle lifecycle = new Lifecycle(new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|"));
+        Map<String, String> example = new HashMap<>();
+        example.put("key1", "value1");
+        example.put("key2", "value2");
+
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new JsonOutput(new PrintStream(out), new Properties(), new LocalizedKeywords());
+
+        // When
+        Story givenStory = new Story("/path/to/story", new Description("Given story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
+        Story rootStory = new Story("/path/to/story", new Description("Root story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
+
+        String step = "My step";
+        Scenario scenario = new Scenario("My scenario", Meta.EMPTY, null, examplesTable, Collections.<String>emptyList());
+
+        reporter.beforeStory(rootStory, false);
+        reporter.lifecyle(lifecycle);
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.example(example, 0);
+        reporter.beforeGivenStories();
+        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
+        reporter.beforeStory(givenStory, true);
+        reporter.lifecyle(lifecycle);
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.example(example, 0);
+        reporter.beforeGivenStories();
+        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
+        reporter.beforeStory(givenStory, true);
+        reporter.lifecyle(lifecycle);
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.example(example, 0);
+        reporter.beforeScenarioSteps(null);
+        reporter.successful(step);
+        reporter.afterScenarioSteps(null);
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.afterStory(true);
+        reporter.afterGivenStories();
+        reporter.beforeScenarioSteps(null);
+        reporter.successful(step);
+        reporter.afterScenarioSteps(null);
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.afterStory(true);
+        reporter.afterGivenStories();
+        reporter.beforeScenarioSteps(null);
+        reporter.successful(step);
+        reporter.afterScenarioSteps(null);
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.example(example, 0);
+        reporter.beforeGivenStories();
+        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
+        reporter.beforeStory(givenStory, true);
+        reporter.lifecyle(lifecycle);
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.example(example, 0);
+        reporter.beforeGivenStories();
+        reporter.givenStories(Collections.singletonList(givenStory.getPath()));
+        reporter.beforeStory(givenStory, true);
+        reporter.lifecyle(lifecycle);
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(Collections.singletonList(step), examplesTable);
+        reporter.example(example, 0);
+        reporter.beforeScenarioSteps(null);
+        reporter.successful(step);
+        reporter.afterScenarioSteps(null);
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.afterStory(true);
+        reporter.afterGivenStories();
+        reporter.beforeScenarioSteps(null);
+        reporter.successful(step);
+        reporter.afterScenarioSteps(null);
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.afterStory(true);
+        reporter.afterGivenStories();
+        reporter.beforeScenarioSteps(null);
+        reporter.successful(step);
+        reporter.afterScenarioSteps(null);
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.afterStory(false);
+
+        // Then
+        assertJson("story-level-examples.json", out.toString());
+    }
+
+    @Test
+    public void shouldReportEventsToJsonOutputIfScenarioIsEmptyWithLifecycleExamplesTable() throws IOException
+    {
+        ExamplesTable examplesTable = new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|");
+        Lifecycle lifecycle = new Lifecycle(new ExamplesTable("|key|row|\n|key1|row1|\n|key2|row2|"));
+        Map<String, String> example = new HashMap<>();
+
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new JsonOutput(new PrintStream(out), new Properties(), new LocalizedKeywords());
+
+        // When
+        Story rootStory = new Story("/path/to/story", new Description("Root story"),
+                new Narrative("renovate my house", "customer", "get a loan"), new ArrayList<Scenario>());
+
+        Scenario scenario = new Scenario("My scenario", Meta.EMPTY, null, examplesTable, Collections.<String>emptyList());
+
+        reporter.beforeStory(rootStory, false);
+        reporter.lifecyle(lifecycle);
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(Collections.emptyList(), examplesTable);
+        reporter.example(example, 0);
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.beforeScenario(scenario);
+        reporter.beforeExamples(Collections.emptyList(), examplesTable);
+        reporter.example(example, 0);
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.afterStory(false);
+
+        // Then
+        String expected = "{\"path\": \"\\/path\\/to\\/story\", \"title\": \"Root story\",\"lifecycle\": {\"keyword\": "
+                + "\"Lifecycle:\",\"parameters\": {\"names\": [\"key\",\"row\"],\"values\": [[\"key1\",\"row1\"],"
+                + "[\"key2\",\"row2\"]]}},\"scenarios\": [{\"keyword\": \"Scenario:\", \"title\": \"My scenario\","
+                + "\"examples\": {\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": [\"key\",\"row\"]"
+                + ",\"values\": [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": \"Example:\","
+                + " \"parameters\": {}}]}},{\"keyword\": \"Scenario:\", \"title\": \"My scenario\",\"examples\": "
+                + "{\"keyword\": \"Examples:\",\"steps\": [],\"parameters\": {\"names\": [\"key\",\"row\"],\"values\":"
+                + " [[\"key1\",\"row1\"],[\"key2\",\"row2\"]]},\"examples\": [{\"keyword\": \"Example:\", \"parameters\""
+                + ": {}}]}}]}";
+        assertThat(dos2unix(out.toString()), equalTo(expected));
     }
 
     @Test
@@ -447,6 +598,57 @@ public class PrintStreamOutputBehaviour extends AbstractOutputBehaviour {
                 + "|Description|Value|Matcher|Verified|\n"
                 + "|A wrong date|01/01/2011|\"02/01/2011\"|No|\n";
         assertThat(dos2unix(out.toString()), equalTo(expected));
+    }
+
+    @Test
+    public void shouldReportEventsToJsonOutputEmptyScenarioLifecycle() {
+        // Given
+        OutputStream out = new ByteArrayOutputStream();
+        StoryReporter reporter = new JsonOutput(new PrintStream(out), new Properties(), new LocalizedKeywords());
+
+        // When
+        ExamplesTable table = new ExamplesTable("|actual|expected|\n|some data|some data|\n");
+        Lifecycle lifecycle = new Lifecycle(table);
+        ExamplesTable emptyExamplesTable = ExamplesTable.EMPTY;
+        Story story = new Story("/path/to/story", new Description("Story with lifecycle and empty scenario"), null,
+                null, null, lifecycle, new ArrayList<Scenario>());
+
+        reporter.beforeStory(story, false);
+        reporter.lifecyle(lifecycle);
+        reporter.beforeScenario(new Scenario("Normal scenario", Meta.EMPTY));
+        reporter.beforeExamples(Collections.singletonList("Then '<expected>' is equal to '<actual>'"), emptyExamplesTable);
+        reporter.example(table.getRow(0), -1);
+        reporter.successful("Then '((some data))' is ((equal to)) '((some data))'");
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.beforeScenario(new Scenario("Some empty scenario", Meta.EMPTY));
+        reporter.beforeExamples(Collections.<String>emptyList(), emptyExamplesTable);
+        reporter.example(table.getRow(0), -1);
+        reporter.afterExamples();
+        reporter.afterScenario();
+        reporter.afterStory(false);
+
+        // Then
+        String expected = "{\"path\": \"\\/path\\/to\\/story\", \"title\": \"Story with lifecycle and empty scenario\","
+                + "\"lifecycle\": {\"keyword\": \"Lifecycle:\",\"parameters\": {\"names\": [\"actual\",\"expected\"],"
+                + "\"values\": [[\"some data\",\"some data\"]]}},\"scenarios\": [{\"keyword\": \"Scenario:\", \"title\""
+                + ": \"Normal scenario\",\"examples\": {\"keyword\": \"Examples:\",\"steps\": [\"Then '<expected>' is"
+                + " equal to '<actual>'\"],\"parameters\": {\"names\": [],\"values\": []},\"examples\": [{\"keyword\":"
+                + " \"Example:\", \"parameters\": {\"actual\":\"some data\",\"expected\":\"some data\"},\"steps\":"
+                + " [{\"outcome\": \"successful\", \"value\": \"Then '((some data))' is ((equal to)) '((some data))'\"}]}]}},"
+                + "{\"keyword\": \"Scenario:\", \"title\": \"Some empty scenario\",\"examples\": {\"keyword\": \"Examples:\""
+                + ",\"steps\": [],\"parameters\": {\"names\": [],\"values\": []},\"examples\": [{\"keyword\": \"Example:\","
+                + " \"parameters\": {\"actual\":\"some data\",\"expected\":\"some data\"}}]}}]}";
+
+        assertThat(dos2unix(out.toString()), equalTo(expected));
+    }
+
+    private void assertJson(String expectedJsonFileName, String actualJson) throws IOException {
+        String expected = IOUtils.toString(getClass().getResourceAsStream("/" + expectedJsonFileName), true);
+        JsonParser parser = new JsonParser();
+        JsonObject expectedObject = parser.parse(actualJson).getAsJsonObject();
+        JsonObject actualObject = parser.parse(expected).getAsJsonObject();
+        assertThat(expectedObject, is(actualObject));
     }
 
     @SuppressWarnings("serial")

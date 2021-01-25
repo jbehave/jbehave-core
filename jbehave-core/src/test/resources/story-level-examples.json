@@ -1,0 +1,415 @@
+{
+  "path": "\/path\/to\/story",
+  "title": "Root story",
+  "lifecycle": {
+    "keyword": "Lifecycle:",
+    "parameters": {
+      "names": [
+        "key",
+        "row"
+      ],
+      "values": [
+        [
+          "key1",
+          "row1"
+        ],
+        [
+          "key2",
+          "row2"
+        ]
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "keyword": "Scenario:",
+      "title": "My scenario",
+      "examples": {
+        "keyword": "Examples:",
+        "steps": [
+          "My step"
+        ],
+        "parameters": {
+          "names": [
+            "key",
+            "row"
+          ],
+          "values": [
+            [
+              "key1",
+              "row1"
+            ],
+            [
+              "key2",
+              "row2"
+            ]
+          ]
+        },
+        "examples": [
+          {
+            "keyword": "Example:",
+            "parameters": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "givenStories": {
+              "keyword": "GivenStories:",
+              "givenStories": [
+                {
+                  "parameters": "",
+                  "path": "\/path\/to\/story"
+                }
+              ],
+              "stories": [
+                {
+                  "path": "\/path\/to\/story",
+                  "title": "Given story",
+                  "lifecycle": {
+                    "keyword": "Lifecycle:",
+                    "parameters": {
+                      "names": [
+                        "key",
+                        "row"
+                      ],
+                      "values": [
+                        [
+                          "key1",
+                          "row1"
+                        ],
+                        [
+                          "key2",
+                          "row2"
+                        ]
+                      ]
+                    }
+                  },
+                  "scenarios": [
+                    {
+                      "keyword": "Scenario:",
+                      "title": "My scenario",
+                      "examples": {
+                        "keyword": "Examples:",
+                        "steps": [
+                          "My step"
+                        ],
+                        "parameters": {
+                          "names": [
+                            "key",
+                            "row"
+                          ],
+                          "values": [
+                            [
+                              "key1",
+                              "row1"
+                            ],
+                            [
+                              "key2",
+                              "row2"
+                            ]
+                          ]
+                        },
+                        "examples": [
+                          {
+                            "keyword": "Example:",
+                            "parameters": {
+                              "key1": "value1",
+                              "key2": "value2"
+                            },
+                            "givenStories": {
+                              "keyword": "GivenStories:",
+                              "givenStories": [
+                                {
+                                  "parameters": "",
+                                  "path": "\/path\/to\/story"
+                                }
+                              ],
+                              "stories": [
+                                {
+                                  "path": "\/path\/to\/story",
+                                  "title": "Given story",
+                                  "lifecycle": {
+                                    "keyword": "Lifecycle:",
+                                    "parameters": {
+                                      "names": [
+                                        "key",
+                                        "row"
+                                      ],
+                                      "values": [
+                                        [
+                                          "key1",
+                                          "row1"
+                                        ],
+                                        [
+                                          "key2",
+                                          "row2"
+                                        ]
+                                      ]
+                                    }
+                                  },
+                                  "scenarios": [
+                                    {
+                                      "keyword": "Scenario:",
+                                      "title": "My scenario",
+                                      "examples": {
+                                        "keyword": "Examples:",
+                                        "steps": [
+                                          "My step"
+                                        ],
+                                        "parameters": {
+                                          "names": [
+                                            "key",
+                                            "row"
+                                          ],
+                                          "values": [
+                                            [
+                                              "key1",
+                                              "row1"
+                                            ],
+                                            [
+                                              "key2",
+                                              "row2"
+                                            ]
+                                          ]
+                                        },
+                                        "examples": [
+                                          {
+                                            "keyword": "Example:",
+                                            "parameters": {
+                                              "key1": "value1",
+                                              "key2": "value2"
+                                            },
+                                            "steps": [
+                                              {
+                                                "outcome": "successful",
+                                                "value": "My step"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "steps": [
+                              {
+                                "outcome": "successful",
+                                "value": "My step"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "steps": [
+              {
+                "outcome": "successful",
+                "value": "My step"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "keyword": "Scenario:",
+      "title": "My scenario",
+      "examples": {
+        "keyword": "Examples:",
+        "steps": [
+          "My step"
+        ],
+        "parameters": {
+          "names": [
+            "key",
+            "row"
+          ],
+          "values": [
+            [
+              "key1",
+              "row1"
+            ],
+            [
+              "key2",
+              "row2"
+            ]
+          ]
+        },
+        "examples": [
+          {
+            "keyword": "Example:",
+            "parameters": {
+              "key1": "value1",
+              "key2": "value2"
+            },
+            "givenStories": {
+              "keyword": "GivenStories:",
+              "givenStories": [
+                {
+                  "parameters": "",
+                  "path": "\/path\/to\/story"
+                }
+              ],
+              "stories": [
+                {
+                  "path": "\/path\/to\/story",
+                  "title": "Given story",
+                  "lifecycle": {
+                    "keyword": "Lifecycle:",
+                    "parameters": {
+                      "names": [
+                        "key",
+                        "row"
+                      ],
+                      "values": [
+                        [
+                          "key1",
+                          "row1"
+                        ],
+                        [
+                          "key2",
+                          "row2"
+                        ]
+                      ]
+                    }
+                  },
+                  "scenarios": [
+                    {
+                      "keyword": "Scenario:",
+                      "title": "My scenario",
+                      "examples": {
+                        "keyword": "Examples:",
+                        "steps": [
+                          "My step"
+                        ],
+                        "parameters": {
+                          "names": [
+                            "key",
+                            "row"
+                          ],
+                          "values": [
+                            [
+                              "key1",
+                              "row1"
+                            ],
+                            [
+                              "key2",
+                              "row2"
+                            ]
+                          ]
+                        },
+                        "examples": [
+                          {
+                            "keyword": "Example:",
+                            "parameters": {
+                              "key1": "value1",
+                              "key2": "value2"
+                            },
+                            "givenStories": {
+                              "keyword": "GivenStories:",
+                              "givenStories": [
+                                {
+                                  "parameters": "",
+                                  "path": "\/path\/to\/story"
+                                }
+                              ],
+                              "stories": [
+                                {
+                                  "path": "\/path\/to\/story",
+                                  "title": "Given story",
+                                  "lifecycle": {
+                                    "keyword": "Lifecycle:",
+                                    "parameters": {
+                                      "names": [
+                                        "key",
+                                        "row"
+                                      ],
+                                      "values": [
+                                        [
+                                          "key1",
+                                          "row1"
+                                        ],
+                                        [
+                                          "key2",
+                                          "row2"
+                                        ]
+                                      ]
+                                    }
+                                  },
+                                  "scenarios": [
+                                    {
+                                      "keyword": "Scenario:",
+                                      "title": "My scenario",
+                                      "examples": {
+                                        "keyword": "Examples:",
+                                        "steps": [
+                                          "My step"
+                                        ],
+                                        "parameters": {
+                                          "names": [
+                                            "key",
+                                            "row"
+                                          ],
+                                          "values": [
+                                            [
+                                              "key1",
+                                              "row1"
+                                            ],
+                                            [
+                                              "key2",
+                                              "row2"
+                                            ]
+                                          ]
+                                        },
+                                        "examples": [
+                                          {
+                                            "keyword": "Example:",
+                                            "parameters": {
+                                              "key1": "value1",
+                                              "key2": "value2"
+                                            },
+                                            "steps": [
+                                              {
+                                                "outcome": "successful",
+                                                "value": "My step"
+                                              }
+                                            ]
+                                          }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            "steps": [
+                              {
+                                "outcome": "successful",
+                                "value": "My step"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            "steps": [
+              {
+                "outcome": "successful",
+                "value": "My step"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
