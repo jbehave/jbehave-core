@@ -3,6 +3,7 @@ package org.jbehave.core.model;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
@@ -54,11 +55,12 @@ public class Meta {
     }
 
     public String getProperty(String name) {
+        return getOptionalProperty(name).orElse(BLANK);
+    }
+
+    public Optional<String> getOptionalProperty(String name) {
         String value = properties.getProperty(name);
-        if (value == null) {
-            return BLANK;
-        }
-        return value;
+        return Optional.ofNullable(value);
     }
 
     public Meta inheritFrom(Meta meta) {       
