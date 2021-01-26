@@ -30,10 +30,10 @@ values. We can then rewrite this scenario as:</p>
     When the stock is traded at <price>
     Then the alert status should be <status>
     
-    Examples:     
+    Examples:
     |symbol|threshold|price|status|
-    |STK1|10.0|5.0|OFF|
-    |STK1|10.0|11.0|ON|
+    |STK1  |10.0     |5.0  |OFF   |
+    |STK1  |10.0     |11.0 |ON    |
 ]]>
 </script>
 
@@ -41,6 +41,53 @@ values. We can then rewrite this scenario as:</p>
 parametrised and should be repeated for as many times as there are data
 rows in the examples table. At each execution, the named parameters are
 taken from the corresponding row.</p>
+
+<p>Also it's possible to put the Examples to the story level:</p>
+
+<script type="syntaxhighlighter" class="brush: bdd">
+<![CDATA[
+    Lifecycle:
+    Examples:
+    |symbol|threshold|price|status|
+    |STK1  |10.0     |5.0  |OFF   |
+    |STK1  |10.0     |11.0 |ON    |
+
+    Scenario: Configure stock
+    Given a stock of <symbol> and a <threshold>
+    When the stock is traded at <price>
+    Then the alert status should be <status>
+]]>
+</script>
+
+<p>In this case the <b>Examples</b> section in the <b>Lifecycle</b> indicates
+that the entire story is parametrised and all scenarios should be repeated as
+many times as there are data rows in the examples table.</p>
+
+<p>It is allowed to use both story level and scenario level <b>Examples</b> at
+the same time. The story level rows are merged with scenario level ones if
+present. In case of conflicting keys, the values from the scenario level take
+precedence. For example, the following story consists of the 4 scenario
+iterations with different datasets:</p>
+
+<script type="syntaxhighlighter" class="brush: bdd">
+<![CDATA[
+    Lifecycle:
+    Examples:
+    |symbol|
+    |STK1  |
+    |STK2  |
+
+    Scenario: Configure stock
+    Given a stock of <symbol> and a <threshold>
+    When the stock is traded at <price>
+    Then the alert status should be <status>
+
+    Examples:
+    |threshold|price|status|
+    |10.0     |5.0  |OFF   |
+    |10.0     |11.0 |ON    |
+]]>
+</script>
 
 <p>One important difference to underline in using table examples is
 that they require <a href="parameter-injection.html">named

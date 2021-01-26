@@ -49,9 +49,14 @@ Outcome: SUCCESS
 Given a step that is executed after each successful story
 Outcome: FAILURE
 Given a step that is executed after each failed story
+Examples:
+|story-level-precondition|
+|cba                     |
+|zyx                     |
 
 Scenario:  A scenario is a collection of executable steps of different type
 
+Given a [story-level-precondition]
 Given step represents a precondition to an event
 When step represents the occurrence of the event
 Then step represents the outcome of the event
@@ -63,9 +68,9 @@ When a negative event occurs
 Then a the outcome should [be-captured]    
 
 Examples: 
-|precondition|be-captured|
-|abc|be captured    |
-|xyz|not be captured|
+|precondition|be-captured    |
+|abc         |be captured    |
+|xyz         |not be captured|
 
 </pre>
 
