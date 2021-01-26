@@ -83,9 +83,9 @@ Then I should... - try again
 Then I should have a balance of $30
  <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
 	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:71)
-	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:51)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
 	(reflection-invoke)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
 ...</failure></step>
 <step outcome="notPerformed">
 Then I should have $20
@@ -95,9 +95,9 @@ Then I don&apos;t return loan
  <failure>org.jbehave.core.model.OutcomesTable$OutcomesFailed
 	at org.jbehave.core.model.OutcomesTable.verify(OutcomesTable.java:55)
 	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:82)
-	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:51)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
 	(reflection-invoke)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
 ...</failure><outcomes>
 <fields>
 <field>Description</field>
@@ -153,9 +153,9 @@ Then I give it to Paul
 Then I should have a balance of $30
  <failure>java.lang.Exception: Expected &lt;30&gt; got &lt;25&gt;
 	at org.jbehave.core.reporters.StoryNarrator.narrateAnInterestingStory(StoryNarrator.java:97)
-	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:51)
+	at org.jbehave.core.reporters.TemplateOutputBehaviour.shouldOutputStoryToXml(TemplateOutputBehaviour.java:54)
 	(reflection-invoke)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)
 ...</failure></step>
 </scenario>
 <after keyword="After:">

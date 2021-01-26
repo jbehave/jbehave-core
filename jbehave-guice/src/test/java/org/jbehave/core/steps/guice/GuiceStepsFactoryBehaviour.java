@@ -6,7 +6,6 @@ import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.steps.AbstractStepsFactory;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.Steps;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -68,17 +67,15 @@ public class GuiceStepsFactoryBehaviour {
     }
 
     @Test
-    @Disabled("assertThrows does not work")
     public void assertThatStepsWithMissingDependenciesCannotBeCreated() {
-        Injector parent = Guice.createInjector(new AbstractModule() {
+        AbstractModule module = new AbstractModule() {
             @Override
             protected void configure() {
-              bind(FooStepsWithDependency.class);
+                bind(FooStepsWithDependency.class);
             }
-          });
-        AbstractStepsFactory factory = new GuiceStepsFactory(new MostUsefulConfiguration(), parent);
+        };
         // When
-        assertThrows(CreationException.class, factory::createCandidateSteps);
+        assertThrows(CreationException.class, () -> Guice.createInjector(module));
         // Then ... expected exception is thrown        
     }
 

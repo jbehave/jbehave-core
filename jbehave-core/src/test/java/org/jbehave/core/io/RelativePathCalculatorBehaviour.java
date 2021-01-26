@@ -1,6 +1,5 @@
 package org.jbehave.core.io;
 
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -9,12 +8,7 @@ import static org.hamcrest.Matchers.is;
 
 public class RelativePathCalculatorBehaviour {
 
-    private RelativePathCalculator calculator;
-
-    @Before
-    public void setUp() {
-        calculator = new RelativePathCalculator();
-    }
+    private RelativePathCalculator calculator = new RelativePathCalculator();
 
     @Test
     public void shouldReturnAbsolutePaths() {

@@ -31,6 +31,7 @@ public class StackTraceFormatter {
         // they may be redundant.
         stackTrace = cutOff(stackTrace, "org.jbehave.core.embedder.");
         stackTrace = cutOff(stackTrace, "org.junit.runners.");
+        stackTrace = cutOff(stackTrace, "org.junit.platform.");
         stackTrace = cutOff(stackTrace, "org.apache.maven.surefire.");
 
         // System.out.println("=====before>" + stackTrace + "<==========");

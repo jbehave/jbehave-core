@@ -163,7 +163,7 @@ public class StoryLoaderBehaviour {
 
     @Test
     public void shouldLoadStoryFromRelativeFilePathsWithSpace() throws MalformedURLException, URISyntaxException {
-        shouldWorkForPath("/org/jbehave/core/io/stories/folder name has spaces");
+        shouldWorkForPath("/org/jbehave/core/io/stories/foldername has spaces");
     }
 
     @Test

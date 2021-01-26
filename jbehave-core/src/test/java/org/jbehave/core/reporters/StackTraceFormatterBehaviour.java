@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-
 public class StackTraceFormatterBehaviour {
 
     @Test
@@ -106,9 +105,9 @@ public class StackTraceFormatterBehaviour {
 
         // Then it looks like
         String expected = "java.lang.Exception: some cause\n"
-                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:103)\n"
+                + "\tat org.jbehave.core.reporters.StackTraceFormatterBehaviour.exceptionShouldBeCompressible(StackTraceFormatterBehaviour.java:104)\n"
                 + "\t(reflection-invoke)\n"
-                + "\tat org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)\n"
+                + "\tat org.junit.platform.commons.util.ReflectionUtils.invokeMethod(ReflectionUtils.java:688)\n"
                 + "...";
         assertThatTraceIs(trace, expected);
     }

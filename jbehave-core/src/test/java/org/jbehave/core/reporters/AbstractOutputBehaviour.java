@@ -19,6 +19,7 @@ public abstract class AbstractOutputBehaviour {
 
     protected void assertThatOutputIs(String out, String pathToExpected) throws IOException {
         String expected = IOUtils.toString(getClass().getResourceAsStream(pathToExpected), true);
+        System.out.println(dos2unix(out));
         assertThat(dos2unix(out), is(dos2unix(expected)));
     }
 

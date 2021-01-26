@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -200,7 +201,7 @@ public class StepCandidateBehaviour {
         StepCandidate candidate = candidateWith("I live on the $nth floor", THEN, method, someSteps);
         String stepAsString = "Then I live on the 1st floor";
         StoryReporter reporter = mock(StoryReporter.class);
-        StepResult result = candidate.createMatchedStep(stepAsString, namedParameters, Collections.emptyList())
+        StepResult result = candidate.createMatchedStep(stepAsString, namedParameters, emptyList())
                 .perform(reporter, null);
         result.describeTo(reporter);
         verify(reporter).beforeStep(stepAsString);
@@ -285,7 +286,7 @@ public class StepCandidateBehaviour {
         StepCandidate candidate = candidateWith(patternAsString, WHEN, method, steps);
         String stepAsString = "When I live on the <ith> floor but some call it the <nth>";
         StoryReporter reporter = mock(StoryReporter.class);
-        StepResult result = candidate.createMatchedStep(stepAsString, namedParameters, Collections.emptyList())
+        StepResult result = candidate.createMatchedStep(stepAsString, namedParameters, emptyList())
                 .perform(reporter, null);
         assertThat(steps.ith, equalTo("first"));
         assertThat(steps.nth, equalTo("ground"));
@@ -305,7 +306,7 @@ public class StepCandidateBehaviour {
         StepCandidate candidate = candidateWith(patternAsString, WHEN, method, steps, new ParameterControls().useNameDelimiterLeft("[").useNameDelimiterRight("]"));
         String stepAsString = "When I live on the [ith] floor but some call it the [nth]";
         StoryReporter reporter = mock(StoryReporter.class);
-        StepResult result = candidate.createMatchedStep(stepAsString, namedParameters, Collections.emptyList())
+        StepResult result = candidate.createMatchedStep(stepAsString, namedParameters, emptyList())
                 .perform(reporter, null);
         assertThat(steps.ith, equalTo("first"));
         assertThat(steps.nth, equalTo("ground"));
@@ -430,7 +431,7 @@ public class StepCandidateBehaviour {
 
     private void performStep(StepCandidate candidate, String stepAsString) {
         StoryReporter reporter = mock(StoryReporter.class);
-        candidate.createMatchedStep(stepAsString, namedParameters, Collections.emptyList()).perform(reporter, null);
+        candidate.createMatchedStep(stepAsString, namedParameters, emptyList()).perform(reporter, null);
         verify(reporter).beforeStep(stepAsString);
     }
 
@@ -476,14 +477,14 @@ public class StepCandidateBehaviour {
         StepCandidate step0 = candidateMatchingStep(candidates, "Given foo named $name");
         StoryReporter reporter = mock(StoryReporter.class);
         String stepAsString00 = "Given foo named xyz";
-        step0.createMatchedStep(stepAsString00, namedParameters, Collections.emptyList()).perform(reporter, null);
+        step0.createMatchedStep(stepAsString00, namedParameters, emptyList()).perform(reporter, null);
         String stepAsString01 = "And foo named xyz";
-        step0.createMatchedStep(stepAsString01, namedParameters, Collections.emptyList()).perform(reporter, null);
+        step0.createMatchedStep(stepAsString01, namedParameters, emptyList()).perform(reporter, null);
         StepCandidate step1 = candidateMatchingStep(candidates, "When foo named $name");
         String stepAsString10 = "When foo named Bar";
-        step1.createMatchedStep(stepAsString10, namedParameters, Collections.emptyList()).perform(reporter, null);
+        step1.createMatchedStep(stepAsString10, namedParameters, emptyList()).perform(reporter, null);
         String stepAsString11 = "And foo named Bar";
-        step1.createMatchedStep(stepAsString11, namedParameters, Collections.emptyList()).perform(reporter, null);
+        step1.createMatchedStep(stepAsString11, namedParameters, emptyList()).perform(reporter, null);
         assertThat(steps.givenName, nullValue());
         assertThat(steps.givenTimes, equalTo(0));
         assertThat(steps.whenName, nullValue());
@@ -515,13 +516,12 @@ public class StepCandidateBehaviour {
         StepCandidate step = candidateMatchingStep(candidates, "Given foo named $name");
         StoryReporter reporter = mock(StoryReporter.class);
         String stepAsString0 = "Given foo named xyz";
-        step.createMatchedStep(stepAsString0, namedParameters, Collections.emptyList()).perform(reporter, null);
+        step.createMatchedStep(stepAsString0, namedParameters, emptyList()).perform(reporter, null);
         assertThat(steps.givenName, equalTo("xyz"));
         assertThat(steps.whenName, nullValue());
         verify(reporter).beforeStep(stepAsString0);
-        String stepAsString1 = "Then foo named xyz";
-        step.createMatchedStep(stepAsString1, namedParameters, Collections.emptyList()).perform(reporter, null);
-        assertThrows(StartingWordNotFound.class, () -> verify(reporter).beforeStep(stepAsString1));
+        assertThrows(StartingWordNotFound.class,
+                () -> step.createMatchedStep("Then foo named xyz", namedParameters, emptyList()));
     }
 
     static class NamedTypeSteps extends Steps {

@@ -9,7 +9,7 @@ import org.jbehave.core.model.OutcomesTable;
 import org.jbehave.core.model.OutcomesTable.OutcomesFailed;
 import org.jbehave.core.model.Scenario;
 import org.jbehave.core.model.Story;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
@@ -29,8 +29,8 @@ public class PostStoryStatisticsCollectorBehaviour {
 
     private PostStoryStatisticsCollector reporter;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    public void beforeEach() {
         out = new ByteArrayOutputStream();
         printStream = new PrintStream(out);
         reporter = new PostStoryStatisticsCollector(printStream);

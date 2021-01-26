@@ -668,7 +668,6 @@ public class EmbedderMojoBehaviour {
     }
 
     @Test
-    @Disabled("The assertThrows does not seem to work")
     public void shouldReportFailuresInRunningStoriesWithAnnotatedEmbedderRunner() throws MojoFailureException {
         // Given
         final EmbedderClassLoader classLoader = new EmbedderClassLoader(this.getClass().getClassLoader());
@@ -694,7 +693,6 @@ public class EmbedderMojoBehaviour {
 
         // When
         doThrow(new RuntimeException()).when(embedder).runStoriesWithAnnotatedEmbedderRunner(classNames);
-        mojo.execute();
 
         assertThrows(MojoFailureException.class, mojo::execute);
         // Then fail as expected

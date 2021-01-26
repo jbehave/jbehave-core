@@ -4,7 +4,7 @@ import com.thoughtworks.paranamer.BytecodeReadingParanamer;
 import org.jbehave.core.annotations.*;
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.reporters.StoryReporter;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -126,7 +126,7 @@ public class CompositeCandidateStepsBehaviour {
     }
 
     @Test
-    @Ignore("fails as perhaps Paranamer not peer of @named in respect of @composite")
+    @Disabled("fails as perhaps Paranamer not peer of @named in respect of @composite")
     public void shouldMatchCompositesAndCreateComposedStepsUsingParanamerNamedParameters() {
         CompositeStepsWithoutNamedAnnotation steps = new CompositeStepsWithoutNamedAnnotation();
         List<StepCandidate> candidates = steps.listCandidates();

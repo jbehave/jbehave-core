@@ -3,7 +3,6 @@ package org.jbehave.core.embedder;
 import org.jbehave.core.Embeddable;
 import org.jbehave.core.embedder.EmbedderClassLoader.InstantiationFailed;
 import org.jbehave.core.junit.JUnitStory;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -47,7 +46,6 @@ public class EmbedderClassLoaderBehaviour {
     }
 
     @Test
-    @Disabled("assertThrows does not work")
     public void shouldNotIgnoreAnIndividualClasspathElementThatIsNull(){
         List<String> elements = asList("target/classes", null);
         assertThrows(EmbedderClassLoader.InvalidClasspathElement.class, () -> new EmbedderClassLoader(elements));
@@ -72,7 +70,6 @@ public class EmbedderClassLoaderBehaviour {
     }
 
     @Test
-    @Disabled("assertThrows does not work")
     public void shouldNotInstantiateClassWithInexistentName() {
         EmbedderClassLoader classLoader = new EmbedderClassLoader(Arrays.<String> asList());
         assertThrows(InstantiationFailed.class, () -> classLoader.newInstance(Embeddable.class, "UnexistentClass"));

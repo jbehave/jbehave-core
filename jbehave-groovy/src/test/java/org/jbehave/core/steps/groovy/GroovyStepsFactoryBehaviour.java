@@ -30,8 +30,7 @@ public class GroovyStepsFactoryBehaviour {
 
     @Test
     public void shouldNotCreateStepsInstancesFromGroovyWhenResourceInvalid() {
-        GroovyStepsFactory factory = new GroovyStepsFactory(new MostUsefulConfiguration(),
-                new GroovyContext(asList("/org/jbehave/core/steps/groovy/invalidSteps.groovy")));
-        assertThrows(GroovyClassInstantiationFailed.class, factory::stepsTypes);
+        assertThrows(GroovyClassInstantiationFailed.class,
+                () -> new GroovyContext(asList("/org/jbehave/core/steps/groovy/invalidSteps.groovy")));
     }
 }

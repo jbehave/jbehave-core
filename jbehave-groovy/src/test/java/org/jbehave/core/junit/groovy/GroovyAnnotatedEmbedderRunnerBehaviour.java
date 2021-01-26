@@ -28,7 +28,7 @@ public class GroovyAnnotatedEmbedderRunnerBehaviour {
         static boolean hasRun;
 
         @Override
-        @Test
+        @org.junit.Test
         public void run() {
             hasRun = true;
         }

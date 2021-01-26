@@ -3,6 +3,7 @@ package org.jbehave.core.steps;
 import static java.util.Arrays.asList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -86,9 +87,6 @@ public class ParameterConvertersBehaviour {
 
     private static final String JSON_AS_STRING = "{\"string\":\"String1\",\"integer\":2,\"stringList\":[\"String2\",\"String3\"],"
             + "\"integerList\":[3,4]}";
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @SuppressWarnings("unchecked")
     @Test
@@ -265,16 +263,18 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertInvalidNumbersWithNumberFormat() {
-        expectedException.expect(ParameterConversionFailed.class);
-        expectedException.expectCause(CoreMatchers.<ParseException>instanceOf(ParseException.class));
-        new NumberConverter().convertValue("abc", Long.class);
+        NumberConverter converter = new NumberConverter();
+        ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
+                () -> converter.convertValue("abc", Long.class));
+        assertThat(exception.getCause(), instanceOf(ParseException.class));
     }
 
     @Test
     public void shouldFailToConvertInvalidNumbersWithNumberFormat2()  {
-        expectedException.expect(ParameterConversionFailed.class);
-        expectedException.expectCause(CoreMatchers.<NumberFormatException>instanceOf(NumberFormatException.class));
-        new NumberConverter().convertValue("12.34.56", BigDecimal.class);
+        NumberConverter converter = new NumberConverter();
+        ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
+                () -> converter.convertValue("12.34.56", BigDecimal.class));
+        assertThat(exception.getCause(), instanceOf(NumberFormatException.class));
     }
 
     @Test
@@ -353,16 +353,18 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertToArrayOfCustomObjectsIfNoConverterFound() {
-        expectedException.expect(ParameterConversionFailed.class);
-        expectedException.expectMessage(
-                "No parameter converter for class [Lorg.jbehave.core.steps.ParameterConvertersBehaviour$Bar");
-        new ParameterConverters().convert("foo", Bar[].class);
+        ParameterConverters converters = new ParameterConverters();
+        ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
+                () -> converters.convert("foo", Bar[].class));
+        assertThat(exception.getMessage(), is(equalTo(
+                "No parameter converter for class [Lorg.jbehave.core.steps.ParameterConvertersBehaviour$Bar;")));
     }
 
     @Test
     public void shouldFailToConvertCommaSeparatedValuesOfInvalidNumbers() {
-        expectedException.expect(ParameterConversionFailed.class);
-        new NumberListConverter().convertValue("3x, x.5", new TypeLiteral<List<Number>>(){}.getType());
+        NumberListConverter converter = new NumberListConverter();
+        assertThrows(ParameterConversionFailed.class,
+                () -> converter.convertValue("3x, x.5", new TypeLiteral<List<Number>>(){}.getType()));
     }
 
     @Test
@@ -399,8 +401,8 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertDateWithInvalidFormat() {
-        expectedException.expect(ParameterConversionFailed.class);
-        new DateConverter().convertValue("dd+MM+yyyy", Date.class);
+        DateConverter dateConverter = new DateConverter();
+        assertThrows(ParameterConversionFailed.class, () -> dateConverter.convertValue("dd+MM+yyyy", Date.class));
     }
 
     @Test
@@ -492,17 +494,16 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertParameterFromFailingMethodReturningValue() throws IntrospectionException {
-        expectedException.expect(ParameterConversionFailed.class);
         Method method = SomeSteps.methodFor("aFailingMethodReturningExamplesTable");
         ParameterConverter converter = new MethodReturningConverter(method, new SomeSteps());
         String value = "|col1|col2|\n|row11|row12|\n|row21|row22|\n";
-        converter.convertValue(value, ExamplesTable.class);
+        assertThrows(ParameterConversionFailed.class, () -> converter.convertValue(value, ExamplesTable.class));
     }
 
     @Test
     public void shouldFailToConvertToUnknownType() {
-        expectedException.expect(ParameterConversionFailed.class);
-        new ParameterConverters(new LoadFromClasspath(), new TableTransformers()).convert("abc", WrongType.class);
+        ParameterConverters converters = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
+        assertThrows(ParameterConversionFailed.class, () -> converters.convert("abc", WrongType.class));
     }
 
     @Test
@@ -523,8 +524,8 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldFailToConvertEnumForValueNotDefined() {
-        expectedException.expect(ParameterConversionFailed.class);
-        new EnumConverter().convertValue("FOUR", SomeEnum.class);
+        EnumConverter enumConverter = new EnumConverter();
+        assertThrows(ParameterConversionFailed.class, () -> enumConverter.convertValue("FOUR", SomeEnum.class));
     }
 
     @Test
@@ -568,10 +569,9 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldNotModifyListOfConvertersFromOriginalParameterConvertersWhenCreatingNewInstance() {
-        expectedException.expect(ParameterConversionFailed.class);
         ParameterConverters original = new ParameterConverters(new LoadFromClasspath(), new TableTransformers());
         original.newInstanceAdding(new FooToBarParameterConverter());
-        original.convert("foo", Bar.class);
+        assertThrows(ParameterConversionFailed.class, () -> original.convert("foo", Bar.class));
     }
 
     @Test
@@ -621,23 +621,23 @@ public class ParameterConvertersBehaviour {
 
     @Test
     public void shouldNotConvertToAnyCollectionOfCustomObjectsUsingCustomConverter() {
-        expectedException.expect(ParameterConversionFailed.class);
-        expectedException.expectMessage(
-                "No parameter converter for java.util.Collection<org.jbehave.core.steps.ParameterConvertersBehaviour$Bar>");
         ParameterConverters parameterConverters = new ParameterConverters(new LoadFromClasspath());
         parameterConverters.addConverters(new FooToBarParameterConverter());
         Type type = new TypeLiteral<Collection<Bar>>(){}.getType();
-        parameterConverters.convert("foo", type);
+        ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
+                () -> parameterConverters.convert("foo", type));
+        assertThat(exception.getMessage(), is(equalTo("No parameter converter for "
+                + "java.util.Collection<org.jbehave.core.steps.ParameterConvertersBehaviour$Bar>")));
     }
 
     @Test
     public void shouldNotConvertToListOfCustomObjectsWhenElementConverterIsNotAdded() {
-        expectedException.expect(ParameterConversionFailed.class);
-        expectedException.expectMessage(
-                "No parameter converter for java.util.List<org.jbehave.core.steps.ParameterConvertersBehaviour$Bar>");
         ParameterConverters parameterConverters = new ParameterConverters(new TableTransformers());
         Type type = new TypeLiteral<List<Bar>>(){}.getType();
-        parameterConverters.convert("foo", type);
+        ParameterConversionFailed exception = assertThrows(ParameterConversionFailed.class,
+                () -> parameterConverters.convert("foo", type));
+        assertThat(exception.getMessage(), is(equalTo(
+                "No parameter converter for java.util.List<org.jbehave.core.steps.ParameterConvertersBehaviour$Bar>")));
     }
 
     @SuppressWarnings("unchecked")

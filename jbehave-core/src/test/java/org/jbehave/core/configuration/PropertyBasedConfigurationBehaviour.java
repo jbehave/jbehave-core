@@ -4,8 +4,8 @@ import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.failures.PassingUponPendingStep;
 import org.jbehave.core.reporters.ConsoleOutput;
 import org.jbehave.core.reporters.SilentSuccessFilter;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,13 +20,13 @@ public class PropertyBasedConfigurationBehaviour {
     private String originalFailOnPending;
     private String originalSilentSuccess;
 
-    @Before
+    @BeforeEach
     public void captureExistingEnvironment() {
         originalFailOnPending = System.getProperty(FAIL_ON_PENDING);
         originalSilentSuccess = System.getProperty(SILENT_SUCCESS);
     }
     
-    @After
+    @AfterEach
     public void resetEnvironment() {
         if (originalFailOnPending != null) {
             System.setProperty(FAIL_ON_PENDING, originalFailOnPending);

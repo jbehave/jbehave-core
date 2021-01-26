@@ -4,12 +4,9 @@ import org.jbehave.core.io.LoadFromClasspath;
 import org.jbehave.core.model.TableTransformers;
 import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import static org.mockito.Mockito.mock;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ConcurrencyBehaviour {
 
     @Test

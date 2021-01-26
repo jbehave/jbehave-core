@@ -79,8 +79,6 @@ import org.mockito.Mockito;
 
 public class EmbedderBehaviour {
 
-    private Embedder embedder;
-
     @Test
     public void shouldMapStoriesAsEmbeddables() {
         // Given
@@ -1216,7 +1214,7 @@ public class EmbedderBehaviour {
         static boolean hasRun;
 
         @Override
-        @Test
+        @org.junit.Test
         public void run() {
             hasRun = true;
         }
@@ -1241,7 +1239,7 @@ public class EmbedderBehaviour {
 
         static boolean hasRun;
 
-        @Test
+        @org.junit.Test
         public void run() {
             hasRun = true;
         }
