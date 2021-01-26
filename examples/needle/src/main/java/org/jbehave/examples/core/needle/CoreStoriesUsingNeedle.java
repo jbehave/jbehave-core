@@ -1,29 +1,23 @@
 package org.jbehave.examples.core.needle;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.InjectableStepsFactory;
 import org.jbehave.core.steps.needle.NeedleStepsFactory;
 import org.jbehave.examples.core.CoreStories;
 import org.jbehave.examples.core.needle.steps.NeedleTraderSteps;
 import org.jbehave.examples.core.service.TradingService;
-import org.jbehave.examples.core.steps.AndSteps;
-import org.jbehave.examples.core.steps.BeforeAfterSteps;
-import org.jbehave.examples.core.steps.CalendarSteps;
-import org.jbehave.examples.core.steps.PendingSteps;
-import org.jbehave.examples.core.steps.PriorityMatchingSteps;
-import org.jbehave.examples.core.steps.SandpitSteps;
-import org.jbehave.examples.core.steps.SearchSteps;
+import org.jbehave.examples.core.steps.*;
 import org.needle4j.injection.InjectionProvider;
 import org.needle4j.injection.InjectionProviders;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+
 /**
- * Run core stories using NeedleStepsFactory. The textual trader stories are
+ * Run core stories using NeedleStepsFactory. The textual stories are
  * exactly the same ones found in the jbehave-core-example. Here we are only
  * concerned with using the container to compose the steps instances.
  */

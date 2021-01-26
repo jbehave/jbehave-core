@@ -1,8 +1,5 @@
 package org.jbehave.examples.core.pico;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -21,23 +18,15 @@ import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.examples.core.pico.AnnotatedEmbedderUsingPico.ConfigurationModule;
 import org.jbehave.examples.core.pico.AnnotatedEmbedderUsingPico.StepsModule;
 import org.jbehave.examples.core.service.TradingService;
-import org.jbehave.examples.core.steps.AndSteps;
-import org.jbehave.examples.core.steps.BeforeAfterSteps;
-import org.jbehave.examples.core.steps.CalendarSteps;
-import org.jbehave.examples.core.steps.PendingSteps;
-import org.jbehave.examples.core.steps.PriorityMatchingSteps;
-import org.jbehave.examples.core.steps.SandpitSteps;
-import org.jbehave.examples.core.steps.SearchSteps;
-import org.jbehave.examples.core.steps.TraderSteps;
-import org.junit.jupiter.api.Test;
+import org.jbehave.examples.core.steps.*;
 import org.junit.runner.RunWith;
 import org.picocontainer.MutablePicoContainer;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.CONSOLE;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.HTML;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.TXT;
-import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
+import static org.jbehave.core.reporters.StoryReporterBuilder.Format.*;
 
 /**
  * Run stories via annotated embedder configuration and steps using Pico. The
@@ -52,7 +41,7 @@ import static org.jbehave.core.reporters.StoryReporterBuilder.Format.XML;
 public class AnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
     @Override
-    @Test
+    @org.junit.Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());
     }

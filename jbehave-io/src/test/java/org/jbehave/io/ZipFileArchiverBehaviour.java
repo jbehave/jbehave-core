@@ -1,6 +1,6 @@
 package org.jbehave.io;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
@@ -20,7 +20,7 @@ public class ZipFileArchiverBehaviour {
     private File dir;
     private FileArchiver archiver = new ZipFileArchiver();
 
-    @Before
+    @BeforeEach
     public void setup() throws IOException {
         dir = new File("target/dir");
         dir.mkdirs();

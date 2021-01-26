@@ -1,11 +1,10 @@
 package com.lunivore.gameoflife.domain;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
+import com.lunivore.gameoflife.view.string.StringRenderer;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
-import com.lunivore.gameoflife.view.string.StringRenderer;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 public class GameBehaviour {
 

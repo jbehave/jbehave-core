@@ -2,8 +2,8 @@ package org.jbehave.io;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -28,7 +28,7 @@ public class ArchivingFileManagerBehaviour {
 	private File file2;
 	private File zip;
 
-	@Before
+	@BeforeEach
 	public void setup() throws IOException {
 		upload = createUploadDir();
 		dir1 = createDir("dir1");
@@ -39,7 +39,7 @@ public class ArchivingFileManagerBehaviour {
 		manager = new ArchivingFileManager(new ZipFileArchiver(), new SilentFileMonitor(), upload);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws IOException {
 		file1.delete();
 		file2.delete();

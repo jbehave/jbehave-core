@@ -1,15 +1,14 @@
 package org.jbehave.examples.core.meta;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.UsingEmbedder;
 import org.jbehave.core.annotations.spring.UsingSpring;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.spring.SpringAnnotatedEmbedderRunner;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 
 @RunWith(SpringAnnotatedEmbedderRunner.class)
 @UsingEmbedder(embedder = Embedder.class, ignoreFailureInStories = false, ignoreFailureInView = false)
@@ -17,7 +16,7 @@ import org.junit.runner.RunWith;
 public final class MetaByRowEmbedder extends InjectableEmbedder {
 
 	@Override
-    @Test
+    @org.junit.Test
 	public void run() {
 		injectedEmbedder().metaFilters().add("+smoke");
 		injectedEmbedder().runStoriesAsPaths(new StoryFinder().findPaths(

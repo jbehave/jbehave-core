@@ -1,10 +1,9 @@
 package org.jbehave.examples.core.urls;
 
-import java.util.List;
-
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
-import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
@@ -17,7 +16,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
  */
 public class CoreStoryRunner {
 
-    @Test
+    @org.junit.Test
     public void runURLLoadedStoriesAsJUnit() {
         // Embedder defines the configuration and candidate steps
         Embedder embedder = new URLCoreEmbedder();

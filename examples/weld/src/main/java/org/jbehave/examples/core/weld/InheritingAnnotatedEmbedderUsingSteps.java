@@ -1,18 +1,12 @@
 package org.jbehave.examples.core.weld;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
+import org.jbehave.core.annotations.UsingSteps;
+import org.jbehave.core.io.StoryFinder;
+import org.jbehave.examples.core.steps.*;
 
 import java.util.List;
 
-import org.jbehave.core.annotations.UsingSteps;
-import org.jbehave.core.io.StoryFinder;
-import org.jbehave.examples.core.steps.AndSteps;
-import org.jbehave.examples.core.steps.BeforeAfterSteps;
-import org.jbehave.examples.core.steps.CalendarSteps;
-import org.jbehave.examples.core.steps.PriorityMatchingSteps;
-import org.jbehave.examples.core.steps.SandpitSteps;
-import org.jbehave.examples.core.steps.TraderSteps;
-import org.junit.jupiter.api.Test;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 /**
  * Here we show how configuation annotations can be split across parent-child hierarchies
@@ -22,7 +16,7 @@ import org.junit.jupiter.api.Test;
 public class InheritingAnnotatedEmbedderUsingSteps extends ParentAnnotatedEmbedderUsingWeld {
 
     @Override
-    @Test
+    @org.junit.Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());
     }

@@ -1,7 +1,5 @@
 package org.jbehave.examples.core.guice;
 
-import java.util.List;
-
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -11,15 +9,10 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.guice.GuiceAnnotatedEmbedderRunner;
 import org.jbehave.examples.core.guice.AnnotatedEmbedderUsingGuice.ConfigurationModule;
-import org.jbehave.examples.core.steps.AndSteps;
-import org.jbehave.examples.core.steps.BeforeAfterSteps;
-import org.jbehave.examples.core.steps.CalendarSteps;
-import org.jbehave.examples.core.steps.PendingSteps;
-import org.jbehave.examples.core.steps.PriorityMatchingSteps;
-import org.jbehave.examples.core.steps.SandpitSteps;
-import org.jbehave.examples.core.steps.TraderSteps;
-import org.junit.jupiter.api.Test;
+import org.jbehave.examples.core.steps.*;
 import org.junit.runner.RunWith;
+
+import java.util.List;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
@@ -38,7 +31,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 public class AnnotatedEmbedderUsingGuiceAndSteps extends InjectableEmbedder {
 
     @Override
-    @Test
+    @org.junit.Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());
     }

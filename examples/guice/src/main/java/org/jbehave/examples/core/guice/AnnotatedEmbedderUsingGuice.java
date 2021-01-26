@@ -1,8 +1,7 @@
 package org.jbehave.examples.core.guice;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-
+import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -20,24 +19,14 @@ import org.jbehave.core.steps.ParameterConverters.ParameterConverter;
 import org.jbehave.examples.core.guice.AnnotatedEmbedderUsingGuice.ConfigurationModule;
 import org.jbehave.examples.core.guice.AnnotatedEmbedderUsingGuice.StepsModule;
 import org.jbehave.examples.core.service.TradingService;
-import org.jbehave.examples.core.steps.AndSteps;
-import org.jbehave.examples.core.steps.BeforeAfterSteps;
-import org.jbehave.examples.core.steps.CalendarSteps;
-import org.jbehave.examples.core.steps.PendingSteps;
-import org.jbehave.examples.core.steps.PriorityMatchingSteps;
-import org.jbehave.examples.core.steps.SandpitSteps;
-import org.jbehave.examples.core.steps.SearchSteps;
-import org.junit.jupiter.api.Test;
+import org.jbehave.examples.core.steps.*;
 import org.junit.runner.RunWith;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Scopes;
+import java.text.SimpleDateFormat;
+import java.util.List;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
+import static org.jbehave.core.reporters.Format.*;
 
 /**
  * Run stories via annotated embedder configuration and steps using Guice. The
@@ -52,7 +41,7 @@ import static org.jbehave.core.reporters.Format.XML;
 public class AnnotatedEmbedderUsingGuice extends InjectableEmbedder {
 
     @Override
-    @Test
+    @org.junit.Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());
     }

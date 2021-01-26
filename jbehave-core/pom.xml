@@ -140,9 +140,9 @@
             <id>package-resources</id>
             <phase>package</phase>
             <configuration>
-              <tasks>
+              <target>
                 <zip destfile="${jbehave-core-resources.zip}" basedir="${basedir}/src/main/resources" />
-              </tasks>
+              </target>
             </configuration>
             <goals>
               <goal>run</goal>

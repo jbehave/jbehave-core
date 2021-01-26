@@ -22,7 +22,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 public class CoreStoriesUsingTestNG extends CoreStories {
 
     @Override
-    @Test
+    @org.junit.Test
     public void run() {
         super.run();
     }

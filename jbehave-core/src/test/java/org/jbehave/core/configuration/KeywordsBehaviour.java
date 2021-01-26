@@ -1,13 +1,14 @@
 package org.jbehave.core.configuration;
 
 import org.jbehave.core.configuration.Keywords.KeywordNotFound;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class KeywordsBehaviour {

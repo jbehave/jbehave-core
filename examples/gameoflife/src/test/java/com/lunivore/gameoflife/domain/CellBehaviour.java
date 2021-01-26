@@ -1,10 +1,10 @@
 package com.lunivore.gameoflife.domain;
 
+import org.junit.jupiter.api.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import org.junit.jupiter.api.Test;
 
 public class CellBehaviour {
 

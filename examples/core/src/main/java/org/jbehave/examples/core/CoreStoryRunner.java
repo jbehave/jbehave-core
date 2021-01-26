@@ -1,10 +1,9 @@
 package org.jbehave.examples.core;
 
-import java.util.List;
-
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
-import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
@@ -17,7 +16,7 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
  */
 public class CoreStoryRunner {
 
-    @Test
+    @org.junit.Test
     public void mapStories() {
         Embedder embedder = new Embedder();
         embedder.useMetaFilters(asList("+author *", "+theme *", "-skip"));
@@ -25,7 +24,7 @@ public class CoreStoryRunner {
         embedder.mapStoriesAsPaths(storyPaths);
     }
 
-    @Test
+    @org.junit.Test
     public void runClasspathLoadedStoriesAsJUnit() {
         // CoreEmbedder defines the configuration and steps factory
         Embedder embedder = new CoreEmbedder();

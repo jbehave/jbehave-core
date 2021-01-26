@@ -1,9 +1,5 @@
 package org.jbehave.examples.core.annotations;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Properties;
-
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -16,27 +12,16 @@ import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.jbehave.core.parsers.RegexPrefixCapturingPatternParser;
 import org.jbehave.core.reporters.StoryReporterBuilder;
 import org.jbehave.core.steps.ParameterConverters.DateConverter;
-import org.jbehave.examples.core.annotations.CoreAnnotatedEmbedder.MyDateConverter;
-import org.jbehave.examples.core.annotations.CoreAnnotatedEmbedder.MyEmbedder;
-import org.jbehave.examples.core.annotations.CoreAnnotatedEmbedder.MyRegexPrefixCapturingPatternParser;
-import org.jbehave.examples.core.annotations.CoreAnnotatedEmbedder.MyReportBuilder;
-import org.jbehave.examples.core.annotations.CoreAnnotatedEmbedder.MyStoryControls;
-import org.jbehave.examples.core.annotations.CoreAnnotatedEmbedder.MyStoryLoader;
-import org.jbehave.examples.core.steps.AndSteps;
-import org.jbehave.examples.core.steps.BeforeAfterSteps;
-import org.jbehave.examples.core.steps.CalendarSteps;
-import org.jbehave.examples.core.steps.PriorityMatchingSteps;
-import org.jbehave.examples.core.steps.SandpitSteps;
-import org.jbehave.examples.core.steps.SearchSteps;
-import org.jbehave.examples.core.steps.TraderSteps;
-import org.junit.Test;
+import org.jbehave.examples.core.annotations.CoreAnnotatedEmbedder.*;
+import org.jbehave.examples.core.steps.*;
 import org.junit.runner.RunWith;
 
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Properties;
+
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-import static org.jbehave.core.reporters.Format.CONSOLE;
-import static org.jbehave.core.reporters.Format.HTML;
-import static org.jbehave.core.reporters.Format.TXT;
-import static org.jbehave.core.reporters.Format.XML;
+import static org.jbehave.core.reporters.Format.*;
 
 @RunWith(AnnotatedEmbedderRunner.class)
 @Configure(stepPatternParser = MyRegexPrefixCapturingPatternParser.class, storyControls = MyStoryControls.class, storyLoader = MyStoryLoader.class, storyReporterBuilder = MyReportBuilder.class, parameterConverters = { MyDateConverter.class })
@@ -46,7 +31,7 @@ import static org.jbehave.core.reporters.Format.XML;
 public class CoreAnnotatedEmbedder extends InjectableEmbedder {
 
     @Override
-    @Test
+    @org.junit.Test
     public void run() {
         List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"),
                 "**/*.story", "**/examples_table_loaded*");

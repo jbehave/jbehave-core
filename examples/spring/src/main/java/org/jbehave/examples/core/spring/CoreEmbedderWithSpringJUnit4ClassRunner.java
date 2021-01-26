@@ -1,18 +1,17 @@
 package org.jbehave.examples.core.spring;
 
-import java.util.List;
-
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.spring.SpringStepsFactory;
 import org.jbehave.examples.core.CoreEmbedder;
 import org.junit.Before;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.List;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
@@ -37,20 +36,20 @@ public class CoreEmbedderWithSpringJUnit4ClassRunner {
         embedder.useCandidateSteps(new SpringStepsFactory(embedder.configuration(), context).createCandidateSteps());
     }
 
-    @Test
+    @org.junit.Test
     public void runStoriesAsPaths() {
         List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromPath("../core/src/main/java"),
                 "**/*.story", "");
         embedder.runStoriesAsPaths(storyPaths);
     }
 
-    @Test
+    @org.junit.Test
     public void findMatchingCandidateSteps() {
         embedder.reportMatchingStepdocs("When traders are subset to \".*y\" by name");
         embedder.reportMatchingStepdocs("Given a step that is not matched");
     }
 
-    @Test
+    @org.junit.Test
     public void findMatchingCandidateStepsWithNoStepsInstancesProvided() {
         embedder.reportMatchingStepdocs("Given a step that cannot be matched");
     }

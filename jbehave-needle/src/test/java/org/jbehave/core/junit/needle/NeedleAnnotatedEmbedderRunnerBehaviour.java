@@ -1,13 +1,5 @@
 package org.jbehave.core.junit.needle;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-import static org.hamcrest.Matchers.is;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.Given;
@@ -24,6 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.InitializationError;
 import org.needle4j.injection.InjectionProvider;
+
+import javax.inject.Inject;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
 
 public class NeedleAnnotatedEmbedderRunnerBehaviour {
 
@@ -46,7 +45,7 @@ public class NeedleAnnotatedEmbedderRunnerBehaviour {
             assertThat(true, is(true));
         }
 
-		@Test
+		@org.junit.Test
 		public void testSteps() {
 			final List<CandidateSteps> candidateSteps = injectedEmbedder().stepsFactory().createCandidateSteps();
 			assertThat(candidateSteps.size(), is(1));

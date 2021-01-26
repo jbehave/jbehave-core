@@ -1,18 +1,14 @@
 package com.lunivore.noughtsandcrosses.game;
 
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.*;
 
 
 
 public class GameModelBehaviour {
 
-    @Test
+    @org.junit.Test
     public void shouldStartEmptyAndTellObserver() {
         GameModel game = new GameModel();
         GameObserver observer = mock(GameObserver.class);
@@ -27,7 +23,7 @@ public class GameModelBehaviour {
         }
     }
     
-    @Test
+    @org.junit.Test
     public void shouldPlaceTokenForCurrentPlayerInTheGivenColumnAndRowStartingWithX() {
         GameModel game = new GameModel();
         GameObserver observer = mock(GameObserver.class);
@@ -43,7 +39,7 @@ public class GameModelBehaviour {
         assertThat(game.playerAt(0, 2), equalTo(Player.O));
     }
     
-    @Test
+    @org.junit.Test
     public void shouldNotifyObserverWhenTheCurrentPlayerWins() {
         // Given a game which X is about to win
         GameModel game = new GameModel();

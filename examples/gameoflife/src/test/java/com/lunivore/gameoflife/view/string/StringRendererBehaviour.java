@@ -1,13 +1,12 @@
 package com.lunivore.gameoflife.view.string;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+import com.lunivore.gameoflife.domain.Grid;
 import org.junit.jupiter.api.Test;
 
-import com.lunivore.gameoflife.domain.Grid;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class StringRendererBehaviour {
 

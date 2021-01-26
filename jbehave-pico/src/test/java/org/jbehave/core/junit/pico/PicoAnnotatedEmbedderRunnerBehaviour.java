@@ -1,8 +1,5 @@
 package org.jbehave.core.junit.pico;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.instanceOf;
-
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -11,6 +8,9 @@ import org.jbehave.core.junit.AnnotatedEmbedderRunner;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.model.InitializationError;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
 
 public class PicoAnnotatedEmbedderRunnerBehaviour {
 
@@ -28,7 +28,7 @@ public class PicoAnnotatedEmbedderRunnerBehaviour {
         static boolean hasRun;
 
         @Override
-        @Test
+        @org.junit.Test
         public void run() {
             hasRun = true;
         }

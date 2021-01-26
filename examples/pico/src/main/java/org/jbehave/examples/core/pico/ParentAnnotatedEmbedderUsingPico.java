@@ -1,9 +1,5 @@
 package org.jbehave.examples.core.pico;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
-
-import java.util.List;
-
 import org.jbehave.core.InjectableEmbedder;
 import org.jbehave.core.annotations.Configure;
 import org.jbehave.core.annotations.UsingEmbedder;
@@ -12,8 +8,11 @@ import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.junit.pico.PicoAnnotatedEmbedderRunner;
 import org.jbehave.examples.core.pico.AnnotatedEmbedderUsingPico.ConfigurationModule;
-import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
+
+import static org.jbehave.core.io.CodeLocations.codeLocationFromPath;
 
 @RunWith(PicoAnnotatedEmbedderRunner.class)
 @Configure()
@@ -22,7 +21,7 @@ import org.junit.runner.RunWith;
 public abstract class ParentAnnotatedEmbedderUsingPico extends InjectableEmbedder {
 
     @Override
-    @Test
+    @org.junit.Test
     public void run() {
         injectedEmbedder().runStoriesAsPaths(storyPaths());
     }
